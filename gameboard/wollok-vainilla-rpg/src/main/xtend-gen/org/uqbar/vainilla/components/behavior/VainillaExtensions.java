@@ -30,19 +30,13 @@ public class VainillaExtensions {
     {
       final ArrayList<Sprite> frames = CollectionLiterals.<Sprite>newArrayList();
       int x = 0;
-      double _width = tiles.getWidth();
-      boolean _lessThan = (x < _width);
-      boolean _while = _lessThan;
-      while (_while) {
+      while ((x < tiles.getWidth())) {
         {
           Sprite _crop = tiles.crop(x, y, tileWidth, tileHeight);
           frames.add(_crop);
           int _x = x;
           x = (_x + tileWidth);
         }
-        double _width_1 = tiles.getWidth();
-        boolean _lessThan_1 = (x < _width_1);
-        _while = _lessThan_1;
       }
       _xblockexpression = new Animation(meanTime, ((Sprite[])Conversions.unwrapArray(frames, Sprite.class)));
     }

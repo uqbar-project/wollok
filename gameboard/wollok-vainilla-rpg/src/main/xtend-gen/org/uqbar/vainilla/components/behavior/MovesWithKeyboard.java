@@ -4,6 +4,8 @@ import com.uqbar.vainilla.DeltaState;
 import com.uqbar.vainilla.MovingGameComponent;
 import com.uqbar.vainilla.UnitVector2D;
 import com.uqbar.vainilla.events.constants.Key;
+import org.eclipse.xtend.lib.Property;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.uqbar.vainilla.components.behavior.Behavior;
 
 /**
@@ -14,45 +16,17 @@ import org.uqbar.vainilla.components.behavior.Behavior;
  */
 @SuppressWarnings("all")
 public class MovesWithKeyboard extends Behavior<MovingGameComponent> {
+  @Property
   private Key _upKey = Key.UP;
   
-  public Key getUpKey() {
-    return this._upKey;
-  }
-  
-  public void setUpKey(final Key upKey) {
-    this._upKey = upKey;
-  }
-  
+  @Property
   private Key _downKey = Key.DOWN;
   
-  public Key getDownKey() {
-    return this._downKey;
-  }
-  
-  public void setDownKey(final Key downKey) {
-    this._downKey = downKey;
-  }
-  
+  @Property
   private Key _leftKey = Key.LEFT;
   
-  public Key getLeftKey() {
-    return this._leftKey;
-  }
-  
-  public void setLeftKey(final Key leftKey) {
-    this._leftKey = leftKey;
-  }
-  
+  @Property
   private Key _rightKey = Key.RIGHT;
-  
-  public Key getRightKey() {
-    return this._rightKey;
-  }
-  
-  public void setRightKey(final Key rightKey) {
-    this._rightKey = rightKey;
-  }
   
   public int getMaxSpeed() {
     return 250;
@@ -123,5 +97,41 @@ public class MovesWithKeyboard extends Behavior<MovingGameComponent> {
       _and = _equals_1;
     }
     return _and;
+  }
+  
+  @Pure
+  public Key getUpKey() {
+    return this._upKey;
+  }
+  
+  public void setUpKey(final Key upKey) {
+    this._upKey = upKey;
+  }
+  
+  @Pure
+  public Key getDownKey() {
+    return this._downKey;
+  }
+  
+  public void setDownKey(final Key downKey) {
+    this._downKey = downKey;
+  }
+  
+  @Pure
+  public Key getLeftKey() {
+    return this._leftKey;
+  }
+  
+  public void setLeftKey(final Key leftKey) {
+    this._leftKey = leftKey;
+  }
+  
+  @Pure
+  public Key getRightKey() {
+    return this._rightKey;
+  }
+  
+  public void setRightKey(final Key rightKey) {
+    this._rightKey = rightKey;
   }
 }

@@ -3,6 +3,8 @@ package org.uqbar.wollok.rpg.components;
 import com.uqbar.vainilla.GameComponent;
 import com.uqbar.vainilla.appearances.Animation;
 import com.uqbar.vainilla.appearances.Sprite;
+import org.eclipse.xtend.lib.Property;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.vainilla.components.behavior.VainillaExtensions;
 import org.uqbar.vainilla.components.collision.Collidable;
@@ -14,15 +16,8 @@ import resource.Resource;
  */
 @SuppressWarnings("all")
 public class Gem extends GameComponent implements Collidable, WollokObjectView {
+  @Property
   private WollokObject _model;
-  
-  public WollokObject getModel() {
-    return this._model;
-  }
-  
-  public void setModel(final WollokObject model) {
-    this._model = model;
-  }
   
   public Gem(final WollokObject obj) {
     this.setModel(obj);
@@ -34,5 +29,14 @@ public class Gem extends GameComponent implements Collidable, WollokObjectView {
   }
   
   public void collidesWith(final Collidable other) {
+  }
+  
+  @Pure
+  public WollokObject getModel() {
+    return this._model;
+  }
+  
+  public void setModel(final WollokObject model) {
+    this._model = model;
   }
 }

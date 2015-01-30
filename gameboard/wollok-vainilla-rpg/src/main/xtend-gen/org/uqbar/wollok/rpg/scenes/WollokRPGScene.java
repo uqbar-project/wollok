@@ -2,7 +2,6 @@ package org.uqbar.wollok.rpg.scenes;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.uqbar.vainilla.Game;
 import com.uqbar.vainilla.GameComponent;
 import com.uqbar.vainilla.GameScene;
@@ -19,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
@@ -84,7 +85,7 @@ public class WollokRPGScene extends GameScene {
       File _file = new File("target/classes/org/uqbar/wollok/rpg/scenes/example.wlk");
       File _file_1 = new File("target/classes/org/uqbar/wollok/rpg/scenes/warriors.wlk");
       final WFile program = WollokInterpreterStandalone.parse(_uRI, 
-        Collections.<File>unmodifiableList(Lists.<File>newArrayList(_file, _file_1)));
+        Collections.<File>unmodifiableList(CollectionLiterals.<File>newArrayList(_file, _file_1)));
       SysoutWollokInterpreterConsole _createWollokConsole = this.createWollokConsole();
       final WollokInterpreter interpreter = new WollokInterpreter(_createWollokConsole);
       interpreter.interpret(program);
@@ -100,8 +101,8 @@ public class WollokRPGScene extends GameScene {
       Iterable<Object> _map = IterableExtensions.<WVariable, Object>map(_allReferenceNames, _function);
       Iterable<WollokObject> _filter = Iterables.<WollokObject>filter(_map, 
         WollokObject.class);
-      final Procedure1<WollokObject> _function_1 = new Procedure1<WollokObject>() {
-        public void apply(final WollokObject wo) {
+      final Consumer<WollokObject> _function_1 = new Consumer<WollokObject>() {
+        public void accept(final WollokObject wo) {
           WMethodContainer _kind = wo.getKind();
           GameComponent<?> _createActor = WollokRPGScene.this.createActor(_kind, wo);
           final Procedure1<GameComponent<?>> _function = new Procedure1<GameComponent<?>>() {
@@ -120,7 +121,7 @@ public class WollokRPGScene extends GameScene {
           WollokRPGScene.this.addComponent(_doubleArrow);
         }
       };
-      IterableExtensions.<WollokObject>forEach(_filter, _function_1);
+      _filter.forEach(_function_1);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -165,22 +166,22 @@ public class WollokRPGScene extends GameScene {
     super.takeStep(graphics);
     Iterable<Collidable> _collidables = this.getCollidables();
     Collidable[] _clone = ((Collidable[])Conversions.unwrapArray(_collidables, Collidable.class)).clone();
-    final Procedure1<Collidable> _function = new Procedure1<Collidable>() {
-      public void apply(final Collidable it) {
+    final Consumer<Collidable> _function = new Consumer<Collidable>() {
+      public void accept(final Collidable it) {
         WollokRPGScene.this.verifyComponentCollides(it);
       }
     };
-    IterableExtensions.<Collidable>forEach(((Iterable<Collidable>)Conversions.doWrapArray(_clone)), _function);
+    ((List<Collidable>)Conversions.doWrapArray(_clone)).forEach(_function);
   }
   
   public void verifyComponentCollides(final Collidable c) {
     List<Collidable> _collisions = this.collisions(c);
-    final Procedure1<Collidable> _function = new Procedure1<Collidable>() {
-      public void apply(final Collidable it) {
+    final Consumer<Collidable> _function = new Consumer<Collidable>() {
+      public void accept(final Collidable it) {
         c.collidesWith(it);
       }
     };
-    IterableExtensions.<Collidable>forEach(_collisions, _function);
+    _collisions.forEach(_function);
   }
   
   public boolean isCollision(final Collidable a, final Collidable b) {

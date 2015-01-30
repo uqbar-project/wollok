@@ -2,19 +2,19 @@ package org.uqbar.wollok.rpg.components;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.uqbar.vainilla.DeltaState;
 import com.uqbar.vainilla.GameComponent;
 import com.uqbar.vainilla.events.constants.Key;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Functions.Function2;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions;
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration;
@@ -59,13 +59,13 @@ public class SendMessageOnCollision extends Behavior<WollokMovingGameComponent> 
         final Collidable other = IterableExtensions.<Collidable>head(collisions);
         List<GameComponent> _createCollisionDialog = this.createCollisionDialog(other);
         this.collisionComponents = _createCollisionDialog;
-        final Procedure1<GameComponent> _function = new Procedure1<GameComponent>() {
-          public void apply(final GameComponent it) {
+        final Consumer<GameComponent> _function = new Consumer<GameComponent>() {
+          public void accept(final GameComponent it) {
             WollokRPGScene _scene = SendMessageOnCollision.this.component.getScene();
             _scene.addComponent(it);
           }
         };
-        IterableExtensions.forEach(this.collisionComponents, _function);
+        this.collisionComponents.forEach(_function);
       } else {
         this.checkIfOptionSelected(s);
       }
@@ -96,12 +96,12 @@ public class SendMessageOnCollision extends Behavior<WollokMovingGameComponent> 
   public void disposeMenu() {
     boolean _notEquals = (!Objects.equal(this.collisionComponents, null));
     if (_notEquals) {
-      final Procedure1<GameComponent> _function = new Procedure1<GameComponent>() {
-        public void apply(final GameComponent it) {
+      final Consumer<GameComponent> _function = new Consumer<GameComponent>() {
+        public void accept(final GameComponent it) {
           it.destroy();
         }
       };
-      IterableExtensions.forEach(this.collisionComponents, _function);
+      this.collisionComponents.forEach(_function);
     }
     this.collisionComponents = null;
   }
@@ -111,8 +111,8 @@ public class SendMessageOnCollision extends Behavior<WollokMovingGameComponent> 
     {
       this.collidingWith = ((WollokObjectView) collidable);
       final Collection<TextOption> opts = this.createMessagesOptions();
-      final int maxWidth = ((((int) XTendUtilExtensions.<TextOption>maxBy(opts, new Function1<TextOption, Double>() {
-        public Double apply(final TextOption it) {
+      final int maxWidth = ((((int) XTendUtilExtensions.<TextOption>maxBy(opts, new Function1<TextOption, Comparable>() {
+        public Comparable apply(final TextOption it) {
           return Double.valueOf(it.getWidth());
         }
       }).getWidth()) + SendMessageOnCollision.leftPadding) + SendMessageOnCollision.rightPadding);
@@ -156,7 +156,7 @@ public class SendMessageOnCollision extends Behavior<WollokMovingGameComponent> 
         }
       };
       IterableExtensions.<TextOption, GameComponent<?>>fold(opts, ((GameComponent<?>) bubble), _function_1);
-      Iterable<GameComponent> _plus = Iterables.<GameComponent>concat(Collections.<CollisionBubble>unmodifiableList(Lists.<CollisionBubble>newArrayList(bubble)), opts);
+      Iterable<GameComponent> _plus = Iterables.<GameComponent>concat(Collections.<CollisionBubble>unmodifiableList(CollectionLiterals.<CollisionBubble>newArrayList(bubble)), opts);
       _xblockexpression = IterableExtensions.<GameComponent>toList(_plus);
     }
     return _xblockexpression;

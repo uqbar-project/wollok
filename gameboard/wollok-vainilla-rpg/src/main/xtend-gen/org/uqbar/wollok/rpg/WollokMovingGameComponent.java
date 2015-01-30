@@ -8,9 +8,10 @@ import com.uqbar.vainilla.colissions.Rectangle;
 import com.uqbar.vainilla.events.constants.MouseButton;
 import java.awt.geom.Point2D;
 import java.util.List;
+import java.util.function.Consumer;
+import org.eclipse.xtend.lib.Property;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.vainilla.components.behavior.Behavior;
 import org.uqbar.vainilla.components.behavior.DynamicBehavior;
@@ -23,15 +24,8 @@ import org.uqbar.wollok.rpg.scenes.WollokRPGScene;
  */
 @SuppressWarnings("all")
 public class WollokMovingGameComponent extends MovingGameComponent<WollokRPGScene> implements DynamicBehavior, WollokObjectView {
+  @Property
   private WollokObject _model;
-  
-  public WollokObject getModel() {
-    return this._model;
-  }
-  
-  public void setModel(final WollokObject model) {
-    this._model = model;
-  }
   
   private List<Behavior> behaviors = CollectionLiterals.<Behavior>newArrayList();
   
@@ -105,12 +99,12 @@ public class WollokMovingGameComponent extends MovingGameComponent<WollokRPGScen
   
   public void update(final DeltaState deltaState) {
     super.update(deltaState);
-    final Procedure1<Behavior> _function = new Procedure1<Behavior>() {
-      public void apply(final Behavior it) {
+    final Consumer<Behavior> _function = new Consumer<Behavior>() {
+      public void accept(final Behavior it) {
         it.update(deltaState);
       }
     };
-    IterableExtensions.<Behavior>forEach(this.behaviors, _function);
+    this.behaviors.forEach(_function);
     boolean _mousePressedOnThis = this.mousePressedOnThis(deltaState);
     if (_mousePressedOnThis) {
       this.mouseButtonPressed();
@@ -132,5 +126,14 @@ public class WollokMovingGameComponent extends MovingGameComponent<WollokRPGScen
   }
   
   public void mouseButtonPressed() {
+  }
+  
+  @Pure
+  public WollokObject getModel() {
+    return this._model;
+  }
+  
+  public void setModel(final WollokObject model) {
+    this._model = model;
   }
 }

@@ -32,17 +32,13 @@ public class FeedbackPropertyChanges extends Behavior implements WollokObjectLis
   
   public synchronized void update(final DeltaState s) {
     final Iterator<PropertyChanged> ite = this.bufferedEvents.iterator();
-    boolean _hasNext = ite.hasNext();
-    boolean _while = _hasNext;
-    while (_while) {
+    while (ite.hasNext()) {
       {
         final PropertyChanged e = ite.next();
         ite.remove();
         GameScene _scene = this.component.getScene();
         _scene.addComponent(e);
       }
-      boolean _hasNext_1 = ite.hasNext();
-      _while = _hasNext_1;
     }
   }
   
