@@ -5,7 +5,7 @@
 
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 
-       uri = "http://www.uqbar.org/project/wollok/WollokDsl" 
+       uri = "http://uqbar-project.org/wollok/WollokDsl" 
        class = "org.uqbar.project.wollok.wollokDsl.WollokDslPackage"
        genModel = "model/generated/WollokDsl.genmodel" /> 
   </extension>
