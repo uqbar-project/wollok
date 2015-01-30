@@ -1,0 +1,31 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class Golondrina {
+	var energia = 100
+
+	method energia() {
+		// XPECT errors --> "Super can only be used in an overriding method" at "super()"
+		super()
+		energia
+	}
+	
+	method comer(alimento, postre) {
+		energia = energia + 2
+	}
+
+}
+
+val o = object {
+	method valak(a) {
+		// XPECT errors --> "Super can only be used in a method belonging to a class" at "super(a)"
+		super(a)
+	}
+}
+this.println(o)
+
+class GolondrinaSarasa extends Golondrina {
+	override comer(a, p) {
+		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2 for: alimento, postre" at "super()"
+		super()
+	}
+}

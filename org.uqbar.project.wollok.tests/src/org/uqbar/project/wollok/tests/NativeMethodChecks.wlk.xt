@@ -1,0 +1,35 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+// 1st check
+
+class MyNativeClass {
+	// XPECT errors --> "Native methods cannot have a body" at "{ 		42 	}"
+	method blah() native {
+		42
+	}
+	
+	method nativeBlahOK() native
+}
+
+// 2nd check
+
+class A {
+	method m1() {}
+}
+
+class B extends A {
+	// XPECT errors --> "Native methods cannot override anything" at "override"
+	override m1() native
+}
+
+// 3rd check
+
+class SuperWithNative {
+	method m1() native
+}
+
+class Subclass extends SuperWithNative {
+	
+	// XPECT errors --> "Cannot declare native methods in this class since there's already a native super class in the hierarchy" at "native"
+	method m2() native
+}

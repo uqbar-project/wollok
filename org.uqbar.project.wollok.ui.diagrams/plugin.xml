@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+           point="org.eclipse.ui.views">
+        <view
+              category="org.uqbar.project.wollok.ui.diagrams.category"
+              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.classes.ClassDiagramView"
+              icon="class_diagram_icon.png"
+              id="org.uqbar.project.wollok.ui.diagrams.class"
+              name="Class Diagram"
+              restorable="true">
+        </view>
+        <category
+              id="org.uqbar.project.wollok.ui.diagrams.category"
+              name="Wollok Diagrams">
+        </category>
+     </extension>
+</plugin>

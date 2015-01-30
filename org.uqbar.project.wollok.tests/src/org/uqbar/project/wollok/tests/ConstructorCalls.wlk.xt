@@ -1,0 +1,36 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class Direccion {
+	var calle
+	var numero
+	
+	new(c, n) {
+		calle = c
+		numero = n
+	}
+}
+
+// XPECT warnings --> "Unused variable" at "direccion"
+val direccion = new Direccion("Jose Marti", 155)
+
+/* XPECT issues --- 
+   "Wrong number of arguments. Should be (c,n)" at "new Direccion()"
+   "Unused variable" at "d1"
+   ---
+*/
+val d1 = new Direccion()
+
+/* XPECT issues --- 
+   "Wrong number of arguments. Should be (c,n)" at "\"Juan\""
+   "Unused variable" at "d2"
+   ---
+*/
+val d2 = new Direccion("Juan")
+
+/* XPECT issues --- 
+   "Wrong number of arguments. Should be (c,n)" at "1"
+   "Unused variable" at "d3"
+   ---
+*/
+val d3 = new Direccion(1, 2, 3)
+

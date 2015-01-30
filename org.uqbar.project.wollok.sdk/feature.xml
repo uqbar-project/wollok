@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.uqbar.project.wollok.sdk"
+      label="Wollok Language Feature"
+      version="1.0.0.qualifier"
+      provider-name="Uqbar Foundation"
+      os="linux,macosx,win32">
+
+   <url>
+      <update label="Wollok Update Site" url="http://dl.bintray.com/uqbar/wollok-update-site/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.xtext"/>
+      <import plugin="org.eclipse.xtext.util"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.emf.ecore"/>
+      <import plugin="org.eclipse.emf.common"/>
+      <import plugin="org.antlr.runtime"/>
+      <import plugin="org.eclipse.xtext.common.types"/>
+      <import plugin="it.xsemantics.runtime" version="1.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.6.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ecore" version="2.6.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j"/>
+      <import plugin="org.eclipse.xtext.xbase.lib"/>
+      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.shared"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.xtext.builder"/>
+      <import plugin="org.eclipse.xtext.common.types.ui"/>
+      <import plugin="org.eclipse.xtext.ui.codetemplates.ui"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.7.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.xtend"/>
+      <import plugin="org.eclipse.xpand"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.uqbar.project.wollok" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.core" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.101" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.9.2" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.uqbar.project.wollok"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.launch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.ui.diagrams"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

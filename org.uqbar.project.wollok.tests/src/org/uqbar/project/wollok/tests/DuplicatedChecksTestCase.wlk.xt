@@ -1,0 +1,129 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class Person {
+	/* XPECT issues --- 
+		 "Unused variable" at "name"
+		 "Duplicated name" at "name"
+		 ---
+	*/
+	var name = ""
+	/* XPECT issues --- 
+		 "Unused variable" at "name"
+		 "Duplicated name" at "name"
+		 ---
+	*/
+	var name = "asdd"
+	// XPECT warnings --> "Unused variable" at "toBeHidden"
+	var toBeHidden = 23
+	
+	new(
+		// XPECT errors --> "Duplicated name" at "a"
+		a, 
+		// XPECT errors --> "Duplicated name" at "a"
+		a
+	) {}
+	
+	
+	method repeatedParameters(
+		// XPECT errors --> "Duplicated name" at "p1"
+		p1,
+		// XPECT errors --> "Duplicated name" at "p1"
+		p1
+	) {}  
+	
+	
+	method hidingFieldWithParameter(
+		// XPECT errors --> "Duplicated name" at "toBeHidden"
+		toBeHidden
+	) {}
+	
+	method hidingFieldWithLocalVar() {
+		/*  XPECT issues ---
+			"Duplicated name" at "toBeHidden"
+ 			"Unused variable" at "toBeHidden"
+		 	---
+		 */
+		var toBeHidden = 22
+	}
+	
+	method hidingParameterWithLocalVar(p1) {
+		/* XPECT issues ---
+			"Duplicated name" at "p1"
+			"Unused variable" at "p1"
+		--- */
+		var p1 = 23
+	}
+	
+	method hidingParameterWithBlockParameter(p1) {
+		/* XPECT issues --- 
+		   "Duplicated name" at "p1"
+		   "Unused variable" at "c"
+		   ---
+		 */
+		var c = [p1 | true ]
+	}
+	
+	// XPECT errors --> "Duplicated method" at "dupMethod"
+	method dupMethod() {}
+	// XPECT errors --> "Duplicated method" at "dupMethod"
+	method dupMethod() {}
+	// XPECT errors --> "Duplicated method" at "dupMethod"
+	method dupMethod(withParam) {}
+	
+}
+
+
+// dup vars
+/*  XPECT issues --- 
+	"Duplicated name" at "u"
+	"Unused variable" at "u"
+	---
+*/
+val u = 23
+/*  XPECT issues --- 
+	"Duplicated name" at "u"
+	"Unused variable" at "u"
+	---
+*/
+val u = 566
+
+// dup closures params
+// XPECT warnings --> "Unused variable" at "closure"
+val closure = [
+	// XPECT errors --> "Duplicated name" at "y"
+	y,
+	// XPECT errors --> "Duplicated name" at "y" 
+	y |
+	y.blah()
+]
+
+// closure param hides other var
+/* 
+   XPECT issues --- 
+   	"Duplicated name" at "u"
+	"Unused variable" at "cl"
+	---
+*/
+
+val cl = [u | u.blah() ]
+// XPECT warnings --> "Unused variable" at "inner"
+val inner = [a |
+	// XPECT errors --> "Duplicated name" at "a" 
+	[a | true]
+]
+
+package myPackage {
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
+	class A {}
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
+	class A {}
+}
+
+// XPECT errors --> "Duplicated package name otherPackage" at "otherPackage"
+package otherPackage {
+	class A {} // this one is ok, it's in another package
+}
+
+// XPECT errors --> "Duplicated package name otherPackage" at "otherPackage"
+package otherPackage {}
+

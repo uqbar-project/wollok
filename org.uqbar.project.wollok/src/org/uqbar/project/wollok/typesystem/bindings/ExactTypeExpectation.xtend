@@ -1,0 +1,22 @@
+package org.uqbar.project.wollok.typesystem.bindings
+
+import org.uqbar.project.wollok.semantics.WollokType
+
+/**
+ * Expect the exact given type.
+ * 
+ * @author jfernandes
+ */
+class ExactTypeExpectation implements TypeExpectation {
+	WollokType expectedType
+	
+	new(WollokType expected) {
+		expectedType = expected 
+	}
+	
+	override check(WollokType actualType) {
+		if (expectedType != actualType)		
+			throw new TypeExpectationFailedException('''ERROR: expected <<«expectedType»>> but found <<«actualType»>>''')
+	}
+	
+}

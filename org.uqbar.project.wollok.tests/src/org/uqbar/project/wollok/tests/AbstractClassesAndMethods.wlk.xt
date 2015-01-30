@@ -1,0 +1,49 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+// abstract
+class A {
+	method foo()
+}
+
+/* XPECT issues ---
+	"Cannot instantiate abstract class" at "A"
+	"Unused variable" at "a"
+	---
+*/
+val a = new A()
+
+class B extends A {}
+
+/* XPECT issues ---
+	"Cannot instantiate abstract class" at "B"
+	"Unused variable" at "b"
+	---
+*/
+val b = new B()
+
+class C extends B {
+	override foo() { 42 }
+}
+// XPECT warnings --> "Unused variable" at "c"
+val c = new C()
+
+
+// implements but declares a new abstract method
+
+class D extends C {
+	method bar()
+}
+
+/* XPECT issues --- 
+   	"Cannot instantiate abstract class" at "D"
+   	"Unused variable" at "d"
+   ---
+ */
+val d = new D()
+
+class E extends D {
+	override bar() { 'bar' }
+}
+
+// XPECT warnings --> "Unused variable" at "e"
+val e = new E()

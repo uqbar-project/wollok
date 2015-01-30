@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+  <extension point="org.eclipse.emf.ecore.generated_package">
+    <package 
+       uri = "http://www.uqbar.org/project/wollok/WollokDsl" 
+       class = "org.uqbar.project.wollok.wollokDsl.WollokDslPackage"
+       genModel = "model/generated/WollokDsl.genmodel" /> 
+  </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated WollokTypeSystem -->
+      <package
+            uri="http://uqbar-project.org/wollok/WollokTypeSystem"
+            class="org.uqbar.project.wollok.wollokTypeSystem.WollokTypeSystemPackage"
+            genModel="src/org/uqbar/project/wollok/typesystem/WollokTypeSystem.genmodel"/>
+   </extension>
+   <extension
+         id="wollokNature"
+         name="Wollok Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.uqbar.project.wollok.nature.WollokNature">
+         </run>
+      </runtime>
+      <content-type
+            id="org.uqbar.project.wollok.contentType">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="wlk"
+            id="org.uqbar.project.wollok.contentType"
+            name="Wollok File"
+            priority="normal">
+      </content-type>
+      <file-association
+            content-type="org.uqbar.project.wollok.contentType"
+            file-extensions="wlk">
+      </file-association>
+   </extension>
+
+</plugin>

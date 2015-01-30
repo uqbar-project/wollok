@@ -1,0 +1,30 @@
+«IMPORT org::uqbar::project::wollok::ui::wizard»
+
+«DEFINE main FOR WollokDslProjectInfo»
+«EXPAND model FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR WollokDslProjectInfo»
+«FILE "src/uqbar/wollok/example.wlk"-»
+/*
+ * This is an example wollok hello world
+ */
+program e {
+	this.println('Hello Wollok!')
+}
+«ENDFILE»
+
+«FILE "src/log4j.properties"-»
+log4j.rootLogger=WARN, stdout
+
+# WHOLE UQBAR
+log4j.logger.org.uqbar=WARN
+## DEBUGGER
+org.uqbar.project.wollok.ui.debugger
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+«ENDFILE»
+
+«ENDDEFINE»

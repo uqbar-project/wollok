@@ -1,0 +1,61 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class WithUnusedVariables {
+	var a = 123
+	// XPECT warnings --> "Unused variable" at "b"
+	var b = 123
+	// XPECT warnings --> "Variable is never assigned" at "c"
+	var c 
+	var d
+	// XPECT errors --> "Variable is never assigned" at "x" 
+	val x 
+	val z = 1
+	
+	val usedOnlyWithUnary = ""
+	
+	var equipos = #[]
+	
+	method doSomething(){
+		a = a + 1 + c + x
+		d = 123
+		//XPECT errors --> "Cannot modify values" at "z"
+		z = equipos.size()
+		
+		a = !usedOnlyWithUnary 
+	}
+}
+// XPECT warnings --> "Unused variable" at "vaca"	
+val vaca = object {
+	var peso = 1000
+	method engordar(cuanto) {
+		peso = peso + cuanto
+	}
+	method peso() {
+		peso
+	}
+}
+
+// forEach
+val vaca1 = object {
+	var peso = 1000
+	method engordar(cuanto) {
+		peso = peso + cuanto
+	}
+	method peso() {
+		peso
+	}
+}
+
+val vaca2 = object {
+	var peso = 1000
+	method engordar(cuanto) {
+		peso = peso + cuanto
+	}
+	method peso() {
+		peso
+	}
+}
+val vacas = #[vaca1, vaca2]
+
+vacas.forEach([v | v.engordar(2)])
+this.assert(vacas.forAll([v | v.peso() == 1002]))

@@ -1,0 +1,215 @@
+Manifest-Version: 1.0
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Built-By: hudsonbuild
+Bundle-SymbolicName: org.uqbar.project.wollok.ui.diagrams;singleton:=true
+Require-Bundle: org.eclipse.gef;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.ui;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.core.resources;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.ui.views;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.ui.workbench;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.ui.ide;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.jface;bundle-version="[3.2.0,4.0.0)",
+ com.google.guava;bundle-version="15.0.0",
+ org.eclipse.xtend2.lib;bundle-version="2.6.2",
+ org.uqbar.project.wollok;bundle-version="1.0.0",
+ org.uqbar.project.wollok.ui;bundle-version="1.0.0",
+ org.eclipse.xtext.ui;bundle-version="2.6.2",
+ org.eclipse.zest.layouts;bundle-version="1.1.0"
+Bundle-Activator: org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
+Bundle-Version: 3.8.1.201308190730
+Build-Jdk: 1.6.0_21
+Bundle-Vendor: %Plugin.providerName
+Bundle-ActivationPolicy: lazy
+Bundle-Name: %Plugin.name
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Bundle-ManifestVersion: 2
+
+Name: org/eclipse/gef/examples/shapes/model/RectangularShape.class
+SHA1-Digest: HyGqV85f/s0Fkjw80xBP73d72Vw=
+
+Name: org/eclipse/gef/examples/shapes/package.html
+SHA1-Digest: /7JrMHqsXoDyt0B4Bg1n25magmE=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapeEditPart.class
+SHA1-Digest: sPHe2ftaoYzgKD46Koi6VepNr6c=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ConnectionReconne
+ ctCommand.class
+SHA1-Digest: FbGgMFAuIO869kaQ2IwHsGqtdoQ=
+
+Name: org/eclipse/gef/examples/shapes/icons/connection_s16.gif
+SHA1-Digest: pwswQvvT9grfPy8ghYBUZff/Rww=
+
+Name: org/eclipse/gef/examples/shapes/parts/package.html
+SHA1-Digest: js7hoOTC8u3zbGOQhPgdSQxIHic=
+
+Name: org/eclipse/gef/examples/shapes/parts/DiagramEditPart$ShapesXYLa
+ youtEditPolicy.class
+SHA1-Digest: TQXQV+77Kzl7iraBu7tFKTff1PY=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditorPaletteFactory$2.cla
+ ss
+SHA1-Digest: VuuF+YjFp75imsAIKxK4b5TFy4c=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditorActionBarContributor
+ .class
+SHA1-Digest: w7S4SDYRIy5ppCfZZaYR8C8mTNg=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditorContextMenuProvider.
+ class
+SHA1-Digest: 0IQ9kwUywFIlWFlpzMNrGfrz0ZY=
+
+Name: org/eclipse/gef/examples/shapes/model/Connection.class
+SHA1-Digest: XM9W7YL188J2PTL9kcaduVJY81Q=
+
+Name: org/eclipse/gef/examples/shapes/ShapesPlugin.class
+SHA1-Digest: xZ70QXu7/iqyoR0s6Ck4Ok7ddCc=
+
+Name: org/eclipse/gef/examples/shapes/model/Shape$1.class
+SHA1-Digest: 0zU19NvWih47orlDqQcCzXN4hK4=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: org/eclipse/gef/examples/shapes/icons/rectangle16.gif
+SHA1-Digest: nPT8McaVRuGxiEljLgrfvTmnL3A=
+
+Name: org/eclipse/gef/examples/shapes/model/EllipticalShape.class
+SHA1-Digest: am4Jdafzn+ri5F2KOfhP3OwXHcU=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditor$1.class
+SHA1-Digest: L4aZ4vpYsIUulwUhAVTqZ1E/Z7c=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ShapeCreateComman
+ d.class
+SHA1-Digest: KA6bBqdzZOdSrhoJmBs6sz6I5Kk=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditor$3.class
+SHA1-Digest: VHKFwfyQ7/C98NzAjAYkGCI51TE=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ConnectionCreateC
+ ommand.class
+SHA1-Digest: M7CkvlfDC6LXb0EcqME6jrzAYD8=
+
+Name: org/eclipse/gef/examples/shapes/ShapesCreationWizard$CreationPag
+ e.class
+SHA1-Digest: QggOI0z5+1C2aF9UVERl6kQuUpY=
+
+Name: org/eclipse/gef/examples/shapes/icons/connection_s24.gif
+SHA1-Digest: CADoXXI/tyihkT+GeGZMxSQs7BE=
+
+Name: org/eclipse/gef/examples/shapes/model/ShapesDiagram.class
+SHA1-Digest: xqIDBeWzjgXk8dRZLw+X6V0oEbI=
+
+Name: org/eclipse/gef/examples/shapes/parts/DiagramEditPart.class
+SHA1-Digest: qXpewx685T19TF33FOcpxL81dpg=
+
+Name: org/eclipse/gef/examples/shapes/icons/rectangle24.gif
+SHA1-Digest: gkv36O+lb8s/5OXL9fCWEZ0HH/k=
+
+Name: META-INF/maven/org.eclipse.gef.plugins/org.eclipse.gef.examples.
+ shapes/pom.properties
+SHA1-Digest: W3oyaONLlLK+uMF4t/SPVIpXMvc=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapeComponentEditPolicy.c
+ lass
+SHA1-Digest: LTVM1ZY6Al3RYa4c3xXlwM8kjeU=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/package.html
+SHA1-Digest: ZHRwPl5Gk1H5KUVex+yZidgbvsA=
+
+Name: org/eclipse/gef/examples/shapes/icons/connection_d16.gif
+SHA1-Digest: +UEBLnsOW5pB7ZBL7jTAMJczh8E=
+
+Name: org/eclipse/gef/examples/shapes/parts/ConnectionEditPart.class
+SHA1-Digest: FfsTw7TrH/2tSkVdrdGk5UwU8b8=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapesEditPartFactory.clas
+ s
+SHA1-Digest: eyNplehXbGOFUPGZV3N4eQalGlU=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapeTreeEditPart.class
+SHA1-Digest: jfaRys1bnyfv4v8Kh0MSIJhhA0U=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapesTreeEditPartFactory.
+ class
+SHA1-Digest: VEezAh5om1aJTLUMKvuWtvzfb3Y=
+
+Name: shapes.gif
+SHA1-Digest: zyPdOCx1A/PlA40039Gq0gZzS9A=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditorPaletteFactory.class
+SHA1-Digest: TUGMZ9fSoEr6Sk5/fif4VjgxPtY=
+
+Name: plugin.properties
+SHA1-Digest: 87/MD4MOY6Fw8F0M8ZKt/2Rt9NA=
+
+Name: org/eclipse/gef/examples/shapes/parts/ConnectionEditPart$1.class
+SHA1-Digest: REZHdg7C+ysoQMmU81TwH/xc9PU=
+
+Name: org/eclipse/gef/examples/shapes/icons/ellipse16.gif
+SHA1-Digest: tSYAQ8Do5oqQnF7PrfZZbNG1E6c=
+
+Name: org/eclipse/gef/examples/shapes/model/Shape.class
+SHA1-Digest: 8JWxIRL782ScIQOQD5sYm1gHf24=
+
+Name: org/eclipse/gef/examples/shapes/model/ModelElement.class
+SHA1-Digest: wUiWhkW4cZfNlkxVFCKdQ2swKXo=
+
+Name: org/eclipse/gef/examples/shapes/parts/ShapeEditPart$1.class
+SHA1-Digest: LaANi6RQAm0uYuX97eWiAeFmrMQ=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditorPaletteFactory$1.cla
+ ss
+SHA1-Digest: rcb2xIxqjktwzutS9Onhgi+27Ro=
+
+Name: org/eclipse/gef/examples/shapes/ShapesCreationWizard.class
+SHA1-Digest: 9FhM0rXyt5Qa8d075uqJhTRIsDM=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ShapeDeleteComman
+ d.class
+SHA1-Digest: 9RYgTJJfSur3uDebI+PQkraGY6M=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditor.class
+SHA1-Digest: PdwThFoV9lebGVWMDhx28tIyFfY=
+
+Name: plugin.xml
+SHA1-Digest: zf6fWF7lJ/AdbwVwiTntAW5jMy0=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ConnectionDeleteC
+ ommand.class
+SHA1-Digest: a1IIE18LkPMkAAlDjwu+rQlshQ0=
+
+Name: org/eclipse/gef/examples/shapes/icons/connection_d24.gif
+SHA1-Digest: fLfcLvaGsqI02EHLmO4jdLkA7ik=
+
+Name: org/eclipse/gef/examples/shapes/model/commands/ShapeSetConstrain
+ tCommand.class
+SHA1-Digest: cfqkDEj9XeDbCBozHTO73hH8loI=
+
+Name: META-INF/maven/org.eclipse.gef.plugins/org.eclipse.gef.examples.
+ shapes/pom.xml
+SHA1-Digest: oQ26Y9+Enc+F7/625/ndSIZJa4k=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditor$2.class
+SHA1-Digest: sH8/Om/G8pdh/kJXNjfrfP+MU3A=
+
+Name: org/eclipse/gef/examples/shapes/model/package.html
+SHA1-Digest: xibpOXrA/hqY46yjm/4WaIzEa6U=
+
+Name: about.html
+SHA1-Digest: upsJNogaGlPvrCoyWxm5ik9e9Bk=
+
+Name: org/eclipse/gef/examples/shapes/icons/ellipse24.gif
+SHA1-Digest: I09PStKK+H75GGr/LyjjTvmNOr0=
+
+Name: org/eclipse/gef/examples/shapes/ShapesEditor$ShapesOutlinePage.c
+ lass
+SHA1-Digest: rsmSqMNg+yT7hNbLxFAgdMm/0XU=
+
+Name: org/eclipse/gef/examples/shapes/parts/DiagramTreeEditPart.class
+SHA1-Digest: Jxk5uRHl2OgLDg5LAh14gohSH8o=
+

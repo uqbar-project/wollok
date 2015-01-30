@@ -1,0 +1,34 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class Persona {
+	method getNombre() {
+		"hardcodeado"
+	}
+	method blah() {
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
+		this.bleh()
+	}
+}
+
+class Profesor extends Persona {
+	method subBlah() {
+		this.getNombre()
+		this.blah()
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
+		this.bleh()
+	}
+}
+
+//XPECT warnings --> "Unused variable" at "o"
+val o = object {
+	method foo() {
+		23
+	}
+	method bar() {
+		this.foo()
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "foobar"
+		this.foobar()
+	}
+}
+
+this.blah()

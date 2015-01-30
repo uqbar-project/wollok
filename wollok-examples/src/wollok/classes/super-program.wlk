@@ -1,0 +1,16 @@
+import zuper.*
+
+program zuper {
+	
+	val pepona = new SeCansaMucho()
+	pepona.volar(50)
+	
+	this.assert(pepona.energia() == 0) // Gastó el doble de energia
+	
+	val o = object {
+		method valak() {
+			// super() // FAIL OK !
+		}
+	}
+	
+}

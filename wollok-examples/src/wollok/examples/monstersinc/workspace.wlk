@@ -1,0 +1,101 @@
+import asustadores.*
+
+import modelo.Puerta
+import modelo.Equipo
+import modelo.MonstersInc
+
+import asustables.Ninio
+import asustables.Piyamada
+import asustables.Adolescente
+
+// 1)
+
+program monstersInc {
+
+val sullivan = new AsustadorNato(200)
+sullivan.setEdad(25)
+val puertaConNinio4 = new Puerta(new Ninio(4))
+
+this.assert(1250 == sullivan.entrarAPuerta(puertaConNinio4))
+
+// 2)
+
+val mike = new AsustadorPerseverante()
+mike.mejora(new EstudiarMateria("Sustos 2", 50))
+mike.mejora(new EjercitarEnSimulador(2))
+
+this.assert(70 == mike.puntosDeTerror())
+
+val piyamada = new Piyamada()
+piyamada.agregarNinio(new Ninio(2))
+piyamada.agregarNinio(new Ninio(3))
+piyamada.agregarNinio(new Ninio(4))
+
+val puertaConPiyamada = new Puerta(piyamada)
+
+val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
+
+this.println(mike)
+this.assert(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
+
+// 3)
+
+val equipo = new Equipo(sullivan, new AsistenteNormal())
+equipo.visitar(new Puerta(new Adolescente()))
+
+this.assertEquals(90.0, sullivan.getNivelMotivacion())
+this.assert(0 == equipo.getEnergiaGenerada())
+
+//this.sleep(6000)
+
+// 4)
+
+val emp = new MonstersInc()
+emp.agregarEquipo(equipo)
+emp.agregarPuerta(puertaConNinio4)
+//emp.agregarPuerta(puertaConPiyamada)
+// TODO: deberia agregar otros
+emp.diaLaboral()
+this.assertEquals(1125.0, equipo.getEnergiaGenerada())
+
+// 5)
+this.assert(equipo == emp.equipoMasAsustador())
+
+val equipoCapo = object {
+	method getEnergiaGenerada() { 90000.0 }
+}
+emp.agregarEquipo(equipoCapo)
+
+this.assert(equipoCapo == emp.equipoMasAsustador())
+
+emp.removerEquipo(equipoCapo)
+
+// 6) 
+
+this.assert(1125.0 == emp.getEnergiaTotalGenerada())
+emp.diaLaboral()
+this.assert(2250.0 == emp.getEnergiaTotalGenerada())
+
+// 7) ASISTENTES
+
+equipo.setAsistente(new AsistenteNormal())
+
+equipo.nuevoDia()
+equipo.visitar(puertaConNinio4)
+this.assertEquals(1125.0, equipo.getEnergiaGenerada())
+
+// ineficiente
+equipo.setAsistente(new AsistenteIneficiente(100))
+
+equipo.nuevoDia()
+equipo.visitar(puertaConNinio4)
+this.assertEquals(1025.0, equipo.getEnergiaGenerada())
+
+// supereficiente
+equipo.setAsistente(new AsistenteSupereficiente(1.25))
+
+equipo.nuevoDia()
+equipo.visitar(puertaConNinio4)
+this.assertEquals(2531.25, equipo.getEnergiaGenerada())
+
+}

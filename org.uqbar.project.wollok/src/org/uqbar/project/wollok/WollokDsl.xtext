@@ -1,0 +1,353 @@
+grammar org.uqbar.project.wollok.WollokDsl with org.eclipse.xtext.common.Terminals
+
+generate wollokDsl "http://uqbar-project.org/wollok/WollokDsl"
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+WFile:
+    (imports+=Import)*
+	body=WFileContent
+;
+
+// IMPORTS
+
+Import: 'import' importedNamespace=QualifiedNameWithWildcard;
+QualifiedName: ID ('.' ID)*;
+QualifiedNameWithWildcard: QualifiedName ('.' '*')?;
+
+// CONTENT
+
+WFileContent:
+	WProgram | WLibrary
+;
+
+WProgram:
+	'program' name=ID '{'
+		(elements+=WExpressionOrVarDeclaration ';'?)+
+	'}'
+;
+
+WLibrary:
+	{WLibrary} elements+=WLibraryElement*
+;
+
+WLibraryElement: WPackage | WClass;
+
+WPackage:
+	'package' name=QualifiedName '{'
+		elements+=WClass*
+	'}'
+;
+
+// reglas generales (solo para ordenar y para fijar bien las relaciones entre clases
+// porque a veces xtext no genera bien.
+// eventualmente sería bueno construir estas clases a mano con EMF, y poder
+// agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
+WNamed: WMethodDeclaration | WReferenciable;
+WMethodContainer: WClass | {WObjectLiteral};
+
+WReferenciable:
+	WParameter | {WVariable}
+;
+
+WObjectLiteral returns WExpression:
+	{WObjectLiteral}
+	=>'object' '{'
+		(members+=WVariableDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
+WVariableDeclaration returns WExpression:
+	{WVariableDeclaration}
+	(writeable?='var'|'val') variable=WVariable ('=' right=WExpression)?
+;
+
+WMethodDeclaration:
+	(overrides?='override')? 'method'
+		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )? ')' 
+		(native?='native')? (expression=WBlockExpression)?
+;
+
+WMethodName:
+	// TODO: 1 por ahora no estan todos soportados para ser sobrecargados
+	// TODO: 2 esto deberia tener un @check el método con +, o - necesita tener un solo argumento
+	ID | OpAdd | OpMulti
+;
+
+WParameter:
+	name=ID
+;
+
+WVariable:
+	name=ID 
+;
+
+	
+// **************************
+// ** lexer rules
+// **************************
+
+Number hidden():
+	HEX | (INT | DECIMAL) ('.' (INT | DECIMAL))?;
+	
+terminal HEX:
+	('0x'|'0X') ('0'..'9'|'a'..'f'|'A'..'F'|'_')+ 
+	('#' (('b'|'B')('i'|'I') | ('l'|'L')))?;
+	
+terminal INT returns ecore::EInt:
+	'0'..'9' ('0'..'9'|'_')*; 
+
+terminal DECIMAL:
+	INT 
+	(('e'|'E') ('+'|'-')? INT)? 
+	(('b'|'B')('i'|'I'|'d'|'D') | ('l'|'L'|'d'|'D'|'f'|'F'))?;
+
+	
+// ***********************
+// ** as XBase
+// ***********************
+
+WExpression returns WExpression:
+	WAssignment;
+	
+WAssignment returns WExpression :
+	{WAssignment} feature=WVariableReference OpSingleAssign value=WAssignment
+	| WOrExpression (
+		=>({WBinaryOperation.leftOperand=current} feature=OpMultiAssign) rightOperand=WAssignment
+	)?
+;
+	
+OpSingleAssign:
+	'='
+;
+
+OpMultiAssign:
+	'+=' | '-=' | '*=' | '/=' | '%=' | 
+	'<' '<' '=' | 
+	'>' '>'? '>=';
+	
+WOrExpression returns WExpression:
+	WAndExpression (=>({WBinaryOperation.leftOperand=current} feature=OpOr) rightOperand=WAndExpression)*;
+	
+OpOr:
+	'||' | 'or';
+
+WAndExpression returns WExpression:
+	WEqualityExpression (=>({WBinaryOperation.leftOperand=current} feature=OpAnd) rightOperand=WEqualityExpression)*;
+
+OpAnd:
+	'&&' | 'and';
+
+WEqualityExpression returns WExpression:
+	WRelationalExpression (=>({WBinaryOperation.leftOperand=current} feature=OpEquality) rightOperand=WRelationalExpression)*;
+
+OpEquality:
+	'==' | '!=' | '===' | '!==';
+
+WRelationalExpression returns WExpression:
+	WOtherOperatorExpression
+	( //=>({WInstanceOfExpression.expression=current} 'instanceof') type=JvmTypeReference |
+	 =>({WBinaryOperation.leftOperand=current} feature=OpCompare) rightOperand=WOtherOperatorExpression)*;
+
+OpCompare:
+	'>=' | '<' '=' | '>' | '<' ;
+
+WOtherOperatorExpression returns WExpression:
+	WAdditiveExpression (=>({WBinaryOperation.leftOperand=current} feature=OpOther)
+	rightOperand=WAdditiveExpression)*;
+
+OpOther:
+	  '->' 
+	| '..<'
+	| '>' '..'
+	| '..'
+	| '=>' 
+	| '>' (=>('>' '>') | '>') 
+	| '<' (=>('<' '<') | '<' | '=>')
+	| '<>'
+	| '?:';
+
+WAdditiveExpression returns WExpression:
+	WMultiplicativeExpression (=>({WBinaryOperation.leftOperand=current} feature=OpAdd)
+	rightOperand=WMultiplicativeExpression)*;
+
+OpAdd:
+	'+' | '-';
+
+WMultiplicativeExpression returns WExpression:
+	WUnaryOperation (=>({WBinaryOperation.leftOperand=current} feature=OpMulti) rightOperand=WUnaryOperation)*;
+
+OpMulti:
+	'*' | '**' | '/' | '%';
+
+WUnaryOperation returns WExpression:
+	{WUnaryOperation} feature=OpUnary operand=WUnaryOperation
+	| WPostfixOperation 
+;
+
+OpUnary:
+	'not' | "!" | "-" | "+";
+	
+WPostfixOperation returns WExpression:
+	WMemberFeatureCall =>({WPostfixOperation.operand=current} feature=OpPostfix)?
+;
+
+OpPostfix:
+	"++" | "--"
+;
+
+WFeatureCall : WSuperInvocation | WMemberFeatureCall;
+
+WMemberFeatureCall returns WExpression:
+	WPrimaryExpression
+	(
+		=>({WMemberFeatureCall.memberCallTarget=current} ("."|nullSafe?="?.")) 
+		=>feature=FeatureCallID 
+		(('(' 
+			(memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
+		')') | memberCallArguments+=WClosure	)
+	)*;
+
+FeatureCallID:
+	ID;
+
+WThis returns WExpression:
+	{WThis} 'this'
+;
+
+WPrimaryExpression returns WExpression:
+	WBlockExpression |
+	WVariableReference |
+	WLiteral |
+	WConstructorCall |
+	WParenthesizedExpression |
+	WSuperInvocation |
+	WIfExpression |
+	WTry |
+	WThrow
+//	XForLoopExpression |
+//	WReturnExpression | 
+;
+
+WSuperInvocation returns WExpression: 
+	{WSuperInvocation} 
+	'super' 
+	('(' 
+		(memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
+	')')	
+;
+
+WParenthesizedExpression returns WExpression:
+	'(' WExpression ')';
+
+
+WBlockExpression returns WExpression: 
+	{WBlockExpression}
+	'{'
+		(expressions+=WExpressionOrVarDeclaration ';'?)*
+	'}';
+
+WExpressionOrVarDeclaration returns WExpression:
+	WVariableDeclaration | WExpression;
+
+WVariableReference:
+	{WVariableReference} ref=[WReferenciable]
+;
+
+WIfExpression:
+	'if' '(' condition=WExpression ')' 
+		then=WExpression
+	(=>'else'
+		else=WExpression
+	)?
+;
+
+
+// LITERALS
+
+WLiteral returns WExpression:
+	WClosure |
+	WBooleanLiteral |
+	WNumberLiteral |
+	WNullLiteral |
+	WStringLiteral |
+	WObjectLiteral |
+	WThis |
+	WCollectionLiteral
+;
+
+WBooleanLiteral returns WExpression :
+	{WBooleanLiteral} ('false' | isTrue?='true');
+
+WNullLiteral returns WExpression :
+	{WNullLiteral} 'null';
+
+WStringLiteral returns WExpression:
+	{WStringLiteral} value=STRING;
+
+WNumberLiteral returns WExpression :
+	{WNumberLiteral} value=Number;
+
+// CLOSURES
+
+WClosure returns WExpression:
+	=>({WClosure} 
+	'[') 
+		=>((parameters+=WParameter (',' parameters+=WParameter)*)? explicitSyntax?='|')? 
+		expression=WExpressionInClosure 
+	']';
+
+WExpressionInClosure returns WExpression: 
+	{WBlockExpression}
+	(expressions+=WExpressionOrVarDeclaration ';'?)*;
+
+// COLLECTIONS
+
+WCollectionLiteral:
+	WListLiteral
+;
+
+WListLiteral:
+	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+
+// CLASSES
+
+WClass:
+	'class' name=ID ('extends' parent=[WClass|QualifiedName])? '{'
+		(members+=WVariableDeclaration ';'?)*
+		(constructor=WConstructor)?
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
+WMember:
+	WVariableDeclaration | WMethodDeclaration
+;
+
+WConstructor:
+	'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+		expression=WBlockExpression
+;
+
+WConstructorCall:
+	'new' classRef=[WClass|QualifiedName]'('
+		(arguments+=WExpression (',' arguments+=WExpression)*)?		
+	')'
+;
+
+WTry:
+	'try'
+		expression=WExpression
+	(catchBlocks+=WCatch)*
+	(=>'then always' alwaysExpression=WExpression)?
+;
+
+WCatch:
+	=>'catch' exceptionVarName=WVariable ':' exceptionType=[WClass|QualifiedName]
+		expression=WExpression 
+;
+
+WThrow:
+	'throw' exception=WExpression
+;

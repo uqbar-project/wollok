@@ -1,0 +1,19 @@
+import simpleClass.Golondrina
+
+program simpleClass {
+	
+	val pepita = new Golondrina()
+
+	var r = pepita.getEnergia() == 50
+	this.assert(r)
+	
+	//// una segunda
+	//
+	val pepona = new Golondrina()
+	pepona.volar(2)
+	this.assertEquals(98, pepona.getEnergia())
+	this.assertEquals(50, pepita.getEnergia())  // pepita no se altero
+	//
+	//
+	
+}

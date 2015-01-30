@@ -1,0 +1,96 @@
+package org.uqbar.project.wollok.ui.perspectives
+
+import org.eclipse.jdt.ui.JavaUI
+import org.eclipse.ui.IPageLayout
+import org.eclipse.ui.IPerspectiveFactory
+import org.eclipse.ui.console.IConsoleConstants
+import org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard
+import org.eclipse.debug.internal.ui.DebugUIPlugin
+
+/**
+ * Wollok coding perspective.
+ * Hides away many java menus and stuffs.
+ * Then focus on wollok features like wizards, etc.
+ * 
+ * @author jfernandes
+ */
+class WollokCodingPerspective implements IPerspectiveFactory {
+	private IPageLayout factory;
+
+	override createInitialLayout(IPageLayout factory) {
+		this.factory = factory 
+		factory => [
+			addViews
+			addActionSets
+			addNewWizardShortcuts
+			addPerspectiveShortcuts
+			addViewShortcuts
+		]
+	}
+	
+	def addViews(IPageLayout it) {
+		createFolder("bottomRight",	IPageLayout.BOTTOM, 0.75f, factory.editorArea) => [
+			addView(IPageLayout.ID_PROBLEM_VIEW)
+			addView(IConsoleConstants.ID_CONSOLE_VIEW)
+			addView("org.eclipse.team.ui.GenericHistoryView")
+		]
+
+		createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.editorArea) => [
+			addView(JavaUI.ID_PACKAGES);
+			addView("org.eclipse.jdt.junit.ResultView");
+		]
+		
+		createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.editorArea) => [
+			addView("org.eclipse.ui.views.ContentOutline");
+		]
+		
+		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
+		addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f)
+	}
+
+	def addActionSets(IPageLayout it) {
+		#[	
+			"org.eclipse.debug.ui.launchActionSet",
+			"org.eclipse.jdt.junit.JUnitActionSet",
+			"org.eclipse.team.ui.actionSet",
+//			JavaUI.ID_ACTION_SET,
+			IPageLayout.ID_NAVIGATE_ACTION_SET
+		]
+		.forEach[ a| addActionSet(a) ]
+	}
+	
+	def addPerspectiveShortcuts(IPageLayout it) {
+		#[
+			"org.eclipse.debug.ui.DebugPerspective",
+			"org.eclipse.ui.resourcePerspective",
+			"org.eclipse.team.ui.TeamSynchronizingPerspective"
+		]
+		.forEach[a| addPerspectiveShortcut(a) ]
+	}	
+	
+	def addNewWizardShortcuts(IPageLayout it) {
+		#[
+			// WOLLOK
+			WollokDslNewProjectWizard.ID,
+			
+			// OTHERs
+			"org.eclipse.ui.wizards.new.folder",
+			"org.eclipse.ui.wizards.new.file"
+		]
+		.forEach[ a| addNewWizardShortcut(a) ]
+	}
+	
+	def addViewShortcuts(IPageLayout it) {
+		#[
+			"org.eclipse.team.ccvs.ui.AnnotateView",
+			"org.eclipse.jdt.junit.ResultView",
+			"org.eclipse.team.ui.GenericHistoryView",
+			JavaUI.ID_PACKAGES,
+			IPageLayout.ID_RES_NAV,
+			IPageLayout.ID_PROBLEM_VIEW,
+			IPageLayout.ID_OUTLINE
+		]
+		.forEach[a| addShowViewShortcut(a) ]
+	}
+	
+}

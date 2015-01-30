@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class Levadura {
+	method fermentar(mosto) // abstract
+}
+
+class Ale extends Levadura {
+	// XPECT errors --> "Method must be marked as overrides, since it overrides a superclass method" at "fermentar"
+	method fermentar(mosto) {
+	}	
+}
