@@ -1,0 +1,8 @@
+*/bin/
+*/xtend-gen/
+*/src-gen/
+*/xsemantics-gen/
+/eclipse/*
+*/target/
+.metadata/*
+.DS_Store
