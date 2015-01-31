@@ -41,6 +41,11 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <!-- THEME -->
+         <property
+           name="cssTheme"
+           value="org.eclipse.e4.ui.css.theme.e4_default">
+     	 </property>
       </product>
    </extension>
    <extension
