@@ -20,7 +20,8 @@ http://wollok.uqbar-project.org
    </configIni>
 
    <launcherArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages i16="/org.uqbar.project.wollok.ui/icons/wollok-logo-16.fw.png" i32="/org.uqbar.project.wollok.ui/icons/wollok-logo-32.fw.png" i48="/org.uqbar.project.wollok.ui/icons/wollok-logo-48.fw.png" i64="/org.uqbar.project.wollok.ui/icons/wollok-logo-64.fw.png" i128="/org.uqbar.project.wollok.ui/icons/wollok-logo-128.png"/>
@@ -326,11 +327,14 @@ Library.
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filebuffers.source"/>
       <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.java7" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.source"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.jobs.source"/>
       <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.net.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.net.source"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.source"/>
@@ -492,6 +496,7 @@ Library.
       <plugin id="org.eclipse.equinox.jsp.jasper.source"/>
       <plugin id="org.eclipse.equinox.launcher"/>
       <plugin id="org.eclipse.equinox.launcher.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.launcher.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.p2.artifact.repository"/>
       <plugin id="org.eclipse.equinox.p2.artifact.repository.source"/>
       <plugin id="org.eclipse.equinox.p2.console"/>
@@ -652,7 +657,9 @@ Library.
       <plugin id="org.eclipse.m2e.core"/>
       <plugin id="org.eclipse.m2e.maven.indexer"/>
       <plugin id="org.eclipse.m2e.maven.runtime"/>
+      <plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
       <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.osgi.services.source"/>
       <plugin id="org.eclipse.osgi.source"/>
@@ -696,6 +703,7 @@ Library.
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64.source"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.team.core"/>
       <plugin id="org.eclipse.team.core.source"/>
       <plugin id="org.eclipse.team.cvs.core"/>
@@ -759,6 +767,7 @@ Library.
       <plugin id="org.eclipse.xtend.ide"/>
       <plugin id="org.eclipse.xtend.ide.source"/>
       <plugin id="org.eclipse.xtend.lib"/>
+      <plugin id="org.eclipse.xtend.lib.macro"/>
       <plugin id="org.eclipse.xtend.lib.source"/>
       <plugin id="org.eclipse.xtend.m2e"/>
       <plugin id="org.eclipse.xtend.standalone"/>
@@ -842,6 +851,7 @@ Library.
       <plugin id="org.mozilla.javascript.source"/>
       <plugin id="org.objectweb.asm"/>
       <plugin id="org.objectweb.asm.source"/>
+      <plugin id="org.objectweb.asm.tree"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
       <plugin id="org.slf4j.api"/>
@@ -852,6 +862,7 @@ Library.
       <plugin id="org.uqbar.project.wollok.ui"/>
       <plugin id="org.uqbar.project.wollok.ui.diagrams"/>
       <plugin id="org.w3c.css.sac"/>
+      <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
       <plugin id="org.xpect"/>

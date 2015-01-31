@@ -31,7 +31,7 @@ class WollokActivator extends WollokDslActivator {
 	}
 	
 	def getImageDescriptor(String name) {
-		val u = new URL(getDescriptor.getInstallURL(), name)
+		val u = new URL(bundle.getEntry("/"), name)
 		return ImageDescriptor.createFromURL(u);
 	}
 
