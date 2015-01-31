@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.semantics.ClassBasedWollokType
 import org.uqbar.project.wollok.semantics.WollokType
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -28,8 +28,8 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	
 	def TypeSystem createTypeSystem() {
 //		new BoundsBasedTypeSystem
-//		new SubstitutionBasedTypeSystem
-		new ConstraintBasedTypeSystem
+		new SubstitutionBasedTypeSystem
+//		new ConstraintBasedTypeSystem
 	}
 	
 	// Utility
