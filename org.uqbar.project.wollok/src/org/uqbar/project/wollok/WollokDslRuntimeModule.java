@@ -4,6 +4,10 @@
 package org.uqbar.project.wollok;
 
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.uqbar.project.wollok.scoping.WollokImportURIResolver;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem;
 import org.uqbar.project.wollok.typesystem.TypeSystem;
@@ -26,5 +30,14 @@ public class WollokDslRuntimeModule extends org.uqbar.project.wollok.AbstractWol
 	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		return WollokResourceDescriptionStrategy.class;
 	}
+	
+	public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider(){
+		return ImportUriGlobalScopeProvider.class;
+	}
+	
+	public Class<? extends ImportUriResolver> bindImportUriResolver(){
+		return WollokImportURIResolver.class;
+	}
+
 	
 }
