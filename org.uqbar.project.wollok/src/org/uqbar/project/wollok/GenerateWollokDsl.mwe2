@@ -6,6 +6,8 @@ import org.eclipse.xtext.ui.generator.*
 
 var grammarURI = "classpath:/org/uqbar/project/wollok/WollokDsl.xtext"
 var fileExtensions = "wlk"
+var fileExtensionsModules = "wmodule"
+var fileExtensionsTest = "wtest"
 var projectName = "org.uqbar.project.wollok"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true

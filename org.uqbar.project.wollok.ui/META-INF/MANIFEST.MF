@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.ui
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-SymbolicName: org.uqbar.project.wollok.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
@@ -32,7 +32,7 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.jdt.ui
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.lib
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.uqbar.project.wollok.ui,
  org.uqbar.project.wollok.ui.contentassist,
  org.uqbar.project.wollok.ui.contentassist.antlr,

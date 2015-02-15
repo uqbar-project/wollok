@@ -1,9 +1,7 @@
 package org.uqbar.project.wollok.scoping
 
-import javax.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.scoping.impl.ImportUriResolver
-import org.eclipse.xtext.ui.resource.XtextResourceSetProvider
 import org.uqbar.project.wollok.wollokDsl.Import
 
 class WollokImportURIResolver extends ImportUriResolver {

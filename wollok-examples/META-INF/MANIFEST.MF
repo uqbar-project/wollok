@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: wollok-examples
 Bundle-SymbolicName: wollok-examples
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Export-Package: wollok.classes,
  wollok.classes.constructors,
  wollok.examples.monstersinc
