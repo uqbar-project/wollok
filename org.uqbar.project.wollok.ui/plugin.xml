@@ -494,11 +494,10 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            class="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspectiveFactory"
             icon="icons/wollok-logo-16.fw.png"
             id="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             name="Wollok">
       </perspective>
    </extension>
-    
 </plugin>

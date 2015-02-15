@@ -939,6 +939,7 @@ Library.
       <plugin id="org.uqbar.project.wollok" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.launch" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
+      <property name="osgi.instance.area" value="./workspace" />
    </configurations>
 
 </product>

@@ -13,7 +13,7 @@ import org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard
  * 
  * @author jfernandes
  */
-class WollokCodingPerspective implements IPerspectiveFactory {
+class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 	private IPageLayout factory;
 
 	override createInitialLayout(IPageLayout factory) {
