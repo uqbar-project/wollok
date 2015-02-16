@@ -37,4 +37,7 @@ class WollokLaunchConstants {
 		config.setAttribute(ATTR_WOLLOK_DEBUG_EVENT_PORT, port)
 	}
 	
+	static def getWollokFile(ILaunchConfiguration config){
+		config.getAttribute(ATTR_WOLLOK_FILE,"")
+	}
 }

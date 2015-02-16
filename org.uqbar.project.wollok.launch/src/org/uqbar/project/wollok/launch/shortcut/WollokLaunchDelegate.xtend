@@ -9,14 +9,13 @@ import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.model.IProcess
 import org.eclipse.jdt.launching.JavaLaunchDelegate
+import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.ui.debugger.WollokDebugTarget
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
-import static extension org.uqbar.project.wollok.launch.shortcut.WDebugExtensions.*
-import org.uqbar.project.wollok.launch.WollokLauncher
 import static extension org.uqbar.project.wollok.launch.WollokLaunchConstants.*
-
+import static extension org.uqbar.project.wollok.launch.shortcut.WDebugExtensions.*
 
 /**
  * Launches the process to execute the interpreter.
@@ -59,36 +58,20 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			config.getWorkingCopy =>[
 				setCommandPort(requestPort)
 				setEventPort(eventPort)
-				setOrUpdateDebugWollokPorts(buildDebugProgramArguments(requestPort, eventPort))
+				setArguments(requestPort, eventPort)
 				doSave
 			]
 		}
-		else {
-			config.removeDebugParamIfExists
-		}
 	}
 	
-	
-	/** 
-	 * It could be an already ran configuration so we need to replace the ports
-	 * Otherwise just add them
-	 */
-	def setOrUpdateDebugWollokPorts(ILaunchConfiguration config, String newDebugParam) {
-		val args = config.programArguments
-		val index = args.indexOf(WollokLauncher.DEBUG_PORTS_PARAM)
-		if (index > 0)
-			config.programArguments = args.substring(0, index) + newDebugParam
-		else 
-			config.programArguments = args + " " + newDebugParam
-	}
-	
-	def removeDebugParamIfExists(ILaunchConfiguration config) {
-		val args = config.programArguments
-		val index = args.indexOf(WollokLauncher.DEBUG_PORTS_PARAM)
-		if (index > 0) 
-			config.programArguments = args.substring(0, index)
-		else
-			config
+	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){
+		val parameters = new WollokLauncherParameters
+		parameters.eventsPort = eventPort;
+		parameters.requestsPort = requestPort
+		parameters.hasRepl = false
+		parameters.wollokFiles += config.wollokFile
+		
+		config.programArguments = parameters.build
 	}
 	
 	def createWollokTarget(ILaunch launch, int requestPort, int eventPort) {
@@ -116,8 +99,4 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		}
 	}
 	
-	def buildDebugProgramArguments(int requestPort, int eventPort) {
-		WollokLauncher.DEBUG_PORTS_PARAM + requestPort + WollokLauncher.DEBUG_PORTS_PARAM_SEPARATOR + eventPort 
-	}
-
 }

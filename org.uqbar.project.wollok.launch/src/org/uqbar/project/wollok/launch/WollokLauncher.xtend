@@ -19,8 +19,6 @@ import static extension org.uqbar.project.wollok.launch.io.IOUtils.*
  * @author jfernandes
  */
 class WollokLauncher {
-	public static String DEBUG_PORTS_PARAM = "-wollok.debugPorts="
-	public static String DEBUG_PORTS_PARAM_SEPARATOR = "_" 
 	static Logger log = Logger.getLogger(WollokLauncher)
 	
 	def static void main(String[] args) {
@@ -31,11 +29,15 @@ class WollokLauncher {
 			log.debug(" args: " + args.toList)
 			
 			val interpreter = new WollokInterpreter(new SysoutWollokInterpreterConsole)
-			val debugger = createDebugger(interpreter, args)
+			val parameters = new WollokLauncherParameters().parse(args)
+			
+			
+			val debugger = createDebugger(interpreter, parameters)
 			interpreter.setDebugger(debugger)
 			
 			log.debug("Executing program...")
-			val fileName = args.get(0)
+			val fileName = parameters.wollokFiles.get(0)
+			
 			log.debug("Interpreting: " + fileName)
 			interpreter.interpret(WollokInterpreterStandalone.parse(fileName))
 			log.debug("Program finished")
@@ -48,11 +50,9 @@ class WollokLauncher {
 		}
 	}
 	
-	def static createDebugger(WollokInterpreter interpreter, String[] args) {
-		val debug = args.findFirst[startsWith(DEBUG_PORTS_PARAM)]
-		if (debug != null) {
-			val ports = debug.substring(debug.indexOf('=') + 1).split(DEBUG_PORTS_PARAM_SEPARATOR)
-			createDebuggerOn(interpreter, Integer.valueOf(ports.get(0)), Integer.valueOf(ports.get(1)))
+	def static createDebugger(WollokInterpreter interpreter, WollokLauncherParameters parameters) {
+		if (parameters.hasDebuggerPorts) {
+			createDebuggerOn(interpreter, parameters.requestsPort, parameters.eventsPort)
 		}
 		else 
 			new XDebuggerOff
