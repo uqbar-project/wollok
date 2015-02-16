@@ -2,7 +2,7 @@
 <feature
       id="org.uqbar.project.wollok.sdk"
       label="Wollok Language Feature"
-      version="1.0.0"
+      version="1.0.0.qualifier"
       provider-name="Uqbar Foundation"
       os="linux,macosx,win32">
 
@@ -74,21 +74,21 @@
          id="org.uqbar.project.wollok"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.launch"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin

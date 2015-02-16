@@ -43,10 +43,10 @@ http://wollok.uqbar-project.org
    <intro introId="org.uqbar.project.wollok.product.intro"/>
 
    <vm>
-      <linux include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</linux>
-      <macos include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</macos>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</solaris>
-      <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
    </vm>
 
    <license>
@@ -924,7 +924,7 @@ Library.
    </plugins>
 
    <features>
-      <feature id="org.uqbar.project.wollok.sdk" version="1.0.0"/>
+      <feature id="org.uqbar.project.wollok.sdk" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
@@ -941,5 +941,9 @@ Library.
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
       <property name="osgi.instance.area" value="./workspace" />
    </configurations>
+
+   <repositories>
+      <repository location="http://update.uqbar.org/wollok" enabled="true" />
+   </repositories>
 
 </product>
