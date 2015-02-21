@@ -29,10 +29,15 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 	WollokInterpreterConsole console
 	var executionStack = new ObservableStack<XStackFrame>
 
+	static val WollokInterpreter instance 
+
 	new(WollokInterpreterConsole console) {
 		this.console = console
 		evaluator = new WollokInterpreterEvaluator(this)
+		instance = this
 	}
+	
+	def static getInstance(){instance}
 	
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	
@@ -108,5 +113,7 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 			debugger.evaluated(e)
 		}			
 	}
+	
+	def getConsole(){console}
 
 }
