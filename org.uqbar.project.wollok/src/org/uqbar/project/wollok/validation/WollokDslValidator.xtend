@@ -36,6 +36,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Custom validation rules.
@@ -84,7 +85,7 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 	
 	@Check
 	def classNameMustStartWithUpperCase(WClass c) {
-		if (Character.isLowerCase(c.name.charAt(0))) error("Class name must start with uppercase", c, WLIBRARY_ELEMENT__NAME, CLASS_NAME_MUST_START_UPPERCASE)
+		if (Character.isLowerCase(c.name.charAt(0))) error("Class name must start with uppercase", c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
 	}
 	
 	@Check
@@ -198,14 +199,14 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 		val classes = p.elements.filter(WClass)
 		val repeated = classes.filter[c| classes.exists[it != c && name == c.name] ]
 		repeated.forEach[
-			error('''Duplicated class name in package «p.name»''', it, WLIBRARY_ELEMENT__NAME)
+			error('''Duplicated class name in package «p.name»''', it, WNAMED__NAME)
 		]
 	}
 	
 	@Check 
 	def avoidDuplicatedPackageName(WPackage p) {
 		if (p.eContainer.eContents.filter(WPackage).exists[it != p && name == p.name])
-			error('''Duplicated package name «p.name»''', p, WLIBRARY_ELEMENT__NAME)
+			error('''Duplicated package name «p.name»''', p, WNAMED__NAME)
 	}
 	
 	@Check
@@ -263,6 +264,14 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 
 	def dispatch boolean isDuplicated(WConstructor c, WReferenciable r) {
 		c.parameters.existsMoreThanOne(r) || c.eContainer.isDuplicated(r)
+	}
+
+	def dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) {
+		c.variables.existsMoreThanOne(r)
+	}
+
+	def dispatch boolean isDuplicated(WPackage p, WNamedObject r){
+		p.namedObjects.existsMoreThanOne(r)
 	}
 
 	// default case is to delegate up to container

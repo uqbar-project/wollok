@@ -8,6 +8,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.WollokDslInjectorProvider
+import org.eclipse.emf.common.util.URI
 
 /**
  * Runs all the examples in the wollok-example project that works as a unit test
@@ -18,6 +19,7 @@ import org.uqbar.project.wollok.WollokDslInjectorProvider
 @RunWith(Parameterized)
 class WollokExamplesTests extends AbstractWollokInterpreterTestCase {
 	static val path = EXAMPLES_PROJECT_PATH + "/src/"
+	static val libPath = EXAMPLES_PROJECT_PATH + "/src/lib"
 
 	@Parameter(0)
 	public File program
@@ -33,8 +35,15 @@ class WollokExamplesTests extends AbstractWollokInterpreterTestCase {
 	@Before
 	def void injectMembers() {
 		new WollokDslInjectorProvider().injector.injectMembers(this)
+		addLibs()
 	}
-
+	
+	def void addLibs(){
+		new File(libPath).listFiles([isFile && name.endsWith(".wlk")]).forEach[
+			it.interpretPropagatingErrors
+		]
+	}
+	
 	@Test
 	def void runWollok() throws Exception {
 		program.interpretPropagatingErrors

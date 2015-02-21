@@ -24,7 +24,7 @@ import org.uqbar.project.wollok.tests.typesystem.TypeSystemTestSuite
  */
 @RunWith(Suite)
 @Suite.SuiteClasses(
-   TypeSystemTestSuite,
+//   TypeSystemTestSuite,
    MixedNumberTypesOperations,
    PolymorphismTestCase,
    SuperInvocationTest,

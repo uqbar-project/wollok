@@ -31,7 +31,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 				2 * super(kms)
 			}
 		}
-	''',
+		''',
 		'''
 		program p {
 		val pepona = new SeCansaMucho()

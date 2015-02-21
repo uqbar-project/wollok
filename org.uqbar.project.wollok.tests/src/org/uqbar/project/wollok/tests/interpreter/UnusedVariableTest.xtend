@@ -40,7 +40,7 @@ class UnusedVariableTest extends AbstractWollokInterpreterTestCase {
 			
 			vaca1.peso()
 			vaca2.peso()
-		}'''.parse
+		}'''.interpretPropagatingErrors
 
 		val vaca1 = ((model.body as WProgram).elements.get(0) as WVariableDeclaration).right as WObjectLiteral
 		val vaca2 = ((model.body as WProgram).elements.get(1) as WVariableDeclaration).right as WObjectLiteral

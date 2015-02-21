@@ -3,6 +3,7 @@
  */
 package org.uqbar.project.wollok.scoping
 
+import com.google.inject.Inject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
@@ -10,7 +11,9 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -22,9 +25,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WCatch
 
 /**
  * This class contains custom scoping description.
@@ -35,8 +36,13 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
  */
 class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 
+	@Inject
+	ImportedNamespaceAwareLocalScopeProvider globalScopeProvider
+
 	def IScope scope_WReferenciable(EObject ctx, EReference ref){
-		ctx.scope
+		val globalScope = globalScopeProvider.getScope(ctx,ref)
+		val elements = ctx.scope.allElements
+		new SimpleScope(globalScope, elements)
 	}
 	
 	// scope extension methods for variable refs (with multiple dispatch)

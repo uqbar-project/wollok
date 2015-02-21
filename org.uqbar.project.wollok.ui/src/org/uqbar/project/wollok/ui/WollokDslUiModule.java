@@ -12,12 +12,14 @@ import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
+import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideRulerAction;
 import org.uqbar.project.wollok.ui.editor.hyperlinking.WollokEObjectAtOffsetHelper;
 import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvieder;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
+import org.uqbar.project.wollok.ui.manifest.WollokJDTManifestFinder;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator;
 
 import com.google.inject.Binder;
@@ -66,5 +68,7 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 		  return org.eclipse.xtext.ui.shared.Access.getWorkspaceProjectsState();
 	}
 
-
+	public Class<? extends WollokManifestFinder> bindWollokManifestFinder(){
+		return WollokJDTManifestFinder.class;
+	}
 }

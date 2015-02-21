@@ -3,6 +3,8 @@
 */
 package org.uqbar.project.wollok;
 
+import com.google.inject.Injector;
+
 /**
  * Initialization support for running Xtext languages 
  * without equinox extension registry

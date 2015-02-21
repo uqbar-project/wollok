@@ -34,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Extension methods to Wollok semantic model.
@@ -49,8 +50,10 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 	def static boolean isNative(WClass it) { methods.exists[m|m.native] }
 
 	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
+	def static fqn(WNamedObject it) { (if(package != null) package.name else "") + "." + name }
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
+	def static WPackage getPackage(WNamedObject it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
 		a == b || (b.parent != null && a.isSuperTypeOf(b.parent))

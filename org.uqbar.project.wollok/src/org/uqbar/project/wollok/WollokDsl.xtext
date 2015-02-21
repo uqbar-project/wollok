@@ -31,23 +31,24 @@ WLibrary:
 	{WLibrary} elements+=WLibraryElement*
 ;
 
-WLibraryElement: WPackage | WClass;
+WLibraryElement: (WPackage | WClass | WNamedObject);
 
 WPackage:
 	'package' name=QualifiedName '{'
-		elements+=WClass*
+		elements+=(WClass | WNamedObject)*
 	'}'
 ;
+
 
 // reglas generales (solo para ordenar y para fijar bien las relaciones entre clases
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WNamed: WMethodDeclaration | WReferenciable;
-WMethodContainer: WClass | {WObjectLiteral};
+WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
 
 WReferenciable:
-	WParameter | {WVariable}
+	WParameter | {WVariable} | WNamedObject
 ;
 
 WObjectLiteral returns WExpression:
@@ -263,7 +264,6 @@ WIfExpression:
 	)?
 ;
 
-
 // LITERALS
 
 WLiteral returns WExpression:
@@ -310,6 +310,13 @@ WCollectionLiteral:
 
 WListLiteral:
 	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+
+WNamedObject:
+	'object' name=ID '{'
+		(members+=WVariableDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
 
 // CLASSES
 

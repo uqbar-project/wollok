@@ -21,20 +21,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//WLibraryElement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WLibraryElement">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WPackage" eSuperTypes="#//WLibraryElement">
+  <eClassifiers xsi:type="ecore:EClass" name="WLibraryElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="WPackage" eSuperTypes="#//WLibraryElement #//WNamed">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//WClass" containment="true"/>
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WNamed">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WMethodContainer">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
-        eType="#//WMember" containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WMethodContainer"/>
   <eClassifiers xsi:type="ecore:EClass" name="WReferenciable" eSuperTypes="#//WNamed"/>
   <eClassifiers xsi:type="ecore:EClass" name="WExpression" eSuperTypes="#//WFeatureCall #//WMember"/>
   <eClassifiers xsi:type="ecore:EClass" name="WMethodDeclaration" eSuperTypes="#//WNamed #//WMember">
@@ -64,8 +59,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
         eType="#//WExpression" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WClass" eSuperTypes="#//WLibraryElement #//WMethodContainer">
+  <eClassifiers xsi:type="ecore:EClass" name="WNamedObject" eSuperTypes="#//WLibraryElement #//WMethodContainer #//WReferenciable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="#//WMember" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WClass" eSuperTypes="#//WLibraryElement #//WNamed #//WMethodContainer">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//WClass"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="#//WMember" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="constructor" eType="#//WConstructor"
         containment="true"/>
   </eClassifiers>
@@ -100,7 +101,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//WExpression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="WObjectLiteral" eSuperTypes="#//WMethodContainer #//WExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="WObjectLiteral" eSuperTypes="#//WMethodContainer #//WExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="#//WMember" containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WVariableDeclaration" eSuperTypes="#//WExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="writeable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//WVariable"

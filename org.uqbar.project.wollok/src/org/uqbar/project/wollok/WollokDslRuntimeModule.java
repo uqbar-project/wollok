@@ -5,9 +5,11 @@ package org.uqbar.project.wollok;
 
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
-import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.uqbar.project.wollok.scoping.WollokImportURIResolver;
+import org.eclipse.xtext.scoping.IScopeProvider;
+import org.uqbar.project.wollok.manifest.WollokManifestFinder;
+import org.uqbar.project.wollok.manifest.classpath.WollokClasspathManifestFinder;
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
+import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem;
 import org.uqbar.project.wollok.typesystem.TypeSystem;
@@ -30,14 +32,21 @@ public class WollokDslRuntimeModule extends org.uqbar.project.wollok.AbstractWol
 	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		return WollokResourceDescriptionStrategy.class;
 	}
-	
 	public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider(){
-		return ImportUriGlobalScopeProvider.class;
+		return WollokGlobalScopeProvider.class;
 	}
 	
-	public Class<? extends ImportUriResolver> bindImportUriResolver(){
-		return WollokImportURIResolver.class;
+	public Class<? extends IScopeProvider> bindIScopeProvider(){
+		return WollokImportedNamespaceAwareLocalScopeProvider.class;
+	}
+	
+	public Class<? extends WollokManifestFinder> bindWollokManifestFinder(){
+		return WollokClasspathManifestFinder.class;
+	}	
+	
+	public void configureIScopeProviderDelegate(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.scoping.IScopeProvider.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(WollokImportedNamespaceAwareLocalScopeProvider.class);
 	}
 
-	
+
 }
