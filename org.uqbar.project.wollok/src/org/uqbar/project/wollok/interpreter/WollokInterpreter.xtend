@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter
 
+import com.google.inject.Inject
 import java.io.Serializable
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
@@ -25,15 +26,18 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 	static Logger log = Logger.getLogger(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
+
+	@Inject
 	XInterpreterEvaluator evaluator
+
+	@Inject
 	WollokInterpreterConsole console
+
 	var executionStack = new ObservableStack<XStackFrame>
 
-	static val WollokInterpreter instance 
+	static var WollokInterpreter instance = null 
 
-	new(WollokInterpreterConsole console) {
-		this.console = console
-		evaluator = new WollokInterpreterEvaluator(this)
+	new() {
 		instance = this
 	}
 	

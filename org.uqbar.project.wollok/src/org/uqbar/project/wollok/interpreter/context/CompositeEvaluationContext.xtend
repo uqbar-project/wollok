@@ -49,5 +49,9 @@ class CompositeEvaluationContext implements EvaluationContext {
 		inner.addReference(name, value)
 		value
 	}
+	
+	override addGlobalReference(String name, Object value) {
+		outer.addGlobalReference(name,value)
+	}
 
 }

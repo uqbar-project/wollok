@@ -8,7 +8,6 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.WollokDslInjectorProvider
-import org.eclipse.emf.common.util.URI
 
 /**
  * Runs all the examples in the wollok-example project that works as a unit test

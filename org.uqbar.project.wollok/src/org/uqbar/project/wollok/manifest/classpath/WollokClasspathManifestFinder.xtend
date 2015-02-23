@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.manifest.classpath
 
 import java.io.File
+import java.net.URL
 import java.net.URLClassLoader
 import java.util.Enumeration
 import java.util.LinkedHashSet
@@ -22,7 +23,7 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 	
 	def getAllClassPathEntries(Function1 <String,Boolean> filter){
 		val x = new LinkedHashSet 
-		x.addAll(handleClassloader(this.class.classLoader, filter))
+		x.addAll(handleClassloader(Thread.currentThread.contextClassLoader, filter))
 		x
 	}
 	
@@ -30,11 +31,12 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		<String>newArrayList
 	}
 	
-	def dispatch handleClassloader(URLClassLoader cl, Function1 <String,Boolean> filter){
-		val r = newArrayList
+	def dispatch handleClassloader(ClassLoader cl, Function1 <String,Boolean> filter){
+		val r = newLinkedHashSet
 		r.addAll(cl.getResources("").toList)
-		r.addAll(cl.URLs)
-		crawl(r.map[new File(it.path.replace("%20"," "))], filter)
+		if(cl instanceof URLClassLoader)
+			r.addAll(cl.URLs)
+		crawl(r.map[new File(normalizePath)], filter)
 	}
 	
 	def dispatch Iterable<String> crawl(Iterable<File> files,Function1 <String,Boolean> filter){
@@ -46,6 +48,7 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 	}
 	
 	def dispatch Iterable<String> crawl(File f,Function1 <String,Boolean> filter){
+
 		if(f.directory){
 			f.listFiles.crawl(filter)
 		}else{
@@ -68,6 +71,13 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 			if(jarFile != null)
 				jarFile.close
 		}
+	}
+	
+	def normalizePath(URL url){
+		var newPath = url.path
+		if(newPath.startsWith("file:"))
+			newPath = newPath.substring(5)
+		newPath.replace("%20"," ")
 	}
 	
 	def <E> toList(Enumeration<E> enumeration){

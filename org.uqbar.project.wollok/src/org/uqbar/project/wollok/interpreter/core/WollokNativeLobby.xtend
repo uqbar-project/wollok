@@ -77,4 +77,8 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			throw new AssertionError('''Expected [«a»] but found [«b»]''')
 	}
 
+	override addGlobalReference(String name, Object value) {
+		addReference(name, value)
+	}
+	
 }

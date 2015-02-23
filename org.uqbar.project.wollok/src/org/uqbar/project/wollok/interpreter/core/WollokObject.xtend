@@ -127,6 +127,9 @@ class WollokObject implements EvaluationContext, WCallable {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
+	override addGlobalReference(String name, Object value) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
 }
 
 /**

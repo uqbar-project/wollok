@@ -31,12 +31,12 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension ParseHelper<WFile>
 	@Inject protected extension ValidationTestHelper
 	@Inject protected XtextResourceSet resourceSet;
+	@Inject
 	protected extension WollokInterpreter interpreter
 	public static val EXAMPLES_PROJECT_PATH = "../wollok-examples"
 
 	@Before
 	def void setUp() {
-		interpreter = new WollokInterpreter(new SysoutWollokInterpreterConsole)
 	}
 
 	@After

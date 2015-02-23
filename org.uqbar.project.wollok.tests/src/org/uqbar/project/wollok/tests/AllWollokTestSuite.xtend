@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.tests.interpreter.ExceptionTestCase
 import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 import org.uqbar.project.wollok.tests.interpreter.MixedNumberTypesOperations
 import org.uqbar.project.wollok.tests.interpreter.MultiOpAssignTestCase
+import org.uqbar.project.wollok.tests.interpreter.NamedObjectsTestCase
 import org.uqbar.project.wollok.tests.interpreter.PolymorphismTestCase
 import org.uqbar.project.wollok.tests.interpreter.PostFixOperationTestCase
 import org.uqbar.project.wollok.tests.interpreter.SuperInvocationTest
@@ -14,7 +15,6 @@ import org.uqbar.project.wollok.tests.interpreter.TypeSystemTestCase
 import org.uqbar.project.wollok.tests.interpreter.UnusedVariableTest
 import org.uqbar.project.wollok.tests.interpreter.WollokExamplesTests
 import org.uqbar.project.wollok.tests.natives.NativeTestCase
-import org.uqbar.project.wollok.tests.typesystem.TypeSystemTestSuite
 
 /**
  * Holds all wollok testcases to be able to run them all together
@@ -36,7 +36,8 @@ import org.uqbar.project.wollok.tests.typesystem.TypeSystemTestSuite
    ExceptionTestCase,
    NativeTestCase,
    ListTestCase,
-   ClosureTestCase
+   ClosureTestCase,
+   NamedObjectsTestCase
 )
 class AllWollokTestSuite {
 	

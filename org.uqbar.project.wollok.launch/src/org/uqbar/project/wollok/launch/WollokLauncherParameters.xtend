@@ -10,9 +10,9 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 class WollokLauncherParameters {
 	@Accessors
-	Integer requestsPort
+	Integer requestsPort = null
 	@Accessors
-	Integer eventsPort
+	Integer eventsPort = null
 	@Accessors
 	List<String> wollokFiles = new ArrayList();
 	@Accessors
@@ -35,7 +35,7 @@ class WollokLauncherParameters {
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
 
-		if ((requestsPort == null && eventsPort != null) || (requestsPort != null && eventsPort == null)) {
+		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
 		}
 
@@ -55,7 +55,7 @@ class WollokLauncherParameters {
 	}
 	
 	def hasDebuggerPorts(){
-		this.eventsPort != null
+		this.eventsPort != 0
 	}
 
 	def options() {

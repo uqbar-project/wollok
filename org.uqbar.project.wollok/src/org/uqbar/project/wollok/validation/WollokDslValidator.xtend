@@ -37,6 +37,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WLibrary
 
 /**
  * Custom validation rules.
@@ -265,6 +266,10 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 
 	def dispatch boolean isDuplicated(WConstructor c, WReferenciable r) {
 		c.parameters.existsMoreThanOne(r) || c.eContainer.isDuplicated(r)
+	}
+
+	def dispatch boolean isDuplicated(WLibrary wl, WReferenciable r){
+		wl.elements.existsMoreThanOne(r)
 	}
 
 	def dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) {

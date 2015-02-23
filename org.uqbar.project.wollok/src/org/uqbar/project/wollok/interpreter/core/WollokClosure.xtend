@@ -75,4 +75,8 @@ class WollokClosure implements EvaluationContext, WCallable {
 		throw new UnresolvableReference(name)
 	}
 	
+	override addGlobalReference(String name, Object value) {
+		container.addGlobalReference(name,value)
+	}
+	
 }
