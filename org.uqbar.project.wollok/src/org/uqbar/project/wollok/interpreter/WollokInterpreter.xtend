@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * XInterpreter impl for Wollok language.
@@ -26,6 +27,9 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 	static Logger log = Logger.getLogger(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
+	
+	@Accessors
+	val globalVariables = <String,Object>newHashMap
 
 	@Inject
 	XInterpreterEvaluator evaluator
@@ -71,14 +75,16 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 		catch (Throwable e)
 			if (propagatingErrors)
 				throw e
-			else
+			else{
 				console.logError(e)
+				null
+			}
 		finally
 			debugger.terminated
 	}
 	
 	def createInitialStackElement(EObject root) {
-		new XStackFrame(root, new WollokNativeLobby(console))
+		new XStackFrame(root, new WollokNativeLobby(console, this))
 	}
 	
 	def performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something) {

@@ -21,6 +21,7 @@ import static org.uqbar.project.wollok.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.launch.WollokLaunchConstants
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -45,7 +46,11 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	
 	def getOrCreateConfig(IFile currFile) {
 		val info = new LaunchConfigurationInfo(currFile)
-		launchManager.launchConfigurations.findFirstIfNone([info.configEquals(it)], [| createConfiguration(info)])
+		val config = launchManager.launchConfigurations.findFirstIfNone([info.configEquals(it)], [| createConfiguration(info)])
+		config.getWorkingCopy => [
+			setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+			doSave
+		]
 	}
 	
 	def locateRunner(IResource resource) throws CoreException {
@@ -66,6 +71,8 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		}
 	}
 
+	def hasRepl(){false}
+
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		LAUNCH_CONFIGURATION_TYPE.configType.newInstance(null, info.generateUniqueName) => [
 			setAttribute(ATTR_PROJECT_NAME, info.project)
@@ -73,6 +80,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			setAttribute(ATTR_STOP_IN_MAIN, false)
 			setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
 			setAttribute(ATTR_WOLLOK_FILE, info.file)
+			setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 			setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 			setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 			doSave

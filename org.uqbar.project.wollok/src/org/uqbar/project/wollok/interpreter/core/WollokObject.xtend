@@ -19,6 +19,7 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * A wollok user defined (dynamic) object.
@@ -110,6 +111,7 @@ class WollokObject implements EvaluationContext, WCallable {
 
 	def dispatch objectDescription(WClass clazz) { "a " + clazz.name }
 	def dispatch objectDescription(WObjectLiteral obj) { "anObject" }
+	def dispatch objectDescription(WNamedObject namedObject){ namedObject.name }
 	
 	def getKind() { behavior }
 	

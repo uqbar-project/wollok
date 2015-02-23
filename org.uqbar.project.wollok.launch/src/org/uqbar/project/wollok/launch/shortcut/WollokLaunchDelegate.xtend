@@ -58,17 +58,22 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			config.getWorkingCopy =>[
 				setCommandPort(requestPort)
 				setEventPort(eventPort)
-				setArguments(requestPort, eventPort)
+				setArguments(requestPort, eventPort, config.hasRepl)
+				doSave
+			]
+		}else{
+			config.getWorkingCopy => [
+				setArguments(0, 0, config.hasRepl)
 				doSave
 			]
 		}
 	}
 	
-	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){
+	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort, boolean hasRepl){
 		val parameters = new WollokLauncherParameters
 		parameters.eventsPort = eventPort;
 		parameters.requestsPort = requestPort
-		parameters.hasRepl = false
+		parameters.hasRepl = hasRepl
 		parameters.wollokFiles += config.wollokFile
 		
 		config.programArguments = parameters.build

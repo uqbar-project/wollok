@@ -180,6 +180,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		} catch (UnresolvableReference e) {
 			new WollokObject(interpreter, namedObject) => [ wo |
 				namedObject.members.forEach[wo.addMember(it)]
+				if(namedObject.native)
+					wo.nativeObject = namedObject.createNativeObject(wo,interpreter)
 				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 			]
 		}

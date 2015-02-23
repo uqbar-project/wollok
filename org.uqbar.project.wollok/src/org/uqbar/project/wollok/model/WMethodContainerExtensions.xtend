@@ -105,6 +105,21 @@ class WMethodContainerExtensions {
 		catch (NoSuchMethodException e)
 			javaClass.newInstance
 	}
+
+	def static Object createNativeObject(WNamedObject it, WollokObject obj, WollokInterpreter interpreter) {
+		var className = fqn
+		var classNameParts = className.split("\\.")
+		val lastPosition = classNameParts.length - 1
+		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
+		className = classNameParts.join(".")
+		
+		val javaClass = Class.forName( className + "Object")
+		try
+			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)
+		catch (NoSuchMethodException e)
+			javaClass.newInstance
+	}
+
 	
 	// ************************************************************************
 	// ** isKindOf(c1, c2): Tells whether c1 is a type or subtype of c2

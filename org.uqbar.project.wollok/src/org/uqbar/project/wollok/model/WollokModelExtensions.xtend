@@ -47,7 +47,7 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static boolean isNative(WClass it) { methods.exists[m|m.native] }
+	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
 	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
 	def static fqn(WNamedObject it) { (if(package != null) package.name else "") + "." + name }

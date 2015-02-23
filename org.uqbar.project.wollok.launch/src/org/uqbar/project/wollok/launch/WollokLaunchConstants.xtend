@@ -17,6 +17,7 @@ class WollokLaunchConstants {
 	
 	// launch configurations custom attributes
 	public static val ATTR_WOLLOK_FILE = "WOLLOK_FILE"
+	public static val ATTR_WOLLOK_IS_REPL = "WOLLOK_IS_REPL"
 	public static val ATTR_WOLLOK_DEBUG_PARAM = "WOLLOK_DEBUG_PARAM"
 	public static val ATTR_WOLLOK_DEBUG_COMMAND_PORT = "WOLLOK_DEBUG_COMMAND_PORT"
 	public static val ATTR_WOLLOK_DEBUG_EVENT_PORT = "WOLLOK_DEBUG_EVENT_PORT"

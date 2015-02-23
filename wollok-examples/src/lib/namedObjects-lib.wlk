@@ -1,5 +1,5 @@
 object pepita {
-	val energy = 0
+	var energy = 0
 	method energyLevel(){
 		energy
 	}

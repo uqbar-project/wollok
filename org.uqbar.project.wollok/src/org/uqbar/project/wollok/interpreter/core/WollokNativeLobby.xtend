@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * Contiene metodos "nativos" que están disponibles
@@ -19,9 +20,11 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext {
 	var Map<String,Object> localVariables = newHashMap
 	WollokInterpreterConsole console
+	WollokInterpreter interpreter
 	
-	new(WollokInterpreterConsole console) {
+	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {
 		this.console = console
+		this.interpreter = interpreter
 	}
 	
 	override getThisObject() { this }
@@ -31,15 +34,23 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override resolve(String variableName) throws UnresolvableReference {
-		if (!localVariables.containsKey(variableName))
-			throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
-		localVariables.get(variableName)
+		if (!localVariables.containsKey(variableName)){
+			if(!interpreter.globalVariables.containsKey(variableName))
+				throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+			else
+				interpreter.globalVariables.get(variableName)
+		}else
+			localVariables.get(variableName)
 	}
 	
-	override setReference(String name, Object value) {
-		if (!localVariables.containsKey(name))
-			throw new UnresolvableReference('''Cannot resolve reference «name»''')
-		localVariables.put(name, value)
+	override setReference(String variableName, Object value) {
+		if (!localVariables.containsKey(variableName)){
+			if(!interpreter.globalVariables.containsKey(variableName))
+				throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+			else
+				interpreter.globalVariables.put(variableName,value)
+		}else
+			localVariables.put(variableName,value)
 	}
 	
 	override addReference(String name, Object value) {
@@ -78,7 +89,8 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 
 	override addGlobalReference(String name, Object value) {
-		addReference(name, value)
+		interpreter.globalVariables.put(name,value)
+		value
 	}
 	
 }
