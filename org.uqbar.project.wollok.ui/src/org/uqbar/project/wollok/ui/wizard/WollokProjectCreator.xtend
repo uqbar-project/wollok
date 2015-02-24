@@ -14,6 +14,7 @@ class WollokProjectCreator extends WollokDslProjectCreator {
 	override protected getRequiredBundles() {
 		super.requiredBundles => [
 			add(DSL_GENERATOR_PROJECT_NAME + ".launch")
+			add(DSL_GENERATOR_PROJECT_NAME + ".lib")
 			add("it.xsemantics.runtime")
 			add("org.eclipse.xtext.ui")
 		]
