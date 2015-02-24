@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.preferences
+package org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
@@ -15,13 +15,14 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage
 
 import static org.eclipse.xtext.ui.XtextProjectHelper.*
-
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.utils.WEclipseUtils
+import org.eclipse.ui.IWorkbenchPropertyPage
 
 /**
  * @author jfernandes
  */
-class TypeSystemPreferencePage extends PropertyAndPreferencePage {
+class TypeSystemPreferencePage extends PropertyAndPreferencePage implements IWorkbenchPropertyPage {
 	@Inject @Named(Constants.LANGUAGE_NAME) String languageName
 	@Inject IPreferenceStoreAccess preferenceStoreAccess
 	TypeSystemConfigurationBlock builderConfigurationBlock
@@ -93,9 +94,9 @@ class TypeSystemPreferencePage extends PropertyAndPreferencePage {
 	
 	protected def rebuild(IProgressMonitor monitor) {
 		if (projectPreferencePage)
-			project.fullBuild(monitor)
+			WEclipseUtils.fullBuild(project,monitor)
 		else
-			allProjects.filter[p| hasNature(p) ].forEach[fullBuild(monitor)]
+			allProjects.filter[p| hasNature(p) ].forEach[p| fullBuild(p,monitor)]
 	}
 	
 	override setElement(IAdaptable element) {

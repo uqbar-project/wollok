@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.preferences
+package org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
 
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.ResourcesPlugin
@@ -7,11 +7,10 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
-import org.eclipse.xtext.builder.EclipseOutputConfigurationProvider
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.uqbar.project.wollok.ui.WollokActivator
 
-import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
+import static org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.WPreferencesUtils.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 /**
@@ -51,7 +50,7 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	}
 	
 	override dispose() {
-		storeSectionExpansionStates = WollokActivator.getInstance.dialogSettings.addNewSection(SETTINGS_SECTION_NAME)
+		restoreSectionExpansionStates = WollokActivator.getInstance.dialogSettings.addNewSection(SETTINGS_SECTION_NAME)
 		super.dispose
 	}
 	

@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.preferences
+package org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
 
 import org.eclipse.jface.preference.IPreferenceStore
 
