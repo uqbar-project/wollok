@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.semantics.TypeSystemException
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.semantics.TypeSystemException
 
 /**
  * t(a) = t(b)

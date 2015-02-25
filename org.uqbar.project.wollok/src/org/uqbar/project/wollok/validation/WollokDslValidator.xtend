@@ -1,13 +1,10 @@
 package org.uqbar.project.wollok.validation
 
-import com.google.inject.Inject
-import it.xsemantics.runtime.RuleEnvironment
+import java.util.List
+import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.Check
-import org.eclipse.xtext.validation.ValidationMessageAcceptor
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.semantics.validation.WollokDslTypeSystemValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -17,9 +14,12 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -34,10 +34,6 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 
 /**
  * Custom validation rules.
@@ -51,10 +47,8 @@ import org.uqbar.project.wollok.wollokDsl.WLibrary
 // like "error/warning/ignore". It could be completely automatically based on annotations.
 // Ex:
 //  @Check @ConfigurableSeverity @EnabledDisabled
-class WollokDslValidator extends WollokDslTypeSystemValidator {
-	@Inject IPreferenceStoreAccess preferenceStoreAccess;
-	// pasar a otra clase con constantes de preferencias
-	public static val TYPE_SYSTEM_CHECKS_ENABLED = "TYPE_SYSTEM_CHECKS_ENABLED"
+class WollokDslValidator extends AbstractWollokDslValidator {
+	List<WollokValidatorExtension> wollokValidatorExtensions
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -63,25 +57,23 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD" 
-	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
+	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
-
+	
+	def validatorExtensions(){
+		if(wollokValidatorExtensions != null)
+			return wollokValidatorExtensions
+			
+		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
+		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
+	}
+	
 	@Check
-	def checkProgramTypes(WFile file) {
-		//TODO: lee las preferencias cada vez!
-		try
-			if (!preferences(file).getBoolean(TYPE_SYSTEM_CHECKS_ENABLED)) 
-				return
-		catch (IllegalStateException e)
-			// headless launcher doesn't open workspace, so this fails.
-			// but it's ok since the type system won't run in runtime. 
-			return;
-		
-		var RuleEnvironment env = xsemanticsSystem.emptyEnvironment
-		errorGenerator.generateErrors(decorateErrorAcceptor(this, TYPE_SYSTEM_ERROR), xsemanticsSystem.inferTypes(env, file.body), file.body)
+	def checkValidationExtensions(WFile wfile){
+		validatorExtensions.forEach[ check(wfile, this)]
 	}
 	
 	@Check
@@ -295,13 +287,5 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 	
 	def error(WNamed e, String message) { error(message, e, WNAMED__NAME) }
 	def error(WNamed e, String message, String errorId) { error(message, e, WNAMED__NAME, errorId) }
-	
-	def preferences(EObject obj) {
-		preferenceStoreAccess.getContextPreferenceStore(obj.getFile.project)
-	}
-	
-	def decorateErrorAcceptor(ValidationMessageAcceptor a, String defaultCode) {
-		new DecoratedValidationMessageAcceptor(a, defaultCode)
-	}
-
+		
 }

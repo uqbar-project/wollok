@@ -4,13 +4,13 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 
 import static org.uqbar.project.wollok.semantics.WollokType.*
 import static org.uqbar.project.wollok.typesystem.constraints.TypeVariablesFactory.*
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 
 /**
  * @author npasserini

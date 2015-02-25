@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.Map
-import org.uqbar.project.wollok.semantics.WollokType
+import org.eclipse.xtend.lib.Property
 import org.uqbar.project.wollok.semantics.TypeSystemException
+import org.uqbar.project.wollok.semantics.WollokType
 
 class TypeVariable {
 	enum ConcreteTypeState {

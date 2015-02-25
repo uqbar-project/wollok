@@ -1,7 +1,8 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
-import org.uqbar.project.wollok.semantics.WollokType
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.Property
+import org.uqbar.project.wollok.semantics.WollokType
 
 /**
  * A type expectation.

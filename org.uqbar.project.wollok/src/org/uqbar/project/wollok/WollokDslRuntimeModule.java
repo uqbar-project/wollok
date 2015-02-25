@@ -13,8 +13,6 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
-import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem;
-import org.uqbar.project.wollok.typesystem.TypeSystem;
 
 import com.google.inject.Binder;
 
@@ -29,7 +27,7 @@ public class WollokDslRuntimeModule extends
 	public void configure(Binder binder) {
 		super.configure(binder);
 		// TYPE SYSTEM
-		binder.bind(TypeSystem.class).to(XSemanticsTypeSystem.class);
+		//binder.bind(TypeSystem.class).to(ConstraintBasedTypeSystem.class);
 	}
 
 	// customize exported objects

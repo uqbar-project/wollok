@@ -32,5 +32,11 @@
              class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.labeling.XSemanticsWollokTypeSystemLabelExtension">
        </wollokTypeSystemLabelExtension>
     </extension>
+    <extension
+          point="org.uqbar.project.wollok.wollokValidationExtension">
+       <wollokValidationExtension
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.validations.XSemanticsWollokValidationExtension">
+       </wollokValidationExtension>
+    </extension>
     <!-- Type System preferences -->
 </plugin>

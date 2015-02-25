@@ -8,10 +8,10 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
+import org.uqbar.project.wollok.typesystem.validations.XSemanticsWollokValidationExtension
 import org.uqbar.project.wollok.ui.WollokActivator
 
 import static org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.WPreferencesUtils.*
-import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 /**
  * @author jfernandes
@@ -22,7 +22,7 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
-		store.setDefault(TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
+		store.setDefault(XSemanticsWollokValidationExtension.TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
 	}
 	
 	override doCreateContents(Composite parent) {
@@ -31,7 +31,7 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 				marginHeight = 20
 				marginWidth = 8
 			]
-			addCheckBox(it, "Enable Type System Checks", TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
+			addCheckBox(it, "Enable Type System Checks", XSemanticsWollokValidationExtension.TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
 		]
 	}
 	

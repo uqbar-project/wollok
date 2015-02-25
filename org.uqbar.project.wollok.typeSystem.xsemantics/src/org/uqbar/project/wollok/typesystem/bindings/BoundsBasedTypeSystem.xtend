@@ -24,10 +24,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 
 /**
  * An attempt to avoid directly manipulating xsemantics environment
