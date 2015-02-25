@@ -34,6 +34,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 
 	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 // WITHOUT - XSEMANTICS
+// TODO: Hacer un extension point
 //		reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
 //			reference.ref.messagesSentTo.forEach[m| acceptor.addProposal(context, m.asProposalText, m.image)]
 	}

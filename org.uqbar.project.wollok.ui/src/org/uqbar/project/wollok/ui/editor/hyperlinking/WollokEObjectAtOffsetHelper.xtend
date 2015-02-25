@@ -21,6 +21,7 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 //  y de nuevo en getCrossReferencedElement()
 class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 /*	
+ *TODO: Hacer un extension point
 	@Inject
   	protected WollokDslTypeSystem xsemanticsSystem
 	
