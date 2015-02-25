@@ -26,5 +26,11 @@
 	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
         </page>
     </extension>
+    <extension
+          point="org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension">
+       <wollokTypeSystemLabelExtension
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.labeling.XSemanticsWollokTypeSystemLabelExtension">
+       </wollokTypeSystemLabelExtension>
+    </extension>
     <!-- Type System preferences -->
 </plugin>

@@ -4,7 +4,7 @@ Bundle-Name: Wollok XSemantics Type System UI
 Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem.xsemantics.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.uqbar.project.wollok.typeSystem.xsemantics;bundle-version="1.0.0",
+Require-Bundle: org.uqbar.project.wollok.typeSystem.xsemantics,
  org.uqbar.project.wollok.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -15,5 +15,5 @@ Require-Bundle: org.uqbar.project.wollok.typeSystem.xsemantics;bundle-version="1
  org.eclipse.xtext.ui.shared
 Export-Package: org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
 Import-Package: org.apache.log4j;version="1.2.15"
-Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.Activator
+Bundle-ActivationPolicy: lazy

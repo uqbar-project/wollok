@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem.xsemantics
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.uqbar.project.wollok;bundle-version="1.0.0",
- it.xsemantics.runtime;bundle-version="1.5.0"
+ it.xsemantics.runtime;bundle-version="1.5.0";visibility:=reexport
