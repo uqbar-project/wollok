@@ -15,7 +15,6 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.ui.workbench;resolution:=optional,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
  org.xpect.xtext.lib;bundle-version="0.1.0",
- it.xsemantics.runtime;bundle-version="1.5.0",
  org.uqbar.project.wollok.lib,
  org.uqbar.project.wollok.typeSystem.xsemantics,
  org.uqbar.project.wollok.ui

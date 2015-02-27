@@ -7,7 +7,7 @@
       os="linux,macosx,win32">
 
    <url>
-      <update label="Wollok Update Site" url="http://dl.bintray.com/uqbar/wollok-update-site/"/>
+      <update label="Wollok Update Site" url="http://update.uqbar.org/wollok/"/>
    </url>
 
    <requires>
@@ -18,13 +18,13 @@
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.antlr.runtime"/>
       <import plugin="org.eclipse.xtext.common.types"/>
-      <import plugin="it.xsemantics.runtime" version="1.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui" version="2.6.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ecore" version="2.6.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.xbase.lib"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
+      <import plugin="org.uqbar.project.wollok" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui.shared"/>
@@ -43,13 +43,11 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.uqbar.project.wollok" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.core" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.ui" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.8.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.101" match="greaterOrEqual"/>
-      <import plugin="org.uqbar.project.wollok.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui" version="2.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.zest.core" version="1.5.0" match="greaterOrEqual"/>
