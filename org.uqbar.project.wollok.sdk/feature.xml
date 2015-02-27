@@ -66,6 +66,8 @@
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="com.google.guava" version="15.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtend2.lib" version="2.6.2" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok.tests" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro"/>
    </requires>
 
    <plugin
@@ -94,6 +96,13 @@
          download-size="0"
          install-size="0"
          version="3.8.1.201308190730"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

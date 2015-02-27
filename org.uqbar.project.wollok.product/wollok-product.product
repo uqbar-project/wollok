@@ -20,6 +20,8 @@ http://wollok.uqbar-project.org
    </configIni>
 
    <launcherArgs>
+      <vmArgs>-XX:PermSize=64M -XX:MaxPermSize=128M
+      </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
@@ -237,23 +239,6 @@ Library.
       <plugin id="hu.cubussapiens.themes.presentation"/>
       <plugin id="hu.cubussapiens.xtext.reflectiveeditor"/>
       <plugin id="hu.cubussapiens.zestlayouts"/>
-      <plugin id="it.xsemantics.doc"/>
-      <plugin id="it.xsemantics.doc.source"/>
-      <plugin id="it.xsemantics.dsl"/>
-      <plugin id="it.xsemantics.dsl.source"/>
-      <plugin id="it.xsemantics.dsl.ui"/>
-      <plugin id="it.xsemantics.dsl.ui.source"/>
-      <plugin id="it.xsemantics.example.expressions"/>
-      <plugin id="it.xsemantics.example.expressions.ui"/>
-      <plugin id="it.xsemantics.example.fj"/>
-      <plugin id="it.xsemantics.example.fj.ui"/>
-      <plugin id="it.xsemantics.example.fjcached"/>
-      <plugin id="it.xsemantics.example.fjcached.ui"/>
-      <plugin id="it.xsemantics.example.lambda"/>
-      <plugin id="it.xsemantics.example.lambda.ui"/>
-      <plugin id="it.xsemantics.runtime"/>
-      <plugin id="it.xsemantics.runtime.source"/>
-      <plugin id="it.xsemantics.ui.examples"/>
       <plugin id="javaewah"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.annotation.source"/>
@@ -700,6 +685,19 @@ Library.
       <plugin id="org.eclipse.osgi.util.source"/>
       <plugin id="org.eclipse.pde"/>
       <plugin id="org.eclipse.pde.api.tools"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.cdcfoundation10" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.cdcfoundation11" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.j2se12" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.j2se13" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.j2se14" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.j2se15" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.javase16" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.javase17" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.javase18" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.jre11" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.osgiminimum10" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.osgiminimum11" fragment="true"/>
+      <plugin id="org.eclipse.pde.api.tools.ee.osgiminimum12" fragment="true"/>
       <plugin id="org.eclipse.pde.api.tools.source"/>
       <plugin id="org.eclipse.pde.api.tools.ui"/>
       <plugin id="org.eclipse.pde.api.tools.ui.source"/>
@@ -906,8 +904,8 @@ Library.
       <plugin id="org.slf4j.api"/>
       <plugin id="org.uqbar.project.wollok"/>
       <plugin id="org.uqbar.project.wollok.launch"/>
+      <plugin id="org.uqbar.project.wollok.lib"/>
       <plugin id="org.uqbar.project.wollok.product"/>
-      <plugin id="org.uqbar.project.wollok.tests"/>
       <plugin id="org.uqbar.project.wollok.ui"/>
       <plugin id="org.uqbar.project.wollok.ui.diagrams"/>
       <plugin id="org.w3c.css.sac"/>
@@ -939,11 +937,12 @@ Library.
       <plugin id="org.uqbar.project.wollok" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.launch" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
+      <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
       <property name="osgi.instance.area" value="./workspace" />
    </configurations>
 
    <repositories>
-      <repository location="http://update.uqbar.org/wollok" enabled="true" />
+      <repository location="http://update.uqbar.org/wollok/" enabled="true" />
    </repositories>
 
 </product>
