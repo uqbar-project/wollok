@@ -11,6 +11,7 @@ import org.eclipse.xtext.util.LazyStringInputStream
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.WollokConstants
 
 class WollokRepl {
 	val Injector injector
@@ -94,7 +95,7 @@ class WollokRepl {
 	def uriToUse(ResourceSet resourceSet) {
 		var name = "__synthetic";
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
-			var syntheticUri = URI.createURI(name + i + ".wpgm");
+			var syntheticUri = URI.createURI(name + i + "." + WollokConstants.PROGRAM_EXTENSION);
 			if (resourceSet.getResource(syntheticUri, false) == null)
 				return syntheticUri;
 		}

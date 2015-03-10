@@ -24,6 +24,7 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.launch.io.IOUtils.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Main program launcher for the interpreter.
@@ -138,7 +139,11 @@ class WollokLauncher {
 	}
 
 	def void collectWollokFiles(File folder, List<File> classpath) {
-		classpath.addAll(folder.listFiles[dir, name| name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest") ])
+		classpath.addAll(
+			folder.listFiles[dir, name|
+				name.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION) ||
+					name.endsWith("." + WollokConstants.PROGRAM_EXTENSION) ||
+					name.endsWith("." + WollokConstants.TEST_EXTENSION)])
 		folder.listFiles[f|f.directory].forEach[collectWollokFiles(it, classpath)]
 	}
 
