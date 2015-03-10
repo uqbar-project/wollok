@@ -6,7 +6,7 @@
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.uqbar.project.wollok.edit"
     editorPluginID="org.uqbar.project.wollok.editor" runtimeVersion="2.10">
   <genPackages prefix="WollokDsl" basePackage="org.uqbar.project.wollok" disposableProviderFactory="true"
-      fileExtensions="wlk" ecorePackage="WollokDsl.ecore#/">
+      fileExtensions="wpgm,wlk,wtest" ecorePackage="WollokDsl.ecore#/">
     <genClasses ecoreClass="WollokDsl.ecore#//WFile">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WFile/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WFile/body"/>
@@ -30,6 +30,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WNamed/name"/>
     </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WMethodContainer"/>
+    <genClasses ecoreClass="WollokDsl.ecore#//WTest">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WTest/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WTest/elements"/>
+    </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WReferenciable"/>
     <genClasses ecoreClass="WollokDsl.ecore#//WExpression"/>
     <genClasses ecoreClass="WollokDsl.ecore#//WMethodDeclaration">

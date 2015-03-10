@@ -11,7 +11,7 @@
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
-            extensions="wlk"
+            extensions="wpgm,wlk,wtest"
             icon="icons/w.png"
             id="org.uqbar.project.wollok.WollokDsl"
             name="Wollok Editor">
@@ -217,6 +217,20 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="wpgm">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="wpgm">
+        </resourceServiceProvider>
+    </extension>
+
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="wlk">
 		</parser>
 	</extension>
@@ -224,6 +238,20 @@
         <resourceServiceProvider
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
             uriExtension="wlk">
+        </resourceServiceProvider>
+    </extension>
+
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="wtest">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="wtest">
         </resourceServiceProvider>
     </extension>
 
@@ -255,7 +283,7 @@
          point="org.eclipse.xtext.builder.participant">
       <participant
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-            fileExtensions="wlk">
+            fileExtensions="wpgm,wlk,wtest">
       </participant>
    </extension>
    <extension
@@ -382,19 +410,19 @@
   <extension point="org.eclipse.compare.contentViewers">
     <viewer id="org.uqbar.project.wollok.WollokDsl.compare.contentViewers"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="wlk">
+            extensions="wpgm,wlk,wtest">
     </viewer>
   </extension>
   <extension point="org.eclipse.compare.contentMergeViewers">
     <viewer id="org.uqbar.project.wollok.WollokDsl.compare.contentMergeViewers"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="wlk" label="WollokDsl Compare">
+            extensions="wpgm,wlk,wtest" label="Wollok Compare">
      </viewer>
   </extension>
   <extension point="org.eclipse.ui.editors.documentProviders">
     <provider id="org.uqbar.project.wollok.WollokDsl.editors.documentProviders"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-            extensions="wlk">
+            extensions="wpgm,wlk,wtest">
     </provider>
   </extension>
 

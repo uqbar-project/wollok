@@ -70,8 +70,11 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt type="org.eclipse.core.resources.IFile"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern"
-                          value="*.wlk"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
                </iterate>
              </with>
            </enablement>
@@ -98,8 +101,11 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt type="org.eclipse.core.resources.IFile"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern"
-                          value="*.wlk"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
                </iterate>
              </with>
            </enablement>

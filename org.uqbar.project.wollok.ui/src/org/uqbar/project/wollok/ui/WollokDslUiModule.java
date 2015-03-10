@@ -58,7 +58,6 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 		binder.bind(ISemanticHighlightingCalculator.class).to(WollokHighlightingCalculator.class);
 	}
 	
-	@Override
 	public Class<? extends IProjectCreator> bindIProjectCreator() {
 		return WollokProjectCreator.class;
 	}

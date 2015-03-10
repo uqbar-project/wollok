@@ -10,14 +10,6 @@
        class = "org.uqbar.project.wollok.wollokDsl.WollokDslPackage"
        genModel = "model/generated/WollokDsl.genmodel" /> 
   </extension>
-<!--
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <package
-            uri="http://uqbar-project.org/wollok/WollokTypeSystem"
-            class="org.uqbar.project.wollok.wollokTypeSystem.WollokTypeSystemPackage"
-            genModel="src/org/uqbar/project/wollok/typesystem/WollokTypeSystem.genmodel"/>
-   </extension>
--->
    <extension
          id="wollokNature"
          name="Wollok Project Nature"

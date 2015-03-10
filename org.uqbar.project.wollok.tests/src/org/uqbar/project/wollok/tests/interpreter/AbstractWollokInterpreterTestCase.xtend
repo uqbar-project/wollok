@@ -28,7 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(WollokDslInjectorProvider))
 abstract class AbstractWollokInterpreterTestCase extends Assert {
-	@Inject protected extension ParseHelper<WFile>
+	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper
 	@Inject protected XtextResourceSet resourceSet;
 	@Inject

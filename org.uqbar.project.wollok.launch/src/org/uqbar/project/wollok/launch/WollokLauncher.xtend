@@ -138,7 +138,7 @@ class WollokLauncher {
 	}
 
 	def void collectWollokFiles(File folder, List<File> classpath) {
-		classpath.addAll(folder.listFiles[dir, name|name.endsWith(".wlk")])
+		classpath.addAll(folder.listFiles[dir, name| name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest") ])
 		folder.listFiles[f|f.directory].forEach[collectWollokFiles(it, classpath)]
 	}
 

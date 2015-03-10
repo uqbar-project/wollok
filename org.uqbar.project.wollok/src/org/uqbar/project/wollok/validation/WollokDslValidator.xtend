@@ -34,6 +34,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Custom validation rules.
@@ -207,6 +208,19 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		if (WollokInterpreterEvaluator.isMultiOpAssignment(op.feature) && !op.leftOperand.isVarRef)
 			error(op.feature + " can only be applied to variable references", op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
+	
+	@Check
+	def programInProgramFile(WProgram p){
+		if(p.eResource.URI.fileExtension != WollokConstants.PROGRAM_EXTENSION)
+			error('''Program «p.name» should be in a file with extension «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)		
+	}
+
+	@Check
+	def libraryInLibraryFile(WLibrary l){
+		if(l.eResource.URI.fileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION)
+			error('''Classes and Objects should be defined in a file with extension «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
+	}
+
 	
 	def isVarRef(WExpression e) { e instanceof WVariableReference }
 

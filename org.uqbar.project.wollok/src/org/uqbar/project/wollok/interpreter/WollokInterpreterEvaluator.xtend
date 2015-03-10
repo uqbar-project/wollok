@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.interpreter
 
+import com.google.inject.Inject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.WollokDSLKeywords
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokClosure
@@ -15,6 +17,7 @@ import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperation
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeUnaryOperations
+import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -30,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -38,6 +42,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -50,10 +55,6 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import com.google.inject.Inject
-import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
-import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 
 /**
  * It's the real "interpreter".
@@ -97,6 +98,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	// program
 	def dispatch Object evaluate(WProgram it) { elements.evalAll }
+
+	// Test
+	def dispatch Object evaluate(WTest it) { elements.evalAll }
+
 
 	def dispatch Object evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)

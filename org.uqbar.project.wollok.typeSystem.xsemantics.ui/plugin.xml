@@ -2,6 +2,15 @@
 <?eclipse version="3.0"?>
 
 <plugin>
+<!--
+	   <extension point="org.eclipse.emf.ecore.generated_package">
+	      <package
+	            uri="http://uqbar-project.org/wollok/WollokTypeSystem"
+	            class="org.uqbar.project.wollok.wollokTypeSystem.WollokTypeSystemPackage"
+	            genModel="src/org/uqbar/project/wollok/typesystem/WollokTypeSystem.genmodel"/>
+	   </extension>
+-->
+
     <extension
             point="org.eclipse.ui.preferencePages">
         <page

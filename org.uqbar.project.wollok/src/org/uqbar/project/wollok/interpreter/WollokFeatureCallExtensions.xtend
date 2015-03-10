@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -33,10 +34,18 @@ class WollokFeatureCallExtensions {
 		interpreter.performOnStack(method, c) [|
 			if (method.native)
 				// reflective call
-				receiver.nativeObject.invoke(method.name, parameters)
+				receiver.nativeObject.invokeNative(method.name, parameters)
 			else
 				method.expression.eval
 		]
+	}
+	
+	def dispatch invokeNative(Object nativeObject, String name, Object... parameters){
+		nativeObject.invoke(name, parameters)
+	}
+
+	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){
+		nativeObject.call(name, parameters)
 	}
 	
 	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {

@@ -4,4 +4,9 @@ package wollok.lib{
 		method readLine() native
 		method readInt() native
 	}
+	
+	object tester{
+		method assert(value) native
+		method assertEquals(expected, actual) native
+	}
 }

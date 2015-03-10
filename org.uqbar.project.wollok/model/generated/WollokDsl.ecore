@@ -30,6 +30,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WMethodContainer"/>
+  <eClassifiers xsi:type="ecore:EClass" name="WTest" eSuperTypes="#//WFileContent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//WExpression" containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WReferenciable" eSuperTypes="#//WNamed"/>
   <eClassifiers xsi:type="ecore:EClass" name="WExpression" eSuperTypes="#//WFeatureCall #//WMember"/>
   <eClassifiers xsi:type="ecore:EClass" name="WMethodDeclaration" eSuperTypes="#//WNamed #//WMember">
