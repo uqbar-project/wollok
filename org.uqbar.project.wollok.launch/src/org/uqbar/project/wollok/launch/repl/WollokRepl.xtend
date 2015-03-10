@@ -59,7 +59,8 @@ class WollokRepl {
 						«input»
 						}
 					'''.parseRepl(mainFile))
-				println(formatReturnValue(returnValue))
+				if(returnValue != null)
+					println(formatReturnValue(returnValue))
 			} catch (ReplParserException e) {
 				e.issues.forEach [
 					println("" + severity.name + ":" + message + "(line:" + (lineNumber - 1) + ")")
@@ -93,7 +94,7 @@ class WollokRepl {
 	def uriToUse(ResourceSet resourceSet) {
 		var name = "__synthetic";
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
-			var syntheticUri = URI.createURI(name + i + ".wlk");
+			var syntheticUri = URI.createURI(name + i + ".wpgm");
 			if (resourceSet.getResource(syntheticUri, false) == null)
 				return syntheticUri;
 		}
