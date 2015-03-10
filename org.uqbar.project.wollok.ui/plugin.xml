@@ -476,6 +476,24 @@
       </category>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
+            class="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
+            descriptionImage="icons/wollok-logo-32.fw.png"
+            finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            icon="icons/wollok-icon-object_16.png"
+            id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
+            name="Wollok Objects and Classes">
+      </wizard>
+      <wizard
+            category="org.uqbar.project.wollok.ui.category"
+            class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
+            descriptionImage="icons/wollok-logo-32.fw.png"
+            finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            icon="icons/wollok-icon-message_16.png"
+            id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
+            name="Wollok Test">
+      </wizard>
+      <wizard
+            category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             descriptionImage="icons/wollok-logo-32.fw.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"

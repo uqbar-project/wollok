@@ -5,7 +5,9 @@ import org.eclipse.ui.IPageLayout
 import org.eclipse.ui.IPerspectiveFactory
 import org.eclipse.ui.console.IConsoleConstants
 import org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard
+import org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard
 import org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard
+import org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard
 
 /**
  * Wollok coding perspective.
@@ -76,6 +78,8 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			// OTHERs
 			"org.eclipse.ui.wizards.new.folder",
 			"org.eclipse.ui.wizards.new.file",
+			NewWollokObjectsWizard.ID,
+			NewWollokTestWizard.ID,
 			NewWollokProgramWizard.ID
 		]
 		.forEach[ a| addNewWizardShortcut(a) ]
