@@ -6,12 +6,16 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.*;
+
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+
 import java.io.*;
+
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 
@@ -21,6 +25,7 @@ import org.eclipse.ui.ide.IDE;
  * @author jfernandes
  */
 public class NewWollokProgramWizard extends Wizard implements INewWizard {
+	public static final String ID = "org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard";
 	private NewWollokProgramWizardPage page;
 	private ISelection selection;
 

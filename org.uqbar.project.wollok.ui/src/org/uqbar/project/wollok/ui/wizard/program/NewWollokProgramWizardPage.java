@@ -41,7 +41,7 @@ public class NewWollokProgramWizardPage extends WizardPage {
 	public NewWollokProgramWizardPage(ISelection selection) {
 		super("wizardPage");
 		setTitle("Multi-page Editor File");
-		setDescription("This wizard creates a new file with *.wlk extension that can be opened by a multi-page editor.");
+		setDescription("This wizard creates a new file with *.wpgm extension that can be opened by a multi-page editor.");
 		this.selection = selection;
 	}
 
@@ -109,7 +109,7 @@ public class NewWollokProgramWizardPage extends WizardPage {
 				containerText.setText(container.getFullPath().toString());
 			}
 		}
-		fileText.setText("program.wlk");
+		fileText.setText("program.wpgm");
 	}
 
 	/**
@@ -162,8 +162,8 @@ public class NewWollokProgramWizardPage extends WizardPage {
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
-			if (ext.equalsIgnoreCase("wlk") == false) {
-				updateStatus("File extension must be \"wlk\"");
+			if (ext.equalsIgnoreCase("wpgm") == false) {
+				updateStatus("File extension must be \"wpgm\"");
 				return;
 			}
 		}
