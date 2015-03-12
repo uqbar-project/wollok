@@ -22,7 +22,7 @@ public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implemen
 	@Override
 	protected InputStream openContentStream() {
 		String contents =
-			"\nobject abc {\n\n\\n\n}";
+			"\nobject abc {\n\n\n\n}";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 }

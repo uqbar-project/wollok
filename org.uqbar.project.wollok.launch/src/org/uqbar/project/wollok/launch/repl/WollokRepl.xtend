@@ -31,7 +31,7 @@ class WollokRepl {
 	def void startRepl() {
 		var String input
 
-		println("Wollok interactive console (type quit to quit): ")
+		println("Wollok interactive console (type \"quit\" to quit): ")
 		print(prompt)
 		
 		while ((input = readInput) != "quit") {
