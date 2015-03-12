@@ -3,16 +3,17 @@ package org.uqbar.project.wollok.model
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 
 /**
  * Extension methods for WMethodContainers.
@@ -29,6 +30,7 @@ class WMethodContainerExtensions {
 
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
+	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	
 	def static dispatch allMethods(WNamedObject o) { o.methods }

@@ -4,6 +4,7 @@ import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -26,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -34,7 +36,6 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Custom validation rules.
@@ -255,6 +256,10 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 
 	def dispatch boolean isDuplicated(WProgram p, WReferenciable v) {
+		p.variables.existsMoreThanOne(v)
+	}
+
+	def dispatch boolean isDuplicated(WTest p, WReferenciable v) {
 		p.variables.existsMoreThanOne(v)
 	}
 
