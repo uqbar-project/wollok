@@ -1,4 +1,4 @@
-program console {
+program intro {
 	val console = this // TODO esto debería volar
 
 	// console es un objeto que me permite escribir en pantalla
@@ -19,4 +19,11 @@ program console {
 	
 	z = x + y
 	console.println(z)
+	
+	this.assertEquals(1,2)
+	
+	(1+2).shouldBe(3)
+	pepita.energia().shouldBe(100)
+	
+	tester.assert()
 }
