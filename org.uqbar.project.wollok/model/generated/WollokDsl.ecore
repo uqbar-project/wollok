@@ -102,6 +102,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//WExpression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WReturnExpression" eSuperTypes="#//WExpression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//WExpression"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WThrow" eSuperTypes="#//WExpression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="exception" eType="#//WExpression"
         containment="true"/>
