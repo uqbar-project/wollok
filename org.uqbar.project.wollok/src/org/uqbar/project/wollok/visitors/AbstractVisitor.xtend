@@ -32,6 +32,7 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * Implements an abstract visitor for the AST
@@ -109,6 +110,7 @@ class AbstractVisitor {
 	def dispatch void visit(WNamedObject it) { members.visitAll }
 	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
 	def dispatch void visit(WPostfixOperation it) { operand.doVisit }
+	def dispatch void visit(WReturnExpression it) { expression.doVisit }
 	
 	// terminal elements
 	

@@ -101,7 +101,9 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		#[SDK,
 		'''
 			class MyException extends wollok.lang.Exception {
-				method customMessage() { "Something went wrong" }
+				method customMessage() { 
+					return "Something went wrong"
+				}
 			}
 			class A { method m1() { throw new MyException() } }
 		''', ''' program p {

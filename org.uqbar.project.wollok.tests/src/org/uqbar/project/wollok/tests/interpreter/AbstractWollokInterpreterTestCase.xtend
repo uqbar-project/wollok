@@ -33,7 +33,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected XtextResourceSet resourceSet;
 	@Inject
 	protected extension WollokInterpreter interpreter
-	public static val EXAMPLES_PROJECT_PATH = "../wollok-examples"
+	public static val EXAMPLES_PROJECT_PATH = "../wollok-tests"
 
 	@Before
 	def void setUp() {

@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 
 /**
  * XInterpreter impl for Wollok language.
@@ -91,7 +92,9 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 		stack.push(new XStackFrame(executable, newContext))
 		try 
 			return something.apply
-		finally
+		catch(ReturnValueException e){
+			return e.value	
+		}finally
 			stack.pop
 	}
 
@@ -113,6 +116,8 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 			stack.peek.defineCurrentLocation = e
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
+		} catch (ReturnValueException ex) {
+			throw ex // a user-level exception, fine !
 		} catch (WollokProgramExceptionWrapper ex) {
 			throw ex // a user-level exception, fine !
 		}

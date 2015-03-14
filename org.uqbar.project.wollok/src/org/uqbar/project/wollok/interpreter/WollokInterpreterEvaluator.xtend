@@ -55,6 +55,9 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
+import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 /**
  * It's the real "interpreter".
@@ -167,6 +170,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WObjectLiteral l) {
 		new WollokObject(interpreter, l) => [l.members.forEach[m|addMember(m)]]
 	}
+	
+	def dispatch Object evaluate(WReturnExpression it){
+		throw new ReturnValueException(expression.eval)
+	}
 
 	def dispatch Object evaluate(WConstructorCall call) {
 		new WollokObject(interpreter, call.classRef) => [ wo |
@@ -203,6 +210,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WAssignment a) {
 		val newValue = a.value.eval
+		
+		if(newValue instanceof VoidObject)
+			throw new WollokInterpreterException("No se puede asignar el valor de retorno de un mensaje que no devuelve nada", a)
+		
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
 		newValue
 	}

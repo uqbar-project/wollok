@@ -11,6 +11,7 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
+import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -32,11 +33,17 @@ class WollokFeatureCallExtensions {
 			throw new MessageNotUnderstood('''Incorrect number of arguments for method '«method.name»'. Expected «method.parameters.size» but found «parameters.size»''')
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		interpreter.performOnStack(method, c) [|
-			if (method.native)
+			if (method.native){
 				// reflective call
-				receiver.nativeObject.invokeNative(method.name, parameters)
-			else
+				val r = receiver.nativeObject.invokeNative(method.name, parameters)
+				if(receiver.nativeObject.isVoid(method.name, parameters))
+					return VoidObject::instance
+				else
+					return r
+			}else{
 				method.expression.eval
+				return VoidObject::instance
+			}
 		]
 	}
 	
@@ -47,6 +54,20 @@ class WollokFeatureCallExtensions {
 	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){
 		nativeObject.call(name, parameters)
 	}
+
+	def dispatch isVoid(Object nativeObject, String message, Object... parameters){
+		var method = this.class.methods.findFirst[name == message]
+		
+		if(method == null)
+			return false
+			
+		method.returnType == Void.TYPE
+	}
+
+	def dispatch isVoid(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){
+		nativeObject.isVoid(name, parameters)
+	}
+
 	
 	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)

@@ -1,11 +1,15 @@
 object named_object_pepita {
 	var energy = 0
 	method energyLevel(){
-		energy
+		return energy
 	}
 	
 	method addEnergy(amount){
 		energy = energy + amount
+	}
+	
+	method retornoNull(){
+		return null
 	}
 	
 	method saludar(){

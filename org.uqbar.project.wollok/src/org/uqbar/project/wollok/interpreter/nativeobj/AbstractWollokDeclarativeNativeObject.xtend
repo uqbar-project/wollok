@@ -16,9 +16,7 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 
 	override call(String message, Object... parameters) {
-		var method = this.class.methods.findFirst[name == message]
-		if (method == null) 
-			method = this.class.methods.findFirst[handlesMessage(message)]
+		var method = getMethod(message)
 		if (method == null)
 			return doesNotUnderstand(message, parameters)
 		else
@@ -28,6 +26,18 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 			catch (InvocationTargetException e) {
 				throw e.cause
 			}
+	}
+	
+	def getMethod(String message){
+		var method = this.class.methods.findFirst[name == message]
+		if (method == null) 
+			method = this.class.methods.findFirst[handlesMessage(message)]
+		method
+	}
+
+	def isVoid(String message, Object... parameters) {
+		val method = getMethod(message)
+		method.returnType == Void.TYPE
 	}
 	
 	def Object doesNotUnderstand(String message, Object[] objects) {
