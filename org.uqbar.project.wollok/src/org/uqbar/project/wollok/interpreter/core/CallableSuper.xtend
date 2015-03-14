@@ -32,4 +32,5 @@ class CallableSuper implements WCallable {
 	def receiver() { 
 		interpreter.stack.peek.context.thisObject as WollokObject //HACKING CAST
 	}
+	
 }

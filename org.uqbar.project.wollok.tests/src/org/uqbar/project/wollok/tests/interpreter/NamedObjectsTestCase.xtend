@@ -10,7 +10,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 				object pepita {
 					var energy = 0
 					method energyLevel(){
-						energy
+						return energy
 					}
 					
 					method addEnergy(amount){

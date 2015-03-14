@@ -20,11 +20,15 @@ class PolymorphismTestCase extends AbstractWollokInterpreterTestCase {
 			method comer(comida) {
 				energia = energia + comida.energia()
 			}
-			method energia() { energia }
+			method energia() { 
+				return energia
+			}
 		}
 
 		val alpiste = object {
-			method energia() { 5 }
+			method energia() { 
+				return 5
+			}
 		}
 
 		pepona.comer(alpiste)
