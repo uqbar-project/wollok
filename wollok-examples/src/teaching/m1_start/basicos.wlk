@@ -1,4 +1,4 @@
-/* Ideas para ejecutar en el REPL (5 minutos)
+/* Ejecutar este archivo (vacío) en el REPL para jugar con los objetos básicos de Wollok
 
 ***********************************************************
 ** Numbers

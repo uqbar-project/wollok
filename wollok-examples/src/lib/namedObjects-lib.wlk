@@ -1,4 +1,4 @@
-object pepita {
+object named_object_pepita {
 	var energy = 0
 	method energyLevel(){
 		energy

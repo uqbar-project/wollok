@@ -1,17 +1,12 @@
+// Todo muy lindo hasta acá, pero la gracia es poder definir nuestros propios objetos
 
-program pepita1 {
-	var console = this
-	
-	// Todo muy lindo hasta acá, pero la gracia es poder definir nuestros propios objetos
-	var pepita = object {
-		var energia = 100
-		
-		method energia() {
-			console.println("hola")
-			energia
-		}
+/*
+ * En nuestra primera versión tenemos una pepita que devuelve un valor fijo de energia, 
+ * la verdad que no sirve para mucho.
+ * 
+ */
+object pepita {
+	method energia() {
+		10
 	}
-
-	this.println(pepita)	
-	this.println(pepita.energia())	
 }
