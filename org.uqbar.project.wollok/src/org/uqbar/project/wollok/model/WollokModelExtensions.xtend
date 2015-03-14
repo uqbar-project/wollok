@@ -50,7 +50,10 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
 	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
-	def static fqn(WNamedObject it) { (if(package != null) package.name else "") + "." + name }
+	def static fqn(WNamedObject it) {
+		 if(package != null) package.name + "." + name
+		 else name
+	}
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 	def static WPackage getPackage(WNamedObject it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }

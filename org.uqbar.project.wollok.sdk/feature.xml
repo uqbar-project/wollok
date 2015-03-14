@@ -95,7 +95,7 @@
          id="org.uqbar.project.wollok.ui.diagrams"
          download-size="0"
          install-size="0"
-         version="3.8.1.201308190730"
+         version="1.0.0.qualifier"
          unpack="false"/>
 
    <plugin

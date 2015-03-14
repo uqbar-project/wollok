@@ -24,12 +24,14 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Implements an abstract visitor for the AST
@@ -99,10 +101,12 @@ class AbstractVisitor {
 	def dispatch void visit(WMethodDeclaration it) { expression.doVisit }
 
 	def dispatch void visit(WProgram it) { elements.visitAll }
+	def dispatch void visit(WTest it) { elements.visitAll }
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
 	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
 	def dispatch void visit(WListLiteral it) { elements.visitAll	}
 	def dispatch void visit(WObjectLiteral it) { members.visitAll }
+	def dispatch void visit(WNamedObject it) { members.visitAll }
 	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
 	def dispatch void visit(WPostfixOperation it) { operand.doVisit }
 	
