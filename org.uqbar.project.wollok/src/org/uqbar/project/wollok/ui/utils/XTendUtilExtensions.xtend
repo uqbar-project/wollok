@@ -128,6 +128,9 @@ class XTendUtilExtensions {
 			return [Object a | (o as WollokClosure).apply(a)]
 		if (t == Object)
 			return o
+		if(t.primitive)
+			return o	
+		
 		throw new RuntimeException('''Cannot convert parameter "«o»" to type "«t.simpleName»""''')
 	}
 	
