@@ -84,6 +84,9 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WCatch/exceptionType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WCatch/expression"/>
     </genClasses>
+    <genClasses ecoreClass="WollokDsl.ecore#//WReturnExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WReturnExpression/expression"/>
+    </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WThrow">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WThrow/exception"/>
     </genClasses>

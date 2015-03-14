@@ -231,9 +231,9 @@ WPrimaryExpression returns WExpression:
 	WSuperInvocation |
 	WIfExpression |
 	WTry |
+	WReturnExpression | 
 	WThrow
 //	XForLoopExpression |
-//	WReturnExpression | 
 ;
 
 WSuperInvocation returns WExpression: 
@@ -358,6 +358,10 @@ WTry:
 WCatch:
 	=>'catch' exceptionVarName=WVariable ':' exceptionType=[WClass|QualifiedName]
 		expression=WExpression 
+;
+
+WReturnExpression:
+	'return' expression=WExpression	
 ;
 
 WThrow:
