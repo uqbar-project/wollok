@@ -27,5 +27,18 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 			'''
 		].interpretPropagatingErrors
 	}
+	
+	@Test
+	def unusedVariables(){
+		val model = '''
+			object pepita {
+				var energia = 0
+				method getEnergia(){ energia }
+				method setEnergia(x){ energia = x }
+			}
+		'''.parse
+		
+		model.assertNoIssues
+	}
 
 }

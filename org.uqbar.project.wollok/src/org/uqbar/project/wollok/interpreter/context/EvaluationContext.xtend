@@ -55,6 +55,9 @@ class MessageNotUnderstood extends RuntimeException {
 		«ENDFOR»
 	'''
 	
+	def getInternalMessage(){
+		super.message
+	}
 }
 
 /**

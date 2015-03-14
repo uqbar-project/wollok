@@ -7,4 +7,8 @@ object pepita {
 	method addEnergy(amount){
 		energy = energy + amount
 	}
+	
+	method saludar(){
+		console.println("Hola")
+	}
 }

@@ -29,7 +29,6 @@ public class WollokDslRuntimeModule extends
 		// TYPE SYSTEM
 		//binder.bind(TypeSystem.class).to(ConstraintBasedTypeSystem.class);
 	}
-
 	// customize exported objects
 	public Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		return WollokResourceDescriptionStrategy.class;
@@ -39,9 +38,11 @@ public class WollokDslRuntimeModule extends
 		return WollokGlobalScopeProvider.class;
 	}
 
+	/*
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return WollokImportedNamespaceAwareLocalScopeProvider.class;
 	}
+	 */
 
 	public Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
 		return WollokClasspathManifestFinder.class;

@@ -98,11 +98,19 @@ class XTendUtilExtensions {
 		// native objects
 		var matchingMethods = target.class.methods.filter[name == message && parameterTypes.size == args.size]
 		if (matchingMethods.isEmpty)
-			throw new MessageNotUnderstood('''«target» does not understand «message»''')
+			throw new MessageNotUnderstood(createMessage(target,message))
 		if (matchingMethods.size > 1)
 			throw new RuntimeException('''Cannot call on object «target» message «message» there are multiple options !! Not yet implemented''')
 		// takes the first one and tries out :S Should do something like multiple-dispatching based on args. 
 		matchingMethods.head.accesibleVersion().invokeConvertingArgs(target, args)
+	}
+	
+	def static dispatch createMessage(Object target, String message){
+		'''«target» does not understand «message»'''.toString
+	}
+
+	def static dispatch createMessage(String target, String message){
+		'''"«target»" does not understand «message»'''.toString
 	}
 	
 	def static invokeConvertingArgs(Method m, Object o, Object... args) {

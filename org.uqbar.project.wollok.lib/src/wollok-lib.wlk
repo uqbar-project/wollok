@@ -1,4 +1,4 @@
-package wollok.lib{
+// package wollok.lib{
 	object console {
 		method println(obj) native
 		method readLine() native
@@ -9,4 +9,4 @@ package wollok.lib{
 		method assert(value) native
 		method assertEquals(expected, actual) native
 	}
-}
+// }

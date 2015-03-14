@@ -8,10 +8,12 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.WollokConstants
 
 class WollokRepl {
 	val Injector injector
@@ -20,6 +22,7 @@ class WollokRepl {
 	val File mainFile
 	val reader = new BufferedReader(new InputStreamReader(System.in))
 	val prompt = ">>> "
+	var whiteSpaces = ""
 
 	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile) {
 		this.injector = injector
@@ -59,13 +62,12 @@ class WollokRepl {
 						program repl {
 						«input»
 						}
-					'''.parseRepl(mainFile))
+					'''.parseRepl(mainFile),true)
 				if(returnValue != null)
 					println(formatReturnValue(returnValue))
-			} catch (ReplParserException e) {
-				e.issues.forEach [
-					println("" + severity.name + ":" + message + "(line:" + (lineNumber - 1) + ")")
-				]
+			} catch (Exception e){
+				resetIndent()
+				handleException(e)
 			}
 	}
 	
@@ -102,4 +104,41 @@ class WollokRepl {
 		throw new IllegalStateException();
 	}
 
+	def <X> X printlnIdent(X obj){
+		print(whiteSpaces)
+		println(obj)
+	}
+	
+	def indent(){
+		whiteSpaces = whiteSpaces + "     "
+	}
+	
+	def resetIndent(){
+		whiteSpaces = ""
+	}
+
+	def dispatch void handleException(ReplParserException e){
+		e.issues.forEach [
+			printlnIdent("" + severity.name + ":" + message + "(line:" + (lineNumber - 1) + ")")
+		]
+	}
+
+	def dispatch void handleException(Throwable e){
+		e.printStackTrace
+	}
+
+	def dispatch void handleException(MessageNotUnderstood e){
+		printlnIdent(e.internalMessage)
+	}
+
+	def dispatch void handleException(WollokInterpreterException e){
+		if(e.lineNumber > 1){
+			printlnIdent('''Error in line (line:«e.lineNumber - 1»): «e.nodeText»:''')
+		}
+		
+		if(e.cause != null){
+			indent()
+			handleException(e.cause)
+		}
+	}
 }

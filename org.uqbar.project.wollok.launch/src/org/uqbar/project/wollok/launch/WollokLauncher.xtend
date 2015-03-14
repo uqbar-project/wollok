@@ -132,9 +132,14 @@ class WollokLauncher {
 
 	// "Classpath assembly"
 	def createClassPath(File file, ResourceSet resourceSet) {
+/* 
 		newArrayList => [
 			collectWollokFiles(findProjectRoot(file.parentFile), it)
 			forEach[f|resourceSet.createResource(URI.createURI(f.toURI.toString))]
+		]
+*/
+		newArrayList => [
+			resourceSet.createResource(URI.createURI(file.toURI.toString))
 		]
 	}
 

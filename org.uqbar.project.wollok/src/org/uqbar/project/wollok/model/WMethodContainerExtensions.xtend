@@ -113,6 +113,7 @@ class WMethodContainerExtensions {
 		var classNameParts = className.split("\\.")
 		val lastPosition = classNameParts.length - 1
 		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
+		
 		className = classNameParts.join(".")
 		
 		val javaClass = Class.forName( className + "Object")

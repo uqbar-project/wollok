@@ -130,7 +130,9 @@ class WollokObject implements EvaluationContext, WCallable {
 	}
 	
 	override addGlobalReference(String name, Object value) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		val interpreter = WollokInterpreter.getInstance
+		interpreter.globalVariables.put(name,value)
+		value
 	}
 }
 
