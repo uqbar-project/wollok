@@ -41,7 +41,6 @@ Refer to the [wiki](wollok/wiki/Home) for documentation like Language Reference 
  * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
  * Install xsemantics plugin from update site:
 ```
-#!xml
 http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
 ```
  * Install debugvisualization plugin from update site:
