@@ -45,14 +45,14 @@ http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
 ```
  * Install debugvisualization plugin from update site:
 ```
-#!xml
 http://eclipse.cubussapiens.hu
 ```
- * Install wollok from update site: 
+ * Install xpext from update site:
 ```
-#!xml
-http://dl.bintray.com/uqbar/wollok-update-site/
+http://www.xpect-tests.org/updatesite/nightly/
 ```
+ * In the resulting Eclipse, import all the projects below https://github.com/uqbar-project/wollok
+ * Run GenerateWollokDsl.mwe2
 
 ## License ##
 
