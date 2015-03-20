@@ -4,6 +4,7 @@
 A programming language and environment for teaching OOP.
 
 ## Installation ##
+Download full Wollok distribution from http://download.uqbar.org/
 
 ## How to Contribute ##
 ### Preparing the development environment ###
