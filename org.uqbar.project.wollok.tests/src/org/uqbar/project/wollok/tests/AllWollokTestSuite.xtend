@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests
 
+import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.uqbar.project.wollok.tests.interpreter.ClosureTestCase
@@ -39,6 +40,7 @@ import org.uqbar.project.wollok.tests.natives.NativeTestCase
    ClosureTestCase,
    NamedObjectsTestCase
 )
+@Ignore
 class AllWollokTestSuite {
 	
 }

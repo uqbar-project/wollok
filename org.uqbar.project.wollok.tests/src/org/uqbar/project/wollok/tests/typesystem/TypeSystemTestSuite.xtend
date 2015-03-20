@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -17,6 +18,7 @@ import org.junit.runners.Suite
    LiteralsInferenceTestCase,
    ConstructorTypeInferenceTestCase
 )
+@Ignore
 class TypeSystemTestSuite {
 	
 }
