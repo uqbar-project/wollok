@@ -5,11 +5,14 @@ A programming language and environment for teaching OOP.
 
 ## Installation ##
 
- * Download [eclipse's xtext distribution](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
+## How to Contribute ##
+### Preparing the development environment ###
+
+ * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
  * Install xsemantics plugin from update site:
 ```
 #!xml
-http://sourceforge.net/projects/xsemantics/files/updates/releases/1.5
+http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
 ```
  * Install debugvisualization plugin from update site:
 ```
