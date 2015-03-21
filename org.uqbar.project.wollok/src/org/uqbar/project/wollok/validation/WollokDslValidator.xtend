@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.validation
 
 import java.util.List
 import org.eclipse.core.runtime.Platform
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
@@ -212,18 +213,32 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def programInProgramFile(WProgram p){
-		if(p.eResource.URI.fileExtension != WollokConstants.PROGRAM_EXTENSION)
-			error('''Program «p.name» should be in a file with extension «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)		
+		if(p.eResource.URI.nonXPectFileExtension != WollokConstants.PROGRAM_EXTENSION)
+			error('''Program «p.name» should be in a file with extension «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)					
 	}
 
 	@Check
 	def libraryInLibraryFile(WLibrary l){
-		if(l.eResource.URI.fileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION)
+		if(l.eResource.URI.nonXPectFileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION) 
 			error('''Classes and Objects should be defined in a file with extension «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
 	}
 
-	
 	def isVarRef(WExpression e) { e instanceof WVariableReference }
+
+	/**
+	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
+	 * 
+	 * This is a workaround for XPext testing. XPect test definition requires to add ".xt" to program file names, 
+	 * therefore fileExtension-dependent validations will fail if this is not taken into account.
+	 */
+	def nonXPectFileExtension(URI uri) {
+		if (uri.fileExtension == 'xt') {
+			val fileName = uri.segments.last()
+			val fileNameParts = fileName.split("\\.")
+			fileNameParts.get(fileNameParts.length - 2) // Penultimate part (last part is .xt)
+		}
+		else uri.fileExtension
+	}
 
 	// ******************************	
 	// native methods

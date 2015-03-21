@@ -6,8 +6,6 @@ import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.tests.XtextTests
 
 /**
- * Tests the "duplicated" checks
- * 
  * @author jfernandes
  */
 @RunWith(XpectRunner)
