@@ -6,7 +6,6 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -35,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
+import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
@@ -207,7 +207,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
-		if (WollokInterpreterEvaluator.isMultiOpAssignment(op.feature) && !op.leftOperand.isVarRef)
+		if (op.feature.isMultiOpAssignment && !op.leftOperand.isVarRef)
 			error(op.feature + " can only be applied to variable references", op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
 	

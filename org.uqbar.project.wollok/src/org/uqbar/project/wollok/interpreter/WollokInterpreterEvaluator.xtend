@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.WollokDSLKeywords
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
@@ -50,6 +49,7 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.interpreter.WollokFeatureCallExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -231,10 +231,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.eval)
 	}
 
-	def static isMultiOpAssignment(String operator) { operator.matches(WollokDSLKeywords.MULTIOPS_REGEXP) }
-
 	def dispatch Object evaluate(WPostfixOperation op) {
-
 		// if we start to "box" numbers into wollok objects, this "1" will then change to find the wollok "1" object-
 		performOpAndUpdateRef(op.operand, op.feature.substring(0, 1), 1)
 	}
@@ -251,6 +248,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WUnaryOperation oper) { oper.feature.asUnaryOperation.apply(oper.operand.eval) }
 
+	def dispatch Object evaluate(WThis t) { interpreter.currentContext.thisObject }
+
 	// member call
 	def dispatch Object evaluate(WFeatureCall call) {
 		try {
@@ -261,7 +260,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		}
 	}
 
-	// HELPER FOR message sends
+	// ********************************************************************************************
+	// ** HELPER FOR message sends
+	// ********************************************************************************************
+	
 	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
@@ -270,11 +272,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		new CallableSuper(interpreter, call.method.declaringContext.parent)
 	}
 
-	def dispatch Object evaluate(WThis t) { interpreter.currentContext.thisObject }
+	// ********************************************************************************************
+	// ** Member call with multiple dispatch to handle WollokObjects as well as primitive types
+	// ********************************************************************************************
 
-	// *******************************************
-	// ** member call with multiple dispatch to handle WollokObjects as well as primitive types
-	// *******************************************
 	def perform(Object target, String message, Object... args) {
 		target.call(message, args)
 	}
@@ -283,5 +284,4 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	/** @deprecated creo que esto no tiene sentido si incluimos los objetos nativos wrappeados en WCallable */
 	def dispatch Object call(Object target, String message, Object... args) { target.invoke(message, args) }
-
 }
