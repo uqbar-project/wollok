@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.interpreter
+package org.uqbar.project.wollok.interpreter.api
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext

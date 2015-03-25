@@ -4,6 +4,8 @@ import com.google.inject.Inject
 import java.io.Serializable
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
@@ -28,8 +30,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	static Logger log = Logger.getLogger(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 	
-	val globalVariables = <String,Object>newHashMap
-	def getGlobalVariables() { globalVariables }
+	@Accessors val globalVariables = <String,Object>newHashMap
 
 	override addGlobalReference(String name, Object value) {
 		globalVariables.put(name,value)

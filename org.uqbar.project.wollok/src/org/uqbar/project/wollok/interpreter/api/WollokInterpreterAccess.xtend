@@ -1,5 +1,6 @@
-package org.uqbar.project.wollok.interpreter
+package org.uqbar.project.wollok.interpreter.api
 
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
