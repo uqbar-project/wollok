@@ -50,10 +50,11 @@ class WollokList extends AbstractWollokWrapperNativeObject<List<Object>> {
 	def Object remove(Object o) { wrapped.remove(o) }
 	
 	def Object detect(WollokClosure pred) { wrapped.findFirst[e| pred.apply(e) as Boolean] }
+	
 	def WollokList flatten() {
 		val r = newArrayList 
 		wrapped.forEach[e| 
-			if (e instanceof Collection) r.addAll(e)
+			if (e instanceof Collection<?>) r.addAll(e)
 			else if (e instanceof WollokList) r.addAll(e.wrapped)
 			else r.add(e)
 		]
