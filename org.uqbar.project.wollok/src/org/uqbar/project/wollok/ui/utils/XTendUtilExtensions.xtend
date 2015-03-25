@@ -102,7 +102,7 @@ class XTendUtilExtensions {
 		if (matchingMethods.size > 1)
 			throw new RuntimeException('''Cannot call on object «target» message «message» there are multiple options !! Not yet implemented''')
 		// takes the first one and tries out :S Should do something like multiple-dispatching based on args. 
-		matchingMethods.head.accesibleVersion().invokeConvertingArgs(target, args)
+		matchingMethods.head.accesibleVersion.invokeConvertingArgs(target, args)
 	}
 	
 	def static dispatch createMessage(Object target, String message){
