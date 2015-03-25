@@ -237,7 +237,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WPostfixOperation op) {
 		// if we start to "box" numbers into wollok objects, this "1" will then change to find the wollok "1" object-
-		performOpAndUpdateRef(op.operand, op.feature.substring(0, 1), 1)
+		performOpAndUpdateRef(op.operand, op.feature.substring(0, 1), new WollokInteger(1))
 	}
 
 	/** 
