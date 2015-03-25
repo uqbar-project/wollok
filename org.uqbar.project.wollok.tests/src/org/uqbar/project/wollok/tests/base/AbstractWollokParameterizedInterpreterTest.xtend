@@ -1,0 +1,30 @@
+package org.uqbar.project.wollok.tests.base
+
+import org.junit.Before
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import org.uqbar.project.wollok.WollokDslInjectorProvider
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+
+/**
+ * Helper class to allow parameterized interpreter tests
+ */
+@RunWith(Parameterized)
+class AbstractWollokParameterizedInterpreterTest extends AbstractWollokInterpreterTestCase {
+
+	/**
+	 * Inject dependencies into this test. 
+	 * This is necessary because @link Parameterized does not allow to define a runner for the child tests.
+	 */
+	@Before
+	def void injectMembers() {
+		new WollokDslInjectorProvider().injector.injectMembers(this)
+	}
+
+	/**
+	 * Converts a Iterable of Iterables into an Iterable<Object[]> as required by the Parameterized runner
+	 */
+	static def asParameters(Iterable<?> parameters) {
+		parameters.map[#[it] as Object[]]
+	}
+}
