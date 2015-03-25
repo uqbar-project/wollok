@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter.context
 
 import java.util.Map
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 
 /**
  * Simple EvaluationContext impl backed up by a map.

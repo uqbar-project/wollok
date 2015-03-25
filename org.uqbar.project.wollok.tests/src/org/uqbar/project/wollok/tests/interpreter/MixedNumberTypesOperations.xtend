@@ -13,25 +13,24 @@ class MixedNumberTypesOperations extends AbstractWollokInterpreterTestCase {
 	def void testEquals() {
 		'''
 			program a {
-			this.assert(2 * 2.0 == 2.0 * 2)
-			this.assert(2 * 2.0 == 2.0 * 2)
-			this.assert(2 * 2 == 2.0 * 2)
-			this.assert(2 * 2 == 2 * 2.0)
-			
-			this.assert(1 + 2.0 == 1.0 + 2)
-			this.assert(1 + 2.0 == 1.0 + 2)
-			this.assert(1 + 2 == 1.0 + 2)
-			this.assert(1 + 2 == 1 + 2.0)
-
-			this.assert(1 - 2.0 == 1.0 - 2)
-			this.assert(1 - 2.0 == 1.0 - 2)
-			this.assert(1 - 2 == 1.0 - 2)
-			this.assert(1 - 2 == 1 - 2.0)
-						
-			this.assert(1 / 2.0 == 1.0 / 2)
-			this.assert(1 / 2.0 == 1.0 / 2)
+				this.assertEquals(2 * 2.0, 2.0 * 2)
+				this.assertEquals(2 * 2.0, 2.0 * 2)
+				this.assertEquals(2 * 2, 2.0 * 2)
+				this.assertEquals(2 * 2, 2 * 2.0)
+				
+				this.assertEquals(1 + 2.0, 1.0 + 2)
+				this.assertEquals(1 + 2.0, 1.0 + 2)
+				this.assertEquals(1 + 2, 1.0 + 2)
+				this.assertEquals(1 + 2, 1 + 2.0)
+				
+				this.assertEquals(1 - 2.0, 1.0 - 2)
+				this.assertEquals(1 - 2.0, 1.0 - 2)
+				this.assertEquals(1 - 2, 1.0 - 2)
+				this.assertEquals(1 - 2, 1 - 2.0)
+				
+				this.assertEquals(1 / 2.0, 1.0 / 2)
+				this.assertEquals(1 / 2.0, 1.0 / 2)
 			}
 		'''.interpretPropagatingErrors
 	}
-
 }

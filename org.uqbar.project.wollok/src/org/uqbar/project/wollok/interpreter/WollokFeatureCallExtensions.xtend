@@ -1,7 +1,8 @@
 package org.uqbar.project.wollok.interpreter
 
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
+import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -10,8 +11,6 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
-import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -21,7 +20,7 @@ import org.uqbar.project.wollok.interpreter.stack.VoidObject
  */
 class WollokFeatureCallExtensions {
 	WollokObject receiver
-	extension WollokInterpreter interpreter
+	extension IWollokInterpreter interpreter
 	
 	new(WollokObject receiver) {
 		this.receiver = receiver

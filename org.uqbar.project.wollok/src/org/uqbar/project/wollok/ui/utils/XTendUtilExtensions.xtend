@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier
 import java.util.Collection
 import java.util.Random
 import org.eclipse.xtext.xbase.lib.Functions.Function1
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WollokClosure
 
 /**

@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * An object that wraps a native object (java/xtend).
@@ -18,20 +18,13 @@ class AbstractWollokWrapperNativeObject<T> extends AbstractWollokDeclarativeNati
 		this.wrapped = wrapped
 	}
 	
-	def getWrapped() {
-		wrapped
-	}
-	
+	def getWrapped() { wrapped }
+		
 	/**
-	 * Si no está definido en esta clase como un método "declarativo", buscamos 
-	 * en el wrapped
+	 * If a message is not defined declaratively, delegate on the native wrapped object.
 	 */
-	override call(String message, Object... parameters) {
-		super.call(	message, parameters)
-	}
-	
 	override doesNotUnderstand(String message, Object[] parameters) {
-		XTendUtilExtensions.invoke(wrapped, message, parameters)
+		wrapped.invoke(message, parameters)
 	}
 	
 }

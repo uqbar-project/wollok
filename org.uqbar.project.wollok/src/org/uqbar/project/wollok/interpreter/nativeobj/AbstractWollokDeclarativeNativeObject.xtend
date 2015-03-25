@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WCallable
 
 /**

@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.Method
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**

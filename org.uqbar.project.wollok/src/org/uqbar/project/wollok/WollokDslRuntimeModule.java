@@ -6,7 +6,6 @@ package org.uqbar.project.wollok;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
-import org.eclipse.xtext.scoping.IScopeProvider;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.manifest.classpath.WollokClasspathManifestFinder;
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
