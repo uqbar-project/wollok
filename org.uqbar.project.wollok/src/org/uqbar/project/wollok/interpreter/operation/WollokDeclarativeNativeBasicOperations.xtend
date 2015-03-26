@@ -131,14 +131,25 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	
 	@BinaryOperation('==')
 	def Object equalsOperation(Object a, Object b) { 
-		overloadOr(a, '==', b) [| bothNull(a,b) || (noneAreNull(a,b) && a.eq(b)) ]
+		if (bothNull(a,b)) true				// Two nulls => they are equal
+		else if (noneAreNull(a,b)) a.eq(b) 	// Two not nulls => they can handle => dispatch
+		else false							// Only one is null => they aren't equal
 	}
-		def dispatch Boolean eq(Object a, Object b) { a == b }
-		def dispatch Boolean eq(WollokInteger a, WollokInteger b) { a.wrapped == b.wrapped }
-		def dispatch Boolean eq(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue == b.doubleValue }
+		def dispatch eq(Object a, Object b) { a == b }
+		def dispatch eq(WCallable a, Object b) { a.call("==", b) }
+		def dispatch eq(WollokInteger a, WollokInteger b) { a.wrapped == b.wrapped }
+		def dispatch eq(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue == b.doubleValue }
 	
 	@BinaryOperation('!=')
-	def Object notEqualsOperation(Object a, Object b) { overloadOr(a, '!=', b) [| a != b ] }
+	def Object notEqualsOperation(Object a, Object b) {
+		if  (bothNull(a,b)) false  				// Two nulls => they are equal => false
+		else if (noneAreNull(a,b)) a.neq(b)		// Two not nulls => they can handle => dispatch
+		else true 								// Only one is null => they aren't equal
+	}	
+		def dispatch neq(Object a, Object b) { a != b }
+		def dispatch neq(WCallable a, Object b) { a.call("!=", b) }
+		def dispatch neq(WollokInteger a, WollokInteger b) { a.wrapped != b.wrapped }
+		def dispatch neq(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue != b.doubleValue }
 
 	@BinaryOperation('===')
 	def Object identicalOperation(Object a, Object b) { overloadOr(a, '===', b) [| a === b ] }
