@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * Helper class to allow parameterized interpreter tests
  */
 @RunWith(Parameterized)
-class AbstractWollokParameterizedInterpreterTest extends AbstractWollokInterpreterTestCase {
+abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollokInterpreterTestCase {
 
 	/**
 	 * Inject dependencies into this test. 

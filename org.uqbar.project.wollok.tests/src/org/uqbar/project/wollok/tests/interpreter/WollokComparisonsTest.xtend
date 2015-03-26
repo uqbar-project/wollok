@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterprete
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
-class WollokArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
+class WollokComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
 	public String expression
 
