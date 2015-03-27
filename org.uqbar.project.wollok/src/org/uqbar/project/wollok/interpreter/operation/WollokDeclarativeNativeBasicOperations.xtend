@@ -176,34 +176,29 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	
 	@BinaryOperation('>=')
 	def Boolean greaterOrEqualsOperation(Object a, Object b) { ge(a, b) }  
-		def dispatch ge(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand >= operator" ) }
-		def dispatch ge(WollokObject a, Object b) { a.call(">=", b) as Boolean }
-		def dispatch ge(Integer a, Integer b) { a >= b }
-		def dispatch ge(Double a, Number b) { a >= b.doubleValue }
-		def dispatch ge(Number a, Double b) { a.doubleValue >= b }
+		def dispatch ge(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» >= «b»''') }
+		def dispatch ge(WCallable a, Object b) { a.call(">=", b) as Boolean }
+		def dispatch ge(WollokInteger a, WollokInteger b) { a.wrapped >= b.wrapped }
+		def dispatch ge(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue >= b.doubleValue }
 
 	@BinaryOperation('<=')
 	def Boolean lesserOrEqualsOperation(Object a, Object b) { le(a, b) }
-		def dispatch le(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand <= operator" ) }  
-		def dispatch le(WollokObject a, Object b) { a.call("<=", b) as Boolean }
-		def dispatch le(Integer a, Integer b) { a <= b }
-		def dispatch le(Double a, Number b) { a <= b.doubleValue }
-		def dispatch le(Number a, Double b) { a.doubleValue <= b }
+		def dispatch le(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» <= «b»''') }  
+		def dispatch le(WCallable a, Object b) { a.call("<=", b) as Boolean }
+		def dispatch le(WollokInteger a, WollokInteger b) { a.wrapped <= b.wrapped }
+		def dispatch le(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue <= b.doubleValue }
 
 	@BinaryOperation('>')
 	def Boolean greaterOperation(Object a, Object b) { gt(a, b) }
-		def dispatch gt(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand > operator" ) }
-		def dispatch gt(WollokObject a, Object b) { a.call(">", b) as Boolean }
-		def dispatch gt(Integer a, Integer b) { a > b }
-		def dispatch gt(Double a, Number b) { a > b.doubleValue }
-		def dispatch gt(Number a, Double b) { a.doubleValue > b }
+		def dispatch gt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» > «b»''') }
+		def dispatch gt(WCallable a, Object b) { a.call(">", b) as Boolean }
+		def dispatch gt(WollokInteger a, WollokInteger b) { a.wrapped > b.wrapped }
+		def dispatch gt(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue > b.doubleValue }
 
 	@BinaryOperation('<')
 	def Boolean lesserOperation(Object a, Object b) { lt(a, b) as Boolean }
-		def dispatch lt(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand < operator" ) }  
-		def dispatch lt(WollokObject a, Object b) { a.call("<", b) }
-		def dispatch lt(Integer a, Integer b) { a < b }
-		def dispatch lt(Double a, Number b) { a < b.doubleValue }
-		def dispatch lt(Number a, Double b) { a.doubleValue < b }
-		
+		def dispatch lt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» < «b»''') }  
+		def dispatch lt(WCallable a, Object b) { a.call("<", b) }
+		def dispatch lt(WollokInteger a, WollokInteger b) { a.wrapped < b.wrapped }
+		def dispatch lt(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue < b.doubleValue }
 }

@@ -20,7 +20,7 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 
 			assert(2 >= 1)
 			assert(1 >= 1)
-			assertFalse(1 > 2)
+			assertFalse(1 >= 2)
 
 			assertFalse(2 < 1)
 			assertFalse(1 < 1)
@@ -36,7 +36,7 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 
 			assert(2 >= 1.0)
 			assert(1 >= 1.0)
-			assertFalse(1 > 2.0)
+			assertFalse(1 >= 2.0)
 
 			assertFalse(2 < 1.0)
 			assertFalse(1 < 1.0)
@@ -52,7 +52,7 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 
 			assert(2.0 >= 1)
 			assert(1.0 >= 1)
-			assertFalse(1.0 > 2)
+			assertFalse(1.0 >= 2)
 
 			assertFalse(2.0 < 1)
 			assertFalse(1.0 < 1)
@@ -68,7 +68,7 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 
 			assert(2.0 >= 1.0)
 			assert(1.0 >= 1.0)
-			assertFalse(1.0 > 2.0)
+			assertFalse(1.0 >= 2.0)
 
 			assertFalse(2.0 < 1.0)
 			assertFalse(1.0 < 1.0)
