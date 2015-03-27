@@ -9,12 +9,13 @@ import org.uqbar.project.wollok.WollokConstants
  * 
  * @author jfernandes
  */
-class WollokProjectCreator extends WollokDslProjectCreator {
+class WollokProjectCreator extends AbstractWollokProjectCreator {
 	
 	override protected getRequiredBundles() {
 		super.requiredBundles => [
-			add(DSL_GENERATOR_PROJECT_NAME + ".launch")
-			add("it.xsemantics.runtime")
+			add(org.uqbar.project.wollok.ui.wizard.AbstractWollokProjectCreator.DSL_GENERATOR_PROJECT_NAME + ".launch")
+			add(org.uqbar.project.wollok.ui.wizard.AbstractWollokProjectCreator.DSL_GENERATOR_PROJECT_NAME + ".lib")
+//			add("it.xsemantics.runtime")
 			add("org.eclipse.xtext.ui")
 		]
 	}

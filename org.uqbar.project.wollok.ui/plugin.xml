@@ -3,6 +3,7 @@
 
 <plugin>
    <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
+   <extension-point id="wollokTypeSystemLabelExtension" name="wollokTypeSystemLabelExtension" schema="schema/wollokTypeSystemLabelExtension.exsd"/>
 
     <extension
             point="org.eclipse.ui.editors">
@@ -10,7 +11,7 @@
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
-            extensions="wlk"
+            extensions="wpgm,wlk,wtest"
             icon="icons/w.png"
             id="org.uqbar.project.wollok.WollokDsl"
             name="Wollok Editor">
@@ -115,34 +116,6 @@
 	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
         </page>
     </extension>
-
-	<!-- Type System preferences -->    
-    <extension
-            point="org.eclipse.ui.preferencePages">
-        <page
-            category="org.uqbar.project.wollok.WollokDsl"
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.TypeSystemPreferencePage"
-            id="org.uqbar.project.wollok.WollokDsl.typeSystem.preferencePage"
-            name="Type System">
-            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
-        </page>
-    </extension>
-    <extension
-            point="org.eclipse.ui.propertyPages">
-        <page
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.TypeSystemPreferencePage"
-            id="org.uqbar.project.wollok.WollokDsl.typeSystem.propertyPage"
-            category="org.uqbar.project.wollok.WollokDsl"
-            name="Type System">
-            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
-            <enabledWhen>
-	            <adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-        </page>
-    </extension>
-    <!-- Type System preferences -->
-    
     <extension
         point="org.eclipse.ui.keywords">
         <keyword
@@ -244,6 +217,20 @@
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
 			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="wpgm">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="wpgm">
+        </resourceServiceProvider>
+    </extension>
+
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="wlk">
 		</parser>
 	</extension>
@@ -251,6 +238,20 @@
         <resourceServiceProvider
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
             uriExtension="wlk">
+        </resourceServiceProvider>
+    </extension>
+
+	<extension
+		point="org.eclipse.emf.ecore.extension_parser">
+		<parser
+			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
+			type="wtest">
+		</parser>
+	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="wtest">
         </resourceServiceProvider>
     </extension>
 
@@ -282,7 +283,7 @@
          point="org.eclipse.xtext.builder.participant">
       <participant
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
-            fileExtensions="wlk">
+            fileExtensions="wpgm,wlk,wtest">
       </participant>
    </extension>
    <extension
@@ -409,19 +410,19 @@
   <extension point="org.eclipse.compare.contentViewers">
     <viewer id="org.uqbar.project.wollok.WollokDsl.compare.contentViewers"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="wlk">
+            extensions="wpgm,wlk,wtest">
     </viewer>
   </extension>
   <extension point="org.eclipse.compare.contentMergeViewers">
     <viewer id="org.uqbar.project.wollok.WollokDsl.compare.contentMergeViewers"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
-            extensions="wlk" label="WollokDsl Compare">
+            extensions="wpgm,wlk,wtest" label="Wollok Compare">
      </viewer>
   </extension>
   <extension point="org.eclipse.ui.editors.documentProviders">
     <provider id="org.uqbar.project.wollok.WollokDsl.editors.documentProviders"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
-            extensions="wlk">
+            extensions="wpgm,wlk,wtest">
     </provider>
   </extension>
 
@@ -475,6 +476,24 @@
       </category>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
+            class="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
+            descriptionImage="icons/wollok-logo-32.fw.png"
+            finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            icon="icons/wollok-icon-object_16.png"
+            id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
+            name="Wollok Objects and Classes">
+      </wizard>
+      <wizard
+            category="org.uqbar.project.wollok.ui.category"
+            class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
+            descriptionImage="icons/wollok-logo-32.fw.png"
+            finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            icon="icons/wollok-icon-message_16.png"
+            id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
+            name="Wollok Test">
+      </wizard>
+      <wizard
+            category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             descriptionImage="icons/wollok-logo-32.fw.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
@@ -494,11 +513,10 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            class="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspectiveFactory"
             icon="icons/wollok-logo-16.fw.png"
             id="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             name="Wollok">
       </perspective>
    </extension>
-    
 </plugin>

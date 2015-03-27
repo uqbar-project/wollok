@@ -1,13 +1,11 @@
 package org.uqbar.project.wollok.validation
 
-import com.google.inject.Inject
-import it.xsemantics.runtime.RuleEnvironment
+import java.util.List
+import org.eclipse.core.runtime.Platform
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.Check
-import org.eclipse.xtext.validation.ValidationMessageAcceptor
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.semantics.validation.WollokDslTypeSystemValidator
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -17,25 +15,28 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
+import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * Custom validation rules.
@@ -49,10 +50,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 // like "error/warning/ignore". It could be completely automatically based on annotations.
 // Ex:
 //  @Check @ConfigurableSeverity @EnabledDisabled
-class WollokDslValidator extends WollokDslTypeSystemValidator {
-	@Inject IPreferenceStoreAccess preferenceStoreAccess;
-	// pasar a otra clase con constantes de preferencias
-	public static val TYPE_SYSTEM_CHECKS_ENABLED = "TYPE_SYSTEM_CHECKS_ENABLED"
+class WollokDslValidator extends AbstractWollokDslValidator {
+	List<WollokValidatorExtension> wollokValidatorExtensions
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -61,30 +60,28 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD" 
-	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
+	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
-
+	
+	def validatorExtensions(){
+		if(wollokValidatorExtensions != null)
+			return wollokValidatorExtensions
+			
+		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
+		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
+	}
+	
 	@Check
-	def checkProgramTypes(WFile file) {
-		//TODO: lee las preferencias cada vez!
-		try
-			if (!preferences(file).getBoolean(TYPE_SYSTEM_CHECKS_ENABLED)) 
-				return
-		catch (IllegalStateException e)
-			// headless launcher doesn't open workspace, so this fails.
-			// but it's ok since the type system won't run in runtime. 
-			return;
-		
-		var RuleEnvironment env = xsemanticsSystem.emptyEnvironment
-		errorGenerator.generateErrors(decorateErrorAcceptor(this, TYPE_SYSTEM_ERROR), xsemanticsSystem.inferTypes(env, file.body), file.body)
+	def checkValidationExtensions(WFile wfile){
+		validatorExtensions.forEach[ check(wfile, this)]
 	}
 	
 	@Check
 	def classNameMustStartWithUpperCase(WClass c) {
-		if (Character.isLowerCase(c.name.charAt(0))) error("Class name must start with uppercase", c, WLIBRARY_ELEMENT__NAME, CLASS_NAME_MUST_START_UPPERCASE)
+		if (Character.isLowerCase(c.name.charAt(0))) error("Class name must start with uppercase", c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
 	}
 	
 	@Check
@@ -198,23 +195,50 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 		val classes = p.elements.filter(WClass)
 		val repeated = classes.filter[c| classes.exists[it != c && name == c.name] ]
 		repeated.forEach[
-			error('''Duplicated class name in package «p.name»''', it, WLIBRARY_ELEMENT__NAME)
+			error('''Duplicated class name in package «p.name»''', it, WNAMED__NAME)
 		]
 	}
 	
 	@Check 
 	def avoidDuplicatedPackageName(WPackage p) {
 		if (p.eContainer.eContents.filter(WPackage).exists[it != p && name == p.name])
-			error('''Duplicated package name «p.name»''', p, WLIBRARY_ELEMENT__NAME)
+			error('''Duplicated package name «p.name»''', p, WNAMED__NAME)
 	}
 	
 	@Check
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
-		if (WollokInterpreterEvaluator.isMultiOpAssignment(op.feature) && !op.leftOperand.isVarRef)
+		if (op.feature.isMultiOpAssignment && !op.leftOperand.isVarRef)
 			error(op.feature + " can only be applied to variable references", op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
 	
+	@Check
+	def programInProgramFile(WProgram p){
+		if(p.eResource.URI.nonXPectFileExtension != WollokConstants.PROGRAM_EXTENSION)
+			error('''Program «p.name» should be in a file with extension «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)					
+	}
+
+	@Check
+	def libraryInLibraryFile(WLibrary l){
+		if(l.eResource.URI.nonXPectFileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION) 
+			error('''Classes and Objects should be defined in a file with extension «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
+	}
+
 	def isVarRef(WExpression e) { e instanceof WVariableReference }
+
+	/**
+	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
+	 * 
+	 * This is a workaround for XPext testing. XPect test definition requires to add ".xt" to program file names, 
+	 * therefore fileExtension-dependent validations will fail if this is not taken into account.
+	 */
+	def nonXPectFileExtension(URI uri) {
+		if (uri.fileExtension == 'xt') {
+			val fileName = uri.segments.last()
+			val fileNameParts = fileName.split("\\.")
+			fileNameParts.get(fileNameParts.length - 2) // Penultimate part (last part is .xt)
+		}
+		else uri.fileExtension
+	}
 
 	// ******************************	
 	// native methods
@@ -227,8 +251,9 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 			 if (overrides) error("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
 			 if (declaringContext instanceof WObjectLiteral) error("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
-			 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-			 	error("Cannot declare native methods in this class since there's already a native super class in the hierarchy", it, WMETHOD_DECLARATION__NATIVE)
+			 if(declaringContext instanceof WClass)
+				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
+				 	error("Cannot declare native methods in this class since there's already a native super class in the hierarchy", it, WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 
@@ -249,6 +274,10 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 		p.variables.existsMoreThanOne(v)
 	}
 
+	def dispatch boolean isDuplicated(WTest p, WReferenciable v) {
+		p.variables.existsMoreThanOne(v)
+	}
+
 	def dispatch boolean isDuplicated(WMethodDeclaration m, WReferenciable v) {
 		m.parameters.existsMoreThanOne(v) || m.declaringContext.isDuplicated(v)
 	}
@@ -263,6 +292,18 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 
 	def dispatch boolean isDuplicated(WConstructor c, WReferenciable r) {
 		c.parameters.existsMoreThanOne(r) || c.eContainer.isDuplicated(r)
+	}
+
+	def dispatch boolean isDuplicated(WLibrary wl, WReferenciable r){
+		wl.elements.existsMoreThanOne(r)
+	}
+
+	def dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) {
+		c.variables.existsMoreThanOne(r)
+	}
+
+	def dispatch boolean isDuplicated(WPackage p, WNamedObject r){
+		p.namedObjects.existsMoreThanOne(r)
 	}
 
 	// default case is to delegate up to container
@@ -280,13 +321,5 @@ class WollokDslValidator extends WollokDslTypeSystemValidator {
 	
 	def error(WNamed e, String message) { error(message, e, WNAMED__NAME) }
 	def error(WNamed e, String message, String errorId) { error(message, e, WNAMED__NAME, errorId) }
-	
-	def preferences(EObject obj) {
-		preferenceStoreAccess.getContextPreferenceStore(obj.getFile.project)
-	}
-	
-	def decorateErrorAcceptor(ValidationMessageAcceptor a, String defaultCode) {
-		new DecoratedValidationMessageAcceptor(a, defaultCode)
-	}
-
+		
 }

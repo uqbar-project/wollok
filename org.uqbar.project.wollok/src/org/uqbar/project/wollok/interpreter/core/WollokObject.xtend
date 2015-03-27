@@ -2,16 +2,18 @@ package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
 import java.util.Set
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.WollokFeatureCallExtensions
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
@@ -27,18 +29,19 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * @author npasserini
  */
 class WollokObject implements EvaluationContext, WCallable {
-	@Property extension WollokInterpreter interpreter
-	extension WollokFeatureCallExtensions featureCall
-	var Map<String,Object> instanceVariables = newHashMap
-	var WMethodContainer behavior
-	@Property var Object nativeObject
+	@Accessors val extension IWollokInterpreter interpreter
+	val extension WollokFeatureCallExtensions featureCall
 	
-	new(WollokInterpreter interpreter, WMethodContainer behavior) {
+	val Map<String,Object> instanceVariables = newHashMap
+	val WMethodContainer behavior
+	@Accessors var Object nativeObject
+	
+	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		this.interpreter = interpreter
 		this.behavior = behavior
-		featureCall = new WollokFeatureCallExtensions(this)
+		this.featureCall = new WollokFeatureCallExtensions(this)
 	}
-	
+
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 	def dispatch void addMember(WVariableDeclaration declaration) {
 		instanceVariables.put(declaration.variable.name, declaration.right?.eval)
@@ -60,10 +63,8 @@ class WollokObject implements EvaluationContext, WCallable {
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WConstructor constructor, Object... objects) {
 		if (constructor != null) {
-			val c = constructor.createEvaluationContext(objects).then(this)
-			performOnStack(constructor, c) [|
-				constructor.expression.eval
-			]
+			val context = constructor.createEvaluationContext(objects).then(this)
+			performOnStack(constructor, context) [| constructor.expression.eval ]
 		}
 	}
 	
@@ -110,6 +111,7 @@ class WollokObject implements EvaluationContext, WCallable {
 
 	def dispatch objectDescription(WClass clazz) { "a " + clazz.name }
 	def dispatch objectDescription(WObjectLiteral obj) { "anObject" }
+	def dispatch objectDescription(WNamedObject namedObject){ namedObject.name }
 	
 	def getKind() { behavior }
 	
@@ -127,6 +129,9 @@ class WollokObject implements EvaluationContext, WCallable {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
+	override addGlobalReference(String name, Object value) {
+		interpreter.addGlobalReference(name, value)
+	}
 }
 
 /**

@@ -38,6 +38,9 @@ class WDebugExtensions {
 	def static void fireEvent(Object source, int eventType, int detail) { fireEvent(new DebugEvent(source, eventType, detail)) }
 	
 	def static isDebug(String mode) { mode.equals(ILaunchManager.DEBUG_MODE) }
+	def static hasRepl(ILaunchConfiguration configuration){
+		configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, false)	
+	}
 	
 	def static setProgramArguments(ILaunchConfiguration configuration, String newValue) {
 		val wc = configuration.getWorkingCopy

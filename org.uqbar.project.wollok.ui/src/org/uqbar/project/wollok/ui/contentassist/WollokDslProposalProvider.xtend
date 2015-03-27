@@ -6,11 +6,7 @@ import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.uqbar.project.wollok.semantics.MessageType
-import org.uqbar.project.wollok.semantics.ObjectLiteralWollokType
-import org.uqbar.project.wollok.semantics.StructuralType
 import org.uqbar.project.wollok.semantics.WollokDslTypeSystem
-import org.uqbar.project.wollok.semantics.WollokType
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -19,21 +15,17 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * 
  * @author jfernandes
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
-	@Inject
-  	protected WollokDslTypeSystem system
+	//@Inject
+  	//protected WollokDslTypeSystem system
 	
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
@@ -41,10 +33,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 
 	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
+// WITHOUT - XSEMANTICS
+// TODO: Hacer un extension point
+//		reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
 //			reference.ref.messagesSentTo.forEach[m| acceptor.addProposal(context, m.asProposalText, m.image)]
 	}
-	
+/* 
 	def asProposal(MessageType message) {
 		message.name + "(" + message?.parameterTypes.map[p| p.asParamName ].join(", ") + ")" 
 	}
@@ -59,7 +53,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		system.inferTypes(env, e)
 		system.queryTypeFor(env, r).first
 	}
-	
+*/	
 	// default hace super
 	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		super.completeWMemberFeatureCall_Feature(expression, assignment, context, acceptor)

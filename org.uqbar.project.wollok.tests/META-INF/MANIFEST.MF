@@ -10,13 +10,14 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.junit;visibility:=reexport,
- org.uqbar.project.wollok.ui,
  org.eclipse.core.runtime,
  org.eclipse.xtext.junit4,
  org.eclipse.ui.workbench;resolution:=optional,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
  org.xpect.xtext.lib;bundle-version="0.1.0",
- it.xsemantics.runtime;bundle-version="1.5.0"
+ org.uqbar.project.wollok.lib,
+ org.uqbar.project.wollok.typeSystem.xsemantics,
+ org.uqbar.project.wollok.ui
 Import-Package: org.apache.log4j,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
@@ -25,5 +26,5 @@ Import-Package: org.apache.log4j,
  org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0",
  org.hamcrest.core
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.uqbar.project.wollok

@@ -3,14 +3,30 @@
 */
 package org.uqbar.project.wollok;
 
+import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
+import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+
+
 /**
  * Initialization support for running Xtext languages 
  * without equinox extension registry
  */
-public class WollokDslStandaloneSetup extends WollokDslStandaloneSetupGenerated{
+public class WollokDslStandaloneSetup extends WollokDslStandaloneSetupGenerated implements Module{
+	public Injector createInjector() {
+		return Guice.createInjector(new org.uqbar.project.wollok.WollokDslRuntimeModule(),this);
+	}
 
-	public static void doSetup() {
-		new WollokDslStandaloneSetup().createInjectorAndDoEMFRegistration();
+	@Override
+	public void configure(Binder binder) {
+		binder.bind(WollokInterpreterConsole.class).to(SysoutWollokInterpreterConsole.class);
+		binder.bind(XInterpreterEvaluator.class).to(WollokInterpreterEvaluator.class);
 	}
 }
 

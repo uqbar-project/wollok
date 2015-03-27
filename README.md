@@ -4,19 +4,9 @@
 A programming language and environment for teaching OOP.
 
 ## Installation ##
+Download full Wollok distribution from http://download.uqbar.org/
 
- * Download [eclipse's xtext distribution](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
- * Install xsemantics plugin from update site:
-```
-#!xml
-http://sourceforge.net/projects/xsemantics/files/updates/releases/1.5
-```
- * Install debugvisualization plugin from update site:
-```
-#!xml
-http://eclipse.cubussapiens.hu
-```
- * Install wollok from update site: 
+Wollok update site:
 ```
 #!xml
 http://dl.bintray.com/uqbar/wollok-update-site/
@@ -45,6 +35,25 @@ Refer to the [wiki](wollok/wiki/Home) for documentation like Language Reference 
 * Integrated with eclipse Launchers (Run As).
 * A debugger.
 
+## How to Contribute ##
+### Preparing the development environment ###
+
+ * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
+ * Install xsemantics plugin from update site:
+```
+http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
+```
+ * Install debugvisualization plugin from update site:
+```
+http://eclipse.cubussapiens.hu
+```
+ * Install xpext from update site:
+```
+http://www.xpect-tests.org/updatesite/nightly/
+```
+ * In the resulting Eclipse, import all the projects below https://github.com/uqbar-project/wollok
+ * Run GenerateWollokDsl.mwe2
+
 ## License ##
 
 Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), All Rights Reserved.
@@ -57,3 +66,4 @@ Distributed under the terms of LGPLv3
 * [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
 * [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
 * [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
+

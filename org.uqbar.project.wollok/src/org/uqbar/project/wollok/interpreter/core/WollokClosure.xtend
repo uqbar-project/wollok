@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.wollokDsl.WClosure
 
@@ -73,6 +73,10 @@ class WollokClosure implements EvaluationContext, WCallable {
 	
 	override setReference(String name, Object value) {
 		throw new UnresolvableReference(name)
+	}
+	
+	override addGlobalReference(String name, Object value) {
+		container.addGlobalReference(name,value)
 	}
 	
 }

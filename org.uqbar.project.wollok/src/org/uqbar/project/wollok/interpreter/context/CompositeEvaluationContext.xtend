@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.context
 
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
@@ -48,6 +49,10 @@ class CompositeEvaluationContext implements EvaluationContext {
 	override addReference(String name, Object value) {
 		inner.addReference(name, value)
 		value
+	}
+	
+	override addGlobalReference(String name, Object value) {
+		outer.addGlobalReference(name,value)
 	}
 
 }

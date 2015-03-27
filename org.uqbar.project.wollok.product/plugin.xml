@@ -62,14 +62,13 @@
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            content="introContent.xml"
+            content="platform:/plugin/org.uqbar.project.wollok.product/introContent.xml"
             id="org.uqbar.project.wollok.product.introConfigId"
             introId="org.uqbar.project.wollok.product.intro">
          <presentation
                home-page-id="root">
             <implementation
                   kind="html"
-                  os="win32,linux,macosx"
                   style="content/shared.css">
             </implementation>
          </presentation>

@@ -6,7 +6,7 @@
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.uqbar.project.wollok.edit"
     editorPluginID="org.uqbar.project.wollok.editor" runtimeVersion="2.10">
   <genPackages prefix="WollokDsl" basePackage="org.uqbar.project.wollok" disposableProviderFactory="true"
-      fileExtensions="wlk" ecorePackage="WollokDsl.ecore#/">
+      fileExtensions="wpgm,wlk,wtest" ecorePackage="WollokDsl.ecore#/">
     <genClasses ecoreClass="WollokDsl.ecore#//WFile">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WFile/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WFile/body"/>
@@ -22,17 +22,17 @@
     <genClasses ecoreClass="WollokDsl.ecore#//WLibrary">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WLibrary/elements"/>
     </genClasses>
-    <genClasses ecoreClass="WollokDsl.ecore#//WLibraryElement">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WLibraryElement/name"/>
-    </genClasses>
+    <genClasses ecoreClass="WollokDsl.ecore#//WLibraryElement"/>
     <genClasses ecoreClass="WollokDsl.ecore#//WPackage">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WPackage/elements"/>
     </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WNamed">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WNamed/name"/>
     </genClasses>
-    <genClasses ecoreClass="WollokDsl.ecore#//WMethodContainer">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WMethodContainer/members"/>
+    <genClasses ecoreClass="WollokDsl.ecore#//WMethodContainer"/>
+    <genClasses ecoreClass="WollokDsl.ecore#//WTest">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WTest/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WTest/elements"/>
     </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WReferenciable"/>
     <genClasses ecoreClass="WollokDsl.ecore#//WExpression"/>
@@ -57,8 +57,12 @@
     <genClasses ecoreClass="WollokDsl.ecore#//WListLiteral">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WListLiteral/elements"/>
     </genClasses>
+    <genClasses ecoreClass="WollokDsl.ecore#//WNamedObject">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WNamedObject/members"/>
+    </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WClass">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WClass/parent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WClass/members"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WClass/constructor"/>
     </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WMember"/>
@@ -80,10 +84,15 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WCatch/exceptionType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WCatch/expression"/>
     </genClasses>
+    <genClasses ecoreClass="WollokDsl.ecore#//WReturnExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WReturnExpression/expression"/>
+    </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WThrow">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WThrow/exception"/>
     </genClasses>
-    <genClasses ecoreClass="WollokDsl.ecore#//WObjectLiteral"/>
+    <genClasses ecoreClass="WollokDsl.ecore#//WObjectLiteral">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WObjectLiteral/members"/>
+    </genClasses>
     <genClasses ecoreClass="WollokDsl.ecore#//WVariableDeclaration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute WollokDsl.ecore#//WVariableDeclaration/writeable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference WollokDsl.ecore#//WVariableDeclaration/variable"/>

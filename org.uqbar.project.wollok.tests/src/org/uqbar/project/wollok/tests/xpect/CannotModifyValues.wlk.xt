@@ -1,0 +1,24 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+class A {
+	val x = "sarasa"
+	
+	new() {
+		// XPECT errors --> "Cannot modify values" at "x"
+		x = 23
+	}
+	
+	method s() {
+		val aBlock = [a |
+			// XPECT errors --> "Cannot modify values" at "a"
+			a = 23
+		]
+		// XPECT errors --> "Cannot modify values" at "aBlock"
+		aBlock = null
+	}
+	
+	method xxx(aParam) {
+		// XPECT errors --> "Cannot modify values" at "aParam"
+		aParam = 23
+	}
+}

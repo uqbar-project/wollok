@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 
 /**
  * Tests wollok exceptions handling mechanism.
@@ -42,7 +42,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			interpretPropagatingErrors
 			
 			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(0, counter)
+			assertEquals(0, (counter as WollokInteger).wrapped)
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}'''].
 			interpretPropagatingErrors
 			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(1, counter)
+			assertEquals(1, (counter as WollokInteger).wrapped)
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				counter = counter + 1 }'''].
 			interpretPropagatingErrors
 			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(2, counter)
+			assertEquals(2, (counter as WollokInteger).wrapped)
 	}
 
 	@Test
@@ -101,7 +101,9 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		#[SDK,
 		'''
 			class MyException extends wollok.lang.Exception {
-				method customMessage() { "Something went wrong" }
+				method customMessage() { 
+					return "Something went wrong"
+				}
 			}
 			class A { method m1() { throw new MyException() } }
 		''', ''' program p {

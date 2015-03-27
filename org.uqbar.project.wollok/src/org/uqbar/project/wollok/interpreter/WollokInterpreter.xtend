@@ -1,8 +1,11 @@
 package org.uqbar.project.wollok.interpreter
 
+import com.google.inject.Inject
 import java.io.Serializable
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
@@ -11,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
+import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 
 /**
@@ -22,17 +26,32 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  * @author jfernandes
  */
  // Rename to XInterpreter
-class WollokInterpreter implements XInterpreter<EObject>, Serializable {
+class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
 	static Logger log = Logger.getLogger(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
+	
+	@Accessors val globalVariables = <String,Object>newHashMap
+
+	override addGlobalReference(String name, Object value) {
+		globalVariables.put(name,value)
+		value
+	}
+
+	@Inject
 	XInterpreterEvaluator evaluator
+
+	@Inject
 	WollokInterpreterConsole console
+
 	var executionStack = new ObservableStack<XStackFrame>
 
-	new(WollokInterpreterConsole console) {
-		this.console = console
-		evaluator = new WollokInterpreterEvaluator(this)
+	static var WollokInterpreter instance = null 
+
+	new() {
+		instance = this
 	}
+	
+	def static getInstance(){instance}
 	
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	
@@ -62,21 +81,25 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 		catch (Throwable e)
 			if (propagatingErrors)
 				throw e
-			else
+			else{
 				console.logError(e)
+				null
+			}
 		finally
 			debugger.terminated
 	}
 	
 	def createInitialStackElement(EObject root) {
-		new XStackFrame(root, new WollokNativeLobby(console))
+		new XStackFrame(root, new WollokNativeLobby(console, this))
 	}
 	
-	def performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something) {
+	override performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something) {
 		stack.push(new XStackFrame(executable, newContext))
 		try 
 			return something.apply
-		finally
+		catch(ReturnValueException e){
+			return e.value	
+		}finally
 			stack.pop
 	}
 
@@ -93,11 +116,13 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 	 * You must always ask the interpreter to evaluate it.
 	 * This way it will pass through the stack and execution flow (like debugging)
 	 */	
-	def eval(EObject e) {
+	override eval(EObject e) {
 		try {
 			stack.peek.defineCurrentLocation = e
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
+		} catch (ReturnValueException ex) {
+			throw ex // a user-level exception, fine !
 		} catch (WollokProgramExceptionWrapper ex) {
 			throw ex // a user-level exception, fine !
 		}
@@ -108,5 +133,7 @@ class WollokInterpreter implements XInterpreter<EObject>, Serializable {
 			debugger.evaluated(e)
 		}			
 	}
+	
+	def getConsole(){console}
 
 }

@@ -1,15 +1,6 @@
 package org.uqbar.project.wollok.ui.editor.hyperlinking
 
-import com.google.inject.Inject
-import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
-import org.uqbar.project.wollok.semantics.ConcreteType
-import org.uqbar.project.wollok.semantics.WollokDslTypeSystem
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extends the default xtext class
@@ -29,6 +20,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 //  una en findCrossReferenceNode()
 //  y de nuevo en getCrossReferencedElement()
 class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
+/*	
+ *TODO: Hacer un extension point
 	@Inject
   	protected WollokDslTypeSystem xsemanticsSystem
 	
@@ -43,7 +36,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	}
 	
 	def boolean isResolvedToMethod(WMemberFeatureCall call) { resolveMethod(call) != null	}
-	
+
 	def resolveMethod(WMemberFeatureCall call) {
 		val env = xsemanticsSystem.emptyEnvironment()
 		for (e : (call.eResource.contents.head).eContents) {
@@ -66,7 +59,6 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 		
 	}
 	
-	
 	override getCrossReferencedElement(INode node) {
 		val semantic = node.semanticElement
 		if (semantic instanceof WMemberFeatureCall) {
@@ -78,5 +70,6 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 		else 
 			super.getCrossReferencedElement(node)
 	}
+ */	
 	
 }

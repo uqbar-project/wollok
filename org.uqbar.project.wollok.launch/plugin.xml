@@ -70,8 +70,11 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt type="org.eclipse.core.resources.IFile"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern"
-                          value="*.wlk"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
                </iterate>
              </with>
            </enablement>
@@ -83,20 +86,57 @@
               label="Wollok Program"/>
          </contextualLaunch>
       </shortcut>
+      <shortcut
+            class="org.uqbar.project.wollok.launch.shortcut.WollokLaunchShortcutWithRepl"
+            description="Launch Wollok with Repl"
+            icon="icons/w.png"
+            id="org.uqbar.project.wollok.launch.shortcut.repl"
+            label="Launch with Repl"
+            modes="run, debug">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt type="org.eclipse.core.resources.IFile"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            name="Run Wollok"
-            description="Run Wollok Program"
             categoryId="org.eclipse.debug.ui.category.run"
-            id="org.uqbar.project.wollok.launch.shortcut.run">
+            description="Run Wollok Program"
+            id="org.uqbar.project.wollok.launch.shortcut.run"
+            name="Run Wollok">
       </command>
    	  <command
-            name="Debug Wollok"
+            categoryId="org.eclipse.debug.ui.category.run"
             description="Debug Wollok Program"
-            categoryId="org.eclipse.debug.ui.category.debug"
-            id="org.uqbar.project.wollok.launch.shortcut.debug">
+            id="org.uqbar.project.wollok.launch.shortcut.debug"
+            name="Debug Wollok">
+      </command>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Run Wollok Program with REPL"
+            id="org.uqbar.project.wollok.launch.shortcut.repl.run"
+            name="Run Wollok REPL">
+      </command>
+   	  <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Debug Wollok Program with REPL"
+            id="org.uqbar.project.wollok.launch.shortcut.repl.debug"
+            name="Debug Wollok REPL">
       </command>
    </extension>
    	<extension
@@ -111,6 +151,20 @@
         <key
             sequence="M2+M3+D W"
             commandId="org.uqbar.project.wollok.launch.shortcut.debug"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   	<extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+X R"
+            commandId="org.uqbar.project.wollok.launch.shortcut.repl.run"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   <extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+D R"
+            commandId="org.uqbar.project.wollok.launch.shortcut.repl.debug"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
     </extension>
    <!-- SHORTCUTS & BINDINGS -->

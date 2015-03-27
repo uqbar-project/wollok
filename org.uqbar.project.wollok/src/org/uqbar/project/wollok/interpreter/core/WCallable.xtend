@@ -11,7 +11,5 @@ package org.uqbar.project.wollok.interpreter.core
  * @author jfernandes
  */
 interface WCallable {
-	
 	def Object call(String message, Object... parameters)
-	
 }

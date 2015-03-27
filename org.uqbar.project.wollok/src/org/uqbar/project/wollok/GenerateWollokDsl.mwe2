@@ -5,7 +5,7 @@ import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
 var grammarURI = "classpath:/org/uqbar/project/wollok/WollokDsl.xtext"
-var fileExtensions = "wlk"
+var fileExtensions = "wpgm,wlk,wtest"
 var projectName = "org.uqbar.project.wollok"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
@@ -72,12 +72,12 @@ Workflow {
     		}
     
     		// old scoping and exporting API
-//    		 fragment = scoping.ImportURIScopingFragment auto-inject {}
-//    		 fragment = exporting.SimpleNamesFragment auto-inject {}
+    		 fragment = scoping.ImportURIScopingFragment auto-inject {}
+    		 fragment = exporting.SimpleNamesFragment auto-inject {}
     
     		// scoping and exporting API
-    		fragment = scoping.ImportNamespacesScopingFragment auto-inject {}
-    		fragment = exporting.QualifiedNamesFragment auto-inject {}
+//    		fragment = scoping.ImportNamespacesScopingFragment auto-inject {}
+//    		fragment = exporting.QualifiedNamesFragment auto-inject {}
     		fragment = builder.BuilderIntegrationFragment auto-inject {}
     
     		// generator API
@@ -120,13 +120,6 @@ Workflow {
     
     		// provides a compare view
     		fragment = compare.CompareFragment auto-inject {}
-    		
-    		
-    		// JAV: project wizard (optional)
-    		fragment = projectWizard.SimpleProjectWizardFragment auto-inject {
-    		      generatorProjectName = "${projectName}"
-    		      fileExtension = "${fileExtensions}"
-    		}
     	}
     }
 }

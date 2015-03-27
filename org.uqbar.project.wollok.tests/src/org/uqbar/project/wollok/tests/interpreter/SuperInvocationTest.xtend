@@ -14,7 +14,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 			var energia = 100
 		
 			method energia() {
-				energia
+				return energia
 			}
 		
 			method volar(kms) {
@@ -22,16 +22,16 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			method gastoParaVolar(kms) {
-				kms
+				return kms
 			}
 		}
 		
 		class SeCansaMucho extends Golondrina {
 			override method gastoParaVolar(kms) {
-				2 * super(kms)
+				return 2 * super(kms)
 			}
 		}
-	''',
+		''',
 		'''
 		program p {
 		val pepona = new SeCansaMucho()

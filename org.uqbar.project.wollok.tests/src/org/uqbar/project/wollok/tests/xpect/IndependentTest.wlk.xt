@@ -1,0 +1,10 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+test pepin{
+	console.println("Hola")
+	tester.assertEquals(0, 0)
+	tester.assert(10 == 10)
+	
+	var x = 1234
+	tester.assert(1234,x)
+}

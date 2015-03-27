@@ -5,12 +5,14 @@
 «ENDDEFINE»
 
 «DEFINE model FOR WollokDslProjectInfo»
-«FILE "src/uqbar/wollok/example.wlk"-»
+«FILE "src/example.wlk"-»
 /*
  * This is an example wollok hello world
  */
-program e {
-	this.println('Hello Wollok!')
+object ex {
+	method sayHi(){
+		console.println('Hello Wollok!')
+	}
 }
 «ENDFILE»
 

@@ -18,7 +18,7 @@ QualifiedNameWithWildcard: QualifiedName ('.' '*')?;
 // CONTENT
 
 WFileContent:
-	WProgram | WLibrary
+	WProgram | WLibrary | WTest
 ;
 
 WProgram:
@@ -31,11 +31,11 @@ WLibrary:
 	{WLibrary} elements+=WLibraryElement*
 ;
 
-WLibraryElement: WPackage | WClass;
+WLibraryElement: (WPackage | WClass | WNamedObject );
 
 WPackage:
 	'package' name=QualifiedName '{'
-		elements+=WClass*
+		elements+=(WClass | WNamedObject)*
 	'}'
 ;
 
@@ -43,11 +43,17 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WNamed: WMethodDeclaration | WReferenciable;
-WMethodContainer: WClass | {WObjectLiteral};
+WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
+
+WTest:
+	'test' name=ID '{'
+		(elements+=WExpressionOrVarDeclaration ';'?)+		
+	'}'
+;
 
 WReferenciable:
-	WParameter | {WVariable}
+	WParameter | {WVariable} | WNamedObject
 ;
 
 WObjectLiteral returns WExpression:
@@ -225,9 +231,9 @@ WPrimaryExpression returns WExpression:
 	WSuperInvocation |
 	WIfExpression |
 	WTry |
+	WReturnExpression | 
 	WThrow
 //	XForLoopExpression |
-//	WReturnExpression | 
 ;
 
 WSuperInvocation returns WExpression: 
@@ -262,7 +268,6 @@ WIfExpression:
 		else=WExpression
 	)?
 ;
-
 
 // LITERALS
 
@@ -311,6 +316,13 @@ WCollectionLiteral:
 WListLiteral:
 	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
 
+WNamedObject:
+	'object' name=ID '{'
+		(members+=WVariableDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
 // CLASSES
 
 WClass:
@@ -346,6 +358,10 @@ WTry:
 WCatch:
 	=>'catch' exceptionVarName=WVariable ':' exceptionType=[WClass|QualifiedName]
 		expression=WExpression 
+;
+
+WReturnExpression:
+	'return' expression=WExpression	
 ;
 
 WThrow:

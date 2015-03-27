@@ -14,7 +14,7 @@ interface XInterpreter<E extends EObject> {
 
 	def Stack<XStackFrame> getStack()
 	
-	def void interpret(E program)
-	def void interpret(E program, Boolean propagatingErrors)
+	def Object interpret(E program)
+	def Object interpret(E program, Boolean propagatingErrors)
 	
 }

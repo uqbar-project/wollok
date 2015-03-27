@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Customizes highlighting
@@ -31,6 +32,10 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	}
 	
 	// ** customizations (as multiple dispatch methods)
+	
+	def dispatch highlight(WNamedObject obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		super.highlightElement(obj, acceptor)
+	}	
 	
 	def dispatch highlight(WVariableReference obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
 		acceptor.addPosition(node.offset, node.length, styleFor(obj.ref))
