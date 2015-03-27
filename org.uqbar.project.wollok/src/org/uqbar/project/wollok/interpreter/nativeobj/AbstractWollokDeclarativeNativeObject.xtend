@@ -16,12 +16,12 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 
 	override call(String message, Object... parameters) {
-		var method = getMethod(message)
+		val method = getMethod(message)
 		if (method == null)
-			return doesNotUnderstand(message, parameters)
+			doesNotUnderstand(message, parameters).asWollokObject
 		else
 			try {
-				method.invoke(this, parameters)
+				method.invoke(this, parameters).asWollokObject
 			}
 			catch (InvocationTargetException e) {
 				throw e.cause
@@ -48,4 +48,12 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message
 	}
 
+	// ********************************************************************************************
+	// ** Conversions from native to wollok objects 
+	// ********************************************************************************************
+	
+	def dispatch asWollokObject(Void v) { null }
+	def dispatch asWollokObject(Integer i) { new WollokInteger(i) }
+	def dispatch asWollokObject(Double d) { new WollokDouble(d) }
+	def dispatch asWollokObject(Object o) { o }
 }

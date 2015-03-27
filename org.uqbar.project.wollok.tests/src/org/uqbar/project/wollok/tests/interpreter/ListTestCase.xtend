@@ -13,7 +13,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			val numbers = #[23, 2, 1]		
-			this.assert(3 == numbers.size())
+			this.assertEquals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
