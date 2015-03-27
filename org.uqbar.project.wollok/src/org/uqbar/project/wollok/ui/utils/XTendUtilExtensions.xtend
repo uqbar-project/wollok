@@ -9,6 +9,8 @@ import java.util.Random
 import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WollokClosure
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 
 /**
  * Utilities for xtend code
@@ -122,10 +124,14 @@ class XTendUtilExtensions {
 		m.invoke(o, converted.toArray)
 	}
 	
-	def static Object convertTo(Object o, Class t) {
+	def static Object convertTo(Object o, Class<?> t) {
 		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
 		if (o instanceof WollokClosure && t == Function1)
 			return [Object a | (o as WollokClosure).apply(a)]
+		if (o instanceof WollokInteger && (t == Integer || t == Integer.TYPE))
+			return (o as WollokInteger).wrapped
+		if (o instanceof WollokDouble && (t == Double || t == Double.TYPE))
+			return (o as WollokDouble).wrapped
 		if (t == Object)
 			return o
 		if(t.primitive)
