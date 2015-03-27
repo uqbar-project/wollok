@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.ui.wizard;
 
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.eclipse.xtext.ui.wizard.IProjectInfo;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
+import org.eclipse.xtext.ui.wizard.IProjectInfo;
 import org.uqbar.project.wollok.ui.WollokActivator;
 
 import com.google.inject.Inject;

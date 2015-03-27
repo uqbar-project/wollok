@@ -57,8 +57,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.eclipse.jface.text.IDocumentListener
-import org.eclipse.jface.text.DocumentEvent
 
 /**
  * 
@@ -321,20 +319,16 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		}
 	}
 	
-	override partClosed(IWorkbenchPart part) {
-	}
+	override partClosed(IWorkbenchPart part) {	}
 	
-	override partDeactivated(IWorkbenchPart part) {
-	}
+	override partDeactivated(IWorkbenchPart part) { }
 	
-	override partOpened(IWorkbenchPart part) {
-	}
+	override partOpened(IWorkbenchPart part) { }
 	
 	// ISelectionListener
 	//   workbench tells us that selection changed from other view
 	override selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (part == this)
-			return;
+		if (part == this) return;
 		if (selection instanceof StructuredSelection) {
 			val selectedClassModels = selection.toList.filter(WClass).fold(newArrayList())[list, c| 
 				val cm = diagram.classes.findFirst[cm | cm.clazz == c]

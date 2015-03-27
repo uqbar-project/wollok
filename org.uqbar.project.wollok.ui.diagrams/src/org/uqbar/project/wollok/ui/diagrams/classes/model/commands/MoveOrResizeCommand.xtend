@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model.commands;
 
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.requests.ChangeBoundsRequest;
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape;
+import org.eclipse.draw2d.geometry.Rectangle
+import org.eclipse.gef.commands.Command
+import org.eclipse.gef.requests.ChangeBoundsRequest
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+
 import static org.eclipse.gef.RequestConstants.*
 
 /**
