@@ -5,7 +5,7 @@ import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 
-class WollokArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
+class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
 	public String expression
 	
