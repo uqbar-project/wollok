@@ -18,6 +18,14 @@ class WollokInterpreterAccess {
 		"==".asBinaryOperation.apply(a, b).isTrue()
 	}
 
+	/**
+	 * Helper method for simple access to wollok number comparison, 
+	 * which is needed in different parts of the interpreter 
+	 */
+	def boolean wollokGreaterThan(Object a, Object b) {
+		">".asBinaryOperation.apply(a, b).isTrue()
+	}
+
 	def dispatch boolean isTrue(Boolean b) { b }
 	def dispatch boolean isTrue(Object o) { throw new WollokRuntimeException('''Expected a boolean but find: «o»''') }
 }

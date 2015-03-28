@@ -51,9 +51,9 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	// ********************************************************************************************
 	// ** Conversions from native to wollok objects 
 	// ********************************************************************************************
-	
-	def dispatch asWollokObject(Void v) { null }
-	def dispatch asWollokObject(Integer i) { new WollokInteger(i) }
-	def dispatch asWollokObject(Double d) { new WollokDouble(d) }
-	def dispatch asWollokObject(Object o) { o }
+
+	def <T> T asWollokObject(Object object) { object?.doAsWollokObject as T }
+	def dispatch doAsWollokObject(Integer i) { new WollokInteger(i) }
+	def dispatch doAsWollokObject(Double d) { new WollokDouble(d) }
+	def dispatch doAsWollokObject(Object o) { o }
 }
