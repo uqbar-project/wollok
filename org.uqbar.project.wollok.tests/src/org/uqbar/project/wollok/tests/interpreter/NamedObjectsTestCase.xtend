@@ -40,5 +40,19 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 		
 		model.assertNoIssues
 	}
+	
+	@Test
+	def void usingThis(){
+		'''
+			object pepita {
+				method uno(){
+					this.otro()
+				}
+				method otro(){
+					return 5
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
 
 }

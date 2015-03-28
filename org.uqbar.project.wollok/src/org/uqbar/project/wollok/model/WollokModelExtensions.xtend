@@ -162,6 +162,11 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 		c.methods.exists[isValidMessage(call)]
 	}
 
+	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
+		c.methods.exists[isValidMessage(call)]
+	}
+
+
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
 		m.name == call.feature && m.parameters.size == call.memberCallArguments.size
 	}
