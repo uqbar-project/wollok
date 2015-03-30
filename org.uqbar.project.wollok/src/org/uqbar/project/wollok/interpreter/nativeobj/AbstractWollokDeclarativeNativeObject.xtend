@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WCallable
 
 /**
@@ -14,6 +15,7 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
  * @author jfernandes
  */
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
+	WollokInterpreterAccess interpreterAccess = new WollokInterpreterAccess
 
 	override call(String message, Object... parameters) {
 		val method = getMethod(message)
@@ -48,12 +50,5 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message
 	}
 
-	// ********************************************************************************************
-	// ** Conversions from native to wollok objects 
-	// ********************************************************************************************
-
-	def <T> T asWollokObject(Object object) { object?.doAsWollokObject as T }
-	def dispatch doAsWollokObject(Integer i) { new WollokInteger(i) }
-	def dispatch doAsWollokObject(Double d) { new WollokDouble(d) }
-	def dispatch doAsWollokObject(Object o) { o }
+	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
 }

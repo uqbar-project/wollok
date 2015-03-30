@@ -1,16 +1,16 @@
 package org.uqbar.project.wollok.interpreter
 
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
+import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.stack.VoidObject
-import org.uqbar.project.wollok.wollokDsl.WFeatureCall
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
@@ -19,33 +19,45 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author npasserini
  * @author jfernandes
  */
-class WollokFeatureCallExtensions {
-	WollokObject receiver
-	extension IWollokInterpreter interpreter
+abstract class AbstractWollokCallable implements WCallable {
+	@Accessors val extension IWollokInterpreter interpreter
+	@Accessors val WMethodContainer behavior
 	
-	new(WollokObject receiver) {
-		this.receiver = receiver
-		this.interpreter = receiver.interpreter
+	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
+		this.interpreter = interpreter
+		this.behavior = behavior
 	}
+
+	// ********************************************************************************************
+	// ** Feature calling
+	// ********************************************************************************************
 	
 	def Object call(WMethodDeclaration method, Object... parameters) {
 		if (method.parameters.size != parameters.size) 
 			throw new MessageNotUnderstood('''Incorrect number of arguments for method '«method.name»'. Expected «method.parameters.size» but found «parameters.size»''')
 		val c = method.createEvaluationContext(parameters).then(receiver)
+		
 		interpreter.performOnStack(method, c) [|
 			if (method.native){
 				// reflective call
 				val r = receiver.nativeObject.invokeNative(method.name, parameters)
 				if(receiver.nativeObject.isVoid(method.name, parameters))
-					return VoidObject::instance
+					return VoidObject.instance
 				else
 					return r
-			}else{
+			} else {
 				method.expression.eval
-				return VoidObject::instance
+				return VoidObject.instance
 			}
 		]
 	}
+
+	def WollokObject getReceiver()
+		
+
+	// ********************************************************************************************
+	// ** Native objects handling
+	// ********************************************************************************************
 	
 	def dispatch invokeNative(Object nativeObject, String name, Object... parameters){
 		nativeObject.invoke(name, parameters)
@@ -55,33 +67,25 @@ class WollokFeatureCallExtensions {
 		nativeObject.call(name, parameters)
 	}
 
+	// ********************************************************************************************
+	// ** Helpers
+	// ********************************************************************************************
+	
+	def eval(EObject expr) { interpreter.eval(expr) }	
+	
+	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
+		declaration.parameters.map[name].createEvaluationContext(values)
+	}
+
 	def dispatch isVoid(Object nativeObject, String message, Object... parameters){
-		var method = this.class.methods.findFirst[name == message]
+		var method = this.class.methods.findFirst[name == message] // TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
 		
-		if(method == null)
-			return false
-			
-		method.returnType == Void.TYPE
+		if(method == null) false 
+		else method.returnType == Void.TYPE
 	}
 
 	def dispatch isVoid(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){
 		nativeObject.isVoid(name, parameters)
 	}
-
-	
-	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
-		declaration.parameters.map[name].createEvaluationContext(values)
-	}
-	
-	// STATIC EXTENSIONS
-	
-	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
-	def static dispatch feature(WMemberFeatureCall call) { call.feature }
-	def static dispatch feature(WSuperInvocation call) { call.method.name }
-
-	// TODO Esto no debería ser necesario pero no logro generar bien la herencia entre estas clases para poder tratarlas polimórficamente.
-	def static dispatch memberCallArguments(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
-	def static dispatch memberCallArguments(WMemberFeatureCall call) { call.memberCallArguments }
-	def static dispatch memberCallArguments(WSuperInvocation call) { call.memberCallArguments }
-	
 }
+

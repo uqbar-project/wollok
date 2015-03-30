@@ -3,29 +3,56 @@ package org.uqbar.project.wollok.model
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WLibrary
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
+import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * Extension methods for WMethodContainers.
  * 
  * @author jfernandes
+ * @author npasserini
  */
-class WMethodContainerExtensions {
+class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WLibrary p){p.elements.filter(WNamedObject)}
+
+	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
+	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
+
+	def static hasUnimplementedInheritedMethods(WClass c) {
+		val unimplementedMethods = <WMethodDeclaration>newArrayList
+		c.superClassesIncludingYourselfTopDownDo [ claz |
+			unimplementedMethods.removeAllSuchAs[claz.overrides(name)]
+			unimplementedMethods.addAll(claz.abstractMethods);
+		]
+		!unimplementedMethods.empty
+	}
+
+	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
+	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
+	def static overrideMethods(WClass it) { methods.filter[overrides].toList }
+	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
+	
+	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent.lookupMethod(m.name) }
+	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
+	
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
@@ -45,7 +72,12 @@ class WMethodContainerExtensions {
 		]
 		methods
 	}
-	
+
+	def static actuallyOverrides(WMethodDeclaration m) {
+		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name)
+	}
+
+		
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
 	def static dispatch WClass parent(WObjectLiteral c) { null } // For now, object literals do not allow superclasses
@@ -80,6 +112,19 @@ class WMethodContainerExtensions {
 		else 
 			null
 	}
+
+	def static dispatch boolean isValidCall(WClass c, WMemberFeatureCall call) {
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
+	}
+
+	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
+		c.methods.exists[isValidMessage(call)]
+	}
+
+	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
+		c.methods.exists[isValidMessage(call)]
+	}
+
 
 	// ************************************************************************
 	// ** Basic methods
@@ -123,6 +168,14 @@ class WMethodContainerExtensions {
 			javaClass.newInstance
 	}
 
+	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
+	def static dispatch feature(WMemberFeatureCall call) { call.feature }
+	def static dispatch feature(WSuperInvocation call) { call.method.name }
+
+	// TODO Esto no debería ser necesario pero no logro generar bien la herencia entre estas clases para poder tratarlas polimórficamente.
+	def static dispatch memberCallArguments(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
+	def static dispatch memberCallArguments(WMemberFeatureCall call) { call.memberCallArguments }
+	def static dispatch memberCallArguments(WSuperInvocation call) { call.memberCallArguments }
 	
 	// ************************************************************************
 	// ** isKindOf(c1, c2): Tells whether c1 is a type or subtype of c2
@@ -131,5 +184,4 @@ class WMethodContainerExtensions {
 
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
-
 }

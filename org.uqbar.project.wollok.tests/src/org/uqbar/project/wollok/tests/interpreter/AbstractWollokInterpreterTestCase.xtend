@@ -54,14 +54,10 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(File fileToRead) {
-		try {
-			new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
-				assertNoErrors
-				interpret(true)
-			]
-		} catch (Throwable t) {
-			throw new RuntimeException("Error running test " + fileToRead, t)
-		}
+		new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
+			assertNoErrors
+			interpret(true)
+		]
 	}
 
 	def interpret(Boolean propagatingErrors, CharSequence... programAsString) {
@@ -69,5 +65,15 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			forEach[assertNoErrors]
 			forEach[it.interpret(propagatingErrors)]
 		]).last
+	}
+
+	def evaluate(String expression) {
+		'''
+			program evaluateExpression {
+				val __expression__ = «expression» 
+			}
+		'''.interpretPropagatingErrors
+		
+		interpreter.currentContext.resolve("__expression__")
 	}
 }

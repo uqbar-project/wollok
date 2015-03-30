@@ -37,11 +37,20 @@ class WollokInteger extends WollokNumber<Integer> {
 	override abs() { 
 		Math.abs(this.wrapped).asWollokObject
 	}
+	
+	override equals(Object other) { 
+		other instanceof WollokInteger && wrapped == (other as WollokInteger).wrapped
+	}
 }
 	
 class WollokDouble extends WollokNumber<Double> {
 	new(Double wrapped) {
 		super(wrapped)
 	}
+
 	override abs() { Math.abs(this.wrapped).asWollokObject }
+
+	override equals(Object other) { 
+		other instanceof WollokDouble && wrapped == (other as WollokDouble).wrapped
+	}
 }
