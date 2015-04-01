@@ -8,13 +8,12 @@ Download full Wollok distribution from http://download.uqbar.org/
 
 Wollok update site:
 ```
-#!xml
 http://dl.bintray.com/uqbar/wollok-update-site/
 ```
 
 ## Documentation ##
 
-Refer to the [wiki](wollok/wiki/Home) for documentation like Language Reference and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like Language Reference and Environment.
 
 ## What's the language like ? ##
 
@@ -47,7 +46,7 @@ http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
 ```
 http://eclipse.cubussapiens.hu
 ```
- * Install xpext from update site:
+ * Install xpect from update site:
 ```
 http://www.xpect-tests.org/updatesite/nightly/
 ```
