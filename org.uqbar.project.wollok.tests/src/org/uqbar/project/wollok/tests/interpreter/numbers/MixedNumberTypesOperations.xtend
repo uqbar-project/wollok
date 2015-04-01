@@ -1,6 +1,7 @@
-package org.uqbar.project.wollok.tests.interpreter
+package org.uqbar.project.wollok.tests.interpreter.numbers
 
 import org.junit.Test
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
  * Tests that the numbers works as expected when mixing integer and doubles

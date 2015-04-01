@@ -71,7 +71,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					energia = energia + cantidad * 10
 				}
 				method energia(){
-					energia
+					return energia
 				}
 			}
 		''',

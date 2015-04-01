@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.interpreter
+package org.uqbar.project.wollok.tests.interpreter.numbers
 
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter

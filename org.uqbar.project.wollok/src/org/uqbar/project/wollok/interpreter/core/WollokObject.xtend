@@ -3,9 +3,9 @@ package org.uqbar.project.wollok.interpreter.core
 import java.util.Map
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
-import org.uqbar.project.wollok.interpreter.WollokFeatureCallExtensions
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
@@ -28,25 +28,21 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * @author jfernandes
  * @author npasserini
  */
-class WollokObject implements EvaluationContext, WCallable {
-	@Accessors val extension IWollokInterpreter interpreter
-	val extension WollokFeatureCallExtensions featureCall
-	
+class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	val Map<String,Object> instanceVariables = newHashMap
-	val WMethodContainer behavior
 	@Accessors var Object nativeObject
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
-		this.interpreter = interpreter
-		this.behavior = behavior
-		this.featureCall = new WollokFeatureCallExtensions(this)
+		super(interpreter, behavior)
 	}
+
+	override getReceiver() { this }
 
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 	def dispatch void addMember(WVariableDeclaration declaration) {
 		instanceVariables.put(declaration.variable.name, declaration.right?.eval)
 	}
-	
+		
 	// ******************************************
 	// **
 	// ******************************************
@@ -64,7 +60,7 @@ class WollokObject implements EvaluationContext, WCallable {
 	def invokeConstructor(WConstructor constructor, Object... objects) {
 		if (constructor != null) {
 			val context = constructor.createEvaluationContext(objects).then(this)
-			performOnStack(constructor, context) [| constructor.expression.eval ]
+			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
 	
@@ -138,7 +134,5 @@ class WollokObject implements EvaluationContext, WCallable {
  * @author jfernandes
  */
 interface WollokObjectListener {
-
 	def void fieldChanged(String fieldName, Object oldValue, Object newValue)
-
 }
