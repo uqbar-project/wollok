@@ -169,7 +169,6 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def layout() {
-		println("Laying out diagram!")
 		// create graph
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.NORTH

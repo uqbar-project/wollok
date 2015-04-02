@@ -62,10 +62,10 @@ class StackFrameEditPart extends AbstractGraphicalEditPart implements PropertyCh
 	
 	override List<VariableModel> getModelChildren() {
 		val map = (modelElement.variables.fold(newHashMap()) [m, v|
-			m.put(v, new VariableModel(v)) 
+			m.put(v, new VariableModel(v, 0)) 
 			m
 		])
-		map.values.clone.forEach[model| model.createConnections(map)]
+		map.values.<VariableModel>clone.forEach[model| model.createConnections(map)]
 		
 		map.values.toList
 	}

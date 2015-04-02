@@ -4,10 +4,10 @@ program tomYJerry {
 		var energia = 100
 		var posicion = 0
 		method getVelocidad() {
-			5 + energia / 10
+			return 5 + energia / 10
 		}
 		method puedeAtraparA(raton) {
-			this.getVelocidad() > raton.getVelocidad()
+			return this.getVelocidad() > raton.getVelocidad()
 		}
 		method correA(raton) {
 			var distancia = raton.getPosicion() - posicion
@@ -24,13 +24,13 @@ program tomYJerry {
 		var peso = 10
 		var posicion = 10
 		method getVelocidad() {
-			10 - peso
+			return 10 - peso
 		}
 		method getPosicion() {
-			posicion
+			return posicion
 		}
 		method getPeso() {
-			peso
+			return peso
 		}
 	}
 	

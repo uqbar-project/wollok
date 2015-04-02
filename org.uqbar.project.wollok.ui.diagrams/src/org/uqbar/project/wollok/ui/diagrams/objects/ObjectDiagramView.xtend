@@ -5,6 +5,12 @@ import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
+import org.eclipse.draw2d.PositionConstants
+import org.eclipse.draw2d.geometry.Point
+import org.eclipse.draw2d.graph.DirectedGraph
+import org.eclipse.draw2d.graph.DirectedGraphLayout
+import org.eclipse.draw2d.graph.Edge
+import org.eclipse.draw2d.graph.Node
 import org.eclipse.gef.DefaultEditDomain
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.GraphicalEditPart
@@ -37,7 +43,15 @@ import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.uqbar.project.wollok.ui.diagrams.classes.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
+import org.eclipse.draw2d.graph.Subgraph
+import com.google.common.collect.Lists
+import javax.swing.plaf.ListUI
+import java.util.Collections
 
 /**
  * 
@@ -130,6 +144,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	def initializeGraphicalViewer() {
 		if (model != null) {
 			graphicalViewer.contents = model
+			layout
 		}
 	}
 	
@@ -189,6 +204,58 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	override setSourceViewer(ISourceViewer sourceViewer) { }
 	
 	// ****************************	
+	// ** Layout (same as for class diagrams... horrible)
+	// ****************************
+	
+	def getNodesEditParts() {
+		if (graphicalViewer.rootEditPart.children.empty)
+			Collections.EMPTY_LIST
+		else 
+			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ValueEditPart)
+	}
+	
+	def getConnectionsEditParts() {
+		if (graphicalViewer.rootEditPart.children.empty)
+			Collections.EMPTY_LIST
+		else
+			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ConnectionEditPart)
+	}
+	
+	def layout() {
+		// create graph
+		val graph = new DirectedGraph
+		graph.direction = PositionConstants.SOUTH
+		
+		val classEditParts = getNodesEditParts()
+		
+		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
+			map.put(e.model as VariableModel, new Node(e.model) => [
+				width = 100 //e.figure.bounds.width
+				height = 100 //e.figure.bounds.height
+			])
+			map
+		]
+			 
+		graph.nodes.addAll(classToNodeMapping.values)
+		graph.edges.addAll(connectionsEditParts.map[c |
+			new Edge(
+				classToNodeMapping.get(c.castedModel.source), 
+				classToNodeMapping.get(c.castedModel.target)
+			)
+		])
+		
+		//layout
+		val directedGraphLayout = new DirectedGraphLayout
+		directedGraphLayout.visit(graph)
+		
+		// map back positions to model
+		graph.nodes.forEach[ val n = it as Node
+			(n.data as Shape).location = new Point(n.x, n.y)
+		]
+	} 
+	
+	
+	// ****************************	
 	// ** Palette
 	// ****************************
 	
@@ -223,6 +290,9 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	// posta
 	
-	override setStackFrame(IStackFrame stackframe) { graphicalViewer.contents = stackframe }
+	override setStackFrame(IStackFrame stackframe) {
+		graphicalViewer.contents = stackframe 
+		layout
+	}
 	
 }
