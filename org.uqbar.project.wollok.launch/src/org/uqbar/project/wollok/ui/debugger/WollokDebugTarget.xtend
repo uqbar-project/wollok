@@ -89,7 +89,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 		if (breakpoint.isWollokBreakpoint) {
 			val marker = breakpoint.marker
 			if (marker != null)
-				return marker.resource.fileExtension == WollokLaunchConstants.EXTENSION
+				return WollokLaunchConstants.isWollokFileExtension(marker.resource.fileExtension)
 		}
 		false
 	}

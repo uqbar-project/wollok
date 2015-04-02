@@ -8,7 +8,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
  */
 class WollokLaunchConstants {
 	
-	public static val EXTENSION = "wlk"
+	public static val EXTENSIONS = #["wlk", "wpgm", "wtest"]
 	
 	public static val LAUNCH_CONFIGURATION_TYPE = "org.uqbar.project.wollok.launch.WollokLaunchConfigurationType"
 	public static val ID_DEBUG_MODEL = "org.uqbar.project.wollok.debugger.model"
@@ -41,4 +41,9 @@ class WollokLaunchConstants {
 	static def getWollokFile(ILaunchConfiguration config){
 		config.getAttribute(ATTR_WOLLOK_FILE,"")
 	}
+	
+	def static isWollokFileExtension(String xt) {
+		xt != null && EXTENSIONS.contains(xt)
+	}
+	
 }

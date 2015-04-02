@@ -41,7 +41,7 @@ class WollokLineBreakpointAdapter implements IToggleBreakpointsTarget {
 			val resource = part.resource
 			if (resource != null) {
 				val ext = resource.getFileExtension
-				if (ext != null && ext == WollokLaunchConstants.EXTENSION)
+				if (WollokLaunchConstants.isWollokFileExtension(ext))
 					return part
 			}
 		}
