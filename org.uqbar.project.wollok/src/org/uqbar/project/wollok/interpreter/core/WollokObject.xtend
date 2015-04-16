@@ -9,6 +9,8 @@ import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
+import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -21,6 +23,7 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 
 /**
  * A wollok user defined (dynamic) object.
@@ -29,6 +32,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
+	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	val Map<String,Object> instanceVariables = newHashMap
 	@Accessors var Object nativeObject
 	
@@ -51,10 +55,18 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	override call(String message, Object... parameters) {
 		val method = behavior.lookupMethod(message)
-		if (method == null)
-			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
-		method.call(parameters)
+		if (method != null)
+			return method.call(parameters)
+
+		// TODO: Adding special case for equals, but we have to fix it	
+		if(message == "=="){
+			val javaMethod = this.class.methods.findFirst[name == "equals"]
+			return javaMethod.invoke(this, parameters).asWollokObject
+		}
+		
+		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
 	}
+	
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WConstructor constructor, Object... objects) {
