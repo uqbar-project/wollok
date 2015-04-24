@@ -190,7 +190,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WNamedObject namedObject) {
 		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(namedObject).toString
-		try {
+		
+		val x = try {
 			interpreter.currentContext.resolve(qualifiedName)
 		} catch (UnresolvableReference e) {
 			new WollokObject(interpreter, namedObject) => [ wo |
@@ -200,6 +201,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 			]
 		}
+		
+		// println(x.toString + System.identityHashCode(x))
+		
+		x
 	}
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }

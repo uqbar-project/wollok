@@ -27,9 +27,9 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 			'''
 		].interpretPropagatingErrors
 	}
-	
+
 	@Test
-	def unusedVariables(){
+	def unusedVariables() {
 		val model = '''
 			object pepita {
 				var energia = 0
@@ -37,12 +37,12 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 				method setEnergia(x){ energia = x }
 			}
 		'''.parse
-		
+
 		model.assertNoIssues
 	}
-	
+
 	@Test
-	def void usingThis(){
+	def void usingThis() {
 		'''
 			object pepita {
 				method uno(){
@@ -55,4 +55,32 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void referencingObject() {
+		#[
+			'''
+				object pp {
+				    val ps = #[pepita]
+				    
+				    method unMethod(){
+				        var x = pepita
+				        return x
+				    }
+				
+				    method getPs(){
+				        return ps
+				    }
+				}
+				
+				object pepita {
+				
+				}			
+			''',
+			'''
+				program xxx{
+					pp.unMethod()
+					this.assert(pepita == pp.getPs().get(0))
+				}
+			'''].interpretPropagatingErrors
+	}
 }
