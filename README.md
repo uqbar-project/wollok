@@ -67,3 +67,6 @@ Distributed under the terms of LGPLv3
 * [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
 * [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
 
+
+## Metrics ##
+[![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
