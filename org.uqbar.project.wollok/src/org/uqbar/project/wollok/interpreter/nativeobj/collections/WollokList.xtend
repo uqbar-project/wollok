@@ -88,5 +88,7 @@ class WollokList extends AbstractWollokWrapperNativeObject<List<Object>> {
 	
 	// object
 	override toString() { "WList" + wrapped.toString }
+	
+	override clone() { new WollokList(interpreter, this.wrapped.clone) }
 
 }

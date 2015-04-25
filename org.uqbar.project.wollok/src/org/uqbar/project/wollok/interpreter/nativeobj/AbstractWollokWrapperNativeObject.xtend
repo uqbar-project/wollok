@@ -7,7 +7,7 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * When you send a message to it, it will try to answer by forwarding
  * the call to the wrapped object, via reflection.
  * 
- * It will try to perform some parameters conversions.
+ * It will try to perform some parameters conversions (maybe in the future?)
  * 
  * @author jfernandes
  */
