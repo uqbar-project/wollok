@@ -62,12 +62,5 @@ Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), Al
 Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)
 
-## Contributors ##
-
-* ![jfernandes.png](http://www.gravatar.com/avatar/2b1a92f9f594441d96dd1ddc9107070f?d=mm&s=60) [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
-* ![npasserini.png](http://www.gravatar.com/avatar/ab0a4c039df7844750bcf7d96c36c381?d=mm&s=60) [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
-* ![ptesone.png](http://www.gravatar.com/avatar/5ca1934161a7eb439ecb7b1bcffd21f1?d=mm&s=60) [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
-
-
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
