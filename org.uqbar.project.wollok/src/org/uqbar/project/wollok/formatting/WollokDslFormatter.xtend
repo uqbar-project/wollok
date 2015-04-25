@@ -46,7 +46,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def methodFormatting(FormattingConfig it) {
-		setLinewrap(1, 1, 1).before(WMethodDeclarationAccess.methodKeyword_1)
+		setLinewrap(1, 1, 2).before(WMethodDeclarationAccess.methodKeyword_1)
 		setLinewrap(1, 1, 1).after(WMethodDeclarationAccess.expressionAssignment_7)
 		
 		setNoSpace.after(WMethodDeclarationAccess.nameAssignment_2)
@@ -95,6 +95,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def programFormatting(FormattingConfig it) {
+		setLinewrap(1, 2, 2).before(WProgramAccess.programKeyword_0)
 		setLinewrap(1, 2, 2).after(WProgramAccess.leftCurlyBracketKeyword_2)
 		setIndentation(WProgramAccess.leftCurlyBracketKeyword_2, WPackageAccess.rightCurlyBracketKeyword_4)
 		
@@ -117,6 +118,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		// indentation
 		setIndentation(WClassAccess.leftCurlyBracketKeyword_3, WClassAccess.rightCurlyBracketKeyword_7)
 		
+		// after all variables
 		setLinewrap(1, 2, 2).after(WClassAccess.group_4)
 		
 		// members (after var, after method)
@@ -153,8 +155,15 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 2, 2).after(WNamedObjectAccess.group_4)
 		
 		// wrap after var, and method
+		setLinewrap(1, 1, 2).after(WNamedObjectAccess.getMembersWVariableDeclarationParserRuleCall_3_0_0)
 		setLinewrap(1, 1, 2).after(WNamedObjectAccess.membersAssignment_4_0)
 		setLinewrap(1, 2, 2).after(WNamedObjectAccess.membersWMethodDeclarationParserRuleCall_4_0_0)
+		
+		// after all variables
+		setLinewrap(1, 2, 2).after(WNamedObjectAccess.group_3)
+		
+		// after all methods
+		setLinewrap(1, 2, 2).after(WNamedObjectAccess.group_4)
 		
 		// increase indentation of content
 		setIndentation(WNamedObjectAccess.leftCurlyBracketKeyword_2, WNamedObjectAccess.rightCurlyBracketKeyword_5)
