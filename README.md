@@ -2,6 +2,7 @@
 # Wollok #
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
 
+
 A programming language and environment for teaching OOP.
 
 ## Installation ##
@@ -63,9 +64,9 @@ Distributed under the terms of LGPLv3
 
 ## Contributors ##
 
-* [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
-* [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
-* [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
+* ![jfernandes.png](http://www.gravatar.com/avatar/2b1a92f9f594441d96dd1ddc9107070f?d=mm&s=60) [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
+* ![npasserini.png](http://www.gravatar.com/avatar/ab0a4c039df7844750bcf7d96c36c381?d=mm&s=60) [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
+* ![ptesone.png](http://www.gravatar.com/avatar/5ca1934161a7eb439ecb7b1bcffd21f1?d=mm&s=60) [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
 
 
 ## Metrics ##
