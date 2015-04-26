@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="5">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="epp.package.java" version="4.4.1.20140925-1820"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.100.v20140603-1326"/>
+<unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140606-1558"/>
+<repository location="http://download.eclipse.org/releases/luna"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.7.3.v201411190455"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="it.xsemantics.feature.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.sdk.source.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.examples.feature.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.doc.feature.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.sdk.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.implemented.examples.feature.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.feature.source.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.runtime.feature.source.feature.group" version="1.7.0.v20141121-1416"/>
+<unit id="it.xsemantics.runtime.feature.feature.group" version="1.7.0.v20141121-1416"/>
+<repository location="http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.zest.feature.group" version="1.5.101.201408150207"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.xpect.sdk.feature.group" version="0.1.0.201409041611"/>
+<repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+</location>
+</locations>
+</target>
