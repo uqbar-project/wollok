@@ -14,12 +14,38 @@
 
 	<name>Wollok TypeSystem Impl based on XSemantics</name>
 
-	<properties>
-		<xsemantics-version>1.7.2</xsemantics-version>
-	</properties>
-
 	<build>
 		<plugins>
+		
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>build-helper-maven-plugin</artifactId>
+		        <version>1.7</version>
+		        <executions>
+		          <execution>
+		            <id>add-source</id>
+		            <phase>generate-sources</phase>
+		            <goals>
+		              <goal>add-source</goal>
+		            </goals>
+		            <configuration>
+		              <sources>
+		                <source>xsemantics-gen</source>
+		              </sources>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+		
+			<!-- compile xtend -->
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+			<!-- generate xsemantics 
+			TODO: I don't know how to solve this, xsemantics requires xtend generated code.
+			But xtend needs the xsemantics generated code (WollokDslTypeSystem) in order to compile.
+			There's a circular dependencies there. -->
 			<plugin>
 				<groupId>org.eclipse.xtext</groupId>
 				<artifactId>xtext-maven-plugin</artifactId>
@@ -51,6 +77,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			
 		</plugins>
 		
 		<pluginManagement>

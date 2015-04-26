@@ -10,6 +10,7 @@ Require-Bundle: org.uqbar.project.wollok.typeSystem.xsemantics,
  org.eclipse.core.resources,
  org.eclipse.jface,
  org.eclipse.ui.workbench,
+ org.eclipse.xtend.lib;bundle-version="2.7.3",
  org.eclipse.xtext.ui,
  org.eclipse.jdt.ui,
  org.eclipse.xtext.ui.shared

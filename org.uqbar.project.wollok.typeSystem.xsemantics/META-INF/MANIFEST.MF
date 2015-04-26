@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem.xsemantics
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.uqbar.project.wollok;bundle-version="1.0.0",
- it.xsemantics.runtime;bundle-version="1.5.0";visibility:=reexport,
+ it.xsemantics.runtime;bundle-version="1.7.2";visibility:=reexport,
+ org.eclipse.xtend.lib;bundle-version="2.7.3",
  org.eclipse.xtext.ui
 Export-Package: org.uqbar.project.wollok.semantics,
  org.uqbar.project.wollok.semantics.validation,

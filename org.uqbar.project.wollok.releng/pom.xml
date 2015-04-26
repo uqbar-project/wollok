@@ -15,9 +15,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>../org.uqbar.project.wollok.lib</module>
 		<module>../org.uqbar.project.wollok.ui</module>
 		<module>../org.uqbar.project.wollok.ui.diagrams</module>
-		<!-- TODO 
 		<module>../org.uqbar.project.wollok.typeSystem.xsemantics</module>
 		<module>../org.uqbar.project.wollok.typeSystem.xsemantics.ui</module>
+		<!-- TODO 
 		<module>../org.uqbar.project.wollok.tests</module>
 		<module>../org.uqbar.project.wollok.sdk</module>
 		<module>../org.uqbar.project.wollok.product</module>
@@ -29,6 +29,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<tycho-version>0.19.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.7.3</xtext.version>
+		<xsemantics-version>1.7.2</xsemantics-version>
 	</properties>
 
 	<repositories>
@@ -55,12 +56,25 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<layout>p2</layout>
 			<url>http://www.xpect-tests.org/updatesite/nightly/</url>
 		</repository>
+		
+		<!-- XSemantics -->
 		<repository>
 			<id>XSemantics Update Site</id>
 			<layout>p2</layout>
-			<url>http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7/</url>
+			<url>http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7</url>
 		</repository>
+		<!-- /XSemantics -->
 	</repositories>
+	
+	<pluginRepositories>
+	 <!-- XSemantics -->
+	 <pluginRepository>
+		<id>xsemantics-maven-repo</id>
+		<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
+	 </pluginRepository>
+	 <!-- /XSemantics -->
+	</pluginRepositories>
+	
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -159,7 +173,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
-			<!-- 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -208,7 +221,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</target>
 				</configuration>
 			</plugin>
-			 -->
 			
 		</plugins>
 	</build>

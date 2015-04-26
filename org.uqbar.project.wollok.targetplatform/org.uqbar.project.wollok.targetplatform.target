@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="5">
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="8">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="epp.package.java" version="4.4.1.20140925-1820"/>
@@ -12,24 +12,25 @@
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="it.xsemantics.feature.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.sdk.source.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.examples.feature.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.doc.feature.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.sdk.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.implemented.examples.feature.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.feature.source.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.runtime.feature.source.feature.group" version="1.7.0.v20141121-1416"/>
-<unit id="it.xsemantics.runtime.feature.feature.group" version="1.7.0.v20141121-1416"/>
-<repository location="http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.zest.feature.group" version="1.5.101.201408150207"/>
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.1.0.201409041611"/>
 <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="it.xsemantics.runtime.feature.source.feature.group" version="1.7.2.v20150304-1517"/>
+<unit id="it.xsemantics.runtime.feature.feature.group" version="1.7.2.v20150304-1517"/>
+<unit id="it.xsemantics.sdk.feature.group" version="1.7.2.v20150304-1517"/>
+<unit id="it.xsemantics.feature.feature.group" version="1.7.2.v20150304-1517"/>
+<repository location="http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="hu.cubussapiens.debugvisualisation.feature.feature.group" version="0.8.2.201101151458"/>
+<unit id="hu.cubussapiens.themes.presentation.feature.feature.group" version="0.1.1.201103090947"/>
+<unit id="hu.cubussapiens.xtext.reflectiveeditor.feature.feature.group" version="0.5.5.201306262153"/>
+<repository location="http://eclipse.cubussapiens.hu"/>
 </location>
 </locations>
 </target>
