@@ -1,5 +1,5 @@
 language: java
-script: cd org.uqbar.project.wollok.targetplatform && mvn clean install && cd ../org.uqbar.project.wollok.releng/ && mvn clean install
+script: cd ../org.uqbar.project.wollok.releng/ && mvn clean install
 
 cache:
   directories:

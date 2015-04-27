@@ -214,7 +214,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</environments>
 					<target>
 						<artifact>
-							<groupId>org.uqbar.wollok</groupId>
+							<groupId>org.uqbar-project</groupId>
 							<artifactId>org.uqbar.project.wollok.targetplatform</artifactId>
 							<version>1.0.0-SNAPSHOT</version>
 						</artifact>
