@@ -39,6 +39,10 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		crawl(r.map[new File(normalizePath)], filter)
 	}
 	
+	def dispatch Iterable<String> crawl(Void nothing, Function1 <String,Boolean> filter) {
+		#[]
+	}
+	
 	def dispatch Iterable<String> crawl(Iterable<File> files,Function1 <String,Boolean> filter){
 		files.map[crawl(filter)].flatten
 	}
@@ -48,14 +52,14 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 	}
 	
 	def dispatch Iterable<String> crawl(File f,Function1 <String,Boolean> filter){
-
-		if(f.directory){
+		if (f.directory) {
 			f.listFiles.crawl(filter)
-		}else{
-			if(f.name.endsWith("jar"))
+		}
+		else {
+			if (f.name.endsWith("jar"))
 				f.crawlJar(filter)
 			else
-				if(filter.apply(f.name))
+				if (filter.apply(f.name))
 					#[f.name]
 				else
 					#[]
@@ -64,12 +68,12 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 	
 	def Iterable<String> crawlJar(File f, Function1 <String,Boolean> filter){
 		var JarFile jarFile = null
-		try{
+		try {
 			jarFile = new JarFile(f)
 			jarFile.entries.toList.map[name].filter(filter)
-		}finally{
-			if(jarFile != null)
-				jarFile.close
+		}
+		finally {
+			jarFile?.close
 		}
 	}
 	
@@ -80,9 +84,9 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		newPath.replace("%20"," ")
 	}
 	
-	def <E> toList(Enumeration<E> enumeration){
+	def <E> toList(Enumeration<E> enumeration) {
 		val r = <E>newArrayList
-		while(enumeration.hasMoreElements){
+		while(enumeration.hasMoreElements) {
 			r.add(enumeration.nextElement)
 		}
 		r
