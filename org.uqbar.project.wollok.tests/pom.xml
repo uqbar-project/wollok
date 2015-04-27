@@ -38,7 +38,8 @@
 		          </execution>
 		        </executions>
 		    </plugin>
-		<!-- 
+		<!-- this will delete src-gen but then you need to build the core project that is the one
+			that generates its content (running the GenerateLang)
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
@@ -54,13 +55,39 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
+			
+			<!-- The unit tests do not have to be executed as plugin-test, there use 
+				the default maven surefire plugin and disable the tycho plug-in -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<excludes>
+								<exclude>**/Abstract*</exclude>
+							</excludes>
+							<forkMode>once</forkMode>
+							<reportFormat>xml</reportFormat>
+							<testClassesDirectory>target/classes</testClassesDirectory>
+							<!--  set the encoding to a defined value to run the encoding tests successful -->
+							<argLine>-Dfile.encoding=US-ASCII</argLine>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
 				<configuration>
-					<useUIHarness>false</useUIHarness>
-					<useUIThread>false</useUIThread>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>

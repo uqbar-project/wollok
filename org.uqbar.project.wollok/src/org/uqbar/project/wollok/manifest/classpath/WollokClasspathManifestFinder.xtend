@@ -6,12 +6,14 @@ import java.net.URLClassLoader
 import java.util.Enumeration
 import java.util.LinkedHashSet
 import java.util.jar.JarFile
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
 
 class WollokClasspathManifestFinder implements WollokManifestFinder {
+	static Logger log = Logger.getLogger(WollokClasspathManifestFinder)
 	
 	override allManifests(ResourceSet resourceSet) {
 		val allClassPathEntries = getAllClassPathEntries[endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)]
@@ -36,6 +38,7 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		r.addAll(cl.getResources("").toList)
 		if(cl instanceof URLClassLoader)
 			r.addAll(cl.URLs)
+		log.warn("Loading Wollok Manifests from: " + r);
 		crawl(r.map[new File(normalizePath)], filter)
 	}
 	
