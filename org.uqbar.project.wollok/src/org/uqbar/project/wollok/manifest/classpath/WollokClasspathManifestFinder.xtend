@@ -42,9 +42,9 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		crawl(r.map[new File(normalizePath)], filter)
 	}
 	
-	def dispatch Iterable<String> crawl(Void nothing, Function1 <String,Boolean> filter) {
-		#[]
-	}
+//	def dispatch Iterable<String> crawl(Void nothing, Function1 <String,Boolean> filter) {
+//		#[]
+//	}
 	
 	def dispatch Iterable<String> crawl(Iterable<File> files,Function1 <String,Boolean> filter){
 		files.map[crawl(filter)].flatten
