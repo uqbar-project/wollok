@@ -13,9 +13,21 @@
   <packaging>eclipse-repository</packaging>
 
   <name>Wollok Language Update Site</name>
+  
+  <properties>
+  	<updateSiteType>bleeding-edge</updateSiteType>
+  </properties>
+  
+  <!-- TO DEPLOY THE UPDATE SITE RUN:
+  	
+  	mvn install -P uploadRepo
+  	
+   -->
+  
 
 	<build>
 		<plugins>
+			<!-- creates the update site -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-director-plugin</artifactId>
@@ -36,5 +48,57 @@
 				</executions>
 			</plugin>
 		</plugins>
+		
+		 <extensions>
+		   <!-- Enabling the use of FTP -->
+		   <extension>
+		    <groupId>org.apache.maven.wagon</groupId>
+		    <artifactId>wagon-ftp</artifactId>
+		    <version>1.0-beta-6</version>
+		   </extension>
+		  </extensions>
 	</build>
+	
+	 <profiles>
+	  <!-- This profile is used to upload the repo -->
+	  <profile>
+	   <id>uploadRepo</id>
+	   <properties>
+	    <!-- Properties relative to the distant host where to upload the repo -->
+	    <ftp.url>ftp://uqbar-wiki.org</ftp.url>
+	    <ftp.toDir>/wollok/${updateSiteType}</ftp.toDir>
+	    <!-- Relative path to the repo being uploaded -->
+	    <repo.path>${project.build.directory}/repository/</repo.path>
+	   </properties>
+	
+	   <build>
+	    <plugins>
+	     <!-- Upload the repo to the server -->
+	     <plugin>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>wagon-maven-plugin</artifactId>
+	      <version>1.0-beta-4</version>
+	      <executions>
+	       <execution>
+	        <id>upload-repo</id>
+	        <phase>install</phase>
+	        <goals>
+	         <goal>upload</goal>
+	        </goals>
+	        <configuration>
+	         <fromDir>${repo.path}</fromDir>
+	         <includes>**</includes>
+	         <toDir>${ftp.toDir}</toDir>
+	         <url>${ftp.url}</url>
+	         <serverId>p2-uqbar</serverId>
+	        </configuration>
+	       </execution>
+	      </executions>
+	     </plugin>
+	    </plugins>
+	   </build>
+	  </profile>
+	 </profiles>
+	
+	
 </project>

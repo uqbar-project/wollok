@@ -38,7 +38,6 @@ class WollokClasspathManifestFinder implements WollokManifestFinder {
 		r.addAll(cl.getResources("").toList)
 		if(cl instanceof URLClassLoader)
 			r.addAll(cl.URLs)
-		println("Loading Wollok Manifests from: " + r);
 		crawl(r.map[new File(normalizePath)], filter)
 	}
 	
