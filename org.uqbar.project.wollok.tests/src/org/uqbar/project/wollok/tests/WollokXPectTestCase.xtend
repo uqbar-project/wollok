@@ -9,6 +9,6 @@ import org.xpect.xtext.lib.tests.XtextTests
  * @author jfernandes
  */
 @RunWith(XpectRunner)
- @Ignore
+@Ignore // TODO: see how to run it with maven as a regular test (not osgi)
 class WollokXPectTestCase extends XtextTests {
 }

@@ -57,25 +57,36 @@
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
 			
-			<!-- The unit tests do not have to be executed as plugin-test, there use 
-				the default maven surefire plugin and disable the tycho plug-in
-				
+			<!-- run tests with tycho -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<useUIHarness>false</useUIHarness>
+					<useUIThread>false</useUIThread>
+					<excludes>
+						<exclude>**/Abstract*</exclude>
+						<exclude>**/WollokXPectTestCase</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
+			<!-- xpect test just with regular junit test
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<inherited>true</inherited>
 				<executions>
 					<execution>
 						<id>test</id>
 						<phase>test</phase>
 						<configuration>
-							<redirectTestOutputToFile>true</redirectTestOutputToFile>
-							<excludes>
-								<exclude>**/Abstract*</exclude>
-							</excludes>
+							<test>org/uqbar/project/wollok/tests/WollokXPectTestCase.java</test>
 							<forkMode>once</forkMode>
 							<reportFormat>xml</reportFormat>
 							<testClassesDirectory>target/classes</testClassesDirectory>
-							<argLine>-Dfile.encoding=UTF-8</argLine>
+							<argLine>-Dfile.encoding=US-ASCII</argLine>
 						</configuration>
 						<goals>
 							<goal>test</goal>
@@ -83,20 +94,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			--> 
-			
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-				<!-- 
-					<skip>true</skip>
-					 -->
-					<useUIHarness>false</useUIHarness>
-					<useUIThread>false</useUIThread>
-				</configuration>
-			</plugin>
+			-->
 		</plugins>
 	</build>
 </project>
