@@ -12,5 +12,5 @@
   <artifactId>org.uqbar.project.wollok.sdk</artifactId>
   <packaging>eclipse-feature</packaging>
 
-  <name>Wollokg Language Feature</name>
+  <name>Wollok Language Feature</name>
 </project>
