@@ -10,7 +10,7 @@ Download full Wollok distribution from http://download.uqbar.org/
 
 Wollok update site:
 ```
-http://dl.bintray.com/uqbar/wollok-update-site/
+http://update.uqbar.org/wollok/
 ```
 
 ## Documentation ##
