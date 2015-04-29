@@ -52,9 +52,39 @@
 				</executions>
 			</plugin>
 			 -->
+			 <plugin>
+			 	<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-clean-plugin</artifactId>
+			    <configuration>
+			        <filesets>
+			            <fileset>
+			                <directory>xtend-gen</directory>
+			                <includes>
+			                    <include>**</include>
+			                </includes>
+			            </fileset>
+			        </filesets>
+			    </configuration>
+			</plugin>
+			 
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+				<executions>
+					<execution>
+			            <goals>
+			                <goal>compile</goal>
+			                <goal>testCompile</goal>
+                            <goal>testCompile</goal>
+                            <goal>xtend-test-install-debug-info</goal>
+			            </goals>
+
+			        </execution>
+				</executions>
+				<configuration>
+	                <outputDirectory>xtend-gen</outputDirectory>
+                    <testOutputDirectory>xtend-gen</testOutputDirectory>
+			    </configuration>
 			</plugin>
 			
 			<!-- run tests with tycho -->

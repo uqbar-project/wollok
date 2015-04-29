@@ -13,7 +13,7 @@ val pepin = object {
 		this.crecer(0.2)
 	}
 	method altura() {
-		altura
+		return altura
 	}
 }
 
