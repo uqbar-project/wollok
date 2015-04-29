@@ -11,7 +11,7 @@ Require-Bundle: org.uqbar.project.wollok.typeSystem.xsemantics,
  org.eclipse.jface,
  org.eclipse.ui.workbench,
  org.eclipse.xtend.lib;bundle-version="2.7.3",
- org.eclipse.xtext.ui,
+ org.eclipse.xtext.ui;bundle-version="2.7.3",
  org.eclipse.jdt.ui,
  org.eclipse.xtext.ui.shared
 Export-Package: org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
