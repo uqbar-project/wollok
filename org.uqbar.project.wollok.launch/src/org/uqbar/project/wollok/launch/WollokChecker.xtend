@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.WollokDslStandaloneSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import java.util.Arrays
 
 /**
  * Wollok checker program.
@@ -101,30 +102,32 @@ class WollokChecker {
 				name.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION) ||
 					name.endsWith("." + WollokConstants.PROGRAM_EXTENSION) ||
 					name.endsWith("." + WollokConstants.TEST_EXTENSION)])
-		folder.listFiles[f|f.directory].forEach[collectWollokFiles(it, classpath)]
+		folder.listFiles[ directory ].forEach[ collectWollokFiles(it, classpath) ]
 	}
 	
 	def validate(Injector injector, Resource resource) {
-		this.validate(injector,resource,[println(it.formattedIssue)],[System.exit(-1)])
+		this.validate(injector,resource,[println(formattedIssue)],[ System.exit(-1) ])
 	}
 	
 	def String formattedIssue(Issue it) {
-		// hardcoded offset. investigate how to get the real offset
-		'''«uriToProblem?.trimFragment.toFileString»:«lineNumber»:1 «severity.name» «message»'''
+		// COLUMN: investigate how to calculate the column number from the offset !
+		'''«uriToProblem?.trimFragment.toFileString»:«lineNumber»:«if (offset == null) 1 else offset» «severity.name» «message»'''
 	}
 	
 	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler, Procedure1<Iterable<Issue>> after) {
 		val validator = injector.getInstance(IResourceValidator)
-		var issues = validator.validate(resource, CheckMode.ALL, null).filter[severity == Severity.ERROR].filter[
-			code != WollokDslValidator.TYPE_SYSTEM_ERROR]
-		if (!issues.isEmpty) {
-			issues.forEach(issueHandler)
-			after.apply(issues)
+		val issues = validator.validate(resource, CheckMode.ALL, null)
+		// WARNINGS
+		issues.filter[ severity == Severity.WARNING ].forEach(issueHandler)
+		// ERRORS 
+		val errors = issues.filter[severity == Severity.ERROR && code != WollokDslValidator.TYPE_SYSTEM_ERROR]
+		if (!errors.isEmpty) {
+			errors.forEach(issueHandler)
+			after.apply(errors)
 		}
 	}
 	
 	def File findProjectRoot(File folder) {
-
 		// goes up all the way (I wanted to search for something like ".project" file but
 		// the launcher is executing this interpreter with a relative path to the file, like "src/blah/myfile.wlk"
 		// so I cannot make it up to the project folder :(
