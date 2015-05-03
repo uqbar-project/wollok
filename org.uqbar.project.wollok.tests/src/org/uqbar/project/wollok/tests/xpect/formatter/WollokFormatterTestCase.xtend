@@ -175,6 +175,70 @@ class WollokFormatterTestCase extends AbstractXtextTests {
         	a.doSomething(a, a, a, a, a)
         }''')
     }
+    
+    @Test
+    def void constructorDefParametersOnLineConstructorStaysLikeThat() throws Exception {
+    	assertFormatting('''class Direccion {
+	var calle
+	var numero  new  (  c  ,   n   ) { calle = c numero = n } }''',
+        '''
+        
+        class Direccion {
+        	var calle
+        	var numero
+
+        	new(c, n) { calle = c numero = n }
+        }''')
+    }
+    
+    // I think there's a bug here in the block formatting within the constructor body
+    @Test
+    def void constructorDefParametersMultipleLinesConstructor() throws Exception {
+    	assertFormatting('''class Direccion {
+	var calle
+	var numero  new  (  c  ,   n   ) { 
+		calle = c
+		numero = n
+	} }''',
+        '''
+        
+        class Direccion {
+        	var calle
+        	var numero
+
+        	new(c, n) {
+        		calle = c numero = n
+        	}
+        }''')
+    }
+    
+    // I think there's a bug here in the block formatting within the constructor body
+    @Test
+    def void constructorCallParameters() throws Exception {
+    	assertFormatting('''class Direccion {
+	var calle
+	var numero  new  (  c  ,   n  , b  ,  d ) { calle = c numero = n } }
+	class Client {
+		method blah() {
+			val a = ""
+			val b = 2
+			val c = new    Direccion  (  a   ,  b   ,  "blah"   ,   #[1,2,3]    )
+		}
+	}''',
+        '''
+
+class Direccion {
+	var calle
+	var numero
+
+	new(c, n, b, d) { calle = c numero = n }
+}
+class Client {
+	method blah() {
+		val a = "" val b = 2 val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
+	}
+}''')
+    }
 
 	// TODO: test 
 	//     	- named objects and object literals
