@@ -71,6 +71,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		// no space around '.' or '?.'
 		setNoSpace.around(WMemberFeatureCallAccess.getAlternatives_1_0_0_1)
 		
+		setNoSpace.before(WMemberFeatureCallAccess.commaKeyword_1_2_0_1_1_0)
 		setSpace(' ').after(WMemberFeatureCallAccess.commaKeyword_1_2_0_1_1_0)
 		
 		// parenthesis
@@ -97,12 +98,15 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	def programFormatting(FormattingConfig it) {
 		setLinewrap(1, 2, 2).before(WProgramAccess.programKeyword_0)
 		setLinewrap(1, 2, 2).after(WProgramAccess.leftCurlyBracketKeyword_2)
-		setIndentation(WProgramAccess.leftCurlyBracketKeyword_2, WPackageAccess.rightCurlyBracketKeyword_4)
+		
+		setIndentation(WProgramAccess.leftCurlyBracketKeyword_2, WProgramAccess.rightCurlyBracketKeyword_4)
 		
 		setLinewrap(1, 2, 2).before(WProgramAccess.rightCurlyBracketKeyword_4)
 		setLinewrap(1, 2, 2).after(WProgramAccess.rightCurlyBracketKeyword_4)
 		
 		setLinewrap(0, 1, 2).after(WProgramAccess.elementsAssignment_3_0)
+		
+		setLinewrap(1, 1, 2).after(WProgramAccess.group_3)
 	}
 	
 	def classFormatting(FormattingConfig it) {

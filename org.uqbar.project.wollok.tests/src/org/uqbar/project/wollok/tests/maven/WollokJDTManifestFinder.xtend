@@ -24,7 +24,7 @@ class WollokJDTManifestFinder implements WollokManifestFinder{
 		if (resourceSet instanceof XtextResourceSet) {
 			val xtextResourceSet = resourceSet as XtextResourceSet
 			val context = xtextResourceSet.getClasspathURIContext();
-			context as IJavaProject
+			if (context instanceof IJavaProject) context as IJavaProject else null
 		} else
 			null;
 	}
