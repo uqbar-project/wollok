@@ -1,30 +1,21 @@
+[![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
 # Wollok #
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
+
 
 A programming language and environment for teaching OOP.
 
 ## Installation ##
+Download full Wollok distribution from http://download.uqbar.org/
 
- * Download [eclipse's xtext distribution](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
- * Install xsemantics plugin from update site:
+Wollok update site:
 ```
-#!xml
-http://sourceforge.net/projects/xsemantics/files/updates/releases/1.5
-```
- * Install debugvisualization plugin from update site:
-```
-#!xml
-http://eclipse.cubussapiens.hu
-```
- * Install wollok from update site: 
-```
-#!xml
 http://dl.bintray.com/uqbar/wollok-update-site/
 ```
 
 ## Documentation ##
 
-Refer to the [wiki](wollok/wiki/Home) for documentation like Language Reference and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like Language Reference and Environment.
 
 ## What's the language like ? ##
 
@@ -45,6 +36,25 @@ Refer to the [wiki](wollok/wiki/Home) for documentation like Language Reference 
 * Integrated with eclipse Launchers (Run As).
 * A debugger.
 
+## How to Contribute ##
+### Preparing the development environment ###
+
+ * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
+ * Install xsemantics plugin from update site:
+```
+http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
+```
+ * Install debugvisualization plugin from update site:
+```
+http://eclipse.cubussapiens.hu
+```
+ * Install xpect from update site:
+```
+http://www.xpect-tests.org/updatesite/nightly/
+```
+ * In the resulting Eclipse, import all the projects below https://github.com/uqbar-project/wollok
+ * Run GenerateWollokDsl.mwe2
+
 ## License ##
 
 Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), All Rights Reserved.
@@ -52,8 +62,5 @@ Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), Al
 Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)
 
-## Contributors ##
-
-* [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
-* [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
-* [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
+## Metrics ##
+[![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)

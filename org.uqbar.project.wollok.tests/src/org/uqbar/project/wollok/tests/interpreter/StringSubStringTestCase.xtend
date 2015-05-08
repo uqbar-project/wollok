@@ -6,7 +6,7 @@ import org.junit.Test
 /**
  * @author tesonep
  */
-class TestTestCase extends AbstractWollokInterpreterTestCase {
+class SubstringTestTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testWithAssertsOk() {

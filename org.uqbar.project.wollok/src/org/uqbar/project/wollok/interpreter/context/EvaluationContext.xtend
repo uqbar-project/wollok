@@ -3,14 +3,8 @@ package org.uqbar.project.wollok.interpreter.context
 import java.io.Serializable
 import java.util.List
 import java.util.Map
-import java.util.Stack
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.WCallable
-import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WFeatureCall
-
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * WExpression evaluation context.
@@ -29,35 +23,6 @@ interface EvaluationContext extends Serializable {
 	def Iterable<WVariable> allReferenceNames()
 	
 	def WCallable getThisObject()
-}
-
-
-class UnresolvableReference extends RuntimeException {
-	new(String message) {
-		super(message)
-	}
-}
-
-class MessageNotUnderstood extends RuntimeException {
-	// Esto es previo a tener la infraestructura de debugging
-	// probablemente seria bueno unificar el manejo de errores con eso
-	var Stack<WFeatureCall> wollokStack = new Stack
-	
-	new(String message) {
-		super(message)
-	}
-	
-	def pushStack(WFeatureCall call) { wollokStack.push(call) }
-	
-	override getMessage() '''«super.getMessage()»
-		«FOR m : wollokStack»
-		«(m as WExpression).method?.declaringContext?.contextName».«(m as WExpression).method?.name»():«NodeModelUtils.findActualNodeFor(m).textRegionWithLineInformation.lineNumber»
-		«ENDFOR»
-	'''
-	
-	def getInternalMessage(){
-		super.message
-	}
 }
 
 /**

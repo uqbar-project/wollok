@@ -1,0 +1,8 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+program tryBlock {
+	// XPECT errors --> "Try block must specify either a 'catch' or a 'then always' clause" at "{ 	this.println("No exception raised") }"
+	try {
+		this.println("No exception raised")
+	}
+}

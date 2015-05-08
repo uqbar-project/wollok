@@ -9,7 +9,7 @@ import static org.uqbar.project.wollok.semantics.WollokType.*
  * 
  * @author npasserini
  */
-class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
+class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Test
 	def void testNumberLiteral() { 	'''program p {

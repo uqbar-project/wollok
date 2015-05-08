@@ -9,19 +9,22 @@ import org.junit.Test
 class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void testPlusPlus() {''' program p {
+	def void testPlusPlus() {''' 
+		program p {
 			var n = 1
 			n++
 			
-			this.assert(n == 2) }'''.interpretPropagatingErrors
+			this.assert(n == 2) 
+		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testMinusMinus() {''' program p {
+	def void testMinusMinus() {'''
+		program p {
 			var n = 2
 			n--
 			
-			this.assert(n == 1) }'''.interpretPropagatingErrors
+			this.assert(n == 1)
+		}'''.interpretPropagatingErrors
 	}
-	
 }

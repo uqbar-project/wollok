@@ -1,0 +1,63 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+program typeSystem {
+	var pepita = object {
+		var energia = 23
+		method comer(cuanto) {
+			energia = energia + cuanto
+		}
+		method energia() {
+			energia
+		}
+		method algoConPerro(perro) {
+			perro.ladrar()
+			perro.ladrar() //autocompletado
+			perro.saltar()
+		}
+	}
+	
+	// DEBERIA FALLAR PERO NO LO HACE PORQUE TODOS LOS BASIC TYPE AHORA DICEN QUE ENTIENDEN CUALQUIER MENSAJE
+	// POR EL QUE VOS LE PREGUNTES
+	pepita = 23
+	
+	
+	// XPECT errors --> 
+	pepita = object {}
+	
+	// XPECT errors --> 
+	pepita = object {
+		method comer(a) {}
+	}
+	
+	// XPECT errors --> 
+	pepita = object {
+		method comer() {}
+		method energia() {}
+		method algoConPerro(p) {
+			p.ladrar()
+			p.saltar()
+		}
+	}
+	
+	// YO CREO QUE ESTE NO DEBERIA FALLAR, PERO ES UN TEMA COMPLICADO
+	//  AL INFERIR EL TIPO DE PARAMETROS EN BASE A SU USO, EL 'p' de "algoConPerro"
+	//  EN ESTE CASO ES "ANY" PORQUE NO LE MANDAMOS NINGUN MENSAJE, PERO EN EL INICIAL ES "algo con ladrar, saltar"
+	//   ENTONCES LOS TRATA COMO DISTINTOS
+	// XPECT errors --> 
+	pepita = object {
+		method comer(cuanto) {}
+		method energia() {}
+		method algoConPerro(p) {}
+	}
+	
+	
+	pepita = object {
+		method comer(cuanto) {}
+		method energia() {}
+		method algoConPerro(p) {
+			p.ladrar()
+			p.saltar()
+		}
+	}
+		
+}

@@ -20,7 +20,8 @@ class WollokBreakpointAdapterFactory implements IAdapterFactory {
 			val resource = editorPart.resource
 			if (resource != null) {
 				val xt = resource.fileExtension
-				if (xt != null && xt.equals(WollokLaunchConstants.EXTENSION)) {
+				
+				if (WollokLaunchConstants.isWollokFileExtension(xt)) {
 					return new WollokLineBreakpointAdapter
 				}
 			}			

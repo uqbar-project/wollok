@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+
+object pepita{
+	method algo(){
+		this.otraCosa()
+	}
+	
+	method otraCosa(){
+		console.println("Hola")
+	}
+}

@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.context
 
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**

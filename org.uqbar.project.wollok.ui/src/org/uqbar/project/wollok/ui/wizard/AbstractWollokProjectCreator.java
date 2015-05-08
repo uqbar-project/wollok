@@ -20,8 +20,7 @@ public class AbstractWollokProjectCreator extends org.eclipse.xtext.ui.wizard.Ab
 	protected static final String DSL_GENERATOR_PROJECT_NAME = "org.uqbar.project.wollok";
 
 	protected static final String SRC_ROOT = "src";
-	protected static final String SRC_GEN_ROOT = "src-gen";
-	protected final List<String> SRC_FOLDER_LIST = ImmutableList.of(SRC_ROOT, SRC_GEN_ROOT);
+	protected final List<String> SRC_FOLDER_LIST = ImmutableList.of(SRC_ROOT);
 
 	@Override
 	protected WollokDslProjectInfo getProjectInfo() {

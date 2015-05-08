@@ -18,4 +18,6 @@ class WollokDSLKeywords {
 	public static val OVERRIDE = "override"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
+
+	public static def isMultiOpAssignment(String operator) { operator.matches(MULTIOPS_REGEXP) }
 }

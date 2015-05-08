@@ -12,6 +12,15 @@
               name="Class Diagram"
               restorable="true">
         </view>
+        <view
+              category="org.uqbar.project.wollok.ui.diagrams.category"
+              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.objects.ObjectDiagramView"
+              icon="class_diagram_icon.png"
+              id="org.uqbar.project.wollok.ui.diagrams.object"
+              name="Object Diagram"
+              restorable="true">
+        </view>
+        
         <category
               id="org.uqbar.project.wollok.ui.diagrams.category"
               name="Wollok Diagrams">

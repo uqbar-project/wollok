@@ -27,7 +27,7 @@ class WollokSourcePathComputer implements ISourcePathComputerDelegate {
 		if (path != null) {
 			val resource = ResourcesPlugin.workspace.root.findMember(new Path(path))
 			if (resource != null) {
-				val container = resource.getParent
+				val container = resource.parent
 				if (container.type == IResource.PROJECT) {
 					sourceContainer = new ProjectSourceContainer(container as IProject, false);
 				} else if (container.type == IResource.FOLDER) {

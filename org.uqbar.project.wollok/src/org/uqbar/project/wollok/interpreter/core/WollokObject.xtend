@@ -2,16 +2,20 @@ package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
 import java.util.Set
-import org.uqbar.project.wollok.interpreter.WollokFeatureCallExtensions
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.UnresolvableReference
+import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
-import org.uqbar.project.wollok.interpreter.context.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
+import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
@@ -19,7 +23,7 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 
 /**
  * A wollok user defined (dynamic) object.
@@ -27,24 +31,22 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
  * @author jfernandes
  * @author npasserini
  */
-class WollokObject implements EvaluationContext, WCallable {
-	@Property extension WollokInterpreter interpreter
-	extension WollokFeatureCallExtensions featureCall
-	var Map<String,Object> instanceVariables = newHashMap
-	var WMethodContainer behavior
-	@Property var Object nativeObject
+class WollokObject extends AbstractWollokCallable implements EvaluationContext {
+	val extension WollokInterpreterAccess = new WollokInterpreterAccess
+	val Map<String,Object> instanceVariables = newHashMap
+	@Accessors var Object nativeObject
 	
-	new(WollokInterpreter interpreter, WMethodContainer behavior) {
-		this.interpreter = interpreter
-		this.behavior = behavior
-		featureCall = new WollokFeatureCallExtensions(this)
+	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
+		super(interpreter, behavior)
 	}
-	
+
+	override getReceiver() { this }
+
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 	def dispatch void addMember(WVariableDeclaration declaration) {
 		instanceVariables.put(declaration.variable.name, declaration.right?.eval)
 	}
-	
+		
 	// ******************************************
 	// **
 	// ******************************************
@@ -53,18 +55,24 @@ class WollokObject implements EvaluationContext, WCallable {
 	
 	override call(String message, Object... parameters) {
 		val method = behavior.lookupMethod(message)
-		if (method == null)
-			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
-		method.call(parameters)
+		if (method != null)
+			return method.call(parameters)
+
+		// TODO: Adding special case for equals, but we have to fix it	
+		if(message == "=="){
+			val javaMethod = this.class.methods.findFirst[name == "equals"]
+			return javaMethod.invoke(this, parameters).asWollokObject
+		}
+		
+		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
 	}
+	
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WConstructor constructor, Object... objects) {
 		if (constructor != null) {
-			val c = constructor.createEvaluationContext(objects).then(this)
-			performOnStack(constructor, c) [|
-				constructor.expression.eval
-			]
+			val context = constructor.createEvaluationContext(objects).then(this)
+			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
 	
@@ -130,9 +138,7 @@ class WollokObject implements EvaluationContext, WCallable {
 	}
 	
 	override addGlobalReference(String name, Object value) {
-		val interpreter = WollokInterpreter.getInstance
-		interpreter.globalVariables.put(name,value)
-		value
+		interpreter.addGlobalReference(name, value)
 	}
 }
 
@@ -140,7 +146,5 @@ class WollokObject implements EvaluationContext, WCallable {
  * @author jfernandes
  */
 interface WollokObjectListener {
-
 	def void fieldChanged(String fieldName, Object oldValue, Object newValue)
-
 }

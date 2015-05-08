@@ -6,7 +6,6 @@ import java.io.FileInputStream
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
-import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.junit4.validation.ValidationTestHelper
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.junit.After
@@ -14,9 +13,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.WollokDslInjectorProvider
-import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -25,8 +22,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  * 
  * @author jfernandes
  */
-@RunWith(typeof(XtextRunner))
-@InjectWith(typeof(WollokDslInjectorProvider))
+@RunWith(XtextRunner)
+@InjectWith(WollokDslInjectorProvider)
 abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper
@@ -57,14 +54,10 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(File fileToRead) {
-		try {
-			new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
-				assertNoErrors
-				interpret(true)
-			]
-		} catch (Throwable t) {
-			throw new RuntimeException("Error running test " + fileToRead, t)
-		}
+		new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
+			assertNoErrors
+			interpret(true)
+		]
 	}
 
 	def interpret(Boolean propagatingErrors, CharSequence... programAsString) {
@@ -72,5 +65,15 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			forEach[assertNoErrors]
 			forEach[it.interpret(propagatingErrors)]
 		]).last
+	}
+
+	def evaluate(String expression) {
+		'''
+			program evaluateExpression {
+				val __expression__ = «expression» 
+			}
+		'''.interpretPropagatingErrors
+		
+		interpreter.currentContext.resolve("__expression__")
 	}
 }

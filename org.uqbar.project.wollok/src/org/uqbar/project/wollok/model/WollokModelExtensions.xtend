@@ -19,22 +19,19 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
-
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Extension methods to Wollok semantic model.
@@ -43,11 +40,9 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
  * @author npasserini
  * @author tesonep
  */
-class WollokModelExtensions extends WMethodContainerExtensions {
+class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
-
-	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
 	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
 	def static fqn(WNamedObject it) {
@@ -60,32 +55,6 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
 		a == b || (b.parent != null && a.isSuperTypeOf(b.parent))
-	}
-
-	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
-
-	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
-
-	def static hasUnimplementedInheritedMethods(WClass c) {
-		val unimplementedMethods = <WMethodDeclaration>newArrayList
-		c.superClassesIncludingYourselfTopDownDo [ claz |
-			unimplementedMethods.removeAllSuchAs[claz.overrides(name)]
-			unimplementedMethods.addAll(claz.abstractMethods);
-		]
-		!unimplementedMethods.empty
-	}
-
-	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
-
-	def static overrideMethods(WClass it) { methods.filter[overrides].toList }
-
-	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
-
-	// *******************
-	// ** WMethodDeclaration
-	// *******************
-	def static actuallyOverrides(WMethodDeclaration m) {
-		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name)
 	}
 
 	// *******************
@@ -122,19 +91,6 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
 
-	def static WMethodDeclaration method(WExpression param) {
-		val container = param.eContainer
-		if (container instanceof WMethodDeclaration)
-			container
-		else if(container instanceof WExpression) container.method
-			// this is just a hack for expressions that are not within a method! Specifically
-		// for expressions in the root level of a file, like an interpreted program
-		// we are actually thinking on disallowing to do that, you won't be able to write
-		// any expression alone in a file. They must be within a class, object or other construction
-		// if we perform that change, then this null won't be necessary.
-		else null
-	}
-
 	def static void addMembersTo(WClass cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
@@ -154,13 +110,6 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
 
-	def static dispatch boolean isValidCall(WClass c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
-	}
-
-	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
-	}
 
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
 		m.name == call.feature && m.parameters.size == call.memberCallArguments.size
@@ -179,11 +128,18 @@ class WollokModelExtensions extends WMethodContainerExtensions {
 
 	def static dispatch declaredVariables(WClass clazz) { clazz.members.filter(WVariableDeclaration).map[variable] }
 
-	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent.lookupMethod(m.name) }
-
-	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
+	def static WMethodDeclaration method(WExpression param) {
+		val container = param.eContainer
+		if (container instanceof WMethodDeclaration)
+			container
+		else if(container instanceof WExpression) container.method
+			// this is just a hack for expressions that are not within a method! Specifically
+		// for expressions in the root level of a file, like an interpreted program
+		// we are actually thinking on disallowing to do that, you won't be able to write
+		// any expression alone in a file. They must be within a class, object or other construction
+		// if we perform that change, then this null won't be necessary.
+		else null
+	}
 
 	// ****************************
 	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
