@@ -6,7 +6,7 @@ object tom {
 	}
 	
 	method energiaPorComer(raton) {
-		12 + raton.peso()
+		return 12 + raton.peso()
 	}
 	
 	method correr(segundos) {
@@ -14,23 +14,23 @@ object tom {
 	}
 	
 	method correrDistancia(metros) {
-		energia -= this.energiaPorCorrer()
+		energia -= this.energiaPorCorrer(metros)
 	}
 	
 	method energiaPorCorrer(metros) {
-		0.5 * metros
+		return 0.5 * metros
 	}
 	
 	method metrosQueCorreEn(segundos) {
-		this.velocidad() * segundos
+		return this.velocidad() * segundos
 	}
 	
 	method velocidad() {
-		5 + (energia / 10)
+		return 5 + (energia / 10)
 	}
 	
 	method meConvieneComerA(raton, metros) {
-		this.energiaPorComer(raton) > this.energiaPorCorrer(metros)
+		return this.energiaPorComer(raton) > this.energiaPorCorrer(metros)
 	}
 }
 

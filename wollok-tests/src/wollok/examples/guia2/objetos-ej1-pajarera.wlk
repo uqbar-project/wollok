@@ -16,7 +16,7 @@ object pepita {
 	}
 	
 	method ubicacion() {
-		return ubicacion
+		ubicacion
 	}
 	
 	method volarA(lugar) {
@@ -74,6 +74,38 @@ object golondrina1 {
 		return energia
 	}
 	
+}
+
+
+object pajarera {
+	
+	val pajaros = #[pepita, pepona, otraPepita]
+	
+	method cuantosHay() {
+		return pajaros.size()
+	}	
+	
+	method agregar(pajaro) {
+		pajaros.add(pajaro)
+	}
+	
+	method sacar(pajaro) {
+		pajaros.remove(pajaro)
+	}
+
+	method alimentarATodosCon(alpiste) {
+		pajaros.forEach[p | p.comer(alpiste)]
+	}
+ 	
+ 	method sonTodosSaludables() {
+ 		var suma = pajaros.sum[p | p.energia()]
+ 		return suma
+ 	}
+ 	
+ 	method alimentarALaPeor() {
+ 		return pajaros.min[p | p.energia()]
+ 	
+ 	}
 }
 
 
