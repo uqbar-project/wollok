@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.semantics
 
 import it.xsemantics.runtime.RuleEnvironment
 import java.util.Iterator
-import org.eclipse.xtend.lib.Property
 
 /**
  * 

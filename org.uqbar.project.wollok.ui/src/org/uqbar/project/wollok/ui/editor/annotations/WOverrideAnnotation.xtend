@@ -4,6 +4,7 @@ import org.eclipse.jface.text.source.Annotation
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A marker on wollok editor that represents the fact
@@ -11,9 +12,10 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class WOverrideAnnotation extends Annotation {
 	public static val ANNOTATION_TYPE = "org.uqbar.project.wollok.ui.overrideIndicator"
-	@Property String methodURI
+	String methodURI
 	
 	new(String text, WMethodDeclaration method) {
 		super(ANNOTATION_TYPE, false, text);

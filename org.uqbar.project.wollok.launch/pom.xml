@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+    <groupId>org.uqbar-project</groupId>
+    <artifactId>wollok-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+	<artifactId>org.uqbar.project.wollok.launch</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<name>Wollok Launch</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+
+		<!-- copy all dependencies -->
+         	<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-dependency-plugin</artifactId>
+	        <version>2.10</version>
+	        <executions>
+	          <execution>
+	            <id>copy-dependencies</id>
+	            <phase>package</phase>
+	            <goals>
+	              <goal>copy-dependencies</goal>
+	            </goals>
+	            <configuration>
+	              <outputDirectory>${project.build.directory}/allDeps</outputDirectory>
+	              <overWriteReleases>false</overWriteReleases>
+	              <overWriteSnapshots>false</overWriteSnapshots>
+	              <overWriteIfNewer>true</overWriteIfNewer>
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin>
+			
+			<!-- create headless WDK --> 
+			<plugin>
+		        <artifactId>maven-assembly-plugin</artifactId>
+		        <version>2.5.4</version>
+		        <configuration>  
+		            <descriptors>  
+		               <descriptor>assembly/wollok-assembly.xml</descriptor>  
+		            </descriptors>  
+	            </configuration>  
+	            <executions>  
+	               <execution>  
+	                  <id>package-native</id>  
+	                  <phase>install</phase>  
+	                  <goals>  
+	                     <goal>attached</goal>  
+	                  </goals>  
+	              </execution>  
+	            </executions>  
+		      </plugin>
+		     <!-- -->
+	</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											exec-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2.1,)
+										</versionRange>
+										<goals>
+											<goal>java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

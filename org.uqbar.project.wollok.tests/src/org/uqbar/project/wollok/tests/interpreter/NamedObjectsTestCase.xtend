@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
+import org.junit.Ignore
 import org.junit.Test
 
 class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
@@ -56,6 +57,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void referencingObject() {
 		#[
 			'''
@@ -79,7 +81,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 			'''
 				program xxx{
 					pp.unMethod()
-					this.assert(pepita == pp.getPs().get(0))
+					this.assertEquals(pepita, pp.getPs().get(0))
 				}
 			'''].interpretPropagatingErrors
 	}
