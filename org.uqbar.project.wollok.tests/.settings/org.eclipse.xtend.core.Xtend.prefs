@@ -5,5 +5,6 @@ is_project_specific=true
 outlet.DEFAULT_OUTPUT.hideLocalSyntheticVariables=true
 outlet.DEFAULT_OUTPUT.installDslAsPrimarySource=false
 outlet.DEFAULT_OUTPUT.sourceFolder.src-gen.directory=xtend-gen
+outlet.DEFAULT_OUTPUT.sourceFolder.src.directory=xtend-gen
 outlet.DEFAULT_OUTPUT.sourceFolder.xtend-gen.directory=xtend-gen
 outlet.DEFAULT_OUTPUT.userOutputPerSourceFolder=true
