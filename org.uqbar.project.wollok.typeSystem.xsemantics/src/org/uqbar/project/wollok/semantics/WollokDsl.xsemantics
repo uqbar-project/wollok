@@ -163,6 +163,7 @@ from {
 		t = G.env(c, WollokType)
 	}
 	else {
+		
 		t = new ClassBasedWollokType(c, this, G)
 		G.add(c, t)
 		// G |- c

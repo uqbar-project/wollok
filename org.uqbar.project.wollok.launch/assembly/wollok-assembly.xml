@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assembly>
+	<id>wdk</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<fileSet>
+			<directory>target/allDeps</directory>
+			<outputDirectory>lib</outputDirectory>
+			<excludes>
+				<exclude>*.source-*.jar</exclude>
+			</excludes>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<excludes>
+				<exclude>*-javadoc.jar</exclude>
+			</excludes>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>wdk/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>wdk/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<lineEnding>dos</lineEnding>
+			<includes>
+				<include>**/*.bat</include>
+			</includes>
+		</fileSet>
+		<!-- al distribuir multiplataforma debemos tener en cuenta que el entorno puede ser windows o unix. 
+      Los sctips para ambos serán empaquetados bajo el directorio bin. -->
+		<fileSet>
+			<directory>wdk/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<lineEnding>unix</lineEnding>
+			<fileMode>0755</fileMode>
+			<includes>
+				<include>**/*.sh</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>wdk/logs</directory>
+			<outputDirectory>logs</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

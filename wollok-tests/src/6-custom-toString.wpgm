@@ -2,7 +2,7 @@ program customToString {
 
 val pepe = object {
 	method toString() {
-		'Pepe'
+		return 'Pepe'
 	}
 }
 

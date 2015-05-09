@@ -1,5 +1,9 @@
 [![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
+[![Releng](https://travis-ci.org/uqbar-project/wollok.svg?branch=releng)](https://travis-ci.org/uqbar-project/wollok?branch=releng)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 # Wollok #
+
+[![Join the chat at https://gitter.im/uqbar-project/wollok](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
 
 
@@ -10,7 +14,7 @@ Download full Wollok distribution from http://download.uqbar.org/
 
 Wollok update site:
 ```
-http://dl.bintray.com/uqbar/wollok-update-site/
+http://update.uqbar.org/wollok/
 ```
 
 ## Documentation ##
@@ -61,6 +65,13 @@ Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), Al
 
 Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)
+
+## Contributors ##
+
+* [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
+* [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
+* [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
+
 
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
