@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumber
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -29,10 +30,19 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	
 	override asBinaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
-		if (op == null) {
-			throw new IllegalBinaryOperation("Operation '" + operationSymbol + "' not supported by interpreter")
+		if (op != null) {
+			[Object a, Object b| op.invoke(this, a, b) ]
 		}
-		[Object a, Object b| op.invoke(this, a, b) ]
+		else
+			[Object a, Object b | 
+				unknownOperator(a, operationSymbol, b)
+			]
+	}
+	
+	// if not resolved by methods in this class: overload or fail
+	def dispatch unknownOperator(WCallable callable, String operationSymbol, Object b) { callable.call(operationSymbol, b) }
+	def dispatch unknownOperator(Object a, String operationSymbol, Object b) {
+		throw new IllegalBinaryOperation("Operation '" + operationSymbol + "' not supported by interpreter")
 	}
 	
 	def hasAnnotationForOperation(Method m, String op) {
@@ -201,4 +211,15 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		def dispatch lt(WCallable a, Object b) { a.call("<", b) }
 		def dispatch lt(WollokInteger a, WollokInteger b) { a.wrapped < b.wrapped }
 		def dispatch lt(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue < b.doubleValue }
+		
+	// ********************************************************************************************
+	// ** Ranges
+	// ********************************************************************************************
+	
+	@BinaryOperation('..')
+	def WollokRange rangeOperation(Object a, Object b) { range(a, b) }
+		def dispatch range(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand .. operator" ) }  
+		def dispatch range(WCallable a, Object b) { a.call("..", b) as WollokRange }
+		def dispatch range(WollokInteger a, WollokInteger b) { new WollokRange(a.wrapped .. b.wrapped) }
+		def dispatch range(WollokNumber<?> a, WollokNumber<?> b) { throw new IllegalBinaryOperation("Operator .. can only be used for integer numbers") }
 }
