@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+    <groupId>org.uqbar-project</groupId>
+    <artifactId>wollok-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+	<artifactId>org.uqbar.project.wollok.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<name>Wollok Tests</name>
+
+	<build>
+		<testSourceDirectory>src</testSourceDirectory>
+		<plugins>
+		
+			<!-- add extra source foldes -->
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>build-helper-maven-plugin</artifactId>
+		        <version>1.7</version>
+		        <executions>
+		          <execution>
+		            <id>add-source</id>
+		            <phase>generate-sources</phase>
+		            <goals>
+		              <goal>add-source</goal>
+		            </goals>
+		            <configuration>
+		              <sources>
+		                <source>src-gen</source>
+		                <source>xtend-gen</source>
+		              </sources>
+		            </configuration>
+		          </execution>
+		        </executions>
+		    </plugin>
+		<!-- this will delete src-gen but then you need to build the core project that is the one
+			that generates its content (running the GenerateLang)
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>gen-clean</id>
+						<phase>clean</phase>
+					</execution>
+				</executions>
+			</plugin>
+			 -->
+			 <plugin>
+			 	<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-clean-plugin</artifactId>
+			    <configuration>
+			        <filesets>
+			            <fileset>
+			                <directory>xtend-gen</directory>
+			                <excludes><exclude>.gitignore</exclude></excludes>
+			            </fileset>
+			        </filesets>
+			    </configuration>
+			</plugin>
+			 
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<executions>
+					<execution>
+			            <goals>
+			                <goal>compile</goal>
+			                <goal>testCompile</goal>
+                            <goal>testCompile</goal>
+                            <goal>xtend-test-install-debug-info</goal>
+			            </goals>
+
+			        </execution>
+				</executions>
+				<configuration>
+	                <outputDirectory>xtend-gen</outputDirectory>
+                    <testOutputDirectory>xtend-gen</testOutputDirectory>
+			    </configuration>
+			</plugin>
+			
+			<!-- run tests with tycho -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<useUIHarness>false</useUIHarness>
+					<useUIThread>false</useUIThread>
+					<excludes>
+						<exclude>**/Abstract*</exclude>
+						<exclude>**/WollokXPectTestCase</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			
+			<!-- xpect test just with regular junit test
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<test>org/uqbar/project/wollok/tests/WollokXPectTestCase.java</test>
+							<forkMode>once</forkMode>
+							<reportFormat>xml</reportFormat>
+							<testClassesDirectory>target/classes</testClassesDirectory>
+							<argLine>-Dfile.encoding=US-ASCII</argLine>
+						</configuration>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+		</plugins>
+	</build>
+</project>

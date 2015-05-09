@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.uqbar-project</groupId>
+	<artifactId>wollok-parent</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<!-- targetplatform, later enabled by target-platform-configuration -->
+		<module>../org.uqbar.project.wollok.targetplatform</module>
+	
+		<module>../org.uqbar.project.wollok</module>
+		<module>../org.uqbar.project.wollok.lib</module>
+		<module>../org.uqbar.project.wollok.launch</module>
+		<module>../org.uqbar.project.wollok.ui</module>
+		<module>../org.uqbar.project.wollok.ui.diagrams</module>
+		<module>../org.uqbar.project.wollok.typeSystem.xsemantics</module>
+		<module>../org.uqbar.project.wollok.typeSystem.xsemantics.ui</module>
+		<module>../org.uqbar.project.wollok.tests</module>
+		<module>../org.uqbar.project.wollok.product</module>
+		<module>../org.uqbar.project.wollok.sdk</module>
+		<module>../org.uqbar.project.wollok.updatesite</module>
+	</modules>
+
+	<properties>
+		<tycho-version>0.22.0</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<xtext.version>2.7.3</xtext.version>
+		<xsemantics-version>1.7.2</xsemantics-version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna</url>
+		</repository>
+		<repository>
+			<id>Xtext Update Site</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/maintenance/</url>
+			<!-- 2.8 
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/</url>
+			-->
+		</repository>
+		<repository>
+			<id>cubussapiens Update Site</id>
+			<layout>p2</layout>
+			<url>http://eclipse.cubussapiens.hu</url>
+		</repository>
+		<repository>
+			<id>XPect Update Site</id>
+			<layout>p2</layout>
+			<url>http://www.xpect-tests.org/updatesite/nightly/</url>
+		</repository>
+		
+		<!-- XSemantics -->
+		<repository>
+			<id>XSemantics Update Site</id>
+			<layout>p2</layout>
+			<url>http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7</url>
+		</repository>
+		<!-- /XSemantics -->
+	</repositories>
+	
+	<pluginRepositories>
+	 <!-- XSemantics -->
+	 <pluginRepository>
+		<id>xsemantics-maven-repo</id>
+		<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
+	 </pluginRepository>
+	 <!-- /XSemantics -->
+	</pluginRepositories>
+	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- xtend-maven-plugin is in pluginManagement instead of in plugins 
+					so that it doesn't run before the exec-maven-plugin's *.mwe2 gen; this way 
+					we can list it after. -->
+				<plugin>
+					<groupId>org.eclipse.xtend</groupId>
+					<artifactId>xtend-maven-plugin</artifactId>
+					<version>${xtext.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>xtend-install-debug-info</goal>
+								<goal>testCompile</goal>
+								<goal>xtend-test-install-debug-info</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<outputDirectory>xtend-gen</outputDirectory>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.5</version>
+					<executions>
+						<execution>
+							<id>gen-clean</id>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+							<configuration>
+								<filesets>
+									<fileset>
+										<directory>${basedir}/xtend-gen</directory>
+										<includes>
+											<include>**</include>
+										</includes>
+										<excludes>
+											<exclude>.gitignore</exclude>
+										</excludes>
+									</fileset>
+									<fileset>
+										<directory>${basedir}/src-gen</directory>
+										<includes>
+											<include>**</include>
+										</includes>
+										<excludes>
+											<exclude>.gitignore</exclude>
+										</excludes>
+									</fileset>
+									<fileset>
+										<directory>${basedir}/emf-gen</directory>
+										<includes>
+											<include>**</include>
+										</includes>
+										<excludes>
+											<exclude>.gitignore</exclude>
+										</excludes>
+									</fileset>
+									<fileset>
+										<directory>${basedir}/test-gen</directory>
+										<includes>
+											<include>**</include>
+										</includes>
+										<excludes>
+											<exclude>.gitignore</exclude>
+										</excludes>
+									</fileset>
+									<!-- 
+									<fileset>
+										<directory>${basedir}/xsemantics-gen</directory>
+										<includes>
+											<include>**</include>
+										</includes>
+										<excludes>
+											<exclude>.gitignore</exclude>
+										</excludes>
+									</fileset>
+									 -->
+								</filesets>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<resolver>p2</resolver>
+					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>org.uqbar-project</groupId>
+							<artifactId>org.uqbar.project.wollok.targetplatform</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+</project>

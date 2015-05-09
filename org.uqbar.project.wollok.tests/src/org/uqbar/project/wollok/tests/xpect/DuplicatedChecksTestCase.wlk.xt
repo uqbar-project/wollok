@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
 
 class Person {
 	/* XPECT issues --- 
@@ -92,7 +92,7 @@ val u = 566
 val closure = [
 	// XPECT errors --> "Duplicated name" at "y"
 	y,
-	// XPECT errors --> "Duplicated name" at "y" 
+	// XPECT errors --> "Duplicated name" at "y"
 	y |
 	y.blah()
 ]
@@ -100,15 +100,15 @@ val closure = [
 // closure param hides other var
 /* 
    XPECT issues --- 
-   	"Duplicated name" at "u"
-	"Unused variable" at "cl"
+"Duplicated name" at "u"
+"Unused variable" at "cl"
 	---
 */
 
 val cl = [u | u.blah() ]
 // XPECT warnings --> "Unused variable" at "inner"
 val inner = [a |
-	// XPECT errors --> "Duplicated name" at "a" 
+	// XPECT errors --> "Duplicated name" at "a"
 	[a | true]
 ]
 

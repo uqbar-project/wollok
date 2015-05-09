@@ -61,7 +61,6 @@ class VagonPasajeros extends Vagon {
 	}
 }
 
-
 class VagonCarga extends Vagon {
 	var cargaMaxima
 	new(cargaM) {
