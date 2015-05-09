@@ -1,5 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
 [![Releng](https://travis-ci.org/uqbar-project/wollok.svg?branch=releng)](https://travis-ci.org/uqbar-project/wollok?branch=releng)
++[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 # Wollok #
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
 
