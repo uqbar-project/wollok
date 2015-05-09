@@ -4,9 +4,9 @@ import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
-var grammarURI = "classpath:/org/uqbar/project/wollok/WollokDsl.xtext"
 var fileExtensions = "wpgm,wlk,wtest"
 var projectName = "org.uqbar.project.wollok"
+var grammarURI = "platform:/resource/${projectName}/src/org/uqbar/project/wollok/WollokDsl.xtext"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
 var encoding = "UTF-8"
@@ -18,6 +18,19 @@ Workflow {
     	// The following two lines can be removed, if Xbase is not used.
 //JAV    	registerGeneratedEPackage = "org.eclipse.xtext.xbase.XbasePackage"
 //JAV    	registerGenModelFile = "platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel"
+
+		resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
+		
+		// add mappings from platform:/resource to classpath:/
+    	uriMap = {
+    		from = "platform:/resource/org.eclipse.xtext.xbase/"
+    		to = "classpath:/"
+    	}
+    	uriMap = {
+    		from = "platform:/resource/org.eclipse.xtext.common.types/"
+    		to = "classpath:/"
+    	}
+		
     }
     
     component = DirectoryCleaner { directory = "${runtimeProject}/src-gen" }
@@ -38,6 +51,8 @@ Workflow {
     	projectNameUi = "${projectName}.ui"
     	encoding = encoding
     	language = auto-inject {
+    		
+    		forcedResourceSet = theResourceSet
    		
     		uri = grammarURI
     
@@ -45,7 +60,9 @@ Workflow {
     		fragment = grammarAccess.GrammarAccessFragment auto-inject {}
     
     		// generates Java API for the generated EPackages
-    		fragment = ecore.EMFGeneratorFragment auto-inject {}
+    		fragment = ecore.EMFGeneratorFragment auto-inject {
+    			javaModelDirectory = "/${projectName}/src-gen"
+    		}
     
     		// the old serialization component
     		// fragment = parseTreeConstructor.ParseTreeConstructorFragment auto-inject {}    

@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.uqbar.project.wollok.semantics.WollokType.*
@@ -8,6 +9,7 @@ import static org.uqbar.project.wollok.semantics.WollokType.*
  * 
  * @author jfernandes
  */
+ @Ignore
 class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	
 	@Test
@@ -88,7 +90,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	@Test
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() { '''
 			class NumberOperation {
-				def perform(aNumber)
+				method perform(aNumber)
 			}
 			class DoubleOperation extends NumberOperation {
 				override method perform(aNumber) { aNumber + aNumber }
@@ -114,11 +116,11 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	@Test
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() { '''
 			class Animal {}
-			class Perro extends Animal { def ladrar() { 'Guau!' } }
-			class Gato extends Animal { def mauyar() { 'Miau!' } }
+			class Perro extends Animal { method ladrar() { 'Guau!' } }
+			class Gato extends Animal { method mauyar() { 'Miau!' } }
 			
 			class Entrenador {
-				def entrenar(unAnimal)
+				method entrenar(unAnimal)
 			}
 			class EntrenadorDePerros extends Entrenador {
 				override method entrenar(unAnimal) { 

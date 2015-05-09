@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+    <groupId>org.uqbar-project</groupId>
+    <artifactId>wollok-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>org.uqbar.project.wollok.updatesite</artifactId>
+  <packaging>eclipse-repository</packaging>
+
+  <name>Wollok Language Update Site</name>
+  
+  <properties>
+  	<updateSiteType>bleeding-edge</updateSiteType>
+  </properties>
+  
+  <!-- TO DEPLOY THE UPDATE SITE RUN:
+  	
+  	mvn install -P uploadRepo
+  	
+   -->
+  
+
+	<build>
+		<plugins>
+			<!-- creates the update site -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-director-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>materialize-products</id>
+						<goals>
+							<goal>materialize-products</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>archive-products</id>
+						<goals>
+							<goal>archive-products</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		
+		 <extensions>
+		   <!-- Enabling the use of FTP -->
+		   <extension>
+		    <groupId>org.apache.maven.wagon</groupId>
+		    <artifactId>wagon-ftp</artifactId>
+		    <version>1.0-beta-6</version>
+		   </extension>
+		  </extensions>
+	</build>
+	
+	 <profiles>
+	  <!-- This profile is used to upload the repo -->
+	  <profile>
+	   <id>uploadRepo</id>
+	   <properties>
+	    <!-- Properties relative to the distant host where to upload the repo -->
+	    <ftp.url>ftp://uqbar-wiki.org</ftp.url>
+	    <!-- Relative path to the repo being uploaded -->
+	    <repo.path>${project.build.directory}/repository/</repo.path>
+
+	    <!-- 
+	    <ftp.toDir>/wollok/${updateSiteType}</ftp.toDir>
+	    -->
+	   </properties>
+	
+	   <build>
+	    <plugins>
+	    
+   			<!-- extract git info -->		
+			<plugin>
+			    <groupId>ru.concerteza.buildnumber</groupId>
+			    <artifactId>maven-jgit-buildnumber-plugin</artifactId>
+			    <version>1.2.9</version>
+			    <executions>
+			        <execution>
+			            <id>git-buildnumber</id>
+			            <goals>
+			                <goal>extract-buildnumber</goal>
+			            </goals>
+			            <phase>prepare-package</phase>
+			        </execution>
+			    </executions>
+			</plugin>
+			<!-- extract git info --> 
+	    
+	     <!-- Upload the repo to the server -->
+	     <plugin>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>wagon-maven-plugin</artifactId>
+	      <version>1.0-beta-4</version>
+	      <executions>
+	       <execution>
+	        <id>upload-repo</id>
+	        <phase>install</phase>
+	        <goals>
+	         <goal>upload</goal>
+	        </goals>
+	        <configuration>
+	         <fromDir>${repo.path}</fromDir>
+	         <includes>**</includes>
+	         <toDir>/wollok/${git.branch}</toDir>
+	         <url>${ftp.url}</url>
+	         <serverId>p2-uqbar</serverId>
+	        </configuration>
+	       </execution>
+	      </executions>
+	     </plugin>
+	    </plugins>
+	   </build>
+	  </profile>
+	 </profiles>
+	
+	
+</project>
