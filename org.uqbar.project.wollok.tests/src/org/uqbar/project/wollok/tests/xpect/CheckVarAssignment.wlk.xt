@@ -1,0 +1,19 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.WollokXPectTestCase END_SETUP */
+	
+	class RangeIterator {
+		var range
+		var current
+		// XPECT warnings --> "Variable is never assigned" at "unassigned"
+		var unassigned
+		new(rang) {
+			range = rang
+			current = rang.getStart()
+		}
+		
+		method hasNext() { return current < range.getEnd() }
+		method next() {
+			current = current + range.getStep()
+			return current
+		} 
+		method getUnassigned() { return unassigned }
+	}

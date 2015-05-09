@@ -9,6 +9,6 @@ import org.xpect.xtext.lib.tests.XtextTests
  * @author jfernandes
  */
 @RunWith(XpectRunner)
- @Ignore
+
 class WollokXPectTestCase extends XtextTests {
 }
