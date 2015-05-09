@@ -22,7 +22,7 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	}
 
 	override dispatch visit(WAssignment assign) {
-		if (assign.feature == lookedFor)
+		if (assign.feature.ref == lookedFor)
 			uses.add(assign)
 	}
 
