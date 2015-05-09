@@ -1,5 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
 # Wollok #
+
+[![Join the chat at https://gitter.im/uqbar-project/wollok](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
 
 
