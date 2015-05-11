@@ -59,7 +59,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return method.call(parameters)
 
 		// TODO: Adding special case for equals, but we have to fix it	
-		if(message == "=="){
+		if (message == "=="){
 			val javaMethod = this.class.methods.findFirst[name == "equals"]
 			return javaMethod.invoke(this, parameters).asWollokObject
 		}
