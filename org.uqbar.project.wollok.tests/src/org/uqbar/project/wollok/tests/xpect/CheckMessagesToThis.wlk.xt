@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class Persona {
 	method getNombre() {
@@ -19,8 +19,7 @@ class Profesor extends Persona {
 	}
 }
 
-//XPECT warnings --> "Unused variable" at "o"
-val o = object {
+object o {
 	method foo() {
 		23
 	}
@@ -30,5 +29,3 @@ val o = object {
 		this.foobar()
 	}
 }
-
-this.blah()

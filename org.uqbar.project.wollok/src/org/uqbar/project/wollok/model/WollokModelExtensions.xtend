@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
+import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -32,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 /**
  * Extension methods to Wollok semantic model.
@@ -60,11 +62,19 @@ class WollokModelExtensions {
 	// *******************
 	// ** WReferenciable
 	// *******************
-	def static dispatch isModifiable(WVariable v) { v.declaration.writeable }
+	def static dispatch isModifiableFrom(WVariable v, WAssignment from) { v.declaration.writeable || from.initializesInstanceValueFromConstructor(v) }
 
-	def static dispatch isModifiable(WParameter v) { false }
+	def static dispatch isModifiableFrom(WParameter v, WAssignment from) { false }
 
-	def static dispatch isModifiable(WReferenciable v) { true }
+	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
+	
+	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
+		v.declaration.right == null && a.isWithinConstructor 
+	}
+	
+	def static boolean isWithinConstructor(EObject e) {
+		e.eContainer != null && (e.eContainer instanceof WConstructor || e.eContainer.isWithinConstructor)
+	}
 
 	/*
 	 * Uses of a Variable

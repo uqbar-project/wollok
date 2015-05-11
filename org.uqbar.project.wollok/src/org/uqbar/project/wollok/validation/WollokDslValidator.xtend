@@ -115,7 +115,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 
 	@Check
 	def checkCannotAssignToVal(WAssignment a) {
-		if(!a.feature.ref.isModifiable) error("Cannot modify values", a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
+		if(!a.feature.ref.isModifiableFrom(a)) error("Cannot modify values", a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
@@ -266,16 +266,14 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 
 	// Root objects (que no tiene acceso a variables fuera de ellos)
-	def dispatch boolean isDuplicated(WClass c, WReferenciable v) {
-		c.variables.existsMoreThanOne(v)
-	}
+	def dispatch boolean isDuplicated(WClass c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
+	def dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
+	def dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
+	def dispatch boolean isDuplicated(WLibrary wl, WReferenciable r){ wl.elements.existsMoreThanOne(r) }
+	def dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) { c.variables.existsMoreThanOne(r) }
 
-	def dispatch boolean isDuplicated(WProgram p, WReferenciable v) {
-		p.variables.existsMoreThanOne(v)
-	}
-
-	def dispatch boolean isDuplicated(WTest p, WReferenciable v) {
-		p.variables.existsMoreThanOne(v)
+	def dispatch boolean isDuplicated(WPackage p, WNamedObject r){
+		p.namedObjects.existsMoreThanOne(r)
 	}
 
 	def dispatch boolean isDuplicated(WMethodDeclaration m, WReferenciable v) {
@@ -292,18 +290,6 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 
 	def dispatch boolean isDuplicated(WConstructor c, WReferenciable r) {
 		c.parameters.existsMoreThanOne(r) || c.eContainer.isDuplicated(r)
-	}
-
-	def dispatch boolean isDuplicated(WLibrary wl, WReferenciable r){
-		wl.elements.existsMoreThanOne(r)
-	}
-
-	def dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) {
-		c.variables.existsMoreThanOne(r)
-	}
-
-	def dispatch boolean isDuplicated(WPackage p, WNamedObject r){
-		p.namedObjects.existsMoreThanOne(r)
 	}
 
 	// default case is to delegate up to container
