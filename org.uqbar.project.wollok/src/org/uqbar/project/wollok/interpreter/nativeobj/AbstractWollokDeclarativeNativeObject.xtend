@@ -51,4 +51,6 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 
 	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
+	
+	def identity() { System.identityHashCode(this) }
 }

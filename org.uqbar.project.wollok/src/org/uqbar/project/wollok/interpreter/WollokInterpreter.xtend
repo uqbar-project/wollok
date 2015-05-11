@@ -56,7 +56,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	
 	override getStack() { executionStack }
-	def getCurrentContext() { stack.peek.context }
+	override getCurrentContext() { stack.peek.context }
 	
 	// ***********************
 	// ** Interprets
