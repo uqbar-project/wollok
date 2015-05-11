@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
+import java.lang.ref.WeakReference
+import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
@@ -70,6 +72,9 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
+	
+	// caches
+	var Map<String, WeakReference> numbersCache = newHashMap
 
 	@Inject
 	WollokInterpreter interpreter
@@ -163,11 +168,21 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WNullLiteral it) { null }
 
 	def dispatch Object evaluate(WNumberLiteral it) {
-		if(value.contains('.')) 
+		if (numbersCache.containsKey(value) && numbersCache.get(value).get != null) {
+			numbersCache.get(value).get
+		}
+		else {
+			val n = instantiateNumber(it)
+			numbersCache.put(value, new WeakReference(n))
+			n
+		}
+	}
+	
+	def instantiateNumber(WNumberLiteral it) {
+		if (value.contains('.')) 
 			new WollokDouble(Double.valueOf(value)) 
 		else 
 			new WollokInteger(Integer.valueOf(value))
-		
 	}
 
 	def dispatch Object evaluate(WObjectLiteral l) {
@@ -196,7 +211,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		} catch (UnresolvableReference e) {
 			new WollokObject(interpreter, namedObject) => [ wo |
 				namedObject.members.forEach[wo.addMember(it)]
-				if(namedObject.native)
+				if (namedObject.native)
 					wo.nativeObject = namedObject.createNativeObject(wo,interpreter)
 				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 			]

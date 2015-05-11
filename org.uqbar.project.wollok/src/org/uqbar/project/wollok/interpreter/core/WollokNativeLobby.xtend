@@ -38,13 +38,12 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override resolve(String variableName) throws UnresolvableReference {
-		if (!localVariables.containsKey(variableName)){
-			if(!interpreter.globalVariables.containsKey(variableName))
-				throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
-			else
-				interpreter.globalVariables.get(variableName)
-		}else
+		if (localVariables.containsKey(variableName))
 			localVariables.get(variableName)
+		else if (interpreter.globalVariables.containsKey(variableName))
+			interpreter.globalVariables.get(variableName)
+		else
+			throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
 	}
 	
 	override setReference(String variableName, Object value) {

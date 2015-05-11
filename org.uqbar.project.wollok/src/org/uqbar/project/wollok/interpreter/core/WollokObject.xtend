@@ -7,10 +7,9 @@ import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
+import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
-import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
-import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -23,7 +22,6 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 
 /**
  * A wollok user defined (dynamic) object.
@@ -35,9 +33,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	val Map<String,Object> instanceVariables = newHashMap
 	@Accessors var Object nativeObject
+	val EvaluationContext parentContext
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
+		parentContext = interpreter.currentContext
 	}
 
 	override getReceiver() { this }
@@ -82,10 +82,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	override resolve(String variableName) {
 		if (variableName == THIS)
-			return this
-		if (!instanceVariables.containsKey(variableName))
-			throw new UnresolvableReference('''Unrecognized variable "«variableName»"" in object "«this»""''') 
-		instanceVariables.get(variableName)
+			this
+		else if (instanceVariables.containsKey(variableName))
+			instanceVariables.get(variableName)
+		else
+			parentContext.resolve(variableName)				
  	}
  	
 	override setReference(String name, Object value) {

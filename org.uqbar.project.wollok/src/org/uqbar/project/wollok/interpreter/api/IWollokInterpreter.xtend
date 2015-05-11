@@ -7,4 +7,5 @@ interface IWollokInterpreter {
 	def Object eval(EObject e)
 	def Object performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something)
 	def Object addGlobalReference(String name, Object value)
+	def EvaluationContext getCurrentContext()
 }
