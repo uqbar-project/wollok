@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Ignore
 import org.junit.Test
 
 class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
@@ -57,7 +56,6 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	@Ignore
 	def void referencingObject() {
 		#[
 			'''
