@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.launch
 
+import org.uqbar.project.wollok.debugger.server.AbstractCommunicationHandlerRunnable
+import org.uqbar.project.wollok.debugger.server.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.launch.io.CommunicationChannel
-import org.uqbar.project.wollok.ui.debugger.server.AbstractCommunicationHandlerRunnable
-import org.uqbar.project.wollok.ui.debugger.server.XTextInterpreterEventPublisher
 
-import static org.uqbar.project.wollok.ui.debugger.WollokDebugCommands.*
+import static org.uqbar.project.wollok.debugger.WollokDebugCommands.*
 
 /**
  * Gateway that handles communication with the client debugger.

@@ -12,12 +12,11 @@ import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.validation.CheckMode
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.WollokDslStandaloneSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
-import java.util.Arrays
 
 /**
  * Wollok checker program.
