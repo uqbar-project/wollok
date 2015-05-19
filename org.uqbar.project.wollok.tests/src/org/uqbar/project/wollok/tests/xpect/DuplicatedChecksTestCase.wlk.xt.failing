@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class Person {
 	/* XPECT issues --- 
@@ -72,45 +72,49 @@ class Person {
 	
 }
 
+class DuplicatedChecksTest {
+	method run() {
+		// dup vars
+		/*  XPECT issues --- 
+			"Duplicated name" at "u"
+			"Unused variable" at "u"
+			---
+		*/
+		val u = 23
+		/*  XPECT issues --- 
+			"Duplicated name" at "u"
+			"Unused variable" at "u"
+			---
+		*/
+		val u = 566
+		
+		// dup closures params
+		// XPECT warnings --> "Unused variable" at "closure"
+		val closure = [
+			// XPECT errors --> "Duplicated name" at "y"
+			y,
+			// XPECT errors --> "Duplicated name" at "y"
+			y |
+			y.blah()
+		]
+		
+		// closure param hides other var
+		/* 
+		   XPECT issues --- 
+		"Duplicated name" at "u"
+		"Unused variable" at "cl"
+			---
+		*/
+		
+		val cl = [u | u.blah() ]
+		// XPECT warnings --> "Unused variable" at "inner"
+		val inner = [a |
+			// XPECT errors --> "Duplicated name" at "a"
+			[a | true]
+		]
+	}
+}
 
-// dup vars
-/*  XPECT issues --- 
-	"Duplicated name" at "u"
-	"Unused variable" at "u"
-	---
-*/
-val u = 23
-/*  XPECT issues --- 
-	"Duplicated name" at "u"
-	"Unused variable" at "u"
-	---
-*/
-val u = 566
-
-// dup closures params
-// XPECT warnings --> "Unused variable" at "closure"
-val closure = [
-	// XPECT errors --> "Duplicated name" at "y"
-	y,
-	// XPECT errors --> "Duplicated name" at "y"
-	y |
-	y.blah()
-]
-
-// closure param hides other var
-/* 
-   XPECT issues --- 
-"Duplicated name" at "u"
-"Unused variable" at "cl"
-	---
-*/
-
-val cl = [u | u.blah() ]
-// XPECT warnings --> "Unused variable" at "inner"
-val inner = [a |
-	// XPECT errors --> "Duplicated name" at "a"
-	[a | true]
-]
 
 package myPackage {
 	// XPECT errors --> "Duplicated class name in package myPackage" at "A"

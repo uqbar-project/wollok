@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 // 1st check
 
@@ -19,7 +19,7 @@ class A {
 
 class B extends A {
 	// XPECT errors --> "Native methods cannot override anything" at "override"
-	override m1() native
+	override method m1() native
 }
 
 // 3rd check

@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class WithUnusedVariables {
 	var a = 123
@@ -24,38 +24,45 @@ class WithUnusedVariables {
 		a = !usedOnlyWithUnary 
 	}
 }
-// XPECT warnings --> "Unused variable" at "vaca"	
-val vaca = object {
-	var peso = 1000
-	method engordar(cuanto) {
-		peso = peso + cuanto
-	}
-	method peso() {
-		peso
-	}
-}
 
-// forEach
-val vaca1 = object {
-	var peso = 1000
-	method engordar(cuanto) {
-		peso = peso + cuanto
+class UnusedVariables {
+	
+	method run() {
+		// XPECT warnings --> "Unused variable" at "vaca"	
+		val vaca = object {
+			var peso = 1000
+			method engordar(cuanto) {
+				peso = peso + cuanto
+			}
+			method peso() {
+				peso
+			}
+		}
+		
+		// forEach
+		val vaca1 = object {
+			var peso = 1000
+			method engordar(cuanto) {
+				peso = peso + cuanto
+			}
+			method peso() {
+				peso
+			}
+		}
+		
+		val vaca2 = object {
+			var peso = 1000
+			method engordar(cuanto) {
+				peso = peso + cuanto
+			}
+			method peso() {
+				peso
+			}
+		}
+		val vacas = #[vaca1, vaca2]
+		
+		vacas.forEach([v | v.engordar(2)])
+		return vacas.forAll([v | v.peso() == 1002])
 	}
-	method peso() {
-		peso
-	}
+	
 }
-
-val vaca2 = object {
-	var peso = 1000
-	method engordar(cuanto) {
-		peso = peso + cuanto
-	}
-	method peso() {
-		peso
-	}
-}
-val vacas = #[vaca1, vaca2]
-
-vacas.forEach([v | v.engordar(2)])
-this.assert(vacas.forAll([v | v.peso() == 1002]))

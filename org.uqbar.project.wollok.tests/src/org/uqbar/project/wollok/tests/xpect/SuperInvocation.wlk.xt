@@ -1,4 +1,4 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.FailingXPectTestCase END_SETUP */
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class Golondrina {
 	var energia = 100
@@ -15,17 +15,23 @@ class Golondrina {
 
 }
 
-val o = object {
-	method valak(a) {
-		// XPECT errors --> "Super can only be used in a method belonging to a class" at "super(a)"
-		super(a)
-	}
-}
-this.println(o)
-
 class GolondrinaSarasa extends Golondrina {
-	override comer(a, p) {
+	override method comer(a, p) {
 		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2 for: alimento, postre" at "super()"
 		super()
 	}
+}
+
+class SuperInvocationTest {
+	
+	method run() {
+		val o = object {
+			method valak(a) {
+				// XPECT errors --> "Super can only be used in a method belonging to a class" at "super(a)"
+				super(a)
+			}
+		}
+		return o
+	}
+	
 }
