@@ -123,6 +123,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 
 	@Check
 	def duplicated(WMethodDeclaration m) {
+		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
 			m.error("Duplicated method")
 	}

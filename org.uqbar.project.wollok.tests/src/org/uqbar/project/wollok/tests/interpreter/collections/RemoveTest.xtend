@@ -71,4 +71,18 @@ class RemoveTest extends AbstractWollokInterpreterTestCase {
 		'''
 		].interpretPropagatingErrors
 	}
+	
+	@Test
+	def void testAddAll() { 
+		'''
+		program p {
+			val unos = #[1,2,3,4]
+			val otros = #[5,6,7,8]
+			
+			val todos = #[]
+			todos.addAll(unos)
+			todos.addAll(otros)			
+			this.assertEquals(8, todos.size())
+		}'''.interpretPropagatingErrors
+	}
 }
