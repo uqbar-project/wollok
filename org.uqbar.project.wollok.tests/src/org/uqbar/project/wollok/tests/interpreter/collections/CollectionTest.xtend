@@ -4,12 +4,14 @@ import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
+ * 
  * @author tesonep
+ * @author jfernandes
  */
-class RemoveTest extends AbstractWollokInterpreterTestCase {
+class CollectionTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
-	def void testSuperInvocation() { #['''
+	def void testCollectionAsInstanceVariable() { #['''
 		object pajarera{
 			val pajaros = #[]
 			method agregar(unPajaro){
