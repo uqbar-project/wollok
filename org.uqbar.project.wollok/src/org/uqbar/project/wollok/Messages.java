@@ -21,6 +21,18 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
 	public static String WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD;
 	public static String WollokDslValidator_SUPER_INCORRECT_ARGS;
+	public static String WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS;
+	public static String WollokDslValidator_CATCH_ONLY_EXCEPTION;
+	public static String WollokDslValidator_POSTFIX_ONLY_FOR_VAR;
+	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
+	public static String WollokDslValidator_DUPLICATED_PACKAGE;
+	public static String WollokDslValidator_PROGRAM_IN_FILE;
+	public static String WollokDslValidator_CLASSES_IN_FILE;
+	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
+	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
+	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;
+	public static String WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS;
+	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	
 	static {
 		// initialize resource bundle

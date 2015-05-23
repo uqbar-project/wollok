@@ -32,13 +32,12 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.Messages
-import static org.uqbar.project.wollok.Messages.*;
 
 /**
  * Custom validation rules.
@@ -173,12 +172,12 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def tryMustHaveEitherCatchOrAlways(WTry tri) {
 		if ((tri.catchBlocks == null || tri.catchBlocks.empty) && tri.alwaysExpression == null)
-			error("Try block must specify either a 'catch' or a 'then always' clause", tri, WTRY__EXPRESSION, ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
+			error(WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS, tri, WTRY__EXPRESSION, ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	}
 	
 	@Check 
 	def catchExceptionTypeMustExtendException(WCatch it) {
-		if (!exceptionType.exception) error("Can only catch wollok.lang.Exception or a subclass of it", it, WCATCH__EXCEPTION_TYPE)
+		if (!exceptionType.exception) error(WollokDslValidator_CATCH_ONLY_EXCEPTION, it, WCATCH__EXCEPTION_TYPE)
 	}
 	
 // requires type system in order to infer type of the WExpression being thrown ! "throw <??>"
@@ -190,7 +189,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def postFixOpOnlyValidforVarReferences(WPostfixOperation op) {
 		if (!(op.operand.isVarRef))
-			error(op.feature + " can only be applied to variable references", op, WPOSTFIX_OPERATION__OPERAND)
+			error(op.feature + WollokDslValidator_POSTFIX_ONLY_FOR_VAR, op, WPOSTFIX_OPERATION__OPERAND)
 	}
 	
 	@Check
@@ -198,32 +197,32 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		val classes = p.elements.filter(WClass)
 		val repeated = classes.filter[c| classes.exists[it != c && name == c.name] ]
 		repeated.forEach[
-			error('''Duplicated class name in package «p.name»''', it, WNAMED__NAME)
+			error(WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + p.name, it, WNAMED__NAME)
 		]
 	}
 	
 	@Check 
 	def avoidDuplicatedPackageName(WPackage p) {
 		if (p.eContainer.eContents.filter(WPackage).exists[it != p && name == p.name])
-			error('''Duplicated package name «p.name»''', p, WNAMED__NAME)
+			error(WollokDslValidator_DUPLICATED_PACKAGE + " " + p.name, p, WNAMED__NAME)
 	}
 	
 	@Check
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
 		if (op.feature.isMultiOpAssignment && !op.leftOperand.isVarRef)
-			error(op.feature + " can only be applied to variable references", op, WBINARY_OPERATION__LEFT_OPERAND)
+			error(op.feature + WollokDslValidator_BINARYOP_ONLY_ON_VARS, op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
 	
 	@Check
 	def programInProgramFile(WProgram p){
 		if(p.eResource.URI.nonXPectFileExtension != WollokConstants.PROGRAM_EXTENSION)
-			error('''Program «p.name» should be in a file with extension «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)					
+			error(WollokDslValidator_PROGRAM_IN_FILE + ''' «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)					
 	}
 
 	@Check
 	def libraryInLibraryFile(WLibrary l){
 		if(l.eResource.URI.nonXPectFileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION) 
-			error('''Classes and Objects should be defined in a file with extension «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
+			error(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
 	}
 
 	def isVarRef(WExpression e) { e instanceof WVariableReference }
@@ -250,13 +249,13 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
-			 if (expression != null) error("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			 if (overrides) error("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
-			 if (declaringContext instanceof WObjectLiteral) error("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
+			 if (expression != null) error(WollokDslValidator_NATIVE_METHOD_NO_BODY, it, WMETHOD_DECLARATION__EXPRESSION)
+			 if (overrides) error(WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE, it, WMETHOD_DECLARATION__OVERRIDES)
+			 if (declaringContext instanceof WObjectLiteral) error(WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES, it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
 			 if(declaringContext instanceof WClass)
 				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-				 	error("Cannot declare native methods in this class since there's already a native super class in the hierarchy", it, WMETHOD_DECLARATION__NATIVE)
+				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 
