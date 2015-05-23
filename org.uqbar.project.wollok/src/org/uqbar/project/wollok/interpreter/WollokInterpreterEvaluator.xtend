@@ -217,8 +217,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			]
 		}
 		
-		// println(x.toString + System.identityHashCode(x))
-		
 		x
 	}
 

@@ -37,6 +37,8 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.Messages
+import static org.uqbar.project.wollok.Messages.*;
 
 /**
  * Custom validation rules.
@@ -62,6 +64,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD" 
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
+	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -81,17 +84,17 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def classNameMustStartWithUpperCase(WClass c) {
-		if (Character.isLowerCase(c.name.charAt(0))) error("Class name must start with uppercase", c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
+		if (Character.isLowerCase(c.name.charAt(0))) error(WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE, c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
 	}
 	
 	@Check
 	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
-		if (Character.isUpperCase(c.name.charAt(0))) error("Referenciable name must start with lowercase", c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
+		if (Character.isUpperCase(c.name.charAt(0))) error(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	}
 
 	@Check
 	def checkCannotInstantiateAbstractClasses(WConstructorCall c) {
-		if(c.classRef.isAbstract) error("Cannot instantiate abstract class", c, WCONSTRUCTOR_CALL__CLASS_REF)
+		if(c.classRef.isAbstract) error(WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS, c, WCONSTRUCTOR_CALL__CLASS_REF, CANNOT_INSTANTIATE_ABSTRACT_CLASS)
 	}
 
 	@Check
@@ -108,7 +111,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def checkMethodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
-		if(m.overrides && !overrides) m.error("Method does not overrides anything")
+		if(m.overrides && !overrides) m.error("Method does not override anything")
 		if (overrides && !m.overrides)
 			m.error("Method must be marked as overrides, since it overrides a superclass method", METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}

@@ -14,7 +14,7 @@
             extensions="wpgm,wlk,wtest"
             icon="icons/w.png"
             id="org.uqbar.project.wollok.WollokDsl"
-            name="Wollok Editor">
+            name="%wollokEditor">
         </editor>
     </extension>
     <extension
@@ -85,21 +85,21 @@
         <page
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl"
-            name="WollokDsl">
+            name="Wollok">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
         </page>
         <page
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.coloring"
-            name="Syntax Coloring">
+            name="%syntaxColoring">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
         </page>
         <page
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.templates"
-            name="Templates">
+            name="%templates">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
         </page>
     </extension>
@@ -125,22 +125,22 @@
     <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Trigger expensive validation"
+            description="%validate.description"
             id="org.uqbar.project.wollok.WollokDsl.validate"
-            name="Validate">
+            name="%validate">
       </command>
       <!-- copy qualified name -->
       <command
             id="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
             categoryId="org.eclipse.ui.category.edit"
-            description="Copy the qualified name for the selected element"
-            name="Copy Qualified Name">
+            description="%copyQualifiedName.description"
+            name="%copyQualifiedName">
       </command>
       <command
             id="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName"
             categoryId="org.eclipse.ui.category.edit"
-            description="Copy the qualified name for the selected element"
-            name="Copy Qualified Name">
+            description="%copyQualifiedName.description"
+            name="%copyQualifiedName">
       </command>
       <!-- manual -->
     </extension>
@@ -150,7 +150,7 @@
              <command
                  commandId="org.uqbar.project.wollok.WollokDsl.validate"
                  style="push"
-                 tooltip="Trigger expensive validation">
+                 tooltip="%validate.description">
             <visibleWhen checkEnabled="false">
                 <reference
                     definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened">
@@ -161,7 +161,7 @@
          <!-- copy qualified name -->
          <menuContribution locationURI="popup:#TextEditorContext?after=copy">
          	<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName" 
-         		style="push" tooltip="Copy Qualified Name">
+         		style="push" tooltip="%copyQualifiedName">
             	<visibleWhen checkEnabled="false">
                 	<reference definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened" />
             	</visibleWhen>
@@ -169,7 +169,7 @@
          </menuContribution>
          <menuContribution locationURI="menu:edit?after=copy">
          	<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.EditorCopyQualifiedName"
-            	style="push" tooltip="Copy Qualified Name">
+            	style="push" tooltip="%copyQualifiedName">
             	<visibleWhen checkEnabled="false">
                 	<reference definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened" />
             	</visibleWhen>
@@ -177,7 +177,7 @@
          </menuContribution>
          <menuContribution locationURI="popup:org.eclipse.xtext.ui.outline?after=additions">
 			<command commandId="org.eclipse.xtext.ui.editor.copyqualifiedname.OutlineCopyQualifiedName" 
-				style="push" tooltip="Copy Qualified Name">
+				style="push" tooltip="%copyQualifiedName">
          		<visibleWhen checkEnabled="false">
 	            	<and>
 	            		<reference definitionId="org.uqbar.project.wollok.WollokDsl.XtextEditor.opened" />
@@ -259,21 +259,21 @@
 	<!-- marker definitions for org.uqbar.project.wollok.WollokDsl -->
 	<extension
 	        id="wollokdsl.check.fast"
-	        name="Wollok Problem"
+	        name="%wollokProblem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.fast"/>
 	    <persistent value="true"/>
 	</extension>
 	<extension
 	        id="wollokdsl.check.normal"
-	        name="Wollok Problem"
+	        name="%wollokProblem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.normal"/>
 	    <persistent value="true"/>
 	</extension>
 	<extension
 	        id="wollokdsl.check.expensive"
-	        name="Wollok Problem"
+	        name="%wollokProblem"
 	        point="org.eclipse.core.resources.markers">
 	    <super type="org.eclipse.xtext.ui.check.expensive"/>
 	    <persistent value="true"/>
@@ -292,7 +292,7 @@
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.compiler.preferencePage"
-            name="Compiler">
+            name="%compiler">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
         </page>
     </extension>
@@ -302,7 +302,7 @@
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.compiler.propertyPage"
-            name="Compiler">
+            name="%compiler">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
             <enabledWhen>
 	            <adapt type="org.eclipse.core.resources.IProject"/>
@@ -327,9 +327,9 @@
 	<extension
 		point="org.eclipse.ui.commands">
 		<command
-			description="Open the quick outline."
+			description="%quickOutline.description"
 			id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
-			name="Quick Outline">
+			name="%quickOutline">
 		</command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -337,7 +337,7 @@
 			locationURI="popup:#TextEditorContext?after=group.open">
 			<command commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline"
 				style="push"
-				tooltip="Open Quick Outline">
+				tooltip="%quickOutline">
 				<visibleWhen checkEnabled="false">
 					<reference definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened"/>
 				</visibleWhen>
@@ -402,7 +402,7 @@
 	        category="org.uqbar.project.wollok.WollokDsl"
 	        class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RefactoringPreferencePage"
 	        id="org.uqbar.project.wollok.WollokDsl.refactoring"
-	        name="Refactoring">
+	        name="%refactoring">
 	        <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
 	    </page>
 	</extension>
@@ -467,7 +467,7 @@
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             icon="icons/w.png"
             id="org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
-            name="Wollok Project"
+            name="%wollokProject"
             project="true">
       </wizard>
       <category
@@ -481,7 +481,7 @@
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-object_16.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
-            name="Wollok Objects and Classes">
+            name="%wollokObjectsAndClasses">
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -490,7 +490,7 @@
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-message_16.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
-            name="Wollok Test">
+            name="%wollokTest">
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -499,7 +499,7 @@
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-program_16.png"
             id="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
-            name="Wollok Program">
+            name="%wollokProgram">
       </wizard>
    </extension>
    <extension
