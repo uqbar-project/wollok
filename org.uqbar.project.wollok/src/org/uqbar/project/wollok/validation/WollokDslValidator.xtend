@@ -104,21 +104,21 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 					""
 				else
 					c.classRef.constructor.parameters.map[name].join(",")
-			error("Wrong number of arguments. Should be (" + expectedMessage + ")", c, WCONSTRUCTOR_CALL__ARGUMENTS)
+			error(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + "(" + expectedMessage + ")", c, WCONSTRUCTOR_CALL__ARGUMENTS)
 		}
 	}
 
 	@Check
 	def checkMethodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
-		if(m.overrides && !overrides) m.error("Method does not override anything")
+		if(m.overrides && !overrides) m.error(WollokDslValidator_METHOD_NOT_OVERRIDING)
 		if (overrides && !m.overrides)
-			m.error("Method must be marked as overrides, since it overrides a superclass method", METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
+			m.error(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}
 
 	@Check
 	def checkCannotAssignToVal(WAssignment a) {
-		if(!a.feature.ref.isModifiableFrom(a)) error("Cannot modify values", a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
+		if(!a.feature.ref.isModifiableFrom(a)) error(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
@@ -127,18 +127,18 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def duplicated(WMethodDeclaration m) {
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
-			m.error("Duplicated method")
+			m.error(WollokDslValidator_DUPLICATED_METHOD)
 	}
 
 	@Check
 	def duplicated(WReferenciable p) {
-		if(p.isDuplicated) p.error("Duplicated name")
+		if(p.isDuplicated) p.error(WollokDslValidator_DUPLICATED_NAME)
 	}
 
 	@Check
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
 		if (call.callOnThis && call.method != null && !call.method.declaringContext.isValidCall(call)) {
-			error("Method does not exist or invalid number of arguments", call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
+			error(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
 		}
 	}
 
@@ -147,23 +147,23 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		val assignments = variable.assignments
 		if (assignments.empty) {
 			if (writeable)
-				warning('''Variable is never assigned''', it, WVARIABLE_DECLARATION__VARIABLE)
+				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)
 			else if (!writeable)
-				error('''Variable is never assigned''', it, WVARIABLE_DECLARATION__VARIABLE)	
+				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)	
 		}
 		if (variable.uses.empty)
-			warning('''Unused variable''', it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
+			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
 	}
 	
 	@Check
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
 		val body = sup.method.expression as WBlockExpression
 		if (sup.method.declaringContext instanceof WObjectLiteral)
-			error("Super can only be used in a method belonging to a class", body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			error(WollokDslValidator_SUPER_ONLY_IN_CLASSES, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
 		else if (!sup.method.overrides)
-			error("Super can only be used in an overriding method", body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			error(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			error('''Incorrect number of arguments for super. Expecting «sup.method.parameters.size» for: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			error('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size» («sup.method.overridenMethod.parameters.map[name].join(", ")»)''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
 	}
 	
 	// ***********************
@@ -244,7 +244,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 
 	// ******************************	
-	// native methods
+	// ** native methods
 	// ******************************
 	
 	@Check
