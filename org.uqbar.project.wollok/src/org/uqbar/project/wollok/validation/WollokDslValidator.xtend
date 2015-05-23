@@ -37,6 +37,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WVariable
 
 /**
  * Custom validation rules.
@@ -186,9 +187,14 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 //	}
 	
 	@Check
-	def postFixOpOnlyValidforVarReferences(WPostfixOperation op) {
-		if (!(op.operand.isVarRef))
-			error(op.feature + " can only be applied to variable references", op, WPOSTFIX_OPERATION__OPERAND)
+	def postFixOpOnlyValidforVarReferences(WPostfixOperation it) {
+		if (!(operand.isVarRef) || operand.isUnmodifiableVariable)
+			error(feature + " can only be applied to variable references", it, WPOSTFIX_OPERATION__OPERAND)
+	}
+	
+	def dispatch boolean isUnmodifiableVariable(WExpression e) { true }
+	def dispatch boolean isUnmodifiableVariable(WVariableReference e) {
+		e.ref instanceof WVariable && !(e.ref as WVariable).declaration.writeable
 	}
 	
 	@Check
