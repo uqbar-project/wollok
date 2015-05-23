@@ -162,7 +162,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		else if (!sup.method.overrides)
 			error(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			error('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size» («sup.method.overridenMethod.parameters.map[name].join(", ")»)''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			error('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
 	}
 	
 	// ***********************
