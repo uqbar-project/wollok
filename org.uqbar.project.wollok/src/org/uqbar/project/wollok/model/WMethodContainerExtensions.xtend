@@ -18,6 +18,9 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.wollokDsl.WConstructor
+import java.util.Arrays
 
 /**
  * Extension methods for WMethodContainers.
@@ -184,4 +187,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
+	
+	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
+		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty))
+			// default constructor
+			null
+		else {
+			val c = clazz.constructors.findFirst[ parameters.size == arguments.size ]
+			if (c == null)
+				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
+			c
+		}
+	} 
+	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
+		throw new WollokRuntimeException('''Impossibel to call a constructor on anything besides a class''');
+	}
 }

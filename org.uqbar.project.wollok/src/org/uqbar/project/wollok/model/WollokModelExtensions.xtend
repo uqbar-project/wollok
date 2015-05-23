@@ -126,12 +126,14 @@ class WollokModelExtensions {
 	}
 
 	def static isValidConstructorCall(WConstructorCall c) {
-		c.numberOfParameters == c.classRef.numberOfParameters
+		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
 
 	def static numberOfParameters(WConstructorCall c) { if(c.arguments == null) 0 else c.arguments.size }
 
-	def static numberOfParameters(WClass c) { if(c.constructor == null) 0 else c.constructor.parameters.size }
+	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
+		(nrOfArgs == 0 && (c.constructors == null || c.constructors.size == 0)) || c.constructors.exists[parameters.size == nrOfArgs] 
+	}
 
 	// For objects or classes
 	def static dispatch declaredVariables(WObjectLiteral obj) { obj.members.filter(WVariableDeclaration).map[variable] }

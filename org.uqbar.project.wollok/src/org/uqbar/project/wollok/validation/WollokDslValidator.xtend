@@ -97,12 +97,20 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def checkConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = if (c.classRef.constructor == null)
+			val expectedMessage = if (c.classRef.constructors == null)
 					""
 				else
-					c.classRef.constructor.parameters.map[name].join(",")
-			error("Wrong number of arguments. Should be (" + expectedMessage + ")", c, WCONSTRUCTOR_CALL__ARGUMENTS)
+					c.classRef.constructors.map[ '(' + parameters.map[name].join(",") + ')'].join(' or ')
+			error("Wrong number of arguments. Should be " + expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
 		}
+	}
+	
+	@Check
+	def checkCannotHaveTwoConstructorsWithSameArity(WClass it) {
+		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
+		repeated.forEach[r|
+			error("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
+		]
 	}
 
 	@Check

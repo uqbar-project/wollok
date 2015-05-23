@@ -179,7 +179,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 2, 2).after(group_4)
 		
 		// constructor
-		setLinewrap(2, 2, 2).around(constructorAssignment_5)
+		setLinewrap(2, 2, 2).around(constructorsAssignment_5)
 		
 		// members (after var, after method)
 		setLinewrap(1, 1, 2).after(membersAssignment_4_0)

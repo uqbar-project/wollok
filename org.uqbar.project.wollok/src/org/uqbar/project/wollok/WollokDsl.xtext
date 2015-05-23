@@ -328,7 +328,7 @@ WNamedObject:
 WClass:
 	'class' name=ID ('extends' parent=[WClass|QualifiedName])? '{'
 		(members+=WVariableDeclaration ';'?)*
-		(constructor=WConstructor)?
+		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
