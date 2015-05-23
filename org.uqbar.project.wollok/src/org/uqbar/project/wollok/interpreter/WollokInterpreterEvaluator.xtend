@@ -123,6 +123,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WIfExpression it) {
 		val cond = condition.eval
+		// I18N !
 		if(!(cond instanceof Boolean)) throw new WollokInterpreterException(
 			"Expression in 'if' must evaluate to a boolean. Instead got: " + cond, it)
 		if (Boolean.TRUE == cond)

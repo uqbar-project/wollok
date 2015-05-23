@@ -81,6 +81,7 @@ class WollokList extends AbstractWollokWrapperNativeObject<List<Object>> {
 	def dispatch addFlat(WollokList accum, Void elem) { accum }
 	
 	def Object any() {
+		// I18N !
 		if (wrapped.isEmpty) throw new WollokRuntimeException("Illegal operation 'any' on empty list")
 		else wrapped.get(randomBetween(0, wrapped.size - 1))
 	}
