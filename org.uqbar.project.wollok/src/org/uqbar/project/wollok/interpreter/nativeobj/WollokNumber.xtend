@@ -1,5 +1,8 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
+/**
+ * 
+ */
 abstract class WollokNumber<T extends Number> extends AbstractWollokWrapperNativeObject<T> implements Comparable<WollokNumber<T>> {
 
 	new(T wrapped) {
@@ -37,9 +40,7 @@ class WollokInteger extends WollokNumber<Integer> {
 		super(wrapped)
 	}
 
-	override abs() {
-		Math.abs(this.wrapped).asWollokObject
-	}
+	override abs() { Math.abs(this.wrapped).asWollokObject }
 
 	override equals(Object other) {
 		other instanceof WollokInteger && wrapped == (other as WollokInteger).wrapped

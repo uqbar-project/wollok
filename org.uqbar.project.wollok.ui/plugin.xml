@@ -519,4 +519,15 @@
             name="Wollok">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.jdt.ui.javaElementFilters">
+      <filter
+            class="org.uqbar.project.wollok.ui.view.WollokViewerFilter"
+            description="Filters non-wollok content"
+            enabled="true"
+            id="org.uqbar.project.wollok.ui.filter"
+            name="Wollok Filter"
+            targetId="org.eclipse.jdt.ui.PackageExplorer">
+      </filter>
+   </extension>
 </plugin>

@@ -23,6 +23,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.layouts;bundle-version="1.1.0",
  org.uqbar.project.wollok.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Activator: org.uqbar.project.wollok.launch.Activator
-Bundle-ClassPath: lib/lipermi-0-4-2.jar,
- .
+Bundle-ClassPath: lib/lipermi-0-4-2.jar, .
+Export-Package: org.uqbar.project.wollok.debugger,
+ org.uqbar.project.wollok.launch,
+ org.uqbar.project.wollok.launch.io,
+ org.uqbar.project.wollok.debugger.server,
+ org.uqbar.project.wollok.debugger.server.rmi

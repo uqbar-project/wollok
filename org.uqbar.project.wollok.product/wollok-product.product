@@ -908,6 +908,7 @@ Library.
       <plugin id="org.uqbar.project.wollok.product"/>
       <plugin id="org.uqbar.project.wollok.ui"/>
       <plugin id="org.uqbar.project.wollok.ui.diagrams"/>
+      <plugin id="org.uqbar.project.wollok.ui.launch"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>
