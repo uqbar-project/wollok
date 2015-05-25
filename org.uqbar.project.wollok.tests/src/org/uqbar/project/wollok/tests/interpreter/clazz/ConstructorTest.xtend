@@ -5,6 +5,12 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 
 /**
+ * All tests for construtors functionality in terms of runtime execution.
+ * For static validations see the XPECT test.
+ * This tests
+ * - having multiple constructors
+ * - constructor delegation: to this or super
+ * - automatic delegation for no-args constructors
  * 
  * @author jfernandes
  */

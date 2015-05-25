@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import com.google.common.collect.Lists
 import java.util.Collections
@@ -81,7 +82,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		
 		// no-args constructor automatic execution 
 		if (constructor == null && objects.length == 0)
-			constructor = (behavior as WClass).findConstructorInSuper
+			constructor = (behavior as WClass).findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
 			
 		if (constructor != null)
 			evaluateConstructor(constructor, objects)
@@ -97,7 +98,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		}
 		else {
 			// automatic super() call
-			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper
+			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
 			delegatedConstructor?.invokeOnContext(constructor, Collections.EMPTY_LIST, constructorEvalContext)
 		}
 		
@@ -112,15 +113,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			null
 		]
 	} 
-	
-	def WClass getWollokClass(WConstructor it) { EcoreUtil2.getContainerOfType(it, WClass) }
-	
-	def dispatch resolveConstructorReference(WMethodContainer behave, WThisDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
-	def dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
-	
-	def findConstructorInSuper(WMethodContainer behave, Object... args) {
-		(behave as WClass).parent?.resolveConstructor(args)
-	}
 	
 	def static createEvaluationContext(WConstructor declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)
@@ -175,6 +167,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	// observable
 	
 	var Set<WollokObjectListener> listeners = newHashSet
+	
+	static val EMPTY_OBJECTS_ARRAY = newArrayOfSize(0)
 	
 	def addFieldChangedListener(WollokObjectListener listener) { this.listeners.add(listener) }
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
