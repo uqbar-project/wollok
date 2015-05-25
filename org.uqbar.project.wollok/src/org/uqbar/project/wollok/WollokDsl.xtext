@@ -339,8 +339,25 @@ WMember:
 
 WConstructor:
 	'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
 		expression=WBlockExpression
 ;
+
+WDelegatingConstructorCall:
+	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+;
+
+// some how this should be referecens to WConstructor
+WThisDelegatingConstructorCall:
+	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+;
+
+// some how this should be referecens to WConstructor
+WSuperDelegatingConstructorCall:
+	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+;
+
+
 
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('

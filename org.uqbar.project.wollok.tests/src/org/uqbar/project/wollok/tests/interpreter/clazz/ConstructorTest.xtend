@@ -106,4 +106,174 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 	}
 	
+	@Test
+	def void constructorDelegationToThis() {
+		#['''
+			class Point {
+				var x
+				var y
+				new(ax, ay) { x = ax ; y = ay }
+				
+				new() = this(10,15) {
+					null
+				}
+				
+				method getX() { return x }
+				method getY() { return y }
+			}
+			''',
+			'''
+			program t {
+				val p = new Point()
+				this.println(p)
+				this.assertEquals(10, p.getX())
+				this.assertEquals(15, p.getY())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void constructorDelegationToSuper() {
+		#['''
+			class SuperClass {
+				var superX
+				new(a) { superX = a }
+				
+				method getSuperX() { return superX }
+			}
+			class SubClass extends SuperClass { 
+				new(n) = super(n + 1) {}
+			}
+			''',
+			'''
+			program t {
+				val o = new SubClass(20)
+				this.assertEquals(21, o.getSuperX())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void twoLevelsDelegationToSuper() {
+		#['''
+			class A {
+				var x
+				new(a) { x = a }
+				
+				method getX() { return x }
+			}
+			class B extends A { 
+				new(n) = super(n + 1) {}
+			}
+			class C extends B {
+				new(l) = super(l * 2) {}
+			}
+			''',
+			'''
+			program t {
+				val o = new C(20)
+				this.assertEquals(41, o.getX())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void mixedThisAndSuperDelegation() {
+		#['''
+			class A {
+				var x
+				var y
+				new(p) = this(p.getX(), p.getY()) {}
+				new(_x,_y) { x = _x ; y = _y }
+				
+				method getX() { return x }
+				method getY() { return y }
+			}
+			class B extends A { 
+				new(p) = super(p + 10) {}
+			}
+			class C extends B {
+				new(_x, _y) = this(new Point(_x, _y)) {}
+				new(p) = super(p) {}
+			}
+			class Point {
+				var x
+				var y
+				new(_x,_y) { x = _x ; y = _y }
+				method +(delta) {
+					x += delta
+					y += delta
+					return this
+				}
+				method getX() { return x }
+				method getY() { return y }
+			}
+			
+			''',
+			'''
+			program t {
+				val o = new C(10, 20)
+				this.assertEquals(20, o.getX())
+				this.assertEquals(30, o.getY())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	// ***********************
+	// ** automatic calls
+	// ***********************
+	
+	@Test
+	def void emptyConstructorInSuperClassMustBeAutomaticallyCalled() {
+		#['''
+			class SuperClass {
+				var superX
+				new() { superX = 20 }
+				
+				method getSuperX() { return superX }
+			}
+			class SubClass extends SuperClass { }
+			''',
+			'''
+			program t {
+				val o = new SubClass()
+				this.assertEquals(20, o.getSuperX())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void emptyConstructorInSuperClassMustBeAutomaticallyCalledBeforeCallingSubclassEmptyConstructor() {
+		#['''
+			class SuperClass {
+				var superX
+				var otherX
+				new() { 
+					superX = 20
+					otherX = 30
+				}
+				
+				method getSuperX() { return superX }
+				method getOtherX() { return otherX }
+				method setSuperX(a) { superX = a }
+			}
+			class SubClass extends SuperClass {
+				var subX
+				new() {
+					subX = 10
+					this.setSuperX(this.getSuperX() + 20) // 20 + 20
+				}
+				method getSubX() { return subX }
+			}
+			''',
+			'''
+			program t {
+				val o = new SubClass()
+				this.assertEquals(10, o.getSubX())
+				this.assertEquals(40, o.getSuperX())
+				this.assertEquals(30, o.getOtherX())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
 }
