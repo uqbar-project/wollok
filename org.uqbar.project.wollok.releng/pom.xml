@@ -6,6 +6,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<artifactId>wollok-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>Wollok Parent (Releng)</name>
+	<url>https://github.com/uqbar-project/wollok</url>
 	<modules>
 		<!-- targetplatform, later enabled by target-platform-configuration -->
 		<module>../org.uqbar.project.wollok.targetplatform</module>
@@ -29,8 +31,23 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.7.3</xtext.version>
 		<xsemantics-version>1.7.2</xsemantics-version>
+		
+		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
+	
+	<issueManagement>
+    	<system>GitHub</system>
+    	<url>https://github.com/uqbar-project/wollok/issues</url>
+  	</issueManagement>
+  	
+  	<scm>
+		<connection>scm:git:${scm.gitServer}/wollok</connection>
+		<developerConnection>scm:git:${scm.gitServer}/wollok</developerConnection>
+		<url>scm:git:${scm.gitServer}/wollok</url>
+		<tag>HEAD</tag>
+	</scm>
 
+	<!-- REVIEWME: p2 repositories are not needed anymore if we use a target platform -->
 	<repositories>
 		<repository>
 			<id>eclipse</id>
@@ -162,6 +179,33 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						</execution>
 					</executions>
 				</plugin>
+				
+				<!-- site -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.3</version>
+					<dependencies>
+						<dependency>
+							<groupId>lt.velykis.maven.skins</groupId>
+							<artifactId>reflow-velocity-tools</artifactId>
+							<version>1.1.1</version>
+						</dependency>
+						<!-- Reflow skin requires Velocity >= 1.7 -->
+						<dependency>
+							<groupId>org.apache.velocity</groupId>
+							<artifactId>velocity</artifactId>
+							<version>1.7</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+				
+				<!-- /site -->
 			</plugins>
 		</pluginManagement>
 
@@ -220,7 +264,47 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</target>
 				</configuration>
 			</plugin>
-			
 		</plugins>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.11</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>github-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+					<onlyMilestoneIssues>false</onlyMilestoneIssues>
+					<includeOpenIssues>false</includeOpenIssues>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	
+	<developers>
+		<developer>
+			<id>npasserini</id>
+			<name>Nicolás Passerini</name>
+			<email>npasserini@gmail.com</email>
+		</developer>
+		<developer>
+			<id>jfernandes</id>
+			<name>Javier Fernandes</name>
+			<email>javier.fernandes@gmail.com</email>
+		</developer>
+		<developer>
+			<id>tesonep</id>
+			<name>Pablo Tesone</name>
+			<email>tesonep@gmail.com</email>
+		</developer>
+	</developers>
+	
 </project>
