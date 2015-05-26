@@ -193,7 +193,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
 		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty))
 			// default constructor
-			null
+			clazz.findConstructorInSuper(arguments)
 		else {
 			val c = clazz.constructors.findFirst[ parameters.size == arguments.size ]
 			if (c == null)

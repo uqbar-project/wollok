@@ -103,8 +103,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		}
 		
 		// actual call
-		val context = constructorEvalContext.then(this)
-		interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
+		if (constructor.expression != null) {
+			val context = constructorEvalContext.then(this)
+			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
+		}
 	}
 	
 	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {

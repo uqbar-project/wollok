@@ -121,8 +121,31 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				new(ax, ay) { x = ax ; y = ay }
 				
 				new() = this(10,15) {
-					null
 				}
+				
+				method getX() { return x }
+				method getY() { return y }
+			}
+			''',
+			'''
+			program t {
+				val p = new Point()
+				this.println(p)
+				this.assertEquals(10, p.getX())
+				this.assertEquals(15, p.getY())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void constructorDelegationToThisWithoutBody() {
+		#['''
+			class Point {
+				var x
+				var y
+				new(ax, ay) { x = ax ; y = ay }
+				
+				new() = this(10,15)
 				
 				method getX() { return x }
 				method getY() { return y }
@@ -278,6 +301,35 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				this.assertEquals(10, o.getSubX())
 				this.assertEquals(40, o.getSuperX())
 				this.assertEquals(30, o.getOtherX())
+			}
+			'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void emptyConstructorAutoCalledMixingImplicitConstructorInHierarchy() {
+		#['''
+			class A {
+				var x
+				new() { x = 20 }
+				
+				method getX() { return x }
+			}
+			class B extends A {
+			}
+			class C extends B {
+				var c1
+				new() {
+					c1 = 10
+				}
+				method getC1() { return c1 }
+			}
+			class D extends C {}
+			''',
+			'''
+			program t {
+				val o = new D()
+				this.assertEquals(20, o.getX())
+				this.assertEquals(10, o.getC1())
 			}
 			'''].interpretPropagatingErrors
 	}
