@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -39,7 +40,8 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.context.WVariable
 
 /**
  * Custom validation rules.
@@ -131,6 +133,27 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			error("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
 		}
+	}
+	
+	@Check
+	def checkCannotUseThisInConstructorDelegation(WThis it) {
+		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
+			error("Cannot access instance methods within constructor delegation.", it)
+	}
+	
+	@Check
+	def checkCannotUseSuperInConstructorDelegation(WSuperInvocation it) {
+		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
+			error("Cannot access super methods within constructor delegation.", it)
+	}
+	
+	@Check
+	def checkCannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
+		eAllContents.filter(WVariableReference).forEach[ref|
+			if (ref.ref instanceof org.uqbar.project.wollok.wollokDsl.WVariable) {
+				error("Cannot access instance variables within constructor delegation.", ref, WVARIABLE_REFERENCE__REF)
+			}
+		]
 	}
 	
 	@Check
@@ -355,4 +378,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def error(WNamed e, String message) { error(message, e, WNAMED__NAME) }
 	def error(WNamed e, String message, String errorId) { error(message, e, WNAMED__NAME, errorId) }
 		
+	def error(String message, EObject obj) {
+		error(message, obj.eContainer, obj.eContainingFeature)
+	}
 }
