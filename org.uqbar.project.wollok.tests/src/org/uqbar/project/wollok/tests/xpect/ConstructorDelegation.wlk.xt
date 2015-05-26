@@ -33,4 +33,20 @@ class D extends B {
 	new(a) = super(1, a) {}
 }
 
+// 
+//  REQUIRED CONSTRUCTOR CALLS 
+//
 
+class X {
+	new(a) {
+		this.println(a)
+	}
+}
+
+// XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
+class Y extends X {
+}
+
+class Z extends X {
+	new() = super("something") {}
+}

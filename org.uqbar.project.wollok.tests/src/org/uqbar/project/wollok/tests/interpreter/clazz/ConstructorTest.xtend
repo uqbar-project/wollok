@@ -130,7 +130,6 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			'''
 			program t {
 				val p = new Point()
-				this.println(p)
 				this.assertEquals(10, p.getX())
 				this.assertEquals(15, p.getY())
 			}

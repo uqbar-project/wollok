@@ -113,6 +113,12 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	@Check
+	def checkRequiredSuperClassConstructorCall(WClass it) {
+		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
+			error('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
+	}
+	
+	@Check
 	def checkCannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
 		repeated.forEach[r|
@@ -122,17 +128,9 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def checkConstrutorMustExpliclityCallSuper(WConstructor it) {
-		if (delegatingConstructorCall == null && wollokClass.requiresExplicitCallToSuperConstructor) {
+		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			error("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
 		}
-	}
-	
-	def boolean requiresExplicitCallToSuperConstructor(WClass clazz) {
-		clazz.parent != null && !clazz.parent.hasEmptyConstructor()
-	}
-	
-	def hasEmptyConstructor(WClass it) {
-		constructors == null || constructors.empty || constructors.exists[ parameters.size == 0 ] 
 	}
 	
 	@Check
