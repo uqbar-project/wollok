@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter
 
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
@@ -71,7 +72,9 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Helpers
 	// ********************************************************************************************
 	
-	def eval(EObject expr) { interpreter.eval(expr) }	
+	def eval(EObject expr) { interpreter.eval(expr) }
+	
+	def evalAll(List<? extends EObject> list) { list.map[ eval ] }	
 	
 	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)

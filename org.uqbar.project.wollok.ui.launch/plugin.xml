@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+	<!-- LAUNCH CONFIG -->
+
+	<extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
+            modes="run, debug"
+            name="Launch Wollok"
+            delegate="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
+            sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
+            sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/w.png"
+            configTypeID="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
+            id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   <!-- LAUNCH CONFIG TAB (UI) -->
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
+            description="Run or debug a Wollok program"
+            class="org.uqbar.project.wollok.ui.launch.ui.WollokTabGroup"
+            id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType.launchTabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <!-- SOURCE LOOKUP -->
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.uqbar.project.wollok.debugger.client.source.WollokSourceLookupDirector"
+            id="org.uqbar.project.wollok.ui.launch.sourceLocator"
+            name="Wollok Source Lookup Director">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.uqbar.project.wollok.debugger.client.source.WollokSourcePathComputer"
+            id="org.uqbar.project.wollok.ui.launch.sourcePathComputer">
+      </sourcePathComputer>
+   </extension>
+   <!-- /SOURCE LOOKUP -->
+
+	<!-- SHORTCUTS & BINDINGS -->
+	<extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut"
+            description="Launch Wollok"
+            id="org.uqbar.project.wollok.ui.launch.shortcut"
+            label="%shortcut.label"
+            modes="run, debug"
+            icon="icons/w.png">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt type="org.eclipse.core.resources.IFile"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
+               </iterate>
+             </with>
+           </enablement>
+           <contextLabel
+              mode="run"
+              label="Wollok Program"/>
+          <contextLabel
+              mode="debug"
+              label="Wollok Program"/>
+         </contextualLaunch>
+      </shortcut>
+      <shortcut
+            class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcutWithRepl"
+            description="Launch Wollok with Repl"
+            icon="icons/w.png"
+            id="org.uqbar.project.wollok.ui.launch.shortcut.repl"
+            label="Launch with Repl"
+            modes="run, debug">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt type="org.eclipse.core.resources.IFile"/>
+                  <or>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
+                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  </or>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Run Wollok Program"
+            id="org.uqbar.project.wollok.ui.launch.shortcut.run"
+            name="Run Wollok">
+      </command>
+   	  <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Debug Wollok Program"
+            id="org.uqbar.project.wollok.ui.launch.shortcut.debug"
+            name="Debug Wollok">
+      </command>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Run Wollok Program with REPL"
+            id="org.uqbar.project.wollok.ui.launch.shortcut.repl.run"
+            name="Run Wollok REPL">
+      </command>
+   	  <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Debug Wollok Program with REPL"
+            id="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
+            name="Debug Wollok REPL">
+      </command>
+   </extension>
+   	<extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+X W"
+            commandId="org.uqbar.project.wollok.ui.launch.shortcut.run"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   <extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+D W"
+            commandId="org.uqbar.project.wollok.ui.launch.shortcut.debug"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   	<extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+X R"
+            commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.run"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   <extension
+          point="org.eclipse.ui.bindings">
+        <key
+            sequence="M2+M3+D R"
+            commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+   <!-- SHORTCUTS & BINDINGS -->
+   
+	<!-- BREAKPOINTS -->
+	<extension point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="org.uqbar.project.wollok.ui.launch.lineBreakpoint.marker"
+            class="org.uqbar.project.wollok.debugger.model.WollokLineBreakpoint"
+            id="org.uqbar.project.wollok.ui.launch.lineBreakpoint">
+      </breakpoint>
+   </extension>
+   <extension point="org.eclipse.core.resources.markers"
+         id="org.uqbar.project.wollok.ui.launch.lineBreakpoint.marker"
+         name="Wollok Line Breakpoint">
+      <super type="org.eclipse.debug.core.lineBreakpointMarker" />
+      <persistent value="true" />
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            class="org.uqbar.project.wollok.debugger.WollokBreakpointAdapterFactory"
+            adaptableType="org.uqbar.project.wollok.ui.editor.WollokTextEditor">
+         <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+      </factory>
+   </extension>
+   
+   <!-- DEBUG MODEL & CONTEXT -->
+   	<extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="Debugging Wollok"
+            description="Wollok Context"
+            id="org.uqbar.project.wollok.debugger.context"
+            parentId="org.eclipse.debug.ui.debugging">
+      </context>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.uqbar.project.wollok.debugger.WollokDebugModelPresentation"
+            id="org.uqbar.project.wollok.debugger.model">
+      </debugModelPresentation>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelContextBindings">
+      <modelContextBinding
+            debugModelId="org.uqbar.project.wollok.debugger.model"
+            contextId="org.uqbar.project.wollok.debugger.context">
+      </modelContextBinding>
+   </extension>
+   <!-- /DEBUG MODEL -->
+   <!-- /BREAKPOINTS -->
+    
+    <!-- BREAKPOINTS ACTIONS -->
+    <extension point="org.eclipse.ui.editorActions">
+      <editorContribution targetID="org.uqbar.project.wollok.WollokDsl" 
+                          id="org.uqbar.project.wollok.WollokDsl.rulerActions">
+	     <action
+	             label="Not Used"
+	             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+	             style="push"
+	             actionID="RulerDoubleClick"
+	             id="org.uqbar.project.wollok.debugger.doubleClickBreakpointAction"/>
+   	  </editorContribution>
+   </extension>
+   <extension point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+         targetID="org.uqbar.project.wollok.WollokDsl"
+         id="org.uqbar.project.wollok.debugger.RulerPopupActions">
+         <action
+            label="Toggle Breakpoint Mierda"
+            class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+            menubarPath="additions"
+            id="org.uqbar.project.wollok.debugger.rulerContextMenu.toggleBreakpointAction">
+         </action>
+      </viewerContribution>
+   </extension>
+  <!-- /BREAKPOINTS ACTIONS -->
+
+
+</plugin>

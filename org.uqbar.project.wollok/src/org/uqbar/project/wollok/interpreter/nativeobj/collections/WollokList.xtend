@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokWrapperNativeObject
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 /**
  * Wrapper for Lists.
  * A Wollok Native List object.
@@ -34,10 +34,9 @@ class WollokList extends AbstractWollokWrapperNativeObject<List<Object>> {
 	// but it requires access to the interpreter which we only have here.	
 	def asWList(Iterable<Object> nativeList) { new WollokList(interpreter, nativeList) }
 
-	// If this two methods were modelled as automatic coercions, many of the list methods below
+	// If this closures to xtend closures were modelled as automatic coercions, many of the list methods below
 	// could be eliminated an delegated to the wrapped list.
-	def <Input, Output> asFun(WollokClosure closure) { [closure.apply(it as Input) as Output] }
-	def <Input> Procedure1<Input> asProc(WollokClosure proc) { [proc.apply(it as Input)] }
+	
 	
 	def forEach(WollokClosure proc) { wrapped.forEach(proc.asProc) }
 	def map(WollokClosure closure) { wrapped.map(closure.asFun).asWList }

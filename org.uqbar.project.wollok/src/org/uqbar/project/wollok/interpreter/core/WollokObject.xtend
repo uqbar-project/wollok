@@ -1,8 +1,11 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import java.util.List
 import java.util.Map
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
@@ -16,12 +19,17 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import com.google.common.collect.Lists
+import java.util.Collections
 
 /**
  * A wollok user defined (dynamic) object.
@@ -69,12 +77,44 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
-	def invokeConstructor(WConstructor constructor, Object... objects) {
-		if (constructor != null) {
-			val context = constructor.createEvaluationContext(objects).then(this)
+	def invokeConstructor(Object... objects) {
+		var constructor = behavior.resolveConstructor(objects)
+		
+		// no-args constructor automatic execution 
+		if (constructor == null && objects.length == 0)
+			constructor = (behavior as WClass).findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
+			
+		if (constructor != null)
+			evaluateConstructor(constructor, objects)
+	}
+	
+	def void evaluateConstructor(WConstructor constructor, Object[] objects) {
+		val constructorEvalContext = constructor.createEvaluationContext(objects)
+		// delegation
+		val other = constructor.delegatingConstructorCall
+		if (other != null) {
+			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
+			delegatedConstructor.invokeOnContext(other, other.arguments, constructorEvalContext) // no 'this' as parent context !
+		}
+		else {
+			// automatic super() call
+			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
+			delegatedConstructor?.invokeOnContext(constructor, Collections.EMPTY_LIST, constructorEvalContext)
+		}
+		
+		// actual call
+		if (constructor.expression != null) {
+			val context = constructorEvalContext.then(this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
+	
+	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {
+		interpreter.performOnStack(call, context) [|
+			evaluateConstructor(constructor, argumentsToEval.evalAll) 
+			null
+		]
+	} 
 	
 	def static createEvaluationContext(WConstructor declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)
@@ -129,6 +169,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	// observable
 	
 	var Set<WollokObjectListener> listeners = newHashSet
+	
+	static val EMPTY_OBJECTS_ARRAY = newArrayOfSize(0)
 	
 	def addFieldChangedListener(WollokObjectListener listener) { this.listeners.add(listener) }
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }

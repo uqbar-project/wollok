@@ -6,6 +6,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -14,6 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WLibrary
@@ -37,6 +39,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * Custom validation rules.
@@ -88,6 +91,10 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
 		if (Character.isUpperCase(c.name.charAt(0))) error("Referenciable name must start with lowercase", c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	}
+	
+	// **************************************
+	// ** instantiation and constructors	
+	// **************************************
 
 	@Check
 	def checkCannotInstantiateAbstractClasses(WConstructorCall c) {
@@ -97,13 +104,53 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def checkConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = if (c.classRef.constructor == null)
+			val expectedMessage = if (c.classRef.constructors == null)
 					""
 				else
-					c.classRef.constructor.parameters.map[name].join(",")
-			error("Wrong number of arguments. Should be (" + expectedMessage + ")", c, WCONSTRUCTOR_CALL__ARGUMENTS)
+					c.classRef.constructors.map[ '(' + parameters.map[name].join(",") + ')'].join(' or ')
+			error("Wrong number of arguments. Should be " + expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
 		}
 	}
+	
+	@Check
+	def checkRequiredSuperClassConstructorCall(WClass it) {
+		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
+			error('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
+	}
+	
+	@Check
+	def checkCannotHaveTwoConstructorsWithSameArity(WClass it) {
+		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
+		repeated.forEach[r|
+			error("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
+		]
+	}
+	
+	@Check
+	def checkConstrutorMustExpliclityCallSuper(WConstructor it) {
+		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
+			error("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
+		}
+	}
+	
+	@Check
+	def checkDelegatedConstructorExists(WDelegatingConstructorCall it) {
+		try {
+			val resolved = it.wollokClass.resolveConstructorReference(it)
+			if (resolved == null) {
+				// we could actually show the available options
+				error("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+			}
+		}
+		catch (WollokRuntimeException e) {
+			// mmm... terrible
+			error("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+		}
+	}
+	
+	// **************************************
+	// ** overriding	
+	// **************************************
 
 	@Check
 	def checkMethodActuallyOverrides(WMethodDeclaration m) {

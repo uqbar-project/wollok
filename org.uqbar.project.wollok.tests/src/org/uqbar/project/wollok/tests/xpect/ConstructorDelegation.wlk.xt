@@ -1,0 +1,52 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	var x
+	var y
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "this(22)"
+	new() = this(22) {
+		x = 2
+		y = 2
+	}
+	
+	method getX() { return x }
+	method getY() { return y }
+}
+
+class B {
+	var x
+	new(_x) { x = _x }
+}
+
+class C extends B {
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super()"
+	new() = super() {}
+}
+
+class D extends B {
+	// XPECT errors --> "Must call a super class constructor explicitly" at "new() { 		 	}"
+	new() {
+		
+	}
+	
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super(1, a)"
+	new(a) = super(1, a) {}
+}
+
+// 
+//  REQUIRED CONSTRUCTOR CALLS 
+//
+
+class X {
+	new(a) {
+		this.println(a)
+	}
+}
+
+// XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
+class Y extends X {
+}
+
+class Z extends X {
+	new() = super("something") {}
+}

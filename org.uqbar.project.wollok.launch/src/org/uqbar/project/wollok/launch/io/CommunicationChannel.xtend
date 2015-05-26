@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.launch.io
 
 import java.io.BufferedReader
 import java.io.PrintWriter
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A link with other process.
@@ -10,8 +11,8 @@ import java.io.PrintWriter
  * @author jfernandes
  */
 class CommunicationChannel {
-	@Property BufferedReader in
-	@Property PrintWriter out
+	@Accessors BufferedReader in
+	@Accessors PrintWriter out
 	
 	new(BufferedReader in, PrintWriter out) {
 		this.in = in

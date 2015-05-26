@@ -23,7 +23,7 @@ abstract class BasicType implements WollokType {
 	//TODO: implementación default para no romper todo desde el inicio.
 	// eventualmente cada type tiene que ir sobrescribiendo esto e implemetando la resolucion
 	// de mensajes que entiende a metodos
-	override understandsMessage(MessageType message) {	true }
+	override understandsMessage(MessageType message) { true }
 	override resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g) { WAny }
 	
 	override refine(WollokType previouslyInferred, RuleEnvironment g) {
