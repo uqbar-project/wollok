@@ -38,16 +38,20 @@ abstract class AbstractWollokCallable implements WCallable {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
-			if (method.native){
+			if (method.native) {
 				// reflective call
 				val r = receiver.nativeObject.invokeNative(method.name, parameters)
-				if(receiver.nativeObject.isVoid(method.name, parameters))
+				if (receiver.nativeObject.isVoid(method.name, parameters))
 					return VoidObject.instance
 				else
 					return r
-			} else {
-				method.expression.eval
-				return VoidObject.instance
+			} 
+			else {
+				val r = method.expression.eval
+				return if (method.expressionReturns)
+						r
+					else
+						VoidObject.instance
 			}
 		]
 	}
