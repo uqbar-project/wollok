@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference
 import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WCallable
@@ -53,6 +54,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -194,13 +196,48 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WConstructorCall call) {
+		call.classRef.hookToObject
 		new WollokObject(interpreter, call.classRef) => [ wo |
 			call.classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
 				if(native) wo.nativeObject = createNativeObject(wo, interpreter)
 			]
+			
+			// add the default "Object class"
+			getObjectClass(call) => [
+				addMembersTo(wo)
+			]
+			
 			wo.invokeConstructor(call.classRef.constructor, call.arguments.evalEach)
 		]
+	}
+	
+	def void hookToObject(WClass wClass) {
+		println("hooking up object to class")
+		if (wClass.parent != null)
+			wClass.parent.hookToObject
+		else {
+			val object = getObjectClass(wClass)
+			println("Found object class " + object)
+			if (wClass != object) { 
+				wClass.parent = object
+				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
+			}
+		}
+	}
+	
+	@Inject IGlobalScopeProvider scopeProvider
+
+	private WClass objectClass
+	
+	def WClass getObjectClass(EObject context) {
+		if (objectClass == null) {
+			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
+				o.toString == 'Object'
+			]
+			objectClass = scope.allElements.get(0).EObjectOrProxy as WClass
+		}
+		objectClass
 	}
 
 	def dispatch Object evaluate(WNamedObject namedObject) {
@@ -224,9 +261,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
 
-	def dispatch Object evaluate(WListLiteral l) {
-		new WollokList(interpreter, newArrayList(l.elements.map[eval].toArray))
-	}
+	def dispatch Object evaluate(WListLiteral l) { new WollokList(interpreter, newArrayList(l.elements.map[eval].toArray)) }
 
 	// other expressions
 	def dispatch Object evaluate(WBlockExpression b) { b.expressions.evalAll }

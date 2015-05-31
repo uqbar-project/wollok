@@ -9,4 +9,13 @@
 		method assert(value) native
 		method assertEquals(expected, actual) native
 	}
+	
+	
+	class Object {
+		method asText() {
+		    return "hardcoded text"
+		}
+	}
+	
+	
 // }
