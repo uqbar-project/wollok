@@ -310,11 +310,14 @@ WExpressionInClosure returns WExpression:
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral
+	WListLiteral | WSetLiteral
 ;
 
-WListLiteral:
+WListLiteral returns WCollectionLiteral:
 	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+	
+WSetLiteral returns WCollectionLiteral:
+	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 
 WNamedObject:
 	'object' name=ID '{'

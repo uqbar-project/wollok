@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
+import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokSet
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
@@ -44,6 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -224,9 +226,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
 
-	def dispatch Object evaluate(WListLiteral l) {
-		new WollokList(interpreter, newArrayList(l.elements.map[eval].toArray))
-	}
+	def dispatch Object evaluate(WListLiteral l) { new WollokList(interpreter, newArrayList(l.elements.map[eval].toArray)) }
+	def dispatch Object evaluate(WSetLiteral l) { new WollokSet(interpreter, newHashSet(l.elements.map[eval].toArray)) }
 
 	// other expressions
 	def dispatch Object evaluate(WBlockExpression b) { b.expressions.evalAll }
