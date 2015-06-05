@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.uqbar.project.wollok.ui.Messages;
 
 /**
  * The abstract parent for all the file wizards. Because all do the same, but it only differes in the extension
@@ -41,7 +42,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 	protected String description;
 	
 	public AbstractNewWollokFileWizardPage(IStructuredSelection selection) {
-		super("wizardPage");
+		super(Messages.AbstractNewWollokFileWizardPage_0);
 		this.doInit();
 		setTitle(this.title);
 		setDescription(this.description);
@@ -65,7 +66,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		layout.numColumns = 3;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Container:");
+		label.setText(Messages.AbstractNewWollokFileWizardPage_container);
 	
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -80,14 +81,14 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		});
 	
 		Button button = new Button(container, SWT.PUSH);
-		button.setText("Browse...");
+		button.setText(Messages.AbstractNewWollokFileWizardPage_browse);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				handleBrowse();
 			}
 		});
 		label = new Label(container, SWT.NULL);
-		label.setText("&File name:");
+		label.setText(Messages.AbstractNewWollokFileWizardPage_fileName);
 	
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -131,7 +132,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 	private void handleBrowse() {
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				"Select new file container");
+				Messages.AbstractNewWollokFileWizardPage_selectContainer);
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
@@ -149,31 +150,31 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		String fileName = getFileName();
 	
 		if (getContainerName().length() == 0) {
-			updateStatus("File container must be specified");
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileContainerRequired);
 			return;
 		}
 		if (container == null) {
-			updateStatus("File container must exist");
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileContainerDoesNotExists);
 			return;
 		}
 
 		if (!container.isAccessible()) {
-			updateStatus("Project must be writable");
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_projectMustBeWritable);
 			return;
 		}
 		if (fileName.length() == 0) {
-			updateStatus("File name must be specified");
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeSpecified);
 			return;
 		}
 		if (fileName.replace('\\', '/').indexOf('/', 1) > 0) {
-			updateStatus("File name must be valid");
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeValid);
 			return;
 		}
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
 			if (ext.equalsIgnoreCase(this.extension) == false) {
-				updateStatus("File extension must be \"" + this.extension +"\"");
+				updateStatus(Messages.AbstractNewWollokFileWizardPage_fileExtensionMustBe + this.extension +"\""); //$NON-NLS-2$
 				return;
 			}
 		}
@@ -214,7 +215,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 					}
 				}
 			}
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 
 }

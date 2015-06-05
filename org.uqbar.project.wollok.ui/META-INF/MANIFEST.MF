@@ -4,6 +4,7 @@ Bundle-Name: org.uqbar.project.wollok.ui
 Bundle-Vendor: Uqbar Project
 Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.ui; singleton:=true
+Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.xtext.ui;bundle-version="[2.7.3,2.7.4)",
