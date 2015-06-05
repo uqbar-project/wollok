@@ -63,7 +63,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	
 	def methodFormatting(FormattingConfig it, extension WMethodDeclarationElements e) {
 		setLinewrap(1, 1, 2).before(methodKeyword_1)
-		setLinewrap(1, 1, 1).after(expressionAssignment_7)
+		setLinewrap(1, 1, 1).after(expressionAssignment_7_0)
 		
 		setNoSpace.after(nameAssignment_2)
 		
