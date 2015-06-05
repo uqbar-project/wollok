@@ -190,23 +190,28 @@ Library.
    </url>
 
    <requires>
-      <import plugin="org.eclipse.xtext.util"/>
+      <import plugin="org.eclipse.xtext" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.util" version="2.7.3" match="equivalent"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.eclipse.xtext.common.types"/>
+      <import plugin="org.eclipse.xtext.common.types" version="2.7.3" match="equivalent"/>
+      <import plugin="org.eclipse.xtend.lib" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ecore" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.xbase.lib" version="2.7.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
       <import plugin="org.uqbar.project.wollok" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared"/>
+      <import plugin="org.eclipse.xtext.ui.shared" version="2.7.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.xtext.common.types.ui"/>
-      <import plugin="org.eclipse.xtext.ui.codetemplates.ui"/>
+      <import plugin="org.eclipse.xtext.builder" version="2.7.3" match="equivalent"/>
+      <import plugin="org.eclipse.xtext.common.types.ui" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.codetemplates.ui" version="2.7.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.ui.console" version="3.5.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.debug" version="3.8.0" match="greaterOrEqual"/>
@@ -237,11 +242,6 @@ Library.
       <import plugin="com.google.guava" version="15.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.uqbar.project.wollok.launch"/>
-      <import plugin="org.eclipse.xtext" version="2.7.3" match="compatible"/>
-      <import plugin="org.eclipse.xtend.lib" version="2.7.3" match="compatible"/>
-      <import plugin="org.eclipse.xtext.ecore" version="2.7.3" match="compatible"/>
-      <import plugin="org.eclipse.xtext.xbase.lib" version="2.7.3" match="compatible"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.7.3" match="compatible"/>
    </requires>
 
    <plugin

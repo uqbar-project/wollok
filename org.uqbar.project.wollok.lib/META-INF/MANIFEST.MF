@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.uqbar.project.wollok.lib.WollokLibActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.xtend.lib;bundle-version="[2.7.3,2.7.4)",
+ org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
  org.uqbar.project.wollok
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
