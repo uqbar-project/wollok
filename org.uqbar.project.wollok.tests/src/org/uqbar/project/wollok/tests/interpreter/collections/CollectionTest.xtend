@@ -4,12 +4,14 @@ import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
+ * 
  * @author tesonep
+ * @author jfernandes
  */
-class RemoveTest extends AbstractWollokInterpreterTestCase {
+class CollectionTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
-	def void testSuperInvocation() { #['''
+	def void testCollectionAsInstanceVariable() { #['''
 		object pajarera{
 			val pajaros = #[]
 			method agregar(unPajaro){
@@ -70,5 +72,19 @@ class RemoveTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''
 		].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testAddAll() { 
+		'''
+		program p {
+			val unos = #[1,2,3,4]
+			val otros = #[5,6,7,8]
+			
+			val todos = #[]
+			todos.addAll(unos)
+			todos.addAll(otros)			
+			this.assertEquals(8, todos.size())
+		}'''.interpretPropagatingErrors
 	}
 }

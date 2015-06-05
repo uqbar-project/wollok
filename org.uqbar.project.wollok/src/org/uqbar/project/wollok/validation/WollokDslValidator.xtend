@@ -38,6 +38,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WVariable
 
 /**
  * Custom validation rules.
@@ -125,6 +126,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 
 	@Check
 	def duplicated(WMethodDeclaration m) {
+		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
 			m.error(WollokDslValidator_DUPLICATED_METHOD)
 	}
