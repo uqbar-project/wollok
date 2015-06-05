@@ -190,7 +190,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def postFixOpOnlyValidforVarReferences(WPostfixOperation op) {
-		if (!(op.operand.isVarRef))
+		if (!(op.operand.isWritableVarRef))
 			error(op.feature + WollokDslValidator_POSTFIX_ONLY_FOR_VAR, op, WPOSTFIX_OPERATION__OPERAND)
 	}
 	
@@ -211,7 +211,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	
 	@Check
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
-		if (op.feature.isMultiOpAssignment && !op.leftOperand.isVarRef)
+		if (op.feature.isMultiOpAssignment && !op.leftOperand.isWritableVarRef)
 			error(op.feature + WollokDslValidator_BINARYOP_ONLY_ON_VARS, op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
 	
@@ -227,7 +227,12 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 			error(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
 	}
 
-	def isVarRef(WExpression e) { e instanceof WVariableReference }
+	def isWritableVarRef(WExpression e) { 
+		e instanceof WVariableReference
+		&& (e as WVariableReference).ref instanceof WVariable
+		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
+		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
+	}
 
 	/**
 	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
