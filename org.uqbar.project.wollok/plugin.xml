@@ -12,7 +12,7 @@
   </extension>
    <extension
          id="wollokNature"
-         name="Wollok Project Nature"
+         name="%wollokProjectNature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
@@ -28,7 +28,7 @@
       <content-type
             file-extensions="wlk"
             id="org.uqbar.project.wollok.contentType"
-            name="Wollok File"
+            name="%wollokFile"
             priority="normal">
       </content-type>
       <file-association

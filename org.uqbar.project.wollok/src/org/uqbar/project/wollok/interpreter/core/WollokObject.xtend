@@ -64,6 +64,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return javaMethod.invoke(this, parameters).asWollokObject
 		}
 		
+		// I18N !
 		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
 	}
 	
@@ -91,8 +92,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
  	
 	override setReference(String name, Object value) {
 		if (name == THIS)
+			// I18N !
 			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
 		if (!instanceVariables.containsKey(name))
+			// I18N !
 			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
 		val oldValue = instanceVariables.put(name, value)

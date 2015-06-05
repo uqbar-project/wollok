@@ -7,7 +7,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok;singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext;bundle-version="2.7.3";visibility:=reexport,
+Require-Bundle: org.eclipse.xtext;bundle-version="[2.7.3,2.8.0)";visibility:=reexport,
  org.eclipse.xtext.xbase;bundle-version="[2.7.3,2.8.0)";resolution:=optional;visibility:=reexport,
  org.eclipse.xtext.generator;bundle-version="[2.7.3,2.8.0)";resolution:=optional,
  org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional,

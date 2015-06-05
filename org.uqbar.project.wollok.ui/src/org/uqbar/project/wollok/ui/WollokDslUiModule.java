@@ -16,7 +16,7 @@ import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideRulerAction;
 import org.uqbar.project.wollok.ui.editor.hyperlinking.WollokEObjectAtOffsetHelper;
-import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvieder;
+import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
 import org.uqbar.project.wollok.ui.manifest.WollokJDTManifestFinder;
@@ -43,7 +43,7 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 	
 	@Override
 	public Class<? extends ITemplateProposalProvider> bindITemplateProposalProvider() {
-		return WollokTemplateProposalProvieder.class;
+		return WollokTemplateProposalProvider.class;
 	}
 	
 	public Class<? extends IHighlightingConfiguration> bindIHighlightingConfiguration () {

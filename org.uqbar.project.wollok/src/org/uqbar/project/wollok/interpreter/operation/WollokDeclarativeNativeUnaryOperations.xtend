@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
  * @author tesonep
  * @author jfernandes
  */
+// I18N !
 class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperations {
 	
 	override asUnaryOperation(String operationSymbol) {
