@@ -25,12 +25,14 @@ class MapBasedEvaluationContext implements EvaluationContext {
 
 	override resolve(String variableName) {
 		if (!values.containsKey(variableName))
+			// I18N !
 			throw new UnresolvableReference("No reference with name " + variableName)
 		values.get(variableName)
 	}
 
 	override setReference(String name, Object value) {
 		if (!values.containsKey(name))
+			// I18N !
 			throw new UnresolvableReference("No reference with name " + name)
 		values.put(name, value)
 	}

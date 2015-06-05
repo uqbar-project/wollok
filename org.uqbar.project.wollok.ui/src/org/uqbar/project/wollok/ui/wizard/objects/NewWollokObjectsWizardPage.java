@@ -2,8 +2,13 @@ package org.uqbar.project.wollok.ui.wizard.objects;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.uqbar.project.wollok.WollokConstants;
+import org.uqbar.project.wollok.ui.Messages;
 import org.uqbar.project.wollok.ui.wizard.abstractWizards.AbstractNewWollokFileWizardPage;
 
+/**
+ * 
+ * @author tesonep
+ */
 public class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 	public NewWollokObjectsWizardPage(IStructuredSelection selection) {
 		super(selection);
@@ -11,8 +16,8 @@ public class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage 
 
 	protected void doInit(){
 		this.extension = WollokConstants.CLASS_OBJECTS_EXTENSION;
-		this.initialFileName = "objects." + WollokConstants.CLASS_OBJECTS_EXTENSION;
-		this.title = "Creates a new file for Objects and Classes";
-		this.description = "This wizard creates a new wollok file for the definition of objects and classes";
+		this.initialFileName = "objects." + WollokConstants.CLASS_OBJECTS_EXTENSION; //$NON-NLS-1$
+		this.title = Messages.NewWollokObjectsWizardPage_title;
+		this.description = Messages.NewWollokObjectsWizardPage_description;
 	}
 }

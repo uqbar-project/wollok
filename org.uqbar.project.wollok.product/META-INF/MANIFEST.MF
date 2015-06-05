@@ -4,6 +4,7 @@ Bundle-Name: Wollok Product
 Bundle-SymbolicName: org.uqbar.project.wollok.product;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Uqbar Project
+Bundle-Localization: plugin
 Require-Bundle: org.uqbar.project.wollok;bundle-version="1.0.0",
  org.uqbar.project.wollok.launch;bundle-version="1.0.0",
  org.uqbar.project.wollok.ui;bundle-version="1.0.0",
