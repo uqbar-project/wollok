@@ -190,16 +190,12 @@ Library.
    </url>
 
    <requires>
-      <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.antlr.runtime"/>
       <import plugin="org.eclipse.xtext.common.types"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ecore" version="2.6.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.xbase.lib"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
@@ -216,7 +212,7 @@ Library.
       <import plugin="org.eclipse.jdt.debug" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.launching" version="3.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.xtend"/>
+      <import plugin="org.eclipse.xtend" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xpand"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jface"/>
@@ -227,14 +223,9 @@ Library.
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.8.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.101" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.zest.core" version="1.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.zest.layouts" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="hu.cubussapiens.debugvisualisation" version="0.8.2" match="greaterOrEqual"/>
-      <import plugin="hu.cubussapiens.themes.presentation" version="0.1.1" match="greaterOrEqual"/>
-      <import plugin="hu.cubussapiens.xtext.reflectiveeditor" version="0.5.5" match="greaterOrEqual"/>
-      <import plugin="hu.cubussapiens.zestlayouts" version="0.8.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.gef" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
@@ -244,9 +235,13 @@ Library.
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="com.google.guava" version="15.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtend2.lib" version="2.6.2" match="greaterOrEqual"/>
-      <import plugin="org.uqbar.project.wollok.tests" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.uqbar.project.wollok.launch"/>
+      <import plugin="org.eclipse.xtext" version="2.7.3" match="compatible"/>
+      <import plugin="org.eclipse.xtend.lib" version="2.7.3" match="compatible"/>
+      <import plugin="org.eclipse.xtext.ecore" version="2.7.3" match="compatible"/>
+      <import plugin="org.eclipse.xtext.xbase.lib" version="2.7.3" match="compatible"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.7.3" match="compatible"/>
    </requires>
 
    <plugin
