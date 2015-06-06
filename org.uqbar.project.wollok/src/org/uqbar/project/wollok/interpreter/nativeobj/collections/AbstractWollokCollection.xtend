@@ -67,4 +67,5 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 		else wrapped.get(randomBetween(0, wrapped.size - 1))
 	}
 	
+	def abstract String getWollokName()
 }

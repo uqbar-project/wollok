@@ -2,9 +2,6 @@ package org.uqbar.project.wollok.interpreter.nativeobj.collections
 
 import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-
-import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * Wrapper for Lists.
@@ -34,9 +31,10 @@ class WollokList extends AbstractWollokCollection<List<Object>> {
 	def dispatch addFlat(WollokList accum, Object elem) { accum.wrapped.add(elem); accum }
 	def dispatch addFlat(WollokList accum, Void elem) { accum }
 	
-	// object
-	override toString() { "WList" + wrapped.toString }
-	
 	override clone() { new WollokList(interpreter, this.wrapped.clone) }
-
+	
+	override getWollokName() {
+		"WList"
+	}
+	
 }

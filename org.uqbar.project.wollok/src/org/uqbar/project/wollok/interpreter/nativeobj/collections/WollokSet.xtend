@@ -18,7 +18,9 @@ class WollokSet extends AbstractWollokCollection<Set<Object>> {
 	
 	override WollokSet asThisCollection(Iterable toWrap) { new WollokSet(interpreter, toWrap) }
 
-	override toString() { "WSet" + wrapped.toString }
 	override clone() { new WollokSet(interpreter, this.wrapped.clone) }
-	
+
+	override getWollokName() {
+		"WSet"
+	}
 }
