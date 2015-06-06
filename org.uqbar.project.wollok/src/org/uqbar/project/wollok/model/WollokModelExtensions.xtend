@@ -181,8 +181,8 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
 	def static IFile getIFile(EObject obj) {
-		val platformString = obj.eResource.URI.toPlatformString(true);
-		ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(platformString));
+		val platformString = obj.eResource.URI.toPlatformString(true)
+		ResourcesPlugin.workspace.root.getFile(new Path(platformString))
 	}
 
 }

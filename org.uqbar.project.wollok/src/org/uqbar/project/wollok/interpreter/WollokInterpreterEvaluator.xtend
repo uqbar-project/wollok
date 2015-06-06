@@ -230,9 +230,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def WClass getObjectClass(EObject context) {
 		if (objectClass == null) {
 			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
-				o.toString == OBJECT_CLASS_NAME
+				o.name.toString == OBJECT_CLASS_NAME
 			]
-			objectClass = scope.allElements.get(0).EObjectOrProxy as WClass
+			objectClass = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME].EObjectOrProxy as WClass
 		}
 		objectClass
 	}

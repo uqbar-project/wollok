@@ -158,17 +158,22 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		className = classNameParts.join(".")
 		val classFQN = className + "Object"
 		
-		createNativeObject(classFQN, obj, interpreter)		
+		createNativeObject(classFQN, obj, interpreter)
 	}
 	
 	def static createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
 		val bundle = WollokActivator.getDefault
 		val javaClass = 
 		if (bundle != null) {
-			bundle.loadWollokLibClass(classFQN)
+			try {
+				bundle.loadWollokLibClass(classFQN, obj.behavior)
+			}
+			catch (ClassNotFoundException e) {
+				interpreter.classLoader.loadClass(classFQN)
+			}
 		}
 		else {
-			Class.forName(classFQN)
+			interpreter.classLoader.loadClass(classFQN)
 		}
 		try
 			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)

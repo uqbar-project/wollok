@@ -36,6 +36,8 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 
 	@Before
 	def void setUp() {
+		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
+		
 		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok-lib.wlk", true))
 		resource.load(new HashMap())
 		resourceSet.getResources().add(resource);
@@ -66,9 +68,6 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpret(Boolean propagatingErrors, CharSequence... programAsString) {
-//		URI.createPlatformResourceURI("org.uqbar.project.wollok.lib/src/wollok-lib.wlk", true)
-//		new File()
-		
 		(programAsString.map[parse(resourceSet)].clone => [
 			forEach[assertNoErrors]
 			forEach[it.interpret(propagatingErrors)]

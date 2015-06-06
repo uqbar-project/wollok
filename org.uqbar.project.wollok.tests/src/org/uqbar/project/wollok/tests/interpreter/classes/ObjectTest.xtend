@@ -19,7 +19,7 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			val myObject = new MyClass()
-			this.assertEquals('hardcoded text', myObject.asText())
+			this.assert(myObject.identity() != null)
 		}'''].interpretPropagatingErrors
 	}
 	

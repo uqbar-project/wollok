@@ -1,8 +1,12 @@
 package org.uqbar.project.wollok
 
 import org.eclipse.core.runtime.Plugin
+import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.core.internal.resources.Project
 
 /**
  * 
@@ -30,7 +34,7 @@ class WollokActivator extends Plugin {
 		bundle.bundleContext.bundles.findFirst[b| b.symbolicName == WOLLOK_LIB_BUNDLE_NAME]
 	}
 	
-	def loadWollokLibClass(String className) {
+	def loadWollokLibClass(String className, EObject context) {
 		try {
 			wollokLib.loadClass(className);
 		} 
@@ -38,7 +42,9 @@ class WollokActivator extends Plugin {
 			throw new WollokRuntimeException("Error while creating native object class " + className, e);
 		}
 		catch (ClassNotFoundException e) {
-			throw new WollokRuntimeException("Error while creating native object class " + className, e);
+			// not found in wollok-lib Search here
+			Thread.currentThread.contextClassLoader.loadClass(className)
+//			throw new WollokRuntimeException("Error while creating native object class " + className, e);
 		}
 		catch (IllegalAccessException e) {
 			throw new WollokRuntimeException("Error while creating native object class " + className, e);
