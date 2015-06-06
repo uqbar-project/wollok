@@ -46,7 +46,7 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
+	def static fqn(WClass it) { (if (package != null) (package.name + ".") else "") + name }
 	def static fqn(WNamedObject it) {
 		 if(package != null) package.name + "." + name
 		 else name

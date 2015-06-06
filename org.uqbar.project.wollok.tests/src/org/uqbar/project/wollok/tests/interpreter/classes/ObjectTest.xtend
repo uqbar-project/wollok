@@ -23,4 +23,20 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 		}'''].interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testInheritedMethodForPairLiterals() {
+		#['''
+		class MyClass {
+		}
+		''',
+		'''
+		program p {
+			val myObject = new MyClass()
+			val pair = myObject -> 23
+			
+			this.assertEquals(myObject, pair.getX())
+			this.assertEquals(23, pair.getY())
+		}'''].interpretPropagatingErrors
+	}
+	
 }

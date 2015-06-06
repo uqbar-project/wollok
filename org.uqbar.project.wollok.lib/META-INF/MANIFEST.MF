@@ -7,5 +7,7 @@ Bundle-Activator: org.uqbar.project.wollok.lib.WollokLibActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
- org.uqbar.project.wollok
+ org.uqbar.project.wollok;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: .,
+ org.uqbar.project.wollok.lib

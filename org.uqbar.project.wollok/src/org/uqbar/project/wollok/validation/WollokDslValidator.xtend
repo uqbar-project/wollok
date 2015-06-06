@@ -249,11 +249,11 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 		if (native) {
 			 if (expression != null) error("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
 			 if (overrides) error("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
-			 if (declaringContext instanceof WObjectLiteral) error("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
+			 if (declaringContext instanceof WObjectLiteral) error("Native methods can only be defined in classes or named objects", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
-			 if(declaringContext instanceof WClass)
-				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-				 	error("Cannot declare native methods in this class since there's already a native super class in the hierarchy", it, WMETHOD_DECLARATION__NATIVE)
+//			 if(declaringContext instanceof WClass)
+//				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
+//				 	error("Cannot declare native methods in this class since there's already a native super class in the hierarchy", it, WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 

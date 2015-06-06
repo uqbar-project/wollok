@@ -32,7 +32,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	val Map<String,Object> instanceVariables = newHashMap
-	@Accessors var Object nativeObject
+	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {

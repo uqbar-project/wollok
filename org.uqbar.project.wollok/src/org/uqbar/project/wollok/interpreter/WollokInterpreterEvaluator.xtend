@@ -72,6 +72,8 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
+	static final String OBJECT_CLASS_NAME = 'WObject'
+	
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
@@ -196,16 +198,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WConstructorCall call) {
+		// hook the implicit relation "* extends Object*
 		call.classRef.hookToObject
+		
 		new WollokObject(interpreter, call.classRef) => [ wo |
 			call.classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
-				if(native) wo.nativeObject = createNativeObject(wo, interpreter)
-			]
-			
-			// add the default "Object class"
-			getObjectClass(call) => [
-				addMembersTo(wo)
+				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
 			
 			wo.invokeConstructor(call.classRef.constructor, call.arguments.evalEach)
@@ -213,12 +212,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 	
 	def void hookToObject(WClass wClass) {
-		println("hooking up object to class")
 		if (wClass.parent != null)
 			wClass.parent.hookToObject
 		else {
 			val object = getObjectClass(wClass)
-			println("Found object class " + object)
 			if (wClass != object) { 
 				wClass.parent = object
 				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
@@ -233,7 +230,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def WClass getObjectClass(EObject context) {
 		if (objectClass == null) {
 			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
-				o.toString == 'Object'
+				o.toString == OBJECT_CLASS_NAME
 			]
 			objectClass = scope.allElements.get(0).EObjectOrProxy as WClass
 		}
@@ -249,13 +246,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			new WollokObject(interpreter, namedObject) => [ wo |
 				namedObject.members.forEach[wo.addMember(it)]
 				if (namedObject.native)
-					wo.nativeObject = namedObject.createNativeObject(wo,interpreter)
+					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
 				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 			]
 		}
-		
-		// println(x.toString + System.identityHashCode(x))
-		
 		x
 	}
 
