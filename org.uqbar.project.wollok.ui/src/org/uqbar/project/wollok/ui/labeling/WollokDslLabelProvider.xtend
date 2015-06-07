@@ -57,9 +57,10 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def resolveLabelExtension() {
 		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
 
-		if(configPoints.empty){
+		if (configPoints.empty) {
 			null
-		}else{
+		}
+		else {
 			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
 		}
 	}

@@ -3,6 +3,10 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
+/**
+ * 
+ * @author tesonep
+ */
 class TesterObject extends AbstractWollokDeclarativeNativeObject {
 
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
@@ -18,7 +22,7 @@ class TesterObject extends AbstractWollokDeclarativeNativeObject {
 			throw new AssertionError("Value was not false")
 	}
 	
-	def dispatch assertEquals(Object a, Object b) {
+	def assertEquals(Object a, Object b) {
 		// TODO: debería compararlos usando el intérprete, como si el usuario mismo
 		// hubiera escrito "a != b". Sino acá está comparando según Java por identidad.
 		if (asBinaryOperation("!=").apply(a,b) == true) 

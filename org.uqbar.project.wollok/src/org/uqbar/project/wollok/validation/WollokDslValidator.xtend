@@ -58,16 +58,17 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
+	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD" 
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
-	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
+	
 	
 	def validatorExtensions(){
 		if(wollokValidatorExtensions != null)
@@ -256,13 +257,13 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
-			 if (expression != null) error(WollokDslValidator_NATIVE_METHOD_NO_BODY, it, WMETHOD_DECLARATION__EXPRESSION)
-			 if (overrides) error(WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE, it, WMETHOD_DECLARATION__OVERRIDES)
-			 if (declaringContext instanceof WObjectLiteral) error(WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES, it, WMETHOD_DECLARATION__NATIVE)
+			 if (expression != null) error("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
+			 if (overrides) error("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
+			 if (declaringContext instanceof WObjectLiteral) error("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
-			 if(declaringContext instanceof WClass)
-				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
+//			 if(declaringContext instanceof WClass)
+//				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
+//				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 

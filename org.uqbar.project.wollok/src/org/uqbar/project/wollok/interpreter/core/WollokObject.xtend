@@ -29,7 +29,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	@Accessors val Map<String,Object> instanceVariables = newHashMap
-	@Accessors var Object nativeObject
+	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
@@ -89,10 +89,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
  	
 	override setReference(String name, Object value) {
 		if (name == THIS)
-			// I18N !
 			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
 		if (!instanceVariables.containsKey(name))
-			// I18N !
 			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
 		val oldValue = instanceVariables.put(name, value)

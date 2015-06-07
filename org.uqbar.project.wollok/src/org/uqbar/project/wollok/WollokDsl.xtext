@@ -78,9 +78,8 @@ WMethodDeclaration:
 ;
 
 WMethodName:
-	// TODO: 1 por ahora no estan todos soportados para ser sobrecargados
 	// TODO: 2 esto deberia tener un @check el método con +, o - necesita tener un solo argumento
-	ID | OpAdd | OpMulti
+	ID | OpAdd | OpMulti | OpEquality | OpOther | OpCompare | OpAnd | OpOr
 ;
 
 WParameter:

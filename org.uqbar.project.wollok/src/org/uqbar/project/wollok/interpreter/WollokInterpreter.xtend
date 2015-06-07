@@ -21,7 +21,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  * XInterpreter impl for Wollok language.
  * Control's the execution flow and stack.
  * It does not actually have the logic to evaluate expressions.
- * For that it delegates to WollokInterpreterEvaluator.
+ * For that it delegates to XInterpreterEvaluator.
  * 
  * @author jfernandes
  */
@@ -42,6 +42,8 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	@Inject
 	WollokInterpreterConsole console
+	
+	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 
 	var executionStack = new ObservableStack<XStackFrame>
 
@@ -134,6 +136,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		}			
 	}
 	
-	def getConsole(){console}
+	def getConsole() { console }
 
 }

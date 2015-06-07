@@ -15,6 +15,9 @@ class WollokRuntimeException extends RuntimeException {
 	new(String message) {
 		super(message)
 	}	
+	new(String message, Exception e) {
+		super(message, e)
+	}
 }
 
 class UnresolvableReference extends WollokRuntimeException {
