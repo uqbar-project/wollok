@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WCallable
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -35,6 +36,7 @@ abstract class AbstractWollokCallable implements WCallable {
 	
 	def Object call(WMethodDeclaration method, Object... parameters) {
 		if (method.parameters.size != parameters.size) 
+			// I18N !
 			throw new MessageNotUnderstood('''Incorrect number of arguments for method '«method.name»'. Expected «method.parameters.size» but found «parameters.size»''')
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
@@ -49,9 +51,13 @@ abstract class AbstractWollokCallable implements WCallable {
 					return VoidObject.instance
 				else
 					return r
-			} else {
-				method.expression.eval
-				return VoidObject.instance
+			} 
+			else {
+				val r = method.expression.eval
+				return if (method.expressionReturns)
+						r
+					else
+						VoidObject.instance
 			}
 		]
 	}

@@ -10,12 +10,9 @@ import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
@@ -31,7 +28,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	val extension WollokInterpreterAccess = new WollokInterpreterAccess
-	val Map<String,Object> instanceVariables = newHashMap
+	@Accessors val Map<String,Object> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
 	
@@ -64,6 +61,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return javaMethod.invoke(this, parameters).asWollokObject
 		}
 		
+		// I18N !
 		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
 	}
 	
@@ -107,21 +105,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
-		val toString = behavior.lookupMethod("toString")
-		if (toString != null)
-			this.call("toString").toString
-		else
-			behavior.objectDescription + this.instanceVariables
+		new ToStringBuilder().smartToString(this)
 	}
-	
-	def shortLabel() {
-		behavior.objectDescription
-	}
-
-	def dispatch objectDescription(WClass clazz) { "a " + clazz.name }
-	def dispatch objectDescription(WObjectLiteral obj) { "anObject" }
-	def dispatch objectDescription(WNamedObject namedObject){ namedObject.name }
-	
+		
 	def getKind() { behavior }
 	
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
@@ -141,6 +127,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override addGlobalReference(String name, Object value) {
 		interpreter.addGlobalReference(name, value)
 	}
+	
 }
 
 /**

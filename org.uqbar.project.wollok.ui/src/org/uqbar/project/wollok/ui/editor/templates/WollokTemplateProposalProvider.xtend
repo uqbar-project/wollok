@@ -12,13 +12,14 @@ import org.eclipse.xtext.ui.editor.contentassist.ITemplateAcceptor
 import org.eclipse.xtext.ui.editor.templates.ContextTypeIdHelper
 import org.eclipse.xtext.ui.editor.templates.DefaultTemplateProposalProvider
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * Provides code templates for the editor.
  * 
  * @author jfernandes
  */
-class WollokTemplateProposalProvieder extends DefaultTemplateProposalProvider {
+class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 	ContextTypeIdHelper helper
 	@Inject
 	extension WollokDslGrammarAccess ga;
@@ -33,34 +34,34 @@ class WollokTemplateProposalProvieder extends DefaultTemplateProposalProvider {
     //"regular templates"
     super.createTemplates(templateContext, context, acceptor)
 
-	addTemplate(WProgramRule, templateContext, acceptor, "Create Program", "Create wollok program", "org.uqbar.project.wollok.createprogram", context,
+	addTemplate(WProgramRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createProgram_name, Messages.WollokTemplateProposalProvider_createProgram_description, "org.uqbar.project.wollok.createprogram", context,
 '''program ${programName} {
 	
 }''')
 
     
-	addTemplate(WLibraryElementRule, templateContext, acceptor, "Create Package", "Create new package element", "org.uqbar.project.wollok.createpackage", context,
+	addTemplate(WLibraryElementRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createPackage_name, Messages.WollokTemplateProposalProvider_createPackage_description, "org.uqbar.project.wollok.createpackage", context,
 '''package ${packageName} {
 	
 }''')
 
 	//todo: class icon
-	addTemplate(getWClassRule, templateContext, acceptor, "Create Class", "Create new class element", "org.uqbar.project.wollok.createclass", context,
+	addTemplate(getWClassRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createClass_name, Messages.WollokTemplateProposalProvider_createClass_description, "org.uqbar.project.wollok.createclass", context,
 '''class ${ClassName} {
 	
 }''')
 
 	//todo: object icon
-	addTemplate(getWObjectLiteralRule, templateContext, acceptor, "Create Object", "Create new object", "org.uqbar.project.wollok.createobject", context,
+	addTemplate(getWObjectLiteralRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createObject_name, Messages.WollokTemplateProposalProvider_createObject_description, "org.uqbar.project.wollok.createobject", context,
 '''object {
 	
 }''')
 
 	//TODO: poder seleccionar entre "var/val"
-	addTemplate(getWVariableDeclarationRule, templateContext, acceptor, "Add reference", "Add new reference", "org.uqbar.project.wollok.objectaddReference", context,
+	addTemplate(getWVariableDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createReference_name, Messages.WollokTemplateProposalProvider_createReference_description, "org.uqbar.project.wollok.objectaddReference", context,
 '''var ${name} = ${value}''')
 
-	addTemplate(getWMethodDeclarationRule, templateContext, acceptor, "Add method", "Add new method", "org.uqbar.project.wollok.objectaddMethod", context,
+	addTemplate(getWMethodDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createMethod_name, Messages.WollokTemplateProposalProvider_createMethod_description, "org.uqbar.project.wollok.objectaddMethod", context,
 '''method ${name}(${param}) {
 	
 }''')

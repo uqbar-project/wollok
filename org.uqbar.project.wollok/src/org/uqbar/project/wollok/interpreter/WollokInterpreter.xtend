@@ -99,9 +99,9 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		stack.push(new XStackFrame(executable, newContext))
 		try 
 			return something.apply
-		catch(ReturnValueException e){
+		catch(ReturnValueException e)
 			return e.value	
-		}finally
+		finally
 			stack.pop
 	}
 
