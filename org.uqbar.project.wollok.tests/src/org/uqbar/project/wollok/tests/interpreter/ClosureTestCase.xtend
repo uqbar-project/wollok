@@ -41,4 +41,46 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void closureAsParamToClosure() {
+		'''
+		program p {
+			val twice = [ block | block.apply() + block.apply() ]
+			
+			this.assertEquals(4, twice.apply [| 2 ])
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void nestedClosure() {
+		'''
+		program p {
+			val sum =  [a, b | a + b]
+			
+			val curried = [ a |
+				[ b | sum.apply(a, b) ] 
+			]
+			
+			val curriedSum = curried.apply(2)
+			
+			this.assertEquals(5, curriedSum.apply(3))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void foldingClosures() {
+		'''
+		program p {
+			val sum2 = [ a | a + 2];
+			val by3 = [ b | b * 3];
+			val pow = [ c | c ** 2];
+			
+			val op = #[sum2, by3, pow]
+			
+			val result = op.fold(0, [acc, o |  o.apply(acc) ])
+			
+			this.assertEquals(36, result)
+		}'''.interpretPropagatingErrors
+	}
+	
 }

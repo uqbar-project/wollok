@@ -11,6 +11,8 @@ import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
+import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
+import java.util.List
 
 /**
  * Utilities for xtend code
@@ -132,6 +134,8 @@ class XTendUtilExtensions {
 			return (o as WollokInteger).wrapped
 		if (o instanceof WollokDouble && (t == Double || t == Double.TYPE))
 			return (o as WollokDouble).wrapped
+		if (o instanceof WollokList && (t == Collection || t == List))
+			return (o as WollokList).wrapped
 		if (t == Object)
 			return o
 		if(t.primitive)

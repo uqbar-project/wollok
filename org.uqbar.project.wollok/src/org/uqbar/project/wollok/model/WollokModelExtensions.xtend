@@ -47,7 +47,7 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { (if(package != null) package.name else "") + "." + name }
+	def static fqn(WClass it) { (if (package != null) (package.name + ".") else "") + name }
 	def static fqn(WNamedObject it) {
 		 if(package != null) package.name + "." + name
 		 else name
@@ -64,9 +64,7 @@ class WollokModelExtensions {
 	// ** WReferenciable
 	// *******************
 	def static dispatch isModifiableFrom(WVariable v, WAssignment from) { v.declaration.writeable || from.initializesInstanceValueFromConstructor(v) }
-
 	def static dispatch isModifiableFrom(WParameter v, WAssignment from) { false }
-
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
 	
 	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
@@ -195,8 +193,8 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
 	def static IFile getIFile(EObject obj) {
-		val platformString = obj.eResource.URI.toPlatformString(true);
-		ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(platformString));
+		val platformString = obj.eResource.URI.toPlatformString(true)
+		ResourcesPlugin.workspace.root.getFile(new Path(platformString))
 	}
 
 }

@@ -17,7 +17,7 @@ class Golondrina {
 
 class GolondrinaSarasa extends Golondrina {
 	override method comer(a, p) {
-		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2 for: alimento, postre" at "super()"
+		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
 		super()
 	}
 }

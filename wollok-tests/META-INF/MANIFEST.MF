@@ -16,7 +16,7 @@ Require-Bundle: com.ibm.icu,
  org.uqbar.project.wollok,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.lib,
- org.eclipse.xtext.ui
+ org.eclipse.xtext.ui;bundle-version="2.7.3"
 Import-Package: org.apache.log4j,
  org.apache.commons.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

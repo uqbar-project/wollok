@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.model
 
 import java.util.Arrays
+import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -151,13 +152,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ** native **
 	
 	def static Object createNativeObject(WClass it, WollokObject obj, WollokInterpreter interpreter) {
-		val javaClass = Class.forName(fqn)
-		try
-			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)
-		catch (NoSuchMethodException e)
-			javaClass.newInstance
+		createNativeObject(fqn, obj, interpreter)
 	}
-
+	
 	def static Object createNativeObject(WNamedObject it, WollokObject obj, WollokInterpreter interpreter) {
 		var className = fqn
 		var classNameParts = className.split("\\.")
@@ -165,8 +162,25 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
 		
 		className = classNameParts.join(".")
+		val classFQN = className + "Object"
 		
-		val javaClass = Class.forName( className + "Object")
+		createNativeObject(classFQN, obj, interpreter)
+	}
+	
+	def static createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
+		val bundle = WollokActivator.getDefault
+		val javaClass = 
+		if (bundle != null) {
+			try {
+				bundle.loadWollokLibClass(classFQN, obj.behavior)
+			}
+			catch (ClassNotFoundException e) {
+				interpreter.classLoader.loadClass(classFQN)
+			}
+		}
+		else {
+			interpreter.classLoader.loadClass(classFQN)
+		}
 		try
 			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)
 		catch (NoSuchMethodException e)
@@ -205,6 +219,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		throw new WollokRuntimeException('''Impossibel to call a constructor on anything besides a class''');
 	}
 	
+	
 	// ************************************************************************
 	// ** Constructors delegation, etc.
 	// ************************************************************************
@@ -215,4 +230,5 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
 		(behave as WClass).parent?.resolveConstructor(args)
 	}
+	
 }

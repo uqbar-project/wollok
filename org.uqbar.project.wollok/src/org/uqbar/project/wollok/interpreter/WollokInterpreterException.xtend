@@ -29,7 +29,7 @@ class WollokInterpreterException extends RuntimeException {
 	
 	def static String createMessage(EObject object) {
 		val node = NodeModelUtils.findActualNodeFor(object)
-		'''Error evaluating line «object.eResource.URI»:[«node.textRegionWithLineInformation.lineNumber»]: «node.text.trim»'''
+		'''Error evaluating line «object?.eResource?.URI»:[«node?.textRegionWithLineInformation.lineNumber»]: «node?.text?.trim»'''
 	}
 	
 	def ObjectURI(){

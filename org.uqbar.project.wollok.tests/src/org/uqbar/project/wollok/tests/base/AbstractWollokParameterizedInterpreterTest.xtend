@@ -17,8 +17,9 @@ abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollok
 	 * This is necessary because @link Parameterized does not allow to define a runner for the child tests.
 	 */
 	@Before
-	def void injectMembers() {
+	override setUp() {
 		new WollokDslInjectorProvider().injector.injectMembers(this)
+		super.setUp
 	}
 
 	/**
