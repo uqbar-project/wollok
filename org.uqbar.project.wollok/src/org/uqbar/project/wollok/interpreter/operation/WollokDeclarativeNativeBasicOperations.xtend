@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
  * 
  * @author jfernandes
  */
+// I18N !
 class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperations {
 	
 	override asBinaryOperation(String operationSymbol) {

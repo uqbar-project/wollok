@@ -40,6 +40,7 @@ class WollokClosure implements EvaluationContext, WCallable {
 		if (message == "apply")
 			apply(parameters)
 		else
+			// I18N !
 			throw new MessageNotUnderstood('''Closure objects don't understand message "«message»" ''')
 	}
 	

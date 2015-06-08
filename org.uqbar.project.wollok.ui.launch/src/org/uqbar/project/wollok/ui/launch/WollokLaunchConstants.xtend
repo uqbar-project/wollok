@@ -4,9 +4,9 @@ import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 
 /**
+ * 
  * @author jfernandes
  */
- 
 class WollokLaunchConstants {
 	
 	public static val EXTENSIONS = #["wlk", "wpgm", "wtest"]
