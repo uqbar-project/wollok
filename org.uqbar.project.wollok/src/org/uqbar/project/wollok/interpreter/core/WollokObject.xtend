@@ -1,7 +1,10 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import java.util.Collections
+import java.util.List
 import java.util.Map
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
@@ -10,6 +13,7 @@ import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -19,6 +23,7 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -61,18 +66,49 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return javaMethod.invoke(this, parameters).asWollokObject
 		}
 		
-		// I18N !
 		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
 	}
 	
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
-	def invokeConstructor(WConstructor constructor, Object... objects) {
-		if (constructor != null) {
-			val context = constructor.createEvaluationContext(objects).then(this)
+	def invokeConstructor(Object... objects) {
+		var constructor = behavior.resolveConstructor(objects)
+		
+		// no-args constructor automatic execution 
+		if (constructor == null && objects.length == 0)
+			constructor = (behavior as WClass).findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
+			
+		if (constructor != null)
+			evaluateConstructor(constructor, objects)
+	}
+	
+	def void evaluateConstructor(WConstructor constructor, Object[] objects) {
+		val constructorEvalContext = constructor.createEvaluationContext(objects)
+		// delegation
+		val other = constructor.delegatingConstructorCall
+		if (other != null) {
+			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
+			delegatedConstructor.invokeOnContext(other, other.arguments, constructorEvalContext) // no 'this' as parent context !
+		}
+		else {
+			// automatic super() call
+			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
+			delegatedConstructor?.invokeOnContext(constructor, Collections.EMPTY_LIST, constructorEvalContext)
+		}
+		
+		// actual call
+		if (constructor.expression != null) {
+			val context = constructorEvalContext.then(this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
+	
+	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {
+		interpreter.performOnStack(call, context) [|
+			evaluateConstructor(constructor, argumentsToEval.evalAll) 
+			null
+		]
+	} 
 	
 	def static createEvaluationContext(WConstructor declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)
@@ -116,6 +152,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	var Set<WollokObjectListener> listeners = newHashSet
 	
+	static val EMPTY_OBJECTS_ARRAY = newArrayOfSize(0)
+	
 	def addFieldChangedListener(WollokObjectListener listener) { this.listeners.add(listener) }
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 	
@@ -127,7 +165,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override addGlobalReference(String name, Object value) {
 		interpreter.addGlobalReference(name, value)
 	}
-	
 }
 
 /**

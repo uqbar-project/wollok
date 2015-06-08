@@ -209,8 +209,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
-			
-			wo.invokeConstructor(call.classRef.constructor, call.arguments.evalEach)
+			wo.invokeConstructor(call.arguments.evalEach)
 		]
 	}
 	

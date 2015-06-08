@@ -4,8 +4,10 @@ import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -14,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WLibrary
@@ -28,7 +31,9 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -38,7 +43,6 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WVariable
 
 /**
  * Custom validation rules.
@@ -69,7 +73,6 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	
-	
 	def validatorExtensions(){
 		if(wollokValidatorExtensions != null)
 			return wollokValidatorExtensions
@@ -92,6 +95,10 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
 		if (Character.isUpperCase(c.name.charAt(0))) error(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	}
+	
+	// **************************************
+	// ** instantiation and constructors	
+	// **************************************
 
 	@Check
 	def checkCannotInstantiateAbstractClasses(WConstructorCall c) {
@@ -101,13 +108,71 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	@Check
 	def checkConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = if (c.classRef.constructor == null)
+			val expectedMessage = if (c.classRef.constructors == null)
 					""
 				else
-					c.classRef.constructor.parameters.map[name].join(",")
-			error(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + "(" + expectedMessage + ")", c, WCONSTRUCTOR_CALL__ARGUMENTS)
+					c.classRef.constructors.map[ '(' + parameters.map[name].join(",") + ')'].join(' or ')
+			error(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS +  expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
 		}
 	}
+
+	@Check
+	def checkRequiredSuperClassConstructorCall(WClass it) {
+		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
+			error('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
+	}
+	
+	@Check
+	def checkCannotHaveTwoConstructorsWithSameArity(WClass it) {
+		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
+		repeated.forEach[r|
+			error("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
+		]
+	}
+	
+	@Check
+	def checkConstrutorMustExpliclityCallSuper(WConstructor it) {
+		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
+			error("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
+		}
+	}
+	
+	@Check
+	def checkCannotUseThisInConstructorDelegation(WThis it) {
+		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
+			error("Cannot access instance methods within constructor delegation.", it)
+	}
+	
+	@Check
+	def checkCannotUseSuperInConstructorDelegation(WSuperInvocation it) {
+		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
+			error("Cannot access super methods within constructor delegation.", it)
+	}
+	
+	@Check
+	def checkCannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
+		eAllContents.filter(WVariableReference).forEach[ref|
+			if (ref.ref instanceof WVariable) {
+				error("Cannot access instance variables within constructor delegation.", ref, WVARIABLE_REFERENCE__REF)
+			}
+		]
+	}
+	
+	@Check
+	def checkDelegatedConstructorExists(WDelegatingConstructorCall it) {
+		try {
+			val resolved = it.wollokClass.resolveConstructorReference(it)
+			if (resolved == null) {
+				// we could actually show the available options
+				error("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+			}
+		}
+		catch (WollokRuntimeException e) {
+			// mmm... terrible
+			error("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+		}
+	}
+
 
 	@Check
 	def checkMethodActuallyOverrides(WMethodDeclaration m) {
@@ -318,4 +383,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def error(WNamed e, String message) { error(message, e, WNAMED__NAME) }
 	def error(WNamed e, String message, String errorId) { error(message, e, WNAMED__NAME, errorId) }
 		
+	def error(String message, EObject obj) {
+		error(message, obj.eContainer, obj.eContainingFeature)
+	}
 }

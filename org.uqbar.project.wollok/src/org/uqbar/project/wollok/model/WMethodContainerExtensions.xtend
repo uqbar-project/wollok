@@ -1,9 +1,12 @@
 package org.uqbar.project.wollok.model
 
+import java.util.Arrays
 import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -14,8 +17,10 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
@@ -155,6 +160,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		var classNameParts = className.split("\\.")
 		val lastPosition = classNameParts.length - 1
 		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
+		
 		className = classNameParts.join(".")
 		val classFQN = className + "Object"
 		
@@ -197,4 +203,32 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
+	
+	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
+		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty))
+			// default constructor
+			clazz.findConstructorInSuper(arguments)
+		else {
+			val c = clazz.constructors.findFirst[ parameters.size == arguments.size ]
+			if (c == null)
+				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
+			c
+		}
+	} 
+	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
+		throw new WollokRuntimeException('''Impossibel to call a constructor on anything besides a class''');
+	}
+	
+	
+	// ************************************************************************
+	// ** Constructors delegation, etc.
+	// ************************************************************************
+	
+	def static dispatch resolveConstructorReference(WMethodContainer behave, WThisDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
+	def static dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
+	
+	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
+		(behave as WClass).parent?.resolveConstructor(args)
+	}
+	
 }

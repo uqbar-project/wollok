@@ -565,15 +565,20 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         pType = (WollokType) result_1.getFirst();
         
       }
-      WConstructor _constructor = c.getConstructor();
-      boolean _notEquals_1 = (!Objects.equal(_constructor, null));
+      EList<WConstructor> _constructors = c.getConstructors();
+      boolean _notEquals_1 = (!Objects.equal(_constructors, null));
       if (_notEquals_1) {
-        /* G |- c.constructor */
-        WConstructor _constructor_1 = c.getConstructor();
-        inferTypesInternal(G, _trace_, _constructor_1);
+        EList<WConstructor> _constructors_1 = c.getConstructors();
+        final Procedure1<WConstructor> _function = new Procedure1<WConstructor>() {
+          public void apply(final WConstructor cons) {
+            /* G |- cons */
+            inferTypesInternal(G, _trace_, cons);
+          }
+        };
+        IterableExtensions.<WConstructor>forEach(_constructors_1, _function);
       }
       Iterable<WMethodDeclaration> _methods = WMethodContainerExtensions.methods(c);
-      final Procedure1<Iterable<WMethodDeclaration>> _function = new Procedure1<Iterable<WMethodDeclaration>>() {
+      final Procedure1<Iterable<WMethodDeclaration>> _function_1 = new Procedure1<Iterable<WMethodDeclaration>>() {
         public void apply(final Iterable<WMethodDeclaration> it) {
           final Procedure1<WMethodDeclaration> _function = new Procedure1<WMethodDeclaration>() {
             public void apply(final WMethodDeclaration m) {
@@ -590,7 +595,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
           IterableExtensions.<WMethodDeclaration>forEach(it, _function_1);
         }
       };
-      ObjectExtensions.<Iterable<WMethodDeclaration>>operator_doubleArrow(_methods, _function);
+      ObjectExtensions.<Iterable<WMethodDeclaration>>operator_doubleArrow(_methods, _function_1);
     }
     return new Result<Boolean>(true);
   }

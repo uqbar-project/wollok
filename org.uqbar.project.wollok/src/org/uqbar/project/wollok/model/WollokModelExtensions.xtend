@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -14,6 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -33,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
-import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 /**
  * Extension methods to Wollok semantic model.
@@ -90,6 +91,9 @@ class WollokModelExtensions {
 	// **********************
 	// ** access containers
 	// **********************
+	
+	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
+	
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
@@ -124,12 +128,22 @@ class WollokModelExtensions {
 	}
 
 	def static isValidConstructorCall(WConstructorCall c) {
-		c.numberOfParameters == c.classRef.numberOfParameters
+		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
 
 	def static numberOfParameters(WConstructorCall c) { if(c.arguments == null) 0 else c.arguments.size }
 
-	def static numberOfParameters(WClass c) { if(c.constructor == null) 0 else c.constructor.parameters.size }
+	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
+
+	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
+		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[parameters.size == nrOfArgs] 
+	}
+	
+	def static superClassRequiresNonEmptyConstructor(WClass c) {
+		c.parent != null && !c.parent.hasEmptyConstructor
+	}
+	
+	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
 	// For objects or classes
 	def static dispatch declaredVariables(WObjectLiteral obj) { obj.members.filter(WVariableDeclaration).map[variable] }
