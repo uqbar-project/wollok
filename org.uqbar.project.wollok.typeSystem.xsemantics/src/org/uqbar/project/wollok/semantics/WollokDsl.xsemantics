@@ -81,7 +81,11 @@ from {
 		
 		for (p : c.variableDeclarations) { G |- p : var WollokType pType }
 		
-		if (c.constructor != null) 	{ G |- c.constructor }
+		if (c.constructors != null) 	{
+			c.constructors.forEach[cons|
+				G |- cons
+			]
+		}
 		c.methods => [
 			// first setup WAny for all methods
 			forEach[m| G.add(m, WAny)]

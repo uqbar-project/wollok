@@ -3,20 +3,21 @@ package org.uqbar.project.wollok.ui.wizard;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
 import org.eclipse.xtext.ui.wizard.IProjectInfo;
+import org.uqbar.project.wollok.ui.Messages;
 import org.uqbar.project.wollok.ui.WollokActivator;
 
 import com.google.inject.Inject;
 
 public class WollokDslNewProjectWizard extends org.eclipse.xtext.ui.wizard.XtextNewProjectWizard {
-	public static final String ID = "org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard";
+	public static final String ID = "org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"; //$NON-NLS-1$
 	
 	private WizardNewProjectCreationPage mainPage;
 
 	@Inject
 	public WollokDslNewProjectWizard(IProjectCreator projectCreator) {
 		super(projectCreator);
-		setWindowTitle("New WollokDsl Project");
-		setDefaultPageImageDescriptor(WollokActivator.getInstance().getImageDescriptor("icons/wollok-logo-64.fw.png"));
+		setWindowTitle(Messages.WollokDslNewProjectWizard_windowTitle);
+		setDefaultPageImageDescriptor(WollokActivator.getInstance().getImageDescriptor("icons/wollok-logo-64.fw.png")); //$NON-NLS-1$
 	}
 
 	/**
@@ -24,9 +25,9 @@ public class WollokDslNewProjectWizard extends org.eclipse.xtext.ui.wizard.Xtext
 	 * The one-time generated version of this class will add a default new project page to the wizard.
 	 */
 	public void addPages() {
-		mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");
-		mainPage.setTitle("WollokDsl Project");
-		mainPage.setDescription("Create a new WollokDsl project.");
+		mainPage = new WizardNewProjectCreationPage("basicNewProjectPage"); //$NON-NLS-1$
+		mainPage.setTitle(Messages.WollokDslNewProjectWizard_pageTitle);
+		mainPage.setDescription(Messages.WollokDslNewProjectWizard_pageDescription);
 		addPage(mainPage);
 	}
 

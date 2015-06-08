@@ -4,6 +4,7 @@ import java.io.Serializable
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A variable within a stack execution.
@@ -11,8 +12,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
  * @author jfernandes
  */
 class XDebugStackFrameVariable implements Serializable {
-	@Property WVariable variable
-	@Property XDebugValue value
+	@Accessors WVariable variable
+	@Accessors XDebugValue value
 		
 	new(WVariable variable, Object value) {
 		this.variable = variable

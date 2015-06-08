@@ -11,7 +11,7 @@ program objectLiterals {
 		}
 		method algoConPerro(perro) {
 			perro.ladrar()
-			perro.ladrar() // autocompletado
+			perro.ladrar() 
 			perro.saltar()
 		}
 	}

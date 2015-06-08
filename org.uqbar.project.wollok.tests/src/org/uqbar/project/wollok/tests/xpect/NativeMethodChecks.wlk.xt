@@ -21,15 +21,3 @@ class B extends A {
 	// XPECT errors --> "Native methods cannot override anything" at "override"
 	override method m1() native
 }
-
-// 3rd check
-
-class SuperWithNative {
-	method m1() native
-}
-
-class Subclass extends SuperWithNative {
-	
-	// XPECT errors --> "Cannot declare native methods in this class since there's already a native super class in the hierarchy" at "native"
-	method m2() native
-}

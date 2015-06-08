@@ -63,7 +63,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	
 	def methodFormatting(FormattingConfig it, extension WMethodDeclarationElements e) {
 		setLinewrap(1, 1, 2).before(methodKeyword_1)
-		setLinewrap(1, 1, 1).after(expressionAssignment_7)
+		setLinewrap(1, 1, 1).after(expressionAssignment_7_0)
 		
 		setNoSpace.after(nameAssignment_2)
 		
@@ -81,22 +81,24 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def constructorDefFormatting(FormattingConfig it, extension WConstructorElements e) {
-		setLinewrap(1, 1, 2).before(newKeyword_0)
-		setLinewrap(1, 1, 1).after(expressionAssignment_4)
+		setLinewrap(1, 1, 2).before(newKeyword_1)
+		setLinewrap(1, 1, 1).after(expressionAssignment_6)
 		
-		setNoSpace.after(newKeyword_0)
+		setNoSpace.after(newKeyword_1)
+		
+		//TODO: delegating constructor format
 		
 		// params
-		setNoSpace.after(leftParenthesisKeyword_1)
-		setNoSpace.around(parametersAssignment_2_0)
-		setNoSpace.before(rightParenthesisKeyword_3)
+		setNoSpace.after(leftParenthesisKeyword_2)
+		setNoSpace.around(parametersAssignment_3_0)
+		setNoSpace.before(rightParenthesisKeyword_4)
 		
 		// param's comma
-		setNoSpace.before(commaKeyword_2_1_0)
-		setSpace(' ').after(commaKeyword_2_1_0)
+		setNoSpace.before(commaKeyword_3_1_0)
+		setSpace(' ').after(commaKeyword_3_1_0)
 		
 		// space after ')' params and before either native / method body
-		setSpace(' ').after(rightParenthesisKeyword_3)
+		setSpace(' ').after(rightParenthesisKeyword_4)
 	}
 	
 	def memberFeatureCallFormatting(FormattingConfig it, extension WMemberFeatureCallElements e) {
@@ -179,7 +181,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 2, 2).after(group_4)
 		
 		// constructor
-		setLinewrap(2, 2, 2).around(constructorAssignment_5)
+		setLinewrap(2, 2, 2).around(constructorsAssignment_5)
 		
 		// members (after var, after method)
 		setLinewrap(1, 1, 2).after(membersAssignment_4_0)

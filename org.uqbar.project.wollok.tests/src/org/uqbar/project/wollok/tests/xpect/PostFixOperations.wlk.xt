@@ -3,6 +3,8 @@
 class PostFixOperations {
 	method run() {
 		val n = 1
+		
+		// XPECT errors --> "++ can only be applied to variable references" at "n"
 		n++
 		
 		// XPECT errors --> "++ can only be applied to variable references" at "(n == 1)"

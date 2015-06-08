@@ -72,13 +72,14 @@ WVariableDeclaration returns WExpression:
 WMethodDeclaration:
 	(overrides?='override')? 'method'
 		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )? ')' 
-		(native?='native')? (expression=WBlockExpression)?
+		(native?='native')? 
+		
+		((expression=WBlockExpression) | (expressionReturns?='=' expression=WOrExpression))?
 ;
 
 WMethodName:
-	// TODO: 1 por ahora no estan todos soportados para ser sobrecargados
 	// TODO: 2 esto deberia tener un @check el método con +, o - necesita tener un solo argumento
-	ID | OpAdd | OpMulti
+	ID | OpAdd | OpMulti | OpEquality | OpOther | OpCompare | OpAnd | OpOr
 ;
 
 WParameter:
@@ -310,11 +311,14 @@ WExpressionInClosure returns WExpression:
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral
+	WListLiteral | WSetLiteral
 ;
 
-WListLiteral:
+WListLiteral returns WCollectionLiteral:
 	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+	
+WSetLiteral returns WCollectionLiteral:
+	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 
 WNamedObject:
 	'object' name=ID '{'
@@ -328,7 +332,7 @@ WNamedObject:
 WClass:
 	'class' name=ID ('extends' parent=[WClass|QualifiedName])? '{'
 		(members+=WVariableDeclaration ';'?)*
-		(constructor=WConstructor)?
+		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
@@ -338,9 +342,26 @@ WMember:
 ;
 
 WConstructor:
-	'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
-		expression=WBlockExpression
+	{WConstructor} 'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
+		(expression=WBlockExpression)?
 ;
+
+WDelegatingConstructorCall:
+	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+;
+
+// some how this should be referecens to WConstructor
+WThisDelegatingConstructorCall:
+	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+;
+
+// some how this should be referecens to WConstructor
+WSuperDelegatingConstructorCall:
+	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+;
+
+
 
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('

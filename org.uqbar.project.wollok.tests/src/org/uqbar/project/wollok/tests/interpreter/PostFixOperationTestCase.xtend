@@ -19,12 +19,32 @@ class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void testPlusPlusWithDoubles() {'''
+		program p {
+			var n = 2.1
+			n++
+			
+			this.assert(n == 3.1)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
 	def void testMinusMinus() {'''
 		program p {
 			var n = 2
 			n--
 			
 			this.assert(n == 1)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testMinusMinusWithDoubles() {'''
+		program p {
+			var n = 2.0
+			n--
+			
+			this.assert(n == 1.0)
 		}'''.interpretPropagatingErrors
 	}
 }

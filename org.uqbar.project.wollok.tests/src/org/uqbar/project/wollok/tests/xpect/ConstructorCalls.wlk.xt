@@ -10,6 +10,32 @@ class Direccion {
 	}
 }
 
+class Point {
+	var x
+	var y
+	
+	new() { x = 0; y = 0 }
+	new(ax, ay) {
+		x = ax ; y = ay
+	}
+}
+
+class Circle {
+	var r
+	var p
+	new(ap, ar) { r = ar ; p = ap }
+	new (x, y, ar) { p = new Point(x, y) ; r = ar }
+}
+
+class WithDuplicatedConstructors {
+	// XPECT errors --> "Duplicated constructor with same number of parameters" at "a"
+	new(a, b) {
+	}
+	// XPECT errors --> "Duplicated constructor with same number of parameters" at "b"
+	new (b, c) {
+	}
+}
+
 class ConstructorCallTest {
 
 	method run() {
@@ -35,7 +61,21 @@ class ConstructorCallTest {
 		   "Unused variable" at "d3"
 		   ---
 		*/
-		val d3 = new Direccion(1, 2, 3)		
+		val d3 = new Direccion(1, 2, 3)	
+		
+		val p1 = new Point()
+		p1.blah()
+
+		val p2 = new Point(2,3)
+		p2.blah()
+		
+		// XPECT errors --> "Wrong number of arguments. Should be () or (ax,ay)" at "1"
+		val p3 = new Point(1, 2, 3)
+		p3.blah()
+		
+		// XPECT errors --> "Wrong number of arguments. Should be (ap,ar) or (x,y,ar)" at "new Circle()"
+		val c1 = new Circle()
+		c1.blah()
 	}	
 	
 }

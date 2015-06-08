@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.debugger.server
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.Property
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
