@@ -78,21 +78,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	   <build>
 	    <plugins>
 	    
-   			<!-- extract git info -->		
+   			<!-- extract git info -->
 			<plugin>
-			    <groupId>ru.concerteza.buildnumber</groupId>
-			    <artifactId>maven-jgit-buildnumber-plugin</artifactId>
-			    <version>1.2.9</version>
-			    <executions>
+		        <groupId>com.github.koraktor</groupId>
+		        <artifactId>mavanagaiata</artifactId>
+		        <version>0.7.0</version>
+		        <executions>
 			        <execution>
-			            <id>git-buildnumber</id>
+			            <id>mavanagaiata-branch</id>
 			            <goals>
-			                <goal>extract-buildnumber</goal>
+			                <goal>branch</goal>
 			            </goals>
 			            <phase>prepare-package</phase>
 			        </execution>
 			    </executions>
-			</plugin>
+		      </plugin>
 			<!-- extract git info --> 
 	    
 	     <!-- Upload the repo to the server -->
@@ -110,7 +110,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	        <configuration>
 	         <fromDir>${repo.path}</fromDir>
 	         <includes>**</includes>
-	         <toDir>/wollok/${git.branch}</toDir>
+	         <toDir>/wollok/${mvngit.branch}</toDir>
 	         <url>${ftp.url}</url>
 	         <serverId>p2-uqbar</serverId>
 	        </configuration>
