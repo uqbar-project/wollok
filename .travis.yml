@@ -1,6 +1,10 @@
 language: java
 script: cd org.uqbar.project.wollok.releng/ && mvn clean install
 
+after_success:
+	- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && org.uqbar.project.wollok.updatesite && mvn -P uploadRepo install
+	- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && org.uqbar.project.wollok.updatesite && mvn -P uploadRepo install
+
 jdk:
     - oraclejdk7
 
