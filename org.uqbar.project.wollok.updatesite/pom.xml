@@ -16,12 +16,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <name>Wollok Language Update Site</name>
   
   <properties>
-  	<updateSiteType>bleeding-edge</updateSiteType>
+  	<updateSiteFolder>dev</updateSiteFolder>
   </properties>
   
   <!-- TO DEPLOY THE UPDATE SITE RUN:
   	
-  	mvn install -P uploadRepo
+  	mvn install -DupdateSiteFolder=<something_like_branch_name> -P uploadRepo
   	
    -->
   
@@ -110,7 +110,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	        <configuration>
 	         <fromDir>${repo.path}</fromDir>
 	         <includes>**</includes>
-	         <toDir>/wollok/${mvngit.branch}</toDir>
+	         <toDir>/wollok/${updateSiteFolder}</toDir>
 	         <url>${ftp.url}</url>
 	         <serverId>p2-uqbar</serverId>
 	        </configuration>

@@ -8,9 +8,9 @@ script: cd org.uqbar.project.wollok.releng/ && mvn clean install
 
 after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && cd ../org.uqbar.project.wollok.updatesite
-  && mvn -P uploadRepo install
+  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo install
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && cd ../org.uqbar.project.wollok.updatesite
-  && mvn -P uploadRepo install
+  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo install
 
 jdk:
 - oraclejdk7
