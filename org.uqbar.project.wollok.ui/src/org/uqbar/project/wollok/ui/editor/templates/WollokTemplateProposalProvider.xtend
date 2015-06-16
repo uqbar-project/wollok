@@ -33,6 +33,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
   override createTemplates(TemplateContext templateContext, ContentAssistContext context, ITemplateAcceptor acceptor) {
     //"regular templates"
     super.createTemplates(templateContext, context, acceptor)
+    
 
 	addTemplate(WProgramRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createProgram_name, Messages.WollokTemplateProposalProvider_createProgram_description, "org.uqbar.project.wollok.createprogram", context,
 '''program ${programName} {
@@ -46,22 +47,22 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 }''')
 
 	//todo: class icon
-	addTemplate(getWClassRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createClass_name, Messages.WollokTemplateProposalProvider_createClass_description, "org.uqbar.project.wollok.createclass", context,
+	addTemplate(WClassRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createClass_name, Messages.WollokTemplateProposalProvider_createClass_description, "org.uqbar.project.wollok.createclass", context,
 '''class ${ClassName} {
 	
 }''')
 
 	//todo: object icon
-	addTemplate(getWObjectLiteralRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createObject_name, Messages.WollokTemplateProposalProvider_createObject_description, "org.uqbar.project.wollok.createobject", context,
+	addTemplate(WObjectLiteralRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createObject_name, Messages.WollokTemplateProposalProvider_createObject_description, "org.uqbar.project.wollok.createobject", context,
 '''object {
 	
 }''')
 
 	//TODO: poder seleccionar entre "var/val"
-	addTemplate(getWVariableDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createReference_name, Messages.WollokTemplateProposalProvider_createReference_description, "org.uqbar.project.wollok.objectaddReference", context,
+	addTemplate(WVariableDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createReference_name, Messages.WollokTemplateProposalProvider_createReference_description, "org.uqbar.project.wollok.objectaddReference", context,
 '''var ${name} = ${value}''')
 
-	addTemplate(getWMethodDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createMethod_name, Messages.WollokTemplateProposalProvider_createMethod_description, "org.uqbar.project.wollok.objectaddMethod", context,
+	addTemplate(WMethodDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createMethod_name, Messages.WollokTemplateProposalProvider_createMethod_description, "org.uqbar.project.wollok.objectaddMethod", context,
 '''method ${name}(${param}) {
 	
 }''')
