@@ -13,7 +13,13 @@ import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.core.runtime.AssertionFailedException
 
+/**
+ * 
+ * @author jfernandes
+ * @author tesonep 
+ */
 class XSemanticsWollokValidationExtension extends WollokDslTypeSystem implements WollokValidatorExtension {
 	@Inject IPreferenceStoreAccess preferenceStoreAccess;
 	@Inject XsemanticsValidatorErrorGenerator errorGenerator
@@ -22,14 +28,16 @@ class XSemanticsWollokValidationExtension extends WollokDslTypeSystem implements
 	public static val TYPE_SYSTEM_CHECKS_ENABLED = "TYPE_SYSTEM_CHECKS_ENABLED"
 
 	override check(WFile file, WollokDslValidator validator) {
-
 		//TODO: lee las preferencias cada vez!
 		try
 			if (!preferences(file).getBoolean(TYPE_SYSTEM_CHECKS_ENABLED))
 				return
-		catch (IllegalStateException e)
+		catch (IllegalStateException e) {
 			// headless launcher doesn't open workspace, so this fails.
 			// but it's ok since the type system won't run in runtime. 
+			return;
+		}
+		catch (AssertionFailedException e) 
 			return;
 
 		var RuleEnvironment env = this.emptyEnvironment

@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.uqbar.project.wollok.ui.Messages;
 
 public abstract class AbstractNewWollokFileWizard extends Wizard {
 
@@ -58,7 +59,7 @@ public abstract class AbstractNewWollokFileWizard extends Wizard {
 			return false;
 		} catch (InvocationTargetException e) {
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error", realException.getMessage());
+			MessageDialog.openError(getShell(), Messages.AbstractNewWollokFileWizard_errorTitle, realException.getMessage());
 			return false;
 		}
 		return true;
@@ -72,11 +73,11 @@ public abstract class AbstractNewWollokFileWizard extends Wizard {
 	private void doFinish(String containerName, String fileName, IProgressMonitor monitor)
 			throws CoreException {
 				// create a sample file
-				monitor.beginTask("Creating " + fileName, 2);
+				monitor.beginTask(Messages.AbstractNewWollokFileWizard_creating + fileName, 2);
 				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 				IResource resource = root.findMember(new Path(containerName));
 				if (!resource.exists() || !(resource instanceof IContainer)) {
-					throwCoreException("Container \"" + containerName + "\" does not exist.");
+					throwCoreException(Messages.AbstractNewWollokFileWizard_containerDoesNotExistPre + containerName + Messages.AbstractNewWollokFileWizard_containerDoesNotExistPost);
 				}
 				IContainer container = (IContainer) resource;
 				final IFile file = container.getFile(new Path(fileName));
@@ -91,7 +92,7 @@ public abstract class AbstractNewWollokFileWizard extends Wizard {
 				} catch (IOException e) {
 				}
 				monitor.worked(1);
-				monitor.setTaskName("Opening file for editing...");
+				monitor.setTaskName(Messages.AbstractNewWollokFileWizard_openingFile);
 				getShell().getDisplay().asyncExec(new Runnable() {
 					public void run() {
 						IWorkbenchPage page =
@@ -107,7 +108,7 @@ public abstract class AbstractNewWollokFileWizard extends Wizard {
 
 	private void throwCoreException(String message) throws CoreException {
 		IStatus status =
-			new Status(IStatus.ERROR, "org.uqbar.project.wollok.ui", IStatus.OK, message, null);
+			new Status(IStatus.ERROR, "org.uqbar.project.wollok.ui", IStatus.OK, message, null); //$NON-NLS-1$
 		throw new CoreException(status);
 	}
 

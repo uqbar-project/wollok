@@ -22,6 +22,7 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * Custom quickfixes.
@@ -32,7 +33,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Capitalize name', 'Capitalize the name.', null) [ context |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_capitalize_name, Messages.WollokDslQuickfixProvider_capitalize_description, null) [ context |
 			context.xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toUpperCase)
@@ -42,7 +43,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	def toLowerCaseReferenciableName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Change to lowercase', 'Change to lowercase', null) [ context |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name, Messages.WollokDslQuickfixProvider_lowercase_description, null) [ context |
 			context.xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toLowerCase)
@@ -52,7 +53,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.CANNOT_ASSIGN_TO_VAL)
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Change declaration to var', 'Change to var.', null) [ e, context |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name, Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
 			val feature = (e as WAssignment).feature
 			if (feature instanceof WVariableDeclaration) {
 				context.xtextDocument.replace(feature.before, feature.node.length,
@@ -63,7 +64,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
 	def createNonExistingMethod(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Create new method', 'Create method.', null) [ e, context |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
 			context.xtextDocument.replace(
@@ -71,7 +72,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				0,
 				"\n" + "\t" + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
-					" {\n\t\t//TODO: generated stub\n\t}"
+					" {\n\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + "\n\t}"
 			)
 		]
 	}
@@ -89,7 +90,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			context.insertAfter(e, 
 				'''
 				catch e : wollok.lang.Exception {
-					// TODO: auto-generated stub
+					// TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 					throw e
 				}'''
 			)

@@ -29,6 +29,7 @@ class WollokInterpreterAccess {
 	}
 
 	def dispatch boolean isTrue(Boolean b) { b }
+	// I18N !
 	def dispatch boolean isTrue(Object o) { throw new WollokRuntimeException('''Expected a boolean but find: «o»''') }
 
 	// ********************************************************************************************

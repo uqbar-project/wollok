@@ -148,8 +148,8 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		var nrSteps = 0
 		var resolved = true
 		while (resolved) {
-			println('Unify #' + nrSteps++)
-			println(this)
+//			println('Unify #' + nrSteps++)
+//			println(this)
 			resolved = rules.clone.fold(false)[r, rule|
 				// keep local variable to force execution (there's no non-shortcircuit 'or' in xtend! :S)
 				val ruleValue = rule.resolve(this)

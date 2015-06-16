@@ -232,7 +232,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<version>${tycho-version}</version>
 				<configuration>
 					<resolver>p2</resolver>
-					<pomDependencies>consider</pomDependencies>
+					<!-- pomDependencies>consider</pomDependencies -->
 					<environments>
 						<environment>
 							<os>win32</os>

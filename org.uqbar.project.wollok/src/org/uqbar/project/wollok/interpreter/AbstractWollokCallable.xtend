@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter
 
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
@@ -11,7 +12,9 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -34,20 +37,28 @@ abstract class AbstractWollokCallable implements WCallable {
 	
 	def Object call(WMethodDeclaration method, Object... parameters) {
 		if (method.parameters.size != parameters.size) 
+			// I18N !
 			throw new MessageNotUnderstood('''Incorrect number of arguments for method '«method.name»'. Expected «method.parameters.size» but found «parameters.size»''')
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
 			if (method.native){
-				// reflective call
-				val r = receiver.nativeObject.invokeNative(method.name, parameters)
-				if(receiver.nativeObject.isVoid(method.name, parameters))
+				// reflective call to native method:
+				// TODO here the method should be able to receive the WollokObject (always ? just in case the java method
+				//    declares it ?)
+				val nativeObject = receiver.nativeObjects.get(method.declaringContext)
+				val r = nativeObject.invokeNative(method.name, parameters)
+				if (nativeObject.isVoid(method.name, parameters))
 					return VoidObject.instance
 				else
 					return r
-			} else {
-				method.expression.eval
-				return VoidObject.instance
+			} 
+			else {
+				val r = method.expression.eval
+				return if (method.expressionReturns)
+						r
+					else
+						VoidObject.instance
 			}
 		]
 	}
@@ -71,7 +82,9 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Helpers
 	// ********************************************************************************************
 	
-	def eval(EObject expr) { interpreter.eval(expr) }	
+	def eval(EObject expr) { interpreter.eval(expr) }
+	
+	def evalAll(List<? extends EObject> list) { list.map[ eval ] }	
 	
 	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
 		declaration.parameters.map[name].createEvaluationContext(values)

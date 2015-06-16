@@ -1,0 +1,73 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	var x
+	var y
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "this(22)"
+	new() = this(22) {
+		x = 2
+		y = 2
+	}
+	
+	method getX() { return x }
+	method getY() { return y }
+}
+
+class B {
+	var x
+	new(_x) { x = _x }
+}
+
+class C extends B {
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super()"
+	new() = super() {}
+}
+
+class D extends B {
+	// XPECT errors --> "Must call a super class constructor explicitly" at "new() { 		 	}"
+	new() {
+		
+	}
+	
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super(1, a)"
+	new(a) = super(1, a) {}
+}
+
+// 
+//  REQUIRED CONSTRUCTOR CALLS 
+//
+
+class X {
+	var a
+	new(_a) {
+		a = _a
+	}
+	method getA() { return a }
+}
+
+// XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
+class Y extends X {
+}
+
+class Z extends X {
+	new() = super("something") {}
+}
+
+
+class InvalidInstanceAccessOnConstructorDelegation extends X {
+	var x = 2
+	
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "this"
+	new() = super(this.getX()) 
+	
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "this"
+	new(a) = super(this)
+	
+	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
+	new(a, b) = super(x)
+	
+	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
+	new(a, b, c) = super(super("blah"))
+	
+	method getX() { return x }	
+}
