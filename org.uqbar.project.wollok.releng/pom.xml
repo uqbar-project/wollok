@@ -36,9 +36,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</properties>
 	
 	<issueManagement>
-    	<system>GitHub</system>
-    	<url>https://github.com/uqbar-project/wollok/issues</url>
+    		 <system>GitHub</system>
+		<url>https://github.com/uqbar-project/wollok/issues</url>
   	</issueManagement>
+
+	<mailingLists>
+        <mailingList>
+            <name>Wollok Google Group</name>
+            <archive>https://groups.google.com/d/forum/wollok-dev</archive>
+            <post>wollok-dev@googlegroups.com</post>
+            <subscribe>wollok-dev+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>wollok-dev+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
   	
   	<scm>
 		<connection>scm:git:${scm.gitServer}/wollok</connection>
