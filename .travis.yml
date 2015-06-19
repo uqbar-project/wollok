@@ -4,13 +4,13 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_d4a7eb0181c9_key -iv $encrypted_d4a7eb0181c9_iv -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 
-script: cd org.uqbar.project.wollok.releng/ && mvn clean install
-
-after_success:
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && cd ../org.uqbar.project.wollok.updatesite
-  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo install
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && cd ../org.uqbar.project.wollok.updatesite
-  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo,uploadProducts install
+script: 
+- cd org.uqbar.project.wollok.releng/ 
+- export PROFILES=normalProfile
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && export PROFILES="uploadRepo"
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && export PROFILES="uploadRepo,uploadProducts"
+- echo "Running with profiles $PROFILES"
+- mvn -DupdateSiteFolder=$TRAVIS_BRANCH clean install -P $PROFILES
 
 jdk:
 - oraclejdk7

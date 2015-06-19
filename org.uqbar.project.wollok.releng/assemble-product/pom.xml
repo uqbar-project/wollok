@@ -13,7 +13,7 @@
 
 	<artifactId>org.uqbar.project.wollok.assemble-product</artifactId>
 	<packaging>eclipse-repository</packaging>
-	<name>Wollok Product</name>
+	<name>Wollok Product Assembler</name>
 
 	<build>
 		<plugins>
