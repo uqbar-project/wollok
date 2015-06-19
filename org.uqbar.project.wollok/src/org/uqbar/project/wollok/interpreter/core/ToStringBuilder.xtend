@@ -42,6 +42,9 @@ class ToStringBuilder {
 	}
 	
 	def dispatch String smartToString(Object obj){
-		obj.toString
+		if(obj == null)
+			"null"
+		else
+			obj.toString
 	}
 }

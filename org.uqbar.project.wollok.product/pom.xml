@@ -19,37 +19,6 @@
 	<name>Wollok Product</name>
 
 	<build>
-		<plugins>
-			<!-- 
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-director-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<executions>
-					<execution>
-						<id>materialize-products</id>
-						<goals>
-							<goal>materialize-products</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>archive-products</id>
-						<goals>
-							<goal>archive-products</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<products>
-						<product>
-							<id>wollok</id>
-							<archiveFileName>wollok-${project.version}</archiveFileName>
-						</product>
-					</products>
-				</configuration>
-			</plugin>
-			 -->
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 

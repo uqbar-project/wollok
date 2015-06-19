@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="9">
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="12">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="epp.package.java" version="4.4.1.20140925-1820"/>
-<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.100.v20140603-1326"/>
-<unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140606-1558"/>
-<repository location="http://download.eclipse.org/releases/luna"/>
-</location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.1.0.201409041611"/>
 <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
@@ -23,8 +17,19 @@
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140925-0400"/>
+<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.100.v20140819-1617"/>
+<unit id="epp.package.java" version="4.4.1.20150109-0740"/>
+<repository location="http://download.eclipse.org/releases/luna"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.7.3.v201411190455"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
+<unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
+<repository location="http://download.itemis.com/updates/"/>
 </location>
 </locations>
 </target>

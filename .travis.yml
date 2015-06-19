@@ -10,7 +10,7 @@ after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && cd ../org.uqbar.project.wollok.updatesite
   && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo install
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && cd ../org.uqbar.project.wollok.updatesite
-  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo install
+  && mvn -DupdateSiteFolder=$TRAVIS_BRANCH -P uploadRepo,uploadProducts install
 
 jdk:
 - oraclejdk7

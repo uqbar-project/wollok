@@ -62,7 +62,7 @@
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            content="platform:/plugin/org.uqbar.project.wollok.product/introContent.xml"
+            content="platform:/plugin/org.uqbar.project.wollok.ui/introContent.xml"
             id="org.uqbar.project.wollok.product.introConfigId"
             introId="org.uqbar.project.wollok.product.intro">
          <presentation

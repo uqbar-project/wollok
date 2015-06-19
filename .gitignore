@@ -1,5 +1,7 @@
 */bin/
 /eclipse/*
-*/target/
+**/target/
 .metadata/*
 .DS_Store
+/target/
+*/workspace/
