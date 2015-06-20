@@ -7,8 +7,8 @@ before_install:
 script: 
 - cd org.uqbar.project.wollok.releng/ 
 - export PROFILES=normalProfile
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "dev" && export PROFILES="uploadRepo"
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && export PROFILES="uploadRepo,uploadProducts"
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo"; fi
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ] ; then export PROFILES="uploadRepo,uploadProducts"; fi
 - echo "Running with profiles $PROFILES"
 - mvn -DupdateSiteFolder=$TRAVIS_BRANCH clean install -P $PROFILES
 
