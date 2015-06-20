@@ -29,7 +29,7 @@
       <launchConfigurationTabGroup
             type="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
             description="Run or debug a Wollok program"
-            class="org.uqbar.project.wollok.ui.launch.ui.WollokTabGroup"
+            class="org.uqbar.project.wollok.ui.launch.WollokTabGroup"
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType.launchTabGroup">
       </launchConfigurationTabGroup>
    </extension>

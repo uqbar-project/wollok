@@ -7,6 +7,7 @@ import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.DebugPlugin
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchManager
+import org.eclipse.debug.ui.IDebugUIConstants
 import org.eclipse.debug.ui.RefreshTab
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
@@ -23,6 +24,7 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.debug.internal.ui.DebugUIPlugin
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -52,10 +54,10 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		], [| 
 			createConfiguration(info)
 		])
-		config.getWorkingCopy => [
-			setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
-			doSave
-		]
+		val wc = config.getWorkingCopy
+		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		// It returns the modified launch config
+		wc.doSave
 	}
 	
 	def locateRunner(IResource resource) throws CoreException {
@@ -90,8 +92,8 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 			setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 			setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
-			doSave
 		]
+		x.doSave
 	}
 }
 

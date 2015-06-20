@@ -19,7 +19,14 @@ class ToStringBuilder {
 	def static dispatch objectDescription(WObjectLiteral obj) { "anObject" }
 	def static dispatch objectDescription(WNamedObject namedObject){ namedObject.name }
 	
-	def dispatch String smartToString(WollokObject obj){
+	def String smartToString(Object obj){
+		if(obj == null)
+			"null"
+		else
+			obj.doSmartToString
+	}
+
+	def dispatch String doSmartToString(WollokObject obj){
 		val toString = obj.behavior.lookupMethod("toString")
 		if (toString != null)
 			obj.call("toString").toString
@@ -33,15 +40,15 @@ class ToStringBuilder {
 		}
 	}
 	
-	def dispatch String smartToString(AbstractWollokCollection<?> col){
+	def dispatch String doSmartToString(AbstractWollokCollection<?> col){
 		col.wollokName + "[" + col.wrapped.map[ smartToString ].join(", ") + "]"
 	}
 	
-	def dispatch String smartToString(Map<String,Object> obs){
+	def dispatch String doSmartToString(Map<String,Object> obs){
 		"[" + obs.entrySet.map[ key + "=" + value.smartToString ].join(", ") +  "]"
 	}
 	
-	def dispatch String smartToString(Object obj){
+	def dispatch String doSmartToString(Object obj){
 		obj.toString
 	}
 }

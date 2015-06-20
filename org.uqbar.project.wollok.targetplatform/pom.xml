@@ -11,6 +11,6 @@
 	  </parent>
 
 	<artifactId>org.uqbar.project.wollok.targetplatform</artifactId>
-
 	<packaging>eclipse-target-definition</packaging>
+	<name>Wollok Target Platform</name>
 </project>
