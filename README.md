@@ -3,19 +3,27 @@
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 # Wollok #
 
-[![Join the chat at https://gitter.im/uqbar-project/wollok](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
 
 
 A programming language and environment for teaching OOP.
 
 ## Installation ##
-Download full Wollok distribution from http://download.uqbar.org/
 
-Wollok update site:
-```
-http://update.uqbar.org/wollok/
-```
+You have two options to download an use Wollok.
+Download a complete Wollok Product Distribution:
+* [Linux 32 bits](http://download.uqbar.org/wollok-linux.gtk.x86.zip)
+* [Linux 64 bits](http://download.uqbar.org/wollok-linux.gtk.x86_64.zip)
+* [Mac 32 bits](http://download.uqbar.org/wollok-macosx.cocoa.x86.zip)
+* [Mac 64 bits](http://download.uqbar.org/wollok-macosx.cocoa.x86_64.zip)
+* [Windows 32 bits](http://download.uqbar.org/wollok-win32.win32.x86.zip)
+* [Windows 64 bits](http://download.uqbar.org/wollok-win32.win32.x86_64.zip)
+
+Or, if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
+
+* http://update.uqbar.org/wollok/master : for the latest stable release
+* http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
+
 
 ## Documentation ##
 
