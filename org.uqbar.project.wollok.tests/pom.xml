@@ -117,7 +117,7 @@
 							<forkMode>once</forkMode>
 							<reportFormat>xml</reportFormat>
 							<testClassesDirectory>target/classes</testClassesDirectory>
-							<argLine>-Dfile.encoding=UTF-8</argLine>
+							<argLine>-Dfile.encoding=UTF-8 -Duser.language=en -Duser.country=US -Dnl=en</argLine>
 						</configuration>
 						<goals>
 							<goal>test</goal>
