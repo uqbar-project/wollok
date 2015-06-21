@@ -12,12 +12,9 @@ A programming language and environment for teaching OOP.
 
 You have two options to download an use Wollok.
 Download a complete Wollok Product Distribution:
-* [Linux 32 bits](http://download.uqbar.org/wollok-linux.gtk.x86.zip)
-* [Linux 64 bits](http://download.uqbar.org/wollok-linux.gtk.x86_64.zip)
-* [Mac 32 bits](http://download.uqbar.org/wollok-macosx.cocoa.x86.zip)
-* [Mac 64 bits](http://download.uqbar.org/wollok-macosx.cocoa.x86_64.zip)
-* [Windows 32 bits](http://download.uqbar.org/wollok-win32.win32.x86.zip)
-* [Windows 64 bits](http://download.uqbar.org/wollok-win32.win32.x86_64.zip)
+* Linux: [32](http://download.uqbar.org/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok-linux.gtk.x86_64.zip) bits
+* Mac [32](http://download.uqbar.org/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok-macosx.cocoa.x86_64.zip) bits
+* Windows [32](http://download.uqbar.org/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok-win32.win32.x86_64.zip) bits
 
 Or, if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
 
