@@ -59,7 +59,7 @@
             class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut"
             description="Launch Wollok"
             id="org.uqbar.project.wollok.ui.launch.shortcut"
-            label="%shortcut.label"
+            label="Run Wollok Program"
             modes="run, debug"
             icon="icons/w.png">
           <contextualLaunch>
