@@ -1,10 +1,13 @@
 package org.uqbar.project.wollok.validation
 
+import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -43,6 +46,9 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.validation.AbstractDeclarativeValidator
+import java.lang.reflect.Method
+import org.eclipse.xtext.validation.AbstractDeclarativeValidator.State
 
 /**
  * Custom validation rules.
@@ -51,12 +57,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author jfernandes
  */
-// TODO: abstract a new generic Validator that is integrated with a preferences mechanism
-// that will allow to enabled/disabled checks, and maybe even configure the issue severity for some
-// like "error/warning/ignore". It could be completely automatically based on annotations.
-// Ex:
-//  @Check @ConfigurableSeverity @EnabledDisabled
 class WollokDslValidator extends AbstractWollokDslValidator {
+	@Inject IPreferenceStoreAccess preferenceStoreAccess;
 	List<WollokValidatorExtension> wollokValidatorExtensions
 
 	// ERROR KEYS	
@@ -87,13 +89,15 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	@Check
+	@DefaultSeverity(ERROR)
 	def classNameMustStartWithUpperCase(WClass c) {
-		if (Character.isLowerCase(c.name.charAt(0))) error(WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE, c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
+		if (Character.isLowerCase(c.name.charAt(0))) report(WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE, c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
 	}
 	
 	@Check
+	@DefaultSeverity(WARN) // TODO: change back to ERROR 
 	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
-		if (Character.isUpperCase(c.name.charAt(0))) error(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
+		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	}
 	
 	// **************************************
@@ -101,12 +105,12 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	// **************************************
 
 	@Check
-	def checkCannotInstantiateAbstractClasses(WConstructorCall c) {
+	def cannotInstantiateAbstractClasses(WConstructorCall c) {
 		if(c.classRef.isAbstract) error(WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS, c, WCONSTRUCTOR_CALL__CLASS_REF, CANNOT_INSTANTIATE_ABSTRACT_CLASS)
 	}
 
 	@Check
-	def checkConstructorCall(WConstructorCall c) {
+	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
 			val expectedMessage = if (c.classRef.constructors == null)
 					""
@@ -117,13 +121,13 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 
 	@Check
-	def checkRequiredSuperClassConstructorCall(WClass it) {
+	def requiredSuperClassConstructorCall(WClass it) {
 		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
 			error('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
 	}
 	
 	@Check
-	def checkCannotHaveTwoConstructorsWithSameArity(WClass it) {
+	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
 		repeated.forEach[r|
 			error("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
@@ -131,26 +135,26 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	@Check
-	def checkConstrutorMustExpliclityCallSuper(WConstructor it) {
+	def construtorMustExpliclityCallSuper(WConstructor it) {
 		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			error("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
 		}
 	}
 	
 	@Check
-	def checkCannotUseThisInConstructorDelegation(WThis it) {
+	def cannotUseThisInConstructorDelegation(WThis it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			error("Cannot access instance methods within constructor delegation.", it)
 	}
 	
 	@Check
-	def checkCannotUseSuperInConstructorDelegation(WSuperInvocation it) {
+	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			error("Cannot access super methods within constructor delegation.", it)
 	}
 	
 	@Check
-	def checkCannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
+	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
 		eAllContents.filter(WVariableReference).forEach[ref|
 			if (ref.ref instanceof WVariable) {
 				error("Cannot access instance variables within constructor delegation.", ref, WVARIABLE_REFERENCE__REF)
@@ -159,7 +163,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	@Check
-	def checkDelegatedConstructorExists(WDelegatingConstructorCall it) {
+	def delegatedConstructorExists(WDelegatingConstructorCall it) {
 		try {
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved == null) {
@@ -175,7 +179,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 
 
 	@Check
-	def checkMethodActuallyOverrides(WMethodDeclaration m) {
+	def methodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
 		if(m.overrides && !overrides) m.error(WollokDslValidator_METHOD_NOT_OVERRIDING)
 		if (overrides && !m.overrides)
@@ -183,7 +187,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 
 	@Check
-	def checkCannotAssignToVal(WAssignment a) {
+	def cannotReassignValues(WAssignment a) {
 		if(!a.feature.ref.isModifiableFrom(a)) error(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
@@ -191,14 +195,14 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
 
 	@Check
-	def duplicated(WMethodDeclaration m) {
+	def duplicatedMethod(WMethodDeclaration m) {
 		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
 			m.error(WollokDslValidator_DUPLICATED_METHOD)
 	}
 
 	@Check
-	def duplicated(WReferenciable p) {
+	def duplicatedVariableOrParameter(WReferenciable p) {
 		if(p.isDuplicated) p.error(WollokDslValidator_DUPLICATED_NAME)
 	}
 
@@ -255,7 +259,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 //	}
 	
 	@Check
-	def postFixOpOnlyValidforVarReferences(WPostfixOperation op) {
+	def postFixOperationOnlyValidforVariables(WPostfixOperation op) {
 		if (!(op.operand.isWritableVarRef))
 			error(op.feature + WollokDslValidator_POSTFIX_ONLY_FOR_VAR, op, WPOSTFIX_OPERATION__OPERAND)
 	}
@@ -270,7 +274,7 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	@Check 
-	def avoidDuplicatedPackageName(WPackage p) {
+	def duplicatedPackageName(WPackage p) {
 		if (p.eContainer.eContents.filter(WPackage).exists[it != p && name == p.name])
 			error(WollokDslValidator_DUPLICATED_PACKAGE + " " + p.name, p, WNAMED__NAME)
 	}
@@ -386,4 +390,83 @@ class WollokDslValidator extends AbstractWollokDslValidator {
 	def error(String message, EObject obj) {
 		error(message, obj.eContainer, obj.eContainingFeature)
 	}
+	
+	def preferences(EObject obj) {
+		preferenceStoreAccess.getContextPreferenceStore(obj.IFile.project)
+	}
+	
+	// ******************************
+	// ** configurable severity
+	// ******************************
+	
+	def report(String description, EObject invalidObject, EAttribute attribute, String issueId) {
+		val checkMethod = inferCheckMethod()
+		
+		var severityValue = preferences(invalidObject).getString(checkMethod.name)?.severityEnumValue
+		if (severityValue == null)
+			severityValue = checkMethod.getAnnotation(DefaultSeverity)?.value
+		
+		if (severityValue == null)
+			error(description, invalidObject, attribute, issueId)
+		switch (severityValue) {
+			case ERROR : error(description, invalidObject, attribute, issueId)
+			case WARN : warning(description, invalidObject, attribute, issueId)
+			case INFO : info(description, invalidObject, attribute, issueId) 
+		}
+	}
+	
+	def inferCheckMethod() {
+		val stackTrace = try throw new RuntimeException() catch(RuntimeException e) e.stackTrace
+		val checkStackElement = stackTrace.get(1);
+		return this.class.methods.findFirst[m | m.name == checkStackElement.methodName]
+	}
+	
+	def getSeverityEnumValue(String value) {
+		if (value == null || "".equals(value.trim)) null else CheckSeverity.valueOf(value)
+	}
+
+	/** overrides to add the enabled/disabled behavior */
+	override protected createMethodWrapper(AbstractDeclarativeValidator instanceToUse, Method method) {
+		new MethodWrapperDecorator(super.createMethodWrapper(instanceToUse, method), instanceToUse as WollokDslValidator)
+	}
+	
+	public static val String PREF_KEY_ENABLED_SUFFIX = ".enabled"
+	
+	static class MethodWrapperDecorator extends MethodWrapper {
+		val MethodWrapper decoratee
+	
+		protected new(MethodWrapper decoratee, WollokDslValidator validator) {
+			super(validator, decoratee.method)
+			this.decoratee = decoratee
+		}
+		
+		override getInstance() {
+			decoratee.instance
+		}
+		
+		override getMethod() {
+			decoratee.method
+		}
+		
+		override isMatching(Class<?> param) {
+			decoratee.isMatching(param)
+		}
+		
+		override invoke(State state) {
+			val prefs = (instance as WollokDslValidator).preferences(state.currentObject)
+			val key = method.name + PREF_KEY_ENABLED_SUFFIX
+			// default is "enabled" if not present
+			if (!prefs.contains(key) || prefs.getBoolean(key)) {
+				println('''CHECK «method.name» ENABLED !''')
+				decoratee.invoke(state)
+			}
+			else {
+				println('''CHECK «method.name» IS DISABLED !''')
+			}
+		}
+	
+	}
+	
 }
+
+
