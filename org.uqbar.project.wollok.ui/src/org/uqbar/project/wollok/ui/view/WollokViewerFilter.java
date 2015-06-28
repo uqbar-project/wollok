@@ -25,8 +25,6 @@ public class WollokViewerFilter extends ViewerFilter {
 	
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		System.out.println("Filtering (" + element.getClass().getName() + ")" + element );
-		
 		if (element instanceof IFile)
 			return !hiddenFiles.contains(((IFile) element).getName());
 		if (element instanceof IFolder)
