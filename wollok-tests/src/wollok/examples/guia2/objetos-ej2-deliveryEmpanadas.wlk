@@ -42,7 +42,7 @@ object motoGrande {
 	}
 	
 	method puedeLlevar(pedido, distancia) {
-		return pedido <= this.capacidad() && (distanciaRecorrida + distancia)  < distanciaMaxima
+		return pedido <= this.capacidad() and (distanciaRecorrida + distancia)  < distanciaMaxima
 	}
 }
 
@@ -61,7 +61,7 @@ object motoChica {
 	}
 	
 	method puedeLlevar(pedido, distancia) {
-		return pedido <= this.capacidad() && (distanciaRecorrida + distancia)  < distanciaMaxima
+		return pedido <= this.capacidad() and (distanciaRecorrida + distancia)  < distanciaMaxima
 	}
 }
 
@@ -81,7 +81,7 @@ object jose {
 	}
 	
 	method puedeLlevar(pedido, distancia) {
-		return cantidadDeViajes > 0 && pedido <= this.capacidad() && distancia < distanciaMaxima
+		return cantidadDeViajes > 0 and pedido <= this.capacidad() and distancia < distanciaMaxima
 	}
 }
 
