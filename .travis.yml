@@ -10,7 +10,7 @@ script:
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo"; fi
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "master" ] ; then export PROFILES="uploadRepo,uploadProducts"; fi
 - echo "Running with profiles $PROFILES"
-- mvn -DupdateSiteFolder=$TRAVIS_BRANCH clean install -P $PROFILES
+- mvn -DupdateSiteFolder=$TRAVIS_BRANCH -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install cobertura:cobertura coveralls:report -P $PROFILES
 
 jdk:
 - oraclejdk7
