@@ -77,7 +77,17 @@ class WEclipseUtils {
 		ResourcesPlugin.getWorkspace.root.getFile(new Path(obj.eResource.URI.toPlatformString(true)))
 	}
 	
-	def static allProjects() { ResourcesPlugin.getWorkspace().getRoot().getProjects() }
+	def static isWorkspaceOpen() {
+		// horrible, but seems the only way (?)
+		try {
+			ResourcesPlugin.getWorkspace
+			true
+		}
+		catch (IllegalStateException e)
+			false 
+	}
+	
+	def static allProjects() { ResourcesPlugin.workspace.root.projects }
 	
 	def static fullBuild(IProject p, IProgressMonitor monitor) {
 		p.build(IncrementalProjectBuilder.FULL_BUILD, monitor)

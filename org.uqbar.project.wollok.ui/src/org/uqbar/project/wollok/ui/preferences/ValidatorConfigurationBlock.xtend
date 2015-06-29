@@ -8,14 +8,16 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
+import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.validation.CheckSeverity
+import org.uqbar.project.wollok.validation.CheckSeverityUtils
+import org.uqbar.project.wollok.validation.DefaultSeverity
+import org.uqbar.project.wollok.validation.NotConfigurable
+import org.uqbar.project.wollok.validation.WollokDslValidator
 
 import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
-import org.uqbar.project.wollok.validation.WollokDslValidator
-import org.eclipse.xtext.validation.Check
-import org.uqbar.project.wollok.validation.CheckSeverity
-import org.uqbar.project.wollok.validation.DefaultSeverity
-import org.uqbar.project.wollok.validation.CheckSeverityUtils
+
 import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
@@ -45,7 +47,7 @@ class ValidatorConfigurationBlock extends OptionsConfigurationBlock {
 				marginWidth = 8
 			]
 			
-			WollokDslValidator.methods.filter[m| m.isAnnotationPresent(Check)].forEach[m|
+			WollokDslValidator.methods.filter[isAnnotationPresent(Check) && isAnnotationPresent(DefaultSeverity) && !isAnnotationPresent(NotConfigurable)].forEach[m|
 				if (m.getAnnotation(DefaultSeverity) != null)
 					store.setDefault(m.name, m.getAnnotation(DefaultSeverity).value.name)
 				store.setDefault(m.name + WollokDslValidator.PREF_KEY_ENABLED_SUFFIX, TRUE)
