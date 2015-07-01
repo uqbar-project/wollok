@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences
+package org.uqbar.project.wollok.ui.preferences
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
@@ -16,67 +16,67 @@ import org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage
 
 import static org.eclipse.xtext.ui.XtextProjectHelper.*
 import static org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.utils.WEclipseUtils
-import org.eclipse.ui.IWorkbenchPropertyPage
 
 /**
+ * Preferences page for validator
+ * 
  * @author jfernandes
  */
-class TypeSystemPreferencePage extends PropertyAndPreferencePage implements IWorkbenchPropertyPage {
+class ValidatorPreferencePage extends PropertyAndPreferencePage {
 	@Inject @Named(Constants.LANGUAGE_NAME) String languageName
 	@Inject IPreferenceStoreAccess preferenceStoreAccess
-	TypeSystemConfigurationBlock builderConfigurationBlock
+	ValidatorConfigurationBlock configurationBlock
 
-	override protected getPreferencePageID() { languageName + "typeSystem.preferencePage" }
-	override protected getPropertyPageID() { languageName + "typeSystem.propertyPage"}
+	override protected getPreferencePageID() { languageName + "validator.preferencePage" }
+	override protected getPropertyPageID() { languageName + "validator.propertyPage"}
 	
 	override createControl(Composite parent) {
 		val container = container as IWorkbenchPreferenceContainer
 		val preferenceStore = preferenceStoreAccess.getWritablePreferenceStore(project)
-		builderConfigurationBlock = new TypeSystemConfigurationBlock(project, preferenceStore, container)
-		builderConfigurationBlock.statusChangeListener = newStatusChangedListener
+		configurationBlock = new ValidatorConfigurationBlock(project, preferenceStore, container)
+		configurationBlock.statusChangeListener = newStatusChangedListener
 		super.createControl(parent)
 	}
-	
+
 	override protected createPreferenceContent(Composite composite, IPreferencePageContainer preferencePageContainer) {
-		builderConfigurationBlock.createContents(composite)
+		configurationBlock.createContents(composite)
 	}
 	
 	override protected hasProjectSpecificOptions(IProject project) {
-		builderConfigurationBlock.hasProjectSpecificOptions(project)
+		configurationBlock.hasProjectSpecificOptions(project)
 	}
 	
 	override dispose() {
-		if (builderConfigurationBlock != null)
-			builderConfigurationBlock.dispose
+		if (configurationBlock != null)
+			configurationBlock.dispose
 		super.dispose
 	}
 	
-	override enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
+		override enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
 		super.enableProjectSpecificSettings(useProjectSpecificSettings)
-		if (builderConfigurationBlock != null)
-			builderConfigurationBlock.useProjectSpecificSettings(useProjectSpecificSettings)
+		if (configurationBlock != null)
+			configurationBlock.useProjectSpecificSettings(useProjectSpecificSettings)
 	}
 
 	override performDefaults() {
 		super.performDefaults
-		if (builderConfigurationBlock != null)
-			builderConfigurationBlock.performDefaults
+		if (configurationBlock != null)
+			configurationBlock.performDefaults
 	}
 
 	override performOk() {
-		if (builderConfigurationBlock != null) {
+		if (configurationBlock != null) {
 			scheduleCleanerJobIfNecessary(container)
-			if (!builderConfigurationBlock.performOk)
+			if (!configurationBlock.performOk)
 				return false
 		}
 		super.performOk
 	}
 
 	override performApply() {
-		if (builderConfigurationBlock != null) {
+		if (configurationBlock != null) {
 			scheduleCleanerJobIfNecessary(null)
-			builderConfigurationBlock.performApply
+			configurationBlock.performApply
 		}
 	}
 	

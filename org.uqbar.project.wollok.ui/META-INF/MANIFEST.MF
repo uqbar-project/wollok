@@ -40,5 +40,6 @@ Export-Package: org.uqbar.project.wollok.ui,
  org.uqbar.project.wollok.ui.editor,
  org.uqbar.project.wollok.ui.internal,
  org.uqbar.project.wollok.ui.labeling,
+ org.uqbar.project.wollok.ui.preferences,
  org.uqbar.project.wollok.ui.quickfix
 Bundle-Activator: org.uqbar.project.wollok.ui.WollokActivator

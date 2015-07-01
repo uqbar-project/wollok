@@ -34,6 +34,10 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS;
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	
+	public static String CheckSeverity_ERROR;
+	public static String CheckSeverity_WARN;
+	public static String CheckSeverity_INFO;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
