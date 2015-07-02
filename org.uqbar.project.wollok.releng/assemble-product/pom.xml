@@ -83,13 +83,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-				<version>1.0-beta-6</version>
-			</extension>
-		</extensions>
 	</build>
 
 	<profiles>
@@ -97,9 +90,7 @@
 		<profile>
 			<id>uploadProducts</id>
 			<properties>
-				<!-- Properties relative to the distant host where to upload the repo -->
 				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
-				<!-- Relative path to the repo being uploaded -->
 				<products.path>${project.build.directory}/products/</products.path>
 			</properties>
 

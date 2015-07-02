@@ -11,7 +11,7 @@ import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.uqbar.project.wollok.typesystem.validations.XSemanticsWollokValidationExtension
 import org.uqbar.project.wollok.ui.WollokActivator
 
-import static org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.WPreferencesUtils.*
+import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 
 /**
  * @author jfernandes

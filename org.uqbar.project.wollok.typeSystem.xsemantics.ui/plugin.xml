@@ -17,7 +17,7 @@
             category="org.uqbar.project.wollok.WollokDsl"
             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.TypeSystemPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.typeSystem.preferencePage"
-            name="Type System">
+            name="%typeSystem">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
         </page>
     </extension>
@@ -27,7 +27,7 @@
             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.TypeSystemPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl.typeSystem.propertyPage"
             category="org.uqbar.project.wollok.WollokDsl"
-            name="Type System">
+            name="%typeSystem">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
             <enabledWhen>
 	            <adapt type="org.eclipse.core.resources.IProject"/>
