@@ -184,7 +184,7 @@ Library.
    </license>
 
    <url>
-      <update label="Wollok Update Site" url="http://update.uqbar.org/wollok/master/"/>
+      <update label="Wollok Update Site" url="http://update.uqbar.org/wollok/master"/>
       <discovery label="GitHub Repository" url="https://github.com/uqbar-project/wollok"/>
       <discovery label="Travis Continuous Integration Project" url="https://travis-ci.org/uqbar-project/wollok"/>
    </url>
