@@ -40,7 +40,7 @@
 				<configuration>
 					<products>
 						<product>
-							<id>wollok</id>
+							<id>org.uqbar.project.wollok.sdk</id>
 							<archiveFileName>wollok</archiveFileName>
 						</product>
 					</products>
