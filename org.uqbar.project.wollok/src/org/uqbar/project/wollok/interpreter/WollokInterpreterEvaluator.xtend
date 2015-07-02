@@ -80,7 +80,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
-	var Map<String, WeakReference> numbersCache = newHashMap
+	var Map<String, WeakReference<Object>> numbersCache = newHashMap
 
 	@Inject
 	WollokInterpreter interpreter

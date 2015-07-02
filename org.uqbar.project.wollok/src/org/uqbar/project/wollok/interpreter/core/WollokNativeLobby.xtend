@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext {
 	extension WollokInterpreterAccess = new WollokInterpreterAccess()
 
-	var Map<String,Object> localVariables = newHashMap
+	static var Map<String,Object> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
 	WollokInterpreter interpreter
 	
@@ -34,12 +34,12 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	override getThisObject() { this }
 	
 	override allReferenceNames() {
-		localVariables.keySet.map[new WVariable(it, true)]
+		localProgramVariables.keySet.map[new WVariable(it, true)]
 	}
 	
 	override resolve(String variableName) throws UnresolvableReference {
-		if (localVariables.containsKey(variableName))
-			localVariables.get(variableName)
+		if (localProgramVariables.containsKey(variableName))
+			localProgramVariables.get(variableName)
 		else if (interpreter.globalVariables.containsKey(variableName))
 			interpreter.globalVariables.get(variableName)
 		else
@@ -48,7 +48,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override setReference(String variableName, Object value) {
-		if (!localVariables.containsKey(variableName)){
+		if (!localProgramVariables.containsKey(variableName)){
 			if (!interpreter.globalVariables.containsKey(variableName))
 				// I18N !
 				throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
@@ -56,11 +56,11 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 				interpreter.globalVariables.put(variableName,value)
 		}
 		else
-			localVariables.put(variableName,value)
+			localProgramVariables.put(variableName,value)
 	}
 	
 	override addReference(String name, Object value) {
-		localVariables.put(name, value)
+		localProgramVariables.put(name, value)
 		value
 	}
 	
