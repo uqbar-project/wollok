@@ -19,6 +19,8 @@ Download a complete Wollok Product Distribution:
 
 ## Installation through Update Sites ##
 
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
+
 Alternatively if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
 
 * http://update.uqbar.org/wollok/master : for the latest stable release

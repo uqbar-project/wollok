@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.model
 
 import java.util.Arrays
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -32,6 +34,8 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author npasserini
  */
 class WMethodContainerExtensions extends WollokModelExtensions {
+	
+	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WLibrary p){p.elements.filter(WNamedObject)}

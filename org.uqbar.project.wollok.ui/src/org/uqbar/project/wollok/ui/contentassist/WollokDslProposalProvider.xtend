@@ -5,6 +5,7 @@ import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -17,44 +18,50 @@ import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
+
 /**
  * 
  * @author jfernandes
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
-	//@Inject
-  	//protected WollokDslTypeSystem system
+	
+	// This whole implementation is just an heuristic until we have a type system
 	
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
 		memberProposalsForTarget(call.memberCallTarget, assignment, context, acceptor)
-	}
 
-	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-// WITHOUT - XSEMANTICS
-// TODO: Hacer un extension point
-//		reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
-//			reference.ref.messagesSentTo.forEach[m| acceptor.addProposal(context, m.asProposalText, m.image)]
-	}
-/* 
-	def asProposal(MessageType message) {
-		message.name + "(" + message?.parameterTypes.map[p| p.asParamName ].join(", ") + ")" 
+		// still call super for global objects and other stuff
+		super.completeWMemberFeatureCall_Feature(model, assignment, context, acceptor)
 	}
 	
-	def dispatch String asParamName(WollokType type) { type.name }
-	def dispatch String asParamName(StructuralType type) { "anObj" }
-	def dispatch String asParamName(ObjectLiteralWollokType type) { "anObj" }
-	
-	def type(WReferenciable r) {
-		val env = system.emptyEnvironment()
-		val e = r.eResource.contents.filter(WFile).head.body
-		system.inferTypes(env, e)
-		system.queryTypeFor(env, r).first
-	}
-*/	
-	// default hace super
+	// default
 	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		super.completeWMemberFeatureCall_Feature(expression, assignment, context, acceptor)
+	}
+	
+	// to a variable
+	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		memberProposalsForTarget(ref.ref, assignment, context, acceptor)
+	}
+	
+	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMessageSent.filter[feature != null].forEach[m|
+			acceptor.addProposal(context, m.asProposalText, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
+		]
+	}
+	
+	// messages to this
+	def dispatch void memberProposalsForTarget(WThis dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		dis.declaringContext.allMethods.forEach[m|
+			acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
+		]
+	}
+	
+	def asProposal(WMethodDeclaration it) {
+		name + "(" + parameters.map[p| p.name ].join(", ") + ")" 
 	}
 		
 	// *****************************
@@ -85,8 +92,34 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	def addProposal(ICompletionProposalAcceptor acceptor, ContentAssistContext context, String feature, Image image) {
-		if (feature != null) 
-			acceptor.accept(context.createProposal(feature, image))
+		if (feature != null) acceptor.accept(context.createProposal(feature, image))
 	}
+	
+		//@Inject
+  	//protected WollokDslTypeSystem system
+
+//	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+//		super.completeWMemberFeatureCall_Feature(reference, assignment, context, acceptor)
+		// TYPE SYSTEM
+		// TODO: Hacer un extension point
+		//		reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
+		//			reference.ref.messagesSentTo.forEach[m| acceptor.addProposal(context, m.asProposalText, m.image)]
+//	}
+/* 
+	def asProposal(MessageType message) {
+		message.name + "(" + message?.parameterTypes.map[p| p.asParamName ].join(", ") + ")" 
+	}
+	
+	def dispatch String asParamName(WollokType type) { type.name }
+	def dispatch String asParamName(StructuralType type) { "anObj" }
+	def dispatch String asParamName(ObjectLiteralWollokType type) { "anObj" }
+	
+	def type(WReferenciable r) {
+		val env = system.emptyEnvironment()
+		val e = r.eResource.contents.filter(WFile).head.body
+		system.inferTypes(env, e)
+		system.queryTypeFor(env, r).first
+	}
+*/	
 
 }
