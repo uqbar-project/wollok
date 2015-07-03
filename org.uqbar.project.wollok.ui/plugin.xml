@@ -80,6 +80,8 @@
             </and>
         </definition>
     </extension>
+    
+    <!-- PREFERENCES -->
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
@@ -116,6 +118,36 @@
 	        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
         </page>
     </extension>
+    
+	    <!-- VALIDATOR -->
+	    <extension
+	            point="org.eclipse.ui.preferencePages">
+	        <page
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.ValidatorPreferencePage"
+	            id="org.uqbar.project.wollok.WollokDsl.validatorPreferencePage"
+	            name="%validator">
+	            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+	        </page>
+	    </extension>
+	    <extension
+	            point="org.eclipse.ui.propertyPages">
+	        <page
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.ValidatorPreferencePage"
+	            id="org.uqbar.project.wollok.WollokDsl.validatorPropertyPage"
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            name="%validator">
+	            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+	            <enabledWhen>
+		            <adapt type="org.eclipse.core.resources.IProject"/>
+				</enabledWhen>
+		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+	        </page>
+	    </extension>
+	    <!-- VALIDATOR -->
+    
+    <!-- /PREFERENCES -->
+    
     <extension
         point="org.eclipse.ui.keywords">
         <keyword

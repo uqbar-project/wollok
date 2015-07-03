@@ -103,4 +103,44 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+		<profiles>
+		<!-- This profile is used to upload the generated SDK package -->
+		<profile>
+			<id>uploadProducts</id>
+			<properties>
+				<!-- Properties relative to the distant host where to upload the repo -->
+				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
+				<!-- Relative path to the repo being uploaded -->
+				<products.path>${project.build.directory}</products.path>
+			</properties>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>wagon-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<id>upload-repo</id>
+								<phase>install</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>${products.path}</fromDir>
+									<includes>**-wdk.zip</includes>
+									<toDir>/wollok/sdk</toDir>
+									<url>${ftp.url}</url>
+									<serverId>downloads-uqbar</serverId>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>

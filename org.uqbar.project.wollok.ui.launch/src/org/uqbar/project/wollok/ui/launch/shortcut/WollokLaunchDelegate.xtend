@@ -9,8 +9,10 @@ import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.model.IProcess
 import org.eclipse.jdt.launching.JavaLaunchDelegate
-import org.uqbar.project.wollok.launch.WollokLauncherParameters
+import org.eclipse.ui.console.ConsolePlugin
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
+import org.uqbar.project.wollok.launch.WollokLauncherParameters
+import org.uqbar.project.wollok.ui.console.WollokReplConsole
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
@@ -38,6 +40,16 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		}
 		var config = configuration.setDebugWollokParam(mode)
 		super.launch(config, mode, launch, monitor);
+		
+		if(configuration.hasRepl){
+			val consoleManager = ConsolePlugin.getDefault().consoleManager
+			var console = consoleManager.consoles.findFirst[ name == WollokReplConsole.consoleName ] as WollokReplConsole
+			if(console == null){
+				console = new WollokReplConsole
+				consoleManager.addConsoles(#[console])
+			}
+			console.startForProcess(launch.processes.get(0))
+		}
 		
 		if (mode.isDebug) {
 			try {

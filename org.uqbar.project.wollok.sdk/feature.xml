@@ -184,7 +184,7 @@ Library.
    </license>
 
    <url>
-      <update label="Wollok Update Site" url="http://update.uqbar.org/wollok/"/>
+      <update label="Wollok Update Site" url="http://update.uqbar.org/wollok/master"/>
       <discovery label="GitHub Repository" url="https://github.com/uqbar-project/wollok"/>
       <discovery label="Travis Continuous Integration Project" url="https://travis-ci.org/uqbar-project/wollok"/>
    </url>
@@ -277,6 +277,20 @@ Library.
          download-size="0"
          install-size="0"
          version="1.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
