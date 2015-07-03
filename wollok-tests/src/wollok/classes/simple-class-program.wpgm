@@ -15,5 +15,5 @@ program simpleClass {
 	this.assertEquals(50, pepita.getEnergia())  // pepita no se altero
 	//
 	//
-	
+
 }

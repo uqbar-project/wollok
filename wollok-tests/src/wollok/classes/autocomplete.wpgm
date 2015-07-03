@@ -1,5 +1,4 @@
 program autocomplete {
-
 	// *************
 	// vars in the same scope
 	
@@ -39,8 +38,6 @@ program autocomplete {
 	var aBlock = [auto |
 		// ufa, no anda acá.
 	]
-	
-	
-	var otro = [auto | auto.arrancar() ]
 
+	var otro = [auto | auto.arrancar() ]
 }

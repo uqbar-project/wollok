@@ -3,11 +3,10 @@ object pepita {
 	var energia = 100
 	var ubicacion = 0
 	
-	method energia() { 
-		return energia
-	}
+	method energia() = ubigacion
 	
 	method volar(km) {
+		console.println("")
 		energia -= (2 * km) + 10
 	}
 	
@@ -15,9 +14,7 @@ object pepita {
 		energia += comida.energia()
 	}
 	
-	method ubicacion() {
-		return ubicacion
-	}
+	method ubicacion() = ubicacion
 	
 	method volarA(lugar) {
 		energia -= ubicacion - lugar.ubicacion()
@@ -33,9 +30,7 @@ object pepita {
 object alpiste {
 	val energia = 10
 	
-	method energia() {
-		return energia
-	}
+	method energia() = energia
 }
 
 object pepona {
@@ -45,9 +40,7 @@ object pepona {
 		energia += comida.energia()
 	}
 	
-	method energia() {
-		return energia
-	}
+	method energia() = energia
 }
 
 object otraPepita {
@@ -57,10 +50,7 @@ object otraPepita {
 		energia += comida.energia()
 	}
 	
-	method energia() {
-		return energia
-	}
-	
+	method energia() = energia
 }
 
 object golondrina1 {
@@ -70,10 +60,7 @@ object golondrina1 {
 		energia += comida.energia()
 	}
 	
-	method energia() {
-		return energia
-	}
-	
+	method energia() = energia
 }
 
 
