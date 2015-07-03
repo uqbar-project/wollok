@@ -81,6 +81,8 @@ class Camion {
 class CamionReutilizable extends Camion {
 	var destinos = #[]
 	
+	new(cargaMaximaPosible) = super(cargaMaximaPosible)
+	
 	override method getCosos() {
 		return destinos.map[destino | destino.getCosos()].flatten() 
 	}
@@ -105,7 +107,6 @@ class CamionReutilizable extends Camion {
 
 class Destino {
 	var lugar
-	var deposito
 	var cosos = #[]
 	
 	new(unLugar) {

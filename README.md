@@ -1,5 +1,6 @@
 [![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
-[![Releng](https://travis-ci.org/uqbar-project/wollok.svg?branch=master)](https://travis-ci.org/uqbar-project/wollok?branch=master)
+[![Travis](https://travis-ci.org/uqbar-project/wollok.svg?branch=master)](https://travis-ci.org/uqbar-project/wollok?branch=master)
+[![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 # Wollok #
 
@@ -17,6 +18,8 @@ Download a complete Wollok Product Distribution:
 * Windows [32](http://download.uqbar.org/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok-win32.win32.x86_64.zip) bits
 
 ## Installation through Update Sites ##
+
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
 
 Alternatively if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
 
