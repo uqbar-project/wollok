@@ -14,6 +14,13 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
 
+import static extension org.eclipse.xtext.EcoreUtil2.*
+import org.uqbar.project.wollok.wollokDsl.Import
+import org.eclipse.xtext.EcoreUtil2
+
+/**
+ * 
+ */
 class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	@Inject
@@ -26,9 +33,27 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val resourceSet = context.resourceSet
 
 		val exportedObjects = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
+		val explicitImportedObjects = this.importedObjects(context)
 
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
-		new SimpleScope(defaultScope, exportedObjects)
+		new SimpleScope(new SimpleScope(defaultScope, exportedObjects), explicitImportedObjects)
+	}
+	
+	def importedObjects(Resource resource) {
+		val rootObject = resource.contents.get(0)
+		val imports = rootObject.getAllContentsOfType(Import)
+		val importedNamespaces = imports.map[importedNamespace]
+		importedNamespaces.map[name|
+			var uri = generateUri(resource, name)
+			EcoreUtil2.getResource(resource, uri)
+		]
+		.map[r |
+			resourceDescriptionManager.getResourceDescription(r).exportedObjects
+		].flatten
+	}
+	
+	def generateUri(Resource resource, String importedName) {
+		resource.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension("wlk").toString
 	}
 
 	def handleManifest(WollokManifest manifest, ResourceSet resourceSet) {

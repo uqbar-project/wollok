@@ -1,4 +1,4 @@
-// package wollok.lib{
+ package lib {
 	object console {
 		method println(obj) native
 		method readLine() native
@@ -37,4 +37,4 @@
 	}
 	
 	
-// }
+}

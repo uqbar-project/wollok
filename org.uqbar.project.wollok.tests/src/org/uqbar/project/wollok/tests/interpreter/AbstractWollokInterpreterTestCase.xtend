@@ -38,7 +38,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
 		
-		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok-lib.wlk", true))
+		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok.wlk", true))
 		resource.load(new HashMap())
 		resourceSet.getResources().add(resource);
 	}
