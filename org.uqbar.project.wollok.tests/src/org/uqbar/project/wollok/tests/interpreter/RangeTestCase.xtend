@@ -10,18 +10,20 @@ import org.junit.Test
 class RangeTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
-	def void testForEach() {#['''program a {
-		val range = 0 .. 10
-		
-		var sum = 0
-		
-		this.assert(range != null)
-		
-		range.forEach [ i | sum += i ]
-		
-		this.assertEquals(55, sum)
-	}'''
-		].interpretPropagatingErrors
+	def void testForEach() {
+		'''
+		program a {
+			val range = 0 .. 10
+			
+			var sum = 0
+			
+			this.assert(range != null)
+			
+			range.forEach [ i | sum += i ]
+			
+			this.assertEquals(55, sum)
+		}
+		'''.interpretPropagatingErrors
 	}
 	
 }

@@ -7,9 +7,8 @@ import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
 import org.eclipse.xtext.util.IAcceptor
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WLibrary
-import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WPackage
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -24,8 +23,6 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 	
 	override createEObjectDescriptions(EObject eObject, IAcceptor<IEObjectDescription> acceptor) {
 		if (eObject instanceof WFile)
-			true
-		else if (eObject instanceof WLibrary)
 			true
 		else if (eObject instanceof WPackage)
 			super.createEObjectDescriptions(eObject, acceptor)

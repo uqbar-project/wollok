@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
-import org.uqbar.project.wollok.wollokDsl.WLibrary
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -38,7 +38,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
-	def static namedObjects(WLibrary p){p.elements.filter(WNamedObject)}
+	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
 	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }

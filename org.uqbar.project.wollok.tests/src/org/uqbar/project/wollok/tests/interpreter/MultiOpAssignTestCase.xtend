@@ -11,27 +11,33 @@ import org.uqbar.project.wollok.WollokDSLKeywords
  */
 class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
-	def void testPlusEquals() {''' program p {
+	def void testPlusEquals() {'''
+		program p {
 			var n = 1
 			n += 1
 			
-			this.assert(n == 2) }'''.interpretPropagatingErrors
+			this.assert(n == 2) 
+		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testMultiplyEquals() {''' program p {
+	def void testMultiplyEquals() {'''
+		program p {
 			var n = 2
 			n *= 3
 			
-			this.assert(n == 6) }'''.interpretPropagatingErrors
+			this.assert(n == 6)
+		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testSubstractEquals() {''' program p {
+	def void testSubstractEquals() {'''
+		program p {
 			var n = 2
 			n -= 1
 			
-			this.assert(n == 1) }'''.interpretPropagatingErrors
+			this.assert(n == 1)
+		}'''.interpretPropagatingErrors
 	}
 	
 	// helper for impl

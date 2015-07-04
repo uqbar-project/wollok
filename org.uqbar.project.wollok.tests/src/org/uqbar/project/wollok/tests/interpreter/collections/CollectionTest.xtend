@@ -28,8 +28,7 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		object pepita{
 			
 		}
-		''',
-		'''
+
 		program p {
 			pajarera.agregar(pepita)
 			pajarera.quitar(pepita)
