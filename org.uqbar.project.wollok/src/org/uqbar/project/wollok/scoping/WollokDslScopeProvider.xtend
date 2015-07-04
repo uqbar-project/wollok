@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -57,6 +58,10 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 			clazz.parent.scope + clazz.declaredVariables
 		else
 			clazz.declaredVariables.asScope
+	}
+
+	def dispatch IScope scope(WNamedObject namedObject) {
+		namedObject.declaredVariables.asScope
 	}
 	
 	// containers which declares elements

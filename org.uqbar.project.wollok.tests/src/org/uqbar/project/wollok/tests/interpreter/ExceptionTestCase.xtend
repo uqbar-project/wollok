@@ -38,11 +38,11 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					this.println("Exception raised!") // OK!
 					e.printStackTrace()
 				}
-			}'''].
-			interpretPropagatingErrors
+			}
+		'''].interpretPropagatingErrors
 			
-			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(0, (counter as WollokInteger).wrapped)
+		val counter = interpreter.currentContext.resolve("counter")
+		assertEquals(0, (counter as WollokInteger).wrapped)
 	}
 	
 	@Test
@@ -51,18 +51,18 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			class MyException extends wollok.lang.Exception {}
 			class A { method m1() { throw new MyException() } }
-		''',
-		''' program p {	
-			val a = new A()
-			var counter = 0
-			
-			try {
-				a.m1()
-			}
-			catch e : MyException
-				this.println("Exception raised!") // OK!
-			then always
-				counter = counter + 1
+		
+			program p {	
+				val a = new A()
+				var counter = 0
+				
+				try {
+					a.m1()
+				}
+				catch e : MyException
+					this.println("Exception raised!") // OK!
+				then always
+					counter = counter + 1
 			}'''].
 			interpretPropagatingErrors
 			val counter = interpreter.currentContext.resolve("counter")
@@ -77,23 +77,25 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A {
 				method m1() {
 				}
-			}'''
-		,
-		''' program p {
-			val a = new A()
-			var counter = 0
-			
-			try {
-				a.m1()
-				counter = counter + 1
 			}
-			catch e : MyException
-				this.println("Exception raised!") // OK!
-			then always
-				counter = counter + 1 }'''].
-			interpretPropagatingErrors
-			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(2, (counter as WollokInteger).wrapped)
+			
+			program p {
+				val a = new A()
+				var counter = 0
+				
+				try {
+					a.m1()
+					counter = counter + 1
+				}
+				catch e : MyException
+					this.println("Exception raised!") // OK!
+				then always
+					counter = counter + 1 
+			}
+		'''].
+		interpretPropagatingErrors
+		val counter = interpreter.currentContext.resolve("counter")
+		assertEquals(2, (counter as WollokInteger).wrapped)
 	}
 
 	@Test
@@ -106,19 +108,20 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 			class A { method m1() { throw new MyException() } }
-		''', ''' program p {
-			val a = new A()
-			var result = null
-			
-			try {
-				a.m1()
+
+			program p {
+				val a = new A()
+				var result = null
+				
+				try {
+					a.m1()
+				}
+				catch e : MyException
+					result = e.customMessage()
 			}
-			catch e : MyException
-				result = e.customMessage()
-			}'''].
-			interpretPropagatingErrors
-			val result = interpreter.currentContext.resolve("result")
-			assertEquals("Something went wrong", result)
+		'''].interpretPropagatingErrors
+		val result = interpreter.currentContext.resolve("result")
+		assertEquals("Something went wrong", result)
 	}
 	
 	@Test
@@ -128,20 +131,20 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class MyException extends wollok.lang.Exception {}
 			class MySubclassException extends MyException {}
 			class A { method m1() { throw new MySubclassException() } }
-			''',
-			''' program p {
-			val a = new A()
-			var result = 0
 			
-			try {
-				a.m1()
-			}
-			catch e : MyException
-				result = 3
+			program p {
+				val a = new A()
+				var result = 0
 				
-			this.assert(3 == result)
-			}'''].
-			interpretPropagatingErrors
+				try {
+					a.m1()
+				}
+				catch e : MyException
+					result = 3
+					
+				this.assert(3 == result)
+				}
+		'''].interpretPropagatingErrors
 	}
 	
 	@Test
@@ -151,20 +154,19 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class MyException extends wollok.lang.Exception {}
 			class MySubclassException extends MyException {}
 			class A { method m1() { throw new MySubclassException() } }
-		''', ''' program p {	
-			val a = new A()
-			var result = 0
-			
-			try 
-				a.m1()
-			
-			catch e : MySubclassException
-				result = 3
-			catch e : MyException
-				result = 2
-			this.assert(3 == result)
-			}'''].
-			interpretPropagatingErrors
+			program p {	
+				val a = new A()
+				var result = 0
+				
+				try 
+					a.m1()
+				
+				catch e : MySubclassException
+					result = 3
+				catch e : MyException
+					result = 2
+				this.assert(3 == result)
+				}
+		'''].interpretPropagatingErrors
 	}
-	
 }

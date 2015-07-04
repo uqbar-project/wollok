@@ -35,14 +35,14 @@ class XSemanticsWollokValidationExtension extends WollokDslTypeSystem implements
 		catch (IllegalStateException e) {
 			// headless launcher doesn't open workspace, so this fails.
 			// but it's ok since the type system won't run in runtime. 
-			return;
+			return
 		}
 		catch (AssertionFailedException e) 
-			return;
+			return
 
 		var RuleEnvironment env = this.emptyEnvironment
 		errorGenerator.generateErrors(decorateErrorAcceptor(validator, WollokDslValidator.TYPE_SYSTEM_ERROR),
-			this.inferTypes(env, file.body), file.body)
+			this.inferTypes(env, file.main), file.main)
 	}
 
 	def preferences(EObject obj) {

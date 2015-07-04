@@ -59,7 +59,6 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForEach() {
 		'''
 		program p {
-			
 			val numbers = #[23, 2, 1]
 			
 			var sum = 0
@@ -73,11 +72,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForAll() {
 		'''
 		program p {
-			
 			val numbers = #[23, 2, 1]
-			
 			var allPositives = numbers.forAll([n | n > 0])
-			
 			this.assert(allPositives)
 		}'''.interpretPropagatingErrors
 	}
@@ -86,9 +82,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testFilter() {
 		'''
 		program p {
-				val numbers = #[23, 2, 1]
-				var greaterThanOneElements = numbers.filter([n | n > 1])
-				this.assert(greaterThanOneElements.size() == 2)
+			val numbers = #[23, 2, 1]
+			var greaterThanOneElements = numbers.filter([n | n > 1])
+			this.assert(greaterThanOneElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -109,9 +105,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testShortCutAvoidingParenthesis() {
 		'''
 		program p {
-				val numbers = #[23, 2, 1]
-				var greaterThanOneElements = numbers.filter[n | n > 1]
-				this.assert(greaterThanOneElements.size() == 2)
+			val numbers = #[23, 2, 1]
+			var greaterThanOneElements = numbers.filter[n | n > 1]
+			this.assert(greaterThanOneElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 
