@@ -19,7 +19,9 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -31,8 +33,6 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 
 /**
  * Implementation that builds up rules
@@ -61,7 +61,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	// ***************************
 	
 	def dispatch void doAnalyse(WProgram it) { elements.analyze }
-	def dispatch void doAnalyse(WLibrary it) { elements.analyze }
+	def dispatch void doAnalyse(WTest it) { elements.analyze }
 	
 	def dispatch void doAnalyse(WClass it) { if (members != null) members.forEach[analyze] }
 	def dispatch void doAnalyse(WMethodDeclaration it) {

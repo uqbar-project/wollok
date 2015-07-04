@@ -18,11 +18,12 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -40,6 +41,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -152,7 +154,7 @@ class WollokModelExtensions {
 
 	// For objects or classes
 	def static dispatch declaredVariables(WObjectLiteral obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-
+	def static dispatch declaredVariables(WNamedObject obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 	def static dispatch declaredVariables(WClass clazz) { clazz.members.filter(WVariableDeclaration).map[variable] }
 
 	def static WMethodDeclaration method(WExpression param) {
@@ -204,10 +206,12 @@ class WollokModelExtensions {
 	}
 
 	// Root objects (que no tiene acceso a variables fuera de ellos)
+	def static dispatch boolean isDuplicated(WFile f, WNamedObject o) { f.elements.existsMoreThanOne(o) }
+	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
+	
 	def static dispatch boolean isDuplicated(WClass c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
-	def static dispatch boolean isDuplicated(WLibrary wl, WReferenciable r){ wl.elements.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) { c.variables.existsMoreThanOne(r) }
 
 	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r){ namedObjects.existsMoreThanOne(r) }
@@ -218,8 +222,11 @@ class WollokModelExtensions {
 	// default case is to delegate up to container
 	def static dispatch boolean isDuplicated(EObject it, WReferenciable r) { eContainer.isDuplicated(r) }
 	
-	def static existsMoreThanOne(Iterable<?> exps, WReferenciable ref) {
+	def static dispatch existsMoreThanOne(Iterable<?> exps, WReferenciable ref) {
 		exps.filter(WReferenciable).exists[it != ref && name == ref.name]
 	}
 
+	def static dispatch existsMoreThanOne(Iterable<?> exps, WNamed named) {
+		exps.filter(WReferenciable).exists[it != named && name == named.name]
+	}
 }

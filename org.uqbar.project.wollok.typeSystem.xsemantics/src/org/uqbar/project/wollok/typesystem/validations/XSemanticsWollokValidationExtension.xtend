@@ -42,7 +42,7 @@ class XSemanticsWollokValidationExtension extends WollokDslTypeSystem implements
 
 		var RuleEnvironment env = this.emptyEnvironment
 		errorGenerator.generateErrors(decorateErrorAcceptor(validator, WollokDslValidator.TYPE_SYSTEM_ERROR),
-			this.inferTypes(env, file.body), file.body)
+			this.inferTypes(env, file.main), file.main)
 	}
 
 	def preferences(EObject obj) {
