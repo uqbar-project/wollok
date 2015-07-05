@@ -1,3 +1,9 @@
+/**
+ * Base class for all Exceptions.
+ * 
+ * @author jfernandes
+ * @since 1.0
+ */
 package lang {
  
 	/**
@@ -10,6 +16,11 @@ package lang {
 		method printStackTrace() native	
 	}
 	
+	/**
+	 *
+	 * @author jfernandes
+	 * since 1.0
+	 */
 	class WObject {
 		method identity() native
 		
@@ -18,22 +29,8 @@ package lang {
 		}
 		
 		method ->(other) {
-			return new lib.Pair(this, other)
+			return new Pair(this, other)
 		}
-	}
- 
-}
- 
-package lib {
-	object console {
-		method println(obj) native
-		method readLine() native
-		method readInt() native
-	}
-	
-	object tester{
-		method assert(value) native
-		method assertEquals(expected, actual) native
 	}
 	
 	class Pair {
@@ -47,6 +44,20 @@ package lib {
 		method getY() { return y }
 		method getKey() { this.getX() }
 		method getValue() { this.getY() }
+	}
+ 
+}
+ 
+package lib {
+	object console {
+		method println(obj) native
+		method readLine() native
+		method readInt() native
+	}
+	
+	object tester {
+		method assert(value) native
+		method assertEquals(expected, actual) native
 	}
 	
 }

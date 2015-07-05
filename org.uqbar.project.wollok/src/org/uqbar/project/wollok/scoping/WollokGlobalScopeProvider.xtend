@@ -6,19 +6,18 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
+import org.uqbar.project.wollok.wollokDsl.Import
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.eclipse.xtext.EcoreUtil2
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
