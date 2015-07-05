@@ -51,10 +51,16 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author tesonep
  */
 class WollokModelExtensions {
+	
+	def static fileName(EObject ele) {
+		ele.eResource.URI.trimFileExtension.lastSegment
+	}
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { (if (package != null) (package.name + ".") else "") + name }
+	def static fqn(WClass it) { 
+		fileName + "." + (if (package != null) (package.name + ".") else "") + name
+	}
 	def static fqn(WNamedObject it) {
 		 if(package != null) package.name + "." + name
 		 else name

@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.natives
+package __synthetic0
 
 class ANativeSubclass {
 	def subclassNativeMethod() {

@@ -16,6 +16,8 @@ import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 class WollokRepl {
 	val Injector injector
 	val WollokLauncher launcher
@@ -65,7 +67,7 @@ class WollokRepl {
 						«FOR a : parsedMainFile.imports.map[importedNamespace]»
 						import «a»
 						«ENDFOR»
-						import «parsedMainFile.eResource.URI.trimFileExtension.lastSegment».*
+						import «parsedMainFile.fileName».*
 						program repl {
 						«input»
 						}

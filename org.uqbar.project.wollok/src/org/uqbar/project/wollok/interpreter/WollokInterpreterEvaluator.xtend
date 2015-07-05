@@ -73,7 +73,7 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
-	static final String OBJECT_CLASS_NAME = 'WObject'
+	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
 	
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
@@ -105,13 +105,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WClass it) {}
-
 	def dispatch Object evaluate(WPackage it) {}
-
-	// program
 	def dispatch Object evaluate(WProgram it) { elements.evalAll }
-
-	// Test
 	def dispatch Object evaluate(WTest it) { elements.evalAll }
 
 
@@ -129,7 +124,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WIfExpression it) {
 		val cond = condition.eval
 		// I18N !
-		if(!(cond instanceof Boolean)) throw new WollokInterpreterException(
+		if (!(cond instanceof Boolean)) throw new WollokInterpreterException(
 			"Expression in 'if' must evaluate to a boolean. Instead got: " + cond, it)
 		if (Boolean.TRUE == cond)
 			then.eval
@@ -233,7 +228,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
 				o.name.toString == OBJECT_CLASS_NAME
 			]
-			objectClass = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME].EObjectOrProxy as WClass
+			val a = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME]
+			if (a == null)
+				throw new WollokRuntimeException("Could NOT find " + OBJECT_CLASS_NAME + " in scope: " + scope.allElements)
+			objectClass = a.EObjectOrProxy as WClass
 		}
 		objectClass
 	}

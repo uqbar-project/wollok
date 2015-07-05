@@ -17,6 +17,8 @@ import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
@@ -45,7 +47,9 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val importedNamespaces = imports.map[importedNamespace]
 		importedNamespaces.map[name|
 			var uri = generateUri(resource, name)
-			EcoreUtil2.getResource(resource, uri)
+			val r = EcoreUtil2.getResource(resource, uri)
+			if (r == null) throw new WollokRuntimeException("Could NOT find resource '" + name +"'");
+			r
 		]
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects

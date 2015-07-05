@@ -1,15 +1,14 @@
- package lib {
-	object console {
-		method println(obj) native
-		method readLine() native
-		method readInt() native
+package lang {
+ 
+	/**
+	 * Base class for all Exceptions.
+	 * 
+	 * @author jfernandes
+	 * @since 1.0
+	 */
+	class Exception {
+		method printStackTrace() native	
 	}
-	
-	object tester{
-		method assert(value) native
-		method assertEquals(expected, actual) native
-	}
-	
 	
 	class WObject {
 		method identity() native
@@ -19,8 +18,22 @@
 		}
 		
 		method ->(other) {
-			return new Pair(this, other)
+			return new lib.Pair(this, other)
 		}
+	}
+ 
+}
+ 
+package lib {
+	object console {
+		method println(obj) native
+		method readLine() native
+		method readInt() native
+	}
+	
+	object tester{
+		method assert(value) native
+		method assertEquals(expected, actual) native
 	}
 	
 	class Pair {
@@ -35,6 +48,5 @@
 		method getKey() { this.getX() }
 		method getValue() { this.getY() }
 	}
-	
 	
 }

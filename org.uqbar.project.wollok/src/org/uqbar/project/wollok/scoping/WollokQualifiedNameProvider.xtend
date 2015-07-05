@@ -6,6 +6,7 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 /**
  * 
  */
@@ -25,7 +26,7 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 	}
 	
 	def qualifiedName(WFile ele) {
-		QualifiedName.create(ele.eResource.URI.trimFileExtension.lastSegment)		
+		QualifiedName.create(ele.fileName)		
 	}
 	
 }

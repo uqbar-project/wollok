@@ -17,6 +17,7 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 		val implicits = super.getImplicitImports(ignoreCase)
 		val r = newArrayList
 		r.add(new ImportNormalizer(qualifiedNameConverter.toQualifiedName("wollok.lib"), true, ignoreCase))
+		r.add(new ImportNormalizer(qualifiedNameConverter.toQualifiedName("wollok.lang"), true, ignoreCase))
 		r.addAll(implicits)
 		r
 	}

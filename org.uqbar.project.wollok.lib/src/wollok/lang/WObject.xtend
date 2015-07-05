@@ -1,4 +1,4 @@
-//package wollok.lang
+package wollok.lang
 
 /**
  * Wollok Object class. It's the native part
