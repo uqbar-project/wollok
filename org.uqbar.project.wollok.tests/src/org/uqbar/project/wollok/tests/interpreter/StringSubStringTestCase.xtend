@@ -10,13 +10,12 @@ class SubstringTestTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testWithAssertsOk() {
-		#[
 		'''
 			test pepita {
 				val x = "Hola, wollok!".substring(0,3)
 				this.assertEquals("Hol", x)			
 			}
-		'''].interpretPropagatingErrors
+		'''.interpretPropagatingErrors
 	}
 	
 }

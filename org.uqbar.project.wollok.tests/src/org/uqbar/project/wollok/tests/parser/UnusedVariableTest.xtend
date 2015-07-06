@@ -5,7 +5,6 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -42,7 +41,7 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 		'''.parse
 		model.validate
 
-		val tren = (model.body as WLibrary).elements.get(0) as WClass
+		val tren = model.elements.get(0) as WClass
 		val agregarVagon = tren.members.get(1) as WMethodDeclaration
 		val getCantidadPasajeros = tren.members.get(2) as WMethodDeclaration
 		val v_param = agregarVagon.parameters.get(0) as WParameter
@@ -86,7 +85,7 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 			}
 		'''.parse
 
-		val program = model.body as WProgram
+		val program = model.main as WProgram
 		val vaca1 = (program.elements.get(0) as WVariableDeclaration).right as WObjectLiteral
 		val vaca2 = (program.elements.get(1) as WVariableDeclaration).right as WObjectLiteral
 		

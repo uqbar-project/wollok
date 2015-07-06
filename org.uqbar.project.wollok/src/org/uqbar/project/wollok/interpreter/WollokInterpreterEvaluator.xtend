@@ -35,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
@@ -100,10 +99,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
 	// EVALUATIONS (as multimethods)
-	def dispatch Object evaluate(WFile it) { body.eval }
-
-	// library won't do anything
-	def dispatch Object evaluate(WLibrary it) {}
+	def dispatch Object evaluate(WFile it) { 
+		// Files should are not allowed to have both a main program and tests at the same time.
+		if (main != null) main.eval else tests.evalAll
+	}
 
 	def dispatch Object evaluate(WClass it) {}
 
