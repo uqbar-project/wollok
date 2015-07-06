@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -17,6 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -40,6 +42,7 @@ import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Custom validation rules.
@@ -311,6 +314,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION) 
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
+		if (t.then?.isReturnBoolean && t.^else?.isReturnBoolean) 
+			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION)
+	}
+	
+	def dispatch boolean getIsReturnBoolean(WExpression it) { false }
+	def dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
+	def dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
 
 	def isWritableVarRef(WExpression e) { 
 		e instanceof WVariableReference
