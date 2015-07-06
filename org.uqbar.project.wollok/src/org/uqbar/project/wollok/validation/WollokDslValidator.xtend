@@ -24,6 +24,7 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
@@ -38,6 +39,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 
 /**
  * Custom validation rules.
@@ -331,7 +333,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 		else uri.fileExtension
 	}
-
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noExtraSentencesAfterReturnStatement(WBlockExpression it){
+		val riturn = expressions.findFirst[ it instanceof WReturnExpression]
+		if (riturn != null) {
+			it.getExpressionsAfter(riturn).forEach[e|
+				report(WollokDslValidator_NO_EXPRESSION_AFTER_RETURN, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))				
+			]
+		}
+	}
+	
 	// ******************************	
 	// ** native methods
 	// ******************************

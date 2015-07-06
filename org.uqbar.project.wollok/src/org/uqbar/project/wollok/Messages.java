@@ -34,6 +34,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS;
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	
+	public static String WollokDslValidator_NO_EXPRESSION_AFTER_RETURN;
+	
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;
 	public static String CheckSeverity_INFO;
