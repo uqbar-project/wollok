@@ -1,3 +1,4 @@
+package natives
 
 class ANativeObject {
 	def aNativeMethod() {

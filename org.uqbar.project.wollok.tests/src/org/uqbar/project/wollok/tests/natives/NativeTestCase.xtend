@@ -10,7 +10,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testClassWithNativeMethod() {
-		'''
+		#["natives"->'''
 			class MyNative {
 				method aNativeMethod() native
 				
@@ -26,12 +26,12 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			
 			this.assertEquals('NATIVE HELLO MESSAGE!', obj.uppercased())
 		}
-		'''.interpretPropagatingErrors
+		'''].interpretPropagatingErrors
 	}
 	
 	@Test
 	def void nativeMethodsInManyClassesInTheHierarchy() {
-		'''
+		#["natives"->'''
 			class MyNative {
 				method aNativeMethod() native
 				
@@ -50,13 +50,13 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			this.assertEquals('Native hello message!', obj.aNativeMethod())
 			this.assertEquals('A Subclass Native Method', obj.subclassNativeMethod())
 		}
-		'''
+		''']
 		.interpretPropagatingErrors
 	}
 	
 	@Test
 	def void testObjectWithNativeMethod() {
-		'''
+		#["natives"->'''
 			object aNative {
 				method aNativeMethod() native
 			}
@@ -64,8 +64,18 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 		program nativeSample {
 			this.assertEquals('Native object hello message!', aNative.aNativeMethod())
 		}
-		'''
+		''']
 		.interpretPropagatingErrors
 	}
 	
+	
+	@Test
+	def void testConsole() {
+		'''
+		program nativeSample {
+			console.println("Hola")
+		}
+		'''
+		.interpretPropagatingErrors
+	}
 }

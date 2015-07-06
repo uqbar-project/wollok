@@ -1,4 +1,4 @@
-package __synthetic0
+package natives
 
 class MyNative {
 	def aNativeMethod() {

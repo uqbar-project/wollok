@@ -1,4 +1,4 @@
-package __synthetic0
+package natives
 
 class ANativeSubclass {
 	def subclassNativeMethod() {

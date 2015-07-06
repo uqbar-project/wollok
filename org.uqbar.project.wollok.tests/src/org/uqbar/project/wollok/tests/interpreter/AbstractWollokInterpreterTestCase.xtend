@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.tests.maven.CustomWollokDslInjectorProvider
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -55,7 +56,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def interpretPropagatingErrors(CharSequence programAsString) {
 		interpretPropagatingErrors(newArrayList(null as String -> programAsString.toString))
 	}
-	
+
 	def interpretPropagatingErrors(String... programAsString) {
 		interpretPropagatingErrors(programAsString.map[null->it])
 	}

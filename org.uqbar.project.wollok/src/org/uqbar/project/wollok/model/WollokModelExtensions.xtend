@@ -62,8 +62,9 @@ class WollokModelExtensions {
 		fileName + "." + (if (package != null) (package.name + ".") else "") + name
 	}
 	def static fqn(WNamedObject it) {
-		 if(package != null) package.name + "." + name
-		 else name
+		 fileName + "." + 
+		 	if(package != null) package.name + "." + name
+		 		else name
 	}
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }

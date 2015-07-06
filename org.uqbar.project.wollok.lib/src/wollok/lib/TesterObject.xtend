@@ -1,3 +1,5 @@
+package wollok.lib
+
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
