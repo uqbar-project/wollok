@@ -41,7 +41,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
