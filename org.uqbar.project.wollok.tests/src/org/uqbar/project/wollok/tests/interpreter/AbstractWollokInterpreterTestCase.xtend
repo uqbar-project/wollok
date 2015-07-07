@@ -13,9 +13,8 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.runner.RunWith
+import org.uqbar.project.wollok.WollokDslInjectorProvider
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.tests.maven.CustomWollokDslInjectorProvider
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -25,8 +24,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  * @author jfernandes
  */
 @RunWith(XtextRunner)
-@InjectWith(CustomWollokDslInjectorProvider)
-//@InjectWith(WollokDslInjectorProvider)
+@InjectWith(WollokDslInjectorProvider)
 abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper

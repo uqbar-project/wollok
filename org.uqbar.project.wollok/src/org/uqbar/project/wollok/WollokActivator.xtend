@@ -1,12 +1,11 @@
 package org.uqbar.project.wollok
 
+import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.core.internal.resources.Project
+import org.eclipse.core.runtime.FileLocator
 
 /**
  * 
@@ -14,10 +13,12 @@ import org.eclipse.core.internal.resources.Project
 class WollokActivator extends Plugin {
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok"
 	public static val WOLLOK_LIB_BUNDLE_NAME = "org.uqbar.project.wollok.lib"
-	private static WollokActivator plugin; 
+	private static WollokActivator plugin;
+	private BundleContext context  
 
 	override start(BundleContext context) {
 		super.start(context)
+		this.context = context
 		plugin = this
 	}
 	
@@ -50,6 +51,18 @@ class WollokActivator extends Plugin {
 			throw new WollokRuntimeException("Error while creating native object class " + className, e);
 		}
 	}
-	
 
+	def findResource(String bundleName, String fullName) {
+		val x = context.bundles.findFirst[it.symbolicName == bundleName]
+		x?.getResource(fullName).openStream
+	}
+	
+	def findResource(String fullName) {
+		val x = context.bundles.findFirst [ it.getResource("/" + fullName) != null ]
+		if(x == null)
+			null
+		else
+			x.getResource(fullName).openStream
+	}
+	
 }

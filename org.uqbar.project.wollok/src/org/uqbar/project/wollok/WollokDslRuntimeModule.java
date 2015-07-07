@@ -6,8 +6,8 @@ package org.uqbar.project.wollok;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
-import org.uqbar.project.wollok.manifest.classpath.WollokClasspathManifestFinder;
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
@@ -44,7 +44,7 @@ public class WollokDslRuntimeModule extends
 	 */
 
 	public Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
-		return WollokClasspathManifestFinder.class;
+		return BasicWollokManifestFinder.class;
 	}
 
 	public void configureIScopeProviderDelegate(com.google.inject.Binder binder) {
