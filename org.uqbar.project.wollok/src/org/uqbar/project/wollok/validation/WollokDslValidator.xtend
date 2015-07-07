@@ -56,6 +56,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
+	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
 	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
@@ -198,6 +199,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotAssignToItself(WAssignment a) {
+		if(!(a.value instanceof WVariableReference))
+			return
+			
+		val rightSide = a.value as WVariableReference
+		if(a.feature.ref == rightSide.ref) 
+			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WASSIGNMENT__FEATURE, CANNOT_ASSIGN_TO_ITSELF)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotAssignToItself(WVariableDeclaration a) {
+		if(!(a.right instanceof WVariableReference))
+			return
+			
+		val rightSide = a.right as WVariableReference
+		if(a.variable == rightSide.ref) 
+			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WVARIABLE_DECLARATION__VARIABLE, CANNOT_ASSIGN_TO_ITSELF)
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
