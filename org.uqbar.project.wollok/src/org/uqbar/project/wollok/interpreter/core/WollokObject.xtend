@@ -158,7 +158,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 	
 	// UFFF no estoy seguro de esto ya 
-	override addReference(String name, Object value) {
+	override addReference(String variable, Object value) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	

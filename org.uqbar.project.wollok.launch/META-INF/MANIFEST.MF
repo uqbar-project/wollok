@@ -26,6 +26,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/lipermi-0-4-2.jar, .
 Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.launch,
+ org.uqbar.project.wollok.launch.setup,
  org.uqbar.project.wollok.launch.io,
  org.uqbar.project.wollok.debugger.server,
  org.uqbar.project.wollok.debugger.server.rmi

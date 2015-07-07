@@ -59,8 +59,8 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			localProgramVariables.put(variableName,value)
 	}
 	
-	override addReference(String name, Object value) {
-		localProgramVariables.put(name, value)
+	override addReference(String variable, Object value) {
+		localProgramVariables.put(variable, value)
 		value
 	}
 	
