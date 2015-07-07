@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.natives
+package natives
 
 class MyNative {
 	def aNativeMethod() {

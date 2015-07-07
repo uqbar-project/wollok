@@ -220,7 +220,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		}
 	} 
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException('''Impossibel to call a constructor on anything besides a class''');
+		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
 	}
 	
 	

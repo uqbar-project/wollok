@@ -26,7 +26,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 			
-			class Prb{
+			class Prb {
 				
 			}
 

@@ -8,6 +8,9 @@ import asustables.Ninio
 import asustables.Piyamada
 import asustables.Adolescente
 
+import asistentes.*
+import actividades.*
+
 // 1)
 
 program monstersInc {

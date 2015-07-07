@@ -43,7 +43,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WObjectLiteral ele) {	'wollok-icon-object_16.png' }
 	
 	def concatResolvedType(String separator, EObject obj){
-		if(!labelExtensionResolved){
+		if(!labelExtensionResolved) {
 			labelExtension = resolveLabelExtension()
 			labelExtensionResolved = true
 		}
@@ -57,12 +57,10 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def resolveLabelExtension() {
 		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
 
-		if (configPoints.empty) {
+		if (configPoints.empty)
 			null
-		}
-		else {
+		else
 			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
-		}
 	}
 	
 	def text(WVariableDeclaration it) { 

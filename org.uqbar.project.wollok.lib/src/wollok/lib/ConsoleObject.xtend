@@ -1,3 +1,5 @@
+package wollok.lib
+
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import org.uqbar.project.wollok.interpreter.WollokInterpreter

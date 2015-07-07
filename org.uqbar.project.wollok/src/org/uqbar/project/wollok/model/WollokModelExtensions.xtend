@@ -41,7 +41,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -51,13 +50,20 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author tesonep
  */
 class WollokModelExtensions {
+	
+	def static fileName(EObject ele) {
+		ele.eResource.URI.trimFileExtension.lastSegment
+	}
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { (if (package != null) (package.name + ".") else "") + name }
+	def static fqn(WClass it) { 
+		fileName + "." + (if (package != null) (package.name + ".") else "") + name
+	}
 	def static fqn(WNamedObject it) {
-		 if(package != null) package.name + "." + name
-		 else name
+		 fileName + "." + 
+		 	if(package != null) package.name + "." + name
+		 		else name
 	}
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }

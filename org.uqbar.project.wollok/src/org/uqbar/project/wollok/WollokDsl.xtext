@@ -44,7 +44,7 @@ WPackage:
 WLibraryElement: (WPackage | WClass | WNamedObject );
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
-WReferenciable: WParameter | {WVariable} | WNamedObject;
+WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}

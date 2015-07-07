@@ -10,8 +10,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testClassWithNativeMethod() {
-		#['''package org.uqbar.project.wollok.tests.natives {
-		
+		#["natives"->'''
 			class MyNative {
 				method aNativeMethod() native
 				
@@ -19,10 +18,6 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 					return this.aNativeMethod().toUpperCase()
 				} 
 			}
-		
-		}''',
-		'''
-		import org.uqbar.project.wollok.tests.natives.MyNative
 
 		program nativeSample {
 			val obj = new MyNative()
@@ -36,8 +31,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void nativeMethodsInManyClassesInTheHierarchy() {
-		#['''package org.uqbar.project.wollok.tests.natives {
-		
+		#["natives"->'''
 			class MyNative {
 				method aNativeMethod() native
 				
@@ -49,11 +43,6 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			class ANativeSubclass extends MyNative {
 				method subclassNativeMethod() native
 			}
-		
-		}'''
-		,'''
-		import org.uqbar.project.wollok.tests.natives.MyNative
-		import org.uqbar.project.wollok.tests.natives.ANativeSubclass
 
 		program nativeSample {
 			val obj = new ANativeSubclass()
@@ -61,27 +50,32 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			this.assertEquals('Native hello message!', obj.aNativeMethod())
 			this.assertEquals('A Subclass Native Method', obj.subclassNativeMethod())
 		}
-		'''
-		].interpretPropagatingErrors
+		''']
+		.interpretPropagatingErrors
 	}
 	
 	@Test
 	def void testObjectWithNativeMethod() {
-		#['''package org.uqbar.project.wollok.tests.natives {
-		
+		#["natives"->'''
 			object aNative {
 				method aNativeMethod() native
 			}
-		
-		}'''
-		,'''
-		import org.uqbar.project.wollok.tests.natives.*
 
 		program nativeSample {
 			this.assertEquals('Native object hello message!', aNative.aNativeMethod())
 		}
-		'''
-		].interpretPropagatingErrors
+		''']
+		.interpretPropagatingErrors
 	}
 	
+	
+	@Test
+	def void testConsole() {
+		'''
+		program nativeSample {
+			console.println("Hola")
+		}
+		'''
+		.interpretPropagatingErrors
+	}
 }

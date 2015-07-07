@@ -38,7 +38,7 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void test_issue_40() {
-		#['''
+		'''
 		object pajarera {
 		    var energiaMenor = 100 
 		    var pajaros = #[pepita, pepe]
@@ -63,14 +63,11 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		        pajarera.setEnergiaMenor(25)
 		    }
 		}
-		''',
-		'''
 		program p {
 			val menor = pajarera.menorValor()
 			this.assertEquals(10, menor)
 		}
-		'''
-		].interpretPropagatingErrors
+		'''.interpretPropagatingErrors
 	}
 	
 	@Test

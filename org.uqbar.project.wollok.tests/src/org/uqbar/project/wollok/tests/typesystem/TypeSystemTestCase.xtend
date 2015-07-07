@@ -55,14 +55,13 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 	
 	@Test
 	def void testClassType() {
-		#['''
+		'''
 			class Pato {
 				method cuack() { 'cuack!' }
-			}''',
-		''' program p {
-			val pato = new Pato()
-			pato.cuack()
-		}'''].parseAndInfer.asserting [
+		 	program p {
+				val pato = new Pato()
+				pato.cuack()
+			}'''.parseAndInfer.asserting [
 			noIssues
 			assertTypeOf(classType("Pato"), 'val pato = new Pato()')
 		]

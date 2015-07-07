@@ -36,6 +36,9 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	def detect(WollokClosure pred) { wrapped.findFirst(pred.asFun) }
 	def count(WollokClosure pred) { wrapped.filter(pred.asFun).size }
 	
+	def join() { join(',') }
+	def join(String separator) { wrapped.join(separator) }
+	
 	def Object fold(Object acc, WollokClosure proc) { 
 		wrapped.fold(acc)[a,e| proc.apply(a, e)]
 	}
