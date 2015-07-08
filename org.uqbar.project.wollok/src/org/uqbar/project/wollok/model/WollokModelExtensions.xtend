@@ -143,7 +143,7 @@ class WollokModelExtensions {
 	def static isValidConstructorCall(WConstructorCall c) {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
-
+	
 	def static numberOfParameters(WConstructorCall c) { if(c.arguments == null) 0 else c.arguments.size }
 
 	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
@@ -234,5 +234,23 @@ class WollokModelExtensions {
 
 	def static dispatch existsMoreThanOne(Iterable<?> exps, WNamed named) {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
+	}
+	
+	def static dispatch boolean isInConstructor(EObject obj){
+		if(obj.eContainer == null)
+			false
+		else obj.eContainer.inConstructor
+	}
+	
+	def static dispatch boolean isInConstructor(WConstructor obj){
+		true
+	}
+
+	def static dispatch boolean isInConstructor(WClass obj){
+		false
+	}
+
+	def static dispatch boolean isInConstructor(WMethodDeclaration obj){
+		false
 	}
 }

@@ -39,9 +39,9 @@ import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
+import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -213,7 +213,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotAssignToItself(WVariableDeclaration a) {
+	def cannotAssignToItselfInVariableDeclaration(WVariableDeclaration a) {
 		if(!(a.right instanceof WVariableReference))
 			return
 			
@@ -381,6 +381,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				report(WollokDslValidator_NO_EXPRESSION_AFTER_RETURN, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))				
 			]
 		}
+	}
+	
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noReturnStatementInConstructor(WReturnExpression it){
+		if(it.inConstructor)
+			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)				
 	}
 	
 	// ******************************	
