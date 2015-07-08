@@ -66,3 +66,25 @@ class UnusedVariables {
 	}
 	
 }
+
+object withUsedVariables {
+	var x
+	
+	method doSomething(){
+		x = 1
+	}
+}
+
+
+class WithUsedVariablesClass {
+	var x
+	var y
+	
+	new(asd){
+		y = asd
+	}
+	
+	method doSomething(){
+		x = 1
+	}
+}
