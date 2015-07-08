@@ -25,5 +25,4 @@ class WollokProjectCreator extends AbstractWollokProjectCreator {
 			add(WollokConstants.NATURE_ID)
 		]
 	}
-	
 }

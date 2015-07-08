@@ -15,7 +15,6 @@ object ex {
 	}
 }
 «ENDFILE»
-
 «FILE "src/log4j.properties"-»
 log4j.rootLogger=WARN, stdout
 
@@ -30,3 +29,4 @@ log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
 «ENDFILE»
 
 «ENDDEFINE»
+

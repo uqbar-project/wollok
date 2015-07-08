@@ -11,6 +11,7 @@ import org.eclipse.xtext.ui.editor.actions.IActionContributor;
 import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.eclipse.xtext.ui.util.PluginProjectFactory;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
@@ -21,6 +22,7 @@ import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvid
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator;
+import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory;
 
 import com.google.inject.Binder;
 import com.google.inject.Provider;
@@ -69,5 +71,9 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 
 	public Class<? extends WollokManifestFinder> bindWollokManifestFinder(){
 		return BasicWollokManifestFinder.class;
+	}
+	
+	public Class<? extends PluginProjectFactory> bindPluginProjectFactory(){
+		return WollokProjectFactory.class;
 	}
 }
