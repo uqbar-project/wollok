@@ -1,0 +1,18 @@
+package org.uqbar.project.wollok.ui.editor.model
+
+import org.eclipse.core.runtime.CoreException
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.handlers.IHandlerService
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider
+
+class WollokDocumentProvider extends XtextDocumentProvider {
+	val String XTEXT_FORMAT_ACTION_COMMAND_ID = "org.eclipse.xtext.ui.FormatAction";
+
+	override doSaveDocument(IProgressMonitor monitor, Object element, IDocument document, boolean overwrite) throws CoreException {
+		val service = PlatformUI.getWorkbench().getService(IHandlerService) as IHandlerService
+		service.executeCommand(XTEXT_FORMAT_ACTION_COMMAND_ID, null)
+		super.doSaveDocument(monitor, element, document, overwrite)
+	}
+}

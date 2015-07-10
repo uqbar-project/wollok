@@ -453,7 +453,7 @@
   </extension>
   <extension point="org.eclipse.ui.editors.documentProviders">
     <provider id="org.uqbar.project.wollok.WollokDsl.editors.documentProviders"
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider"
             extensions="wpgm,wlk,wtest">
     </provider>
   </extension>
