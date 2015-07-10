@@ -14,7 +14,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.zest.feature.group" version="1.5.101.201408150207"/>
-<repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases/3.9.101_gef-maintenance_810/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140925-0400"/>
