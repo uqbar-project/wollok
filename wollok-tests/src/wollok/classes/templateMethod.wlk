@@ -1,5 +1,3 @@
-package templateMethod {
-
 class Golondrina {
 	var energia = 100
 
@@ -22,4 +20,3 @@ class NoSeCansa extends Golondrina {
 	}
 }
 
-}

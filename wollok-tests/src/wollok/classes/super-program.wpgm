@@ -1,4 +1,4 @@
-import zuper.*
+import zuper.zuper.*
 
 program zuper {
 	

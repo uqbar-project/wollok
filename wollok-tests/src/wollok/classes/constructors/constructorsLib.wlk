@@ -1,5 +1,3 @@
-package constructorsLib {
-	
 class Direccion {
 	var calle = ""
 	var numero = 0
@@ -22,4 +20,3 @@ class Direccion {
 	
 //	new Direccion { calle = "Humberto 1mo", numero = 1080, a = 23 }
 	
-}

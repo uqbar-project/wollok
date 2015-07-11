@@ -1,4 +1,4 @@
-package wollok.classes.natives {
+package classes.natives {
 
 	class MyNative {
 		method aNativeMethod() native

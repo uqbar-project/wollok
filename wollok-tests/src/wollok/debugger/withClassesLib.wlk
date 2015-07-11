@@ -1,5 +1,3 @@
-package debuggerWithClasses {
-
 class GuybrushTreepWood {
 	method fightSwordMaster() {
 		var a = "Yo Soy Cola, "
@@ -8,4 +6,3 @@ class GuybrushTreepWood {
 	}
 }
 
-}

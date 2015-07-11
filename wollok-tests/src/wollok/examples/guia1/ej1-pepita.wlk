@@ -3,7 +3,7 @@ object pepita {
 	var energia = 100
 	var ubicacion = 0
 	
-	method energia() = ubigacion
+	method energia() = energia
 	
 	method volar(km) {
 		console.println("")
