@@ -85,7 +85,7 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.WollokRootPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl"
             name="Wollok">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
