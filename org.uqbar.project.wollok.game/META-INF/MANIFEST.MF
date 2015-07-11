@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Game
+Bundle-SymbolicName: org.uqbar.project.wollok.game
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro
+Bundle-ClassPath: target/dependency/gdx-1.6.0.jar,
+ target/dependency/gdx-backend-lwjgl-1.6.0.jar,
+ target/dependency/gdx-platform-1.6.0-natives-desktop.jar,
+ target/dependency/jinput-2.0.5.jar,
+ target/dependency/jinput-platform-2.0.5-natives-linux.jar,
+ target/dependency/jinput-platform-2.0.5-natives-osx.jar,
+ target/dependency/jinput-platform-2.0.5-natives-windows.jar,
+ target/dependency/jlayer-1.0.1-gdx.jar,
+ target/dependency/jorbis-0.0.17.jar,
+ target/dependency/jutils-1.0.0.jar,
+ target/dependency/lwjgl_util-2.9.2.jar,
+ target/dependency/lwjgl-2.9.2.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-linux.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-osx.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-windows.jar
+

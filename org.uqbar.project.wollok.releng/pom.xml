@@ -11,7 +11,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<modules>
 		<!-- targetplatform, later enabled by target-platform-configuration -->
 		<module>../org.uqbar.project.wollok.targetplatform</module>
-	
+
 		<module>../org.uqbar.project.wollok</module>
 		<module>../org.uqbar.project.wollok.lib</module>
 		<module>../org.uqbar.project.wollok.launch</module>
@@ -24,6 +24,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>../org.uqbar.project.wollok.sdk</module>
 		<module>../org.uqbar.project.wollok.product</module>
 		<module>../org.uqbar.project.wollok.updatesite</module>
+		<module>../org.uqbar.project.wollok.game</module>
+		<module>assemble-product</module>
 	</modules>
 
 	<properties>
@@ -31,10 +33,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.7.3</xtext.version>
 		<xsemantics-version>1.7.2</xsemantics-version>
-		
+
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
-	
+
 	<issueManagement>
     		 <system>GitHub</system>
 		<url>https://github.com/uqbar-project/wollok/issues</url>
@@ -49,7 +51,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
             <unsubscribe>wollok-dev+unsubscribe@googlegroups.com</unsubscribe>
         </mailingList>
     </mailingLists>
-  	
+
   	<scm>
 		<connection>scm:git:${scm.gitServer}/wollok</connection>
 		<developerConnection>scm:git:${scm.gitServer}/wollok</developerConnection>
@@ -68,7 +70,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<id>Xtext Update Site</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/maintenance/</url>
-			<!-- 2.8 
+			<!-- 2.8
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/</url>
 			-->
 		</repository>
@@ -82,7 +84,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<layout>p2</layout>
 			<url>http://www.xpect-tests.org/updatesite/nightly/</url>
 		</repository>
-		
+
 		<!-- XSemantics -->
 		<repository>
 			<id>XSemantics Update Site</id>
@@ -91,7 +93,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		</repository>
 		<!-- /XSemantics -->
 	</repositories>
-	
+
 	<pluginRepositories>
 	 <!-- XSemantics -->
 	 <pluginRepository>
@@ -100,12 +102,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	 </pluginRepository>
 	 <!-- /XSemantics -->
 	</pluginRepositories>
-	
+
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!-- xtend-maven-plugin is in pluginManagement instead of in plugins 
-					so that it doesn't run before the exec-maven-plugin's *.mwe2 gen; this way 
+				<!-- xtend-maven-plugin is in pluginManagement instead of in plugins
+					so that it doesn't run before the exec-maven-plugin's *.mwe2 gen; this way
 					we can list it after. -->
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
@@ -173,7 +175,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 											<exclude>.gitignore</exclude>
 										</excludes>
 									</fileset>
-									<!-- 
+									<!--
 									<fileset>
 										<directory>${basedir}/xsemantics-gen</directory>
 										<includes>
@@ -189,7 +191,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						</execution>
 					</executions>
 				</plugin>
-				
+
 				<!-- site -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -214,7 +216,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>2.8</version>
 				</plugin>
-				
+
 				<!-- /site -->
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
@@ -249,7 +251,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		</pluginManagement>
 
 		<plugins>
-		
+
 			<!-- SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
 			<plugin>
 			  <groupId>org.apache.maven.plugins</groupId>
@@ -261,28 +263,21 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			    <skip>true</skip>
 			  </configuration>
 			</plugin>
-			<!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
 			<!-- avoid checking maven version vs manifest version (because having the ".qualifier" makes it fail -->
 			<plugin>
-	            <groupId>org.eclipse.tycho</groupId>
-	            <artifactId>tycho-packaging-plugin</artifactId>
-	            <version>${tycho-version}</version>
-	            <configuration>
-	                <strictVersions>false</strictVersions>
-	            </configuration>
-	        </plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-packaging-plugin</artifactId>
+          <version>${tycho-version}</version>
+          <configuration>
+              <strictVersions>false</strictVersions>
+          </configuration>
+      </plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<resolver>p2</resolver>
+					<pomDependencies>consider</pomDependencies>
 					<!-- pomDependencies>consider</pomDependencies -->
 					<environments>
 						<environment>
@@ -325,7 +320,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</target>
 				</configuration>
 			</plugin>
-			
+
 			<!-- code coverage -->
 			<plugin>
 			    <groupId>org.jacoco</groupId>
@@ -349,7 +344,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	            <groupId>org.eluder.coveralls</groupId>
 	            <artifactId>coveralls-maven-plugin</artifactId>
 	             <version>3.0.1</version>
-	
+
 	            <configuration>
 	                <coberturaReports>
 	                    <coberturaReport>
@@ -362,9 +357,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	            </configuration>
 	        </plugin>
 	        <!-- code coverage -->
-	        
+
 		</plugins>
-		
+
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -372,7 +367,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<version>1.0-beta-6</version>
 			</extension>
 		</extensions>
-		
+
 	</build>
 
 	<reporting>
@@ -396,7 +391,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			</plugin>
 		</plugins>
 	</reporting>
-	
+
 	<developers>
 		<developer>
 			<id>npasserini</id>
@@ -414,5 +409,5 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<email>tesonep@gmail.com</email>
 		</developer>
 	</developers>
-	
+
 </project>
