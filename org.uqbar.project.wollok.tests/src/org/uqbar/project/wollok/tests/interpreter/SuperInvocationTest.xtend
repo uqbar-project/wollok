@@ -36,7 +36,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 			program p {
 				val pepona = new SeCansaMucho()
 				pepona.volar(50)
-				this.assert(pepona.energia() == 0) // Gastó el doble de energia
+				assert.that(pepona.energia() == 0) // Gastó el doble de energia
 			}
 		'''.interpretPropagatingErrors
 	}

@@ -44,7 +44,7 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	
 	static def dispatch Iterable<File> listWollokPrograms(File it){
 		if(file){
-			if(name.endsWith(".wlk") || name.endsWith(".wpgm"))
+			if(name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest"))
 				#[it]
 			else
 				#[]

@@ -19,9 +19,9 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 				}
 
 				program namedObjects{
-					this.assertEquals(0, pepita.energyLevel())
+					assert.equals(0, pepita.energyLevel())
 					pepita.addEnergy(10)
-					this.assertEquals(10, pepita.energyLevel())
+					assert.equals(10, pepita.energyLevel())
 				}
 			'''
 		].interpretPropagatingErrors
@@ -74,7 +74,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 			
 			program xxx{
 				pp.unMethod()
-				this.assertEquals(pepita, pp.getPs().get(0))
+				assert.equals(pepita, pp.getPs().get(0))
 			}
 		'''.interpretPropagatingErrors
 	}

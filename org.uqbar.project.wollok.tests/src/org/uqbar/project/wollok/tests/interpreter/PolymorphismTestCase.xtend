@@ -32,7 +32,7 @@ class PolymorphismTestCase extends AbstractWollokInterpreterTestCase {
 
 			pepona.comer(alpiste)
 			
-			this.assert(105 == pepona.energia())
+			assert.that(105 == pepona.energia())
 		}
 		'''.interpretPropagatingErrors
 	}

@@ -17,12 +17,12 @@ val pepin = object {
 	}
 }
 
-this.assert(pepin.altura() == 1.4)
+assert.that(pepin.altura() == 1.4)
 
 pepin.crecer(0.1)
-this.assert(pepin.altura() == 1.5)
+assert.that(pepin.altura() == 1.5)
 
 pepin.ponerseZancos()
-this.assert(pepin.altura() == 1.7)
+assert.that(pepin.altura() == 1.7)
 
 }

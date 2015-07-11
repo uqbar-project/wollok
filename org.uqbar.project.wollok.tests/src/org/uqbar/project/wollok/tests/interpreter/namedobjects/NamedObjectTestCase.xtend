@@ -28,7 +28,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			pp.unMethod()
 			
-			this.assertEquals(pepita, pp.getPs().get(0))
+			assert.equals(pepita, pp.getPs().get(0))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -44,12 +44,12 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			} 
 			
-			this.assert(33 == o.getN())
+			assert.that(33 == o.getN())
 			
 			// change N
 			n = 34
 			
-			this.assert(34 == o.getN())
+			assert.that(34 == o.getN())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -68,7 +68,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 				
 				val o = new Pepe() 
 				
-				this.assert(33 == o.getN())
+				assert.that(33 == o.getN())
 			}'''.interpretPropagatingErrors
 			fail("Linking should have failed, 'n' from class Pepe shoudln't have been resolved !")
 		}

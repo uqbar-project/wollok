@@ -130,7 +130,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				catch e : MyException
 					result = 3
 					
-				this.assert(3 == result)
+				assert.that(3 == result)
 				}
 		'''.interpretPropagatingErrors
 	}
@@ -153,7 +153,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					result = 3
 				catch e : MyException
 					result = 2
-				this.assert(3 == result)
+				assert.that(3 == result)
 			}
 		'''.interpretPropagatingErrors
 	}

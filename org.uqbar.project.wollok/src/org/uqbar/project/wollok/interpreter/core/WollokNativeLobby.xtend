@@ -81,20 +81,4 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		value
 	}
 
-	// ********************************************************************************************
-	// ** Assertions
-	// ********************************************************************************************
-
-	@NativeMessage("assert")
-	def assertMethod(Boolean value) {
-		if (!value) throw new AssertionFailed("Value was not true")
-	}
-	
-	def assertFalse(Boolean value) {
-		if (value) throw new AssertionFailed("Value was not false")
-	}
-	
-	def assertEquals(Object a, Object b) {
-		if (!a.wollokEquals(b)) throw new AssertionFailed('''Expected [«a»] but found [«b»]''')
-	}
 }

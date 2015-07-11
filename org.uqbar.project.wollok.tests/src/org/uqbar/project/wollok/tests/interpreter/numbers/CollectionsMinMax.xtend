@@ -23,7 +23,7 @@ class CollectionsMinMax extends AbstractWollokInterpreterTestCase {
 				import objs.*
 			
 				program a {
-					this.assertEquals(x1, #[x1, x2, x3].min[ o | o.value()])
+					assert.equals(x1, #[x1, x2, x3].min[ o | o.value()])
 				}
 			'''
 		].interpretPropagatingErrors
@@ -46,7 +46,7 @@ class CollectionsMinMax extends AbstractWollokInterpreterTestCase {
 			"pgm" -> '''
 				import objs.*
 				program a {
-					this.assertEquals(x3, #[x1, x2, x3].max[ o | o.value()])
+					assert.equals(x3, #[x1, x2, x3].max[ o | o.value()])
 				}
 			'''
 		].interpretPropagatingErrors

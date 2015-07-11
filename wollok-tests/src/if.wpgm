@@ -11,14 +11,14 @@ program ifs {
 	val number = 2
 	val oddOrEven = if (number % 2 == 0) "even" else "odd"
 	
-	this.assert("even" == oddOrEven)
+	assert.that("even" == oddOrEven)
 	
-	this.assert("odd" == if (3 % 2 == 0) "even" else "odd")
+	assert.that("odd" == if (3 % 2 == 0) "even" else "odd")
 	
 	// now in a method
 	
 	val s = new S()
 	
-	this.assert("even" == s.whatIf(2))
-	this.assert("odd" == s.whatIf(3))
+	assert.that("even" == s.whatIf(2))
+	assert.that("odd" == s.whatIf(3))
 }

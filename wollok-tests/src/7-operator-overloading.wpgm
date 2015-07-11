@@ -9,6 +9,6 @@ val sumable = object {
 }
 
 this.println(sumable + 15)
-this.assert(sumable + 15 == 30)
+assert.that(sumable + 15 == 30)
 
 }

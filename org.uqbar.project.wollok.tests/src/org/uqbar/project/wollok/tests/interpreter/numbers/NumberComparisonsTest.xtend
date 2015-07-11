@@ -14,69 +14,69 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameters(name="{0}")
 	static def Iterable<Object[]> data() {
 		'''
-			assert(2 > 1)
-			assertFalse(1 > 1)
-			assertFalse(1 > 2)
+			that(2 > 1)
+			notThat(1 > 1)
+			notThat(1 > 2)
 
-			assert(2 >= 1)
-			assert(1 >= 1)
-			assertFalse(1 >= 2)
+			that(2 >= 1)
+			that(1 >= 1)
+			notThat(1 >= 2)
 
-			assertFalse(2 < 1)
-			assertFalse(1 < 1)
-			assert(1 < 2)
+			notThat(2 < 1)
+			notThat(1 < 1)
+			that(1 < 2)
 
-			assertFalse(2 <= 1)
-			assert(1 <= 1)
-			assert(1 <= 2)
+			notThat(2 <= 1)
+			that(1 <= 1)
+			that(1 <= 2)
 			
-			assert(2 > 1.0)
-			assertFalse(1 > 1.0)
-			assertFalse(1 > 2.0)
+			that(2 > 1.0)
+			notThat(1 > 1.0)
+			notThat(1 > 2.0)
 
-			assert(2 >= 1.0)
-			assert(1 >= 1.0)
-			assertFalse(1 >= 2.0)
+			that(2 >= 1.0)
+			that(1 >= 1.0)
+			notThat(1 >= 2.0)
 
-			assertFalse(2 < 1.0)
-			assertFalse(1 < 1.0)
-			assert(1 < 2.0)
+			notThat(2 < 1.0)
+			notThat(1 < 1.0)
+			that(1 < 2.0)
 
-			assertFalse(2 <= 1.0)
-			assert(1 <= 1.0)
-			assert(1 <= 2.0)
+			notThat(2 <= 1.0)
+			that(1 <= 1.0)
+			that(1 <= 2.0)
 			
-			assert(2.0 > 1)
-			assertFalse(1.0 > 1)
-			assertFalse(1.0 > 2)
+			that(2.0 > 1)
+			notThat(1.0 > 1)
+			notThat(1.0 > 2)
 
-			assert(2.0 >= 1)
-			assert(1.0 >= 1)
-			assertFalse(1.0 >= 2)
+			that(2.0 >= 1)
+			that(1.0 >= 1)
+			notThat(1.0 >= 2)
 
-			assertFalse(2.0 < 1)
-			assertFalse(1.0 < 1)
-			assert(1.0 < 2)
+			notThat(2.0 < 1)
+			notThat(1.0 < 1)
+			that(1.0 < 2)
 
-			assertFalse(2.0 <= 1)
-			assert(1.0 <= 1)
-			assert(1.0 <= 2)
+			notThat(2.0 <= 1)
+			that(1.0 <= 1)
+			that(1.0 <= 2)
 			
-			assert(2.0 > 1.0)
-			assertFalse(1.0 > 1.0)
-			assertFalse(1.0 > 2.0)
+			that(2.0 > 1.0)
+			notThat(1.0 > 1.0)
+			notThat(1.0 > 2.0)
 
-			assert(2.0 >= 1.0)
-			assert(1.0 >= 1.0)
-			assertFalse(1.0 >= 2.0)
+			that(2.0 >= 1.0)
+			that(1.0 >= 1.0)
+			notThat(1.0 >= 2.0)
 
-			assertFalse(2.0 < 1.0)
-			assertFalse(1.0 < 1.0)
-			assert(1.0 < 2.0)
+			notThat(2.0 < 1.0)
+			notThat(1.0 < 1.0)
+			that(1.0 < 2.0)
 
-			assertFalse(2.0 <= 1.0)
-			assert(1.0 <= 1.0)
-			assert(1.0 <= 2.0)
+			notThat(2.0 <= 1.0)
+			that(1.0 <= 1.0)
+			that(1.0 <= 2.0)
 			
 		'''.lines.asParameters
 	}
@@ -84,5 +84,5 @@ class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void runAssertion() { assertion.interpretPropagatingErrors }
 
-	def assertion() ''' program p { this.«expression» } '''
+	def assertion() ''' program p { assert.«expression» } '''
 }

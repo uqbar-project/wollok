@@ -16,12 +16,12 @@ this.println(bag)
 // ***************************
 
 // size (a forwarded message to java.util.List)
-this.assertEquals(3, numbers.size())
-this.assert(numbers.contains(23))
+assert.equals(3, numbers.size())
+assert.that(numbers.contains(23))
 this.assertFalse(numbers.contains(1))
 
 // forAll
-this.assert(#[20, 22, 34].forAll([n | n > 18]))
+assert.that(#[20, 22, 34].forAll([n | n > 18]))
 this.assertFalse(#[20, 22, 34].forAll([n | n > 30]))
 
 // forEach
@@ -47,17 +47,17 @@ val vaca2 = object {
 val vacas = #[vaca1, vaca2]
 
 vacas.forEach[v | v.engordar(2)]
-this.assert(vacas.forAll[v | v.peso() == 1002])
+assert.that(vacas.forAll[v | v.peso() == 1002])
 
 // map
 val mapped = vacas.map[v | v.peso()]
-this.assert(mapped.forAll[p | p == 1002])
+assert.that(mapped.forAll[p | p == 1002])
 
 
 // filter
 val r = #[10, 20, 30, 40, 50].filter[n| n > 30]
-this.assert(r.size() == 2)
-this.assert(r.contains(40))
-this.assert(r.contains(50))
+assert.that(r.size() == 2)
+assert.that(r.contains(40))
+assert.that(r.contains(50))
 
 }

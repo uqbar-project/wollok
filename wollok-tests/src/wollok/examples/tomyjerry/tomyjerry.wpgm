@@ -34,7 +34,7 @@ program tomYJerry {
 		}
 	}
 	
-	this.assert(tom.puedeAtraparA(jerry))
+	assert.that(tom.puedeAtraparA(jerry))
 	tom.correA(jerry)
 
 	tom.comeA(jerry)

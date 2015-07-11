@@ -17,11 +17,11 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 			
 			var sum = 0
 			
-			this.assert(range != null)
+			assert.that(range != null)
 			
 			range.forEach [ i | sum += i ]
 			
-			this.assertEquals(55, sum)
+			assert.equals(55, sum)
 		}
 		'''.interpretPropagatingErrors
 	}

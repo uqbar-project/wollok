@@ -14,7 +14,7 @@ class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 1
 			n++
 			
-			this.assert(n == 2) 
+			assert.that(n == 2) 
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -24,7 +24,7 @@ class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 2.1
 			n++
 			
-			this.assert(n == 3.1)
+			assert.that(n == 3.1)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -34,7 +34,7 @@ class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 2
 			n--
 			
-			this.assert(n == 1)
+			assert.that(n == 1)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -44,7 +44,7 @@ class PostFixOperationTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 2.0
 			n--
 			
-			this.assert(n == 1.0)
+			assert.that(n == 1.0)
 		}'''.interpretPropagatingErrors
 	}
 }

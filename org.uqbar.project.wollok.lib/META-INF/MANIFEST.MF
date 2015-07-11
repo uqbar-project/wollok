@@ -9,4 +9,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: .,
- org.uqbar.project.wollok.lib
+ org.uqbar.project.wollok.lib,
+ wollok.lang,
+ wollok.lib

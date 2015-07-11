@@ -33,7 +33,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			program a {
 				val nombre = mostaza.entrenar()
 				
-				this.assertEquals('pepita', nombre)
+				assert.equals('pepita', nombre)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -64,7 +64,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			program a {
 				val nombre = mostaza.entrenar()
 				
-				this.assertEquals('pepita,pepona', nombre)
+				assert.equals('pepita,pepona', nombre)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -83,7 +83,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.*
 			program a {
-				this.assertEquals('pepita,pepona', #[pepita, pepona].map[p| p.getNombre()].join())
+				assert.equals('pepita,pepona', #[pepita, pepona].map[p| p.getNombre()].join())
 			}
 		'''
 		].interpretPropagatingErrors
@@ -106,8 +106,8 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			import aves.nadadoras.patitoFeo
 			import aves.pepona
 			program a {
-				this.assertEquals('Patito Feo', patitoFeo.getNombre())
-				this.assertEquals('pepona', pepona.getNombre())
+				assert.equals('Patito Feo', patitoFeo.getNombre())
+				assert.equals('pepona', pepona.getNombre())
 			}
 		'''
 		].interpretPropagatingErrors
@@ -176,7 +176,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		''',
 		'programa' -> '''
 			program a {
-				this.assert(new aves.Golondrina() != null)
+				assert.that(new aves.Golondrina() != null)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -191,7 +191,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.Golondrina
 			program a {
-				this.assert(new Golondrina() != null)
+				assert.that(new Golondrina() != null)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -206,7 +206,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.*
 			program a {
-				this.assert(new Golondrina() != null)
+				assert.that(new Golondrina() != null)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -223,7 +223,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.nadadoras.Pato
 			program a {
-				this.assert(new Pato() != null)
+				assert.that(new Pato() != null)
 			}
 		'''
 		].interpretPropagatingErrors
@@ -240,7 +240,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.nadadoras.*
 			program a {
-				this.assert(new Pato() != null)
+				assert.that(new Pato() != null)
 			}
 		'''
 		].interpretPropagatingErrors

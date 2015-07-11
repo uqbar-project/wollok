@@ -16,7 +16,7 @@ class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 1
 			n += 1
 			
-			this.assert(n == 2) 
+			assert.that(n == 2) 
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -26,7 +26,7 @@ class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 2
 			n *= 3
 			
-			this.assert(n == 6)
+			assert.that(n == 6)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -36,7 +36,7 @@ class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 			var n = 2
 			n -= 1
 			
-			this.assert(n == 1)
+			assert.that(n == 1)
 		}'''.interpretPropagatingErrors
 	}
 	

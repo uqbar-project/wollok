@@ -55,9 +55,11 @@ package lib {
 		method readInt() native
 	}
 	
-	object tester {
-		method assert(value) native
-		method assertEquals(expected, actual) native
+	object assert {
+		method that(value) native
+		method notThat(value) native
+		method equals(expected, actual) native
+		method notEquals(expected, actual) native
 	}
 	
 }

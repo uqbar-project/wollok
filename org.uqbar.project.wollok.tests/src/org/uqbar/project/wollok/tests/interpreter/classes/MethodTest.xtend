@@ -19,8 +19,8 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 		}
 		program p {
 			val pepona = new Golondrina()
-			this.assertEquals(pepona.energia(), 100)
-			this.assertEquals(pepona.capacidadDeVuelo(), 10)
+			assert.equals(pepona.energia(), 100)
+			assert.equals(pepona.capacidadDeVuelo(), 10)
 		}'''.interpretPropagatingErrors
 	}
 	

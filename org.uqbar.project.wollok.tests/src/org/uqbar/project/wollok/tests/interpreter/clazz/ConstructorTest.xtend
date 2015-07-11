@@ -48,9 +48,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		program t {
 			val c = new C (1,2,3)
-			this.assertEquals(1, c.getA())
-			this.assertEquals(2, c.getB())
-			this.assertEquals(3, c.getC())
+			assert.equals(1, c.getA())
+			assert.equals(2, c.getB())
+			assert.equals(3, c.getC())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -73,12 +73,12 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		program t {
 			val p1 = new Point(1,2)
-			this.assertEquals(1, p1.getX())
-			this.assertEquals(2, p1.getY())
+			assert.equals(1, p1.getX())
+			assert.equals(2, p1.getY())
 
 			val p2 = new Point()
-			this.assertEquals(20, p2.getX())
-			this.assertEquals(20, p2.getY())
+			assert.equals(20, p2.getX())
+			assert.equals(20, p2.getY())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -120,8 +120,8 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				val p = new Point()
-				this.assertEquals(10, p.getX())
-				this.assertEquals(15, p.getY())
+				assert.equals(10, p.getX())
+				assert.equals(15, p.getY())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -142,8 +142,8 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			program t {
 				val p = new Point()
 				this.println(p)
-				this.assertEquals(10, p.getX())
-				this.assertEquals(15, p.getY())
+				assert.equals(10, p.getX())
+				assert.equals(15, p.getY())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -162,7 +162,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				val o = new SubClass(20)
-				this.assertEquals(21, o.getSuperX())
+				assert.equals(21, o.getSuperX())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -184,7 +184,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				val o = new C(20)
-				this.assertEquals(41, o.getX())
+				assert.equals(41, o.getX())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -223,8 +223,8 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			
 			program t {
 				val o = new C(10, 20)
-				this.assertEquals(20, o.getX())
-				this.assertEquals(30, o.getY())
+				assert.equals(20, o.getX())
+				assert.equals(30, o.getY())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -245,7 +245,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class SubClass extends SuperClass { }
 			program t {
 				val o = new SubClass()
-				this.assertEquals(20, o.getSuperX())
+				assert.equals(20, o.getSuperX())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -275,9 +275,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				val o = new SubClass()
-				this.assertEquals(10, o.getSubX())
-				this.assertEquals(40, o.getSuperX())
-				this.assertEquals(30, o.getOtherX())
+				assert.equals(10, o.getSubX())
+				assert.equals(40, o.getSuperX())
+				assert.equals(30, o.getOtherX())
 			}
 			'''.interpretPropagatingErrors
 	}
@@ -303,8 +303,8 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class D extends C {}
 			program t {
 				val o = new D()
-				this.assertEquals(20, o.getX())
-				this.assertEquals(10, o.getC1())
+				assert.equals(20, o.getX())
+				assert.equals(10, o.getC1())
 			}
 			'''.interpretPropagatingErrors
 	}

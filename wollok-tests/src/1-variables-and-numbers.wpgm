@@ -16,41 +16,41 @@ program variablesAndNumbers {
 	 * asdasd
 	 */
 	
-	this.assert(b == 24)
+	assert.that(b == 24)
 	
-	this.assert(10 - 5 == 5)
-	this.assert(10 * a == 230)
-	this.assert(100 / 10 == 10)
-	this.assert(100 % 10 == 0)
-	this.assert(2 ** 3 == 8.0)
-	this.assertEquals(8.0, 2**3)
+	assert.that(10 - 5 == 5)
+	assert.that(10 * a == 230)
+	assert.that(100 / 10 == 10)
+	assert.that(100 % 10 == 0)
+	assert.that(2 ** 3 == 8.0)
+	assert.equals(8.0, 2**3)
 	
-	this.assert(2 * 2.0 == 2.0 * 2)
-	this.assert(2 + 2.0 == 2.0 + 2)
+	assert.that(2 * 2.0 == 2.0 * 2)
+	assert.that(2 + 2.0 == 2.0 + 2)
 	
-	this.assert("Hola" * 3 == "HolaHolaHola")
-	this.assert(3 * "Hola" == "HolaHolaHola")
+	assert.that("Hola" * 3 == "HolaHolaHola")
+	assert.that(3 * "Hola" == "HolaHolaHola")
 	
-	this.assertEquals(0 - 1, -1)
-	this.assertEquals(0 - 4, -4)
+	assert.equals(0 - 1, -1)
+	assert.equals(0 - 4, -4)
 	
-	this.assert("Hola Mundo" - 6 == "Hola")
-	this.assert("Juan Jose Juan Pepe" - "Juan" == " Jose  Pepe")
+	assert.that("Hola Mundo" - 6 == "Hola")
+	assert.that("Juan Jose Juan Pepe" - "Juan" == " Jose  Pepe")
 	
 	var d = 1
 	d++
-	this.assertEquals(2, d)
+	assert.equals(2, d)
 	
 	d--
-	this.assertEquals(1, d)
+	assert.equals(1, d)
 	
 	d += 3
-	this.assertEquals(4, d)
+	assert.equals(4, d)
 	
 	d -= 1
-	this.assertEquals(3, d)
+	assert.equals(3, d)
 	
 	d *= 2
-	this.assertEquals(6, d)
+	assert.equals(6, d)
 
 }

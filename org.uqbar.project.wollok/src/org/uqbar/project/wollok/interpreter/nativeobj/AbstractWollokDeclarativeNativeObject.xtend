@@ -18,7 +18,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	WollokInterpreterAccess interpreterAccess = new WollokInterpreterAccess
 
 	override call(String message, Object... parameters) {
-		val method = getMethod(message)
+		val method = getMethod(message, parameters)
 		if (method == null)
 			doesNotUnderstand(message, parameters).asWollokObject
 		else
@@ -30,10 +30,10 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 			}
 	}
 	
-	def getMethod(String message){
-		var method = this.class.methods.findFirst[name == message]
+	def getMethod(String message, Object... parameters){
+		var method = this.class.methods.findFirst[handlesMessage(message)]
 		if (method == null) 
-			method = this.class.methods.findFirst[handlesMessage(message)]
+			method = this.class.methods.findFirst[name == message]
 		method
 	}
 

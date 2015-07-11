@@ -22,9 +22,9 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 		program nativeSample {
 			val obj = new MyNative()
 			val response = obj.aNativeMethod()
-			this.assertEquals('Native hello message!', response)
+			assert.equals('Native hello message!', response)
 			
-			this.assertEquals('NATIVE HELLO MESSAGE!', obj.uppercased())
+			assert.equals('NATIVE HELLO MESSAGE!', obj.uppercased())
 		}
 		'''].interpretPropagatingErrors
 	}
@@ -47,8 +47,8 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 		program nativeSample {
 			val obj = new ANativeSubclass()
 			
-			this.assertEquals('Native hello message!', obj.aNativeMethod())
-			this.assertEquals('A Subclass Native Method', obj.subclassNativeMethod())
+			assert.equals('Native hello message!', obj.aNativeMethod())
+			assert.equals('A Subclass Native Method', obj.subclassNativeMethod())
 		}
 		''']
 		.interpretPropagatingErrors
@@ -62,7 +62,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 
 		program nativeSample {
-			this.assertEquals('Native object hello message!', aNative.aNativeMethod())
+			assert.equals('Native object hello message!', aNative.aNativeMethod())
 		}
 		''']
 		.interpretPropagatingErrors

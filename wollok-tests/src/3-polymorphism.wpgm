@@ -19,6 +19,6 @@ pepona.comer(alpiste)
 // Comento porque si no da un error al correr WollokExamplesTests
 // pepona.comer(23) 
 
-this.assert(pepona.energia() == 105)
+assert.that(pepona.energia() == 105)
 
 }

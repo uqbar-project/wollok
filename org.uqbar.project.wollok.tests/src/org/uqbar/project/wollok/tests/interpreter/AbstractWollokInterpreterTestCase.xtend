@@ -36,10 +36,10 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Before
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
-		
-		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok.wlk", true))
-		resource.load(new HashMap())
-		resourceSet.getResources().add(resource);
+
+	//		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok.wlk", true))
+	//		resource.load(new HashMap())
+	//		resourceSet.getResources().add(resource);
 	}
 
 	@After
@@ -48,25 +48,25 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpret(String... programAsString) {
-		this.interpret(false, programAsString.map[null->it])
+		this.interpret(false, programAsString.map[null -> it])
 	}
-	
+
 	def interpretPropagatingErrors(CharSequence programAsString) {
 		interpretPropagatingErrors(newArrayList(null as String -> programAsString.toString))
 	}
 
 	def interpretPropagatingErrors(String... programAsString) {
-		interpretPropagatingErrors(programAsString.map[null->it])
+		interpretPropagatingErrors(programAsString.map[null -> it])
 	}
-	
+
 	def interpretPropagatingErrors(Pair<String, String>... programAsString) {
 		this.interpret(true, programAsString)
 	}
-	
+
 	def interpretPropagatingErrorsWithoutStaticChecks(String... programAsString) {
 		interpretPropagatingErrorsWithoutStaticChecks(programAsString.map[new Pair(null, it)])
 	}
-	
+
 	def interpretPropagatingErrorsWithoutStaticChecks(Pair<String, String>... programAsString) {
 		this.interpret(true, true, programAsString)
 	}
@@ -79,7 +79,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpret(Boolean propagatingErrors, Pair<String, String>... programAsString) {
-		interpret(propagatingErrors, false, programAsString)		
+		interpret(propagatingErrors, false, programAsString)
 	}
 
 	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, Pair<String, String>... programAsString) {
@@ -89,14 +89,38 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			forEach[it.interpret(propagatingErrors)]
 		]).last
 	}
-	
+
 	def evaluate(String expression) {
 		'''
 			program evaluateExpression {
 				val __expression__ = «expression» 
 			}
 		'''.toString.interpretPropagatingErrors
-		
+
 		interpreter.currentContext.resolve("__expression__")
+	}
+
+	def void assertIsException(Throwable exception, Class<? extends Throwable> clazz) {
+		if(!clazz.isInstance(exception)){
+			if(exception.cause == null)
+				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
+			else{
+				assertIsException(exception.cause, clazz)
+			}
+		}
+		
+	}
+	
+	def getMessageOf(Throwable exception, Class<? extends Throwable> clazz) {
+		if(clazz.isInstance(exception)){
+			exception.message
+		}else{
+			if(exception.cause == null)
+				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
+			else{
+				getMessageOf(exception.cause, clazz)
+			}
+		}
+		
 	}
 }

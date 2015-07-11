@@ -14,30 +14,30 @@ class NumberEqualityTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameters(name="{0}")
 	static def Iterable<Object[]> data() {
 		'''
-			assert(1 == 1)
-			assert(1 == 1.0)
-			assert(1.0 == 1)
-			assert(1.0 == 1.0)
+			assert.that(1 == 1)
+			assert.that(1 == 1.0)
+			assert.that(1.0 == 1)
+			assert.that(1.0 == 1.0)
 			
-			assertFalse(1 == 2)
-			assertFalse(1.0 == 2)
-			assertFalse(1 == 2.0)
-			assertFalse(1.0 == 2.0)
+			assert.notThat(1 == 2)
+			assert.notThat(1.0 == 2)
+			assert.notThat(1 == 2.0)
+			assert.notThat(1.0 == 2.0)
 			
-			assert(1 != 2)
-			assert(1 != 2.0)
-			assert(1.0 != 2)
-			assert(1.0 != 2.0)
+			assert.that(1 != 2)
+			assert.that(1 != 2.0)
+			assert.that(1.0 != 2)
+			assert.that(1.0 != 2.0)
 			
-			assertFalse(1 != 1)
-			assertFalse(1.0 != 1)
-			assertFalse(1 != 1.0)
-			assertFalse(1.0 != 1.0)			
+			assert.notThat(1 != 1)
+			assert.notThat(1.0 != 1)
+			assert.notThat(1 != 1.0)
+			assert.notThat(1.0 != 1.0)			
 		'''.lines.asParameters
 	}
 		
 	@Test
 	def void runAssertion() { assertion.interpretPropagatingErrors }
 
-	def assertion() ''' program p { this.«expression» } '''
+	def assertion() ''' program p { «expression» } '''
 }

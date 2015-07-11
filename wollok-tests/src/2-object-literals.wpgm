@@ -17,7 +17,7 @@ program objectLiterals {
 	}
 	
 	pepita.comer(5)
-	this.assert(pepita.energia() == 125)
+	assert.that(pepita.energia() == 125)
 	
 	// assignments to check type system
 	//pepita = 23 // FAIL (OK)

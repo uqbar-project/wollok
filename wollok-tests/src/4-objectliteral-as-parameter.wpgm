@@ -14,6 +14,6 @@ program objectLiteralsAsParameters {
 
 	pepona.comer(object { method energia() { 100.0 } })
 
-	this.assert(pepona.energia() == 200)
+	assert.that(pepona.energia() == 200)
 
 }

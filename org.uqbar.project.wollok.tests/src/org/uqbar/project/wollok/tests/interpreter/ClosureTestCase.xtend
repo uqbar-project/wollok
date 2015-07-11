@@ -13,7 +13,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			val helloWorld = [ "helloWorld" ]
 			val response = helloWorld.apply()		
-			this.assertEquals("helloWorld", response)
+			assert.equals("helloWorld", response)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -23,7 +23,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			val helloWorld = [to | "hello " + to ]
 			val response = helloWorld.apply("world")		
-			this.assertEquals("hello world", response)
+			assert.equals("hello world", response)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -34,10 +34,10 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 			var to = "world"
 			val helloWorld = ["hello " + to ]
 			
-			this.assertEquals("hello world", helloWorld.apply())
+			assert.equals("hello world", helloWorld.apply())
 			
 			to = "someone else"
-			this.assertEquals("hello someone else", helloWorld.apply())
+			assert.equals("hello someone else", helloWorld.apply())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -47,7 +47,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			val twice = [ block | block.apply() + block.apply() ]
 			
-			this.assertEquals(4, twice.apply [| 2 ])
+			assert.equals(4, twice.apply [| 2 ])
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -63,7 +63,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 			
 			val curriedSum = curried.apply(2)
 			
-			this.assertEquals(5, curriedSum.apply(3))
+			assert.equals(5, curriedSum.apply(3))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -79,7 +79,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 			
 			val result = op.fold(0, [acc, o |  o.apply(acc) ])
 			
-			this.assertEquals(36, result)
+			assert.equals(36, result)
 		}'''.interpretPropagatingErrors
 	}
 	
