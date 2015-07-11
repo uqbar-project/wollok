@@ -101,11 +101,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt type="org.eclipse.core.resources.IFile"/>
-                  <or>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
-                  </or>
+	              <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
                </iterate>
              </with>
            </enablement>

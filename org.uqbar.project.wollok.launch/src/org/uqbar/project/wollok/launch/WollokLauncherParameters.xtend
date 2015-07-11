@@ -38,8 +38,13 @@ class WollokLauncherParameters {
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
 		}
-
+		
 		wollokFiles = cmdLine.argList
+		
+		if(!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
+			throw new RuntimeException("Repl can only be used with .wlk files.")
+		}
+		
 		this
 	}
 
