@@ -14,7 +14,7 @@ import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.WollokDslStandaloneSetup
+import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -46,7 +46,7 @@ class WollokChecker {
 				System.exit(0)
 			}
 
-			injector = new WollokDslStandaloneSetup().createInjectorAndDoEMFRegistration
+			injector = new WollokLauncherSetup().createInjectorAndDoEMFRegistration
 
 			val parameters = new WollokLauncherParameters().parse(args)
 			val fileName = parameters.wollokFiles.get(0)

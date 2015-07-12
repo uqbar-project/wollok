@@ -79,7 +79,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
-	var Map<String, WeakReference> numbersCache = newHashMap
+	var Map<String, WeakReference<Object>> numbersCache = newHashMap
 
 	@Inject
 	WollokInterpreter interpreter
@@ -111,6 +111,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 
 	def dispatch Object evaluate(WVariableDeclaration it) {
+		if(it.eContainer instanceof WProgram){
+			interpreter.addProgramVariable(variable)
+		}
 		interpreter.currentContext.addReference(variable.name, right?.eval)
 	}
 

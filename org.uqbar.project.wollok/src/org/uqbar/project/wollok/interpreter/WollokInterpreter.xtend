@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.uqbar.project.wollok.wollokDsl.WVariable
 
 /**
  * XInterpreter impl for Wollok language.
@@ -31,6 +32,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	XDebugger debugger = new XDebuggerOff
 	
 	@Accessors val globalVariables = <String,Object>newHashMap
+	@Accessors val programVariables = <WVariable>newArrayList
 
 	override addGlobalReference(String name, Object value) {
 		globalVariables.put(name,value)
@@ -138,4 +140,9 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	
 	def getConsole() { console }
 
+	def addProgramVariable(WVariable variable){
+		val old = programVariables.findFirst[it.name == variable.name]
+		programVariables.remove(old)
+		programVariables.add(variable)
+	}
 }
