@@ -18,7 +18,8 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
  org.uqbar.project.wollok.lib,
  org.uqbar.project.wollok.typeSystem.xsemantics,
- org.uqbar.project.wollok.ui
+ org.uqbar.project.wollok.ui,
+ org.uqbar.project.wollok.launch
 Import-Package: org.apache.log4j,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",

@@ -16,7 +16,7 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 interface EvaluationContext extends Serializable {
 	def Object resolve(String name) throws UnresolvableReference
 	def void setReference(String name, Object value)
-	def Object addReference(String name, Object value) // new local variable
+	def Object addReference(String variable, Object value) // new local variable
 	def Object addGlobalReference(String name, Object value)
 	
 	/** Returns an iterable with all available references names from this context */

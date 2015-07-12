@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.console
 
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
@@ -113,9 +114,13 @@ class WollokReplConsole extends TextConsole {
 	def loadHistory(){
 		runInBackground[
 			var file = ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
-			val objStream = new ObjectInputStream(new FileInputStream(file.toOSString))
-			this.lastCommands.clear
-			this.lastCommands.addAll(objStream.readObject as OrderedBoundedSet<String>)
+			var javaFile = new File(file.toOSString)
+			
+			if(javaFile.exists){
+				val objStream = new ObjectInputStream(new FileInputStream(javaFile))
+				this.lastCommands.clear
+				this.lastCommands.addAll(objStream.readObject as OrderedBoundedSet<String>)
+			}
 		]
 	}
 	

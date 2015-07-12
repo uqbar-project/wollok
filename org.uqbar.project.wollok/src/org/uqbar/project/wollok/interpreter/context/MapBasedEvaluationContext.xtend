@@ -37,8 +37,8 @@ class MapBasedEvaluationContext implements EvaluationContext {
 		values.put(name, value)
 	}
 
-	override addReference(String name, Object value) {
-		values.put(name, value)
+	override addReference(String variable, Object value) {
+		values.put(variable, value)
 		value
 	}
 	
