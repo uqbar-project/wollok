@@ -9,6 +9,7 @@ import org.eclipse.xtext.resource.containers.IAllContainersState;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
 import org.eclipse.xtext.ui.editor.actions.IActionContributor;
 import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider;
+import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
@@ -23,6 +24,7 @@ import org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider;
 import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
+import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory;
 
@@ -42,9 +44,11 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 	@Override
 	public void configure(Binder binder) {
 		super.configure(binder);
+
 		binder.bind(EObjectAtOffsetHelper.class).to(WollokEObjectAtOffsetHelper.class);
+		binder.bind(IEObjectHoverProvider.class).to(WollokEObjectHoverProvider.class);
 	}
-	
+		
 	@Override
 	public Class<? extends ITemplateProposalProvider> bindITemplateProposalProvider() {
 		return WollokTemplateProposalProvider.class;
