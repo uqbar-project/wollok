@@ -257,6 +257,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WTryElements i) {
+		setLinewrap(1, 1, 2).before(group)
 		setLinewrap(1, 1, 1).after(tryKeyword_0)
 		setLinewrap(1, 1, 1).after(catchBlocksAssignment_2)
 		
