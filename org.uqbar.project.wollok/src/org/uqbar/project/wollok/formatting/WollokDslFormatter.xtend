@@ -23,6 +23,8 @@ import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElement
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
 import org.eclipse.xtext.util.ReflectionUtil
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuperInvocationElements
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 /**
  * This class contains custom formatting description.
@@ -65,7 +67,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WMethodDeclarationElements e) {
-		setLinewrap(1, 1, 2).before(methodKeyword_1)
+		setLinewrap(1, 1, 2).before(group)
 		setLinewrap(1, 1, 1).after(expressionAssignment_7_0)
 		
 		setNoSpace.after(nameAssignment_2)
@@ -271,6 +273,10 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setNoSpace.after(leftParenthesisKeyword_2_0)
 		setNoSpace.before(rightParenthesisKeyword_2_2)
 		setNoSpace.after(superKeyword_1)
+	}
+	
+	def dispatch formatting(FormattingConfig it, extension WVariableDeclarationElements i) {
+		setLinewrap(1, 1, 2).after(group)
 	}
 	
 	// default
