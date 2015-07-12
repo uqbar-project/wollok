@@ -7,8 +7,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.containers.IAllContainersState;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
+import org.eclipse.xtext.ui.editor.XtextSourceViewerConfiguration;
 import org.eclipse.xtext.ui.editor.actions.IActionContributor;
 import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider;
+import org.eclipse.xtext.ui.editor.model.DocumentTokenSource;
+import org.eclipse.xtext.ui.editor.model.TerminalsTokenTypeToPartitionMapper;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
@@ -16,10 +19,13 @@ import org.eclipse.xtext.ui.util.PluginProjectFactory;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
+import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper;
+import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideRulerAction;
 import org.uqbar.project.wollok.ui.editor.hyperlinking.WollokEObjectAtOffsetHelper;
 import org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider;
+import org.uqbar.project.wollok.ui.editor.model.WollokDocumentTokenSource;
 import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
@@ -82,4 +88,17 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 	public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider(){
 		return WollokDocumentProvider.class;
 	}
+	
+	public Class<? extends XtextSourceViewerConfiguration> bindSourceViewerConfiguration(){
+		return WollokSourceViewerConfiguration.class;
+	}
+	
+	public Class<? extends DocumentTokenSource> bindDocumentTokenSource(){
+		return WollokDocumentTokenSource.class;
+	}
+	
+	public Class<? extends TerminalsTokenTypeToPartitionMapper> bindTerminalsTokenTypeToPartitionMapper() {
+		return TokenTypeToPartitionMapper.class;
+	}
+	
 }
