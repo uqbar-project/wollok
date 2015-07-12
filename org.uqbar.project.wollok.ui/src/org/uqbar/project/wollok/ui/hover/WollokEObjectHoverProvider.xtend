@@ -22,7 +22,7 @@ class WollokEObjectHoverProvider extends DefaultEObjectHoverProvider {
 	}
 	
 	// default: removes the "W" prefix and uses the class name
-	def dispatch modelTypeDescription(EObject it) { if (eClass.name.startsWith("W")) eClass.name.substring(1) }
+	def dispatch modelTypeDescription(EObject it) { if (eClass.name.startsWith("W")) eClass.name.substring(1) else eClass.name }
 	def dispatch modelTypeDescription(WNamedObject it) { "Object" }
 	def dispatch modelTypeDescription(WObjectLiteral it) { "Object" }
 	def dispatch modelTypeDescription(WMethodDeclaration it) { "Method" }
