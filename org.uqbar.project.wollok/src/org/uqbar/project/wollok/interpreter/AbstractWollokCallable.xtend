@@ -90,8 +90,9 @@ abstract class AbstractWollokCallable implements WCallable {
 		declaration.parameters.map[name].createEvaluationContext(values)
 	}
 
-	def dispatch isVoid(Object nativeObject, String message, Object... parameters){
-		var method = this.class.methods.findFirst[name == message] // TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
+	def dispatch isVoid(Object nativeObject, String message, Object... parameters) {
+		// TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
+		var method = this.class.methods.findFirst[name == message]
 		
 		if(method == null) false 
 		else method.returnType == Void.TYPE

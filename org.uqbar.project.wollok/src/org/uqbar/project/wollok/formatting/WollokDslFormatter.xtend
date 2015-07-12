@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
 import org.eclipse.xtext.util.ReflectionUtil
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuperInvocationElements
 
 /**
  * This class contains custom formatting description.
@@ -214,27 +215,27 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		// wrap before
 		setLinewrap(1, 2, 2).before(objectKeyword_0)
 		
-		setLinewrap.after(leftCurlyBracketKeyword_2)
-		setLinewrap.after(rightCurlyBracketKeyword_5)
+		setLinewrap.after(leftCurlyBracketKeyword_3)
+		setLinewrap.after(rightCurlyBracketKeyword_6)
 		setLinewrap(1, 2, 2).after(group_4)
 		
 		// wrap after var, and method
-		setLinewrap(1, 1, 2).after(getMembersWVariableDeclarationParserRuleCall_3_0_0)
+		setLinewrap(1, 1, 2).after(membersWVariableDeclarationParserRuleCall_4_0_0)
 		setLinewrap(1, 1, 2).after(membersAssignment_4_0)
-		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_4_0_0)
+		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_5_0_0)
 		
 		// after all variables
-		setLinewrap(1, 2, 2).after(group_3)
-		
-		// after all methods
 		setLinewrap(1, 2, 2).after(group_4)
 		
+		// after all methods
+		setLinewrap(1, 2, 2).after(group_5)
+		
 		// increase indentation of content
-		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_5)
+		setIndentation(leftCurlyBracketKeyword_3, rightCurlyBracketKeyword_6)
 		
 		// wrap before and after close bracket
-		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_5)
-		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_5)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_6)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_6)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WListLiteralElements l) {
@@ -264,6 +265,12 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setSpace(' ').after(catchKeyword_0)
 		setLinewrap(1,1,1).before(catchKeyword_0)
 		setLinewrap(1,1,1).around(expressionAssignment_4)
+	}
+	
+	def dispatch formatting(FormattingConfig it, extension WSuperInvocationElements i) {
+		setNoSpace.after(leftParenthesisKeyword_2_0)
+		setNoSpace.before(rightParenthesisKeyword_2_2)
+		setNoSpace.after(superKeyword_1)
 	}
 	
 	// default

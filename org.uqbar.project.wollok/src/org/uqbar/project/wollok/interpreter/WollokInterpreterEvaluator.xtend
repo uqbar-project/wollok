@@ -244,15 +244,32 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		
 		val x = try {
 			interpreter.currentContext.resolve(qualifiedName)
-		} catch (UnresolvableReference e) {
-			new WollokObject(interpreter, namedObject) => [ wo |
-				namedObject.members.forEach[wo.addMember(it)]
-				if (namedObject.native)
-					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
-				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
-			]
+		}
+		catch (UnresolvableReference e) {
+			createNamedObject(namedObject, qualifiedName)
 		}
 		x
+	}
+	
+	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
+		namedObject.hookObjectInHierarhcy
+		
+		new WollokObject(interpreter, namedObject) => [ wo |
+			namedObject.members.forEach[wo.addMember(it)]
+			if (namedObject.native)
+				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
+		]
+	}
+	
+	def hookObjectInHierarhcy(WNamedObject namedObject) {
+		if (namedObject.parent != null)
+			namedObject.parent.hookToObject
+		else {
+			val object = getObjectClass(namedObject)
+			namedObject.parent = object
+			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
+		}
 	}
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
