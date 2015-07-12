@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.ui.editor.model.WollokDocumentTokenSource;
 import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator;
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
+import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory;
 
@@ -48,9 +49,11 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 	@Override
 	public void configure(Binder binder) {
 		super.configure(binder);
+
 		binder.bind(EObjectAtOffsetHelper.class).to(WollokEObjectAtOffsetHelper.class);
+		binder.bind(IEObjectHoverProvider.class).to(WollokEObjectHoverProvider.class);
 	}
-	
+		
 	@Override
 	public Class<? extends ITemplateProposalProvider> bindITemplateProposalProvider() {
 		return WollokTemplateProposalProvider.class;

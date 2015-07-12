@@ -21,7 +21,7 @@ class ReplMemoryTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 		'''
 		program p {
-			tester.assertEquals(17, xxx)
+			assert.equals(17, xxx)
 		}
 		'''.interpretPropagatingErrors
 	}

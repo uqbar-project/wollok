@@ -24,33 +24,36 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		else
 			try {
 				method.invoke(this, parameters).asWollokObject
-			}
-			catch (InvocationTargetException e) {
+			} catch (InvocationTargetException e) {
 				throw e.cause
+			} catch (Throwable e) {
+				println(''' Method: «method.name» «method.parameterTypes» Parameters:«parameters.toString» Target:«this» ''')
+				e.printStackTrace
+				throw e
 			}
 	}
-	
-	def getMethod(String message, Object... parameters){
-		var method = this.class.methods.findFirst[handlesMessage(message)]
-		if (method == null) 
-			method = this.class.methods.findFirst[name == message]
+
+	def getMethod(String message, Object... parameters) {
+		var method = this.class.methods.findFirst[handlesMessage(message, parameters)]
+		if (method == null)
+			method = this.class.methods.findFirst[name == message && parameterTypes.size == parameters.size]
 		method
 	}
 
 	def isVoid(String message, Object... parameters) {
-		val method = getMethod(message)
+		val method = getMethod(message, parameters)
 		method.returnType == Void.TYPE
 	}
-	
+
 	def Object doesNotUnderstand(String message, Object[] objects) {
 		throw new MessageNotUnderstood(message)
 	}
-	
-	def handlesMessage(Method m, String message) {
-		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message
+
+	def handlesMessage(Method m, String message, Object... parameters) {
+		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message && m.parameterTypes.size == parameters.size
 	}
 
 	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
-	
+
 	def identity() { System.identityHashCode(this) }
 }
