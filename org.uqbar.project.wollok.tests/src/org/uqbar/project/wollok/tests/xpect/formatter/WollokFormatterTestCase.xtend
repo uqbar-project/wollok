@@ -235,7 +235,9 @@ class Direccion {
 }
 class Client {
 	method blah() {
-		val a = "" val b = 2 val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
+		val a = ""
+		val b = 2
+		val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
 	}
 }''')
     }
