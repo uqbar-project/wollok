@@ -311,7 +311,7 @@ WSetLiteral returns WCollectionLiteral:
 	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 
 WNamedObject:
-	'object' name=ID '{'
+	'object' name=ID ('extends' parent=[WClass|QualifiedName])?'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'

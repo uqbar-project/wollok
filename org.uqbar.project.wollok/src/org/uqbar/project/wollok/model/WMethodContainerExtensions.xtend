@@ -91,7 +91,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
 	def static dispatch WClass parent(WObjectLiteral c) { null } // For now, object literals do not allow superclasses
-	def static dispatch WClass parent(WNamedObject c) { null } // For now, object literals do not allow superclasses
+	def static dispatch WClass parent(WNamedObject c) { c.parent } // For now, object literals do not allow superclasses
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
@@ -103,10 +103,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
 	
-	def static dispatch boolean inheritsMethod(WMethodContainer c, String name) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch boolean inheritsMethod(WMethodContainer c, String name) { c.parent != null && c.parent.hasOrInheritMethod(name) }
 	def static dispatch boolean inheritsMethod(WClass c, String name) { c.parent != null && c.parent.hasOrInheritMethod(name) }
-	def static dispatch boolean inheritsMethod(WObjectLiteral c, String name) { false }
-	def static dispatch boolean inheritsMethod(WNamedObject c, String name) { false }
 	
 	def static boolean hasOrInheritMethod(WClass c, String mname) { 
 		c != null && (c.methods.exists[name == mname] || c.parent.hasOrInheritMethod(mname))

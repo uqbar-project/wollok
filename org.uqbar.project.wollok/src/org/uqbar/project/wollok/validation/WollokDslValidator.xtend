@@ -261,13 +261,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
-		val body = sup.method.expression as WBlockExpression
 		if (sup.method.declaringContext instanceof WObjectLiteral)
-			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, sup)
 		else if (!sup.method.overrides)
-			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', sup)
 	}
 	
 	// ***********************
