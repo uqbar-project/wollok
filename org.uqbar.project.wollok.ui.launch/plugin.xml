@@ -23,6 +23,27 @@
       </launchConfigurationTypeImage>
    </extension>
    
+   <!-- LAUNCH CONFIG FOR TESTS -->
+
+	<extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            modes="run, debug"
+            name="%wollok.launch.tests"
+            delegate="org.uqbar.project.wollok.ui.launch.shortcut.WollokTestLaunchDelegate"
+            sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
+            sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/wtest-icon.png"
+            configTypeID="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+      
    <!-- LAUNCH CONFIG TAB (UI) -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -31,6 +52,17 @@
             description="Run or debug a Wollok program"
             class="org.uqbar.project.wollok.ui.launch.WollokTabGroup"
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType.launchTabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+
+   <!-- LAUNCH CONFIG TAB FOR TESTS (UI) -->
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
+            description="Run or debug a Wollok program"
+            class="org.uqbar.project.wollok.ui.launch.WollokTestsTabGroup"
+            id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType.launchTabGroup">
       </launchConfigurationTabGroup>
    </extension>
    
@@ -239,6 +271,23 @@
             id="org.uqbar.project.wollok.debugger.rulerContextMenu.toggleBreakpointAction">
          </action>
       </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.uqbar.project.wollok.ui.views.category"
+            class="org.uqbar.project.wollok.ui.tests.WollokTestResultView"
+            icon="icons/dwarf.png"
+            id="org.uqbar.project.wollok.ui.launch.resultView"
+            name="%wollok.tests.view.name"
+            restorable="true">
+      </view>
+      <stickyView
+            closeable="true"
+            id="org.uqbar.project.wollok.ui.launch.resultView"
+            location="LEFT"
+            moveable="true">
+      </stickyView>
    </extension>
   <!-- /BREAKPOINTS ACTIONS -->
 

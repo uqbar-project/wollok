@@ -9,7 +9,8 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
  */
 class WollokLaunchConstants {
 	
-	public static val EXTENSIONS = #["wlk", "wpgm", "wtest"]
+	public static val WTEST_EXTENSIONS = "wtest"
+	public static val EXTENSIONS = #["wlk", "wpgm", WTEST_EXTENSIONS]
 	
 	public static val LAUNCH_CONFIGURATION_TYPE = "org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
 	public static val ID_DEBUG_MODEL = "org.uqbar.project.wollok.debugger.model"
