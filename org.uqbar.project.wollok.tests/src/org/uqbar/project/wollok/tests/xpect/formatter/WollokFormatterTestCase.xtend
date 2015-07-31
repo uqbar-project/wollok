@@ -242,6 +242,20 @@ class Client {
 }''')
     }
 
+    @Test
+    def void testSimpleTestFormatting() throws Exception {
+    	assertFormatting(
+    	'''test "aSimpleTest"{
+    				assert.that(true)
+    	}''',
+'''
+
+test "aSimpleTest" {
+	assert.that(true)
+}''')
+    }
+
+
 	// TODO: test 
 	//     	- named objects and object literals
 	//		- method parameter declaration

@@ -31,7 +31,7 @@
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run, debug"
             name="%wollok.launch.tests"
-            delegate="org.uqbar.project.wollok.ui.launch.shortcut.WollokTestLaunchDelegate"
+            delegate="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>
@@ -102,11 +102,7 @@
                      ifEmpty="false"
                      operator="and">
                   <adapt type="org.eclipse.core.resources.IFile"/>
-                  <or>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wlk"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
-                    <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
-                  </or>
+                  <test property="org.eclipse.debug.ui.matchesPattern" value="*.wpgm"/>
                </iterate>
              </with>
            </enablement>
@@ -139,6 +135,27 @@
            </enablement>
          </contextualLaunch>
       </shortcut>
+      <shortcut
+            class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
+            description="Launch Wollok with Repl"
+            icon="icons/w-test.png"
+            id="org.uqbar.project.wollok.ui.tests.shortcut"
+            label="%wollok.launch.tests"
+            modes="run, debug">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  <adapt type="org.eclipse.core.resources.IFile"/>
+	              <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -165,6 +182,18 @@
             description="Debug Wollok Program with REPL"
             id="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
             name="Debug Wollok REPL">
+      </command>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Run Wollok Program with REPL"
+            id="org.uqbar.project.wollok.ui.tests.shortcut.run"
+            name="%wollok.run.tests">
+      </command>
+   	  <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            description="Debug Wollok Program with REPL"
+            id="org.uqbar.project.wollok.ui.tests.shortcut.debug"
+            name="%wollok.debug.tests">
       </command>
    </extension>
    	<extension

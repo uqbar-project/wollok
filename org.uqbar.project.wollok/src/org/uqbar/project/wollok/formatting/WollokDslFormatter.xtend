@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.formatting
 import com.google.inject.Inject
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
+import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
@@ -18,13 +19,12 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WNamedObjectElem
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WObjectLiteralElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WPackageElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WProgramElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
-import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
-import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import org.eclipse.xtext.util.ReflectionUtil
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuperInvocationElements
-import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
+
+import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTestElements
 
 /**
  * This class contains custom formatting description.
@@ -157,6 +157,20 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	
 	def dispatch formatting(FormattingConfig it, extension WProgramElements p) {
 		setLinewrap(1, 2, 2).before(programKeyword_0)
+		setLinewrap(1, 2, 2).after(leftCurlyBracketKeyword_2)
+		
+		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_4)
+		
+		setLinewrap(1, 2, 2).before(rightCurlyBracketKeyword_4)
+		setLinewrap(1, 2, 2).after(rightCurlyBracketKeyword_4)
+		
+		setLinewrap(0, 1, 2).after(elementsAssignment_3_0)
+		
+		setLinewrap(1, 1, 2).after(group_3)
+	}
+
+	def dispatch formatting(FormattingConfig it, extension WTestElements p) {
+		setLinewrap(1, 2, 2).before(testKeyword_0)
 		setLinewrap(1, 2, 2).after(leftCurlyBracketKeyword_2)
 		
 		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_4)
