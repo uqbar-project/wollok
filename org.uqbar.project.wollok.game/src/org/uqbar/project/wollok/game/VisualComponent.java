@@ -1,18 +1,26 @@
 package org.uqbar.project.wollok.game;
 
+import org.uqbar.project.wollok.game.Position;
+
 public class VisualComponent {
 
-	private Position myPosition;
+	private Position position;
 	private String image;
-	private Object myDomainObject;
+	private Object domainObject;
 	
+	public VisualComponent() { }
 	
+	public VisualComponent(Object object, String image, Position position) {
+		this.domainObject = object;
+		this.image = image;
+		this.position = position;
+	}
 	
 	public Position getMyPosition() {
-		return myPosition;
+		return position;
 	}
 	public void setMyPosition(Position myPosition) {
-		this.myPosition = myPosition;
+		this.position = myPosition;
 	}
 	public String getImage() {
 		return image;
@@ -21,10 +29,10 @@ public class VisualComponent {
 		this.image = image;
 	}
 	public Object getMyDomainObject() {
-		return myDomainObject;
+		return domainObject;
 	}
 	public void setMyDomainObject(Object myDomainObject) {
-		this.myDomainObject = myDomainObject;
+		this.domainObject = myDomainObject;
 	}
 	
 	

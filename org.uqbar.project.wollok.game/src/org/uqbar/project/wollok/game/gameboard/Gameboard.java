@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.game.gameboard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.game.VisualComponent;
@@ -28,7 +27,7 @@ public class Gameboard {
 		
 	}
 	
-	private void createCells(int cantCellX, int cantCellY) {
+	private void createCells() {
 		for (int i = 0; i < cantCellX; i++) {
 			for (int j = 0; j < cantCellY; j++) {
 				cells.add(new Cell(i*CELLZISE, j*CELLZISE));
@@ -37,7 +36,6 @@ public class Gameboard {
 	}
 
 	public void start() {
-		this.createCells(cantCellX, cantCellY);
 		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
 	}
 	
@@ -53,8 +51,11 @@ public class Gameboard {
 		return Gdx.input.isKeyPressed(key);
 	}
 	
+	public void addComponent(VisualComponent component) {
+		this.components.add(component);
+	}
+	
 	public Collection<VisualComponent> getComponentsInPosition(Position myPosition) {
-		
 		return Collections2.filter(components, new IsEqualPosition(myPosition));
 	}
 	
@@ -89,6 +90,7 @@ public class Gameboard {
 
 	public void setCantCellX(int cantCellX) {
 		this.cantCellX = cantCellX;
+		this.createCells();
 	}
 
 	public int getCantCellY() {
@@ -97,6 +99,7 @@ public class Gameboard {
 
 	public void setCantCellY(int cantCellY) {
 		this.cantCellY = cantCellY;
+		this.createCells();
 	}
 	
 	private class IsEqualPosition implements Predicate<VisualComponent>{
@@ -118,5 +121,6 @@ public class Gameboard {
 		  instance = new Gameboard();
 	  return instance;
 	}
+
 }
 

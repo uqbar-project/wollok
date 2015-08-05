@@ -34,6 +34,56 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	def void runWollok() throws Exception {
 		program.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void canSetGameboardsTittle() {
+		#[		
+		'''
+			program p {
+				wgame.setTittle("un Titulo")
+
+				tester.assertEquals("un Titulo", wgame.getTittle())
+			}
+		'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void canSetGameboardsDimentions() {
+		#[		
+		'''
+			program p {
+				wgame.setWeight(2)
+				wgame.setHeight(3)
+				
+				tester.assertEquals(2, wgame.getWeight())
+				tester.assertEquals(3, wgame.getHeight())
+			}
+		'''].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void canAddVisualObjects() {
+		#[
+		'''
+			object pepita {
+				var energia = 0
+				method come(cantidad){
+					energia = energia + cantidad * 10
+				}
+				method energia(){
+					return energia
+				}
+			}
+		''',
+		'''
+			program p {
+				wgame.addObject(pepita, "pepita.png", 1, 1)
+				
+				tester.assertEquals(1, wgame.getObjectsIn(1, 1).size())
+				tester.assert(wgame.getObjectsIn(1, 1).contains(pepita))
+			}
+		'''].interpretPropagatingErrors
+	}
 
 	// ********************************************************************************************
 	// ** Helpers

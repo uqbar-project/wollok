@@ -1,21 +1,60 @@
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.game.gameboard.Gameboard
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
+import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
-	@NativeMessage("sayMyName")
-	def diMiNombre(){
-		WollokInterpreter.getInstance().getConsole().logMessage("Juancete")
-	}
-
 	@NativeMessage("getGameboard")
-	def getGameboardMethod(){
-		var game = Gameboard.getInstance()
-		game.tittle = "Tu vieja"
-		game.cantCellX = 3
-		game.cantCellY = 3
-		game 
+	def getGameboardMethod() {
+		Gameboard.getInstance()
+	}
+	
+	@NativeMessage("setTittle")
+	def setTittleMethod(String tittle) {
+		Gameboard.getInstance().tittle = tittle
+	}
+	
+	@NativeMessage("getTittle")
+	def getTittleMethod() {
+		Gameboard.getInstance().tittle
+	}
+	
+	@NativeMessage("setWeight")
+	def setWeightMethod(WollokInteger cant) {
+		Gameboard.getInstance().cantCellX = cant.wrapped
+	}
+		
+	@NativeMessage("getWeight")
+	def getWeightMethod() {
+		Gameboard.getInstance().cantCellX
+	}
+	
+	@NativeMessage("setHeight")
+	def setHeightMethod(WollokInteger cant) {
+		Gameboard.getInstance().cantCellY = cant.wrapped
+	}
+	
+	@NativeMessage("getHeight")
+	def getHeightMethod() {
+		Gameboard.getInstance().cantCellY
+	}
+	
+	@NativeMessage("addObject")
+	def addObjectMethod(Object wollokObject, String image, WollokInteger posX, WollokInteger posY) {
+		var position = new Position(posX.wrapped, posY.wrapped)
+		var visualComponent = new VisualComponent(wollokObject, image, position)
+		Gameboard.getInstance().addComponent(visualComponent)
+	}
+	
+	@NativeMessage("getObjectsIn")
+	def getObjectsInMethod(WollokInteger posX, WollokInteger posY) {
+		var position = new Position(posX.wrapped, posY.wrapped)
+		var list = Gameboard.getInstance().getComponentsInPosition(position).map[it.myDomainObject]
+		new WollokList(WollokInterpreter.getInstance, list)
 	}
 }
