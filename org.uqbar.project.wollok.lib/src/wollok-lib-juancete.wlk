@@ -1,5 +1,5 @@
 
-object juancete{
+object wgame{
 		method sayMyName() native
-		method launchWollokGame() native
+		method getGameboard() native
 	}
