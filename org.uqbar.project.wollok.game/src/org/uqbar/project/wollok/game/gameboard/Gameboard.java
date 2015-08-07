@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.game.VisualComponent;
 import org.uqbar.project.wollok.game.listeners.GameboardListener;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -121,6 +122,5 @@ public class Gameboard {
 		  instance = new Gameboard();
 	  return instance;
 	}
-
 }
 

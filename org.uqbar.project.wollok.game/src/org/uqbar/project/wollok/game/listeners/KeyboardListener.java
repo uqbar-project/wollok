@@ -7,7 +7,7 @@ public class KeyboardListener implements GameboardListener {
 	private int key;
 	private Runnable gameAction;
 
-	public KeyboardListener(int key, Runnable gameAction) {
+	 public KeyboardListener(int key, Runnable gameAction) {
 		this.key = key;
 		this.gameAction = gameAction;
 		
