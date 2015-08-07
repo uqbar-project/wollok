@@ -2,10 +2,10 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
-import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
@@ -45,10 +45,10 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("addObject")
-	def addObjectMethod(Object wollokObject, String image, WollokInteger posX, WollokInteger posY) {
-		var position = new Position(posX.wrapped, posY.wrapped)
-		var visualComponent = new VisualComponent(wollokObject, image, position)
-		Gameboard.getInstance().addComponent(visualComponent)
+	def addObjectMethod(WollokObject wollokObject) {
+//		var position = new Position(posX.wrapped, posY.wrapped)
+//		var visualComponent = new VisualComponent(wollokObject, image, position)
+//		Gameboard.getInstance().addComponent(visualComponent)
 	}
 	
 	@NativeMessage("getObjectsIn")

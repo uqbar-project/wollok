@@ -46,6 +46,7 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 			}
 		'''].interpretPropagatingErrors
 	}
+
 	
 	@Test
 	def void canSetGameboardsDimentions() {
@@ -84,7 +85,28 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 			}
 		'''].interpretPropagatingErrors
 	}
-
+	
+	@Test
+	def void canCreateAPositionObject() {
+		#[		
+		'''
+			program p {
+				var pos = new Position()
+				pos.setX(1)
+				pos.setY(1)
+								
+				var pos2 = new Position()
+				pos2.setX(2)
+				pos2.setY(2)
+				
+				tester.assertEquals(1, pos.getX())
+				tester.assertEquals(1, pos.getY())
+				tester.assertEquals(2, pos2.getX())
+				tester.assertEquals(2, pos2.getY())
+			}
+		'''].interpretPropagatingErrors
+	}
+	
 	// ********************************************************************************************
 	// ** Helpers
 	// ********************************************************************************************

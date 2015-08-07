@@ -10,3 +10,11 @@ object wgame{
 		method addObject(wollokObject, image, posX, posY) native
 		method getObjectsIn(posX, posY) native
 	}
+
+class Position { 
+	method getX() native
+	method setX(x) native
+	method getY() native
+	method setY(y) native
+
+}
