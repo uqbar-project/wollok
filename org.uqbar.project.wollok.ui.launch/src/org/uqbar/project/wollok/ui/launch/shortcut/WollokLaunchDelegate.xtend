@@ -38,7 +38,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		if (configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) != null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
-		var config = configuration.setDebugWollokParam(mode)
+		var config = configuration.configureLaunchSettings(mode)
 		super.launch(config, mode, launch, monitor);
 		
 		if(configuration.hasRepl){
@@ -63,7 +63,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		}
 	}
 	
-	def setDebugWollokParam(ILaunchConfiguration config, String mode) {
+	def configureLaunchSettings(ILaunchConfiguration config, String mode) {
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort

@@ -7,6 +7,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.launch.WollokLauncherException;
+import org.uqbar.project.wollok.ui.tests.WollokTestResultView;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -16,6 +17,16 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.uqbar.project.wollok.ui.launch";
 	private static Activator plugin;
 	
+	private WollokTestResultView wollokTestResultView;
+	
+	public WollokTestResultView getWollokTestResultView() {
+		return wollokTestResultView;
+	}
+
+	public void setWollokTestResultView(WollokTestResultView wollokTestResultView) {
+		this.wollokTestResultView = wollokTestResultView;
+	}
+
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;

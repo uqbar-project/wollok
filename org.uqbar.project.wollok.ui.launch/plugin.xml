@@ -185,13 +185,13 @@
       </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
-            description="Run Wollok Program with REPL"
+            description="Run Wollok Tests"
             id="org.uqbar.project.wollok.ui.tests.shortcut.run"
             name="%wollok.run.tests">
       </command>
    	  <command
             categoryId="org.eclipse.debug.ui.category.run"
-            description="Debug Wollok Program with REPL"
+            description="Debug Wollok Tests"
             id="org.uqbar.project.wollok.ui.tests.shortcut.debug"
             name="%wollok.debug.tests">
       </command>

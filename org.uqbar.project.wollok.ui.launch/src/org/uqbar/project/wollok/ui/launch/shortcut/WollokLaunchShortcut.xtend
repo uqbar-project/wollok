@@ -25,6 +25,7 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import org.eclipse.debug.internal.ui.DebugUIPlugin
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -83,17 +84,19 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val x = cfgType.newInstance(null, info.generateUniqueName)
-		x => [
-			setAttribute(ATTR_PROJECT_NAME, info.project)
-			setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
-			setAttribute(ATTR_STOP_IN_MAIN, false)
-			setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
-			setAttribute(ATTR_WOLLOK_FILE, info.file)
-			setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
-			setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
-			setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
-		]
+		this.configureConfiguration(x, info)
 		x.doSave
+	}
+	
+	def configureConfiguration(ILaunchConfigurationWorkingCopy it, LaunchConfigurationInfo info) {
+		setAttribute(ATTR_PROJECT_NAME, info.project)
+		setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
+		setAttribute(ATTR_STOP_IN_MAIN, false)
+		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
+		setAttribute(ATTR_WOLLOK_FILE, info.file)
+		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
+		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 	}
 }
 
@@ -112,6 +115,6 @@ class LaunchConfigurationInfo {
 		file == a.getAttribute(ATTR_WOLLOK_FILE, "X")
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
-			&& LAUNCH_CONFIGURATION_TYPE == a.type.identifier
+			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
 	}
 }
