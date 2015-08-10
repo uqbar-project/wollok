@@ -16,11 +16,11 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	}
 	
 	override testsToRun(List<WTest> tests) {
-		println('''Tests to run: «tests.join(", ")»''')
+//		println('''Tests to run: «tests.map[name].join(", ")»''')
 	}
 	
 	override testStart(WTest test) {
-		println('''Starting test: «test.name»''')
+//		println('''Starting test: «test.name»''')
 	}
 	
 }

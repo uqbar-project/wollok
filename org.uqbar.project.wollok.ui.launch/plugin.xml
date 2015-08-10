@@ -61,7 +61,7 @@
       <launchConfigurationTabGroup
             type="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             description="Run or debug a Wollok program"
-            class="org.uqbar.project.wollok.ui.launch.WollokTestsTabGroup"
+            class="org.uqbar.project.wollok.ui.tests.launch.WollokTestsTabGroup"
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType.launchTabGroup">
       </launchConfigurationTabGroup>
    </extension>

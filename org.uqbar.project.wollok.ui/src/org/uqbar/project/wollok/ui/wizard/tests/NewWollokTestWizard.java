@@ -22,7 +22,7 @@ public class NewWollokTestWizard extends AbstractNewWollokFileWizard implements 
 	@Override
 	protected InputStream openContentStream() {
 		String contents =
-			"\ntest \"testX\" {\n\n\n\n}";
+			"\ntest \"testX\" {\n\n\tassert.that(true)\n\n}";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 }

@@ -16,7 +16,7 @@ class WollokRootPreferencePage extends LanguageRootPreferencePage {
 	override protected createFieldEditors() {
 
 		val preferenceStore = preferenceStoreAccess.getWritablePreferenceStore()
-		preferenceStore.setDefault(FORMAT_ON_SAVE, true)
+		preferenceStore.setDefault(FORMAT_ON_SAVE, false)
 
 		addField(
 			new BooleanFieldEditor(FORMAT_ON_SAVE, Messages.WollokRootPreferencePage_autoformat_description,

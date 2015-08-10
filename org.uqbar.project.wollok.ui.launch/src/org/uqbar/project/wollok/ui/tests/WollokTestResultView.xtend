@@ -1,56 +1,43 @@
 package org.uqbar.project.wollok.ui.tests
 
-import net.sf.lipermi.handler.CallHandler
-import net.sf.lipermi.net.Server
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.swt.SWT
+import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.part.ViewPart
-import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.launch.io.IOUtils
-import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.ui.launch.Activator
 
 class WollokTestResultView extends ViewPart {
 
-	val Server server
-	val CallHandler callHandler
-	val WollokUITestNotifier wollokUITestNotifier
-	
-	@Accessors
-	val int listeningPort
+	public val static NAME = "org.uqbar.project.wollok.ui.launch.resultView"
 	 
 	new() {
 		super()
-		
-		wollokUITestNotifier = new WollokUITestNotifier
-		
-		callHandler = new CallHandler
-		callHandler.registerGlobal(WollokRemoteUITestNotifier, wollokUITestNotifier )
-		
-		server = new Server
-		listeningPort = IOUtils.findFreePort
-		server.bind(listeningPort,callHandler)
-		
-		Activator.getDefault().wollokTestResultView = this
+		Activator.getDefault().wollokTestResultView = this		
 	}
 	
 	var TreeViewer testTree
 	
 	override createPartControl(Composite parent) {
 		new GridLayout() => [
-			marginWidth = 0;
-			marginHeight = 0;
-			parent.setLayout(it);
+			marginWidth = 0
+			marginHeight = 0
+			numColumns = 1
+			verticalSpacing = 2
+			parent.setLayout(it)
 		]
 		
 		testTree = new TreeViewer(parent, SWT.V_SCROLL) 
-	}
-	
-	override protected finalize() throws Throwable {
-		super.finalize()
-		server.close
+		testTree.contentProvider = new WTestsContentProvider
+		testTree.input = "x"
+		
+		val layoutData = new GridData();
+		layoutData.grabExcessHorizontalSpace = true;
+		layoutData.grabExcessVerticalSpace = true;
+		layoutData.horizontalAlignment = GridData.FILL;
+		layoutData.verticalAlignment = GridData.FILL;
+		testTree.control.layoutData = layoutData;
 	}
 	
 	override setFocus() {
