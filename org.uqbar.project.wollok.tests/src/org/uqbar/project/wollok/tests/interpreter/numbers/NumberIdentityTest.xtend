@@ -15,7 +15,7 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 	def void testTwoLiterals() {
 		'''
 		program p {
-			this.assert(33.identity() == 33.identity())
+			assert.that(33.identity() == 33.identity())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -26,7 +26,7 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 			var a = 33
 			var b = 33
 			
-			this.assert(a.identity() == b.identity())
+			assert.that(a.identity() == b.identity())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -41,7 +41,7 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 				method getB() { return b }
 			}
 			
-			this.assert(a.identity() == o.getB().identity())
+			assert.that(a.identity() == o.getB().identity())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -49,7 +49,7 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 	def void testTwoDoubleLiterals() {
 		'''
 		program p {
-			this.assert((33.0).identity() == (33.0).identity())
+			assert.that((33.0).identity() == (33.0).identity())
 		}'''.interpretPropagatingErrors
 	}
 	

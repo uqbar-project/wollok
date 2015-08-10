@@ -51,6 +51,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_createMethod_description;
 	public static String WollokDslQuickfixProvider_createMethod_stub;
 	
+	public static String WollokRootPreferencePage_autoformat_description;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

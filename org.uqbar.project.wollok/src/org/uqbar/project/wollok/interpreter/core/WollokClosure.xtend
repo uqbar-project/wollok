@@ -62,8 +62,8 @@ class WollokClosure implements EvaluationContext, WCallable {
 
 	// unimplemented methods
 	
-	override addReference(String name, Object value) {
-		throw new UnresolvableReference(name)
+	override addReference(String variable, Object value) {
+		throw new UnresolvableReference(variable)
 	}
 	
 	// a closure doesn't have a static state.

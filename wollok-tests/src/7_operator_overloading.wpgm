@@ -1,0 +1,14 @@
+program operatorOverloading {
+
+
+val sumable = object {
+	val value = 15
+	method +(otro) {
+		value + otro
+	}
+}
+
+this.println(sumable + 15)
+assert.that(sumable + 15 == 30)
+
+}

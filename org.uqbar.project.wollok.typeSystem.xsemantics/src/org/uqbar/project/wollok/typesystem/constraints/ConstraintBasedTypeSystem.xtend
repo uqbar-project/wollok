@@ -4,7 +4,6 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
@@ -29,9 +28,9 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 		p.elements.forEach[generateVariables]
 	}
 	
-	def dispatch void generateVariables(WLibrary p) {
-		p.elements.forEach[generateVariables]
-	}
+//	def dispatch void generateVariables(WLibrary p) {
+//		p.elements.forEach[generateVariables]
+//	}
 
 	def dispatch void generateVariables(EObject node) {
 		println(node)

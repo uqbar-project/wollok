@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -17,7 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WLibrary
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -25,7 +26,9 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
@@ -36,8 +39,10 @@ import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
+import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Custom validation rules.
@@ -51,6 +56,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
+	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
 	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
@@ -196,6 +202,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
+	def cannotAssignToItself(WAssignment a) {
+		if(!(a.value instanceof WVariableReference))
+			return
+			
+		val rightSide = a.value as WVariableReference
+		if(a.feature.ref == rightSide.ref) 
+			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WASSIGNMENT__FEATURE, CANNOT_ASSIGN_TO_ITSELF)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotAssignToItselfInVariableDeclaration(WVariableDeclaration a) {
+		if(!(a.right instanceof WVariableReference))
+			return
+			
+		val rightSide = a.right as WVariableReference
+		if(a.variable == rightSide.ref) 
+			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WVARIABLE_DECLARATION__VARIABLE, CANNOT_ASSIGN_TO_ITSELF)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
 	def duplicatedMethod(WMethodDeclaration m) {
 		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
@@ -233,13 +261,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
-		val body = sup.method.expression as WBlockExpression
 		if (sup.method.declaringContext instanceof WObjectLiteral)
-			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, sup)
 		else if (!sup.method.overrides)
-			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', body, WBLOCK_EXPRESSION__EXPRESSIONS, body.expressions.indexOf(sup))
+			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', sup)
 	}
 	
 	// ***********************
@@ -305,10 +332,22 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def libraryInLibraryFile(WLibrary l){
-		if(l.eResource.URI.nonXPectFileExtension != WollokConstants.CLASS_OBJECTS_EXTENSION) 
-			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.CLASS_OBJECTS_EXTENSION»''', l, WLIBRARY__ELEMENTS)		
+	def testInTestFile(WTest t){
+		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION) 
+			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
+		if (t.then?.isReturnBoolean && t.^else?.isReturnBoolean) 
+			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION)
+	}
+	
+	def dispatch boolean getIsReturnBoolean(WExpression it) { false }
+	def dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
+	def dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
 
 	def isWritableVarRef(WExpression e) { 
 		e instanceof WVariableReference
@@ -331,7 +370,26 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 		else uri.fileExtension
 	}
-
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noExtraSentencesAfterReturnStatement(WBlockExpression it){
+		val riturn = expressions.findFirst[ it instanceof WReturnExpression]
+		if (riturn != null) {
+			it.getExpressionsAfter(riturn).forEach[e|
+				report(WollokDslValidator_NO_EXPRESSION_AFTER_RETURN, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))				
+			]
+		}
+	}
+	
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noReturnStatementInConstructor(WReturnExpression it){
+		if(it.inConstructor)
+			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)				
+	}
+	
 	// ******************************	
 	// ** native methods
 	// ******************************

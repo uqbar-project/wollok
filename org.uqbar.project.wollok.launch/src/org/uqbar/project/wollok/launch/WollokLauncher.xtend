@@ -33,7 +33,7 @@ class WollokLauncher extends WollokChecker {
 		interpreter.interpret(parsed)
 
 		if (parameters.hasRepl) {
-			new WollokRepl(this, injector, interpreter, mainFile).startRepl
+			new WollokRepl(this, injector, interpreter, mainFile, parsed).startRepl
 		}
 	}
 

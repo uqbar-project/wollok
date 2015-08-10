@@ -77,9 +77,9 @@ Workflow {
     
     		// The antlr parser generator fragment.
     		fragment = parser.antlr.XtextAntlrGeneratorFragment auto-inject {
-    		//  options = {
-    		//      backtrack = true
-    		//  }
+//    		  options = {
+//    		      backtrack = true
+//    		  }
     		}
     
     		// Xtend-based API for validation

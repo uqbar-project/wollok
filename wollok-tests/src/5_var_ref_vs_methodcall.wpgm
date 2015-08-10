@@ -1,0 +1,28 @@
+program varRefVsMethodCalls {
+
+// 5to diferenciar acceso a properties de methods
+
+val pepin = object {
+	var altura = 1.40
+	
+	method crecer(cuanto) {
+		altura = altura + cuanto
+	}
+	
+	method ponerseZancos() {
+		this.crecer(0.2)
+	}
+	method altura() {
+		return altura
+	}
+}
+
+assert.that(pepin.altura() == 1.4)
+
+pepin.crecer(0.1)
+assert.that(pepin.altura() == 1.5)
+
+pepin.ponerseZancos()
+assert.that(pepin.altura() == 1.7)
+
+}

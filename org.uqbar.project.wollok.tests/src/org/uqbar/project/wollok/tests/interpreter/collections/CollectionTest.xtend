@@ -28,18 +28,17 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		object pepita{
 			
 		}
-		''',
-		'''
+
 		program p {
 			pajarera.agregar(pepita)
 			pajarera.quitar(pepita)
-			this.assert(pajarera.cantidad() == 0)
+			assert.that(pajarera.cantidad() == 0)
 		}'''].interpretPropagatingErrors
 	}
 	
 	@Test
 	def void test_issue_40() {
-		#['''
+		'''
 		object pajarera {
 		    var energiaMenor = 100 
 		    var pajaros = #[pepita, pepe]
@@ -64,14 +63,11 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		        pajarera.setEnergiaMenor(25)
 		    }
 		}
-		''',
-		'''
 		program p {
 			val menor = pajarera.menorValor()
-			this.assertEquals(10, menor)
+			assert.equals(10, menor)
 		}
-		'''
-		].interpretPropagatingErrors
+		'''.interpretPropagatingErrors
 	}
 	
 	@Test
@@ -84,7 +80,7 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 			val todos = #[]
 			todos.addAll(unos)
 			todos.addAll(otros)			
-			this.assertEquals(8, todos.size())
+			assert.equals(8, todos.size())
 		}'''.interpretPropagatingErrors
 	}
 }

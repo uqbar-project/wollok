@@ -14,7 +14,7 @@ class SetTest extends ListTestCase {
 		'''
 		program p {
 			val numbers = #{ 23, 2, 1, 1, 1 }		
-			this.assertEquals(3, numbers.size())
+			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -25,7 +25,7 @@ class SetTest extends ListTestCase {
 			val numbers = #{ 23, 2, 1, 1, 1 }
 			numbers.add(1)
 			numbers.add(1)		
-			this.assertEquals(3, numbers.size())
+			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -35,7 +35,7 @@ class SetTest extends ListTestCase {
 		program p {
 			val numbers = #{ 23, 2, 1, 1, 1 }
 			numbers.add(#{1, 1, 1, 1, 4})
-			this.assertEquals(4, numbers.size())
+			assert.equals(4, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	

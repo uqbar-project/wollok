@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void testMultipleReferencesToSameObjectCreatesJustOneInstance() { #['''
+	def void testMultipleReferencesToSameObjectCreatesJustOneInstance() { '''
 		object pp {
 		    var ps = #[pepita]
 		    method unMethod(){
@@ -24,13 +24,12 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		object pepita {	}
-		''',
-		'''
+		
 		program p {
 			pp.unMethod()
 			
-			this.assertEquals(pepita, pp.getPs().get(0))
-		}'''].interpretPropagatingErrors
+			assert.equals(pepita, pp.getPs().get(0))
+		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
@@ -45,12 +44,12 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			} 
 			
-			this.assert(33 == o.getN())
+			assert.that(33 == o.getN())
 			
 			// change N
 			n = 34
 			
-			this.assert(34 == o.getN())
+			assert.that(34 == o.getN())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -58,21 +57,19 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testObjectScopingWithClassesFailsOnLinking() {
 		try {
-			#['''
+			'''
 			class Pepe {
 				method getN() {
 					return n
 				}
 			}
-			''',
-			'''
 			program p {
 				var n = 33
 				
-				val o = new Pepe 
+				val o = new Pepe() 
 				
-				this.assert(33 == o.getN())
-			}'''].interpretPropagatingErrors
+				assert.that(33 == o.getN())
+			}'''.interpretPropagatingErrors
 			fail("Linking should have failed, 'n' from class Pepe shoudln't have been resolved !")
 		}
 		catch (AssertionError e) {

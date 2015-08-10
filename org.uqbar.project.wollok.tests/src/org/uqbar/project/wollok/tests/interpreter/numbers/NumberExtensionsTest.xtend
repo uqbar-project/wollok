@@ -50,7 +50,7 @@ class NumberExtensionsTest extends AbstractWollokParameterizedInterpreterTest {
 
 	def assertion() '''
 		program p {
-			this.assertEquals(«expectedResult», «expression») 
+			assert.equals(«expectedResult», «expression») 
 		}
 	'''
 }

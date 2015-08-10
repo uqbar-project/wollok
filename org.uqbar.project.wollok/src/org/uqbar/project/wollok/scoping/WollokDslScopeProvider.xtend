@@ -11,7 +11,6 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
-import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -20,6 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -37,7 +37,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	@Inject
-	ImportedNamespaceAwareLocalScopeProvider globalScopeProvider
+	WollokImportedNamespaceAwareLocalScopeProvider globalScopeProvider
 
 	def IScope scope_WReferenciable(EObject ctx, EReference ref){
 		val globalScope = globalScopeProvider.getScope(ctx,ref)
@@ -58,17 +58,21 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 		else
 			clazz.declaredVariables.asScope
 	}
+
+	def dispatch IScope scope(WNamedObject namedObject) {
+		namedObject.declaredVariables.asScope
+	}
 	
 	// containers which declares elements
-	def dispatch IScope scope(WObjectLiteral obj){ obj.declaredVariables.asScope }
-	def dispatch IScope scope(WConstructor ctr) { ctr.eContainer.scope + ctr.parameters }
-	def dispatch IScope scope(WClosure closure){ closure.eContainer.scope + closure.parameters }
-	def dispatch IScope scope(WMethodDeclaration method){ method.eContainer.scope + method.parameters }
-	def dispatch IScope scope(WCatch cach){ cach.eContainer.scope + cach.exceptionVarName }
+	def dispatch IScope scope(WObjectLiteral it) { declaredVariables.asScope }
+	def dispatch IScope scope(WConstructor it) { eContainer.scope + parameters }
+	def dispatch IScope scope(WClosure it) { eContainer.scope + parameters }
+	def dispatch IScope scope(WMethodDeclaration it) { eContainer.scope + parameters }
+	def dispatch IScope scope(WCatch it) { eContainer.scope + exceptionVarName }
 
 	// usage
-	def dispatch IScope scope(WExpression exp) {
-		exp.eContainer.scope + exp.allSiblingsBefore.filter(WVariableDeclaration).map[variable]
+	def dispatch IScope scope(WExpression it) {
+		eContainer.scope + allSiblingsBefore.filter(WVariableDeclaration).map[variable]
 	}
 	
 	// *******************************************

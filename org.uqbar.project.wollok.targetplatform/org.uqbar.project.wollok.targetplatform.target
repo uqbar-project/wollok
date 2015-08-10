@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="12">
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="13">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.1.0.201409041611"/>
@@ -14,7 +14,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.zest.feature.group" version="1.5.101.201408150207"/>
-<repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases/3.9.101_gef-maintenance_810/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140925-0400"/>
@@ -30,6 +30,12 @@
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
 <unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
 <repository location="http://download.itemis.com/updates/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.tigris.subversion.clientadapter.feature.feature.group" version="1.10.3"/>
+<unit id="org.tigris.subversion.subclipse.feature.group" version="1.10.9"/>
+<unit id="org.tigris.subversion.clientadapter.javahl.feature.feature.group" version="1.8.13"/>
+<repository location="http://subclipse.tigris.org/update_1.10.x"/>
 </location>
 </locations>
 </target>

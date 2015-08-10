@@ -39,7 +39,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 
 		createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.editorArea) => [
 			addView(JavaUI.ID_PACKAGES);
-			addView("org.eclipse.jdt.junit.ResultView");
+			addView("org.uqbar.project.wollok.ui.launch.resultView");
 		]
 		
 		createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.editorArea) => [

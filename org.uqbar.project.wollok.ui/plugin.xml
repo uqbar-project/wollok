@@ -85,7 +85,7 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.WollokRootPreferencePage"
             id="org.uqbar.project.wollok.WollokDsl"
             name="Wollok">
             <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
@@ -453,7 +453,7 @@
   </extension>
   <extension point="org.eclipse.ui.editors.documentProviders">
     <provider id="org.uqbar.project.wollok.WollokDsl.editors.documentProviders"
-            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.model.XtextDocumentProvider"
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider"
             extensions="wpgm,wlk,wtest">
     </provider>
   </extension>
@@ -561,5 +561,12 @@
             name="Wollok Filter"
             targetId="org.eclipse.jdt.ui.PackageExplorer">
       </filter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.uqbar.project.wollok.ui.views.category"
+            name="Wollok">
+      </category>
    </extension>
 </plugin>

@@ -14,7 +14,7 @@ import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.WollokDslStandaloneSetup
+import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -42,15 +42,15 @@ class WollokChecker {
 			log.debug(" args: " + args.toList)
 			
 			if (args.contains("--version")) {
-				println("Wollok v1.0.0") // TODO: compute real version number 
+				println("Wollok v1.1.0") // TODO: compute real version number 
 				System.exit(0)
 			}
-
-			injector = new WollokDslStandaloneSetup().createInjectorAndDoEMFRegistration
-
+			
 			val parameters = new WollokLauncherParameters().parse(args)
 			val fileName = parameters.wollokFiles.get(0)
 			val mainFile = new File(fileName)
+
+			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
 			log.debug("Parsing program...")
 			val parsed = mainFile.parse

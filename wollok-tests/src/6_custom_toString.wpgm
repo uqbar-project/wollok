@@ -1,0 +1,12 @@
+program customToString {
+
+val pepe = object {
+	method toString() {
+		return 'Pepe'
+	}
+}
+
+this.println(pepe)
+assert.that(pepe.toString() == 'Pepe')
+
+}

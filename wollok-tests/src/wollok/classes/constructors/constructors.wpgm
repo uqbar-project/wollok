@@ -1,0 +1,7 @@
+import constructorsLib.*
+
+program constructors {
+	val direccion = new Direccion("Jose Marti", 155)
+	assert.equals("Jose Marti", direccion.getCalle())
+	assert.equals(155, direccion.getNumero())
+}

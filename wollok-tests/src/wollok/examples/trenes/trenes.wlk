@@ -1,5 +1,3 @@
-package trenes {
-
 class Deposito {
 	val formaciones = #[]
 	
@@ -74,4 +72,3 @@ class VagonCarga extends Vagon {
 	}
 }
 
-}

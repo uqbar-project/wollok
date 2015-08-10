@@ -1,17 +1,15 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Ignore
 import org.junit.Test
+import wollok.lib.AssertionException
 
 /**
  * @author tesonep
  */
-@Ignore // fails after using WollokJDTManifestFinder (seems like it doesn't find wollok.lib)
 class TestTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testWithAssertsOk() {
-		#[
 		'''
 			object pepita {
 				var energia = 0
@@ -22,23 +20,20 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					return energia
 				}
 			}
-		''',
-		
-		'''
-			test pepita {
-				tester.assert(pepita.energia() == 0)	
-				tester.assertEquals(0, pepita.energia())	
+
+			test "pepita" {
+				assert.that(pepita.energia() == 0)	
+				assert.equals(0, pepita.energia())	
 				
 				pepita.come(10)
-				tester.assertEquals(100, pepita.energia())	
+				assert.equals(100, pepita.energia())	
 			}
-		'''].interpretPropagatingErrors
+		'''.interpretPropagatingErrors
 	}
 
 	@Test
 	def void testWithAssertEqualsWithErrors() {
 		try{
-			#[
 			'''
 				object pepita {
 					var energia = 0
@@ -49,22 +44,21 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 						return energia
 					}
 				}
-			''',
-			
-			'''
-				test pepita {
-					tester.assertEquals(7, pepita.energia())	
+
+				test "pepita" {
+					assert.equals(7, pepita.energia())	
 				}
-			'''].interpretPropagatingErrors
+			'''.interpretPropagatingErrors
+
 			fail()
-		}catch(AssertionError e){
-			assertEquals("Expected [7] but found [0]",e.message)
+		} catch(Exception e){
+			e.assertIsException(AssertionException)
+			assertEquals("Expected [7] but found [0]",getMessageOf(e,AssertionException))
 		}
 	}
 
 	@Test(expected = AssertionError)
 	def void testWithAssertsWithErrors() {
-		#[
 		'''
 			object pepita {
 				var energia = 0
@@ -75,13 +69,10 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					return energia
 				}
 			}
-		''',
-		
-		'''
+
 			test pepita {
 				tester.assert(7 == pepita.energia())	
 			}
-		'''].interpretPropagatingErrors
+		'''.interpretPropagatingErrors
 	}
-	
 }

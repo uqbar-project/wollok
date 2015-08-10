@@ -16,6 +16,8 @@ import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 class WollokRepl {
 	val Injector injector
 	val WollokLauncher launcher
@@ -24,12 +26,14 @@ class WollokRepl {
 	val reader = new BufferedReader(new InputStreamReader(System.in))
 	val prompt = ">>> "
 	var whiteSpaces = ""
+	val WFile parsedMainFile
 
-	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile) {
+	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile) {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
 		this.mainFile = mainFile
+		this.parsedMainFile = parsedMainFile
 	}
 
 	def void startRepl() {
@@ -60,6 +64,10 @@ class WollokRepl {
 			try {
 				val returnValue = interpreter.interpret(
 					'''
+						«FOR a : parsedMainFile.imports.map[importedNamespace]»
+						import «a»
+						«ENDFOR»
+						import «parsedMainFile.fileName».*
 						program repl {
 						«input»
 						}
@@ -105,9 +113,10 @@ class WollokRepl {
 	def uriToUse(ResourceSet resourceSet) {
 		var name = "__synthetic";
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
-			var syntheticUri = URI.createURI(name + i + "." + WollokConstants.PROGRAM_EXTENSION);
-			if (resourceSet.getResource(syntheticUri, false) == null)
+			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
+			if (resourceSet.getResource(syntheticUri, false) == null){
 				return syntheticUri;
+			}
 		}
 		throw new IllegalStateException();
 	}
@@ -127,7 +136,7 @@ class WollokRepl {
 
 	def dispatch void handleException(ReplParserException e){
 		e.issues.forEach [
-			printlnIdent("" + severity.name + ":" + message + "(line:" + (lineNumber - 1) + ")")
+			printlnIdent("" + severity.name + ":" + message + "(line:" + (lineNumber - numberOfLinesBefore) + ")")
 		]
 	}
 
@@ -139,9 +148,13 @@ class WollokRepl {
 		printlnIdent(e.internalMessage)
 	}
 
+	def getNumberOfLinesBefore(){
+		2 + parsedMainFile.imports.size
+	}
+
 	def dispatch void handleException(WollokInterpreterException e){
-		if(e.lineNumber > 1){
-			printlnIdent('''Error in line (line:«e.lineNumber - 1»): «e.nodeText»:''')
+		if(e.lineNumber > numberOfLinesBefore){
+			printlnIdent('''Error in line (line:«e.lineNumber - numberOfLinesBefore»): «e.nodeText»:''')
 		}
 		
 		if(e.cause != null){

@@ -2,6 +2,12 @@ package org.uqbar.project.wollok;
 
 import org.eclipse.osgi.util.NLS;
 
+/**
+ * Holds keys for all i18nized texts.
+ * Check for messages.properties file
+ * 
+ * @author jfernandes
+ */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.messages"; //$NON-NLS-1$
 
@@ -12,6 +18,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_NOT_OVERRIDING;
 	public static String WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
+	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
@@ -33,6 +40,10 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;
 	public static String WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS;
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
+	
+	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_NO_EXPRESSION_AFTER_RETURN;
+	public static String WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION;
 	
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;

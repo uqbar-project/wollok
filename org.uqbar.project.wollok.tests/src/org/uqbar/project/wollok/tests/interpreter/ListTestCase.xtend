@@ -13,7 +13,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			val numbers = #[23, 2, 1]		
-			this.assertEquals(3, numbers.size())
+			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -22,7 +22,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			val numbers = #[23, 2, 1]		
-			this.assert(numbers.contains(23))
+			assert.that(numbers.contains(23))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -32,7 +32,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			val numbers = #[23, 2, 1]
 			numbers.remove(23)		
-			this.assert(2 == numbers.size())
+			assert.that(2 == numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -42,7 +42,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			val numbers = #[23, 2, 1]
 			numbers.clear()		
-			this.assert(0 == numbers.size())
+			assert.that(0 == numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -51,7 +51,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			val numbers = #[23, 2, 1]
-			this.assertFalse(numbers.isEmpty())
+			assert.notThat(numbers.isEmpty())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -59,13 +59,12 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForEach() {
 		'''
 		program p {
-			
 			val numbers = #[23, 2, 1]
 			
 			var sum = 0
 			numbers.forEach([n | sum += n])
 			
-			this.assertEquals(26, sum)
+			assert.equals(26, sum)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -73,12 +72,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForAll() {
 		'''
 		program p {
-			
 			val numbers = #[23, 2, 1]
-			
 			var allPositives = numbers.forAll([n | n > 0])
-			
-			this.assert(allPositives)
+			assert.that(allPositives)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -86,9 +82,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testFilter() {
 		'''
 		program p {
-				val numbers = #[23, 2, 1]
-				var greaterThanOneElements = numbers.filter([n | n > 1])
-				this.assert(greaterThanOneElements.size() == 2)
+			val numbers = #[23, 2, 1]
+			var greaterThanOneElements = numbers.filter([n | n > 1])
+			assert.that(greaterThanOneElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -99,9 +95,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			val numbers = #[10, 20, 30]
 			var halfs = numbers.map([n | n / 2])
 
-			this.assert(halfs.contains(5))
-			this.assert(halfs.contains(10))
-			this.assert(halfs.contains(15))
+			assert.that(halfs.contains(5))
+			assert.that(halfs.contains(10))
+			assert.that(halfs.contains(15))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -109,9 +105,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testShortCutAvoidingParenthesis() {
 		'''
 		program p {
-				val numbers = #[23, 2, 1]
-				var greaterThanOneElements = numbers.filter[n | n > 1]
-				this.assert(greaterThanOneElements.size() == 2)
+			val numbers = #[23, 2, 1]
+			var greaterThanOneElements = numbers.filter[n | n > 1]
+			assert.that(greaterThanOneElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 

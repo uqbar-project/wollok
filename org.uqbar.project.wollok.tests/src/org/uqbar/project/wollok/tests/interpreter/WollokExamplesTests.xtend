@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterprete
  */
 class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	static val path = EXAMPLES_PROJECT_PATH + "/src/"
-	static val libPath = EXAMPLES_PROJECT_PATH + "/src/lib"
 
 	@Parameter(0)
 	public File program
@@ -23,7 +22,6 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	static def Iterable<Object[]> data() {
 		val files = newArrayList => [
 			addAll(path.listWollokPrograms)
-			addAll(libPath.listWollokPrograms)
 		]
 		
 		files.asParameters
@@ -38,7 +36,20 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	// ** Helpers
 	// ********************************************************************************************
 	
-	static def listWollokPrograms(String path) {
-		new File(path).listFiles[isFile && name.endsWith(".wlk")]
+	// isFile && (name.endsWith(".wlk") || name.endsWith(".wpgm")) 
+	
+	static def dispatch Iterable<File> listWollokPrograms(String path) {
+		new File(path).listWollokPrograms
+	}
+	
+	static def dispatch Iterable<File> listWollokPrograms(File it){
+		if(file){
+			if(name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest"))
+				#[it]
+			else
+				#[]
+		}else{
+			listFiles.map[listWollokPrograms].flatten
+		}
 	}
 }

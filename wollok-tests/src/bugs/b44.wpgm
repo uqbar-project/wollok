@@ -1,7 +1,0 @@
-
-program abc {
-	val aList = #[ 1, 2, 3, 4]
-	val clone = aList.clone()
-	
-	tester.assertEquals(aList.getClass(), clone.getClass())
-}

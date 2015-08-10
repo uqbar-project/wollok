@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: vainilla
 Bundle-SymbolicName: vainilla
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Export-Package: com.uqbar.vainilla,
  com.uqbar.vainilla.appearances,
  com.uqbar.vainilla.colissions,

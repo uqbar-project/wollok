@@ -1,0 +1,5 @@
+
+object alpiste {
+	method energia() = 100
+}
+test "Prueba" { assert.equals(100, alpiste.energia()) }

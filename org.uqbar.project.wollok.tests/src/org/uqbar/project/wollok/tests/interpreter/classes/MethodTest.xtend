@@ -10,20 +10,18 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class MethodTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void shortSyntaxForMethodsReturningAValue() { #['''
+	def void shortSyntaxForMethodsReturningAValue() { '''
 		class Golondrina {
 			var energia = 100
 		
 			method energia() = energia
 			method capacidadDeVuelo() = 10
 		}
-		''',
-		'''
 		program p {
 			val pepona = new Golondrina()
-			this.assertEquals(pepona.energia(), 100)
-			this.assertEquals(pepona.capacidadDeVuelo(), 10)
-		}'''].interpretPropagatingErrors
+			assert.equals(pepona.energia(), 100)
+			assert.equals(pepona.capacidadDeVuelo(), 10)
+		}'''.interpretPropagatingErrors
 	}
 	
 }

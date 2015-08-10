@@ -35,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WLibrary
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
@@ -74,13 +73,13 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
-	static final String OBJECT_CLASS_NAME = 'WObject'
+	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
 	
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
-	var Map<String, WeakReference> numbersCache = newHashMap
+	var Map<String, WeakReference<Object>> numbersCache = newHashMap
 
 	@Inject
 	WollokInterpreter interpreter
@@ -100,23 +99,21 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
 	// EVALUATIONS (as multimethods)
-	def dispatch Object evaluate(WFile it) { body.eval }
-
-	// library won't do anything
-	def dispatch Object evaluate(WLibrary it) {}
+	def dispatch Object evaluate(WFile it) { 
+		// Files should are not allowed to have both a main program and tests at the same time.
+		if (main != null) main.eval else tests.evalAll
+	}
 
 	def dispatch Object evaluate(WClass it) {}
-
 	def dispatch Object evaluate(WPackage it) {}
-
-	// program
 	def dispatch Object evaluate(WProgram it) { elements.evalAll }
-
-	// Test
 	def dispatch Object evaluate(WTest it) { elements.evalAll }
 
 
 	def dispatch Object evaluate(WVariableDeclaration it) {
+		if(it.eContainer instanceof WProgram){
+			interpreter.addProgramVariable(variable)
+		}
 		interpreter.currentContext.addReference(variable.name, right?.eval)
 	}
 
@@ -130,7 +127,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WIfExpression it) {
 		val cond = condition.eval
 		// I18N !
-		if(!(cond instanceof Boolean)) throw new WollokInterpreterException(
+		if (!(cond instanceof Boolean)) throw new WollokInterpreterException(
 			"Expression in 'if' must evaluate to a boolean. Instead got: " + cond, it)
 		if (Boolean.TRUE == cond)
 			then.eval
@@ -234,7 +231,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
 				o.name.toString == OBJECT_CLASS_NAME
 			]
-			objectClass = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME].EObjectOrProxy as WClass
+			val a = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME]
+			if (a == null)
+				throw new WollokRuntimeException("Could NOT find " + OBJECT_CLASS_NAME + " in scope: " + scope.allElements)
+			objectClass = a.EObjectOrProxy as WClass
 		}
 		objectClass
 	}
@@ -244,15 +244,32 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		
 		val x = try {
 			interpreter.currentContext.resolve(qualifiedName)
-		} catch (UnresolvableReference e) {
-			new WollokObject(interpreter, namedObject) => [ wo |
-				namedObject.members.forEach[wo.addMember(it)]
-				if (namedObject.native)
-					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
-				interpreter.currentContext.addGlobalReference(qualifiedName, wo)
-			]
+		}
+		catch (UnresolvableReference e) {
+			createNamedObject(namedObject, qualifiedName)
 		}
 		x
+	}
+	
+	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
+		namedObject.hookObjectInHierarhcy
+		
+		new WollokObject(interpreter, namedObject) => [ wo |
+			namedObject.members.forEach[wo.addMember(it)]
+			if (namedObject.native)
+				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
+		]
+	}
+	
+	def hookObjectInHierarhcy(WNamedObject namedObject) {
+		if (namedObject.parent != null)
+			namedObject.parent.hookToObject
+		else {
+			val object = getObjectClass(namedObject)
+			namedObject.parent = object
+			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
+		}
 	}
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }

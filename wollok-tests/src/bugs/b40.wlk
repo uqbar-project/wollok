@@ -1,5 +1,3 @@
-package b40 {
-
 object pajarera {
     var energiaMenor = 100 
     var pajaros = #[pepita, pepe]
@@ -38,4 +36,3 @@ class Arturo {
     }
 }
 
-}

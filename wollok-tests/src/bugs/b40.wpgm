@@ -1,7 +1,0 @@
-import b40.*
-
-program b40 {
-
-	tester.assertEquals(10, pajarera.menorValor())
-	
-}

@@ -17,12 +17,11 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 						energy = energy + amount
 					}
 				}
-			''',
-			'''
+
 				program namedObjects{
-					this.assertEquals(0, pepita.energyLevel())
+					assert.equals(0, pepita.energyLevel())
 					pepita.addEnergy(10)
-					this.assertEquals(10, pepita.energyLevel())
+					assert.equals(10, pepita.energyLevel())
 				}
 			'''
 		].interpretPropagatingErrors
@@ -57,30 +56,26 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void referencingObject() {
-		#[
-			'''
-				object pp {
-				    val ps = #[pepita]
-				    
-				    method unMethod(){
-				        var x = pepita
-				        return x
-				    }
-				
-				    method getPs(){
-				        return ps
-				    }
-				}
-				
-				object pepita {
-				
-				}			
-			''',
-			'''
-				program xxx{
-					pp.unMethod()
-					this.assertEquals(pepita, pp.getPs().get(0))
-				}
-			'''].interpretPropagatingErrors
+		'''
+			object pp {
+			    val ps = #[pepita]
+			    
+			    method unMethod(){
+			        var x = pepita
+			        return x
+			    }
+			
+			    method getPs(){
+			        return ps
+			    }
+			}
+			
+			object pepita {}
+			
+			program xxx{
+				pp.unMethod()
+				assert.equals(pepita, pp.getPs().get(0))
+			}
+		'''.interpretPropagatingErrors
 	}
 }

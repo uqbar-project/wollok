@@ -13,7 +13,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.maven.CustomWollokDslInjectorProvider
+import org.uqbar.project.wollok.WollokDslInjectorProvider
 
 /**
  * Tests wollok code formatter
@@ -21,7 +21,7 @@ import org.uqbar.project.wollok.tests.maven.CustomWollokDslInjectorProvider
  * @author jfernandes
  */
 @RunWith(XtextRunner)
-@InjectWith(CustomWollokDslInjectorProvider)
+@InjectWith(WollokDslInjectorProvider)
 class WollokFormatterTestCase extends AbstractXtextTests {
 	@Inject
 	INodeModelFormatter formatter
@@ -235,10 +235,26 @@ class Direccion {
 }
 class Client {
 	method blah() {
-		val a = "" val b = 2 val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
+		val a = ""
+		val b = 2
+		val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
 	}
 }''')
     }
+
+    @Test
+    def void testSimpleTestFormatting() throws Exception {
+    	assertFormatting(
+    	'''test "aSimpleTest"{
+    				assert.that(true)
+    	}''',
+'''
+
+test "aSimpleTest" {
+	assert.that(true)
+}''')
+    }
+
 
 	// TODO: test 
 	//     	- named objects and object literals

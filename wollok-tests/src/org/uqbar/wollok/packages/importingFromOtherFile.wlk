@@ -1,5 +1,5 @@
-import a.A
-import b.*
+import otherFile.a.A
+import otherFile.b.*
 
 class I extends A {
 	
