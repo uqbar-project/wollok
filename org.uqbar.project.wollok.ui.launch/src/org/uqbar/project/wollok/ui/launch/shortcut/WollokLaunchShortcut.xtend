@@ -6,14 +6,15 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.DebugPlugin
 import org.eclipse.debug.core.ILaunchConfiguration
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 import org.eclipse.debug.core.ILaunchManager
-import org.eclipse.debug.ui.IDebugUIConstants
 import org.eclipse.debug.ui.RefreshTab
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.core.JavaModelException
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
@@ -24,7 +25,6 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.eclipse.debug.internal.ui.DebugUIPlugin
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -83,24 +83,26 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val x = cfgType.newInstance(null, info.generateUniqueName)
-		x => [
-			setAttribute(ATTR_PROJECT_NAME, info.project)
-			setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
-			setAttribute(ATTR_STOP_IN_MAIN, false)
-			setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
-			setAttribute(ATTR_WOLLOK_FILE, info.file)
-			setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
-			setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
-			setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
-		]
+		this.configureConfiguration(x, info)
 		x.doSave
+	}
+	
+	def configureConfiguration(ILaunchConfigurationWorkingCopy it, LaunchConfigurationInfo info) {
+		setAttribute(ATTR_PROJECT_NAME, info.project)
+		setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
+		setAttribute(ATTR_STOP_IN_MAIN, false)
+		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
+		setAttribute(ATTR_WOLLOK_FILE, info.file)
+		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
+		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
+		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 	}
 }
 
 class LaunchConfigurationInfo {
-	@Property String name;
-	@Property String project;
-	@Property String file;
+	@Accessors String name;
+	@Accessors String project;
+	@Accessors String file;
 
 	new(IFile file) {
 		name = file.name
@@ -112,6 +114,6 @@ class LaunchConfigurationInfo {
 		file == a.getAttribute(ATTR_WOLLOK_FILE, "X")
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
-			&& LAUNCH_CONFIGURATION_TYPE == a.type.identifier
+			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
 	}
 }

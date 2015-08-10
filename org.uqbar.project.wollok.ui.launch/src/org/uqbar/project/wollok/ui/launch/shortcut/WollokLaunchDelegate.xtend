@@ -38,7 +38,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		if (configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) != null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
-		var config = configuration.setDebugWollokParam(mode)
+		var config = configuration.configureLaunchSettings(mode)
 		super.launch(config, mode, launch, monitor);
 		
 		if(configuration.hasRepl){
@@ -63,32 +63,35 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		}
 	}
 	
-	def setDebugWollokParam(ILaunchConfiguration config, String mode) {
+	def configureLaunchSettings(ILaunchConfiguration config, String mode) {
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort
 			config.getWorkingCopy =>[
 				setCommandPort(requestPort)
 				setEventPort(eventPort)
-				setArguments(requestPort, eventPort, config.hasRepl)
+				setArguments(requestPort, eventPort)
 				doSave
 			]
 		}else{
 			config.getWorkingCopy => [
-				setArguments(0, 0, config.hasRepl)
+				setArguments(0, 0)
 				doSave
 			]
 		}
 	}
 	
-	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort, boolean hasRepl){
+	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort){
 		val parameters = new WollokLauncherParameters
 		parameters.eventsPort = eventPort;
 		parameters.requestsPort = requestPort
-		parameters.hasRepl = hasRepl
 		parameters.wollokFiles += config.wollokFile
-		
-		config.programArguments = parameters.build
+		parameters.hasRepl = config.hasRepl
+		parameters
+	}
+	
+	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){
+		config.programArguments = configureLaunchParameters(config, requestPort, eventPort).build
 	}
 	
 	def createWollokTarget(ILaunch launch, int requestPort, int eventPort) {

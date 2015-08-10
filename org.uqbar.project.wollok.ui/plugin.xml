@@ -562,4 +562,11 @@
             targetId="org.eclipse.jdt.ui.PackageExplorer">
       </filter>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.uqbar.project.wollok.ui.views.category"
+            name="Wollok">
+      </category>
+   </extension>
 </plugin>

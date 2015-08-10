@@ -45,12 +45,12 @@ class WollokChecker {
 				println("Wollok v1.0.0") // TODO: compute real version number 
 				System.exit(0)
 			}
-
-			injector = new WollokLauncherSetup().createInjectorAndDoEMFRegistration
-
+			
 			val parameters = new WollokLauncherParameters().parse(args)
 			val fileName = parameters.wollokFiles.get(0)
 			val mainFile = new File(fileName)
+
+			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
 			log.debug("Parsing program...")
 			val parsed = mainFile.parse

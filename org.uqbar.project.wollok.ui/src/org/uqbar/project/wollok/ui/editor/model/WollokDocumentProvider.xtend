@@ -19,8 +19,10 @@ class WollokDocumentProvider extends XtextDocumentProvider {
 
 		val prefStore = preferenceStoreAccess.preferenceStore
 
-		if(prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) && !prefStore.getBoolean(WollokRootPreferencePage.FORMAT_ON_SAVE)){
-			return 
+		if (!prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) ||
+			(prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) &&
+				!prefStore.getBoolean(WollokRootPreferencePage.FORMAT_ON_SAVE))) {
+			return
 		}
 
 		val service = PlatformUI.getWorkbench().getService(IHandlerService) as IHandlerService

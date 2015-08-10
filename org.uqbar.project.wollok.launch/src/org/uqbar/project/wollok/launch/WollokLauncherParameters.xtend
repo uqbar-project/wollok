@@ -17,12 +17,20 @@ class WollokLauncherParameters {
 	List<String> wollokFiles = new ArrayList();
 	@Accessors
 	boolean hasRepl = false;
+
+	@Accessors
+	Integer testPort = null;
+
+	@Accessors
+	boolean tests = false;
 	
 	def build(){
 		val sb = new StringBuilder
 		if(hasRepl)sb.append("-r").append(" ")
 		if(requestsPort != null)sb.append("-requestsPort " + requestsPort.toString).append(" ")
 		if(eventsPort != null)sb.append("-eventsPort " + eventsPort.toString).append(" ")
+		if(testPort != null)sb.append("-testPort " + testPort.toString).append(" ")
+		if(tests)sb.append("-t ")
 		wollokFiles.forEach [ sb.append(it).append(" ") ]
 		sb.toString
 	}
@@ -31,6 +39,9 @@ class WollokLauncherParameters {
 		val parser = new GnuParser
 		val cmdLine = parser.parse(options, args)
 		hasRepl = cmdLine.hasOption("r")
+		
+		tests = cmdLine.hasOption("t")
+		testPort = parseParameter(cmdLine, "testPort")
 
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
@@ -66,6 +77,12 @@ class WollokLauncherParameters {
 	def options() {
 		val options = new Options
 		options.addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
+		options.addOption(new Option("t", "Running tests") => [longOpt = "tests"])
+		options.addOption(
+			new Option("testPort", "Server port for tests") => [
+				argName = "port"
+				args = 1
+			])
 		options.addOption(
 			new Option("requestsPort", "Request ports") => [
 				argName = "port"

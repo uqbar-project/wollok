@@ -3,11 +3,6 @@
 */
 package org.uqbar.project.wollok;
 
-import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
-import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
-import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
-
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -22,11 +17,9 @@ public class WollokDslStandaloneSetup extends WollokDslStandaloneSetupGenerated 
 	public Injector createInjector() {
 		return Guice.createInjector(new org.uqbar.project.wollok.WollokDslRuntimeModule(),this);
 	}
-
+	
 	@Override
 	public void configure(Binder binder) {
-		binder.bind(WollokInterpreterConsole.class).to(SysoutWollokInterpreterConsole.class);
-		binder.bind(XInterpreterEvaluator.class).to(WollokInterpreterEvaluator.class);
 	}
 }
 
