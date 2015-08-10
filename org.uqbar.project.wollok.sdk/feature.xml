@@ -204,7 +204,7 @@ Library.
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
-      <import plugin="org.uqbar.project.wollok" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.ui.shared" version="2.7.3" match="greaterOrEqual"/>
