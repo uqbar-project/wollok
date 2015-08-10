@@ -6,14 +6,15 @@ import org.eclipse.core.runtime.CoreException
 import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.DebugPlugin
 import org.eclipse.debug.core.ILaunchConfiguration
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 import org.eclipse.debug.core.ILaunchManager
-import org.eclipse.debug.ui.IDebugUIConstants
 import org.eclipse.debug.ui.RefreshTab
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.core.JavaModelException
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
@@ -24,8 +25,6 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.eclipse.debug.internal.ui.DebugUIPlugin
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -101,9 +100,9 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 }
 
 class LaunchConfigurationInfo {
-	@Property String name;
-	@Property String project;
-	@Property String file;
+	@Accessors String name;
+	@Accessors String project;
+	@Accessors String file;
 
 	new(IFile file) {
 		name = file.name
