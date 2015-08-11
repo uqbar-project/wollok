@@ -19,14 +19,13 @@ class WollokDocumentProvider extends XtextDocumentProvider {
 
 		val prefStore = preferenceStoreAccess.preferenceStore
 
-		if (!prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) ||
-			(prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) &&
-				!prefStore.getBoolean(WollokRootPreferencePage.FORMAT_ON_SAVE))) {
-			return
+		if (prefStore.contains(WollokRootPreferencePage.FORMAT_ON_SAVE) &&
+				prefStore.getBoolean(WollokRootPreferencePage.FORMAT_ON_SAVE)) {
+
+			val service = PlatformUI.getWorkbench().getService(IHandlerService) as IHandlerService
+			service.executeCommand(XTEXT_FORMAT_ACTION_COMMAND_ID, null)
 		}
 
-		val service = PlatformUI.getWorkbench().getService(IHandlerService) as IHandlerService
-		service.executeCommand(XTEXT_FORMAT_ACTION_COMMAND_ID, null)
 		super.doSaveDocument(monitor, element, document, overwrite)
 	}
 }
