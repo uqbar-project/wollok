@@ -63,7 +63,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def locateRunner(IResource resource) throws CoreException {
 		val project = JavaCore.create(resource.project)
 		if (!isOnClasspath(WollokLauncher.name, project))
-			throw new DebugException(Activator.PLUGIN_ID.errorStatus("Please put bundle '" + Activator.PLUGIN_ID + "' on your project's classpath."))
+			throw new DebugException(Activator.PLUGIN_ID.errorStatus("Please put bundle '" + Activator.LAUNCHER_PLUGIN_ID + "' on your project's classpath."))
 	}
 
 	def isOnClasspath(String fullyQualifiedName, IJavaProject project) {
