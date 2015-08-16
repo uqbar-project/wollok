@@ -16,5 +16,6 @@ class Position {
 	method setX(x) native
 	method getY() native
 	method setY(y) native
-
+	method setWollokObject(anObject) native
+	method sendMessage() native
 }
