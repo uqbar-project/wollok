@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.game.gameboard;
 
+import org.uqbar.project.wollok.game.VisualComponent;
 import org.uqbar.project.wollok.game.listeners.GameboardListener;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -39,6 +40,8 @@ public class GameboardRendering implements ApplicationListener {
 			this.draw(cell);
 		}
 		
+		this.draw(gameboard.getCharacterVisualcomponent());
+		
 		batch.end();
 	}
 
@@ -53,6 +56,11 @@ public class GameboardRendering implements ApplicationListener {
 		batch.draw(texture, cell.width, cell.height);
 	}
 	
+	private void draw(VisualComponent aComponent){
+		Texture texture = new Texture(Gdx.files.internal(aComponent.getImage()));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		batch.draw(texture, aComponent.getMyPosition().getXinPixels(), aComponent.getMyPosition().getYinPixels());
+	}
 	
 	@Override
 	public void resize(int arg0, int arg1) {

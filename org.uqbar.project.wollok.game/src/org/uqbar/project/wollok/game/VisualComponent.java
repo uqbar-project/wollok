@@ -1,16 +1,18 @@
 package org.uqbar.project.wollok.game;
 
 import org.uqbar.project.wollok.game.Position;
+import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
 public class VisualComponent {
 
 	private Position position;
 	private String image;
+	// En realidad es un WollokObject pero lo debo tratar como object generalmente...WTF!
 	private Object domainObject;
 	
 	public VisualComponent() { }
 	
-	public VisualComponent(Object object, String image, Position position) {
+	public VisualComponent(WollokObject object, String image, Position position) {
 		this.domainObject = object;
 		this.image = image;
 		this.position = position;

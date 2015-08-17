@@ -26,12 +26,12 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		Gameboard.getInstance().tittle
 	}
 	
-	@NativeMessage("setWeight")
+	@NativeMessage("setWidth")
 	def setWeightMethod(WollokInteger cant) {
 		Gameboard.getInstance().cantCellX = cant.wrapped
 	}
 		
-	@NativeMessage("getWeight")
+	@NativeMessage("getWidth")
 	def getWeightMethod() {
 		Gameboard.getInstance().cantCellX
 	}
@@ -46,12 +46,17 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		Gameboard.getInstance().cantCellY
 	}
 	
-	@NativeMessage("addObject")
-	def addObjectMethod(WollokObject wollokObject) {
+	@NativeMessage("addCharacter")
+	def addCharacterMethod(Object wollokObject) {
+		Gameboard.getInstance().setCharacterWollokObject(wollokObject)
+	}
+	
+//	@NativeMessage("addObject")
+//	def addObjectMethod(WollokObject wollokObject) {
 //		var position = new Position(posX.wrapped, posY.wrapped)
 //		var visualComponent = new VisualComponent(wollokObject, image, position)
 //		Gameboard.getInstance().addComponent(visualComponent)
-	}
+//	}
 	
 	@NativeMessage("getObjectsIn")
 	def getObjectsInMethod(WollokInteger posX, WollokInteger posY) {

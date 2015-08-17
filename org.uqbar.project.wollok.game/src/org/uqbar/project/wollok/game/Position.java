@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.game;
 
+import org.uqbar.project.wollok.game.gameboard.Gameboard;
+
 public class Position {
 
 	private int x;
@@ -39,11 +41,17 @@ public class Position {
 	public int getX() {
 		return x;
 	}
+	public int getXinPixels(){
+		return x * Gameboard.CELLZISE;
+	}
 	public void setX(int x) {
 		this.x = x;
 	}
 	public int getY() {
 		return y;
+	}
+	public int getYinPixels(){
+		return y * Gameboard.CELLZISE;
 	}
 	public void setY(int y) {
 		this.y = y;

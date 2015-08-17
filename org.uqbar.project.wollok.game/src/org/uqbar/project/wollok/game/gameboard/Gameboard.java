@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.uqbar.project.wollok.game.GameFactory;
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.game.VisualComponent;
 import org.uqbar.project.wollok.game.listeners.GameboardListener;
+import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -16,16 +18,20 @@ import com.google.common.collect.Collections2;
 
 public class Gameboard {
 	
-	private static final int CELLZISE = 50;
+	public static final int CELLZISE = 50;
 	private String tittle;
 	private int cantCellX;
 	private int cantCellY;
 	private List<Cell> cells = new ArrayList<Cell>();
+	private VisualComponent character;
 	private List<GameboardListener> listeners = new ArrayList<GameboardListener>();
 	private List<VisualComponent> components = new ArrayList<VisualComponent>();
 	
 	public Gameboard(){
-		
+		this.character = new VisualComponent();
+		this.character.setMyPosition(new Position(1,1));
+		GameFactory factory = new GameFactory();
+		factory.setGame(this);
 	}
 	
 	private void createCells() {
@@ -61,6 +67,14 @@ public class Gameboard {
 	}
 	
 	// Getters & Setters
+	
+	public void setCharacterWollokObject(Object aCharacter){
+		this.character.setMyDomainObject(aCharacter);
+	}
+	public VisualComponent getCharacterVisualcomponent(){
+		return this.character;
+	}
+	
 	public String getTittle() {
 		return tittle;
 	}
