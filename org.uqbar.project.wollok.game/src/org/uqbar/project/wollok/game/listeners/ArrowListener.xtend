@@ -11,10 +11,10 @@ class ArrowListener implements GameboardListener {
 	var diccionario = new HashMap<Integer, Runnable>()
 	
 	new(Gameboard aGameboard){
-		diccionario.put(Keys.UP,[|aGameboard.characterVisualcomponent.myPosition.incY(1)])
-		diccionario.put(Keys.DOWN,[|aGameboard.characterVisualcomponent.myPosition.incY(-1)])
-		diccionario.put(Keys.LEFT,[|aGameboard.characterVisualcomponent.myPosition.incX(-1)])
-		diccionario.put(Keys.RIGHT,[|aGameboard.characterVisualcomponent.myPosition.incX(1)])
+		diccionario.put(Keys.UP,[|aGameboard.character.myPosition.incY(1)])
+		diccionario.put(Keys.DOWN,[|aGameboard.character.myPosition.incY(-1)])
+		diccionario.put(Keys.LEFT,[|aGameboard.character.myPosition.incX(-1)])
+		diccionario.put(Keys.RIGHT,[|aGameboard.character.myPosition.incX(1)])
 	}
 	
 	override notify(Gameboard gameboard) {

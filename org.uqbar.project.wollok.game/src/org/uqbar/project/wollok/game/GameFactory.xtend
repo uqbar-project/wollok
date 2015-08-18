@@ -13,7 +13,7 @@ class GameFactory {
 	var Gameboard gameboard
 
 	//Solo a fin de crear un prototipo de ejemplo
-	def makeJson(){
+	def exampleJson(){
 		var config = new GameConfiguration()
 		config.gameboardHeight = 5	
 		config.gameboardTitle = "sokoban"
@@ -21,20 +21,24 @@ class GameFactory {
 		config.imageCharacter = "jugador.png"
 		config.imageGround = "flying_bird.png"
 		config.arrowListener = true
-		var Json json = new Json();
-		System.out.println(json.toJson(config));		
+		config.addComponent(new Component("pared.png",true,false))
+		config.addComponent(new Component("caja.png",true,true))
+		makeJson(config)
 	}
-	
+	def makeJson(GameConfiguration aConfig){
+		var Json json = new Json();
+		System.out.println(json.prettyPrint(aConfig));		
+	}
 	def loadJson(){
 		var Json json = new Json();
 		var String text = readFile("config.json",StandardCharsets.UTF_8)
 		var GameConfiguration config = json.fromJson(typeof(GameConfiguration), text);
-		gameboard.configuration = config		
+		gameboard.configuration = config
 	}
 	
 	def void setGame(Gameboard aGameboard) {
 		this.gameboard = aGameboard
-		//makeJson()
+		//exampleJson()
 		loadJson()
 		aGameboard.configuration.build(aGameboard);
 	}

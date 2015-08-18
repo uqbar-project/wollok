@@ -26,12 +26,20 @@ public class Gameboard {
 	private boolean marca;
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
+	public VisualComponent getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(VisualComponent character) {
+		this.character = character;
+	}
+
 	private List<GameboardListener> listeners = new ArrayList<GameboardListener>();
 	private List<VisualComponent> components = new ArrayList<VisualComponent>();
-	
-	public Gameboard(){
-		this.character = new VisualComponent();
-		this.character.setMyPosition(new Position(1,1));
+
+	public Gameboard() {
+		marca = false;
+		keyboardCounter = 0;
 		GameFactory factory = new GameFactory();
 		factory.setGame(this);
 	}
@@ -76,7 +84,7 @@ public class Gameboard {
 	public VisualComponent getCharacterVisualcomponent(){
 		return this.character;
 	}
-	
+
 	public String getTittle() {
 		return configuration.getGameboardTitle();
 	}
