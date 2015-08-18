@@ -1,0 +1,6 @@
+{gameboardTitle:sokoban,
+gameboardHeight:5,
+gameboardWidth:5,
+imageCharacter:jugador.png,
+imageGround:flying_bird.png,
+arrowListener:true}

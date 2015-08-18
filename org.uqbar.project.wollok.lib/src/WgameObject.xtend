@@ -17,8 +17,8 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("setTittle")
-	def setTittleMethod(String tittle) {
-		Gameboard.getInstance().tittle = tittle
+	def setTittleMethod(String title) {
+		Gameboard.getInstance().configuration.gameboardTitle = title
 	}
 	
 	@NativeMessage("getTittle")
@@ -28,7 +28,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
 	@NativeMessage("setWidth")
 	def setWeightMethod(WollokInteger cant) {
-		Gameboard.getInstance().cantCellX = cant.wrapped
+		Gameboard.getInstance().configuration.gameboardWidth =  cant.wrapped
 	}
 		
 	@NativeMessage("getWidth")
@@ -38,7 +38,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
 	@NativeMessage("setHeight")
 	def setHeightMethod(WollokInteger cant) {
-		Gameboard.getInstance().cantCellY = cant.wrapped
+		Gameboard.getInstance().configuration.gameboardHeight = cant.wrapped
 	}
 	
 	@NativeMessage("getHeight")

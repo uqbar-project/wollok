@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.game;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.uqbar.project.wollok.game.GameConfiguration;
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
 
 public class GameboardTest {
@@ -12,9 +13,11 @@ public class GameboardTest {
 	@Before
 	public void init(){
 		this.aGameBoard2x5 = new Gameboard();
-		this.aGameBoard2x5.setTittle("UnTìtulo");
-		this.aGameBoard2x5.setCantCellX(2);
-		this.aGameBoard2x5.setCantCellY(5);
+		GameConfiguration config = new GameConfiguration();
+		config.setGameboardTitle("UnTìtulo");
+		config.setGameboardWidth(2);
+		config.setGameboardHeight(5);
+		this.aGameBoard2x5.setConfiguration(config);		
 	}
 	
 	@Test

@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uqbar.project.wollok.game.GameConfiguration;
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.game.VisualComponent;
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
@@ -34,8 +35,10 @@ public class CollisionListenerTest {
 		otherCoin.setMyPosition(new Position(4, 4));
 		
 		gameboard = new Gameboard();
-		gameboard.setCantCellX(5);
-		gameboard.setCantCellY(5);
+		GameConfiguration config = new GameConfiguration();
+		config.setGameboardWidth(5);
+		config.setGameboardHeight(5);
+		gameboard.setConfiguration(config);
 		gameboard.setComponents(Arrays.asList(mario, aCoin, otherCoin));
 		
 		block = mock(Consumer.class);
