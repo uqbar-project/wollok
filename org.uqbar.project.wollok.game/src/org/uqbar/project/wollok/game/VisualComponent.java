@@ -37,5 +37,8 @@ public class VisualComponent {
 		this.domainObject = myDomainObject;
 	}
 	
+	public void sendMessage(String message){
+		WollokObject.class.cast(this.domainObject).call(message);
+	}
 	
 }

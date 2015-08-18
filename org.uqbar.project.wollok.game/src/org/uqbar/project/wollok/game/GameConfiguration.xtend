@@ -5,6 +5,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import java.util.List
 import java.util.ArrayList
+import org.uqbar.project.wollok.game.listeners.GameboardListener
 
 @Accessors
 class GameConfiguration {
@@ -15,6 +16,7 @@ class GameConfiguration {
 	var String imageGround
 	var boolean arrowListener
 	var List<Component> components
+	var List<GameboardListener> listeners = new ArrayList<GameboardListener>();
 	
 	new (){
 		components = new ArrayList<Component>()
@@ -29,6 +31,10 @@ class GameConfiguration {
 		aBoard.character = new VisualComponent()
 		aBoard.character.myPosition = new Position(1,1)
 		aBoard.getCharacter.image = imageCharacter
+	}
+	
+	def addListener(GameboardListener aListener){
+		listeners.add(aListener)
 	}
 	
 }

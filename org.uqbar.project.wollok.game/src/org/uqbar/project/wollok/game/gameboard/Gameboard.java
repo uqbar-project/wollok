@@ -26,15 +26,6 @@ public class Gameboard {
 	private boolean marca;
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
-	public VisualComponent getCharacter() {
-		return character;
-	}
-
-	public void setCharacter(VisualComponent character) {
-		this.character = character;
-	}
-
-	private List<GameboardListener> listeners = new ArrayList<GameboardListener>();
 	private List<VisualComponent> components = new ArrayList<VisualComponent>();
 
 	public Gameboard() {
@@ -77,8 +68,15 @@ public class Gameboard {
 	}
 	
 	// Getters & Setters
+	public VisualComponent getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(VisualComponent character) {
+		this.character = character;
+	}
 	
-	public void setCharacterWollokObject(Object aCharacter){
+	public void setCharacterWollokObject(Object aCharacter) {
 		this.character.setMyDomainObject(aCharacter);
 	}
 	public VisualComponent getCharacterVisualcomponent(){
@@ -94,11 +92,18 @@ public class Gameboard {
 	}
 
 	public List<GameboardListener> getListeners() {
-		return listeners;
+		return this.configuration.getListeners();
 	}
 	
 	public List<VisualComponent> getComponents() {
 		return this.components;
+	}
+
+	public void serListeners(List<GameboardListener> aList){
+		this.configuration.setListeners(aList);
+	}
+	public void addListener(GameboardListener aListener){
+		this.configuration.getListeners().add(aListener);
 	}
 
 	public void setComponents(List<VisualComponent> components) {

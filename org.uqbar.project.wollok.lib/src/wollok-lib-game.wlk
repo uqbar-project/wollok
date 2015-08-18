@@ -10,6 +10,7 @@ object wgame{
 		method addCharacter(wollokObject) native
 		method addObject(wollokObject, image, posX, posY) native
 		method getObjectsIn(posX, posY) native
+		method addKeyboardListener(action) native
 	}
 
 class Position { 

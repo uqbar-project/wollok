@@ -8,6 +8,8 @@ import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokClosure
+import org.uqbar.project.wollok.game.listeners.KeyboardListener
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
@@ -51,6 +53,11 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		Gameboard.getInstance().setCharacterWollokObject(wollokObject)
 	}
 	
+	@NativeMessage("addKeyboardListener")
+	def addKeyboardListenerMethod(WollokClosure action) {
+		var listener = new KeyboardListener(46, [| action.apply()])
+		Gameboard.getInstance().addListener(listener)
+	}
 //	@NativeMessage("addObject")
 //	def addObjectMethod(WollokObject wollokObject) {
 //		var position = new Position(posX.wrapped, posY.wrapped)

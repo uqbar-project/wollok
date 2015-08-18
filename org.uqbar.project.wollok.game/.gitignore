@@ -15,6 +15,7 @@ hs_err_pid*
 
 # Build and Release Folders
 bin/
+xtend-gen/
 bin-debug/
 bin-release/
 

@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import org.uqbar.project.wollok.game.gameboard.Gameboard
+import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import com.badlogic.gdx.Input.Keys
 
 class GameFactory {
 
