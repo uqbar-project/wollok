@@ -49,8 +49,61 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("addCharacter")
-	def addCharacterMethod(Object wollokObject) {
-		Gameboard.getInstance().setCharacterWollokObject(wollokObject)
+	def addCharacterMethod(Object object) {
+		var wollokObject = WollokObject.cast(object)
+		
+		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
+		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
+		var image = String.cast(wollokObject.call("getImagen"))
+		
+		var gamePosition = new Position(x, y)
+		var visualComponent = new VisualComponent(wollokObject, image, gamePosition)
+		
+		Gameboard.getInstance().character = visualComponent
+	}
+	
+	@NativeMessage("addObject")
+	def addObjectMethod(Object object) {
+		
+		var wollokObject = WollokObject.cast(object)
+		
+		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
+		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
+		
+		var gamePosition = new Position(x, y)
+		var visualComponent = new VisualComponent(wollokObject, "caja.png", gamePosition)
+		
+		Gameboard.getInstance().addComponent(visualComponent)
+	}
+	
+	@NativeMessage("agregarObjeto")
+	def agregarObjetoMethod(Object object) {
+		
+		var wollokObject = WollokObject.cast(object)
+		
+		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
+		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
+		var image = String.cast(wollokObject.call("getImagen"))
+		
+		var gamePosition = new Position(x, y)
+		var visualComponent = new VisualComponent(wollokObject, image, gamePosition)
+		
+		Gameboard.getInstance().addComponent(visualComponent)
+	}
+	
+	@NativeMessage("agregarPersonaje")
+	def agregarPersonajeMethod(Object object) {
+		
+		var wollokObject = WollokObject.cast(object)
+		
+		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
+		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
+		var image = String.cast(wollokObject.call("getImagen"))
+		
+		var gamePosition = new Position(x, y)
+		var visualComponent = new VisualComponent(wollokObject, image, gamePosition)
+		
+		Gameboard.getInstance().character = visualComponent
 	}
 	
 	@NativeMessage("addKeyboardListener")
@@ -64,6 +117,14 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 //		var visualComponent = new VisualComponent(wollokObject, image, position)
 //		Gameboard.getInstance().addComponent(visualComponent)
 //	}
+	
+	
+	@NativeMessage("alPresionarHacer")
+	def alPresionarHacerMethod(Object key, WollokClosure action) {
+		var num = WollokInteger.cast(key).wrapped
+		var listener = new KeyboardListener(num, [| action.apply()])
+		Gameboard.getInstance().addListener(listener)
+	}
 	
 	@NativeMessage("getObjectsIn")
 	def getObjectsInMethod(WollokInteger posX, WollokInteger posY) {

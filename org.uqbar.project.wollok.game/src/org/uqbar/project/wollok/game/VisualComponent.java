@@ -37,6 +37,12 @@ public class VisualComponent {
 		this.domainObject = myDomainObject;
 	}
 	
+	public Texture getTexture(){
+		if(this.texture == null)
+			return this.texture = new Texture(Gdx.files.internal(image));
+		return this.texture;
+	}
+	
 	public void sendMessage(String message){
 		WollokObject.class.cast(this.domainObject).call(message);
 	}
