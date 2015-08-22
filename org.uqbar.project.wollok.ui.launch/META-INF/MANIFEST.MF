@@ -5,6 +5,7 @@ Bundle-Vendor: Uqbar Project
 Bundle-Version: 1.1.0.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.ui.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.uqbar.project.wollok,
