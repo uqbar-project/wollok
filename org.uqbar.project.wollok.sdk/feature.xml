@@ -189,6 +189,10 @@ Library.
       <discovery label="Travis Continuous Integration Project" url="https://travis-ci.org/uqbar-project/wollok"/>
    </url>
 
+   <includes
+         id="org.eclipse.pde"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.xtext" version="2.7.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.util" version="2.7.3" match="equivalent"/>
