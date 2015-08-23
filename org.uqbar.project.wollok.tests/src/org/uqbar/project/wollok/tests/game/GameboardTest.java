@@ -10,18 +10,18 @@ public class GameboardTest {
 
 	private Gameboard aGameBoard2x5;
 
-	@Before
-	public void init(){
-		this.aGameBoard2x5 = new Gameboard();
-		GameConfiguration config = new GameConfiguration();
-		config.setGameboardTitle("UnTìtulo");
-		config.setGameboardWidth(2);
-		config.setGameboardHeight(5);
-		this.aGameBoard2x5.setConfiguration(config);		
-	}
-	
-	@Test
-	public void on_initialize_create_all_cells() {
-		Assert.assertEquals(10, this.aGameBoard2x5.getCells().size());
-	}
+//	@Before
+//	public void init(){
+//		this.aGameBoard2x5 = new Gameboard();
+//		GameConfiguration config = new GameConfiguration();
+//		config.setGameboardTitle("UnTìtulo");
+//		config.setGameboardWidth(2);
+//		config.setGameboardHeight(5);
+//		this.aGameBoard2x5.setConfiguration(config);		
+//	}
+//	
+//	@Test
+//	public void on_initialize_create_all_cells() {
+//		Assert.assertEquals(10, this.aGameBoard2x5.getCells().size());
+//	}
 }

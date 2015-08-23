@@ -14,28 +14,28 @@ public class KeyboardListenerTest {
 	private Gameboard gameboard;
 	private Runnable action;
 	
-	@Before
-	public void init() {
-		gameboard = mock(Gameboard.class);
-		action = mock(Runnable.class);
-		leftListener = new KeyboardListenerBuilder()
-			.setLeftKey()
-			.setAction(action)
-			.build();
-	}
-	
-	@Test
-	public void when_no_listened_key_is_pressed_nothing_happens(){
-		leftListener.notify(gameboard);
-		verify(action, never()).run();
-	}
-	
-	@Test
-	public void when_listened_key_is_pressed_run_the_action(){
-		when(gameboard.isKeyPressed(anyInt())).thenReturn(true);
-		leftListener.notify(gameboard);
-		verify(action).run();
-	}
+//	@Before
+//	public void init() {
+//		gameboard = mock(Gameboard.class);
+//		action = mock(Runnable.class);
+//		leftListener = new KeyboardListenerBuilder()
+//			.setLeftKey()
+//			.setAction(action)
+//			.build();
+//	}
+//	
+//	@Test
+//	public void when_no_listened_key_is_pressed_nothing_happens(){
+//		leftListener.notify(gameboard);
+//		verify(action, never()).run();
+//	}
+//	
+//	@Test
+//	public void when_listened_key_is_pressed_run_the_action(){
+//		when(gameboard.isKeyPressed(anyInt())).thenReturn(true);
+//		leftListener.notify(gameboard);
+//		verify(action).run();
+//	}
 }
 
 
