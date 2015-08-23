@@ -1,0 +1,42 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Levadura {
+	var biomasa = 100
+	
+	method getBiomasa() = biomasa
+}
+
+class Ale extends Levadura {
+	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	var biomasa = 200
+	
+	method algoConBiomasaParaEvitarWarning() {
+		return biomasa
+	}
+}
+
+class B extends Levadura {
+	
+}
+
+/**
+ * this one duplicates a var that is two levels up
+ */
+class C extends B {
+	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	var biomasa = 200
+	
+		method algoConBiomasaParaEvitarWarning() {
+		return biomasa
+	}
+}
+
+// same for objects
+object anObject extends Levadura {
+	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
+	var biomasa = 200
+	
+		method algoConBiomasaParaEvitarWarning() {
+		return biomasa
+	}
+}
