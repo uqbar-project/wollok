@@ -139,7 +139,7 @@
 						<version>1.0-beta-4</version>
 						<executions>
 							<execution>
-								<id>upload-repo</id>
+								<id>upload-products</id>
 								<phase>install</phase>
 								<goals>
 									<goal>upload</goal>
