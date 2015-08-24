@@ -48,7 +48,7 @@ public class VisualComponent {
 	}
 
 	private String getShowableAttribute() {
-		String objectProperty = this.sendMessage(this.attribute).toString();
+		String objectProperty = this.domainObject.getInstanceVariables().get(this.attribute).toString();
 		return this.attribute + ":" + objectProperty;
 	}
 	
