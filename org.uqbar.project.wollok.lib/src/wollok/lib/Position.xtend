@@ -1,4 +1,4 @@
-//package org.uqbar.project.wollok.lib.game
+package wollok.lib
 
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.core.WollokObject

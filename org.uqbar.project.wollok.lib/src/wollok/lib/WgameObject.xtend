@@ -1,4 +1,4 @@
-//package org.uqbar.project.wollok.lib.game
+package wollok.lib
 
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
