@@ -16,11 +16,27 @@ object wgame{
 	method getHeight() native
 }
 
-class Position { 
-	method getX() native
-	method setX(x) native
-	method getY() native
-	method setY(y) native
-	method setWollokObject(anObject) native
-	method sendMessage() native
+class Position {
+	var x = 0
+	var y = 0
+	
+	new() { }
+	
+	new(_x, _y) {
+		x = _x
+		y = _y
+	}
+	
+	method getX() {
+		return x
+	}
+	method setX(_x) {
+		x = _x
+	}
+	method getY() {
+		return y
+	}
+	method setY(_y) {
+		y = _y
+	}
 }

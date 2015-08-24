@@ -19,7 +19,7 @@ public class CollisionListener implements GameboardListener {
 	@Override
 	public void notify(Gameboard gameboard) {
 		Collection<VisualComponent> componets =
-				gameboard.getComponentsInPosition(component.getMyPosition());
+				gameboard.getComponentsInPosition(component.getPosition());
 		for (VisualComponent visualComponent : componets) {
 			if(!visualComponent.equals(component))
 				block.accept(visualComponent);

@@ -29,8 +29,6 @@ class Position {
 	override public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		var Position other = obj as Position;
 		if (this.getX() != other.getX())
 			return false;
@@ -65,18 +63,22 @@ class WPosition extends Position {
 	}
 	
 	override int getX() {
-		WollokInteger.cast(this.object.call("getX")).wrapped
+		WollokInteger.cast(this.getPosition().call("getX")).wrapped
 	}
 	
 	override int getY() {
-		WollokInteger.cast(this.object.call("getY")).wrapped
+		WollokInteger.cast(this.getPosition().call("getY")).wrapped
 	}
 	
 	override setX(int num) {
-		this.object.call("setX", new WollokInteger(num))
+		this.getPosition().call("setX", new WollokInteger(num))
 	}
 	
 	override setY(int num) {
-		this.object.call("setY", new WollokInteger(num))
+		this.getPosition().call("setY", new WollokInteger(num))
+	}
+	
+	def getPosition() {
+		WollokObject.cast(this.object.call("getPosicion"))
 	}
 }

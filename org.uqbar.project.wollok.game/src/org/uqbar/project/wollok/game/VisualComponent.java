@@ -28,7 +28,7 @@ public class VisualComponent {
 		this.attribute = attr;
 	}
 	
-	public Position getMyPosition() {
+	public Position getPosition() {
 		return position;
 	}
 
@@ -52,10 +52,10 @@ public class VisualComponent {
 	}
 
 	public void draw(SpriteBatch batch, BitmapFont font) {
-		batch.draw(this.getTexture(), this.getMyPosition().getXinPixels(), this.getMyPosition().getYinPixels());
+		batch.draw(this.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 
 		if (this.attribute != null)
-			font.draw(batch, this.getShowableAttribute(), this.getMyPosition().getXinPixels(), this.getMyPosition().getYinPixels());
+			font.draw(batch, this.getShowableAttribute(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 	}
 
 	private String getShowableAttribute() {
