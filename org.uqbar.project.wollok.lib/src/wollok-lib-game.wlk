@@ -4,6 +4,7 @@ object wgame{
 	method addVisualCharacter(element) native
 	method addVisualWithReference(element, property) native
 	method whenKeyPressedDo(key, action) native
+	method whenCollideDo(element, action) native
 	method getObjectsIn(posX, posY) native
 	method start() native
 	

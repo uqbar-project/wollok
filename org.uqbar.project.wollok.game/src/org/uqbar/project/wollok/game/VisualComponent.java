@@ -31,9 +31,11 @@ public class VisualComponent {
 	public Position getMyPosition() {
 		return position;
 	}
-	public Object getMyDomainObject() {
-		return domainObject;
+
+	public WollokObject getDomainObject() {
+		return this.domainObject;
 	}
+	
 	public void setMyDomainObject(WollokObject myDomainObject) {
 		this.domainObject = myDomainObject;
 	}
