@@ -13,11 +13,45 @@ import org.uqbar.project.wollok.game.listeners.KeyboardListener
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
-	@NativeMessage("getGameboard")
-	def getGameboardMethod() {
-		Gameboard.getInstance()
+	@NativeMessage("whenKeyPressedDo")
+	def whenKeyPressedDoMethod(Object key, WollokClosure action) {
+		var num = WollokInteger.cast(key).wrapped
+		var listener = new KeyboardListener(num, [ | action.apply() ])
+		Gameboard.getInstance().addListener(listener)
 	}
 	
+	@NativeMessage("addVisualCharacter")
+	def addVisualCharacterMethod(Object object) {
+		var wollokObject = WollokObject.cast(object)
+		this.addCharacter(new VisualComponent(wollokObject))
+	}
+	
+	@NativeMessage("addVisual")
+	def addVisualMethod(Object element) {		
+		var wollokObject = WollokObject.cast(element)
+		this.addComponent(new VisualComponent(wollokObject))
+	}
+	
+	@NativeMessage("addVisualWithReference")
+	def addVisualWithReferenceMethod(Object element, String property) {		
+		var wollokObject = WollokObject.cast(element)
+		this.addComponent(new VisualComponent(wollokObject, property))
+	}
+	
+	@NativeMessage("start")
+	def startMethod() {
+		Gameboard.getInstance().start()
+	}
+	
+	def addCharacter(VisualComponent component) {
+		Gameboard.getInstance().addCharacter(component)
+	}
+	
+	def addComponent(VisualComponent component) {
+		Gameboard.getInstance().addComponent(component)
+	}
+	
+	// accessors
 	@NativeMessage("setTittle")
 	def setTittleMethod(String title) {
 		Gameboard.getInstance().configuration.gameboardTitle = title

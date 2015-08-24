@@ -8,7 +8,9 @@ import org.uqbar.project.wollok.game.GameConfiguration;
 import org.uqbar.project.wollok.game.GameFactory;
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.game.VisualComponent;
+import org.uqbar.project.wollok.game.listeners.ArrowListener;
 import org.uqbar.project.wollok.game.listeners.GameboardListener;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.google.common.base.Predicate;
@@ -22,15 +24,11 @@ public class Gameboard {
 	private int cantCellY;
 
 	private GameConfiguration configuration;
-	private float keyboardCounter;
-	private boolean marca;
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
 	private List<VisualComponent> components = new ArrayList<VisualComponent>();
 
 	public Gameboard() {
-		marca = false;
-		keyboardCounter = 0;
 		GameFactory factory = new GameFactory();
 		factory.setGame(this);
 	}
@@ -56,7 +54,7 @@ public class Gameboard {
 	}
 	
 	public boolean isKeyPressed(int key) {
-		return Gdx.input.isKeyPressed(key);
+		return Gdx.input.isKeyJustPressed(key);
 	}
 	
 	public void addComponent(VisualComponent component) {
@@ -72,12 +70,10 @@ public class Gameboard {
 		return character;
 	}
 
-	public void setCharacter(VisualComponent character) {
+	public void addCharacter(VisualComponent character) {
 		this.character = character;
-	}
-	
-	public void setCharacterWollokObject(Object aCharacter) {
-		this.character.setMyDomainObject(aCharacter);
+		this.configuration.addListener(new ArrowListener(this));
+		this.addComponent(character);
 	}
 	public VisualComponent getCharacterVisualcomponent(){
 		return this.character;

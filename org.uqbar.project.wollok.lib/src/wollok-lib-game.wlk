@@ -1,21 +1,19 @@
 
 object wgame{
-		method getGameboard() native
-		method setTittle(tittle) native
-		method getTittle() native
-		method setWidth(cant) native
-		method getWidth() native
-		method setHeight(cant) native
-		method getHeight() native
-		method addCharacter(wollokObject) native
-		method addObject(wollokObject, image, posX, posY) native
-		method addObject(wollokObject) native
-		method agregarObjeto(wollokObject, attribute) native
-		method alPresionarHacer(key, action) native
-		method agregarPersonaje(object) native
-		method getObjectsIn(posX, posY) native
-		method addKeyboardListener(action) native
-	}
+	method addVisual(element) native
+	method addVisualCharacter(element) native
+	method addVisualWithReference(element, property) native
+	method whenKeyPressedDo(key, action) native
+	method getObjectsIn(posX, posY) native
+	method start() native
+	
+	method setTittle(tittle) native
+	method getTittle() native
+	method setWidth(cant) native
+	method getWidth() native
+	method setHeight(cant) native
+	method getHeight() native
+}
 
 class Position { 
 	method getX() native

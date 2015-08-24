@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.game
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 
 @Accessors
 class Position {
@@ -53,4 +55,30 @@ class Position {
 	def public void incY(int spaces){
 		this.setY(this.getY() + spaces);
 	}		
+}
+
+
+class WPosition extends Position {
+	
+	WollokObject object
+	
+	new(WollokObject wObject) {
+		this.object = wObject
+	}
+	
+	override int getX() {
+		WollokInteger.cast(this.object.call("getX")).wrapped
+	}
+	
+	override int getY() {
+		WollokInteger.cast(this.object.call("getY")).wrapped
+	}
+	
+	override setX(int num) {
+		this.object.call("setX", new WollokInteger(num))
+	}
+	
+	override setY(int num) {
+		this.object.call("setY", new WollokInteger(num))
+	}
 }

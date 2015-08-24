@@ -13,21 +13,18 @@ public class VisualComponent {
 
 	private Position position;
 	private String image;
-	// En realidad es un WollokObject pero lo debo tratar como object generalmente...WTF!
-	private Object domainObject;
+	private WollokObject domainObject;
 	private Texture texture;
 	private String attribute;
 	
-	public VisualComponent() { }
-	
-	public VisualComponent(WollokObject object, String image, Position position) {
+	public VisualComponent(WollokObject object) {
 		this.domainObject = object;
-		this.image = image;
-		this.position = position;
+		this.image = String.class.cast(this.domainObject.call("getImagen"));
+		this.position = new WPosition(object);
 	}
 	
-	public VisualComponent(WollokObject object, String image, Position position, String attr) {
-		this(object, image, position);
+	public VisualComponent(WollokObject object, String attr) {
+		this(object);
 		this.attribute = attr;
 	}
 	
@@ -37,11 +34,11 @@ public class VisualComponent {
 	public Object getMyDomainObject() {
 		return domainObject;
 	}
-	public void setMyDomainObject(Object myDomainObject) {
+	public void setMyDomainObject(WollokObject myDomainObject) {
 		this.domainObject = myDomainObject;
 	}
 	
-	public Texture getTexture(){
+	public Texture getTexture() {
 		if(this.texture == null)
 			this.texture = new Texture(Gdx.files.internal(image));
 			this.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -49,7 +46,7 @@ public class VisualComponent {
 	}
 	
 	public Object sendMessage(String message) {
-		return WollokObject.class.cast(this.domainObject).call(message);
+		return this.domainObject.call(message);
 	}
 
 	public void draw(SpriteBatch batch, BitmapFont font) {
