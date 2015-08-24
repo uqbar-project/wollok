@@ -3,23 +3,19 @@ package org.uqbar.project.wollok.game;
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class VisualComponent {
 
 	private Position position;
-	private String image;
+	private Image image;
 	private WollokObject domainObject;
-	private Texture texture;
 	private String attribute;
 	
 	public VisualComponent(WollokObject object) {
 		this.domainObject = object;
-		this.image = String.class.cast(this.domainObject.call("getImagen"));
+		this.image = new WImage(object);
 		this.position = new WPosition(object);
 	}
 	
@@ -40,19 +36,12 @@ public class VisualComponent {
 		this.domainObject = myDomainObject;
 	}
 	
-	public Texture getTexture() {
-		if(this.texture == null)
-			this.texture = new Texture(Gdx.files.internal(image));
-			this.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		return this.texture;
-	}
-	
 	public Object sendMessage(String message) {
 		return this.domainObject.call(message);
 	}
 
 	public void draw(SpriteBatch batch, BitmapFont font) {
-		batch.draw(this.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
+		batch.draw(this.image.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 
 		if (this.attribute != null)
 			font.draw(batch, this.getShowableAttribute(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());

@@ -27,6 +27,19 @@ class Position {
 		y = _y
 	}
 	
+	method moveLeft(num) {
+		x = x - num
+	}
+	method moveRight(num) {
+		x = x + num
+	}
+	method moveDown(num) {
+		y = y - num
+	}
+	method moveUp(num) {
+		y = y + num
+	}
+	
 	method getX() {
 		return x
 	}
@@ -38,5 +51,14 @@ class Position {
 	}
 	method setY(_y) {
 		y = _y
+	}
+}
+
+class GameException extends wollok.lang.Exception {
+
+	var message
+ 
+	new(_message) {
+		message = _message
 	}
 }
