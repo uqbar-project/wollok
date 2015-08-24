@@ -8,6 +8,7 @@ class Position {
 	private int x;
 	private int y;
 	
+	new() {}
 	
 	new(int x, int y) {
 		this.x = x;
@@ -18,8 +19,8 @@ class Position {
 	override public int hashCode() {
 		val int prime = 31;
 		var int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
+		result = prime * result + this.getX();
+		result = prime * result + this.getY();
 		return result;
 	}
 	
@@ -31,25 +32,25 @@ class Position {
 		if (getClass() != obj.getClass())
 			return false;
 		var Position other = obj as Position;
-		if (x != other.x)
+		if (this.getX() != other.getX())
 			return false;
-		if (y != other.y)
+		if (this.getY() != other.getY())
 			return false;
 		return true;
 	}
 	
 	def public int getXinPixels(){
-		return x * Gameboard.CELLZISE;
+		return this.getX() * Gameboard.CELLZISE;
 	}
 
 	def public int getYinPixels(){
-		return y * Gameboard.CELLZISE;
+		return this.getY() * Gameboard.CELLZISE;
 	}	
 	
 	def public void incX(int spaces){
-		this.x = this.x + spaces;
+		this.setX(this.getX() + spaces);
 	}
 	def public void incY(int spaces){
-		this.y = this.y + spaces;
+		this.setY(this.getY() + spaces);
 	}		
 }

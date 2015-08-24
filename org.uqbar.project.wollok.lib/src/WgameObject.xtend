@@ -49,15 +49,13 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("addCharacter")
-	def addCharacterMethod(Object object) {
+	def addCharacterMethod(Object object, String attribute) {
 		var wollokObject = WollokObject.cast(object)
 		
-		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
-		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
 		var image = String.cast(wollokObject.call("getImagen"))
 		
-		var gamePosition = new Position(x, y)
-		var visualComponent = new VisualComponent(wollokObject, image, gamePosition)
+		var gamePosition = new WPosition(wollokObject)
+		var visualComponent = new VisualComponent(wollokObject, image, gamePosition, attribute)
 		
 		Gameboard.getInstance().character = visualComponent
 	}
@@ -77,16 +75,14 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("agregarObjeto")
-	def agregarObjetoMethod(Object object) {
+	def agregarObjetoMethod(Object object, String attribute) {
 		
 		var wollokObject = WollokObject.cast(object)
 		
-		var x = WollokInteger.cast(wollokObject.call("getX")).wrapped
-		var y = WollokInteger.cast(wollokObject.call("getY")).wrapped
 		var image = String.cast(wollokObject.call("getImagen"))
 		
-		var gamePosition = new Position(x, y)
-		var visualComponent = new VisualComponent(wollokObject, image, gamePosition)
+		var gamePosition = new WPosition(wollokObject)
+		var visualComponent = new VisualComponent(wollokObject, image, gamePosition, attribute)
 		
 		Gameboard.getInstance().addComponent(visualComponent)
 	}
@@ -131,5 +127,30 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		var position = new Position(posX.wrapped, posY.wrapped)
 		var list = Gameboard.getInstance().getComponentsInPosition(position).map[it.myDomainObject]
 		new WollokList(WollokInterpreter.getInstance, list)
+	}
+}
+
+class WPosition extends Position {
+	
+	WollokObject object
+	
+	new(WollokObject wObject) {
+		this.object = wObject
+	}
+	
+	override int getX() {
+		WollokInteger.cast(this.object.call("getX")).wrapped
+	}
+	
+	override int getY() {
+		WollokInteger.cast(this.object.call("getY")).wrapped
+	}
+	
+	override setX(int num) {
+		this.object.call("setX", new WollokInteger(num))
+	}
+	
+	override setY(int num) {
+		this.object.call("setY", new WollokInteger(num))
 	}
 }

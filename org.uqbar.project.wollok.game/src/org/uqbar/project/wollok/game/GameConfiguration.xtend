@@ -28,9 +28,9 @@ class GameConfiguration {
 		aBoard.createCells(imageGround)
 		if (arrowListener)
 			aBoard.addListener(new ArrowListener(aBoard))
-		aBoard.character = new VisualComponent()
-		aBoard.character.myPosition = new Position(1,1)
-		aBoard.getCharacter.image = imageCharacter
+//		aBoard.character = new VisualComponent()
+//		aBoard.character.myPosition = new Position(1,1)
+//		aBoard.getCharacter.image = imageCharacter
 	}
 	
 	def addListener(GameboardListener aListener){

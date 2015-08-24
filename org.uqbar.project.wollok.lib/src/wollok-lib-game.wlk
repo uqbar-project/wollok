@@ -10,7 +10,7 @@ object wgame{
 		method addCharacter(wollokObject) native
 		method addObject(wollokObject, image, posX, posY) native
 		method addObject(wollokObject) native
-		method agregarObjeto(wollokObject) native
+		method agregarObjeto(wollokObject, attribute) native
 		method alPresionarHacer(key, action) native
 		method agregarPersonaje(object) native
 		method getObjectsIn(posX, posY) native
