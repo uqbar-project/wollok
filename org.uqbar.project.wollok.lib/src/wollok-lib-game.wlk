@@ -40,6 +40,8 @@ class Position {
 		y = y + num
 	}
 	
+	method clone() = new Position(x, y)
+	
 	method getX() {
 		return x
 	}
