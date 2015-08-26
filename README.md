@@ -61,7 +61,7 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 ## How to Contribute ##
 ### Preparing the development environment ###
 
- * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/Xtext/download.html) (Full Eclipse)
+ * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/downloads/download.php?file=/modeling/tmf/xtext/downloads/drops/2.7.3/R201411190455/tmf-xtext-Update-2.7.3.zip) (Full Eclipse)
  * Install xsemantics plugin from update site:
 ```
 http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
