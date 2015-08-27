@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.game;
 
 import org.uqbar.project.wollok.game.Position;
+import org.uqbar.project.wollok.game.gameboard.Gameboard;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -41,10 +43,20 @@ public class VisualComponent {
 	public void draw(SpriteBatch batch, BitmapFont font) {
 		batch.draw(this.image.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 
-		if (this.attribute != null)
+		if (this.attribute != null && this.isInMyZone())
 			font.draw(batch, this.getShowableAttribute(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 	}
 
+	private boolean isInMyZone(){
+		int xMouse = Gdx.input.getX();
+		int yMouse = Gdx.input.getY();
+		int bottomX = this.getPosition().getXinPixels();
+		int bottomY = this.getPosition().getYinPixels();
+		int topX = bottomX + Gameboard.CELLZISE;
+		int topY = bottomY + Gameboard.CELLZISE;
+		return (xMouse > bottomX && xMouse < topX) && (yMouse > bottomY && yMouse < topY);
+	}
+	
 	private String getShowableAttribute() {
 		String objectProperty = this.domainObject.getInstanceVariables().get(this.attribute).toString();
 		return this.attribute + ":" + objectProperty;
