@@ -305,13 +305,6 @@ Library.
          unpack="false"/>
 
    <plugin
-         id="org.tigris.subversion.clientadapter.javahl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.tigris.subversion.subclipse.core"
          download-size="0"
          install-size="0"
@@ -334,6 +327,20 @@ Library.
 
    <plugin
          id="org.tigris.subversion.subclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tigris.subversion.clientadapter.svnkit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tmatesoft.svnkit"
          download-size="0"
          install-size="0"
          version="0.0.0"
