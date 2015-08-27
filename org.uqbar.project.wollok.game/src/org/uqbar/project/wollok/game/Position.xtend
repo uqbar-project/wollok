@@ -56,29 +56,25 @@ class Position {
 
 class WPosition extends Position {
 	
-	WollokObject object
+	WollokObject position
 	
 	new(WollokObject wObject) {
-		this.object = wObject
+		this.position = wObject
 	}
 	
 	override int getX() {
-		WollokInteger.cast(this.getPosition().call("getX")).wrapped
+		WollokInteger.cast(position.call("getX")).wrapped
 	}
 	
 	override int getY() {
-		WollokInteger.cast(this.getPosition().call("getY")).wrapped
+		WollokInteger.cast(position.call("getY")).wrapped
 	}
 	
 	override setX(int num) {
-		this.getPosition().call("setX", new WollokInteger(num))
+		position.call("setX", new WollokInteger(num))
 	}
 	
 	override setY(int num) {
-		this.getPosition().call("setY", new WollokInteger(num))
-	}
-	
-	def getPosition() {
-		WollokObject.cast(this.object.call("getPosicion"))
+		position.call("setY", new WollokInteger(num))
 	}
 }

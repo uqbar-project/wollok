@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class VisualComponent {
 
-	private Position position;
 	private Image image;
 	private WollokObject domainObject;
 	private String attribute;
@@ -16,7 +15,6 @@ public class VisualComponent {
 	public VisualComponent(WollokObject object) {
 		this.domainObject = object;
 		this.image = new WImage(object);
-		this.position = new WPosition(object);
 	}
 	
 	public VisualComponent(WollokObject object, String attr) {
@@ -25,7 +23,7 @@ public class VisualComponent {
 	}
 	
 	public Position getPosition() {
-		return position;
+		return new WPosition(WollokObject.class.cast(domainObject.call("getPosicion")));
 	}
 
 	public WollokObject getDomainObject() {

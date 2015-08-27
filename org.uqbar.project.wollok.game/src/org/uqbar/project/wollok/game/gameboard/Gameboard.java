@@ -149,5 +149,10 @@ public class Gameboard {
 	public void setConfiguration(GameConfiguration configuration) {
 		this.configuration = configuration;
 	}
+
+	public void clear() {
+		this.components.clear();
+		this.configuration.getListeners().clear();
+	}
 }
 
