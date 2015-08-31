@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.game.listeners.GameboardListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -31,6 +32,7 @@ public class Gameboard {
 	public Gameboard() {
 		GameFactory factory = new GameFactory();
 		factory.setGame(this);
+		//this.setStage(new Stage());
 	}
 
 	public void createCells(String groundImage) {
@@ -63,6 +65,11 @@ public class Gameboard {
 
 	public Collection<VisualComponent> getComponentsInPosition(Position myPosition) {
 		return Collections2.filter(components, new IsEqualPosition(myPosition));
+	}
+
+	public Collection<VisualComponent> getComponentsInPosition(int xInPixels, int yInPixels) {
+		yInPixels = Gameboard.getInstance().height() - yInPixels;
+		return Collections2.filter(components, new IsEqualPosition(xInPixels,yInPixels));
 	}
 	
 	// Getters & Setters
@@ -125,9 +132,18 @@ public class Gameboard {
 	private class IsEqualPosition implements Predicate<VisualComponent>{
 
 		private Position myPosition;
+
+		public IsEqualPosition(int x, int y){
+			
+			this.myPosition = new Position();
+			this.myPosition.setX(x/Gameboard.CELLZISE);
+			this.myPosition.setY(y/Gameboard.CELLZISE);
+		}
+		
 		public IsEqualPosition(Position p) {
 			this.myPosition = p;
 		}
+
 		@Override
 		public boolean apply(VisualComponent it) {
 			return it.getPosition().equals(myPosition);

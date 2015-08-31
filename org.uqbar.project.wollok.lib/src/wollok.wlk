@@ -488,6 +488,10 @@ object wgame{
 	method getHeight() native
 }
 
+object wGameKeys {
+	method getKeyCode(aKey) native
+}
+
 class Position {
 	var x = 0
 	var y = 0

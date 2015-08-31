@@ -51,10 +51,10 @@ public class VisualComponent {
 		int xMouse = Gdx.input.getX();
 		int yMouse = Gdx.input.getY();
 		int bottomX = this.getPosition().getXinPixels();
-		int bottomY = this.getPosition().getYinPixels();
+		int bottomY = Gameboard.getInstance().height() - this.getPosition().getYinPixels();
 		int topX = bottomX + Gameboard.CELLZISE;
-		int topY = bottomY + Gameboard.CELLZISE;
-		return (xMouse > bottomX && xMouse < topX) && (yMouse > bottomY && yMouse < topY);
+		int topY = bottomY - Gameboard.CELLZISE;
+		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY);
 	}
 	
 	private String getShowableAttribute() {
