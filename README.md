@@ -61,7 +61,8 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 ## How to Contribute ##
 ### Preparing the development environment ###
 
- * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/downloads/download.php?file=/modeling/tmf/xtext/downloads/drops/2.7.3/R201411190455/tmf-xtext-Update-2.7.3.zip) (Full Eclipse)
+ * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/downloads/download.php?file=/modeling/tmf/xtext/downloads/drops/2.7.3/R201411190455/tmf-xtext-Update-2.7.3.zip)
+   * Install it as an archived repository - Help -> Install New Software -> Add (work with) -> Archive
  * Install xsemantics plugin from update site:
 ```
 http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
@@ -76,6 +77,8 @@ http://www.xpect-tests.org/updatesite/nightly/
 ```
  * In the resulting Eclipse, import all the projects below https://github.com/uqbar-project/wollok
  * Run GenerateWollokDsl.mwe2
+ * Install Tycho from  Marketplace
+ * Install `buildhelper` from Marketplace
 
 ## License ##
 
