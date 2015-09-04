@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * @author jfernandes
  */
 class MonstersIncTestCase extends AbstractWollokInterpreterTestCase {
-	val path = EXAMPLES_PROJECT_PATH + "/src/wollok/examples/monstersinc/workspace.wpgm"
+	val path = EXAMPLES_PROJECT_PATH + "/src/wollok/examples/monstersinc/monstersInc.wtest"
 	
 	@Test
 	def void run() {
