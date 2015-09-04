@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.model
 
 import java.util.Arrays
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.WollokActivator
@@ -87,6 +88,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name)
 	}
 
+
+	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
+	def static List<WClass> _parents(WMethodContainer c, List l) {
+		if (c == null) {
+			return l
+		}
+		l.add(c)
+		return _parents(c.parent, l)
+	}
 		
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
@@ -137,7 +147,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ************************************************************************
 	// ** Basic methods
 	// ************************************************************************
-
+	
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
 		if (cl.parent != null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)

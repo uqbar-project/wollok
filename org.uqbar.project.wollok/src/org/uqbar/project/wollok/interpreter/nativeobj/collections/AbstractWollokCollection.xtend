@@ -28,6 +28,14 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	
 	def abstract AbstractWollokCollection<T> asThisCollection(Iterable toWrap)
 	
+	override equals(Object other) { 
+		if (!(other instanceof AbstractWollokCollection)) {
+			return false
+		}
+		val o = other as AbstractWollokCollection
+		size == o.size && this.wrapped.forall[e | o.contains(e) ]
+	}
+	
 	def forEach(WollokClosure proc) { wrapped.forEach(proc.asProc) }
 	def map(WollokClosure closure) { wrapped.map(closure.asFun).asThisCollection }
 	def forAll(WollokClosure pred) { wrapped.forall(pred.asFun) }
@@ -35,6 +43,8 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	def filter(WollokClosure pred) { wrapped.filter(pred.asFun).asThisCollection }
 	def detect(WollokClosure pred) { wrapped.findFirst(pred.asFun) }
 	def count(WollokClosure pred) { wrapped.filter(pred.asFun).size }
+	
+	def size() { wrapped.size }
 	
 	def join() { join(',') }
 	def join(String separator) { wrapped.join(separator) }
@@ -67,7 +77,7 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	
 	def Object any() {
 		if (wrapped.isEmpty) throw new WollokRuntimeException("Illegal operation 'any' on empty collection")
-		else wrapped.get(randomBetween(0, wrapped.size - 1))
+		else wrapped.get(randomBetween(0, wrapped.size))
 	}
 	
 	def abstract String getWollokName()
