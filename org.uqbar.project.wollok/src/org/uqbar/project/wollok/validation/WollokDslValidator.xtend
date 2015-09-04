@@ -43,6 +43,7 @@ import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 /**
  * Custom validation rules.
@@ -228,6 +229,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
 			m.report(WollokDslValidator_DUPLICATED_METHOD)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def duplicatedVariableFromSuperclass(WMethodContainer m) {
+		val inheritedVariables = m.parents.map[variables].flatten
+		m.variables.filter[v | inheritedVariables.exists[name == v.name ]]
+		.forEach [
+			report(WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY)
+		]
 	}
 
 	@Check

@@ -20,6 +20,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
+	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
