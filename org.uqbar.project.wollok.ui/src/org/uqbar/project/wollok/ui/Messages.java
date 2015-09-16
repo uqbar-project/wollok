@@ -52,6 +52,7 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_createMethod_stub;
 	
 	public static String WollokRootPreferencePage_autoformat_description;
+	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
 	
 	static {
 		// initialize resource bundle

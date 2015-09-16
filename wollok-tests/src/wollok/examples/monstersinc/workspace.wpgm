@@ -2,7 +2,7 @@ import asustadores.*
 
 import modelo.Puerta
 import modelo.Equipo
-import modelo.MonstersInc
+import modelo.monstersInc
 
 import asustables.Ninio
 import asustables.Piyamada
@@ -14,15 +14,14 @@ import actividades.*
 // 1)
 program monstersInc {
 
-val sullivan = new AsustadorNato(200)
-sullivan.setEdad(25)
+val sullivan = new AsustadorNato(25, 200)
 val puertaConNinio4 = new Puerta(new Ninio(4))
 
 assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
 
 
 // 2)
-val mike = new AsustadorPerseverante()
+val mike = new AsustadorPerseverante(20)
 mike.mejora(new EstudiarMateria("Sustos 2", 50))
 mike.mejora(new EjercitarEnSimulador(2))
 
@@ -53,7 +52,7 @@ assert.that(0 == equipo.getEnergiaGenerada())
 
 // 4)
 
-val emp = new MonstersInc()
+val emp = monstersInc
 emp.agregarEquipo(equipo)
 emp.agregarPuerta(puertaConNinio4)
 //emp.agregarPuerta(puertaConPiyamada)
