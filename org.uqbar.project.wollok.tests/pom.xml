@@ -96,6 +96,7 @@
 					<excludes>
 						<exclude>**/Abstract*</exclude>
 						<exclude>**/WollokXPectTest.java</exclude>
+						<!-- <exclude>**/WollokContentAssistTest.java</exclude> -->
 					</excludes>
 				</configuration>
 			</plugin>
@@ -113,6 +114,7 @@
 						<configuration>
 							<includes>
 								<include>**/WollokXPectTest.java</include>
+								<!-- <include>**/WollokContentAssistTest.java</include> -->
 							</includes>
 							<forkMode>once</forkMode>
 							<reportFormat>xml</reportFormat>
