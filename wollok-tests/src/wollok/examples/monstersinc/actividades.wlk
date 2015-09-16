@@ -11,11 +11,11 @@ class EstudiarMateria extends Actividad {
 		puntos = p
 	}
 	
-	override method calcularMejora() { puntos }
+	override method calcularMejora() { return puntos }
 }
 
 class EjercitarEnSimulador extends Actividad {
 	var horas = 0
 	new(h) { horas = h }
-	override method calcularMejora() { 10 * horas }
+	override method calcularMejora() { return 10 * horas }
 }

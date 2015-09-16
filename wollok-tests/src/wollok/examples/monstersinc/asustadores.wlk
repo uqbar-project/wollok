@@ -13,7 +13,7 @@ class Asustador {
 	method asustar(ninio) {
 		val a = nivelMotivacion / 100
 		val ptos = this.puntosDeTerror()
-		a * (ptos / ninio.getEdad())
+		return a * (ptos / ninio.getEdad())
 	}
 	
 	method /*abstract*/ puntosDeTerror()
@@ -29,7 +29,7 @@ class AsustadorNato extends Asustador {
 		puntosTerrorInnatos = p
 	}
 	override method puntosDeTerror() {
-		puntosTerrorInnatos * this.getEdad()
+		return puntosTerrorInnatos * this.getEdad()
 	}
 }
 
@@ -38,6 +38,6 @@ class AsustadorPerseverante extends Asustador {
 	method mejora(actividad) {
 		puntosDeTerror += actividad.calcularMejora()
 	}
-	override method puntosDeTerror() { puntosDeTerror }
+	override method puntosDeTerror() { return puntosDeTerror }
 }
 

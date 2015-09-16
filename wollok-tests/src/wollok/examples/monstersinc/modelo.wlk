@@ -15,7 +15,7 @@ class MonstersInc {
 	}
 	
 	method equipoMasAsustador() {
-		equipos.max([e| e.getEnergiaGenerada()])
+		return equipos.max([e| e.getEnergiaGenerada()])
 	} 
 }
 
@@ -42,7 +42,7 @@ class Equipo {
 		val energiaPorAsustar = energiaGenerada + asustador.entrarAPuerta(puerta)
 		energiaGenerada = asistente.calcularEnergia(energiaPorAsustar)
 	}
-	method getEnergiaGenerada() { energiaGenerada }
+	method getEnergiaGenerada() = energiaGenerada
 	method nuevoDia() { energiaGenerada = 0 }
 }
 
