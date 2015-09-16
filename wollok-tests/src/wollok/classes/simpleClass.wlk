@@ -6,7 +6,7 @@
 class Golondrina {
 	var energia = 100 /** Retorna la energia actual  */
 	method getEnergia() {
-		energia
+		return energia
 	}
 
 	/** Setea la energia */

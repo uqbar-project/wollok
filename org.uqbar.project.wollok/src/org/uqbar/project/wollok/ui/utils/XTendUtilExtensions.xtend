@@ -110,7 +110,7 @@ class XTendUtilExtensions {
 	}
 	
 	def static dispatch createMessage(Object target, String message){
-		'''«target» does not understand «message»'''.toString
+		'''«target» («target.class.simpleName») does not understand «message»'''.toString
 	}
 
 	def static dispatch createMessage(String target, String message){

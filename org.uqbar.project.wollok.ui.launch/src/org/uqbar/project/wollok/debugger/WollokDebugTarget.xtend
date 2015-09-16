@@ -63,7 +63,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	def createCommandHandler(int port) {
-		Thread.sleep(2500) // wait for remote process to start the server
+		Thread.sleep(3000) // HACK: wait for remote process to start the server. Maybe add this as a preference (?)
 		client = new Client("localhost", port, new CallHandler)
 		client.getGlobal(DebugCommandHandler) as DebugCommandHandler
 	}

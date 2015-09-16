@@ -1,7 +1,11 @@
+
 object barcoPirata {
 	var mision = buscarTesoro
 	var capacidad = 50
 	var tripulacion = 42
+	var ancla
+	
+	method getAncla() = ancla
 		
 	method tieneSuficienteTripulacion() {
 		return tripulacion >= capacidad * 0.9 
@@ -20,7 +24,7 @@ object barcoPirata2 {
 	method tieneSuficienteTripulacion() {
 		return tripulacion >= capacidad * 0.9 
 	}
-}
+} 
 
 
 object barbanegra {

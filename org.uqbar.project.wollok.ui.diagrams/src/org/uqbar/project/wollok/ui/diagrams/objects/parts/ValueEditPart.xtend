@@ -25,6 +25,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
  */
 class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
+	Ellipse ellipse
 	
 	override activate() {
 		if (!active) {
@@ -48,8 +49,11 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Figure => [
 			layoutManager = new StackLayout
 		
-			add(new Ellipse => [
-				backgroundColor = ClassDiagramColors.CLASS_BACKGROUND
+			val c = colorFor(castedModel)
+			println(" >>>>>>>>> model color for " + castedModel.valueString + " is " + c)
+			
+			add(this.ellipse = new Ellipse => [
+				backgroundColor = c
 				opaque = true
 			])
 			add(new Label => [
@@ -58,6 +62,21 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			])
 		]
 	}
+	
+	def colorFor(VariableModel model) {
+		val v = model.valueString
+		if (v == "null")
+			ClassDiagramColors.OBJECTS_VALUE_NULL
+		else if (v.isNumeric)
+			ClassDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
+		else 
+			ClassDiagramColors.CLASS_BACKGROUND
+	}
+	
+	def dispatch isNumeric(Void v) { false }
+	def dispatch isNumeric(String str) {
+		return str.matches("^-?\\d+(\\.\\d+)?$");
+	} 
 	
 	def getCastedModel() { model as VariableModel }
 
