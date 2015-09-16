@@ -256,6 +256,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
+			
+			namedObject.parent.superClassesIncludingYourselfTopDownDo [
+				addMembersTo(wo)
+				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+			]
+			
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
