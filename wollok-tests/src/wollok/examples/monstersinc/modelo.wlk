@@ -21,7 +21,7 @@ object monstersInc {
 	}
 	
 	method equipoMasAsustador() {
-		return equipos.max([e| e.getEnergiaGenerada() ])
+		return equipos.max([e| e.getEnergiaGenerada()])
 	} 
 }
 

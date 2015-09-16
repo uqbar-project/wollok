@@ -1,0 +1,68 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	method giveMeANumber() {
+		return 10
+	}
+}
+
+class B extends A {
+	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
+	override method giveMeANumber() { 20 * 20 }
+}
+
+class C extends A {
+	override method giveMeANumber() { 
+		return 0
+	}
+}
+
+class D extends C {
+}
+
+class E extends D {
+	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
+	override method giveMeANumber() { 20 * 20 }
+}
+
+class F extends A {
+	override method giveMeANumber() = 6
+}
+
+
+// OPPOSITE CASE: adding a return to a non-return method
+
+class Z {
+	method doSomething() {
+		console.println("Blah")
+	}
+}
+
+class Y extends Z {
+	// XPECT errors --> "Must NOT return a value since overridden method does not return a value" at "doSomething"
+	override method doSomething() {
+		return 23
+	}	
+}
+
+
+// OVERRIDING ABSTRACTS WON'T CHECK
+
+class M {
+	method anAbstractMethod()	
+}
+
+// returns
+class N extends M {
+	override method anAbstractMethod() { return 2 }
+}
+
+// doesn't return
+class O extends M {
+	override method anAbstractMethod() { console.println("blah") }
+}
+
+// return shortcut
+class P extends M {
+	override method anAbstractMethod() = 2
+}

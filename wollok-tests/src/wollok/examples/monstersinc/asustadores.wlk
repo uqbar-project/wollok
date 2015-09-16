@@ -32,7 +32,7 @@ class AsustadorNato extends Asustador {
 		puntosTerrorInnatos = p
 	}
 	override method puntosDeTerror() {
-		return this.getEdad() * puntosTerrorInnatos
+		return puntosTerrorInnatos * this.getEdad()
 	}
 }
 
