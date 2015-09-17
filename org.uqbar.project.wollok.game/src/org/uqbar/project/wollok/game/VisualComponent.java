@@ -1,7 +1,11 @@
 package org.uqbar.project.wollok.game;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.uqbar.project.wollok.game.Position;
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
+import org.uqbar.project.wollok.interpreter.core.ToStringBuilder;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
 import com.badlogic.gdx.Gdx;
@@ -12,7 +16,7 @@ public class VisualComponent {
 
 	private Image image;
 	private WollokObject domainObject;
-	private String attribute;
+	private Collection<String> attributes = new ArrayList<String>();
 	
 	public VisualComponent(WollokObject object) {
 		this.domainObject = object;
@@ -21,7 +25,14 @@ public class VisualComponent {
 	
 	public VisualComponent(WollokObject object, String attr) {
 		this(object);
-		this.attribute = attr;
+		this.attributes.add(attr);
+	}
+	
+	public VisualComponent(WollokObject object, Collection<Object> attrs) {
+		this(object);
+		for(Object attr : attrs){
+			this.attributes.add(attr.toString());
+		} 
 	}
 	
 	public Position getPosition() {
@@ -43,8 +54,14 @@ public class VisualComponent {
 	public void draw(SpriteBatch batch, BitmapFont font) {
 		batch.draw(this.image.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 
-		if (this.attribute != null && this.isInMyZone())
-			font.draw(batch, this.getShowableAttribute(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
+		String printableString = "";
+		
+		for(String attr : this.attributes){
+			printableString = printableString.concat(this.getShowableAttribute(attr).concat("\n"));
+		}
+		
+		if (printableString != "" && this.isInMyZone())
+			font.draw(batch, printableString, this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 	}
 
 	private boolean isInMyZone(){
@@ -57,9 +74,10 @@ public class VisualComponent {
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY);
 	}
 	
-	private String getShowableAttribute() {
-		String objectProperty = this.domainObject.getInstanceVariables().get(this.attribute).toString();
-		return this.attribute + ":" + objectProperty;
+	private String getShowableAttribute(String attr) {
+		Object value = this.domainObject.getInstanceVariables().get(attr);
+		
+		return attr + ":" + new ToStringBuilder().smartToString(value);
 	}
 	
 }

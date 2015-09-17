@@ -28,9 +28,9 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	}
 	
 	@NativeMessage("addVisualWithReference")
-	def addVisualWithReferenceMethod(Object element, String property) {		
+	def addVisualWithReferenceMethod(Object element, WollokList property) {		
 		var wollokObject = WollokObject.cast(element)
-		this.addComponent(new VisualComponent(wollokObject, property))
+		this.addComponent(new VisualComponent(wollokObject, property.wrapped))
 	}
 	
 	@NativeMessage("whenKeyPressedDo")
