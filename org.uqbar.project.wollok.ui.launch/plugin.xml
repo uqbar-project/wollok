@@ -305,7 +305,7 @@
          point="org.eclipse.ui.views">
       <view
             category="org.uqbar.project.wollok.ui.views.category"
-            class="org.uqbar.project.wollok.ui.tests.WollokTestResultView"
+            class="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.WollokTestResultView"
             icon="icons/w-tests.png"
             id="org.uqbar.project.wollok.ui.launch.resultView"
             name="%wollok.tests.view.name"

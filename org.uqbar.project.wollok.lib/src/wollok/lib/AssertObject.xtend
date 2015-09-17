@@ -53,11 +53,11 @@ class AssertionException extends Exception {
 	}
 
 	static def valueWasNotTrue() {
-		return new AssertionException("Value was not true", null, null)
+		return new AssertionException("Value was not true", "true", "false")
 	}
 
 	static def valueWasNotFalse() {
-		return new AssertionException("Value was not false", null, null)
+		return new AssertionException("Value was not false", "false", "true")
 	}
 
 	static def valueNotWasEquals(Object expected, Object actual) {
@@ -65,7 +65,7 @@ class AssertionException extends Exception {
 	}
 
 	static def valueNotWasNotEquals(Object expected, Object actual) {
-		return new AssertionException("Expected different to [{0}] but found [{1}]", null, null)
+		return AssertionException.newException("Expected different to [{0}] but found [{1}]", expected, actual)
 	}
 
 	static def newException(String format, Object expected, Object actual) {

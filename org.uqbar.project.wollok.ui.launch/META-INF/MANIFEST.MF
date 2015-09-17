@@ -25,6 +25,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.core;bundle-version="1.5.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
  org.uqbar.project.wollok.ui;bundle-version="1.1.0",
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.observable,
+ org.eclipse.core.databinding.property,
+ org.eclipse.jface,
+ org.eclipse.jface.databinding,
  org.eclipse.jdt.junit,
  org.eclipse.jdt.junit.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
