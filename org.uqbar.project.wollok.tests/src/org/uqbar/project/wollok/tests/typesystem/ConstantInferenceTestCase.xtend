@@ -13,9 +13,9 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Test
 	def void testNumberLiteral() { 	'''program p {
-		val a = 46
-		val b = "Hello"
-		val c = true
+			val a = 46
+			val b = "Hello"
+			val c = true
 		}'''.parseAndInfer.asserting [
 			assertTypeOf(WInt, "val a = 46")
 			assertTypeOf(WString, 'val b = "Hello"')

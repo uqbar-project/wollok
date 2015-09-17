@@ -10,7 +10,7 @@
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
             modes="run, debug"
             name="Launch Wollok"
-            delegate="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>
@@ -31,7 +31,7 @@
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run, debug"
             name="%wollok.launch.tests"
-            delegate="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>

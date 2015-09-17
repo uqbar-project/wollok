@@ -4,4 +4,9 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 class VoidObject {
 	@Accessors static val instance = new VoidObject
+	
+	override toString() {
+		"Void"  // mm.. or null/Null ?
+	}
+	
 }

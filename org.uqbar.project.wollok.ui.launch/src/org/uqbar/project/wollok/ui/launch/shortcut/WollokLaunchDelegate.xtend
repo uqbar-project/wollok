@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
+import com.google.inject.Inject
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.debug.core.DebugEvent
@@ -10,6 +11,7 @@ import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.model.IProcess
 import org.eclipse.jdt.launching.JavaLaunchDelegate
 import org.eclipse.ui.console.ConsolePlugin
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
@@ -30,6 +32,8 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
  * @author jfernandes
  */
 class WollokLaunchDelegate extends JavaLaunchDelegate {
+	@Inject
+	IPreferenceStoreAccess preferenceStoreAccess
 
 	//Use RefreshUtil after switching to debug >= 3.6
 	private static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
@@ -95,7 +99,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	}
 	
 	def createWollokTarget(ILaunch launch, int requestPort, int eventPort) {
-		new WollokDebugTarget(launch, launch.processes.get(0), requestPort, eventPort)
+		new WollokDebugTarget(preferenceStoreAccess, launch, launch.processes.get(0), requestPort, eventPort)
 	}
 	
 	def createListener(ILaunchConfiguration configuration) {

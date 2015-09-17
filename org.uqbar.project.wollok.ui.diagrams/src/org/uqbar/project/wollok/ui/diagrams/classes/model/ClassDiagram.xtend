@@ -22,7 +22,7 @@ class ClassDiagram extends ModelElement {
 			val parent = c.clazz.parent
 			if (parent != null) {
 				val parentModel = classes.findFirst[clazz == parent]
-				new Connection(c, parentModel)
+				new Connection(null, c, parentModel)
 			}
 		]
 	}

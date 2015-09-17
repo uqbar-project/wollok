@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
 import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A connection between two distinct shapes.
@@ -24,8 +25,10 @@ class Connection extends ModelElement {
 	int lineStyle = Graphics.LINE_SOLID
 	Shape source
 	Shape target
+	@Accessors String name
 
-	new(Shape source, Shape target) {
+	new(String name, Shape source, Shape target) {
+		this.name = name 
 		reconnect(source, target)
 	}
 

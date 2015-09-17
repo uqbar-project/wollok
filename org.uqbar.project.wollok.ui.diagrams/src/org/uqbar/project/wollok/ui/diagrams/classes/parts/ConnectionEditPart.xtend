@@ -8,6 +8,8 @@ import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.editparts.AbstractConnectionEditPart
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.eclipse.draw2d.MidpointLocator
+import org.eclipse.draw2d.Label
 
 /**
  * @author jfernandes
@@ -29,6 +31,9 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyC
 		super.createFigure as PolylineConnection => [
 			targetDecoration = new PolygonDecoration
 			lineStyle = castedModel.lineStyle
+			
+			if (castedModel.name != null)
+				add(new Label(castedModel.name) => [ opaque = true ], new MidpointLocator(it, 0))
 		]
 	}
 

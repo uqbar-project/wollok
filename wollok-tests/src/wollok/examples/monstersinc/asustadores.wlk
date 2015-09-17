@@ -3,8 +3,7 @@ class Asustador {
 	var nivelMotivacion = 100
 	
 	new(e) { edad = e }
-	
-	method getEdad() = return edad 
+	method getEdad() = edad  
 	method setEdad(e) { edad = e }
 	
 	method getNivelMotivacion() = nivelMotivacion
@@ -32,7 +31,7 @@ class AsustadorNato extends Asustador {
 		puntosTerrorInnatos = p
 	}
 	override method puntosDeTerror() {
-		return this.getEdad() * puntosTerrorInnatos
+		return puntosTerrorInnatos * this.getEdad()
 	}
 }
 

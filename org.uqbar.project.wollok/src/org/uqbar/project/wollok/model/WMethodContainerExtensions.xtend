@@ -27,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * Extension methods for WMethodContainers.
@@ -64,6 +65,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent.lookupMethod(m.name) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
+	def static returnsValue(WMethodDeclaration it) { expressionReturns || it.eAllContents.exists[e | e.isReturnWithValue] }
+	
+	def dispatch static isReturnWithValue(EObject it) { false }
+	def dispatch static isReturnWithValue(WReturnExpression it) { it.expression != null }
+	
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
@@ -87,8 +93,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static actuallyOverrides(WMethodDeclaration m) {
 		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name)
 	}
-
-
+	
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
 	def static List<WClass> _parents(WMethodContainer c, List l) {
 		if (c == null) {

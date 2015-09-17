@@ -15,6 +15,10 @@ class ClassDiagramColors {
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)
 	public static val CLASS_INNER_BORDER = new Color(null, 255, 245, 240)
 	
+	public static val OBJECTS_VALUE_DEFAULT = CLASS_BACKGROUND
+	public static val OBJECTS_VALUE_NULL = new Color(null, 255, 255, 255)
+	public static val OBJECTS_VALUE_NUMERIC_BACKGROUND = new Color(null, 224, 199, 206)
+	
 	// FONTS
 	
 	public static val SYSTEM_FONT = Display.getDefault.systemFont.fontData.get(0)

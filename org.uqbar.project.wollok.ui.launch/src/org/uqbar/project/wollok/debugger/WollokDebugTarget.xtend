@@ -13,13 +13,16 @@ import org.eclipse.debug.core.model.ILineBreakpoint
 import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IThread
-import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
+import org.eclipse.jface.preference.IPreferenceStore
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.debugger.client.EventDispatchJob
 import org.uqbar.project.wollok.debugger.model.WollokDebugElement
 import org.uqbar.project.wollok.debugger.model.WollokStackFrame
 import org.uqbar.project.wollok.debugger.model.WollokThread
 import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
+import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
+import org.uqbar.project.wollok.ui.preferences.WollokRootPreferencePage
 
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
@@ -46,8 +49,11 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	protected WollokThread wollokThread
 	private IThread[] wollokThreads
 	
-	new(ILaunch launch, IProcess process, int requestPort, int eventPort) throws CoreException {
+	IPreferenceStore prefs
+	
+	new(IPreferenceStoreAccess preferenceStoreAccess, ILaunch launch, IProcess process, int requestPort, int eventPort) throws CoreException {
 		super(null)
+		this.prefs = preferenceStoreAccess.preferenceStore
 		this.launch = launch
 		target = this
 		this.process = process
@@ -63,9 +69,17 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	def createCommandHandler(int port) {
-		Thread.sleep(2500) // wait for remote process to start the server
+		Thread.sleep(getSleepTime())
 		client = new Client("localhost", port, new CallHandler)
 		client.getGlobal(DebugCommandHandler) as DebugCommandHandler
+	}
+	
+	def getSleepTime() {
+		if (prefs.contains(WollokRootPreferencePage.DEBUGGER_WAIT_TIME_FOR_CONNECT))
+			prefs.getInt(WollokRootPreferencePage.DEBUGGER_WAIT_TIME_FOR_CONNECT)
+		else {
+			WollokRootPreferencePage.DEBUGGER_WAIT_TIME_FOR_CONNECT_DEFAULT
+		}
 	}
 	
 	override getName() throws DebugException {
