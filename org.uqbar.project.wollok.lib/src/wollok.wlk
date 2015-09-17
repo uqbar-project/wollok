@@ -488,8 +488,24 @@ object wgame{
 	method getHeight() native
 }
 
-object wGameKeys {
+object keys {
 	method getKeyCode(aKey) native
+	
+	method onPress(key) {
+		return new ProtoKeyListener(this.getKeyCode(key))
+	}
+}
+
+class ProtoKeyListener {
+	val key
+
+	new(_key) {
+		key = _key
+	}
+	
+	method do(action) {
+		wgame.whenKeyPressedDo(key, action)
+	}
 }
 
 class Position {
