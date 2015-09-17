@@ -10,7 +10,7 @@ import com.google.inject.Injector;
  */
 public class WollokDslExecutableExtensionFactory extends AbstractGuiceAwareExecutableExtensionFactory {
 
-	@Override1
+	@Override
 	protected Bundle getBundle() {
 		return Activator.getDefault().getBundle();
 	}
