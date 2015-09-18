@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
 
 /**
  * A connection between two distinct shapes.
@@ -22,14 +23,19 @@ class Connection extends ModelElement {
 	]
 
 	boolean isConnected
-	int lineStyle = Graphics.LINE_SOLID
+	int lineStyle
 	Shape source
 	Shape target
 	@Accessors String name
 
 	new(String name, Shape source, Shape target) {
-		this.name = name 
+		this.name = name
 		reconnect(source, target)
+		this.lineStyle = calculateLineStyle()
+	}
+	
+	def calculateLineStyle() {
+		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else Graphics.LINE_SOLID
 	}
 
 	def disconnect() {

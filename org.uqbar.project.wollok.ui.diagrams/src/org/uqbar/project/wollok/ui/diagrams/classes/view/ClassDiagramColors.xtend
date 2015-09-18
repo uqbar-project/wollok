@@ -18,6 +18,7 @@ class ClassDiagramColors {
 	public static val OBJECTS_VALUE_DEFAULT = CLASS_BACKGROUND
 	public static val OBJECTS_VALUE_NULL = new Color(null, 255, 255, 255)
 	public static val OBJECTS_VALUE_NUMERIC_BACKGROUND = new Color(null, 224, 199, 206)
+	public static val OBJECTS_VALUE_LIST_BACKGROUND = new Color(null, 240, 199, 216)
 	
 	// FONTS
 	

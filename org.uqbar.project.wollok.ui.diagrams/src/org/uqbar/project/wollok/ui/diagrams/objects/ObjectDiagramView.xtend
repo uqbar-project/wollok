@@ -293,9 +293,6 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	override setStackFrame(IStackFrame stackframe) {
 		// hack to remember positions
-		val oldModel = graphicalViewer.contents?.model as WollokStackFrame
-		println(graphicalViewer.contents?.model?.class?.simpleName)
-		
 		val oldRootPart = graphicalViewer.contents as StackFrameEditPart
 		
 		val map = new HashMap<String,Shape>()

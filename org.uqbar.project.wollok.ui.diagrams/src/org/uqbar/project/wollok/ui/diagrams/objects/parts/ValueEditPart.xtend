@@ -18,6 +18,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
+import org.eclipse.draw2d.RectangleFigure
 
 /**
  * 
@@ -25,7 +26,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
  */
 class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
-	Ellipse ellipse
+	org.eclipse.draw2d.Shape ellipse
 	
 	override activate() {
 		if (!active) {
@@ -50,7 +51,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			layoutManager = new StackLayout
 		
 			val c = colorFor(castedModel)
-			add(this.ellipse = new Ellipse => [
+			add(this.ellipse = createShape() => [
 				backgroundColor = c
 				opaque = true
 			])
@@ -61,20 +62,24 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		]
 	}
 	
+	def createShape() {
+		if (castedModel.isList)
+			new RectangleFigure
+		else
+			new Ellipse
+	}
+	
 	def colorFor(VariableModel model) {
 		val v = model.valueString
 		if (v == "null")
 			ClassDiagramColors.OBJECTS_VALUE_NULL
-		else if (v.isNumeric)
+		else if (model.isNumeric)
 			ClassDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
+		else if (model.isList)
+			ClassDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
 		else 
 			ClassDiagramColors.CLASS_BACKGROUND
 	}
-	
-	def dispatch isNumeric(Void v) { false }
-	def dispatch isNumeric(String str) {
-		return str.matches("^-?\\d+(\\.\\d+)?$");
-	} 
 	
 	def getCastedModel() { model as VariableModel }
 
