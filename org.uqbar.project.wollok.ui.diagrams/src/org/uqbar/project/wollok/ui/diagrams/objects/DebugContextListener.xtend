@@ -11,7 +11,6 @@ import org.eclipse.jface.viewers.StructuredSelection
  * @author jfernandes
  */
 class DebugContextListener implements IDebugContextListener {
-	
 	IStackFrameConsumer consumer
 	
 	new(IStackFrameConsumer consumer) {
@@ -19,7 +18,7 @@ class DebugContextListener implements IDebugContextListener {
 	}
 	
 	override debugContextChanged(DebugContextEvent event) {
-		if ((event.flags.bitwiseAnd(DebugContextEvent.ACTIVATED)) > 0) {
+		if (event.flags.bitwiseAnd(DebugContextEvent.ACTIVATED) > 0) {
 			contextActivated(event.context)
 		}
 	}
@@ -27,12 +26,12 @@ class DebugContextListener implements IDebugContextListener {
 	def void contextActivated(ISelection context) {
 		if (context instanceof StructuredSelection) {
 			val data = (context as StructuredSelection).firstElement
-			if (data instanceof IStackFrame) {
-				consumer.stackFrame = data as IStackFrame
-			} else {
-				consumer.stackFrame = null
-			}
+			changeStackFrame(if (data instanceof IStackFrame) data as IStackFrame else null)
 		}
+	}
+	
+	def changeStackFrame(IStackFrame frame) {
+		consumer.stackFrame = frame
 	}
 	
 }

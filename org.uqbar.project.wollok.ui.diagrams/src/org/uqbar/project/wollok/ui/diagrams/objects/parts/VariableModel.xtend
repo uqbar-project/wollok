@@ -29,10 +29,13 @@ class VariableModel extends Shape {
 	def get(Map<IVariable, VariableModel> map, IVariable variable) {
 		if (map.containsKey(variable)) 
 			map.get(variable)
-		else
+		else {
 			new VariableModel(variable, this.level + 1) => [
 				map.put(variable, it)
+				// go deep (recursion)
+				it.createConnections(map)
 			]
+		}
 	}
 	
 	def getValueString() {

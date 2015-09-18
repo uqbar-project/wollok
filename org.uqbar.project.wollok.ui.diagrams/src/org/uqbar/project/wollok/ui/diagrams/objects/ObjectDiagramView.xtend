@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.diagrams.objects
 
 import java.util.ArrayList
+import java.util.Collections
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.ColorConstants
@@ -48,10 +49,10 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
-import org.eclipse.draw2d.graph.Subgraph
-import com.google.common.collect.Lists
-import javax.swing.plaf.ListUI
-import java.util.Collections
+import org.uqbar.project.wollok.debugger.model.WollokStackFrame
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
+import java.util.Map
+import java.util.HashMap
 
 /**
  * 
@@ -99,11 +100,11 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			page = null
 		}
 		
-		debugListener = new DebugContextListener(this);
-		DebugUITools.getDebugContextManager().addDebugContextListener(debugListener);
+		debugListener = new DebugContextListener(this)
+		DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
 
 		// Check if there is an already started debug context
-		val dc = DebugUITools.getDebugContext();
+		val dc = DebugUITools.getDebugContext
 		if (dc != null) {
 			val o = dc.getAdapter(IStackFrame)
 			if (o instanceof IStackFrame)
@@ -291,8 +292,30 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// posta
 	
 	override setStackFrame(IStackFrame stackframe) {
-		graphicalViewer.contents = stackframe 
-		layout
+		// hack to remember positions
+		val oldModel = graphicalViewer.contents?.model as WollokStackFrame
+		println(graphicalViewer.contents?.model?.class?.simpleName)
+		
+		val oldRootPart = graphicalViewer.contents as StackFrameEditPart
+		
+		val map = new HashMap<String,Shape>()
+		if (oldRootPart != null) {
+			oldRootPart.children.<ValueEditPart>forEach[it |
+				map.put((it.model as VariableModel).valueString, it.model as Shape)
+			]
+		}
+		
+		graphicalViewer.contents = stackframe
+		layout()
+		
+		(graphicalViewer.contents as StackFrameEditPart).children.<ValueEditPart>forEach[ ep |
+			val vm = ep.model as VariableModel
+			if (map.containsKey(vm.valueString)) {
+				val oldShape = map.get(vm.valueString)
+				vm.location = oldShape.location
+				vm.size = oldShape.size
+			}
+		]
 	}
 	
 }

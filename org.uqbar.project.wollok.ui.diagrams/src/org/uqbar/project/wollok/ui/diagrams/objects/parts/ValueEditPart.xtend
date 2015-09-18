@@ -50,8 +50,6 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			layoutManager = new StackLayout
 		
 			val c = colorFor(castedModel)
-			println(" >>>>>>>>> model color for " + castedModel.valueString + " is " + c)
-			
 			add(this.ellipse = new Ellipse => [
 				backgroundColor = c
 				opaque = true
