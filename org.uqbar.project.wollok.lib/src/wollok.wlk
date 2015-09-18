@@ -538,24 +538,28 @@ class Position {
 		return x == other.getX() and y == other.getY()
 	}
 	
-	method drawCharacterWithReferences(element, reference){
+	method drawCharacterWithReferences(element, reference) {
 		this.drawCharacter(element)
 		wgame.addVisualWithReference(element, reference)
 	}
 	
-	method drawCharacter(element){
+	method drawCharacter(element) {
 		element.setPosicion(this.clone())
 		wgame.addVisualCharacter(element)
 	}
 	
-	method drawElementWithReferences(element, reference){
+	method drawElementWithReferences(element, reference) {
 		this.drawElement(element)
 		wgame.addVisualWithReference(element, reference)
 	}
 	
-	method drawElement(element){
+	method drawElement(element) {
 		element.setPosicion(this.clone())
 		wgame.addVisual(element)
+	}
+	
+	method getAllElements() {
+		return wgame.getObjectsIn(this)
 	}
 	
 	method getX() {
