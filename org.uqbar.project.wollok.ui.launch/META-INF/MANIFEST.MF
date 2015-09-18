@@ -36,3 +36,15 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Activator: org.uqbar.project.wollok.ui.launch.Activator
 Bundle-ClassPath: lib/lipermi-0-4-2.jar,
  .
+Export-Package: org.uqbar.project.wollok.debugger,
+ org.uqbar.project.wollok.debugger.client,
+ org.uqbar.project.wollok.debugger.client.source,
+ org.uqbar.project.wollok.debugger.model,
+ org.uqbar.project.wollok.ui.console,
+ org.uqbar.project.wollok.ui.i18n,
+ org.uqbar.project.wollok.ui.launch,
+ org.uqbar.project.wollok.ui.launch.shortcut,
+ org.uqbar.project.wollok.ui.tests,
+ org.uqbar.project.wollok.ui.tests.launch,
+ org.uqbar.project.wollok.ui.tests.model,
+ org.uqbar.project.wollok.ui.tests.shortcut

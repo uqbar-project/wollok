@@ -18,8 +18,17 @@ class VariableModel extends Shape {
 	
 	new(IVariable variable, int level) {
 		this.variable = variable
-		this.size = new Dimension(75, 75)
+		this.size = calculateSize()
 		this.level = level
+	}
+	
+	def calculateSize() {
+		if (isNumeric)
+			new Dimension(50, 50)
+		else if (isList)
+			new Dimension(50, 25)
+		else
+			new Dimension(75, 75)
 	}
 	
 	def createConnections(Map<IVariable, VariableModel> context) {
@@ -29,14 +38,33 @@ class VariableModel extends Shape {
 	def get(Map<IVariable, VariableModel> map, IVariable variable) {
 		if (map.containsKey(variable)) 
 			map.get(variable)
-		else
+		else {
 			new VariableModel(variable, this.level + 1) => [
 				map.put(variable, it)
+				// go deep (recursion)
+				it.createConnections(map)
 			]
+		}
 	}
 	
-	def getValueString() {
-		if (variable.value == null) "null" else variable.value.valueString
+	def String getValueString() {
+		if (variable.value == null) 
+			"null"
+		else if (isList)
+			"List" 
+		else 
+			originalValueString()
 	}
 	
+	def originalValueString() {
+		variable.value.valueString
+	}
+	
+	def isNumeric() {
+		if (variable.value == null) false else valueString.matches("^-?\\d+(\\.\\d+)?$")
+	} 
+	
+	def isList() {
+		if (variable.value == null) false else originalValueString.matches("^List \\(id.*")
+	}
 }
