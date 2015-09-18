@@ -11,10 +11,7 @@ import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
  * @author jfernandes
  */
 class Connection extends ModelElement {
-	public static val SOLID_CONNECTION = new Integer(Graphics.LINE_SOLID)
 	static final val SOLID_STR = "Solid"
-
-	public static val DASHED_CONNECTION = new Integer(Graphics.LINE_DASH)
 	static val DASHED_STR = "Dashed"
 	
 	public static val LINESTYLE_PROP = "LineStyle"
