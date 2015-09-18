@@ -227,17 +227,15 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.SOUTH
 		
-		val classEditParts = getNodesEditParts()
-		
-		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
+		val classToNodeMapping = nodesEditParts.fold(newHashMap)[map, e | 
 			map.put(e.model as VariableModel, new Node(e.model) => [
 				width = 100 //e.figure.bounds.width
 				height = 100 //e.figure.bounds.height
 			])
 			map
 		]
-			 
 		graph.nodes.addAll(classToNodeMapping.values)
+		
 		graph.edges.addAll(connectionsEditParts.map[c |
 			new Edge(
 				classToNodeMapping.get(c.castedModel.source), 
@@ -245,9 +243,10 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			)
 		])
 		
-		//layout
-		val directedGraphLayout = new DirectedGraphLayout
-		directedGraphLayout.visit(graph)
+		// layout
+		new DirectedGraphLayout => [
+			visit(graph)
+		]
 		
 		// map back positions to model
 		graph.nodes.forEach[ val n = it as Node
