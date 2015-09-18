@@ -9,7 +9,7 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
             modes="run, debug"
-            name="Launch Wollok"
+            name="Wollok Program"
             delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
