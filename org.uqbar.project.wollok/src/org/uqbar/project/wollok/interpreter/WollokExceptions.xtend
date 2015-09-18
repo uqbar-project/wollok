@@ -30,6 +30,7 @@ class MessageNotUnderstood extends WollokRuntimeException {
 	// Esto es previo a tener la infraestructura de debugging
 	// probablemente seria bueno unificar el manejo de errores con eso
 	var Stack<WFeatureCall> wollokStack = new Stack
+	var String precalculatedMessage = null	
 	
 	new(String message) {
 		super(message)
@@ -37,7 +38,16 @@ class MessageNotUnderstood extends WollokRuntimeException {
 	
 	def pushStack(WFeatureCall call) { wollokStack.push(call) }
 	
-	override getMessage() '''«super.getMessage()»
+	override getMessage(){
+		if(precalculatedMessage == null){
+			precalculatedMessage = this.calculateMessage().toString
+			wollokStack = null
+		}
+		
+		return precalculatedMessage
+	}
+	
+	def calculateMessage() '''«super.getMessage()»
 		«FOR m : wollokStack»
 		«(m as WExpression).method?.declaringContext?.contextName».«(m as WExpression).method?.name»():«NodeModelUtils.findActualNodeFor(m).textRegionWithLineInformation.lineNumber»
 		«ENDFOR»
@@ -46,15 +56,17 @@ class MessageNotUnderstood extends WollokRuntimeException {
 	def getInternalMessage(){
 		super.message
 	}
-}
 
-class IllegalBinaryOperation extends WollokRuntimeException {
-	new(String message) {
-		super(message)
+	/* This method is only intended to be used when the exception is going to be sent to the UI. Because Wollok AST nodes are not serializable :( */	
+	def prepareForSerialization(){
+		if(precalculatedMessage == null){
+			precalculatedMessage = this.calculateMessage.toString
+			wollokStack = null;
+		}
 	}
 }
 
-class AssertionFailed extends WollokRuntimeException {
+class IllegalBinaryOperation extends WollokRuntimeException {
 	new(String message) {
 		super(message)
 	}

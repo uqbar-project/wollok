@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.tests.model;
 
-import java.text.MessageFormat;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.graphics.Image;
@@ -67,7 +68,9 @@ public enum WollokTestState {
 		
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return result.getMessage();
+			StringWriter sw = new StringWriter();
+			result.getException().printStackTrace(new PrintWriter(sw));
+			return sw.toString();
 		}
 
 	},
@@ -111,7 +114,7 @@ public enum WollokTestState {
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return MessageFormat.format(WollokLaunchUIMessages.WollokTestState_ASSERTION_ERROR, result.getMessage(), result.getExpected(), result.getActual());
+			return new AssertErrorFormatter().format(result.getAssertException());
 		}
 
 	};

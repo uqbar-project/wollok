@@ -11,6 +11,8 @@ import org.eclipse.jface.viewers.LabelProvider
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.graphics.RGB
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
@@ -25,8 +27,6 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
-import org.eclipse.swt.graphics.Color
-import org.eclipse.swt.graphics.RGB
 
 /**
  * 
@@ -114,18 +114,25 @@ class WollokTestResultView extends ViewPart implements Observer {
 			grabExcessVerticalSpace = true
 			horizontalAlignment = GridData.FILL
 			verticalAlignment = GridData.FILL
+			verticalSpan = 5
 			testTree.control.layoutData = it	
 		]
 	}
 	
 	def createTextOutput(Composite parent) {
-		textOutput = new Text(parent, SWT.MULTI.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.BORDER));
+		textOutput = new Text(parent, 
+			SWT.MULTI
+			.bitwiseOr(SWT.WRAP)
+			.bitwiseOr(SWT.BORDER)
+			.bitwiseOr(SWT.V_SCROLL)
+		);
 		textOutput.editable = false
 		new GridData => [
 			grabExcessHorizontalSpace = true
 			grabExcessVerticalSpace = true
 			horizontalAlignment = GridData.FILL
 			verticalAlignment = GridData.FILL
+			verticalSpan = 5
 			textOutput.layoutData = it
 		]
 	}

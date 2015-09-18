@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.tests.model
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
+import wollok.lib.AssertionException
 
 @Accessors
 class WollokTestResult {
@@ -13,9 +14,7 @@ class WollokTestResult {
 	var URI testResource
 	var URI errorResource
 	int lineNumber
-	String actual
-	String expected
-	String message
+	Exception exception
 
 	new(WollokTestInfo testInfo) {
 		this.testInfo = testInfo
@@ -37,22 +36,24 @@ class WollokTestResult {
 		startTime = System.currentTimeMillis
 	}
 	
-	def endedAssertError(String message, String expected, String actual, int lineNumber, String resource) {
+	def endedAssertError(AssertionException exception, int lineNumber, String resource) {
 		endTime = System.currentTimeMillis
 		state = WollokTestState.ASSERT
-		this.message = message
-		this.expected = expected
-		this.actual = actual
+		this.exception = exception
 		this.lineNumber = lineNumber
 		this.errorResource = URI.createURI(resource)
 	}
 	
-	def endedError(String message, int lineNumber, String resource) {
+	def endedError(Exception exception, int lineNumber, String resource) {
 		endTime = System.currentTimeMillis
 		state = WollokTestState.ERROR
 		this.errorResource = URI.createURI(resource)
 		this.lineNumber = lineNumber
-		this.message = message;
+		this.exception = exception;
+	}
+	
+	def getAssertException(){
+		exception as AssertionException
 	}
 	
 	override toString() {

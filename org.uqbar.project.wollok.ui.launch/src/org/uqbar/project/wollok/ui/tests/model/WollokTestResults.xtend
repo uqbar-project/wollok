@@ -2,12 +2,13 @@ package org.uqbar.project.wollok.ui.tests.model
 
 import com.google.inject.Singleton
 import java.util.List
+import java.util.Observable
+import org.eclipse.emf.common.util.URI
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
-import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.Observable
 import org.uqbar.project.wollok.ui.console.RunInUI
-import org.eclipse.emf.common.util.URI
+import wollok.lib.AssertionException
 
 /**
  * This class represents the model of the results of an execution.
@@ -18,8 +19,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	@Accessors
 	var WollokTestContainer container
 	
-	override assertError(String testName, String message, String expected, String actual, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(message, expected, actual, lineNumber, resource)
+	override assertError(String testName, AssertionException assertionException, int lineNumber, String resource) {
+		testByName(testName).endedAssertError(assertionException, lineNumber, resource)
 		
 		this.setChanged
 		this.notifyObservers
@@ -52,8 +53,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.tests.findFirst[name == testName]
 	}
 	
-	override error(String testName, String message, int lineNumber, String resource) {
-		testByName(testName).endedError(message, lineNumber, resource);
+	override error(String testName, Exception exception, int lineNumber, String resource) {
+		testByName(testName).endedError(exception, lineNumber, resource);
 		
 		this.setChanged
 		this.notifyObservers		

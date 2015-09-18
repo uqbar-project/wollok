@@ -15,6 +15,11 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String WollokTestResultView_TOTAL_TESTS;
 	public static String WollokTestResultView_RUN_TESTS;
 	public static String WollokTestResultView_ERROR_TESTS;
+
+	public static String WollokTestState_ASSERT_WAS_NOT_TRUE;
+	public static String WollokTestState_ASSERT_WAS_NOT_FALSE;
+	public static String WollokTestState_ASSERT_WAS_NOT_EQUALS;
+	public static String WollokTestState_ASSERT_WAS_NOT_DIFFERENT;
 	
 	static {
 		// initialize resource bundle
