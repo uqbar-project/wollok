@@ -53,6 +53,7 @@ import org.uqbar.project.wollok.debugger.model.WollokStackFrame
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
 import java.util.Map
 import java.util.HashMap
+import java.util.List
 
 /**
  * 
@@ -291,9 +292,8 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// posta
 	
 	override setStackFrame(IStackFrame stackframe) {
-		// hack to remember positions
+		// backup nodes positions
 		val oldRootPart = graphicalViewer.contents as StackFrameEditPart
-		
 		val map = new HashMap<String,Shape>()
 		if (oldRootPart != null) {
 			oldRootPart.children.<ValueEditPart>forEach[it |
@@ -301,16 +301,28 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			]
 		}
 		
+		// set new stack
 		graphicalViewer.contents = stackframe
 		layout()
 		
-		(graphicalViewer.contents as StackFrameEditPart).children.<ValueEditPart>forEach[ ep |
-			val vm = ep.model as VariableModel
-			if (map.containsKey(vm.valueString)) {
+		// recover old positions
+		val newModels = (graphicalViewer.contents as StackFrameEditPart).children.<ValueEditPart,VariableModel>map[ ep | ep.model as VariableModel ]
+		val alreadyDisplaying = newModels.filter[ map.containsKey(valueString) ].toList
+		alreadyDisplaying.forEach[vm |
 				val oldShape = map.get(vm.valueString)
 				vm.location = oldShape.location
 				vm.size = oldShape.size
-			}
+		]
+		
+		// tweak layout
+		val newNodes = newModels.filter[!alreadyDisplaying.contains(it)].toList
+//		relocateSolitaryNodes(newNodes)
+	}
+	
+	def relocateSolitaryNodes(List<VariableModel> models) {
+		val nodesReferencedByJustOne = models.filter[m | m.targetConnections.size == 1]
+		nodesReferencedByJustOne.forEach[m | 
+			m.moveCloseTo(m.targetConnections.get(0).source)
 		]
 	}
 	
