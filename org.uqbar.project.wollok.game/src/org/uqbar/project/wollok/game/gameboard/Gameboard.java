@@ -80,7 +80,6 @@ public class Gameboard {
 	public void addCharacter(VisualComponent character) {
 		this.character = character;
 		this.configuration.addListener(new ArrowListener(this));
-		this.addComponent(character);
 	}
 	public VisualComponent getCharacterVisualcomponent(){
 		return this.character;
