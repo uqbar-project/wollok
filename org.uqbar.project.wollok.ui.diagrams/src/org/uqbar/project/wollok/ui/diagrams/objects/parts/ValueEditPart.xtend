@@ -7,6 +7,7 @@ import org.eclipse.draw2d.Ellipse
 import org.eclipse.draw2d.EllipseAnchor
 import org.eclipse.draw2d.Figure
 import org.eclipse.draw2d.Label
+import org.eclipse.draw2d.RectangleFigure
 import org.eclipse.draw2d.StackLayout
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
@@ -18,7 +19,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
-import org.eclipse.draw2d.RectangleFigure
+import org.eclipse.draw2d.ChopboxAnchor
 
 /**
  * 
@@ -84,8 +85,15 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	def getCastedModel() { model as VariableModel }
 
 	def getConnectionAnchor() {
-		if (anchor == null) anchor = new EllipseAnchor(figure)
+		if (anchor == null) anchor = createConnectionAnchor()
 		anchor
+	}
+	
+	def createConnectionAnchor() {
+		if (castedModel.isList)
+			new ChopboxAnchor(figure)
+		else
+			new EllipseAnchor(figure)
 	}
 	
 	override getModelSourceConnections() { castedModel.sourceConnections }
