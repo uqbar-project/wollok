@@ -19,6 +19,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE;
+	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_DUPLICATED_METHOD;

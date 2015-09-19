@@ -67,6 +67,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || it.eAllContents.exists[e | e.isReturnWithValue] }
 	
+	def static isGetter(WMethodDeclaration it) { name.length > 4 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
+	
 	def dispatch static isReturnWithValue(EObject it) { false }
 	def dispatch static isReturnWithValue(WReturnExpression it) { it.expression != null }
 	
