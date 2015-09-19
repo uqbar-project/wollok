@@ -6,6 +6,8 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.eclipse.draw2d.geometry.Point
+import java.util.Random
 
 /**
  * 
@@ -67,4 +69,16 @@ class VariableModel extends Shape {
 	def isList() {
 		if (variable.value == null) false else originalValueString.matches("^List \\(id.*")
 	}
+	
+	def moveCloseTo(Shape shape) {
+		// a random value in [0, 2PI] for the angle in radians
+		val angle = new Random().nextFloat() * 2 * Math.PI 
+		// length of the line
+		val magnitude = 100.0f
+		
+		this.location = new Point(shape.location.x + Math.cos(angle) * magnitude, shape.location.y + Math.sin(angle) * magnitude)
+	}
+	
 }
+	
+	
