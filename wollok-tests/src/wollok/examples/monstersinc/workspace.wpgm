@@ -63,7 +63,7 @@ program monstersInc {
 	assert.that(equipo == emp.equipoMasAsustador())
 	
 	val equipoCapo = object {
-		method getEnergiaGenerada() { 90000.0 }
+		method getEnergiaGenerada() { return 90000.0 }
 	}
 	emp.agregarEquipo(equipoCapo)
 	
