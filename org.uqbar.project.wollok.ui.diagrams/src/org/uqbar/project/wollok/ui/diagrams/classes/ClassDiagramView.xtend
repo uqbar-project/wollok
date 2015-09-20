@@ -151,7 +151,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 
 		// configure the context menu provider
-		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, actionRegistry)
+		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 		graphicalViewer.contextMenu = cmProvider
 		site.registerContextMenu(cmProvider, graphicalViewer)
 	}
