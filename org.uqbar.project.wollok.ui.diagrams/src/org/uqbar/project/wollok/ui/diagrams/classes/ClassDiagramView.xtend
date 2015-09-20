@@ -57,6 +57,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 /**
  * 
@@ -109,6 +111,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def getClasses() {
+		// I'm not sure we should be reading it again every time. We should be using
+		// the document from the editor that has been read already. This will also make sure
+		// that there's also only 1 instance of each model object (like a WClass)
 		val resource = xtextDocument.getAdapter(IResource)
 		val r = resourceSet.getResource(URI.createURI(resource.locationURI.toString), true)
 		r.load(#{})
@@ -324,19 +329,27 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	override partOpened(IWorkbenchPart part) { }
 	
-	// ISelectionListener
-	//   workbench tells us that selection changed from other view
+	// workbench -> gef editor
 	override selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (part == this) return;
 		if (selection instanceof StructuredSelection) {
-			val selectedClassModels = selection.toList.filter(WClass).fold(newArrayList())[list, c| 
-				val cm = diagram.classes.findFirst[cm | cm.clazz == c]
+			// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
+			// should we use getAdapter() ?
+			val selectedClassModels = selection.toList.filter(EObjectNode).filter[EClass == WollokDslPackage.Literals.WCLASS].fold(newArrayList())[list, c|
+				val cm = getClassEditParts.findFirst[ep |
+					// mm.. i don't like comparing by name :( but our diagram seems to load 
+					// the xtext document (and model objects) again, so instances are different
+					val a =  ep.castedModel.clazz.name
+					val b = c.text.toString
+					a == b 
+				]
 				if (cm != null)
 					list += cm
 				list
 			]
-			if (!selectedClassModels.empty)
-				graphicalViewer.selection = new StructuredSelection(selectedClassModels)	
+			if (!selectedClassModels.empty) {
+				graphicalViewer.selection = new StructuredSelection(selectedClassModels)
+			}	
 		}
 	}
 
