@@ -24,6 +24,6 @@ class ClassDiagramEditPartFactory implements EditPartFactory {
 	
 	def dispatch getPartForElement(ClassDiagram it) { new ClassDiagramEditPart }
 	def dispatch getPartForElement(ClassModel it) { new ClassEditPart }
-	def dispatch getPartForElement(Connection it) { new ConnectionEditPart }
+	def dispatch getPartForElement(Connection it) { new InheritanceConnectionEditPart }
 
 }
