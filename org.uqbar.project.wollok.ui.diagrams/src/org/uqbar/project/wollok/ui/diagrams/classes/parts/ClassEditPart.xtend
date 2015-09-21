@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener
 import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Rectangle
+import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.NodeEditPart
@@ -16,9 +17,10 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WAttributteFigure
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WMethodFigure
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -48,12 +50,12 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name) => [ f |
 			f.abstract = castedModel.clazz.abstract
-			
-			castedModel.clazz.methods.forEach[m| f.add(new WMethodFigure(m.name)) ]
-			
-			castedModel.clazz.variableDeclarations.forEach[a| f.add(new WAttributteFigure(a.variable.name)) ]
+			castedModel.clazz.members.forEach[m| f.add(createMemberFigure(m)) ]
 		]
 	}
+	
+	def dispatch createMemberFigure(WMethodDeclaration member) { new WMethodFigure(member) }
+	def dispatch createMemberFigure(WVariableDeclaration member) { new WAttributteFigure(member) }
 
 	def getCastedModel() { model as ClassModel }
 
@@ -71,7 +73,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		castedModel.targetConnections
 	}
 
-	override getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart connection) {
+	override getSourceConnectionAnchor(ConnectionEditPart connection) {
 		connectionAnchor
 	}
 
@@ -79,7 +81,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		connectionAnchor
 	}
 
-	override getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart connection) {
+	override getTargetConnectionAnchor(ConnectionEditPart connection) {
 		connectionAnchor
 	}
 

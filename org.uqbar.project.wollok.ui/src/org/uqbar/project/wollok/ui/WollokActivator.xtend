@@ -5,6 +5,7 @@ import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.swt.widgets.Display
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
+import org.eclipse.jface.viewers.ILabelProvider
 
 /**
  * Customized activator.
@@ -33,6 +34,10 @@ class WollokActivator extends WollokDslActivator {
 	def getImageDescriptor(String name) {
 		val u = new URL(bundle.getEntry("/"), name)
 		return ImageDescriptor.createFromURL(u);
+	}
+	
+	def getLabelProvider() {
+		this.getInjector(ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL).getInstance(ILabelProvider)
 	}
 
 }
