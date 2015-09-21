@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.ConnectionAnchor
+import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.EditPolicy
@@ -21,6 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.draw2d.geometry.Dimension
 
 /**
  * 
@@ -31,14 +33,19 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
+			castedModel.size = max(figure.preferredSize, (100 -> 0))
 			castedModel.addPropertyChangeListener(this)
 		}
 	}
 	
+	def max(Dimension d, Pair<Integer, Integer> other) {
+		new Dimension(Math.max(d.width, other.key), Math.max(d.height, other.value))
+	}
+	
 	override deactivate() {
 		if (active) {
-			super.deactivate;
+			super.deactivate
 			castedModel.removePropertyChangeListener(this)
 		}
 	}
@@ -51,7 +58,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new WClassFigure(castedModel.clazz.name) => [ f |
 			f.abstract = castedModel.clazz.abstract
 			castedModel.clazz.members.forEach[m| f.add(createMemberFigure(m)) ]
-		]
+		]		
 	}
 	
 	def dispatch createMemberFigure(WMethodDeclaration member) { new WMethodFigure(member) }
@@ -103,5 +110,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		(parent as GraphicalEditPart).setLayoutConstraint(this, figure, castedModel.bounds)
 	}
 	
-	def getBounds(Shape it) { new Rectangle(location, size) }
+	def getBounds(Shape it) {
+		new Rectangle(location, size)
+	}
 }
