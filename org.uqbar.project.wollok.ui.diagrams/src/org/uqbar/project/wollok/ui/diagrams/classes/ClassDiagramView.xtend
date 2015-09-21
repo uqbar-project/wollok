@@ -92,12 +92,11 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
-		site.selectionProvider = this
 	}
 	
 	def createDiagramModel() {
 		val List<WClass> classes = xtextDocument.readOnly[XtextResource resource|
-			getClasses
+			getClasses(resource)
 		]
 		new ClassDiagram => [
 			classes.forEach[c|
@@ -110,13 +109,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		]
 	}
 	
-	def getClasses() {
-		// I'm not sure we should be reading it again every time. We should be using
-		// the document from the editor that has been read already. This will also make sure
-		// that there's also only 1 instance of each model object (like a WClass)
-		val resource = xtextDocument.getAdapter(IResource)
-		val r = resourceSet.getResource(URI.createURI(resource.locationURI.toString), true)
-		r.load(#{})
+	def getClasses(XtextResource r) {
 		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
 	}
 	
@@ -132,6 +125,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
+		
+		// we provide selection
+		site.selectionProvider = this
 	}
 	
 	def createViewer(Composite parent) {
@@ -339,9 +335,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				val cm = getClassEditParts.findFirst[ep |
 					// mm.. i don't like comparing by name :( but our diagram seems to load 
 					// the xtext document (and model objects) again, so instances are different
-					val a =  ep.castedModel.clazz.name
-					val b = c.text.toString
-					a == b 
+					ep.castedModel.clazz.name == c.text.toString 
 				]
 				if (cm != null)
 					list += cm
@@ -379,12 +373,14 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		if (!selection.empty && selection instanceof StructuredSelection) {
 			val s = selection as StructuredSelection
 			if (s.size == 1) {
-				var model = (s.firstElement as EditPart).model
+				val model = (s.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					model = model.clazz
-					this.selection = new StructuredSelection(model)
+					val wclazz = model.clazz
+					this.selection = new StructuredSelection(wclazz)
 					val e = new SelectionChangedEvent(this, this.selection)
-					listeners.forEach[l| l.selectionChanged(e)]
+					listeners.forEach[l| 
+						l.selectionChanged(e)
+					]
 				}
 			}
 		}
