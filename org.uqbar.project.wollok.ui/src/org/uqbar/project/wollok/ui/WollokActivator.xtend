@@ -2,10 +2,12 @@ package org.uqbar.project.wollok.ui
 
 import java.net.URL
 import org.eclipse.jface.resource.ImageDescriptor
+import org.eclipse.jface.viewers.ILabelProvider
 import org.eclipse.swt.widgets.Display
+import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
+import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
-import org.eclipse.jface.viewers.ILabelProvider
 
 /**
  * Customized activator.
@@ -38,6 +40,10 @@ class WollokActivator extends WollokDslActivator {
 	
 	def getLabelProvider() {
 		this.getInjector(ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL).getInstance(ILabelProvider)
+	}
+	
+	def getOpener() {
+		this.getInjector(ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL).getInstance(IURIEditorOpener)
 	}
 
 }

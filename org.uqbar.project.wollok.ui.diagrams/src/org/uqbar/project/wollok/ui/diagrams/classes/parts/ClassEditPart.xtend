@@ -4,15 +4,18 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.ConnectionAnchor
-import org.eclipse.draw2d.IFigure
+import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
+import org.eclipse.gef.RequestConstants
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.xtext.ui.editor.IURIEditorOpener
+import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WAttributteFigure
@@ -22,7 +25,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.draw2d.geometry.Dimension
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * 
@@ -30,6 +33,11 @@ import org.eclipse.draw2d.geometry.Dimension
  */
 class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
+	IURIEditorOpener opener
+	
+	new() {
+		opener = WollokActivator.getInstance.opener
+	}
 
 	override activate() {
 		if (!active) {
@@ -52,6 +60,13 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy {})
+	}
+	
+	override performRequest(Request req) {
+		if (req.type == RequestConstants.REQ_OPEN)
+	         opener.open(EcoreUtil2.getURI(castedModel.clazz), true)
+		else 
+			super.performRequest(req)
 	}
 
 	override createFigure() {
