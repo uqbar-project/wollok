@@ -4,7 +4,6 @@ import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.EditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ConnectionEditPart
 
 /**
  * 
@@ -25,6 +24,6 @@ class ObjectDiagramEditPartFactory implements EditPartFactory {
 	
 	def dispatch getPartForElement(IStackFrame it) { new StackFrameEditPart }
 	def dispatch getPartForElement(VariableModel it) { new ValueEditPart }
-	def dispatch getPartForElement(Connection it) { new ConnectionEditPart }
+	def dispatch getPartForElement(Connection it) { new ReferenceConnectionEditPart  }
 
 }

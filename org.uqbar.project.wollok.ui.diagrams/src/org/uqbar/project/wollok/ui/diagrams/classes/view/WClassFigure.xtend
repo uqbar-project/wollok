@@ -22,7 +22,10 @@ class WClassFigure extends Figure {
 	new(String name) {
 		super()
 
-		layoutManager = new ToolbarLayout
+		layoutManager = new ToolbarLayout => [
+			matchWidth =  true
+			spacing = 5
+		]
 
 		nameLabel = new Label(name) => [
 			border = margin(2, 2, 5, 2)

@@ -21,6 +21,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.eclipse.core.runtime.Platform
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+
 /**
  * Provides labels for EObjects.
  * 
@@ -42,13 +44,13 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def text(WObjectLiteral ele) { 'object' }
 	def image(WObjectLiteral ele) {	'wollok-icon-object_16.png' }
 	
-	def concatResolvedType(String separator, EObject obj){
-		if(!labelExtensionResolved) {
-			labelExtension = resolveLabelExtension()
+	def concatResolvedType(String separator, EObject obj) {
+		if (!labelExtensionResolved) {
+			labelExtension = resolveLabelExtension
 			labelExtensionResolved = true
 		}
 		
-		if(labelExtension != null)
+		if (labelExtension != null)
 			separator + labelExtension.resolvedType(obj)
 		else 
 			""
@@ -79,7 +81,8 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	def text(WMethodDeclaration m) { 
-		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' + concatResolvedType(" : ",m) 
+		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
+			+ if (m.returnsValue) (" → " + concatResolvedType("",m)) else "" 
 	}
 	def text(WConstructor m) {
 		'new(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'

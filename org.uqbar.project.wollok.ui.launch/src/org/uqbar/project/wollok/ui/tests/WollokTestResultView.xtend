@@ -52,7 +52,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	@Inject
 	var WollokTestResults results
 	@Inject
-	var GlobalURIEditorOpener opener;
+	var GlobalURIEditorOpener opener
 
 	override createPartControl(Composite parent) {
 		new GridLayout() => [

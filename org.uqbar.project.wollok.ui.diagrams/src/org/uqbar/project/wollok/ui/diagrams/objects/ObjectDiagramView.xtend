@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui.diagrams.objects
 
 import java.util.ArrayList
 import java.util.Collections
+import java.util.HashMap
+import java.util.List
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.ColorConstants
@@ -45,15 +47,11 @@ import org.uqbar.project.wollok.ui.diagrams.classes.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ConnectionEditPart
+import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
-import org.uqbar.project.wollok.debugger.model.WollokStackFrame
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
-import java.util.Map
-import java.util.HashMap
-import java.util.List
 
 /**
  * 
@@ -209,18 +207,14 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// ** Layout (same as for class diagrams... horrible)
 	// ****************************
 	
-	def getNodesEditParts() {
-		if (graphicalViewer.rootEditPart.children.empty)
-			Collections.EMPTY_LIST
-		else 
-			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ValueEditPart)
-	}
+	def getNodesEditParts() { editParts(ValueEditPart) }
+	def getConnectionsEditParts() { editParts(ConnectionEditPart) }
 	
-	def getConnectionsEditParts() {
+	def <T extends EditPart> editParts(Class<T> class1) {
 		if (graphicalViewer.rootEditPart.children.empty)
 			Collections.EMPTY_LIST
 		else
-			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ConnectionEditPart)
+			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(class1)
 	}
 	
 	def layout() {
