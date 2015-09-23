@@ -4,21 +4,28 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.ConnectionAnchor
+import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Rectangle
+import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
+import org.eclipse.gef.RequestConstants
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.xtext.ui.editor.IURIEditorOpener
+import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WAttributteFigure
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WMethodFigure
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * 
@@ -26,17 +33,27 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
+	IURIEditorOpener opener
+	
+	new() {
+		opener = WollokActivator.getInstance.opener
+	}
 
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
+			castedModel.size = max(figure.preferredSize, (100 -> 0))
 			castedModel.addPropertyChangeListener(this)
 		}
 	}
 	
+	def max(Dimension d, Pair<Integer, Integer> other) {
+		new Dimension(Math.max(d.width, other.key), Math.max(d.height, other.value))
+	}
+	
 	override deactivate() {
 		if (active) {
-			super.deactivate;
+			super.deactivate
 			castedModel.removePropertyChangeListener(this)
 		}
 	}
@@ -44,16 +61,23 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy {})
 	}
+	
+	override performRequest(Request req) {
+		if (req.type == RequestConstants.REQ_OPEN)
+	         opener.open(EcoreUtil2.getURI(castedModel.clazz), true)
+		else 
+			super.performRequest(req)
+	}
 
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name) => [ f |
 			f.abstract = castedModel.clazz.abstract
-			
-			castedModel.clazz.methods.forEach[m| f.add(new WMethodFigure(m.name)) ]
-			
-			castedModel.clazz.variableDeclarations.forEach[a| f.add(new WAttributteFigure(a.variable.name)) ]
-		]
+			castedModel.clazz.members.forEach[m| f.add(createMemberFigure(m)) ]
+		]		
 	}
+	
+	def dispatch createMemberFigure(WMethodDeclaration member) { new WMethodFigure(member) }
+	def dispatch createMemberFigure(WVariableDeclaration member) { new WAttributteFigure(member) }
 
 	def getCastedModel() { model as ClassModel }
 
@@ -71,7 +95,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		castedModel.targetConnections
 	}
 
-	override getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart connection) {
+	override getSourceConnectionAnchor(ConnectionEditPart connection) {
 		connectionAnchor
 	}
 
@@ -79,7 +103,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		connectionAnchor
 	}
 
-	override getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart connection) {
+	override getTargetConnectionAnchor(ConnectionEditPart connection) {
 		connectionAnchor
 	}
 
@@ -101,5 +125,7 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		(parent as GraphicalEditPart).setLayoutConstraint(this, figure, castedModel.bounds)
 	}
 	
-	def getBounds(Shape it) { new Rectangle(location, size) }
+	def getBounds(Shape it) {
+		new Rectangle(location, size)
+	}
 }

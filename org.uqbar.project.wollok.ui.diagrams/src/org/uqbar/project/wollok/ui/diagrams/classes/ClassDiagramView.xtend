@@ -57,6 +57,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 /**
  * 
@@ -90,12 +92,11 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
-		site.selectionProvider = this
 	}
 	
 	def createDiagramModel() {
 		val List<WClass> classes = xtextDocument.readOnly[XtextResource resource|
-			getClasses
+			getClasses(resource)
 		]
 		new ClassDiagram => [
 			classes.forEach[c|
@@ -108,10 +109,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		]
 	}
 	
-	def getClasses() {
-		val resource = xtextDocument.getAdapter(IResource)
-		val r = resourceSet.getResource(URI.createURI(resource.locationURI.toString), true)
-		r.load(#{})
+	def getClasses(XtextResource r) {
 		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
 	}
 	
@@ -127,6 +125,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
+		
+		// we provide selection
+		site.selectionProvider = this
 	}
 	
 	def createViewer(Composite parent) {
@@ -151,7 +152,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 
 		// configure the context menu provider
-		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, actionRegistry)
+		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 		graphicalViewer.contextMenu = cmProvider
 		site.registerContextMenu(cmProvider, graphicalViewer)
 	}
@@ -324,19 +325,25 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	override partOpened(IWorkbenchPart part) { }
 	
-	// ISelectionListener
-	//   workbench tells us that selection changed from other view
+	// workbench -> gef editor
 	override selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (part == this) return;
 		if (selection instanceof StructuredSelection) {
-			val selectedClassModels = selection.toList.filter(WClass).fold(newArrayList())[list, c| 
-				val cm = diagram.classes.findFirst[cm | cm.clazz == c]
+			// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
+			// should we use getAdapter() ?
+			val selectedClassModels = selection.toList.filter(EObjectNode).filter[EClass == WollokDslPackage.Literals.WCLASS].fold(newArrayList())[list, c|
+				val cm = getClassEditParts.findFirst[ep |
+					// mm.. i don't like comparing by name :( but our diagram seems to load 
+					// the xtext document (and model objects) again, so instances are different
+					ep.castedModel.clazz.name == c.text.toString 
+				]
 				if (cm != null)
 					list += cm
 				list
 			]
-			if (!selectedClassModels.empty)
-				graphicalViewer.selection = new StructuredSelection(selectedClassModels)	
+			if (!selectedClassModels.empty) {
+				graphicalViewer.selection = new StructuredSelection(selectedClassModels)
+			}	
 		}
 	}
 
@@ -366,12 +373,14 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		if (!selection.empty && selection instanceof StructuredSelection) {
 			val s = selection as StructuredSelection
 			if (s.size == 1) {
-				var model = (s.firstElement as EditPart).model
+				val model = (s.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					model = model.clazz
-					this.selection = new StructuredSelection(model)
+					val wclazz = model.clazz
+					this.selection = new StructuredSelection(wclazz)
 					val e = new SelectionChangedEvent(this, this.selection)
-					listeners.forEach[l| l.selectionChanged(e)]
+					listeners.forEach[l| 
+						l.selectionChanged(e)
+					]
 				}
 			}
 		}
