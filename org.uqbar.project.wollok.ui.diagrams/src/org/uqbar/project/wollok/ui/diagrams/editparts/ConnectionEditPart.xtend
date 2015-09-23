@@ -18,7 +18,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
 			castedModel.addPropertyChangeListener(this)
 		}
 	}
@@ -41,7 +41,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 
 	override deactivate() {
 		if (active) {
-			super.deactivate;
+			super.deactivate
 			castedModel.removePropertyChangeListener(this)
 		}
 	}

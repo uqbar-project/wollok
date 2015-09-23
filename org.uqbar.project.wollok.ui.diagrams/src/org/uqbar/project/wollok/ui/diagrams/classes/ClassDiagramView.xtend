@@ -174,12 +174,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.NORTH
 		
-		val classEditParts = getClassEditParts()
-		
 		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
 			map.put(e.model as ClassModel, new Node(e.model) => [
-				width = 100 //e.figure.bounds.width
-				height = 100 //e.figure.bounds.height
+				width = e.figure.preferredSize.width
+				height = e.figure.preferredSize.height
 			])
 			map
 		]
@@ -196,7 +194,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		])
 		graph.edges.addAll(relations)
 		
-		//layout
+		// layout
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
 		

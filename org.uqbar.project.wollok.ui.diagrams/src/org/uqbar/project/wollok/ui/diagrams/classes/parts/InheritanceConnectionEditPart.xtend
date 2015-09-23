@@ -15,10 +15,4 @@ class InheritanceConnectionEditPart extends ConnectionEditPart {
 		]
 	}
 	
-//	override createFigure() {
-//		super.createFigure() as PolylineConnection => [
-//			connectionRouter = new SquareConnectionRouter
-//		]
-//	}
-	
 }

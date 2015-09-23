@@ -6,7 +6,6 @@ import org.eclipse.draw2d.ConnectionLayer
 import org.eclipse.draw2d.FreeformLayer
 import org.eclipse.draw2d.FreeformLayout
 import org.eclipse.draw2d.MarginBorder
-import org.eclipse.draw2d.ShortestPathConnectionRouter
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.EditPolicy
@@ -16,11 +15,10 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.requests.CreateRequest
+import org.uqbar.project.gef.SquareConnectionRouter
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
-import org.eclipse.draw2d.ManhattanConnectionRouter
-import org.uqbar.project.gef.SquareConnectionRouter
 
 /**
  * @author jfernandes
