@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
+import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.PolygonDecoration
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
-import org.eclipse.draw2d.ColorConstants
 
 /**
  * @author jfernandes
@@ -14,5 +14,11 @@ class InheritanceConnectionEditPart extends ConnectionEditPart {
 			backgroundColor = ColorConstants.white
 		]
 	}
+	
+//	override createFigure() {
+//		super.createFigure() as PolylineConnection => [
+//			connectionRouter = new SquareConnectionRouter
+//		]
+//	}
 	
 }

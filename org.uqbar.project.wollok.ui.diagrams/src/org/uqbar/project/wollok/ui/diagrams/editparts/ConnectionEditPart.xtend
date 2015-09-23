@@ -4,13 +4,12 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.MidpointLocator
-import org.eclipse.draw2d.PolygonDecoration
 import org.eclipse.draw2d.PolylineConnection
+import org.eclipse.draw2d.RotatableDecoration
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.editparts.AbstractConnectionEditPart
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
-import org.eclipse.draw2d.RotatableDecoration
 
 /**
  * @author jfernandes

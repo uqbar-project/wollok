@@ -19,6 +19,8 @@ import org.eclipse.gef.requests.CreateRequest
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
+import org.eclipse.draw2d.ManhattanConnectionRouter
+import org.uqbar.project.gef.SquareConnectionRouter
 
 /**
  * @author jfernandes
@@ -43,8 +45,14 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 			f.layoutManager = new FreeformLayout
 
 			val connLayer = getLayer(LayerConstants.CONNECTION_LAYER) as ConnectionLayer
-			connLayer.setConnectionRouter(new ShortestPathConnectionRouter(f))
+			connLayer.setConnectionRouter(createConnectionRouter(f))
 		]
+	}
+	
+	def createConnectionRouter(FreeformLayer f) {
+		new SquareConnectionRouter
+//		new ManhattanConnectionRouter
+//		new ShortestPathConnectionRouter(f)
 	}
 
 	override deactivate() {
