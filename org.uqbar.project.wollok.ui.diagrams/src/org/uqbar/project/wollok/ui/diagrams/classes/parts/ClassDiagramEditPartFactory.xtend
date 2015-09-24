@@ -5,6 +5,8 @@ import org.eclipse.gef.EditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * 
@@ -24,6 +26,9 @@ class ClassDiagramEditPartFactory implements EditPartFactory {
 	
 	def dispatch getPartForElement(ClassDiagram it) { new ClassDiagramEditPart }
 	def dispatch getPartForElement(ClassModel it) { new ClassEditPart }
+	def dispatch getPartForElement(WVariableDeclaration it) { new InstanceVariableEditPart }
+	def dispatch getPartForElement(WMethodDeclaration it) { new MethodEditPart }
+	
 	def dispatch getPartForElement(Connection it) { new InheritanceConnectionEditPart }
 
 }

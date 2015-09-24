@@ -206,7 +206,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 		graph.nodes.forEach[ val n = it as Node
 			var deltaY = 10
-			if (n == bottomNode) deltaY += bottomNode.height;
+			if (n != bottomNode) deltaY += bottomNode.height;
 			(n.data as ClassModel).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
 	}

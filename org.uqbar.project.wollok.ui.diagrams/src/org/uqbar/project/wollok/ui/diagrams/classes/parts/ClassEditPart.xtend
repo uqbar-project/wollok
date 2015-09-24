@@ -14,18 +14,17 @@ import org.eclipse.gef.Request
 import org.eclipse.gef.RequestConstants
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.view.WAttributteFigure
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
-import org.uqbar.project.wollok.ui.diagrams.classes.view.WMethodFigure
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
+import org.eclipse.gef.EditPart
+import org.eclipse.gef.requests.CreateRequest
 
 /**
  * 
@@ -57,9 +56,18 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			castedModel.removePropertyChangeListener(this)
 		}
 	}
+	
+	override getModelChildren() { castedModel.clazz.members }
 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy {})
+		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ClassContainerEditPolicy)
+		// to be able to select child parts
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, new FlowLayoutEditPolicy {
+			override protected createAddCommand(EditPart arg0, EditPart arg1) {}
+			override protected createMoveChildCommand(EditPart arg0, EditPart arg1) {}
+			override protected getCreateCommand(CreateRequest arg0) {}
+		})
 	}
 	
 	override performRequest(Request req) {
@@ -72,13 +80,9 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name) => [ f |
 			f.abstract = castedModel.clazz.abstract
-			castedModel.clazz.members.forEach[m| f.add(createMemberFigure(m)) ]
 		]		
 	}
 	
-	def dispatch createMemberFigure(WMethodDeclaration member) { new WMethodFigure(member) }
-	def dispatch createMemberFigure(WVariableDeclaration member) { new WAttributteFigure(member) }
-
 	def getCastedModel() { model as ClassModel }
 
 	def getConnectionAnchor() {
