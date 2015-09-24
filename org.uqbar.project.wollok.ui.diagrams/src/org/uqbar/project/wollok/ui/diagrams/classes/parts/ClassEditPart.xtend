@@ -7,36 +7,28 @@ import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
+import org.eclipse.gef.EditPart
 import org.eclipse.gef.EditPolicy
 import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.NodeEditPart
 import org.eclipse.gef.Request
 import org.eclipse.gef.RequestConstants
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
+import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
+import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.xtext.EcoreUtil2
-import org.eclipse.xtext.ui.editor.IURIEditorOpener
-import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
-import org.eclipse.gef.EditPart
-import org.eclipse.gef.requests.CreateRequest
 
 /**
  * 
  * @author jfernandes
  */
-class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
+class ClassEditPart extends AbstractLanguageElementEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
-	IURIEditorOpener opener
-	
-	new() {
-		opener = WollokActivator.getInstance.opener
-	}
 
 	override activate() {
 		if (!active) {
@@ -70,18 +62,13 @@ class ClassEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		})
 	}
 	
-	override performRequest(Request req) {
-		if (req.type == RequestConstants.REQ_OPEN)
-	         opener.open(EcoreUtil2.getURI(castedModel.clazz), true)
-		else 
-			super.performRequest(req)
-	}
-
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name) => [ f |
 			f.abstract = castedModel.clazz.abstract
 		]		
 	}
+	
+	override getLanguageElement() { castedModel.clazz }
 	
 	def getCastedModel() { model as ClassModel }
 
