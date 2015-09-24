@@ -14,7 +14,7 @@ class WMethodFigure extends AbstractClassMemberFigure<WMethodDeclaration> {
 
 	def setAbstract(boolean isAbstract) {
 		font = if (isAbstract)
-				JFaceResources.fontRegistry.getItalic(JFaceResources.TEXT_FONT)
+				JFaceResources.fontRegistry.getItalic(JFaceResources.DEFAULT_FONT)
 			else
 				JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT)
 		repaint
