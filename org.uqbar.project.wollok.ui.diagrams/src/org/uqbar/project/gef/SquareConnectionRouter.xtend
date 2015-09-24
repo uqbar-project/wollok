@@ -44,21 +44,24 @@ class SquareConnectionRouter extends AbstractRouter {
 		
 		conn.points = new PointList => [
 			addPoint(startPoint)
+			// go up
+			addPoint(new Point(startPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
 			// go right
-			addPoint(new Point(endPoint.x - DISTANCE_FROM_TARGET /*? */, startPoint.y))
-			// go down
-			addPoint(new Point(endPoint.x - DISTANCE_FROM_TARGET /*? */, endPoint.y))
+			addPoint(new Point(endPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
 			addPoint(endPoint)
 		]
 	}
 	
 	override protected getStartPoint(Connection conn) {
-		conn.sourceAnchor.owner.bounds.middleRight
+		conn.sourceAnchor.owner.bounds.middleTop
 	}
 	
 	override protected getEndPoint(Connection conn) {
-		conn.targetAnchor.owner.bounds.middleLeft
+		conn.targetAnchor.owner.bounds.middleBottom
 	}
+	
+	def getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
+	def getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
 	
 	def getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
 	def getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }

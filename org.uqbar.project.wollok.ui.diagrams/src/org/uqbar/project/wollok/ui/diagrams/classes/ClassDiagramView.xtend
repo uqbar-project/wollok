@@ -172,7 +172,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def layout() {
 		// create graph
 		val graph = new DirectedGraph
-		graph.direction = PositionConstants.NORTH
+		graph.direction = PositionConstants.SOUTH
 		
 		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
 			map.put(e.model as ClassModel, new Node(e.model) => [
@@ -198,9 +198,16 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
 		
-		// map back positions to model
+		
+		// map back positions to model inverting the Y coordinates
+		// because the directed graph only supports layout directo to SOUTH, meaning
+		// super classes will be at the bottom. So we invert them
+		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
+
 		graph.nodes.forEach[ val n = it as Node
-			(n.data as ClassModel).location = new Point(n.x, n.y)
+			var deltaY = 10
+			if (n == bottomNode) deltaY += bottomNode.height;
+			(n.data as ClassModel).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
 	}
 	
