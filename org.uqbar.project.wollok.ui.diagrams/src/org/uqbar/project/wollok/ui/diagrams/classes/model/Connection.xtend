@@ -37,7 +37,7 @@ class Connection extends ModelElement {
 
 	def disconnect() {
 		if (isConnected) {
-			source.removeConnection(this)
+			source?.removeConnection(this)
 			target.removeConnection(this)
 			isConnected = false
 		}
@@ -72,14 +72,14 @@ class Connection extends ModelElement {
 
 	def reconnect() {
 		if (!isConnected) {
-			source.addConnection(this)
+			source?.addConnection(this)
 			target.addConnection(this)
 			isConnected = true
 		}
 	}
 
 	def reconnect(Shape newSource, Shape newTarget) {
-		if (newSource == null || newTarget == null || newSource == newTarget) {
+		if (newTarget == null || newSource == newTarget) {
 			throw new IllegalArgumentException
 		}
 		disconnect

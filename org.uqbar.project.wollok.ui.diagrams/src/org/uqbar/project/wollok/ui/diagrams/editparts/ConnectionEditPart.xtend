@@ -26,7 +26,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy)
 	}
-
+	
 	override createFigure() {
 		super.createFigure as PolylineConnection => [
 			targetDecoration = createEdgeDecoration()
