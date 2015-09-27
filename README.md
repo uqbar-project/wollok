@@ -44,7 +44,7 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * Non "class-centered". Allows you to create objects as first-class citizens without the need of classes. To start working with objects without introducing complex subjects and mechanisms as hierarchies, overriding methods, etc.
 * Tries to maximize compile-time checks while keeping the power of a dynamic language.
 * With implicit types: by means of a type system and type inference mechanism.
-* A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
+* A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming)
 * Interpreted: means that the code is being evaluated as it's being read.
 
 Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
