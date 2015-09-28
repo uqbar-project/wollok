@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.game.ui.importWizards;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -38,21 +40,22 @@ public class ImportGamePage extends WizardPage {
 	    text1 = new Text(container, SWT.BORDER | SWT.SINGLE);
 	    text1.setText("");
 	    text1.setEditable(false);
-//	    text1.addKeyListener(new KeyListener() {
-//
-//	      @Override
-//	      public void keyPressed(KeyEvent e) {
-//	      }
-//
-//	      @Override
-//	      public void keyReleased(KeyEvent e) {
-//	        if (!text1.getText().isEmpty()) {
-//	          setPageComplete(true);
-//
-//	        }
-//	      }
-//
-//	    });
+	    text1.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+		        if (!text1.getText().isEmpty()) {
+		          setPageComplete(true);
+
+		        }				
+			}
+		});
 
 	    final Shell shell = this.getShell();
 	    shell.setText("Browse Wollok Game pack");	    
@@ -60,11 +63,11 @@ public class ImportGamePage extends WizardPage {
 	    button.setText("Browse files...");
 	    button.addSelectionListener(new SelectionAdapter() {
 	      public void widgetSelected(SelectionEvent event) {
-	    	  FileDialog dlg = new FileDialog(shell);
+	    	  FileDialog dlg = new FileDialog(shell, SWT.OPEN);
 
 	        // Set the initial filter path according
 	        // to anything they've selected or typed in
-	        dlg.setFilterPath("*.*");
+	        dlg.setFilterPath("*.zip");
 
 	        // Change the title bar text
 	        dlg.setText("Search Wollok Game pack file ");
@@ -77,6 +80,7 @@ public class ImportGamePage extends WizardPage {
 	        if (dir != null) {
 	          // Set the text box to the new selection
 	          text1.setText(dir);
+	          setPageComplete(true);
 	        }
 	      }
 	    });	    

@@ -10,42 +10,59 @@
  *******************************************************************************/
 package org.uqbar.project.wollok.game.ui.importWizards;
 
+import java.io.IOException;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.uqbar.project.wollok.game.ui.commons.ZipHandler;
 
-public class ImportGame extends Wizard implements IWorkbenchWizard{
-	
-	  protected ImportGamePage one;
+public class ImportGame extends Wizard implements IWorkbenchWizard {
 
-	  public ImportGame() {
-	    super();
-	    setNeedsProgressMonitor(true);
-	  }
+	protected ImportGamePage one;
 
-	  @Override
-	  public String getWindowTitle() {
-	    return "EImport Wollok Game";
-	  }
+	public ImportGame() {
+		super();
+		setNeedsProgressMonitor(true);
+	}
 
-	  @Override
-	  public void addPages() {
-	    one = new ImportGamePage();
-	    addPage(one);
-	  }
+	@Override
+	public String getWindowTitle() {
+		return "Import Wollok Game";
+	}
 
-	  @Override
-	  public boolean performFinish() {
-	    // Print the result to the console
-	    System.out.println(one.getText1());
-	    return true;
-	  }
+	@Override
+	public void addPages() {
+		one = new ImportGamePage();
+		addPage(one);
+	}
+
+	@Override
+	public boolean performFinish() {
+		// System.out.println(one.getText1());
+		ZipHandler compressor = new ZipHandler();
+		try {
+				compressor.extractFromZipFile(one.getText1(),
+						compressor.getProjectPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
 
 	@Override
 	public void init(IWorkbench arg0, IStructuredSelection arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
