@@ -1,13 +1,13 @@
 package org.uqbar.project.wollok.ui.diagrams.objects.parts
 
 import java.util.Map
+import java.util.Random
 import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.geometry.Dimension
+import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.eclipse.draw2d.geometry.Point
-import java.util.Random
 
 /**
  * 

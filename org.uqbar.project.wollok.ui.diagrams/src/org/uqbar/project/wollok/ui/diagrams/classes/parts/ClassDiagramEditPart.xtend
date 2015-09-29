@@ -6,7 +6,6 @@ import org.eclipse.draw2d.ConnectionLayer
 import org.eclipse.draw2d.FreeformLayer
 import org.eclipse.draw2d.FreeformLayout
 import org.eclipse.draw2d.MarginBorder
-import org.eclipse.draw2d.ShortestPathConnectionRouter
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.EditPolicy
@@ -16,6 +15,7 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.requests.CreateRequest
+import org.uqbar.project.gef.SquareConnectionRouter
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
@@ -43,8 +43,14 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 			f.layoutManager = new FreeformLayout
 
 			val connLayer = getLayer(LayerConstants.CONNECTION_LAYER) as ConnectionLayer
-			connLayer.setConnectionRouter(new ShortestPathConnectionRouter(f))
+			connLayer.setConnectionRouter(createConnectionRouter(f))
 		]
+	}
+	
+	def createConnectionRouter(FreeformLayer f) {
+		new SquareConnectionRouter
+//		new ManhattanConnectionRouter
+//		new ShortestPathConnectionRouter(f)
 	}
 
 	override deactivate() {
