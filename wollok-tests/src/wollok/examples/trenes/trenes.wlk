@@ -10,21 +10,20 @@ class Tren {
 	val locomotoras = #[]
 	
 	method agregarVagon(v) { vagones.add(v) }
-	method getCantidadPasajeros() { vagones.sum[v| v.getCantidadPasajeros()] }
-	method getCantidadVagonesLivianos() { vagones.count[v| v.esLiviano()] }
-	method getVelocidadMaxima() { locomotoras.min[l| l.getVelocidadMaxima() ].getVelocidadMaxima() }
+	method getCantidadPasajeros() = vagones.sum[v| v.getCantidadPasajeros()] 
+	method getCantidadVagonesLivianos() = vagones.count[v| v.esLiviano()]
+	method getVelocidadMaxima() = locomotoras.min[l| l.getVelocidadMaxima() ].getVelocidadMaxima()
 	method agregarLocomotora(loco) { locomotoras.add(loco)	}
 	method esEficiente() { locomotoras.forAll[l| l.esEficiente()] }
 	method puedeMoverse() { this.arrastreUtilTotalLocomotoras() >= this.pesoMaximoTotalDeVagones() }
 	method arrastreUtilTotalLocomotoras() { locomotoras.sum[l| l.arrastreUtil()] }
 	method pesoMaximoTotalDeVagones() { vagones.sum[v| v.getPesoMaximo()] }
-	method getKilosEmpujeFaltantes() {
+	method getKilosEmpujeFaltantes() =
 		if (this.puedeMoverse())
 			0
 		else
 			this.pesoMaximoTotalDeVagones() - this.arrastreUtilTotalLocomotoras()
-	}
-	method vagonMasPesado() { vagones.max([v| v.getPesoMaximo() ]) }
+	method vagonMasPesado() = vagones.max([v| v.getPesoMaximo() ])
 }
 
 class Locomotora {
@@ -52,7 +51,7 @@ class VagonPasajeros extends Vagon {
 	new(a, la) { ancho = a ; largo = la }
 	
 	override method getCantidadPasajeros() {
-		largo * if (ancho < 2.5) 8 else 10
+		return largo * if (ancho < 2.5) 8 else 10
 	}
 	override method getPesoMaximo() {
 		return this.getCantidadPasajeros() * 80
@@ -64,11 +63,7 @@ class VagonCarga extends Vagon {
 	new(cargaM) {
 		cargaMaxima = cargaM
 	}
-	override method getCantidadPasajeros() {
-		0
-	}
-	override method getPesoMaximo() {
-		cargaMaxima + 160
-	}
+	override method getCantidadPasajeros() = 0
+	override method getPesoMaximo() = cargaMaxima + 160
 }
 
