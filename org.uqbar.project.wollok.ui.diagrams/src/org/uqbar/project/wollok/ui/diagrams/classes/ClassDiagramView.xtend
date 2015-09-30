@@ -59,6 +59,10 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
  * 
@@ -95,22 +99,31 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def createDiagramModel() {
-		val List<WClass> classes = xtextDocument.readOnly[XtextResource resource|
-			getClasses(resource)
-		]
 		new ClassDiagram => [
+			// classes
+			val classes = xtextDocument.readOnly[XtextResource resource| getClasses(resource) ]
 			classes.forEach[c|
 				addClass(new ClassModel(c) => [
 					location = new Point(100, 100)
 				])
 			]
+			// objects
+			val objects = xtextDocument.readOnly[XtextResource resource| getNamedObjects(resource) ]
+			objects.forEach[c| 
+				addNamedObject(new NamedObjectModel(c) => [ location = new Point(100, 100) ])
+			]
 			
+			// relations
 			connectRelations
 		]
 	}
 	
 	def getClasses(XtextResource r) {
 		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
+	}
+	
+	def getNamedObjects(XtextResource r) {
+		(r.contents.get(0) as WFile).eAllContents.filter(WNamedObject).toList
 	}
 	
 	override createPartControl(Composite parent) {
@@ -181,9 +194,15 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			])
 			map
 		]
-		 
 		graph.nodes.addAll(classToNodeMapping.values)
-				
+		
+		// objects
+		graph.nodes.addAll(objectsEditParts.map[e| new Node(e.model) => [
+			width = e.figure.preferredSize.width
+			height = e.figure.preferredSize.height
+		]])
+		
+		// superclass relations		
 		val relations = model.classes.fold(newArrayList, [l, c| 
 			if (c.clazz.parent != null)
 				l.add(new Edge(
@@ -207,12 +226,16 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		graph.nodes.forEach[ val n = it as Node
 			var deltaY = 10
 			if (n != bottomNode) deltaY += bottomNode.height;
-			(n.data as ClassModel).location = new Point(n.x, bottomNode.y - n.y + deltaY)
+			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
 	}
 	
 	def getClassEditParts() {
 		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ClassEditPart)
+	}
+	
+	def getObjectsEditParts() {
+		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(NamedObjectEditPart)
 	}
 	
 	def setGraphicalViewer(GraphicalViewer viewer) {

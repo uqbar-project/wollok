@@ -32,7 +32,7 @@ class Locomotora {
 	var pesoMaximoArrastre
 	var velocidadMaxima
 	new(pes, pesoMaxA, veloMax) { peso = pes ; pesoMaximoArrastre = pesoMaxA ; velocidadMaxima = veloMax }
-	method getVelocidadMaxima() { velocidadMaxima }
+	method getVelocidadMaxima() = velocidadMaxima 
 	
 	method esEficiente() { pesoMaximoArrastre >= 5 * peso }
 	method arrastreUtil() { pesoMaximoArrastre - peso }
@@ -55,7 +55,7 @@ class VagonPasajeros extends Vagon {
 		largo * if (ancho < 2.5) 8 else 10
 	}
 	override method getPesoMaximo() {
-		this.getCantidadPasajeros() * 80
+		return this.getCantidadPasajeros() * 80
 	}
 }
 

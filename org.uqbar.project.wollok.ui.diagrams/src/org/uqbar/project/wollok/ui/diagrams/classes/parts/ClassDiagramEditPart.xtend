@@ -71,7 +71,7 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 
 	private static class ShapesXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		override createChangeConstraintCommand(ChangeBoundsRequest request, EditPart child, Object constraint) {
-			if (child instanceof ClassEditPart && constraint instanceof Rectangle)
+			if (child instanceof AbstractMethodContainerEditPart && constraint instanceof Rectangle)
 				// return a command that can move and/or resize a Shape
 				new MoveOrResizeCommand(child.model as Shape, request, constraint as Rectangle)
 			else
@@ -82,13 +82,8 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 			super.createChildEditPolicy(child)
 		}
 
-		override createChangeConstraintCommand(EditPart child, Object constraint) {
-			null
-		}
-
-		override getCreateCommand(CreateRequest request) {
-			null
-		}
+		override createChangeConstraintCommand(EditPart child, Object constraint) { null }
+		override getCreateCommand(CreateRequest request) { null }
 
 	}
 
