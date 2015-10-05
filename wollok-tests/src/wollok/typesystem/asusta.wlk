@@ -2,10 +2,10 @@ class Asustador {
 	var edad = 0
 	var nivelMotivacion = 100
 	
-	method getEdad() { edad }
+	method getEdad() = edad
 	method setEdad(e) { edad = e }
 	
-	method getNivelMotivacion() { nivelMotivacion }
+	method getNivelMotivacion() = nivelMotivacion
 	
 	method entrarAPuerta(puerta) {
 		puerta.entra(this)
