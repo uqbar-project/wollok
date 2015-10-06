@@ -30,7 +30,9 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.swt,
  org.eclipse.jface,
  org.eclipse.ui.workbench,
- org.eclipse.jdt.ui
+ org.eclipse.jdt.ui,
+ org.eclipse.xtext.xbase.ui;bundle-version="2.7.3",
+ org.eclipse.ltk.ui.refactoring;bundle-version="3.7.100"
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.lib
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

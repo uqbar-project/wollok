@@ -4,6 +4,8 @@
 package org.uqbar.project.wollok.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.xtext.common.types.TypesFactory;
+import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
 import org.eclipse.xtext.resource.containers.IAllContainersState;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
@@ -18,8 +20,12 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 import org.eclipse.xtext.ui.util.PluginProjectFactory;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
+import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
+import org.uqbar.project.wollok.refactoring.DummyJvmModelAssociations;
+import org.uqbar.project.wollok.refactoring.DummyJvmTypeProvider;
+import org.uqbar.project.wollok.refactoring.DummyJvmTypeProviderFactory;
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper;
 import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener;
@@ -70,6 +76,11 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 		
 		binder.bind(IHighlightingConfiguration.class).to(WollokHighlightingConfiguration.class);
 		binder.bind(ISemanticHighlightingCalculator.class).to(WollokHighlightingCalculator.class);
+		
+		// Hacks to be able to reuse the logic to extract method from refactoring
+		binder.bind(IJvmModelAssociations.class).to(DummyJvmModelAssociations.class); 
+		binder.bind(IJvmTypeProvider.Factory.class).to(DummyJvmTypeProviderFactory.class);
+		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
 	}
 	
 	public Class<? extends IProjectCreator> bindIProjectCreator() {
