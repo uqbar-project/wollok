@@ -84,6 +84,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
+	def removeUnusedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Remove variable', 'Remove unused variable.', null) [ e, context |
+			context.xtextDocument.replace(e.before, e.node.length, "")
+		]
+	}
+	
 	@Fix(WollokDslValidator.ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	def addCatchOrAlwaysToTry(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add a "catch" statement', 'Add a "catch" statement".', null) [ e, context |
