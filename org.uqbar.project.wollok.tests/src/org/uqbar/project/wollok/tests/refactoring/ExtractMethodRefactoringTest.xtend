@@ -29,6 +29,7 @@ import org.eclipse.emf.common.util.TreeIterator
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import java.util.List
 
 /**
  * 
@@ -41,12 +42,11 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		assertRefactor('''
 			class A {
 				method foo() {
-					return 100 + 23 * 2
+					return 100 + /* */ 23 * 2 /* */
 				}
 			}
 		''',
 		"calculus",
-		[filter(WBinaryOperation).findFirst[e | e.feature == "*"] as WExpression],
 		'''
 			class A {
 				method foo() {
@@ -65,12 +65,11 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		assertRefactor('''
 			class A {
 				method foo(bar) {
-					return 100 + bar * 2
+					return 100 + /* */ bar * 2 /* */
 				}
 			}
 		''',
 		"calculus",
-		[filter(WBinaryOperation).findFirst[e | e.feature == "*"] as WExpression],
 		'''
 			class A {
 				method foo(bar) {
@@ -95,7 +94,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 			}
 		''',
 		"imprimir",
-		[filter(WMemberFeatureCall).findFirst[e | e.feature == "println"] as WExpression],
+		[filter(WMemberFeatureCall).filter[e | e.feature == "println"].filter(WExpression).toList],
 		'''
 			class A {
 				method foo(bar) {
@@ -110,6 +109,56 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		''')
 	}
 	
+	@Test
+	def void extractMethodReferencingInstanceVariable() {
+		assertRefactor('''
+			class A {
+				var bar = 20
+				method foo() {
+					return 100 + /* */ bar * 2 /* */
+				}
+			}
+		''',
+		"calculus",
+		'''
+			class A {
+				var bar = 20
+				method foo() {
+					return 100 + this.calculus()
+				}
+				
+				method calculus() {
+					return bar * 2
+				}
+			}
+		''')
+	}
+	
+	@Test
+	def void extractMethodReferencingTwoMixedVariables() {
+		assertRefactor('''
+			class A {
+				var bar = 20
+				method foo(zoo) {
+					return 100 + /* */ bar * 2 * zoo /* */
+				}
+			}
+		''',
+		"calculus",
+		'''
+			class A {
+				var bar = 20
+				method foo(zoo) {
+					return 100 + this.calculus(zoo)
+				}
+	
+				method calculus(zoo) {
+					return bar * 2 * zoo
+				}
+			}
+		''')
+	}
+	
 	// *****************************
 	// ** utility methods
 	// *****************************
@@ -118,14 +167,24 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 	@Inject DocumentTokenSource tokenSource
 	@Inject ITextEditComposer composer
 	
-	def void assertRefactor(String code, String newMethodName,(TreeIterator<EObject>)=>WExpression selector, String refactored) {
+	def void assertRefactor(String code, String newMethodName, String refactored) {
+		val start = code.indexOf('/* */')
+		val end = code.lastIndexOf('/* */')
+		
+		assertRefactor(code, newMethodName, [
+			it.filter[e| NodeModelUtils.getNode(e).offset >= start && NodeModelUtils.getNode(e).offset + NodeModelUtils.getNode(e).length <= end ]
+			.filter(WExpression).toList
+		], refactored)
+	}
+	
+	def void assertRefactor(String code, String newMethodName,(TreeIterator<EObject>)=>List<WExpression> selector, String refactored) {
 		
 		val editor = createEditor(code)
 		
 		val selection = selector.apply(code.interpretPropagatingErrors.eAllContents)
 		
 		val ExtractMethodRefactoring r = createRefactoring(newMethodName)
-		r.initialize(editor, #[selection], false)
+		r.initialize(editor, selection, false)
 		
 		val pm = new NullProgressMonitor 
 		
@@ -138,7 +197,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		change.perform(pm)
 		
 		// assert
-		val output = editor.document.get
+		val output = editor.document.get.replaceAll(' \\/\\* \\*\\/', '')
 		assertEquals(refactored, output)
 	}
 	
