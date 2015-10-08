@@ -24,6 +24,7 @@ import org.eclipse.xtext.ui.resource.IResourceSetProvider
 import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static org.eclipse.xtext.util.Strings.*
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -31,16 +32,16 @@ import static org.eclipse.xtext.util.Strings.*
  */
 class ExtractMethodUserInputPage extends UserInputWizardPage {
 	@Inject
-	private EmbeddedEditorFactory editorFactory;
+	private EmbeddedEditorFactory editorFactory
 	@Inject
-	private IResourceSetProvider resourceSetProvider;
+	private IResourceSetProvider resourceSetProvider
 	@Inject
-	private ProjectUtil projectUtil;
+	private ProjectUtil projectUtil
 	@Accessors ExtractMethodRefactoring refactoring
-	private Text textField;
-	private EmbeddedEditor signaturePreview;
-	private EmbeddedEditorModelAccess partialEditor;
-	private boolean isInitialName = true;
+	private Text textField
+	private EmbeddedEditor signaturePreview
+	private EmbeddedEditorModelAccess partialEditor
+	private boolean isInitialName = true
 	
 	new() {
 		super("ExtractMethodInputPage")
@@ -62,7 +63,7 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 	}
 	
 	def createNameField(Composite result) {
-		new Label(result, SWT.NONE) => [ text = "Method name:" ]
+		new Label(result, SWT.NONE) => [ text = Messages.ExtractMethodUserInputPage_methodName ]
 		
 		textField = new Text(result, SWT.BORDER) => [
 			text = refactoring.methodName
@@ -75,18 +76,10 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 		if (!refactoring.parameterInfos.empty) {
 			val cp = new ChangeParametersControl(result, SWT.NONE,
 					"Parameters", new IParameterListChangeListener() {
-						override def parameterChanged(ParameterInfo parameter) {
-							parameterModified
-						}
-	
-						override def parameterListChanged() {
-							parameterModified
-						}
-	
-						override def parameterAdded(ParameterInfo parameter) {
-							updatePreview
-						}
-					}, ChangeParametersControl.Mode.EXTRACT_METHOD);
+						override def parameterChanged(ParameterInfo parameter) { parameterModified }
+						override def parameterListChanged() { parameterModified }
+						override def parameterAdded(ParameterInfo parameter) { updatePreview }
+					}, ChangeParametersControl.Mode.EXTRACT_METHOD)
 			cp.layoutData = new GridData(GridData.FILL_BOTH) => [ horizontalSpan = 2 ]
 			cp.input = refactoring.parameterInfos
 		}
@@ -109,10 +102,8 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 	}
 
 	def updatePreview() {
-		if (signaturePreview == null)
-			return
-		val signature = refactoring.methodSignature
-		partialEditor.updateModel(partialEditorModelPrefix, signature, partialEditorModelSuffix)
+		if (signaturePreview != null)
+			partialEditor.updateModel(partialEditorModelPrefix, refactoring.methodSignature, partialEditorModelSuffix)
 	}
 	
 	def String getPartialEditorModelPrefix() {
@@ -139,7 +130,7 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 		val text = getText()
 		if (isEmpty(text)) {
 			if (!isInitialName)
-				result.addFatalError("Provide a method name");
+				result.addFatalError(Messages.ExtractMethodUserInputPage_provideMethodName)
 			return result
 		}
 		result.merge(refactoring.validateMethodName(text))
@@ -162,7 +153,7 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 	
 	def createSignaturePreview(Composite composite) {
 		new Label(composite, SWT.NONE) => [
-			text = "Method signature preview:"
+			text = Messages.ExtractMethodUserInputPage_methodSignaturePreview
 			layoutData = new GridData(SWT.FILL) => [ horizontalSpan = 2 ]
 		]
 		

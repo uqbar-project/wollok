@@ -54,6 +54,10 @@ public class Messages extends NLS {
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
 	
+	public static String ExtractMethodUserInputPage_methodName;
+	public static String ExtractMethodUserInputPage_methodSignaturePreview;
+	public static String ExtractMethodUserInputPage_provideMethodName;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
