@@ -34,9 +34,8 @@ import org.eclipse.emf.ecore.EObject
  */
 class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 	
-	//TODO: the actual generated method must contain the return statement
 	@Test
-	def void extractSimpleMethodWithoutParameters() {
+	def void extractSimpleMethodWithoutParametersReturningAValue() {
 		assertRefactor('''
 			class A {
 				method foo() {
@@ -54,6 +53,30 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 				
 				method calculus() {
 					return 23 * 2
+				}
+			}
+		''')
+	}
+	
+	@Test
+	def void extractMethodReferencingParameter() {
+		assertRefactor('''
+			class A {
+				method foo(bar) {
+					return 100 + bar * 2
+				}
+			}
+		''',
+		"calculus",
+		[filter(WBinaryOperation).findFirst[e | e.feature == "*"] as WExpression],
+		'''
+			class A {
+				method foo(bar) {
+					return 100 + this.calculus(bar)
+				}
+				
+				method calculus(bar) {
+					return bar * 2
 				}
 			}
 		''')
