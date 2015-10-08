@@ -27,6 +27,8 @@ import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 import org.eclipse.emf.common.util.TreeIterator
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * 
@@ -77,6 +79,32 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 				
 				method calculus(bar) {
 					return bar * 2
+				}
+			}
+		''')
+	}
+	
+	@Test
+	def void extractMethodWithoutReturn() {
+		assertRefactor('''
+			class A {
+				method foo(bar) {
+					console.println("hola mundo")
+					return 100 + bar * 2
+				}
+			}
+		''',
+		"imprimir",
+		[filter(WMemberFeatureCall).findFirst[e | e.feature == "println"] as WExpression],
+		'''
+			class A {
+				method foo(bar) {
+					this.imprimir()
+					return 100 + bar * 2
+				}
+				
+				method imprimir() {
+					console.println("hola mundo")
 				}
 			}
 		''')

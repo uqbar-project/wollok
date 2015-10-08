@@ -282,7 +282,9 @@ class ExtractMethodRefactoring extends Refactoring {
 	}
 	
 	def isNeedsReturnExpression() {
-		returnExpression != null
+		returnExpression != null 
+			// TODO: this seems an oversimplification
+			&& !(lastExpression.eContainer instanceof WBlockExpression)  
 	}
 	
 	def isFinalFeature(JvmIdentifiableElement returnFeature) {
