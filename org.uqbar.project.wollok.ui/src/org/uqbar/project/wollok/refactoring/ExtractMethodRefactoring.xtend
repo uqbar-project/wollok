@@ -298,6 +298,9 @@ class ExtractMethodRefactoring extends Refactoring {
 //			methodCallSection.append(if (isFinalFeature(returnFeature)) "val " else "var ")
 //			methodCallSection.append(returnFeature.simpleName).append(" = ")
 //		}
+
+		if (expressions.size == 1 && expressions.get(0) instanceof WReturnExpression)
+			methodCallSection.append('return ')
 		
 		var needsSurroundingParentheses = false
 		

@@ -1,11 +1,14 @@
 package org.uqbar.project.wollok.tests.refactoring
 
 import com.google.inject.Inject
-import org.eclipse.core.runtime.IProgressMonitor
+import java.util.List
 import org.eclipse.core.runtime.NullProgressMonitor
+import org.eclipse.emf.common.util.TreeIterator
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.ltk.core.refactoring.RefactoringStatus
 import org.eclipse.ui.IWorkbenchPartSite
 import org.eclipse.ui.texteditor.IDocumentProvider
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.DefaultLocationInFileProvider
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.DocumentTokenSource
@@ -19,17 +22,13 @@ import org.eclipse.xtext.xbase.ui.refactoring.ExpressionUtil
 import org.junit.Test
 import org.uqbar.project.wollok.refactoring.ExtractMethodRefactoring
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.xpect.util.ReflectionUtil
 
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
-import org.eclipse.emf.common.util.TreeIterator
-import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import java.util.List
 
 /**
  * 
@@ -154,6 +153,32 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 	
 				method calculus(zoo) {
 					return bar * 2 * zoo
+				}
+			}
+		''')
+	}
+	
+	@Test
+	def void extractReturnStatement() {
+		assertRefactor('''
+			class A {
+				method foo() {
+					val tempVal = 2
+					return 100 + 2 * tempVal
+				}
+			}
+		''',
+		"calculus",
+		[filter(WReturnExpression).filter(WExpression).toList],
+		'''
+			class A {
+				method foo() {
+					val tempVal = 2
+					return this.calculus()
+				}
+	
+				method calculus() {
+					return 100 + 2 * tempVal
 				}
 			}
 		''')
