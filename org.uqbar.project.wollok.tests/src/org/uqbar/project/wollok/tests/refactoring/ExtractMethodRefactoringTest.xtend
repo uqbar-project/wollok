@@ -25,6 +25,8 @@ import org.xpect.util.ReflectionUtil
 
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
+import org.eclipse.emf.common.util.TreeIterator
+import org.eclipse.emf.ecore.EObject
 
 /**
  * 
@@ -43,6 +45,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 			}
 		''',
 		"calculus",
+		[filter(WBinaryOperation).findFirst[e | e.feature == "*"] as WExpression],
 		'''
 			class A {
 				method foo() {
@@ -50,7 +53,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 				}
 				
 				method calculus() {
-					23 * 2
+					return 23 * 2
 				}
 			}
 		''')
@@ -64,11 +67,11 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 	@Inject DocumentTokenSource tokenSource
 	@Inject ITextEditComposer composer
 	
-	def void assertRefactor(String code, String newMethodName, String refactored) {
+	def void assertRefactor(String code, String newMethodName,(TreeIterator<EObject>)=>WExpression selector, String refactored) {
 		
 		val editor = createEditor(code)
 		
-		val selection = code.interpretPropagatingErrors.eAllContents.filter(WBinaryOperation).findFirst[e | e.feature == "*"] as WExpression
+		val selection = selector.apply(code.interpretPropagatingErrors.eAllContents)
 		
 		val ExtractMethodRefactoring r = createRefactoring(newMethodName)
 		r.initialize(editor, #[selection], false)

@@ -10,11 +10,7 @@ class Asustador {
 	method entrarAPuerta(puerta) {
 		puerta.entra(this)
 	}
-	method asustar(ninio) = (nivelMotivacion / 100) * (this.puntitosSarasa(ninio))
-	
-	method puntitosSarasa(ninio) {
-		this.puntosDeTerror() / ninio.getEdad()
-	}
+	method asustar(ninio) = (nivelMotivacion / 100) * (this.puntosDeTerror() / ninio.getEdad())
 	
 	method puntosDeTerror()
 	

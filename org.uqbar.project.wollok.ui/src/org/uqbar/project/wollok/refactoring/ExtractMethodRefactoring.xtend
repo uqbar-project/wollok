@@ -125,7 +125,7 @@ class ExtractMethodRefactoring extends Refactoring {
 		try {
 			val calledExternalFeatureNames = <String>newHashSet
 			
-			var returnExpression = if (originalMethod.returnsValue) lastExpression else null
+			returnExpression = if (originalMethod.returnsValue) lastExpression else null
 			
 			val isReturnAllowed = isEndOfOriginalMethod 
 			
@@ -263,12 +263,12 @@ class ExtractMethodRefactoring extends Refactoring {
 			textEdit = replaceConverter.convertToTextEdit(rewriter.changes)
 		}
 		catch (OperationCanceledException e) {
-			throw e;
+			throw e
 		}
 		catch (Exception exc) {
-			handleException(exc, status);
+			handleException(exc, status)
 		}
-		return status.getRefactoringStatus();
+		status.refactoringStatus
 	}
 	
 	def asSection(ITextRegion r) { rewriter.newSection(r.offset, r.length) }
@@ -278,14 +278,11 @@ class ExtractMethodRefactoring extends Refactoring {
 	}
 	
 	def getExpressionsRegion() {
-		val firstRegion = expressionUtil.getTextRegion(firstExpression)
-		val lastRegion = expressionUtil.getTextRegion(lastExpression)
-		
-		new TextRegion(firstRegion.offset, lastRegion.offset + lastRegion.length - firstRegion.offset)
+		expressionUtil.getRegion(firstExpression, lastExpression)
 	}
 	
 	def isNeedsReturnExpression() {
-		returnExpression != null && returnExpression != lastExpression;
+		returnExpression != null
 	}
 	
 	def isFinalFeature(JvmIdentifiableElement returnFeature) {
@@ -324,28 +321,27 @@ class ExtractMethodRefactoring extends Refactoring {
 		]
 	}
 	
-	def createMethodDeclarationEdit(DocumentRewriter.Section declarationSection, int expressionIndentLevel, ITextRegion expressionsRegion) throws BadLocationException {
+	def createMethodDeclarationEdit(DocumentRewriter.Section it, int expressionIndentLevel, ITextRegion expressionsRegion) throws BadLocationException {
+		newLine
+		newLine
+		appendMethodSignature
+		
+		append(" {") increaseIndentation newLine
+		
+		
+		if (isNeedsReturnExpression) {
+			append('return ')
+		}
+		
 		val expressionsAsString = getExtractedMethodBody(expressionsRegion)
-		declarationSection
-				.newLine
-				.newLine
-		appendMethodSignature(declarationSection)
+		append(expressionsAsString, Math.min(0, -expressionIndentLevel))
 		
-		declarationSection
-				.append(" {")
-				.increaseIndentation
-				.newLine
+//		if (isNeedsReturnExpression) {
+//			newLine
+//			append('return ' + (returnExpression as WMemberFeatureCall).feature)
+//		}
 		
-		declarationSection.append(expressionsAsString, Math.min(0, -expressionIndentLevel))
-		if (isNeedsReturnExpression)
-			declarationSection
-				.newLine
-				.append((returnExpression as WMemberFeatureCall).feature)
-
-		declarationSection
-			.decreaseIndentation
-			.newLine
-			.append("}")
+		decreaseIndentation newLine append("}")
 	}
 	
 	def getExtractedMethodBody(ITextRegion expressionsRegion) throws BadLocationException {
@@ -360,9 +356,9 @@ class ExtractMethodRefactoring extends Refactoring {
 	}
 	
 	def getMethodBodyWithRenamedParameters(ITextRegion expressionsRegion) throws BadLocationException {
-		var expressionsAsString = expressionsRegion.asString
 		val List<ReplaceRegion> parameterRenames = newArrayList
-		for (String parameterName: externalFeatureCalls.keySet()) {
+		
+		for (String parameterName: externalFeatureCalls.keySet) {
 			val parameter = find(parameterInfos, [ info | equal(info.oldName, parameterName) ])
 			
 			if (parameter.renamed) {
@@ -372,15 +368,13 @@ class ExtractMethodRefactoring extends Refactoring {
 				}
 			}
 		}
+		
 		sort(parameterRenames, [o1, o2 | o2.offset - o1.offset ])
-		
-		val buffer = new StringBuffer(expressionsAsString)
-		
-		for (ReplaceRegion parameterRename: parameterRenames) {
-			buffer.replace(parameterRename.offset - expressionsRegion.offset, parameterRename.endOffset - expressionsRegion.offset, parameterRename.text)
-		}
-		
-		buffer.toString
+
+		parameterRenames.fold(new StringBuffer(expressionsRegion.asString)) [b, it|
+			b.replace(offset - expressionsRegion.offset, endOffset - expressionsRegion.offset, text)
+			b
+		].toString
 	}
 	
 	def asString(ITextRegion r) { document.get(r.offset, r.length) }
