@@ -57,6 +57,7 @@ public class Messages extends NLS {
 	public static String ExtractMethodUserInputPage_methodName;
 	public static String ExtractMethodUserInputPage_methodSignaturePreview;
 	public static String ExtractMethodUserInputPage_provideMethodName;
+	public static String ExtractMethodUserInputPage_extractMethodTitle;
 	
 	static {
 		// initialize resource bundle

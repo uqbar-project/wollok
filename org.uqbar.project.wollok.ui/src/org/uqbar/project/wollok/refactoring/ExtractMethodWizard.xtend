@@ -1,9 +1,10 @@
 package org.uqbar.project.wollok.refactoring
 
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard
 import com.google.inject.Inject
 import com.google.inject.Provider
 import org.eclipse.ltk.core.refactoring.Refactoring
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -26,7 +27,7 @@ class ExtractMethodWizard extends RefactoringWizard {
 		this.userInputPage = userInputPage;
 	}
 	
-	override def getWindowTitle() { "Extract Method" }
+	override def getWindowTitle() { Messages.ExtractMethodUserInputPage_extractMethodTitle }
 
 	override def addUserInputPages() {
 		userInputPage.setRefactoring(refactoring as ExtractMethodRefactoring)
