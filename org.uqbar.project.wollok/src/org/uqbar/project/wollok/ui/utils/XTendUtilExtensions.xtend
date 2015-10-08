@@ -34,6 +34,10 @@ class XTendUtilExtensions {
 	// ** Collections
 	// ***************************************
 	
+	def static <T> List<T> duplicates(List<T> original) {
+		original.filter[e| original.filter[it == e].size > 1 ].toList
+	}
+	
 	/** A "map" whose closure receives the index (position) besides the item */
 	def static <E,T> Collection<T> map(Iterable<E> col, (Integer,E)=>T mapper) {
 		val r = newArrayList

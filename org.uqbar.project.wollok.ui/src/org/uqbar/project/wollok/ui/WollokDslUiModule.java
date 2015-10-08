@@ -23,9 +23,6 @@ import org.eclipse.xtext.ui.wizard.IProjectCreator;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
-import org.uqbar.project.wollok.refactoring.DummyJvmModelAssociations;
-import org.uqbar.project.wollok.refactoring.DummyJvmTypeProvider;
-import org.uqbar.project.wollok.refactoring.DummyJvmTypeProviderFactory;
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper;
 import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration;
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener;
@@ -39,6 +36,8 @@ import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration;
 import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator;
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory;
+import org.uqbar.project.wollok.utils.DummyJvmModelAssociations;
+import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory;
 
 import com.google.inject.Binder;
 import com.google.inject.Provider;

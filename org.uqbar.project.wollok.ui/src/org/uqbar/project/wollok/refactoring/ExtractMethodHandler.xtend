@@ -51,7 +51,7 @@ class ExtractMethodHandler extends AbstractHandler {
 							val extractMethodRefactoring = refactoringProvider.get
 							if (extractMethodRefactoring.initialize(editor, expressions, true)) {
 								updateSelection(editor, expressions)
-								val wizard = wizardFactory.create(extractMethodRefactoring);
+								val wizard = wizardFactory.create(extractMethodRefactoring)
 								val openOperation = new RefactoringWizardOpenOperation_NonForking(wizard)
 								openOperation.run(editor.site.shell, "Extract Method");
 							}

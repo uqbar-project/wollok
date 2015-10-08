@@ -18,6 +18,7 @@ import org.eclipse.jface.text.BadLocationException
 import org.eclipse.ltk.core.refactoring.Refactoring
 import org.eclipse.ltk.core.refactoring.RefactoringStatus
 import org.eclipse.text.edits.TextEdit
+import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.common.types.JvmIdentifiableElement
@@ -55,6 +56,7 @@ import static org.eclipse.xtext.util.Strings.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.refactoring.RefactoringExtensions.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * 
@@ -63,6 +65,7 @@ import static extension org.uqbar.project.wollok.refactoring.RefactoringExtensio
 // this needs to view reviewed for:
 //  - extracting a method that returns a value
 //  - any unnecessary code (since it was based on xtend)
+@Accessors 
 class ExtractMethodRefactoring extends Refactoring {
 	static val Logger LOG = Logger.getLogger(ExtractMethodRefactoring)
 	
@@ -80,7 +83,7 @@ class ExtractMethodRefactoring extends Refactoring {
 	WMethodDeclaration originalMethod
 	IXtextDocument document
 	boolean doSave
-	XtextEditor editor
+	ITextEditor editor
 	List<WExpression> expressions
 	WExpression firstExpression
 	WExpression lastExpression
@@ -94,7 +97,7 @@ class ExtractMethodRefactoring extends Refactoring {
 	override getName() { "Extract Method Refactoring" }
 	
 	def initialize(XtextEditor editor, List<WExpression> expressions, boolean doSave) {
-		if(expressions.isEmpty() || editor.getDocument() == null)
+		if (expressions.empty || editor.document == null)
 			return false
 		
 		this.document = editor.document
@@ -193,7 +196,8 @@ class ExtractMethodRefactoring extends Refactoring {
 	}
 	
 	def handleException(Exception exc, StatusWrapper status) {
-		status.add(RefactoringStatus.FATAL, "Error during refactoring: {0}", exc, LOG);
+		exc.printStackTrace
+		status.add(RefactoringStatus.FATAL, "Error during refactoring: {0}", exc.toString)
 	}
 	
 	def isEndOfOriginalMethod() {
@@ -227,17 +231,11 @@ class ExtractMethodRefactoring extends Refactoring {
 	
 	def validateParameters() {
 		val status = new RefactoringStatus
-		val Set<String> namesSoFar = newHashSet
 		
-		for (ParameterInfo parameterInfo : parameterInfos) {
-			val newName = parameterInfo.getNewName
-			if (namesSoFar.contains(newName))
-				status.addError("Duplicate parameter name '" + newName + "'");
-			if (!equal(newName, parameterInfo.oldName) && localFeatureNames.contains(newName))
-				status.addError("'" + newName + "' is already used as a name in the selected code")
-//			nameUtil.checkNewFeatureName(newName, false, status);
-			namesSoFar.add(newName)
-		}
+		parameterInfos.map[newName].duplicates.forEach[ status.addError("Duplicate parameter name '" + it + "'") ]
+		
+		parameterInfos.filter[ !equal(newName, oldName) && localFeatureNames.contains(newName) ].forEach[ status.addError("'" + newName + "' is already used as a name in the selected code") ]
+		
 		status
 	}
 	

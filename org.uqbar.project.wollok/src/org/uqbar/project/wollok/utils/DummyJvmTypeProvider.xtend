@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.refactoring
+package org.uqbar.project.wollok.utils
 
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider

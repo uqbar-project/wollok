@@ -22,7 +22,7 @@ class ExtractMethodWizard extends RefactoringWizard {
 	}
 
 	new(Refactoring refactoring, ExtractMethodUserInputPage userInputPage) {
-		super(refactoring, RefactoringWizard.DIALOG_BASED_USER_INTERFACE);
+		super(refactoring, RefactoringWizard.DIALOG_BASED_USER_INTERFACE)
 		this.userInputPage = userInputPage;
 	}
 	
@@ -30,7 +30,7 @@ class ExtractMethodWizard extends RefactoringWizard {
 
 	override def addUserInputPages() {
 		userInputPage.setRefactoring(refactoring as ExtractMethodRefactoring)
-		addPage(userInputPage);
+		addPage(userInputPage)
 	}
 	
 }

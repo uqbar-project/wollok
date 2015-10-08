@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.refactoring;
+package org.uqbar.project.wollok.utils;
 
 import java.util.HashSet;
 import java.util.Set;
