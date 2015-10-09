@@ -45,14 +45,6 @@ object barbanegra {
 	}
 }
 
-class A {
-}
-
-class B extends A {
-	 method foo(a, b) {}
-}
-
-
 object jack {
 	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
 	var nivelEbriedad = 50

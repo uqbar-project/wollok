@@ -48,6 +48,10 @@ class QuickFixUtils {
 		document.replace(beforeObject.before, 0, append)
 	}
 	
+	def static void append(IXtextDocument document, EObject afterObject, String append) {
+		document.replace(afterObject.after, 0, append)
+	}
+	
 	def static before(EObject element) {
 		element.node.offset
 	}

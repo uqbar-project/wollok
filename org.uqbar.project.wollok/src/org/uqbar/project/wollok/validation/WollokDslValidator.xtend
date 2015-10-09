@@ -77,6 +77,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
+	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -276,7 +277,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedVariableOrParameter(WReferenciable p) {
-		if(p.isDuplicated) p.report(WollokDslValidator_DUPLICATED_NAME)
+		if (p.isDuplicated) p.report(WollokDslValidator_DUPLICATED_NAME)
 	}
 
 	@Check
@@ -293,9 +294,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val assignments = variable.assignments
 		if (assignments.empty) {
 			if (writeable)
-				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)
+				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)
 			else if (!writeable)
-				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)	
+				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)	
 		}
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)

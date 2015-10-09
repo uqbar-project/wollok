@@ -169,7 +169,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
-	
 	@Fix(NATIVE_METHOD_CANNOT_OVERRIDES)
 	def removeOverrideFromNativeMethod(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
@@ -181,6 +180,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def removeDuplicatedMethod(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove method', 'Remove duplicated method.', null) [ e, it |
 			xtextDocument.delete(e)
+		]
+	}
+	
+	@Fix(VARIABLE_NEVER_ASSIGNED)
+	def initializeNonAssignedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Initialize value', 'Initialize.', null) [ e, it |
+			xtextDocument.append(e, " = value")
 		]
 	}
 	
