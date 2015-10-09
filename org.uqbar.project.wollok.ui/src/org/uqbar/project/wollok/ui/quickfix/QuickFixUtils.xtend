@@ -32,7 +32,11 @@ class QuickFixUtils {
 	
 	def static void delete(IXtextDocument it, EObject e) {
 		replace(e.before, e.node.length, "")
-	 }
+	}
+	 
+	def static void deleteToken(IXtextDocument it, EObject e, String token) {
+		replace(e.before + e.node.text.indexOf(token) - 2, token.length, "")
+	}
 
 	// ****************** AST UTILS *********************
 	

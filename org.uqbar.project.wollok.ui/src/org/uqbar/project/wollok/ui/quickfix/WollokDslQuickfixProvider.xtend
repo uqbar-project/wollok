@@ -123,6 +123,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	
+	@Fix(NATIVE_METHOD_CANNOT_OVERRIDES)
+	def removeOverrideFromNativeMethod(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
+			xtextDocument.deleteToken(e, OVERRIDE)
+		]
+	}
+	
 	@Fix(MUST_CALL_SUPER)
 	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add call to super', 'Add call to super.', null) [ e, it |

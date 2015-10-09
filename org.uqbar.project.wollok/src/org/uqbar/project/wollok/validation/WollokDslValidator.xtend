@@ -72,6 +72,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
+	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -437,7 +438,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
 			 if (expression != null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
+			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
 			 if (declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
 //			 if(declaringContext instanceof WClass)
