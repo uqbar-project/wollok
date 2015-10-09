@@ -258,10 +258,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def duplicatedMethod(WMethodDeclaration m) {
+	def duplicatedMethod(WMethodDeclaration it) {
 		// can we allow methods with same name but different arg size ? 
-		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
-			m.report(WollokDslValidator_DUPLICATED_METHOD, DUPLICATED_METHOD)
+		if (declaringContext.methods.exists[m | m != it && hasSameSignatureThan(m)] )
+			report(WollokDslValidator_DUPLICATED_METHOD, DUPLICATED_METHOD)
 	}
 	
 	@Check

@@ -66,6 +66,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || it.eAllContents.exists[e | e.isReturnWithValue] }
+	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { name == other.name && parameters.size == other.parameters.size }
 	
 	def static isGetter(WMethodDeclaration it) { name.length > 4 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
 	
