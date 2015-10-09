@@ -75,6 +75,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
 	public static val BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION = "BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION"
 	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
+	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -196,7 +197,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
-		if(m.overrides && !overrides) m.report(WollokDslValidator_METHOD_NOT_OVERRIDING)
+		if (m.overrides && !overrides) m.report(WollokDslValidator_METHOD_NOT_OVERRIDING, METHOD_DOESNT_OVERRIDE_ANYTHING)
 		if (overrides && !m.overrides)
 			m.report(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}

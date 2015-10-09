@@ -28,6 +28,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.WollokDSLKeywords
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 
 /**
  * Custom quickfixes.
@@ -89,24 +91,34 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
+	def addMethodToSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
+			val method = e as WMethodDeclaration
+			val parent = method.wollokClass.parent
+			
+			val constructor = '''method «method.name»(«method.parameters.map[name].join(",")») { 
+				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+			}'''
+			
+			addConstructor(parent, constructor)
+		]
+	}
+	
+	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
+	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
+			xtextDocument.deleteToken(e, WollokDSLKeywords.OVERRIDE)
+		]
+	}
+	
 	@Fix(WollokDslValidator.REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
 			
 			val constructors = clazz.parent.constructors.map[ '''\tnew(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)'''].join('\n')
-			
-			val lastVar = clazz.members.findLast[it instanceof WVariableDeclaration]
-			if (lastVar != null)
-				insertAfter(lastVar, constructors)
-			else {
-				val firstMethod = clazz.members.findFirst[it instanceof WMethodDeclaration]
-				if (firstMethod != null)
-					insertBefore(firstMethod, constructors)
-				else {
-					xtextDocument.replace(clazz.after - 1, 0, constructors)
-				}
-			}
+			addConstructor(clazz, constructors)
 		]
 	}
 	
@@ -120,7 +132,12 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 			}'''
 			
-			val lastConstructor = parent.members.findLast[it instanceof WConstructor]
+			addConstructor(parent, constructor)
+		]
+	}
+	
+	protected def addConstructor(IModificationContext it, WClass parent, String constructor) {
+		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
 			if (lastConstructor != null)
 				insertAfter(lastConstructor, constructor)
 			else {
@@ -136,8 +153,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 					}
 				}
 			}
-		]
-	}
+	} 
 	
 	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
 	def removeUnusedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
