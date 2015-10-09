@@ -110,6 +110,35 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+	def createConstructorInSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Create constructor in superclass', 'Add new constructor in superclass.', null) [ e, it |
+			val delegatingConstructor = (e as WConstructor).delegatingConstructorCall
+			val parent = e.wollokClass.parent
+			
+			val constructor = '''new(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")») { 
+				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+			}'''
+			
+			val lastConstructor = parent.members.findLast[it instanceof WConstructor]
+			if (lastConstructor != null)
+				insertAfter(lastConstructor, constructor)
+			else {
+				val lastVar = parent.members.findLast[it instanceof WVariableDeclaration]
+				if (lastVar != null)
+					insertAfter(lastVar, constructor)
+				else {
+					val firstMethod = parent.members.findFirst[it instanceof WMethodDeclaration]
+					if (firstMethod != null)
+						insertBefore(firstMethod, constructor)
+					else {
+						xtextDocument.replace(parent.after - 1, 0, constructor)
+					}
+				}
+			}
+		]
+	}
+	
 	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
 	def removeUnusedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove variable', 'Remove unused variable.', null) [ e, it |
@@ -158,7 +187,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			context.insertAfter(e,
 				'''
 				then always {
-					// TODO: auto-generated stub
+					//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 				}'''
 			)			
 		]
