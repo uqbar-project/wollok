@@ -9,7 +9,7 @@
               class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.classes.ClassDiagramView"
               icon="class_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.class"
-              name="Class Diagram"
+              name="%staticDiagramView"
               restorable="true">
         </view>
         <view

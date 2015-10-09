@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import java.util.List
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
+import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
 
 /**
@@ -136,5 +137,9 @@ public abstract class Shape extends ModelElement {
 			size.size = newSize
 			firePropertyChange(SIZE_PROP, null, size)
 		}
+	}
+	
+	def getBounds() {
+		new Rectangle(location, size)
 	}
 }

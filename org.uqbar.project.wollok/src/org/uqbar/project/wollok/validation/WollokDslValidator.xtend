@@ -212,7 +212,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	def getterMethodShouldReturnAValue(WMethodDeclaration m) {
-		if (m.isGetter && !m.returnsValue)
+		if (m.isGetter && !m.abstract && !m.returnsValue)
 			m.report(WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE, GETTER_METHOD_SHOULD_RETURN_VALUE)
 	}
 
