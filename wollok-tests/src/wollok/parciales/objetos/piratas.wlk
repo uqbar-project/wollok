@@ -41,7 +41,10 @@ object barbanegra {
 	}
 	
 	method getDinero() {
-		return dinero
+		return if (nivelEbriedad > 20)
+			true
+		else
+			false
 	}
 }
 

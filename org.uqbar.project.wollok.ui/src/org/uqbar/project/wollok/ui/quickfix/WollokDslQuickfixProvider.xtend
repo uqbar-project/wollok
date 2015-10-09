@@ -27,6 +27,7 @@ import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 
 /**
  * Custom quickfixes.
@@ -160,6 +161,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 					// TODO: auto-generated stub
 				}'''
 			)			
+		]
+	}
+	
+	@Fix(BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION) 
+	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Replace if with the condition', 'Removes the if and just leaves the condition.', null) [ e, it |
+			val ifE = e as WIfExpression
+			xtextDocument.replaceWith(e, ifE.condition)
 		]
 	}
 
