@@ -177,6 +177,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 	
+	@Fix(DUPLICATED_METHOD)
+	def removeDuplicatedMethod(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Remove method', 'Remove duplicated method.', null) [ e, it |
+			xtextDocument.delete(e)
+		]
+	}
+	
 	@Fix(MUST_CALL_SUPER)
 	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add call to super', 'Add call to super.', null) [ e, it |

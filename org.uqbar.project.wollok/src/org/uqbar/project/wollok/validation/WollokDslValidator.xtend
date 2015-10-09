@@ -76,6 +76,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION = "BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION"
 	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
+	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -259,7 +260,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def duplicatedMethod(WMethodDeclaration m) {
 		// can we allow methods with same name but different arg size ? 
 		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
-			m.report(WollokDslValidator_DUPLICATED_METHOD)
+			m.report(WollokDslValidator_DUPLICATED_METHOD, DUPLICATED_METHOD)
 	}
 	
 	@Check

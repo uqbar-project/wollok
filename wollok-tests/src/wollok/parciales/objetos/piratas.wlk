@@ -49,7 +49,7 @@ class A {
 }
 
 class B extends A {
-	 method foo(a, b) {} 
+	 method foo(a, b) {}
 }
 
 
