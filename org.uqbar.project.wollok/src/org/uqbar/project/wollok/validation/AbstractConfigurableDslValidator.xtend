@@ -65,15 +65,20 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 			case INFO : info(description, invalidObject, ref, issueId) 
 		}
 	}
+	
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index) {
+		report(description, invalidObject, ref, null)
+	}
+	
+	def report(String description, EObject invalidObject, EStructuralFeature ref, int index, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 		
 		if (severityValue == null)
-			error(description, invalidObject, ref, index)
+			error(description, invalidObject, ref, index, issueId)
 		switch (severityValue) {
-			case ERROR : error(description, invalidObject, ref, index)
-			case WARN : warning(description, invalidObject, ref, index)
-			case INFO : info(description, invalidObject, ref, index) 
+			case ERROR : error(description, invalidObject, ref, index, issueId)
+			case WARN : warning(description, invalidObject, ref, index, issueId)
+			case INFO : info(description, invalidObject, ref, index, issueId) 
 		}
 	}
 	

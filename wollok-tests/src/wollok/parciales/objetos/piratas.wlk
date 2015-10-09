@@ -45,11 +45,6 @@ object barbanegra {
 	}
 }
 
-class A {
-	new(p) {}
-	
-}
-
 object jack {
 	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
 	var nivelEbriedad = 50

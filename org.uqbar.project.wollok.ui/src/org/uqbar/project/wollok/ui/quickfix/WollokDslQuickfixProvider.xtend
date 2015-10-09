@@ -26,6 +26,7 @@ import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 /**
  * Custom quickfixes.
@@ -119,6 +120,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def deleteDuplicatedConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove constructor', 'Remove duplicated constructor.', null) [ e, it |
 			xtextDocument.delete(e)
+		]
+	}
+	
+	@Fix(MUST_CALL_SUPER)
+	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Add call to super', 'Add call to super.', null) [ e, it |
+			val const = e as WConstructor
+			val call = " = super()" // this could be more involved here and useful for the user :P
+			val paramCloseOffset = const.node.text.indexOf(")")
+			xtextDocument.replace(e.before + paramCloseOffset - 1, 0, call)
 		]
 	}
 	
