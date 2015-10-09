@@ -20,7 +20,7 @@ class WollokSet extends AbstractWollokCollection<Set<Object>> {
 
 	override clone() { new WollokSet(interpreter, this.wrapped.clone) }
 
-	override getWollokName() {
-		"WSet"
-	}
+	override getWollokName() { "WSet" }
+	
+	override surroundToString(String s) { "#{" + s + "}" }
 }
