@@ -45,6 +45,15 @@ object barbanegra {
 	}
 }
 
+class A {
+	new(p) {}
+	new(a, b) {}
+	new(a, b, c) {}
+}
+
+class B extends A {
+}
+
 object jack {
 	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
 	var nivelEbriedad = 50
@@ -65,8 +74,9 @@ object jack {
 
 object buscarTesoro {
 	method puedeSerCumplidaPor(pirata) {
-		return (pirata.items().contains("brujula") || pirata.items().contains("mapa") || pirata.items().contains("mapa")) &&
-			(pirata.getDinero() <= 5) 
+		return (pirata.items().contains("brujula") 
+			|| pirata.items().contains("mapa") || pirata.items().contains("mapa")
+		) && (pirata.getDinero() <= 5)
 	}
 }
 

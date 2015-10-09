@@ -23,6 +23,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import org.uqbar.project.wollok.ui.Messages
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 /**
  * Custom quickfixes.
@@ -33,8 +35,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_capitalize_name, Messages.WollokDslQuickfixProvider_capitalize_description, null) [ context |
-			context.xtextDocument => [
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_capitalize_name, Messages.WollokDslQuickfixProvider_capitalize_description, null) [ 
+			xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toUpperCase)
 			]
@@ -43,8 +45,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	def toLowerCaseReferenciableName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name, Messages.WollokDslQuickfixProvider_lowercase_description, null) [ context |
-			context.xtextDocument => [
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name, Messages.WollokDslQuickfixProvider_lowercase_description, null) [ 
+			xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toLowerCase)
 			]
@@ -79,8 +81,29 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add "override" keyword', 'Add "override" keyword to method.', null) [ e, context |
-			context.xtextDocument.replace(e.before, 0, OVERRIDE + ' ')
+		acceptor.accept(issue, 'Add "override" keyword', 'Add "override" keyword to method.', null) [ e, it |
+			xtextDocument.prepend(e, OVERRIDE + ' ')
+		]
+	}
+	
+	@Fix(WollokDslValidator.REQUIRED_SUPERCLASS_CONSTRUCTOR)
+	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
+			val clazz = e as WClass
+			
+			val constructors = clazz.parent.constructors.map[ '''\tnew(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)'''].join('\n')
+			
+			val lastVar = clazz.members.findLast[it instanceof WVariableDeclaration]
+			if (lastVar != null)
+				insertAfter(lastVar, constructors)
+			else {
+				val firstMethod = clazz.members.findFirst[it instanceof WMethodDeclaration]
+				if (firstMethod != null)
+					insertBefore(firstMethod, constructors)
+				else {
+					xtextDocument.replace(clazz.after - 1, 0, constructors)
+				}
+			}
 		]
 	}
 	
@@ -151,7 +174,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 	// *********************************************
 	// ** Unresolved references code (should be generalized into something using reflection as xtext's declarative quickfixes)
-		// **   this needs some overriding since xtext doesn't have an extension point or declarative way
+	// **   this needs some overriding since xtext doesn't have an extension point or declarative way
 	// **   to get in between (they already provide a quick fix to change the reference to some other similar variable name)
 	// *********************************************
 	
@@ -160,7 +183,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 		// adding "create for unresolved references"		
 		val modificationContext = modificationContextFactory.createModificationContext(issue);
-		val xtextDocument = modificationContext.getXtextDocument();
+		val xtextDocument = modificationContext.xtextDocument
 		if (xtextDocument == null)
 			return;
 		xtextDocument.readOnly(
@@ -184,5 +207,5 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)
 		}
 	}
-
+	
 }

@@ -68,6 +68,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
 	public static val GETTER_METHOD_SHOULD_RETURN_VALUE = "GETTER_METHOD_SHOULD_RETURN_VALUE" 
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
+	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	
 	// WARNING KEYS
@@ -125,7 +126,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def requiredSuperClassConstructorCall(WClass it) {
 		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
-			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
+			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	}
 	
 	@Check

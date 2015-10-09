@@ -24,9 +24,14 @@ class Asustador {
 
 class AsustadorNato extends Asustador {
 	var puntosTerrorInnatos
+<<<<<<< Updated upstream
 	new (p) { puntosTerrorInnatos = p	}
 	override method puntosDeTerror() {
 		puntosTerrorInnatos * this.getEdad()
 	}
+=======
+	new (p) { puntosTerrorInnatos = p }
+	override method puntosDeTerror() = puntosTerrorInnatos * this.getEdad()
+>>>>>>> Stashed changes
 }
 
