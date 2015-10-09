@@ -34,17 +34,23 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val resourceSet = context.resourceSet
 
 		val exportedObjects = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
-		val explicitImportedObjects = this.importedObjects(context)
+		val explicitImportedObjects = this.importedObjects(context, exportedObjects)
 
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(new SimpleScope(defaultScope, exportedObjects), explicitImportedObjects)
 	}
 	
-	def importedObjects(Resource resource) {
+	def importedObjects(Resource resource, Iterable<IEObjectDescription> objectsFromManifests) {
 		val rootObject = resource.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
 		val importedNamespaces = imports.map[importedNamespace]
-		importedNamespaces.map[name|
+		importedNamespaces
+		.filter[name|
+			// filters those imported from libraries, we won't handle them as regular imports
+			// this needs further works if we add more complex imports like *, or aliases.
+			!objectsFromManifests.exists[o| o.qualifiedName.toString == name]
+		]
+		.map[name|
 			var uri = generateUri(resource, name)
 			val r = EcoreUtil2.getResource(resource, uri)
 			if (r == null) throw new WollokRuntimeException("Could NOT find resource '" + name +"'");

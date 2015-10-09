@@ -94,7 +94,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	
 	// FINDS
 	
-	def findByText(EObject model, String token) {
+	def static findByText(EObject model, String token) {
 		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
 			.findFirst[n| 
 				escapeNodeTextToCompare(n.text) == token && n.hasDirectSemanticElement 
@@ -103,7 +103,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 		found.semanticElement
 	}
 	
-	def String escapeNodeTextToCompare(String nodeText) {
+	def static String escapeNodeTextToCompare(String nodeText) {
 		if (nodeText.startsWith("\n"))
 			nodeText.substring(1).escapeNodeTextToCompare
 		else if (nodeText.startsWith("\t"))

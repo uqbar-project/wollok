@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
+import org.eclipse.xtend.lib.Property
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
@@ -17,4 +18,5 @@ class ClassModel extends Shape {
 	override toString() {
 		"ClassModel<" + clazz.name + ">"		
 	}
+	
 }
