@@ -67,7 +67,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 	}
 	
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index) {
-		report(description, invalidObject, ref, null)
+		report(description, invalidObject, ref, index, null)
 	}
 	
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index, String issueId) {
