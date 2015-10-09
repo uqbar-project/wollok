@@ -9,22 +9,23 @@ import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
+import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
+import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
-import org.uqbar.project.wollok.ui.Messages
-import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 /**
  * Custom quickfixes.
@@ -109,8 +110,15 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
 	def removeUnusedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove variable', 'Remove unused variable.', null) [ e, context |
-			context.xtextDocument.replace(e.before, e.node.length, "")
+		acceptor.accept(issue, 'Remove variable', 'Remove unused variable.', null) [ e, it |
+			xtextDocument.delete(e)
+		]
+	}
+	
+	@Fix(DUPLICATED_CONSTRUCTOR)
+	def deleteDuplicatedConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Remove constructor', 'Remove duplicated constructor.', null) [ e, it |
+			xtextDocument.delete(e)
 		]
 	}
 	

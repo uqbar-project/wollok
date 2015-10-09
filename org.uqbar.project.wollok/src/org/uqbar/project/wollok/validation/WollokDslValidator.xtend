@@ -69,6 +69,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val GETTER_METHOD_SHOULD_RETURN_VALUE = "GETTER_METHOD_SHOULD_RETURN_VALUE" 
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
+	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	
 	// WARNING KEYS
@@ -134,7 +135,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
 		repeated.forEach[r|
-			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
+			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS, DUPLICATED_CONSTRUCTOR)
 		]
 	}
 	

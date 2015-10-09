@@ -29,6 +29,10 @@ class QuickFixUtils {
 		val newBlock = (textToInsert + "\n").replaceAll('\n', e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.before, 0, newBlock)
 	}
+	
+	def static void delete(IXtextDocument it, EObject e) {
+		replace(e.before, e.node.length, "")
+	 }
 
 	// ****************** AST UTILS *********************
 	

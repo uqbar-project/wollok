@@ -47,11 +47,7 @@ object barbanegra {
 
 class A {
 	new(p) {}
-	new(a, b) {}
-	new(a, b, c) {}
-}
-
-class B extends A {
+	
 }
 
 object jack {
