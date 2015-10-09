@@ -141,4 +141,25 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testToString() {
+		'''
+		program p {
+			val a = #[23, 2, 1]
+			assert.equals("#[23, 2, 1]", a.toString())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testToStringWithObjectRedefiningToStringInWollok() {
+		'''
+		object myObject {
+			method toString() = "My Object"
+		}
+		program p {
+			val a = #[23, 2, 1, myObject]
+			assert.equals("#[23, 2, 1, My Object]", a.toString())
+		}'''.interpretPropagatingErrors
+	}
+	
 }

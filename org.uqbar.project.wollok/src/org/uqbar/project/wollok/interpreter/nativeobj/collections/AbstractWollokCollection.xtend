@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokWrapperNativ
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WCallable
 
 /**
  * @author jfernandes
@@ -81,4 +82,10 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	}
 	
 	def abstract String getWollokName()
+	
+	// this is kind of a hack. This should be wollok code once we migrate this "really native" object into a wollok class
+	// defined in wollok SDK library
+	override toString() { surroundToString(wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(", ")) }
+	
+	def abstract String surroundToString(String s)
 }
