@@ -44,7 +44,8 @@ class SetTest extends ListTestCase {
 		'''
 		program p {
 			val a = #{23, 2, 2}
-			assert.equals("#{2, 23}", a.toString())
+			val s = a.toString()
+			assert.that("#{2, 23}" == s or "#{23, 2}" == s)
 		}'''.interpretPropagatingErrors
 	}
 	
