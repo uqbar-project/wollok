@@ -147,7 +147,7 @@
 								<configuration>
 									<fromDir>${products.path}</fromDir>
 									<includes>**.zip</includes>
-									<toDir>/</toDir>
+									<toDir>/wollok/products/</toDir>
 									<url>${ftp.url}</url>
 									<serverId>downloads-uqbar</serverId>
 								</configuration>
