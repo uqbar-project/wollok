@@ -42,7 +42,7 @@ class WollokChecker {
 			log.debug(" args: " + args.toList)
 			
 			if (args.contains("--version")) {
-				println("Wollok v1.1.0") // TODO: compute real version number 
+				println("Wollok v" + Wollok.VERSION) 
 				System.exit(0)
 			}
 			
