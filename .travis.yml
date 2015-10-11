@@ -9,7 +9,7 @@ script:
 - cd org.uqbar.project.wollok.releng/ 
 - export PROFILES=normalProfile
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo"; fi
-- [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] && export PROFILES="uploadRepo,uploadProducts"
+- if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export PROFILES="uploadRepo,uploadProducts" ; fi
 - echo "Running with profiles $PROFILES"
 - mvn -DupdateSiteFolder=$TRAVIS_BRANCH -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES
 
