@@ -26,3 +26,10 @@ for i in `find . -name "MANIFEST.MF" | grep uqbar | grep -v "/target"`; do
     	mv $i.tmp $i
     fi
 done
+
+echo "Updating features ..."
+for i in `find . -name "feature.xml" | grep uqbar | grep -v "/target"`; do
+    sed -e "s#\(.*\)version=\"[0-9][\.0-9]*\.qualifier\"\(.*\)#\1version=\"$NEW_VERSION.qualifier\"\2#g" $i > $i.tmp
+    rm $i
+    mv $i.tmp $i
+done
