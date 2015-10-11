@@ -2,7 +2,13 @@
 
 NEW_VERSION=$1
 
-# update all plugins versions on manifests
+echo "Updating pom files..."
+for i in `find . -name "pom.xml" -not -path "./.metadata/*" -not -path "*/target/*" -not -path "*/META-INF/maven/*"`; do
+    sed -e "s#\(.*\)<version>[0-9][\.0-9]*-SNAPSHOT</version>\(.*\)#\1<version>$NEW_VERSION-SNAPSHOT</version>\2#g" $i > $i.tmp
+    rm $i
+    mv $i.tmp $i
+done
+
 echo "Updating bundle versions in MANIFEST.MF..."
 for i in `find . -name "MANIFEST.MF" | grep uqbar | grep -v "/target"`;	do
     sed -e "s#Bundle-Version: \(.*\)#Bundle-Version: $NEW_VERSION.qualifier#g" $i > $i.tmp
