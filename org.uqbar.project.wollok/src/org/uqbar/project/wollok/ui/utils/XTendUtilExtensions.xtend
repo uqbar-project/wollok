@@ -126,11 +126,12 @@ class XTendUtilExtensions {
 			throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»". Given arguments «args»''') 
 		}
 		val converted = newArrayList
-		args.fold(0)[i, a | converted.add(a.convertTo(m.parameterTypes.get(i))); i + 1 ]
-		m.invoke(o, converted.toArray)
+		args.fold(0)[i, a | converted.add(a.wollokToJava(m.parameterTypes.get(i))); i + 1 ]
+		val returnVal = m.invoke(o, converted.toArray)
+		javaToWollok(returnVal)
 	}
 	
-	def static Object convertTo(Object o, Class<?> t) {
+	def static Object wollokToJava(Object o, Class<?> t) {
 		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
 		if (o instanceof WollokClosure && t == Function1)
 			return [Object a | (o as WollokClosure).apply(a)]
@@ -146,6 +147,14 @@ class XTendUtilExtensions {
 			return o	
 		
 		throw new RuntimeException('''Cannot convert parameter "«o»" to type "«t.simpleName»""''')
+	}
+	
+	def static Object javaToWollok(Object o) {
+		if (o == null)
+			return null
+		if (o instanceof Integer)
+			return new WollokInteger(o as Integer)
+		o
 	}
 	
 	def static accesibleVersion(Method m) {
