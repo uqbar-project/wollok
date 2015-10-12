@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
