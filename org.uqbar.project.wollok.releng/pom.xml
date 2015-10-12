@@ -249,6 +249,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		</pluginManagement>
 
 		<plugins>
+		
+			<!-- SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-deploy-plugin</artifactId>
+			  <!--  TODO: version here
+			  <version>xxx</version>
+			   -->
+			  <configuration>
+			    <skip>true</skip>
+			  </configuration>
+			</plugin>
+			<!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -317,6 +330,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			            </goals>
 			        </execution>
 			    </executions>
+				<configuration>
+				    <excludes>
+				        <exclude>org/uqbar/project/wollok/tests/**/*.java</exclude>
+				    </excludes>
+				</configuration>
 			</plugin>
 	        <plugin>
 	            <groupId>org.eluder.coveralls</groupId>
