@@ -65,9 +65,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
-	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE" 
+	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
+	public static val GETTER_METHOD_SHOULD_RETURN_VALUE = "GETTER_METHOD_SHOULD_RETURN_VALUE" 
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
+	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
+	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
+	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
+	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
+	public static val BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION = "BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION"
+	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
+	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
+	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
+	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -124,7 +134,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def requiredSuperClassConstructorCall(WClass it) {
 		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
-			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME)
+			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	}
 	
 	@Check
@@ -132,7 +142,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
 		repeated.forEach[r|
-			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS)
+			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS, DUPLICATED_CONSTRUCTOR)
 		]
 	}
 	
@@ -140,7 +150,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def construtorMustExpliclityCallSuper(WConstructor it) {
 		if (delegatingConstructorCall == null && wollokClass.superClassRequiresNonEmptyConstructor) {
-			report("Must call a super class constructor explicitly", it.wollokClass, WCLASS__CONSTRUCTORS, wollokClass.constructors.indexOf(it))
+			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
 	
@@ -175,12 +185,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved == null) {
 				// we could actually show the available options
-				report("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+				report("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
 		}
 		catch (WollokRuntimeException e) {
 			// mmm... terrible
-			report("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)
+			report("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 		}
 	}
 
@@ -189,7 +199,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
-		if(m.overrides && !overrides) m.report(WollokDslValidator_METHOD_NOT_OVERRIDING)
+		if (m.overrides && !overrides) m.report(WollokDslValidator_METHOD_NOT_OVERRIDING, METHOD_DOESNT_OVERRIDE_ANYTHING)
 		if (overrides && !m.overrides)
 			m.report(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}
@@ -206,6 +216,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE, OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE)
 			}
 		}
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	def getterMethodShouldReturnAValue(WMethodDeclaration m) {
+		if (m.isGetter && !m.abstract && !m.returnsValue)
+			m.report(WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE, GETTER_METHOD_SHOULD_RETURN_VALUE)
 	}
 
 	@Check
@@ -241,10 +258,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def duplicatedMethod(WMethodDeclaration m) {
+	def duplicatedMethod(WMethodDeclaration it) {
 		// can we allow methods with same name but different arg size ? 
-		if (m.declaringContext.members.filter(WMethodDeclaration).exists[it != m && it.name == m.name])
-			m.report(WollokDslValidator_DUPLICATED_METHOD)
+		if (declaringContext.methods.exists[m | m != it && hasSameSignatureThan(m)] )
+			report(WollokDslValidator_DUPLICATED_METHOD, DUPLICATED_METHOD)
 	}
 	
 	@Check
@@ -260,7 +277,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedVariableOrParameter(WReferenciable p) {
-		if(p.isDuplicated) p.report(WollokDslValidator_DUPLICATED_NAME)
+		if (p.isDuplicated) p.report(WollokDslValidator_DUPLICATED_NAME)
 	}
 
 	@Check
@@ -277,9 +294,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val assignments = variable.assignments
 		if (assignments.empty) {
 			if (writeable)
-				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)
+				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)
 			else if (!writeable)
-				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE)	
+				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)	
 		}
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
@@ -368,7 +385,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
 		if (t.then?.isReturnBoolean && t.^else?.isReturnBoolean) 
-			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION)
+			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION, BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
 	}
 	
 	def dispatch boolean getIsReturnBoolean(WExpression it) { false }
@@ -426,7 +443,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
 			 if (expression != null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES)
+			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
 			 if (declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
 //			 if(declaringContext instanceof WClass)

@@ -19,23 +19,29 @@ class WClassFigure extends Figure {
 	Figure attributesFigure
 	Figure methodsFigure
 
-	new(String name) {
+	new(String name, Color fgColor, Color bgColor) {
 		super()
 
-		layoutManager = new ToolbarLayout
+		layoutManager = new ToolbarLayout => [
+			matchWidth =  true
+			spacing = 5
+		]
+		
+		backgroundColor = bgColor
+		foregroundColor = fgColor
 
 		nameLabel = new Label(name) => [
 			border = margin(2, 2, 5, 2)
 		]
 		add(nameLabel)
+		abstract = false
 		
 		attributesFigure = createCompartment 
 		add(attributesFigure)
 		
 		methodsFigure = createCompartment
 		add(methodsFigure)
-
-		backgroundColor = ClassDiagramColors.CLASS_BACKGROUND
+		
 		opaque = true
 	}
 	
@@ -45,7 +51,7 @@ class WClassFigure extends Figure {
 				minorAlignment = ToolbarLayout.ALIGN_TOPLEFT				
 			]
 			border = new WSeparatorBorder
-			backgroundColor = ClassDiagramColors.CLASS_BACKGROUND.darker
+			backgroundColor = this.backgroundColor.darker
 			opaque = true
 		]
 	}
@@ -66,22 +72,15 @@ class WClassFigure extends Figure {
 		nameLabel.text
 	}
 
-	override add(IFigure figure, Object constraint, int index) {
-		addChild(figure, constraint, index)	
-	}
-
+	override add(IFigure figure, Object constraint, int index) { addChild(figure, constraint, index) }
 	def dispatch addChild(WAttributteFigure figure, Object constraint, int index) { attributesFigure.add(figure, constraint, -1) }
 	def dispatch addChild(WMethodFigure figure, Object constraint, int index) { methodsFigure.add(figure, constraint, -1) }
 	def dispatch addChild(IFigure figure, Object constraint, int index) { super.add(figure, constraint, index) }
 
-	override remove(IFigure figure) {
-		if (figure instanceof WAttributteFigure)
-			attributesFigure.remove(figure)
-		else if (figure instanceof WMethodFigure)
-			methodsFigure.remove(figure)
-		else
-			super.remove(figure)
-	}
+	override remove(IFigure figure) { removeChild(figure) }
+	def dispatch removeChild(WAttributteFigure it) { attributesFigure.remove(it) }
+	def dispatch removeChild(WMethodFigure it) { methodsFigure.remove(it) }
+	def dispatch removeChild(IFigure it) { super.remove(it) }
 
 	def getNameLabel() {
 		nameLabel

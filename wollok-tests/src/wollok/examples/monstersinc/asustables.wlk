@@ -7,7 +7,7 @@ class Ninio extends Asustable {
 	
 	new(e) { edad = e }
 	method setEdad(e) { edad = e }
-	method getEdad() { edad }
+	method getEdad() = edad
 	override method teVaAAsustar(asustador) {
 		return asustador.asustar(this)
 	}
@@ -28,7 +28,8 @@ class Adulto extends Asustable {
 
 class Adolescente extends Asustable {
 	override method teVaAAsustar(asustador) {
-		asustador.reducirMotivacion(0.10)
-		0
+		var factor = 0.10
+		asustador.reducirMotivacion(factor)
+		return 0
 	}
 }

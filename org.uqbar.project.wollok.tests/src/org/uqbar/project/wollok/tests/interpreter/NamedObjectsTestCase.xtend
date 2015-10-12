@@ -32,7 +32,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 		val model = '''
 			object pepita {
 				var energia = 0
-				method getEnergia(){ energia }
+				method getEnergia(){ return energia }
 				method setEnergia(x){ energia = x }
 			}
 		'''.parse
@@ -45,7 +45,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			object pepita {
 				method uno(){
-					this.otro()
+					return this.otro()
 				}
 				method otro(){
 					return 5

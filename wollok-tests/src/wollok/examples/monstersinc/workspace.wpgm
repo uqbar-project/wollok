@@ -2,7 +2,7 @@ import asustadores.*
 
 import modelo.Puerta
 import modelo.Equipo
-import modelo.MonstersInc
+import modelo.monstersInc
 
 import asustables.Ninio
 import asustables.Piyamada
@@ -11,94 +11,62 @@ import asustables.Adolescente
 import asistentes.*
 import actividades.*
 
-// 1)
-
+/**
+ *
+ */
 program monstersInc {
 
-val sullivan = new AsustadorNato(200)
-sullivan.setEdad(25)
-val puertaConNinio4 = new Puerta(new Ninio(4))
+	// 1)
+	val sullivan = new AsustadorNato(25, 200)
+	val puertaConNinio4 = new Puerta(new Ninio(4))
+	
+	assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
 
-assert.that(1250 == sullivan.entrarAPuerta(puertaConNinio4))
 
-// 2)
+	// 2)
+	val mike = new AsustadorPerseverante(20)
+	mike.mejora(new EstudiarMateria("Sustos 2", 50))
+	mike.mejora(new EjercitarEnSimulador(2))
+	
+	assert.that(70 == mike.puntosDeTerror())
+	
+	val piyamada = new Piyamada()
+	piyamada.agregarNinio(new Ninio(2))
+	piyamada.agregarNinio(new Ninio(3))
+	piyamada.agregarNinio(new Ninio(4))
+	
+	val puertaConPiyamada = new Puerta(piyamada)
+	
+	val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
+	
+	this.println(mike)
+	assert.that(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
 
-val mike = new AsustadorPerseverante()
-mike.mejora(new EstudiarMateria("Sustos 2", 50))
-mike.mejora(new EjercitarEnSimulador(2))
 
-assert.that(70 == mike.puntosDeTerror())
+	// 3)
+	val equipo = new Equipo(sullivan, new AsistenteNormal())
+	equipo.visitar(new Puerta(new Adolescente()))
+	
+	assert.equals(90.0, sullivan.getNivelMotivacion())
+	assert.that(0 == equipo.getEnergiaGenerada())
 
-val piyamada = new Piyamada()
-piyamada.agregarNinio(new Ninio(2))
-piyamada.agregarNinio(new Ninio(3))
-piyamada.agregarNinio(new Ninio(4))
 
-val puertaConPiyamada = new Puerta(piyamada)
+	// 4)
 
-val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
+	val emp = monstersInc
+	emp.agregarEquipo(equipo)
+	emp.agregarPuerta(puertaConNinio4)
+	emp.diaLaboral()
+	assert.equals(1125.0, equipo.getEnergiaGenerada())
 
-this.println(mike)
-assert.that(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
-
-// 3)
-
-val equipo = new Equipo(sullivan, new AsistenteNormal())
-equipo.visitar(new Puerta(new Adolescente()))
-
-assert.equals(90.0, sullivan.getNivelMotivacion())
-assert.that(0 == equipo.getEnergiaGenerada())
-
-//this.sleep(6000)
-
-// 4)
-
-val emp = new MonstersInc()
-emp.agregarEquipo(equipo)
-emp.agregarPuerta(puertaConNinio4)
-//emp.agregarPuerta(puertaConPiyamada)
-// TODO: deberia agregar otros
-emp.diaLaboral()
-assert.equals(1125.0, equipo.getEnergiaGenerada())
-
-// 5)
-assert.that(equipo == emp.equipoMasAsustador())
-
-val equipoCapo = object {
-	method getEnergiaGenerada() { 90000.0 }
-}
-emp.agregarEquipo(equipoCapo)
-
-assert.that(equipoCapo == emp.equipoMasAsustador())
-
-emp.removerEquipo(equipoCapo)
-
-// 6) 
-
-assert.that(1125.0 == emp.getEnergiaTotalGenerada())
-emp.diaLaboral()
-assert.that(2250.0 == emp.getEnergiaTotalGenerada())
-
-// 7) ASISTENTES
-
-equipo.setAsistente(new AsistenteNormal())
-
-equipo.nuevoDia()
-equipo.visitar(puertaConNinio4)
-assert.equals(1125.0, equipo.getEnergiaGenerada())
-
-// ineficiente
-equipo.setAsistente(new AsistenteIneficiente(100))
-
-equipo.nuevoDia()
-equipo.visitar(puertaConNinio4)
-assert.equals(1025.0, equipo.getEnergiaGenerada())
-
-// supereficiente
-equipo.setAsistente(new AsistenteSupereficiente(1.25))
-
-equipo.nuevoDia()
-equipo.visitar(puertaConNinio4)
-assert.equals(2531.25, equipo.getEnergiaGenerada())
+	// 5)
+	assert.that(equipo == emp.equipoMasAsustador())
+	
+	val equipoCapo = object {
+		method getEnergiaGenerada() { return 90000.0 }
+	}
+	emp.agregarEquipo(equipoCapo)
+	
+	assert.that(equipoCapo == emp.equipoMasAsustador())
 
 }

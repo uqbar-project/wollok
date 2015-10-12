@@ -7,7 +7,7 @@
 		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
 		<groupId>org.uqbar-project</groupId>
 		<artifactId>wollok-parent</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.uqbar.project.wollok.updatesite</artifactId>
@@ -19,42 +19,12 @@
 		<updateSiteFolder>dev</updateSiteFolder>
 	</properties>
 
-	<!-- TO DEPLOY THE UPDATE SITE RUN: mvn install -DupdateSiteFolder=<something_like_branch_name> 
-		-P uploadRepo -->
-
+	<!-- TO DEPLOY THE UPDATE SITE RUN: 
+	
+		mvn install -DupdateSiteFolder=<something_like_branch_name> -P uploadRepo
+	-->
 
 	<build>
-		<plugins>
-			<!-- creates the update site -->
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-director-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<executions>
-					<execution>
-						<id>materialize-products</id>
-						<goals>
-							<goal>materialize-products</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>archive-products</id>
-						<goals>
-							<goal>archive-products</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<products>
-						<product>
-							<id>wollok-ide</id>
-							<archiveFileName>wollok</archiveFileName>
-						</product>
-					</products>
-				</configuration>
-			</plugin>
-		</plugins>
-
 		<extensions>
 			<!-- Enabling the use of FTP -->
 			<extension>
@@ -66,7 +36,7 @@
 	</build>
 
 	<profiles>
-		<!-- This profile is used to upload the repo -->
+		<!-- This profile is used to generate and upload the updatesites -->
 		<profile>
 			<id>uploadRepo</id>
 			<properties>
@@ -74,12 +44,38 @@
 				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
-
-				<!-- <ftp.toDir>/wollok/${updateSiteType}</ftp.toDir> -->
 			</properties>
 
 			<build>
 				<plugins>
+					<!-- creates the update site -->
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-p2-director-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<executions>
+							<execution>
+								<id>materialize-products</id>
+								<goals>
+									<goal>materialize-products</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>archive-products</id>
+								<goals>
+									<goal>archive-products</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<products>
+								<product>
+									<id>wollok-ide</id>
+									<archiveFileName>wollok</archiveFileName>
+								</product>
+							</products>
+						</configuration>
+					</plugin>
 
 					<!-- extract git info -->
 					<plugin>

@@ -1,26 +1,30 @@
 package org.uqbar.project.wollok.ui.tests
 
+import com.google.inject.Inject
+import com.google.inject.Singleton
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Server
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.io.IOUtils
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
+import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 
-class WollokTestsResultListener {
+@Singleton
+class WollokTestsResultsListener{
 	val Server server
 	val CallHandler callHandler
 	
 	@Accessors
-	val WollokUITestNotifier wollokUITestNotifier
-	
-	@Accessors
 	val int listeningPort
+	
+	val WollokTestResults testResults;
 
-	new() {
-		wollokUITestNotifier = new WollokUITestNotifier
-
+	@Inject
+	new(WollokTestResults testResults) {
+		this.testResults = testResults
+		
 		callHandler = new CallHandler
-		callHandler.registerGlobal(WollokRemoteUITestNotifier, wollokUITestNotifier)
+		callHandler.registerGlobal(WollokRemoteUITestNotifier, testResults)
 
 		server = new Server
 		listeningPort = IOUtils.findFreePort
@@ -29,5 +33,5 @@ class WollokTestsResultListener {
 	
 	def close(){
 		server.close()
-	}
+	}	
 }

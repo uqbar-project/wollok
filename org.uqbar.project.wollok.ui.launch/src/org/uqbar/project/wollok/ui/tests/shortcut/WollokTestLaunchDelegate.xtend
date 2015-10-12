@@ -6,6 +6,7 @@ import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.ui.PlatformUI
 import org.uqbar.project.wollok.ui.console.RunInUI
+import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate
 import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 
@@ -23,7 +24,7 @@ class WollokTestLaunchDelegate extends WollokLaunchDelegate {
 	override configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
 		val cfg = super.configureLaunchParameters(config, requestPort, eventPort)
 		cfg.tests = true
-		//cfg.testPort = Activator.getDefault.wollokTestsResultListener.listeningPort
+		cfg.testPort = Activator.getDefault.wollokTestViewListeningPort
 		cfg
 	}
 }

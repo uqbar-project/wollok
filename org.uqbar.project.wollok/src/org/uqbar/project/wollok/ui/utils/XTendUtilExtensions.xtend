@@ -34,6 +34,10 @@ class XTendUtilExtensions {
 	// ** Collections
 	// ***************************************
 	
+	def static <T> List<T> duplicates(List<T> original) {
+		original.filter[e| original.filter[it == e].size > 1 ].toList
+	}
+	
 	/** A "map" whose closure receives the index (position) besides the item */
 	def static <E,T> Collection<T> map(Iterable<E> col, (Integer,E)=>T mapper) {
 		val r = newArrayList
@@ -110,7 +114,7 @@ class XTendUtilExtensions {
 	}
 	
 	def static dispatch createMessage(Object target, String message){
-		'''«target» does not understand «message»'''.toString
+		'''«target» («target.class.simpleName») does not understand «message»'''.toString
 	}
 
 	def static dispatch createMessage(String target, String message){

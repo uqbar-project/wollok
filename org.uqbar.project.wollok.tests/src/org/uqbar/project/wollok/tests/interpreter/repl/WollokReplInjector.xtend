@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 class WollokReplInjector extends WollokDslInjectorProvider {
 	
 	override protected internalCreateInjector() {
-		return new WollokLauncherSetup().createInjectorAndDoEMFRegistration();
+		new WollokLauncherSetup().createInjectorAndDoEMFRegistration
 	}
 	
 }

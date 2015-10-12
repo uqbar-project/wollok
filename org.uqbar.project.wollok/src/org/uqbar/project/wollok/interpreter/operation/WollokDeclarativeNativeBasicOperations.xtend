@@ -61,10 +61,12 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		else sum(a, b)
 	}  
 		def dispatch sum(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to add «a» + «b»''') }
-		def dispatch sum(WCallable a, Object b) { a.call("+", b) }
 		def dispatch sum(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped + b.wrapped) }
 		def dispatch sum(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue + b.doubleValue) }
+		def dispatch sum(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») + «b» («b.class?.simpleName»)''') }
 		def dispatch sum(String a, Object b) { a + b }
+		//
+		def dispatch sum(WCallable a, Object b) { a.call("+", b) }
 	
 	def zero(Object nonNull) { minus(nonNull, nonNull) }
 	
@@ -78,30 +80,33 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		else minus(a, b)
 	}
 		def dispatch minus(Object a, Object b) { throw new IllegalBinaryOperation('''Unable tu subtract «a» - «b»''') }  
-		def dispatch minus(WCallable a, Object b) { a.call("-", b) }
 		def dispatch minus(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped - b.wrapped) }
 		def dispatch minus(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue - b.doubleValue) }
+		def dispatch minus(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») - «b» («b.class?.simpleName»)''') }
 		def dispatch minus(String a, WollokInteger b) { a.substring(0, a.length - b.wrapped) }
 		def dispatch minus(String a, String b) { a.replace(b, "") }
+		def dispatch minus(WCallable a, Object b) { a.call("-", b) }
 	
 	@BinaryOperation('*')  
 	def Object multiplyOperation(Object a, Object b) { 
 		if (a == null || b == null) null
 		else multiply(a, b)
 	}
-		def dispatch multiply(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to multiply «a» * «b»''') }  
-		def dispatch multiply(WCallable a, Object b) { a.call("*", b) }
 		def dispatch multiply(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped * b.wrapped) }
 		def dispatch multiply(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue * b.doubleValue) }
 		def dispatch multiply(String a, WollokInteger b) { (1..b.wrapped).map[a].join }
 		def dispatch multiply(WollokInteger a, String b) { (1..a.wrapped).map[b].join }
+		def dispatch multiply(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») * «b» («b.class?.simpleName»)''') }
+		def dispatch multiply(WCallable a, Object b) { a.call("*", b) }
+		def dispatch multiply(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to multiply «a» * «b»''') }
 	
 	@BinaryOperation('/')
 	def Object divideOperation(Object a, Object b) { divide(a, b) }
 		def dispatch divide(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to divide «a» / «b»''') }  
-		def dispatch divide(WCallable a, Object b) { a.call("/", b) }
 		def dispatch divide(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped / b.wrapped) }
 		def dispatch divide(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue / b.doubleValue) }
+		def dispatch divide(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») / «b» («b.class?.simpleName»)''') }
+		def dispatch divide(WCallable a, Object b) { a.call("/", b) }
 	
 	@BinaryOperation('**')
 	def Object raiseOperation(Object a, Object b) { raise(a, b) }

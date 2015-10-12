@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
 import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
 
 /**
  * A connection between two distinct shapes.
@@ -9,10 +11,7 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
  * @author jfernandes
  */
 class Connection extends ModelElement {
-	public static val SOLID_CONNECTION = new Integer(Graphics.LINE_SOLID)
 	static final val SOLID_STR = "Solid"
-
-	public static val DASHED_CONNECTION = new Integer(Graphics.LINE_DASH)
 	static val DASHED_STR = "Dashed"
 	
 	public static val LINESTYLE_PROP = "LineStyle"
@@ -21,17 +20,24 @@ class Connection extends ModelElement {
 	]
 
 	boolean isConnected
-	int lineStyle = Graphics.LINE_SOLID
+	int lineStyle
 	Shape source
 	Shape target
+	@Accessors String name
 
-	new(Shape source, Shape target) {
+	new(String name, Shape source, Shape target) {
+		this.name = name
 		reconnect(source, target)
+		this.lineStyle = calculateLineStyle()
+	}
+	
+	def calculateLineStyle() {
+		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else Graphics.LINE_SOLID
 	}
 
 	def disconnect() {
 		if (isConnected) {
-			source.removeConnection(this)
+			source?.removeConnection(this)
 			target.removeConnection(this)
 			isConnected = false
 		}
@@ -66,14 +72,14 @@ class Connection extends ModelElement {
 
 	def reconnect() {
 		if (!isConnected) {
-			source.addConnection(this)
+			source?.addConnection(this)
 			target.addConnection(this)
 			isConnected = true
 		}
 	}
 
 	def reconnect(Shape newSource, Shape newTarget) {
-		if (newSource == null || newTarget == null || newSource == newTarget) {
+		if (newTarget == null || newSource == newTarget) {
 			throw new IllegalArgumentException
 		}
 		disconnect
