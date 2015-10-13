@@ -3,10 +3,9 @@
 [![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Wollok #
-
-![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
-
+<h1>
+<img src="https://github.com/uqbar-project/wollok/blob/master/org.uqbar.project.wollok.ui/icons/wollok-logo-64.fw.png?raw=true"/> Wollok
+</h1>
 
 A programming language and environment for teaching OOP.
 
