@@ -47,6 +47,8 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
 * Interpreted: means that the code is being evaluated as it's being read.
 
+Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
+
 ## How is the Environment ? ##
 
 * Completely integrated with Eclipse.
