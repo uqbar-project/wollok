@@ -8,13 +8,13 @@
     <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
     <groupId>org.uqbar-project</groupId>
     <artifactId>wollok-parent</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
-	<artifactId>org.uqbar.project.wollok.ui.diagrams</artifactId>
+	<artifactId>org.uqbar.project.wollok.ui</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>Wollok UI Diagrams</name>
+	<name>Wollok UI</name>
 
 	<build>
 		<plugins>
