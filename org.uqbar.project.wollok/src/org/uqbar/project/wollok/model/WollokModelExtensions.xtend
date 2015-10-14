@@ -135,6 +135,18 @@ class WollokModelExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
 	
+	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it) {
+		if (isCallOnThis) 
+			method.declaringContext.findMethod(it)
+		else if (isCallToWellKnownObject)
+			resolveWKO.findMethod(it)
+		else
+		 // TODO: call to super (?)
+		 	null
+	}
+	
+	
+	
 	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
 
 	def static dispatch boolean isWellKnownObject(EObject it) { false }

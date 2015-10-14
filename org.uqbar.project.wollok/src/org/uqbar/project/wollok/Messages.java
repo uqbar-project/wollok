@@ -27,6 +27,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
 	public static String WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST;
+	public static String WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES;
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;

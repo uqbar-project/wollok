@@ -80,6 +80,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	
+	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
+		c.allMethods.findFirst[m | m.name == feature && m.parameters.size == memberCallArguments.size ]
+	}
+	
 	def static dispatch allMethods(WNamedObject o) { o.methods }
 	def static dispatch allMethods(WObjectLiteral o) { o.methods }
 	def static dispatch allMethods(WClass c) {

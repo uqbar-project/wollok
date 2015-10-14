@@ -9,26 +9,40 @@ object pepita {
 	}
 }
 
-class MethodsCalledOnWellKnowObjects {
+class A {
+	method toBeOverriden(a) {}
+}
+
+class MethodsCalledOnWellKnowObjects extends A {
 
 	method asParameter() {
-		// XPEC errors --> "This message call produces no value" at "pepita.eat(10)"
+		// XPECT errors --> "This message call produces no value" at "eat"
 		console.println(pepita.eat(10))
 	}
 	
-	method assinged(aParam) {
-		// XPE errors --> "This message call produces no value" at "pepita.eat(10)"
+	method initialization(aParam) {
+		// XPECT errors --> "This message call produces no value" at "eat"
 		val a = pepita.eat(10)
 		
 		console.println(a)
 	}
 	
+	method assignment(aParam) {
+		var a = null
+		
+		// XPECT errors --> "This message call produces no value" at "eat"
+		a = pepita.eat(10)
+		
+		console.println(a)
+	}
+	
 	method asReturnValue() {
-		// XPET errors --> "This message produces no value" at "pepita.eat(10)"
+		// XPECT errors --> "This message call produces no value" at "eat"
 		return pepita.eat(10)
 	}
 	
 	method asAnIfCondition() {
+		// XPECT errors --> "This message call produces no value" at "eat"
 		return if (pepita.eat(10))
 			20
 		else 
@@ -36,7 +50,39 @@ class MethodsCalledOnWellKnowObjects {
 	}
 	
 	method asABinaryOperatorArgument() {
-		return 10 + pepita.eat(10) 
+		#[
+			// XPECT errors --> "This message call produces no value" at "eat" 
+			10 + pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat" 
+			10 * pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat"
+			true && pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat"
+			true || pepita.eat(10)
+		]
+	}
+	
+	method asTargetForNewMessageSend() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		pepita.eat(10).cantina() 
+	}
+	
+	method asListLiteralElement() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		#[1, 2, 3, pepita.eat(10)] 
+	}
+	
+	override method toBeOverriden(a) {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		super(pepita.eat(10))
+	}
+	
+	method asConstructorArg() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		new B(pepita.eat(10)) 
 	}
 }
 
+class B {
+	new(a) {}
+}

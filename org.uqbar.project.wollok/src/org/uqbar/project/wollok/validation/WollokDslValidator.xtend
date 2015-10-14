@@ -44,6 +44,9 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl
+import org.eclipse.emf.ecore.EStructuralFeature
 
 /**
  * Custom validation rules.
@@ -64,6 +67,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_ON_WKO_DOESNT_EXIST = "METHOD_ON_WKO_DOESNT_EXIST"
+	public static val VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES = "VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
 	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
@@ -295,6 +299,39 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (call.callToWellKnownObject && !call.isValidCallToWKObject) {
 			report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
 		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
+		val method = call.resolveMethod
+		if (method != null && !method.returnsValue && call.isUsedAsValue) {
+			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
+		}
+	}
+	
+	def static boolean isUsedAsValue(WMemberFeatureCall call) { call.eContainingFeature.evaluatesContent }
+
+	/**
+	 * Tells whether the feature (an attribute of the semantic model)
+	 * expects the content to be evaluted to a value.
+	 * This is useful to check if the actual content produces a value.
+	 */
+	def static boolean isEvaluatesContent(EStructuralFeature it) {
+		it == WollokDslPackage.Literals.WASSIGNMENT__VALUE
+		|| it == WollokDslPackage.Literals.WVARIABLE_DECLARATION__RIGHT
+		|| it == WollokDslPackage.Literals.WIF_EXPRESSION__CONDITION
+		|| it == WollokDslPackage.Literals.WRETURN_EXPRESSION__EXPRESSION
+		|| it == WollokDslPackage.Literals.WMEMBER_FEATURE_CALL__MEMBER_CALL_TARGET
+		|| it == WollokDslPackage.Literals.WMEMBER_FEATURE_CALL__MEMBER_CALL_ARGUMENTS
+		// binary ops
+		|| it == WollokDslPackage.Literals.WBINARY_OPERATION__LEFT_OPERAND
+		|| it == WollokDslPackage.Literals.WBINARY_OPERATION__RIGHT_OPERAND
+		// collections literals
+		|| it == WollokDslPackage.Literals.WCOLLECTION_LITERAL__ELEMENTS
+		|| it == WollokDslPackage.Literals.WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
+		|| it == WollokDslPackage.Literals.WCONSTRUCTOR_CALL__ARGUMENTS
+		|| it == WollokDslPackage.Literals.WTHROW__EXCEPTION
 	}
 
 	@Check
