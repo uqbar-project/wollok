@@ -84,9 +84,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allMethods.findFirst[m | m.name == feature && m.parameters.size == memberCallArguments.size ]
 	}
 	
-	def static dispatch allMethods(WNamedObject o) { o.methods }
-	def static dispatch allMethods(WObjectLiteral o) { o.methods }
-	def static dispatch allMethods(WClass c) {
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject o) { o.methods + if (o.parent != null) o.parent.allMethods else #[] }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral o) { o.methods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
 		val methods = newArrayList
 		c.superClassesIncludingYourselfTopDownDo[cl |
 			// remove overriden
@@ -152,7 +152,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
+		c.allMethods.exists[isValidMessage(call)]
 	}
 
 
