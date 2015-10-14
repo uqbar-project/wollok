@@ -81,6 +81,9 @@ class MethodsCalledOnWellKnowObjects extends A {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		new B(pepita.eat(10)) 
 	}
+	
+	// XPECT errors --> "This message call produces no value" at "eat"
+	method asExpressionOnMethodShortcut() = pepita.eat(10) 
 }
 
 class B {

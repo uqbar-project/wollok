@@ -310,7 +310,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 	
-	def static boolean isUsedAsValue(WMemberFeatureCall call) { call.eContainingFeature.evaluatesContent }
+	def static boolean isUsedAsValue(WMemberFeatureCall call) { 
+		call.eContainingFeature.evaluatesContent || (call.eContainer instanceof WMethodDeclaration && (call.eContainer as WMethodDeclaration).isExpressionReturns)
+	}
 
 	/**
 	 * Tells whether the feature (an attribute of the semantic model)
