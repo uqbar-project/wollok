@@ -12,19 +12,19 @@ object pepita {
 class MethodsCalledOnWellKnowObjects {
 
 	method asParameter() {
-		// XPECT errors --> "This message call produces no value" at "pepita.eat(10)"
+		// XPEC errors --> "This message call produces no value" at "pepita.eat(10)"
 		console.println(pepita.eat(10))
 	}
 	
 	method assinged(aParam) {
-		// XPECT errors --> "This message call produces no value" at "pepita.eat(10)"
+		// XPE errors --> "This message call produces no value" at "pepita.eat(10)"
 		val a = pepita.eat(10)
 		
 		console.println(a)
 	}
 	
 	method asReturnValue() {
-		// XPECT errors --> "This message produces no value" at "pepita.eat(10)"
+		// XPET errors --> "This message produces no value" at "pepita.eat(10)"
 		return pepita.eat(10)
 	}
 	
