@@ -8,8 +8,11 @@ import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -20,14 +23,16 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * Extension methods for WMethodContainers.
@@ -253,6 +258,22 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
 		(behave as WClass).parent?.resolveConstructor(args)
+	}
+	
+	// ************************************************************************
+	// ** unorganized
+	// ************************************************************************
+	
+	def static dispatch boolean getIsReturnBoolean(WExpression it) { false }
+	def static dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
+	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
+
+	def static isWritableVarRef(WExpression e) { 
+		e instanceof WVariableReference
+		&& (e as WVariableReference).ref instanceof WVariable
+		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
+		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
 	}
 	
 }

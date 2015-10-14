@@ -13,8 +13,8 @@ class Direccion {
 		// ...
 	}
 	
-	method getCalle() { calle }
-	method getNumero() { numero }
+	method getCalle() { return calle }
+	method getNumero() { return numero }
 }
 	
 	

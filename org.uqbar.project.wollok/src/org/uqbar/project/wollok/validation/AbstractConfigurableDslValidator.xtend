@@ -93,7 +93,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 	
 	def inferCheckMethod() {
 		val stackTrace = try throw new RuntimeException() catch(RuntimeException e) e.stackTrace
-		val checkStackElement = stackTrace.get(1);
+		val checkStackElement = stackTrace.get(3)
 		return this.class.methods.findFirst[m | m.name == checkStackElement.methodName]
 	}
 	

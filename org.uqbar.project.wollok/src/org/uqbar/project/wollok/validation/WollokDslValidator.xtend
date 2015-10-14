@@ -48,6 +48,8 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl
 import org.eclipse.emf.ecore.EStructuralFeature
 
+import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
+
 /**
  * Custom validation rules.
  *
@@ -83,6 +85,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
+	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -305,35 +308,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
 		val method = call.resolveMethod
-		if (method != null && !method.native && !method.returnsValue && call.isUsedAsValue) {
+		if (method != null && !method.native && !method.abstract && !method.returnsValue && call.isUsedAsValue) {
 			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
 		}
-	}
-	
-	def static boolean isUsedAsValue(WMemberFeatureCall call) { 
-		call.eContainingFeature.evaluatesContent || (call.eContainer instanceof WMethodDeclaration && (call.eContainer as WMethodDeclaration).isExpressionReturns)
-	}
-
-	/**
-	 * Tells whether the feature (an attribute of the semantic model)
-	 * expects the content to be evaluted to a value.
-	 * This is useful to check if the actual content produces a value.
-	 */
-	def static boolean isEvaluatesContent(EStructuralFeature it) {
-		it == WollokDslPackage.Literals.WASSIGNMENT__VALUE
-		|| it == WollokDslPackage.Literals.WVARIABLE_DECLARATION__RIGHT
-		|| it == WollokDslPackage.Literals.WIF_EXPRESSION__CONDITION
-		|| it == WollokDslPackage.Literals.WRETURN_EXPRESSION__EXPRESSION
-		|| it == WollokDslPackage.Literals.WMEMBER_FEATURE_CALL__MEMBER_CALL_TARGET
-		|| it == WollokDslPackage.Literals.WMEMBER_FEATURE_CALL__MEMBER_CALL_ARGUMENTS
-		// binary ops
-		|| it == WollokDslPackage.Literals.WBINARY_OPERATION__LEFT_OPERAND
-		|| it == WollokDslPackage.Literals.WBINARY_OPERATION__RIGHT_OPERAND
-		// collections literals
-		|| it == WollokDslPackage.Literals.WCOLLECTION_LITERAL__ELEMENTS
-		|| it == WollokDslPackage.Literals.WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
-		|| it == WollokDslPackage.Literals.WCONSTRUCTOR_CALL__ARGUMENTS
-		|| it == WollokDslPackage.Literals.WTHROW__EXCEPTION
 	}
 
 	@Check
@@ -436,18 +413,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION, BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
 	}
 	
-	def dispatch boolean getIsReturnBoolean(WExpression it) { false }
-	def dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
-	def dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
-	def dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
-
-	def isWritableVarRef(WExpression e) { 
-		e instanceof WVariableReference
-		&& (e as WVariableReference).ref instanceof WVariable
-		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
-		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
-	}
-
 	/**
 	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
 	 * 
@@ -480,6 +445,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def noReturnStatementInConstructor(WReturnExpression it){
 		if(it.inConstructor)
 			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)				
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
+		if (!returnsValue && expression.evaluatesToAValue)
+			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	
 	// ******************************	
