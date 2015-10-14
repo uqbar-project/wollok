@@ -1,0 +1,34 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Persona {
+	method blah() {
+		wellKnown.foo()
+		wellKnown.bar()
+		
+		// XPECT errors --> "Method does not exist in well-known object" at "fooBar"
+		wellKnown.fooBar()
+		
+		// XPECT errors --> "Method does not exist in well-known object" at "fooWithParam"
+		wellKnown.fooWithParam()
+	}
+}
+
+class B {
+	var i = wellKnown.foo()
+	// XPECT errors --> "Method does not exist in well-known object" at "zoo"
+	var x = wellKnown.zoo()
+	
+	method a() { i + x }
+}
+
+
+object wellKnown {
+	method foo() {
+		23
+	}
+	method bar() {
+		this.foo()
+	}
+	method fooWithParam(p) {
+	}
+}

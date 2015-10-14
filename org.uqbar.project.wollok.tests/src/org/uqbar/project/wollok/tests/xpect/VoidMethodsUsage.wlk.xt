@@ -1,0 +1,42 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+	var energy = 0
+
+	// this is the void method	
+	method eat(something) {
+		energy -= something
+	}
+}
+
+class MethodsCalledOnWellKnowObjects {
+
+	method asParameter() {
+		// XPECT errors --> "This message call produces no value" at "pepita.eat(10)"
+		console.println(pepita.eat(10))
+	}
+	
+	method assinged(aParam) {
+		// XPECT errors --> "This message call produces no value" at "pepita.eat(10)"
+		val a = pepita.eat(10)
+		
+		console.println(a)
+	}
+	
+	method asReturnValue() {
+		// XPECT errors --> "This message produces no value" at "pepita.eat(10)"
+		return pepita.eat(10)
+	}
+	
+	method asAnIfCondition() {
+		return if (pepita.eat(10))
+			20
+		else 
+			30	
+	}
+	
+	method asABinaryOperatorArgument() {
+		return 10 + pepita.eat(10) 
+	}
+}
+

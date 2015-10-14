@@ -63,6 +63,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
+	public static val METHOD_ON_WKO_DOESNT_EXIST = "METHOD_ON_WKO_DOESNT_EXIST"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
 	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
@@ -285,6 +286,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
 		if (call.callOnThis && call.method != null && !call.method.declaringContext.isValidCall(call)) {
 			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
+		if (call.callToWellKnownObject && !call.isValidCallToWKObject) {
+			report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
 		}
 	}
 

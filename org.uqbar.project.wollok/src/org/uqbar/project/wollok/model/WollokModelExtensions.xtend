@@ -134,6 +134,17 @@ class WollokModelExtensions {
 	def static isCallOnVariableRef(WMemberFeatureCall c) { c.memberCallTarget instanceof WVariableReference }
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
+	
+	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
+
+	def static dispatch boolean isWellKnownObject(EObject it) { false }
+	def static dispatch boolean isWellKnownObject(WVariableReference it) { ref.isWellKnownObject }
+	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
+	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
+	
+	def static isValidCallToWKObject(WMemberFeatureCall it) { resolveWKO.isValidCall(it) }
+	
+	def static resolveWKO(WMemberFeatureCall it) { (memberCallTarget as WVariableReference).ref as WNamedObject }
 
 
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
