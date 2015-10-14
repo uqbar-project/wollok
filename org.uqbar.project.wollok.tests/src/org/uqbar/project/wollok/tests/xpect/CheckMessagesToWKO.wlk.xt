@@ -18,7 +18,7 @@ class B {
 	// XPECT errors --> "Method does not exist in well-known object" at "zoo"
 	var x = wellKnown.zoo()
 	
-	method a() { i + x }
+	method a() = i + x
 }
 
 

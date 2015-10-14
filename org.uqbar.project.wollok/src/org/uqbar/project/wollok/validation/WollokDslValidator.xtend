@@ -450,7 +450,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
-		if (!returnsValue && expression.evaluatesToAValue)
+		if (!native && !abstract && !returnsValue && expression.evaluatesToAValue)
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	

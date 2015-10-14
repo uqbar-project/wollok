@@ -85,7 +85,7 @@ class WEvaluationExtension {
 	def static dispatch boolean isEvaluatesToAValue(WBlockExpression it) { expressions.last.evaluatesToAValue }
 	def static dispatch boolean isEvaluatesToAValue(WTry it) { expression.evaluatesToAValue && catchBlocks.forall[c| c.expression.evaluatesToAValue ] }
 	// calls
-	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it) { method.overridenMethod.returnsValue }
+	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it) { method.overridenMethod != null && method.overridenMethod.returnsValue }
 	def static dispatch boolean isEvaluatesToAValue(WMemberFeatureCall it) { val m = resolveMethod ; m != null && m.returnsValue }
 	// default
 	def static dispatch boolean isEvaluatesToAValue(Void it) { false }

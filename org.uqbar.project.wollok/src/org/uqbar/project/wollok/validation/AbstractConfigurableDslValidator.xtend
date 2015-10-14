@@ -13,6 +13,7 @@ import static org.uqbar.project.wollok.validation.AbstractConfigurableDslValidat
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.validation.Check
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic
@@ -93,7 +94,10 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 	
 	def inferCheckMethod() {
 		val stackTrace = try throw new RuntimeException() catch(RuntimeException e) e.stackTrace
-		val checkStackElement = stackTrace.get(3)
+		val checkStackElement = stackTrace.findLast[e| 
+			val m = this.class.methods.findFirst[name == e.methodName]
+			m != null && m.isAnnotationPresent(Check)
+		]
 		return this.class.methods.findFirst[m | m.name == checkStackElement.methodName]
 	}
 	

@@ -1,9 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 object pepita{
-	method algo(){
-		this.otraCosa()
-	}
+	method algo() = this.otraCosa()
 	
 	method otraCosa(){
 		return 23

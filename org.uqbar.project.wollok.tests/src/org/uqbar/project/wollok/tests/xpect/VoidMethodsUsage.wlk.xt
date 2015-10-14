@@ -49,7 +49,7 @@ class MethodsCalledOnWellKnowObjects extends A {
 			30	
 	}
 	
-	method asABinaryOperatorArgument() {
+	method asABinaryOperatorArgument() = {
 		#[
 			// XPECT errors --> "This message call produces no value" at "eat" 
 			10 + pepita.eat(10),
@@ -67,7 +67,7 @@ class MethodsCalledOnWellKnowObjects extends A {
 		pepita.eat(10).cantina() 
 	}
 	
-	method asListLiteralElement() {
+	method asListLiteralElement() = {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		#[1, 2, 3, pepita.eat(10)] 
 	}
@@ -77,7 +77,7 @@ class MethodsCalledOnWellKnowObjects extends A {
 		super(pepita.eat(10))
 	}
 	
-	method asConstructorArg() {
+	method asConstructorArg() = {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		new B(pepita.eat(10)) 
 	}

@@ -2,7 +2,7 @@
 
 class MultiOpsOperations {
 	
-	method run() {
+	method run() = {
 		var n = 1
 		n++  // OK
 		

@@ -67,7 +67,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent.lookupMethod(m.name) }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }

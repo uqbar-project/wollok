@@ -8,7 +8,7 @@ class A {
 
 class B extends A {
 	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
-	override method giveMeANumber() { 20 * 20 }
+	override method giveMeANumber() { console.println("blah") }
 }
 
 class C extends A {
@@ -22,7 +22,7 @@ class D extends C {
 
 class E extends D {
 	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
-	override method giveMeANumber() { 20 * 20 }
+	override method giveMeANumber() { console.println("blah") }
 }
 
 class F extends A {
