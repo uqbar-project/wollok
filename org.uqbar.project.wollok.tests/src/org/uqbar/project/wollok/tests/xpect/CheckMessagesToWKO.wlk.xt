@@ -23,12 +23,8 @@ class B {
 
 
 object wellKnown {
-	method foo() {
-		23
-	}
-	method bar() {
-		this.foo()
-	}
+	method foo() = 23
+	method bar() = this.foo()
 	method fooWithParam(p) {
 	}
 }
