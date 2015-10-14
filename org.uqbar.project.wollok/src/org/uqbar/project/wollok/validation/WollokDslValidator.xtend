@@ -305,7 +305,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
 		val method = call.resolveMethod
-		if (method != null && !method.returnsValue && call.isUsedAsValue) {
+		if (method != null && !method.native && !method.returnsValue && call.isUsedAsValue) {
 			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
 		}
 	}
