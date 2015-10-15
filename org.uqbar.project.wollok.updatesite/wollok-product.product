@@ -631,7 +631,7 @@ Library.
    </configurations>
 
    <repositories>
-      <repository location="http://update.uqbar.org/wollok/master" enabled="true" />
+      <repository location="http://update.uqbar.org/wollok/stable" enabled="true" />
    </repositories>
 
 </product>
