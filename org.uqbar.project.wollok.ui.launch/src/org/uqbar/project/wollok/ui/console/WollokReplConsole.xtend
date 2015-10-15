@@ -24,6 +24,9 @@ import org.uqbar.project.wollok.ui.launch.Activator
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
+/**
+ * @author tesonep
+ */
 class WollokReplConsole extends TextConsole {
 
 	IProcess process
@@ -40,7 +43,7 @@ class WollokReplConsole extends TextConsole {
 	val lastCommands = new OrderedBoundedSet<String>(10)
 
 	new() {
-		super(WollokReplConsole.consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"),true);
+		super(WollokReplConsole.consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 	}
@@ -49,8 +52,8 @@ class WollokReplConsole extends TextConsole {
 		loadHistory
 		this.process = process
 		this.streamsProxy = process.streamsProxy
-		this.activate()
-		outputTextEnd = 0;
+		this.activate
+		outputTextEnd = 0
 		
 
 		runInUI[
@@ -95,8 +98,8 @@ class WollokReplConsole extends TextConsole {
 		inputBuffer = this.document.get(outputTextEnd, this.document.length - outputTextEnd)
 	}
 	
-	def addCommandToHistory(){
-		if(!inputBuffer.empty){
+	def addCommandToHistory() {
+		if(!inputBuffer.empty) {
 			lastCommands.remove(inputBuffer)
 			lastCommands.add(inputBuffer)
 			saveHistory()
@@ -135,9 +138,9 @@ class WollokReplConsole extends TextConsole {
 		this.page.viewer.textWidget.caretOffset = outputTextEnd
 	}
 	
-	def numberOfHistories(){ lastCommands.size }
+	def numberOfHistories() { lastCommands.size }
 	
-	def loadHistory(int pos){
+	def loadHistory(int pos) {
 		runInUI[
 			inputBuffer = if(lastCommands.size == 0) ""
 			else {
