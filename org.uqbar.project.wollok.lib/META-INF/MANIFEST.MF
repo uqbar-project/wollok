@@ -1,5 +1,5 @@
 Bundle-ManifestVersion: 2
-Bundle-Name: WollokLib
+Bundle-Name: Wollok Lib
 Bundle-SymbolicName: org.uqbar.project.wollok.lib
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.uqbar.project.wollok.lib.WollokLibActivator
@@ -12,3 +12,4 @@ Export-Package: .,
  org.uqbar.project.wollok.lib,
  wollok.lang,
  wollok.lib
+Bundle-Vendor: uqbar.org
