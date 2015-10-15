@@ -11,16 +11,18 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WMember
 
 /**
  * 
@@ -46,30 +48,36 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		memberProposalsForTarget(ref.ref, assignment, context, acceptor)
 	}
-	
+
+	// any referenciable shows all messages that you already sent to it	
 	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMessageSent.filter[feature != null].forEach[m|
-			acceptor.addProposal(context, m.asProposalText, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
-		]
+		ref.allMessageSent.filter[feature != null].forEach[ context.addProposal(it, acceptor) ]
+	}
+	
+	// message to WKO's (shows the object's methods)
+	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMethods.forEach[ context.addProposal(it, acceptor) ]
 	}
 	
 	// messages to this
 	def dispatch void memberProposalsForTarget(WThis dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		dis.declaringContext.allMethods.forEach[m|
-			acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
-		]
+		dis.declaringContext.allMethods.forEach[ context.addProposal(it, acceptor) ]
 	}
 	
-	def asProposal(WMethodDeclaration it) {
-		name + "(" + parameters.map[p| p.name ].join(", ") + ")" 
-	}
-		
 	// *****************************
 	// ** proposing methods and how they are completed
 	// *****************************
 	
-	def asProposalText(WMemberFeatureCall call) {
+	def addProposal(ContentAssistContext context, WMember m, ICompletionProposalAcceptor acceptor) {
+		acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
+	}
+	
+	def dispatch asProposal(WMemberFeatureCall call) {
 		call.feature + "(" + call.memberCallArguments.map[asProposalParameter].join(",") + ")"
+	}
+	
+	def dispatch asProposal(WMethodDeclaration it) {
+		name + "(" + parameters.map[p| p.name ].join(", ") + ")" 
 	}
 	
 	def dispatch asProposalParameter(WVariableReference r) {  r.ref.name }
