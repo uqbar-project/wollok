@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.launch.Activator
 
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
+import org.eclipse.xtext.RuleCall
 
 /**
  * A line style listener for the console to highlight code
@@ -29,6 +30,7 @@ import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
  * 
  * @author jfernandes
  */
+// TODO: this needs to be refactored. I "works" now we need to make it pretty :P
 class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	val static PROMPT = ">>> " // duplicated from WollokRepl
 	val static PROMPT_REPLACEMENT = "    "
@@ -60,13 +62,10 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		val footerOffset = programHeader.length + escaped.length
 		val headerLength = programHeader.length		
 
-		// first styles are parser errors		
-		val styles = resource.parseResult.syntaxErrors
-							.filter[offset > programHeader.length && offset < footerOffset]
-							.map[ parserError(event, offset, Math.min(length, footerOffset)) ]
-							.toList
+		// original highlights (from other listeners)
+		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
 		
-		// add highlights
+		// add custom highlights
 		calculator.provideHighlightingFor(resource) [ offset, length, styleIds |
 			val styleId = styleIds.get(0) // just get the first one ??
 			val style = stylesProvider.getAttribute(styleId)
@@ -75,37 +74,54 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 			s.data = styleId
 			
 			if (s.start <= originalText.length && (s.start + s.length) <= originalText.length) {
-				styles.add(s)
+				styles.merge(s)
 			}
 		]
 		
-		// try to imitate some styles as the editor
-		
+		// try to imitate some styles as the editor "manually"
 		resource.contents.get(0).node.asTreeIterable
 			.filter[offset > programHeader.length && offset < footerOffset]
 			.forEach [n | processASTNode(styles, n, n.grammarElement, event, headerLength) ]
+			
+		// highlight errors
+		resource.parseResult.syntaxErrors
+							.filter[offset > programHeader.length && offset < footerOffset]
+							.map[ parserError(event, offset, Math.min(length, footerOffset)) ]
+							.forEach [ styles.merge(it) ]
 		
-//		println("APPLYED " + styles.size + " STYLES")
-		
-		if (!styles.empty) {
-			if (!event.styles.empty)
-				styles.addAll(event.styles)
-			event.styles = styles.mixin
-		}
+		// REVIEW: I think this is not needed since we touch the original list
+		event.styles = styles.sortBy[start].toList 
 		
 		safelyPrintStyles(event, originalText)
 	}
 	
+	// *******************************************
+	// ** hand-made rules for base lang elements to imitate
+	// ** the editor styles. Because I don't know how to reuse that highlight
+	// *******************************************
+	
 	var KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
+	var STRING_COLOR = new Color(null, new RGB(42, 0, 255))
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
 		if (value.length > 1) {
-			val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, KEYWORD_COLOR, null)
+			val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, KEYWORD_COLOR, null, SWT.BOLD)
 			s.data = "KEYWORD"
-			styles.add(s)
+			styles.merge(s)
 		}
 	}
-	def dispatch processASTNode(List<StyleRange> styles, INode n, EObject it, LineStyleEvent event, int headerLength) { }
+	
+	def dispatch processASTNode(List<StyleRange> styles, INode n, RuleCall it, LineStyleEvent event, int headerLength) {
+		if ("STRING" == rule.name) {
+			val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, STRING_COLOR, null)
+			s.data = "STRING"
+			styles.merge(s)
+		}
+	}
+	
+	def dispatch processASTNode(List<StyleRange> styles, INode n, EObject it, LineStyleEvent event, int headerLength) {
+//		println("UNKNOWN " + it.grammarDescription)
+	}
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Void it, LineStyleEvent event, int headerLength) { }
 	
 	def parseIt(String content) {
@@ -122,18 +138,38 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		]
 	}
 	
-	def mixin(List<StyleRange> ranges) {
-		// remove 0 length
-		val sorted = ranges.filter[length > 0].sortBy[start]
-		sorted.forEach[s |
-			val nextOnes = sorted.filter[start > s.start].sortBy[start]
-			val colliding = nextOnes.findFirst[start <= (s.start + s.length) ]
-			// cut it
-			if (colliding != null)
-				s.length = colliding.start - s.start
-		]
-		sorted
+	/** 
+	 * Merges the given new style into the list of styles.
+	 * It performs all the movements and splitups to make sure there are no overlaps.
+	 * The new style is considered priority so it will "win" over the existing ones.
+	 */
+	def merge(List<StyleRange> ranges, StyleRange newStyle) {
+		val sorted = ranges.sortBy[start]
+		val toAppend = newArrayList
+		
+		// overlapping before
+		val before = sorted.filter[start < newStyle.start && end > newStyle.start]
+			// reduce end (from right)
+			before.filter[end.between(newStyle)].forEach[ length = newStyle.start - start ]
+			// larger than original -> split in 2
+			before.filter[end > newStyle.end].forEach[
+				toAppend.add(it.clone as StyleRange => [start = newStyle.end])
+				length = newStyle.start - start
+			]
+		
+		val after = sorted.filter[start >= newStyle.start]
+			// exceeding to right -> reduce start (from left)
+			after.filter[end > newStyle.end].forEach[ start = newStyle.end ]
+		
+		// between -> remove
+		ranges.removeAll(after.filter[end <= newStyle.end].toList)
+		ranges.addAll(toAppend)
+		// finally add the new one
+		ranges.add(newStyle)
 	}
+	
+	def end(StyleRange it) { start + length }
+	def between(int position, StyleRange range) { position >= range.start && position <= range.end }
 	
 	def static escape(String text) {
 		var escaped = text
@@ -164,15 +200,15 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	}
 	
 	protected def safelyPrintStyles(LineStyleEvent event, String originalText) {
-		if (!event.styles.empty) {
-			event.styles.filter[it != null].sortBy[start].toList.forEach[
-				try {
-					println('''[«start»,«start + length», «data», "«originalText.substring(start, start + length)»"]''')
-				}
-				catch (StringIndexOutOfBoundsException e) {
-					println('''//////////////// BOOM !: text size «originalText.length» and OFFENDING STYLE: «it»''')
-				}
-			]
-		}
+//		if (!event.styles.empty) {
+//			event.styles.filter[it != null].sortBy[start].toList.forEach[
+//				try {
+//					println('''[«start»,«start + length», «data», "«originalText.substring(start, start + length)»"]''')
+//				}
+//				catch (StringIndexOutOfBoundsException e) {
+//					println('''//////////////// BOOM !: text size «originalText.length» and OFFENDING STYLE: «it»''')
+//				}
+//			]
+//		}
 	}
 }
