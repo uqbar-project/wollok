@@ -7,6 +7,8 @@ import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
 import org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant
+import org.uqbar.project.wollok.ui.console.highlight.WollokCodeHighLightLineStyleListener
+import org.eclipse.swt.custom.StyledText
 
 /**
  * 
@@ -40,6 +42,9 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		// init participant (coloring)
 		this.participant = new WollokReplConsolePageParticipant
 		participant.init(this, console)
+		
+		// need to remove the listener later ?
+		(control as StyledText).addLineStyleListener(new WollokCodeHighLightLineStyleListener)
 	}
 
 	def increaseHistoryPosition(){

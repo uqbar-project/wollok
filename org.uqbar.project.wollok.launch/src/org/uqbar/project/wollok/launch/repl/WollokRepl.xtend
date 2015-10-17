@@ -27,6 +27,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author tesonep
  * @author jfernandes
  */
+// I18N
 class WollokRepl {
 	static val COLOR_RETURN_VALUE = BLUE
 	static val COLOR_ERROR = RED
@@ -37,8 +38,8 @@ class WollokRepl {
 	val WollokInterpreter interpreter
 	val File mainFile
 	val reader = new BufferedReader(new InputStreamReader(System.in))
-	val prompt = ">>> "
-	var whiteSpaces = ""
+	val static prompt = ">>> "
+	var static whiteSpaces = ""
 	val WFile parsedMainFile
 
 	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile) {
@@ -177,8 +178,8 @@ class WollokRepl {
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {
-		if (e.lineNumber > numberOfLinesBefore){
-			printlnIdent('''Error in line (line: «e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
+		if (e.lineNumber > numberOfLinesBefore) {
+			printlnIdent('''Error in line («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
 		
 		if (e.cause != null) {

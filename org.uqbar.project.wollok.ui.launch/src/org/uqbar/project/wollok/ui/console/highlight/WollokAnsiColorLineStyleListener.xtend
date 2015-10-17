@@ -14,13 +14,15 @@ import org.eclipse.swt.graphics.GlyphMetrics
 import static org.uqbar.project.wollok.ui.console.highlight.AnsiCommands.*
 
 /**
+ * A LineStyleListener that interprets ansi codes
+ * and provides the styles based on that standard (font style and colors).
  * 
  * @author jfernandes
  */
-class WollokReplLineStyleListener implements LineStyleListener {
+class WollokAnsiColorLineStyleListener implements LineStyleListener {
 	var lastAttributes = new WollokConsoleAttributes
     var currentAttributes = new WollokConsoleAttributes
-    static val Pattern pattern = Pattern.compile("\u001b\\[[\\d;]*[A-HJKSTfimnsu]")
+    public static val Pattern pattern = Pattern.compile("\u001b\\[[\\d;]*[A-HJKSTfimnsu]")
     static val Character ESCAPE_SGR = 'm'
 
     int lastRangeEnd = 0;

@@ -6,6 +6,7 @@ import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
+import org.eclipse.xtext.RuleCall
 
 /**
  * Provides utilities for quickfixes.
@@ -82,5 +83,8 @@ class QuickFixUtils {
 		val length = endOffset - startOffset
 		context.xtextDocument.get(startOffset, length)
 	}
+	
+	def static dispatch grammarDescription(RuleCall it) { "RuleCall " + rule}
+	def static dispatch grammarDescription(EObject it) { it }
 	
 }
