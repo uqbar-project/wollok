@@ -8,8 +8,6 @@ import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
-import org.eclipse.swt.graphics.Color
-import org.eclipse.swt.graphics.RGB
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
@@ -39,7 +37,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	
 	val static PROMPT_ANSI = "\u001b[36m>>> [m"
 	
-	var PARSER_ERROR_COLOR = new Color(null, new RGB(255, 0, 0))
+	var PARSER_ERROR_COLOR = newColor(255, 0, 0)
 	
 	val programHeader = "program repl {\n"
 	val programFooter =  "\n}"
@@ -96,6 +94,11 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		// REVIEW: I think this is not needed since we touch the original list
 		event.styles = styles.sortBy[start].toList 
 		
+		// FIX exceeding styles
+		event.styles.filter[it != null && end > originalText.length].forEach[
+			length = originalText.length - start
+		]
+		
 		safelyPrintStyles(event, originalText)
 	}
 	
@@ -127,10 +130,12 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 //		if (!event.styles.empty) {
 //			event.styles.filter[it != null].sortBy[start].toList.forEach[
 //				try {
-//					println('''[«start»,«start + length», «data», "«originalText.substring(start, start + length)»"]''')
+//					println('''[«start»,«start + length», «data», "«originalText.substring(start, end)»"]''')
 //				}
 //				catch (StringIndexOutOfBoundsException e) {
 //					println('''//////////////// BOOM !: text size «originalText.length» and OFFENDING STYLE: «it»''')
+//					// cutting it
+//					length = originalText.length - start
 //				}
 //			]
 //		}

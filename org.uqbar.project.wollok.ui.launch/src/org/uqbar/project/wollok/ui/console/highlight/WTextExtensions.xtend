@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.ui.console.highlight
 import java.util.List
 import java.util.regex.Matcher
 import org.eclipse.swt.custom.StyleRange
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.graphics.RGB
 
 /**
  * Utility extension methods for manipulating text in editors or consoles
@@ -51,5 +53,7 @@ class WTextExtensions {
 	}
 	
 	def static operator_multiply(String s, int n) { (1..n).map[' '].join }
+	
+	def static newColor(int r, int g, int b) {new Color(null, new RGB(r, g, b)) }
 	
 }

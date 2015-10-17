@@ -9,9 +9,11 @@ import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.graphics.RGB
 import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
+import org.eclipse.xtext.TerminalRule
 import org.eclipse.xtext.nodemodel.INode
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
+import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 
 /**
  * Moved this logic to its own class.
@@ -29,22 +31,26 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExten
  */
 class WollokConsoleHighlighter {
 	var KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
-	var STRING_COLOR = new Color(null, new RGB(42, 0, 255))
+
+	val terminalColors = #{
+		"STRING" -> newColor(42, 0, 255),
+		"INT" -> newColor(125, 125, 125),
+		"SL_COMMENT" -> newColor(62, 127, 95),
+		"ML_COMMENT" -> newColor(62, 127, 95)
+	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
 		if (value.length > 1) {
-			val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, KEYWORD_COLOR, null, SWT.BOLD)
-			s.data = "KEYWORD"
-			styles.merge(s)
+			addStyle(event, n, headerLength, styles, "KEYWORD", KEYWORD_COLOR, null, SWT.BOLD)
 		}
 	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, RuleCall it, LineStyleEvent event, int headerLength) {
-		if ("STRING" == rule.name) {
-			val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, STRING_COLOR, null)
-			s.data = "STRING"
-			styles.merge(s)
-		}
+		checkByName(event, n, headerLength, styles, rule.name)
+	}
+	
+	def dispatch processASTNode(List<StyleRange> styles, INode n, TerminalRule it, LineStyleEvent event, int headerLength) {
+		checkByName(event, n, headerLength, styles, name)
 	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, EObject it, LineStyleEvent event, int headerLength) {
@@ -52,5 +58,24 @@ class WollokConsoleHighlighter {
 	}
 
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Void it, LineStyleEvent event, int headerLength) { }
+
+
+	// helpers
 	
+	def addStyle(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String data, Color color) {
+		addStyle(event, n, headerLength, styles, data, color, null, SWT.NONE)
+	}
+	
+	def addStyle(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String data, Color fgColor, Color bgColor, int style) {
+		val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, fgColor, bgColor, style)
+		s.data = data
+		styles.merge(s)
+	}	
+	
+	def checkByName(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String name) {
+		if (terminalColors.containsKey(name)) {
+			addStyle(event, n, headerLength, styles, name, terminalColors.get(name))
+		}
+	}
 }
+

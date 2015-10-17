@@ -157,10 +157,9 @@ class WollokReplConsole extends TextConsole {
 }
 
 class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
-	
 	val WollokReplConsole console
 	
-	new(WollokReplConsole console){
+	new(WollokReplConsole console) {
 		this.console = console
 	}
 	
@@ -168,28 +167,17 @@ class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
 		null
 	}
 	
-	override isReadOnly(int offset) {
-		offset < console.outputTextEnd
-	}
+	override isReadOnly(int offset) { offset < console.outputTextEnd }
 	
-	override computePartitioning(int offset, int length) {
-		
-	}
+	override computePartitioning(int offset, int length) { }
 	
-	override connect(IDocument document) {
-	}
+	override connect(IDocument document) { }
 	
-	override disconnect() {
-
-	}
+	override disconnect() { }
 	
-	override documentAboutToBeChanged(DocumentEvent event) {
-
-	}
+	override documentAboutToBeChanged(DocumentEvent event) { }
 	
-	override documentChanged(DocumentEvent event) {
-		true
-	}
+	override documentChanged(DocumentEvent event) { true }
 	
 	override getContentType(int offset) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
