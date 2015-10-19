@@ -2,9 +2,10 @@ package org.uqbar.project.wollok.launch.repl
 
 import com.google.inject.Injector
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStreamReader
-import org.eclipse.emf.common.util.URI
+import java.io.PrintStream
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
@@ -16,16 +17,29 @@ import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static org.fusesource.jansi.Ansi.*
+import static org.fusesource.jansi.Ansi.Color.*
+
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+/**
+ * 
+ * @author tesonep
+ * @author jfernandes
+ */
+// I18N
 class WollokRepl {
+	static val COLOR_RETURN_VALUE = BLUE
+	static val COLOR_ERROR = RED
+	static val COLOR_REPL_MESSAGE = CYAN 
+	
 	val Injector injector
 	val WollokLauncher launcher
 	val WollokInterpreter interpreter
 	val File mainFile
 	val reader = new BufferedReader(new InputStreamReader(System.in))
-	val prompt = ">>> "
-	var whiteSpaces = ""
+	val static prompt = ">>> "
+	var static whiteSpaces = ""
 	val WFile parsedMainFile
 
 	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile) {
@@ -39,28 +53,32 @@ class WollokRepl {
 	def void startRepl() {
 		var String input
 
-		println("Wollok interactive console (type \"quit\" to quit): ")
-		print(prompt)
+		println("Wollok interactive console (type \"quit\" to quit): ".importantMessageStyle)
+		printPrompt
 		
 		while ((input = readInput) != "quit") {
 			executeInput(input)
-			print(prompt)
+			printPrompt
 		}
 	}
 	
-	def String readInput(){
+	def printPrompt() {
+		print(prompt.messageStyle)
+	}
+	
+	def String readInput() {
 		val input = reader.readLine.trim
-		if(input == ""){
-			print(prompt)
+		if (input == "") {
+			printPrompt
 			readInput
 		}
 		else
-			if(input.endsWith(";")) 
+			if (input.endsWith(";")) 
 				input + " " + readInput
 			else input
 	}
 	
-	def executeInput(String input){
+	def executeInput(String input) {
 			try {
 				val returnValue = interpreter.interpret(
 					'''
@@ -73,93 +91,108 @@ class WollokRepl {
 						}
 					'''.parseRepl(mainFile),true)
 				printReturnValue(returnValue)
-			} catch (Exception e){
-				resetIndent()
+			} 
+			catch (Exception e) {
+				resetIndent
 				handleException(e)
 			}
 	}
 	
-	def printReturnValue(Object obj){
-		if(obj == null)
-			println(obj)
+	def printReturnValue(Object obj) {
+		if (obj == null)
+			println("null".returnStyle)
 		else 
 			doPrintReturnValue(obj)
 	}
 	
 	def dispatch doPrintReturnValue(Object obj){
-		println(obj?.toString)
+		println(obj?.toString.returnStyle)
 	}
 
 	def dispatch doPrintReturnValue(String obj){
-		println('"' + obj +'"')
+		println(('"' + obj + '"').returnStyle)
 	}
 
 	def dispatch doPrintReturnValue(VoidObject obj){}
 
 	def parseRepl(CharSequence content, File mainFile) {
 		val resourceSet = injector.getInstance(XtextResourceSet)
-		val resource = resourceSet.createResource(uriToUse(resourceSet));
+		val resource = resourceSet.createResource(uriToUse(resourceSet))
 		val in = new LazyStringInputStream(content.toString)
 
 		launcher.createClassPath(mainFile, resourceSet)
 
-		resourceSet.getResources().add(resource);
+		resourceSet.resources.add(resource)
 
 		resource.load(in, #{});
 		launcher.validate(injector, resource, [], [throw new ReplParserException(it)])
-		resource.getContents().get(0) as WFile;
+		resource.contents.get(0) as WFile
 	}
 
 	def uriToUse(ResourceSet resourceSet) {
 		var name = "__synthetic";
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
-			if (resourceSet.getResource(syntheticUri, false) == null){
-				return syntheticUri;
+			if (resourceSet.getResource(syntheticUri, false) == null) {
+				return syntheticUri
 			}
 		}
-		throw new IllegalStateException();
+		throw new IllegalStateException
 	}
 
-	def <X> X printlnIdent(X obj){
+	def <X> X printlnIdent(X obj) {
 		print(whiteSpaces)
 		println(obj)
 	}
 	
-	def indent(){
+	def indent() {
 		whiteSpaces = whiteSpaces + "     "
 	}
 	
-	def resetIndent(){
+	def resetIndent() {
 		whiteSpaces = ""
 	}
 
-	def dispatch void handleException(ReplParserException e){
+	def dispatch void handleException(ReplParserException e) {
 		e.issues.forEach [
-			printlnIdent("" + severity.name + ":" + message + "(line:" + (lineNumber - numberOfLinesBefore) + ")")
+			printlnIdent(errorStyle("" + severity.name + ":" + message + "(line: " + (lineNumber - numberOfLinesBefore) + ")"))
 		]
 	}
-
-	def dispatch void handleException(Throwable e){
-		e.printStackTrace
+	
+	def dispatch void handleException(Throwable e) {
+		println(e.stackTraceAsString.errorStyle)
+	}
+	
+	def stackTraceAsString(Throwable e) {
+		val s = new ByteArrayOutputStream()
+		e.printStackTrace(new PrintStream(s))
+		new String(s.toByteArray)
 	}
 
-	def dispatch void handleException(MessageNotUnderstood e){
-		printlnIdent(e.internalMessage)
+	def dispatch void handleException(MessageNotUnderstood e) {
+		printlnIdent(e.internalMessage.errorStyle)
 	}
 
 	def getNumberOfLinesBefore(){
 		2 + parsedMainFile.imports.size
 	}
 
-	def dispatch void handleException(WollokInterpreterException e){
-		if(e.lineNumber > numberOfLinesBefore){
-			printlnIdent('''Error in line (line:«e.lineNumber - numberOfLinesBefore»): «e.nodeText»:''')
+	def dispatch void handleException(WollokInterpreterException e) {
+		if (e.lineNumber > numberOfLinesBefore) {
+			printlnIdent('''Error in line («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
 		
-		if(e.cause != null){
-			indent()
+		if (e.cause != null) {
+			indent
 			handleException(e.cause)
 		}
 	}
+	
+	// ********** STYLING
+	
+	// applies styles for errors
+	def errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset }
+	def importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset }
+	def messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset }
+	def returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset }
 }

@@ -1,10 +1,5 @@
 package org.uqbar.project.wollok.ui.console
 
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.debug.core.model.IProcess
@@ -24,6 +19,11 @@ import org.uqbar.project.wollok.ui.launch.Activator
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+
+/**
+ * @author tesonep
+ */
 class WollokReplConsole extends TextConsole {
 
 	IProcess process
@@ -40,7 +40,7 @@ class WollokReplConsole extends TextConsole {
 	val lastCommands = new OrderedBoundedSet<String>(10)
 
 	new() {
-		super(WollokReplConsole.consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"),true);
+		super(WollokReplConsole.consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 	}
@@ -49,14 +49,14 @@ class WollokReplConsole extends TextConsole {
 		loadHistory
 		this.process = process
 		this.streamsProxy = process.streamsProxy
-		this.activate()
-		outputTextEnd = 0;
+		this.activate
+		outputTextEnd = 0
 		
 
 		runInUI[
 			this.clearConsole
-			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
-			DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
+			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
+			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
 		]
 		
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
@@ -89,39 +89,44 @@ class WollokReplConsole extends TextConsole {
 	}
 		
 	def updateInputBuffer(){
-		if(outputTextEnd > this.document.length){
-			outputTextEnd = this.document.length
+		if(outputTextEnd > document.length){
+			outputTextEnd = document.length
 		}
-		inputBuffer = this.document.get(outputTextEnd, this.document.length - outputTextEnd)
+		inputBuffer = document.get(outputTextEnd, this.document.length - outputTextEnd)
 	}
 	
-	def addCommandToHistory(){
-		if(!inputBuffer.empty){
-			lastCommands.remove(inputBuffer)
-			lastCommands.add(inputBuffer)
-			saveHistory()
+	def addCommandToHistory() {
+		if(!inputBuffer.empty) {
+			lastCommands => [
+				remove(inputBuffer)
+				add(inputBuffer)
+			]
+			saveHistory
 		}
 	}
 	
 	def saveHistory(){
-		runInBackground[
-			var file = ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
-			val objStream = new ObjectOutputStream(new FileOutputStream(file.toOSString))
-			objStream.writeObject(this.lastCommands)
+		runInBackground [
+			historyFilePath.asObjectStream.writeObject(this.lastCommands)
 		]
 	}
 
 	def loadHistory(){
 		runInBackground[
-			var file = ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
-			var javaFile = new File(file.toOSString)
+			var javaFile = historyFilePath.asJavaFile
 			
-			if(javaFile.exists){
-				val objStream = new ObjectInputStream(new FileInputStream(javaFile))
-				this.lastCommands.clear
-				this.lastCommands.addAll(objStream.readObject as OrderedBoundedSet<String>)
+			if (javaFile.exists) {
+				val objStream = javaFile.asObjectInputStream
+				lastCommands => [
+					clear
+					addAll(objStream.readObject as OrderedBoundedSet<String>)
+				]
 			}
 		]
+	}
+	
+	def historyFilePath() {
+		ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
 	}
 	
 	def sendInputBuffer(){
@@ -132,16 +137,16 @@ class WollokReplConsole extends TextConsole {
 		streamsProxy.write(x)
 		outputTextEnd += x.length 
 		updateInputBuffer
-		this.page.viewer.textWidget.caretOffset = outputTextEnd
+		page.viewer.textWidget.caretOffset = outputTextEnd
 	}
 	
-	def numberOfHistories(){ lastCommands.size }
+	def numberOfHistories() { lastCommands.size }
 	
-	def loadHistory(int pos){
+	def loadHistory(int pos) {
 		runInUI[
-			inputBuffer = if(lastCommands.size == 0) ""
+			inputBuffer = if (lastCommands.size == 0) ""
 			else {
-				val ps = if(pos >= lastCommands.size) 0 else pos
+				val ps = if (pos >= lastCommands.size) 0 else pos
 				lastCommands.last(ps)
 			}
 			
@@ -152,10 +157,9 @@ class WollokReplConsole extends TextConsole {
 }
 
 class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
-	
 	val WollokReplConsole console
 	
-	new(WollokReplConsole console){
+	new(WollokReplConsole console) {
 		this.console = console
 	}
 	
@@ -163,28 +167,17 @@ class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
 		null
 	}
 	
-	override isReadOnly(int offset) {
-		offset < console.outputTextEnd
-	}
+	override isReadOnly(int offset) { offset < console.outputTextEnd }
 	
-	override computePartitioning(int offset, int length) {
-		
-	}
+	override computePartitioning(int offset, int length) { }
 	
-	override connect(IDocument document) {
-	}
+	override connect(IDocument document) { }
 	
-	override disconnect() {
-
-	}
+	override disconnect() { }
 	
-	override documentAboutToBeChanged(DocumentEvent event) {
-
-	}
+	override documentAboutToBeChanged(DocumentEvent event) { }
 	
-	override documentChanged(DocumentEvent event) {
-		true
-	}
+	override documentChanged(DocumentEvent event) { true }
 	
 	override getContentType(int offset) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")

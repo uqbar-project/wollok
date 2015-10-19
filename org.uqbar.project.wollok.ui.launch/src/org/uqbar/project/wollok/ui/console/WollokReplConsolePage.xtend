@@ -6,41 +6,62 @@ import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
+import org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant
+import org.uqbar.project.wollok.ui.console.highlight.WollokCodeHighLightLineStyleListener
+import org.eclipse.swt.custom.StyledText
 
+/**
+ * 
+ * 
+ * @author tesonep
+ * @author jfernandes
+ */
 class WollokReplConsolePage extends TextConsolePage implements KeyListener {
-
 	val WollokReplConsole console
 	var int historyPosition = -1
+	WollokReplConsolePageParticipant participant
 
 	new(WollokReplConsole console, IConsoleView view) {
 		super(console, view)
 		this.console = console
 	}
+	
+	override dispose() {
+		participant.dispose
+		super.dispose
+	}
 
-	override createControl(Composite parent) {
-		super.createControl(parent)
+	override createControl(Composite oldParent) {
+		super.createControl(oldParent)
 		viewer.textWidget.addKeyListener(this)
 
 		viewer.textWidget.addVerifyListener [ event |
 			event.doit = ! console.partitioner.isReadOnly(event.start)
 		]
+		
+		// init participant (coloring)
+		this.participant = new WollokReplConsolePageParticipant
+		participant.init(this, console)
+		
+		// need to remove the listener later ?
+		(control as StyledText).addLineStyleListener(new WollokCodeHighLightLineStyleListener)
 	}
 
 	def increaseHistoryPosition(){
-		historyPosition++;
+		historyPosition++
 		
-		if(historyPosition >= console.numberOfHistories)
+		if (historyPosition >= console.numberOfHistories)
 			historyPosition = 0
 		
-		if(historyPosition <= 0 && console.numberOfHistories == 0){
+		if (historyPosition <= 0 && console.numberOfHistories == 0) {
 			historyPosition = -1
 		}
 	}
 
 	def decreaseHistoryPosition(){
-		historyPosition--;
+		historyPosition--
 		
-		if(historyPosition < 0)
+		if (historyPosition < 0)
 			historyPosition = console.numberOfHistories - 1
 	}
 
@@ -58,15 +79,17 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		}
 
 
-		if (e.keyCode == 0x0d){
+		// return key pressed 
+		if (e.keyCode == 0x0d && !e.controlPressed) {
 			console.sendInputBuffer
 			historyPosition = -1
 		}
 		else
 			console.updateInputBuffer
 	}
+	
+	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
 
-	override keyReleased(KeyEvent e) {
-	}
+	override keyReleased(KeyEvent e) { }
 
 }

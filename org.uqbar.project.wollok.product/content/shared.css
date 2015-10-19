@@ -4,7 +4,7 @@ html {
 	overflow:auto;
 	border:0px;
 	height:100%;
-	}
+}
 
 	
 body {	
@@ -15,18 +15,18 @@ body {
 	color:#000000;
 	background-image:url("./titlebanner.gif");
 	background-repeat: repeat-x;
-	} 
+} 
 	
 h1 {
 	text-align:left;
 	font-size: 16pt;
 	font-weight:normal;
 	color:#E5E5E5;
-	} 
+} 
 
 h4 {
 	color:#787878;
-	}	
+}	
 	
 a {
 	display:block;
@@ -34,10 +34,9 @@ a {
 	font-size: 12px;
 	color:#000000;
 	font-weight:normal;
-	text-decoration:none;
 	padding-bottom:20px;
-	}
+}
 	
 p {
 	padding-left:14px;
-	}
+}

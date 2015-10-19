@@ -24,7 +24,9 @@ Require-Bundle: org.eclipse.ui,
  org.uqbar.project.wollok.lib,
  org.eclipse.xtext.ui.shared;bundle-version="2.7.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: lib/lipermi-0-4-2.jar, .
+Bundle-ClassPath: lib/lipermi-0-4-2.jar,
+ lib/jansi-1.11.jar,
+ .
 Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.launch.setup,

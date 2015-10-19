@@ -2,14 +2,19 @@ package org.uqbar.project.wollok.ui.launch;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.ui.console.IConsolePageParticipant;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.launch.WollokLauncherException;
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator;
 import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
-import org.uqbar.project.wollok.ui.tests.model.WollokTestResults;
 
 import com.google.inject.Injector;
 
@@ -60,4 +65,23 @@ public class Activator extends AbstractUIPlugin {
 	public Injector getInjector(){
 		return WollokDslActivator.getInstance().getInjector(WollokDslActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL);
 	}
+	
+	// syntax highlight in repl console
+	private Map<StyledText, IConsolePageParticipant> viewers = new HashMap<StyledText, IConsolePageParticipant>();
+
+    public void addViewer(StyledText viewer, IConsolePageParticipant participant) {
+        viewers.put(viewer, participant);
+    }
+
+    public void removeViewerWithPageParticipant(IConsolePageParticipant participant) {
+        Set<StyledText> toRemove = new HashSet<StyledText>();
+
+        for (StyledText viewer : viewers.keySet()) {
+            if (viewers.get(viewer) == participant)
+                toRemove.add(viewer);
+        }
+
+        for (StyledText viewer : toRemove)
+            viewers.remove(viewer);
+    }
 }

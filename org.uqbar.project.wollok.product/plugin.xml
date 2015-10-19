@@ -46,23 +46,41 @@
            name="cssTheme"
            value="org.eclipse.e4.ui.css.theme.e4_default">
      	 </property>
+     	 
+     	 <!-- INTRO -->
+     	 <property  
+               name="introBrandingImage"  
+               value="product:/icons/wollok-logo-64.fw.png">  
+         </property>  
+         <property  
+               name="introTitle"  
+               value="Wollok Programming Environment">
+         </property>  
       </product>
    </extension>
+   
+   <!-- INTRO -->
    <extension
          point="org.eclipse.ui.intro">
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
             id="org.uqbar.project.wollok.product.intro">
       </intro>
+      <introProductBinding  
+            introId="org.eclipse.ui.intro.universal"  
+            productId="org.uqbar.project.wollok.product.org_uqbar_project_wollok_product">  
+      </introProductBinding> 
+      <!--
       <introProductBinding
             introId="org.uqbar.project.wollok.product.intro"
             productId="org.uqbar.project.wollok.product.org_uqbar_project_wollok_product">
-      </introProductBinding>
+      </introProductBinding
+		-->
    </extension>
    <extension
          point="org.eclipse.ui.intro.config">
       <config
-            content="platform:/plugin/org.uqbar.project.wollok.ui/introContent.xml"
+            content="platform:/plugin/org.uqbar.project.wollok.product/introContent.xml"
             id="org.uqbar.project.wollok.product.introConfigId"
             introId="org.uqbar.project.wollok.product.intro">
          <presentation
@@ -74,5 +92,6 @@
          </presentation>
       </config>
    </extension>
-
+	<!-- /INTRO -->
+	
 </plugin>
