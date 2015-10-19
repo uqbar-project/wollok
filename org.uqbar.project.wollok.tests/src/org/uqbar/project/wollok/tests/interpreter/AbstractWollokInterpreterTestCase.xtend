@@ -101,11 +101,12 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def void assertIsException(Throwable exception, Class<? extends Throwable> clazz) {
-		if(!clazz.isInstance(exception)){
-			if(exception.cause == null){
+		if (!clazz.isInstance(exception)) {
+			if (exception.cause == null) {
 				exception.printStackTrace
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
-			}else{
+			}
+			else{
 				assertIsException(exception.cause, clazz)
 			}
 		}
@@ -113,10 +114,11 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 	
 	def getMessageOf(Throwable exception, Class<? extends Throwable> clazz) {
-		if(clazz.isInstance(exception)){
+		if (clazz.isInstance(exception)) {
 			exception.message
-		}else{
-			if(exception.cause == null)
+		}
+		else{
+			if (exception.cause == null)
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
 			else{
 				getMessageOf(exception.cause, clazz)

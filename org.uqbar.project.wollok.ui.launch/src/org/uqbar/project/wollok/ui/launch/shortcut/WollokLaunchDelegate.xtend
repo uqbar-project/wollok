@@ -45,10 +45,10 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		var config = configuration.configureLaunchSettings(mode)
 		super.launch(config, mode, launch, monitor);
 		
-		if(configuration.hasRepl){
+		if (configuration.hasRepl) {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			var console = consoleManager.consoles.findFirst[ name == WollokReplConsole.consoleName ] as WollokReplConsole
-			if(console == null){
+			if (console == null) {
 				console = new WollokReplConsole
 				consoleManager.addConsoles(#[console])
 			}
