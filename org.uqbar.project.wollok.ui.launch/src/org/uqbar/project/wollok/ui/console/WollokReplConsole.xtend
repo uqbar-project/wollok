@@ -71,17 +71,20 @@ class WollokReplConsole extends TextConsole {
 		]
 	}
 	
-	def getOutputText(){
-		this.document.get(0, outputTextEnd);
-	}
+	def shutdown() { process.terminate }
+	def isRunning() { !process.terminated }
+	
+	def getOutputText() { document.get(0, outputTextEnd) }
 	
 	override clearConsole() {
 		super.clearConsole()
-		this.outputTextEnd = 0
+		outputTextEnd = 0
 	}
 	
 	override createPage(IConsoleView view) {
-		this.page = new WollokReplConsolePage(this, view)
+		this.page = new WollokReplConsolePage(this, view) => [
+			setFocus
+		]
 	}
 
 	static def getConsoleName() {
@@ -154,6 +157,9 @@ class WollokReplConsole extends TextConsole {
 			document.set(newText)
 		]
 	}
+	
+	def canWriteAt(int offset) { partitioner.isReadOnly(offset) }
+	
 }
 
 class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {

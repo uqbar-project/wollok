@@ -6,9 +6,6 @@ import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
-import org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant
-import org.uqbar.project.wollok.ui.console.highlight.WollokCodeHighLightLineStyleListener
-import org.eclipse.swt.custom.StyledText
 
 /**
  * 
@@ -19,35 +16,22 @@ import org.eclipse.swt.custom.StyledText
 class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	val WollokReplConsole console
 	var int historyPosition = -1
-	WollokReplConsolePageParticipant participant
 
 	new(WollokReplConsole console, IConsoleView view) {
 		super(console, view)
 		this.console = console
 	}
 	
-	override dispose() {
-		participant.dispose
-		super.dispose
-	}
-
 	override createControl(Composite oldParent) {
 		super.createControl(oldParent)
 		viewer.textWidget.addKeyListener(this)
 
 		viewer.textWidget.addVerifyListener [ event |
-			event.doit = ! console.partitioner.isReadOnly(event.start)
+			event.doit = console.isRunning && !console.canWriteAt(event.start)
 		]
-		
-		// init participant (coloring)
-		this.participant = new WollokReplConsolePageParticipant
-		participant.init(this, console)
-		
-		// need to remove the listener later ?
-		(control as StyledText).addLineStyleListener(new WollokCodeHighLightLineStyleListener)
 	}
 
-	def increaseHistoryPosition(){
+	def increaseHistoryPosition() {
 		historyPosition++
 		
 		if (historyPosition >= console.numberOfHistories)
@@ -58,7 +42,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		}
 	}
 
-	def decreaseHistoryPosition(){
+	def decreaseHistoryPosition() {
 		historyPosition--
 		
 		if (historyPosition < 0)
@@ -66,6 +50,11 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	}
 
 	override keyPressed(KeyEvent e) {
+		if (!console.isRunning) {
+			e.doit = false
+			return;
+		}
+
 		if (e.keyCode == SWT.ARROW_UP) {
 			increaseHistoryPosition
 			console.loadHistory(historyPosition)

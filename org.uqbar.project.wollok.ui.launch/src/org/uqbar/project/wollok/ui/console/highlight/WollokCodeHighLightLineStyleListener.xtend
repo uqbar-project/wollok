@@ -12,12 +12,14 @@ import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.editor.syntaxcoloring.TextAttributeProvider
+import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.ui.launch.Activator
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.xtext.diagnostics.Severity
 
 /**
  * A line style listener for the console to highlight code
@@ -47,10 +49,12 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	@Inject TextAttributeProvider stylesProvider
 	@Inject XtextResourceSet resourceSet
 	WollokConsoleHighlighter highlighter
+	WollokChecker checker
 	
 	new() {
 		Activator.getDefault.injector.injectMembers(this)
 		highlighter = new WollokConsoleHighlighter // TODO: inject
+		checker = new WollokChecker
 	}
 	
 	override lineGetStyle(LineStyleEvent event) {
@@ -91,6 +95,12 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 							.map[ parserError(event, offset, Math.min(length, footerOffset)) ]
 							.forEach [ styles.merge(it) ]
 		
+		// validations (checks)
+		checker.validate(Activator.getDefault.injector, resource, [], [issues |
+			println("Check Issues: " + issues)
+			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
+		])
+		
 		// REVIEW: I think this is not needed since we touch the original list
 		event.styles = styles.sortBy[start].toList 
 		
@@ -116,9 +126,11 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		]
 	}
 	
-	def parserError(LineStyleEvent event, int offset, int length) {
+	def checkerError(LineStyleEvent event, int offset, int length) { errorStyle(event, offset, length, "CHECK_ERROR") } 
+	def parserError(LineStyleEvent event, int offset, int length) { errorStyle(event, offset, length, "PARSER_ERROR") }
+	def errorStyle(LineStyleEvent event, int offset, int length, String type) {
 		new StyleRange(event.lineOffset + (offset - programHeader.length), length, PARSER_ERROR_COLOR, null, SWT.ITALIC) => [
-			data = "PARSER_ERROR"
+			data = type
 		]
 	}
 	
