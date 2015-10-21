@@ -43,7 +43,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
 		var config = configuration.configureLaunchSettings(mode)
-		super.launch(config, mode, launch, monitor);
+		super.launch(config, mode, launch, monitor)
 		
 		if (configuration.hasRepl) {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager

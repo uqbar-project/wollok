@@ -20,12 +20,20 @@ import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import java.util.List
+import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
+import org.eclipse.core.resources.IFile
+import java.io.InputStream
+import java.io.ByteArrayInputStream
+import java.io.File
+import org.eclipse.core.resources.IContainer
+import java.util.Date
+import java.text.SimpleDateFormat
 
 /**
  * @author tesonep
  */
 class WollokReplConsole extends TextConsole {
-
 	IProcess process
 	IStreamsProxy streamsProxy
 	@Accessors
@@ -36,6 +44,8 @@ class WollokReplConsole extends TextConsole {
 	String inputBuffer = ""
 	@Accessors
 	WollokReplConsolePartitioner partitioner
+	@Accessors
+	List<String> sessionCommands = newArrayList
 
 	val lastCommands = new OrderedBoundedSet<String>(10)
 
@@ -86,20 +96,43 @@ class WollokReplConsole extends TextConsole {
 			setFocus
 		]
 	}
+	
+	def exportSession() {
+		val fileName = WollokLaunchShortcut.getWollokFile(process.launch)
+		val project = WollokLaunchShortcut.getWollokProject(process.launch)
+		println("Exporting from project " + project + " and file " + fileName)
+		val file = (ResourcesPlugin.getWorkspace.root.findMember(project) as IContainer).findMember(fileName)
+		val newFile = file.parent.getFile(new Path(file.nameWithoutExtension + ".wtest"))
+
+		// TODO include same imports as original file		
+		val content = '''
+			import «file.nameWithoutExtension».*
+			
+			// auto-generated at «new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date())»
+			test "exported test from REPL session" {
+				
+				«FOR s : sessionCommands»
+					«s»
+				«ENDFOR»
+				
+			}
+		'''.toString
+		newFile.create(new ByteArrayInputStream(content.bytes), false, null)
+	}
 
 	static def getConsoleName() {
 		"Wollok REPL Console"
 	}
 		
 	def updateInputBuffer(){
-		if(outputTextEnd > document.length){
+		if (outputTextEnd > document.length){
 			outputTextEnd = document.length
 		}
 		inputBuffer = document.get(outputTextEnd, this.document.length - outputTextEnd)
 	}
 	
 	def addCommandToHistory() {
-		if(!inputBuffer.empty) {
+		if (!inputBuffer.empty) {
 			lastCommands => [
 				remove(inputBuffer)
 				add(inputBuffer)
@@ -115,14 +148,13 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def loadHistory(){
-		runInBackground[
-			var javaFile = historyFilePath.asJavaFile
+		runInBackground [
+			val javaFile = historyFilePath.asJavaFile
 			
 			if (javaFile.exists) {
-				val objStream = javaFile.asObjectInputStream
 				lastCommands => [
 					clear
-					addAll(objStream.readObject as OrderedBoundedSet<String>)
+					addAll(javaFile.asObjectInputStream.readObject as OrderedBoundedSet<String>)
 				]
 			}
 		]
@@ -136,6 +168,7 @@ class WollokReplConsole extends TextConsole {
 		val x = inputBuffer + "\n";
 		
 		addCommandToHistory
+		sessionCommands += inputBuffer
 		
 		streamsProxy.write(x)
 		outputTextEnd += x.length 

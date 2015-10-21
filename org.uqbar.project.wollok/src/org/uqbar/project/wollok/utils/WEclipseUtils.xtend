@@ -103,4 +103,6 @@ class WEclipseUtils {
 	def static asJavaFile(IPath path) { new File(path.toOSString) }
 	def static ObjectInputStream asObjectInputStream(File file) { new ObjectInputStream(new FileInputStream(file)) }
 	
+	def static nameWithoutExtension(IResource it) { if (name.contains(".")) name.substring(0, name.lastIndexOf('.')) else name }
+	
 }

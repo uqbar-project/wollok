@@ -97,7 +97,6 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		
 		// validations (checks)
 		checker.validate(Activator.getDefault.injector, resource, [], [issues |
-			println("Check Issues: " + issues)
 			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
 		])
 		

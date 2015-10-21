@@ -17,7 +17,7 @@ import org.uqbar.project.wollok.ui.console.WollokReplConsole
  */
 class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	IPageBookViewPage page
-//    Action export
+    Action export
     Action stop
     IActionBars bars
     WollokReplConsole console
@@ -32,12 +32,12 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
         createRemoveButton
 
 		bars => [
-//			menuManager.add(new Separator)
-//	        menuManager.add(export)
+			menuManager.add(new Separator)
+	        menuManager.add(export)
 	
 	        toolBarManager => [
 	        	appendToGroup(IConsoleConstants.LAUNCH_GROUP, stop)
-//	        	appendToGroup(IConsoleConstants.LAUNCH_GROUP, export)	
+	        	appendToGroup(IConsoleConstants.LAUNCH_GROUP, export)	
 	        ]
 	
 	        updateActionBars			
@@ -55,12 +55,12 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
     }
 
     def createRemoveButton() {
-//        val imageDescriptor = ImageDescriptor.createFromFile(getClass(), "/icons/export.png");
-//        this.export= new Action("Export History", imageDescriptor) {
-//            override run() {
-//                
-//            }
-//        };
+        val imageDescriptor = ImageDescriptor.createFromFile(getClass(), "/icons/export.png");
+        this.export= new Action("Export History", imageDescriptor) {
+            override run() {
+          		console.exportSession      
+            }
+        };
     }
 	
 	override activated() {
