@@ -10,7 +10,6 @@ import it.xsemantics.runtime.RuleFailedException;
 import it.xsemantics.runtime.XsemanticsRuntimeSystem;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
@@ -21,7 +20,6 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
@@ -1841,8 +1839,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   protected Result<WollokType> applyRuleWParametersType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WReferenciable p) throws RuleFailedException {
     WollokType t = null; // output parameter
     final ArrayList<MessageType> messagesTypes = CollectionLiterals.<MessageType>newArrayList();
-    Iterator<WMemberFeatureCall> _allMessageSent = WollokModelExtensions.allMessageSent(p);
-    List<WMemberFeatureCall> _list = IteratorExtensions.<WMemberFeatureCall>toList(_allMessageSent);
+    Iterable<WMemberFeatureCall> _allMessageSent = WollokModelExtensions.allMessageSent(p);
+    List<WMemberFeatureCall> _list = IterableExtensions.<WMemberFeatureCall>toList(_allMessageSent);
     for (final WMemberFeatureCall m : _list) {
       /* G |- m ~> var MessageType messageType */
       MessageType messageType = null;
