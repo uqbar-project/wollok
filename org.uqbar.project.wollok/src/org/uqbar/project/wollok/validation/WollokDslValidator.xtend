@@ -10,16 +10,15 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -40,15 +39,11 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
+import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl
-import org.eclipse.emf.ecore.EStructuralFeature
-
-import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Custom validation rules.
@@ -301,6 +296,34 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
 		if (call.callToWellKnownObject && !call.isValidCallToWKObject) {
 			report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
+		}
+	}
+	
+	// WKO
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
+		if (parent != null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
+			report('''No default constructor in super type «parent.name». You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''', it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectSuperClassConstructorMustExists(WNamedObject it) {
+		if (parent != null && !parentParameters.empty && !parent.hasConstructorForArgs(parentParameters.size)) {
+			report('''No superclass constructor or wrong number of arguments. You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''', it, WNAMED_OBJECT__PARENT)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectMustImplementAbstractMethods(WNamedObject it) {
+		if (parent != null) {
+			val abstractMethods = allAbstractMethods(it.parent)
+			if (!abstractMethods.empty) {
+				report('''Must implement inherited abstract methods: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
+			}
 		}
 	}
 	

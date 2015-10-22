@@ -264,6 +264,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+
+			if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
+				wo.invokeConstructor(namedObject.parentParameters.evalEach)
+			
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 		]
 	}
