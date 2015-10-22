@@ -264,4 +264,21 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		].interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testRefereceByFQNWithoutImport() {
+		#['b' -> '''
+			class Golondrina  {
+			    method volar(kms) {
+			        console.println("flying...")
+			    }
+			}
+		''',
+		'programa' -> '''
+			program zuper {
+			        val pepona = new b.Golondrina()
+			}
+		'''
+		].interpretPropagatingErrors
+	}
+	
 }
