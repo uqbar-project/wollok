@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.model
 
+import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -120,14 +121,19 @@ class WollokModelExtensions {
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
-
 	def dispatch messagesSentTo(WParameter p) { p.allMessageSent }
 
-	def static allMessageSent(WReferenciable r) { r.eContainer.allMessageSentTo(r) }
+	def static Iterable<WMemberFeatureCall> allMessageSent(WReferenciable r) { r.eContainer.allMessageSentTo(r) + r.allMessagesToRefsWithSameNameAs}
 
-	def static allMessageSentTo(EObject context, WReferenciable ref) {
-		context.allCalls.filter[c|c.isCallOnVariableRef && (c.memberCallTarget as WVariableReference).ref == ref]
+	def static List<WMemberFeatureCall> allMessageSentTo(EObject context, WReferenciable ref) {
+		context.allCalls.filter[c|c.isCallOnVariableRef && (c.memberCallTarget as WVariableReference).ref == ref].toList
 	}
+	
+	// heuristic: add's messages sent to other parameters with the same name
+	def static dispatch Iterable<WMemberFeatureCall> allMessagesToRefsWithSameNameAs(WParameter ref) {
+		ref.declaringContext.methods.map[ parameters ].flatten.filter[ name == ref.name && it != ref ].map[ eContainer.allMessageSentTo(it) ].flatten
+	}
+	def static dispatch Iterable<WMemberFeatureCall> allMessagesToRefsWithSameNameAs(WReferenciable it) { #[] }
 
 	def static allCalls(EObject context) { context.eAllContents.filter(WMemberFeatureCall) }
 
