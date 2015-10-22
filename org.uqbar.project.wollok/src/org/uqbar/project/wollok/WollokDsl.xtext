@@ -317,6 +317,10 @@ WNamedObject:
 	'}'
 ;
 
+WCanExtendClass:
+	WClass | WNamedObject
+;
+
 // CLASSES
 
 WClass:

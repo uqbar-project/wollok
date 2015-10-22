@@ -48,16 +48,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
 	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
+	def static boolean isAbstract(WNamedObject it) { parent != null && parent.hasUnimplementedInheritedMethods }
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 
-	def static hasUnimplementedInheritedMethods(WClass c) {
+	def static allAbstractMethods(WClass c) {
 		val unimplementedMethods = <WMethodDeclaration>newArrayList
 		c.superClassesIncludingYourselfTopDownDo [ claz |
 			unimplementedMethods.removeAllSuchAs[claz.overrides(name)]
 			unimplementedMethods.addAll(claz.abstractMethods);
 		]
-		!unimplementedMethods.empty
+		unimplementedMethods
 	}
+
+	def static hasUnimplementedInheritedMethods(WClass c) { !c.allAbstractMethods.empty }
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 	

@@ -119,4 +119,27 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void objectInheritFromClassThatHasConstructorPassingAnotherWKOMessageReturnValue() {
+		'''
+			class Dog {
+				val owner
+				new(param) {
+					owner = param
+				}	
+				method owner() = owner
+			}
+			object lassie extends Dog(jorge.name()) {
+			}
+			
+			object jorge {
+				method name() = "Jorge"
+			}
+			
+			program p {
+				assert.equals("Jorge", lassie.owner())
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }
