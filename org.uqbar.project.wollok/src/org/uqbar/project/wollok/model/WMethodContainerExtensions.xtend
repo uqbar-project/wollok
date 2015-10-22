@@ -244,6 +244,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			c
 		}
 	} 
+	
+	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
+		obj.parent.resolveConstructor(arguments)
+	}
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
 		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
 	}
