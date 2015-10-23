@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * 
  * @author tesonep
  */
-class MixedNumberTypesOperations extends AbstractWollokInterpreterTestCase {
+class MixedNumberTypesOperationsTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void testEquals() {

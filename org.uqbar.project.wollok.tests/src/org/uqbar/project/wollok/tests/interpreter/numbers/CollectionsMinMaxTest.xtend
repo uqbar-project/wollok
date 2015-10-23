@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter.numbers
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
-class CollectionsMinMax extends AbstractWollokInterpreterTestCase {
+class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void testMin() {
