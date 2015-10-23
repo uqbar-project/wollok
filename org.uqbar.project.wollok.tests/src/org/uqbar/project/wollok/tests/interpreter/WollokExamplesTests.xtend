@@ -1,9 +1,12 @@
 package org.uqbar.project.wollok.tests.interpreter
 
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileReader
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.launch.io.IOUtils
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 
 /**
@@ -43,13 +46,30 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	}
 	
 	static def dispatch Iterable<File> listWollokPrograms(File it){
-		if(file){
-			if(name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest"))
+		if (file) {
+			if((name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest")) && !ignore(it))
 				#[it]
 			else
 				#[]
-		}else{
+		} 
+		else {
 			listFiles.map[listWollokPrograms].flatten
 		}
 	}
+	
+	def static ignore(File file) {
+		var BufferedReader reader = null
+		try {
+			reader = new BufferedReader(new FileReader(file))
+			val r = reader.readLine.contains("@test IGNORE")
+			if (r)
+				println("IGNORING " + file.name)
+			r
+		}
+		finally {
+			if (reader != null)
+				reader.close
+		} 
+	}
+	
 }
