@@ -41,10 +41,8 @@ abstract class AbstractWollokCallable implements WCallable {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
-			if (method.native){
+			if (method.native) {
 				// reflective call to native method:
-				// TODO here the method should be able to receive the WollokObject (always ? just in case the java method
-				//    declares it ?)
 				val nativeObject = receiver.nativeObjects.get(method.declaringContext)
 				val r = nativeObject.invokeNative(method.name, parameters)
 				if (nativeObject.isVoid(method.name, parameters))
@@ -69,8 +67,11 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Native objects handling
 	// ********************************************************************************************
 	
-	def dispatch invokeNative(Object nativeObject, String name, Object... parameters){
-		nativeObject.invoke(name, parameters)
+	def dispatch invokeNative(Object nativeObject, String name, Object... parameters) {
+		val method = AbstractWollokDeclarativeNativeObject.getMethod(nativeObject.class, name, parameters)
+		if (method == null)
+			throw new MessageNotUnderstood(createMessage(nativeObject , name, parameters))
+		method.accesibleVersion.invokeConvertingArgs(nativeObject, parameters)
 	}
 
 	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){

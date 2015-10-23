@@ -33,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Extension methods for WMethodContainers.
@@ -213,10 +214,24 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		else {
 			interpreter.classLoader.loadClass(classFQN)
 		}
-		try
-			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)
-		catch (NoSuchMethodException e)
-			javaClass.newInstance
+		
+		tryInstantiate(
+			[|javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)],
+			[|javaClass.getConstructor(WollokObject).newInstance(obj)],
+			[|javaClass.newInstance]	
+		)
+	}
+	
+	def static tryInstantiate(()=>Object... closures) {
+		var NoSuchMethodException lastException = null
+		for (c : closures) {
+			try
+				return c.apply
+			catch (NoSuchMethodException e) {
+				lastException = e
+			}	
+		}
+		throw new WollokRuntimeException("Error while instantiating native class. No valid constructor: (), or (WollokObject) or (WollokObject, WollokInterpreter)", lastException)
 	}
 
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }

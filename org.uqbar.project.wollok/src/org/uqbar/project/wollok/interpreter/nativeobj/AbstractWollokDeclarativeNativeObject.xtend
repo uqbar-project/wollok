@@ -40,9 +40,14 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 
 	def getMethod(String message, Object... parameters) {
-		var method = this.class.methods.findFirst[handlesMessage(message, parameters)]
+		// TODO: cache methods by message (?)
+		getMethod(class, message, parameters)
+	}
+	
+	def static getMethod(Class c, String message, Object... parameters) {
+		var method = c.methods.findFirst[handlesMessage(message, parameters)]
 		if (method == null)
-			method = this.class.methods.findFirst[name == message && parameterTypes.size == parameters.size]
+			method = c.methods.findFirst[name == message && parameterTypes.size == parameters.size]
 		method
 	}
 
@@ -55,7 +60,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		throw new MessageNotUnderstood(message)
 	}
 
-	def handlesMessage(Method m, String message, Object... parameters) {
+	def static handlesMessage(Method m, String message, Object... parameters) {
 		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message && m.parameterTypes.size == parameters.size
 	}
 
