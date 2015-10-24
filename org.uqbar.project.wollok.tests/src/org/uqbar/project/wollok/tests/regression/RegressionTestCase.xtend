@@ -143,7 +143,28 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		
 		}'''.interpretPropagatingErrors
-
 }
+
+	@Test
+	def void bug_213() {
+		'''object pepita extends Golondrina {
+			}
+	
+		class Golondrina {
+		    var energia = 100
+		    method volar(kms) {
+		        this.modificar(-kms * 2)
+		    }
+		    method modificar(n) {
+		        energia += n 
+		    }
+		    method getEnergia() = energia
+		}
+		
+		program p {
+			pepita.volar(2)		
+		}
+		'''.interpretPropagatingErrors
+	}
 	
 }

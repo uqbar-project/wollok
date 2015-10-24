@@ -256,8 +256,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
+			
+			namedObject.parent.superClassesIncludingYourselfTopDownDo [
+				addMembersTo(wo)
+				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+			]
+			
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+
+			if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
+				wo.invokeConstructor(namedObject.parentParameters.evalEach)
+			
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 		]
 	}
@@ -284,6 +294,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		val newValue = a.value.eval
 		
 		if(newValue instanceof VoidObject)
+			// i18n
 			throw new WollokInterpreterException("No se puede asignar el valor de retorno de un mensaje que no devuelve nada", a)
 		
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)

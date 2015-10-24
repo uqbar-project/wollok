@@ -13,7 +13,6 @@ import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.core.JavaModelException
 import org.eclipse.jface.dialogs.MessageDialog
-import org.eclipse.xtend.lib.Property
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -25,6 +24,7 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.debug.core.ILaunch
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -69,9 +69,9 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def isOnClasspath(String fullyQualifiedName, IJavaProject project) {
 		var f = fullyQualifiedName
 		if (f.indexOf('$') != -1)
-			f = f.replace('$', '.');
+			f = f.replace('$', '.')
 		try {
-			val type = project.findType(fullyQualifiedName);
+			val type = project.findType(fullyQualifiedName)
 			type != null && type.exists
 		} catch (JavaModelException e) {
 			false
@@ -91,12 +91,16 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_PROJECT_NAME, info.project)
 		setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
 		setAttribute(ATTR_STOP_IN_MAIN, false)
+		setAttribute(ATTR_USE_START_ON_FIRST_THREAD, false) // fixes wollok-game in osx
 		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
 		setAttribute(ATTR_WOLLOK_FILE, info.file)
 		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 	}
+	
+	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
+	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
 }
 
 class LaunchConfigurationInfo {

@@ -4,7 +4,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.uqbar-project</groupId>
 	<artifactId>wollok-parent</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Wollok Parent (Releng)</name>
 	<url>https://github.com/uqbar-project/wollok</url>
@@ -249,12 +249,34 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		</pluginManagement>
 
 		<plugins>
+		
+			<!-- SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-deploy-plugin</artifactId>
+			  <!--  TODO: version here
+			  <version>xxx</version>
+			   -->
+			  <configuration>
+			    <skip>true</skip>
+			  </configuration>
+			</plugin>
+			<!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
+			<!-- avoid checking maven version vs manifest version (because having the ".qualifier" makes it fail -->
+			<plugin>
+	            <groupId>org.eclipse.tycho</groupId>
+	            <artifactId>tycho-packaging-plugin</artifactId>
+	            <version>${tycho-version}</version>
+	            <configuration>
+	                <strictVersions>false</strictVersions>
+	            </configuration>
+	        </plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -298,7 +320,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 						<artifact>
 							<groupId>org.uqbar-project</groupId>
 							<artifactId>org.uqbar.project.wollok.targetplatform</artifactId>
-							<version>1.1.0-SNAPSHOT</version>
+							<version>${version}</version>
 						</artifact>
 					</target>
 				</configuration>
@@ -317,6 +339,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			            </goals>
 			        </execution>
 			    </executions>
+				<configuration>
+				    <excludes>
+				        <exclude>org/uqbar/project/wollok/tests/**/*.java</exclude>
+				    </excludes>
+				</configuration>
 			</plugin>
 	        <plugin>
 	            <groupId>org.eluder.coveralls</groupId>

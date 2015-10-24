@@ -3,10 +3,9 @@
 [![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Wollok #
-
-![wollok64.png](https://bitbucket.org/repo/annz6R/images/1431350970-wollok64.png)
-
+<h1>
+<img src="https://github.com/uqbar-project/wollok/blob/master/org.uqbar.project.wollok.ui/icons/wollok-logo-64.fw.png?raw=true"/> Wollok
+</h1>
 
 A programming language and environment for teaching OOP.
 
@@ -14,9 +13,9 @@ A programming language and environment for teaching OOP.
 
 You have two options to download an use Wollok.
 Download a complete Wollok Product Distribution:
-* Linux: [32](http://download.uqbar.org/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok-linux.gtk.x86_64.zip) bits
-* Mac [32](http://download.uqbar.org/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok-macosx.cocoa.x86_64.zip) bits
-* Windows [32](http://download.uqbar.org/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok-win32.win32.x86_64.zip) bits
+* Linux: [32](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
+* Mac [32](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
+* Windows [32](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86_64.zip) bits
 
 ## Installation through Update Sites ##
 
@@ -24,7 +23,7 @@ Download a complete Wollok Product Distribution:
 
 Alternatively if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
 
-* http://update.uqbar.org/wollok/master : for the latest stable release
+* http://update.uqbar.org/wollok/stable : for the latest stable release
 * http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
 
 ## Wollok SDK standalone ##
@@ -48,6 +47,8 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
 * Interpreted: means that the code is being evaluated as it's being read.
 
+Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
+
 ## How is the Environment ? ##
 
 * Completely integrated with Eclipse.
@@ -59,23 +60,11 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * A debugger.
 
 ## How to Contribute ##
-### Preparing the development environment ###
 
- * Download [eclipse's XText distribution v2.7.3](http://www.eclipse.org/downloads/download.php?file=/modeling/tmf/xtext/downloads/drops/2.7.3/R201411190455/tmf-xtext-Update-2.7.3.zip) (Full Eclipse)
- * Install xsemantics plugin from update site:
-```
-http://master.dl.sourceforge.net/project/xsemantics/updates/releases/1.7
-```
- * Install debugvisualization plugin from update site:
-```
-http://eclipse.cubussapiens.hu
-```
- * Install xpect from update site:
-```
-http://www.xpect-tests.org/updatesite/nightly/
-```
- * In the resulting Eclipse, import all the projects below https://github.com/uqbar-project/wollok
- * Run GenerateWollokDsl.mwe2
+If you want to contribute to the Wollok development that would be awesome !
+We have set a number of wiki pages to help you start, and also documented conventions and instructions for different tasks.
+
+See [https://github.com/uqbar-project/wollok/wiki/Development](https://github.com/uqbar-project/wollok/wiki/Development)
 
 ## License ##
 

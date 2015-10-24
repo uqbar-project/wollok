@@ -15,7 +15,7 @@ class WithUnusedVariables {
 	
 	var equipos = #[]
 	
-	method doSomething(){
+	method doSomething() = {
 		a = a + 1 + c + x
 		d = 123
 		//XPECT errors --> "Cannot modify values" at "z"
@@ -34,9 +34,7 @@ class UnusedVariables {
 			method engordar(cuanto) {
 				peso = peso + cuanto
 			}
-			method peso() {
-				peso
-			}
+			method peso() = peso
 		}
 		
 		// forEach
@@ -45,9 +43,7 @@ class UnusedVariables {
 			method engordar(cuanto) {
 				peso = peso + cuanto
 			}
-			method peso() {
-				peso
-			}
+			method peso() = peso
 		}
 		
 		val vaca2 = object {
@@ -55,9 +51,7 @@ class UnusedVariables {
 			method engordar(cuanto) {
 				peso = peso + cuanto
 			}
-			method peso() {
-				peso
-			}
+			method peso() = peso
 		}
 		val vacas = #[vaca1, vaca2]
 		

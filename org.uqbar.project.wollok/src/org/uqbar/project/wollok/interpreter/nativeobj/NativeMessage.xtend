@@ -6,13 +6,12 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * Anota un método de un objeto nativo como
- * que es la implementación de un mensaje.
- * Esto permite resolver el caso en que
- * queremos que el mensaje wollok sea un simbolo
- * o una palabra reservada en java/xtend,
- * con lo cual no podemos usar el nombre del método
- * para matchear con el mensaje que se le manda.
+ * Annotates a given java method as the native implementation
+ * of a wollok message.
+ * 
+ * This allows us to expose to wollok a message with a name
+ * that is a reserved word in java-side.
+ * Or also when we want to use symbols (which java doesn't allow)
  * 
  * @author jfernandes
  */

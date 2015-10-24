@@ -1,6 +1,13 @@
 package org.uqbar.project.wollok.ui.editor.hyperlinking
 
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extends the default xtext class
@@ -20,22 +27,34 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 //  una en findCrossReferenceNode()
 //  y de nuevo en getCrossReferencedElement()
 class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
-/*	
- *TODO: Hacer un extension point
-	@Inject
-  	protected WollokDslTypeSystem xsemanticsSystem
-	
+
 	override protected findCrossReferenceNode(INode node) {
 		val semantic = node.semanticElement
-		if (semantic instanceof WMemberFeatureCall && (semantic as WMemberFeatureCall).isResolvedToMethod()
-			|| semantic instanceof WSuperInvocation
-		)
+		if (semantic instanceof WMemberFeatureCall && (semantic as WMemberFeatureCall).isResolvedToMethod || semantic instanceof WSuperInvocation)
 			node
 		else
 			super.findCrossReferenceNode(node)
 	}
 	
-	def boolean isResolvedToMethod(WMemberFeatureCall call) { resolveMethod(call) != null	}
+	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod != null }
+	
+	override getCrossReferencedElement(INode node) {
+		val ref = node.semanticElement.resolveReference
+		if (ref != null)
+			ref
+		else
+			super.getCrossReferencedElement(node)
+	}
+	
+	def dispatch resolveReference(WMemberFeatureCall it) { resolveMethod }
+	def dispatch resolveReference(WSuperInvocation it) { superMethod }
+	def dispatch resolveReference(EObject it) { null }
+	
+/*	
+
+ *TODO: Hacer un extension point
+	@Inject
+  	protected WollokDslTypeSystem xsemanticsSystem
 
 	def resolveMethod(WMemberFeatureCall call) {
 		val env = xsemanticsSystem.emptyEnvironment()
@@ -58,18 +77,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 			null
 		
 	}
-	
-	override getCrossReferencedElement(INode node) {
-		val semantic = node.semanticElement
-		if (semantic instanceof WMemberFeatureCall) {
-			semantic.resolveMethod
-		}
-		else if (semantic instanceof WSuperInvocation) {
-			semantic.superMethod
-		}
-		else 
-			super.getCrossReferencedElement(node)
-	}
+
  */	
 	
 }

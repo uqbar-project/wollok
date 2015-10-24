@@ -78,4 +78,47 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void nativeClassWithAccessToWollokObject() {
+		#["natives"->'''
+			class MyNativeWithAccessToObject {
+				var initialValue = 42
+				method lifeMeaning() native
+				method newDelta(d) native
+				
+				method initialValue() {
+					return initialValue
+				} 
+			}
+
+		program nativeSample {
+			val obj = new MyNativeWithAccessToObject()
+			
+			assert.equals(42, obj.initialValue())
+			assert.equals(100 + 42, obj.lifeMeaning())
+			
+			obj.newDelta(200)
+			
+			assert.equals(200 + 42, obj.lifeMeaning())
+		}
+		''']
+		.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void methodWithNativeMessageAnnotation() {
+		#["natives"->'''
+			class MyNativeWithAccessToObject {
+				method final() native
+			}
+
+		program nativeSample {
+			val obj = new MyNativeWithAccessToObject()
+			
+			assert.equals(500, obj.final())
+		}
+		''']
+		.interpretPropagatingErrors
+	}
 }

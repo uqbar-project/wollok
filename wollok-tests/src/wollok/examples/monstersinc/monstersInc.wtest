@@ -11,13 +11,15 @@ import asustables.Adolescente
 import asistentes.*
 import actividades.*
 
-test "MonstersInc" {
+test "Asustador Nato con Ninio genera energia" {
 	// -----------------------------------------
 	// punto 1
 	val sullivan = new AsustadorNato(25, 200)
 	val puertaConNinio4 = new Puerta(new Ninio(4))
 	assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
+}
 
+test "Asustador Perseverante mejora estudiando y ejercitando" {
 	// -----------------------------------------
 	// punto 2
 	val mike = new AsustadorPerseverante(0)
@@ -25,7 +27,9 @@ test "MonstersInc" {
 	mike.mejora(new EjercitarEnSimulador(2))
 	
 	assert.equals(70, mike.puntosDeTerror())
-	
+}
+
+test "Mike asusta una piyamada" {
 	val piyamada = new Piyamada()
 	piyamada.agregarNinio(new Ninio(2))
 	piyamada.agregarNinio(new Ninio(3))
@@ -33,10 +37,21 @@ test "MonstersInc" {
 	
 	val puertaConPiyamada = new Puerta(piyamada)
 	
+	val mike = new AsustadorPerseverante(0)
+	mike.mejora(new EstudiarMateria("Sustos 2", 50))
+	mike.mejora(new EjercitarEnSimulador(2))
 	val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
 	assert.equals(75, energiaMike)   // 70/2 + 70/3 + 70/4 = 75
+}
 
+test "Asustar a un adolescente disminuye la motivacion" {
+	val puertaConNinio4 = new Puerta(new Ninio(4))
+	val mike = new AsustadorPerseverante(0)
+	mike.mejora(new EstudiarMateria("Sustos 2", 50))
+	mike.mejora(new EjercitarEnSimulador(2))
+	val sullivan = new AsustadorNato(25, 200)
+	
 	// -----------------------------------------
 	// punto 3
 	val equipo = new Equipo(sullivan, new AsistenteNormal())

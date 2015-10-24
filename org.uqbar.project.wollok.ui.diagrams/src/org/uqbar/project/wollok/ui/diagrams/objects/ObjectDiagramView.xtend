@@ -1,6 +1,9 @@
 package org.uqbar.project.wollok.ui.diagrams.objects
 
 import java.util.ArrayList
+import java.util.Collections
+import java.util.HashMap
+import java.util.List
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.ColorConstants
@@ -44,14 +47,11 @@ import org.uqbar.project.wollok.ui.diagrams.classes.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ConnectionEditPart
+import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
-import org.eclipse.draw2d.graph.Subgraph
-import com.google.common.collect.Lists
-import javax.swing.plaf.ListUI
-import java.util.Collections
 
 /**
  * 
@@ -99,11 +99,11 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			page = null
 		}
 		
-		debugListener = new DebugContextListener(this);
-		DebugUITools.getDebugContextManager().addDebugContextListener(debugListener);
+		debugListener = new DebugContextListener(this)
+		DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
 
 		// Check if there is an already started debug context
-		val dc = DebugUITools.getDebugContext();
+		val dc = DebugUITools.getDebugContext
 		if (dc != null) {
 			val o = dc.getAdapter(IStackFrame)
 			if (o instanceof IStackFrame)
@@ -207,18 +207,14 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// ** Layout (same as for class diagrams... horrible)
 	// ****************************
 	
-	def getNodesEditParts() {
-		if (graphicalViewer.rootEditPart.children.empty)
-			Collections.EMPTY_LIST
-		else 
-			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ValueEditPart)
-	}
+	def getNodesEditParts() { editParts(ValueEditPart) }
+	def getConnectionsEditParts() { editParts(ConnectionEditPart) }
 	
-	def getConnectionsEditParts() {
+	def <T extends EditPart> editParts(Class<T> class1) {
 		if (graphicalViewer.rootEditPart.children.empty)
 			Collections.EMPTY_LIST
 		else
-			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ConnectionEditPart)
+			(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(class1)
 	}
 	
 	def layout() {
@@ -226,17 +222,15 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.SOUTH
 		
-		val classEditParts = getNodesEditParts()
-		
-		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
+		val classToNodeMapping = nodesEditParts.fold(newHashMap)[map, e | 
 			map.put(e.model as VariableModel, new Node(e.model) => [
 				width = 100 //e.figure.bounds.width
 				height = 100 //e.figure.bounds.height
 			])
 			map
 		]
-			 
 		graph.nodes.addAll(classToNodeMapping.values)
+		
 		graph.edges.addAll(connectionsEditParts.map[c |
 			new Edge(
 				classToNodeMapping.get(c.castedModel.source), 
@@ -244,9 +238,10 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			)
 		])
 		
-		//layout
-		val directedGraphLayout = new DirectedGraphLayout
-		directedGraphLayout.visit(graph)
+		// layout
+		new DirectedGraphLayout => [
+			visit(graph)
+		]
 		
 		// map back positions to model
 		graph.nodes.forEach[ val n = it as Node
@@ -291,8 +286,38 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// posta
 	
 	override setStackFrame(IStackFrame stackframe) {
-		graphicalViewer.contents = stackframe 
-		layout
+		// backup nodes positions
+		val oldRootPart = graphicalViewer.contents as StackFrameEditPart
+		val map = new HashMap<String,Shape>()
+		if (oldRootPart != null) {
+			oldRootPart.children.<ValueEditPart>forEach[it |
+				map.put((it.model as VariableModel).valueString, it.model as Shape)
+			]
+		}
+		
+		// set new stack
+		graphicalViewer.contents = stackframe
+		layout()
+		
+		// recover old positions
+		val newModels = (graphicalViewer.contents as StackFrameEditPart).children.<ValueEditPart,VariableModel>map[ ep | ep.model as VariableModel ]
+		val alreadyDisplaying = newModels.filter[ map.containsKey(valueString) ].toList
+		alreadyDisplaying.forEach[vm |
+				val oldShape = map.get(vm.valueString)
+				vm.location = oldShape.location
+				vm.size = oldShape.size
+		]
+		
+		// tweak layout
+		val newNodes = newModels.filter[!alreadyDisplaying.contains(it)].toList
+//		relocateSolitaryNodes(newNodes)
+	}
+	
+	def relocateSolitaryNodes(List<VariableModel> models) {
+		val nodesReferencedByJustOne = models.filter[m | m.targetConnections.size == 1]
+		nodesReferencedByJustOne.forEach[m | 
+			m.moveCloseTo(m.targetConnections.get(0).source)
+		]
 	}
 	
 }

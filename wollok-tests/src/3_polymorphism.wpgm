@@ -1,24 +1,23 @@
 program polymorphism {
 
-// 3ro: objetos como parametro
-
-val pepona = object {
-	var energia = 100
-	method comer(comida) {
-		energia = energia + comida.energia()
+	// golondrina pepona con energia
+	val pepona = object {
+		var energia = 100
+		method comer(comida) {
+			energia = energia + comida.energia()
+		}
+		method energia() { return energia }
 	}
-	method energia() { return energia }
-}
 
-val alpiste = object {
-	method energia() { return 5 } 
-}
+	/* el alpiste tambien tiene energia  */
+	val alpiste = object {
+		method energia() {		
+			return 5
+		} 
+	}
 
-pepona.comer(alpiste)
+	pepona.comer(alpiste)
 
-// Comento porque si no da un error al correr WollokExamplesTests
-// pepona.comer(23) 
-
-assert.that(pepona.energia() == 105)
+	assert.that(pepona.energia() == 105)
 
 }

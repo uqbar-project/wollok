@@ -24,7 +24,7 @@ class CallableSuper extends AbstractWollokCallable {
 		val method = behavior.lookupMethod(message)
 		if (method == null)
 			// I18N !
-			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
+			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»(«parameters.map["p"].join(',')»)''')
 		
 		method.call(parameters)
 	}

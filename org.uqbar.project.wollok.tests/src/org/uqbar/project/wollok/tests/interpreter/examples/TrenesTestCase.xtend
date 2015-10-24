@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * 
  * @author tesonep
  */
-class MonstersIncTestCase extends AbstractWollokInterpreterTestCase {
+class TrenesTestCase extends AbstractWollokInterpreterTestCase {
 	val path = EXAMPLES_PROJECT_PATH + "/src/wollok/examples/trenes/workspace.wpgm"
 	
 	@Test

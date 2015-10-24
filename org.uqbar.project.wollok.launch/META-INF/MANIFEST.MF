@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.launch
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
@@ -19,11 +19,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.xtext.ui;bundle-version="[2.7.3,2.8.0)",
  org.eclipse.ui.ide;bundle-version="3.9.2",
  org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
- org.eclipse.zest.core;bundle-version="1.5.0",
- org.eclipse.zest.layouts;bundle-version="1.1.0",
- org.uqbar.project.wollok.lib 
+ org.uqbar.project.wollok.lib,
+ org.eclipse.xtext.ui.shared;bundle-version="2.7.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: lib/lipermi-0-4-2.jar, .
+Bundle-ClassPath: lib/lipermi-0-4-2.jar,
+ lib/jansi-1.11.jar,
+ .
 Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.launch.setup,

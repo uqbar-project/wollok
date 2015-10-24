@@ -17,11 +17,17 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
 	public static String WollokDslValidator_METHOD_NOT_OVERRIDING;
 	public static String WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD;
+	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE;
+	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE;
+	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
+	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
+	public static String WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST;
+	public static String WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES;
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
@@ -42,6 +48,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	
 	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_RETURN_FORGOTTEN;
+	
 	public static String WollokDslValidator_NO_EXPRESSION_AFTER_RETURN;
 	public static String WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION;
 	

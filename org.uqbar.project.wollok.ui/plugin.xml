@@ -569,4 +569,75 @@
             name="Wollok">
       </category>
    </extension>
+   
+   <!-- refactorings -->
+   <extension point="org.eclipse.ui.commands">
+      <command
+              id="org.uqbar.project.wollok.refactoring.ExtractMethod"
+              name="%ExtractMethodRefactoring_name"
+              description="%ExtractMethodRefactoring_description">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+        <key 
+            sequence="M2+M3+M"
+            commandId="org.uqbar.project.wollok.refactoring.ExtractMethod"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"/>
+        <key
+            sequence="COMMAND+ALT+M"
+            commandId="org.uqbar.project.wollok.refactoring.ExtractMethod"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.xtext.ui.XtextEditorScope"
+            platform="carbon"/>
+	</extension>
+	
+	<extension point="org.eclipse.ui.handlers">
+		<handler 
+			class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.refactoring.ExtractMethodHandler"
+			commandId="org.uqbar.project.wollok.refactoring.ExtractMethod">
+			<activeWhen>
+				<reference
+					definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened">
+				</reference>
+			</activeWhen>
+		</handler>
+	</extension>
+	
+	    <extension point="org.eclipse.ui.menus">
+         <menuContribution
+            locationURI="popup:#TextEditorContext?after=xtext.ui.SourceMenu">
+         <menu
+               id="xtend.ide.RefactorMenu"
+               label="Refactor"
+               mnemonic="Refac&amp;tor">
+            <command
+                  commandId="org.uqbar.project.wollok.refactoring.ExtractMethod"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="org.uqbar.project.wollok.WollokDsl.Editor.opened">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </menu>
+         <separator
+               name="xtend.ide.referencesSeparator"
+               visible="true">
+         </separator>
+      </menuContribution>
+         <menuContribution
+               locationURI="popup:#TextEditorContext?before=group.find">
+            <separator
+                  name="org.eclipse.xtend.ide.separator4"
+                  visible="true">
+            </separator>
+            <separator
+                  name="org.eclipse.xtend.ide.separator5"
+                  visible="true">
+            </separator>
+         </menuContribution>
+   </extension>
+   <!-- /refactoring -->
 </plugin>

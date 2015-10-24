@@ -28,7 +28,8 @@ class Adulto extends Asustable {
 
 class Adolescente extends Asustable {
 	override method teVaAAsustar(asustador) {
-		asustador.reducirMotivacion(0.10)
+		var factor = 0.10
+		asustador.reducirMotivacion(factor)
 		return 0
 	}
 }

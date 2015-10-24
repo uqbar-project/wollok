@@ -39,4 +39,17 @@ class SetTest extends ListTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	override def void testToString() {
+		'''
+		program p {
+			val a = #{23, 2, 2}
+			val s = a.toString()
+			assert.that("#{2, 23}" == s or "#{23, 2}" == s)
+		}'''.interpretPropagatingErrors
+	}
+	
+	override testToStringWithObjectRedefiningToStringInWollok() {
+	}
+	
 }

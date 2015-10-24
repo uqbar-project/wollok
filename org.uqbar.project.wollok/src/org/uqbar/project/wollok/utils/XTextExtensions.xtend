@@ -4,12 +4,14 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.ITextRegionWithLineInformation
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WExpression
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Extension methods and utilities for xtext
@@ -52,6 +54,17 @@ class XTextExtensions {
 			else
 				return beforeNodes
 		}
+	}
+	
+	def static computeUnusedUri(XtextResourceSet resourceSet, String name) {
+		var i = 0
+		while(i < Integer.MAX_VALUE) {
+			val syntheticUri = URI.createURI(name + i + "." + WollokConstants.PROGRAM_EXTENSION);
+			if (resourceSet.getResource(syntheticUri, false) == null)
+				return syntheticUri
+			i++
+		}
+		throw new IllegalStateException
 	}
 	
 }

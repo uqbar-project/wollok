@@ -1,0 +1,29 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+
+}
+
+object o {
+	// XPECT errors --> "Duplicated method" at "foo"
+	method foo() { }
+	// XPECT errors --> "Duplicated method" at "foo"
+	method foo() { }
+	
+	method foo(a) { }
+	method foo(a, b) { }
+	
+	// XPECT errors --> "Duplicated method" at "bar"
+	method bar(a) { }
+	// XPECT errors --> "Duplicated method" at "bar"
+	method bar(a) { }
+	method bar(a, b) { }
+	
+	// XPECT errors --> "Duplicated method" at "zoo"
+	method zoo(a,b,c) {}
+	// XPECT errors --> "Duplicated method" at "zoo"
+	method zoo(a,b,c) {}
+	method zoo(a) {}
+	method zoo(a,b) {}
+	method zoo(a,b,c,d) {}
+}

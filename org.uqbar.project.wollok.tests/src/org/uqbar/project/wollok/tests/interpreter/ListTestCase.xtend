@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.interpreter
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
+import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 
 /**
  * @author jfernandes
@@ -110,5 +111,55 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			assert.that(greaterThanOneElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
-
+	
+	@Test
+	def void testAny() {
+		'''
+		program p {
+			val numbers = #[23]		
+			assert.equals(23, numbers.any())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testEqualsWithMethodName() {
+		'''
+		program p {
+			val a = #[23, 2, 1]
+			val b = #[23, 2, 1]
+			assert.that(a.equals(b))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testEqualsWithEqualsEquals() {
+		'''
+		program p {
+			val a = #[23, 2, 1]
+			val b = #[23, 2, 1]
+			assert.that(a == b)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testToString() {
+		'''
+		program p {
+			val a = #[23, 2, 1]
+			assert.equals("#[23, 2, 1]", a.toString())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testToStringWithObjectRedefiningToStringInWollok() {
+		'''
+		object myObject {
+			method toString() = "My Object"
+		}
+		program p {
+			val a = #[23, 2, 1, myObject]
+			assert.equals("#[23, 2, 1, My Object]", a.toString())
+		}'''.interpretPropagatingErrors
+	}
+	
 }

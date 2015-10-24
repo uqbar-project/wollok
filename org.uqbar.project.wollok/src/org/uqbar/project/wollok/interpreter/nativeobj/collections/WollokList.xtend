@@ -37,4 +37,6 @@ class WollokList extends AbstractWollokCollection<List<Object>> {
 		"WList"
 	}
 	
+	override surroundToString(String s) { "#[" + s + "]"}
+	
 }

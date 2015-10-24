@@ -8,7 +8,7 @@
     <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
     <groupId>org.uqbar-project</groupId>
     <artifactId>wollok-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
 
 	<artifactId>org.uqbar.project.wollok.launch</artifactId>
@@ -22,49 +22,6 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
-
-		<!-- copy all dependencies -->
-         	<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-dependency-plugin</artifactId>
-	        <version>2.10</version>
-	        <executions>
-	          <execution>
-	            <id>copy-dependencies</id>
-	            <phase>package</phase>
-	            <goals>
-	              <goal>copy-dependencies</goal>
-	            </goals>
-	            <configuration>
-	              <outputDirectory>${project.build.directory}/allDeps</outputDirectory>
-	              <overWriteReleases>false</overWriteReleases>
-	              <overWriteSnapshots>false</overWriteSnapshots>
-	              <overWriteIfNewer>true</overWriteIfNewer>
-	            </configuration>
-	          </execution>
-	        </executions>
-	      </plugin>
-			
-			<!-- create headless WDK --> 
-			<plugin>
-		        <artifactId>maven-assembly-plugin</artifactId>
-		        <version>2.5.4</version>
-		        <configuration>  
-		            <descriptors>  
-		               <descriptor>assembly/wollok-assembly.xml</descriptor>  
-		            </descriptors>  
-	            </configuration>  
-	            <executions>  
-	               <execution>  
-	                  <id>package-native</id>  
-	                  <phase>install</phase>  
-	                  <goals>  
-	                     <goal>attached</goal>  
-	                  </goals>  
-	              </execution>  
-	            </executions>  
-		      </plugin>
-		     <!-- -->
 	</plugins>
 		<pluginManagement>
 			<plugins>
@@ -105,7 +62,7 @@
 	</build>
 	
 		<profiles>
-		<!-- This profile is used to upload the generated SDK package -->
+		<!-- This profile is used to generate and upload the SDK packages -->
 		<profile>
 			<id>uploadProducts</id>
 			<properties>
@@ -117,6 +74,51 @@
 
 			<build>
 				<plugins>
+
+					<!-- copy all dependencies -->
+		         	<plugin>
+			        <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-dependency-plugin</artifactId>
+			        <version>2.10</version>
+			        <executions>
+			          <execution>
+			            <id>copy-dependencies</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>copy-dependencies</goal>
+			            </goals>
+			            <configuration>
+			              <outputDirectory>${project.build.directory}/allDeps</outputDirectory>
+			              <overWriteReleases>false</overWriteReleases>
+			              <overWriteSnapshots>false</overWriteSnapshots>
+			              <overWriteIfNewer>true</overWriteIfNewer>
+			            </configuration>
+			          </execution>
+			        </executions>
+			      </plugin>
+					
+					<!-- create WDKs --> 
+					<plugin>
+				        <artifactId>maven-assembly-plugin</artifactId>
+				        <version>2.5.4</version>
+				        <configuration>  
+				            <descriptors>  
+				               <descriptor>assembly/wollok-assembly.xml</descriptor>  
+				            </descriptors>  
+			            </configuration>  
+			            <executions>  
+			               <execution>  
+			                  <id>package-native</id>  
+			                  <phase>install</phase>  
+			                  <goals>  
+			                     <goal>attached</goal>  
+			                  </goals>  
+			              </execution>  
+			            </executions>  
+				      </plugin>
+				     <!-- -->
+				
+					<!-- upload -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>

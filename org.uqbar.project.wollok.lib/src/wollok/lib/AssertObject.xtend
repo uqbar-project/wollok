@@ -4,8 +4,6 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
-import java.text.MessageFormat
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * 
@@ -39,38 +37,4 @@ class AssertObject extends AbstractWollokDeclarativeNativeObject {
 			throw AssertionException.valueNotWasNotEquals(a, b)
 	}
 
-}
-
-@Accessors
-class AssertionException extends Exception {
-	val String expected
-	val String actual
-
-	new(String msg, String expected, String actual) {
-		super(msg)
-		this.expected = expected
-		this.actual = actual
-	}
-
-	static def valueWasNotTrue() {
-		return new AssertionException("Value was not true", null, null)
-	}
-
-	static def valueWasNotFalse() {
-		return new AssertionException("Value was not false", null, null)
-	}
-
-	static def valueNotWasEquals(Object expected, Object actual) {
-		return newException("Expected [{0}] but found [{1}]", expected, actual)
-	}
-
-	static def valueNotWasNotEquals(Object expected, Object actual) {
-		return new AssertionException("Expected different to [{0}] but found [{1}]", null, null)
-	}
-
-	static def newException(String format, Object expected, Object actual) {
-		val strExpected = if(expected == null) "null" else expected.toString
-		val strActual = if(actual == null) "null" else actual.toString
-		return new AssertionException(MessageFormat.format(format, strExpected, strActual), strExpected, strActual)
-	}
 }

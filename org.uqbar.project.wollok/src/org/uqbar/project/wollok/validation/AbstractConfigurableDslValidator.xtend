@@ -13,6 +13,7 @@ import static org.uqbar.project.wollok.validation.AbstractConfigurableDslValidat
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.validation.Check
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic
@@ -65,15 +66,20 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 			case INFO : info(description, invalidObject, ref, issueId) 
 		}
 	}
+	
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index) {
+		report(description, invalidObject, ref, index, null)
+	}
+	
+	def report(String description, EObject invalidObject, EStructuralFeature ref, int index, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 		
 		if (severityValue == null)
-			error(description, invalidObject, ref, index)
+			error(description, invalidObject, ref, index, issueId)
 		switch (severityValue) {
-			case ERROR : error(description, invalidObject, ref, index)
-			case WARN : warning(description, invalidObject, ref, index)
-			case INFO : info(description, invalidObject, ref, index) 
+			case ERROR : error(description, invalidObject, ref, index, issueId)
+			case WARN : warning(description, invalidObject, ref, index, issueId)
+			case INFO : info(description, invalidObject, ref, index, issueId) 
 		}
 	}
 	
@@ -88,7 +94,10 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 	
 	def inferCheckMethod() {
 		val stackTrace = try throw new RuntimeException() catch(RuntimeException e) e.stackTrace
-		val checkStackElement = stackTrace.get(1);
+		val checkStackElement = stackTrace.findLast[e| 
+			val m = this.class.methods.findFirst[name == e.methodName]
+			m != null && m.isAnnotationPresent(Check)
+		]
 		return this.class.methods.findFirst[m | m.name == checkStackElement.methodName]
 	}
 	

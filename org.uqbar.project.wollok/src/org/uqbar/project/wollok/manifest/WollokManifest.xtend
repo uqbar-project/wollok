@@ -10,10 +10,21 @@ class WollokManifest {
 	public static val WOLLOK_MANIFEST_EXTENSION = ".wollokmf"
 	
 	new(InputStream is) {
-		val reader = new BufferedReader(new InputStreamReader(is))
-		var String name = null
-		while((name = reader.readLine) != null){
-			uris += URI.createURI("classpath:/" + name)
+		try {
+			val reader = new BufferedReader(new InputStreamReader(is))
+			var String name = null
+			while((name = reader.readLine) != null){
+				uris += URI.createURI("classpath:/" + name)
+			}
+		}
+		finally {
+			try {
+				is.close
+			}
+			catch (Exception e) {
+				println("Error while closing input stream on finally")
+				e.printStackTrace
+			}
 		}
 	}
 

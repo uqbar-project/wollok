@@ -2,7 +2,7 @@
 
 class Persona {
 	method getNombre() {
-		"hardcodeado"
+		return "hardcodeado"
 	}
 	method blah() {
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
@@ -21,7 +21,7 @@ class Profesor extends Persona {
 
 object o {
 	method foo() {
-		23
+		return 23
 	}
 	method bar() {
 		this.foo()

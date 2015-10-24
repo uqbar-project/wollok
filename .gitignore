@@ -5,3 +5,5 @@
 .DS_Store
 /target/
 */workspace/
+org.eclipse.*
+pom.xml.versionsBackup

@@ -46,6 +46,10 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addView("org.eclipse.ui.views.ContentOutline");
 		]
 		
+		createFolder("right", IPageLayout.BOTTOM, 0.25f, "org.eclipse.ui.views.ContentOutline") => [
+			addView("org.uqbar.project.wollok.ui.diagrams.class");
+		]
+		
 		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
 		addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f)
 	}

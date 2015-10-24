@@ -19,9 +19,9 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.requests.CreateRequest
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 
 /**
  * 
@@ -62,7 +62,10 @@ class StackFrameEditPart extends AbstractGraphicalEditPart implements PropertyCh
 	
 	override List<VariableModel> getModelChildren() {
 		val map = (modelElement.variables.fold(newHashMap()) [m, v|
-			m.put(v, new VariableModel(v, 0)) 
+			val vm = new VariableModel(v, 0)
+			m.put(v, vm)
+			// root arrow
+			new Connection(v.name, null, vm) 
 			m
 		])
 		map.values.<VariableModel>clone.forEach[model| model.createConnections(map)]

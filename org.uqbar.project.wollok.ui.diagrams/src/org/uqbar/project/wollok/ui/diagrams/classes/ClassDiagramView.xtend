@@ -57,6 +57,12 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
  * 
@@ -90,29 +96,34 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
-		site.selectionProvider = this
 	}
 	
 	def createDiagramModel() {
-		val List<WClass> classes = xtextDocument.readOnly[XtextResource resource|
-			getClasses
-		]
 		new ClassDiagram => [
+			// classes
+			val classes = xtextDocument.readOnly[XtextResource resource| getClasses(resource) ]
 			classes.forEach[c|
 				addClass(new ClassModel(c) => [
 					location = new Point(100, 100)
 				])
 			]
+			// objects
+			val objects = xtextDocument.readOnly[XtextResource resource| getNamedObjects(resource) ]
+			objects.forEach[c| 
+				addNamedObject(new NamedObjectModel(c) => [ location = new Point(100, 100) ])
+			]
 			
+			// relations
 			connectRelations
 		]
 	}
 	
-	def getClasses() {
-		val resource = xtextDocument.getAdapter(IResource)
-		val r = resourceSet.getResource(URI.createURI(resource.locationURI.toString), true)
-		r.load(#{})
+	def getClasses(XtextResource r) {
 		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
+	}
+	
+	def getNamedObjects(XtextResource r) {
+		(r.contents.get(0) as WFile).eAllContents.filter(WNamedObject).toList
 	}
 	
 	override createPartControl(Composite parent) {
@@ -127,6 +138,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
+		
+		// we provide selection
+		site.selectionProvider = this
 	}
 	
 	def createViewer(Composite parent) {
@@ -151,7 +165,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 
 		// configure the context menu provider
-		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, actionRegistry)
+		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 		graphicalViewer.contextMenu = cmProvider
 		site.registerContextMenu(cmProvider, graphicalViewer)
 	}
@@ -171,20 +185,24 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def layout() {
 		// create graph
 		val graph = new DirectedGraph
-		graph.direction = PositionConstants.NORTH
-		
-		val classEditParts = getClassEditParts()
+		graph.direction = PositionConstants.SOUTH
 		
 		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
 			map.put(e.model as ClassModel, new Node(e.model) => [
-				width = 100 //e.figure.bounds.width
-				height = 100 //e.figure.bounds.height
+				width = e.figure.preferredSize.width
+				height = e.figure.preferredSize.height
 			])
 			map
 		]
-		 
 		graph.nodes.addAll(classToNodeMapping.values)
-				
+		
+		// objects
+		graph.nodes.addAll(objectsEditParts.map[e| new Node(e.model) => [
+			width = e.figure.preferredSize.width
+			height = e.figure.preferredSize.height
+		]])
+		
+		// superclass relations		
 		val relations = model.classes.fold(newArrayList, [l, c| 
 			if (c.clazz.parent != null)
 				l.add(new Edge(
@@ -195,18 +213,29 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		])
 		graph.edges.addAll(relations)
 		
-		//layout
+		// layout
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
 		
-		// map back positions to model
+		
+		// map back positions to model inverting the Y coordinates
+		// because the directed graph only supports layout directo to SOUTH, meaning
+		// super classes will be at the bottom. So we invert them
+		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
+
 		graph.nodes.forEach[ val n = it as Node
-			(n.data as ClassModel).location = new Point(n.x, n.y)
+			var deltaY = 10
+			if (n != bottomNode) deltaY += bottomNode.height;
+			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
 	}
 	
 	def getClassEditParts() {
 		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ClassEditPart)
+	}
+	
+	def getObjectsEditParts() {
+		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(NamedObjectEditPart)
 	}
 	
 	def setGraphicalViewer(GraphicalViewer viewer) {
@@ -324,19 +353,25 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	override partOpened(IWorkbenchPart part) { }
 	
-	// ISelectionListener
-	//   workbench tells us that selection changed from other view
+	// workbench -> gef editor
 	override selectionChanged(IWorkbenchPart part, ISelection selection) {
 		if (part == this) return;
 		if (selection instanceof StructuredSelection) {
-			val selectedClassModels = selection.toList.filter(WClass).fold(newArrayList())[list, c| 
-				val cm = diagram.classes.findFirst[cm | cm.clazz == c]
+			// I think this is coupled with the outline view. It should use WClass instead of EObjectNode
+			// should we use getAdapter() ?
+			val selectedClassModels = selection.toList.filter(EObjectNode).filter[EClass == WollokDslPackage.Literals.WCLASS].fold(newArrayList())[list, c|
+				val cm = getClassEditParts.findFirst[ep |
+					// mm.. i don't like comparing by name :( but our diagram seems to load 
+					// the xtext document (and model objects) again, so instances are different
+					ep.castedModel.clazz.name == c.text.toString 
+				]
 				if (cm != null)
 					list += cm
 				list
 			]
-			if (!selectedClassModels.empty)
-				graphicalViewer.selection = new StructuredSelection(selectedClassModels)	
+			if (!selectedClassModels.empty) {
+				graphicalViewer.selection = new StructuredSelection(selectedClassModels)
+			}	
 		}
 	}
 
@@ -366,12 +401,14 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		if (!selection.empty && selection instanceof StructuredSelection) {
 			val s = selection as StructuredSelection
 			if (s.size == 1) {
-				var model = (s.firstElement as EditPart).model
+				val model = (s.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					model = model.clazz
-					this.selection = new StructuredSelection(model)
+					val wclazz = model.clazz
+					this.selection = new StructuredSelection(wclazz)
 					val e = new SelectionChangedEvent(this, this.selection)
-					listeners.forEach[l| l.selectionChanged(e)]
+					listeners.forEach[l| 
+						l.selectionChanged(e)
+					]
 				}
 			}
 		}

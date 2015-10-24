@@ -7,6 +7,7 @@ import org.eclipse.draw2d.Ellipse
 import org.eclipse.draw2d.EllipseAnchor
 import org.eclipse.draw2d.Figure
 import org.eclipse.draw2d.Label
+import org.eclipse.draw2d.RectangleFigure
 import org.eclipse.draw2d.StackLayout
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.ConnectionEditPart
@@ -18,6 +19,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
+import org.eclipse.draw2d.ChopboxAnchor
 
 /**
  * 
@@ -25,6 +27,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
  */
 class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 	ConnectionAnchor anchor
+	org.eclipse.draw2d.Shape ellipse
 	
 	override activate() {
 		if (!active) {
@@ -48,8 +51,9 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		new Figure => [
 			layoutManager = new StackLayout
 		
-			add(new Ellipse => [
-				backgroundColor = ClassDiagramColors.CLASS_BACKGROUND
+			val c = colorFor(castedModel)
+			add(this.ellipse = createShape() => [
+				backgroundColor = c
 				opaque = true
 			])
 			add(new Label => [
@@ -59,11 +63,37 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 		]
 	}
 	
+	def createShape() {
+		if (castedModel.isList)
+			new RectangleFigure
+		else
+			new Ellipse
+	}
+	
+	def colorFor(VariableModel model) {
+		val v = model.valueString
+		if (v == "null")
+			ClassDiagramColors.OBJECTS_VALUE_NULL
+		else if (model.isNumeric)
+			ClassDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
+		else if (model.isList)
+			ClassDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
+		else 
+			ClassDiagramColors.CLASS_BACKGROUND
+	}
+	
 	def getCastedModel() { model as VariableModel }
 
 	def getConnectionAnchor() {
-		if (anchor == null) anchor = new EllipseAnchor(figure)
+		if (anchor == null) anchor = createConnectionAnchor()
 		anchor
+	}
+	
+	def createConnectionAnchor() {
+		if (castedModel.isList)
+			new ChopboxAnchor(figure)
+		else
+			new EllipseAnchor(figure)
 	}
 	
 	override getModelSourceConnections() { castedModel.sourceConnections }

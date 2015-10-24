@@ -1,18 +1,16 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.view
 
-import org.eclipse.draw2d.Label
-import org.eclipse.draw2d.PositionConstants
 import org.eclipse.jface.resource.JFaceResources
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * 
  * @author jfernandes
  */
-class WAttributteFigure extends Label {
+class WAttributteFigure extends AbstractClassMemberFigure<WVariableDeclaration> {
 	
-	new(String text) {
-		this.text = text
-		labelAlignment = PositionConstants.LEFT
+	new(WVariableDeclaration v) {
+		super(v)
 	}
 
 	def setLineItalic(String text, boolean italic) {

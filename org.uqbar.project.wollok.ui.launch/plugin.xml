@@ -9,8 +9,8 @@
       <launchConfigurationType
             id="org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
             modes="run, debug"
-            name="Launch Wollok"
-            delegate="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
+            name="Wollok Program"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>
@@ -31,7 +31,7 @@
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             modes="run, debug"
             name="%wollok.launch.tests"
-            delegate="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
+            delegate="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchDelegate"
             sourceLocatorId="org.uqbar.project.wollok.ui.launch.sourceLocator"
             sourcePathComputerId="org.uqbar.project.wollok.ui.launch.sourcePathComputer"/>
    </extension>
@@ -114,6 +114,7 @@
               label="Wollok Program"/>
          </contextualLaunch>
       </shortcut>
+      <!-- REPL -->
       <shortcut
             class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcutWithRepl"
             description="Launch Wollok with Repl"
@@ -135,10 +136,11 @@
            </enablement>
          </contextualLaunch>
       </shortcut>
+      <!-- /REPL -->
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
             description="Launch Wollok with Repl"
-            icon="icons/w-test.png"
+            icon="icons/w.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
             modes="run, debug">
@@ -305,8 +307,8 @@
          point="org.eclipse.ui.views">
       <view
             category="org.uqbar.project.wollok.ui.views.category"
-            class="org.uqbar.project.wollok.ui.tests.WollokTestResultView"
-            icon="icons/dwarf.png"
+            class="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.tests.WollokTestResultView"
+            icon="icons/w-tests.png"
             id="org.uqbar.project.wollok.ui.launch.resultView"
             name="%wollok.tests.view.name"
             restorable="true">
@@ -320,5 +322,24 @@
    </extension>
   <!-- /BREAKPOINTS ACTIONS -->
 
+  <!-- REPL CONSOLE PARTICIPANTS -->
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="org.uqbar.project.wollok.ui.console.actions.WollokReplConsoleActionsParticipant"
+            id="org.uqbar.project.wollok.ui.console.actions.WollokReplConsoleActionsParticipant">
+         <enablement>
+            <instanceof value="org.uqbar.project.wollok.ui.console.WollokReplConsole"/>
+         </enablement>
+      </consolePageParticipant>
+      <consolePageParticipant
+            class="org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant"
+            id="org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant">
+         <enablement>
+            <instanceof value="org.uqbar.project.wollok.ui.console.WollokReplConsole"/>
+         </enablement>
+      </consolePageParticipant>
+   </extension>
+  <!-- /REPL -->
 
 </plugin>

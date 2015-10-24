@@ -1,0 +1,10 @@
+import ej1_pepita.*
+// TODO include same imports as original file
+
+// auto-generated at 20/10/2015 23:51:606
+test "exported test from REPL session" {
+	pepita.energia()
+	pepita.volar(10)
+	alpiste.energia()
+	
+}

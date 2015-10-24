@@ -17,7 +17,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch Object evaluate(WFile it) { 
 		// Files should are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
-			wollokTestsReporter.testsToRun(tests)
+			wollokTestsReporter.testsToRun(it, tests)
 			tests.evalAll
 		}
 	}
@@ -34,7 +34,8 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.ObjectURI)
 				null
 			}else{
-				throw e
+				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.ObjectURI)
+				null
 			}
 		}
 	}
