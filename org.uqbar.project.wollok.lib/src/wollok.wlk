@@ -50,6 +50,11 @@ package lang {
 		method getValue() { this.getY() }
 	}
 	
+	/**
+	 *
+	 * @author jfernandes
+	 * @since 1.3
+	 */
 	class WList {
 		
 		method fold(initialValue, closure) native
