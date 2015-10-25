@@ -24,7 +24,7 @@ class WollokList extends AbstractWollokCollection<List<Object>> {
 	override WollokList asThisCollection(Iterable toWrap) { new WollokList(interpreter, toWrap) }	
 
 	/**
-	 * Multiple level flattenning. Nulls removed.
+	 * Multiple level flattening. Nulls removed.
 	 */		
 	def WollokList flatten() { newArrayList.asThisCollection.addFlat(this) }
 	def dispatch WollokList addFlat(WollokList accum, WollokList elem) { elem.wrapped.forEach[accum.addFlat(it)]; accum}
