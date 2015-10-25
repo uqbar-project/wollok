@@ -35,6 +35,9 @@ package lang {
 		method randomBetween(start, end) native
 		
 		method toString() { return "anObject" }
+		
+		method className() native
+		
 	}
 	
 	class Pair {
@@ -65,6 +68,24 @@ package lang {
 		method clear() native
 		method join(separator) native
 		
+		method max(closure) = this.absolute(closure, [a,b | a > b])
+		method min(closure) = this.absolute(closure, [a,b | a < b])
+		
+		method absolute(closure, criteria) {
+			val result = this.fold(null, [acc, e|
+				val n = closure.apply(e) 
+				if (acc == null)
+					new Pair(e, n)
+				else {
+					if (criteria.apply(n, acc.getY()))
+						new Pair(e, n)
+					else
+						acc
+				}
+			])
+			return if (result == null) null else result.getX()
+		}
+		 
 		// non-native methods
 		
 		method newInstance() = new WList()
@@ -96,7 +117,6 @@ package lang {
 		}
 		
 		override method toString() = "#[" + this.join(",") + "]"
-		
 	}
 	
 }

@@ -11,6 +11,29 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		"val numbers = #[22, 2, 10]"
 	}
 	
+	def instantiateStrings() {
+		"val strings = #['hello', 'hola', 'bonjour', 'ciao', 'hi']"
+	}
+	
+	@Test
+	def void min() {
+		'''
+		program p {
+			«instantiateStrings»		
+			assert.equals('hi', strings.min[e| e.length() ])
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void max() {
+		'''
+		program p {
+			«instantiateStrings»
+			val r = strings.max[e| e.length() ]	
+			assert.equals('bonjour', strings.max[e| e.length() ])
+		}'''.interpretPropagatingErrors
+	}
+	
 	@Test
 	def void testSize() {
 		'''

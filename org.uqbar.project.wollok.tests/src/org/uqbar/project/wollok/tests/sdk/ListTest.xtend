@@ -17,6 +17,10 @@ class ListTest extends ListTestCase {
 		numbers.add(10)"
 	}
 	
+	override instantiateStrings() {
+		"val strings = new WList(); \n #['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach[e| strings.add(e) ]"
+	}
+	
 	@Test
 	def void toStringOnEmptyCollection() {
 		'''
