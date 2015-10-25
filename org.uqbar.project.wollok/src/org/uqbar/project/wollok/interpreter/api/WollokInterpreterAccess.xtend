@@ -33,7 +33,8 @@ class WollokInterpreterAccess {
 	def dispatch boolean isTrue(Object o) { throw new WollokRuntimeException('''Expected a boolean but find: «o»''') }
 
 	// ********************************************************************************************
-	// ** Conversions from native to wollok objects 
+	// ** Conversions from native to wollok objects
+	// ** REVIEWME: we have some other place in the code where we perform java-wollok translations 
 	// ********************************************************************************************
 
 	def <T> T asWollokObject(Object object) { object?.doAsWollokObject as T }

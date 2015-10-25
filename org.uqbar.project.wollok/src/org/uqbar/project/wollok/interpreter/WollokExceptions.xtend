@@ -17,8 +17,8 @@ class WollokRuntimeException extends RuntimeException {
 	new(String message) {
 		super(message)
 	}	
-	new(String message, Exception e) {
-		super(message, e)
+	new(String message, Throwable t) {
+		super(message, t)
 	}
 }
 

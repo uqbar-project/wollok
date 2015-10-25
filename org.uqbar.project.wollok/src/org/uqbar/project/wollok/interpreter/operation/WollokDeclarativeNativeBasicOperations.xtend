@@ -11,6 +11,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumber
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
+import java.lang.reflect.InvocationTargetException
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -32,7 +34,14 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	override asBinaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
 		if (op != null) {
-			[Object a, ()=>Object b| op.invoke(this, a, b) ]
+			[Object a, ()=>Object b| 
+				try {
+					op.invoke(this, a, b)
+				}
+				catch(InvocationTargetException e) {
+					throw new WollokRuntimeException('''Error while resolving «a» «operationSymbol» «b»''', e.cause)
+				}
+			]
 		}
 		else
 			[Object a, ()=>Object b | 

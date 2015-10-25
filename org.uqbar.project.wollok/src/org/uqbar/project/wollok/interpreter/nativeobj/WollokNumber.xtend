@@ -32,6 +32,10 @@ abstract class WollokNumber<T extends Number> extends AbstractWollokWrapperNativ
 	def doubleValue() { wrapped.doubleValue() }
 
 	override toString() { wrapped.toString() }
+	
+	override equals(Object obj) {
+		return this.class.isInstance(obj) && wrapped == (obj as WollokNumber).wrapped 
+	}
 
 }
 

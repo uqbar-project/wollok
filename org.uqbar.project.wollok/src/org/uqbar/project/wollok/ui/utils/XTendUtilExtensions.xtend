@@ -132,6 +132,9 @@ class XTendUtilExtensions {
 	}
 	
 	def static Object wollokToJava(Object o, Class<?> t) {
+		if (t.isInstance(o)) 
+			return o
+
 		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
 		if (o instanceof WollokClosure && t == Function1)
 			return [Object a | (o as WollokClosure).apply(a)]

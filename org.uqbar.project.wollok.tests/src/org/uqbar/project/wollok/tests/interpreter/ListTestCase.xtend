@@ -32,6 +32,17 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void testExists() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.that(numbers.exists[e| e > 20])
+			assert.that(numbers.exists[e| e > 0])
+			assert.notThat(numbers.exists[e| e < 0])
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
 	def void testRemove() {
 		'''
 		program p {
@@ -110,6 +121,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			«instantiateCollectionAsNumbersVariable»
 			var halfs = numbers.map([n | n / 2])
 
+			assert.equals(3, halfs.size())
 			assert.that(halfs.contains(11))
 			assert.that(halfs.contains(5))
 			assert.that(halfs.contains(1))

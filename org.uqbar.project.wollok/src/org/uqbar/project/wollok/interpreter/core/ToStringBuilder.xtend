@@ -17,10 +17,10 @@ class ToStringBuilder {
 
 	def static dispatch objectDescription(WClass clazz) { "a " + clazz.name  }
 	def static dispatch objectDescription(WObjectLiteral obj) { "anObject" }
-	def static dispatch objectDescription(WNamedObject namedObject){ namedObject.name }
+	def static dispatch objectDescription(WNamedObject namedObject) { namedObject.name }
 	
-	def String smartToString(Object obj){
-		if(obj == null)
+	def String smartToString(Object obj) {
+		if (obj == null)
 			"null"
 		else
 			obj.doSmartToString
@@ -28,12 +28,15 @@ class ToStringBuilder {
 
 	def dispatch String doSmartToString(WollokObject obj){
 		val toString = obj.behavior.lookupMethod("toString")
-		if (toString != null)
+		if (toString != null) {
+			println("Calling toString on " + System.identityHashCode(obj) + obj.behavior)
 			obj.call("toString").toString
+		}
 		else{
-			if(alreadyShown.contains(obj)){
+			if (alreadyShown.contains(obj)) {
 				obj.behavior.objectDescription
-			}else{
+			} 
+			else {
 				alreadyShown.add(obj)
 				obj.behavior.objectDescription + obj.instanceVariables.smartToString
 			}

@@ -1,13 +1,22 @@
 package wollok.lang
 
+import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+
 /**
  * Wollok Object class. It's the native part
  * 
  * @author jfernandes
  */
 class WObject {
+	val WollokObject obj
 	
-	// Native methods should be able to access the WollokObject !
-	def identity() { System.identityHashCode(this) }
+	new(WollokObject obj) {
+		this.obj = obj
+	}
+	
+	def identity() { System.identityHashCode(obj) }
+	
+	def randomBetween(int start, int end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 }
