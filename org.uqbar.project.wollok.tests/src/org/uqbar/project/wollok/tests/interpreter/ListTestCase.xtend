@@ -35,7 +35,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testSize() {
+	def void size() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»		
@@ -44,7 +44,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testContains() {
+	def void contains() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -55,7 +55,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testExists() {
+	def void exists() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -66,7 +66,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testRemove() {
+	def void remove() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -76,7 +76,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testClear() {
+	def void clear() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -86,7 +86,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testIsEmpty() {
+	def void isEmpty() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -95,7 +95,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testForEach() {
+	def void forEach() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -108,7 +108,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testForAll() {
+	def void forAll() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -223,6 +223,16 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals(0, numbers.count[e| e < 0])
 		}
 		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void sum() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			
+			assert.equals(34, numbers.sum([n | n]))
+		}'''.interpretPropagatingErrors
 	}
 	
 }
