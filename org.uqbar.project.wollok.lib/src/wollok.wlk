@@ -96,6 +96,8 @@ package lang {
 		method forAll(predicate) = this.fold(true, [ acc, e | if (!acc) acc else predicate.apply(e) ])
 		method exists(predicate) = this.fold(false, [ acc, e | if (acc) acc else predicate.apply(e) ])
 		
+		method detect(predicate) = this.fold(null, [ acc, e | if (acc == null && predicate.apply(e)) e else acc  ])
+		
 		method map(closure) = this.fold(this.newInstance(), [ acc, e |
 			 acc.add(closure.apply(e))
 			 acc

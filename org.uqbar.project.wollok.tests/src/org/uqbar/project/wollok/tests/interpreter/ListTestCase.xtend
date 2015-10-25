@@ -212,4 +212,14 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void detect() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(22, numbers.detect[e| e > 20])
+			assert.equals(null, numbers.detect[e| e > 1000])
+		}
+		'''.interpretPropagatingErrors
+	}
 }
