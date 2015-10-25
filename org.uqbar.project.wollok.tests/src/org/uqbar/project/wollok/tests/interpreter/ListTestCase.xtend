@@ -112,23 +112,13 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var allPositives = numbers.forAll([n | n > 0])
-			assert.that(allPositives)
+			assert.that(numbers.forAll([n | n > 0]))
+			assert.notThat(numbers.forAll([n | n > 5]))
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testForAllWhenItIsFalse() {
-		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			var allPositives = numbers.forAll([n | n > 5])
-			assert.notThat(allPositives)
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void testFilter() {
+	def void filter() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -138,7 +128,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testMap() {
+	def void map() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -152,7 +142,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testShortCutAvoidingParenthesis() {
+	def void shortCutAvoidingParenthesis() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -162,7 +152,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testAny() {
+	def void any() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
@@ -172,7 +162,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testEqualsWithMethodName() {
+	def void equalsWithMethodName() {
 		'''
 		program p {
 			val a = #[23, 2, 1]
@@ -182,7 +172,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testEqualsWithEqualsEquals() {
+	def void equalsWithEqualsEquals() {
 		'''
 		program p {
 			val a = #[23, 2, 1]
@@ -222,4 +212,17 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void count() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(1, numbers.count[e| e > 20])
+			assert.equals(3, numbers.count[e| e > 0])
+			assert.equals(0, numbers.count[e| e < 0])
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 }
