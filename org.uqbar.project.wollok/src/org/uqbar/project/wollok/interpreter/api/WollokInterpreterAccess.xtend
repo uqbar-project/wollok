@@ -17,7 +17,7 @@ class WollokInterpreterAccess {
 	 * which is needed in different parts of the interpreter 
 	 */
 	def boolean wollokEquals(Object a, Object b) {
-		operations.asBinaryOperation("==").apply(a, b).isTrue()
+		operations.asBinaryOperation("==").apply(a, [|b]).isTrue()
 	}
 
 	/**
@@ -25,7 +25,7 @@ class WollokInterpreterAccess {
 	 * which is needed in different parts of the interpreter 
 	 */
 	def boolean wollokGreaterThan(Object a, Object b) {
-		operations.asBinaryOperation(">").apply(a, b).isTrue()
+		operations.asBinaryOperation(">").apply(a, [|b]).isTrue()
 	}
 
 	def dispatch boolean isTrue(Boolean b) { b }

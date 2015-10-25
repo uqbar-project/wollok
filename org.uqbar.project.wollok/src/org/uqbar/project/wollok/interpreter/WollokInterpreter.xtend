@@ -109,7 +109,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	
 	def evalBinary(Object a, String operand, Object b) {
-		evaluator.resolveBinaryOperation(operand).apply(a, b)
+		evaluator.resolveBinaryOperation(operand).apply(a, [|b])
 	}
 
 	/**
