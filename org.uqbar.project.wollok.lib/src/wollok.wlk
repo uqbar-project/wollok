@@ -38,8 +38,8 @@ package lang {
 		method randomBetween(start, end) native
 		
 		method toString() {
-			return "anObject"
-			//return "anObject[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
+			return "anObject[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
+			//return "anObject"
 		}
 		
 		method className() native
@@ -156,6 +156,8 @@ package mirror {
 		new(_target, _name) { target = _target ; name = _name }
 		method name() = name
 		method value() = target.resolve(name)
+		
+		override method toString() = name + "=" + this.value()
 	}
 
 }

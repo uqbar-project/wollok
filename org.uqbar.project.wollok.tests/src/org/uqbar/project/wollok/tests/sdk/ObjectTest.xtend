@@ -11,6 +11,22 @@ import org.junit.Test
 class ObjectTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
+	def void defaultToString() {
+		'''
+			class Perro {
+				var nombre = "Colita"
+				var edad = 7
+			}
+			
+			program p {
+				val perro = new Perro()
+				
+				assert.equals("anObject[edad=7, nombre=Colita]", perro.toString())
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
 	def void instanceVariableFor() {
 		'''
 			class Perro {
@@ -31,25 +47,23 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
-//	@Test
-//	def void instanceVariables() {
-//		'''
-//			class Perro {
-//				var nombre = "Colita"
-//				var edad = 7
-//			}
-//			
-//			program p {
-//				val perro = new Perro()
-//				
-//				val instVars = perro.instanceVariables()
-//				assert.equals(2, instVars.size())
-//«««				assert.that(instVars.contains("nombre"))
-//«««				assert.that(instVars.contains("edad"))
-//				
-//				console.println(instVars)
-//			}
-//		'''.interpretPropagatingErrors
-//	}
+	@Test
+	def void instanceVariables() {
+		'''
+			class Perro {
+				var nombre = "Colita"
+				var edad = 7
+			}
+			
+			program p {
+				val perro = new Perro()
+				
+				val instVars = perro.instanceVariables()
+				assert.equals(2, instVars.size())
+				
+				assert.equals("#[edad=7, nombre=Colita]",instVars.toString())
+			}
+		'''.interpretPropagatingErrors
+	}
 	
 }
