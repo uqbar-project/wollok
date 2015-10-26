@@ -29,7 +29,6 @@ class ToStringBuilder {
 	def dispatch String doSmartToString(WollokObject obj){
 		val toString = obj.behavior.lookupMethod("toString")
 		if (toString != null) {
-			println("Calling toString on " + System.identityHashCode(obj) + obj.behavior)
 			obj.call("toString").toString
 		}
 		else{

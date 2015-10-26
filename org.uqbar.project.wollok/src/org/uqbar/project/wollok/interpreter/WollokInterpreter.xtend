@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
+import com.google.inject.Injector
 import java.io.Serializable
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
@@ -45,6 +46,9 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	@Inject
 	WollokInterpreterConsole console
 	
+	@Inject
+	Injector injector
+	
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 
 	var executionStack = new ObservableStack<XStackFrame>
@@ -55,7 +59,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		instance = this
 	}
 	
-	def static getInstance(){instance}
+	def static getInstance(){ instance }
+	def getInjector() { injector }
+	
+	def getEvaluator() { evaluator }
 	
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	

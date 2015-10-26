@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference
 import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WCallable
@@ -73,20 +72,16 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
-	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
-	
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
 	var Map<String, WeakReference<Object>> numbersCache = newHashMap
-
 	@Inject
 	WollokInterpreter interpreter
-
 	@Inject
 	WollokQualifiedNameProvider qualifiedNameProvider
-
+	
 	/* HELPER METHODS */
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
 	protected def eval(EObject e) { interpreter.eval(e) }
@@ -199,14 +194,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WConstructorCall call) {
 		// hook the implicit relation "* extends Object*
-		call.classRef.hookToObject
+		newInstance(call.classRef, call.arguments.evalEach)
+	}
+	
+	def newInstance(WClass classRef, Object... arguments) {
+		classRef.hookToObject
 		
-		new WollokObject(interpreter, call.classRef) => [ wo |
-			call.classRef.superClassesIncludingYourselfTopDownDo [
+		new WollokObject(interpreter, classRef) => [ wo |
+			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
-			wo.invokeConstructor(call.arguments.evalEach)
+			wo.invokeConstructor(arguments)
 		]
 	}
 	
@@ -214,7 +213,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		if (wClass.parent != null)
 			wClass.parent.hookToObject
 		else {
-			val object = getObjectClass(wClass)
+			val object = WollokClassFinder.getInstance.getObjectClass(wClass)
 			if (wClass != object) { 
 				wClass.parent = object
 				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
@@ -222,23 +221,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		}
 	}
 	
-	@Inject IGlobalScopeProvider scopeProvider
-
-	private WClass objectClass
-	
-	def WClass getObjectClass(EObject context) {
-		if (objectClass == null) {
-			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
-				o.name.toString == OBJECT_CLASS_NAME
-			]
-			val a = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME]
-			if (a == null)
-				throw new WollokRuntimeException("Could NOT find " + OBJECT_CLASS_NAME + " in scope: " + scope.allElements)
-			objectClass = a.EObjectOrProxy as WClass
-		}
-		objectClass
-	}
-
 	def dispatch Object evaluate(WNamedObject namedObject) {
 		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(namedObject).toString
 		
@@ -276,7 +258,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		if (namedObject.parent != null)
 			namedObject.parent.hookToObject
 		else {
-			val object = getObjectClass(namedObject)
+			val object = WollokClassFinder.getInstance.getObjectClass(namedObject)
 			namedObject.parent = object
 			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
 		}

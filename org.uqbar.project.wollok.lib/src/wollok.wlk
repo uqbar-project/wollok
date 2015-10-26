@@ -23,6 +23,9 @@ package lang {
 	 */
 	class WObject {
 		method identity() native
+		method instanceVariables() native
+		method instanceVariableFor(name) native
+		method resolve(name) native
 		
 		method ==(other) {
 			return this === other
@@ -34,7 +37,10 @@ package lang {
 		
 		method randomBetween(start, end) native
 		
-		method toString() { return "anObject" }
+		method toString() {
+			return "anObject"
+			//return "anObject[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
+		}
 		
 		method className() native
 		
@@ -88,6 +94,8 @@ package lang {
 		 
 		// non-native methods
 		
+		method addAll(elements) { elements.forEach[e| this.add(e) ] }
+		
 		method newInstance() = new WList()
 		
 		method isEmpty() = this.size() == 0
@@ -138,4 +146,16 @@ package lib {
 		method notEquals(expected, actual) native
 	}
 	
+}
+
+package mirror {
+
+	class InstanceVariableMirror {
+		val target
+		val name
+		new(_target, _name) { target = _target ; name = _name }
+		method name() = name
+		method value() = target.resolve(name)
+	}
+
 }
