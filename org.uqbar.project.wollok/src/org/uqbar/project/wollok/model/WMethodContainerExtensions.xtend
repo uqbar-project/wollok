@@ -157,11 +157,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
-		c.allMethods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 

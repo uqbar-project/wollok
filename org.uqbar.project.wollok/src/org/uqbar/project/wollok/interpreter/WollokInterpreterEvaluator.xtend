@@ -209,7 +209,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def void hookToObject(WClass wClass) {
+	def static void hookToObject(WClass wClass) {
 		if (wClass.parent != null)
 			wClass.parent.hookToObject
 		else {
@@ -254,7 +254,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def hookObjectInHierarhcy(WNamedObject namedObject) {
+	def static hookObjectInHierarhcy(WNamedObject namedObject) {
 		if (namedObject.parent != null)
 			namedObject.parent.hookToObject
 		else {

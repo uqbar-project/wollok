@@ -43,6 +43,8 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
+
 /**
  * Extension methods to Wollok semantic model.
  * 
@@ -162,7 +164,11 @@ class WollokModelExtensions {
 	
 	def static isValidCallToWKObject(WMemberFeatureCall it) { resolveWKO.isValidCall(it) }
 	
-	def static resolveWKO(WMemberFeatureCall it) { (memberCallTarget as WVariableReference).ref as WNamedObject }
+	def static resolveWKO(WMemberFeatureCall it) { 
+		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
+		obj.hookObjectInHierarhcy
+		obj
+	}
 
 
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {

@@ -18,10 +18,24 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 				var edad = 7
 			}
 			
+			object casa {
+				var ambientes = 3
+				var direccion = "San Juan 1234"
+			}
+			
 			program p {
 				val perro = new Perro()
 				
-				assert.equals("anObject[edad=7, nombre=Colita]", perro.toString())
+				assert.equals("a Perro[edad=7, nombre=Colita]", perro.toString())
+				assert.equals("casa[ambientes=3, direccion=San Juan 1234]", casa.toString())
+				
+				val anonymousObject = object {
+					var edad = 23
+					var altura = 1.7
+				}
+				
+«««				//TODO
+«««				assert.equals("anObject[edad=23, altura=1.7]", anonymousObject.toString())
 			}
 		'''.interpretPropagatingErrors
 	}

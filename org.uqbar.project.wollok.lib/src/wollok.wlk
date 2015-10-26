@@ -26,6 +26,7 @@ package lang {
 		method instanceVariables() native
 		method instanceVariableFor(name) native
 		method resolve(name) native
+		method kindName() native
 		
 		method ==(other) {
 			return this === other
@@ -38,12 +39,8 @@ package lang {
 		method randomBetween(start, end) native
 		
 		method toString() {
-			return "anObject[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
-			//return "anObject"
+			return this.kindName() + "[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
 		}
-		
-		method className() native
-		
 	}
 	
 	class Pair {
