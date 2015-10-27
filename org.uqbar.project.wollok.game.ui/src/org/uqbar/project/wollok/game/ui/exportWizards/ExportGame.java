@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.game.ui.exportWizards;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -31,8 +33,6 @@ public class ExportGame extends Wizard implements IWorkbenchWizard {
 
 	@Override
 	public boolean performFinish() {
-		// Print the result to the console
-		// System.out.println(one.getText1());
 		
 		ZipHandler compressor = new ZipHandler();
 		
@@ -69,52 +69,12 @@ public class ExportGame extends Wizard implements IWorkbenchWizard {
 		try {
 			compressor.makeZipFile(one.getText1());
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
 		}
-//		try {
-//			FileOutputStream fos = new FileOutputStream(one.getText1());
-//			ZipOutputStream zos = new ZipOutputStream(fos);
-//
-//			// WLK Files
-//			String workingDir = ResourcesPlugin.getWorkspace().getRoot().findMember(this.getProjectPath()).getLocation().toString(); //.getLocation().toString() + this.getProjectPath(); 
-//			File f = new File(workingDir + "/src");
-//			File[] matchingFiles = f.listFiles(new FilenameFilter() {
-//				public boolean accept(File dir, String name) {
-//					return name.endsWith("wlk") || name.endsWith("wpgm");
-//				}
-//			});
-//			for (int i = 0; i < matchingFiles.length; i++)
-//				addToZipFile("src",  matchingFiles[i], zos);
-//			// JSON
-//			f = new File(workingDir);
-//			matchingFiles = f.listFiles(new FilenameFilter() {
-//				public boolean accept(File dir, String name) {
-//					return name.endsWith("json");
-//				}
-//			});
-//			for (int i = 0; i < matchingFiles.length; i++)
-//				addToZipFile("",  matchingFiles[i], zos);
-//			
-//			//PNG
-//			f = new File(workingDir+ "/assets");
-//			matchingFiles = f.listFiles(new FilenameFilter() {
-//				public boolean accept(File dir, String name) {
-//					return name.endsWith("png");
-//				}
-//			});
-//			for (int i = 0; i < matchingFiles.length; i++)
-//				addToZipFile("assets",  matchingFiles[i], zos);			
-//			
-//			
-//			zos.close();
-//			fos.close();
-//
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 		return true;
 	}
 

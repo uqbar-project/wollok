@@ -38,37 +38,37 @@ public class ZipHandler {
 		this.fileList.add(aFile);
 	}
 
-	public String getProjectPath(){
-		return ResourcesPlugin.getWorkspace().getRoot().findMember(this.getProjectName()).getLocation().toString();
-	}
-	public IPath getProjectIPath(){
-		return ResourcesPlugin.getWorkspace().getRoot().findMember(this.getProjectName()).getLocation();
-	}
-	public void makeZipFile(String fileOutput) throws FileNotFoundException {
-		try {
-			FileOutputStream fos = new FileOutputStream(fileOutput);
-			ZipOutputStream zos = new ZipOutputStream(fos);
-			for (int i = 0; i < fileList.size(); i++){
-				File fileToAdd = fileList.get(i);
-				if (fileToAdd.getName().contains(".json"))
-					addToZipFile("", fileToAdd , zos);
-				else if (fileToAdd.getName().contains(".wlk") || fileToAdd.getName().contains(".wpgm"))
-					addToZipFile("src", fileToAdd , zos);
-				else if (fileToAdd.getName().contains(".png"))
-					addToZipFile("assets", fileToAdd , zos);				
-			}
-			
-			zos.close();
-			fos.close();				
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
+	public String getProjectPath() {
+		return ResourcesPlugin.getWorkspace().getRoot()
+				.findMember(this.getProjectName()).getLocation().toString();
 	}
 
-	private void addToZipFile(String folder, File aFile,
-			ZipOutputStream zos) throws FileNotFoundException, IOException {
+	public IPath getProjectIPath() {
+		return ResourcesPlugin.getWorkspace().getRoot()
+				.findMember(this.getProjectName()).getLocation();
+	}
+
+	public void makeZipFile(String fileOutput) throws FileNotFoundException,
+			IOException {
+		FileOutputStream fos = new FileOutputStream(fileOutput);
+		ZipOutputStream zos = new ZipOutputStream(fos);
+		for (int i = 0; i < fileList.size(); i++) {
+			File fileToAdd = fileList.get(i);
+			if (fileToAdd.getName().contains(".json"))
+				addToZipFile("", fileToAdd, zos);
+			else if (fileToAdd.getName().contains(".wlk")
+					|| fileToAdd.getName().contains(".wpgm"))
+				addToZipFile("src", fileToAdd, zos);
+			else if (fileToAdd.getName().contains(".png"))
+				addToZipFile("assets", fileToAdd, zos);
+		}
+
+		zos.close();
+		fos.close();
+	}
+
+	private void addToZipFile(String folder, File aFile, ZipOutputStream zos)
+			throws FileNotFoundException, IOException {
 
 		System.out.println("Escribiendo '" + aFile.getName()
 				+ "' al archivo zip");
@@ -99,17 +99,21 @@ public class ZipHandler {
 			destDir.mkdir();
 		}
 		new File(destDirectory + "/assets").mkdir();
-		
-		IJavaProject javaProject = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().findMember(this.getProjectName()).getProject());
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().findMember(this.getProjectName()).getProject();
+
+		IJavaProject javaProject = JavaCore.create(ResourcesPlugin
+				.getWorkspace().getRoot().findMember(this.getProjectName())
+				.getProject());
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.findMember(this.getProjectName()).getProject();
 		IFolder sourceFolder = project.getFolder("assets");
-		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(sourceFolder);
+		IPackageFragmentRoot root = javaProject
+				.getPackageFragmentRoot(sourceFolder);
 		IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
 		IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
 		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
 		newEntries[oldEntries.length] = JavaCore.newSourceEntry(root.getPath());
-		javaProject.setRawClasspath(newEntries, null);		
-		
+		javaProject.setRawClasspath(newEntries, null);
+
 		ZipInputStream zipIn = new ZipInputStream(new FileInputStream(
 				zipFilePath));
 		ZipEntry entry = zipIn.getNextEntry();
@@ -128,7 +132,7 @@ public class ZipHandler {
 			entry = zipIn.getNextEntry();
 		}
 		zipIn.close();
-		
+
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 

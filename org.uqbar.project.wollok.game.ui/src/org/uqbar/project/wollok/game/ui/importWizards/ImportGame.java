@@ -44,17 +44,17 @@ public class ImportGame extends Wizard implements IWorkbenchWizard {
 		// System.out.println(one.getText1());
 		ZipHandler compressor = new ZipHandler();
 		try {
-				compressor.extractFromZipFile(one.getText1(),
-						compressor.getProjectPath());
+			compressor.extractFromZipFile(one.getText1(),
+					compressor.getProjectPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		} catch (JavaModelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}
