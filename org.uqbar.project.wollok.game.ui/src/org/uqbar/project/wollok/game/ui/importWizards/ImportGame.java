@@ -47,18 +47,19 @@ public class ImportGame extends Wizard implements IWorkbenchWizard {
 			compressor.extractFromZipFile(one.getText1(),
 					compressor.getProjectPath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			one.setErrorMessage(e.getMessage());
 			return false;
 		} catch (JavaModelException e) {
-			e.printStackTrace();
+			one.setErrorMessage(e.getMessage());
 			return false;
 		} catch (CoreException e) {
-			e.printStackTrace();
+			one.setErrorMessage(e.getMessage());
 			return false;
 		}
 		return true;
 	}
 
+	
 	@Override
 	public void init(IWorkbench arg0, IStructuredSelection arg1) {
 		// TODO Auto-generated method stub

@@ -69,10 +69,10 @@ public class ExportGame extends Wizard implements IWorkbenchWizard {
 		try {
 			compressor.makeZipFile(one.getText1());
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			one.setErrorMessage(e.getMessage());
 			return false;
 		} catch (IOException e) {
-			e.printStackTrace();
+			one.setErrorMessage(e.getMessage());
 			return false;
 		}
 		return true;
