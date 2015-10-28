@@ -71,7 +71,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name) }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
@@ -141,13 +141,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c != null && (c.methods.exists[name == mname] || c.parent.hasOrInheritMethod(mname))
 	}
 
-	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message) { 
-		val method = behavior.methods.findFirst[name == message]
+	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
+		val method = behavior.methods.findFirst[name == message && parameters.size == params.size]
 		
 		if (method != null) 
 			return method
 		else if (behavior.parent != null)
-			behavior.parent.lookupMethod(message)
+			behavior.parent.lookupMethod(message, params)
 		else 
 			null
 	}
@@ -223,13 +223,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static tryInstantiate(()=>Object... closures) {
-		var NoSuchMethodException lastException = null
+		var Exception lastException = null
 		for (c : closures) {
 			try
 				return c.apply
 			catch (NoSuchMethodException e) {
 				lastException = e
-			}	
+			}
+			catch (InstantiationException e) {
+				lastException = e
+			}
 		}
 		throw new WollokRuntimeException("Error while instantiating native class. No valid constructor: (), or (WollokObject) or (WollokObject, WollokInterpreter)", lastException)
 	}

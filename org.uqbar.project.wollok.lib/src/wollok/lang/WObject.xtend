@@ -24,7 +24,7 @@ class WObject {
 	
 	def identity() { System.identityHashCode(obj) }
 	
-	def randomBetween(int start, int end) { XTendUtilExtensions.randomBetween(start, end) }
+	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
 	
@@ -51,7 +51,7 @@ class WObject {
 	
 	def newList(Collection<?> elements) {
 		val list = newInstance("wollok.lang.WList")
-		elements.forEach[it| 
+		elements.forEach[ 
 			list.call("add", it)
 		]
 		list

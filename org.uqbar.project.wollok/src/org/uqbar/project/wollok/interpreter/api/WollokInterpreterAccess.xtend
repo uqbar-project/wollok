@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.interpreter.api
 
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
@@ -11,6 +12,8 @@ import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBas
  */
 class WollokInterpreterAccess {
 	WollokBasicBinaryOperations operations = new WollokDeclarativeNativeBasicOperations
+	
+	public static val INSTANCE = new WollokInterpreterAccess
 	
 	/**
 	 * Helper method for simple access to wollok equality between objects, 
@@ -38,7 +41,11 @@ class WollokInterpreterAccess {
 	// ********************************************************************************************
 
 	def <T> T asWollokObject(Object object) { object?.doAsWollokObject as T }
-	def dispatch doAsWollokObject(Integer i) { new WollokInteger(i) }
-	def dispatch doAsWollokObject(Double d) { new WollokDouble(d) }
+	def dispatch doAsWollokObject(Integer i) { evaluator.instantiateNumber(i.toString) }
+	def dispatch doAsWollokObject(Double d) { evaluator.instantiateNumber(d.toString) }
 	def dispatch doAsWollokObject(Object o) { o }
+	
+	def evaluator() {
+		WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator
+	}
 }

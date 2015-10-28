@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
 /**
- * 
+ * @deprecated
  */
+@Deprecated
 abstract class WollokNumber<T extends Number> extends AbstractWollokWrapperNativeObject<T> implements Comparable<WollokNumber<T>> {
 
 	new(T wrapped) {
@@ -39,6 +40,10 @@ abstract class WollokNumber<T extends Number> extends AbstractWollokWrapperNativ
 
 }
 
+/**
+ * @deprecated use WInteger
+ */
+@Deprecated
 class WollokInteger extends WollokNumber<Integer> {
 	new(Integer wrapped) {
 		super(wrapped)
@@ -56,6 +61,10 @@ class WollokInteger extends WollokNumber<Integer> {
 
 }
 
+/**
+ * @deprecated use WDouble
+ */
+@Deprecated
 class WollokDouble extends WollokNumber<Double> {
 	new(Double wrapped) {
 		super(wrapped)

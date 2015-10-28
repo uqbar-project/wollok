@@ -19,7 +19,9 @@ class WollokRange extends AbstractWollokWrapperNativeObject<IntegerRange> {
 	}
 	
 	def forEach(WollokClosure proc) { 
-		wrapped.forEach[i | proc.apply(new WollokInteger(i)) ]
+		// don't instantiate WollokInteger, use WInteger instead
+		wrapped.forEach[i | proc.apply(newInstance(i)) ]
 	}
+	
 	
 }

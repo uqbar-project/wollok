@@ -13,6 +13,11 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
 import java.util.List
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 /**
  * Utilities for xtend code
@@ -127,8 +132,13 @@ class XTendUtilExtensions {
 		}
 		val converted = newArrayList
 		args.fold(0)[i, a | converted.add(a.wollokToJava(m.parameterTypes.get(i))); i + 1 ]
-		val returnVal = m.invoke(o, converted.toArray)
-		javaToWollok(returnVal)
+		try {
+			val returnVal = m.invoke(o, converted.toArray)
+			javaToWollok(returnVal)
+		}
+		catch (IllegalArgumentException e) {
+			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted)
+		}
 	}
 	
 	def static Object wollokToJava(Object o, Class<?> t) {
@@ -138,10 +148,22 @@ class XTendUtilExtensions {
 		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
 		if (o instanceof WollokClosure && t == Function1)
 			return [Object a | (o as WollokClosure).apply(a)]
+		// new conversions
+		if (o.isNativeType("wollok.lang.WInteger") && (t == Integer || t == Integer.TYPE)) {
+			return ((o as WollokObject).getNativeObject("wollok.lang.WInteger") as JavaWrapper<Integer>).wrapped
+		}
+		if (o.isNativeType("wollok.lang.WDouble") && (t == Integer || t == Integer.TYPE)) {
+			return ((o as WollokObject).getNativeObject("wollok.lang.WDouble") as JavaWrapper<Double>).wrapped
+		}
+		if (o.isNativeType("wollok.lang.WList") && (t == Collection || t == List)) {
+			return ((o as WollokObject).getNativeObject("wollok.lang.WList") as JavaWrapper<List>).wrapped
+		}
+		
 		if (o instanceof WollokInteger && (t == Integer || t == Integer.TYPE))
 			return (o as WollokInteger).wrapped
 		if (o instanceof WollokDouble && (t == Double || t == Double.TYPE))
 			return (o as WollokDouble).wrapped
+			
 		if (o instanceof WollokList && (t == Collection || t == List))
 			return (o as WollokList).wrapped
 		if (t == Object)
@@ -149,14 +171,18 @@ class XTendUtilExtensions {
 		if(t.primitive)
 			return o	
 		
-		throw new RuntimeException('''Cannot convert parameter "«o»" to type "«t.simpleName»""''')
+		throw new RuntimeException('''Cannot convert parameter "«o»" of type «o.class.name» to type "«t.simpleName»""''')
 	}
+	
+	def static dispatch isNativeType(Object o, String type) { false }
+	def static dispatch isNativeType(Void o, String type) { false }
+	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
 	
 	def static Object javaToWollok(Object o) {
 		if (o == null)
 			return null
 		if (o instanceof Integer)
-			return new WollokInteger(o as Integer)
+			return (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).instantiateNumber(o.toString)
 		o
 	}
 	

@@ -3,9 +3,11 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WCallable
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * Abstract base class for all native objects that implements
@@ -72,4 +74,8 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
 
 	def identity() { System.identityHashCode(this) }
+	
+	def newInstance(Number naitive) {
+		(WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).instantiateNumber(naitive.toString)
+	} 
 }

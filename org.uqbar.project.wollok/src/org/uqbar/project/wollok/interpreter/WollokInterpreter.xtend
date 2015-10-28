@@ -52,6 +52,8 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 
 	var executionStack = new ObservableStack<XStackFrame>
+	
+	@Accessors var EObject evaluating
 
 	static var WollokInterpreter instance = null 
 
@@ -84,7 +86,11 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			executionStack.push(stackFrame)
 			debugger.started
 			
+			evaluating = rootObject
+			
 			evaluator.evaluate(rootObject)
+			
+//			evaluating = null
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			throw e

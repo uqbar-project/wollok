@@ -115,21 +115,11 @@ public class ObjectLiteralWollokType extends BasicType implements ConcreteType {
     WMethodDeclaration _xblockexpression = null;
     {
       String _name = message.getName();
-      final WMethodDeclaration m = WMethodContainerExtensions.lookupMethod(this.object, _name);
+      List<WollokType> _parameterTypes = message.getParameterTypes();
+      final WMethodDeclaration m = WMethodContainerExtensions.lookupMethod(this.object, _name, _parameterTypes);
       WMethodDeclaration _xifexpression = null;
-      boolean _and = false;
       boolean _notEquals = (!Objects.equal(m, null));
-      if (!_notEquals) {
-        _and = false;
-      } else {
-        EList<WParameter> _parameters = m.getParameters();
-        int _size = _parameters.size();
-        List<WollokType> _parameterTypes = message.getParameterTypes();
-        int _size_1 = _parameterTypes.size();
-        boolean _equals = (_size == _size_1);
-        _and = _equals;
-      }
-      if (_and) {
+      if (_notEquals) {
         _xifexpression = m;
       } else {
         _xifexpression = null;

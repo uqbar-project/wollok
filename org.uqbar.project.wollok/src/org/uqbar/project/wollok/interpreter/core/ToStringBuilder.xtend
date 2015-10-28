@@ -27,11 +27,11 @@ class ToStringBuilder {
 	}
 
 	def dispatch String doSmartToString(WollokObject obj){
-		val toString = obj.behavior.lookupMethod("toString")
+		val toString = obj.behavior.lookupMethod("toString", #[])
 		if (toString != null) {
 			obj.call("toString").toString
 		}
-		else{
+		else {
 			if (alreadyShown.contains(obj)) {
 				obj.behavior.objectDescription
 			} 

@@ -175,7 +175,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		call.inferredNode
 		// solo se vincula con un método de this
 		if (call.memberCallTarget instanceof WThis) {
-			val referencedMethod = call.method.declaringContext.lookupMethod(call.feature)
+			val referencedMethod = call.method.declaringContext.lookupMethod(call.feature, call.memberCallArguments)
 			call <=> referencedMethod
 		}
 	}

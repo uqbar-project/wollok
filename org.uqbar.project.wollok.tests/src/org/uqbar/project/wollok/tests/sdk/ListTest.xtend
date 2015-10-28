@@ -46,5 +46,19 @@ class ListTest extends ListTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testContainsWithComplexObjects() {
+		'''
+			object o1 {}
+			object o2 {}
+			
+		program p {
+			val list = #[o1, o2]
+			
+			assert.that(list.contains(o1))
+			assert.that(list.contains(o2))
+		}'''.interpretPropagatingErrors
+	}
+	
 	
 }

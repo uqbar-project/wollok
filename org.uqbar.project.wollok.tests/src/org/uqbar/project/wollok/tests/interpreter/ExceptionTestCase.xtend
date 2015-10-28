@@ -2,6 +2,9 @@ package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import wollok.lang.WInteger
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Tests wollok exceptions handling mechanism.
@@ -33,8 +36,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''].interpretPropagatingErrors
 			
-		val counter = interpreter.currentContext.resolve("counter")
-		assertEquals(0, (counter as WollokInteger).wrapped)
+		val counter = interpreter.currentContext.resolve("counter") as WollokObject
+		assertEquals(0, counter.asInteger)
 	}
 	
 	@Test
@@ -56,8 +59,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					counter = counter + 1
 			}'''.
 			interpretPropagatingErrors
-			val counter = interpreter.currentContext.resolve("counter")
-			assertEquals(1, (counter as WollokInteger).wrapped)
+			val counter = interpreter.currentContext.resolve("counter") as WollokObject
+			assertEquals(1, counter.asInteger)
 	}
 	
 	@Test
@@ -84,8 +87,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.
 		interpretPropagatingErrors
-		val counter = interpreter.currentContext.resolve("counter")
-		assertEquals(2, (counter as WollokInteger).wrapped)
+		val counter = interpreter.currentContext.resolve("counter") as WollokObject
+		assertEquals(2, counter.asInteger)
 	}
 
 	@Test

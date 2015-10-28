@@ -55,7 +55,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 			object mostaza {
 				method entrenar() {
-					return #[pepita, pepona].map[p| p.getNombre()].join()
+					return #[pepita, pepona].map[p| p.getNombre()].join(',')
 				} 
 			}
 		''',

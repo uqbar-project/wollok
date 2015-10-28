@@ -32,6 +32,8 @@ package lang {
 			return this === other
 		}
 		
+		method equals(other) = this == other
+		
 		method ->(other) {
 			return new Pair(this, other)
 		}
@@ -39,7 +41,26 @@ package lang {
 		method randomBetween(start, end) native
 		
 		method toString() {
-			return this.kindName() + "[" + this.instanceVariables().map[v| v.name() + "=" + v.value() ].join(', ')  + "]"
+			// TODO: should be a set
+			// return this.toSmartString(#{})
+			return this.toSmartString(#[])
+		}
+		method toSmartString(alreadyShown) {
+			if (alreadyShown.exists[e| e.identity() == this.identity()] ) { 
+				return this.kindName() 
+			}
+			else {
+				//console.println(this.kindName() + " NOT SHOWN, so showing it. Shown List size = " + alreadyShown.size())
+				alreadyShown.add(this)
+				return this.internalToSmartString(alreadyShown)
+			}
+		} 
+		method internalToSmartString(alreadyShown) {
+			return this.kindName() + "[" 
+				+ this.instanceVariables().map[v| 
+					v.name() + "=" + v.valueToSmartString(alreadyShown)
+				].join(', ') 
+			+ "]"
 		}
 	}
 	
@@ -56,21 +77,7 @@ package lang {
 		method getValue() { this.getY() }
 	}
 	
-	/**
-	 *
-	 * @author jfernandes
-	 * @since 1.3
-	 */
-	class WList {
-		
-		method fold(initialValue, closure) native
-		method add(element) native
-		method remove(element) native
-		method size() native
-		method get(index) native
-		method clear() native
-		method join(separator) native
-		
+	class WCollection {
 		method max(closure) = this.absolute(closure, [a,b | a > b])
 		method min(closure) = this.absolute(closure, [a,b | a < b])
 		
@@ -92,8 +99,6 @@ package lang {
 		// non-native methods
 		
 		method addAll(elements) { elements.forEach[e| this.add(e) ] }
-		
-		method newInstance() = new WList()
 		
 		method isEmpty() = this.size() == 0
 				
@@ -117,6 +122,54 @@ package lang {
 				
 		method contains(e) = this.exists[one | e == one ]
 		
+		override method internalToSmartString(alreadyShown) {
+			return this.toStringPrefix() + this.map[e| e.toSmartString(alreadyShown) ].join(', ') + this.toStringSufix()
+		}
+		
+		method toStringPrefix()
+		method toStringSufix()
+		
+		method newInstance()
+	}
+
+	/**
+	 *
+	 * @author jfernandes
+	 * @since 1.3
+	 */	
+	class WSet extends WCollection {
+	
+		override method newInstance() = new WSet()
+		override method toStringPrefix() = "#{"
+		override method toStringSufix() = "}"
+		
+		method any() = this.first()
+		
+		method first() native
+		
+		// REFACTORME: DUP METHODS
+		method fold(initialValue, closure) native
+		method add(element) native
+		method remove(element) native
+		method size() native
+		method clear() native
+		method join(separator) native
+		method join() native
+		method equals(other) native
+		method ==(other) native
+	}
+	
+	/**
+	 *
+	 * @author jfernandes
+	 * @since 1.3
+	 */
+	class WList extends WCollection {
+
+		method get(index) native
+		
+		override method newInstance() = new WList()
+		
 		method any() {
 			if (this.isEmpty()) 
 				throw new Exception() //("Illegal operation 'any' on empty collection")
@@ -124,9 +177,92 @@ package lang {
 				return this.get(this.randomBetween(0, this.size()))
 		}
 		
-		override method toString() = "#[" + this.join(",") + "]"
+		override method toStringPrefix() = "#["
+		override method toStringSufix() = "]"
+		
+		// REFACTORME: DUP METHODS
+		method fold(initialValue, closure) native
+		method add(element) native
+		method remove(element) native
+		method size() native
+		method clear() native
+		method join(separator) native
+		method join() native
+		method equals(other) native
+		method ==(other) native
 	}
 	
+	/**
+	 *
+	 * @author jfernandes
+	 * @since 1.3
+	 * @noInstantiate
+	 */	
+	class Number {
+		method max(other) = if (this >= other) this else other
+		method min(other) = if (this <= other) this else other
+		
+		method !=(other) = ! (this == other)
+	}
+	
+	/**
+	 * @author jfernandes
+	 * @since 1.3
+	 * @noInstantiate
+	 */
+	class WInteger extends Number {
+		method ==(other) native
+		method +(other) native
+		method -(other) native
+		method *(other) native
+		method /(other) native
+		method **(other) native
+		method %(other) native
+		
+		method toString() native
+		
+		override method internalToSmartString(alreadyShown) { return this.stringValue() }
+		method stringValue() native	
+		
+		method ..(end) native
+		
+		method >(other) native
+		method >=(other) native
+		method <(other) native
+		method <=(other) native
+		
+		method abs() native
+		method invert() native
+	}
+	
+	/**
+	 * @author jfernandes
+	 * @since 1.3
+	 * @noInstantiate
+	 */
+	class WDouble extends Number {
+		method ==(other) native
+		method +(other) native
+		method -(other) native
+		method *(other) native
+		method /(other) native
+		method **(other) native
+		method %(other) native
+		
+		method toString() native
+		
+		override method internalToSmartString(alreadyShown) { return this.stringValue() }
+		method stringValue() native	
+		
+		method >(other) native
+		method >=(other) native
+		method <(other) native
+		method <=(other) native
+		
+		method abs() native
+		method invert() native
+	}
+
 }
  
 package lib {
@@ -154,7 +290,12 @@ package mirror {
 		method name() = name
 		method value() = target.resolve(name)
 		
-		override method toString() = name + "=" + this.value()
+		method valueToSmartString(alreadyShown) {
+			val v = this.value()
+			return if (v == null) "null" else v.toSmartString(alreadyShown)
+		}
+
+		method toString() = name + "=" + this.value()
 	}
 
 }

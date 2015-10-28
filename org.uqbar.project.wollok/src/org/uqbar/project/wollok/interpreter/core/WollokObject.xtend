@@ -56,7 +56,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override getThisObject() { this }
 	
 	override call(String message, Object... parameters) {
-		val method = behavior.lookupMethod(message)
+		val method = behavior.lookupMethod(message, parameters)
 		if (method != null)
 			return method.call(parameters)
 
@@ -165,6 +165,14 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override addGlobalReference(String name, Object value) {
 		interpreter.addGlobalReference(name, value)
 	}
+	
+	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
+	def <T> getNativeObject(String clazz) { this.nativeObjects.values.findFirst[clazz == it.class.name ] as T }
+	
+	def hasNativeType(String type) {
+		nativeObjects.values.exists[n| n.class.name == type ]
+	}
+	
 }
 
 /**
