@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UqbarPropertyPageContrib
+Bundle-SymbolicName: UqbarPropertyPageContrib
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: uqbarpropertypagecontrib.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.databinding,
+ org.eclipse.core.resources,
+ org.eclipse.jface.databinding
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: uqbarpropertypagecontrib

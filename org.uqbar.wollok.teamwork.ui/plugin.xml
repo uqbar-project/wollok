@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+  <extension point="org.eclipse.team.core.repository">
+  <repository
+    class="org.uqbar.wollok.teamwork.RepositoryProvider"
+    typeClass="org.uqbar.wollok.teamwork.RepositoryProviderType"
+    id="org.uqbar.wollok.teamwork.RepositoryProvider"
+    canImportId=""
+    metaFilePaths="">
+  </repository>
+</extension>
+
+  <extension
+        point="org.eclipse.team.ui.configurationWizards">
+        <wizard
+		name="Wollok Teamwork"
+		icon="icons/full/wizards/wollok-teamwork.png"	
+		class="org.uqbar.wollok.teamwork.ui.SharingWizard"
+		id="org.uqbar.wollok.teamwork.ui.SharingWizard">
+	</wizard>
+  </extension>
+  
+  
+  
+  
+     <extension point="org.eclipse.core.expressions.definitions">
+      <definition id="org.uqbar.wollok.teamwork.ResourceShared">
+         <iterate ifEmpty="false">
+            <adapt type="org.eclipse.core.resources.IResource">
+               <test property="org.eclipse.core.resources.projectPersistentProperty"
+                     value="org.uqbar.wollok.teamwork.RepositoryProvider"/>
+            </adapt>
+         </iterate>
+      </definition>
+      <definition id="org.uqbar.wollok.teamwork.ProjectShared">
+         <iterate ifEmpty="false">
+            <adapt type="org.eclipse.core.resources.IProject">
+               <test property="org.eclipse.core.resources.projectPersistentProperty"
+                     value="org.uqbar.wollok.teamwork.RepositoryProvider"/>
+            </adapt>
+         </iterate>
+      </definition>
+   </extension>
+   
+ 
+<!-- this is using popupMenu, the class must be IActionDelegate -->   
+ <extension
+    point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           objectClass="org.eclipse.core.resources.IProject"
+           adaptable="true"
+           id="org.uqbar.wollok.teamwork.ui.IProjectContributions">
+        <filter
+              name="projectPersistentProperty"
+              value="org.eclipse.team.core.repository=org.uqbar.wollok.teamwork.RepositoryProvider">
+        </filter>
+        <action
+              label="Disconnect"
+              tooltip="desconectalo che"
+              class="org.uqbar.wollok.teamwork.ui.DisconnectAction"
+              menubarPath="team.main/group3"
+              id="org.uqbar.wollok.teamwork.ui.DisconnectAction">
+        </action>
+    </objectContribution>
+ </extension>
+
+
+
+
+</plugin>
