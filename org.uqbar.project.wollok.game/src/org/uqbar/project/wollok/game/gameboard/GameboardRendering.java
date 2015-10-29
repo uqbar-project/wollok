@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import org.uqbar.project.wollok.game.VisualComponent;
-import org.uqbar.project.wollok.game.listeners.GameboardListener;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
