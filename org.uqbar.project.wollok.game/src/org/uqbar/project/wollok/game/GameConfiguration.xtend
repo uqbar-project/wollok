@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.game
 
+import java.util.ArrayList
+import java.util.Collections
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.listeners.ArrowListener
-import java.util.List
-import java.util.ArrayList
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 
 @Accessors

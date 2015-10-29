@@ -5,7 +5,6 @@ import org.uqbar.project.wollok.game.listeners.GameboardListener;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,8 +44,14 @@ public class GameboardRendering implements ApplicationListener {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
-		for (GameboardListener listener : gameboard.getListeners()) {
+		/*for (GameboardListener listener : gameboard.getListeners()) {
 			listener.notify(gameboard);
+		}
+		NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA 
+		AL MOMENTO DE ELIMINAR VALORES DE LA LISTA
+		 */
+		for (int i=0;i<  gameboard.getListeners().size(); i++){
+			gameboard.getListeners().get(i).notify(gameboard);
 		}
 
 		for (Cell cell : gameboard.getCells()) {
