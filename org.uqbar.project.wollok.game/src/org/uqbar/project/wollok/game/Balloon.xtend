@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.Color
 
 class Balloon {
 
@@ -17,16 +19,27 @@ class Balloon {
 	}
 
 	def void draw(SpriteBatch batch, String text) {
-		var textBitmap = new BitmapFont();
-//		var lenght = text.length
-//		var rows = lenght / 8
+		var newText = text
+		if (text.length > 50)
+			newText = text.substring(0,49) + "..."
+			
+		var textBitmap = new BitmapFont()
+		var glyphLayout = new GlyphLayout()
+		val width = 75
+		var plusWidth = 0 
+		glyphLayout.setText(textBitmap,newText,new Color(0,0,0,100),width,3,true)
+		while(glyphLayout.height > 29){
+			glyphLayout.reset
+			plusWidth += 10
+			glyphLayout.setText(textBitmap,newText,new Color(0,0,0,100),width + plusWidth,3,true)
+		}
 		
 		var character = Gameboard.getInstance.getCharacter()
-		var	x = character.getPosition().getXinPixels() + 40;
-		var y = character.getPosition().getYinPixels() + 40;
-		patch.draw(batch, x, y, 100, 85);
+		var	x = character.getPosition().getXinPixels() + 40
+		var y = character.getPosition().getYinPixels() + 40
+		patch.draw(batch, x, y, 100 + plusWidth, 85)
 		
-		textBitmap.setColor(0, 0, 0, 100);
-		textBitmap.draw(batch, text, x + 10, y + 75, 75, 3, true);
+		textBitmap.setColor(0, 0, 0, 100)
+		textBitmap.draw(batch, glyphLayout, x + 10, y + 75);
 	}
 }

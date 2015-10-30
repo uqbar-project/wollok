@@ -64,7 +64,7 @@ public class GameboardRendering implements ApplicationListener {
 		}
 		if (gameboard.getCharacter()!= null){
 			this.draw(gameboard.getCharacter());
-			balloon.draw(batch,"Quiero aprobar proyecto...");
+			balloon.draw(batch,"poasdfposopadf pop  posadfpspdaof poasdfp posadfpoasdpfapsdf");
 		}
 		
 		
