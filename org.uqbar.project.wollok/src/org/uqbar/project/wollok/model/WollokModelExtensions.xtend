@@ -6,6 +6,7 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -41,9 +42,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-
 import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -143,11 +143,11 @@ class WollokModelExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
 	
-	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it) {
+	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
 		if (isCallOnThis) 
 			method.declaringContext.findMethod(it)
 		else if (isCallToWellKnownObject)
-			resolveWKO.findMethod(it)
+			resolveWKO(finder).findMethod(it)
 		else
 		 // TODO: call to super (?)
 		 	null
@@ -162,11 +162,11 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 	
-	def static isValidCallToWKObject(WMemberFeatureCall it) { resolveWKO.isValidCall(it) }
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it) }
 	
-	def static resolveWKO(WMemberFeatureCall it) { 
+	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
 		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarhcy
+		obj.hookObjectInHierarhcy(finder)
 		obj
 	}
 

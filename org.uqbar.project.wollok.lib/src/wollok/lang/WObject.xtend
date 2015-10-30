@@ -45,8 +45,7 @@ class WObject {
 	}
 	
 	def newInstance(String className, Object... arguments) {
-		val mirrorClass = WollokClassFinder.getInstance.searchClass(className, obj.behavior)
-		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(mirrorClass, arguments)
+		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(className, arguments)
 	}
 	
 	def newList(Collection<?> elements) {

@@ -8,6 +8,8 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import com.google.inject.Inject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 
 /**
  * Extends the default xtext class
@@ -27,6 +29,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 //  una en findCrossReferenceNode()
 //  y de nuevo en getCrossReferencedElement()
 class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
+	@Inject
+	WollokClassFinder classFinder
 
 	override protected findCrossReferenceNode(INode node) {
 		val semantic = node.semanticElement
@@ -36,7 +40,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 			super.findCrossReferenceNode(node)
 	}
 	
-	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod != null }
+	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) != null }
 	
 	override getCrossReferencedElement(INode node) {
 		val ref = node.semanticElement.resolveReference
@@ -46,7 +50,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 			super.getCrossReferencedElement(node)
 	}
 	
-	def dispatch resolveReference(WMemberFeatureCall it) { resolveMethod }
+	def dispatch resolveReference(WMemberFeatureCall it) { resolveMethod(classFinder) }
 	def dispatch resolveReference(WSuperInvocation it) { superMethod }
 	def dispatch resolveReference(EObject it) { null }
 	

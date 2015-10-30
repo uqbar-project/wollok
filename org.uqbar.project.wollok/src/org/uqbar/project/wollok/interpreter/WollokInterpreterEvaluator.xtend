@@ -81,6 +81,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	WollokInterpreter interpreter
 	@Inject
 	WollokQualifiedNameProvider qualifiedNameProvider
+	@Inject WollokClassFinder classFinder
 	
 	/* HELPER METHODS */
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
@@ -209,11 +210,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 	
 	def newInstance(String classFQN, Object... arguments) {
-		newInstance(WollokClassFinder.getInstance.searchClass(classFQN, interpreter.evaluating), arguments)
+		newInstance(classFinder.searchClass(classFQN, interpreter.evaluating), arguments)
 	}
 	
 	def newInstance(WClass classRef, Object... arguments) {
-		classRef.hookToObject
+		classRef.hookToObject(classFinder)
 		
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
@@ -224,12 +225,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def static void hookToObject(WClass wClass) {
+	def static void hookToObject(WClass wClass, WollokClassFinder finder) {
 		if (wClass.parent != null)
-			wClass.parent.hookToObject
+			wClass.parent.hookToObject(finder)
 		else {
-			val object = WollokClassFinder.getInstance.getObjectClass(wClass)
-			if (wClass != object) { 
+			val object = finder.getObjectClass(wClass)
+			if (wClass.fqn != object.fqn) { 
 				wClass.parent = object
 				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
 			}
@@ -249,7 +250,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarhcy
+		namedObject.hookObjectInHierarhcy(classFinder)
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
@@ -269,11 +270,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def static hookObjectInHierarhcy(WNamedObject namedObject) {
+	def static hookObjectInHierarhcy(WNamedObject namedObject, WollokClassFinder finder) {
 		if (namedObject.parent != null)
-			namedObject.parent.hookToObject
+			namedObject.parent.hookToObject(finder)
 		else {
-			val object = WollokClassFinder.getInstance.getObjectClass(namedObject)
+			val object = finder.getObjectClass(namedObject)
 			namedObject.parent = object
 			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
 		}

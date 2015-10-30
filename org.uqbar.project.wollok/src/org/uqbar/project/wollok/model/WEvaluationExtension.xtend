@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.model
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -27,8 +29,6 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.OpMultiAssignElements
-import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Extension methods related to validating values
@@ -38,8 +38,8 @@ import org.uqbar.project.wollok.WollokConstants
  */
 class WEvaluationExtension {
 	
-	def static boolean isUsedAsValue(WMemberFeatureCall call) { 
-		call.eContainingFeature.evaluatesContent || (call.eContainer instanceof WMethodDeclaration && (call.eContainer as WMethodDeclaration).isExpressionReturns)
+	def static boolean isUsedAsValue(WMemberFeatureCall call, WollokClassFinder finder) { 
+		call.eContainingFeature.isEvaluatesContent(finder) || (call.eContainer instanceof WMethodDeclaration && (call.eContainer as WMethodDeclaration).isExpressionReturns)
 	}
 
 	/**
@@ -47,7 +47,7 @@ class WEvaluationExtension {
 	 * expects the content to be evaluted to a value.
 	 * This is useful to check if the actual content produces a value.
 	 */
-	def static boolean isEvaluatesContent(EStructuralFeature it) {
+	def static boolean isEvaluatesContent(EStructuralFeature it, WollokClassFinder finder) {
 		it == WASSIGNMENT__VALUE
 		|| it == WVARIABLE_DECLARATION__RIGHT
 		|| it == WIF_EXPRESSION__CONDITION
@@ -65,29 +65,29 @@ class WEvaluationExtension {
 	}
 	
 	// literals
-	def static dispatch boolean isEvaluatesToAValue(WCollectionLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WNumberLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WStringLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WNullLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WBooleanLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WThis it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WClosure it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WVariableReference it) { true }
+	def static dispatch boolean isEvaluatesToAValue(WCollectionLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WNumberLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WStringLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WNullLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WBooleanLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WThis it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WClosure it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WVariableReference it, WollokClassFinder finder) { true }
 	// ops
-	def static dispatch boolean isEvaluatesToAValue(WBinaryOperation it) { !WollokConstants.OPMULTIASSIGN.contains(feature) }
-	def static dispatch boolean isEvaluatesToAValue(WConstructorCall it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WUnaryOperation it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WPostfixOperation it) { true }
+	def static dispatch boolean isEvaluatesToAValue(WBinaryOperation it, WollokClassFinder finder) { !WollokConstants.OPMULTIASSIGN.contains(feature) }
+	def static dispatch boolean isEvaluatesToAValue(WConstructorCall it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WUnaryOperation it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WPostfixOperation it, WollokClassFinder finder) { true }
 	// constructions
-	def static dispatch boolean isEvaluatesToAValue(WReturnExpression it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WIfExpression it) { then.evaluatesToAValue && (^else == null || ^else.evaluatesToAValue) }
-	def static dispatch boolean isEvaluatesToAValue(WBlockExpression it) { expressions.last.evaluatesToAValue }
-	def static dispatch boolean isEvaluatesToAValue(WTry it) { expression.evaluatesToAValue && catchBlocks.forall[c| c.expression.evaluatesToAValue ] }
+	def static dispatch boolean isEvaluatesToAValue(WReturnExpression it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WIfExpression it, WollokClassFinder finder) { then.isEvaluatesToAValue(finder) && (^else == null || ^else.isEvaluatesToAValue(finder)) }
+	def static dispatch boolean isEvaluatesToAValue(WBlockExpression it, WollokClassFinder finder) { expressions.last.isEvaluatesToAValue(finder) }
+	def static dispatch boolean isEvaluatesToAValue(WTry it, WollokClassFinder finder) { expression.isEvaluatesToAValue(finder) && catchBlocks.forall[c| c.expression.isEvaluatesToAValue(finder) ] }
 	// calls
-	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it) { method.overridenMethod != null && method.overridenMethod.returnsValue }
-	def static dispatch boolean isEvaluatesToAValue(WMemberFeatureCall it) { val m = resolveMethod ; m != null && m.returnsValue }
+	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it, WollokClassFinder finder) { method.overridenMethod != null && method.overridenMethod.returnsValue }
+	def static dispatch boolean isEvaluatesToAValue(WMemberFeatureCall it, WollokClassFinder finder) { val m = resolveMethod(finder) ; m != null && m.returnsValue }
 	// default
-	def static dispatch boolean isEvaluatesToAValue(Void it) { false }
-	def static dispatch boolean isEvaluatesToAValue(EObject it) { false }
+	def static dispatch boolean isEvaluatesToAValue(Void it, WollokClassFinder finder) { false }
+	def static dispatch boolean isEvaluatesToAValue(EObject it, WollokClassFinder finder) { false }
 }

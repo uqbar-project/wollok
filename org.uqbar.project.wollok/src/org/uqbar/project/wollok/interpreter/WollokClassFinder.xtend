@@ -5,6 +5,8 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.eclipse.xtext.internal.Activator
+import org.uqbar.project.wollok.WollokActivator
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -15,13 +17,12 @@ class WollokClassFinder {
 	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
 	private WClass objectClass
 	@Inject IGlobalScopeProvider scopeProvider
-	static val INSTANCE = new WollokClassFinder
-
-	new() {
-		WollokInterpreter.getInstance.injector.injectMembers(this)
-	}
 	
-	def static getInstance() { INSTANCE }
+	static var WollokClassFinder INSTANCE
+	
+	new() { INSTANCE = this }
+	
+	def static getInstance() { INSTANCE } 
 	
 	def WClass getObjectClass(EObject context) {
 		if (objectClass == null) {

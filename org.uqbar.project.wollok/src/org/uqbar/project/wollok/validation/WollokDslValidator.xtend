@@ -1,11 +1,13 @@
 package org.uqbar.project.wollok.validation
 
+import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -20,6 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -43,7 +46,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Custom validation rules.
@@ -54,6 +56,8 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
 	List<WollokValidatorExtension> wollokValidatorExtensions
+	@Inject
+	WollokClassFinder classFinder
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -294,8 +298,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
-		if (call.callToWellKnownObject && !call.isValidCallToWKObject) {
-			report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
+		try {
+			if (call.callToWellKnownObject && !call.isValidCallToWKObject(classFinder)) {
+				report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
+			}
+		} catch (Exception e) {
+			e.printStackTrace
+			throw e
 		}
 	}
 	
@@ -330,8 +339,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
-		val method = call.resolveMethod
-		if (method != null && !method.native && !method.abstract && !method.returnsValue && call.isUsedAsValue) {
+		val method = call.resolveMethod(classFinder)
+		if (method != null && !method.native && !method.abstract && !method.returnsValue && call.isUsedAsValue(classFinder)) {
 			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
 		}
 	}
@@ -473,7 +482,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
-		if (!native && !abstract && !returnsValue && expression.evaluatesToAValue)
+		if (!native && !abstract && !returnsValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	
