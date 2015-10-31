@@ -57,20 +57,26 @@ public class Gameboard {
 		return Gdx.input.isKeyJustPressed(key);
 	}
 	
-	public void addComponent(VisualComponent component) {
-		this.components.add(component);
+	public void clear() {
+		this.components.clear();
+		this.configuration.getListeners().clear();
 	}
 
 	public Collection<VisualComponent> getComponentsInPosition(Position myPosition) {
 		return Collections2.filter(components, new IsEqualPosition(myPosition));
 	}
-
+	
 	public Collection<VisualComponent> getComponentsInPosition(int xInPixels, int yInPixels) {
 		yInPixels = Gameboard.getInstance().height() - yInPixels;
 		return Collections2.filter(components, new IsEqualPosition(xInPixels,yInPixels));
 	}
 	
 	// Getters & Setters
+
+	public void addComponent(VisualComponent component) {
+		this.components.add(component);
+	}
+	
 	public VisualComponent getCharacter() {
 		return character;
 	}
@@ -101,9 +107,6 @@ public class Gameboard {
 		return allComponents;
 	}
 
-	public void serListeners(List<GameboardListener> aList){
-		this.configuration.setListeners(aList);
-	}
 	public void addListener(GameboardListener aListener){
 		this.configuration.getListeners().add(aListener);
 	}
@@ -128,7 +131,15 @@ public class Gameboard {
 		return configuration.getGameboardHeight();
 	}
 	
-	private class IsEqualPosition implements Predicate<VisualComponent>{
+	public GameConfiguration getConfiguration() {
+		return configuration;
+	}
+	
+	public void setConfiguration(GameConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	private class IsEqualPosition implements Predicate<VisualComponent> {
 
 		private Position myPosition;
 
@@ -155,19 +166,6 @@ public class Gameboard {
 	  if(instance == null)
 		  instance = new Gameboard();
 	  return instance;
-	}
-
-	public GameConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(GameConfiguration configuration) {
-		this.configuration = configuration;
-	}
-
-	public void clear() {
-		this.components.clear();
-		this.configuration.getListeners().clear();
 	}
 }
 
