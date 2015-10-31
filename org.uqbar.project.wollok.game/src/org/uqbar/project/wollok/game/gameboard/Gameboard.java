@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.game.gameboard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.uqbar.project.wollok.game.BalloonMessage;
 import org.uqbar.project.wollok.game.GameConfiguration;
 import org.uqbar.project.wollok.game.GameFactory;
 import org.uqbar.project.wollok.game.Position;
@@ -25,8 +27,9 @@ public class Gameboard {
 	private GameConfiguration configuration;
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
-	private List<VisualComponent> components = new ArrayList<VisualComponent>();
-
+	public List<VisualComponent> components = new ArrayList<VisualComponent>();
+	private List<BalloonMessage> textToShow = new ArrayList<BalloonMessage>();
+	
 	public Gameboard() {
 		GameFactory factory = new GameFactory();
 		factory.setGame(this);
@@ -166,6 +169,24 @@ public class Gameboard {
 	  if(instance == null)
 		  instance = new Gameboard();
 	  return instance;
+	}
+
+	public void characterSay(String aText) {
+		this.textToShow.add(new BalloonMessage(aText));
+	}
+
+	public boolean hasMessages() {
+		List<BalloonMessage> textToDelete = new ArrayList<BalloonMessage>();
+		for(int i = 0; i<this.textToShow.size();i++){
+			if (this.textToShow.get(i).removeMe())
+				textToDelete.add(textToShow.get(i));
+		}
+		this.textToShow.removeAll(textToDelete);
+		return this.textToShow.size() > 0;
+	}
+
+	public String getCurrentMessage() {
+		return this.textToShow.get(0).getText();
 	}
 }
 
