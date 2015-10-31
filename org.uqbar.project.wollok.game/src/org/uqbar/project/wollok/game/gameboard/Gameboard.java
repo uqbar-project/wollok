@@ -96,7 +96,9 @@ public class Gameboard {
 	}
 	
 	public List<VisualComponent> getComponents() {
-		return this.components;
+		ArrayList<VisualComponent> allComponents = new ArrayList<VisualComponent>(this.components);
+		allComponents.add(this.character);
+		return allComponents;
 	}
 
 	public void serListeners(List<GameboardListener> aList){
