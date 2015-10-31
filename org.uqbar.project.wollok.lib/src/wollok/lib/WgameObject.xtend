@@ -33,6 +33,12 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		this.addComponent(new VisualComponent(wollokObject, property.wrapped))
 	}
 	
+	@NativeMessage("addVisualCharacterWithReference")
+	def addVisualCharacterWithReferenceMethod(Object element, WollokList property) {		
+		var wollokObject = WollokObject.cast(element)
+		this.addCharacter(new VisualComponent(wollokObject, property.wrapped))
+	}
+	
 	@NativeMessage("whenKeyPressedDo")
 	def whenKeyPressedDoMethod(Object key, WollokClosure action) {
 		var num = WollokInteger.cast(key).wrapped
