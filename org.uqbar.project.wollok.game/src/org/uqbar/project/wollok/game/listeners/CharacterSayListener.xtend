@@ -15,8 +15,7 @@ class CharacterSayListener implements GameboardListener {
 	}
 	
 	override notify(Gameboard gameboard) {
-		if (gameboard.isKeyPressed(this.key))
-		if (text.hasNext)
+		if (gameboard.isKeyPressed(this.key) && text.hasNext)
 			gameboard.characterSay(text.next)
 	}
 	
