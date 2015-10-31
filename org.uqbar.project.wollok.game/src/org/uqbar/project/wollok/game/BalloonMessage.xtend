@@ -13,9 +13,8 @@ class BalloonMessage {
 		text = aText
 	}
 	
-	def boolean removeMe(){
-		if (timestamp == 0) return false
-		return new Date().time - timestamp > timeToLive  
+	def boolean shouldRemove(){
+		return timestamp != 0 && new Date().time - timestamp > timeToLive   
 	}
 	
 	def getText(){

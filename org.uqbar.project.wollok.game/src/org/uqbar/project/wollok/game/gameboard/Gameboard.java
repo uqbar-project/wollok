@@ -28,7 +28,7 @@ public class Gameboard {
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
 	public List<VisualComponent> components = new ArrayList<VisualComponent>();
-	private List<BalloonMessage> textToShow = new ArrayList<BalloonMessage>();
+	private List<BalloonMessage> balloonMessages = new ArrayList<BalloonMessage>();
 	
 	public Gameboard() {
 		GameFactory factory = new GameFactory();
@@ -172,21 +172,21 @@ public class Gameboard {
 	}
 
 	public void characterSay(String aText) {
-		this.textToShow.add(new BalloonMessage(aText));
+		this.balloonMessages.add(new BalloonMessage(aText));
 	}
 
 	public boolean hasMessages() {
 		List<BalloonMessage> textToDelete = new ArrayList<BalloonMessage>();
-		for(int i = 0; i<this.textToShow.size();i++){
-			if (this.textToShow.get(i).removeMe())
-				textToDelete.add(textToShow.get(i));
+		for(int i = 0; i<this.balloonMessages.size();i++){
+			if (this.balloonMessages.get(i).shouldRemove())
+				textToDelete.add(balloonMessages.get(i));
 		}
-		this.textToShow.removeAll(textToDelete);
-		return this.textToShow.size() > 0;
+		this.balloonMessages.removeAll(textToDelete);
+		return this.balloonMessages.size() > 0;
 	}
 
 	public String getCurrentMessage() {
-		return this.textToShow.get(0).getText();
+		return this.balloonMessages.get(0).getText();
 	}
 }
 
