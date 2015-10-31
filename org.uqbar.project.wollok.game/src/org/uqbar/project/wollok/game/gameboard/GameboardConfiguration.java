@@ -7,6 +7,7 @@ public class GameboardConfiguration extends LwjglApplicationConfiguration {
 
 	public GameboardConfiguration(Gameboard gameboard) {
 		this.useGL30 = false;
+		this.resizable = false;
 		this.title = gameboard.getTittle();
 		this.width = gameboard.width();
 		this.height = gameboard.height();
