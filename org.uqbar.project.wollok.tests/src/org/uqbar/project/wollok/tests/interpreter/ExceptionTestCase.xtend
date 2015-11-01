@@ -111,7 +111,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 		val result = interpreter.currentContext.resolve("result")
-		assertEquals("Something went wrong", result)
+		assertEquals("Something went wrong", result.toString)
 	}
 	
 	@Test
