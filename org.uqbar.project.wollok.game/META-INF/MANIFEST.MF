@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Game
+Bundle-Name: Wollok Game
 Bundle-SymbolicName: org.uqbar.project.wollok.game
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.guava,
@@ -25,9 +25,12 @@ Bundle-ClassPath: target/dependency/gdx-1.6.0.jar,
  target/dependency/lwjgl-platform-2.9.2-natives-osx.jar,
  target/dependency/lwjgl-platform-2.9.2-natives-windows.jar
 Import-Package: org.junit;version="4.11.0",
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework;version="1.3.0",
+ org.uqbar.project.wollok.interpreter.core,
+ org.uqbar.project.wollok.interpreter.nativeobj
 Export-Package: .,
  com.badlogic.gdx,
  org.uqbar.project.wollok.game,
  org.uqbar.project.wollok.game.gameboard,
  org.uqbar.project.wollok.game.listeners
+Bundle-Vendor: Uqbar Project
