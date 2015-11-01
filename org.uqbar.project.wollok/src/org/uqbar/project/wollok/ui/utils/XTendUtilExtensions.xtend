@@ -4,18 +4,16 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.math.BigDecimal
 import java.util.Collection
+import java.util.List
 import java.util.Random
 import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
-import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
@@ -155,17 +153,13 @@ class XTendUtilExtensions {
 		if (o.isNativeType("wollok.lang.WDouble") && (t == Integer || t == Integer.TYPE)) {
 			return ((o as WollokObject).getNativeObject("wollok.lang.WDouble") as JavaWrapper<Double>).wrapped
 		}
+		if (o.isNativeType("wollok.lang.WString") && t == String) {
+			return ((o as WollokObject).getNativeObject("wollok.lang.WString") as JavaWrapper<String>).wrapped
+		}
 		if (o.isNativeType("wollok.lang.WList") && (t == Collection || t == List)) {
 			return ((o as WollokObject).getNativeObject("wollok.lang.WList") as JavaWrapper<List>).wrapped
 		}
 		
-		if (o instanceof WollokInteger && (t == Integer || t == Integer.TYPE))
-			return (o as WollokInteger).wrapped
-		if (o instanceof WollokDouble && (t == Double || t == Double.TYPE))
-			return (o as WollokDouble).wrapped
-			
-		if (o instanceof WollokList && (t == Collection || t == List))
-			return (o as WollokList).wrapped
 		if (t == Object)
 			return o
 		if(t.primitive)
@@ -179,12 +173,15 @@ class XTendUtilExtensions {
 	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
 	
 	def static Object javaToWollok(Object o) {
-		if (o == null)
-			return null
-		if (o instanceof Integer)
-			return (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).instantiateNumber(o.toString)
+		if (o == null) return null
+		if (o instanceof Integer) return evaluator.instantiateNumber(o.toString)
+		if (o instanceof Double) return evaluator.instantiateNumber(o.toString)
+		if (o instanceof BigDecimal) return evaluator.instantiateNumber(o.toString)
+		if (o instanceof String) return evaluator.newInstanceWithWrapped("wollok.lang.WString", o)
 		o
 	}
+	
+	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 	
 	def static accesibleVersion(Method m) {
 		var c = m.declaringClass

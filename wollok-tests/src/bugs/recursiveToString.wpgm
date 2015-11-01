@@ -1,25 +1,25 @@
 object obj2 {
-				var y 
-				method setY(anObject){
-					y = anObject
-				}
-			}
-			
-			object obj1 {
-				var x = #[]
-				method addX(anObject){
-					x.add(anObject)
-				}
-			}
-			
-			class Prb {
-				
-			}
+	var y 
+	method setY(anObject){
+		y = anObject
+	}
+}
 
-			program a {
-				obj1.addX(obj2)
-				obj2.setY(obj1)
-				obj1.addX(new Prb())
-				
-				assert.equals('obj2[y=obj1[x=#[anObject,aPrb]]]', obj2.toString())
+object obj1 {
+	var x = #[]
+	method addX(anObject){
+		x.add(anObject)
+	}
+}
+
+class Prb {
+	
+}
+
+program a {
+	obj1.addX(obj2)
+	obj2.setY(obj1)
+	obj1.addX(new Prb())
+	
+	assert.equals('obj2[y=obj1[x=#[anObject,aPrb]]]', obj2.toString())
 }

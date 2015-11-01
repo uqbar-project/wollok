@@ -1,29 +1,20 @@
 package wollok.lang
 
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumber
 
 /**
- * 
+ * Base class for numbers.
+ * Probably this (int double and number) will be replaced by a BigDecimal.
  * 
  * @author jfernandes
  */
-abstract class WNumber<T extends Number> implements JavaWrapper<T> {
-	WollokInterpreterAccess interpreterAccess = new WollokInterpreterAccess // re-use a singleton ?
-	protected val WollokObject obj
-	protected val WollokInterpreter interpreter
-	
-	@Accessors protected T wrapped
-	
+abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
+
 	new(WollokObject obj, WollokInterpreter interpreter) {
-		this.obj = obj
-		this.interpreter = interpreter
+		super(obj, interpreter)
 	}
 	
 	def max(WNumber<?> other) { doMax(this, other).asWollokObject }
@@ -38,10 +29,6 @@ abstract class WNumber<T extends Number> implements JavaWrapper<T> {
 
 	def dispatch doMin(WNumber<?> a, WNumber<?> b) { Math.min(a.doubleValue, b.doubleValue) }
 
-	def newInstance(Number naitive) {
-		(interpreter.evaluator as WollokInterpreterEvaluator).instantiateNumber(naitive.toString)
-	} 
-
 	// ********************************************************************************************
 	// ** Basics
 	// ********************************************************************************************	
@@ -51,7 +38,7 @@ abstract class WNumber<T extends Number> implements JavaWrapper<T> {
 	override toString() { wrapped.toString() }
 	
 	override equals(Object obj) {
-		return this.class.isInstance(obj) && wrapped == (obj as WollokNumber).wrapped 
+		return this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
 	}
 	
 	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
@@ -64,6 +51,10 @@ abstract class WNumber<T extends Number> implements JavaWrapper<T> {
 		newInstance(result)
 	}
 	
-	def nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
+	def newInstance(Number naitive) {
+		(interpreter.evaluator as WollokInterpreterEvaluator).instantiateNumber(naitive.toString)
+	} 
+	
+	def WNumber<? extends Number> nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
 	
 }

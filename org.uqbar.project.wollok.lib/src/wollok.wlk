@@ -50,7 +50,6 @@ package lang {
 				return this.kindName() 
 			}
 			else {
-				//console.println(this.kindName() + " NOT SHOWN, so showing it. Shown List size = " + alreadyShown.size())
 				alreadyShown.add(this)
 				return this.internalToSmartString(alreadyShown)
 			}
@@ -261,6 +260,29 @@ package lang {
 		
 		method abs() native
 		method invert() native
+	}
+	
+	class WString {
+		method length() native
+		method charAt(index) native
+		method +(other) native
+		method startsWith(other) native
+		method endsWith(other) native
+		method indexOf(other) native
+		method lastIndexOf(other) native
+		method toLowerCase() native
+		method toUpperCase() native
+		method trim() native
+		
+		method substring(length) native
+		method substring(startIndex, length) native
+
+		method toString() native
+		method toSmartString(alreadyShown) native
+		method ==(other) native
+		
+		
+		method size() = this.length()
 	}
 
 }

@@ -1,7 +1,6 @@
 package natives
 
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import wollok.lang.WInteger
 

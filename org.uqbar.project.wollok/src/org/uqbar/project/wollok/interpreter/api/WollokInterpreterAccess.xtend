@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.interpreter.api
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 

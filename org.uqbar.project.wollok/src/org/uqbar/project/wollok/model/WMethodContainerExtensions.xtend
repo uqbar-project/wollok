@@ -294,11 +294,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
 	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
 
-	def static isWritableVarRef(WExpression e) { 
-		e instanceof WVariableReference
-		&& (e as WVariableReference).ref instanceof WVariable
-		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
-		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
-	}
+	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
+	def static dispatch boolean isWritableVarRef(WExpression it) { false }
 	
 }

@@ -24,6 +24,8 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 /**
  * A wollok user defined (dynamic) object.
@@ -66,7 +68,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return javaMethod.invoke(this, parameters).asWollokObject
 		}
 		
-		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
+		throw new MessageNotUnderstood('''Message not understood: «if(message != "toString") this else behavior.objectDescription» does not understand «message»''')
 	}
 	
 	
@@ -141,7 +143,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
-		new ToStringBuilder().smartToString(this)
+		val string = call("toString", #[]) as WollokObject
+		(string.getNativeObject("wollok.lang.WString") as JavaWrapper<String>).wrapped
 	}
 		
 	def getKind() { behavior }

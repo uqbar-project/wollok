@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokSet
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
@@ -152,7 +151,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WThrow t) {
-
 		// this must be checked!
 		val obj = t.exception.eval as WollokObject
 		throw new WollokProgramExceptionWrapper(obj)
@@ -161,7 +159,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def boolean matches(WCatch cach, WollokObject exceptionThrown) { exceptionThrown.isKindOf(cach.exceptionType) }
 
 	// literals
-	def dispatch Object evaluate(WStringLiteral it) { value }
+	def dispatch Object evaluate(WStringLiteral it) { newInstanceWithWrapped("wollok.lang.WString", value) }
 
 	def dispatch Object evaluate(WBooleanLiteral it) { isTrue }
 
@@ -178,6 +176,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			numbersCache.put(value, new WeakReference(n))
 			n
 		}
+	}
+	
+	def <T> newInstanceWithWrapped(String className, T wrapped) {
+		newInstance(className) => [
+			val JavaWrapper<T> native = getNativeObject(className)
+			native.wrapped = wrapped
+		]
 	}
 	
 	def instantiateNumber(String value) {
@@ -221,7 +226,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
-			wo.invokeConstructor(arguments)
+			wo.invokeConstructor(arguments.map[javaToWollok].toArray)
 		]
 	}
 	
