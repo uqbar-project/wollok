@@ -118,16 +118,22 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	@BinaryOperation('&&')
 	def Object andOperation(Object a, ()=>Object b) { and(a, b) }  
 		def dispatch and(Object a, ()=>Object b) { throw new IllegalBinaryOperation('''«a»(«a.class.simpleName») does not understand && operator''') }
-		def dispatch and(WollokObject a, ()=>Object b) { a.call("&&", b.apply) }
-		def dispatch and(Boolean a, ()=>Object b) { a && b.apply as Boolean }
+		//TODO: hack we are sending the xtend closure here to the wollok object for shortcircuit
+		//   the WBoolean implementation. If someone overloads the && message he will receive this 
+		//   non-wollok object. I think that we should send a WollokClosure
+		//   or have some language-level construction for "lazy" parameters
+		def dispatch and(WCallable a, ()=>Object b) { a.call("&&", b) }
 	@BinaryOperation('and')	
 	def Object andPhrase(Object a, ()=>Object b) { andOperation(a, b)}
 	
 	@BinaryOperation('||')
 	def Object orOperation(Object a, ()=>Object b) { or(a, b) }
-		def dispatch or(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand || operator" ) }  
-		def dispatch or(WollokObject a, ()=>Object b) { a.call("||", b.apply) }
-		def dispatch or(Boolean a, ()=>Object b) { a || b.apply as Boolean }
+		def dispatch or(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand || operator" ) }
+		// TODO: hack we are sending the xtend closure here to the wollok object for shortcircuit
+		//   the WBoolean implementation. If someone overloads the && message he will receive this 
+		//   non-wollok object. I think that we should send a WollokClosure
+		//   or have some language-level construction for "lazy" parameters  
+		def dispatch or(WCallable a, ()=>Object b) { a.call("||", b) }
 	@BinaryOperation('or')	
 	def Object orPhrase(Object a, ()=>Object b) { orOperation(a, b)}
 
@@ -177,24 +183,24 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	// ********************************************************************************************
 	// ** Inequality operators
 	// ********************************************************************************************	
-	
+
 	@BinaryOperation('>=')
-	def Boolean greaterOrEqualsOperation(Object a, ()=>Object eb) { val b = eb.apply; ge(a, b) }  
+	def greaterOrEqualsOperation(Object a, ()=>Object eb) { val b = eb.apply; ge(a, b) }  
 		def dispatch ge(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» >= «b»''') }
-		def dispatch ge(WCallable a, Object b) { a.call(">=", b) as Boolean }
+		def dispatch ge(WCallable a, Object b) { a.call(">=", b) }
 
 	@BinaryOperation('<=')
-	def Boolean lesserOrEqualsOperation(Object a, ()=>Object eb) { val b = eb.apply; le(a, b) }
+	def lesserOrEqualsOperation(Object a, ()=>Object eb) { val b = eb.apply; le(a, b) }
 		def dispatch le(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» <= «b»''') }  
-		def dispatch le(WCallable a, Object b) { a.call("<=", b) as Boolean }
+		def dispatch le(WCallable a, Object b) { a.call("<=", b) }
 
 	@BinaryOperation('>')
-	def Boolean greaterOperation(Object a, ()=>Object eb) { val b = eb.apply; gt(a, b) }
+	def greaterOperation(Object a, ()=>Object eb) { val b = eb.apply; gt(a, b) }
 		def dispatch gt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» > «b»''') }
-		def dispatch gt(WCallable a, Object b) { a.call(">", b) as Boolean }
+		def dispatch gt(WCallable a, Object b) { a.call(">", b) }
 
 	@BinaryOperation('<')
-	def Boolean lesserOperation(Object a, ()=>Object eb) { val b = eb.apply; lt(a, b) as Boolean }
+	def lesserOperation(Object a, ()=>Object eb) { val b = eb.apply; lt(a, b) }
 		def dispatch lt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» < «b»''') }  
 		def dispatch lt(WCallable a, Object b) { a.call("<", b) }
 		

@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 
 /**
  * abstract base class to share some code between java wrappers
@@ -34,6 +35,7 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 	}
 	
 	def newInstanceWithWrapped(T wrapped) {
-		evaluator.newInstanceWithWrapped(class.name, wrapped)
+		val transformedClassName = DefaultNativeObjectFactory.javaToWollokFQN(class.name)
+		evaluator.newInstanceWithWrapped(transformedClassName, wrapped)
 	} 
 }

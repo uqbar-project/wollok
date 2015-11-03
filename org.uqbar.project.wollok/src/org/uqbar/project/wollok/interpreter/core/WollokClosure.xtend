@@ -80,4 +80,7 @@ class WollokClosure implements EvaluationContext, WCallable {
 		container.addGlobalReference(name,value)
 	}
 	
+	override toString() {
+		"aClosure(" + parameters.map[name].join(', ') + ")"
+	}
 }

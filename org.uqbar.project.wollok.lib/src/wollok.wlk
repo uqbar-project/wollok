@@ -21,7 +21,7 @@ package lang {
 	 * @author jfernandes
 	 * since 1.0
 	 */
-	class WObject {
+	class Object {
 		method identity() native
 		method instanceVariables() native
 		method instanceVariableFor(name) native
@@ -76,7 +76,7 @@ package lang {
 		method getValue() { this.getY() }
 	}
 	
-	class WCollection {
+	class Collection {
 		method max(closure) = this.absolute(closure, [a,b | a > b])
 		method min(closure) = this.absolute(closure, [a,b | a < b])
 		
@@ -104,7 +104,7 @@ package lang {
 		method forEach(closure) { this.fold(null, [ acc, e | closure.apply(e) ]) }
 		method forAll(predicate) = this.fold(true, [ acc, e | if (!acc) acc else predicate.apply(e) ])
 		method exists(predicate) = this.fold(false, [ acc, e | if (acc) acc else predicate.apply(e) ])
-		method detect(predicate) = this.fold(null, [ acc, e | if (acc == null && predicate.apply(e)) e else acc  ])
+		method detect(predicate) = this.fold(null, [ acc, e | if (acc == null && predicate.apply(e)) e else acc ])
 		method count(predicate) = this.fold(0, [ acc, e | if (predicate.apply(e)) acc++ else acc  ])
 		method sum(closure) = this.fold(0, [ acc, e | acc + closure.apply(e) ])
 		
@@ -136,9 +136,9 @@ package lang {
 	 * @author jfernandes
 	 * @since 1.3
 	 */	
-	class WSet extends WCollection {
+	class Set extends Collection {
 	
-		override method newInstance() = new WSet()
+		override method newInstance() = new Set()
 		override method toStringPrefix() = "#{"
 		override method toStringSufix() = "}"
 		
@@ -163,11 +163,11 @@ package lang {
 	 * @author jfernandes
 	 * @since 1.3
 	 */
-	class WList extends WCollection {
+	class List extends Collection {
 
 		method get(index) native
 		
-		override method newInstance() = new WList()
+		override method newInstance() = new List()
 		
 		method any() {
 			if (this.isEmpty()) 
@@ -209,7 +209,7 @@ package lang {
 	 * @since 1.3
 	 * @noInstantiate
 	 */
-	class WInteger extends Number {
+	class Integer extends Number {
 		method ==(other) native
 		method +(other) native
 		method -(other) native
@@ -239,7 +239,7 @@ package lang {
 	 * @since 1.3
 	 * @noInstantiate
 	 */
-	class WDouble extends Number {
+	class Double extends Number {
 		method ==(other) native
 		method +(other) native
 		method -(other) native
@@ -262,7 +262,7 @@ package lang {
 		method invert() native
 	}
 	
-	class WString {
+	class String {
 		method length() native
 		method charAt(index) native
 		method +(other) native
@@ -284,7 +284,21 @@ package lang {
 		
 		method size() = this.length()
 	}
-
+	
+	class Boolean {
+	
+		method and(other) native
+		method &&(other) native
+		
+		method or(other) native
+		method ||(other) native
+		
+		method toString() native
+		method toSmartString(alreadyShown) native
+		method ==(other) native
+		
+		method negate() native
+	}
 }
  
 package lib {

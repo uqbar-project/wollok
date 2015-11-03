@@ -4,18 +4,13 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
-import java.math.BigDecimal
 import java.util.Collection
 import java.util.List
 import java.util.Random
-import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
-import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Utilities for xtend code
@@ -135,53 +130,9 @@ class XTendUtilExtensions {
 			javaToWollok(returnVal)
 		}
 		catch (IllegalArgumentException e) {
-			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted)
+			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted, e)
 		}
 	}
-	
-	def static Object wollokToJava(Object o, Class<?> t) {
-		if (t.isInstance(o)) 
-			return o
-
-		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
-		if (o instanceof WollokClosure && t == Function1)
-			return [Object a | (o as WollokClosure).apply(a)]
-		// new conversions
-		if (o.isNativeType("wollok.lang.WInteger") && (t == Integer || t == Integer.TYPE)) {
-			return ((o as WollokObject).getNativeObject("wollok.lang.WInteger") as JavaWrapper<Integer>).wrapped
-		}
-		if (o.isNativeType("wollok.lang.WDouble") && (t == Integer || t == Integer.TYPE)) {
-			return ((o as WollokObject).getNativeObject("wollok.lang.WDouble") as JavaWrapper<Double>).wrapped
-		}
-		if (o.isNativeType("wollok.lang.WString") && t == String) {
-			return ((o as WollokObject).getNativeObject("wollok.lang.WString") as JavaWrapper<String>).wrapped
-		}
-		if (o.isNativeType("wollok.lang.WList") && (t == Collection || t == List)) {
-			return ((o as WollokObject).getNativeObject("wollok.lang.WList") as JavaWrapper<List>).wrapped
-		}
-		
-		if (t == Object)
-			return o
-		if(t.primitive)
-			return o	
-		
-		throw new RuntimeException('''Cannot convert parameter "«o»" of type «o.class.name» to type "«t.simpleName»""''')
-	}
-	
-	def static dispatch isNativeType(Object o, String type) { false }
-	def static dispatch isNativeType(Void o, String type) { false }
-	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
-	
-	def static Object javaToWollok(Object o) {
-		if (o == null) return null
-		if (o instanceof Integer) return evaluator.instantiateNumber(o.toString)
-		if (o instanceof Double) return evaluator.instantiateNumber(o.toString)
-		if (o instanceof BigDecimal) return evaluator.instantiateNumber(o.toString)
-		if (o instanceof String) return evaluator.newInstanceWithWrapped("wollok.lang.WString", o)
-		o
-	}
-	
-	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 	
 	def static accesibleVersion(Method m) {
 		var c = m.declaringClass

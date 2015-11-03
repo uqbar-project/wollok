@@ -1,7 +1,6 @@
 package wollok.lang
 
 import java.util.Collection
-import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WCallable
@@ -27,7 +26,7 @@ class WCollection<T extends Collection> {
 		// This is necessary because native #contains does not take into account Wollok object equality 
 		wrapped.remove(wrapped.findFirst[it.wollokEquals(e)])
 	}
-	def size() { wrapped.size.asWollokObject }
+	def size() { wrapped.size }
 	
 	def void clear() { wrapped.clear }
 	

@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+import org.uqbar.project.wollok.sdk.WollokDSK
 
 /**
  * Wollok Object class. It's the native part
@@ -49,7 +50,7 @@ class WObject {
 	}
 	
 	def newList(Collection<?> elements) {
-		val list = newInstance("wollok.lang.WList")
+		val list = newInstance(WollokDSK.LIST)
 		elements.forEach[ 
 			list.call("add", it)
 		]

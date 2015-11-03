@@ -5,8 +5,8 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.eclipse.xtext.internal.Activator
-import org.uqbar.project.wollok.WollokActivator
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.WollokActivator
  * @author jfernandes
  */
 class WollokClassFinder {
-	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
 	private WClass objectClass
 	@Inject IGlobalScopeProvider scopeProvider
 	
@@ -26,7 +25,7 @@ class WollokClassFinder {
 	
 	def WClass getObjectClass(EObject context) {
 		if (objectClass == null) {
-			objectClass = searchClass(OBJECT_CLASS_NAME, context)
+			objectClass = searchClass(OBJECT, context)
 		}
 		objectClass
 	}

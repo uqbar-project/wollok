@@ -10,10 +10,11 @@ import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
-import org.uqbar.project.wollok.interpreter.WollokClassFinder;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory;
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
@@ -35,6 +36,8 @@ public class WollokDslRuntimeModule extends
 	@Override
 	public void configure(Binder binder) {
 		super.configure(binder);
+		
+		binder.bind(NativeObjectFactory.class).to(DefaultNativeObjectFactory.class);
 		
 		// TYPE SYSTEM
 		// binder.bind(TypeSystem.class).to(ConstraintBasedTypeSystem.class);

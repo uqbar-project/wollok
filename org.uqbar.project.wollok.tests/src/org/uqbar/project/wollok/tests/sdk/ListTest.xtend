@@ -11,21 +11,21 @@ import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 class ListTest extends ListTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
-		"val numbers = new WList()
+		"val numbers = new List()
 		numbers.add(22)
 		numbers.add(2)
 		numbers.add(10)"
 	}
 	
 	override instantiateStrings() {
-		"val strings = new WList(); \n #['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach[e| strings.add(e) ]"
+		"val strings = new List(); \n #['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach[e| strings.add(e) ]"
 	}
 	
 	@Test
 	def void toStringOnEmptyCollection() {
 		'''
 		program p {
-			val numbers = new WList()
+			val numbers = new List()
 			assert.equals("#[]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}

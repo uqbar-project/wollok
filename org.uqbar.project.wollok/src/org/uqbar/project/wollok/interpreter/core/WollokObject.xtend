@@ -27,6 +27,11 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * A wollok user defined (dynamic) object.
  * 
@@ -65,7 +70,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		// TODO: Adding special case for equals, but we have to fix it	
 		if (message == "=="){
 			val javaMethod = this.class.methods.findFirst[name == "equals"]
-			return javaMethod.invoke(this, parameters).asWollokObject
+			return javaMethod.invoke(this, parameters).javaToWollok
 		}
 		
 		throw new MessageNotUnderstood('''Message not understood: «if(message != "toString") this else behavior.objectDescription» does not understand «message»''')
@@ -143,8 +148,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
+		//TODO: java string shouldn't call wollok string
+		// it should be a low-lever WollokVM debugging method
 		val string = call("toString", #[]) as WollokObject
-		(string.getNativeObject("wollok.lang.WString") as JavaWrapper<String>).wrapped
+		(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
 	}
 		
 	def getKind() { behavior }
@@ -170,10 +177,14 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
-	def <T> getNativeObject(String clazz) { this.nativeObjects.values.findFirst[clazz == it.class.name ] as T }
+	def <T> getNativeObject(String clazz) {
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz) 
+		this.nativeObjects.values.findFirst[ transformedClassName == class.name ] as T
+	}
 	
 	def hasNativeType(String type) {
-		nativeObjects.values.exists[n| n.class.name == type ]
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
+		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
 	}
 	
 }

@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * Base class for numbers.
@@ -41,7 +42,7 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 		return this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
 	}
 	
-	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
+	def <T> T asWollokObject(Object obj) { WollokJavaConversions.javaToWollok(obj) as T }
 	
 	def operate(WollokObject other, (Number)=>Number block) {
 		val n = other.nativeNumber
@@ -52,7 +53,7 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	}
 	
 	def newInstance(Number naitive) {
-		(interpreter.evaluator as WollokInterpreterEvaluator).instantiateNumber(naitive.toString)
+		(interpreter.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
 	} 
 	
 	def WNumber<? extends Number> nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }

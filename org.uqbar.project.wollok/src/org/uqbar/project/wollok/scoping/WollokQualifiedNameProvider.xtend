@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 /**
  * 
  */

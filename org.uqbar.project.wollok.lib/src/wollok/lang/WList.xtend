@@ -4,7 +4,7 @@ import java.util.List
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 /**
- * Native part of the wollok.lang.WList class
+ * Native part of the wollok.lang.List class
  * 
  * @author jfernandes
  */

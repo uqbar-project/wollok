@@ -60,6 +60,11 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
+
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * It's the real "interpreter".
@@ -75,12 +80,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
-	var Map<String, WeakReference<Object>> numbersCache = newHashMap
-	@Inject
-	WollokInterpreter interpreter
-	@Inject
-	WollokQualifiedNameProvider qualifiedNameProvider
+	var Map<String, WeakReference<WollokObject>> numbersCache = newHashMap
+	var WollokObject trueObject
+	var WollokObject falseObject
+	
+	@Inject	WollokInterpreter interpreter
+	@Inject	WollokQualifiedNameProvider qualifiedNameProvider
 	@Inject WollokClassFinder classFinder
+	@Inject extension NativeObjectFactory nativesFactory
 	
 	/* HELPER METHODS */
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
@@ -118,13 +125,16 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
+	
+	
 
 	def dispatch Object evaluate(WIfExpression it) {
 		val cond = condition.eval
+		
 		// I18N !
-		if (!(cond instanceof Boolean)) throw new WollokInterpreterException(
-			"Expression in 'if' must evaluate to a boolean. Instead got: " + cond, it)
-		if (Boolean.TRUE == cond)
+		if (!(cond.isWBoolean)) 
+			throw new WollokInterpreterException('''Expression in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
+		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
 			then.eval
 		else
 			^else?.eval
@@ -159,9 +169,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def boolean matches(WCatch cach, WollokObject exceptionThrown) { exceptionThrown.isKindOf(cach.exceptionType) }
 
 	// literals
-	def dispatch Object evaluate(WStringLiteral it) { newInstanceWithWrapped("wollok.lang.WString", value) }
+	def dispatch Object evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }
 
-	def dispatch Object evaluate(WBooleanLiteral it) { isTrue }
+
+	def dispatch Object evaluate(WBooleanLiteral it) { booleanValue(it.isIsTrue) }
 
 	def dispatch Object evaluate(WNullLiteral it) { null }
 
@@ -178,6 +189,19 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		}
 	}
 	
+	def booleanValue(boolean isTrue) {
+		if (isTrue) {
+			if (trueObject == null)
+				trueObject = newInstanceWithWrapped(BOOLEAN, isTrue)
+			return trueObject
+		}
+		else {
+			if (falseObject == null) 
+				falseObject = newInstanceWithWrapped(BOOLEAN, isTrue)
+			return falseObject
+		}
+	}
+	
 	def <T> newInstanceWithWrapped(String className, T wrapped) {
 		newInstance(className) => [
 			val JavaWrapper<T> native = getNativeObject(className)
@@ -187,16 +211,16 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	
 	def instantiateNumber(String value) {
 		if (value.contains('.'))
-			doInstantiateNumber("wollok.lang.WDouble", Double.valueOf(value)) 
+			doInstantiateNumber(DOUBLE, Double.valueOf(value)) 
 		else {
-			doInstantiateNumber("wollok.lang.WInteger", Integer.valueOf(value))
+			doInstantiateNumber(INTEGER, Integer.valueOf(value))
 		}
 	}
 	
 	def doInstantiateNumber(String className, Object value) {
 		val obj = newInstance(className)
 		// hack because this project doesn't depend on wollok.lib project so we don't see the classes !
-		val intNative = obj.nativeObjects.values.findFirst[it.class.name == className] as JavaWrapper
+		val intNative = obj.getNativeObject(className) as JavaWrapper
 		intNative.wrapped = value
 		obj
 	}
@@ -287,8 +311,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
 
-	def dispatch Object evaluate(WListLiteral l) { createCollection("wollok.lang.WList", l.elements) }
-	def dispatch Object evaluate(WSetLiteral l) { createCollection("wollok.lang.WSet", l.elements) }
+	def dispatch Object evaluate(WListLiteral l) { createCollection(LIST, l.elements) }
+	def dispatch Object evaluate(WSetLiteral l) { createCollection(SET, l.elements) }
 //	def dispatch Object evaluate(WSetLiteral l) { new WollokSet(interpreter, newHashSet(l.elements.map[eval].toArray)) }
 	// TODO create a WSET
 	
@@ -325,6 +349,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
 		} else
 			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.lazyEval)
+				// this is just for the null == null comparisson. Otherwise is re-retrying to convert
+				.javaToWollok
 	}
 	
 	def lazyEval(EObject expression) {
@@ -332,8 +358,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WPostfixOperation op) {
-		// if we start to "box" numbers into wollok objects, this "1" will then change to find the wollok "1" object-
-		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [| instantiateNumber("1") ])
+		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [| getOrCreateNumber("1") ])
 	}
 
 	/** 
@@ -341,7 +366,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	 * to a reference, and then updates the value in the context (think of +=, or ++, they have common behaviors)
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>Object rightPart) {
-		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart)
+		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
 		newValue
 	}
@@ -394,7 +419,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		} 
 		val r = target.invoke(messageName, arguments)
 		if (r != null)
-			WollokInterpreterAccess.INSTANCE.asWollokObject(r)
+			WollokJavaConversions.javaToWollok(r)
 		else
 			r
 	}
