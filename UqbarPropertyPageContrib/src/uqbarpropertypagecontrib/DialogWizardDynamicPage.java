@@ -1,8 +1,9 @@
 package uqbarpropertypagecontrib;
 
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.dialogs.IDialogSettings;
 
-public  class DialogWizardDynamicPage extends DynamicPropertyPage<IDialogSettings> {
+public class DialogWizardDynamicPage extends DynamicPropertyPage<IDialogSettings> implements IDialogPage{
 
 	@Override
 	protected AttributeType<IDialogSettings> getBooleanType() {
