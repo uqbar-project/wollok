@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.uqbar.wollok.teamwork.ui">
+      <RepositoryConfigurator class="org.uqbar.wollok.teamwork.git.GitRespositoryConfigurator">
+      </RepositoryConfigurator>
+      <RepositoryConfigurator class="org.uqbar.wollok.teamwork.git.DummyRespositoryConfigurator">
+      </RepositoryConfigurator>
+   </extension>
+
+
+</plugin>

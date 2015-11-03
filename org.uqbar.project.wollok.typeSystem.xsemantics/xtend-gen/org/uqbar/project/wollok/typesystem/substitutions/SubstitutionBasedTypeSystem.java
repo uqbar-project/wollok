@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -14,7 +15,6 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.Functions.Function2;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
 import org.uqbar.project.wollok.semantics.BasicType;
@@ -65,12 +65,12 @@ public class SubstitutionBasedTypeSystem implements TypeSystem {
   
   public void analyse(final EObject p) {
     EList<EObject> _eContents = p.eContents();
-    final Procedure1<EObject> _function = new Procedure1<EObject>() {
-      public void apply(final EObject it) {
+    final Consumer<EObject> _function = new Consumer<EObject>() {
+      public void accept(final EObject it) {
         SubstitutionBasedTypeSystem.this.analyze(it);
       }
     };
-    IterableExtensions.<EObject>forEach(_eContents, _function);
+    _eContents.forEach(_function);
   }
   
   public void analyze(final EObject node) {
@@ -83,12 +83,12 @@ public class SubstitutionBasedTypeSystem implements TypeSystem {
   }
   
   public void analyze(final Iterable<? extends EObject> objects) {
-    final Procedure1<EObject> _function = new Procedure1<EObject>() {
-      public void apply(final EObject it) {
+    final Consumer<EObject> _function = new Consumer<EObject>() {
+      public void accept(final EObject it) {
         SubstitutionBasedTypeSystem.this.analyze(it);
       }
     };
-    IterableExtensions.forEach(objects, _function);
+    objects.forEach(_function);
   }
   
   protected void _doAnalyse(final WProgram it) {
@@ -106,12 +106,12 @@ public class SubstitutionBasedTypeSystem implements TypeSystem {
     boolean _notEquals = (!Objects.equal(_members, null));
     if (_notEquals) {
       EList<WMember> _members_1 = it.getMembers();
-      final Procedure1<WMember> _function = new Procedure1<WMember>() {
-        public void apply(final WMember it) {
+      final Consumer<WMember> _function = new Consumer<WMember>() {
+        public void accept(final WMember it) {
           SubstitutionBasedTypeSystem.this.analyze(it);
         }
       };
-      IterableExtensions.<WMember>forEach(_members_1, _function);
+      _members_1.forEach(_function);
     }
   }
   

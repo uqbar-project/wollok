@@ -9,7 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.core;bundle-version="3.7.0",
  org.eclipse.team.ui;bundle-version="3.7.100",
  org.eclipse.core.resources;bundle-version="3.9.1",
- UqbarPropertyPageContrib;bundle-version="1.0.0"
+ org.uqbar.contrib.utils;bundle-version="1.0.0",
+ org.eclipse.equinox.preferences,
+ org.eclipse.core.databinding;bundle-version="1.4.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: org.uqbar.wollok.teamwork.extensions
 

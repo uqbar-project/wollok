@@ -34,7 +34,7 @@ public enum PreferenceTypes implements AttributeType<IEclipsePreferences> {
 		}
 
 		@Override
-		public Object fromModel(IEclipsePreferences preferences,
+		public Object fromModel(Object preferences,
 				String preferenceName, Object defaultValue) {
 			return preferences.getBoolean(preferenceName, (Boolean)defaultValue);
 		}

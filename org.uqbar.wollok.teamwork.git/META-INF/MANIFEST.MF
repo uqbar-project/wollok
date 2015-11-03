@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GitTeamwork
+Bundle-SymbolicName: org.uqbar.wollok.teamwork.git;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.uqbar.wollok.teamwork.git.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.uqbar.wollok.teamwork.ui;bundle-version="1.0.0",
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy

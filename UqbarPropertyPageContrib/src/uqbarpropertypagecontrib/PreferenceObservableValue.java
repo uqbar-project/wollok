@@ -11,20 +11,20 @@ import org.eclipse.swt.widgets.Composite;
 
 public class PreferenceObservableValue extends AbstractObservableValue {
 
-	private IEclipsePreferenceWrapper preferencesWrapper;
+	private ModelWrapper preferencesWrapper;
 	
 	private String preferenceName;
 	private String description;
 	private Object defaultValue;
 	
-	private PreferenceType preferenceType;
+	private AttributeType preferenceType;
 	private Object value;
 	private WidgetFactory widgetFactory;
 	private DataBindingContext context;
 	private IObservableValue enableWhen; 
 	
-	public IEclipsePreferences getPreferences() {
-		return this.preferencesWrapper.getPreferences();
+	public Object getModel() {
+		return this.preferencesWrapper.getModel();
 	}
 
 	public void enableWhen(IObservableValue booleanObserver) {
@@ -35,12 +35,11 @@ public class PreferenceObservableValue extends AbstractObservableValue {
 		this.enableWhen(new NotObservableValue(booleanObserver, true));		
 	}
 
-	public IEclipsePreferenceWrapper getPreferencesWrapper() {
+	public ModelWrapper getPreferencesWrapper() {
 		return preferencesWrapper;
 	}
 
-
-	public void setPreferencesWrapper(IEclipsePreferenceWrapper preferencesWrapper) {
+	public void setPreferencesWrapper(ModelWrapper preferencesWrapper) {
 		this.preferencesWrapper = preferencesWrapper;
 	}
 
@@ -69,11 +68,11 @@ public class PreferenceObservableValue extends AbstractObservableValue {
 		this.defaultValue = defaultValue;
 	}
 
-	public PreferenceType getPreferenceType() {
+	public AttributeType getPreferenceType() {
 		return preferenceType;
 	}
 
-	public void setPreferenceType(PreferenceType preferenceType) {
+	public void setPreferenceType(AttributeType preferenceType) {
 		this.preferenceType = preferenceType;
 	}
 
@@ -87,9 +86,9 @@ public class PreferenceObservableValue extends AbstractObservableValue {
 
 
 	public PreferenceObservableValue(
-			IEclipsePreferenceWrapper preferenceWrapper, String preferenceName,
+			ModelWrapper preferenceWrapper, String preferenceName,
 			String descriptionName, Object defaultValue,
-			PreferenceType preferenceType, 
+			AttributeType preferenceType, 
 			WidgetFactory widgetFactory, DataBindingContext context) {
 		super();
 		this.preferencesWrapper = preferenceWrapper;
@@ -136,16 +135,16 @@ public class PreferenceObservableValue extends AbstractObservableValue {
 	}
 
 	@Override
-	protected Object doGetValue() {
+	public Object doGetValue() {
 		return value;
 	}
 	
 	public void toPreference() {
-		this.preferenceType.toPreference(this.preferencesWrapper.getPreferences(), this.preferenceName, this.getValue() != null ? this.getValue() : this.defaultValue);
+		this.preferenceType.toModel(this.preferencesWrapper.getModel(), this.preferenceName, this.getValue() != null ? this.getValue() : this.defaultValue);
 	}
 	
 	public void fromPreference() {
-		this.setValue(this.preferenceType.fromPreference(this.preferencesWrapper.getPreferences(), this.preferenceName, this.defaultValue));
+		this.setValue(this.preferenceType.fromModel(this.preferencesWrapper.getModel(), this.preferenceName, this.defaultValue));
 	} 
 	
 	public void restoreDefault() {
@@ -160,5 +159,4 @@ public class PreferenceObservableValue extends AbstractObservableValue {
 		this.enableWhen = disableOn;
 	}
 	
-
 }

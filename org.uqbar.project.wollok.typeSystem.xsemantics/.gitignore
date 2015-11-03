@@ -1,1 +1,3 @@
 *._trace
+/xtend-gen/
+/xsemantics-gen/

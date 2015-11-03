@@ -1,82 +1,97 @@
 package org.uqbar.wollok.teamwork.ui;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Composite;
+import org.uqbar.wollok.teamwork.extensions.TeamworkConfigurator;
 
-import uqbarpropertypagecontrib.DynamicPropertyPage;
+public class TeamworkPage extends WizardPage implements IWizardPage {
 
-public class TeamworkPage extends DynamicPropertyPage implements IWizardPage {
-
-	private IWizard wizard;
-	private IWizardPage previusPage;
 	private IProject project;
+	
+	private List<TeamworkConfigurator> extensions;
+	private String[] configuratorNames;
+	
 
-	public TeamworkPage() {
-		this.noDefaultAndApplyButton();
+	public TeamworkPage(IProject project, SharingWizard wizard, List<TeamworkConfigurator> extensions) {
+		super("Teamwork Repository selection");
+		this.project = project;
+		this.setWizard(wizard);
+		this.extensions = extensions;
+		configuratorNames = new String[extensions.size()];
+		int i = 0;
+		for(TeamworkConfigurator configurator : extensions) {
+			configuratorNames[i++] = configurator.getName();
+		}
+		this.setPageComplete(false);
+		this.setDescription("Choose a Backend Platform");
 	}
 	
 	@Override
 	public boolean canFlipToNextPage() {
-		return false;
+		return getCurrentConfigurator() != null;
 	}
-
-	@Override
-	public String getName() {
-		return "TeamWorkPage";
-	}
-
+	
 	@Override
 	public IWizardPage getNextPage() {
-		return null;
+		return getCurrentConfigurator()!= null ? getCurrentConfigurator().getWizardPages().get(0) : null;
 	}
 
-	@Override
-	public IWizardPage getPreviousPage() {
-		return previusPage;
+	public SharingWizard getSharingWizard() {
+		return (SharingWizard) getWizard();
 	}
 
-	@Override
-	public IWizard getWizard() {
-		return wizard;
-	}
-
-	@Override
-	public boolean isPageComplete() {
-		return true;
-	}
-
-	@Override
-	public void setPreviousPage(IWizardPage arg0) {
-		previusPage = arg0;
-	}
 
 	@Override
 	public void setWizard(IWizard arg0) {
-		this.wizard = arg0;
-	}
-
-	@Override
-	protected String getPluginId() {
-		return Activator.PLUGIN_ID;
+		super.setWizard(arg0);
 	}
 
 	public IProject getProject() {
 		return project;
 	}
 
-	public void setProject(IProject project) {
-		this.project = project;
+	
+	@Override
+	public void createControl(Composite parent) {
+		org.eclipse.swt.widgets.List combo = new org.eclipse.swt.widgets.List(parent, SWT.SINGLE);
+		combo.setItems(configuratorNames);
+		combo.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				setCurrentConfigurator(combo.getSelectionIndex() >= 0 ? extensions.get(combo.getSelectionIndex()) : null);
+				TeamworkPage.this.getWizard().getContainer().updateButtons();
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				widgetSelected(arg0);
+			}
+		});
+		this.setControl(combo);
 	}
 
-	/**
-	 * Create preference for project scope. Override it if you want other scope
-	 * */
-	protected IScopeContext buildScopeContext() {
-		return new ProjectScope(this.project);
+
+	public TeamworkConfigurator getCurrentConfigurator() {
+		return this.getSharingWizard().getCurrentConfigurator();
 	}
+
+
+	public void setCurrentConfigurator(TeamworkConfigurator currentConfigurator) {
+		this.getSharingWizard().setCurrentConfigurator(currentConfigurator);
+	}
+	
+	
 
 
 }

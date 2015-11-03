@@ -17,33 +17,49 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.osgi.service.prefs.BackingStoreException;
 
-public abstract class DynamicPropertyPage extends PropertyPage implements
-		IEclipsePreferenceWrapper {
+/**
+ * This class is prepared for use IEclipsePreferences, Project Scope, as backing model.
+ * You can override type attributes for use another kind of backing
+ * @author leo
+ *
+ */
 
-	private List<PreferenceObservableValue> models = new ArrayList<PreferenceObservableValue>();
-	private IEclipsePreferences preferences;
+public abstract class DynamicPropertyPage<Model> extends PropertyPage implements
+		ModelWrapper<Model> {
+
+	private List<PreferenceObservableValue> observablesValues = new ArrayList<PreferenceObservableValue>();
+	//IEclipsePreferences or override all attributesTypesMethods 
+	private Model model;
 	private DataBindingContext dbc = new DataBindingContext();
+	private SaveModelStrategy<Model> saveModelStrategy;
 
-	public void setPreferences(IEclipsePreferences preferences) {
-		this.preferences = preferences;
-	}
+	
 
 	public DynamicPropertyPage() {
 		
 	}
+
+	public void setSaveModelStrategy(SaveModelStrategy<Model> saveModelStrategy) {
+		this.saveModelStrategy = saveModelStrategy;
+	}
+	
+	public void setModel(Model model) {
+		this.model = model;
+	}
 	
 
-	public PreferenceObservableValue addString(String preferenceName, String description,
+	public PreferenceObservableValue addString(String attributeName, String description,
 			String defaultValue) {
-		return this.addModel(preferenceName,
-				description, defaultValue, PreferenceTypes.STRING,
+		return this.addAttribute(attributeName,
+				description, defaultValue, getStringType(),
 				WidgetFactories.TEXT);
 	}
 
-	public PreferenceObservableValue addModel(String preferenceName, String description,
-			Object defaultValue, PreferenceType type,
+
+	public PreferenceObservableValue addAttribute(String attributeName, String description,
+			Object defaultValue, AttributeType type,
 			WidgetFactory widgetFactory) {
-		return this.addModel(new PreferenceObservableValue(this, preferenceName,
+		return this.addModel(new PreferenceObservableValue(this, attributeName,
 				description, defaultValue, type, widgetFactory, this
 						.getDatabindingContex()));
 	}
@@ -58,14 +74,15 @@ public abstract class DynamicPropertyPage extends PropertyPage implements
 
 	public PreferenceObservableValue addBoolean(String preferenceName, String description,
 			boolean defaultValue) {
-		return this.addModel(preferenceName,
-				description, defaultValue, PreferenceTypes.BOOLEAN,
+		return this.addAttribute(preferenceName,
+				description, defaultValue, getBooleanType(),
 				WidgetFactories.CHECKBOX);
 
 	}
 
+
 	public PreferenceObservableValue addModel(PreferenceObservableValue value) {
-		this.models.add(value);
+		this.observablesValues.add(value);
 		return value;
 	}
 
@@ -73,66 +90,60 @@ public abstract class DynamicPropertyPage extends PropertyPage implements
 	protected Control createContents(Composite parent) {
 		this.load();
 		final Composite composite = new Composite(parent, SWT.NONE);
-		for (PreferenceObservableValue model : models) {
+		for (PreferenceObservableValue model : observablesValues) {
 			model.addTo(composite);
 		}
 		GridLayoutFactory.swtDefaults().generateLayout(composite);
 		return composite;
 	}
 
-	public IEclipsePreferences getPreferences() {
-		if (this.preferences == null) {
-			this.preferences = buildPreference();
+	public Model getModel() {
+		if (this.model == null) {
+			this.model = createModel();
 		}
-		return this.preferences;
+		return this.model;
 	}
 
-	protected IEclipsePreferences buildPreference() {
-		IScopeContext projectScope = buildScopeContext();
-		return projectScope.getNode(getPluginId());
+
+
+	protected Model createModel() {
+		return null;
 	}
 
-	/**
-	 * Create preference for project scope. Override it if you want other scope
-	 * */
-	protected IScopeContext buildScopeContext() {
-		return new ProjectScope((IProject) this
-				.getElement().getAdapter(IProject.class));
-	}
 
-	/**
-	 * Used by buildPreference method to define scope in a Plugin context a
-	 * typical implementation return Activator.PLUGIN_ID
-	 */
-	protected abstract String getPluginId();
 
 	public void load() {
-		for (PreferenceObservableValue model : this.models) {
+		for (PreferenceObservableValue model : this.observablesValues) {
 			model.fromPreference();
 		}
 	}
 
 	@Override
 	public boolean performOk() {
-		for (PreferenceObservableValue model : this.models) {
+		for (PreferenceObservableValue model : this.observablesValues) {
 			model.toPreference();
 		}
-		try {
-			this.getPreferences().flush();
-		} catch (BackingStoreException e) {
-			throw new RuntimeException(e);
-		}
+		save();
 		return super.performOk();
+	}
+
+	protected void save() {
+		if(this.saveModelStrategy != null) {
+			this.saveModelStrategy.save(this.getModel());
+		}
 	}
 
 	@Override
 	protected void performDefaults() {
-		for (PreferenceObservableValue model : this.models) {
+		for (PreferenceObservableValue model : this.observablesValues) {
 			model.restoreDefault();
 		}
 		super.performDefaults();
 	}
 	
+	protected abstract AttributeType<Model> getBooleanType();
+	
+	protected abstract AttributeType<Model> getStringType();
 	
 
 }

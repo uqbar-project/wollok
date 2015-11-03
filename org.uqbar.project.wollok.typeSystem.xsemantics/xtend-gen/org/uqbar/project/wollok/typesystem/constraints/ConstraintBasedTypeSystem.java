@@ -4,12 +4,11 @@ import com.google.common.base.Objects;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.TypeSystem;
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException;
@@ -30,22 +29,22 @@ public class ConstraintBasedTypeSystem implements TypeSystem {
   
   public void analyse(final EObject p) {
     EList<EObject> _eContents = p.eContents();
-    final Procedure1<EObject> _function = new Procedure1<EObject>() {
-      public void apply(final EObject it) {
+    final Consumer<EObject> _function = new Consumer<EObject>() {
+      public void accept(final EObject it) {
         ConstraintBasedTypeSystem.this.generateVariables(it);
       }
     };
-    IterableExtensions.<EObject>forEach(_eContents, _function);
+    _eContents.forEach(_function);
   }
   
   protected void _generateVariables(final WProgram p) {
     EList<WExpression> _elements = p.getElements();
-    final Procedure1<WExpression> _function = new Procedure1<WExpression>() {
-      public void apply(final WExpression it) {
+    final Consumer<WExpression> _function = new Consumer<WExpression>() {
+      public void accept(final WExpression it) {
         ConstraintBasedTypeSystem.this.generateVariables(it);
       }
     };
-    IterableExtensions.<WExpression>forEach(_elements, _function);
+    _elements.forEach(_function);
   }
   
   protected void _generateVariables(final EObject node) {

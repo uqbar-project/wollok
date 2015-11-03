@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.semantics;
 import com.google.inject.Inject;
 import it.xsemantics.runtime.RuleEnvironment;
 import it.xsemantics.runtime.RuleFailedException;
+import java.util.function.Consumer;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -12,8 +13,6 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.util.ITextRegionWithLineInformation;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.semantics.AnyType;
 import org.uqbar.project.wollok.semantics.WollokDslTypeSystem;
 import org.uqbar.project.wollok.semantics.WollokType;
@@ -36,12 +35,12 @@ public class XSemanticsTypeSystem implements TypeSystem {
     RuleEnvironment _emptyEnvironment = this.xsemanticsSystem.emptyEnvironment();
     this.env = _emptyEnvironment;
     EList<EObject> _eContents = p.eContents();
-    final Procedure1<EObject> _function = new Procedure1<EObject>() {
-      public void apply(final EObject e) {
+    final Consumer<EObject> _function = new Consumer<EObject>() {
+      public void accept(final EObject e) {
         XSemanticsTypeSystem.this.xsemanticsSystem.inferTypes(XSemanticsTypeSystem.this.env, e);
       }
     };
-    IterableExtensions.<EObject>forEach(_eContents, _function);
+    _eContents.forEach(_function);
   }
   
   public WollokType resolvedType(final EObject o) {
