@@ -104,7 +104,12 @@ package lang {
 		method forEach(closure) { this.fold(null, [ acc, e | closure.apply(e) ]) }
 		method forAll(predicate) = this.fold(true, [ acc, e | if (!acc) acc else predicate.apply(e) ])
 		method exists(predicate) = this.fold(false, [ acc, e | if (acc) acc else predicate.apply(e) ])
-		method detect(predicate) = this.fold(null, [ acc, e | if (acc == null && predicate.apply(e)) e else acc ])
+		method detect(predicate) = this.fold(null, [ acc, e |
+			 if (acc != null)
+			 	acc
+			 else
+			 	if (predicate.apply(e)) e else null
+		])
 		method count(predicate) = this.fold(0, [ acc, e | if (predicate.apply(e)) acc++ else acc  ])
 		method sum(closure) = this.fold(0, [ acc, e | acc + closure.apply(e) ])
 		
