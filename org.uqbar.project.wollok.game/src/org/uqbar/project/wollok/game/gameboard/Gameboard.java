@@ -108,7 +108,8 @@ public class Gameboard {
 	
 	public List<VisualComponent> getComponents() {
 		ArrayList<VisualComponent> allComponents = new ArrayList<VisualComponent>(this.components);
-		allComponents.add(this.character);
+		if (character != null)
+			allComponents.add(this.character);
 		return allComponents;
 	}
 
