@@ -2,6 +2,9 @@ package org.uqbar.project.wollok.game.gameboard;
 
 import org.uqbar.project.wollok.game.Balloon;
 import org.uqbar.project.wollok.game.VisualComponent;
+import org.uqbar.project.wollok.interpreter.WollokInterpreterException;
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -43,7 +46,12 @@ public class GameboardRendering implements ApplicationListener {
 
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (int i=0; i < gameboard.getListeners().size(); i++){
-			gameboard.getListeners().get(i).notify(gameboard);
+			try {
+				gameboard.getListeners().get(i).notify(gameboard);
+			} catch (WollokProgramExceptionWrapper e) {
+				gameboard.characterSay(e.getWollokException().getInstanceVariables().get("message").toString());
+			} catch (WollokInterpreterException e) { } // TODO 
+
 		}
 
 		for (Cell cell : gameboard.getCells()) {
