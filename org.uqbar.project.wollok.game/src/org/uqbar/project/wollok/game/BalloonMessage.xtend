@@ -17,10 +17,10 @@ class BalloonMessage {
 	val static glyphLayout = new GlyphLayout()
 	val static textBitmap = new BitmapFont()
 	val static baseWidth = 75
+	var static timeToLive = 2000
 	
 	var String text
 	var long timestamp = 0
-	var long timeToLive = 2000
 	
 	new (String aText){
 		text = aText

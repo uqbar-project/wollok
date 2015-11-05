@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import org.uqbar.project.wollok.game.Balloon;
 import org.uqbar.project.wollok.game.VisualComponent;
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException;
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -20,7 +18,6 @@ public class GameboardRendering implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private BitmapFont font;
-	private Balloon balloon;
 	
 	
 	public GameboardRendering(Gameboard gameboard) {
@@ -34,7 +31,6 @@ public class GameboardRendering implements ApplicationListener {
 		camera.setToOrtho(false, gameboard.width(), gameboard.height());
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		balloon = new Balloon();
 	}
 
 	@Override
