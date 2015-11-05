@@ -470,115 +470,113 @@ package lib {
 		method notEquals(expected, actual) native
 	}
 
-object wgame{
-	method addVisual(element) native
-	method addVisualCharacter(element) native
-	method addVisualWithReference(element, property) native
-	method addVisualCharacterWithReference(element, property) native
-	method whenKeyPressedDo(key, action) native
-	method whenKeyPressedSay(key, function) native
-	method whenCollideDo(element, action) native
-	method getObjectsIn(position) native
-	method clear() native
-	method start() native
-	
-	method setTittle(tittle) native
-	method getTittle() native
-	method setWidth(cant) native
-	method getWidth() native
-	method setHeight(cant) native
-	method getHeight() native
-}
-
-object keys {
-	method getKeyCode(aKey) native
-	
-	method onPress(key) {
-		return new ProtoKeyListener(this.getKeyCode(key))
-	}
-}
-
-class ProtoKeyListener {
-	val key
-
-	new(_key) {
-		key = _key
-	}
-
-	method characterSay(function){
-		wgame.whenKeyPressedSay(key, function)
-	}	
-	method do(action) {
-		wgame.whenKeyPressedDo(key, action)
-	}
-}
-
-class Position {
-	var x = 0
-	var y = 0
-	
-	new() { }
-	
-	new(_x, _y) {
-		x = _x
-		y = _y
+	object wgame{
+		method addVisual(element) native
+		method addVisualCharacter(element) native
+		method addVisualWithReference(element, property) native
+		method addVisualCharacterWithReference(element, property) native
+		method whenKeyPressedDo(key, action) native
+		method whenKeyPressedSay(key, function) native
+		method whenCollideDo(element, action) native
+		method getObjectsIn(position) native
+		method clear() native
+		method start() native
+		
+		method setTittle(tittle) native
+		method getTittle() native
+		method setWidth(cant) native
+		method getWidth() native
+		method setHeight(cant) native
+		method getHeight() native
 	}
 	
-	method moveLeft(num) {
-		x = x - num
-	}
-	method moveRight(num) {
-		x = x + num
-	}
-	method moveDown(num) {
-		y = y - num
-	}
-	method moveUp(num) {
-		y = y + num
+	object keys {
+		method getKeyCode(aKey) native
+		
+		method onPress(key) {
+			return new ProtoKeyListener(this.getKeyCode(key))
+		}
 	}
 	
-	method clone() = new Position(x, y)
+	class ProtoKeyListener {
+		val key
 	
-	method == (other) {
-		return x == other.getX() and y == other.getY()
-	}
+		new(_key) {
+			key = _key
+		}
 	
-	method drawCharacterWithReferences(element, reference) {
-		element.setPosicion(this.clone())
-		wgame.addVisualCharacterWithReference(element, reference)
-	}
-	
-	method drawCharacter(element) {
-		element.setPosicion(this.clone())
-		wgame.addVisualCharacter(element)
-	}
-	
-	method drawElementWithReferences(element, reference) {
-		element.setPosicion(this.clone())
-		wgame.addVisualWithReference(element, reference)
+		method characterSay(function){
+			wgame.whenKeyPressedSay(key, function)
+		}	
+		method do(action) {
+			wgame.whenKeyPressedDo(key, action)
+		}
 	}
 	
-	method drawElement(element) {
-		element.setPosicion(this.clone())
-		wgame.addVisual(element)
+	class Position {
+		var x = 0
+		var y = 0
+		
+		new() { }
+		
+		new(_x, _y) {
+			x = _x
+			y = _y
+		}
+		
+		method moveLeft(num) {
+			x = x - num
+		}
+		method moveRight(num) {
+			x = x + num
+		}
+		method moveDown(num) {
+			y = y - num
+		}
+		method moveUp(num) {
+			y = y + num
+		}
+		
+		method clone() = new Position(x, y)
+		
+		method == (other) {
+			return x == other.getX() and y == other.getY()
+		}
+		
+		method drawCharacterWithReferences(element, reference) {
+			element.setPosicion(this.clone())
+			wgame.addVisualCharacterWithReference(element, reference)
+		}
+		
+		method drawCharacter(element) {
+			element.setPosicion(this.clone())
+			wgame.addVisualCharacter(element)
+		}
+		
+		method drawElementWithReferences(element, reference) {
+			element.setPosicion(this.clone())
+			wgame.addVisualWithReference(element, reference)
+		}
+		
+		method drawElement(element) {
+			element.setPosicion(this.clone())
+			wgame.addVisual(element)
+		}
+		
+		method getAllElements() {
+			return wgame.getObjectsIn(this)
+		}
+		
+		method getX() { return x }
+		
+		method setX(_x) { x = _x }
+		
+		method getY() { return y }
+		
+		method setY(_y) { y = _y }
+		
 	}
 	
-	method getAllElements() {
-		return wgame.getObjectsIn(this)
-	}
-	
-	method getX() {
-		return x
-	}
-	method setX(_x) {
-		x = _x
-	}
-	method getY() {
-		return y
-	}
-	method setY(_y) {
-		y = _y
-	}
 }
 
 package mirror {
