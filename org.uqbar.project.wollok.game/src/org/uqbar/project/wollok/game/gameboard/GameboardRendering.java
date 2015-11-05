@@ -48,12 +48,16 @@ public class GameboardRendering implements ApplicationListener {
 		for (int i=0; i < gameboard.getListeners().size(); i++){
 			try {
 				gameboard.getListeners().get(i).notify(gameboard);
-			} catch (WollokProgramExceptionWrapper e) {
+			} 
+			catch (WollokProgramExceptionWrapper e) {
 				Object message = e.getWollokException().getInstanceVariables().get("message");
 				if (message == null)
-					message = "!!!";
-				gameboard.characterSay(message.toString());
-			} catch (WollokInterpreterException e) { } // TODO 
+					message = "NO MESSAGE";
+				gameboard.characterSay("ERROR: " + message.toString());
+			} 
+//			catch (WollokInterpreterException e) { 
+//				gameboard.characterSay(e.getCause().getCause().getMessage()); 
+//			}
 
 		}
 

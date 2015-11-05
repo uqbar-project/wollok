@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.uqbar.project.wollok.game.BalloonMessage;
 import org.uqbar.project.wollok.game.GameConfiguration;
 import org.uqbar.project.wollok.game.GameFactory;
 import org.uqbar.project.wollok.game.Position;
@@ -28,7 +27,6 @@ public class Gameboard {
 	private List<Cell> cells = new ArrayList<Cell>();
 	private VisualComponent character;
 	public List<VisualComponent> components = new ArrayList<VisualComponent>();
-	private List<BalloonMessage> balloonMessages = new ArrayList<BalloonMessage>();
 	
 	public Gameboard() {
 		GameFactory factory = new GameFactory();
@@ -63,6 +61,10 @@ public class Gameboard {
 	public void clear() {
 		this.components.clear();
 		this.configuration.getListeners().clear();
+	}
+
+	public void characterSay(String aText) {
+		this.character.say(aText);
 	}
 
 	public Collection<VisualComponent> getComponentsInPosition(Position myPosition) {
@@ -169,24 +171,6 @@ public class Gameboard {
 	  if(instance == null)
 		  instance = new Gameboard();
 	  return instance;
-	}
-
-	public void characterSay(String aText) {
-		this.balloonMessages.add(new BalloonMessage(aText));
-	}
-
-	public boolean hasMessages() {
-		List<BalloonMessage> textToDelete = new ArrayList<BalloonMessage>();
-		for(int i = 0; i<this.balloonMessages.size();i++){
-			if (this.balloonMessages.get(i).shouldRemove())
-				textToDelete.add(balloonMessages.get(i));
-		}
-		this.balloonMessages.removeAll(textToDelete);
-		return this.balloonMessages.size() > 0;
-	}
-
-	public String getCurrentMessage() {
-		return this.balloonMessages.get(0).getText();
 	}
 }
 
