@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.core.ToStringBuilder;
 import org.uqbar.project.wollok.interpreter.core.WollokObject;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -54,7 +55,11 @@ public class VisualComponent {
 	}
 	
 	public void say(String aText) {
-		this.balloonMessages.add(new BalloonMessage(aText));
+		this.balloonMessages.add(new BalloonMessage(aText, Color.BLACK));
+	}
+	
+	public void scream(String aText) {
+		this.balloonMessages.add(new BalloonMessage(aText, Color.RED));
 	}
 
 	public void draw(SpriteBatch batch, BitmapFont font) {

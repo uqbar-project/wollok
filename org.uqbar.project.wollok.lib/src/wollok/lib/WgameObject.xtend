@@ -57,7 +57,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 
 	@NativeMessage("whenCollideDo")
 	def whenCollideDoMethod(Object object, WollokClosure action) {
-		var visualObject = Gameboard.getInstance().components.findFirst[ c | c.domainObject.equals(WollokObject.cast(object))]
+		var visualObject = Gameboard.getInstance().getComponents().findFirst[ c | c.domainObject.equals(WollokObject.cast(object))]
 		var listener = new CollisionListener(visualObject, [ e | action.apply(e.domainObject) ])
 		Gameboard.getInstance().addListener(listener)
 	}

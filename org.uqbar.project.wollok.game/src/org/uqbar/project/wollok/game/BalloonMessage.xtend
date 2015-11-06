@@ -13,17 +13,18 @@ import com.badlogic.gdx.graphics.Color
 @Accessors
 class BalloonMessage {
 	val static patch = new NinePatch(new Texture(Gdx.files.internal("assets/speech.png")), 30, 60, 40, 50)
-	val static colorNegro = Color.BLACK
 	val static glyphLayout = new GlyphLayout()
 	val static textBitmap = new BitmapFont()
 	val static baseWidth = 75
 	var static timeToLive = 2000
 	
 	var String text
+	var Color color
 	var long timestamp = 0
 	
-	new (String aText){
+	new (String aText, Color aColor){
 		text = aText
+		color = aColor
 	}
 	
 	def boolean shouldRemove(){
@@ -56,6 +57,6 @@ class BalloonMessage {
 	}
 		
 	private def setText(String text, int width) {
-		glyphLayout.setText(textBitmap, text, colorNegro, width, 3, true)
+		glyphLayout.setText(textBitmap, text, color, width, 3, true)
 	}
 }
