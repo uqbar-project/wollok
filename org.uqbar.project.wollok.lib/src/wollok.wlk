@@ -228,7 +228,7 @@ package lang {
 		override method internalToSmartString(alreadyShown) { return this.stringValue() }
 		method stringValue() native	
 		
-		method ..(end) native
+		method ..(end) = new Range(this, end)
 		
 		method >(other) native
 		method >=(other) native
@@ -303,6 +303,20 @@ package lang {
 		method ==(other) native
 		
 		method negate() native
+	}
+	
+	/**
+	 * @author jfernandes
+	 * @since 1.3
+	 */
+	class Range {
+		val start
+		val end
+		new(_start, _end) { start = _start ; end = _end }
+		
+		method forEach(closure) native
+		
+		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}
 }
  

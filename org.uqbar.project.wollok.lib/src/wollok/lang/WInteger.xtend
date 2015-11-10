@@ -4,7 +4,6 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
 
 /**
  * @author jfernandes
@@ -69,10 +68,6 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	def wollokEquals(WollokObject other) {
 		this.doubleValue == other.nativeNumber.doubleValue
 	}
-	
-	@NativeMessage("..")
-	// TODO: should migrate WollokRange to be a wollok class also
-	def range(WollokObject other) { new WollokRange(wrapped .. other.nativeNumber.wrapped.intValue) }
 	
 	def invert() { (-wrapped).asWollokObject }
 	

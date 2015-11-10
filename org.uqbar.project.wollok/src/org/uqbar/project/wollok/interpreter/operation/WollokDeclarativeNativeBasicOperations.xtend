@@ -7,7 +7,6 @@ import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -209,7 +208,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	// ********************************************************************************************
 	
 	@BinaryOperation('..')
-	def WollokRange rangeOperation(Object a, ()=>Object eb) { val b = eb.apply; range(a, b) }
+	def rangeOperation(Object a, ()=>Object eb) { val b = eb.apply; range(a, b) }
 		def dispatch range(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand .. operator" ) }  
-		def dispatch range(WCallable a, Object b) { a.call("..", b) as WollokRange }
+		def dispatch range(WCallable a, Object b) { a.call("..", b) }
 }
