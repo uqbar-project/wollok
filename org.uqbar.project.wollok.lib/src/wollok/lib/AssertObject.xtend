@@ -27,13 +27,13 @@ class AssertObject extends AbstractWollokDeclarativeNativeObject {
 
 	@NativeMessage("equals")
 	def assertEquals(Object a, Object b) {
-		if (asBinaryOperation("==").apply(a, b) == false)
+		if (asBinaryOperation("==").apply(a, [|b]) == false)
 			throw AssertionException.valueNotWasEquals(a, b)
 	}
 
 	@NativeMessage("notEquals")
 	def assertNotEquals(Object a, Object b) {
-		if (asBinaryOperation("==").apply(a, b) == true)
+		if (asBinaryOperation("==").apply(a, [|b]) == true)
 			throw AssertionException.valueNotWasNotEquals(a, b)
 	}
 

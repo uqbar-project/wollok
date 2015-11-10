@@ -308,22 +308,26 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		if (binary.feature.isMultiOpAssignment) {
 			val operator = binary.feature.substring(0, 1)
 			val reference = binary.leftOperand
-			val rightPart = binary.rightOperand.eval
-			reference.performOpAndUpdateRef(operator, rightPart)
+
+			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
 		} else
-			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.eval)
+			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.lazyEval)
+	}
+	
+	def lazyEval(EObject expression) {
+		[| expression.eval ]
 	}
 
 	def dispatch Object evaluate(WPostfixOperation op) {
 		// if we start to "box" numbers into wollok objects, this "1" will then change to find the wollok "1" object-
-		performOpAndUpdateRef(op.operand, op.feature.substring(0, 1), new WollokInteger(1))
+		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [|new WollokInteger(1)])
 	}
 
 	/** 
 	 * A method reused between opmulti and post fix. Since it performs an binary operation applied
 	 * to a reference, and then updates the value in the context (think of +=, or ++, they have common behaviors)
 	 */
-	def performOpAndUpdateRef(WExpression reference, String operator, Object rightPart) {
+	def performOpAndUpdateRef(WExpression reference, String operator, ()=>Object rightPart) {
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart)
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
 		newValue

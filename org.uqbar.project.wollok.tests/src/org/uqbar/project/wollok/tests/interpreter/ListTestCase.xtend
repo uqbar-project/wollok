@@ -1,19 +1,21 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 
 /**
  * @author jfernandes
  */
 class ListTestCase extends AbstractWollokInterpreterTestCase {
 	
+	def instantiateCollectionAsNumbersVariable() {
+		"val numbers = #[22, 2, 10]"
+	}
+	
 	@Test
 	def void testSize() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]		
+			«instantiateCollectionAsNumbersVariable»		
 			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -22,8 +24,10 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testContains() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]		
-			assert.that(numbers.contains(23))
+			«instantiateCollectionAsNumbersVariable»
+			assert.that(numbers.contains(22))
+			assert.that(numbers.contains(2))
+			assert.that(numbers.contains(10))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -31,8 +35,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testRemove() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			numbers.remove(23)		
+			«instantiateCollectionAsNumbersVariable»
+			numbers.remove(22)		
 			assert.that(2 == numbers.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -41,7 +45,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testClear() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			numbers.clear()		
 			assert.that(0 == numbers.size())
 		}'''.interpretPropagatingErrors
@@ -51,7 +55,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testIsEmpty() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			assert.notThat(numbers.isEmpty())
 		}'''.interpretPropagatingErrors
 	}
@@ -60,12 +64,12 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForEach() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			
 			var sum = 0
 			numbers.forEach([n | sum += n])
 			
-			assert.equals(26, sum)
+			assert.equals(34, sum)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -73,9 +77,19 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForAll() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			var allPositives = numbers.forAll([n | n > 0])
 			assert.that(allPositives)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testForAllWhenItIsFalse() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			var allPositives = numbers.forAll([n | n > 5])
+			assert.notThat(allPositives)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -83,9 +97,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testFilter() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			var greaterThanOneElements = numbers.filter([n | n > 1])
-			assert.that(greaterThanOneElements.size() == 2)
+			«instantiateCollectionAsNumbersVariable»
+			var greaterThanFiveElements = numbers.filter([n | n > 5])
+			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -93,12 +107,12 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testMap() {
 		'''
 		program p {
-			val numbers = #[10, 20, 30]
+			«instantiateCollectionAsNumbersVariable»
 			var halfs = numbers.map([n | n / 2])
 
+			assert.that(halfs.contains(11))
 			assert.that(halfs.contains(5))
-			assert.that(halfs.contains(10))
-			assert.that(halfs.contains(15))
+			assert.that(halfs.contains(1))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -106,9 +120,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testShortCutAvoidingParenthesis() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			var greaterThanOneElements = numbers.filter[n | n > 1]
-			assert.that(greaterThanOneElements.size() == 2)
+			«instantiateCollectionAsNumbersVariable»
+			var greaterThanFiveElements = numbers.filter[n | n > 5]
+			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -116,8 +130,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testAny() {
 		'''
 		program p {
-			val numbers = #[23]		
-			assert.equals(23, numbers.any())
+			«instantiateCollectionAsNumbersVariable»
+			val any = numbers.any()
+			assert.that(numbers.contains(any))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -145,8 +160,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testToString() {
 		'''
 		program p {
-			val a = #[23, 2, 1]
-			assert.equals("#[23, 2, 1]", a.toString())
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals("#[22, 2, 10]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
