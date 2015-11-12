@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class VisualComponent {
@@ -75,13 +76,15 @@ public class VisualComponent {
 
 	private void drawAttributesIfNecesary(SpriteBatch batch, BitmapFont font) {
 		String printableString = "";
+		GlyphLayout glyphLayout = new GlyphLayout();
 		
 		for(String attr : this.attributes){
 			printableString = printableString.concat(this.getShowableAttribute(attr).concat("\n"));
 		}
-		
+		glyphLayout.reset();
+		glyphLayout.setText(font, printableString, Color.WHITE, 220, 3, true);
 		if (printableString != "" && this.isInMyZone())
-			font.draw(batch, printableString, this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
+			font.draw(batch, glyphLayout, this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
 	}
 
 	private void drawMe(SpriteBatch batch) {

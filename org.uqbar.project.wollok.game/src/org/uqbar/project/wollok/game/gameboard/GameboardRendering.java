@@ -54,9 +54,6 @@ public class GameboardRendering implements ApplicationListener {
 				if (character != null)
 					character.scream("ERROR: " + message.toString());
 			} 
-//			catch (WollokInterpreterException e) { 
-//				gameboard.characterSay(e.getCause().getCause().getMessage()); 
-//			}
 
 		}
 

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -91,9 +93,20 @@ public class ZipHandler {
 		zos.closeEntry();
 		fis.close();
 	}
-
+	 private void isValid(String fileName) throws ZipException, IOException {
+		 File file = new File(fileName);
+	    ZipFile zipfile = null;
+        zipfile = new ZipFile(file);
+            if (zipfile != null) {
+                zipfile.close();
+                zipfile = null;
+            }
+		}
 	public void extractFromZipFile(String zipFilePath, String destDirectory)
 			throws IOException, CoreException {
+		
+		this.isValid(zipFilePath);
+		
 		File destDir = new File(destDirectory);
 		if (!destDir.exists()) {
 			destDir.mkdir();

@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.game.listeners;
 
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException;
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper;
 
 public class KeyboardListener implements GameboardListener {
 
