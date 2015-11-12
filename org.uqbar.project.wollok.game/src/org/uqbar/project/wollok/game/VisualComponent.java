@@ -84,7 +84,7 @@ public class VisualComponent {
 		glyphLayout.reset();
 		glyphLayout.setText(font, printableString, Color.WHITE, 220, 3, true);
 		if (printableString != "" && this.isInMyZone())
-			font.draw(batch, glyphLayout, this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
+			font.draw(batch, glyphLayout, this.getPosition().getXinPixels()-75, this.getPosition().getYinPixels());
 	}
 
 	private void drawMe(SpriteBatch batch) {
