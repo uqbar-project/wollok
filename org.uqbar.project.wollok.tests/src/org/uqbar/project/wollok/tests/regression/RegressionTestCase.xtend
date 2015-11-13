@@ -72,10 +72,9 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		        var filtro4 = #[]
 		        filtro4 = filtro3.filter[p|p.energia() >= 30]
 		
-		        if(filtro4.size() == 0){    
-		
+		        if (filtro4.size() == 0) {    
 		            this.alimentaBajaEnergia(filtro3)
-		            //return pepe.energia()
+		            return pepe.energia()
 		        }else{
 		            return "La energia de pepe es 30"
 		        }

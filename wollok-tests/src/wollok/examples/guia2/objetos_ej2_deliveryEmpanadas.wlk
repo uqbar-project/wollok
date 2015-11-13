@@ -30,9 +30,7 @@ object motoGrande {
 	val distanciaMaxima = 100
 	var distanciaRecorrida = 0
 
-	method capacidad() {
-		return 60
-	}
+	method capacidad() { return 60 }
 
 	method llevarPedido(pedido, distancia) {
 		if (this.puedeLlevar(pedido, distancia)) {
@@ -41,8 +39,7 @@ object motoGrande {
 	}
 
 	method puedeLlevar(pedido, distancia) {
-		return pedido <= this.capacidad() and ( distanciaRecorrida + distancia ) <
-		distanciaMaxima
+		return pedido <= this.capacidad() and ( distanciaRecorrida + distancia ) < distanciaMaxima
 	}
 }
 
@@ -132,43 +129,48 @@ object delivery {
 	}
 
 	method transportesQueNecesitoParaLlevar(pedido, distancia) {
-		var pendiente = pedido var transportesNecesarios = #[ ] transportes.forEach[
-		t | if (pedido > 0) {
-			if (t.puedeLlevar(pedido - t.capacidad(), distancia)) {
-				transportesNecesarios.add(t) pendiente -= t.capacidad()
+		var pendiente = pedido var transportesNecesarios = #[ ] 
+		transportes.forEach[t | 
+			if (pedido > 0) {
+				if (t.puedeLlevar(pedido - t.capacidad(), distancia)) {
+					transportesNecesarios.add(t) pendiente -= t.capacidad()
+				}
 			}
-		} ] return transportesNecesarios
+		]
+		return transportesNecesarios
 	}
 
 	method cantidadDesperdiciadaPorLlevar(pedido, distancia) {
-		var transportesQueSalen =
-		this.transportesQueNecesitoParaLlevar(pedido, distancia) return
-		transportesQueSalen.sum[ t | t.capacidad() ] - pedido
+		var transportesQueSalen = this.transportesQueNecesitoParaLlevar(pedido, distancia) 
+		return transportesQueSalen.sum[ t | t.capacidad() ] - pedido
 	}
 
-	method pedidosTotalesVidaUtil() {
-	}
+	method pedidosTotalesVidaUtil() {}
 
 	method transporteOptimo(pedido, distancia) {
 		var desperdicio = 1000
 		var menorSobrante = 1000
 		var mejorTransporte = null
-		transportes.forEach[ t | if (this.desperdicio(t, pedido, distancia) >= 0 &&
-		this.desperdicio(t, pedido, distancia) < desperdicio) {
-			desperdicio = this.desperdicio(t, pedido, distancia) mejorTransporte = t
-		} else if (this.sobrante(t, pedido) >= 0 && this.sobrante(t, pedido) <
-		menorSobrante) {
-			menorSobrante = this.sobrante(t, pedido) mejorTransporte = t
-		} console.println(mejorTransporte) ] return mejorTransporte
+		transportes.forEach[ t | 
+			if (this.desperdicio(t, pedido, distancia) >= 0 &&  this.desperdicio(t, pedido, distancia) < desperdicio) {
+				desperdicio = this.desperdicio(t, pedido, distancia) mejorTransporte = t
+			} else if (this.sobrante(t, pedido) >= 0 && this.sobrante(t, pedido) < menorSobrante) {
+				menorSobrante = this.sobrante(t, pedido) mejorTransporte = t
+			} 
+			console.println(mejorTransporte)
+		] 
+		return mejorTransporte
 	}
 
 	method transportesOptimos(pedido, mejoresTransportes, todosLosTransportes) {
 		var pendiente = pedido var transporte = null transporte =
 		todosLosTransportes.transporteOptimo(pedido)
 		mejoresTransportes.add(transporte) todosLosTransportes.remove(transporte)
-		pendiente -= pedido - transporte.capacidad() if (pedido >= 0) {
-			this.transportesOptimos(pedido, mejoresTransportes, todosLosTransportes)
-		} else {
+		pendiente -= pedido - transporte.capacidad() 
+		if (pedido >= 0) {
+			return this.transportesOptimos(pedido, mejoresTransportes, todosLosTransportes)
+		}
+		else {
 			return mejoresTransportes
 		}
 	}
