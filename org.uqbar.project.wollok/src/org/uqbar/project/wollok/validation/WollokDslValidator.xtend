@@ -201,7 +201,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodActuallyOverrides(WMethodDeclaration m) {
@@ -223,6 +222,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE, OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE)
 			}
 		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def methodDoesNotReturnAValueOnEveryPossibleFlow(WMethodDeclaration it) {
+		if (returnsValue  && !expressionReturns && !returnsOnAllPossibleFlows)
+			report(WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW)
 	}
 	
 	@Check
