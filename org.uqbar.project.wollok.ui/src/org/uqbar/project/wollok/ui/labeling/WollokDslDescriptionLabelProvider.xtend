@@ -21,6 +21,7 @@ class WollokDslDescriptionLabelProvider extends DefaultDescriptionLabelProvider 
 		switch (ele.EClass) {
 			case WCLASS: 'wollok-icon-class_16.png'
 			case WPACKAGE: 'package.png'
+			case WNAMED_OBJECT: 'wollok-icon-object_16.png'
 			
 			default: null
 		}

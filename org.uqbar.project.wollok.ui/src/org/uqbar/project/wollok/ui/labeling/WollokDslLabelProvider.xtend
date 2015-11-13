@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.eclipse.core.runtime.Platform
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Provides labels for EObjects.
@@ -43,6 +44,9 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	
 	def text(WObjectLiteral ele) { 'object' }
 	def image(WObjectLiteral ele) {	'wollok-icon-object_16.png' }
+	
+	def text(WNamedObject ele) { 'object' }
+	def image(WNamedObject ele) { 'wollok-icon-object_16.png' }
 	
 	def concatResolvedType(String separator, EObject obj) {
 		if (!labelExtensionResolved) {
