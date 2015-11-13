@@ -1,10 +1,9 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
 import java.io.Serializable
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A variable within a stack execution.
@@ -21,7 +20,8 @@ class XDebugStackFrameVariable implements Serializable {
 	}
 	
 	def dispatch asRemoteValue(WollokObject object) { new XWollokObjectDebugValue(variable.name, object) }
-	def dispatch asRemoteValue(WollokList list) { new XWollokListDebugValue(list) }
+	// TODO: after changing lists to wollokobjects
+//	def dispatch asRemoteValue(WollokList list) { new XWollokListDebugValue(list) }
 	def dispatch asRemoteValue(Object o) { new XDebugValue(o.toString) }
 	
 }

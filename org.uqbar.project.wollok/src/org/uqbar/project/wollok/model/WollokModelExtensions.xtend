@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.model
 
+import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -40,6 +42,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
@@ -120,20 +123,52 @@ class WollokModelExtensions {
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
-
 	def dispatch messagesSentTo(WParameter p) { p.allMessageSent }
 
-	def static allMessageSent(WReferenciable r) { r.eContainer.allMessageSentTo(r) }
+	def static Iterable<WMemberFeatureCall> allMessageSent(WReferenciable r) { r.eContainer.allMessageSentTo(r) + r.allMessagesToRefsWithSameNameAs}
 
-	def static allMessageSentTo(EObject context, WReferenciable ref) {
-		context.allCalls.filter[c|c.isCallOnVariableRef && (c.memberCallTarget as WVariableReference).ref == ref]
+	def static List<WMemberFeatureCall> allMessageSentTo(EObject context, WReferenciable ref) {
+		context.allCalls.filter[c|c.isCallOnVariableRef && (c.memberCallTarget as WVariableReference).ref == ref].toList
 	}
+	
+	// heuristic: add's messages sent to other parameters with the same name
+	def static dispatch Iterable<WMemberFeatureCall> allMessagesToRefsWithSameNameAs(WParameter ref) {
+		ref.declaringContext.methods.map[ parameters ].flatten.filter[ name == ref.name && it != ref ].map[ eContainer.allMessageSentTo(it) ].flatten
+	}
+	def static dispatch Iterable<WMemberFeatureCall> allMessagesToRefsWithSameNameAs(WReferenciable it) { #[] }
 
 	def static allCalls(EObject context) { context.eAllContents.filter(WMemberFeatureCall) }
 
 	def static isCallOnVariableRef(WMemberFeatureCall c) { c.memberCallTarget instanceof WVariableReference }
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
+	
+	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
+		if (isCallOnThis) 
+			method.declaringContext.findMethod(it)
+		else if (isCallToWellKnownObject)
+			resolveWKO(finder).findMethod(it)
+		else
+		 // TODO: call to super (?)
+		 	null
+	}
+	
+	
+	
+	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
+
+	def static dispatch boolean isWellKnownObject(EObject it) { false }
+	def static dispatch boolean isWellKnownObject(WVariableReference it) { ref.isWellKnownObject }
+	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
+	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
+	
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it) }
+	
+	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
+		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
+		obj.hookObjectInHierarhcy(finder)
+		obj
+	}
 
 
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
@@ -152,9 +187,8 @@ class WollokModelExtensions {
 		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[parameters.size == nrOfArgs] 
 	}
 	
-	def static superClassRequiresNonEmptyConstructor(WClass c) {
-		c.parent != null && !c.parent.hasEmptyConstructor
-	}
+	def static superClassRequiresNonEmptyConstructor(WClass it) { parent != null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent != null && !parent.hasEmptyConstructor }
 	
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 

@@ -1,11 +1,17 @@
 package org.uqbar.project.wollok.utils
 
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IncrementalProjectBuilder
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IAdaptable
+import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.NullProgressMonitor
@@ -92,5 +98,11 @@ class WEclipseUtils {
 	def static fullBuild(IProject p, IProgressMonitor monitor) {
 		p.build(IncrementalProjectBuilder.FULL_BUILD, monitor)
 	}
+	
+	def static asObjectStream(IPath path) { new ObjectOutputStream(new FileOutputStream(path.toOSString)) }
+	def static asJavaFile(IPath path) { new File(path.toOSString) }
+	def static ObjectInputStream asObjectInputStream(File file) { new ObjectInputStream(new FileInputStream(file)) }
+	
+	def static nameWithoutExtension(IResource it) { if (name.contains(".")) name.substring(0, name.lastIndexOf('.')) else name }
 	
 }

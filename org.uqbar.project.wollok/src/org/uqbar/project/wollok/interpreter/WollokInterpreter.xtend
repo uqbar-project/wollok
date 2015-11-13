@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
+import com.google.inject.Injector
 import java.io.Serializable
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
@@ -45,9 +46,14 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	@Inject
 	WollokInterpreterConsole console
 	
+	@Inject
+	Injector injector
+	
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 
 	var executionStack = new ObservableStack<XStackFrame>
+	
+	@Accessors var EObject evaluating
 
 	static var WollokInterpreter instance = null 
 
@@ -55,7 +61,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		instance = this
 	}
 	
-	def static getInstance(){instance}
+	def static getInstance(){ instance }
+	def getInjector() { injector }
+	
+	def getEvaluator() { evaluator }
 	
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	
@@ -77,7 +86,11 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			executionStack.push(stackFrame)
 			debugger.started
 			
+			evaluating = rootObject
+			
 			evaluator.evaluate(rootObject)
+			
+//			evaluating = null
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			throw e
@@ -109,7 +122,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	
 	def evalBinary(Object a, String operand, Object b) {
-		evaluator.resolveBinaryOperation(operand).apply(a, b)
+		evaluator.resolveBinaryOperation(operand).apply(a, [|b])
 	}
 
 	/**

@@ -21,7 +21,7 @@ class Profesor extends Persona {
 
 object o {
 	method foo() {
-		23
+		return 23
 	}
 	method bar() {
 		this.foo()

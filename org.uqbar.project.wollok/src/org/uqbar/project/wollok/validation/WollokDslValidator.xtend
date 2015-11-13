@@ -1,26 +1,28 @@
 package org.uqbar.project.wollok.validation
 
+import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -40,10 +42,10 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
+import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 /**
  * Custom validation rules.
@@ -54,6 +56,8 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
 	List<WollokValidatorExtension> wollokValidatorExtensions
+	@Inject
+	WollokClassFinder classFinder
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -63,6 +67,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
+	public static val METHOD_ON_WKO_DOESNT_EXIST = "METHOD_ON_WKO_DOESNT_EXIST"
+	public static val VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES = "VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
 	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
@@ -78,6 +84,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
+	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -287,6 +294,56 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
 		}
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
+		try {
+			if (call.callToWellKnownObject && !call.isValidCallToWKObject(classFinder)) {
+				report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_WKO_DOESNT_EXIST)
+			}
+		} catch (Exception e) {
+			e.printStackTrace
+			throw e
+		}
+	}
+	
+	// WKO
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
+		if (parent != null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
+			report('''No default constructor in super type «parent.name». You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''', it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectSuperClassConstructorMustExists(WNamedObject it) {
+		if (parent != null && !parentParameters.empty && !parent.hasConstructorForArgs(parentParameters.size)) {
+			report('''No superclass constructor or wrong number of arguments. You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''', it, WNAMED_OBJECT__PARENT)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def objectMustImplementAbstractMethods(WNamedObject it) {
+		if (parent != null) {
+			val abstractMethods = allAbstractMethods(it.parent)
+			if (!abstractMethods.empty) {
+				report('''Must implement inherited abstract methods: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
+			}
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
+		val method = call.resolveMethod(classFinder)
+		if (method != null && !method.native && !method.abstract && !method.returnsValue && call.isUsedAsValue(classFinder)) {
+			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
+		}
+	}
 
 	@Check
 	//TODO: a single method performs many checks ! cannot configure that
@@ -388,18 +445,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + " return " + t.condition.sourceCode, t, WIF_EXPRESSION__CONDITION, BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
 	}
 	
-	def dispatch boolean getIsReturnBoolean(WExpression it) { false }
-	def dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
-	def dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
-	def dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
-
-	def isWritableVarRef(WExpression e) { 
-		e instanceof WVariableReference
-		&& (e as WVariableReference).ref instanceof WVariable
-		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
-		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
-	}
-
 	/**
 	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
 	 * 
@@ -432,6 +477,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def noReturnStatementInConstructor(WReturnExpression it){
 		if(it.inConstructor)
 			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)				
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
+		if (!native && !abstract && !returnsValue && expression.isEvaluatesToAValue(classFinder))
+			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	
 	// ******************************	

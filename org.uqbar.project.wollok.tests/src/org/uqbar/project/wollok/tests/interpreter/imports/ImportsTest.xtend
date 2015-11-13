@@ -55,7 +55,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 			object mostaza {
 				method entrenar() {
-					return #[pepita, pepona].map[p| p.getNombre()].join()
+					return #[pepita, pepona].map[p| p.getNombre()].join(',')
 				} 
 			}
 		''',
@@ -259,6 +259,23 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 						new nadadoras.Pato()
 					}
 				}
+			}
+		'''
+		].interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testRefereceByFQNWithoutImport() {
+		#['b' -> '''
+			class Golondrina  {
+			    method volar(kms) {
+			        console.println("flying...")
+			    }
+			}
+		''',
+		'programa' -> '''
+			program zuper {
+			        val pepona = new b.Golondrina()
 			}
 		'''
 		].interpretPropagatingErrors

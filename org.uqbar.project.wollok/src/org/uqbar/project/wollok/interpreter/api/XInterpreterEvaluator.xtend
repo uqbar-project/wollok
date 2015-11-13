@@ -21,7 +21,6 @@ interface XInterpreterEvaluator extends Serializable {
 	
 	def Object evaluate(EObject o)
 
-	// Parece hackeadas	
-	def (Object,Object)=>Object resolveBinaryOperation(String operator)
+	def (Object,()=>Object)=>Object resolveBinaryOperation(String operator)
 	
 }

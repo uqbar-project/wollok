@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok;singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -39,7 +39,7 @@ Export-Package: org.uqbar.project.wollok,
  org.uqbar.project.wollok.interpreter.core,
  org.uqbar.project.wollok.interpreter.debugger,
  org.uqbar.project.wollok.interpreter.nativeobj,
- org.uqbar.project.wollok.interpreter.nativeobj.collections,
+ org.uqbar.project.wollok.interpreter.natives,
  org.uqbar.project.wollok.interpreter.operation,
  org.uqbar.project.wollok.interpreter.stack,
  org.uqbar.project.wollok.manifest,
@@ -48,6 +48,7 @@ Export-Package: org.uqbar.project.wollok,
  org.uqbar.project.wollok.parser.antlr,
  org.uqbar.project.wollok.parser.antlr.internal,
  org.uqbar.project.wollok.scoping,
+ org.uqbar.project.wollok.sdk,
  org.uqbar.project.wollok.serializer,
  org.uqbar.project.wollok.services,
  org.uqbar.project.wollok.ui.utils,

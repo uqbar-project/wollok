@@ -1,20 +1,28 @@
 package org.uqbar.project.wollok.ui.quickfix
 
+import com.google.inject.Inject
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
+import org.uqbar.project.wollok.WollokDSLKeywords
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -24,12 +32,9 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.WollokDSLKeywords
-import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 
 /**
  * Custom quickfixes.
@@ -37,6 +42,8 @@ import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
+	@Inject
+	WollokClassFinder classFinder
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -69,13 +76,18 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
+	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
 	def createNonExistingMethod(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
+			
+			val wko = call.resolveWKO(classFinder)
+			
+			val placeToAdd = wko.findPlaceToAddMethod
+			
 			context.xtextDocument.replace(
-				call.method.after,
+				placeToAdd,
 				0,
 				"\n" + "\t" + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
@@ -83,6 +95,22 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			)
 		]
 	}
+	
+	def int findPlaceToAddMethod(WMethodContainer it) {
+		val lastMethod = members.lastOf(WMethodDeclaration)
+		if (lastMethod != null)
+			return lastMethod.after
+		val lastConstructor = members.lastOf(WConstructor)
+		if (lastConstructor != null)
+			return lastConstructor.after
+		val lastInstVar = members.lastOf(WVariableDeclaration)
+		if (lastInstVar != null)
+			return lastInstVar.after
+		
+		return it.node.offset + it.node.text.indexOf("{") + 1
+	}
+	
+	def <T> T lastOf(EList<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -137,6 +165,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 	
 	protected def addConstructor(IModificationContext it, WClass parent, String constructor) {
+		// TODO try to generalize and use findPlaceToAddMethod
+		
 		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
 			if (lastConstructor != null)
 				insertAfter(lastConstructor, constructor)

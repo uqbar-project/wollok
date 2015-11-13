@@ -30,9 +30,7 @@ val vaca1 = object {
 	method engordar(cuanto) {
 		peso = peso + cuanto
 	}
-	method peso() {
-		peso
-	}
+	method peso() = peso
 }
 
 val vaca2 = object {
@@ -40,9 +38,7 @@ val vaca2 = object {
 	method engordar(cuanto) {
 		peso = peso + cuanto
 	}
-	method peso() {
-		peso
-	}
+	method peso() = peso
 }
 val vacas = #[vaca1, vaca2]
 

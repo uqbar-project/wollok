@@ -304,7 +304,8 @@ public class BoundsBasedTypeSystem implements TypeSystem {
       WMethodDeclaration _method = WollokModelExtensions.method(call);
       WMethodContainer _declaringContext = WollokModelExtensions.declaringContext(_method);
       String _feature = call.getFeature();
-      final WMethodDeclaration referencedMethod = WMethodContainerExtensions.lookupMethod(_declaringContext, _feature);
+      EList<WExpression> _memberCallArguments = call.getMemberCallArguments();
+      final WMethodDeclaration referencedMethod = WMethodContainerExtensions.lookupMethod(_declaringContext, _feature, _memberCallArguments);
       this.operator_spaceship(call, referencedMethod);
     }
   }

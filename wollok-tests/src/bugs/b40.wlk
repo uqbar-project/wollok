@@ -13,6 +13,7 @@ object pajarera {
 
 object pepe {
     method sosMenor(energiaMenor){
+    	console.println()
         pajarera.setEnergiaMenor(10)
     }
 }

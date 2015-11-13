@@ -11,4 +11,6 @@ class WollokConstants {
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	
+	public static val OPMULTIASSIGN = #['+=', '-=', '*=', '/=', '%=', '<<=', '>>=']
+	
 }

@@ -24,6 +24,7 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.debug.core.ILaunch
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -97,6 +98,9 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 	}
+	
+	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
+	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
 }
 
 class LaunchConfigurationInfo {

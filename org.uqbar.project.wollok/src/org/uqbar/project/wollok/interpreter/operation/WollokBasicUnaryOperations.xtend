@@ -16,5 +16,6 @@ interface WollokBasicUnaryOperations {
 	/**
 	 * Returns a function (block) that knows how to perform the unary operation.
 	 */
+	//TODO: object -> WollokObject
 	def (Object)=>Object asUnaryOperation(String operationSymbol)
 }

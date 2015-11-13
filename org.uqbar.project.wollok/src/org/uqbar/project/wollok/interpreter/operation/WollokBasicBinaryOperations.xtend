@@ -16,5 +16,6 @@ interface WollokBasicBinaryOperations {
 	/**
 	 * Returns a function (block) that knows how to perform the binary operation.
 	 */
-	def (Object,Object)=>Object asBinaryOperation(String operationSymbol)
+	//TODO: after removing all 100% java objects this return type will have type WollokObject instead of Object
+	def (Object, ()=>Object)=>Object asBinaryOperation(String operationSymbol)
 }

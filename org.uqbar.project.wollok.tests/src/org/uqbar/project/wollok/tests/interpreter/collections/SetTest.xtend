@@ -9,6 +9,10 @@ import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 // the inheritance needs to be reviewed if we add list specific tests it won't work here
 class SetTest extends ListTestCase {
 	
+	override instantiateCollectionAsNumbersVariable() {
+		"val numbers = #{22, 2, 10}"
+	}
+	
 	@Test
 	def void testSizeWithDuplicates() {
 		'''
@@ -50,6 +54,17 @@ class SetTest extends ListTestCase {
 	}
 	
 	override testToStringWithObjectRedefiningToStringInWollok() {
+	}
+
+	@Test
+	def void testFlatMap() {
+		'''
+		program p {
+			assert.equals(#{1,2,3,4}, #{#{1,2}, #{1,3,4}}.flatten())
+			assert.equals(#{1,2, 3}, #{#{1,2}, #{}, #{1,2, 3}}.flatten())
+			assert.equals(#{}, #{}.flatten())
+			assert.equals(#{}, #{#{}}.flatten())
+		}'''.interpretPropagatingErrors
 	}
 	
 }

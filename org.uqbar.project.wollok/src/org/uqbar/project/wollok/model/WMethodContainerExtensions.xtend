@@ -4,12 +4,12 @@ import java.util.Arrays
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
-import org.uqbar.project.wollok.WollokActivator
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -20,14 +20,16 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * Extension methods for WMethodContainers.
@@ -43,16 +45,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
 	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
+	def static boolean isAbstract(WNamedObject it) { parent != null && parent.hasUnimplementedInheritedMethods }
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 
-	def static hasUnimplementedInheritedMethods(WClass c) {
+	def static allAbstractMethods(WClass c) {
 		val unimplementedMethods = <WMethodDeclaration>newArrayList
 		c.superClassesIncludingYourselfTopDownDo [ claz |
 			unimplementedMethods.removeAllSuchAs[claz.overrides(name)]
 			unimplementedMethods.addAll(claz.abstractMethods);
 		]
-		!unimplementedMethods.empty
+		unimplementedMethods
 	}
+
+	def static hasUnimplementedInheritedMethods(WClass c) { !c.allAbstractMethods.empty }
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 	
@@ -62,7 +67,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent.lookupMethod(m.name) }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
@@ -80,9 +85,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	
-	def static dispatch allMethods(WNamedObject o) { o.methods }
-	def static dispatch allMethods(WObjectLiteral o) { o.methods }
-	def static dispatch allMethods(WClass c) {
+	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
+		c.allMethods.findFirst[m | m.name == feature && m.parameters.size == memberCallArguments.size ]
+	}
+	
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject o) { o.methods + if (o.parent != null) o.parent.allMethods else #[] }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral o) { o.methods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
 		val methods = newArrayList
 		c.superClassesIncludingYourselfTopDownDo[cl |
 			// remove overriden
@@ -128,13 +137,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c != null && (c.methods.exists[name == mname] || c.parent.hasOrInheritMethod(mname))
 	}
 
-	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message) { 
-		val method = behavior.methods.findFirst[name == message]
+	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
+		val method = behavior.methods.findFirst[name == message && parameters.size == params.size]
 		
 		if (method != null) 
 			return method
 		else if (behavior.parent != null)
-			behavior.parent.lookupMethod(message)
+			behavior.parent.lookupMethod(message, params)
 		else 
 			null
 	}
@@ -144,11 +153,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 
@@ -169,44 +178,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue 
 	}
 	
-	// ** native **
-	
-	def static Object createNativeObject(WClass it, WollokObject obj, WollokInterpreter interpreter) {
-		createNativeObject(fqn, obj, interpreter)
-	}
-	
-	def static Object createNativeObject(WNamedObject it, WollokObject obj, WollokInterpreter interpreter) {
-		var className = fqn
-		var classNameParts = className.split("\\.")
-		val lastPosition = classNameParts.length - 1
-		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
-		
-		className = classNameParts.join(".")
-		val classFQN = className + "Object"
-		
-		createNativeObject(classFQN, obj, interpreter)
-	}
-	
-	def static createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
-		val bundle = WollokActivator.getDefault
-		val javaClass = 
-		if (bundle != null) {
-			try {
-				bundle.loadWollokLibClass(classFQN, obj.behavior)
-			}
-			catch (ClassNotFoundException e) {
-				interpreter.classLoader.loadClass(classFQN)
-			}
-		}
-		else {
-			interpreter.classLoader.loadClass(classFQN)
-		}
-		try
-			javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)
-		catch (NoSuchMethodException e)
-			javaClass.newInstance
-	}
-
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
@@ -235,6 +206,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			c
 		}
 	} 
+	
+	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
+		obj.parent.resolveConstructor(arguments)
+	}
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
 		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
 	}
@@ -250,5 +225,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
 		(behave as WClass).parent?.resolveConstructor(args)
 	}
+	
+	// ************************************************************************
+	// ** unorganized
+	// ************************************************************************
+	
+	def static dispatch boolean getIsReturnBoolean(WExpression it) { false }
+	def static dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
+	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
+
+	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
+	def static dispatch boolean isWritableVarRef(WExpression it) { false }
 	
 }

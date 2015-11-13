@@ -79,7 +79,8 @@ public class ClassBasedWollokType extends BasicType implements ConcreteType {
     WMethodDeclaration _xblockexpression = null;
     {
       String _name = message.getName();
-      final WMethodDeclaration m = WMethodContainerExtensions.lookupMethod(this.clazz, _name);
+      List<WollokType> _parameterTypes = message.getParameterTypes();
+      final WMethodDeclaration m = WMethodContainerExtensions.lookupMethod(this.clazz, _name, _parameterTypes);
       WMethodDeclaration _xifexpression = null;
       boolean _and = false;
       boolean _notEquals = (!Objects.equal(m, null));
@@ -88,8 +89,8 @@ public class ClassBasedWollokType extends BasicType implements ConcreteType {
       } else {
         EList<WParameter> _parameters = m.getParameters();
         int _size = _parameters.size();
-        List<WollokType> _parameterTypes = message.getParameterTypes();
-        int _size_1 = _parameterTypes.size();
+        List<WollokType> _parameterTypes_1 = message.getParameterTypes();
+        int _size_1 = _parameterTypes_1.size();
         boolean _equals = (_size == _size_1);
         _and = _equals;
       }

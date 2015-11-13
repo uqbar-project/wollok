@@ -15,9 +15,7 @@ object pepita {
 		energia += comida.energia()
 	}
 	
-	method ubicacion() {
-		ubicacion
-	}
+	method ubicacion() = ubicacion
 	
 	method volarA(lugar) {
 		energia -= ubicacion - lugar.ubicacion()
