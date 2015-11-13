@@ -55,5 +55,16 @@ class SetTest extends ListTestCase {
 	
 	override testToStringWithObjectRedefiningToStringInWollok() {
 	}
+
+	@Test
+	def void testFlatMap() {
+		'''
+		program p {
+			assert.equals(#{1,2,3,4}, #{#{1,2}, #{1,3,4}}.flatten())
+			assert.equals(#{1,2, 3}, #{#{1,2}, #{}, #{1,2, 3}}.flatten())
+			assert.equals(#{}, #{}.flatten())
+			assert.equals(#{}, #{#{}}.flatten())
+		}'''.interpretPropagatingErrors
+	}
 	
 }

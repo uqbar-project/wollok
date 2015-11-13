@@ -83,4 +83,15 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 			assert.equals(8, todos.size())
 		}'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void testFlatMap() {
+		'''
+		program p {
+			assert.equals(#[1,2,3,4], #[#[1,2], #[3,4]].flatten())
+			assert.equals(#[1,2,3,4], #[#[1,2], #[], #[3,4]].flatten())
+			assert.equals(#[], #[].flatten())
+			assert.equals(#[], #[#[]].flatten())
+		}'''.interpretPropagatingErrors
+	}
 }
