@@ -199,7 +199,7 @@ WFeatureCall : WSuperInvocation | WMemberFeatureCall;
 WMemberFeatureCall returns WExpression:
 	WPrimaryExpression
 	(
-		=>({WMemberFeatureCall.memberCallTarget=current} ("."|nullSafe?="?.")) 
+		=>({WMemberFeatureCall.memberCallTarget=current} ("."| nullSafe?="?.")) 
 		=>feature=FeatureCallID 
 		(('(' 
 			(memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
