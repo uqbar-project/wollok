@@ -118,13 +118,19 @@ package lang {
 			 acc
 		])
 		
+		method flatMap(closure) = this.fold(this.newInstance(), [ acc, e |
+			acc.addAll(closure.apply(e))
+			acc
+		])
+
 		method filter(closure) = this.fold(this.newInstance(), [ acc, e |
 			 if (closure.apply(e))
 			 	acc.add(e)
 			 acc
 		])
-				
+
 		method contains(e) = this.exists[one | e == one ]
+		method flatten() = this.flatMap[ e | e ]
 		
 		override method internalToSmartString(alreadyShown) {
 			return this.toStringPrefix() + this.map[e| e.toSmartString(alreadyShown) ].join(', ') + this.toStringSufix()
