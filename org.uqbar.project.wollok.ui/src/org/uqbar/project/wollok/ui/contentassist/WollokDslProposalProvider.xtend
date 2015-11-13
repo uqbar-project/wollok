@@ -10,25 +10,29 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WMember
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
  * @author jfernandes
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
+	var extension BasicTypeResolver typeResolver = new BasicTypeResolver 
 	
 	// This whole implementation is just an heuristic until we have a type system
 	
@@ -51,22 +55,38 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 
 	// any referenciable shows all messages that you already sent to it	
 	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMessageSent.filter[feature != null].forEach[ context.addProposal(it, acceptor) ]
+		ref.messageSentAsProposals(context, acceptor)
+	}
+	
+	// for variables tries to resolve the type based on the initial value (for literal objects like strings, lists, etc)
+	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		val WMethodContainer type = ref.resolveType
+		if (type != null)
+			type.methodsAsProposals(context, acceptor)
+		else
+			ref.messageSentAsProposals(context, acceptor)
 	}
 	
 	// message to WKO's (shows the object's methods)
 	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMethods.forEach[ context.addProposal(it, acceptor) ]
+		ref.methodsAsProposals(context, acceptor)
 	}
 	
 	// messages to this
 	def dispatch void memberProposalsForTarget(WThis dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		dis.declaringContext.allMethods.forEach[ context.addProposal(it, acceptor) ]
+		dis.declaringContext.methodsAsProposals(context, acceptor)
 	}
+	
 	
 	// *****************************
 	// ** proposing methods and how they are completed
 	// *****************************
+	def messageSentAsProposals(WReferenciable ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMessageSent.filter[feature != null].forEach[ context.addProposal(it, acceptor) ]
+	}
+	def methodsAsProposals(WMethodContainer ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMethods.forEach[ context.addProposal(it, acceptor) ]
+	}
 	
 	def addProposal(ContentAssistContext context, WMember m, ICompletionProposalAcceptor acceptor) {
 		acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
