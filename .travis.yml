@@ -8,7 +8,7 @@ before_install:
 script: 
 - cd org.uqbar.project.wollok.releng/ 
 - export PROFILES=normalProfile
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo"; export UPDATE_SITE="$TRAVIS_BRANCH" ;fi
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ;fi
 - if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
 - mvn -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES
