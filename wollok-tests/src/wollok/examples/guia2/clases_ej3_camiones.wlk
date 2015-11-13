@@ -1,17 +1,11 @@
 class Deposito {
 	var camiones = #[]
 	
-	method cargaEnViaje() {
-		return camiones.sum[camion | camion.capacidadDisponible()]
-	}
+	method cargaEnViaje() = camiones.sum[camion | camion.capacidadDisponible()]
 	
-	method camionesQueCargan(unContenido) {
-		return camiones.filter[camion | camion.estaCargando(unContenido)]
-	}
+	method camionesQueCargan(unContenido) = camiones.filter[camion | camion.estaCargando(unContenido)]
 	
-	method camionConMayorCantidadDeCosos() {
-		return camiones.max[camion | camion.getCosos().size()]
-	}		
+	method camionConMayorCantidadDeCosos() = camiones.max[camion | camion.getCosos().size()]
 }
 
 class Camion {
@@ -19,63 +13,33 @@ class Camion {
 	var cargaMaxima
 	var estado = disponible
 	
-	new(cargaMaximaPosible) {
-		cargaMaxima = cargaMaximaPosible
-	}
+	new(cargaMaximaPosible) { cargaMaxima = cargaMaximaPosible }
 
-	method getCosos() {
-		return cosos
-	}
+	method getCosos() = cosos
 
-	method cargaActual() {
-		return this.getCosos().sum[bulto | bulto.peso()]
-	}
+	method cargaActual() =this.getCosos().sum[bulto | bulto.peso()]
 
-	method puedeCargar(unCoso) {
-		return this.tieneLugarPara(unCoso) && estado.sePuedeCargar()
-	} 	
+	method puedeCargar(unCoso) = this.tieneLugarPara(unCoso) && estado.sePuedeCargar()
 	
-	method tieneLugarPara(unCoso) {
-		return this.cargaActual() + unCoso.peso() <= cargaMaxima
-	}
+	method tieneLugarPara(unCoso) = this.cargaActual() + unCoso.peso() <= cargaMaxima
 	
-	method tieneLugar() {
-		return this.cargaActual() < cargaMaxima
-	}
+	method tieneLugar() = this.cargaActual() < cargaMaxima
 	
-	method cargar(unCoso) {
-		if (this.puedeCargar(unCoso)) {
-			this.getCosos().add(unCoso)
-		}
-	}
+	method cargar(unCoso) { if (this.puedeCargar(unCoso)) this.getCosos().add(unCoso) }
 	
-	method cambiarEstado(nuevoEstado) {
-		estado = nuevoEstado
-	}
+	method cambiarEstado(nuevoEstado) { estado = nuevoEstado }
 	
-	method estaListoParaSalir() {
-		return estado.estaListoParaSalir(this)
-	}
+	method estaListoParaSalir() = estado.estaListoParaSalir(this)
 	
-	method capacidadDisponible() {
-		return estado.capacidadDisponible(this)
-	}
+	method capacidadDisponible() = estado.capacidadDisponible(this)
 	
-	method getCargaMaxima() {
-		return cargaMaxima
-	}
+	method getCargaMaxima() = cargaMaxima
 	
-	method estaCargando(unContenido) {
-		return this.tieneLugar() && this.getCosos().exists[coso | coso.getContenido() == unContenido]
-	}
+	method estaCargando(unContenido) = this.tieneLugar() && this.getCosos().exists[coso | coso.getContenido() == unContenido]
 	
-	method cosoMasLiviano() {
-		return this.getCosos().min[coso | coso.peso()]
-	}
+	method cosoMasLiviano() = this.getCosos().min[coso | coso.peso()]
 	
-	method elementosEnComunCon(otroCamion) {
-		return this.getCosos().filter[coso | otroCamion.getCosos().contains(coso)] 
-	}
+	method elementosEnComunCon(otroCamion) = this.getCosos().filter[coso | otroCamion.getCosos().contains(coso)] 
 }
 
 class CamionReutilizable extends Camion {
@@ -83,13 +47,9 @@ class CamionReutilizable extends Camion {
 	
 	new(cargaMaximaPosible) = super(cargaMaximaPosible)
 	
-	override method getCosos() {
-		return destinos.map[destino | destino.getCosos()].flatten() 
-	}
+	override method getCosos() = destinos.map[destino | destino.getCosos()].flatten() 
 	
-	method descargarCamionEn(unLugar) {
-		destino.remove(destinos.detect[destino | destino.getLugar() == unLugar])
-	}
+	method descargarCamionEn(unLugar) { destino.remove(destinos.detect[destino | destino.getLugar() == unLugar]) }
 	
 	method cargarUnCosoEnDestino(unCoso, unLugar) {
 		if(this.puedeCargar(unCoso)) {
@@ -109,17 +69,9 @@ class Destino {
 	var lugar
 	var cosos = #[]
 	
-	new(unLugar) {
-		lugar = unLugar
-	}
-	
-	method getLugar() {
-		return lugar
-	}
-	
-	method getCosos() {
-		return cosos
-	}	
+	new(unLugar) { lugar = unLugar }
+	method getLugar() = lugar 
+	method getCosos() = cosos
 }
 
 class Bulto {
@@ -135,13 +87,9 @@ class Bulto {
 		contenido = contenidoCaja
 	}
 	
-	method peso() {
-		return (pesoCaja * cantidadCajas) + pesoEstructura
-	}
+	method peso() = (pesoCaja * cantidadCajas) + pesoEstructura
 	
-	method getContenido() {
-		return contenido
-	}
+	method getContenido() = contenido
 }
 
 class Caja {
@@ -153,13 +101,9 @@ class Caja {
 		contenido = contenidoCaja
 	}
 	
-	method peso() {
-		return pesoCaja
-	}
+	method peso() = pesoCaja
 	
-	method getContenido() {
-		return contenido
-	}
+	method getContenido() = contenido
 }
 
 class Bidon {
@@ -172,58 +116,34 @@ class Bidon {
 		densidad = densidadLiquido
 	}
 	
-	method peso() {
-		return capacidad * densidad
-	}
-	
-	method getContenido() {
-		return contenido
-	}
+	method peso() = capacidad * densidad
+	method getContenido() = contenido
 	
 }
 
 object disponible {
-	method sePuedeCargar() {
-		return true
-	}
+	method sePuedeCargar() = true
 	
-	method estaListoParaSalir(camion) {
-		return camion.cargaActual() >= camion.getCargaMaxima() * 0.75
-	}
+	method estaListoParaSalir(camion) = camion.cargaActual() >= camion.getCargaMaxima() * 0.75
 	
 	method capacidadDisponible(camion) {
-		if(camion.tieneLugar()) {
+		if (camion.tieneLugar()) {
 			return camion.getCargaMaxima() - camion.getCargaActual()
 		}
+		else return 0
 	}
 }
 
 object enReparacion {
-	method sePuedeCargar() {
-		return false	
-	}
-	
-	method capacidadDisponible(camion) {
-		return 0 
-	}
-	
-	method estaListoParaSalir(camion) {
-		return false
-	}
+	method sePuedeCargar() = false	
+	method capacidadDisponible(camion) = 0 
+	method estaListoParaSalir(camion) = false
 }
 
 object deViaje {
-	method sePuedeCargar() {
-		return false
-	}
-	
-	method capacidadDisponible(camion) {
-		return 0 
-	}
-	
-	method estaListoParaSalir(camion) {
-		return false
-	}	
+	method sePuedeCargar() = false
+	method capacidadDisponible(camion) = 0 
+	method estaListoParaSalir(camion) = false
 }
 
 object main {
@@ -236,15 +156,8 @@ object main {
 		camion.cargar(caja2)
 	}
 	
-	method cargaActualCamion(camion) {
-		return camion.cargaActual()
-	}
-	
-	method getCamion1() {
-		return camion1
-	}
-	
-	method getCaja1(){
- 		return caja1
- 	}
+	method cargaActualCamion(camion) = camion.cargaActual()
+	method getCamion1() = camion1
+	method getCaja1() = caja1
+
  }

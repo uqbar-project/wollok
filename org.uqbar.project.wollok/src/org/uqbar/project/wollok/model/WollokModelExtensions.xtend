@@ -42,6 +42,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WThrow
 
 /**
  * Extension methods to Wollok semantic model.
@@ -264,21 +266,20 @@ class WollokModelExtensions {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
 	
-	def static dispatch boolean isInConstructor(EObject obj){
-		if(obj.eContainer == null)
-			false
-		else obj.eContainer.inConstructor
-	}
+	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer != null && obj.eContainer.inConstructor }
+	def static dispatch boolean isInConstructor(WConstructor obj) { true }
+	def static dispatch boolean isInConstructor(WClass obj){ false }
+	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
 	
-	def static dispatch boolean isInConstructor(WConstructor obj){
-		true
-	}
-
-	def static dispatch boolean isInConstructor(WClass obj){
-		false
-	}
-
-	def static dispatch boolean isInConstructor(WMethodDeclaration obj){
-		false
-	}
+	// *****************************
+	// ** valid return
+	// *****************************
+	
+	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it) { expression.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it) { true }
+	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
+	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
+	
 }
