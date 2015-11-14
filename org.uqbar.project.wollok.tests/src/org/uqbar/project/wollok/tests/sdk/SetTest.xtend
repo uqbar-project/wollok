@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.interpreter.collections
+package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.ListTestCase
@@ -67,4 +67,16 @@ class SetTest extends ListTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testConversions() {
+		'''
+		program p {
+			val set= #{1,2,3}
+			assert.equals(#{1,2,3}, set.asSet())
+			
+			val list = set.asList()
+			assert.equals(3, list.size())
+			#[1,2,3].forEach[i|assert.equals(list.contains(i))]
+		}'''.interpretPropagatingErrors
+	}
 }

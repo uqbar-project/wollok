@@ -72,8 +72,8 @@ package lang {
 		}
 		method getX() { return x }
 		method getY() { return y }
-		method getKey() { this.getX() }
-		method getValue() { this.getY() }
+		method getKey() { return this.getX() }
+		method getValue() { return this.getY() }
 	}
 	
 	class Collection {
@@ -210,6 +210,8 @@ package lang {
 		
 		method toStringPrefix()
 		method toStringSufix()
+		method asList()
+		method asSet()
 		
 		method newInstance()
 	}
@@ -221,10 +223,18 @@ package lang {
 	 */	
 	class Set extends Collection {
 	
-		override method newInstance() = new Set()
+		override method newInstance() = #{}
 		override method toStringPrefix() = "#{"
 		override method toStringSufix() = "}"
 		
+		override method asList() { 
+			val result = #[]
+			result.addAll(this)
+			return result
+		}
+		
+		override method asSet() = this
+
 		method any() = this.first()
 		
 		method first() native
@@ -250,7 +260,7 @@ package lang {
 
 		method get(index) native
 		
-		override method newInstance() = new List()
+		override method newInstance() = #[]
 		
 		method any() {
 			if (this.isEmpty()) 
@@ -261,6 +271,15 @@ package lang {
 		
 		override method toStringPrefix() = "#["
 		override method toStringSufix() = "]"
+
+		override method asList() = this
+		
+		override method asSet() { 
+			val result = #{}
+			result.addAll(this)
+			return result
+		}
+		
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
