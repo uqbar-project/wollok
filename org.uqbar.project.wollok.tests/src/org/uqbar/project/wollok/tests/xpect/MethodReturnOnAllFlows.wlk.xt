@@ -83,5 +83,15 @@ class A {
 		a += 2
 		throw new Exception()
 	}
+	
+	method withTryCatch() {
+	    try {
+	         return 23
+	    }
+	    catch e : Exception {
+	         console.println("saasas")
+	         throw e
+	    }
+	}
 
 }

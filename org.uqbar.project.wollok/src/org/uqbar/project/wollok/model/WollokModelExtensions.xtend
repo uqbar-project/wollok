@@ -46,6 +46,7 @@ import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEv
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WCatch
 
 /**
  * Extension methods to Wollok semantic model.
@@ -62,13 +63,18 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { 
+	def static dispatch fqn(WClass it) { 
 		fileName + "." + (if (package != null) (package.name + ".") else "") + name
 	}
-	def static fqn(WNamedObject it) {
+	def static dispatch fqn(WNamedObject it) {
 		 fileName + "." + 
 		 	if(package != null) package.name + "." + name
 		 		else name
+	}
+	
+	def static dispatch fqn(WObjectLiteral it) {
+		//TODO: make it better (show containing class /object / package + linenumber ?)
+		fileName + "." + "anonymousObject" 
 	}
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
@@ -286,6 +292,8 @@ class WollokModelExtensions {
 	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
 	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WTry it) { expression.returnsOnAllPossibleFlows && catchBlocks.forall[c | c.returnsOnAllPossibleFlows ] }
+	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
 	
 }
