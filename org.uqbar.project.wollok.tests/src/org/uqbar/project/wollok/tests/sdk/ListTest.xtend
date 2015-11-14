@@ -49,8 +49,8 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testContainsWithComplexObjects() {
 		'''
-			object o1 {}
-			object o2 {}
+		object o1 {}
+		object o2 {}
 			
 		program p {
 			val list = #[o1, o2]
@@ -60,5 +60,14 @@ class ListTest extends ListTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
-	
+	@Test
+	def void testConversions() {
+		'''
+		program p {
+			val list = #[1,2,3]
+			
+			assert.equals(#[1,2,3], list.asList())
+			assert.equals(#{1,2,3}, list.asSet())
+		}'''.interpretPropagatingErrors
+	}
 }

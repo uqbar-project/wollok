@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.interpreter.collections
+package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
