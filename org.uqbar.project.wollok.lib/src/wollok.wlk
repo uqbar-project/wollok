@@ -77,7 +77,22 @@ package lang {
 	}
 	
 	class Collection {
+		/**
+		  * Returns the element that is considered to be/have the maximum value.
+		  * The criteria is given by a closure that receives a single element as input (one of the element)
+		  * The closure must return a comparable value (something that understands the >, >= messages).
+		  * Example:
+		  *       #["a", "ab", "abc", "d" ].max[e| e.length() ]    ->  returns "abc"		 
+		  */
 		method max(closure) = this.absolute(closure, [a,b | a > b])
+		
+		/**
+		  * Returns the element that is considered to be/have the minimum value.
+		  * The criteria is given by a closure that receives a single element as input (one of the element)
+		  * The closure must return a comparable value (something that understands the >, >= messages).
+		  * Example:
+		  *       #["ab", "abc", "hello", "wollok world"].max[e| e.length() ]    ->  returns "wollok world"		 
+		  */
 		method min(closure) = this.absolute(closure, [a,b | a < b])
 		
 		method absolute(closure, criteria) {
@@ -97,22 +112,79 @@ package lang {
 		 
 		// non-native methods
 		
+		/**
+		  * Adds all elements from the given collection parameter to this collection
+		  */
 		method addAll(elements) { elements.forEach[e| this.add(e) ] }
 		
+		/** Tells whether this collection has no elements */
 		method isEmpty() = this.size() == 0
 				
+		/**
+		 * Performs an operation on every elements of this collection.
+		 * The logic to execute is passed as a closure that takes a single parameter.
+		 * @returns nothing
+		 * Example:
+		 *      plants.forEach[ plant |   plant.takeSomeWater() ]
+		 */
 		method forEach(closure) { this.fold(null, [ acc, e | closure.apply(e) ]) }
+		
+		/**
+		 * Tells whether all the elements of this collection satisfy a given condition
+		 * The condition is a closure argument that takes a single element and returns a boolean value.
+		 * @returns true/false
+		 * Example:
+		 *      plants.forAll[ plant | plant.hasFlowers() ]
+		 */
 		method forAll(predicate) = this.fold(true, [ acc, e | if (!acc) acc else predicate.apply(e) ])
+		/**
+		 * Tells whether at least one element of this collection satisfy a given condition
+		 * The condition is a closure argument that takes a single element and returns a boolean value.
+		 * @returns true/false
+		 * Example:
+		 *      plants.exists[ plant | plant.hasFlowers() ]
+		 */
 		method exists(predicate) = this.fold(false, [ acc, e | if (acc) acc else predicate.apply(e) ])
+		/**
+		 * Returns the element of this collection that satisfy a given condition.
+		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * will be returned
+		 * @returns the element that complies the condition
+		 * Example:
+		 *      users.detect[ user | user.name() == "Cosme Fulanito" ]
+		 */
 		method detect(predicate) = this.fold(null, [ acc, e |
 			 if (acc != null)
 			 	acc
 			 else
 			 	if (predicate.apply(e)) e else null
 		])
+		/**
+		 * Counts all elements of this collection that satisfy a given condition
+		 * The condition is a closure argument that takes a single element and returns a number.
+		 * @returns an integer number
+		 * Example:
+		 *      plants.count[ plant | plant.hasFlowers() ]
+		 */
 		method count(predicate) = this.fold(0, [ acc, e | if (predicate.apply(e)) acc++ else acc  ])
+		/**
+		 * Collects the sum of each value for all e
+		 * This is similar to call a map[] to transform each element into a number object and then adding all those numbers.
+		 * The condition is a closure argument that takes a single element and returns a boolean value.
+		 * @returns an integer
+		 * Example:
+		 *      val totalNumberOfFlowers = plants.sum[ plant | plant.numberOfFlowers() ]
+		 */
 		method sum(closure) = this.fold(0, [ acc, e | acc + closure.apply(e) ])
 		
+		/**
+		 * Returns a new collection that contains the result of transforming each of this collection's elements
+		 * using a given closure.
+		 * The condition is a closure argument that takes a single element and returns an object.
+		 * @returns another collection (same type as this one)
+		 * Example:
+		 *      val ages = users.map[ user | user.age() ]
+		 */
 		method map(closure) = this.fold(this.newInstance(), [ acc, e |
 			 acc.add(closure.apply(e))
 			 acc
