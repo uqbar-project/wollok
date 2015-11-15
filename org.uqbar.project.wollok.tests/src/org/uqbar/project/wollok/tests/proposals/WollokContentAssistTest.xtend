@@ -26,6 +26,7 @@ import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.setup.ThisModel
 import org.xpect.xtext.lib.setup.ThisOffset
 import org.xpect.xtext.lib.setup.ThisResource
+import org.junit.Ignore
 
 @SuppressWarnings("restriction")
 @RunWith(XpectRunner)
@@ -36,6 +37,7 @@ class WollokContentAssistTest extends AbstractContentAssistProcessorTest {
 	protected Injector injector;
 	
 	@Xpect
+	@Ignore
 	@ParameterParser(syntax = "'at' arg1=OFFSET")
 	def void proposals( //
 			@CommaSeparatedValuesExpectation ICommaSeparatedValuesExpectation expectation, //
