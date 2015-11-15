@@ -157,7 +157,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				
 				method getSuperX() { return superX }
 			}
-			class SubClass extends SuperClass { 
+			class SubClass inherits SuperClass { 
 				new(n) = super(n + 1) {}
 			}
 			program t {
@@ -176,10 +176,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				
 				method getX() { return x }
 			}
-			class B extends A { 
+			class B inherits A { 
 				new(n) = super(n + 1) {}
 			}
-			class C extends B {
+			class C inherits B {
 				new(l) = super(l * 2) {}
 			}
 			program t {
@@ -201,10 +201,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				method getX() { return x }
 				method getY() { return y }
 			}
-			class B extends A { 
+			class B inherits A { 
 				new(p) = super(p + 10) {}
 			}
-			class C extends B {
+			class C inherits B {
 				new(_x, _y) = this(new Point(_x, _y)) {}
 				new(p) = super(p) {}
 			}
@@ -242,7 +242,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				
 				method getSuperX() { return superX }
 			}
-			class SubClass extends SuperClass { }
+			class SubClass inherits SuperClass { }
 			program t {
 				val o = new SubClass()
 				assert.equals(20, o.getSuperX())
@@ -265,7 +265,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				method getOtherX() { return otherX }
 				method setSuperX(a) { superX = a }
 			}
-			class SubClass extends SuperClass {
+			class SubClass inherits SuperClass {
 				var subX
 				new() {
 					subX = 10
@@ -291,16 +291,16 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				
 				method getX() { return x }
 			}
-			class B extends A {
+			class B inherits A {
 			}
-			class C extends B {
+			class C inherits B {
 				var c1
 				new() {
 					c1 = 10
 				}
 				method getC1() { return c1 }
 			}
-			class D extends C {}
+			class D inherits C {}
 			program t {
 				val o = new D()
 				assert.equals(20, o.getX())

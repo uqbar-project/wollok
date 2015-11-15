@@ -27,7 +27,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 				}
 			}
 			
-			class SeCansaMucho extends Golondrina {
+			class SeCansaMucho inherits Golondrina {
 				override method gastoParaVolar(kms) {
 					return 2 * super(kms)
 				}

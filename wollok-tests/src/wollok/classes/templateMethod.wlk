@@ -10,7 +10,7 @@ class Golondrina {
 	method gastoParaVolar(kms) = kms
 }
 
-class NoSeCansa extends Golondrina {
+class NoSeCansa inherits Golondrina {
 	override method gastoParaVolar(kms) = 0
 }
 

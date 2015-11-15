@@ -6,7 +6,7 @@ class Levadura {
 	method getBiomasa() = biomasa
 }
 
-class Ale extends Levadura {
+class Ale inherits Levadura {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
 	var biomasa = 200
 	
@@ -15,14 +15,14 @@ class Ale extends Levadura {
 	}
 }
 
-class B extends Levadura {
+class B inherits Levadura {
 	
 }
 
 /**
  * this one duplicates a var that is two levels up
  */
-class C extends B {
+class C inherits B {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
 	var biomasa = 200
 	
@@ -32,7 +32,7 @@ class C extends B {
 }
 
 // same for objects
-object anObject extends Levadura {
+object anObject inherits Levadura {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"
 	var biomasa = 200
 	

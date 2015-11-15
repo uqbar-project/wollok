@@ -91,7 +91,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 					energia = energia + gramos 
 				}
 			}
-			class GolondrinaIneficiente extends Golondrina {
+			class GolondrinaIneficiente inherits Golondrina {
 				override method comer(gramos) { }
 			}
 		'''.parseAndInfer.asserting [
