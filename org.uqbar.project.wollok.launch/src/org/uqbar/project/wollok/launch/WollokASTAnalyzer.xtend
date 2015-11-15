@@ -23,26 +23,26 @@ class WollokASTAnalyzer extends WollokChecker {
 	}
 	
 	def String process(EObject it) '''{
-		"type" : "«eClass.name.transform»",
-		«simpleProperties»
-		«IF !eContents.empty»
-		«features»
-		«ENDIF»
+		«FOR p : (type + simpleProperties + features) SEPARATOR ","»
+		"«p.key»" : «p.value»
+		«ENDFOR»
 	}'''
 	
-	def String simpleProperties(EObject it) {
-		class.methods.filter[isSimplePropertyGetter].map[m| '''"«m.name.getterToPropertyName»" : "«m.invoke(it)»"'''].join(", ")
+	def type(EObject it) { #["type" -> '"' + eClass.name.transform + '"'] }
+	
+	def simpleProperties(EObject it) {
+		class.methods.filter[isSimplePropertyGetter].map[m| m.name.getterToPropertyName -> '"' + m.invoke(it).asString + '"' ]
 	}
+	
+	def asString(Object it) { if (it == null) null else it.toString }
 	
 	def getterToPropertyName(String it) { substring(3).firstToLower }
 	def firstToLower(String it) { Character.toLowerCase(charAt(0)) + substring(1) }
 	
 	def isSimplePropertyGetter(Method it) { name.startsWith("get") && parameterTypes.length == 0 && returnType.isBasicType }
+	def isBasicType(Class it) { it == String || it == Boolean || it == Double || it == Integer || it.primitive }	
 	
-	def dispatch isBasicType(Class it) { it == String || it == Boolean || it == Double || it == Integer || it.primitive }
-	
-	
-	def String features(EObject it) { eContents.groupBy[eContainingFeature].entrySet.map['''"«key?.name»" : «elements(value, key)»'''].join(",") }
+	def features(EObject it) { eContents.groupBy[eContainingFeature].entrySet.map[key?.name -> elements(value, key)] }
 	
 	def elements(List<EObject> it, EStructuralFeature feature) '''«IF feature.many»[«ENDIF» «map[e|process(e)].join(",")» «IF feature.many»]«ENDIF»'''
 	
