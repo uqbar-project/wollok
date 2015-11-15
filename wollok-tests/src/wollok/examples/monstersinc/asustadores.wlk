@@ -9,12 +9,12 @@ class Asustador {
 	method getNivelMotivacion() = nivelMotivacion
 	
 	method entrarAPuerta(puerta) {
-		return puerta.entra(this)
+		return puerta.entra(self)
 	}
 	
 	method asustar(ninio) {
-		val a = this.getPorcentaje()
-		return a * this.puntosDeTerror() / ninio.getEdad()
+		val a = self.getPorcentaje()
+		return a * self.puntosDeTerror() / ninio.getEdad()
 	}
 	method getPorcentaje() {
 		return nivelMotivacion / 100
@@ -33,7 +33,7 @@ class AsustadorNato inherits Asustador {
 		puntosTerrorInnatos = p
 	}
 	override method puntosDeTerror() {
-		return puntosTerrorInnatos * this.getEdad()
+		return puntosTerrorInnatos * self.getEdad()
 	}
 }
 

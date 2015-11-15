@@ -13,9 +13,9 @@ object pepe {
 }
 
 object categoria {
-	method gerente() { return this.categoria(2500) }
-	method cadete() { return this.categoria(2700) }
-	method jefe() { return this.categoria(2600) }
+	method gerente() { return self.categoria(2500) }
+	method cadete() { return self.categoria(2700) }
+	method jefe() { return self.categoria(2600) }
 	
 	method categoria(sueldo) {
 		var nuevaCategoria = object {

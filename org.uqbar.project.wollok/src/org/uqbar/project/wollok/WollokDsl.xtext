@@ -210,7 +210,7 @@ FeatureCallID:
 	ID;
 
 WThis returns WExpression:
-	{WThis} 'this'
+	{WThis} 'self'
 ;
 
 WPrimaryExpression returns WExpression:
@@ -347,7 +347,7 @@ WDelegatingConstructorCall:
 
 // some how this should be referecens to WConstructor
 WThisDelegatingConstructorCall:
-	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+	{WThisDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
 // some how this should be referecens to WConstructor

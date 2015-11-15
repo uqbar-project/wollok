@@ -9,7 +9,7 @@ class Direccion {
 		a = 23
 	}
 	
-	new (c) = this(c, 3) {
+	new (c) = self(c, 3) {
 		// ...
 	}
 	

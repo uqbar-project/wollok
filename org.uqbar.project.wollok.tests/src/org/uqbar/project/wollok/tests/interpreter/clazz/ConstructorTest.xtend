@@ -7,9 +7,9 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 /**
  * All tests for construtors functionality in terms of runtime execution.
  * For static validations see the XPECT test.
- * This tests
+ * self tests
  * - having multiple constructors
- * - constructor delegation: to this or super
+ * - constructor delegation: to self or super
  * - automatic delegation for no-args constructors
  * 
  * @author jfernandes
@@ -105,14 +105,14 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThis() {
+	def void constructorDelegationToSelf() {
 		'''
 			class Point {
 				var x
 				var y
 				new(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15) {
+				new() = self(10,15) {
 				}
 				
 				method getX() { return x }
@@ -127,21 +127,21 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThisWithoutBody() {
+	def void constructorDelegationToSelfWithoutBody() {
 		'''
 			class Point {
 				var x
 				var y
 				new(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15)
+				new() = self(10,15)
 				
 				method getX() { return x }
 				method getY() { return y }
 			}
 			program t {
 				val p = new Point()
-				this.println(p)
+				self.println(p)
 				assert.equals(10, p.getX())
 				assert.equals(15, p.getY())
 			}
@@ -190,12 +190,12 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void mixedThisAndSuperDelegation() {
+	def void mixedSelfAndSuperDelegation() {
 		'''
 			class A {
 				var x
 				var y
-				new(p) = this(p.getX(), p.getY()) {}
+				new(p) = self(p.getX(), p.getY()) {}
 				new(_x,_y) { x = _x ; y = _y }
 				
 				method getX() { return x }
@@ -205,7 +205,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				new(p) = super(p + 10) {}
 			}
 			class C inherits B {
-				new(_x, _y) = this(new Point(_x, _y)) {}
+				new(_x, _y) = self(new Point(_x, _y)) {}
 				new(p) = super(p) {}
 			}
 			class Point {
@@ -215,7 +215,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				method +(delta) {
 					x += delta
 					y += delta
-					return this
+					return self
 				}
 				method getX() { return x }
 				method getY() { return y }
@@ -269,7 +269,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				var subX
 				new() {
 					subX = 10
-					this.setSuperX(this.getSuperX() + 20) // 20 + 20
+					self.setSuperX(self.getSuperX() + 20) // 20 + 20
 				}
 				method getSubX() { return subX }
 			}

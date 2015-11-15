@@ -17,7 +17,7 @@ object monstersInc {
 	}
 	
 	method diaLaboral() {
-		equipos.forEach([e| e.visitar(this.cualquierPuerta())])
+		equipos.forEach([e| e.visitar(self.cualquierPuerta())])
 	}
 	
 	method equipoMasAsustador() {

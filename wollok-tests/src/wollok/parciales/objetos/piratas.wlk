@@ -31,7 +31,7 @@ object barbanegra {
 	var dinero = 10
 	
 	method esUtilParaUnaMision(mision) {
-		return mision.puedeSerCumplidaPor(this)
+		return mision.puedeSerCumplidaPor(self)
 	}
 	
 	method items() {
@@ -48,7 +48,7 @@ object jack {
 	var dinero = 2
 	
 	method esUtilParaUnaMision(mision) {
-		return mision.puedeSerCumplidaPor(this)
+		return mision.puedeSerCumplidaPor(self)
 	}
 	
 	method items() {
