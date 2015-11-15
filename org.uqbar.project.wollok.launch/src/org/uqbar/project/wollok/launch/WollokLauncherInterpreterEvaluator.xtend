@@ -23,17 +23,19 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	}
 	
 	
-	override dispatch Object evaluate(WTest test){
-		try{
+	override dispatch Object evaluate(WTest test) {
+		try {
 			wollokTestsReporter.testStart(test)
 			val x = test.elements.evalAll
 			wollokTestsReporter.reportTestOk(test)
 			x
-		}catch(WollokInterpreterException e){
-			if(e.cause instanceof AssertionException){
+		}
+		catch(WollokInterpreterException e) {
+			if (e.cause instanceof AssertionException) {
 				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.ObjectURI)
 				null
-			}else{
+			}
+			else {
 				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.ObjectURI)
 				null
 			}

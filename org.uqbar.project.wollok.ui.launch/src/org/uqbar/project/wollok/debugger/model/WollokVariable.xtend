@@ -22,9 +22,11 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 		value = if (adaptee.value == null) null else adaptee.value.toEclipseValue
 	}
 	
-	def dispatch toEclipseValue(XWollokObjectDebugValue value) { new WollokObjectValue	(target, value) }
+	def dispatch toEclipseValue(XWollokObjectDebugValue value) { new WollokObjectValue(target, value) }
 	def dispatch toEclipseValue(XWollokListDebugValue value) { new WollokObjectValue(target, value) }
-	def dispatch toEclipseValue(XDebugValue value) { new WollokValue(target, value.stringValue) }
+	def dispatch toEclipseValue(XDebugValue value) { 
+		new WollokValue(target, value.stringValue)
+	}
 	
 	override getName() { adaptee.variable.name }
 	override getValue() { value }

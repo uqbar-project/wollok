@@ -148,10 +148,16 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
-		//TODO: java string shouldn't call wollok string
-		// it should be a low-lever WollokVM debugging method
-		val string = call("toString", #[]) as WollokObject
-		(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
+		try {
+			//TODO: java string shouldn't call wollok string
+			// it should be a low-lever WollokVM debugging method
+			val string = call("toString", #[]) as WollokObject
+			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
+		}
+		catch (MessageNotUnderstood e) {
+			e.printStackTrace
+			this.behavior.objectDescription
+		}
 	}
 		
 	def getKind() { behavior }
