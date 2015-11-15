@@ -13,7 +13,7 @@ class A {
 	method toBeOverriden(a) {}
 }
 
-class MethodsCalledOnWellKnowObjects extends A {
+class MethodsCalledOnWellKnowObjects inherits A {
 
 	method asParameter() {
 		// XPECT errors --> "This message call produces no value" at "eat"

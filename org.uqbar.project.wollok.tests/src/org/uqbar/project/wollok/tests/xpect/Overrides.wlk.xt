@@ -4,7 +4,7 @@ class Levadura {
 	method fermentar(mosto) // abstract
 }
 
-class Ale extends Levadura {
+class Ale inherits Levadura {
 	// XPECT errors --> "Method must be marked as overrides, since it overrides a superclass method" at "fermentar"
 	method fermentar(mosto) {
 	}	

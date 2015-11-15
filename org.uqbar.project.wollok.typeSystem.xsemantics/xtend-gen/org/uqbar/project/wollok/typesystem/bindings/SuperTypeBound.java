@@ -76,7 +76,7 @@ public class SuperTypeBound extends TypeBound {
     StringConcatenation _builder = new StringConcatenation();
     TypedNode _from = this.getFrom();
     _builder.append(_from, "");
-    _builder.append(" extends ");
+    _builder.append(" inherits ");
     TypedNode _to = this.getTo();
     _builder.append(_to, "");
     return _builder.toString();

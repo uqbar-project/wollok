@@ -40,7 +40,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 				} 
 			}
 			
-			class ANativeSubclass extends MyNative {
+			class ANativeSubclass inherits MyNative {
 				method subclassNativeMethod() native
 			}
 

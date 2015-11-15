@@ -42,7 +42,7 @@ class Camion {
 	method elementosEnComunCon(otroCamion) = this.getCosos().filter[coso | otroCamion.getCosos().contains(coso)] 
 }
 
-class CamionReutilizable extends Camion {
+class CamionReutilizable inherits Camion {
 	var destinos = #[]
 	
 	new(cargaMaximaPosible) = super(cargaMaximaPosible)
