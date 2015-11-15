@@ -7,15 +7,15 @@ program tomYJerry {
 			return 5 + energia / 10
 		}
 		method puedeAtraparA(raton) {
-			return this.getVelocidad() > raton.getVelocidad()
+			return self.getVelocidad() > raton.getVelocidad()
 		}
 		method correA(raton) {
 			var distancia = raton.getPosicion() - posicion
-			energia -= 0.5 * this.getVelocidad() * distancia
+			energia -= 0.5 * self.getVelocidad() * distancia
 			posicion = raton.getPosicion()
 		}
 		method comeA(raton) {
-			this.correA(raton)
+			self.correA(raton)
 			energia += 12 + raton.getPeso()
 		}
 	}

@@ -5,7 +5,7 @@ program p {
 	val a = 23
 	
 	// XPECT errors --> "Couldn't resolve reference to WReferenciable 'x'." at "x"
-	this.println(x)
+	self.println(x)
 	
 	// XPECT warnings --> "Unused variable" at "objetin"
 	val objetin = object {

@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -71,7 +71,7 @@ class WEvaluationExtension {
 	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it) { true }
 	def static dispatch boolean isEvaluatesToAValue(WNullLiteral it) { true }
 	def static dispatch boolean isEvaluatesToAValue(WBooleanLiteral it) { true }
-	def static dispatch boolean isEvaluatesToAValue(WThis it) { true }
+	def static dispatch boolean isEvaluatesToAValue(WSelf it) { true }
 	def static dispatch boolean isEvaluatesToAValue(WClosure it) { true }
 	def static dispatch boolean isEvaluatesToAValue(WVariableReference it) { true }
 	// ops

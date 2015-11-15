@@ -21,7 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
@@ -205,7 +205,7 @@ from {
 } 
 
 rule WThisType 
-	G |- WThis thiz : WollokType t
+	G |- WSelf thiz : WollokType t
 from {
 	val containingMethod = thiz.method
 	if (containingMethod == null) { // codigo suelto
@@ -324,7 +324,7 @@ from {
 rule RefineMethodReturnType 
 	G |- WMemberFeatureCall call << WollokType newType
 from {
-	if (call.memberCallTarget instanceof WThis) {
+	if (call.memberCallTarget instanceof WSelf) {
 		G |- call.memberCallTarget : var WollokType thisType
 		if (thisType instanceof ClassBasedWollokType) {
 			G |- call ~> var MessageType typeOfMessage

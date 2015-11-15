@@ -27,7 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThisDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -275,7 +275,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ** Constructors delegation, etc.
 	// ************************************************************************
 	
-	def static dispatch resolveConstructorReference(WMethodContainer behave, WThisDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
+	def static dispatch resolveConstructorReference(WMethodContainer behave, WSelfDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
 	def static dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
 	
 	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {

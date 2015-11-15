@@ -44,9 +44,9 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WReferenciable;
+import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
 import org.uqbar.project.wollok.wollokDsl.WTest;
-import org.uqbar.project.wollok.wollokDsl.WThis;
 import org.uqbar.project.wollok.wollokDsl.WVariable;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
@@ -157,7 +157,7 @@ public class SubstitutionBasedTypeSystem implements TypeSystem {
   
   protected void _doAnalyse(final WMemberFeatureCall it) {
     WExpression _memberCallTarget = it.getMemberCallTarget();
-    if ((_memberCallTarget instanceof WThis)) {
+    if ((_memberCallTarget instanceof WSelf)) {
       WMethodDeclaration _method = WollokModelExtensions.method(it);
       WMethodContainer _declaringContext = WollokModelExtensions.declaringContext(_method);
       String _feature = it.getFeature();

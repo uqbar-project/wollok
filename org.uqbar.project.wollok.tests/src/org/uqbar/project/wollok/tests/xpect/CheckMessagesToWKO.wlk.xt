@@ -24,7 +24,7 @@ class B {
 
 object wellKnown {
 	method foo() = 23
-	method bar() = this.foo()
+	method bar() = self.foo()
 	method fooWithParam(p) {
 	}
 }

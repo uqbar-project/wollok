@@ -3,8 +3,8 @@
 class A {
 	var x
 	var y
-	// XPECT errors --> "Invalid constructor call. Does Not exist" at "this(22)"
-	new() = this(22) {
+	// XPECT errors --> "Invalid constructor call. Does Not exist" at "self(22)"
+	new() = self(22) {
 		x = 2
 		y = 2
 	}
@@ -57,11 +57,11 @@ class Z inherits X {
 class InvalidInstanceAccessOnConstructorDelegation inherits X {
 	var x = 2
 	
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "this"
-	new() = super(this.getX()) 
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	new() = super(self.getX()) 
 	
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "this"
-	new(a) = super(this)
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	new(a) = super(self)
 	
 	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
 	new(a, b) = super(x)

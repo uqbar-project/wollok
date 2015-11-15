@@ -1,21 +1,21 @@
 program printing {
 	val a = 23 + 1
 	
-	this.println(a)
+	self.println(a)
 	
 	var b = "hola"
 	
-	this.println(b)
+	self.println(b)
 	
-	this.println("linea1")
-	this.println("linea2")
-	this.println("linea3")
-	this.println("linea4")
-	this.println("linea5")
+	self.println("linea1")
+	self.println("linea2")
+	self.println("linea3")
+	self.println("linea4")
+	self.println("linea5")
 	
-	this.println("linea6")
-	this.println("linea7")
-	this.println("linea8")
-	this.println("linea9")
-	this.println("linea10")
+	self.println("linea6")
+	self.println("linea7")
+	self.println("linea8")
+	self.println("linea9")
+	self.println("linea10")
 }

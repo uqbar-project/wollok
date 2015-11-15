@@ -39,7 +39,7 @@ program monstersInc {
 	
 	val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
-	this.println(mike)
+	self.println(mike)
 	assert.that(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
 
 

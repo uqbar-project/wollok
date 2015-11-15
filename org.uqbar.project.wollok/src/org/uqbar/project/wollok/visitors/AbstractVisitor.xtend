@@ -27,7 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
@@ -123,5 +123,5 @@ class AbstractVisitor {
 	def dispatch void visit(WStringLiteral literal) {}
 	def dispatch void visit(WBooleanLiteral literal) {}
 	def dispatch void visit(WParameter param) {}
-	def dispatch void visit(WThis wthis) {}	
+	def dispatch void visit(WSelf wthis) {}	
 }

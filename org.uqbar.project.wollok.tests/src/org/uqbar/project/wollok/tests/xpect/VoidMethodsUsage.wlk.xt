@@ -3,7 +3,7 @@
 object pepita {
 	var energy = 0
 
-	// this is the void method	
+	// self is the void method	
 	method eat(something) {
 		energy -= something
 	}

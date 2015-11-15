@@ -35,7 +35,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
-				this.println(obj2)
+				self.println(obj2)
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -47,7 +47,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				var x
 			}
 			program a {
-				this.println(obj1)
+				self.println(obj1)
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -78,7 +78,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
-				this.println(obj2)
+				self.println(obj2)
 			}
 		'''.interpretPropagatingErrors
 	}

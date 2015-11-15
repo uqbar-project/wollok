@@ -10,7 +10,7 @@ val pepin = object {
 	}
 	
 	method ponerseZancos() {
-		this.crecer(0.2)
+		self.crecer(0.2)
 	}
 	method altura() {
 		return altura

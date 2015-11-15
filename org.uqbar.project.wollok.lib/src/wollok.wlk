@@ -25,11 +25,11 @@ package lang {
 		method identity() native
 		
 		method ==(other) {
-			return this === other
+			return self === other
 		}
 		
 		method ->(other) {
-			return new Pair(this, other)
+			return new Pair(self, other)
 		}
 	}
 	
@@ -42,8 +42,8 @@ package lang {
 		}
 		method getX() { return x }
 		method getY() { return y }
-		method getKey() { this.getX() }
-		method getValue() { this.getY() }
+		method getKey() { self.getX() }
+		method getValue() { self.getY() }
 	}
  
 }

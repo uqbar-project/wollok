@@ -62,13 +62,13 @@ class WollokFormatterTestCase extends AbstractXtextTests {
 
     @Test
     def void testSimpleProgramWithVariablesAndMessageSend() throws Exception {
-    	assertFormatting('''program p { val a = 10 val b = 20 this.println(a + b) }''',
+    	assertFormatting('''program p { val a = 10 val b = 20 self.println(a + b) }''',
         '''
         
         program p {
         	val a = 10
         	val b = 20
-        	this.println(a + b)
+        	self.println(a + b)
         }''')
     }
     

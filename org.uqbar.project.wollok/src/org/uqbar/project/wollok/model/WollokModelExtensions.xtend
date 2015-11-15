@@ -34,7 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -141,7 +141,7 @@ class WollokModelExtensions {
 
 	def static isCallOnVariableRef(WMemberFeatureCall c) { c.memberCallTarget instanceof WVariableReference }
 
-	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
+	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WSelf }
 	
 	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it) {
 		if (isCallOnThis) 
@@ -215,7 +215,7 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBlockExpression o) { true }
 	def static dispatch isTransparent(WIfExpression o) { true }
 	// literals or leafs
-	def static dispatch isTransparent(WThis o) { true }
+	def static dispatch isTransparent(WSelf o) { true }
 	def static dispatch isTransparent(WNumberLiteral o) { true }
 	def static dispatch isTransparent(WStringLiteral o) { true }
 	def static dispatch isTransparent(WBooleanLiteral o) { true }

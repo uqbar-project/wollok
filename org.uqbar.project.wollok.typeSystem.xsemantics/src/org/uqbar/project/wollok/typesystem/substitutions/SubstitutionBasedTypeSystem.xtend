@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -87,7 +87,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WVariable v) { /* does nothing */ }
 	
 	def dispatch void doAnalyse(WMemberFeatureCall it) {
-		if (memberCallTarget instanceof WThis)
+		if (memberCallTarget instanceof WSelf)
 			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature))
 	}
 	

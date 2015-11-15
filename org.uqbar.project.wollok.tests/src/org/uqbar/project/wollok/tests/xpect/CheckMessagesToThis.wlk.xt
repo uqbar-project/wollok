@@ -6,16 +6,16 @@ class Persona {
 	}
 	method blah() {
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
-		this.bleh()
+		self.bleh()
 	}
 }
 
 class Profesor inherits Persona {
 	method subBlah() {
-		this.getNombre()
-		this.blah()
+		self.getNombre()
+		self.blah()
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "bleh"
-		this.bleh()
+		self.bleh()
 	}
 }
 
@@ -24,8 +24,8 @@ object o {
 		return 23
 	}
 	method bar() {
-		this.foo()
+		self.foo()
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "foobar"
-		this.foobar()
+		self.foobar()
 	}
 }

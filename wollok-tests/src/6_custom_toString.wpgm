@@ -6,7 +6,7 @@ val pepe = object {
 	}
 }
 
-this.println(pepe)
+self.println(pepe)
 assert.that(pepe.toString() == 'Pepe')
 
 }

@@ -28,7 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -159,7 +159,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotUseThisInConstructorDelegation(WThis it) {
+	def cannotUseThisInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access instance methods within constructor delegation.", it)
 	}
