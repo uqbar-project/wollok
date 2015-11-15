@@ -113,6 +113,8 @@ class WollokModelExtensions {
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
+	
+	def static first(WBlockExpression it, Class type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
