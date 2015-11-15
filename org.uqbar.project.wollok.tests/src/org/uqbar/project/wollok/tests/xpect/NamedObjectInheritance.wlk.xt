@@ -3,7 +3,7 @@
 // test case
 
 class WithDefaultConstructor {}
-object innheritingFromWitDefaultConstructor extends WithDefaultConstructor {}
+object innheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
 
 
 // test case
@@ -13,7 +13,7 @@ class WithSingleOneArgConstructor {
 }
 
 // XPECT errors --> "No default constructor in super type WithSingleOneArgConstructor. You must explicitly call a constructor: (param)" at "WithSingleOneArgConstructor"
-object one extends WithSingleOneArgConstructor { }
+object one inherits WithSingleOneArgConstructor { }
 
 
 // test case
@@ -24,14 +24,14 @@ class TwoConstructors {
 }
 
 // XPECT errors --> "No default constructor in super type TwoConstructors. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
-object two extends TwoConstructors { }
+object two inherits TwoConstructors { }
 
-object o1 extends TwoConstructors("hola") { }
-object o2 extends TwoConstructors(23) { }
-object o3 extends TwoConstructors("hola", 23) { }
+object o1 inherits TwoConstructors("hola") { }
+object o2 inherits TwoConstructors(23) { }
+object o3 inherits TwoConstructors("hola", 23) { }
 
 // XPECT errors --> "No superclass constructor or wrong number of arguments. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
-object o4 extends TwoConstructors("hola", 23, "chau") { }
+object o4 inherits TwoConstructors("hola", 23, "chau") { }
 
 // test case
 
@@ -39,7 +39,7 @@ class WithExplicitDefaultConstructor {
 	new() {}
 }
 
-object explicit extends WithExplicitDefaultConstructor { }
+object explicit inherits WithExplicitDefaultConstructor { }
 
 
 // test case
@@ -49,7 +49,7 @@ class WithExplicitDefaultConstructorAndAnother {
 	new(a) {}
 }
 
-object explicitWithAnother extends WithExplicitDefaultConstructorAndAnother { }
+object explicitWithAnother inherits WithExplicitDefaultConstructorAndAnother { }
 
 
 // abstract class
@@ -58,12 +58,12 @@ class A {
 }
 
 // XPECT errors --> "Must implement inherited abstract methods: blah()" at "anA"
-object anA extends A {
+object anA inherits A {
 }
 
-class B extends A {
+class B inherits A {
 	method otherAbstract(one, two)
 }
 
 // XPECT errors --> "Must implement inherited abstract methods: blah(), otherAbstract(one, two)" at "aB"
-object aB extends B {}
+object aB inherits B {}

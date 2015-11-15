@@ -5,5 +5,5 @@ class A {
 }
 
 
-class MyException extends wollok.lang.Exception {
+class MyException inherits wollok.lang.Exception {
 }

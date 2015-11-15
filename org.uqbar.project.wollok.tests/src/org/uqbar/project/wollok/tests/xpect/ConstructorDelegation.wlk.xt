@@ -18,12 +18,12 @@ class B {
 	new(_x) { x = _x }
 }
 
-class C extends B {
+class C inherits B {
 	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super()"
 	new() = super() {}
 }
 
-class D extends B {
+class D inherits B {
 	// XPECT errors --> "Must call a super class constructor explicitly" at "new() { 		 	}"
 	new() {
 		
@@ -46,15 +46,15 @@ class X {
 }
 
 // XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
-class Y extends X {
+class Y inherits X {
 }
 
-class Z extends X {
+class Z inherits X {
 	new() = super("something") {}
 }
 
 
-class InvalidInstanceAccessOnConstructorDelegation extends X {
+class InvalidInstanceAccessOnConstructorDelegation inherits X {
 	var x = 2
 	
 	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "this"

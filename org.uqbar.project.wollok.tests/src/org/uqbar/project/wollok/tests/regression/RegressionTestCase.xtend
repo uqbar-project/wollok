@@ -146,7 +146,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void bug_213() {
-		'''object pepita extends Golondrina {
+		'''object pepita inherits Golondrina {
 			}
 	
 		class Golondrina {

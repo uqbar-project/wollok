@@ -3,6 +3,6 @@ package a {
 }
 
 package b {
-	class B extends a.A {}
-	class C extends B {}
+	class B inherits a.A {}
+	class C inherits B {}
 }

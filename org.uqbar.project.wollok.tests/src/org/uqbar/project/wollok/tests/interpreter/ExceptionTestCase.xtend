@@ -14,7 +14,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testThrowAndCatch() {
 		#[		
 		'''
-			class MyException extends Exception {}
+			class MyException inherits Exception {}
 			class A {
 				method m1() { throw new MyException() }
 			}
@@ -40,7 +40,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testThenAlwaysExcecutedOnException() {
 		'''
-			class MyException extends wollok.lang.Exception {}
+			class MyException inherits wollok.lang.Exception {}
 			class A { method m1() { throw new MyException() } }
 		
 			program p {	
@@ -63,7 +63,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testThenAlwaysExcecutedEvenWithoutAnExceptionRaised() {
 		'''
-			class MyException extends wollok.lang.Exception {}
+			class MyException inherits wollok.lang.Exception {}
 			class A {
 				method m1() {
 				}
@@ -91,7 +91,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchUsingTheExceptionVariable() {
 		'''
-			class MyException extends wollok.lang.Exception {
+			class MyException inherits wollok.lang.Exception {
 				method customMessage() { 
 					return "Something went wrong"
 				}
@@ -116,8 +116,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchMatchesSubtype() {
 		'''
-			class MyException extends wollok.lang.Exception {}
-			class MySubclassException extends MyException {}
+			class MyException inherits wollok.lang.Exception {}
+			class MySubclassException inherits MyException {}
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {
@@ -138,8 +138,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testFirstCatchMatches() {
 		'''
-			class MyException extends wollok.lang.Exception {}
-			class MySubclassException extends MyException {}
+			class MyException inherits wollok.lang.Exception {}
+			class MySubclassException inherits MyException {}
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {	

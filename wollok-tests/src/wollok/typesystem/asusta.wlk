@@ -20,7 +20,7 @@ class Asustador {
 	}
 }
 
-class AsustadorNato extends Asustador {
+class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
 	new (p) { puntosTerrorInnatos = p	}
 	override method puntosDeTerror() = puntosTerrorInnatos * this.getEdad()

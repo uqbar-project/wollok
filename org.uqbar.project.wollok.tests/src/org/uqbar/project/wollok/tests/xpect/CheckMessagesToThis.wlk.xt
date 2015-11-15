@@ -10,7 +10,7 @@ class Persona {
 	}
 }
 
-class Profesor extends Persona {
+class Profesor inherits Persona {
 	method subBlah() {
 		this.getNombre()
 		this.blah()

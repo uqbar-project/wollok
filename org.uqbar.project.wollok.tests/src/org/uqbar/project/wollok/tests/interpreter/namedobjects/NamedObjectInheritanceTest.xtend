@@ -30,7 +30,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 			class MyClass {
 				method myMethod() = "1234"
 			}
-			object myObject extends MyClass {
+			object myObject inherits MyClass {
 				method something() = "abc"
 			}
 			
@@ -47,7 +47,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 			class MyClass {
 				method myMethod() = "1234"
 			}
-			object myObject extends MyClass {
+			object myObject inherits MyClass {
 				method something() = "abc"
 				override method myMethod() = "5678"
 			}
@@ -65,7 +65,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 			class MyClass {
 				method myMethod() = "1234"
 			}
-			object myObject extends MyClass {
+			object myObject inherits MyClass {
 				method something() = "abc"
 				override method myMethod() = super() + "5678"
 			}
@@ -87,7 +87,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 				}	
 				method name() = name
 			}
-			object lassie extends Dog("lassie") {
+			object lassie inherits Dog("lassie") {
 			}
 			
 			program p {
@@ -106,7 +106,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 				}	
 				method owner() = owner
 			}
-			object lassie extends Dog(jorge) {
+			object lassie inherits Dog(jorge) {
 			}
 			
 			object jorge {
@@ -129,7 +129,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 				}	
 				method owner() = owner
 			}
-			object lassie extends Dog(jorge.name()) {
+			object lassie inherits Dog(jorge.name()) {
 			}
 			
 			object jorge {

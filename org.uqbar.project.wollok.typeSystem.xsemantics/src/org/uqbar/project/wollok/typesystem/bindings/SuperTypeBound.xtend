@@ -53,7 +53,7 @@ class SuperTypeBound extends TypeBound {
 	}
 	
 	override toString() {
-		'''«from» extends «to»'''
+		'''«from» inherits «to»'''
 	}
 	
 }

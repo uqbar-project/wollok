@@ -17,7 +17,7 @@ class Golondrina {
 	}
 }
 
-class SeCansaMucho extends Golondrina {
+class SeCansaMucho inherits Golondrina {
 	override method gastoParaVolar(kms) {
 		val r = super(kms)
 		return 2 * r

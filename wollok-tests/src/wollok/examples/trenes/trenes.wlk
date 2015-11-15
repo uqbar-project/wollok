@@ -43,7 +43,7 @@ class Vagon {
 	method getPesoMaximo()
 }
 
-class VagonPasajeros extends Vagon {
+class VagonPasajeros inherits Vagon {
 	var ancho
 	var largo
 	new(a, la) { ancho = a ; largo = la }
@@ -56,7 +56,7 @@ class VagonPasajeros extends Vagon {
 	}
 }
 
-class VagonCarga extends Vagon {
+class VagonCarga inherits Vagon {
 	var cargaMaxima
 	new(cargaM) {
 		cargaMaxima = cargaM
