@@ -49,7 +49,7 @@ import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
@@ -335,7 +335,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WUnaryOperation oper) { oper.feature.asUnaryOperation.apply(oper.operand.eval) }
 
-	def dispatch Object evaluate(WThis t) { interpreter.currentContext.thisObject }
+	def dispatch Object evaluate(WSelf t) { interpreter.currentContext.thisObject }
 
 	// member call
 	def dispatch Object evaluate(WFeatureCall call) {

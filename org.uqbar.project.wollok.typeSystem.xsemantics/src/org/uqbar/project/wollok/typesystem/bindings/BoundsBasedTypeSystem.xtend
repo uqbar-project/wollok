@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -174,7 +174,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	def dispatch void bind(WMemberFeatureCall call) {
 		call.inferredNode
 		// solo se vincula con un método de this
-		if (call.memberCallTarget instanceof WThis) {
+		if (call.memberCallTarget instanceof WSelf) {
 			val referencedMethod = call.method.declaringContext.lookupMethod(call.feature)
 			call <=> referencedMethod
 		}

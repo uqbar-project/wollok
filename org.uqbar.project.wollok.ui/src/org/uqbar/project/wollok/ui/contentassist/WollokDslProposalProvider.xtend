@@ -17,7 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -60,7 +60,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	// messages to this
-	def dispatch void memberProposalsForTarget(WThis dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	def dispatch void memberProposalsForTarget(WSelf dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		dis.declaringContext.allMethods.forEach[ context.addProposal(it, acceptor) ]
 	}
 	
@@ -88,7 +88,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch asProposalParameter(WCollectionLiteral c) { "aCollection" }
 	def dispatch asProposalParameter(WObjectLiteral c) { "anObject" }
 	def dispatch asProposalParameter(WNullLiteral c) { "null" } //mmm
-	def dispatch asProposalParameter(WThis c) { "this" } //mmm
+	def dispatch asProposalParameter(WSelf c) { "this" } //mmm
 	def dispatch asProposalParameter(WExpression r) { "something" }
 
 	// *****************************

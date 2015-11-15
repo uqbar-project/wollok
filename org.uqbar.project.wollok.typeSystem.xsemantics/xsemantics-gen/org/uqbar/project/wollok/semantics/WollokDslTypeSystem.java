@@ -53,9 +53,9 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WReferenciable;
+import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation;
-import org.uqbar.project.wollok.wollokDsl.WThis;
 import org.uqbar.project.wollok.wollokDsl.WVariable;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
@@ -1064,7 +1064,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     return new Result<WollokType>(t);
   }
   
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThis thiz) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSelf thiz) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
     	final Result<WollokType> _result_ = applyRuleWThisType(G, _subtrace_, thiz);
@@ -1083,7 +1083,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     }
   }
   
-  protected Result<WollokType> applyRuleWThisType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThis thiz) throws RuleFailedException {
+  protected Result<WollokType> applyRuleWThisType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSelf thiz) throws RuleFailedException {
     WollokType t = null; // output parameter
     final WMethodDeclaration containingMethod = WollokModelExtensions.method(thiz);
     boolean _equals = Objects.equal(containingMethod, null);
@@ -1402,7 +1402,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleRefineMethodReturnType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WMemberFeatureCall call, final WollokType newType) throws RuleFailedException {
     WExpression _memberCallTarget = call.getMemberCallTarget();
-    if ((_memberCallTarget instanceof WThis)) {
+    if ((_memberCallTarget instanceof WSelf)) {
       /* G |- call.memberCallTarget : var WollokType thisType */
       WExpression _memberCallTarget_1 = call.getMemberCallTarget();
       WollokType thisType = null;

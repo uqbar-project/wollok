@@ -43,8 +43,8 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WReferenciable;
+import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
-import org.uqbar.project.wollok.wollokDsl.WThis;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
 
@@ -300,7 +300,7 @@ public class BoundsBasedTypeSystem implements TypeSystem {
   protected void _bind(final WMemberFeatureCall call) {
     this.inferredNode(call);
     WExpression _memberCallTarget = call.getMemberCallTarget();
-    if ((_memberCallTarget instanceof WThis)) {
+    if ((_memberCallTarget instanceof WSelf)) {
       WMethodDeclaration _method = WollokModelExtensions.method(call);
       WMethodContainer _declaringContext = WollokModelExtensions.declaringContext(_method);
       String _feature = call.getFeature();
