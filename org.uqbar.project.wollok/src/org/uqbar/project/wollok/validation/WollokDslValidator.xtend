@@ -44,6 +44,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Custom validation rules.
@@ -460,10 +462,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noExtraSentencesAfterReturnStatement(WBlockExpression it){
-		val riturn = expressions.findFirst[ it instanceof WReturnExpression]
+		checkNoAfter(WReturnExpression, WollokDslValidator_NO_EXPRESSION_AFTER_RETURN)
+		checkNoAfter(WThrow, WollokDslValidator_NO_EXPRESSION_AFTER_THROW)
+	}
+	
+	def checkNoAfter(WBlockExpression it, Class<? extends EObject> type, String errorKey) {
+		val riturn = expressions.findFirst[ type.isInstance(it) ]
 		if (riturn != null) {
 			it.getExpressionsAfter(riturn).forEach[e|
-				report(WollokDslValidator_NO_EXPRESSION_AFTER_RETURN, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))				
+				report(errorKey, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))				
 			]
 		}
 	}
