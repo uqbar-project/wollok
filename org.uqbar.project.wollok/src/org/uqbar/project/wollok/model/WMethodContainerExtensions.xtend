@@ -55,11 +55,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static allAbstractMethods(WClass c) {
 		val unimplementedMethods = <WMethodDeclaration>newArrayList
 		c.superClassesIncludingYourselfTopDownDo [ claz |
-			unimplementedMethods.removeAllSuchAs[claz.overrides(name)]
+			unimplementedMethods.removeAllSuchAs[claz.overrides(it)]
 			unimplementedMethods.addAll(claz.abstractMethods);
 		]
 		unimplementedMethods
 	}
+	
+	def static Iterable<WMethodDeclaration> unimplementedAbstractMethods(WNamedObject it) { parent.allAbstractMethods.filter[m| !it.overrides(m)] }
 
 	def static hasUnimplementedInheritedMethods(WClass c) { !c.allAbstractMethods.empty }
 
@@ -67,8 +69,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
-	def static overrideMethods(WClass it) { methods.filter[overrides].toList }
-	def static boolean overrides(WClass c, String methodName) { c.overrideMethods.exists[name == methodName] }
+	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
+	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[name == m.name && parameters.size == m.parameters.size ] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name) }
@@ -107,7 +109,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static actuallyOverrides(WMethodDeclaration m) {
-		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name)
+		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
 	}
 	
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
@@ -134,11 +136,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
 	
-	def static dispatch boolean inheritsMethod(WMethodContainer c, String name) { c.parent != null && c.parent.hasOrInheritMethod(name) }
-	def static dispatch boolean inheritsMethod(WClass c, String name) { c.parent != null && c.parent.hasOrInheritMethod(name) }
+	def static boolean inheritsMethod(WMethodContainer c, String name, int argSize) { c.parent != null && c.parent.hasOrInheritMethod(name, argSize) }
 	
-	def static boolean hasOrInheritMethod(WClass c, String mname) { 
-		c != null && (c.methods.exists[name == mname] || c.parent.hasOrInheritMethod(mname))
+	def static boolean hasOrInheritMethod(WClass c, String mname, int argsSize) { 
+		c != null && (c.methods.exists[name == mname && parameters.size == argsSize] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message) { 

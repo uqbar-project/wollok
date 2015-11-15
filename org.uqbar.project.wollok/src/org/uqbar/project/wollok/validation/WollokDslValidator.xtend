@@ -326,9 +326,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def objectMustImplementAbstractMethods(WNamedObject it) {
 		if (parent != null) {
-			val abstractMethods = allAbstractMethods(it.parent)
+			val abstractMethods = unimplementedAbstractMethods
 			if (!abstractMethods.empty) {
-				report('''Must implement inherited abstract methods: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
+				report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
 			}
 		}
 	}
