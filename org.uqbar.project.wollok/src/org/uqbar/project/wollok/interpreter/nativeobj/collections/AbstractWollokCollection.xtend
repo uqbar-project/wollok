@@ -39,10 +39,10 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 	
 	def forEach(WollokClosure proc) { wrapped.forEach(proc.asProc) }
 	def map(WollokClosure closure) { wrapped.map(closure.asFun).asThisCollection }
-	def forAll(WollokClosure pred) { wrapped.forall(pred.asFun) }
-	def exists(WollokClosure pred) { wrapped.exists(pred.asFun) }
+	def all(WollokClosure pred) { wrapped.forall(pred.asFun) }
+	def any(WollokClosure pred) { wrapped.exists(pred.asFun) }
 	def filter(WollokClosure pred) { wrapped.filter(pred.asFun).asThisCollection }
-	def detect(WollokClosure pred) { wrapped.findFirst(pred.asFun) }
+	def find(WollokClosure pred) { wrapped.findFirst(pred.asFun) }
 	def count(WollokClosure pred) { wrapped.filter(pred.asFun).size }
 	
 	def size() { wrapped.size }
@@ -76,8 +76,8 @@ abstract class AbstractWollokCollection<T extends Collection> extends AbstractWo
 		wrapped.exists[it.wollokEquals(object)]
 	}
 	
-	def Object any() {
-		if (wrapped.isEmpty) throw new WollokRuntimeException("Illegal operation 'any' on empty collection")
+	def Object anyOne() {
+		if (wrapped.isEmpty) throw new WollokRuntimeException("Illegal operation 'anyOne' on empty collection")
 		else wrapped.get(randomBetween(0, wrapped.size))
 	}
 	
