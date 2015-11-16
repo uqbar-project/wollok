@@ -1,8 +1,8 @@
 package natives
 
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import wollok.lang.WInteger
 
 /**
  * @author jfernandes
@@ -16,10 +16,10 @@ class MyNativeWithAccessToObject {
 	}
 	
 	def lifeMeaning() {
-		delta + (obj.resolve("initialValue") as WollokInteger).wrapped
+		delta + (obj.resolve("initialValue") as WollokObject).getNativeObject(WInteger).wrapped
 	}
 	
-	def newDelta(int newValue) {
+	def newDelta(Integer newValue) {
 		delta = newValue
 	}
 	

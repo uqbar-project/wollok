@@ -14,17 +14,19 @@ class A {
 }
 
 class MethodsCalledOnWellKnowObjects inherits A {
+	var e
+	method setA(a) { e = a }
 
 	method asParameter() {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		console.println(pepita.eat(10))
+		this.setA(pepita.eat(10))
 	}
 	
 	method initialization(aParam) {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		val a = pepita.eat(10)
 		
-		console.println(a)
+		this.setA(a)
 	}
 	
 	method assignment(aParam) {
@@ -33,7 +35,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		a = pepita.eat(10)
 		
-		console.println(a)
+		this.setA(a)
 	}
 	
 	method asReturnValue() {

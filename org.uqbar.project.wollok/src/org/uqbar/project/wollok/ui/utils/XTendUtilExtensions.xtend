@@ -5,14 +5,12 @@ import java.io.StringWriter
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.Collection
-import java.util.Random
-import org.eclipse.xtext.xbase.lib.Functions.Function1
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
 import java.util.List
+import java.util.Random
+import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Utilities for xtend code
@@ -127,34 +125,13 @@ class XTendUtilExtensions {
 		}
 		val converted = newArrayList
 		args.fold(0)[i, a | converted.add(a.wollokToJava(m.parameterTypes.get(i))); i + 1 ]
-		val returnVal = m.invoke(o, converted.toArray)
-		javaToWollok(returnVal)
-	}
-	
-	def static Object wollokToJava(Object o, Class<?> t) {
-		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
-		if (o instanceof WollokClosure && t == Function1)
-			return [Object a | (o as WollokClosure).apply(a)]
-		if (o instanceof WollokInteger && (t == Integer || t == Integer.TYPE))
-			return (o as WollokInteger).wrapped
-		if (o instanceof WollokDouble && (t == Double || t == Double.TYPE))
-			return (o as WollokDouble).wrapped
-		if (o instanceof WollokList && (t == Collection || t == List))
-			return (o as WollokList).wrapped
-		if (t == Object)
-			return o
-		if(t.primitive)
-			return o	
-		
-		throw new RuntimeException('''Cannot convert parameter "«o»" to type "«t.simpleName»""''')
-	}
-	
-	def static Object javaToWollok(Object o) {
-		if (o == null)
-			return null
-		if (o instanceof Integer)
-			return new WollokInteger(o as Integer)
-		o
+		try {
+			val returnVal = m.invoke(o, converted.toArray)
+			javaToWollok(returnVal)
+		}
+		catch (IllegalArgumentException e) {
+			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted, e)
+		}
 	}
 	
 	def static accesibleVersion(Method m) {

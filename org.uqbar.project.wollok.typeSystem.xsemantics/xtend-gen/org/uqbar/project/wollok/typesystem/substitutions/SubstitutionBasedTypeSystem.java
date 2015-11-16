@@ -161,7 +161,8 @@ public class SubstitutionBasedTypeSystem implements TypeSystem {
       WMethodDeclaration _method = WollokModelExtensions.method(it);
       WMethodContainer _declaringContext = WollokModelExtensions.declaringContext(_method);
       String _feature = it.getFeature();
-      WMethodDeclaration _lookupMethod = WMethodContainerExtensions.lookupMethod(_declaringContext, _feature);
+      EList<WExpression> _memberCallArguments = it.getMemberCallArguments();
+      WMethodDeclaration _lookupMethod = WMethodContainerExtensions.lookupMethod(_declaringContext, _feature, _memberCallArguments);
       this.addCheck(it, it, TypeCheck.SAME_AS, _lookupMethod);
     }
   }

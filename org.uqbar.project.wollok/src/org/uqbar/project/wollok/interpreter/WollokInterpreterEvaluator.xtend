@@ -2,20 +2,18 @@ package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
+import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.scoping.IGlobalScopeProvider
+import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokList
-import org.uqbar.project.wollok.interpreter.nativeobj.collections.WollokSet
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
@@ -62,6 +60,11 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
+
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * It's the real "interpreter".
@@ -73,20 +76,19 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator {
-	static final String OBJECT_CLASS_NAME = 'wollok.lang.WObject'
-	
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
 	// caches
-	var Map<String, WeakReference<Object>> numbersCache = newHashMap
-
-	@Inject
-	WollokInterpreter interpreter
-
-	@Inject
-	WollokQualifiedNameProvider qualifiedNameProvider
-
+	var Map<String, WeakReference<WollokObject>> numbersCache = newHashMap
+	var WollokObject trueObject
+	var WollokObject falseObject
+	
+	@Inject	WollokInterpreter interpreter
+	@Inject	WollokQualifiedNameProvider qualifiedNameProvider
+	@Inject WollokClassFinder classFinder
+	@Inject extension NativeObjectFactory nativesFactory
+	
 	/* HELPER METHODS */
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
 	protected def eval(EObject e) { interpreter.eval(e) }
@@ -123,13 +125,16 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
+	
+	
 
 	def dispatch Object evaluate(WIfExpression it) {
 		val cond = condition.eval
+		
 		// I18N !
-		if (!(cond instanceof Boolean)) throw new WollokInterpreterException(
-			"Expression in 'if' must evaluate to a boolean. Instead got: " + cond, it)
-		if (Boolean.TRUE == cond)
+		if (!(cond.isWBoolean)) 
+			throw new WollokInterpreterException('''Expression in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
+		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
 			then.eval
 		else
 			^else?.eval
@@ -168,80 +173,103 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def boolean matches(WCatch cach, WollokObject exceptionThrown) { exceptionThrown.isKindOf(cach.exceptionType) }
 
 	// literals
-	def dispatch Object evaluate(WStringLiteral it) { value }
+	def dispatch Object evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }
 
-	def dispatch Object evaluate(WBooleanLiteral it) { isTrue }
+
+	def dispatch Object evaluate(WBooleanLiteral it) { booleanValue(it.isIsTrue) }
 
 	def dispatch Object evaluate(WNullLiteral it) { null }
 
-	def dispatch Object evaluate(WNumberLiteral it) {
+	def dispatch Object evaluate(WNumberLiteral it) { value.orCreateNumber }
+	
+	def getOrCreateNumber(String value) {
 		if (numbersCache.containsKey(value) && numbersCache.get(value).get != null) {
 			numbersCache.get(value).get
 		}
 		else {
-			val n = instantiateNumber(it)
+			val n = instantiateNumber(value)
 			numbersCache.put(value, new WeakReference(n))
 			n
 		}
 	}
 	
-	def instantiateNumber(WNumberLiteral it) {
-		if (value.contains('.')) 
-			new WollokDouble(Double.valueOf(value)) 
-		else 
-			new WollokInteger(Integer.valueOf(value))
+	def booleanValue(boolean isTrue) {
+		if (isTrue) {
+			if (trueObject == null)
+				trueObject = newInstanceWithWrapped(BOOLEAN, isTrue)
+			return trueObject
+		}
+		else {
+			if (falseObject == null) 
+				falseObject = newInstanceWithWrapped(BOOLEAN, isTrue)
+			return falseObject
+		}
+	}
+	
+	def <T> newInstanceWithWrapped(String className, T wrapped) {
+		newInstance(className) => [
+			val JavaWrapper<T> native = getNativeObject(className)
+			native.wrapped = wrapped
+		]
+	}
+	
+	def instantiateNumber(String value) {
+		if (value.contains('.'))
+			doInstantiateNumber(DOUBLE, Double.valueOf(value)) 
+		else {
+			doInstantiateNumber(INTEGER, Integer.valueOf(value))
+		}
+	}
+	
+	def doInstantiateNumber(String className, Object value) {
+		val obj = newInstance(className)
+		// hack because this project doesn't depend on wollok.lib project so we don't see the classes !
+		val intNative = obj.getNativeObject(className) as JavaWrapper
+		intNative.wrapped = value
+		obj
 	}
 
 	def dispatch Object evaluate(WObjectLiteral l) {
 		new WollokObject(interpreter, l) => [l.members.forEach[m|addMember(m)]]
 	}
 	
-	def dispatch Object evaluate(WReturnExpression it){
+	def dispatch Object evaluate(WReturnExpression it) {
 		throw new ReturnValueException(expression.eval)
 	}
 
 	def dispatch Object evaluate(WConstructorCall call) {
 		// hook the implicit relation "* extends Object*
-		call.classRef.hookToObject
+		newInstance(call.classRef, call.arguments.evalEach)
+	}
+	
+	def newInstance(String classFQN, Object... arguments) {
+		newInstance(classFinder.searchClass(classFQN, interpreter.evaluating), arguments)
+	}
+	
+	def newInstance(WClass classRef, Object... arguments) {
+		classRef.hookToObject(classFinder)
 		
-		new WollokObject(interpreter, call.classRef) => [ wo |
-			call.classRef.superClassesIncludingYourselfTopDownDo [
+		new WollokObject(interpreter, classRef) => [ wo |
+			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
-			wo.invokeConstructor(call.arguments.evalEach)
+			wo.invokeConstructor(arguments.map[javaToWollok].toArray)
 		]
 	}
 	
-	def void hookToObject(WClass wClass) {
+	def static void hookToObject(WClass wClass, WollokClassFinder finder) {
 		if (wClass.parent != null)
-			wClass.parent.hookToObject
+			wClass.parent.hookToObject(finder)
 		else {
-			val object = getObjectClass(wClass)
-			if (wClass != object) { 
+			val object = finder.getObjectClass(wClass)
+			if (wClass.fqn != object.fqn) { 
 				wClass.parent = object
 				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
 			}
 		}
 	}
 	
-	@Inject IGlobalScopeProvider scopeProvider
-
-	private WClass objectClass
-	
-	def WClass getObjectClass(EObject context) {
-		if (objectClass == null) {
-			val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
-				o.name.toString == OBJECT_CLASS_NAME
-			]
-			val a = scope.allElements.findFirst[o| o.name.toString == OBJECT_CLASS_NAME]
-			if (a == null)
-				throw new WollokRuntimeException("Could NOT find " + OBJECT_CLASS_NAME + " in scope: " + scope.allElements)
-			objectClass = a.EObjectOrProxy as WClass
-		}
-		objectClass
-	}
-
 	def dispatch Object evaluate(WNamedObject namedObject) {
 		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(namedObject).toString
 		
@@ -255,7 +283,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarhcy
+		namedObject.hookObjectInHierarhcy(classFinder)
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
@@ -275,11 +303,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def hookObjectInHierarhcy(WNamedObject namedObject) {
+	def static hookObjectInHierarhcy(WNamedObject namedObject, WollokClassFinder finder) {
 		if (namedObject.parent != null)
-			namedObject.parent.hookToObject
+			namedObject.parent.hookToObject(finder)
 		else {
-			val object = getObjectClass(namedObject)
+			val object = finder.getObjectClass(namedObject)
 			namedObject.parent = object
 			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
 		}
@@ -287,8 +315,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
 
-	def dispatch Object evaluate(WListLiteral l) { new WollokList(interpreter, newArrayList(l.elements.map[eval].toArray)) }
-	def dispatch Object evaluate(WSetLiteral l) { new WollokSet(interpreter, newHashSet(l.elements.map[eval].toArray)) }
+	def dispatch Object evaluate(WListLiteral l) { createCollection(LIST, l.elements) }
+	def dispatch Object evaluate(WSetLiteral l) { createCollection(SET, l.elements) }
+//	def dispatch Object evaluate(WSetLiteral l) { new WollokSet(interpreter, newHashSet(l.elements.map[eval].toArray)) }
+	// TODO create a WSET
+	
+	def createCollection(String collectionName, List<WExpression> elements) {
+		this.newInstance(collectionName) => [
+			elements.forEach[e| 
+				call("add", e.eval)
+			]
+		]
+	}
 
 	// other expressions
 	def dispatch Object evaluate(WBlockExpression b) { b.expressions.evalAll }
@@ -315,6 +353,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
 		} else
 			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.lazyEval)
+				// this is just for the null == null comparisson. Otherwise is re-retrying to convert
+				.javaToWollok
 	}
 	
 	def lazyEval(EObject expression) {
@@ -322,8 +362,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WPostfixOperation op) {
-		// if we start to "box" numbers into wollok objects, this "1" will then change to find the wollok "1" object-
-		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [|new WollokInteger(1)])
+		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [| getOrCreateNumber("1") ])
 	}
 
 	/** 
@@ -331,7 +370,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	 * to a reference, and then updates the value in the context (think of +=, or ++, they have common behaviors)
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>Object rightPart) {
-		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart)
+		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
 		newValue
 	}
@@ -373,5 +412,19 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object call(WCallable target, String message, Object... args) { target.call(message, args) }
 
 	/** @deprecated creo que esto no tiene sentido si incluimos los objetos nativos wrappeados en WCallable */
-	def dispatch Object call(Object target, String message, Object... args) { target.invoke(message, args) }
+	def dispatch Object call(Object target, String message, Object... args) {
+		// hack while we still have some java objects being published and used in the wollok world.
+		// for example java.lang.String's and booleans
+		var messageName = message
+		var arguments = args
+		if (message == "toSmartString") {
+			messageName = "toString"
+			arguments = #[]
+		} 
+		val r = target.invoke(messageName, arguments)
+		if (r != null)
+			WollokJavaConversions.javaToWollok(r)
+		else
+			r
+	}
 }

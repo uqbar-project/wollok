@@ -17,17 +17,23 @@ class WollokRuntimeException extends RuntimeException {
 	new(String message) {
 		super(message)
 	}	
-	new(String message, Exception e) {
-		super(message, e)
+	new(String message, Throwable t) {
+		super(message, t)
 	}
 }
 
+/**
+ * @deprecated This must be modeled in wollok itself and it will be replaced by WollokProgramExceptionWrapper
+ */
 class UnresolvableReference extends WollokRuntimeException {
 	new(String message) {
 		super(message)
 	}
 }
 
+/**
+ * @deprecated This must be modeled in wollok itself and it will be replaced by WollokProgramExceptionWrapper
+ */
 class MessageNotUnderstood extends WollokRuntimeException {
 	// Esto es previo a tener la infraestructura de debugging
 	// probablemente seria bueno unificar el manejo de errores con eso

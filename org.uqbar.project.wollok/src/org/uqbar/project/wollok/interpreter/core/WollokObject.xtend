@@ -24,6 +24,13 @@ import static org.uqbar.project.wollok.WollokDSLKeywords.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -56,17 +63,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override getThisObject() { this }
 	
 	override call(String message, Object... parameters) {
-		val method = behavior.lookupMethod(message)
+		val method = behavior.lookupMethod(message, parameters)
 		if (method != null)
 			return method.call(parameters)
 
 		// TODO: Adding special case for equals, but we have to fix it	
 		if (message == "=="){
 			val javaMethod = this.class.methods.findFirst[name == "equals"]
-			return javaMethod.invoke(this, parameters).asWollokObject
+			return javaMethod.invoke(this, parameters).javaToWollok
 		}
 		
-		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
+		throw new MessageNotUnderstood('''Message not understood: «if(message != "toString") this else behavior.objectDescription» does not understand «message»''')
 	}
 	
 	
@@ -141,7 +148,16 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
-		new ToStringBuilder().smartToString(this)
+		try {
+			//TODO: java string shouldn't call wollok string
+			// it should be a low-lever WollokVM debugging method
+			val string = call("toString", #[]) as WollokObject
+			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
+		}
+		catch (MessageNotUnderstood e) {
+			e.printStackTrace
+			this.behavior.objectDescription
+		}
 	}
 		
 	def getKind() { behavior }
@@ -165,6 +181,18 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override addGlobalReference(String name, Object value) {
 		interpreter.addGlobalReference(name, value)
 	}
+	
+	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
+	def <T> getNativeObject(String clazz) {
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz) 
+		this.nativeObjects.values.findFirst[ transformedClassName == class.name ] as T
+	}
+	
+	def hasNativeType(String type) {
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
+		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
+	}
+	
 }
 
 /**

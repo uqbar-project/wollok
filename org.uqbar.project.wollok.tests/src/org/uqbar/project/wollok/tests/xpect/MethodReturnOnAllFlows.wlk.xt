@@ -1,6 +1,9 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class A {
+	var c
+	
+	method setC(_c) { c = _c }
 	
 	method foo() = "Foo"
 	
@@ -82,6 +85,16 @@ class A {
 		var a = 23
 		a += 2
 		throw new Exception()
+	}
+	
+	method withTryCatch() {
+	    try {
+	         return 23
+	    }
+	    catch e : Exception {
+	         this.setC("saasas")
+	         throw e
+	    }
 	}
 
 }

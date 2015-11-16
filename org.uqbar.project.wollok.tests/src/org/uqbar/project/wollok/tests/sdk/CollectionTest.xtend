@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.interpreter.collections
+package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
@@ -81,6 +81,17 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 			todos.addAll(unos)
 			todos.addAll(otros)			
 			assert.equals(8, todos.size())
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testFlatMap() {
+		'''
+		program p {
+			assert.equals(#[1,2,3,4], #[#[1,2], #[3,4]].flatten())
+			assert.equals(#[1,2,3,4], #[#[1,2], #[], #[3,4]].flatten())
+			assert.equals(#[], #[].flatten())
+			assert.equals(#[], #[#[]].flatten())
 		}'''.interpretPropagatingErrors
 	}
 }

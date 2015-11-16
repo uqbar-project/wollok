@@ -5,7 +5,11 @@ import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+/**
+ * @author tesonep
+ */
 class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
 	extension WollokInterpreterAccess = new WollokInterpreterAccess
 	
@@ -55,6 +59,15 @@ class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
 	
 	@Test
 	def void validateResult() { 
-		assertEquals(expectedResult.asWollokObject, expression.evaluate)
+		val WollokObject actual = expression.evaluate as WollokObject
+		val WollokObject expected = expectedResult.javaToWollok as WollokObject
+		
+		try {
+			assertTrue(expected.call("==", actual).wollokToJava(Boolean) as Boolean)
+		}
+		catch (AssertionError e) {
+			println("Expected " + expected + " but got " + actual)
+			throw e
+		}
 	}
 }

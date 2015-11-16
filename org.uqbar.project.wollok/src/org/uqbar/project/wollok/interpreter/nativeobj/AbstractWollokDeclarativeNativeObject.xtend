@@ -3,8 +3,12 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WCallable
+
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * Abstract base class for all native objects that implements
@@ -15,7 +19,6 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
  * @author jfernandes
  */
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
-	WollokInterpreterAccess interpreterAccess = new WollokInterpreterAccess
 
 	override call(String message, Object... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
@@ -23,7 +26,13 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 			doesNotUnderstand(message, parameters).asWollokObject
 		else
 			try {
-				method.invoke(this, parameters).asWollokObject
+				if (method.parameterTypes.size != parameters.size)
+					throw new WollokRuntimeException('''Wrong number of arguments for method. Expected «method.parameterTypes.size» but you passed «parameters.size»''')
+				
+				method.invokeConvertingArgs(this, parameters)
+//				method.invoke(this, parameters).asWollokObject
+			} catch (IllegalArgumentException e) {
+				throw new WollokRuntimeException("Error while calling native java method " + method, e)				
 			} catch (InvocationTargetException e) {
 				throw e.cause
 			} catch (Throwable e) {
@@ -64,7 +73,11 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message && m.parameterTypes.size == parameters.size
 	}
 
-	def <T> T asWollokObject(Object obj) { interpreterAccess.asWollokObject(obj) }
+	def <T> T asWollokObject(Object obj) { WollokJavaConversions.javaToWollok(obj) as T}
 
 	def identity() { System.identityHashCode(this) }
+	
+	def newInstance(Number naitive) {
+		(WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
+	} 
 }

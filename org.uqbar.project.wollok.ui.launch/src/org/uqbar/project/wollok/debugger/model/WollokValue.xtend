@@ -14,6 +14,7 @@ class WollokValue extends WollokDebugElement implements IValue {
 	
 	new(WollokDebugTarget target, String value) {
 		super(target)
+		println("creating value directly for " + value)
 		this.value = value
 	}
 	

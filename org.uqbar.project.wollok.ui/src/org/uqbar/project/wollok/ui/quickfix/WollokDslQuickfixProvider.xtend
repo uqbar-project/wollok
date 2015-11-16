@@ -1,20 +1,28 @@
 package org.uqbar.project.wollok.ui.quickfix
 
+import com.google.inject.Inject
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
+import org.uqbar.project.wollok.WollokDSLKeywords
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -23,17 +31,10 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.WollokDSLKeywords
-import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-import org.eclipse.emf.common.util.EList
 
 /**
  * Custom quickfixes.
@@ -41,6 +42,8 @@ import org.eclipse.emf.common.util.EList
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
+	@Inject
+	WollokClassFinder classFinder
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -79,7 +82,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
 			
-			val wko = call.resolveWKO
+			val wko = call.resolveWKO(classFinder)
 			
 			val placeToAdd = wko.findPlaceToAddMethod
 			

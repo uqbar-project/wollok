@@ -1,11 +1,9 @@
 package org.uqbar.project.wollok
 
-import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.eclipse.core.runtime.FileLocator
 
 /**
  * 
@@ -51,7 +49,7 @@ class WollokActivator extends Plugin {
 			throw new WollokRuntimeException("Error while creating native object class " + className, e);
 		}
 	}
-
+	
 	def findResource(String bundleName, String fullName) {
 		val x = context.bundles.findFirst[it.symbolicName == bundleName]
 		x?.getResource(fullName).openStream

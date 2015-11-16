@@ -4,10 +4,7 @@ import java.util.Arrays
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
-import org.uqbar.project.wollok.WollokActivator
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -33,7 +30,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Extension methods for WMethodContainers.
@@ -73,7 +69,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[name == m.name && parameters.size == m.parameters.size ] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name) }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static returnsValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
@@ -142,13 +138,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c != null && (c.methods.exists[name == mname && parameters.size == argsSize] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
-	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message) { 
-		val method = behavior.methods.findFirst[name == message]
+	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
+		val method = behavior.methods.findFirst[name == message && parameters.size == params.size]
 		
 		if (method != null) 
 			return method
 		else if (behavior.parent != null)
-			behavior.parent.lookupMethod(message)
+			behavior.parent.lookupMethod(message, params)
 		else 
 			null
 	}
@@ -158,11 +154,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
-		c.allMethods.exists[isValidMessage(call)]
+		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
 	}
 
 
@@ -183,58 +179,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue 
 	}
 	
-	// ** native **
-	
-	def static Object createNativeObject(WClass it, WollokObject obj, WollokInterpreter interpreter) {
-		createNativeObject(fqn, obj, interpreter)
-	}
-	
-	def static Object createNativeObject(WNamedObject it, WollokObject obj, WollokInterpreter interpreter) {
-		var className = fqn
-		var classNameParts = className.split("\\.")
-		val lastPosition = classNameParts.length - 1
-		classNameParts.set(lastPosition, classNameParts.get(lastPosition).toFirstUpper)
-		
-		className = classNameParts.join(".")
-		val classFQN = className + "Object"
-		
-		createNativeObject(classFQN, obj, interpreter)
-	}
-	
-	def static createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
-		val bundle = WollokActivator.getDefault
-		val javaClass = 
-		if (bundle != null) {
-			try {
-				bundle.loadWollokLibClass(classFQN, obj.behavior)
-			}
-			catch (ClassNotFoundException e) {
-				interpreter.classLoader.loadClass(classFQN)
-			}
-		}
-		else {
-			interpreter.classLoader.loadClass(classFQN)
-		}
-		
-		tryInstantiate(
-			[|javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)],
-			[|javaClass.getConstructor(WollokObject).newInstance(obj)],
-			[|javaClass.newInstance]	
-		)
-	}
-	
-	def static tryInstantiate(()=>Object... closures) {
-		var NoSuchMethodException lastException = null
-		for (c : closures) {
-			try
-				return c.apply
-			catch (NoSuchMethodException e) {
-				lastException = e
-			}	
-		}
-		throw new WollokRuntimeException("Error while instantiating native class. No valid constructor: (), or (WollokObject) or (WollokObject, WollokInterpreter)", lastException)
-	}
-
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
@@ -292,11 +236,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
 	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
 
-	def static isWritableVarRef(WExpression e) { 
-		e instanceof WVariableReference
-		&& (e as WVariableReference).ref instanceof WVariable
-		&& ((e as WVariableReference).ref as WVariable).eContainer instanceof WVariableDeclaration
-		&& (((e as WVariableReference).ref as WVariable).eContainer as WVariableDeclaration).writeable
-	}
+	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
+	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
+	def static dispatch boolean isWritableVarRef(WExpression it) { false }
 	
 }

@@ -6,6 +6,7 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -41,9 +42,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WCatch
 
 /**
  * Extension methods to Wollok semantic model.
@@ -60,13 +63,22 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static fqn(WClass it) { 
+	def static dispatch name(WClass it) { name }
+	def static dispatch name(WNamedObject it) { name }
+	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
+
+	def static dispatch fqn(WClass it) { 
 		fileName + "." + (if (package != null) (package.name + ".") else "") + name
 	}
-	def static fqn(WNamedObject it) {
+	def static dispatch fqn(WNamedObject it) {
 		 fileName + "." + 
 		 	if(package != null) package.name + "." + name
 		 		else name
+	}
+	
+	def static dispatch fqn(WObjectLiteral it) {
+		//TODO: make it better (show containing class /object / package + linenumber ?)
+		fileName + "." + "anonymousObject" 
 	}
 
 	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
@@ -145,11 +157,11 @@ class WollokModelExtensions {
 
 	def static isCallOnThis(WMemberFeatureCall c) { c.memberCallTarget instanceof WThis }
 	
-	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it) {
+	def static WMethodDeclaration resolveMethod(WMemberFeatureCall it, WollokClassFinder finder) {
 		if (isCallOnThis) 
 			method.declaringContext.findMethod(it)
 		else if (isCallToWellKnownObject)
-			resolveWKO.findMethod(it)
+			resolveWKO(finder).findMethod(it)
 		else
 		 // TODO: call to super (?)
 		 	null
@@ -164,9 +176,13 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 	
-	def static isValidCallToWKObject(WMemberFeatureCall it) { resolveWKO.isValidCall(it) }
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it) }
 	
-	def static resolveWKO(WMemberFeatureCall it) { (memberCallTarget as WVariableReference).ref as WNamedObject }
+	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
+		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
+		obj.hookObjectInHierarhcy(finder)
+		obj
+	}
 
 
 	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
@@ -282,6 +298,8 @@ class WollokModelExtensions {
 	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
 	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WTry it) { expression.returnsOnAllPossibleFlows && catchBlocks.forall[c | c.returnsOnAllPossibleFlows ] }
+	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
 	
 }

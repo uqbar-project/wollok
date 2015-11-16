@@ -3,8 +3,6 @@ package org.uqbar.project.wollok.interpreter.operation
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WCallable
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -50,17 +48,11 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 	@UnaryOperation('-')
 	def Object invertOperation(Object a) { invert(a) }  
 	def dispatch invert(WCallable a) { a.call("invert") }
-	def dispatch invert(WollokInteger a) { 
-		new WollokInteger(-a.wrapped)
-	}
-	def dispatch invert(WollokDouble a) { new WollokDouble(-a.wrapped) }
 	def dispatch invert(Object a) { throw new MessageNotUnderstood("Type " + a + "does not implement invert operation (-)") }
 
 	@UnaryOperation('+')
 	def Object plusOperation(Object a) { plus(a) }  
 	def dispatch plus(WCallable a) { a.call("plus") }
-	def dispatch plus(WollokInteger a) { a }
-	def dispatch plus(WollokDouble a) { a }
 	def dispatch plus(Object a) { throw new MessageNotUnderstood("Type " + a + "does not implement plus operation (+)") }
 
 }

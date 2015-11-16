@@ -16,18 +16,12 @@ class MixedNumberTypesOperationsTest extends AbstractWollokInterpreterTestCase {
 			program a {
 				assert.equals(2 * 2.0, 2.0 * 2)
 				assert.equals(2 * 2.0, 2.0 * 2)
-				assert.equals(2 * 2, 2.0 * 2)
-				assert.equals(2 * 2, 2 * 2.0)
 				
 				assert.equals(1 + 2.0, 1.0 + 2)
 				assert.equals(1 + 2.0, 1.0 + 2)
-				assert.equals(1 + 2, 1.0 + 2)
-				assert.equals(1 + 2, 1 + 2.0)
 				
 				assert.equals(1 - 2.0, 1.0 - 2)
 				assert.equals(1 - 2.0, 1.0 - 2)
-				assert.equals(1 - 2, 1.0 - 2)
-				assert.equals(1 - 2, 1 - 2.0)
 				
 				assert.equals(1 / 2.0, 1.0 / 2)
 				assert.equals(1 / 2.0, 1.0 / 2)

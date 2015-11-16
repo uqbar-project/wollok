@@ -4,6 +4,9 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * 
@@ -27,13 +30,13 @@ class AssertObject extends AbstractWollokDeclarativeNativeObject {
 
 	@NativeMessage("equals")
 	def assertEquals(Object a, Object b) {
-		if (asBinaryOperation("==").apply(a, [|b]) == false)
+		if (asBinaryOperation("==").apply(a, [|b]).wollokToJava(Boolean) == false)
 			throw AssertionException.valueNotWasEquals(a, b)
 	}
 
 	@NativeMessage("notEquals")
 	def assertNotEquals(Object a, Object b) {
-		if (asBinaryOperation("==").apply(a, [|b]) == true)
+		if (asBinaryOperation("==").apply(a, [|b]).wollokToJava(Boolean) == true)
 			throw AssertionException.valueNotWasNotEquals(a, b)
 	}
 
