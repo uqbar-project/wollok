@@ -74,21 +74,21 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testForAll() {
+	def void testAll() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var allPositives = numbers.forAll([n | n > 0])
+			var allPositives = numbers.all([n | n > 0])
 			assert.that(allPositives)
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testForAllWhenItIsFalse() {
+	def void testAllWhenItIsFalse() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var allPositives = numbers.forAll([n | n > 5])
+			var allPositives = numbers.all([n | n > 5])
 			assert.notThat(allPositives)
 		}'''.interpretPropagatingErrors
 	}
@@ -127,11 +127,11 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testAny() {
+	def void testAnyOne() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			val any = numbers.any()
+			val any = numbers.anyOne()
 			assert.that(numbers.contains(any))
 		}'''.interpretPropagatingErrors
 	}
