@@ -9,3 +9,19 @@ class Ale inherits Levadura {
 	method fermentar(mosto) {
 	}	
 }
+
+class Lager inherits Levadura {
+	// XPECT errors --> "Method does not override anything" at "fermentar"
+	override method fermentar(mosto, tiempo) {}
+	
+	method create() {
+		// XPECT errors --> "Cannot instantiate abstract class" at "Lager"
+		return new Lager()
+	}	
+}
+
+object londonAle inherits Levadura {
+	override method fermentar(mosto) {
+	}	
+}
+

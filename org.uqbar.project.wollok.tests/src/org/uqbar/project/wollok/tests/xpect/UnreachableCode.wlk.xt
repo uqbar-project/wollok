@@ -1,0 +1,56 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	method inABlock() {
+		try {
+			return 1
+		}
+		catch e : Exception {
+			return 2
+		}
+		// XPECT errors --> "Unreachable code" at "return 3"
+		return 3
+	}
+	
+	method inABlock0() {
+		try {
+			return 1
+		}
+		then always {
+			console.println("abc")
+		}
+		return 3
+	}
+	
+// TODO: re-enable after merging dev-natives-to-wollok
+//	method inABlock2() {
+//		try {
+//			return 1
+//		}
+//		catch e : Exception {
+//			return 2
+//		}
+//	}
+	
+	method inABlock3() {
+		try {
+			return 1
+		}
+		catch e : Exception {
+			console.println(e)
+		}
+		return 3
+	}
+	
+	method inABlock4() {
+		try {
+			return 1
+		}
+		catch e : Exception {
+			throw e
+		}
+		// XPECT errors --> "Unreachable code" at "return 3"
+		return 3
+	}
+	
+}

@@ -1,0 +1,39 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	method inABlock() {
+		val aBlock = [a |
+			throw new Exception()
+			// XPECT errors --> "Unexpected expression after throw" at "a > 23"
+			a > 23
+		]
+		aBlock.apply(23)
+		throw new Exception()
+		
+		// XPECT errors --> "Unexpected expression after throw" at "val b = '23'"
+		val b = '23'
+		// XPECT errors --> "Unexpected expression after throw" at "return b"
+		return b
+	}
+	
+	method withinAnIf(aParam) {
+		var a = 1
+		if (a > 0) {
+			throw new Exception()
+			// XPECT errors --> "Unexpected expression after throw" at "a = 23"
+			a = 23
+		}
+		else {
+			a = 22
+			throw new Exception()
+			// XPECT errors --> "Unexpected expression after throw" at "a = 21"
+			a = 21
+		}
+	}
+	
+	method throwAfterThrow() {
+		throw new Exception()
+		// XPECT errors --> "Unexpected expression after throw" at "throw new Exception()"
+		throw new Exception()
+	}
+}
