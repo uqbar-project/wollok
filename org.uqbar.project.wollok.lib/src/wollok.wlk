@@ -13,7 +13,45 @@ package lang {
 	 * @since 1.0
 	 */
 	class Exception {
-		method printStackTrace() native	
+		val message
+		val cause
+	
+		new()
+		new(_message) = this(_message, null)
+		new(_message, _cause) { message = _message ; cause = _cause }
+		
+		method printStackTrace() { this.printStackTraceWithPreffix("") }
+		
+		/**@private */
+		method printStackTraceWithPreffix(preffix) {
+			console.println(preffix + "Exception " + this.className() + (if (message != null) (" :" + message.toString()) else "")
+			
+			// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
+			this.getStackTrace().forEach[e|
+				console.println("\tat " + e.contextDescription() + " [" + e.location() + "]")
+			]
+			
+			if (cause != null)
+				cause.printStackTraceWithPreffix("Caused by: ")
+		}
+		
+		/**@private */
+		method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+		
+		method getStackTrace() native
+		
+		method getMessage() = message
+	}
+	
+	class StackTraceElement {
+		val contextDescription
+		val location
+		new(_contextDescription, _location) {
+			contextDescription = _contextDescription
+			location = _location
+		}
+		method contextDescription() = contextDescription
+		method location() = location
 	}
 	
 	/**
@@ -27,6 +65,7 @@ package lang {
 		method instanceVariableFor(name) native
 		method resolve(name) native
 		method kindName() native
+		method className() native
 		
 		method ==(other) {
 			return this === other
@@ -221,7 +260,7 @@ package lang {
 	 * @author jfernandes
 	 * @since 1.3
 	 */	
-	class Set extends Collection {
+	class Set inherits Collection {
 	
 		override method newInstance() = #{}
 		override method toStringPrefix() = "#{"
@@ -256,7 +295,7 @@ package lang {
 	 * @author jfernandes
 	 * @since 1.3
 	 */
-	class List extends Collection {
+	class List inherits Collection {
 
 		method get(index) native
 		
@@ -311,7 +350,7 @@ package lang {
 	 * @since 1.3
 	 * @noInstantiate
 	 */
-	class Integer extends Number {
+	class Integer inherits Number {
 		method ==(other) native
 		method +(other) native
 		method -(other) native
@@ -341,7 +380,7 @@ package lang {
 	 * @since 1.3
 	 * @noInstantiate
 	 */
-	class Double extends Number {
+	class Double inherits Number {
 		method ==(other) native
 		method +(other) native
 		method -(other) native

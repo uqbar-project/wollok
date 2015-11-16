@@ -63,6 +63,10 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
+	def static dispatch name(WClass it) { name }
+	def static dispatch name(WNamedObject it) { name }
+	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
+
 	def static dispatch fqn(WClass it) { 
 		fileName + "." + (if (package != null) (package.name + ".") else "") + name
 	}
@@ -121,6 +125,8 @@ class WollokModelExtensions {
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
+	
+	def static first(WBlockExpression it, Class type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 

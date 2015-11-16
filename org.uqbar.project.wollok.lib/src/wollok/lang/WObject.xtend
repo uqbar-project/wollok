@@ -9,6 +9,8 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 import org.uqbar.project.wollok.sdk.WollokDSK
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 /**
  * Wollok Object class. It's the native part
  * 
@@ -28,6 +30,7 @@ class WObject {
 	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
+	def className() { (obj.kind).name }
 	
 	def instanceVariables() {
 		newList(obj.instanceVariables.keySet.map[ variableMirror(it) ].toList)
