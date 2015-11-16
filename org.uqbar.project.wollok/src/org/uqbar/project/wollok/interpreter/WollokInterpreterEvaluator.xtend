@@ -141,14 +141,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		catch (WollokProgramExceptionWrapper e) {
 			val cach = t.catchBlocks.findFirst[c|c.matches(e.wollokException)]
 			if (cach != null) {
-				val context = cach.createEvaluationContext(e.wollokException).then(interpreter.currentContext)
-				interpreter.performOnStack(cach, context) [|
-					cach.expression.eval
-				]
+				cach.evaluate(e)
 			} else
 				throw e
 		} finally
 			t.alwaysExpression?.eval
+	}
+	
+	def evaluate(WCatch it, WollokProgramExceptionWrapper e) {
+		val context = createEvaluationContext(e.wollokException).then(interpreter.currentContext)
+		interpreter.performOnStack(it, context) [|
+			expression.eval
+		]
 	}
 
 	def createEvaluationContext(WCatch wCatch, WollokObject exception) {
@@ -156,7 +160,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch Object evaluate(WThrow t) {
-
 		// this must be checked!
 		val obj = t.exception.eval as WollokObject
 		throw new WollokProgramExceptionWrapper(obj)

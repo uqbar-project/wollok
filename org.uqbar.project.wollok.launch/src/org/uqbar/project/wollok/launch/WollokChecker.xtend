@@ -110,7 +110,7 @@ class WollokChecker {
 	
 	def String formattedIssue(Issue it) {
 		// COLUMN: investigate how to calculate the column number from the offset !
-		'''[«severity»] «uriToProblem?.trimFragment.toFileString»:«lineNumber»:«if (offset == null) 1 else offset» «severity.name» «message»'''
+		'''[«severity»] «uriToProblem?.trimFragment?.toFileString»:«lineNumber»:«if (offset == null) 1 else offset» «severity?.name» «message»'''
 	}
 	
 	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler, Procedure1<Iterable<Issue>> after) {

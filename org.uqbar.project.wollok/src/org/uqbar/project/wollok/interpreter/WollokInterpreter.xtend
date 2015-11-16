@@ -67,7 +67,13 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	// ***********************
 	
 	override interpret(EObject rootObject) {
-		interpret(rootObject, false)
+		try {
+			interpret(rootObject, false)
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// todo: what about "propagating errors?"
+			e.wollokException.call("printStackTrace")
+		}
 	}
 	
 	override interpret(EObject rootObject, Boolean propagatingErrors) {
@@ -85,7 +91,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		catch (Throwable e)
 			if (propagatingErrors)
 				throw e
-			else{
+			else {
 				console.logError(e)
 				null
 			}

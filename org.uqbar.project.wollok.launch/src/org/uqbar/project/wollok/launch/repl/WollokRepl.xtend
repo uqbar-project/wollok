@@ -21,6 +21,7 @@ import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
@@ -177,9 +178,14 @@ class WollokRepl {
 		2 + parsedMainFile.imports.size
 	}
 
+	def dispatch void handleException(WollokProgramExceptionWrapper e) {
+		// Wollok-level user exception
+		e.wollokException.call("printStackTrace")
+	}
+
 	def dispatch void handleException(WollokInterpreterException e) {
 		if (e.lineNumber > numberOfLinesBefore) {
-			printlnIdent('''Error in line («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
+			printlnIdent('''WVM Error in line («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
 		
 		if (e.cause != null) {
