@@ -15,6 +15,7 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.* 
  */
 class WollokJSONTestsReporter implements WollokTestsReporter {
 	var testPassed = 0
+	var testFailures = 0
 	var testErrors = 0
 	var first = true
 	
@@ -24,7 +25,12 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	"tests" : [''')}
 	
 	override finished() {println(
-'''		]
+'''		],
+	"summary" :  {
+		"passed" : "«testPassed»",
+		"failures" : "«testFailures»",
+		"errors" : "«testErrors»"
+	}
 }''')}
 	
 	override testStart(WTest test) {}
@@ -40,14 +46,18 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 			"lineNumber" : "«lineNumber»",
 			"stackTrace" : "«assertionError.stackTraceAsString»""
 		}
-	}''')}
+	}''')
+		testFailures++
+	}
 	
 	override reportTestOk(WTest test) { println(
 '''
     {
     "name" : "«test.name»",
         "state" : "passed"
-    }''')}
+    }''')
+    	testPassed++
+    }
 	
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) { println(
 '''
@@ -60,7 +70,9 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 			"file" : "«resource.trimFragment»",
 			"lineNumber" : "«lineNumber»"
 		}
-	}''')}
+	}''')
+		testErrors++
+	}
 	
 	def dispatch getTheWollokMessage(Exception exception) { exception.message }
 	def dispatch getTheWollokMessage(WollokProgramExceptionWrapper exception) { exception.wollokMessage }
