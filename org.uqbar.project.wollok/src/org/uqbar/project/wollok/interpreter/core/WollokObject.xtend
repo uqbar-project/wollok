@@ -7,12 +7,13 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -20,17 +21,13 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokDSLKeywords.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
-
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * A wollok user defined (dynamic) object.
@@ -62,6 +59,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	override getThisObject() { this }
 	
+	// TODO: parameters should be WollokObject... after we migrate all to be wollok objects
 	override call(String message, Object... parameters) {
 		val method = behavior.lookupMethod(message, parameters)
 		if (method != null)
@@ -73,9 +71,21 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			return javaMethod.invoke(this, parameters).javaToWollok
 		}
 		
-		throw new MessageNotUnderstood('''Message not understood: «if(message != "toString") this else behavior.objectDescription» does not understand «message»''')
+		throwMessageNotUnderstood(message, parameters)		
 	}
 	
+	def throwMessageNotUnderstood(String name, Object... parameters) {
+		try {
+			call("messageNotUnderstood", name.javaToWollok, #[parameters])
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// this one is ok !
+			throw e
+		}
+		catch (RuntimeException e) {
+			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
+		}
+	}
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(Object... objects) {
@@ -154,9 +164,14 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			val string = call("toString", #[]) as WollokObject
 			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		}
-		catch (MessageNotUnderstood e) {
-			e.printStackTrace
-			this.behavior.objectDescription
+		// this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
+		// they don't understand the toString() message
+		catch (WollokProgramExceptionWrapper e) {
+			if (e.isMessageNotUnderstood) {
+				this.behavior.objectDescription
+			}
+			else
+				throw e
 		}
 	}
 		

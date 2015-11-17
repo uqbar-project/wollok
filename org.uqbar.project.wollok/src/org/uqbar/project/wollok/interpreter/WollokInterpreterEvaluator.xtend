@@ -381,12 +381,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	// member call
 	def dispatch Object evaluate(WFeatureCall call) {
-		try {
-			call.evaluateTarget.perform(call.feature, call.memberCallArguments.evalEach)
-		} catch (MessageNotUnderstood e) {
-			e.pushStack(call)
-			throw e
-		}
+		call.evaluateTarget.perform(call.feature, call.memberCallArguments.evalEach)
 	}
 
 	// ********************************************************************************************

@@ -1,5 +1,9 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import org.uqbar.project.wollok.sdk.WollokDSK
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * Wraps a user exception (an exception thrown in the user code
  * written in Wollok lang) into a java exception so we can reuse
@@ -16,6 +20,10 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	
 	def getWollokException() {
 		wollokException
+	}
+	
+	def boolean isMessageNotUnderstood() {
+		wollokException.call("className").wollokToJava(String) != WollokDSK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
 	}
 	
 }

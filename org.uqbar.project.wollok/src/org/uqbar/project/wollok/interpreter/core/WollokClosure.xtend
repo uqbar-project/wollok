@@ -1,13 +1,15 @@
 package org.uqbar.project.wollok.interpreter.core
 
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.wollokDsl.WClosure
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * A closure runtime native object
@@ -40,8 +42,12 @@ class WollokClosure implements EvaluationContext, WCallable {
 		if (message == "apply")
 			apply(parameters)
 		else
-			// I18N !
-			throw new MessageNotUnderstood('''Closure objects don't understand message "«message»" ''')
+			throw throwMessageNotUnderstood(this, message, parameters)
+	}
+	
+	// REPEATED code: will be deleted once we migrate closures to be modeled in wollok
+	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, "Closures don't understand message " + name))
 	}
 	
 	def Object apply(Object... arguments) {

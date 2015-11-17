@@ -22,6 +22,7 @@ class WString extends AbstractJavaWrapper<String> {
 	def concat(Object other) { doConcatWith(other) }
 		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
 		def dispatch WollokObject doConcatWith(WollokObject it) { asWString.doConcatWith }
+		def dispatch WollokObject doConcatWith(Object it) { throw new RuntimeException("Concat doesn't support " + it.class.name) }
 		
 	def startsWith(WollokObject other) { wrapped.startsWith(other.asWString.wrapped) }
 	def endsWith(WollokObject other ) { wrapped.endsWith(other.asWString.wrapped) }

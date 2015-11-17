@@ -6,7 +6,6 @@ import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -55,16 +54,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 			
 		e.cause.prepareExceptionForTrip()
 	}
-
-	def dispatch Object prepareExceptionForTrip(MessageNotUnderstood e) {
-		e.prepareForSerialization()
-
-		if(e.cause == null)
-			return null
-			
-		e.cause.prepareExceptionForTrip()
-	}
-
+	
 	def dispatch Object prepareExceptionForTrip(WollokInterpreterException e) {
 		e.sourceElement = null;
 

@@ -2,11 +2,15 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WCallable
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -19,23 +23,32 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * @author jfernandes
  */
 abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
+	WollokObject obj
+	@Accessors WollokInterpreter interpreter
+	
+	new (WollokObject obj, WollokInterpreter interpreter) {
+		this.obj = obj
+		this.interpreter = interpreter
+	}
 
 	override call(String message, Object... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
 		if (method == null)
-			doesNotUnderstand(message, parameters).asWollokObject
+			throw doesNotUnderstand(message, parameters)
 		else
 			try {
 				if (method.parameterTypes.size != parameters.size)
 					throw new WollokRuntimeException('''Wrong number of arguments for method. Expected «method.parameterTypes.size» but you passed «parameters.size»''')
 				
 				method.invokeConvertingArgs(this, parameters)
-//				method.invoke(this, parameters).asWollokObject
-			} catch (IllegalArgumentException e) {
+			}
+			catch (IllegalArgumentException e) {
 				throw new WollokRuntimeException("Error while calling native java method " + method, e)				
-			} catch (InvocationTargetException e) {
+			}
+			catch (InvocationTargetException e) {
 				throw e.cause
-			} catch (Throwable e) {
+			}
+			catch (Throwable e) {
 				println(''' Method: «method.name» «method.parameterTypes» Parameters:«parameters.toString» Target:«this» ''')
 				e.printStackTrace
 				throw e
@@ -65,8 +78,12 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		method.returnType == Void.TYPE
 	}
 
-	def Object doesNotUnderstand(String message, Object[] objects) {
-		throw new MessageNotUnderstood(message)
+	def doesNotUnderstand(String message, Object[] objects) {
+		throwMessageNotUnderstood(this, message, objects)
+	}
+	
+	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters)))
 	}
 
 	def static handlesMessage(Method m, String message, Object... parameters) {
@@ -78,6 +95,6 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	def identity() { System.identityHashCode(this) }
 	
 	def newInstance(Number naitive) {
-		(WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
+		(interpreter.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
 	} 
 }

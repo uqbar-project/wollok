@@ -1,13 +1,12 @@
 package wollok.lang
 
 import java.util.Collection
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 

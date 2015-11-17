@@ -13,7 +13,9 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -35,9 +37,6 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ********************************************************************************************
 	
 	def Object call(WMethodDeclaration method, Object... parameters) {
-		if (method.parameters.size != parameters.size) 
-			// I18N !
-			throw new MessageNotUnderstood('''Incorrect number of arguments for method '«method.name»'. Expected «method.parameters.size» but found «parameters.size»''')
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
@@ -70,8 +69,13 @@ abstract class AbstractWollokCallable implements WCallable {
 	def dispatch invokeNative(Object nativeObject, String name, Object... parameters) {
 		val method = AbstractWollokDeclarativeNativeObject.getMethod(nativeObject.class, name, parameters)
 		if (method == null)
-			throw new MessageNotUnderstood(createMessage(nativeObject , name, parameters))
+			throw throwMessageNotUnderstood(nativeObject, name, parameters)
 		method.accesibleVersion.invokeConvertingArgs(nativeObject, parameters)
+	}
+	
+	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+		val wollokException = ((interpreter as WollokInterpreter).evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
+		new WollokProgramExceptionWrapper(wollokException)
 	}
 
 	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){

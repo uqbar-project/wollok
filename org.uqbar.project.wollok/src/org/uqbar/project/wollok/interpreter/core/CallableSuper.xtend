@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.interpreter.core
 
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
@@ -24,7 +23,8 @@ class CallableSuper extends AbstractWollokCallable {
 		val method = behavior.lookupMethod(message, parameters)
 		if (method == null)
 			// I18N !
-			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»(«parameters.map["p"].join(',')»)''')
+			throw throwMessageNotUnderstood(this, message, parameters)
+//			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»(«parameters.map["p"].join(',')»)''')
 		
 		method.call(parameters)
 	}

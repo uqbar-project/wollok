@@ -22,7 +22,7 @@ package lang {
 		
 		method printStackTrace() { this.printStackTraceWithPreffix("") }
 		
-		/**@private */
+		/** @private */
 		method printStackTraceWithPreffix(preffix) {
 			console.println(preffix + "Exception " + this.className() + (if (message != null) (" :" + message.toString()) else "")
 			
@@ -35,12 +35,26 @@ package lang {
 				cause.printStackTraceWithPreffix("Caused by: ")
 		}
 		
-		/**@private */
+		/** @private */
 		method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
 		
 		method getStackTrace() native
 		
 		method getMessage() = message
+	}
+	
+	class MessageNotUnderstoodException inherits Exception {
+		new()
+		new(_message) = super(_message)
+		new(_message, _cause) = super(_message, _cause)
+		
+		/*
+		'''«super.getMessage()»
+			«FOR m : wollokStack»
+			«(m as WExpression).method?.declaringContext?.contextName».«(m as WExpression).method?.name»():«NodeModelUtils.findActualNodeFor(m).textRegionWithLineInformation.lineNumber»
+			«ENDFOR»
+			'''
+		*/
 	}
 	
 	class StackTraceElement {
@@ -67,8 +81,21 @@ package lang {
 		method kindName() native
 		method className() native
 		
+		/**
+		 * Tells whether this object is "equals" to the given object
+		 * The default behavior compares them in terms of identity (===)
+		 */
 		method ==(other) {
 			return this === other
+		}
+		
+		/**
+		 * Tells whether this object is identical (the same) to the given one.
+		 * It does it by comparing their identities.
+		 * So this basically relies on the wollok.lang.Integer equality (which is native)
+		 */
+		method ===(other) {
+			return this.identity() == other.identity()
 		}
 		
 		method equals(other) = this == other
@@ -99,6 +126,16 @@ package lang {
 					v.name() + "=" + v.valueToSmartString(alreadyShown)
 				].join(', ') 
 			+ "]"
+		}
+		
+		method messageNotUnderstood(name, parameters) {
+			var message = "Message not understood: " 
+			message += if (name != "toString") 
+						this.toString()
+					 else 
+					 	this.kindName()
+			message += " does not understand " + name
+			throw new MessageNotUnderstoodException(message)
 		}
 	}
 	
