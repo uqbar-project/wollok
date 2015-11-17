@@ -1,8 +1,13 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import org.eclipse.emf.common.util.URI
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WThrow
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Wraps a user exception (an exception thrown in the user code
@@ -13,10 +18,21 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  */
 class WollokProgramExceptionWrapper extends RuntimeException {
 	WollokObject wollokException
+	@Accessors URI URI
+	@Accessors int lineNumber
 	
 	new(WollokObject exception) {
 		wollokException = exception
 	}
+	
+	new(WollokObject exception, WThrow origin) {
+		this(exception)
+		URI = EcoreUtil2.getURI(origin)
+		lineNumber = lineNumber(origin)	
+	}
+	
+	def node(WThrow it) { NodeModelUtils.findActualNodeFor(it) }
+	def lineNumber(WThrow it) { node.textRegionWithLineInformation.lineNumber }
 	
 	def getWollokException() {
 		wollokException

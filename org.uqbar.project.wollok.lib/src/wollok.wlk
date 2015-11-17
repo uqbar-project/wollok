@@ -20,19 +20,26 @@ package lang {
 		new(_message) = this(_message, null)
 		new(_message, _cause) { message = _message ; cause = _cause }
 		
-		method printStackTrace() { this.printStackTraceWithPreffix("") }
+		method printStackTrace() { this.printStackTrace(console) }
+		method getStackTraceAsString() {
+			val printer = new StringPrinter()
+			this.printStackTrace(printer)
+			return printer.getBuffer()
+		}
+		
+		method printStackTrace(printer) { this.printStackTraceWithPreffix("", printer) }
 		
 		/** @private */
-		method printStackTraceWithPreffix(preffix) {
-			console.println(preffix + "Exception " + this.className() + (if (message != null) (" :" + message.toString()) else "")
+		method printStackTraceWithPreffix(preffix, printer) {
+			printer.println(preffix +  this.className() + (if (message != null) (": " + message.toString()) else "")
 			
 			// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
 			this.getStackTrace().forEach[e|
-				console.println("\tat " + e.contextDescription() + " [" + e.location() + "]")
+				printer.println("\tat " + e.contextDescription() + " [" + e.location() + "]")
 			]
 			
 			if (cause != null)
-				cause.printStackTraceWithPreffix("Caused by: ")
+				cause.printStackTraceWithPreffix("Caused by: ", printer)
 		}
 		
 		/** @private */
@@ -89,6 +96,9 @@ package lang {
 			return this === other
 		}
 		
+		/** Tells whether this object is not equals to the given one */
+		method !=(other) = ! (this == other)
+		
 		/**
 		 * Tells whether this object is identical (the same) to the given one.
 		 * It does it by comparing their identities.
@@ -129,12 +139,15 @@ package lang {
 		}
 		
 		method messageNotUnderstood(name, parameters) {
-			var message = "Message not understood: " 
-			message += if (name != "toString") 
+			var message = if (name != "toString") 
 						this.toString()
 					 else 
 					 	this.kindName()
 			message += " does not understand " + name
+			if (parameters.size() > 0)
+				message += "(" + (0..(parameters.size()-1)).map[i| "p" + i].join(',') + ")"
+			else
+				message += "()"
 			throw new MessageNotUnderstoodException(message)
 		}
 	}
@@ -489,11 +502,18 @@ package lang {
 		
 		method forEach(closure) native
 		
+		method map(closure) {
+			val l = #[]
+			this.forEach[e| l.add(closure.apply(e)) ]
+			return l
+		}
+		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}
 }
  
 package lib {
+
 	object console {
 		method println(obj) native
 		method readLine() native
@@ -505,6 +525,14 @@ package lib {
 		method notThat(value) native
 		method equals(expected, actual) native
 		method notEquals(expected, actual) native
+	}
+	
+	class StringPrinter {
+		var buffer = ""
+		method println(obj) {
+			buffer += obj.toString() + "\n"
+		}
+		method getBuffer() = buffer
 	}
 	
 }

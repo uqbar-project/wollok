@@ -19,8 +19,12 @@ import org.uqbar.project.wollok.wollokDsl.Import
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
+import static org.uqbar.project.wollok.WollokConstants.*
+
 /**
  * 
+ * @author tesonep
+ * @author jfernandes
  */
 class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
@@ -62,7 +66,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	}
 	
 	def generateUri(Resource resource, String importedName) {
-		resource.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension("wlk").toString
+		resource.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
 	def handleManifest(WollokManifest manifest, ResourceSet resourceSet) {
@@ -70,9 +74,13 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	}
 
 	def loadResource(URI uri, ResourceSet resourceSet) {
-		val resource = resourceSet.getResource(uri, true)
-		resource.load(#{})
-
-		resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+		try {
+			val resource = resourceSet.getResource(uri, true)
+			resource.load(#{})
+			resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+		}
+		catch (RuntimeException e) {
+			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
+		} 
 	}
 }

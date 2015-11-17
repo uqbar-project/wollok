@@ -29,7 +29,7 @@ class WObject {
 	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
-	def className() { (obj.kind).name }
+	def className() { (obj.kind).fqn }
 	
 	def instanceVariables() {
 		newList(obj.instanceVariables.keySet.map[ variableMirror(it) ].toList)

@@ -9,8 +9,13 @@ import org.uqbar.project.wollok.launch.tests.WollokRemoteTestReporter
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.scoping.WollokReplGlobalScopeProvider
 
+/**
+ * Runtime module for the launcher.
+ * It changes the test reporter for test execution
+ * 
+ * @author tesonep
+ */
 class WollokLauncherModule extends WollokDslRuntimeModule {
-	
 	val WollokLauncherParameters params
 	
 	new(WollokLauncherParameters params) {
@@ -25,9 +30,9 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		return WollokLauncherInterpreterEvaluator
 	}
 	
-	def Class<? extends WollokTestsReporter> bindWollokTestsReporter(){
-		if(params.tests){
-			if(params.testPort != null && params.testPort != 0)
+	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
+		if (params.tests) {
+			if (params.testPort != null && params.testPort != 0)
 				return WollokRemoteTestReporter
 			else
 				return WollokConsoleTestsReporter

@@ -28,6 +28,7 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
 /**
  * A wollok user defined (dynamic) object.
@@ -75,11 +76,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
+		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
+		if (this.behavior instanceof WObjectLiteral) {
+			val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, ("does not understand message " + name).javaToWollok)
+			throw new WollokProgramExceptionWrapper(e)
+		}
+		
 		try {
-			call("messageNotUnderstood", name.javaToWollok, #[parameters])
+			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
 		}
 		catch (WollokProgramExceptionWrapper e) {
-			// this one is ok !
+			// this one is ok because calling messageNotUnderstood actually throws the exception!
 			throw e
 		}
 		catch (RuntimeException e) {

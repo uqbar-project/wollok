@@ -22,7 +22,6 @@ program monstersInc {
 	
 	assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
 
-
 	// 2)
 	val mike = new AsustadorPerseverante(20)
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))

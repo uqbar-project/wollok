@@ -1,24 +1,37 @@
 package org.uqbar.project.wollok.launch.tests
 
 import com.google.inject.Inject
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.ArrayList
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
+/**
+ * WollokTestReporter implementation that sends the event to a remote
+ * WollokRemoteUITestNotifier instance.
+ * 
+ * It uses RMI to communicate with another process (the UI)
+ * 
+ * @author tesonep
+ */
 class WollokRemoteTestReporter implements WollokTestsReporter {
 
 	@Inject
 	var WollokLauncherParameters parameters
 
 	var Client client
-	var CallHandler callHandler = new CallHandler
+	var callHandler = new CallHandler
 	var WollokRemoteUITestNotifier remoteTestNotifier
 
 	@Inject
@@ -43,24 +56,35 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		remoteTestNotifier.testStart(test.name)
 	}
 
-	override reportTestError(WTest test, WollokInterpreterException exception, int lineNumber, URI resource) {
-		exception.prepareExceptionForTrip
-		remoteTestNotifier.error(test.name, exception, lineNumber, resource.toString)
-	}
-
-	def dispatch Object prepareExceptionForTrip(Throwable e) {
-		if(e.cause == null)
-			return null
-			
-		e.cause.prepareExceptionForTrip()
+	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource.toString)
 	}
 	
-	def dispatch Object prepareExceptionForTrip(WollokInterpreterException e) {
-		e.sourceElement = null;
+	def dispatch String convertToString(Exception exception) {
+		val sw = new StringWriter
+        exception.printStackTrace(new PrintWriter(sw))
+        sw.toString  
+	}
+	
+	def dispatch String convertToString(WollokProgramExceptionWrapper exception) {
+		exception.wollokException.call("getStackTraceAsString").wollokToJava(String) as String
+	}
 
-		if(e.cause == null)
-			return null
-			
-		e.cause.prepareExceptionForTrip()
+	def dispatch void prepareExceptionForTrip(Throwable e) {
+		if (e.cause != null)
+			e.cause.prepareExceptionForTrip
+	}
+	
+	def dispatch void prepareExceptionForTrip(WollokInterpreterException e) {
+		e.sourceElement = null
+
+		if (e.cause != null)
+			e.cause.prepareExceptionForTrip
+	}
+	
+	def dispatch void prepareExceptionForTrip(WollokProgramExceptionWrapper e) {
+		e.URI = null
+		if (e.cause != null)
+			e.cause.prepareExceptionForTrip		
 	}
 }
