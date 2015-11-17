@@ -20,21 +20,22 @@ class WollokLauncherParameters {
 	@Accessors
 	List<String> wollokFiles = new ArrayList();
 	@Accessors
-	boolean hasRepl = false;
-
+	boolean hasRepl = false
 	@Accessors
-	Integer testPort = null;
-
+	Integer testPort = null
 	@Accessors
-	boolean tests = false;
+	boolean jsonOutput = false
+	@Accessors
+	boolean tests = false
 	
-	def build(){
+	def build() {
 		val sb = new StringBuilder
 		if (hasRepl)sb.append("-r").append(" ")
 		if (requestsPort != null) sb.append("-requestsPort " + requestsPort.toString).append(" ")
 		if (eventsPort != null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
 		if (testPort != null) sb.append("-testPort " + testPort.toString).append(" ")
 		if (tests) sb.append("-t ")
+		if (jsonOutput) sb.append("-jsonOutput ")
 		wollokFiles.forEach [ sb.append(it).append(" ") ]
 		sb.toString
 	}
@@ -46,6 +47,8 @@ class WollokLauncherParameters {
 		
 		tests = cmdLine.hasOption("t")
 		testPort = parseParameter(cmdLine, "testPort")
+		
+		jsonOutput = cmdLine.hasOption("jsonOutput")
 
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
@@ -82,6 +85,8 @@ class WollokLauncherParameters {
 		new Options => [
 			addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
 			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
+			
+			addOption(new Option("jsonOutput", "JSON test report output"))
 			
 			add("testPort", "Server port for tests", "port", 1)
 			add("requestsPort", "Request ports", "port", 1)

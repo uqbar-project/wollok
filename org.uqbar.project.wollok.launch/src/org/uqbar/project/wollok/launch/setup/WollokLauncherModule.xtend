@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.launch.tests.WollokConsoleTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokRemoteTestReporter
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.scoping.WollokReplGlobalScopeProvider
+import org.uqbar.project.wollok.launch.tests.WollokJSONTestsReporter
 
 /**
  * Runtime module for the launcher.
@@ -34,6 +35,8 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		if (params.tests) {
 			if (params.testPort != null && params.testPort != 0)
 				return WollokRemoteTestReporter
+			else if(params.jsonOutput)
+				return WollokJSONTestsReporter
 			else
 				return WollokConsoleTestsReporter
 		}

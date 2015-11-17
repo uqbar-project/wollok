@@ -87,4 +87,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		if (e.cause != null)
 			e.cause.prepareExceptionForTrip		
 	}
+	
+	override finished() {
+	}
+	
 }

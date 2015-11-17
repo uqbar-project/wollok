@@ -20,4 +20,10 @@ interface WollokTestsReporter {
 	def void reportTestOk(WTest test)
 	def void testsToRun(WFile file, List<WTest> tests)
 	def void testStart(WTest test)
+	
+	/**
+	 * Tells this reporter that the execution has finished
+	 */	
+	def void finished()
+	
 }

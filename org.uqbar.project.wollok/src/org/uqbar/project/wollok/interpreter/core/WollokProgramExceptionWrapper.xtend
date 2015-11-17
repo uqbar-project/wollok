@@ -42,4 +42,12 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 		wollokException.call("className").wollokToJava(String) != WollokDSK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
 	}
 	
+	def getWollokStackTrace() {
+		wollokException.call("getStackTraceAsString").wollokToJava(String)
+	}
+	
+	def getWollokMessage() {
+		wollokException.call("getMessage").wollokToJava(String)
+	}
+	
 }

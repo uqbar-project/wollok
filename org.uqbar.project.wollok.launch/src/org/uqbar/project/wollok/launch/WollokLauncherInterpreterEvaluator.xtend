@@ -26,7 +26,10 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		// Files should are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
 			wollokTestsReporter.testsToRun(it, tests)
-			tests.evalAll
+			try 
+				tests.evalAll
+			finally
+				wollokTestsReporter.finished
 		}
 	}
 	

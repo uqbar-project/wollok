@@ -28,4 +28,8 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 		throw exception
 	}
 	
+	override finished() {
+	
+	}
+	
 }

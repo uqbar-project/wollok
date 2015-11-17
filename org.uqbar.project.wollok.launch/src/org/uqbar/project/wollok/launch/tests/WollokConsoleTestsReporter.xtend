@@ -31,4 +31,7 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 		println('''Test: «test.name» : «exception.message» («resource.trimFragment»:«lineNumber»)''')
 	}
 	
+	override finished() {
+	}
+	
 }
