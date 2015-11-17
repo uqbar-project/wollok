@@ -43,5 +43,9 @@ class AssertObject extends AbstractWollokDeclarativeNativeObject {
 		if (asBinaryOperation("==").apply(a, [|b]).wollokToJava(Boolean) == true)
 			throw AssertionException.valueNotWasNotEquals(a, b)
 	}
+	
+	def fail(String message) {
+		throw AssertionException.fail(message)
+	}
 
 }
