@@ -2,13 +2,16 @@ package org.uqbar.project.wollok.launch.setup
 
 import org.uqbar.project.wollok.WollokDslRuntimeModule
 import org.uqbar.project.wollok.launch.WollokLauncherInterpreterEvaluator
+import org.uqbar.project.wollok.launch.WollokLauncherIssueHandler
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.tests.DefaultWollokTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokConsoleTestsReporter
 import org.uqbar.project.wollok.launch.tests.WollokRemoteTestReporter
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
+import org.uqbar.project.wollok.launch.tests.json.WollokJSONTestsReporter
+import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 import org.uqbar.project.wollok.scoping.WollokReplGlobalScopeProvider
-import org.uqbar.project.wollok.launch.tests.WollokJSONTestsReporter
+import org.uqbar.project.wollok.launch.DefaultWollokLauncherIssueHandler
 
 /**
  * Runtime module for the launcher.
@@ -42,6 +45,13 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		}
 		else
 			return DefaultWollokTestsReporter
+	}
+	
+	def Class<? extends WollokLauncherIssueHandler> bindWollokLauncherIssueHandler() {
+		if (params.tests && params.jsonOutput)
+			WollokLauncherIssueHandlerJSON
+		else
+			DefaultWollokLauncherIssueHandler
 	}
 	
 }

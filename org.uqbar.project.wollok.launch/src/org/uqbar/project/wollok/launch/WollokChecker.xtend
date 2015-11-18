@@ -82,14 +82,7 @@ class WollokChecker {
 		resource.contents.get(0) as WFile
 	}
 	
-		// "Classpath assembly"
 	def createClassPath(File file, ResourceSet resourceSet) {
-/* 
-		newArrayList => [
-			collectWollokFiles(findProjectRoot(file.parentFile), it)
-			forEach[f|resourceSet.createResource(URI.createURI(f.toURI.toString))]
-		]
-*/
 		newArrayList => [
 			resourceSet.createResource(URI.createURI(file.toURI.toString))
 		]
@@ -105,12 +98,8 @@ class WollokChecker {
 	}
 	
 	def validate(Injector injector, Resource resource) {
-		this.validate(injector,resource,[println(formattedIssue)],[ System.exit(-1) ])
-	}
-	
-	def String formattedIssue(Issue it) {
-		// COLUMN: investigate how to calculate the column number from the offset !
-		'''[«severity»] «uriToProblem?.trimFragment?.toFileString»:«lineNumber»:«if (offset == null) 1 else offset» «severity?.name» «message»'''
+		val handler = injector.getInstance(WollokLauncherIssueHandler)
+		this.validate(injector,resource,[handler.handleIssue(it)],[ handler.finished ; System.exit(-1) ])
 	}
 	
 	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler, Procedure1<Iterable<Issue>> after) {
