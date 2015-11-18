@@ -78,9 +78,11 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
+				val s = obj2.toString()
+				console.println(s)
 				assert.that(
-					'obj2[y=obj1[x=#{a Prb[], obj2}]]' == obj2.toString() 
-					|| 'obj2[y=obj1[x=#{obj2, a Prb[]}]]' == obj2.toString() 
+					'obj2[y=obj1[x=#{a Prb[], obj2}]]' == s 
+					|| 'obj2[y=obj1[x=#{obj2, a Prb[]}]]' == s 
 				)
 			}
 		'''.interpretPropagatingErrors
