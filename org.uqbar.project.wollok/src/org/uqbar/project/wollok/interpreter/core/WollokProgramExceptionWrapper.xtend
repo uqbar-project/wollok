@@ -43,11 +43,11 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def getWollokStackTrace() {
-		wollokException.call("getStackTraceAsString").wollokToJava(String)
+		wollokException.call("getStackTraceAsString").wollokToJava(String) as String
 	}
 	
 	def getWollokMessage() {
-		wollokException.call("getMessage").wollokToJava(String)
+		wollokException.call("getMessage").wollokToJava(String) as String
 	}
 	
 }
