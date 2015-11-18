@@ -20,12 +20,12 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 	
 	override finished() {
 		new Gson().newJsonWriter(new PrintWriter(System.out)) => [
-			beginObject
-				name("version").value(Wollok.VERSION)
+			obj [
+				with("version", Wollok.VERSION)
 				name("checks").beginArray
 					renderIssues				
 				endArray
-			endObject
+			]
 			close
 		]
 	}

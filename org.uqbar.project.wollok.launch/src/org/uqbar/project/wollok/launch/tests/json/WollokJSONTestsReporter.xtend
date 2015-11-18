@@ -15,9 +15,12 @@ import wollok.lib.AssertionException
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
+ * A test reporter that prints to console in JSON format.
+ * Used by mumuki, for example.
  * 
  * @author jfernandes
  */
+//TODO: it could be rendering the elapsed time for each test
 class WollokJSONTestsReporter implements WollokTestsReporter {
 	var testPassed = 0
 	var testFailures = 0
