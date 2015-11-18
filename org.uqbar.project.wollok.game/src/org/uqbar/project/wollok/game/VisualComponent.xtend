@@ -11,45 +11,31 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.Gdx
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
+import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors
 class VisualComponent {
 	
+	private Position position;
 	private Image image;
 	private WollokObject domainObject;
 	private Collection<String> attributes = new ArrayList<String>();
 	private List<BalloonMessage> balloonMessages = new ArrayList<BalloonMessage>();
 	
-	new (WollokObject object) {
-		this.domainObject = object;
-		this.image = new WImage(object);
+	new (Position position, Image image) {
+		this.position = position
+		this.image = image
 	}
 	
-	new (WollokObject object, String attr) {
-		this(object);
-		this.attributes.add(attr);
+	new (WollokObject object) {
+		this.domainObject = object
+		this.position = new WPosition(WollokObject.cast(domainObject.call("getPosicion")))
+		this.image = new WImage(object)
 	}
 	
 	new (WollokObject object, Collection<Object> attrs) {
 		this(object);
-		for(Object attr : attrs){
-			this.attributes.add(attr.toString());
-		} 
-	}
-	
-	def getPosition() {
-		return new WPosition(WollokObject.cast(domainObject.call("getPosicion")));
-	}
-
-	def getDomainObject() {
-		return this.domainObject;
-	}
-	
-	def setMyDomainObject(WollokObject myDomainObject) {
-		this.domainObject = myDomainObject;
-	}
-	
-	def sendMessage(String message) {
-		return this.domainObject.call(message);
+		this.attributes.addAll(attrs.map[it.toString()])
 	}
 	
 	def say(String aText) {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import java.util.Collection
 
 class Gameboard {
 
@@ -25,15 +26,11 @@ class Gameboard {
 	public List<VisualComponent> components = new ArrayList<VisualComponent>();
 	
 	def static getInstance() {
-		if (instance == null)
-			instance = new Gameboard();
-		return instance;
-	}
-	
-	new () {
-		var factory = new GameFactory();
-		factory.setGame(this);
-		//this.setStage(new Stage());
+		if (instance == null) {
+			instance = new Gameboard()
+			new GameFactory().setGame(instance)
+		}
+		return instance
 	}
 
 	def createCells(String groundImage) {
@@ -82,6 +79,10 @@ class Gameboard {
 
 	def addComponent(VisualComponent component) {
 		this.components.add(component);
+	}
+	
+	def addComponents(Collection<VisualComponent> components) {
+		this.components.addAll(components);
 	}
 	
 	def getCharacter() {
