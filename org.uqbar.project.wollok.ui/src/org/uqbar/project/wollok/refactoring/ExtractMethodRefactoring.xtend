@@ -125,7 +125,7 @@ class ExtractMethodRefactoring extends Refactoring {
 		try {
 			val calledExternalFeatureNames = <String>newHashSet
 			
-			returnExpression = if (originalMethod.returnsValue) lastExpression else null
+			returnExpression = if (originalMethod.supposedToReturnValue) lastExpression else null
 			
 			val isReturnAllowed = isEndOfOriginalMethod 
 			

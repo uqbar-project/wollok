@@ -216,12 +216,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def overridingMethodMustReturnAValueIfOriginalMethodReturnsAValue(WMethodDeclaration m) {
-		if (m.overrides) {
+		if (m.overrides && !m.native) {
 			val overriden = m.overridenMethod
 			if (overriden != null && !overriden.abstract) {
-				if (overriden.returnsValue && !m.returnsValue)
+				if (overriden.supposedToReturnValue && !m.returnsOnAllPossibleFlows)
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE, OVERRIDING_METHOD_MUST_RETURN_VALUE)
-				if (!overriden.returnsValue && m.returnsValue)
+				if (!overriden.supposedToReturnValue && m.returnsOnAllPossibleFlows)
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE, OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE)
 			}
 		}
@@ -230,14 +230,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodDoesNotReturnAValueOnEveryPossibleFlow(WMethodDeclaration it) {
-		if (returnsValue  && !expressionReturns && !returnsOnAllPossibleFlows)
+		if (supposedToReturnValue  && !returnsOnAllPossibleFlows)
 			report(WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW)
 	}
 	
 	@Check
 	@DefaultSeverity(WARN)
 	def getterMethodShouldReturnAValue(WMethodDeclaration m) {
-		if (m.isGetter && !m.abstract && !m.returnsValue)
+		if (m.isGetter && !m.abstract && !m.supposedToReturnValue)
 			m.report(WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE, GETTER_METHOD_SHOULD_RETURN_VALUE)
 	}
 
@@ -349,7 +349,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
 		val method = call.resolveMethod(classFinder)
-		if (method != null && !method.native && !method.abstract && !method.returnsValue && call.isUsedAsValue(classFinder)) {
+		if (method != null && !method.native && !method.abstract && !method.supposedToReturnValue && call.isUsedAsValue(classFinder)) {
 			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE, VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
 		}
 	}
@@ -496,7 +496,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(WARN)
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
-		if (!native && !abstract && !returnsValue && expression.isEvaluatesToAValue(classFinder))
+		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	

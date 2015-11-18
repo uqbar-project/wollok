@@ -66,3 +66,17 @@ class O inherits M {
 class P inherits M {
 	override method anAbstractMethod() = 2
 }
+
+
+///  case where overriding method throws exception should raise an error
+
+class Persona {
+  method quiereSubirA(unMicro) {
+    return false
+  }
+}
+class Indeciso inherits Persona {
+  override method quiereSubirA(unMicro) {
+    throw new Exception()
+  }
+}

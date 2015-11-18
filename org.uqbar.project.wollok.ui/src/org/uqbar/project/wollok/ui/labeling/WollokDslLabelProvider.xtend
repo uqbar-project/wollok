@@ -86,7 +86,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	
 	def text(WMethodDeclaration m) { 
 		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
-			+ if (m.returnsValue) (" → " + concatResolvedType("",m)) else "" 
+			+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else "" 
 	}
 	def text(WConstructor m) {
 		'new(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
