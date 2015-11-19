@@ -25,7 +25,7 @@ class GameboardRendering implements ApplicationListener {
 	override create() {
 		Gdx.input.setInputProcessor(new GameboardInputProcessor());
 		camera = new OrthographicCamera(0, 0);
-		camera.setToOrtho(false, gameboard.width(), gameboard.height());
+		camera.setToOrtho(false, gameboard.pixelWidth(), gameboard.pixelHeight());
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}

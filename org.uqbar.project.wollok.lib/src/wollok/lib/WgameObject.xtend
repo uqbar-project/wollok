@@ -91,7 +91,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	// accessors
 	@NativeMessage("setTittle")
 	def setTittleMethod(String title) {
-		Gameboard.getInstance().configuration.gameboardTitle = title.wollokToJava(String) as String
+		Gameboard.getInstance().title = title.wollokToJava(String) as String
 	}
 	
 	@NativeMessage("getTittle")
@@ -101,22 +101,22 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
 	@NativeMessage("setWidth")
 	def setWeightMethod(WollokObject cant) {
-		Gameboard.getInstance().configuration.gameboardWidth =  cant.wollokToJava(Integer) as Integer
+		Gameboard.getInstance().width =  cant.wollokToJava(Integer) as Integer
 	}
 		
 	@NativeMessage("getWidth")
 	def getWeightMethod() {
-		Gameboard.getInstance().cantCellX.javaToWollok
+		Gameboard.getInstance().width.javaToWollok
 	}
 	
 	@NativeMessage("setHeight")
 	def setHeightMethod(WollokObject cant) {
-		Gameboard.getInstance().configuration.gameboardHeight = cant.wollokToJava(Integer) as Integer
+		Gameboard.getInstance().height = cant.wollokToJava(Integer) as Integer
 	}
 	
 	@NativeMessage("getHeight")
 	def getHeightMethod() {
-		Gameboard.getInstance().cantCellY.javaToWollok
+		Gameboard.getInstance().height.javaToWollok
 	}
 	
 }

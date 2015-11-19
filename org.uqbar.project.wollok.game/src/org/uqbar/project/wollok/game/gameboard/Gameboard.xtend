@@ -1,41 +1,47 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 
-import org.uqbar.project.wollok.game.GameConfiguration;
-import org.uqbar.project.wollok.game.GameFactory;
-import org.uqbar.project.wollok.game.Position;
-import org.uqbar.project.wollok.game.VisualComponent;
-import org.uqbar.project.wollok.game.listeners.ArrowListener;
-import org.uqbar.project.wollok.game.listeners.GameboardListener;
+import com.google.common.base.Predicate
+import com.google.common.collect.Collections2
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import java.util.ArrayList
 import java.util.Collection
+import java.util.List
 
+import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.listeners.ArrowListener
+import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.game.GameboardFactory
+import org.eclipse.xtend.lib.annotations.Accessors
+
+@Accessors
 class Gameboard {
 
 	public static Gameboard instance;
-	public static final int CELLZISE = 50;
-	private GameConfiguration configuration;
-	private List<Cell> cells = new ArrayList<Cell>();
-	private VisualComponent character;
-	public List<VisualComponent> components = new ArrayList<VisualComponent>();
+	public static final int CELLZISE = 50
+	private VisualComponent character
+	private List<Cell> cells = new ArrayList<Cell>()
+	
+	public String title
+	public int height
+	public int width
+	public List<VisualComponent> components = new ArrayList<VisualComponent>()
+	public List<GameboardListener> listeners = new ArrayList<GameboardListener>()
 	
 	def static getInstance() {
 		if (instance == null) {
 			instance = new Gameboard()
-			new GameFactory().setGame(instance)
+			GameboardFactory.setGame(instance)
 		}
 		return instance
 	}
 
 	def createCells(String groundImage) {
-		for (var i = 0; i < configuration.getGameboardWidth(); i++) {
-			for (var j = 0; j < configuration.getGameboardHeight(); j++) {
+		for (var i = 0; i < height; i++) {
+			for (var j = 0; j < width; j++) {
 				cells.add(new Cell(i * CELLZISE, j * CELLZISE, groundImage));
 			}
 		}
@@ -45,12 +51,12 @@ class Gameboard {
 		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
 	}
 
-	def height() {
-		return this.getCantCellY() * CELLZISE;
+	def pixelHeight() {
+		return height * CELLZISE;
 	}
 
-	def width() {
-		return getCantCellX() * CELLZISE;
+	def pixelWidth() {
+		return width * CELLZISE;
 	}
 
 	def isKeyPressed(int key) {
@@ -59,23 +65,23 @@ class Gameboard {
 	
 	def clear() {
 		this.components.clear();
-		this.configuration.getListeners().clear();
+		this.listeners.clear();
 	}
 
 	def characterSay(String aText) {
 		this.character.say(aText);
 	}
-
-	// Getters & Setters
 	
 	def getComponentsInPosition(Position myPosition) {
 		return Collections2.filter(components, new IsEqualPosition(myPosition));
 	}
 	
 	def getComponentsInPosition(int xInPixels, int yInPixels) {
-		var inverseYInPixels = Gameboard.getInstance().height() - yInPixels;
+		var inverseYInPixels = Gameboard.getInstance().pixelHeight() - yInPixels;
 		return Collections2.filter(components, new IsEqualPosition(xInPixels,inverseYInPixels));
 	}
+
+	// Getters & Setters
 
 	def addComponent(VisualComponent component) {
 		this.components.add(component);
@@ -84,26 +90,14 @@ class Gameboard {
 	def addComponents(Collection<VisualComponent> components) {
 		this.components.addAll(components);
 	}
-	
-	def getCharacter() {
-		return character;
-	}
 
 	def addCharacter(VisualComponent character) {
 		this.character = character;
-		this.configuration.addListener(new ArrowListener(this));
+		this.addListener(new ArrowListener(this));
 	}
 
-	def getTittle() {
-		return configuration.getGameboardTitle();
-	}
-
-	def getCells() {
-		return cells;
-	}
-
-	def getListeners() {
-		return this.configuration.getListeners();
+	def addListener(GameboardListener aListener){
+		this.listeners.add(aListener);
 	}
 
 	def getComponents() {
@@ -111,26 +105,6 @@ class Gameboard {
 		if (character != null)
 			allComponents.add(this.character);
 		return allComponents;
-	}
-
-	def addListener(GameboardListener aListener){
-		this.configuration.getListeners().add(aListener);
-	}
-	
-	def getCantCellX() {
-		return configuration.getGameboardWidth();
-	}
-
-	def getCantCellY() {
-		return configuration.getGameboardHeight();
-	}
-	
-	def getConfiguration() {
-		return configuration;
-	}
-	
-	def setConfiguration(GameConfiguration configuration) {
-		this.configuration = configuration;
 	}
 }
 

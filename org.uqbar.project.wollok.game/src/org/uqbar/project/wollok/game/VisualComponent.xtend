@@ -78,7 +78,7 @@ class VisualComponent {
 		var xMouse = Gdx.input.getX();
 		var yMouse = Gdx.input.getY();
 		var bottomX = this.getPosition().getXinPixels();
-		var bottomY = Gameboard.getInstance().height() - this.getPosition().getYinPixels();
+		var bottomY = Gameboard.getInstance().pixelHeight() - this.getPosition().getYinPixels();
 		var topX = bottomX + Gameboard.CELLZISE;
 		var topY = bottomY - Gameboard.CELLZISE;
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY);

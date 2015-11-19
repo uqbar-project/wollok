@@ -9,8 +9,8 @@ class GameboardConfiguration extends LwjglApplicationConfiguration {
 		this.useGL30 = false;
 		this.resizable = false;
 		this.title = gameboard.getTittle();
-		this.width = gameboard.width();
-		this.height = gameboard.height();
+		this.width = gameboard.pixelWidth();
+		this.height = gameboard.pixelHeight();
 		this.addIcon("flying_bird.png", FileType.Internal);
 	}
 }
