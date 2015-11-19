@@ -12,7 +12,6 @@ import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
-import org.uqbar.project.wollok.WollokDSLKeywords
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
@@ -29,7 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
-import static org.uqbar.project.wollok.WollokDSLKeywords.*
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -37,11 +36,13 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 
 /**
  * Custom quickfixes.
- *
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
+ * 
+ * @author jfernandes
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Inject
@@ -138,7 +139,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
-			xtextDocument.deleteToken(e, WollokDSLKeywords.OVERRIDE)
+			xtextDocument.deleteToken(e, OVERRIDE)
 		]
 	}
 	
@@ -260,9 +261,18 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val ifE = e as WIfExpression
 			var inlineResult = if (ifE.then.isReturnTrue) ifE.condition.sourceCode else ("!(" + ifE.condition.sourceCode + ")")
 			if (ifE.then.hasReturnWithValue) {
-				inlineResult = "return " + inlineResult
+				inlineResult = RETURN + " " + inlineResult
 			}
 			xtextDocument.replaceWith(e, inlineResult)
+		]
+	}
+	
+	@Fix(RETURN_FORGOTTEN)
+	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, 'Prepend "return"', 'Adds a "return" keyword', null) [ e, it |
+			val method = e as WMethodDeclaration
+			val body = (method.expression as WBlockExpression)
+			insertBefore(body.expressions.last, RETURN + " ")
 		]
 	}
 
@@ -275,14 +285,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
 			val newVarName = xtextDocument.get(issue.offset, issue.length)
 			val firstExpressionInContext = e.block.expressions.head
-			context.insertBefore(firstExpressionInContext, "var " + newVarName)
+			context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
 		]
 
 		// create instance var
 		issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.', "variable.gif") [ e, context |
 			val newVarName = xtextDocument.get(issue.offset, issue.length)
 			val firstClassChild = (e as WExpression).method.declaringContext.eContents.head
-			context.insertBefore(firstClassChild, "var " + newVarName)
+			context.insertBefore(firstClassChild, VAR + " " + newVarName)
 		]
 		
 		// create parameter
@@ -298,7 +308,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, 'Create new class', 'Create a new class definition.', "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = (e as WExpression).method.declaringContext
-			context.xtextDocument.replace(container.after, 0, "\nclass " + newClassName + " {\n}\n")
+			context.xtextDocument.replace(container.after, 0, "\n" + CLASS + newClassName + " {\n}\n")
 		]
 		
 	}
