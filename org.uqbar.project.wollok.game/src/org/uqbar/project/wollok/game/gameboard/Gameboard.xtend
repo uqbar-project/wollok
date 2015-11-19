@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 
 import com.google.common.base.Predicate

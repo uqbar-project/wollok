@@ -3,18 +3,20 @@ package org.uqbar.project.wollok.game.helpers
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.Gdx
 
-import org.eclipse.xtend.lib.annotations.Accessors
-
-@Accessors
 class Keyboard {
 	
-	public static Keyboard instance
+	var static Keyboard instance
 	
 	def static getInstance() {
 		if (instance == null)
 			instance = new Keyboard()
 			
 		instance
+	}
+	
+	// For testing
+	def static setInstance(Keyboard keyboard) {
+		instance = keyboard
 	}
 	
 	def isKeyPressed(int key) {
