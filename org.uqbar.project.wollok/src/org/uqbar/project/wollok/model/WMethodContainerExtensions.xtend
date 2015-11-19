@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * Extension methods for WMethodContainers.
@@ -79,6 +80,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def dispatch static isReturnWithValue(EObject it) { false }
 	def dispatch static isReturnWithValue(WReturnExpression it) { it.expression != null }
+	
+	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
+	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 	
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 
@@ -236,10 +240,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
 	
-	def static dispatch boolean getIsReturnBoolean(WExpression it) { false }
-	def static dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
-	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
-	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
+	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
+	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
+	def static dispatch boolean evaluatesToBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def static dispatch boolean evaluatesToBoolean(WBooleanLiteral it) { true }
 
 	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }

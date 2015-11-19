@@ -450,7 +450,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
-		if (t.then?.isReturnBoolean && t.^else?.isReturnBoolean) {
+		if (t.then?.evaluatesToBoolean && t.^else?.evaluatesToBoolean) {
 			val inlineResult = if (t.then.isReturnTrue) t.condition.sourceCode else ("!(" + t.condition.sourceCode + ")")
 			val replacement = " return " + inlineResult 
 			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + replacement, t, WIF_EXPRESSION__CONDITION, BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)

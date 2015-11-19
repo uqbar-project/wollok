@@ -258,7 +258,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Replace if with the condition', 'Removes the if and just leaves the condition.', null) [ e, it |
 			val ifE = e as WIfExpression
-			val inlineResult = if (ifE.then.isReturnTrue) ifE.condition.sourceCode else ("!(" + ifE.condition.sourceCode + ")")
+			var inlineResult = if (ifE.then.isReturnTrue) ifE.condition.sourceCode else ("!(" + ifE.condition.sourceCode + ")")
+			if (ifE.then.hasReturnWithValue) {
+				inlineResult = "return " + inlineResult
+			}
 			xtextDocument.replaceWith(e, inlineResult)
 		]
 	}
