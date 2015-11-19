@@ -42,6 +42,10 @@ class QuickFixUtils {
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {
 		replace(what.before, what.node.length, withWhat.node.text)
 	}
+	
+	def static void replaceWith(IXtextDocument it, EObject what, String newText) {
+		replace(what.before, what.node.length, newText)
+	}
 
 	// ****************** AST UTILS *********************
 	

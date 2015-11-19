@@ -36,6 +36,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+
 /**
  * Custom quickfixes.
  *
@@ -256,7 +258,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Replace if with the condition', 'Removes the if and just leaves the condition.', null) [ e, it |
 			val ifE = e as WIfExpression
-			xtextDocument.replaceWith(e, ifE.condition)
+			val inlineResult = if (ifE.then.isReturnTrue) ifE.condition.sourceCode else ("!(" + ifE.condition.sourceCode + ")")
+			xtextDocument.replaceWith(e, inlineResult)
 		]
 	}
 
