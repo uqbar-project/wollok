@@ -7,31 +7,39 @@ import org.junit.Test;
 
 import org.uqbar.project.wollok.game.gameboard.Gameboard;
 import org.uqbar.project.wollok.game.listeners.KeyboardListener;
+import org.uqbar.project.wollok.game.helpers.Keyboard
 
 class KeyboardListenerTest {
 	
-	KeyboardListener leftListener;
-	Gameboard gameboard;
-	Runnable action;
+	KeyboardListener listener
+	Gameboard gameboard
+	Keyboard keyboard
+	Runnable action
 	
 	@Before
 	def void init() {
-		val LEFT = 0
+		val ANY_KEY = 0
 		gameboard = mock(Gameboard)
+		keyboard = mock(Keyboard)
 		action = mock(Runnable)
-		leftListener = new KeyboardListener(LEFT, action)
+		
+		Keyboard.instance = keyboard		
+		listener = new KeyboardListener(ANY_KEY, action)
 	}
 	
 	@Test
 	def when_no_listened_key_is_pressed_nothing_happens(){
-		leftListener.notify(gameboard);
-		verify(action, never()).run();
+		when(keyboard.isKeyPressed(anyInt())).thenReturn(false)
+		
+		listener.notify(gameboard)
+		verify(action, never()).run()
 	}
 	
 	@Test
 	def when_listened_key_is_pressed_run_the_action(){
-		when(gameboard.isKeyPressed(anyInt())).thenReturn(true);
-		leftListener.notify(gameboard);
-		verify(action).run();
+		when(keyboard.isKeyPressed(anyInt())).thenReturn(true)
+		
+		listener.notify(gameboard)
+		verify(action).run()
 	}
 }
