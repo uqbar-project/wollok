@@ -37,7 +37,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	@NativeMessage("whenKeyPressedSay")
 	def whenKeyPressedSayMethod(Object key, WollokClosure function) {	
 		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		var listener = new CharacterSayListener(num,  [ | return function.apply().wollokToJava(String) as String ])
+		var listener = new CharacterSayListener(num,  [ return function.apply().wollokToJava(String) as String ])
 		Gameboard.getInstance().addListener(listener)
 	}
 	
@@ -51,7 +51,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	@NativeMessage("whenKeyPressedDo")
 	def whenKeyPressedDoMethod(Object key, WollokClosure action) {
 		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		var listener = new KeyboardListener(num, [ | action.apply() ])
+		var listener = new KeyboardListener(num, [ action.apply() ])
 		Gameboard.getInstance().addListener(listener)
 	}
 
