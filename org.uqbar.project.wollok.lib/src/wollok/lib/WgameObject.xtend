@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.game.listeners.CharacterSayListener
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
@@ -37,7 +36,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	@NativeMessage("whenKeyPressedSay")
 	def whenKeyPressedSayMethod(Object key, WollokClosure function) {	
 		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		var listener = new CharacterSayListener(num,  [ return function.apply().wollokToJava(String) as String ])
+		var listener = new KeyboardListener(num,  [ Gameboard.getInstance.characterSay(function.apply.wollokToJava(String) as String) ]) 
 		Gameboard.getInstance().addListener(listener)
 	}
 	
