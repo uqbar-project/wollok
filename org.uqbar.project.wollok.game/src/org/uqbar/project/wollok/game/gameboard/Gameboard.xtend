@@ -58,10 +58,6 @@ class Gameboard {
 	def pixelWidth() {
 		return width * CELLZISE;
 	}
-
-	def isKeyPressed(int key) {
-		return Gdx.input.isKeyJustPressed(key);
-	}
 	
 	def clear() {
 		this.components.clear();
@@ -83,17 +79,17 @@ class Gameboard {
 
 	// Getters & Setters
 
+	def addCharacter(VisualComponent character) {
+		this.character = character;
+		this.addListener(new ArrowListener(character));
+	}
+
 	def addComponent(VisualComponent component) {
 		this.components.add(component);
 	}
 	
 	def addComponents(Collection<VisualComponent> components) {
 		this.components.addAll(components);
-	}
-
-	def addCharacter(VisualComponent character) {
-		this.character = character;
-		this.addListener(new ArrowListener(this));
 	}
 
 	def addListener(GameboardListener aListener){
