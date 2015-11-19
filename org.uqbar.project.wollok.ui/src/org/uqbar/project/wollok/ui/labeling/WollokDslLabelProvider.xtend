@@ -38,15 +38,15 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		super(delegate)
 	}
 		
-	def image(WPackage ele) { 'package.png' }
-	def image(WProgram ele) { 'wollok-icon-program_16.png' }
-	def image(WClass ele) {	'wollok-icon-class_16.png' }
+	def image(WPackage it) { 'package.png' }
+	def image(WProgram it) { 'wollok-icon-program_16.png' }
+	def image(WClass it) {	'wollok-icon-class_16.png' }
 	
-	def text(WObjectLiteral ele) { 'object' }
-	def image(WObjectLiteral ele) {	'wollok-icon-object_16.png' }
+	def text(WObjectLiteral it) { 'object' }
+	def image(WObjectLiteral it) {	'wollok-icon-object_16.png' }
 	
-	def text(WNamedObject ele) { 'object' }
-	def image(WNamedObject ele) { 'wollok-icon-object_16.png' }
+	def text(WNamedObject it) { name }
+	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 	
 	def concatResolvedType(String separator, EObject obj) {
 		if (!labelExtensionResolved) {
@@ -74,14 +74,14 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
 
-	def text(WVariable ele) { ele.name + concatResolvedType(": ",ele) }
+	def text(WVariable it) { name + concatResolvedType(": ", it) }
 	def image(WVariable ele) 	{ 'variable.gif' }
 	
-	def text(WParameter p) { textForParam(p) }
+	def text(WParameter it) { textForParam }
 	def image(WParameter ele) { 'variable.gif' }
 	
-	def textForParam(WReferenciable p) { // solo para wparam y wclosureparam
-		p.name + concatResolvedType(": ", p)
+	def textForParam(WReferenciable it) { // solo para wparam y wclosureparam
+		name + concatResolvedType(": ", it)
 	}
 	
 	def text(WMethodDeclaration m) { 
