@@ -39,7 +39,7 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 				with("lineNumber", i.lineNumber)
 				with("offset", i.offset)
 				with("length", i.length)
-				with("uri", i.uriToProblem.toString)
+				with("uri", i.uriToProblem.toFileString)
 				with("syntaxError", i.syntaxError)
 				array("data", i.data)
 			]
@@ -63,7 +63,7 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 	def array(JsonWriter it, String name, String[] value) { 
 		name(name)
 		beginArray
-			value.forEach[v| value(v)]
+			if (value != null) value.forEach[v| value(v)]
 		endArray
 	}
 	
