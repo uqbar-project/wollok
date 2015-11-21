@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.game.VisualComponent
 
 class GameboardRendering implements ApplicationListener {
 
@@ -16,7 +13,6 @@ class GameboardRendering implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private BitmapFont font;
-	
 	
 	new (Gameboard gameboard) {
 		this.gameboard = gameboard;
@@ -36,48 +32,14 @@ class GameboardRendering implements ApplicationListener {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
-		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
-		for (var i=0; i < gameboard.getListeners().size(); i++){
-			try {
-				gameboard.getListeners().get(i).notify(gameboard);
-			} 
-			catch (WollokProgramExceptionWrapper e) {
-				var message = e.getWollokException().getInstanceVariables().get("message");
-				if (message == null)
-					message = "NO MESSAGE";
-				
-				var character = gameboard.getCharacter();
-				if (character != null)
-					character.scream("ERROR: " + message.toString());
-			} 
-
-		}
-
-		for (Cell cell : gameboard.getCells()) {
-			this.draw(cell);
-		}
-
-		for (VisualComponent component : gameboard.getComponents()) {
-			this.draw(component);
-		}
-
+		this.gameboard.render(batch, font)
+		
 		batch.end();
 	}
 
 	override dispose() {
 		batch.dispose();
 	}
-
-	def draw(Cell cell) {
-		var texture = cell.getTexture();
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		batch.draw(texture, cell.getWidth(), cell.getHeight());
-	}
-
-	def draw(VisualComponent aComponent) {
-		aComponent.draw(batch, font);
-	}
-
 	
 	override pause() {
 //		throw new UnsupportedOperationException("TODO: auto-generated method stub")

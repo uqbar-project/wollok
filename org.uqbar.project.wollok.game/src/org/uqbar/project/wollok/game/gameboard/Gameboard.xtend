@@ -15,6 +15,9 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.game.GameboardFactory
 import org.eclipse.xtend.lib.annotations.Accessors
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 @Accessors
 class Gameboard {
@@ -38,16 +41,38 @@ class Gameboard {
 		return instance
 	}
 
+	def void start() {
+		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
+	}
+	
+	def void render(SpriteBatch batch, BitmapFont font) {
+		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
+		for (var i=0; i < this.listeners.size(); i++){
+			try {
+				this.listeners.get(i).notify(this);
+			} 
+			catch (WollokProgramExceptionWrapper e) {
+				var message = e.getWollokException().getInstanceVariables().get("message");
+				if (message == null)
+					message = "NO MESSAGE";
+				
+				if (character != null)
+					character.scream("ERROR: " + message.toString());
+			} 
+
+		}
+
+		this.cells.forEach[ it.render(batch, font) ]
+
+		this.getComponents().forEach[ it.draw(batch, font) ]		
+	}
+
 	def createCells(String groundImage) {
 		for (var i = 0; i < height; i++) {
 			for (var j = 0; j < width; j++) {
 				cells.add(new Cell(i * CELLZISE, j * CELLZISE, groundImage));
 			}
 		}
-	}
-
-	def void start() {
-		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
 	}
 
 	def pixelHeight() {
