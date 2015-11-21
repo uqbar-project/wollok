@@ -1,22 +1,17 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-
 import com.google.common.base.Predicate
 import com.google.common.collect.Collections2
-
 import java.util.ArrayList
 import java.util.Collection
 import java.util.List
-
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.GameboardFactory
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
-import org.uqbar.project.wollok.game.GameboardFactory
-import org.eclipse.xtend.lib.annotations.Accessors
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 @Accessors
@@ -45,7 +40,7 @@ class Gameboard {
 		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
 	}
 	
-	def void render(SpriteBatch batch, BitmapFont font) {
+	def void render(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (var i=0; i < this.listeners.size(); i++){
 			try {
@@ -59,12 +54,11 @@ class Gameboard {
 				if (character != null)
 					character.scream("ERROR: " + message.toString());
 			} 
-
 		}
 
-		this.cells.forEach[ it.render(batch) ]
+		this.cells.forEach[ it.render(window) ]
 
-		this.getComponents().forEach[ it.draw(batch, font) ]		
+		this.getComponents().forEach[ it.draw(window) ]		
 	}
 
 	def createCells(String groundImage) {

@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.game.gameboard
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import org.uqbar.project.wollok.game.Image
 
 class Cell {
@@ -14,7 +13,7 @@ class Cell {
 		this.image = new Image(image)
 	}
 	
-	def render(SpriteBatch batch) {
-		batch.draw(image.getTexture(), this.width, this.height)
+	def render(Window window) {
+		window.drawIn(image, width, height)
 	}	
 }

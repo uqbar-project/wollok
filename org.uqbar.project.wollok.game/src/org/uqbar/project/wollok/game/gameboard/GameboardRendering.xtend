@@ -1,18 +1,13 @@
 package org.uqbar.project.wollok.game.gameboard
 
 import com.badlogic.gdx.ApplicationListener
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 
 class GameboardRendering implements ApplicationListener {
 
-	private Gameboard gameboard;
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private BitmapFont font;
+	private Gameboard gameboard
+	private Window window
 	
 	new (Gameboard gameboard) {
 		this.gameboard = gameboard;
@@ -20,25 +15,21 @@ class GameboardRendering implements ApplicationListener {
 
 	override create() {
 		Gdx.input.setInputProcessor(new GameboardInputProcessor());
-		camera = new OrthographicCamera(0, 0);
-		camera.setToOrtho(false, gameboard.pixelWidth(), gameboard.pixelHeight());
-		batch = new SpriteBatch();
-		font = new BitmapFont();
+		var camera = new OrthographicCamera(0, 0);
+		camera.setToOrtho(false, gameboard.pixelWidth(), gameboard.pixelHeight())
+		this.window = new Window(camera)
 	}
 
 	override render() {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
+		this.window.clear()
 
-		this.gameboard.render(batch, font)
+		this.gameboard.render(this.window)
 		
-		batch.end();
+		this.window.end()
 	}
 
 	override dispose() {
-		batch.dispose();
+		this.window.dispose()
 	}
 	
 	override pause() {

@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.gameboard.Window
 
 @Accessors
 class VisualComponent {
@@ -46,32 +47,26 @@ class VisualComponent {
 		this.balloonMessages.add(new BalloonMessage(aText, Color.RED));
 	}
 
-	def draw(SpriteBatch batch, BitmapFont font) {
-		this.drawMe(batch);
-		this.drawAttributesIfNecesary(batch, font);
-		this.drawBallonIfNecesary(batch);
+	def draw(Window window) {
+		this.drawMe(window)
+		this.drawAttributesIfNecesary(window)
+		this.drawBallonIfNecesary(window)
 	}
 
-	def drawBallonIfNecesary(SpriteBatch batch) {
-		if (this.hasMessages())
-			this.getCurrentMessage().draw(batch, this);
+	def drawMe(Window window) {
+		window.draw(this.image, this.position)
 	}
 
-	def drawAttributesIfNecesary(SpriteBatch batch, BitmapFont font) {
-		var printableString = "";
-		var glyphLayout = new GlyphLayout();
-		
-		for(String attr : this.attributes){
-			printableString = printableString.concat(this.getShowableAttribute(attr).concat("\n"));
+	def drawAttributesIfNecesary(Window window) {		
+		var printableString = this.attributes.map[ this.getShowableAttribute(it)].join("\n")
+		if (printableString != "" && this.isInMyZone()) {
+			window.writeAttributes(printableString, this.position, Color.WHITE)
 		}
-		glyphLayout.reset();
-		glyphLayout.setText(font, printableString, Color.WHITE, 220, 3, true);
-		if (printableString != "" && this.isInMyZone())
-			font.draw(batch, glyphLayout, this.getPosition().getXinPixels()-75, this.getPosition().getYinPixels());
 	}
 
-	def drawMe(SpriteBatch batch) {
-		batch.draw(this.image.getTexture(), this.getPosition().getXinPixels(), this.getPosition().getYinPixels());
+	def drawBallonIfNecesary(Window window) {
+		if (this.hasMessages())
+			this.getCurrentMessage().draw(window, this);
 	}
 
 	def isInMyZone(){
