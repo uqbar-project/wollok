@@ -62,7 +62,7 @@ class Gameboard {
 
 		}
 
-		this.cells.forEach[ it.render(batch, font) ]
+		this.cells.forEach[ it.render(batch) ]
 
 		this.getComponents().forEach[ it.draw(batch, font) ]		
 	}
