@@ -13,7 +13,7 @@ class Cell {
 		this.image = new Image(image)
 	}
 	
-	def render(Window window) {
+	def draw(Window window) {
 		window.drawIn(image, width, height)
 	}	
 }

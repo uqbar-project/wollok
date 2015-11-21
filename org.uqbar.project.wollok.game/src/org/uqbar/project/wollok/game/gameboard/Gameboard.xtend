@@ -40,7 +40,7 @@ class Gameboard {
 		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
 	}
 	
-	def void render(Window window) {
+	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (var i=0; i < this.listeners.size(); i++){
 			try {
@@ -56,7 +56,7 @@ class Gameboard {
 			} 
 		}
 
-		this.cells.forEach[ it.render(window) ]
+		this.cells.forEach[ it.draw(window) ]
 
 		this.getComponents().forEach[ it.draw(window) ]		
 	}

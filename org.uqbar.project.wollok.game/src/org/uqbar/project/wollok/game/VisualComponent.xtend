@@ -1,18 +1,15 @@
 package org.uqbar.project.wollok.game
 
-import org.uqbar.project.wollok.interpreter.core.WollokObject
-import java.util.Collection
-import java.util.ArrayList
-import java.util.List
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.Gdx
-import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
+import com.badlogic.gdx.graphics.Color
+import java.util.ArrayList
+import java.util.Collection
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.gameboard.Window
+import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 @Accessors
 class VisualComponent {
@@ -47,7 +44,7 @@ class VisualComponent {
 		this.balloonMessages.add(new BalloonMessage(aText, Color.RED));
 	}
 
-	def draw(Window window) {
+	def void draw(Window window) {
 		this.drawMe(window)
 		this.drawAttributesIfNecesary(window)
 		this.drawBallonIfNecesary(window)

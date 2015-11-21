@@ -23,7 +23,7 @@ class GameboardRendering implements ApplicationListener {
 	override render() {
 		this.window.clear()
 
-		this.gameboard.render(this.window)
+		this.gameboard.draw(this.window)
 		
 		this.window.end()
 	}
