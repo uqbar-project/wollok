@@ -52,6 +52,24 @@ public class Messages extends NLS {
 	public static String WollokTemplateProposalProvider_WMethodDeclaration_name;
 	public static String WollokTemplateProposalProvider_WMethodDeclaration_description;
 	
+	public static String WollokTemplateProposalProvider_WConstructorCall_name;
+	public static String WollokTemplateProposalProvider_WConstructorCall_description;
+	
+	public static String WollokTemplateProposalProvider_WIfExpression_name;
+	public static String WollokTemplateProposalProvider_WIfExpression_description;
+	
+	public static String WollokTemplateProposalProvider_WListLiteral_name;
+	public static String WollokTemplateProposalProvider_WListLiteral_description;
+	
+	public static String WollokTemplateProposalProvider_WSetLiteral_name;
+	public static String WollokTemplateProposalProvider_WSetLiteral_description;
+	
+	public static String WollokTemplateProposalProvider_WClosure_name;
+	public static String WollokTemplateProposalProvider_WClosure_description;
+	
+	public static String WollokTemplateProposalProvider_WTry_name;
+	public static String WollokTemplateProposalProvider_WTry_description;
+	
 	public static String WollokDslQuickfixProvider_capitalize_name;
 	public static String WollokDslQuickfixProvider_capitalize_description;
 	public static String WollokDslQuickfixProvider_lowercase_name;

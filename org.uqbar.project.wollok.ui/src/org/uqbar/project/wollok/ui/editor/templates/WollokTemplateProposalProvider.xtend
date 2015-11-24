@@ -21,6 +21,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.ui.Messages.*
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WTry
 
 /**
  * Provides code templates for the editor.
@@ -76,6 +83,37 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 
 << WVariableDeclaration >>
 '''var ${name} = ${value}'''
+
+<< WConstructorCall >>
+'''new ${Class}}()'''
+
+<< WIfExpression >>
+'''if (${condition}) {
+	${then}
+}'''
+
+<< WListLiteral >>
+'''#[${content}]'''
+
+<< WSetLiteral >>
+'''#{${content}}'''
+
+<< WClosure >>
+'''[ ${params} | ${content} ]'''
+
+<< WTest >>
+'''test "${name}" {
+	${content}
+}'''
+
+<< WTry >>
+'''try {
+	${content}
+}
+catch e : Exception {
+	// TODO
+	${handler}
+}'''
 
 	addTemplate(WLibraryElementRule, templateContext, acceptor, WollokTemplateProposalProvider_WPackage_name, WollokTemplateProposalProvider_WPackage_description, "org.uqbar.project.wollok.createpackage", context,
 '''package ${packageName} {
