@@ -26,7 +26,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>../org.uqbar.project.wollok.game.ui</module>
 		<module>../org.uqbar.project.wollok.updatesite</module>
 		<module>../org.uqbar.project.wollok.product</module>
-		<module>assemble-product</module>
 	</modules>
 
 	<properties>
@@ -264,6 +263,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			    <skip>true</skip>
 			  </configuration>
 			</plugin>
+                       <!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
+                       <plugin>
+                               <groupId>org.eclipse.tycho</groupId>
+                               <artifactId>tycho-maven-plugin</artifactId>
+                               <version>${tycho-version}</version>
+                               <extensions>true</extensions>
+                       </plugin>
 			<!-- avoid checking maven version vs manifest version (because having the ".qualifier" makes it fail -->
 			<plugin>
           <groupId>org.eclipse.tycho</groupId>
@@ -278,6 +284,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
+					<resolver>p2</resolver>
 					<pomDependencies>consider</pomDependencies>
 					<!-- pomDependencies>consider</pomDependencies -->
 					<environments>
