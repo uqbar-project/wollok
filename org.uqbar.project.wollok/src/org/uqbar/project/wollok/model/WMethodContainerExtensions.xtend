@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * Extension methods for WMethodContainers.
@@ -72,13 +73,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
-	def static returnsValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
+	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
 	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { name == other.name && parameters.size == other.parameters.size }
 	
 	def static isGetter(WMethodDeclaration it) { name.length > 4 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
 	
 	def dispatch static isReturnWithValue(EObject it) { false }
 	def dispatch static isReturnWithValue(WReturnExpression it) { it.expression != null }
+	
+	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
+	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 	
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 
@@ -231,10 +235,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ** unorganized
 	// ************************************************************************
 	
-	def static dispatch boolean getIsReturnBoolean(WExpression it) { false }
-	def static dispatch boolean getIsReturnBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnBoolean }
-	def static dispatch boolean getIsReturnBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
-	def static dispatch boolean getIsReturnBoolean(WBooleanLiteral it) { true }
+	def static dispatch boolean getIsReturnTrue(WExpression it) { false }
+	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
+	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
+	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
+	
+	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
+	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
+	def static dispatch boolean evaluatesToBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
+	def static dispatch boolean evaluatesToBoolean(WBooleanLiteral it) { true }
 
 	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }

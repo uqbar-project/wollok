@@ -20,7 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
-import static org.uqbar.project.wollok.WollokDSLKeywords.*
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*

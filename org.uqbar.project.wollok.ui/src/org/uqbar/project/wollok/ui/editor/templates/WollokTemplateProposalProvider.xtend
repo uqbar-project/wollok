@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.editor.templates
 
 import com.google.inject.Inject
+import java.util.Properties
 import org.eclipse.jface.text.templates.ContextTypeRegistry
 import org.eclipse.jface.text.templates.Template
 import org.eclipse.jface.text.templates.TemplateContext
@@ -12,7 +13,21 @@ import org.eclipse.xtext.ui.editor.contentassist.ITemplateAcceptor
 import org.eclipse.xtext.ui.editor.templates.ContextTypeIdHelper
 import org.eclipse.xtext.ui.editor.templates.DefaultTemplateProposalProvider
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
-import org.uqbar.project.wollok.ui.Messages
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+
+import static org.uqbar.project.wollok.ui.Messages.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WTry
 
 /**
  * Provides code templates for the editor.
@@ -20,6 +35,7 @@ import org.uqbar.project.wollok.ui.Messages
  * @author jfernandes
  */
 class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
+	static Properties properties
 	ContextTypeIdHelper helper
 	@Inject
 	extension WollokDslGrammarAccess ga;
@@ -34,40 +50,83 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
     //"regular templates"
     super.createTemplates(templateContext, context, acceptor)
     
-
-	addTemplate(WProgramRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createProgram_name, Messages.WollokTemplateProposalProvider_createProgram_description, "org.uqbar.project.wollok.createprogram", context,
+    val extension builder = new TemplateBuilder(grammar, "org.uqbar.project.wollok", "WollokTemplateProposalProvider", getProperties,  [rule, name, description, id, content | 
+    	addTemplate(rule, templateContext, acceptor, name, description, id, context, content)
+    ]);
+    
+    builder
+    
+<< WProgram >> 
 '''program ${programName} {
 	
-}''')
+}'''
 
-    
-	addTemplate(WLibraryElementRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createPackage_name, Messages.WollokTemplateProposalProvider_createPackage_description, "org.uqbar.project.wollok.createpackage", context,
+<< WClass >>
+'''class ${ClassName} {
+	
+}'''
+
+<< WNamedObject >>
+'''object ${objectName} {
+	
+}'''
+
+<< WObjectLiteral >>
+'''object {
+	
+}'''
+
+<< WMethodDeclaration >>
+'''method ${name}(${param}) {
+	
+}'''
+
+<< WVariableDeclaration >>
+'''var ${name} = ${value}'''
+
+<< WConstructorCall >>
+'''new ${Class}}()'''
+
+<< WIfExpression >>
+'''if (${condition}) {
+	${then}
+}'''
+
+<< WListLiteral >>
+'''#[${content}]'''
+
+<< WSetLiteral >>
+'''#{${content}}'''
+
+<< WClosure >>
+'''[ ${params} | ${content} ]'''
+
+<< WTest >>
+'''test "${name}" {
+	${content}
+}'''
+
+<< WTry >>
+'''try {
+	${content}
+}
+catch e : Exception {
+	// TODO
+	${handler}
+}'''
+
+	addTemplate(WLibraryElementRule, templateContext, acceptor, WollokTemplateProposalProvider_WPackage_name, WollokTemplateProposalProvider_WPackage_description, "org.uqbar.project.wollok.createpackage", context,
 '''package ${packageName} {
 	
 }''')
 
-	//todo: class icon
-	addTemplate(WClassRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createClass_name, Messages.WollokTemplateProposalProvider_createClass_description, "org.uqbar.project.wollok.createclass", context,
-'''class ${ClassName} {
+	}
 	
-}''')
-
-	//todo: object icon
-	addTemplate(WObjectLiteralRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createObject_name, Messages.WollokTemplateProposalProvider_createObject_description, "org.uqbar.project.wollok.createobject", context,
-'''object {
-	
-}''')
-
-	//TODO: poder seleccionar entre "var/val"
-	addTemplate(WVariableDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createReference_name, Messages.WollokTemplateProposalProvider_createReference_description, "org.uqbar.project.wollok.objectaddReference", context,
-'''var ${name} = ${value}''')
-
-	addTemplate(WMethodDeclarationRule, templateContext, acceptor, Messages.WollokTemplateProposalProvider_createMethod_name, Messages.WollokTemplateProposalProvider_createMethod_description, "org.uqbar.project.wollok.objectaddMethod", context,
-'''method ${name}(${param}) {
-	
-}''')
-
-  }
+	def getGetProperties() {
+		if (properties == null)
+			properties = loadProperties 
+		properties
+	}
 		
 	def addTemplate(AbstractRule rule, TemplateContext templateContext, ITemplateAcceptor acceptor, String name, String description, String tid, ContentAssistContext context, String c) {
 		val id = helper.getId(rule);

@@ -293,7 +293,7 @@ class WollokModelExtensions {
 	// ** valid return
 	// *****************************
 	
-	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it) { expression.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it) { expressionReturns || expression.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it) { true }
 	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
 	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }

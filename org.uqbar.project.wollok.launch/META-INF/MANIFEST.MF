@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.9.2",
  org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
  org.uqbar.project.wollok.lib,
- org.eclipse.xtext.ui.shared;bundle-version="2.7.3"
+ org.eclipse.xtext.ui.shared;bundle-version="2.7.3",
+ org.junit;bundle-version="4.11.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/lipermi-0-4-2.jar,
  lib/jansi-1.11.jar,
