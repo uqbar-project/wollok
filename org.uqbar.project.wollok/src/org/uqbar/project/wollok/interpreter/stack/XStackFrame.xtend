@@ -30,4 +30,6 @@ class XStackFrame implements Serializable {
 		currentLocation = object.toSourceCodeLocation
 	}
 	
+	override toString() '''«context» («currentLocation»)'''
+	
 }

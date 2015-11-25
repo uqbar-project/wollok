@@ -7,6 +7,13 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+/**
+ * Logs the events to the console output.
+ * Used when running the tests from console without a remote client program (RMI)
+ * like eclipse UI.
+ * 
+ * @author tesonep
+ */
 class WollokConsoleTestsReporter implements WollokTestsReporter {
 	
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
@@ -20,8 +27,11 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	override testsToRun(WFile file, List<WTest> tests) {}
 	override testStart(WTest test) {}
 	
-	override reportTestError(WTest test, WollokInterpreterException exception, int lineNumber, URI resource) {
+	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		println('''Test: «test.name» : «exception.message» («resource.trimFragment»:«lineNumber»)''')
+	}
+	
+	override finished() {
 	}
 	
 }

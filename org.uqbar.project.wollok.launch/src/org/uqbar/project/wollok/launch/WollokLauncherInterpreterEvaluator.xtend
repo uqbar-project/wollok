@@ -7,21 +7,31 @@ import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+/**
+ * Subclasses the wollok evaluator to support tests
+ * 
+ * // TODO: should we need this subclass ? why don't we just move this code up ?
+ * 
+ * @author tesonep
+ */
 class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	
 	@Inject
 	WollokTestsReporter wollokTestsReporter
 	
-		// EVALUATIONS (as multimethods)
+	// EVALUATIONS (as multimethods)
 	override dispatch Object evaluate(WFile it) { 
 		// Files should are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
 			wollokTestsReporter.testsToRun(it, tests)
-			tests.evalAll
+			try 
+				tests.evalAll
+			finally
+				wollokTestsReporter.finished
 		}
 	}
-	
 	
 	override dispatch Object evaluate(WTest test) {
 		try {
@@ -30,15 +40,20 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			wollokTestsReporter.reportTestOk(test)
 			x
 		}
-		catch(WollokInterpreterException e) {
+		catch (WollokInterpreterException e) {
 			if (e.cause instanceof AssertionException) {
-				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.ObjectURI)
+				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.objectURI)
 				null
 			}
 			else {
-				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.ObjectURI)
+				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.objectURI)
 				null
 			}
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// an uncaught wollok-level exception wrapped into java
+			wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
+			null
 		}
 	}
 }

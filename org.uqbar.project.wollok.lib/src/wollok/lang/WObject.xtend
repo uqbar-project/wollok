@@ -1,13 +1,12 @@
 package wollok.lang
 
 import java.util.Collection
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
@@ -30,7 +29,7 @@ class WObject {
 	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
-	def className() { (obj.kind).name }
+	def className() { (obj.kind).fqn }
 	
 	def instanceVariables() {
 		newList(obj.instanceVariables.keySet.map[ variableMirror(it) ].toList)

@@ -41,7 +41,7 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 				}
 				object x3 {
 					method value(){ return 3 }
-				}				
+				}
 			''',
 			"pgm" -> '''
 				import objs.*

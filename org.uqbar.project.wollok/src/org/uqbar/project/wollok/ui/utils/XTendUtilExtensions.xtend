@@ -7,10 +7,13 @@ import java.lang.reflect.Modifier
 import java.util.Collection
 import java.util.List
 import java.util.Random
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Utilities for xtend code
@@ -104,21 +107,22 @@ class XTendUtilExtensions {
 		// native objects
 		var matchingMethods = target.class.methods.filter[name == message && parameterTypes.size == args.size]
 		if (matchingMethods.isEmpty)
-			throw new MessageNotUnderstood(createMessage(target,message, args))
+			throw throwMessageNotUnderstood(target, message, args)
 		if (matchingMethods.size > 1)
 			throw new RuntimeException('''Cannot call on object «target» message «message» there are multiple options !! Not yet implemented''')
 		// takes the first one and tries out :S Should do something like multiple-dispatching based on args. 
 		matchingMethods.head.accesibleVersion.invokeConvertingArgs(target, args)
 	}
 	
-	def static dispatch createMessage(Object target, String message, Object... args) {
+	// TODO: repeated code
+	def static throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
+		new WollokProgramExceptionWrapper((WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters)))
+	}
+	
+	def static String createMessage(Object target, String message, Object... args) {
 		'''«target» («target.class.simpleName») does not understand «message»(«args.map['p'].join(',')»)'''.toString
 	}
 
-	def static dispatch createMessage(String target, String message){
-		'''"«target»" does not understand «message»'''.toString
-	}
-	
 	def static invokeConvertingArgs(Method m, Object o, Object... args) {
 		if (m.parameterTypes.size != args.size) {
 			throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»". Given arguments «args»''') 

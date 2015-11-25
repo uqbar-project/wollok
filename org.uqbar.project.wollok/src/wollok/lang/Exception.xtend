@@ -5,9 +5,7 @@ import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
-import org.uqbar.project.wollok.wollokDsl.WClass
-
-//import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Wollok Exception native implementation.
@@ -24,7 +22,9 @@ class Exception {
 	}
 	
 	def getStackTrace() {
-		stackTrace.reverse.map[ exceptionObject.call("createStackTraceElement", contextDescription, location)].toList //.javaToWollok
+		stackTrace.reverse.map[ 
+			exceptionObject.call("createStackTraceElement", contextDescription.javaToWollok, location.toString.javaToWollok)
+		].toList
 	}
 	
 	def location(SourceCodeLocation l) {

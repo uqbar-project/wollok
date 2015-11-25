@@ -21,7 +21,8 @@ class WString extends AbstractJavaWrapper<String> {
 	@NativeMessage("+")
 	def concat(Object other) { doConcatWith(other) }
 		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
-		def dispatch WollokObject doConcatWith(WollokObject it) { asWString.doConcatWith }
+		def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
+		def dispatch WollokObject doConcatWith(Object it) { throw new RuntimeException("Concat doesn't support " + it.class.name) }
 		
 	def startsWith(WollokObject other) { wrapped.startsWith(other.asWString.wrapped) }
 	def endsWith(WollokObject other ) { wrapped.endsWith(other.asWString.wrapped) }
@@ -42,6 +43,8 @@ class WString extends AbstractJavaWrapper<String> {
 		val wString = other.getNativeObject(WString)
 		wString != null && wrapped == wString.wrapped
 	}
+	
+	def convertToWString(WollokObject it) { call("toString") as WollokObject }
 	
 	def asWString(WollokObject it) { 
 		val wString = it.getNativeObject(WString)

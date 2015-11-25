@@ -3,10 +3,10 @@ package org.uqbar.project.wollok.interpreter.operation
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.IllegalBinaryOperation
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -173,8 +173,10 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		if (a instanceof WollokObject)
 			try
 				return a.call(message, b)
-			catch(MessageNotUnderstood e) {
-				// not understood, fallback !
+			catch (WollokProgramExceptionWrapper e) {
+				// if it's message not understood then ok, default to the closure
+				if (!e.isMessageNotUnderstood)
+					throw e
 			}
 		otherwise.apply
 	}

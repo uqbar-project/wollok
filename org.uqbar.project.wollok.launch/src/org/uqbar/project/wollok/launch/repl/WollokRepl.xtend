@@ -10,9 +10,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -21,7 +21,6 @@ import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
@@ -165,13 +164,9 @@ class WollokRepl {
 	}
 	
 	def stackTraceAsString(Throwable e) {
-		val s = new ByteArrayOutputStream()
+		val s = new ByteArrayOutputStream
 		e.printStackTrace(new PrintStream(s))
 		new String(s.toByteArray)
-	}
-
-	def dispatch void handleException(MessageNotUnderstood e) {
-		printlnIdent(e.internalMessage.errorStyle)
 	}
 
 	def getNumberOfLinesBefore(){

@@ -62,6 +62,13 @@ public class Messages extends NLS {
 	public static String CheckSeverity_WARN;
 	public static String CheckSeverity_INFO;
 	
+	// ****************************
+	// ** runtime interpreter
+	// ****************************
+	
+	public static String OBJECT_DESCRIPTION_ARTICLE;
+	public static String OBJECT_DESCRIPTION_AN_OBJECT;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

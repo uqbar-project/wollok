@@ -2,7 +2,7 @@ package wollok.lib
 
 import java.text.MessageFormat
 import org.eclipse.xtend.lib.annotations.Accessors
-
+import org.eclipse.core.runtime.AssertionFailedException
 
 /**
  * This exceptions are thrown when an assert is not ok.
@@ -25,6 +25,9 @@ abstract class AssertionException extends Exception {
 		actual = null
 	}
 
+	static def fail(String message) {
+		return new AssertionFailedException(message) {}
+	}
 
 	static def valueWasNotTrue() {
 		return new ValueWasNotTrueException()

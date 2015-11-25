@@ -5,7 +5,7 @@ program exceptions {
 	
 	var i = 0
 	try {
-		a.m1() 
+		a.m0() 
 		this.println("No exception raised")
 	}
 	catch e : MyException

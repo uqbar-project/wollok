@@ -1,10 +1,16 @@
 import ej1_pepita.*
 // TODO include same imports as original file
 
+class A {}
+
 // auto-generated at 20/10/2015 23:51:606
 test "exported test from REPL session" {
 	pepita.energia()
-	pepita.volar(10)
-	alpiste.energia()
+	pepita.volar(22)
 	
+//	val a = new A()
+	
+//	a.m1()
+	
+	assert.equals(10, alpiste.energia())
 }

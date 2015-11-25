@@ -167,7 +167,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WThrow t) {
 		// this must be checked!
 		val obj = t.exception.eval as WollokObject
-		throw new WollokProgramExceptionWrapper(obj)
+		throw new WollokProgramExceptionWrapper(obj, t)
 	}
 
 	def boolean matches(WCatch cach, WollokObject exceptionThrown) { exceptionThrown.isKindOf(cach.exceptionType) }
@@ -381,12 +381,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	// member call
 	def dispatch Object evaluate(WFeatureCall call) {
-		try {
-			call.evaluateTarget.perform(call.feature, call.memberCallArguments.evalEach)
-		} catch (MessageNotUnderstood e) {
-			e.pushStack(call)
-			throw e
-		}
+		call.evaluateTarget.perform(call.feature, call.memberCallArguments.evalEach)
 	}
 
 	// ********************************************************************************************

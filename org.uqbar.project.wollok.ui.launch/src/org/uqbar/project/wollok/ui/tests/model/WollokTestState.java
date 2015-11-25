@@ -68,9 +68,7 @@ public enum WollokTestState {
 		
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			StringWriter sw = new StringWriter();
-			result.getException().printStackTrace(new PrintWriter(sw));
-			return sw.toString();
+			return result.getErrorOutput();
 		}
 
 	},

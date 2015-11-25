@@ -158,4 +158,29 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void testMessageNotUnderstood() {
+		'''
+			class A { 
+				method m1() { throw new Exception("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m2()
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("a A[] does not understand m2()", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+		
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
 }

@@ -6,7 +6,6 @@ object pepita {
 	method energia() = energia
 	
 	method volar(km) {
-		console.println("")
 		energia -= (2 * km) + 10
 	}
 	

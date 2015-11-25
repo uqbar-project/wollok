@@ -10,21 +10,22 @@ import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchDelegate
 import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 
+/**
+ * @author tesonep
+ */
 class WollokTestLaunchDelegate extends WollokLaunchDelegate {
 	
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		
 		RunInUI.runInUI[ 
 			PlatformUI.workbench.activeWorkbenchWindow.activePage.showView(WollokTestResultView.NAME)
 		]
-		
 		super.launch(configuration, mode, launch, monitor)
 	}
 	
 	override configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
-		val cfg = super.configureLaunchParameters(config, requestPort, eventPort)
-		cfg.tests = true
-		cfg.testPort = Activator.getDefault.wollokTestViewListeningPort
-		cfg
+		super.configureLaunchParameters(config, requestPort, eventPort) => [
+			tests = true
+			testPort = Activator.getDefault.wollokTestViewListeningPort
+		]
 	}
 }

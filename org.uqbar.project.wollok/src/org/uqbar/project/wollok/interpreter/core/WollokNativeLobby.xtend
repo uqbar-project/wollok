@@ -17,14 +17,12 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  * @author jfernandes
  */
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext {
-
 	static var Map<String,Object> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
-	WollokInterpreter interpreter
 	
 	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {
+		super(null, interpreter)
 		this.console = console
-		this.interpreter = interpreter
 	}
 	
 	override getThisObject() { this }

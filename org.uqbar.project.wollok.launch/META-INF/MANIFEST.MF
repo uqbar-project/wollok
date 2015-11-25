@@ -25,6 +25,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/lipermi-0-4-2.jar,
  lib/jansi-1.11.jar,
+ lib/gson-2.4.jar,
  .
 Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.launch,

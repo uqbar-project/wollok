@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * @author jfernandes
@@ -37,7 +38,7 @@ class TypeSystemTestCase extends AbstractWollokInterpreterTestCase {
 			.interpretPropagatingErrors
 			fail()
 		}
-		catch (WollokInterpreterException e) {
+		catch (WollokProgramExceptionWrapper e) {
 		}
 	}
 	

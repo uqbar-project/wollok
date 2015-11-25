@@ -27,4 +27,6 @@ class SourceCodeLocation implements Serializable {
 		this.length = length
 	}
 	
+	override toString() '''«fileURI»:«startLine» [«offset»->«offset + length»]'''
+	
 }

@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.Method
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.core.WCallable
 
 /**
@@ -26,7 +25,8 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 	override asUnaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
 		if (op == null) {
-			throw new MessageNotUnderstood("Operation '" + operationSymbol + "' not supported by interpreter")
+			//TODO: model a generic WollokVMException
+			throw new RuntimeException("Operation '" + operationSymbol + "' not supported by interpreter")
 		}
 		[Object a | op.invoke(this, a) ]
 	}
@@ -35,24 +35,29 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 		m.isAnnotationPresent(UnaryOperation) && m.getAnnotation(UnaryOperation).value == op
 	}
 	
+	def throwOperationNotSupported(String operator, Object target) {
+		throw new RuntimeException("Operator " + operator + " not supported for " + target)
+	}
+	
 	// OPERATIONS
 	
 	@UnaryOperation('!')
 	def Object negateOperation(Object a) { negate(a) }  
 	def dispatch negate(WCallable a) { a.call("negate") }
 	def dispatch negate(Boolean a) { !a }
-	def dispatch negate(Object a) { throw new MessageNotUnderstood("Type " + a + "does not implement negate operation (!)") }
+	def dispatch negate(Object a) { throwOperationNotSupported("!", a) }
+	
 	@UnaryOperation('not')
 	def Object notOperation(Object a) { negate(a) }
 	
 	@UnaryOperation('-')
 	def Object invertOperation(Object a) { invert(a) }  
 	def dispatch invert(WCallable a) { a.call("invert") }
-	def dispatch invert(Object a) { throw new MessageNotUnderstood("Type " + a + "does not implement invert operation (-)") }
+	def dispatch invert(Object a) { throwOperationNotSupported("-", a)  }
 
 	@UnaryOperation('+')
 	def Object plusOperation(Object a) { plus(a) }  
 	def dispatch plus(WCallable a) { a.call("plus") }
-	def dispatch plus(Object a) { throw new MessageNotUnderstood("Type " + a + "does not implement plus operation (+)") }
+	def dispatch plus(Object a) { throwOperationNotSupported("+", a)  }
 
 }
