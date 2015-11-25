@@ -65,11 +65,6 @@ public class GameboardRendering implements ApplicationListener {
 			this.draw(component);
 		}
 
-		if (gameboard.getCharacter()!= null && gameboard.hasMessages()){
-			this.draw(gameboard.getCharacter());
-			balloon.draw(batch,gameboard.getCurrentMessage());
-		}
-		
 		batch.end();
 	}
 
@@ -79,9 +74,9 @@ public class GameboardRendering implements ApplicationListener {
 	}
 
 	private void draw(Cell cell) {
-		Texture texture = new Texture(Gdx.files.internal(cell.element));
+		Texture texture = cell.getTexture();
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		batch.draw(texture, cell.width, cell.height);
+		batch.draw(texture, cell.getWidth(), cell.getHeight());
 	}
 
 	private void draw(VisualComponent aComponent) {

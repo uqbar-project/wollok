@@ -104,7 +104,7 @@ public class VisualComponent {
 	private String getShowableAttribute(String attr) {
 		Object value = this.domainObject.getInstanceVariables().get(attr);
 		
-		return attr + ":" + new ToStringBuilder().smartToString(value);
+		return attr + ":" + value.toString(); //new ToStringBuilder().smartToString(value);
 	}
 	
 	public boolean hasMessages() {

@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.game
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class Position {
@@ -63,18 +63,18 @@ class WPosition extends Position {
 	}
 	
 	override int getX() {
-		WollokInteger.cast(position.call("getX")).wrapped
+		position.call("getX").wollokToJava(Integer) as Integer
 	}
 	
 	override int getY() {
-		WollokInteger.cast(position.call("getY")).wrapped
+		position.call("getY").wollokToJava(Integer) as Integer
 	}
 	
 	override setX(int num) {
-		position.call("setX", new WollokInteger(num))
+		position.call("setX", num.javaToWollok)
 	}
 	
 	override setY(int num) {
-		position.call("setY", new WollokInteger(num))
+		position.call("setY", num.javaToWollok)
 	}
 }
