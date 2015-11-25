@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 class Image {
 	
@@ -42,6 +43,6 @@ class WImage extends Image {
 	}
 	
 	override getPath() { 
-		String.cast(this.object.call("getImagen"))
+		this.object.call("getImagen").wollokToJava(String) as String
 	}
 }
