@@ -12,7 +12,7 @@ A programming language and environment for teaching OOP.
 ## Installation ##
 
 You have two options to download an use Wollok.
-**Download a **complete Wollok Product Distribution**:
+**Download a complete Wollok Product Distribution**:
 
 * Linux: [32](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
 * Mac [32](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
