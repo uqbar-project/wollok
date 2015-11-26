@@ -134,8 +134,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		]
 	} 
 	
-	def static createEvaluationContext(WConstructor declaration, Object... values) {
-		declaration.parameters.map[name].createEvaluationContext(values)
+	def createEvaluationContext(WConstructor declaration, Object... values) {
+		declaration.parameters.createMap(values).asEvaluationContext
 	}
 	
 	override resolve(String variableName) {

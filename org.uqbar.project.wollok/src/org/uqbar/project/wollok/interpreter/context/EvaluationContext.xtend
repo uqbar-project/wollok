@@ -49,4 +49,5 @@ class EvaluationContextExtensions {
 	
 	def static asEvaluationContext(Map<String, Object> values) { new MapBasedEvaluationContext(values) }
 	def static then(EvaluationContext inner, EvaluationContext outer) { new CompositeEvaluationContext(inner, outer) }
+	
 }

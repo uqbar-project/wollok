@@ -16,6 +16,10 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.eclipse.emf.common.util.EList
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -91,14 +95,33 @@ abstract class AbstractWollokCallable implements WCallable {
 	def evalAll(List<? extends EObject> list) { list.map[ eval ] }	
 	
 	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
-		declaration.parameters.map[name].createEvaluationContext(values)
+		declaration.parameters.createMap(values).asEvaluationContext
+	}
+	
+	def createMap(EList<WParameter> parameters, Object[] values) {
+		var i = 0
+		val m = newHashMap
+		for (p : parameters) {
+			m.put(p.name, value(p, values, i))
+			i++
+		}
+		m
+	}
+	
+	def Object value(WParameter p, Object[] values, int i) {
+		if (p.isVarArg) {
+			// todo handle empty vararg
+			(values.subList(i, values.size)).javaToWollok
+		}
+		else
+			values.get(i)
 	}
 
 	def dispatch isVoid(Object nativeObject, String message, Object... parameters) {
 		// TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
 		var method = this.class.methods.findFirst[name == message]
 		
-		if(method == null) false 
+		if (method == null) false 
 		else method.returnType == Void.TYPE
 	}
 

@@ -6,14 +6,16 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.Collection
 import java.util.List
+import java.util.Map
 import java.util.Random
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Utilities for xtend code
@@ -79,6 +81,10 @@ class XTendUtilExtensions {
 	
 	def static <E> minBy(Collection<E> col, (E)=>Comparable func) {
 		col.collectComparing(func, [a,b| a < b])
+	}
+	
+	def static <E,K,V> Map<K,V> mapBy(Collection<E> col, (E)=>Pair<K,V> func) {
+		newHashMap(col.map(func))
 	}
 	
 	def static <A,B,O> Collection<O> zip(Iterable<A> colA, Iterable<B> colB, (A,B)=>O zipFunc) {

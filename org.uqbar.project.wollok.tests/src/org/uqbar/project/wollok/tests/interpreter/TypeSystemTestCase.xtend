@@ -28,18 +28,19 @@ class TypeSystemTestCase extends AbstractWollokInterpreterTestCase {
 				a.m1()  //FINE !
 			}'''
 		
-		program.interpretPropagatingErrors
+		program.interpretPropagatingErrors;
 		
-		try {
-			(program.substring(0, program.length - 1) + '''
+		(program.substring(0, program.length - 1) + '''
 				a.m2()
-				a.m3()
+				try {
+					a.m3()
+					assert.fail("should have failed!")
+				}
+				catch e : MessageNotUnderstoodException {
+					// OK !
+				}
 			}''')
 			.interpretPropagatingErrors
-			fail()
-		}
-		catch (WollokProgramExceptionWrapper e) {
-		}
 	}
 	
 }
