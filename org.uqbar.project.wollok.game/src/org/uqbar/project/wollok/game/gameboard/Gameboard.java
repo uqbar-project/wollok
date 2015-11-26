@@ -19,9 +19,8 @@ import com.google.common.collect.Collections2;
 public class Gameboard {
 	
 	public static final int CELLZISE = 50;
-	private String tittle;
-	private int cantCellX;
-	private int cantCellY;
+	private int cantCellX = 10;
+	private int cantCellY = 10;
 
 	private GameConfiguration configuration;
 	private List<Cell> cells = new ArrayList<Cell>();
@@ -31,7 +30,6 @@ public class Gameboard {
 	public Gameboard() {
 		GameFactory factory = new GameFactory();
 		factory.setGame(this);
-		//this.setStage(new Stage());
 	}
 
 	public void createCells(String groundImage) {
@@ -107,7 +105,7 @@ public class Gameboard {
 	}
 	
 	public List<VisualComponent> getComponents() {
-		ArrayList<VisualComponent> allComponents = new ArrayList<VisualComponent>(this.components);
+		List<VisualComponent> allComponents = new ArrayList<VisualComponent>(this.components);
 		if (character != null)
 			allComponents.add(this.character);
 		return allComponents;
