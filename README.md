@@ -34,7 +34,7 @@ This is useful for example if you are going to develop with Sublime or any other
 
 ## Documentation ##
 
-Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like Language Reference and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) and Environment.
 
 ## What's the language like ? ##
 
@@ -44,6 +44,32 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * With implicit types: by means of a type system and type inference mechanism.
 * A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
 * Interpreted: means that the code is being evaluated as it's being read.
+
+```xtend
+package fliers {
+
+   class Bird {
+        method fly(to) {
+             // ...
+        }
+   }
+
+   class Plane {
+        method fly(to) {
+            // ...
+        }
+   }
+
+}
+
+  val boomerang = object {
+        method fly(to) {
+             // ... goes, and then goes back here
+        }
+  }
+
+  #[ new Bird(), new Plane(), boomerang ].forEach[ o |  o.fly() ]
+```
 
 Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
 
