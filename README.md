@@ -12,17 +12,12 @@ A programming language and environment for teaching OOP.
 ## Installation ##
 
 You have two options to download an use Wollok.
-Download a complete Wollok Product Distribution:
+** Download a **complete Wollok Product Distribution**:
 * Linux: [32](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
 * Mac [32](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
 * Windows [32](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86_64.zip) bits
-
-## Installation through Update Sites ##
-
+** Update Site (if you already have a compatible eclipse) **:
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
-
-Alternatively if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
-
 * http://update.uqbar.org/wollok/stable : for the latest stable release
 * http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
 
