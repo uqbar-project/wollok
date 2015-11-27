@@ -14,6 +14,7 @@ package org.uqbar.project.wollok.sdk
  * 
  * @author jfernandes
  */
+//TODO: fix typo
 class WollokDSK {
 	
 	public static val OBJECT = "wollok.lang.Object"

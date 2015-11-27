@@ -61,7 +61,7 @@ WVariableDeclaration returns WExpression:
 
 WMethodDeclaration:
 	(overrides?='override')? 'method'
-		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )? ')' 
+		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )?')' 
 		(native?='native')? 
 		
 		((expression=WBlockExpression) | (expressionReturns?='=' expression=WOrExpression))?
@@ -73,7 +73,7 @@ WMethodName:
 ;
 
 WParameter:
-	name=ID
+	name=ID (varArg?='...')?
 ;
 
 WVariable:

@@ -49,6 +49,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
 /**
  * Custom validation rules.
@@ -88,6 +89,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
+	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
 	
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -150,7 +152,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
-		val repeated = constructors.filter[c | constructors.exists[c2 | c != c2 && c.parameters.size == c2.parameters.size ]]
+		val repeated = constructors.filter[c | constructors.exists[c2 | c2 != c && c.matches(c2.parameters.size)]]
 		repeated.forEach[r|
 			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS, DUPLICATED_CONSTRUCTOR)
 		]
@@ -501,6 +503,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def varArgMustBeTheLastParameter(WParameter it) {
+		if (isVarArg && eContainer.parameters().last != it) {
+			report(WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE, it, WPARAMETER__VAR_ARG, VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE)
+		}
 	}
 	
 	// ******************************	

@@ -48,6 +48,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
 	def static boolean isAbstract(WNamedObject it) { parent != null && parent.hasUnimplementedInheritedMethods }
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
+	
+	def static dispatch parameters(WMethodDeclaration it) { parameters }
+	def static dispatch parameters(WConstructor it) { parameters }
 
 	def static allAbstractMethods(WClass c) {
 		val unimplementedMethods = <WMethodDeclaration>newArrayList
@@ -67,14 +70,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
-	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[name == m.name && parameters.size == m.parameters.size ] }
+	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[matches(m.name, m.parameters.size)] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
 	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
 	
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
-	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { name == other.name && parameters.size == other.parameters.size }
+	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { matches(other.name, other.parameters) }
 	
 	def static isGetter(WMethodDeclaration it) { name.length > 4 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
 	
@@ -92,7 +95,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst[m | m.name == feature && m.parameters.size == memberCallArguments.size ]
+		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
 	}
 	
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject o) { o.methods + if (o.parent != null) o.parent.allMethods else #[] }
@@ -139,11 +142,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean inheritsMethod(WMethodContainer c, String name, int argSize) { c.parent != null && c.parent.hasOrInheritMethod(name, argSize) }
 	
 	def static boolean hasOrInheritMethod(WClass c, String mname, int argsSize) { 
-		c != null && (c.methods.exists[name == mname && parameters.size == argsSize] || c.parent.hasOrInheritMethod(mname, argsSize))
+		c != null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
-		val method = behavior.methods.findFirst[name == message && parameters.size == params.size]
+		val method = behavior.methods.findFirst[matches(message, params)]
 		
 		if (method != null) 
 			return method
@@ -151,6 +154,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			behavior.parent.lookupMethod(message, params)
 		else 
 			null
+	}
+	
+	def static matches(WMethodDeclaration it, String message, List params) { matches(message, params.size) }
+	
+	def static matches(WMethodDeclaration it, String message, int nrOfArgs) {
+		name == message && 
+		if (hasVarArgs)
+			nrOfArgs >= parameters.filter[!isVarArg].size
+		else
+			nrOfArgs == parameters.size
 	}
 
 	def static dispatch boolean isValidCall(WClass c, WMemberFeatureCall call) {
@@ -205,7 +218,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			// default constructor
 			clazz.findConstructorInSuper(arguments)
 		else {
-			val c = clazz.constructors.findFirst[ parameters.size == arguments.size ]
+			val c = clazz.constructors.findFirst[ matches(arguments.size) ]
 			if (c == null)
 				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
 			c

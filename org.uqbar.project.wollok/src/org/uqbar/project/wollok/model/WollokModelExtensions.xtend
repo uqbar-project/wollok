@@ -185,8 +185,8 @@ class WollokModelExtensions {
 	}
 
 
-	def static isValidMessage(WMethodDeclaration m, WMemberFeatureCall call) {
-		m.name == call.feature && m.parameters.size == call.memberCallArguments.size
+	def static isValidMessage(WMethodDeclaration it, WMemberFeatureCall call) {
+		matches(call.feature, call.memberCallArguments)
 	}
 
 	def static isValidConstructorCall(WConstructorCall c) {
@@ -198,8 +198,18 @@ class WollokModelExtensions {
 	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
 
 	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[parameters.size == nrOfArgs] 
+		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[matches(nrOfArgs)] 
 	}
+	
+	def static matches(WConstructor it, int nrOfArgs) { 
+		if (hasVarArgs)
+			nrOfArgs >= parameters.filter[!isVarArg].size
+		else
+			nrOfArgs == parameters.size
+	}
+	
+	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
+	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
 	
 	def static superClassRequiresNonEmptyConstructor(WClass it) { parent != null && !parent.hasEmptyConstructor }
 	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent != null && !parent.hasEmptyConstructor }
