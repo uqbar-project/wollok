@@ -19,8 +19,6 @@ import com.google.common.collect.Collections2;
 public class Gameboard {
 	
 	public static final int CELLZISE = 50;
-	private int cantCellX = 10;
-	private int cantCellY = 10;
 
 	private GameConfiguration configuration;
 	private List<Cell> cells = new ArrayList<Cell>();
@@ -120,16 +118,16 @@ public class Gameboard {
 	}
 
 	public int getCantCellX() {
-		return cantCellX;
+		return configuration.getGameboardWidth();
 	}
 
-	public void setCantCellX(int cantCellX) {
-		this.cantCellX = cantCellX;
-	}
-
-	public void setCantCellY(int cantCellY) {
-		this.cantCellY = cantCellY;
-	}
+//	public void setCantCellX(int cantCellX) {
+//		this.cantCellX = cantCellX;
+//	}
+//
+//	public void setCantCellY(int cantCellY) {
+//		this.cantCellY = cantCellY;
+//	}
 
 	public int getCantCellY() {
 		return configuration.getGameboardHeight();
