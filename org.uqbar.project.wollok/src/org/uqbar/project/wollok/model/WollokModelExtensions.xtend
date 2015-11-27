@@ -312,4 +312,7 @@ class WollokModelExtensions {
 	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
 	
+	
+	def static tri(WCatch it) { eContainer as WTry }
+	def static catchesBefore(WCatch it) { tri.catchBlocks.subList(0, tri.catchBlocks.indexOf(it)) }
 }
