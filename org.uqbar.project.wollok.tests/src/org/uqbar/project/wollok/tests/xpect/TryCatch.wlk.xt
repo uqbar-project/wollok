@@ -1,0 +1,41 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class AException inherits wollok.lang.Exception {  new(m) = super(m) }
+class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+class CException inherits wollok.lang.Exception {  new(m) = super(m) }
+			
+class A { 
+	method m1() { throw new CException("hello you see") }
+}
+			
+object p {	
+	val a = new A()
+	method unreachableCatches() {			
+		try {
+			a.m1()
+			assert.fail("Should have thrown exception")
+		}
+		catch e : AException
+			assert.fail("incorrect catch !")
+		catch e
+			console.println("blah")
+		// XPECT errors --> "Unreachable catch block" at "e" 
+		catch e : BException
+			assert.fail("incorrect catch !")
+	}
+	
+	method twoCatchesWithoutType() {			
+		try {
+			a.m1()
+			assert.fail("Should have thrown exception")
+		}
+		catch e
+			console.println("blah")
+		// XPECT errors --> "Unreachable catch block" at "e"
+		catch e
+			assert.fail("incorrect catch !")
+		// XPECT errors --> "Unreachable catch block" at "e"
+		catch e : BException
+			assert.fail("incorrect catch !")
+	}
+}

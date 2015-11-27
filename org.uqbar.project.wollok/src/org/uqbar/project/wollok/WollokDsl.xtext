@@ -371,7 +371,7 @@ WTry:
 ;
 
 WCatch:
-	=>'catch' exceptionVarName=WVariable ':' exceptionType=[WClass|QualifiedName]
+	=>'catch' exceptionVarName=WVariable (':' exceptionType=[WClass|QualifiedName])?
 		expression=WExpression 
 ;
 

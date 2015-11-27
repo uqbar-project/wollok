@@ -183,4 +183,149 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
 		// actual stack trace string e.getStackTraceAsString()
 	}
+	
+	@Test
+	def void testCatchWithoutType() {
+		'''
+			class A { 
+				method m1() { throw new Exception("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown exception")
+				}	
+				catch e {
+					// ok !
+					assert.equals("hello you see", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testMultipleMatchingCatchesWillOnlyExecuteTheFirstOne() {
+		'''
+			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class BException inherits AException {  new(m) = super(m) }
+			class CException inherits wollok.lang.Exception {  new(m) = super(m) }
+			
+			class A { 
+				method m1() { throw new BException("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown exception")
+				}	
+				catch e : BException {
+					// OK !
+				}
+				catch e : AException {
+					assert.fail("incorrenct catch !")
+				}
+				catch e {
+					assert.fail("incorrenct catch !")
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithoutTypeMatchingJustTheFirstCatch() {
+		'''
+			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+			
+			class A { 
+				method m1() { throw new AException("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown exception")
+				}	
+				catch e : AException {
+					// OK !
+				}
+				catch e : BException {
+					assert.fail("incorrenct catch !")
+				}
+				catch e {
+					assert.fail("incorrenct catch !")
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithoutTypeMatchingJustTheSecondCatch() {
+		'''
+			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+			
+			class A { 
+				method m1() { throw new BException("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown exception")
+				}	
+				catch e : AException {
+					assert.fail("incorrenct catch !")
+				}
+				catch e : BException {
+					// OK !
+				}
+				catch e {
+					assert.fail("incorrenct catch !")
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithoutTypeMatchingTheLastCatch() {
+		'''
+			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class CException inherits wollok.lang.Exception {  new(m) = super(m) }
+			
+			class A { 
+				method m1() { throw new CException("hello you see") }
+			}
+			
+			program p {	
+				val a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown exception")
+				}	
+				catch e : AException {
+					assert.fail("incorrect catch !")
+				}
+				catch e : BException {
+					assert.fail("incorrect catch !")
+				}
+				catch e {
+					// OK !
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }

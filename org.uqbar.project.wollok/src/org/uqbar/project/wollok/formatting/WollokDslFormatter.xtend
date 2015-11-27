@@ -281,7 +281,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	def dispatch formatting(FormattingConfig it, extension WCatchElements i) {
 		setSpace(' ').after(catchKeyword_0)
 		setLinewrap(1,1,1).before(catchKeyword_0)
-		setLinewrap(1,1,1).around(expressionAssignment_4)
+		setLinewrap(1,1,1).around(expressionAssignment_3)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WSuperInvocationElements i) {
