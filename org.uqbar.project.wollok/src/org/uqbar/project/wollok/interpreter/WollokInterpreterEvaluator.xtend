@@ -170,7 +170,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		throw new WollokProgramExceptionWrapper(obj, t)
 	}
 
-	def boolean matches(WCatch cach, WollokObject exceptionThrown) { exceptionThrown.isKindOf(cach.exceptionType) }
+	def boolean matches(WCatch cach, WollokObject it) { cach.exceptionType == null || isKindOf(cach.exceptionType) }
 
 	// literals
 	def dispatch Object evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }

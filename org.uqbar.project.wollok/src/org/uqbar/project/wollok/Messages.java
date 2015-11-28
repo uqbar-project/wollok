@@ -36,6 +36,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_SUPER_INCORRECT_ARGS;
 	public static String WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS;
 	public static String WollokDslValidator_CATCH_ONLY_EXCEPTION;
+	public static String WollokDslValidator_UNREACHABLE_CATCH;
+	public static String WollokDslValidator_ONLY_ONE_CATCH_WITHOUT_TYPE;
 	public static String WollokDslValidator_POSTFIX_ONLY_FOR_VAR;
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;

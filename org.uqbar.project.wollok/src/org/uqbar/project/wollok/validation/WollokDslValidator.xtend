@@ -395,8 +395,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check 
 	@DefaultSeverity(ERROR)
 	def catchExceptionTypeMustExtendException(WCatch it) {
-		if (!exceptionType.exception) report(WollokDslValidator_CATCH_ONLY_EXCEPTION, it, WCATCH__EXCEPTION_TYPE)
+		if (exceptionType != null && !exceptionType.exception) report(WollokDslValidator_CATCH_ONLY_EXCEPTION, it, WCATCH__EXCEPTION_TYPE)
 	}
+	
+	@Check 
+	@DefaultSeverity(ERROR)
+	def unreachableCatch(WCatch it) {
+		val hidingCatch = catchesBefore.findFirst[c| 
+			c.exceptionType == null || c.exceptionType.isSameOrSuperClassOf(it.exceptionType)
+		]
+		if (hidingCatch != null) 
+			report(WollokDslValidator_UNREACHABLE_CATCH, it, WCATCH__EXCEPTION_VAR_NAME)
+	}
+	
+	def boolean isSameOrSuperClassOf(WClass one, WClass other) {
+		one == other || one.isSuperTypeOf(other)
+	}
+	
+	
 	
 // requires type system in order to infer type of the WExpression being thrown ! "throw <??>"
 //	@Check
