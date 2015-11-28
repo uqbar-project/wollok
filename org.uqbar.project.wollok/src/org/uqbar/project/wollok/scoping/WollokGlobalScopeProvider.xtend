@@ -47,22 +47,31 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def importedObjects(Resource resource, Iterable<IEObjectDescription> objectsFromManifests) {
 		val rootObject = resource.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
-		val importedNamespaces = imports.map[importedNamespace]
+		val importedNamespaces = imports.filter[importedNamespace != null].map[importedNamespace]
 		importedNamespaces
-		.filter[name|
+		.filter[ name|
 			// filters those imported from libraries, we won't handle them as regular imports
 			// this needs further works if we add more complex imports like *, or aliases.
 			!objectsFromManifests.exists[o| o.qualifiedName.toString == name]
 		]
-		.map[name|
-			var uri = generateUri(resource, name)
-			val r = EcoreUtil2.getResource(resource, uri)
-			if (r == null) throw new WollokRuntimeException("Could NOT find resource '" + name +"'");
-			r
+		.map[ name|
+			name.toResource(resource)
 		]
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten
+	}
+	
+	def toResource(String name, Resource resource) {
+		try {
+			var uri = generateUri(resource, name)
+			val r = EcoreUtil2.getResource(resource, uri)
+			if (r == null) throw new WollokRuntimeException("Could NOT find resource '" + name +"'");
+			r
+		}
+		catch (RuntimeException e) {
+			throw new WollokRuntimeException("Error while resolving import '" + name + "'", e)
+		}
 	}
 	
 	def generateUri(Resource resource, String importedName) {

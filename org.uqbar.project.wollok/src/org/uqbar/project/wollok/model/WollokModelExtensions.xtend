@@ -57,9 +57,10 @@ import org.uqbar.project.wollok.wollokDsl.WCatch
  */
 class WollokModelExtensions {
 	
-	def static fileName(EObject ele) {
-		ele.eResource.URI.trimFileExtension.lastSegment
+	def static fileName(EObject it) {
+		file.URI.trimFileExtension.lastSegment
 	}
+	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
