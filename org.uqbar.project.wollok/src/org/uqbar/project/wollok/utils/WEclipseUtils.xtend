@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
+import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * Utilities on top of eclipse platform.
@@ -75,6 +76,17 @@ class WEclipseUtils {
 		var path = new Path(uri.toFileString)
 		ResourcesPlugin.workspace.root.getFileForLocation(path)
 	}
+	
+	def static exists(IPath it) { ResourcesPlugin.getWorkspace.root.exists(it) }
+	def static exists(Resource it) {
+		if (isWorkspaceOpen)
+			iPath.exists
+		else {
+			val s = URI.toFileString
+			s != null && new File(s).exists
+		}
+	}
+	def static iPath(Resource it) { Path.fromOSString(URI.toPlatformString(true)) }
 	
 	def static getVerticalRuler(XtextEditor editor) { editor.getAdapter(IVerticalRulerInfo) as IVerticalRuler }
 	def static getDocument(XtextEditor editor) { XtextDocumentUtil.get(editor) }

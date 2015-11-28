@@ -20,6 +20,10 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import org.eclipse.xtext.diagnostics.ExceptionDiagnostic
+import org.eclipse.xtext.validation.EObjectDiagnosticImpl
+import org.eclipse.xtext.diagnostics.Severity
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 /**
  * 
@@ -38,7 +42,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val resourceSet = context.resourceSet
 
 		val exportedObjects = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
-		val explicitImportedObjects = this.importedObjects(context, exportedObjects)
+		val explicitImportedObjects = importedObjects(context, exportedObjects)
 
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(new SimpleScope(defaultScope, exportedObjects), explicitImportedObjects)
@@ -47,34 +51,37 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def importedObjects(Resource resource, Iterable<IEObjectDescription> objectsFromManifests) {
 		val rootObject = resource.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
-		val importedNamespaces = imports.filter[importedNamespace != null].map[importedNamespace]
-		importedNamespaces
-		.filter[ name|
+		
+		imports.filter[
 			// filters those imported from libraries, we won't handle them as regular imports
 			// this needs further works if we add more complex imports like *, or aliases.
-			!objectsFromManifests.exists[o| o.qualifiedName.toString == name]
+			importedNamespace != null && !objectsFromManifests.exists[o| o.qualifiedName.toString == importedNamespace]
 		]
-		.map[ name|
-			name.toResource(resource)
+		.map[ 
+			toResource(resource)
 		]
+		.filter[it != null]
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten
 	}
 	
-	def toResource(String name, Resource resource) {
+	def static toResource(Import it, Resource resource) {
 		try {
-			var uri = generateUri(resource, name)
+			var uri = generateUri(resource, importedNamespace)
 			val r = EcoreUtil2.getResource(resource, uri)
-			if (r == null) throw new WollokRuntimeException("Could NOT find resource '" + name +"'");
 			r
+//			if (r != null && EcoreUtil2.isValidUri(resource, r.URI))
+//				r
+//			else
+//				null
 		}
 		catch (RuntimeException e) {
-			throw new WollokRuntimeException("Error while resolving import '" + name + "'", e)
+			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
 		}
 	}
 	
-	def generateUri(Resource resource, String importedName) {
+	def static generateUri(Resource resource, String importedName) {
 		resource.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 

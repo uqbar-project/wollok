@@ -311,6 +311,7 @@ class WollokModelExtensions {
 	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WTry it) { expression.returnsOnAllPossibleFlows && catchBlocks.forall[c | c.returnsOnAllPossibleFlows ] }
 	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(Void it) { false } // ?
 	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
 	
 	
