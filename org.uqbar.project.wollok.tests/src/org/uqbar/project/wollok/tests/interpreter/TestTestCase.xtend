@@ -33,7 +33,6 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void testWithAssertEqualsWithErrors() {
-		try{
 			'''
 				object pepita {
 					var energia = 0
@@ -46,15 +45,15 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				}
 
 				test "pepita" {
-					assert.equals(7, pepita.energia())	
+					try {
+						assert.equals(7, pepita.energia())
+						assert.fail("should have failed")
+					}
+					catch e {
+						assert.equals("Expected [7] but found [0]", e.getMessage())
+					} 	
 				}
 			'''.interpretPropagatingErrors
-
-			fail()
-		} catch(Exception e){
-			e.assertIsException(AssertionException)
-			assertEquals("Expected [7] but found [0]",getMessageOf(e,AssertionException))
-		}
 	}
 
 	@Test(expected = AssertionError)

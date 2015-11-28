@@ -28,6 +28,8 @@ class WollokDSK {
 	public static val LIST = "wollok.lang.List"
 	public static val SET = "wollok.lang.Set"
 	
+	public static val EXCEPTION = "wollok.lang.Exception"
+	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	
 }

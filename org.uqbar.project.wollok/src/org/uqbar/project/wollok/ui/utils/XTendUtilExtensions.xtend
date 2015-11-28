@@ -16,6 +16,8 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import java.lang.reflect.InvocationTargetException
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * Utilities for xtend code
@@ -138,6 +140,9 @@ class XTendUtilExtensions {
 		try {
 			val returnVal = m.invoke(o, converted.toArray)
 			javaToWollok(returnVal)
+		}
+		catch (InvocationTargetException e) {
+			throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
 		}
 		catch (IllegalArgumentException e) {
 			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted, e)

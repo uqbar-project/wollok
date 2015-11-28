@@ -328,4 +328,19 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testExceptionFromNativeMethodGetsWrappedIntoAWollokException() {
+		'''
+			program p {
+				try {
+					console.println(2 / 0)
+				}
+				catch e : Exception {
+					// OK !
+					e.printStackTrace()
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }
