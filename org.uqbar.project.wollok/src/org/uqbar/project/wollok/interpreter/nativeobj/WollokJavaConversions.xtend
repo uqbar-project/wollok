@@ -89,6 +89,9 @@ class WollokJavaConversions {
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 	
+	def static newWollokException(String message) {
+		evaluator.newInstance(EXCEPTION, message)
+	}
 	
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 	
