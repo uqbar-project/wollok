@@ -539,7 +539,7 @@ package lib {
 		
 		method clone() = new Position(x, y)
 		
-		method == (other) {
+		override method == (other) {
 			return x == other.getX() and y == other.getY()
 		}
 		
