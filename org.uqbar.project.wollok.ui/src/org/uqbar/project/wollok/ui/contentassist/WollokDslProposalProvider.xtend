@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.contentassist
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.uqbar.project.wollok.ui.WollokActivator
@@ -10,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -26,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamed
 
 /**
  * 
@@ -77,10 +80,10 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		dis.declaringContext.methodsAsProposals(context, acceptor)
 	}
 	
-	
 	// *****************************
 	// ** proposing methods and how they are completed
 	// *****************************
+
 	def messageSentAsProposals(WReferenciable ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		ref.allMessageSent.filter[feature != null].forEach[ context.addProposal(it, acceptor) ]
 	}
@@ -121,6 +124,20 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	
 	def addProposal(ICompletionProposalAcceptor acceptor, ContentAssistContext context, String feature, Image image) {
 		if (feature != null) acceptor.accept(context.createProposal(feature, image))
+	}
+	
+	// ****************************************
+	// ** imports
+	// ****************************************
+	
+	override completeImport_ImportedNamespace(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		val content = model.file.resourceSet.allContents.filter(WLibraryElement)
+		// add other files content here
+		
+		content.forEach[
+			if (it instanceof WMethodContainer)
+				acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
+		]
 	}
 	
 		//@Inject

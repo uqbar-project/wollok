@@ -36,10 +36,6 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Before
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
-
-	//		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok.wlk", true))
-	//		resource.load(new HashMap())
-	//		resourceSet.getResources().add(resource);
 	}
 
 	@After
@@ -60,7 +56,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(Pair<String, String>... programAsString) {
-		this.interpret(true, programAsString)
+		interpret(true, programAsString)
 	}
 
 	def interpretPropagatingErrorsWithoutStaticChecks(String... programAsString) {
@@ -68,7 +64,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrorsWithoutStaticChecks(Pair<String, String>... programAsString) {
-		this.interpret(true, true, programAsString)
+		interpret(true, true, programAsString)
 	}
 
 	def interpretPropagatingErrors(File fileToRead) {
@@ -83,11 +79,19 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, Pair<String, String>... programAsString) {
-		(programAsString.map[parse(resourceSet)].clone => [
+		interpret(propagatingErrors, ignoreStaticErrors, false, programAsString)
+	}
+
+	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, boolean saveFilesToDisk, Pair<String, String>... programAsString) {
+		(programAsString.map[parse(resourceSet, saveFilesToDisk)].clone => [
 			if (!ignoreStaticErrors)
 				forEach[assertNoErrors]
 			forEach[it.interpret(propagatingErrors)]
 		]).last
+	}
+	
+	def interpretAsFilesPropagatingErrors(Pair<String, String>... programAsString) {
+		interpret(true, false, true, programAsString)
 	}
 
 	def evaluate(String expression) {

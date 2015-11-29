@@ -49,7 +49,13 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.Path
+import java.io.File
 
 /**
  * Custom validation rules.
@@ -521,6 +527,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
 	}
 	
+	@Check
+	@DefaultSeverity(ERROR)
+	def wrongImport(Import it) {
+		try {
+			// hack here to avoid checking references to the SDK which
+			// is resolved "magically"
+			if (importedNamespace.startsWith("wollok."))
+				return 
+			val r = WollokGlobalScopeProvider.toResource(it, eResource)
+			if (r == null || !r.exists)
+				report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
+		}
+		catch (RuntimeException e) {
+			e.printStackTrace
+			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
+		}
+	}
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def varArgMustBeTheLastParameter(WParameter it) {

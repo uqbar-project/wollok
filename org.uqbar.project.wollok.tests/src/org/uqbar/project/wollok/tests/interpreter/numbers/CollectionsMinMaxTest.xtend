@@ -7,8 +7,7 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void testMin() {
-		#[
-			"objs" -> '''
+		'''
 				object x1 {
 					method value(){ return 1 }
 				}
@@ -18,21 +17,17 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 				object x3 {
 					method value(){ return 3 }
 				}				
-			''',
-			"pgm"->'''
-				import objs.*
-			
+
 				program a {
 					assert.equals(x1, #[x1, x2, x3].min[ o | o.value()])
 				}
 			'''
-		].interpretPropagatingErrors
+		.interpretPropagatingErrors
 	}
 
 	@Test
 	def void testMax() {
-		#[
-			"objs" -> '''
+			'''
 				object x1 {
 					method value(){ return 1 }
 				}
@@ -42,13 +37,11 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 				object x3 {
 					method value(){ return 3 }
 				}
-			''',
-			"pgm" -> '''
-				import objs.*
+
 				program a {
 					assert.equals(x3, #[x1, x2, x3].max[ o | o.value()])
 				}
 			'''
-		].interpretPropagatingErrors
+		.interpretPropagatingErrors
 	}
 }

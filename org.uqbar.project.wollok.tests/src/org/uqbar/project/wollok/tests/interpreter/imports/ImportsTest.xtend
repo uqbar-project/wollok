@@ -36,7 +36,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.equals('pepita', nombre)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.equals('pepita,pepona', nombre)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.equals('pepita,pepona', #[pepita, pepona].map[p| p.getNombre()].join())
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.equals('pepona', pepona.getNombre())
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -194,7 +194,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.that(new Golondrina() != null)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -209,7 +209,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.that(new Golondrina() != null)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -226,7 +226,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.that(new Pato() != null)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
@@ -243,7 +243,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				assert.that(new Pato() != null)
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test

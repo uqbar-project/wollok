@@ -37,7 +37,6 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS;
 	public static String WollokDslValidator_CATCH_ONLY_EXCEPTION;
 	public static String WollokDslValidator_UNREACHABLE_CATCH;
-	public static String WollokDslValidator_ONLY_ONE_CATCH_WITHOUT_TYPE;
 	public static String WollokDslValidator_POSTFIX_ONLY_FOR_VAR;
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
@@ -55,6 +54,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
 	
+	public static String WollokDslValidator_WRONG_IMPORT;
 	
 	public static String WollokDslValidator_NO_EXPRESSION_AFTER_RETURN;
 	public static String WollokDslValidator_NO_EXPRESSION_AFTER_THROW;
