@@ -177,7 +177,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 	
-	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it) }
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it, finder) }
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
 		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject

@@ -150,6 +150,10 @@ package lang {
 				message += "()"
 			throw new MessageNotUnderstoodException(message)
 		}
+		
+		method error(message) {
+			throw new Exception(message)
+		}
 	}
 	
 	class Pair {

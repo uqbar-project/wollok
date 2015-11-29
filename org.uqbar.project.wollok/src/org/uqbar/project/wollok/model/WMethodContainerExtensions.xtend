@@ -4,6 +4,7 @@ import java.util.Arrays
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -29,8 +30,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * Extension methods for WMethodContainers.
@@ -126,8 +127,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
-	def static dispatch WClass parent(WObjectLiteral c) { null } // For now, object literals do not allow superclasses
-	def static dispatch WClass parent(WNamedObject c) { c.parent } // For now, object literals do not allow superclasses
+	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.object class ?
+	def static dispatch WClass parent(WNamedObject c) { c.parent }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
@@ -166,18 +167,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nrOfArgs == parameters.size
 	}
 
-	def static dispatch boolean isValidCall(WClass c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
+	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
+		c.hookObjectSuperClass(finder)
+		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
-
-	def static dispatch boolean isValidCall(WObjectLiteral c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
-	}
-
-	def static dispatch boolean isValidCall(WNamedObject c, WMemberFeatureCall call) {
-		c.methods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call))
-	}
-
+	
+	def static dispatch void hookObjectSuperClass(WClass it, WollokClassFinder finder) { hookToObject(finder) }
+	def static dispatch void hookObjectSuperClass(WNamedObject it, WollokClassFinder finder) { hookObjectInHierarhcy(finder) }
+	def static dispatch void hookObjectSuperClass(WObjectLiteral it, WollokClassFinder finder) { } // nothing !
 
 	// ************************************************************************
 	// ** Basic methods

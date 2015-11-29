@@ -342,5 +342,26 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void testErrorMethodOnWollokObject() {
+		'''
+			class C {
+				method foo() {
+					this.error("Gently failling!")
+				}
+			}
+			program p {
+				try {
+					val f = new C()
+					f.foo()
+				}
+				catch e {
+					// OK !
+					assert.equals("Gently failling!", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
 	
 }
