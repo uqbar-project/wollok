@@ -42,6 +42,10 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 				
 				method.invokeConvertingArgs(this, parameters)
 			}
+			catch (WollokProgramExceptionWrapper e) {
+				// ok, a java exception was wrapped into a wollok one
+				throw e
+			}
 			catch (IllegalArgumentException e) {
 				throw new WollokRuntimeException("Error while calling native java method " + method, e)				
 			}

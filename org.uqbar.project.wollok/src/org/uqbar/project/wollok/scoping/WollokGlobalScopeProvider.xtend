@@ -69,12 +69,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def static toResource(Import it, Resource resource) {
 		try {
 			var uri = generateUri(resource, importedNamespace)
-			val r = EcoreUtil2.getResource(resource, uri)
-			r
-//			if (r != null && EcoreUtil2.isValidUri(resource, r.URI))
-//				r
-//			else
-//				null
+			EcoreUtil2.getResource(resource, uri)
 		}
 		catch (RuntimeException e) {
 			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)

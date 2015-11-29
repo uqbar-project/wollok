@@ -34,7 +34,6 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		if (createFilesOnDisk) {
 			val f = new File(uri.toFileString)
 			
-			println("?????? " + f)
 			if (!f.exists) {
 				f.createNewFile
 			}

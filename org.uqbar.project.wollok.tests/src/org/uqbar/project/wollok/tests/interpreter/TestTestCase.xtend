@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
-import wollok.lib.AssertionException
 
 /**
  * @author tesonep

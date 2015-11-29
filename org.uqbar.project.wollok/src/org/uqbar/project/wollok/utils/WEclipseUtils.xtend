@@ -79,7 +79,7 @@ class WEclipseUtils {
 	
 	def static exists(IPath it) { ResourcesPlugin.getWorkspace.root.exists(it) }
 	def static exists(Resource it) {
-		if (isWorkspaceOpen)
+		if (isWorkspaceOpen && URI.isPlatform)
 			iPath.exists
 		else {
 			val s = URI.toFileString
