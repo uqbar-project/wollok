@@ -11,6 +11,6 @@ class WSet extends WCollection<Set> {
 		wrapped = newHashSet
 	}
 	
-	def first() { wrapped.head }
+	def any() { wrapped.head }
 	
 }

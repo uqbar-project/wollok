@@ -324,9 +324,7 @@ package lang {
 		
 		override method asSet() = this
 
-		method any() = this.first()
-		
-		method first() native
+		method any() native
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
@@ -353,7 +351,7 @@ package lang {
 		
 		method any() {
 			if (this.isEmpty()) 
-				throw new Exception() //("Illegal operation 'any' on empty collection")
+				throw new Exception("Illegal operation 'any' on empty collection")
 			else 
 				return this.get(this.randomBetween(0, this.size()))
 		}
