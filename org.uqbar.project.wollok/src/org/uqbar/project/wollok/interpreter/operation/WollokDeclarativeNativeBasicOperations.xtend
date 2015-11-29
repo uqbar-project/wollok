@@ -35,7 +35,10 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 					op.invoke(this, a, b)
 				}
 				catch(InvocationTargetException e) {
-					throw new WollokRuntimeException('''Error while resolving «a» «operationSymbol» «b»''', e.cause)
+					if (e.cause instanceof WollokProgramExceptionWrapper)
+						throw e.cause
+					else
+						throw new WollokRuntimeException('''Error while resolving «a» «operationSymbol» «b»''', e.cause)
 				}
 			]
 		}
