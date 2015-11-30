@@ -95,7 +95,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	
 	@NativeMessage("getTittle")
 	def getTittleMethod() {
-		Gameboard.getInstance().tittle.javaToWollok
+		Gameboard.getInstance().title.javaToWollok
 	}
 	
 	@NativeMessage("setWidth")

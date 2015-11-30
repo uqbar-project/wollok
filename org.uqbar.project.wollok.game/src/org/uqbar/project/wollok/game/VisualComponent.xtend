@@ -79,7 +79,7 @@ class VisualComponent {
 	def getShowableAttribute(String attr) {
 		var value = this.domainObject.getInstanceVariables().get(attr);
 		
-		return attr + ":" + new ToStringBuilder().smartToString(value);
+		return attr + ":" + value.toString
 	}
 
 	def hasMessages() {
