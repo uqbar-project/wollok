@@ -99,7 +99,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 //			evaluating = null
 		}
 		catch (WollokProgramExceptionWrapper e) {
-			throw new RuntimeException("Uncaught wollok exception: \n" + e.wollokException.call("getStackTraceAsString"))
+			throw e
 		}
 		catch (Throwable e)
 			if (propagatingErrors)

@@ -22,6 +22,8 @@ import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * 
  * @author tesonep
@@ -91,7 +93,7 @@ class WollokRepl {
 						}
 					'''.parseRepl(mainFile),true)
 				printReturnValue(returnValue)
-			} 
+			}
 			catch (Exception e) {
 				resetIndent
 				handleException(e)
@@ -175,7 +177,7 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokProgramExceptionWrapper e) {
 		// Wollok-level user exception
-		e.wollokException.call("printStackTrace")
+		printlnIdent(e.wollokStackTrace.errorStyle)
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {
