@@ -6,7 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.uqbar.project.wollok.game.gameboard.Gameboard;
+import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.game.VisualComponent
@@ -34,9 +35,9 @@ class GameboardTest {
 		gameboard.height = 5
 		listener = mock(GameboardListener)
 		gameboard.addListener(listener)
-		component = mock(VisualComponent)
+		component = this.createComponent(new Position(0, 0))
 		gameboard.addComponent(component)
-		character = mock(VisualComponent)
+		character = this.createComponent(new Position(1, 0))
 		gameboard.addCharacter(character)
 	}
 	
@@ -44,6 +45,13 @@ class GameboardTest {
 	def can_create_all_cells() {
 		gameboard.createCells("UnaImagen")
 		Assert.assertEquals(10, gameboard.cells.size());
+	}
+	
+	@Test
+	def can_return_all_components_in_a_position() {
+		var otherComponent = this.createComponent(new Position(1, 0))
+		gameboard.addComponent(otherComponent)
+		Assert.assertArrayEquals(#{otherComponent, character}, gameboard.getComponentsInPosition(new Position(1, 0)))
 	}
 	
 	@Test
@@ -66,5 +74,12 @@ class GameboardTest {
 		inOrder.verify(cell).draw(window)
 		inOrder.verify(component).draw(window)
 		inOrder.verify(character).draw(window)
+	}
+
+	
+	def createComponent(Position position) {
+		var aComponent = mock(VisualComponent)
+		when(aComponent.position).thenReturn(position)
+		aComponent
 	}
 }

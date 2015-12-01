@@ -1,19 +1,18 @@
 package org.uqbar.project.wollok.game.gameboard
 
 import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.Position
 
 class Cell {
-	var int width
-	var int height
 	var Image image
+	var Position position
 
-	new (int widthSize, int heghtSize, String image) {
-		this.width = widthSize
-		this.height = heghtSize
-		this.image = new Image(image)
+	new(Position position, Image image) {
+		this.position = position
+		this.image = image
 	}
 	
 	def draw(Window window) {
-		window.drawIn(image, width, height)
+		window.draw(image, position)
 	}	
 }

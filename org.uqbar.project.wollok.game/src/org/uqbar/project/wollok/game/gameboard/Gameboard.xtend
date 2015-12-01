@@ -1,13 +1,12 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import com.google.common.base.Predicate
-import com.google.common.collect.Collections2
 import java.util.ArrayList
 import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.GameboardFactory
+import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
@@ -64,7 +63,7 @@ class Gameboard {
 	def createCells(String groundImage) {
 		for (var i = 0; i < height; i++) {
 			for (var j = 0; j < width; j++) {
-				cells.add(new Cell(i * CELLZISE, j * CELLZISE, groundImage));
+				cells.add(new Cell(new Position(i, j), new Image(groundImage)));
 			}
 		}
 	}
@@ -86,13 +85,8 @@ class Gameboard {
 		this.character.say(aText);
 	}
 	
-	def getComponentsInPosition(Position myPosition) {
-		return Collections2.filter(components, new IsEqualPosition(myPosition));
-	}
-	
-	def getComponentsInPosition(int xInPixels, int yInPixels) {
-		var inverseYInPixels = Gameboard.getInstance().pixelHeight() - yInPixels;
-		return Collections2.filter(components, new IsEqualPosition(xInPixels,inverseYInPixels));
+	def getComponentsInPosition(Position position) {
+		return this.getComponents().filter [it.position.equals(position)]
 	}
 
 	// Getters & Setters
@@ -115,30 +109,9 @@ class Gameboard {
 	}
 
 	def getComponents() {
-		var allComponents = new ArrayList<VisualComponent>(this.components);
+		var others = #{}
 		if (character != null)
-			allComponents.add(this.character);
-		return allComponents;
+			others = #{character}
+		components + others
 	}
-}
-
-class IsEqualPosition implements Predicate<VisualComponent> {
-
-	Position myPosition;
-
-	new (int x, int y){
-		
-		this.myPosition = new Position();
-		this.myPosition.setX(x/Gameboard.CELLZISE);
-		this.myPosition.setY(y/Gameboard.CELLZISE);
-	}
-	
-	new (Position p) {
-		this.myPosition = p;
-	}
-
-	override apply(VisualComponent it) {
-		return it.getPosition().equals(myPosition);
-	}
-
 }

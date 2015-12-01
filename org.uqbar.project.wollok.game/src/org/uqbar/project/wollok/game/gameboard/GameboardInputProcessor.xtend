@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import java.util.Collection
+import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 
 class GameboardInputProcessor implements InputProcessor {
@@ -25,8 +25,12 @@ class GameboardInputProcessor implements InputProcessor {
 	}
 
 	override boolean touchDown(int x, int y, int pointer, int button) {
-
-		var Collection<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(x, y)
+		
+		var inverseY = Gameboard.getInstance().pixelHeight() - y;
+		var position = new Position(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
+		
+		var Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
+		
 		System.out.println("Click en " + x + "," + y + " con boton" + button)
 		System.out.println("Hay " + lista.size + " elementos")
 		if (button == 1) {

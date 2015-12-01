@@ -8,7 +8,6 @@ import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.gameboard.Window
-import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 @Accessors

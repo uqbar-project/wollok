@@ -87,7 +87,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		Gameboard.getInstance().addComponent(component)
 	}
 	
-	// accessors
+//	 ACCESSORS
 	@NativeMessage("setTittle")
 	def setTittleMethod(String title) {
 		Gameboard.getInstance().title = title.wollokToJava(String) as String

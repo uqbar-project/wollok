@@ -1,13 +1,7 @@
 package org.uqbar.project.wollok.game
 
-import java.util.Date
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.GlyphLayout
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import java.util.Date
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Window
 
