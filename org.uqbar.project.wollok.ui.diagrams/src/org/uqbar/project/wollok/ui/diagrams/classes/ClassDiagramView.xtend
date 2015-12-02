@@ -118,11 +118,17 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def getClasses(XtextResource r) {
-		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
+		if (r.contents.empty)
+			#[]
+		else 
+			(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
 	}
 	
 	def getNamedObjects(XtextResource r) {
-		(r.contents.get(0) as WFile).eAllContents.filter(WNamedObject).toList
+		if (r.contents.empty)
+			#[]
+		else 
+			(r.contents.get(0) as WFile).eAllContents.filter(WNamedObject).toList
 	}
 	
 	override createPartControl(Composite parent) {
