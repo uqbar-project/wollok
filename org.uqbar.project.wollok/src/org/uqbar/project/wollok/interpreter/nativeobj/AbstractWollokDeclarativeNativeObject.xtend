@@ -73,13 +73,12 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	def static getMethod(Class c, String message, Object... parameters) {
 		var method = c.methods.findFirst[handlesMessage(message, parameters)]
 		if (method == null)
-			method = c.methods.findFirst[name == message && parameterTypes.size == parameters.size]
+			method = c.methods.findFirst[name == message && matches(parameters)]
 		method
 	}
 
 	def isVoid(String message, Object... parameters) {
-		val method = getMethod(message, parameters)
-		method.returnType == Void.TYPE
+		getMethod(message, parameters).returnType == Void.TYPE
 	}
 
 	def doesNotUnderstand(String message, Object[] objects) {
@@ -91,7 +90,12 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 
 	def static handlesMessage(Method m, String message, Object... parameters) {
-		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message && m.parameterTypes.size == parameters.size
+		m.isAnnotationPresent(NativeMessage) && m.getAnnotation(NativeMessage).value == message 
+			&& m.matches(parameters)
+	}
+	
+	def static matches(Method it, Object... parameters) {
+		(parameterTypes.size == parameters.size) || (varArgs && parameters.size >= (parameterTypes.size - 1))
 	}
 
 	def <T> T asWollokObject(Object obj) { WollokJavaConversions.javaToWollok(obj) as T}

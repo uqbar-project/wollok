@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * @author jfernandes
@@ -26,12 +27,15 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void max() {
+		try 
 		'''
 		program p {
 			«instantiateStrings»
 			val r = strings.max[e| e.length() ]	
 			assert.equals('bonjour', strings.max[e| e.length() ])
 		}'''.interpretPropagatingErrors
+		catch (WollokProgramExceptionWrapper e)
+					fail(e.message)
 	}
 	
 	@Test

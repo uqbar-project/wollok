@@ -1,8 +1,9 @@
 package wollok.lang
 
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
@@ -16,8 +17,9 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 		super(obj, interpreter) 
 	}
 	
-	def void forEach(WollokClosure proc) {
-		initWrapped.forEach[e| proc.apply(e.javaToWollok) ]
+	def void forEach(WollokObject proc) {
+		val c = (proc.getNativeObject(CLOSURE) as Closure)
+		initWrapped.forEach[e| c.doApply(e.javaToWollok) ]
 	}
 	
 	def initWrapped() {

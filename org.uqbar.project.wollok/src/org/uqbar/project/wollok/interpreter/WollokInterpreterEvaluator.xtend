@@ -6,14 +6,15 @@ import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WCallable
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
@@ -55,16 +56,14 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
-
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * It's the real "interpreter".
@@ -313,15 +312,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		}
 	}
 
-	def dispatch Object evaluate(WClosure l) { new WollokClosure(l, interpreter) }
+	def dispatch Object evaluate(WClosure l) { newInstance(CLOSURE) => [
+		(getNativeObject(CLOSURE) as NodeAware<WClosure>).EObject = l
+	] }
 
-	def dispatch Object evaluate(WListLiteral l) { createCollection(LIST, l.elements) }
-	def dispatch Object evaluate(WSetLiteral l) { createCollection(SET, l.elements) }
-//	def dispatch Object evaluate(WSetLiteral l) { new WollokSet(interpreter, newHashSet(l.elements.map[eval].toArray)) }
-	// TODO create a WSET
+	def dispatch Object evaluate(WListLiteral it) { createCollection(LIST, elements) }
+	def dispatch Object evaluate(WSetLiteral it) { createCollection(SET, elements) }
 	
 	def createCollection(String collectionName, List<WExpression> elements) {
-		this.newInstance(collectionName) => [
+		newInstance(collectionName) => [
 			elements.forEach[e| 
 				call("add", e.eval)
 			]
@@ -334,9 +333,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def dispatch Object evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		
-		if(newValue instanceof VoidObject)
+		if (newValue instanceof VoidObject)
 			// i18n
-			throw new WollokInterpreterException("No se puede asignar el valor de retorno de un mensaje que no devuelve nada", a)
+			// reviewme: should it throw a wollok.lang.Exception instead of a java exception ?
+			throw new WollokInterpreterException("Tried to assign a void value !", a)
 		
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
 		newValue
