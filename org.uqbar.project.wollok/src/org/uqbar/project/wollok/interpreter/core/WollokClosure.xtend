@@ -1,15 +1,13 @@
 package org.uqbar.project.wollok.interpreter.core
 
-import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
-import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.wollokDsl.WClosure
 
-import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
-
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
+import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 
 /**
  * A closure runtime native object
@@ -17,7 +15,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
  //REVIEWME: tiene cosas parecidas a la ejecución de un método en WollokObject
-class WollokClosure implements EvaluationContext, WCallable {
+class WollokClosure implements WCallable {
 	extension WollokInterpreter interpreter
 	WClosure closure
 	EvaluationContext container
@@ -28,21 +26,9 @@ class WollokClosure implements EvaluationContext, WCallable {
 		this.container = interpreter.currentContext
 	}
 	
-	override getThisObject() { container.thisObject }
-	
-	def getParameters() {
-		closure.parameters
-	}
-	
-	override allReferenceNames() {
-		closure.parameterNames.map[new WVariable(it, true)] + container.allReferenceNames
-	}
-	
 	override call(String message, Object... parameters) {
-		if (message == "apply")
-			apply(parameters)
-		else
-			throw throwMessageNotUnderstood(this, message, parameters)
+		if (message != "apply") throw throwMessageNotUnderstood(this, message, parameters)
+		apply(parameters)
 	}
 	
 	// REPEATED code: will be deleted once we migrate closures to be modeled in wollok
@@ -57,35 +43,11 @@ class WollokClosure implements EvaluationContext, WCallable {
 		]
 	}
 	
-	def static createEvaluationContext(WClosure c, Object... values) {
-		c.parameterNames.createEvaluationContext(values)
-	}
+	def static createEvaluationContext(WClosure c, Object... values) { c.parameterNames.createEvaluationContext(values) }
 	
-	def static parameterNames(WClosure c) {
-		c.parameters.map[name]
-	}
+	def static getParameterNames(WClosure it) { parameters.map[name] }
+	def getParameters() { closure.parameters }
 
-
-	// unimplemented methods
-	
-	override addReference(String variable, Object value) {
-		throw new UnresolvableReference(variable)
-	}
-	
-	// a closure doesn't have a static state.
-	// an evaluation context is newly created on each "apply()" call
-	override resolve(String name) throws UnresolvableReference {
-		throw new UnresolvableReference(name)
-	}
-	
-	override setReference(String name, Object value) {
-		throw new UnresolvableReference(name)
-	}
-	
-	override addGlobalReference(String name, Object value) {
-		container.addGlobalReference(name,value)
-	}
-	
 	override toString() {
 		"aClosure(" + parameters.map[name].join(', ') + ")"
 	}
