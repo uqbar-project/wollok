@@ -38,7 +38,7 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 
 ## What's the language like ? ##
 
-* **Object Oriented((
+* **Object Oriented**
 * Non "class-centered". Allows you to create **objects as first-class citizens without the need of classes**. To start working with objects without introducing complex subjects and mechanisms as hierarchies, overriding methods, etc.
 * Tries to **maximize compile-time checks** while keeping the **power of a dynamic language.**
 * With **implicit types**: by means of a type system and type inference mechanism.
@@ -75,13 +75,15 @@ Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/
 
 ## How is the Environment ? ##
 
-* Completely integrated with Eclipse.
-* Compile-time errors reporting.
-* Checks and Quick-Fixes.
-* Integrated Console.
-* Integrated Outline.
-* Integrated with eclipse Launchers (Run As).
-* A debugger.
+You can either use its IDE:
+* Completely **integrated with Eclipse**.
+* With: many *static code analysis**, **Quick-Fixes**, **Refactors**
+* An **interactive Console** (**REPL**)
+* **Visual representations**: Outline, Static diagram, Objects Diagrams
+* A **debugger**.
+
+Or use the WDK which has command line tools for running and checkin a program.
+This is also integrated with Sublime Editor.
 
 ## How to Contribute ##
 
