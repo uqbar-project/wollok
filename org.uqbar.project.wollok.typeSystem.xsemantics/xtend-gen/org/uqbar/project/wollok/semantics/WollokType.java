@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.semantics;
 
-import it.xsemantics.runtime.RuleEnvironment;
 import org.uqbar.project.wollok.semantics.AnyType;
 import org.uqbar.project.wollok.semantics.BooleanType;
 import org.uqbar.project.wollok.semantics.IntType;
@@ -31,7 +30,7 @@ public interface WollokType {
   
   public abstract boolean understandsMessage(final MessageType message);
   
-  public abstract WollokType resolveReturnType(final MessageType message, final WollokDslTypeSystem system, final RuleEnvironment g);
+  public abstract WollokType resolveReturnType(final MessageType message, final WollokDslTypeSystem system, final /* RuleEnvironment */Object g);
   
   /**
    * This type was found while inferring a type.
@@ -39,7 +38,7 @@ public interface WollokType {
    * If he founds that they are not compatible at all, then it could fail
    * throwing TypeSystemException which will cause a type check error.
    */
-  public abstract WollokType refine(final WollokType previouslyInferred, final RuleEnvironment g);
+  public abstract WollokType refine(final WollokType previouslyInferred, final /* RuleEnvironment */Object g);
   
   /**
    * Returns all messages that this types defines.

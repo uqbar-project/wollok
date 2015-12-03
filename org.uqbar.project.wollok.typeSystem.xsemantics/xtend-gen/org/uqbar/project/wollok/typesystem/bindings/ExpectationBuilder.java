@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.typesystem.bindings;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.xbase.lib.Extension;
 import org.uqbar.project.wollok.typesystem.bindings.BoundsBasedTypeSystem;
 import org.uqbar.project.wollok.typesystem.bindings.TypedNode;
 
@@ -13,7 +11,6 @@ import org.uqbar.project.wollok.typesystem.bindings.TypedNode;
  */
 @SuppressWarnings("all")
 public class ExpectationBuilder {
-  @Extension
   private BoundsBasedTypeSystem t;
   
   private TypedNode node;
@@ -23,9 +20,10 @@ public class ExpectationBuilder {
     this.node = node;
   }
   
-  public void operator_greaterEqualsThan(final EObject o1, final EObject o2) {
-    TypedNode _node = this.t.getNode(o1);
-    TypedNode _node_1 = this.t.getNode(o2);
-    this.t.bindAsSuperTypeOf(this.node, _node, _node_1);
+  public void operator_greaterEqualsThan(final /* EObject */Object o1, final /* EObject */Object o2) {
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method bindAsSuperTypeOf is undefined for the type ExpectationBuilder"
+      + "\nnode cannot be resolved"
+      + "\nnode cannot be resolved");
   }
 }

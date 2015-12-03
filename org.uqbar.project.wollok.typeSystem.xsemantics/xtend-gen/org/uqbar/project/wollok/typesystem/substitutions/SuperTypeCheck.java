@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem.substitutions;
 
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.uqbar.project.wollok.semantics.TypeSystemException;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException;
@@ -27,8 +26,7 @@ public class SuperTypeCheck implements TypeCheck {
         _builder.append(b, "");
         _builder.append(">> which is not");
         throw new TypeExpectationFailedException(_builder.toString());
-      } else {
-        throw Exceptions.sneakyThrow(_t);
+      } else {COMPILE ERROR : 'org.eclipse.xtext.xbase.lib.Exceptions' could not be found on the classpath!
       }
     }
   }
