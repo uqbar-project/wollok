@@ -34,7 +34,7 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 	def void runWollok() throws Exception {
 		program.interpretPropagatingErrors
 	}
-
+	
 	// ********************************************************************************************
 	// ** Helpers
 	// ********************************************************************************************

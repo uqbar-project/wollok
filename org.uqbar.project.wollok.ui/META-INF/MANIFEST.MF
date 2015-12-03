@@ -35,7 +35,7 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.eclipse.ltk.ui.refactoring;bundle-version="3.7.100"
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.xbase.lib
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.uqbar.project.wollok.refactoring,
  org.uqbar.project.wollok.ui,
  org.uqbar.project.wollok.ui.contentassist,

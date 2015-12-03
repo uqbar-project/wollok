@@ -624,6 +624,8 @@ Library.
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />
       <plugin id="org.uqbar.project.wollok" autoStart="false" startLevel="0" />
+      <plugin id="org.uqbar.project.wollok.game" autoStart="false" startLevel="0" />
+      <plugin id="org.uqbar.project.wollok.game.ui" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.launch" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
       <property name="eclipse.p2.data.area" value="@config.dir/../p2" />

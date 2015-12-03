@@ -1,0 +1,35 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: Wollok Game
+Bundle-SymbolicName: org.uqbar.project.wollok.game
+Bundle-Version: 1.3.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.junit;version="4.11.0",
+ org.osgi.framework;version="1.3.0",
+ org.uqbar.project.wollok.interpreter.core,
+ org.uqbar.project.wollok.interpreter.nativeobj
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
+ org.uqbar.project.wollok
+Bundle-ClassPath: .,
+ target/dependency/gdx-1.6.0.jar,
+ target/dependency/gdx-backend-lwjgl-1.6.0.jar,
+ target/dependency/gdx-platform-1.6.0-natives-desktop.jar,
+ target/dependency/jinput-2.0.5.jar,
+ target/dependency/jinput-platform-2.0.5-natives-linux.jar,
+ target/dependency/jinput-platform-2.0.5-natives-osx.jar,
+ target/dependency/jinput-platform-2.0.5-natives-windows.jar,
+ target/dependency/jlayer-1.0.1-gdx.jar,
+ target/dependency/jorbis-0.0.17.jar,
+ target/dependency/jutils-1.0.0.jar,
+ target/dependency/lwjgl_util-2.9.2.jar,
+ target/dependency/lwjgl-2.9.2.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-linux.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-osx.jar,
+ target/dependency/lwjgl-platform-2.9.2-natives-windows.jar
+Export-Package: .,
+ com.badlogic.gdx,
+ org.uqbar.project.wollok.game,
+ org.uqbar.project.wollok.game.gameboard,
+ org.uqbar.project.wollok.game.helpers,
+ org.uqbar.project.wollok.game.listeners
+Bundle-Vendor: Uqbar Project
