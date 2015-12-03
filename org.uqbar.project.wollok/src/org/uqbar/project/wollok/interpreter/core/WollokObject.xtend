@@ -37,7 +37,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
-	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	@Accessors val Map<String,Object> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
