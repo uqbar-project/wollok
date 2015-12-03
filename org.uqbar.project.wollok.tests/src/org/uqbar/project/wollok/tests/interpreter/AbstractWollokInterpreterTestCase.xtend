@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -86,7 +87,12 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		(programAsString.map[parse(resourceSet, saveFilesToDisk)].clone => [
 			if (!ignoreStaticErrors)
 				forEach[assertNoErrors]
-			forEach[it.interpret(propagatingErrors)]
+			forEach[
+				try
+					it.interpret(propagatingErrors)
+				catch (WollokProgramExceptionWrapper e)
+					fail(e.wollokStackTrace)
+			]
 		]).last
 	}
 	

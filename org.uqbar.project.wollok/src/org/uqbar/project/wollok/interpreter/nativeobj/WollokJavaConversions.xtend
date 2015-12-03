@@ -5,14 +5,12 @@ import java.util.Collection
 import java.util.List
 import java.util.Set
 import org.eclipse.xtext.xbase.lib.Functions.Function1
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -20,10 +18,6 @@ import org.uqbar.project.wollok.interpreter.stack.VoidObject
  * @author jfernandes
  */
 class WollokJavaConversions {
-	
-	def static <Input> Procedure1<Input> asProc(WollokClosure proc) { [proc.apply(it as Input)] }
-	
-	def static <Input, Output> asFun(WollokClosure closure) { [closure.apply(it as Input) as Output] }
 	
 	def static asInteger(WollokObject it) { ((it as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped }
 	
@@ -34,32 +28,33 @@ class WollokJavaConversions {
 	def static Object wollokToJava(Object o, Class<?> t) {
 		if (o == null) return null
 		if (t.isInstance(o)) return o
+		if (t == Object) return o
 
-		// acá hace falta diseño. Capaz con un "NativeConversionsProvider" y registrar conversiones.
-		if (o instanceof WollokClosure && t == Function1)
-			return [Object a | (o as WollokClosure).apply(a)]
-		// new conversions
-		if (o.isNativeType(INTEGER) && (t == Integer || t == Integer.TYPE)) {
+		if (o.isNativeType(CLOSURE) && t == Function1)
+			return [Object a | ((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
+		if (o.isNativeType(INTEGER) && (t == Integer || t == Integer.TYPE))
 			return ((o as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
-		}
-		if (o.isNativeType(DOUBLE) && (t == Integer || t == Integer.TYPE)) {
+		if (o.isNativeType(DOUBLE) && (t == Integer || t == Integer.TYPE))
 			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<Double>).wrapped
-		}
-		if (o.isNativeType(STRING) && t == String) {
+		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
-		}
-		if (o.isNativeType(LIST) && (t == Collection || t == List)) {
+		if (o.isNativeType(LIST) && (t == Collection || t == List))
 			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List>).wrapped
-		}
-		if (o.isNativeType(SET) && (t == Collection || t == Set)) {
+		if (o.isNativeType(SET) && (t == Collection || t == Set))
 			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
-		}
-		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE)) {
+		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
-		}
 		
-		if (t == Object)
-			return o
+//		if (t.array && t.componentType == Object) {
+//			val a = newArrayOfSize(1)
+//			a.set(0, o)
+//			return a
+//		}
+			
+		if (t == Collection || t == List)
+			return #[o]
+		
+		// remove this ?
 		if (t.primitive)
 			return o	
 		

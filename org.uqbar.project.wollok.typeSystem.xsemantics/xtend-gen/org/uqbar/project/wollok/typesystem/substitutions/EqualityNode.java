@@ -1,8 +1,5 @@
 package org.uqbar.project.wollok.typesystem.substitutions;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtend.lib.Property;
-import org.eclipse.xtext.xbase.lib.Pure;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.substitutions.CheckTypeRule;
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem;
@@ -24,11 +21,11 @@ import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSy
  */
 @SuppressWarnings("all")
 public abstract class EqualityNode {
-  @Property
-  private EObject _model;
+  /* @Property
+   */private /* EObject */Object model;
   
-  public EqualityNode(final EObject object) {
-    this.setModel(object);
+  public EqualityNode(final /* EObject */Object object) {
+    this.model = object;
   }
   
   public abstract boolean tryToResolve(final SubstitutionBasedTypeSystem system, final CheckTypeRule rule);
@@ -40,16 +37,7 @@ public abstract class EqualityNode {
   public abstract boolean isNonTerminalFor(final Object obj);
   
   public int hashCode() {
-    EObject _model = this.getModel();
-    return _model.hashCode();
-  }
-  
-  @Pure
-  public EObject getModel() {
-    return this._model;
-  }
-  
-  public void setModel(final EObject model) {
-    this._model = model;
+    throw new Error("Unresolved compilation problems:"
+      + "\nhashCode cannot be resolved");
   }
 }

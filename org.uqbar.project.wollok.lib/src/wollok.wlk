@@ -455,6 +455,10 @@ package lang {
 		method invert() native
 	}
 	
+	/**
+	 * @author jfernandes
+	 * @noInstantiate
+	 */
 	class String {
 		method length() native
 		method charAt(index) native
@@ -478,6 +482,10 @@ package lang {
 		method size() = this.length()
 	}
 	
+	/**
+	 * @author jfernandes
+	 * @noinstantiate
+	 */
 	class Boolean {
 	
 		method and(other) native
@@ -511,6 +519,16 @@ package lang {
 		}
 		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
+	}
+	
+	/**
+	 * @author jfernandes
+	 * @since 1.3
+	 * @noInstantiate
+	 */
+	class Closure {
+		method apply(parameters...) native
+		method toString() native
 	}
 }
  

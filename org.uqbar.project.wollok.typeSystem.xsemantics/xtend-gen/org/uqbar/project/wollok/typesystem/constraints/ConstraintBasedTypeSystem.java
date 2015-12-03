@@ -1,22 +1,13 @@
 package org.uqbar.project.wollok.typesystem.constraints;
 
-import com.google.common.base.Objects;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
-import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.TypeSystem;
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException;
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariable;
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesFactory;
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral;
-import org.uqbar.project.wollok.wollokDsl.WExpression;
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
@@ -26,79 +17,65 @@ import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
  */
 @SuppressWarnings("all")
 public class ConstraintBasedTypeSystem implements TypeSystem {
-  private final Map<EObject, TypeVariable> typeVariables = CollectionLiterals.<EObject, TypeVariable>newHashMap();
+  private final /* Map<EObject, TypeVariable> */Object typeVariables /* Skipped initializer because of errors */;
   
-  public void analyse(final EObject p) {
-    EList<EObject> _eContents = p.eContents();
-    final Procedure1<EObject> _function = new Procedure1<EObject>() {
-      public void apply(final EObject it) {
-        ConstraintBasedTypeSystem.this.generateVariables(it);
-      }
-    };
-    IterableExtensions.<EObject>forEach(_eContents, _function);
+  public void analyse(final /* EObject */Object p) {
+    throw new Error("Unresolved compilation problems:"
+      + "\neContents cannot be resolved"
+      + "\nforEach cannot be resolved");
   }
   
   protected void _generateVariables(final WProgram p) {
-    EList<WExpression> _elements = p.getElements();
-    final Procedure1<WExpression> _function = new Procedure1<WExpression>() {
-      public void apply(final WExpression it) {
-        ConstraintBasedTypeSystem.this.generateVariables(it);
-      }
-    };
-    IterableExtensions.<WExpression>forEach(_elements, _function);
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method elements is undefined for the type ConstraintBasedTypeSystem"
+      + "\nforEach cannot be resolved");
   }
   
-  protected void _generateVariables(final EObject node) {
-    InputOutput.<EObject>println(node);
+  protected void _generateVariables(final /* EObject */Object node) {
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method println is undefined for the type ConstraintBasedTypeSystem");
   }
   
   protected void _generateVariables(final WNumberLiteral num) {
-    TypeVariable _sealed = TypeVariablesFactory.sealed(WollokType.WInt);
-    this.typeVariables.put(num, _sealed);
+    throw new Error("Unresolved compilation problems:"
+      + "\nType mismatch: cannot convert from Object to TypeVariable");
   }
   
   protected void _generateVariables(final WStringLiteral string) {
-    TypeVariable _sealed = TypeVariablesFactory.sealed(WollokType.WString);
-    this.typeVariables.put(string, _sealed);
+    throw new Error("Unresolved compilation problems:"
+      + "\nType mismatch: cannot convert from Object to TypeVariable");
   }
   
   protected void _generateVariables(final WBooleanLiteral bool) {
-    TypeVariable _sealed = TypeVariablesFactory.sealed(WollokType.WBoolean);
-    this.typeVariables.put(bool, _sealed);
+    throw new Error("Unresolved compilation problems:"
+      + "\nType mismatch: cannot convert from Object to TypeVariable");
   }
   
   public void inferTypes() {
   }
   
-  public WollokType type(final EObject obj) {
-    WollokType _xblockexpression = null;
-    {
-      final TypeVariable typeVar = this.typeVariables.get(obj);
-      boolean _equals = Objects.equal(typeVar, null);
-      if (_equals) {
-        throw new RuntimeException(("I don\'t have type information for " + obj));
-      }
-      _xblockexpression = typeVar.type();
-    }
-    return _xblockexpression;
+  public WollokType type(final /* EObject */Object obj) {
+    throw new Error("Unresolved compilation problems:"
+      + "\n== cannot be resolved."
+      + "\n+ cannot be resolved.");
   }
   
-  public Iterable<TypeExpectationFailedException> issues(final EObject obj) {
-    return Collections.<TypeExpectationFailedException>unmodifiableList(CollectionLiterals.<TypeExpectationFailedException>newArrayList());
+  public Iterable<TypeExpectationFailedException> issues(final /* EObject */Object obj) {
+    return Collections.<TypeExpectationFailedException>unmodifiableList(org.eclipse.xtext.xbase.lib.CollectionLiterals.<TypeExpectationFailedException>newArrayList());
   }
   
   public void generateVariables(final EObject bool) {
-    if (bool instanceof WBooleanLiteral) {
-      _generateVariables((WBooleanLiteral)bool);
+    if (bool != null) {
+      _generateVariables(bool);
       return;
-    } else if (bool instanceof WNumberLiteral) {
-      _generateVariables((WNumberLiteral)bool);
+    } else if (bool != null) {
+      _generateVariables(bool);
       return;
-    } else if (bool instanceof WStringLiteral) {
-      _generateVariables((WStringLiteral)bool);
+    } else if (bool != null) {
+      _generateVariables(bool);
       return;
-    } else if (bool instanceof WProgram) {
-      _generateVariables((WProgram)bool);
+    } else if (bool != null) {
+      _generateVariables(bool);
       return;
     } else if (bool != null) {
       _generateVariables(bool);

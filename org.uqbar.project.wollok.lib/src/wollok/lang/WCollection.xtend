@@ -4,9 +4,10 @@ import java.util.Collection
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WCallable
-import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * @author jfernandes
@@ -15,9 +16,10 @@ class WCollection<T extends Collection> {
 	@Accessors var T wrapped
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 	
-	def Object fold(Object acc, WollokClosure proc) {
+	def Object fold(Object acc, WollokObject proc) {
+		val c = (proc.getNativeObject(CLOSURE) as Closure)
 		wrapped.fold(acc) [i, e|
-			proc.apply(i, e)
+			c.doApply(i, e)
 		]
 	}
 	

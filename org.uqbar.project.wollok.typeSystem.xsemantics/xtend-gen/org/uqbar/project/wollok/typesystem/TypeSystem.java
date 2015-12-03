@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem;
 
-import org.eclipse.emf.ecore.EObject;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException;
 
@@ -17,7 +16,7 @@ public interface TypeSystem {
    * # 1: First step
    * Builds any needed graph or rules based on the program.
    */
-  public abstract void analyse(final EObject root);
+  public abstract void analyse(final /* EObject */Object root);
   
   /**
    * # 2:
@@ -29,7 +28,7 @@ public interface TypeSystem {
    * # 3:
    * Then you can perform queries for types.
    */
-  public abstract WollokType type(final EObject obj);
+  public abstract WollokType type(final /* EObject */Object obj);
   
-  public abstract Iterable<TypeExpectationFailedException> issues(final EObject obj);
+  public abstract Iterable<TypeExpectationFailedException> issues(final /* EObject */Object obj);
 }

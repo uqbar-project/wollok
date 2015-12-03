@@ -132,20 +132,35 @@ class XTendUtilExtensions {
 	}
 
 	def static invokeConvertingArgs(Method m, Object o, Object... args) {
-		if (m.parameterTypes.size != args.size) {
-			throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»". Given arguments «args»''') 
+		if ((!m.varArgs && m.parameterTypes.size != args.size) || (m.varArgs && args.length < m.parameterTypes.length - 1)) {
+			throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»(«m.parameterTypes.length»)". Given arguments «args» («args.length»)''') 
 		}
-		val converted = newArrayList
-		args.fold(0)[i, a | converted.add(a.wollokToJava(m.parameterTypes.get(i))); i + 1 ]
+
+		var Object[] result = null
+		if (m.isVarArgs) {
+			// todo: contemplate vararg method with more than one arg
+//			result = args
+			result = newArrayOfSize(1)
+			result.set(0, args)
+		}
+		else {
+			val converted = newArrayList
+			args.fold(0)[i, a | 
+				val conv = a.wollokToJava(m.parameterTypes.get(i))
+				converted.add(conv); i + 1
+			]
+			result = converted.toArray
+		}
+		
 		try {
-			val returnVal = m.invoke(o, converted.toArray)
+			val returnVal = m.invoke(o, result)
 			javaToWollok(returnVal)
 		}
 		catch (InvocationTargetException e) {
 			throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
 		}
 		catch (IllegalArgumentException e) {
-			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + converted, e)
+			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + result, e)
 		}
 	}
 	
