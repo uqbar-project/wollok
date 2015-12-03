@@ -470,7 +470,7 @@ package lib {
 		method notEquals(expected, actual) native
 	}
 
-	object wgame{
+	object wgame {
 		method addVisual(element) native
 		method addVisualCharacter(element) native
 		method addVisualWithReference(element, property) native
@@ -482,11 +482,11 @@ package lib {
 		method clear() native
 		method start() native
 		
-		method setTittle(tittle) native
+		method setTittle() native
 		method getTittle() native
-		method setWidth(cant) native
+		method setWidth() native
 		method getWidth() native
-		method setHeight(cant) native
+		method setHeight() native
 		method getHeight() native
 	}
 	

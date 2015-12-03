@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
@@ -118,12 +119,12 @@ public class BoundsBasedTypeSystem implements TypeSystem {
    * Second step. Goes through all the bindings and tries to infer types.
    */
   public void inferTypes() {
-    final Procedure1<TypeBound> _function = new Procedure1<TypeBound>() {
-      public void apply(final TypeBound it) {
+    final Consumer<TypeBound> _function = new Consumer<TypeBound>() {
+      public void accept(final TypeBound it) {
         it.inferTypes();
       }
     };
-    IterableExtensions.<TypeBound>forEach(this.bounds, _function);
+    this.bounds.forEach(_function);
   }
   
   /**
@@ -151,12 +152,12 @@ public class BoundsBasedTypeSystem implements TypeSystem {
   protected void _bind(final WProgram p) {
     this.inferredNode(p);
     EList<WExpression> _elements = p.getElements();
-    final Procedure1<WExpression> _function = new Procedure1<WExpression>() {
-      public void apply(final WExpression it) {
+    final Consumer<WExpression> _function = new Consumer<WExpression>() {
+      public void accept(final WExpression it) {
         BoundsBasedTypeSystem.this.bind(it);
       }
     };
-    IterableExtensions.<WExpression>forEach(_elements, _function);
+    _elements.forEach(_function);
     EList<WExpression> _elements_1 = p.getElements();
     WExpression _last = IterableExtensions.<WExpression>last(_elements_1);
     this.operator_spaceship(p, _last);
@@ -166,30 +167,30 @@ public class BoundsBasedTypeSystem implements TypeSystem {
     ClassBasedWollokType _classBasedWollokType = new ClassBasedWollokType(c, null, null);
     this.fixedNode(_classBasedWollokType, c);
     Iterable<WVariableDeclaration> _variableDeclarations = WMethodContainerExtensions.variableDeclarations(c);
-    final Procedure1<WVariableDeclaration> _function = new Procedure1<WVariableDeclaration>() {
-      public void apply(final WVariableDeclaration it) {
+    final Consumer<WVariableDeclaration> _function = new Consumer<WVariableDeclaration>() {
+      public void accept(final WVariableDeclaration it) {
         BoundsBasedTypeSystem.this.bind(it);
       }
     };
-    IterableExtensions.<WVariableDeclaration>forEach(_variableDeclarations, _function);
+    _variableDeclarations.forEach(_function);
     Iterable<WMethodDeclaration> _methods = WMethodContainerExtensions.methods(c);
-    final Procedure1<WMethodDeclaration> _function_1 = new Procedure1<WMethodDeclaration>() {
-      public void apply(final WMethodDeclaration it) {
+    final Consumer<WMethodDeclaration> _function_1 = new Consumer<WMethodDeclaration>() {
+      public void accept(final WMethodDeclaration it) {
         BoundsBasedTypeSystem.this.bind(it);
       }
     };
-    IterableExtensions.<WMethodDeclaration>forEach(_methods, _function_1);
+    _methods.forEach(_function_1);
   }
   
   protected void _bind(final WBlockExpression e) {
     this.inferredNode(e);
     EList<WExpression> _expressions = e.getExpressions();
-    final Procedure1<WExpression> _function = new Procedure1<WExpression>() {
-      public void apply(final WExpression it) {
+    final Consumer<WExpression> _function = new Consumer<WExpression>() {
+      public void accept(final WExpression it) {
         BoundsBasedTypeSystem.this.bind(it);
       }
     };
-    IterableExtensions.<WExpression>forEach(_expressions, _function);
+    _expressions.forEach(_function);
     EList<WExpression> _expressions_1 = e.getExpressions();
     WExpression _last = IterableExtensions.<WExpression>last(_expressions_1);
     this.operator_spaceship(e, _last);

@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokClosure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.game.listeners.CharacterSayListener
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 class WgameObject extends AbstractWollokDeclarativeNativeObject {
@@ -37,7 +36,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	@NativeMessage("whenKeyPressedSay")
 	def whenKeyPressedSayMethod(Object key, WollokClosure function) {	
 		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		var listener = new CharacterSayListener(num,  [ | return function.apply().wollokToJava(String) as String ])
+		var listener = new KeyboardListener(num,  [ Gameboard.getInstance.characterSay(function.apply.wollokToJava(String) as String) ]) 
 		Gameboard.getInstance().addListener(listener)
 	}
 	
@@ -51,7 +50,7 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 	@NativeMessage("whenKeyPressedDo")
 	def whenKeyPressedDoMethod(Object key, WollokClosure action) {
 		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		var listener = new KeyboardListener(num, [ | action.apply() ])
+		var listener = new KeyboardListener(num, [ action.apply() ])
 		Gameboard.getInstance().addListener(listener)
 	}
 
@@ -88,35 +87,35 @@ class WgameObject extends AbstractWollokDeclarativeNativeObject {
 		Gameboard.getInstance().addComponent(component)
 	}
 	
-	// accessors
+//	 ACCESSORS
 	@NativeMessage("setTittle")
 	def setTittleMethod(String title) {
-		Gameboard.getInstance().configuration.gameboardTitle = title.wollokToJava(String) as String
+		Gameboard.getInstance().title = title.wollokToJava(String) as String
 	}
 	
 	@NativeMessage("getTittle")
 	def getTittleMethod() {
-		Gameboard.getInstance().tittle.javaToWollok
+		Gameboard.getInstance().title.javaToWollok
 	}
 	
 	@NativeMessage("setWidth")
 	def setWeightMethod(WollokObject cant) {
-		Gameboard.getInstance().configuration.gameboardWidth =  cant.wollokToJava(Integer) as Integer
+		Gameboard.getInstance().width =  cant.wollokToJava(Integer) as Integer
 	}
 		
 	@NativeMessage("getWidth")
 	def getWeightMethod() {
-		Gameboard.getInstance().cantCellX.javaToWollok
+		Gameboard.getInstance().width.javaToWollok
 	}
 	
 	@NativeMessage("setHeight")
 	def setHeightMethod(WollokObject cant) {
-		Gameboard.getInstance().configuration.gameboardHeight = cant.wollokToJava(Integer) as Integer
+		Gameboard.getInstance().height = cant.wollokToJava(Integer) as Integer
 	}
 	
 	@NativeMessage("getHeight")
 	def getHeightMethod() {
-		Gameboard.getInstance().cantCellY.javaToWollok
+		Gameboard.getInstance().height.javaToWollok
 	}
 	
 }
