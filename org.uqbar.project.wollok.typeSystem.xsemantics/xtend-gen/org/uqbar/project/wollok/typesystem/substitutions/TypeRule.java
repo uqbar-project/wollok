@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.substitutions;
 
+import org.eclipse.emf.ecore.EObject;
 import org.uqbar.project.wollok.semantics.WollokType;
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem;
 
@@ -10,9 +11,9 @@ import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSy
  */
 @SuppressWarnings("all")
 public abstract class TypeRule {
-  protected /* EObject */Object source;
+  protected EObject source;
   
-  public TypeRule(final /* EObject */Object source) {
+  public TypeRule(final EObject source) {
     this.source = source;
   }
   
@@ -30,7 +31,7 @@ public abstract class TypeRule {
   /**
    * Returns the type for the given object, in case this rule knows about it.
    */
-  public WollokType typeOf(final /* EObject */Object object) {
+  public WollokType typeOf(final EObject object) {
     return null;
   }
   

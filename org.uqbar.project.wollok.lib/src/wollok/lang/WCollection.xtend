@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 /**
  * @author jfernandes
@@ -17,7 +17,7 @@ class WCollection<T extends Collection> {
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 	
 	def Object fold(Object acc, WollokObject proc) {
-		val c = (proc.getNativeObject(CLOSURE) as Closure)
+		val c = proc.asClosure
 		wrapped.fold(acc) [i, e|
 			c.doApply(i, e)
 		]

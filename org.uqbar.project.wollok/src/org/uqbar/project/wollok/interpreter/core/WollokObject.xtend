@@ -24,7 +24,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -37,7 +37,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
-	val extension WollokInterpreterAccess = new WollokInterpreterAccess
 	@Accessors val Map<String,Object> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
@@ -122,7 +121,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		
 		// actual call
 		if (constructor.expression != null) {
-			val context = constructorEvalContext.then(this)
+			val context = then(constructorEvalContext, this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
@@ -135,7 +134,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	} 
 	
 	def createEvaluationContext(WConstructor declaration, Object... values) {
-		declaration.parameters.createMap(values).asEvaluationContext
+		asEvaluationContext(declaration.parameters.createMap(values))
 	}
 	
 	override resolve(String variableName) {
