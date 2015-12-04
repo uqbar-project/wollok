@@ -10,6 +10,8 @@ import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * Wollok Object class. It's the native part
  * 
@@ -48,13 +50,14 @@ class WObject {
 	}
 	
 	def newInstance(String className, Object... arguments) {
-		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(className, arguments)
+		val wArgs = arguments.map[javaToWollok]
+		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(className, wArgs)
 	}
 	
-	def newList(Collection<?> elements) {
+	def newList(Collection<WollokObject> elements) {
 		val list = newInstance(WollokDSK.LIST)
 		elements.forEach[ 
-			list.call("add", it)
+			list.call("add", it.javaToWollok)
 		]
 		list
 	}

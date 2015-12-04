@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
@@ -32,10 +33,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	static Logger log = Logger.getLogger(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 	
-	@Accessors val globalVariables = <String,Object>newHashMap
+	@Accessors val globalVariables = <String,WollokObject> newHashMap
 	@Accessors val programVariables = <WVariable>newArrayList
 
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		globalVariables.put(name,value)
 		value
 	}
@@ -116,18 +117,18 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		new XStackFrame(root, new WollokNativeLobby(console, this))
 	}
 	
-	override performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something) {
+	override performOnStack(EObject executable, EvaluationContext newContext, ()=>WollokObject something) {
 		stack.push(new XStackFrame(executable, newContext))
 		try 
 			return something.apply
-		catch(ReturnValueException e)
+		catch (ReturnValueException e)
 			return e.value	
 		finally
 			stack.pop
 	}
 
 	
-	def evalBinary(Object a, String operand, Object b) {
+	def evalBinary(WollokObject a, String operand, WollokObject b) {
 		evaluator.resolveBinaryOperation(operand).apply(a, [|b])
 	}
 
@@ -145,7 +146,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
 		} catch (ReturnValueException ex) {
-			throw ex // a user-level exception, fine !
+			throw ex // a return
 		} catch (WollokProgramExceptionWrapper ex) {
 			throw ex // a user-level exception, fine !
 		}

@@ -47,7 +47,7 @@ class Gameboard {
 				this.listeners.get(i).notify(this);
 			} 
 			catch (WollokProgramExceptionWrapper e) {
-				var message = e.getWollokException().getInstanceVariables().get("message");
+				var Object message = e.getWollokException().getInstanceVariables().get("message");
 				if (message == null)
 					message = "NO MESSAGE";
 				

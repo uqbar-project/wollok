@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.api
 
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
@@ -17,7 +18,7 @@ class WollokInterpreterAccess {
 	 * Helper method for simple access to wollok equality between objects, 
 	 * which is needed in different parts of the interpreter 
 	 */
-	def boolean wollokEquals(Object a, Object b) {
+	def boolean wollokEquals(WollokObject a, WollokObject b) {
 		operations.asBinaryOperation("==").apply(a, [|b]).isTrue
 	}
 
@@ -25,7 +26,7 @@ class WollokInterpreterAccess {
 	 * Helper method for simple access to wollok number comparison, 
 	 * which is needed in different parts of the interpreter 
 	 */
-	def boolean wollokGreaterThan(Object a, Object b) {
+	def boolean wollokGreaterThan(WollokObject a, WollokObject b) {
 		operations.asBinaryOperation(">").apply(a, [|b]).isTrue
 	}
 

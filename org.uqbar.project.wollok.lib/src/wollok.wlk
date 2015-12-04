@@ -156,6 +156,9 @@ package lang {
 		}
 	}
 	
+	object void { }
+	
+	
 	class Pair {
 		val x
 		val y

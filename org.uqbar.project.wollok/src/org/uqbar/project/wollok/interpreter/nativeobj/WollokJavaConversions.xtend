@@ -8,7 +8,6 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.stack.VoidObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -65,27 +64,27 @@ class WollokJavaConversions {
 	def static dispatch isNativeType(Void o, String type) { false }
 	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
 	
-	def static Object javaToWollok(Object o) {
+	def static WollokObject javaToWollok(Object o) {
 		if (o == null) return null
 		convertJavaToWollok(o)
 	}
 	
-	def static dispatch convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
-	def static dispatch convertJavaToWollok(Double o) { evaluator.getOrCreateNumber(o.toString) }
-	def static dispatch convertJavaToWollok(BigDecimal o) { evaluator.getOrCreateNumber(o.toString) }
+	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
+	def static dispatch WollokObject convertJavaToWollok(Double o) { evaluator.getOrCreateNumber(o.toString) }
+	def static dispatch WollokObject convertJavaToWollok(BigDecimal o) { evaluator.getOrCreateNumber(o.toString) }
 	// cache strings ?
-	def static dispatch convertJavaToWollok(String o) { evaluator.newInstanceWithWrapped(STRING, o) }
-	def static dispatch convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
-	def static dispatch convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
-	def static dispatch convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
-	def static dispatch convertJavaToWollok(WollokObject it) { it }
-	def static dispatch convertJavaToWollok(VoidObject it) { it } // mmmmmm 
-	def static dispatch convertJavaToWollok(Object o) { 
+	def static dispatch WollokObject convertJavaToWollok(String o) { evaluator.newInstanceWithWrapped(STRING, o) }
+	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
+	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
+	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
+	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
+	
+	def static dispatch WollokObject convertJavaToWollok(Object o) { 
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 	
 	def static newWollokException(String message) {
-		evaluator.newInstance(EXCEPTION, message)
+		evaluator.newInstance(EXCEPTION, message.javaToWollok)
 	}
 	
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }

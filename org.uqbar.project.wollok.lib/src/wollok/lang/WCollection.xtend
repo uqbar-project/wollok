@@ -16,15 +16,15 @@ class WCollection<T extends Collection> {
 	@Accessors var T wrapped
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 	
-	def Object fold(Object acc, WollokObject proc) {
+	def Object fold(WollokObject acc, WollokObject proc) {
 		val c = proc.asClosure
 		wrapped.fold(acc) [i, e|
 			c.doApply(i, e)
 		]
 	}
 	
-	def void add(Object e) { wrapped.add(e) }
-	def void remove(Object e) { 
+	def void add(WollokObject e) { wrapped.add(e) }
+	def void remove(WollokObject e) { 
 		// This is necessary because native #contains does not take into account Wollok object equality 
 		wrapped.remove(wrapped.findFirst[it.wollokEquals(e)])
 	}

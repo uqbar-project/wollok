@@ -28,7 +28,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					counter = counter + 1
 				}
 				catch e : MyException {
-					this.println("Exception raised!") // OK!
+					console.println("Exception raised!") // OK!
 					e.printStackTrace()
 				}
 			}
@@ -52,7 +52,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					a.m1()
 				}
 				catch e : MyException
-					this.println("Exception raised!") // OK!
+					console.println("Exception raised!") // OK!
 				then always
 					counter = counter + 1
 			}'''.

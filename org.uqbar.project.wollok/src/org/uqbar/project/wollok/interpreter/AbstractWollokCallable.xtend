@@ -10,17 +10,17 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
-import org.uqbar.project.wollok.interpreter.stack.VoidObject
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -41,7 +41,9 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Feature calling
 	// ********************************************************************************************
 	
-	def Object call(WMethodDeclaration method, Object... parameters) {
+	def theVoid() { WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
+	
+	def WollokObject call(WMethodDeclaration method, WollokObject... parameters) {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
@@ -50,16 +52,16 @@ abstract class AbstractWollokCallable implements WCallable {
 				val nativeObject = receiver.nativeObjects.get(method.declaringContext)
 				val r = nativeObject.invokeNative(method.name, parameters)
 				if (nativeObject.isVoid(method.name, parameters))
-					return VoidObject.instance
+					return theVoid
 				else
 					return r
-			} 
+			}
 			else {
-				val r = method.expression.eval
+				val r = method.expression.eval as WollokObject
 				return if (method.expressionReturns)
 						r
 					else
-						VoidObject.instance
+						theVoid
 			}
 		]
 	}
@@ -71,19 +73,18 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Native objects handling
 	// ********************************************************************************************
 	
-	def dispatch invokeNative(Object nativeObject, String name, Object... parameters) {
+	def dispatch invokeNative(Object nativeObject, String name, WollokObject... parameters) {
 		val method = AbstractWollokDeclarativeNativeObject.getMethod(nativeObject.class, name, parameters)
 		if (method == null)
 			throw throwMessageNotUnderstood(nativeObject, name, parameters)
 		method.accesibleVersion.invokeConvertingArgs(nativeObject, parameters)
 	}
 	
-	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
-		val wollokException = ((interpreter as WollokInterpreter).evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
-		new WollokProgramExceptionWrapper(wollokException)
+	def throwMessageNotUnderstood(Object nativeObject, String name, WollokObject[] parameters) {
+		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
 	}
 
-	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){
+	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, WollokObject... parameters) {
 		nativeObject.call(name, parameters)
 	}
 
@@ -95,11 +96,11 @@ abstract class AbstractWollokCallable implements WCallable {
 	
 	def evalAll(List<? extends EObject> list) { list.map[ eval ] }	
 	
-	def createEvaluationContext(WMethodDeclaration declaration, Object... values) {
+	def createEvaluationContext(WMethodDeclaration declaration, WollokObject... values) {
 		declaration.parameters.createMap(values).asEvaluationContext
 	}
 	
-	def Map<String, Object> createMap(EList<WParameter> parameters, Object[] values) {
+	def Map<String, WollokObject> createMap(EList<WParameter> parameters, WollokObject[] values) {
 		var i = 0
 		val m = newHashMap
 		for (p : parameters) {
@@ -109,21 +110,20 @@ abstract class AbstractWollokCallable implements WCallable {
 		m
 	}
 	
-	def Object value(WParameter p, Object[] values, int i) {
+	def WollokObject value(WParameter p, WollokObject[] values, int i) {
 		if (p.isVarArg) {
 			// todo handle empty vararg
 			(values.subList(i, values.size)).javaToWollok
 		}
+		// handle lazy params here ??
 		else
 			values.get(i)
 	}
 
 	def dispatch isVoid(Object nativeObject, String message, Object... parameters) {
 		// TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
-		var method = this.class.methods.findFirst[name == message]
-		
-		if (method == null) false 
-		else method.returnType == Void.TYPE
+		var method = class.methods.findFirst[name == message]
+		method != null && method.returnType == Void.TYPE 
 	}
 
 	def dispatch isVoid(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){

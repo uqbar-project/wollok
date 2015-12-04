@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.context
 
 import java.util.Map
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Simple EvaluationContext impl backed up by a map.
@@ -10,9 +11,9 @@ import org.uqbar.project.wollok.interpreter.UnresolvableReference
  * @author jfernandes
  */
 class MapBasedEvaluationContext implements EvaluationContext {
-	Map<String, Object> values
+	Map<String, WollokObject> values
 	
-	new(Map<String, Object> map) {
+	new(Map<String, WollokObject> map) {
 		values = map
 	}
 	
@@ -30,19 +31,19 @@ class MapBasedEvaluationContext implements EvaluationContext {
 		values.get(variableName)
 	}
 
-	override setReference(String name, Object value) {
+	override setReference(String name, WollokObject value) {
 		if (!values.containsKey(name))
 			// I18N !
 			throw new UnresolvableReference("No reference with name " + name)
 		values.put(name, value)
 	}
 
-	override addReference(String variable, Object value) {
+	override addReference(String variable, WollokObject value) {
 		values.put(variable, value)
 		value
 	}
 	
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	

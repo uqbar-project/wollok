@@ -124,7 +124,12 @@ class XTendUtilExtensions {
 	
 	// TODO: repeated code
 	def static throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
-		new WollokProgramExceptionWrapper((WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters)))
+		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
+	}
+	
+	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
+	def static newException(String exceptionClassName, String message) {
+		new WollokProgramExceptionWrapper(evaluator.newInstance(exceptionClassName, message.javaToWollok)) 
 	}
 	
 	def static String createMessage(Object target, String message, Object... args) {

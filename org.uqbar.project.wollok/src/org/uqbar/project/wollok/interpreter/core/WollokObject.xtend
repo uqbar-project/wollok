@@ -9,7 +9,6 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -22,9 +21,9 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -37,7 +36,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
-	@Accessors val Map<String,Object> instanceVariables = newHashMap
+	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
 	
@@ -59,26 +58,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	override getThisObject() { this }
 	
-	// TODO: parameters should be WollokObject... after we migrate all to be wollok objects
-	override call(String message, Object... parameters) {
+	override call(String message, WollokObject... parameters) {
 		val method = behavior.lookupMethod(message, parameters)
-		if (method != null)
-			return method.call(parameters)
-
-		// TODO: Adding special case for equals, but we have to fix it	
-		if (message == "=="){
-			val javaMethod = this.class.methods.findFirst[name == "equals"]
-			return javaMethod.invoke(this, parameters).javaToWollok
-		}
-		
-		throwMessageNotUnderstood(message, parameters)		
+		if (method == null)
+			throwMessageNotUnderstood(message, parameters)
+		method.call(parameters)
 	}
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
 		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
 		if (this.behavior instanceof WObjectLiteral) {
-			val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, ("does not understand message " + name).javaToWollok)
-			throw new WollokProgramExceptionWrapper(e)
+			throw messageNotUnderstood("does not understand message " + name)
 		}
 		
 		try {
@@ -93,8 +83,13 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		}
 	}
 	
+	def messageNotUnderstood(String message) {
+		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
+		new WollokProgramExceptionWrapper(e)
+	}
+	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
-	def invokeConstructor(Object... objects) {
+	def invokeConstructor(WollokObject... objects) {
 		var constructor = behavior.resolveConstructor(objects)
 		
 		// no-args constructor automatic execution 
@@ -105,7 +100,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			evaluateConstructor(constructor, objects)
 	}
 	
-	def void evaluateConstructor(WConstructor constructor, Object[] objects) {
+	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
 		val constructorEvalContext = constructor.createEvaluationContext(objects)
 		// delegation
 		val other = constructor.delegatingConstructorCall
@@ -133,7 +128,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		]
 	} 
 	
-	def createEvaluationContext(WConstructor declaration, Object... values) {
+	def createEvaluationContext(WConstructor declaration, WollokObject... values) {
 		asEvaluationContext(declaration.parameters.createMap(values))
 	}
 	
@@ -146,7 +141,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			parentContext.resolve(variableName)				
  	}
  	
-	override setReference(String name, Object value) {
+	override setReference(String name, WollokObject value) {
 		if (name == THIS)
 			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
 		if (!instanceVariables.containsKey(name))
@@ -195,11 +190,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 	
 	// UFFF no estoy seguro de esto ya 
-	override addReference(String variable, Object value) {
+	override addReference(String variable, WollokObject value) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		interpreter.addGlobalReference(name, value)
 	}
 	

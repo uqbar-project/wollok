@@ -34,12 +34,13 @@ class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>,
 	// REVIEW: all the convertions between list, array, etc
 	
 	override Object apply(WollokObject args) {
-		val arguments = (args.wollokToJava(List) as List).toArray
+		val list = (args.wollokToJava(List) as List<WollokObject>)
+		val arguments = list.toArray(<WollokObject>newArrayOfSize(list.size))
 		doApply(arguments)
 	}
 
 	@NativeMessage("apply")	
-	def doApply(Object... args) {
+	def doApply(WollokObject... args) {
 		val context = closure.createEvaluationContext(args).then(container)
 		interpreter.performOnStack(closure, context) [|
 			interpreter.eval(closure.expression)
@@ -48,7 +49,7 @@ class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>,
 	
 	
 	
-	def static createEvaluationContext(org.uqbar.project.wollok.wollokDsl.WClosure c, Object... values) { c.parameterNames.createEvaluationContext(values) }
+	def static createEvaluationContext(org.uqbar.project.wollok.wollokDsl.WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }
 	
 	def static getParameterNames(org.uqbar.project.wollok.wollokDsl.WClosure it) { parameters.map[name] }
 	def getParameters() { closure.parameters }
