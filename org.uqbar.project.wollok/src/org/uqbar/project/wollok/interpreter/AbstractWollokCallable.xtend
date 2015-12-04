@@ -41,7 +41,7 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Feature calling
 	// ********************************************************************************************
 	
-	def theVoid() { WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
+	def WollokObject theVoid() { WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def WollokObject call(WMethodDeclaration method, WollokObject... parameters) {
 		val c = method.createEvaluationContext(parameters).then(receiver)
@@ -50,14 +50,14 @@ abstract class AbstractWollokCallable implements WCallable {
 			if (method.native) {
 				// reflective call to native method:
 				val nativeObject = receiver.nativeObjects.get(method.declaringContext)
-				val r = nativeObject.invokeNative(method.name, parameters)
+				val WollokObject r = nativeObject.invokeNative(method.name, parameters)
 				if (nativeObject.isVoid(method.name, parameters))
 					return theVoid
 				else
 					return r
 			}
 			else {
-				val r = method.expression.eval as WollokObject
+				val WollokObject r = method.expression.eval as WollokObject
 				return if (method.expressionReturns)
 						r
 					else
