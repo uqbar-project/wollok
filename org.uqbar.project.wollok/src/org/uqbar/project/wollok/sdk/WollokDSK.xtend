@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.sdk
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Contains class names for Wollok core SDK.
@@ -39,7 +40,7 @@ class WollokDSK {
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	
-	def static getVoid(WollokInterpreter i, EObject context) {
+	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
 	}
 	
