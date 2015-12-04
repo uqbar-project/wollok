@@ -14,44 +14,45 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Cell
 import org.uqbar.project.wollok.game.helpers.Keyboard
 
+/**
+ * @author ?
+ */
 class GameboardTest {
-	
-	Gameboard gameboard;
-	
+	Gameboard gameboard
 	GameboardListener listener
-	
 	VisualComponent component
-	
 	VisualComponent character
-	
 	Cell cell
 
 	@Before
 	def void init(){
 		Keyboard.setInstance(mock(Keyboard))
-		gameboard = new Gameboard()
-		gameboard.title = "UnTìtulo"
-		gameboard.width = 2
-		gameboard.height = 5
+		gameboard = new Gameboard => [
+			title = "UnTitulo"
+			width = 2
+			height = 5
+		]
+		
 		listener = mock(GameboardListener)
 		gameboard.addListener(listener)
-		component = this.createComponent(new Position(0, 0))
+		
+		component = createComponent(new Position(0, 0))
 		gameboard.addComponent(component)
-		character = this.createComponent(new Position(1, 0))
+		character = createComponent(new Position(1, 0))
 		gameboard.addCharacter(character)
 	}
 	
 	@Test
 	def can_create_all_cells() {
 		gameboard.createCells("UnaImagen")
-		Assert.assertEquals(10, gameboard.cells.size());
+		Assert.assertEquals(10, gameboard.cells.size)
 	}
 	
 	@Test
 	def can_return_all_components_in_a_position() {
-		var otherComponent = this.createComponent(new Position(1, 0))
+		var otherComponent = createComponent(new Position(1, 0))
 		gameboard.addComponent(otherComponent)
-		Assert.assertArrayEquals(#{otherComponent, character}, gameboard.getComponentsInPosition(new Position(1, 0)))
+		Assert.assertArrayEquals(#[character, otherComponent], gameboard.getComponentsInPosition(new Position(1, 0)))
 	}
 	
 	@Test
@@ -77,9 +78,9 @@ class GameboardTest {
 	}
 
 	
-	def createComponent(Position position) {
-		var aComponent = mock(VisualComponent)
-		when(aComponent.position).thenReturn(position)
-		aComponent
+	def createComponent(Position p) {
+		mock(VisualComponent) => [
+			when(position).thenReturn(p)	
+		]
 	}
 }

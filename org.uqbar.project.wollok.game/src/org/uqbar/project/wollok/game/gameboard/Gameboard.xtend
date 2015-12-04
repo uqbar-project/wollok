@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import java.util.ArrayList
 import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -13,19 +12,21 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+/**
+ * 
+ */
 @Accessors
 class Gameboard {
-
-	public static Gameboard instance;
+	public static Gameboard instance
 	public static final int CELLZISE = 50
 	private VisualComponent character
-	private List<Cell> cells = new ArrayList<Cell>()
+	private List<Cell> cells = newArrayList
 	
 	public String title
 	public int height
 	public int width
-	public List<VisualComponent> components = new ArrayList<VisualComponent>()
-	public List<GameboardListener> listeners = new ArrayList<GameboardListener>()
+	public List<VisualComponent> components = newArrayList
+	public List<GameboardListener> listeners = newArrayList
 	
 	def static getInstance() {
 		if (instance == null) {
@@ -85,23 +86,26 @@ class Gameboard {
 		this.character.say(aText);
 	}
 	
-	def getComponentsInPosition(Position position) {
-		return this.getComponents().filter [it.position.equals(position)]
+	def getComponentsInPosition(Position p) {
+		components.filter [
+			position == p
+		]
 	}
 
 	// Getters & Setters
 
 	def addCharacter(VisualComponent character) {
-		this.character = character;
-		this.addListener(new ArrowListener(character));
+		this.character = character
+		this.addComponent(character)
+		this.addListener(new ArrowListener(character))
 	}
 
 	def addComponent(VisualComponent component) {
-		this.components.add(component);
+		components.add(component)
 	}
 	
-	def addComponents(Collection<VisualComponent> components) {
-		this.components.addAll(components);
+	def addComponents(Collection<VisualComponent> it) {
+		components.addAll(it)
 	}
 
 	def addListener(GameboardListener aListener){
@@ -109,9 +113,6 @@ class Gameboard {
 	}
 
 	def getComponents() {
-		var others = #{}
-		if (character != null)
-			others = #{character}
-		components + others
+		this.components
 	}
 }

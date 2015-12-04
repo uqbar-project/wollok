@@ -13,62 +13,52 @@ class Position {
 	new() {}
 	
 	new(int x, int y) {
-		this.x = x;
-		this.y = y;
+		this.x = x
+		this.y = y
 	}
 	
-	
 	override public int hashCode() {
-		val int prime = 31;
-		var int result = 1;
-		result = prime * result + this.getX();
-		result = prime * result + this.getY();
-		return result;
+		val prime = 31
+		val result = prime + x
+		prime * result + y
 	}
 	
 	override public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
-		var Position other = obj as Position;
-		if (this.getX() != other.getX())
-			return false;
-		if (this.getY() != other.getY())
-			return false;
-		return true;
+		if (obj == null) return false
+		
+		var Position other = obj as Position
+		x == other.x && y == other.y 
 	}
 	
 	def public int getXinPixels(){
-		return this.getX() * Gameboard.CELLZISE;
+		x * Gameboard.CELLZISE
 	}
 
 	def public int getYinPixels(){
-		return this.getY() * Gameboard.CELLZISE;
+		y * Gameboard.CELLZISE
 	}	
 	
-	def public void incX(int spaces){
-		this.setX(this.getX() + spaces);
+	def public void incX(int spaces) {
+		x = x + spaces
 	}
-	def public void incY(int spaces){
-		this.setY(this.getY() + spaces);
+	
+	def public void incY(int spaces) {
+		y = y + spaces
 	}		
 }
 
 
 class WPosition extends Position {
-	
 	WollokObject position
 	
 	new(WollokObject wObject) {
 		this.position = wObject
 	}
 	
-	override int getX() {
-		position.call("getX").wollokToJava(Integer) as Integer
-	}
+	override getX() { position.getInt("getX") }
+	override getY() { position.getInt("getY") }
 	
-	override int getY() {
-		position.call("getY").wollokToJava(Integer) as Integer
-	}
+	def getInt(WollokObject it, String methodName) { call(methodName).wollokToJava(Integer) as Integer }
 	
 	override setX(int num) {
 		position.call("setX", num.javaToWollok)
