@@ -1,25 +1,26 @@
 package org.uqbar.project.wollok.interpreter
 
 import java.util.List
+import java.util.Map
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-
-import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.eclipse.emf.common.util.EList
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -98,7 +99,7 @@ abstract class AbstractWollokCallable implements WCallable {
 		declaration.parameters.createMap(values).asEvaluationContext
 	}
 	
-	def createMap(EList<WParameter> parameters, Object[] values) {
+	def Map<String, Object> createMap(EList<WParameter> parameters, Object[] values) {
 		var i = 0
 		val m = newHashMap
 		for (p : parameters) {
