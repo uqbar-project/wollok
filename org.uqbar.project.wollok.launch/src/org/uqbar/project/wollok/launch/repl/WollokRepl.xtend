@@ -13,7 +13,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.interpreter.stack.VoidObject
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -21,8 +20,6 @@ import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * 
@@ -107,15 +104,13 @@ class WollokRepl {
 			doPrintReturnValue(obj)
 	}
 	
-	def dispatch doPrintReturnValue(Object obj){
+	def dispatch doPrintReturnValue(Object obj) {
 		println(obj?.toString.returnStyle)
 	}
 
-	def dispatch doPrintReturnValue(String obj){
+	def dispatch doPrintReturnValue(String obj) {
 		println(('"' + obj + '"').returnStyle)
 	}
-
-	def dispatch doPrintReturnValue(VoidObject obj){}
 
 	def parseRepl(CharSequence content, File mainFile) {
 		val resourceSet = injector.getInstance(XtextResourceSet)

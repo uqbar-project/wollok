@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.Method
 import org.uqbar.project.wollok.interpreter.core.WCallable
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -28,7 +29,7 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 			//TODO: model a generic WollokVMException
 			throw new RuntimeException("Operation '" + operationSymbol + "' not supported by interpreter")
 		}
-		[Object a | op.invoke(this, a) ]
+		[ a | op.invoke(this, a) as WollokObject ]
 	}
 	
 	def hasAnnotationForOperation(Method m, String op) {

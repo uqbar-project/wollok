@@ -14,6 +14,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * Abstract base class for all native objects that implements
  * messages as methods.
@@ -31,7 +33,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		this.interpreter = interpreter
 	}
 
-	override call(String message, Object... parameters) {
+	override call(String message, WollokObject... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
 		if (method == null)
 			throw doesNotUnderstand(message, parameters)
@@ -86,7 +88,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 	
 	def throwMessageNotUnderstood(Object nativeObject, String name, Object[] parameters) {
-		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters)))
+		new WollokProgramExceptionWrapper((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters).javaToWollok))
 	}
 
 	def static handlesMessage(Method m, String message, Object... parameters) {

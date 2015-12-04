@@ -39,19 +39,19 @@ class CompositeEvaluationContext implements EvaluationContext {
 			outer.resolve(variableName)
 	}
 
-	override setReference(String name, Object value) {
+	override setReference(String name, WollokObject value) {
 		try
 			inner.setReference(name, value)
 		catch (UnresolvableReference e)
 			outer.setReference(name, value)
 	}
 
-	override addReference(String variable, Object value) {
+	override addReference(String variable, WollokObject value) {
 		inner.addReference(variable, value)
 		value
 	}
 	
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		outer.addGlobalReference(name,value)
 	}
 

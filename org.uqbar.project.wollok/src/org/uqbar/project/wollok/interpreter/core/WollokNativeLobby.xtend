@@ -14,10 +14,13 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  * a nivel root del archivo. Es decir que estas funciones
  * no están disponibles dentro de un objeto).
  * 
+ * @deprecated this is the only "special" evalcontext which is not a WollokObject.
+ * That's not happy at all.
+ * 
  * @author jfernandes
  */
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext {
-	static var Map<String,Object> localProgramVariables = newHashMap
+	static var Map<String, WollokObject> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
 	
 	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {
@@ -25,7 +28,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		this.console = console
 	}
 	
-	override getThisObject() { this }
+	override getThisObject() { throw new UnsupportedOperationException("Cannot use this in a program's code !")}
 	
 	override allReferenceNames() {
 		localProgramVariables.keySet.map[new WVariable(it, true)]
@@ -41,7 +44,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
 	}
 	
-	override setReference(String variableName, Object value) {
+	override setReference(String variableName, WollokObject value) {
 		if (!localProgramVariables.containsKey(variableName)){
 			if (!interpreter.globalVariables.containsKey(variableName))
 				// I18N !
@@ -53,7 +56,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 			localProgramVariables.put(variableName,value)
 	}
 	
-	override addReference(String variable, Object value) {
+	override addReference(String variable, WollokObject value) {
 		localProgramVariables.put(variable, value)
 		value
 	}
@@ -70,7 +73,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		Thread.sleep(milis)
 	}
 	
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		interpreter.globalVariables.put(name,value)
 		value
 	}

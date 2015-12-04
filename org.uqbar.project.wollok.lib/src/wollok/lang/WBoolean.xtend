@@ -1,6 +1,7 @@
 package wollok.lang
 
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
@@ -15,10 +16,17 @@ class WBoolean extends AbstractJavaWrapper<Boolean> {
 	}
 	
 	@NativeMessage("&&")
-	def and(()=>Object lazyOther) { isTrue && isTrue(lazyOther.apply) }
+	def and(WollokObject lazyOther) { 
+		if (!isTrue)
+			return false
+		else
+			return isTrue(lazyOther.apply)
+	}
 	
 	@NativeMessage("||")
-	def or(()=>Object lazyOther) { isTrue || isTrue(lazyOther.apply) }
+	def or(WollokObject lazyOther) { isTrue || isTrue(lazyOther.apply) }
+	
+	def apply(WollokObject object) { (object as LazyWollokObject).eval }
 	
 	def isTrue() { wrapped }
 	def isFalse() { !wrapped }

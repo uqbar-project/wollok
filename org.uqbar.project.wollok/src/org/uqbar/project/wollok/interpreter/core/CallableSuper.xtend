@@ -19,13 +19,10 @@ class CallableSuper extends AbstractWollokCallable {
 		this.behavior = behavior
 	}
 	
-	override call(String message, Object... parameters) {
+	override call(String message, WollokObject... parameters) {
 		val method = behavior.lookupMethod(message, parameters)
 		if (method == null)
-			// I18N !
 			throw throwMessageNotUnderstood(this, message, parameters)
-//			throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»(«parameters.map["p"].join(',')»)''')
-		
 		method.call(parameters)
 	}
 	

@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.api
 
 import java.io.Serializable
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Abstraction over an object that knows 
@@ -19,8 +20,8 @@ import org.eclipse.emf.ecore.EObject
  */
 interface XInterpreterEvaluator extends Serializable {
 	
-	def Object evaluate(EObject o)
+	def WollokObject evaluate(EObject o)
 
-	def (Object,()=>Object)=>Object resolveBinaryOperation(String operator)
+	def (WollokObject,()=>WollokObject)=>WollokObject resolveBinaryOperation(String operator)
 	
 }

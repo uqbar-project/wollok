@@ -22,7 +22,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	WollokTestsReporter wollokTestsReporter
 	
 	// EVALUATIONS (as multimethods)
-	override dispatch Object evaluate(WFile it) { 
+	override dispatch evaluate(WFile it) { 
 		// Files should are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
 			wollokTestsReporter.testsToRun(it, tests)
@@ -33,7 +33,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		}
 	}
 	
-	override dispatch Object evaluate(WTest test) {
+	override dispatch evaluate(WTest test) {
 		try {
 			wollokTestsReporter.testStart(test)
 			val x = test.elements.evalAll

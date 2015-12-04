@@ -47,7 +47,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				var x
 			}
 			program a {
-				this.println(obj1)
+				console.println(obj1)
 			}
 		'''.interpretPropagatingErrors
 	}
