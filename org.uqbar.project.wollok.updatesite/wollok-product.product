@@ -613,6 +613,7 @@ Library.
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.pde"/>
+      <feature id="org.eclipse.equinox.executable" version="3.6.200.v20150602-1417"/>
    </features>
 
    <configurations>
