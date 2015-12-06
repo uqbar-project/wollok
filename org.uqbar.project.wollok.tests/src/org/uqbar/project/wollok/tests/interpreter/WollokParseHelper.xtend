@@ -29,8 +29,8 @@ class WollokParseHelper extends ParseHelper<WFile>{
 									WollokConstants.TEST_EXTENSION
 							else
 									WollokConstants.CLASS_OBJECTS_EXTENSION
+		val uri = resourceSetToUse.calculateUriFor(file).trimFileExtension.appendFileExtension(fileExtension)
 		
-		val uri = resourceSetToUse.calculateUriFor(file)
 		if (createFilesOnDisk) {
 			val f = new File(uri.toFileString)
 			
@@ -40,6 +40,7 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		}
 		
 		val p = parse(getAsStream(file.value), uri, null, resourceSetToUse)
+		p.eResource.URI = uri
 		if (p == null)
 			throw new RuntimeException("Error while parsing program with resourceSet = " + resourceSetToUse.resources + " the following program: " + file.value)
 		return p

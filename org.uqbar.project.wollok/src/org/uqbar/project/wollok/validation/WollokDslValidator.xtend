@@ -466,7 +466,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def testInTestFile(WTest t){
+	def testInTestFile(WTest t) {
 		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION) 
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
 	}
