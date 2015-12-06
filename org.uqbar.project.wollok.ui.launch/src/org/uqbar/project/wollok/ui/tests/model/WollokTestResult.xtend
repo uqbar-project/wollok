@@ -59,7 +59,8 @@ class WollokTestResult {
 		ended(state)
 		this.exception = e
 		this.lineNumber = lineNumber
-		this.errorResource = URI.createURI(resource)
+		if (resource != null)
+			this.errorResource = URI.createURI(resource)
 	}
 	
 	def ended(WollokTestState state) {

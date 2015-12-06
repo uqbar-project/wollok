@@ -20,7 +20,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 
-			test "pepita" {
+			program p {
 				assert.that(pepita.energia() == 0)	
 				assert.equals(0, pepita.energia())	
 				
@@ -43,7 +43,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					}
 				}
 
-				test "pepita" {
+				program pepitao {
 					try {
 						assert.equals(7, pepita.energia())
 						assert.fail("should have failed")
@@ -68,7 +68,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 
-			test pepita {
+			program p {
 				tester.assert(7 == pepita.energia())	
 			}
 		'''.interpretPropagatingErrors

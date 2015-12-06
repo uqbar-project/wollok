@@ -37,10 +37,6 @@
                name="startupProgressRect"
                value="5,275,445,15">
          </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
          <!-- THEME -->
          <property
            name="cssTheme"
@@ -55,7 +51,11 @@
          <property  
                name="introTitle"  
                value="Wollok Programming Environment">
-         </property>  
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
    

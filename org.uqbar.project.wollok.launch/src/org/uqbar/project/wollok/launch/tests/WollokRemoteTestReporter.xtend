@@ -57,7 +57,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource.toString)
+		remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
 	}
 	
 	def dispatch String convertToString(Exception exception) {

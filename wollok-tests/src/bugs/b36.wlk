@@ -1,4 +1,4 @@
-object pepe { 
+object pepe {
 	var categoria 
 	var faltas 
 	var bonoproductividad = true 

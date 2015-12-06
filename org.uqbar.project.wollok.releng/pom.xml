@@ -29,10 +29,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</modules>
 
 	<properties>
-		<tycho-version>0.22.0</tycho-version>
+		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.7.3</xtext.version>
-		<xsemantics-version>1.7.2</xsemantics-version>
+		<xtext.version>2.9.0</xtext.version>
+		<xsemantics-version>1.9.0.rc2</xsemantics-version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
@@ -59,21 +59,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<tag>HEAD</tag>
 	</scm>
 
-	<!-- REVIEWME: p2 repositories are not needed anymore if we use a target platform -->
 	<repositories>
+	<!-- REVIEWME: p2 repositories are not needed anymore if we use a target platform 
 		<repository>
 			<id>eclipse</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
+			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
+		-->
 		<repository>
 			<id>Xtext Update Site</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/maintenance/</url>
-			<!-- 2.8
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/</url>
-			-->
 		</repository>
+		<!-- 
 		<repository>
 			<id>cubussapiens Update Site</id>
 			<layout>p2</layout>
@@ -85,13 +84,25 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<url>http://www.xpect-tests.org/updatesite/nightly/</url>
 		</repository>
 
-		<!-- XSemantics -->
 		<repository>
 			<id>XSemantics Update Site</id>
 			<layout>p2</layout>
-			<url>http://sourceforge.net/projects/xsemantics/files/updates/releases/1.7</url>
+			<url>http://sourceforge.net/projects/xsemantics/files/updates/releases/1.9</url>
 		</repository>
-		<!-- /XSemantics -->
+		
+	-->
+		<repository>
+			<id>codehaus-snapshots</id>
+			<name>disable dead 'Codehaus Snapshots' repository, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=481478</name>
+			<url>http://nexus.codehaus.org/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	
 	</repositories>
 
 	<pluginRepositories>
@@ -243,6 +254,68 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											build-helper-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.9.1,)
+										</versionRange>
+										<goals>
+											<goal>add-resource</goal>
+											<goal>add-source</goal>
+											<goal>add-test-resource</goal>
+											<goal>add-test-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-compiler-plugin
+										</artifactId>
+										<versionRange>
+											[0.23.1,)
+										</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-packaging-plugin
+										</artifactId>
+										<versionRange>
+											[0.23.1,)
+										</versionRange>
+										<goals>
+											<goal>build-qualifier</goal>
+											<goal>validate-id</goal>
+											<goal>validate-version</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -267,9 +340,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<plugin>
 			  <groupId>org.apache.maven.plugins</groupId>
 			  <artifactId>maven-deploy-plugin</artifactId>
-			  <!--  TODO: version here
-			  <version>xxx</version>
-			   -->
+			  <version>2.8.2</version>
 			  <configuration>
 			    <skip>true</skip>
 			  </configuration>

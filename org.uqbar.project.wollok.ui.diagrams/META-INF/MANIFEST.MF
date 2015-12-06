@@ -3,8 +3,7 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Built-By: hudsonbuild
 Bundle-SymbolicName: org.uqbar.project.wollok.ui.diagrams;singleton:=true
-Require-Bundle: org.eclipse.gef;bundle-version="[3.5.0,4.0.0)",
- org.eclipse.ui;bundle-version="[3.2.0,4.0.0)",
+Require-Bundle: org.eclipse.ui;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.core.resources;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.ui.views;bundle-version="[3.2.0,4.0.0)",
@@ -12,12 +11,13 @@ Require-Bundle: org.eclipse.gef;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.ui.ide;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.jface;bundle-version="[3.2.0,4.0.0)",
  com.google.guava;bundle-version="15.0.0",
- org.eclipse.xtend.lib;bundle-version="[2.7.3,2.8.0)",
+ org.eclipse.xtend.lib;bundle-version="2.9.0",
  org.uqbar.project.wollok;bundle-version="1.3.0",
  org.uqbar.project.wollok.ui;bundle-version="1.3.0";visibility:=reexport,
- org.eclipse.xtext.ui;bundle-version="[2.7.3,2.8.0)",
+ org.eclipse.xtext.ui;bundle-version="2.9.0",
  org.eclipse.debug.ui;bundle-version="3.9.0",
- org.uqbar.project.wollok.ui.launch;bundle-version="1.3.0"
+ org.uqbar.project.wollok.ui.launch;bundle-version="1.3.0",
+ org.eclipse.gef
 Bundle-Activator: org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 Bundle-Version: 1.3.0.qualifier
 Build-Jdk: 1.6.0_21

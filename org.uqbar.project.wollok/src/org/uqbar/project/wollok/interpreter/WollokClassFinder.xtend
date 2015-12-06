@@ -4,7 +4,6 @@ import com.google.inject.Inject
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.scoping.IGlobalScopeProvider
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
