@@ -3,7 +3,8 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import com.google.inject.Injector
 import java.io.Serializable
-import org.apache.log4j.Logger
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
@@ -30,7 +31,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
  */
  // Rename to XInterpreter
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
-	static Logger log = Logger.getLogger(WollokInterpreter)
+	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 	
 	@Accessors val globalVariables = <String,WollokObject> newHashMap

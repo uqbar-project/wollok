@@ -20,6 +20,7 @@ import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * 
@@ -97,10 +98,11 @@ class WollokRepl {
 			}
 	}
 	
+	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
 		if (obj == null)
 			println("null".returnStyle)
-		else 
+		else if (obj instanceof WollokObject && !(obj as WollokObject).isVoid)
 			doPrintReturnValue(obj)
 	}
 	

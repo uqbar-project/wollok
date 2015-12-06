@@ -28,6 +28,8 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * A wollok user defined (dynamic) object.
@@ -177,6 +179,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 		
 	def getKind() { behavior }
+	
+	def isVoid() { this == WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
 	

@@ -69,7 +69,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	def createCommandHandler(int port) {
-		Thread.sleep(getSleepTime())
+		Thread.sleep(sleepTime)
 		client = new Client("localhost", port, new CallHandler)
 		client.getGlobal(DebugCommandHandler) as DebugCommandHandler
 	}
@@ -84,7 +84,6 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	
 	override getName() throws DebugException {
 		if (name == null) {
-			name = "Wollok Program"
 			try
 				name = launch.launchConfiguration.getMain
 			catch (CoreException e) {
@@ -96,7 +95,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	override getProcess() { process }
 	override ILaunch getLaunch() { launch } 
 	override getThreads() throws DebugException { wollokThreads }
-	override hasThreads() throws DebugException {	true }
+	override hasThreads() throws DebugException { true }
 	def getWThread() throws DebugException { wollokThread }
 	
 	override supportsBreakpoint(IBreakpoint breakpoint) {
@@ -197,7 +196,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	
 	def breakpointHit(String fileURI, int lineNumber) {
 		findAndSetCurrentBreakpoint(fileURI, lineNumber)
-		suspended(DebugEvent.BREAKPOINT);
+		suspended(DebugEvent.BREAKPOINT)
 	}
 	
 	def findAndSetCurrentBreakpoint(String fileURI, int lineNumber) {
