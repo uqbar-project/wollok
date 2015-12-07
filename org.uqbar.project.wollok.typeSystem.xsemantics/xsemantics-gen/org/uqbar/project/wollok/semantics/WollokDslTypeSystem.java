@@ -477,11 +477,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleInferDefault(final RuleEnvironment G, final RuleApplicationTrace _trace_, final EObject obj) throws RuleFailedException {
     EList<EObject> _eContents = obj.eContents();
-    final Consumer<EObject> _function = new Consumer<EObject>() {
-      public void accept(final EObject e) {
-        /* G |- e */
-        inferTypesInternal(G, _trace_, e);
-      }
+    final Consumer<EObject> _function = (EObject e) -> {
+      /* G |- e */
+      inferTypesInternal(G, _trace_, e);
     };
     _eContents.forEach(_function);
     return new Result<Boolean>(true);
@@ -508,11 +506,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleInferWProgram(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WProgram obj) throws RuleFailedException {
     EList<WExpression> _elements = obj.getElements();
-    final Consumer<WExpression> _function = new Consumer<WExpression>() {
-      public void accept(final WExpression e) {
-        /* G |- e */
-        inferTypesInternal(G, _trace_, e);
-      }
+    final Consumer<WExpression> _function = (WExpression e) -> {
+      /* G |- e */
+      inferTypesInternal(G, _trace_, e);
     };
     _elements.forEach(_function);
     return new Result<Boolean>(true);
@@ -568,31 +564,23 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       boolean _notEquals_1 = (!Objects.equal(_constructors, null));
       if (_notEquals_1) {
         EList<WConstructor> _constructors_1 = c.getConstructors();
-        final Consumer<WConstructor> _function = new Consumer<WConstructor>() {
-          public void accept(final WConstructor cons) {
-            /* G |- cons */
-            inferTypesInternal(G, _trace_, cons);
-          }
+        final Consumer<WConstructor> _function = (WConstructor cons) -> {
+          /* G |- cons */
+          inferTypesInternal(G, _trace_, cons);
         };
         _constructors_1.forEach(_function);
       }
       Iterable<WMethodDeclaration> _methods = WMethodContainerExtensions.methods(c);
-      final Procedure1<Iterable<WMethodDeclaration>> _function_1 = new Procedure1<Iterable<WMethodDeclaration>>() {
-        public void apply(final Iterable<WMethodDeclaration> it) {
-          final Consumer<WMethodDeclaration> _function = new Consumer<WMethodDeclaration>() {
-            public void accept(final WMethodDeclaration m) {
-              G.add(m, WollokType.WAny);
-            }
-          };
-          it.forEach(_function);
-          final Consumer<WMethodDeclaration> _function_1 = new Consumer<WMethodDeclaration>() {
-            public void accept(final WMethodDeclaration m) {
-              /* G |- m */
-              inferTypesInternal(G, _trace_, m);
-            }
-          };
-          it.forEach(_function_1);
-        }
+      final Procedure1<Iterable<WMethodDeclaration>> _function_1 = (Iterable<WMethodDeclaration> it) -> {
+        final Consumer<WMethodDeclaration> _function_2 = (WMethodDeclaration m) -> {
+          G.add(m, WollokType.WAny);
+        };
+        it.forEach(_function_2);
+        final Consumer<WMethodDeclaration> _function_3 = (WMethodDeclaration m) -> {
+          /* G |- m */
+          inferTypesInternal(G, _trace_, m);
+        };
+        it.forEach(_function_3);
       };
       ObjectExtensions.<Iterable<WMethodDeclaration>>operator_doubleArrow(_methods, _function_1);
     }
@@ -620,10 +608,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleInferConstructor(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WConstructor c) throws RuleFailedException {
     EList<WParameter> _parameters = c.getParameters();
-    final Consumer<WParameter> _function = new Consumer<WParameter>() {
-      public void accept(final WParameter p) {
-        G.add(p, WollokType.WAny);
-      }
+    final Consumer<WParameter> _function = (WParameter p) -> {
+      G.add(p, WollokType.WAny);
     };
     _parameters.forEach(_function);
     /* G |- c.expression : var WollokType returnType */
@@ -681,10 +667,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       }
     }
     EList<WParameter> _parameters = m.getParameters();
-    final Consumer<WParameter> _function = new Consumer<WParameter>() {
-      public void accept(final WParameter p) {
-        G.add(p, WollokType.WAny);
-      }
+    final Consumer<WParameter> _function = (WParameter p) -> {
+      G.add(p, WollokType.WAny);
     };
     _parameters.forEach(_function);
     WExpression _expression = m.getExpression();
@@ -710,11 +694,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         }
       }
       EList<WParameter> _parameters_1 = m.getParameters();
-      final Function1<WParameter, Boolean> _function_1 = new Function1<WParameter, Boolean>() {
-        public Boolean apply(final WParameter p) {
-          WollokType _env = WollokDslTypeSystem.this.<WollokType>env(G, p, WollokType.class);
-          return Boolean.valueOf(Objects.equal(_env, WollokType.WAny));
-        }
+      final Function1<WParameter, Boolean> _function_1 = (WParameter p) -> {
+        WollokType _env = this.<WollokType>env(G, p, WollokType.class);
+        return Boolean.valueOf(Objects.equal(_env, WollokType.WAny));
       };
       Iterable<WParameter> _filter = IterableExtensions.<WParameter>filter(_parameters_1, _function_1);
       for (final WParameter p : _filter) {
@@ -754,10 +736,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleInferWClosure(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WClosure c) throws RuleFailedException {
     EList<WParameter> _parameters = c.getParameters();
-    final Consumer<WParameter> _function = new Consumer<WParameter>() {
-      public void accept(final WParameter p) {
-        G.add(p, WollokType.WAny);
-      }
+    final Consumer<WParameter> _function = (WParameter p) -> {
+      G.add(p, WollokType.WAny);
     };
     _parameters.forEach(_function);
     WExpression _expression = c.getExpression();
@@ -1806,11 +1786,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         
       }
       Iterable<WMethodDeclaration> _methods = WMethodContainerExtensions.methods(obj);
-      final Consumer<WMethodDeclaration> _function = new Consumer<WMethodDeclaration>() {
-        public void accept(final WMethodDeclaration it) {
-          /* G |- it */
-          inferTypesInternal(G, _trace_, it);
-        }
+      final Consumer<WMethodDeclaration> _function = (WMethodDeclaration it) -> {
+        /* G |- it */
+        inferTypesInternal(G, _trace_, it);
       };
       _methods.forEach(_function);
       t = newType;
@@ -1888,32 +1866,30 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   protected Result<MessageType> applyRuleTypeOfMessage(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WMemberFeatureCall call) throws RuleFailedException {
     MessageType t = null; // output parameter
     EList<WExpression> _memberCallArguments = call.getMemberCallArguments();
-    final Function1<WExpression, WollokType> _function = new Function1<WExpression, WollokType>() {
-      public WollokType apply(final WExpression a) {
-        WollokType _xtrycatchfinallyexpression = null;
-        try {
-          WollokType _xblockexpression = null;
-          {
-            /* G |- a : var WollokType argType */
-            WollokType argType = null;
-            Result<WollokType> result = typeInternal(G, _trace_, a);
-            checkAssignableTo(result.getFirst(), WollokType.class);
-            argType = (WollokType) result.getFirst();
-            
-            _xblockexpression = (argType);
-          }
-          _xtrycatchfinallyexpression = _xblockexpression;
-        } catch (final Throwable _t) {
-          if (_t instanceof RuleFailedException) {
-            final RuleFailedException e = (RuleFailedException)_t;
-            VoidType _voidType = new VoidType();
-            _xtrycatchfinallyexpression = _voidType;
-          } else {
-            throw Exceptions.sneakyThrow(_t);
-          }
+    final Function1<WExpression, WollokType> _function = (WExpression a) -> {
+      WollokType _xtrycatchfinallyexpression = null;
+      try {
+        WollokType _xblockexpression = null;
+        {
+          /* G |- a : var WollokType argType */
+          WollokType argType = null;
+          Result<WollokType> result = typeInternal(G, _trace_, a);
+          checkAssignableTo(result.getFirst(), WollokType.class);
+          argType = (WollokType) result.getFirst();
+          
+          _xblockexpression = (argType);
         }
-        return _xtrycatchfinallyexpression;
+        _xtrycatchfinallyexpression = _xblockexpression;
+      } catch (final Throwable _t) {
+        if (_t instanceof RuleFailedException) {
+          final RuleFailedException e = (RuleFailedException)_t;
+          VoidType _voidType = new VoidType();
+          _xtrycatchfinallyexpression = _voidType;
+        } else {
+          throw Exceptions.sneakyThrow(_t);
+        }
       }
+      return _xtrycatchfinallyexpression;
     };
     final List<WollokType> paramTypes = ListExtensions.<WExpression, WollokType>map(_memberCallArguments, _function);
     String _feature = call.getFeature();
