@@ -34,10 +34,10 @@ http://wollok.uqbar-project.org
       startupMessageRect="7,252,445,20"
       startupForegroundColor="FFF9D9" />
    <launcher name="wollok">
-      <macosx icon="../../org.uqbar.project.wollok.ui/icons/wollok-logo-128.icns"/>
+      <macosx icon="../../org.uqbar.project.wollok.ui/icons/wollok-logo.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="../../org.uqbar.project.wollok.ui/icons/wollok-logo-128.ico"/>
+         <ico path="../../org.uqbar.project.wollok.ui/icons/wollok-logo.ico"/>
          <bmp/>
       </win>
    </launcher>
@@ -635,6 +635,8 @@ Library.
    </configurations>
 
    <repositories>
+      <repository location="http://update.uqbar.org/wollok/stable" enabled="true" />
+      <repository location="http://update.uqbar.org/wollok/stable" enabled="true" />
       <repository location="http://update.uqbar.org/wollok/stable" enabled="true" />
    </repositories>
 
