@@ -60,37 +60,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</scm>
 
 	<repositories>
-	<!-- REVIEWME: p2 repositories are not needed anymore if we use a target platform 
-		<repository>
-			<id>eclipse</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars</url>
-		</repository>
-		-->
+		<!-- i think this can be removed -->
 		<repository>
 			<id>Xtext Update Site</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/</url>
 		</repository>
-		<!-- 
-		<repository>
-			<id>cubussapiens Update Site</id>
-			<layout>p2</layout>
-			<url>http://eclipse.cubussapiens.hu</url>
-		</repository>
-		<repository>
-			<id>XPect Update Site</id>
-			<layout>p2</layout>
-			<url>http://www.xpect-tests.org/updatesite/nightly/</url>
-		</repository>
-
-		<repository>
-			<id>XSemantics Update Site</id>
-			<layout>p2</layout>
-			<url>http://sourceforge.net/projects/xsemantics/files/updates/releases/1.9</url>
-		</repository>
-		
-	-->
+		<!-- -->
 		<repository>
 			<id>codehaus-snapshots</id>
 			<name>disable dead 'Codehaus Snapshots' repository, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=481478</name>
@@ -394,11 +370,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 							<ws>cocoa</ws>
 							<arch>x86_64</arch>
 						</environment>
+						<!-- trying to fix travis build in eclipse mars (xtext 2.9) 
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86</arch>
 						</environment>
+						-->
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
