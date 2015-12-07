@@ -540,7 +540,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
 		}
 		catch (RuntimeException e) {
-			e.printStackTrace
 			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
 		}
 	}

@@ -12,9 +12,7 @@ import static org.uqbar.project.wollok.Messages.*
  */
 class ToStringBuilder {
 	
-	def static shortLabel(WollokObject obj) {
-		obj.behavior.objectDescription
-	}
+	def static shortLabel(WollokObject obj) { obj.behavior.objectDescription }
 
 	def static dispatch objectDescription(WClass clazz) { OBJECT_DESCRIPTION_ARTICLE + clazz.name }
 	def static dispatch objectDescription(WObjectLiteral obj) { OBJECT_DESCRIPTION_AN_OBJECT }

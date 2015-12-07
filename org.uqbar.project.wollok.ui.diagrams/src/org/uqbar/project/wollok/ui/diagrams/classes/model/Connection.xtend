@@ -80,7 +80,7 @@ class Connection extends ModelElement {
 
 	def reconnect(Shape newSource, Shape newTarget) {
 		if (newTarget == null || newSource == newTarget) {
-			throw new IllegalArgumentException
+			throw new IllegalArgumentException("New target for connection cannot be null")
 		}
 		disconnect
 		this.source = newSource

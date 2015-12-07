@@ -127,7 +127,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
-	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.object class ?
+	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.Object class ?
 	def static dispatch WClass parent(WNamedObject c) { c.parent }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
@@ -179,6 +179,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ************************************************************************
 	// ** Basic methods
 	// ************************************************************************
+	
+	def static superClassesIncludingYourself(WClass cl) {
+		val classes = newArrayList
+		cl.superClassesIncludingYourselfTopDownDo[classes.add(it)]
+		classes
+	}
 	
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
 		if (cl.parent != null) cl.parent.superClassesIncludingYourselfTopDownDo(action)

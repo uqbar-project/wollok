@@ -13,11 +13,11 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 class CommandHandlerFactory {
 	
 	def static createCommandHandler(XDebugger debugger, int port) {
-		val callHandler = new CallHandler
-		val server = new Server
-		
-		callHandler.registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server))
-		server.bind(port, callHandler)
+		new CallHandler => [
+			val server = new Server
+			registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server))
+			server.bind(port, it)
+		]
 	}
 	
 	def static remoteObjectName() { DebugCommandHandler.simpleName }

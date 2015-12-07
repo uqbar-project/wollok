@@ -28,7 +28,6 @@ class XDebugStackFrameVariable implements Serializable {
 			new XWollokObjectDebugValue(variable.name, object)
 	}
 	def dispatch asRemoteValue(Object o) {
-		println("Creating xdebug value for unknonw object" + o) 
 		new XDebugValue(o.toString)
 	}
 	
