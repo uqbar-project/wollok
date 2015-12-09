@@ -296,7 +296,7 @@
          targetID="org.uqbar.project.wollok.WollokDsl"
          id="org.uqbar.project.wollok.debugger.RulerPopupActions">
          <action
-            label="Toggle Breakpoint Mierda"
+            label="Toggle Breakpoint"
             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
             menubarPath="additions"
             id="org.uqbar.project.wollok.debugger.rulerContextMenu.toggleBreakpointAction">

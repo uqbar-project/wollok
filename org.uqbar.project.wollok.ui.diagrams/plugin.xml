@@ -26,4 +26,13 @@
               name="Wollok Diagrams">
         </category>
      </extension>
+     <extension
+           point="org.eclipse.ui.perspectiveExtensions">
+        <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+        	<view id="org.uqbar.project.wollok.ui.diagrams.object" 
+                relative="org.eclipse.ui.views.ContentOutline"
+                relationship="stack"
+                visible="true"/>
+        </perspectiveExtension>
+     </extension>
 </plugin>
