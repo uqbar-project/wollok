@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Contains class names for Wollok core SDK.
@@ -42,6 +43,11 @@ class WollokDSK {
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
+	}
+	
+	def static isBasicType(WollokObject it) {
+		val fqn = behavior.fqn
+		fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
 	}
 	
 }

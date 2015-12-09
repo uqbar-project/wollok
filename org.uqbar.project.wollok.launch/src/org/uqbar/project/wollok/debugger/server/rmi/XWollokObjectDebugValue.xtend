@@ -10,7 +10,7 @@ import static extension java.lang.System.*
 import static extension org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.debugVariables
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.shortLabel
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.sdk.WollokDSK
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 /**
@@ -29,13 +29,13 @@ class XWollokObjectDebugValue extends XDebugValue {
 		this.typeName = obj.behavior.fqn
 		this.varName = varName
 		// should be lazily fetched
-		variables = obj.debugVariables
+		if (!obj.isBasicType)
+			variables = obj.debugVariables
 	}
 	
 	def static description(WollokObject obj) {
-		val fqn = obj.behavior.fqn
-		if (fqn == Integer || fqn == DOUBLE)
-			((obj.call("toString") as WollokObject).getNativeObject(WollokDSK.STRING) as JavaWrapper<String>).wrapped
+		if (obj.isBasicType)
+			((obj.call("toString") as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		else
 			obj.shortLabel + " (id=" + obj.identityHashCode + ")"
 	}

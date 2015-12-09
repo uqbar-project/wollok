@@ -21,7 +21,7 @@ class XDebugStackFrame implements Serializable {
 	}
 	
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext context) {
-		newArrayList(context.allReferenceNames.map[it.toVariable(context)])
+		newArrayList(context.allReferenceNames.map[toVariable(context)])
 	}
 	
 	def static toVariable(WVariable variable, EvaluationContext context) {

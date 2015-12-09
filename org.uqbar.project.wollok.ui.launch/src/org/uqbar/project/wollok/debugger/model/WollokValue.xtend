@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.debugger.model
 
+import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.model.IValue
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
-import org.eclipse.debug.core.DebugException
 
 /**
  * Dummy value impl
@@ -14,7 +14,6 @@ class WollokValue extends WollokDebugElement implements IValue {
 	
 	new(WollokDebugTarget target, String value) {
 		super(target)
-		println("creating value directly for " + value)
 		this.value = value
 	}
 	

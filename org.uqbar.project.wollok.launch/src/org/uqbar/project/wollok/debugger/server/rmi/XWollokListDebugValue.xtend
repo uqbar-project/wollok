@@ -24,7 +24,7 @@ class XWollokListDebugValue extends XDebugValue {
 	}
 	
 	def getElements(WollokObject object) {
-		val wrapped = object.getNativeObject(LIST) as JavaWrapper<List>
+		val wrapped = object.getNativeObject(LIST) as JavaWrapper<List<WollokObject>>
 		wrapped.wrapped
 	}
 	
