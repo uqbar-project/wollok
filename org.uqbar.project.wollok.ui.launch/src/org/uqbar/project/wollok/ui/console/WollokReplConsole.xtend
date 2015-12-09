@@ -49,8 +49,10 @@ class WollokReplConsole extends TextConsole {
 
 	val lastCommands = new OrderedBoundedSet<String>(10)
 
+	def static getConsoleName() { "Wollok REPL Console" }
+
 	new() {
-		super(WollokReplConsole.consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
+		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 	}
@@ -58,25 +60,23 @@ class WollokReplConsole extends TextConsole {
 	def startForProcess(IProcess process) {
 		loadHistory
 		this.process = process
-		this.streamsProxy = process.streamsProxy
-		this.activate
+		streamsProxy = process.streamsProxy
+		activate
 		outputTextEnd = 0
 		
-
 		runInUI[
-			this.clearConsole
+			clearConsole
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
 		]
 		
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
-			runInUI("WollokReplConsole-UpdateText")[
-				val newText = this.outputText + text
-				this.document.set(newText)
-				outputTextEnd += text.length 
-				this.page.viewer.textWidget.caretOffset = outputTextEnd
-				this.updateInputBuffer	
-				this.activate
+			runInUI("WollokReplConsole-UpdateText") [
+				page.viewer.textWidget.append(text)
+				outputTextEnd += text.length
+				page.viewer.textWidget.caretOffset = outputTextEnd
+				updateInputBuffer
+				activate
 			]
 		]
 	}
@@ -87,7 +87,7 @@ class WollokReplConsole extends TextConsole {
 	def getOutputText() { document.get(0, outputTextEnd) }
 	
 	override clearConsole() {
-		super.clearConsole()
+		super.clearConsole
 		outputTextEnd = 0
 	}
 	
@@ -120,15 +120,11 @@ class WollokReplConsole extends TextConsole {
 		newFile.create(new ByteArrayInputStream(content.bytes), false, null)
 	}
 
-	static def getConsoleName() {
-		"Wollok REPL Console"
-	}
-		
-	def updateInputBuffer(){
-		if (outputTextEnd > document.length){
+	def updateInputBuffer() {
+		if (outputTextEnd > document.length) {
 			outputTextEnd = document.length
 		}
-		inputBuffer = document.get(outputTextEnd, this.document.length - outputTextEnd)
+		inputBuffer = document.get(outputTextEnd, document.length - outputTextEnd)
 	}
 	
 	def addCommandToHistory() {
@@ -141,13 +137,13 @@ class WollokReplConsole extends TextConsole {
 		}
 	}
 	
-	def saveHistory(){
+	def saveHistory() {
 		runInBackground [
-			historyFilePath.asObjectStream.writeObject(this.lastCommands)
+			historyFilePath.asObjectStream.writeObject(lastCommands)
 		]
 	}
 
-	def loadHistory(){
+	def loadHistory() {
 		runInBackground [
 			val javaFile = historyFilePath.asJavaFile
 			
@@ -164,14 +160,14 @@ class WollokReplConsole extends TextConsole {
 		ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
 	}
 	
-	def sendInputBuffer(){
+	def sendInputBuffer() {
 		val x = inputBuffer + "\n";
 		
 		addCommandToHistory
 		sessionCommands += inputBuffer
 		
 		streamsProxy.write(x)
-		outputTextEnd += x.length 
+		outputTextEnd += x.length
 		updateInputBuffer
 		page.viewer.textWidget.caretOffset = outputTextEnd
 	}
@@ -179,15 +175,14 @@ class WollokReplConsole extends TextConsole {
 	def numberOfHistories() { lastCommands.size }
 	
 	def loadHistory(int pos) {
-		runInUI[
+		runInUI [
 			inputBuffer = if (lastCommands.size == 0) ""
 			else {
 				val ps = if (pos >= lastCommands.size) 0 else pos
 				lastCommands.last(ps)
 			}
 			
-			val newText = document.get(0, outputTextEnd) + inputBuffer
-			document.set(newText)
+			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer)
 		]
 	}
 	
@@ -202,9 +197,7 @@ class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
 		this.console = console
 	}
 	
-	override getStyleRanges(int offset, int length) {
-		null
-	}
+	override getStyleRanges(int offset, int length) { null }
 	
 	override isReadOnly(int offset) { offset < console.outputTextEnd }
 	

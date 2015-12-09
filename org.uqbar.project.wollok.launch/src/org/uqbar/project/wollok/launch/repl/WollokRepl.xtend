@@ -22,6 +22,8 @@ import static org.fusesource.jansi.Ansi.Color.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
+import static org.uqbar.project.wollok.launch.repl.Messages.*
+
 /**
  * 
  * @author tesonep
@@ -53,7 +55,7 @@ class WollokRepl {
 	def void startRepl() {
 		var String input
 
-		println("Wollok interactive console (type \"quit\" to quit): ".importantMessageStyle)
+		println(REPL_WELCOME.importantMessageStyle)
 		printPrompt
 		
 		while ((input = readInput) != "quit") {

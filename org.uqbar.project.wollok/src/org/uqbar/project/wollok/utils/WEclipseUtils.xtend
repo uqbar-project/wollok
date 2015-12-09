@@ -112,6 +112,8 @@ class WEclipseUtils {
 	}
 	
 	def static asObjectStream(IPath path) { new ObjectOutputStream(new FileOutputStream(path.toOSString)) }
+	
+	def static <T> readObject(File file, Class<T> type) { file.asObjectInputStream.readObject as T }
 	def static asJavaFile(IPath path) { new File(path.toOSString) }
 	def static ObjectInputStream asObjectInputStream(File file) { new ObjectInputStream(new FileInputStream(file)) }
 	
