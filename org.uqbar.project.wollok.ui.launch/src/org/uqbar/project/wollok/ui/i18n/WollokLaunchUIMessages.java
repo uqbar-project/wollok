@@ -5,6 +5,9 @@ import org.eclipse.osgi.util.NLS;
 public class WollokLaunchUIMessages extends NLS {
 	private static final String BASE_NAME = "org.uqbar.project.wollok.ui.i18n.messages"; //$NON-NLS-1$
 
+	public static String PROBLEM_LAUNCHING_WOLLOK;
+	public static String ADD_LAUNCH_PLUGIN_DEPENDENCY;
+	
 	public static String WollokTestState_ASSERTION_ERROR;
 	public static String WollokTestState_ASSERT;
 	public static String WollokTestState_ERROR;

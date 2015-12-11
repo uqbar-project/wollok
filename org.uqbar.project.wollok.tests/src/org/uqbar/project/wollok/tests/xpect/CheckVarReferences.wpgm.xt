@@ -4,19 +4,19 @@ program p {
 	// XPECT warnings --> "Unused variable" at "a"
 	val a = 23
 	
-	// XPECT errors --> "Couldn't resolve reference to WReferenciable 'x'." at "x"
+	// XPECT errors --> "Couldn't resolve reference to Referenciable 'x'." at "x"
 	this.println(x)
 	
 	// XPECT warnings --> "Unused variable" at "objetin"
 	val objetin = object {
 		var l = "ele"
 		method algoConLYZNoExiste() {
-			// XPECT errors --> "Couldn't resolve reference to WReferenciable 'z'." at "z"
+			// XPECT errors --> "Couldn't resolve reference to Referenciable 'z'." at "z"
 			l = l + z
 			
 			/* XPECT errors ---
-				"Couldn't resolve reference to WReferenciable 'z'." at "z"
-				"Couldn't resolve reference to WReferenciable 'z'." at "z"
+				"Couldn't resolve reference to Referenciable 'z'." at "z"
+				"Couldn't resolve reference to Referenciable 'z'." at "z"
 			--- */
 			z = z + 1    // z no existe !
 		}
