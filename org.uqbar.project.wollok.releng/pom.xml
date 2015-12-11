@@ -38,7 +38,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</properties>
 
 	<issueManagement>
-    		 <system>GitHub</system>
+    	<system>GitHub</system>
 		<url>https://github.com/uqbar-project/wollok/issues</url>
   	</issueManagement>
 
@@ -60,13 +60,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	</scm>
 
 	<repositories>
-		<!-- i think this can be removed -->
-		<repository>
-			<id>Xtext Update Site</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/</url>
-		</repository>
-		<!-- -->
 		<repository>
 			<id>codehaus-snapshots</id>
 			<name>disable dead 'Codehaus Snapshots' repository, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=481478</name>
@@ -321,39 +314,40 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			    <skip>true</skip>
 			  </configuration>
 			</plugin>
-                       <!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
-                       <plugin>
-                               <groupId>org.eclipse.tycho</groupId>
-                               <artifactId>tycho-maven-plugin</artifactId>
-                               <version>${tycho-version}</version>
-                               <extensions>true</extensions>
-                       </plugin>
+            <!-- /SKIP "DEPLOY" phase from release (we are not publishing jars into maven  -->
+            <plugin>
+               <groupId>org.eclipse.tycho</groupId>
+               <artifactId>tycho-maven-plugin</artifactId>
+               <version>${tycho-version}</version>
+               <extensions>true</extensions>
+            </plugin>
 			<!-- avoid checking maven version vs manifest version (because having the ".qualifier" makes it fail -->
 			<plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho-version}</version>
-          <configuration>
-              <strictVersions>false</strictVersions>
-          </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-compiler-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <configuration>
-        	<compilerVersion>1.8</compilerVersion>
-        </configuration>
-      </plugin>
+	          <groupId>org.eclipse.tycho</groupId>
+	          <artifactId>tycho-packaging-plugin</artifactId>
+	          <version>${tycho-version}</version>
+	          <configuration>
+	              <strictVersions>false</strictVersions>
+	          </configuration>
+      		</plugin>
+	      	<plugin>
+		        <groupId>org.eclipse.tycho</groupId>
+		        <artifactId>tycho-compiler-plugin</artifactId>
+		        <version>${tycho-version}</version>
+		        <configuration>
+		        	<compilerVersion>1.8</compilerVersion>
+		        </configuration>
+	      	</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
 					<resolver>p2</resolver>
+					<!-- 
 					<pomDependencies>consider</pomDependencies>
+					 -->
 					<executionEnvironment>JavaSE-1.8</executionEnvironment>
-					<!-- pomDependencies>consider</pomDependencies -->
 					<environments>
 						<environment>
 							<os>win32</os>

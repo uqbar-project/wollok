@@ -44,7 +44,7 @@ public class WollokDslRuntimeModule extends
 		
 		
 		// Hacks to be able to reuse the logic to extract method from refactoring
-		binder.bind(IJvmModelAssociations.class).to(DummyJvmModelAssociations.class); 
+//		binder.bind(IJvmModelAssociations.class).to(DummyJvmModelAssociations.class); 
 		binder.bind(IJvmTypeProvider.Factory.class).to(DummyJvmTypeProviderFactory.class);
 		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
 	}

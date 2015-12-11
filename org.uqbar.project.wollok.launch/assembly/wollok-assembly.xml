@@ -19,7 +19,7 @@
 				<exclude>*.source-*.jar</exclude>
 			</excludes>
 			<includes>
-				<include>*.jar</include>
+				<include>**/*.jar</include>
 			</includes>
 		</fileSet>
 	
