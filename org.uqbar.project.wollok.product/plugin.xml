@@ -50,7 +50,7 @@
          </property>  
          <property  
                name="introTitle"  
-               value="Wollok Programming Environment">
+               value="%introTitle">
          </property>
          <property
                name="preferenceCustomization"
