@@ -193,9 +193,13 @@ Library.
          id="org.eclipse.pde"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.babel.nls_eclipse_es"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.xtext" version="2.9.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.util" />
+      <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>

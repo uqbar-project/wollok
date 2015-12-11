@@ -498,6 +498,7 @@
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             icon="icons/w.png"
+            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             id="org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             name="%wollokProject"
             project="true">

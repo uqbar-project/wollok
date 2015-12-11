@@ -26,7 +26,7 @@ http://wollok.uqbar-project.org
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.uqbar.project.wollok.ui/icons/wollok-logo-16.fw.png" i32="/org.uqbar.project.wollok.ui/icons/wollok-logo-32.fw.png" i48="/org.uqbar.project.wollok.ui/icons/wollok-logo-48.fw.png" i64="/org.uqbar.project.wollok.ui/icons/wollok-logo-64.fw.png" i128="/org.uqbar.project.wollok.ui/icons/wollok-logo-128.png"/>
+   <windowImages i16="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_16x16.png" i32="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_32x32.png" i48="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_48x48.png" i64="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_64x64.png" i128="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_128x128.png" i256="/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_256x256.png"/>
 
    <splash
       location="org.uqbar.project.wollok.ui"
@@ -45,10 +45,10 @@ http://wollok.uqbar-project.org
    <intro introId="org.uqbar.project.wollok.product.introConfigId"/>
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
-      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
+      <linux include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
+      <macos include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</solaris>
-      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
+      <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
    </vm>
 
    <license>
