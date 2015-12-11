@@ -26,6 +26,9 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import org.eclipse.debug.core.ILaunch
 
+import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
+import org.eclipse.core.runtime.Platform
+
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
  * for wollok.
@@ -44,7 +47,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			currFile.refreshProject
 		}
 		catch (CoreException e)
-			MessageDialog.openError(null, "Problem running launcher.", e.message)
+			MessageDialog.openError(null, PROBLEM_LAUNCHING_WOLLOK, e.message)
 	}
 	
 	def getOrCreateConfig(IFile currFile) {
@@ -63,7 +66,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def locateRunner(IResource resource) throws CoreException {
 		val project = JavaCore.create(resource.project)
 		if (!isOnClasspath(WollokLauncher.name, project))
-			throw new DebugException(Activator.PLUGIN_ID.errorStatus("Please put bundle '" + Activator.LAUNCHER_PLUGIN_ID + "' on your project's classpath."))
+			throw new DebugException(Activator.PLUGIN_ID.errorStatus(ADD_LAUNCH_PLUGIN_DEPENDENCY + Activator.LAUNCHER_PLUGIN_ID))
 	}
 
 	def isOnClasspath(String fullyQualifiedName, IJavaProject project) {
@@ -78,12 +81,12 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		}
 	}
 
-	def hasRepl(){false}
+	def hasRepl() { false }
 
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
 		val x = cfgType.newInstance(null, info.generateUniqueName)
-		this.configureConfiguration(x, info)
+		configureConfiguration(x, info)
 		x.doSave
 	}
 	
@@ -93,6 +96,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_STOP_IN_MAIN, false)
 		setAttribute(ATTR_USE_START_ON_FIRST_THREAD, false) // fixes wollok-game in osx
 		setAttribute(ATTR_PROGRAM_ARGUMENTS, info.file)
+		setAttribute(ATTR_VM_ARGUMENTS, "-Duser.language=" + Platform.NL)
 		setAttribute(ATTR_WOLLOK_FILE, info.file)
 		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")

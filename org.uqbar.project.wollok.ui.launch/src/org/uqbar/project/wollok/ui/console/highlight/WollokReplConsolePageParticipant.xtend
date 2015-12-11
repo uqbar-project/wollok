@@ -35,9 +35,8 @@ class WollokReplConsolePageParticipant implements IConsolePageParticipant {
 	override deactivated() { }
 	
 	override dispose() {
-		if (viewer != null && listeners != null)
+		if (viewer != null && !viewer.disposed && listeners != null)
 			listeners.forEach[ viewer.removeLineStyleListener(it) ]
-
 		viewer = null
 		listeners = null
 	}

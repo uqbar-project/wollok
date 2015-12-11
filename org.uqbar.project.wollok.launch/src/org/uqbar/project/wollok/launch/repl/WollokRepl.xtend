@@ -156,7 +156,7 @@ class WollokRepl {
 
 	def dispatch void handleException(ReplParserException e) {
 		e.issues.forEach [
-			printlnIdent(errorStyle("" + severity.name + ":" + message + "(line: " + (lineNumber - numberOfLinesBefore) + ")"))
+			printlnIdent(errorStyle('''«severity.name»: «message» («LINE»: «lineNumber - numberOfLinesBefore»)'''))
 		]
 	}
 	
@@ -181,7 +181,7 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokInterpreterException e) {
 		if (e.lineNumber > numberOfLinesBefore) {
-			printlnIdent('''WVM Error in line («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
+			printlnIdent('''«WVM_ERROR» («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
 		
 		if (e.cause != null) {

@@ -10,8 +10,9 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.launch.repl.messages"; //$NON-NLS-1$
 	
-	public static String Sarasa_0;
+	public static String LINE;
 	public static String REPL_WELCOME;
+	public static String WVM_ERROR;
 
 	static {
 		// initialize resource bundle
