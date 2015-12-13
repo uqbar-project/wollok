@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+    <groupId>org.uqbar-project</groupId>
+    <artifactId>wollok-parent</artifactId>
+    <version>1.3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>org.uqbar.project.wollok.product.ui.feature</artifactId>
+  <packaging>eclipse-feature</packaging>
+
+  <name>Wollok Product UI Feature</name>
+  <description>Feature for wollok product ui customizations</description>
+</project>

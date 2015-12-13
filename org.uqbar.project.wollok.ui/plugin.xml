@@ -4,6 +4,7 @@
 <plugin>
    <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
    <extension-point id="wollokTypeSystemLabelExtension" name="wollokTypeSystemLabelExtension" schema="schema/wollokTypeSystemLabelExtension.exsd"/>
+   <extension-point id="startup" name="org.uqbar.project.wollok.ui.startup" schema="schema/startup.exsd"/>
 
     <extension
             point="org.eclipse.ui.editors">

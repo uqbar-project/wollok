@@ -13,4 +13,4 @@ Export-Package: .,
  org.uqbar.project.wollok.lib,
  wollok.lang,
  wollok.lib
-Bundle-Vendor: uqbar.org
+Bundle-Vendor: Uqbar Project

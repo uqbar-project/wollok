@@ -100,8 +100,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
 	
-	def validatorExtensions(){
-		if(wollokValidatorExtensions != null)
+	def validatorExtensions() {
+		if (wollokValidatorExtensions != null)
 			return wollokValidatorExtensions
 			
 		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
