@@ -32,6 +32,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.eclipse.xtext.EcoreUtil2.*
+import org.uqbar.project.wollok.wollokDsl.WClosure
 
 /**
  * Extension methods for WMethodContainers.
@@ -83,7 +85,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static isGetter(WMethodDeclaration it) { name.length > 4 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
 	
 	def dispatch static isReturnWithValue(EObject it) { false }
-	def dispatch static isReturnWithValue(WReturnExpression it) { it.expression != null }
+	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
+	//  within a closure as a return on the containing method.
+	def dispatch static isReturnWithValue(WReturnExpression it) { expression != null && allContainers.forall[!(it instanceof WClosure)] }
 	
 	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }

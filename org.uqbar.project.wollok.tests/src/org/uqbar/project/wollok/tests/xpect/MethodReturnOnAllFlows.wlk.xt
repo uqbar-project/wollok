@@ -96,5 +96,12 @@ class A {
 	         throw e
 	    }
 	}
+	
+	method cargar() {
+		#["hola", "chau"]
+			.map[ p |
+				return p
+			]
+	}
 
 }
