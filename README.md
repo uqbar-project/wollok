@@ -12,19 +12,17 @@ A programming language and environment for teaching OOP.
 ## Installation ##
 
 You have two options to download an use Wollok.
-Download a complete Wollok Product Distribution:
+**Download a complete Wollok Product Distribution**:
+
 * Linux: [32](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-linux.gtk.x86_64.zip) bits
 * Mac [32](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-macosx.cocoa.x86_64.zip) bits
 * Windows [32](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86.zip) / [64](http://download.uqbar.org/wollok/products/stable/wollok-win32.win32.x86_64.zip) bits
 
-## Installation through Update Sites ##
-
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
-
-Alternatively if you are already familiar with Eclipse you can install Wollok on top of an existing eclipse product by using one of the following update sites:
-
+**Update Site (if you already have a compatible eclipse)**:
 * http://update.uqbar.org/wollok/stable : for the latest stable release
 * http://update.uqbar.org/wollok/dev : for the current dev (work in progress) version
+
+Or drag and drop <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=2420552" class="drag" title="Drag to your running Eclipse workspace to install Wollok"><img src="https://marketplace.eclipse.org/sites/all/themes/solstice/_themes/solstice_marketplace/public/images/btn-install.png" alt="Drag to your running Eclipse workspace to install Wollok" /></a>
 
 ## Wollok SDK standalone ##
 
@@ -36,28 +34,56 @@ This is useful for example if you are going to develop with Sublime or any other
 
 ## Documentation ##
 
-Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like Language Reference and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) and Environment.
 
 ## What's the language like ? ##
 
-* Object Oriented
-* Non "class-centered". Allows you to create objects as first-class citizens without the need of classes. To start working with objects without introducing complex subjects and mechanisms as hierarchies, overriding methods, etc.
-* Tries to maximize compile-time checks while keeping the power of a dynamic language.
-* With implicit types: by means of a type system and type inference mechanism.
-* A clean syntax avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming)
-* Interpreted: means that the code is being evaluated as it's being read.
+* **Object Oriented**
+* Non "class-centered". Allows you to create **objects as first-class citizens without the need of classes**. To start working with objects without introducing complex subjects and mechanisms as hierarchies, overriding methods, etc.
+* Tries to **maximize compile-time checks** while keeping the **power of a dynamic language.**
+* With **implicit types**: by means of a type system and type inference mechanism.
+* A **clean modern syntax** avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
+* **Interpreted**: means that the code is being evaluated as it's being read. Although its **declarative syntax** makes it feel like a compiled language
+
+```xtend
+package fliers {
+
+   object superman {
+        method fly(to) {
+             // ...
+        }
+   }
+
+   class Plane {
+        method fly(to) {
+            // ...
+        }
+   }
+
+}
+
+  val aBird = object {
+        method fly(to) {
+             // ...
+        }
+  }
+
+  #[ superman, new Plane(), aBird ].forEach[ o |  o.fly() ]
+```
 
 Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
 
 ## How is the Environment ? ##
 
-* Completely integrated with Eclipse.
-* Compile-time errors reporting.
-* Checks and Quick-Fixes.
-* Integrated Console.
-* Integrated Outline.
-* Integrated with eclipse Launchers (Run As).
-* A debugger.
+You can either use its IDE:
+* Completely **integrated with Eclipse**.
+* With: many *static code analysis**, **Quick-Fixes**, **Refactors**
+* An **interactive Console** (**REPL**)
+* **Visual representations**: Outline, Static diagram, Objects Diagrams
+* A **debugger**.
+
+Or use the WDK which has command line tools for running and checkin a program.
+This is also integrated with Sublime Editor.
 
 ## How to Contribute ##
 
