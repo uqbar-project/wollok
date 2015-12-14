@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.game.listeners
 
 import org.uqbar.project.wollok.game.VisualComponent
-import java.util.function.Consumer
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 
 /**
@@ -9,9 +8,9 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
  */
 class CollisionListener implements GameboardListener {
 	VisualComponent component
-	Consumer<VisualComponent> block
+	(VisualComponent)=>Object block
 
-	new (VisualComponent component, Consumer<VisualComponent> block) {
+	new (VisualComponent component, (VisualComponent)=>Object block) {
 		this.component = component
 		this.block = block
 	}
@@ -21,7 +20,7 @@ class CollisionListener implements GameboardListener {
 		c.forEach[println(it)]
 		c.filter[ it != component ]
 			.forEach[ 
-				block.accept(it)
+				block.apply(it)
 			]
 	}
 }
