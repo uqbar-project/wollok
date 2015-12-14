@@ -222,18 +222,10 @@ class WollokModelExtensions {
 	def static dispatch declaredVariables(WNamedObject obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 	def static dispatch declaredVariables(WClass clazz) { clazz.members.filter(WVariableDeclaration).map[variable] }
 
-	def static WMethodDeclaration method(WExpression param) {
-		val container = param.eContainer
-		if (container instanceof WMethodDeclaration)
-			container
-		else if(container instanceof WExpression) container.method
-			// this is just a hack for expressions that are not within a method! Specifically
-		// for expressions in the root level of a file, like an interpreted program
-		// we are actually thinking on disallowing to do that, you won't be able to write
-		// any expression alone in a file. They must be within a class, object or other construction
-		// if we perform that change, then this null won't be necessary.
-		else null
-	}
+	def static dispatch WMethodDeclaration method(Void it) { null }
+	def static dispatch WMethodDeclaration method(EObject it) { null }
+	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
+	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
 
 	// ****************************
 	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
