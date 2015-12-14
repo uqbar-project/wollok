@@ -17,8 +17,8 @@
 	<name>Wollok Game</name>
 
 	<dependencies>
-		<!--  manually downloaded with copy dependencies and then copied into "lib" folder
-			included then in MANIFEST.MF 
+	    <!-- uncommment just for running copy-dependencies and moving them to /lib folder
+	    	we are not using maven for this.
 		<dependency>
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx</artifactId>
@@ -40,12 +40,30 @@
 
 	<build>
 		<resources>
-	        <resource>
-	            <directory>assets</directory>
-	        </resource>
-	    </resources>				
+			<resource>
+				<directory>assets</directory>
+			</resource>
+		</resources>
 		<pluginManagement>
-			<plugins>			
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.xtend</groupId>
+					<artifactId>xtend-maven-plugin</artifactId>
+				</plugin>
+				<!-- 
+				<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.1</version>
+					<executions>
+						<execution>
+							<phase>initialize</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				 -->
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
