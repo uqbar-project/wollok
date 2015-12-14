@@ -26,6 +26,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>../org.uqbar.project.wollok.game.ui</module>
 		<module>../org.uqbar.project.wollok.updatesite</module>
 		<module>../org.uqbar.project.wollok.product</module>
+		<module>../org.uqbar.project.wollok.product.ui</module>
+		<module>../org.uqbar.project.wollok.product.ui.feature</module>
 	</modules>
 
 	<properties>

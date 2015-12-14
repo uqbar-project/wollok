@@ -12,6 +12,8 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 /**
  * Extension methods and utilities for xtext
@@ -25,13 +27,15 @@ class XTextExtensions {
 	def static toSourceCodeLocation(EObject o) { 
 		o.astNode.textRegionWithLineInformation.toSourceCodeLocation(o.fileURI) => [ contextDescription = o.contextDescription ]
 	}
-	def static dispatch String contextDescription(EObject o) { null }
-	def static dispatch String contextDescription(WExpression e) { 
-		val m = e.method
-		if (m != null)
-			m.declaringContext.contextName + "." + m.name + "(" + m.parameters.map[name].join(",") + ")"
-		else 
-			null
+	
+	def static dispatch String contextDescription(Void o) { null }
+	def static dispatch String contextDescription(EObject o) { /*println("No context for " + o) ;*/ null }
+	def static dispatch String contextDescription(WExpression e) { e.method.contextDescription }
+	def static dispatch String contextDescription(WMethodDeclaration m) {
+		m.declaringContext.contextName + "." + m.name + "(" + m.parameters.map[name].join(",") + ")"
+	}
+	def static dispatch String contextDescription(WConstructor m) {
+		m.declaringContext.contextName + "." + "(" + m.parameters.map[name].join(",") + ")"
 	}
 	
 	def static toSourceCodeLocation(ITextRegionWithLineInformation t, URI file) {

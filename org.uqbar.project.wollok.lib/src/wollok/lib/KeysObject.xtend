@@ -6,10 +6,7 @@ import org.uqbar.project.wollok.game.helpers.Keyboard
  * @author ?
  */
 class KeysObject {
+	var static keyboard = new Keyboard
 
-	var static keyboard = new Keyboard()
-
-	def getKeyCode(String aKey) {
-		keyboard.getKey(aKey)
-	}
+	def getKeyCode(String aKey) { keyboard.getKey(aKey) }
 }

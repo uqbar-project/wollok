@@ -4,10 +4,10 @@ import java.net.URL
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.viewers.ILabelProvider
 import org.eclipse.swt.widgets.Display
-import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
+import org.eclipse.core.runtime.Platform
 
 /**
  * Customized activator.
@@ -15,8 +15,8 @@ import org.uqbar.project.wollok.ui.internal.WollokDslActivator
  * @author jfernandes
  */
 class WollokActivator extends WollokDslActivator {
-	//package name where the "messages.properties" is
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok.ui.messages" 
+	public static val POINT_STARTUP_ID = "org.uqbar.project.wollok.ui.startup" 
 
 	def static WollokActivator getInstance() {
 		return WollokDslActivator.getInstance as WollokActivator
@@ -24,8 +24,18 @@ class WollokActivator extends WollokDslActivator {
 	
 	override start(BundleContext context) throws Exception {
 		super.start(context)
+		callStartupExtensions
 	}
-
+	
+	def callStartupExtensions() {
+		startupExtensions.forEach[startup]
+	}
+	
+	def startupExtensions() {
+		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor(POINT_STARTUP_ID)
+		configs.map[it.createExecutableExtension("class") as WollokUIStartup]
+	}
+	
 	def static getStandardDisplay() {
 		val display = Display.getCurrent
 		if (display == null)

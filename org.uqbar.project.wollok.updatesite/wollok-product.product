@@ -596,6 +596,7 @@ Library.
 
    <features>
       <feature id="org.uqbar.project.wollok.sdk"/>
+      <feature id="org.uqbar.project.wollok.product.ui.feature"/>
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
@@ -629,6 +630,7 @@ Library.
       <plugin id="org.uqbar.project.wollok.game" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.game.ui" autoStart="false" startLevel="0" />
       <plugin id="org.uqbar.project.wollok.launch" autoStart="false" startLevel="0" />
+      <plugin id="org.uqbar.project.wollok.product.ui" autoStart="true" startLevel="3" />
       <plugin id="org.uqbar.project.wollok.ui" autoStart="false" startLevel="0" />
       <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
       <property name="osgi.instance.area" value="./workspace" />
