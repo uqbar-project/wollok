@@ -38,20 +38,20 @@ class CollisionListenerTest {
 	}
 	
 	@Test
-	def nothing_happens_when_components_dont_collide_with_itself(){
+	def void nothing_happens_when_components_dont_collide_with_itself(){
 		collisionListener.notify(gameboard)
 		verify(block, never).apply(mario)
 	}
 	
 	@Test
-	def when_no_components_are_colliding_with_mario_then_nothing_happens(){
+	def void when_no_components_are_colliding_with_mario_then_nothing_happens(){
 		collisionListener.notify(gameboard)
 		verify(block, never).apply(aCoin)
 		verify(block, never).apply(otherCoin)
 	}
 	
 	@Test
-	def when_components_are_colliding_with_mario_then_block_is_called_with_each(){
+	def void when_components_are_colliding_with_mario_then_block_is_called_with_each(){
 		aCoin.position = mario.position
 		otherCoin.position = mario.position
 		
@@ -62,7 +62,7 @@ class CollisionListenerTest {
 	}
 	
 	@Test
-	def when_components_are_colliding_but_anyone_is_mario_then_nothing_happens(){
+	def void when_components_are_colliding_but_anyone_is_mario_then_nothing_happens(){
 		aCoin.position = otherCoin.position
 		
 		collisionListener.notify(gameboard)

@@ -141,7 +141,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
 			val expectedMessage = 
-				"new " + c.classRef.name +
+				" new " + c.classRef.name +
 					if (c.classRef.constructors == null)
 						""
 					else
