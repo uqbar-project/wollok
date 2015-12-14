@@ -140,10 +140,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = if (c.classRef.constructors == null)
-					""
-				else
-					c.classRef.constructors.map[ '(' + parameters.map[name].join(",") + ')'].join(' or ')
+			val expectedMessage = 
+				"new " + c.classRef.name +
+					if (c.classRef.constructors == null)
+						""
+					else
+						c.classRef.constructors.map[ '(' + parameters.map[name].join(",") + ')'].join(' or ')
 			report(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS +  expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
 		}
 	}

@@ -16,9 +16,8 @@ class CollisionListener implements GameboardListener {
 	}
 
 	override notify(Gameboard gameboard) {
-		val c = gameboard.getComponentsInPosition(component.position)
-		c.forEach[println(it)]
-		c.filter[ it != component ]
+		gameboard.getComponentsInPosition(component.position)
+			.filter[ it != component ]
 			.forEach[ 
 				block.apply(it)
 			]

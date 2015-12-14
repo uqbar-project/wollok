@@ -3,12 +3,44 @@ package org.uqbar.project.wollok.game
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
+abstract class AbstractPosition {
+	override public int hashCode() {
+		val prime = 31
+		val result = prime + x
+		prime * result + y
+	}
+	
+	override equals(Object obj) {
+		if (obj == null) return false
+		
+		var other = obj as AbstractPosition
+		x == other.x && y == other.y 
+	}
+	
+	def getXinPixels() { x * Gameboard.CELLZISE }
+	def getYinPixels() { y * Gameboard.CELLZISE }	
+	
+	def void incX(int spaces) { x = x + spaces }
+	def void incY(int spaces) { y = y + spaces }
+	
+	override toString() { getX + "@" + getY }
+	
+	def int getX()
+	def void setX(int x)
+	def int getY()
+	def void setY(int y)
+}
+
+/**
+ * 
+ */
 @Accessors
-class Position {
-	private int x;
-	private int y;
+class Position extends AbstractPosition {
+	private int x
+	private int y
 	
 	new() {}
 	
@@ -16,39 +48,10 @@ class Position {
 		this.x = x
 		this.y = y
 	}
-	
-	override public int hashCode() {
-		val prime = 31
-		val result = prime + x
-		prime * result + y
-	}
-	
-	override public boolean equals(Object obj) {
-		if (obj == null) return false
-		
-		var Position other = obj as Position
-		x == other.x && y == other.y 
-	}
-	
-	def public int getXinPixels(){
-		x * Gameboard.CELLZISE
-	}
-
-	def public int getYinPixels(){
-		y * Gameboard.CELLZISE
-	}	
-	
-	def public void incX(int spaces) {
-		x = x + spaces
-	}
-	
-	def public void incY(int spaces) {
-		y = y + spaces
-	}		
 }
 
 
-class WPosition extends Position {
+class WPosition extends AbstractPosition {
 	WollokObject position
 	
 	new(WollokObject wObject) {

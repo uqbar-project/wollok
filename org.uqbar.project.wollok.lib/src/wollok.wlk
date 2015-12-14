@@ -613,18 +613,10 @@ package lib {
 			y = _y
 		}
 		
-		method moveLeft(num) {
-			x = x - num
-		}
-		method moveRight(num) {
-			x = x + num
-		}
-		method moveDown(num) {
-			y = y - num
-		}
-		method moveUp(num) {
-			y = y + num
-		}
+		method moveLeft(num) { x = x - num }
+		method moveRight(num) { x = x + num }
+		method moveDown(num) { y = y - num }
+		method moveUp(num) { y = y + num }
 		
 		method clone() = new Position(x, y)
 		
@@ -652,15 +644,13 @@ package lib {
 			wgame.addVisual(element)
 		}
 		
-		method getAllElements() {
-			return wgame.getObjectsIn(this)
-		}
+		method getAllElements() = wgame.getObjectsIn(this)
 		
-		method getX() { return x }
+		method getX() = x
 		
 		method setX(_x) { x = _x }
 		
-		method getY() { return y }
+		method getY() = y
 		
 		method setY(_y) { y = _y }
 		

@@ -1,16 +1,16 @@
 package org.uqbar.project.wollok.game.gameboard
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import org.uqbar.project.wollok.game.Image
-import org.uqbar.project.wollok.game.Position
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import org.uqbar.project.wollok.game.AbstractPosition
+import org.uqbar.project.wollok.game.Image
 
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("assets/speech.png")), 30, 60, 40, 50)
@@ -24,21 +24,21 @@ class Window {
 		this.camera = camera
 	}
 	
-	def draw(Image image, Position position) {
-		this.drawIn(image, position.xinPixels, position.yinPixels)
+	def draw(Image image, AbstractPosition position) {
+		drawIn(image, position.xinPixels, position.yinPixels)
 	}
 	
 	def drawIn(Image image, int x, int y) {
 		batch.draw(image.texture, x, y)
 	}
 	
-	def writeAttributes(String text, Position position, Color color) {
+	def writeAttributes(String text, AbstractPosition position, Color color) {
 		glyphLayout.reset()
 		glyphLayout.setText(font, text, color, 220, 3, true)
 		font.draw(batch, glyphLayout, position.xinPixels - 80, position.yinPixels)
 	}
 	
-	def drawBallon(String text, Position position, Color color) {		
+	def drawBallon(String text, AbstractPosition position, Color color) {		
 		val baseWidth = 75
 		var newText = text
 		

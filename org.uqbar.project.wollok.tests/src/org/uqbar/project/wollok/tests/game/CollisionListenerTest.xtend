@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.game
 
-import java.util.function.Consumer
+import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.junit.Before
 import org.junit.Test
 import org.uqbar.project.wollok.game.Image
@@ -20,7 +20,7 @@ class CollisionListenerTest {
 	VisualComponent mario
 	VisualComponent aCoin
 	VisualComponent otherCoin
-	Consumer<VisualComponent> block
+	(VisualComponent)=>Object block
 	
 	@Before
 	def void init() {
@@ -33,21 +33,21 @@ class CollisionListenerTest {
 		
 		gameboard.addComponents(newArrayList(mario, aCoin, otherCoin))
 		
-		block = mock(Consumer)
+		block = mock(Function1)
 		collisionListener = new CollisionListener(mario, block)
 	}
 	
 	@Test
 	def nothing_happens_when_components_dont_collide_with_itself(){
 		collisionListener.notify(gameboard)
-		verify(block, never).accept(mario)
+		verify(block, never).apply(mario)
 	}
 	
 	@Test
 	def when_no_components_are_colliding_with_mario_then_nothing_happens(){
 		collisionListener.notify(gameboard)
-		verify(block, never).accept(aCoin)
-		verify(block, never).accept(otherCoin)
+		verify(block, never).apply(aCoin)
+		verify(block, never).apply(otherCoin)
 	}
 	
 	@Test
@@ -57,8 +57,8 @@ class CollisionListenerTest {
 		
 		collisionListener.notify(gameboard)
 		
-		verify(block).accept(aCoin)
-		verify(block).accept(otherCoin)
+		verify(block).apply(aCoin)
+		verify(block).apply(otherCoin)
 	}
 	
 	@Test
