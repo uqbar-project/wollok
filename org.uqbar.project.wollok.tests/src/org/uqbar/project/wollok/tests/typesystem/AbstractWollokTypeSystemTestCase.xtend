@@ -113,7 +113,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	}
 	
 	def findConstructor(String className, int nrOfParams) {
-		findClass(className).constructors.findFirst[ parameters.size == nrOfParams ]
+		findClass(className).constructors.findFirst[ matches(nrOfParams) ]
 	}
 	
 	def findMethod(String methodFQN) {

@@ -35,7 +35,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
-				this.println(obj2)
+				assert.equals('obj2[y=obj1[x=#[obj2, a Prb[]]]]', obj2.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -47,38 +47,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				var x
 			}
 			program a {
-				this.println(obj1)
-			}
-		'''.interpretPropagatingErrors
-	}
-
-	@Test
-	def void testSets() {
-		'''
-			object obj2 {
-				var y 
-				method setY(anObject){
-					y = anObject
-				}
-			}
-			
-			object obj1 {
-				var x = #{}
-				method addX(anObject){
-					x.add(anObject)
-				}
-			}
-			
-			class Prb{
-				
-			}
-
-			program a {
-				obj1.addX(obj2)
-				obj2.setY(obj1)
-				obj1.addX(new Prb())
-				
-				this.println(obj2)
+				console.println(obj1)
 			}
 		'''.interpretPropagatingErrors
 	}

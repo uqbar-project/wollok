@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.List
 import java.util.Map
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
-import org.uqbar.project.wollok.interpreter.core.WCallable
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * WExpression evaluation context.
@@ -14,15 +14,15 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
  * @author jfernandes
  */
 interface EvaluationContext extends Serializable {
-	def Object resolve(String name) throws UnresolvableReference
-	def void setReference(String name, Object value)
-	def Object addReference(String variable, Object value) // new local variable
-	def Object addGlobalReference(String name, Object value)
+	def WollokObject resolve(String name) throws UnresolvableReference
+	def void setReference(String name, WollokObject value)
+	def WollokObject addReference(String variable, WollokObject value) // new local variable
+	def WollokObject addGlobalReference(String name, WollokObject value)
 	
 	/** Returns an iterable with all available references names from this context */
 	def Iterable<WVariable> allReferenceNames()
 	
-	def WCallable getThisObject()
+	def WollokObject getThisObject()
 }
 
 /**
@@ -34,11 +34,11 @@ interface EvaluationContext extends Serializable {
  //TODO: move to another file
 class EvaluationContextExtensions {
 	
-	def static createEvaluationContext(String name, Object value) {
+	def static createEvaluationContext(String name, WollokObject value) {
 		createEvaluationContext(#[name], value)
 	}
 	
-	def static createEvaluationContext(List<String> names, Object... values) {
+	def static createEvaluationContext(List<String> names, WollokObject... values) {
 		var i = 0
 		val map = newHashMap
 		for (name : names) {
@@ -47,6 +47,7 @@ class EvaluationContextExtensions {
 		map.asEvaluationContext
 	}
 	
-	def static asEvaluationContext(Map<String, Object> values) { new MapBasedEvaluationContext(values) }
+	def static asEvaluationContext(Map<String, WollokObject> values) { new MapBasedEvaluationContext(values) }
 	def static then(EvaluationContext inner, EvaluationContext outer) { new CompositeEvaluationContext(inner, outer) }
+	
 }

@@ -1,9 +1,9 @@
 import otherFile.a.A
 import otherFile.b.*
 
-class I extends A {
+class I inherits A {
 	
 }
 
-class Y extends C {}
-class Z extends B {}
+class Y inherits C {}
+class Z inherits B {}

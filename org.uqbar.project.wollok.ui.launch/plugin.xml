@@ -114,6 +114,7 @@
               label="Wollok Program"/>
          </contextualLaunch>
       </shortcut>
+      <!-- REPL -->
       <shortcut
             class="org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcutWithRepl"
             description="Launch Wollok with Repl"
@@ -135,6 +136,7 @@
            </enablement>
          </contextualLaunch>
       </shortcut>
+      <!-- /REPL -->
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
             description="Launch Wollok with Repl"
@@ -294,7 +296,7 @@
          targetID="org.uqbar.project.wollok.WollokDsl"
          id="org.uqbar.project.wollok.debugger.RulerPopupActions">
          <action
-            label="Toggle Breakpoint Mierda"
+            label="Toggle Breakpoint"
             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
             menubarPath="additions"
             id="org.uqbar.project.wollok.debugger.rulerContextMenu.toggleBreakpointAction">
@@ -320,5 +322,24 @@
    </extension>
   <!-- /BREAKPOINTS ACTIONS -->
 
+  <!-- REPL CONSOLE PARTICIPANTS -->
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="org.uqbar.project.wollok.ui.console.actions.WollokReplConsoleActionsParticipant"
+            id="org.uqbar.project.wollok.ui.console.actions.WollokReplConsoleActionsParticipant">
+         <enablement>
+            <instanceof value="org.uqbar.project.wollok.ui.console.WollokReplConsole"/>
+         </enablement>
+      </consolePageParticipant>
+      <consolePageParticipant
+            class="org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant"
+            id="org.uqbar.project.wollok.ui.console.highlight.WollokReplConsolePageParticipant">
+         <enablement>
+            <instanceof value="org.uqbar.project.wollok.ui.console.WollokReplConsole"/>
+         </enablement>
+      </consolePageParticipant>
+   </extension>
+  <!-- /REPL -->
 
 </plugin>

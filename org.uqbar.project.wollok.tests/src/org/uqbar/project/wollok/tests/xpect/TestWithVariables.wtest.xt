@@ -1,4 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+import wollok.lib.assert
 
 test "testX" {
 

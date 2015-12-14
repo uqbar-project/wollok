@@ -1,11 +1,17 @@
 package org.uqbar.project.wollok.utils
 
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IncrementalProjectBuilder
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IAdaptable
+import org.eclipse.core.runtime.IPath
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.IStatus
 import org.eclipse.core.runtime.NullProgressMonitor
@@ -22,6 +28,7 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
+import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * Utilities on top of eclipse platform.
@@ -70,6 +77,17 @@ class WEclipseUtils {
 		ResourcesPlugin.workspace.root.getFileForLocation(path)
 	}
 	
+	def static exists(IPath it) { ResourcesPlugin.getWorkspace.root.exists(it) }
+	def static exists(Resource it) {
+		if (isWorkspaceOpen && URI.isPlatform)
+			iPath.exists
+		else {
+			val s = URI.toFileString
+			s != null && new File(s).exists
+		}
+	}
+	def static iPath(Resource it) { Path.fromOSString(URI.toPlatformString(true)) }
+	
 	def static getVerticalRuler(XtextEditor editor) { editor.getAdapter(IVerticalRulerInfo) as IVerticalRuler }
 	def static getDocument(XtextEditor editor) { XtextDocumentUtil.get(editor) }
 	
@@ -92,5 +110,13 @@ class WEclipseUtils {
 	def static fullBuild(IProject p, IProgressMonitor monitor) {
 		p.build(IncrementalProjectBuilder.FULL_BUILD, monitor)
 	}
+	
+	def static asObjectStream(IPath path) { new ObjectOutputStream(new FileOutputStream(path.toOSString)) }
+	
+	def static <T> readObject(File file, Class<T> type) { file.asObjectInputStream.readObject as T }
+	def static asJavaFile(IPath path) { new File(path.toOSString) }
+	def static ObjectInputStream asObjectInputStream(File file) { new ObjectInputStream(new FileInputStream(file)) }
+	
+	def static nameWithoutExtension(IResource it) { if (name.contains(".")) name.substring(0, name.lastIndexOf('.')) else name }
 	
 }

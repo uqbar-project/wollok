@@ -1,0 +1,107 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	var c
+	
+	method setC(_c) { c = _c }
+	
+	method foo() = "Foo"
+	
+	method getFoo() { return "Foo" }
+	
+	method getBar() { 
+		if (this.getFoo() == "Foo")  
+			return "Foo"
+		else
+			return "Bar"
+	}
+	
+	// XPECT errors --> "Must return a value on every possible flow" at "getZoo"
+	method getZoo() { 
+		if (this.getFoo() == "Foo")  
+			return "Foo"
+	}
+	
+	// XPECT errors --> "Must return a value on every possible flow" at "getZoo2"
+	method getZoo2() { 
+		if (this.getFoo() == "Foo")  
+			return "Foo"
+		
+		var a = 2
+		a += 1
+	}
+	
+	// XPECT errors --> "Must return a value on every possible flow" at "getXoo"
+	method getXoo() { 
+		if (this.getFoo() == "Foo")  
+			return "Foo"
+		else
+			"Bar"
+	}
+	
+	// XPECT errors --> "Must return a value on every possible flow" at "getXoo2"
+	method getXoo2() { 
+		if (this.getFoo() == "Foo") {
+			var a = 23
+			a += 2
+			return a
+		}
+		else
+			"Bar"
+	}
+	
+	// XPECT errors --> "Must return a value on every possible flow" at "getXoo3"
+	method getXoo3() { 
+		if (this.getFoo() == "Foo") {
+			"Foo"
+		}
+		else {
+			return "Bar"
+		}
+	}
+	
+	method getThrowingException() {
+		if (this.getFoo() == "Foo") {
+			throw new Exception() 
+		}
+		else {
+			return "Foo"
+		}
+	}
+	
+	method getThrowingExceptionAtIf() {
+		if (this.getFoo() == "Foo") {
+			throw new Exception() 
+		}
+		var a = 23
+		a += 2
+		return "Foo"
+	}
+	
+	method getThrowingExceptionAtBody() {
+		if (this.getFoo() == "Foo") {
+			return "Foo" 
+		}
+		var a = 23
+		a += 2
+		throw new Exception()
+	}
+	
+	method withTryCatch() {
+	    try {
+	         return 23
+	    }
+	    catch e : Exception {
+	         this.setC("saasas")
+	         throw e
+	    }
+	}
+	
+	method cargar() {
+		#["hola", "chau"]
+			.map[ p |
+				return p
+			]
+	}
+
+}

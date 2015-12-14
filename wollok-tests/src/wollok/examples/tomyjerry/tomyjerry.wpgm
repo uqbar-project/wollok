@@ -14,7 +14,7 @@ program tomYJerry {
 			energia -= 0.5 * this.getVelocidad() * distancia
 			posicion = raton.getPosicion()
 		}
-		method comeA(raton) {
+		method comeA(raton) { 
 			this.correA(raton)
 			energia += 12 + raton.getPeso()
 		}

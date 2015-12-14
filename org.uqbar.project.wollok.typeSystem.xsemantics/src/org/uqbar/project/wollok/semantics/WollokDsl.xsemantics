@@ -38,6 +38,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 // JUDGMENTS
 
 judgments {
+
 	inferTypes |- EObject obj
 	
 	type |- WExpression expression : output WollokType

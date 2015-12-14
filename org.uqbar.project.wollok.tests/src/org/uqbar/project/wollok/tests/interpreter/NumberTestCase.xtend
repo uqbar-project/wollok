@@ -10,6 +10,22 @@ import org.junit.Test
 class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
+	def void integersAsResultValueOfNative() {
+		'''program a {
+			assert.equals(4, "hola".length())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void sum() {
+		'''program a {
+			assert.equals(4, 3 + 1)
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
 	def void integersFromNativeObjects() {
 		'''program a {
 		

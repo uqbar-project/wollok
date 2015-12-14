@@ -4,8 +4,24 @@ class Levadura {
 	method fermentar(mosto) // abstract
 }
 
-class Ale extends Levadura {
+class Ale inherits Levadura {
 	// XPECT errors --> "Method must be marked as overrides, since it overrides a superclass method" at "fermentar"
 	method fermentar(mosto) {
 	}	
 }
+
+class Lager inherits Levadura {
+	// XPECT errors --> "Method does not override anything" at "fermentar"
+	override method fermentar(mosto, tiempo) {}
+	
+	method create() {
+		// XPECT errors --> "Cannot instantiate abstract class" at "Lager"
+		return new Lager()
+	}	
+}
+
+object londonAle inherits Levadura {
+	override method fermentar(mosto) {
+	}	
+}
+

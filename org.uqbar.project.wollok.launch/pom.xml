@@ -8,13 +8,17 @@
     <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
     <groupId>org.uqbar-project</groupId>
     <artifactId>wollok-parent</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
 
 	<artifactId>org.uqbar.project.wollok.launch</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
 	<name>Wollok Launch</name>
+	
+	<properties>
+		<updateSiteFolder>dev</updateSiteFolder>
+	</properties>
 
 	<build>
 		<plugins>
@@ -74,7 +78,6 @@
 
 			<build>
 				<plugins>
-
 					<!-- copy all dependencies -->
 		         	<plugin>
 			        <groupId>org.apache.maven.plugins</groupId>
@@ -109,7 +112,7 @@
 			            <executions>  
 			               <execution>  
 			                  <id>package-native</id>  
-			                  <phase>install</phase>  
+			                  <phase>package</phase>  
 			                  <goals>  
 			                     <goal>attached</goal>  
 			                  </goals>  
@@ -133,7 +136,7 @@
 								<configuration>
 									<fromDir>${products.path}</fromDir>
 									<includes>**-wdk.zip</includes>
-									<toDir>/wollok/sdk</toDir>
+									<toDir>/wollok/sdk/${updateSiteFolder}</toDir>
 									<url>${ftp.url}</url>
 									<serverId>downloads-uqbar</serverId>
 								</configuration>

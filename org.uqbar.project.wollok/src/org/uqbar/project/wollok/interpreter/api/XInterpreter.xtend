@@ -14,6 +14,7 @@ interface XInterpreter<E extends EObject> {
 
 	def Stack<XStackFrame> getStack()
 	
+	// TODO: return value should be WollokObject
 	def Object interpret(E program)
 	def Object interpret(E program, Boolean propagatingErrors)
 	

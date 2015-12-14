@@ -6,7 +6,7 @@
 
 «DEFINE model FOR WollokDslProjectInfo»
 «FILE "src/example.wlk"-»
-/*
+/**
  * This is an example wollok hello world
  */
 object ex {

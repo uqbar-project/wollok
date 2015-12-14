@@ -1,128 +1,172 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * @author jfernandes
  */
 class ListTestCase extends AbstractWollokInterpreterTestCase {
 	
+	def instantiateCollectionAsNumbersVariable() {
+		"val numbers = #[22, 2, 10]"
+	}
+	
+	def instantiateStrings() {
+		"val strings = #['hello', 'hola', 'bonjour', 'ciao', 'hi']"
+	}
+	
 	@Test
-	def void testSize() {
+	def void min() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]		
+			«instantiateStrings»		
+			assert.equals('hi', strings.min[e| e.length() ])
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void max() {
+		try 
+		'''
+		program p {
+			«instantiateStrings»
+			val r = strings.max[e| e.length() ]	
+			assert.equals('bonjour', strings.max[e| e.length() ])
+		}'''.interpretPropagatingErrors
+		catch (WollokProgramExceptionWrapper e)
+					fail(e.message)
+	}
+	
+	@Test
+	def void size() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»		
 			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testContains() {
+	def void contains() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]		
-			assert.that(numbers.contains(23))
+			«instantiateCollectionAsNumbersVariable»
+			assert.that(numbers.contains(22))
+			assert.that(numbers.contains(2))
+			assert.that(numbers.contains(10))
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testRemove() {
+	def void exists() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			numbers.remove(23)		
+			«instantiateCollectionAsNumbersVariable»
+			assert.that(numbers.exists[e| e > 20])
+			assert.that(numbers.exists[e| e > 0])
+			assert.notThat(numbers.exists[e| e < 0])
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void remove() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			numbers.remove(22)		
 			assert.that(2 == numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testClear() {
+	def void clear() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			numbers.clear()		
 			assert.that(0 == numbers.size())
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testIsEmpty() {
+	def void isEmpty() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			assert.notThat(numbers.isEmpty())
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testForEach() {
+	def void forEach() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
+			«instantiateCollectionAsNumbersVariable»
 			
 			var sum = 0
 			numbers.forEach([n | sum += n])
 			
-			assert.equals(26, sum)
+			assert.equals(34, sum)
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testForAll() {
+	def void forAll() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			var allPositives = numbers.forAll([n | n > 0])
-			assert.that(allPositives)
+			«instantiateCollectionAsNumbersVariable»
+			assert.that(numbers.forAll([n | n > 0]))
+			assert.notThat(numbers.forAll([n | n > 5]))
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testFilter() {
+	def void filter() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			var greaterThanOneElements = numbers.filter([n | n > 1])
-			assert.that(greaterThanOneElements.size() == 2)
+			«instantiateCollectionAsNumbersVariable»
+			var greaterThanFiveElements = numbers.filter([n | n > 5])
+			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testMap() {
+	def void map() {
 		'''
 		program p {
-			val numbers = #[10, 20, 30]
+			«instantiateCollectionAsNumbersVariable»
 			var halfs = numbers.map([n | n / 2])
 
+			assert.equals(3, halfs.size())
+			assert.that(halfs.contains(11))
 			assert.that(halfs.contains(5))
-			assert.that(halfs.contains(10))
-			assert.that(halfs.contains(15))
+			assert.that(halfs.contains(1))
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testShortCutAvoidingParenthesis() {
+	def void shortCutAvoidingParenthesis() {
 		'''
 		program p {
-			val numbers = #[23, 2, 1]
-			var greaterThanOneElements = numbers.filter[n | n > 1]
-			assert.that(greaterThanOneElements.size() == 2)
+			«instantiateCollectionAsNumbersVariable»
+			var greaterThanFiveElements = numbers.filter[n | n > 5]
+			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testAny() {
+	def void any() {
 		'''
 		program p {
-			val numbers = #[23]		
-			assert.equals(23, numbers.any())
+			«instantiateCollectionAsNumbersVariable»
+			val any = numbers.any()
+			assert.that(numbers.contains(any))
 		}'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void testEqualsWithMethodName() {
+	def void equalsWithMethodName() {
 		'''
 		program p {
 			val a = #[23, 2, 1]
@@ -132,7 +176,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testEqualsWithEqualsEquals() {
+	def void equalsWithEqualsEquals() {
 		'''
 		program p {
 			val a = #[23, 2, 1]
@@ -145,8 +189,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testToString() {
 		'''
 		program p {
-			val a = #[23, 2, 1]
-			assert.equals("#[23, 2, 1]", a.toString())
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals("#[22, 2, 10]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -154,11 +198,44 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void testToStringWithObjectRedefiningToStringInWollok() {
 		'''
 		object myObject {
-			method toString() = "My Object"
+			method internalToSmartString(alreadyShown) = "My Object"
 		}
 		program p {
 			val a = #[23, 2, 1, myObject]
 			assert.equals("#[23, 2, 1, My Object]", a.toString())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void detect() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(22, numbers.detect[e| e > 20])
+			assert.equals(null, numbers.detect[e| e > 1000])
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void count() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(1, numbers.count[e| e > 20])
+			assert.equals(3, numbers.count[e| e > 0])
+			assert.equals(0, numbers.count[e| e < 0])
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void sum() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			
+			assert.equals(34, numbers.sum([n | n]))
 		}'''.interpretPropagatingErrors
 	}
 	

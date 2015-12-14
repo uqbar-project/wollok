@@ -1,10 +1,18 @@
 package org.uqbar.project.wollok.ui.tests.model
 
+import java.io.PrintWriter
+import java.io.StringWriter
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import wollok.lib.AssertionException
 
+/**
+ * Test result model for the UI.
+ * Gets populated by the event raised by the wollok launcher that gets to the UI via RMI.
+ * 
+ * @author tesonep
+ */
 @Accessors
 class WollokTestResult {
 	val WollokTestInfo testInfo
@@ -14,7 +22,10 @@ class WollokTestResult {
 	var URI testResource
 	var URI errorResource
 	int lineNumber
+	// for the assert exception
 	Exception exception
+	// for other exceptions we just get the string. This is a hack, but I need to cut the refactor (exceptions to wollok)
+	String exceptionAsString
 
 	new(WollokTestInfo testInfo) {
 		this.testInfo = testInfo
@@ -27,29 +38,34 @@ class WollokTestResult {
 	}
 
 	def void endedOk(){
-		endTime = System.currentTimeMillis
-		state = WollokTestState.OK
+		ended(WollokTestState.OK)
 	}
 	
-	def void started(){
+	def void started() {
 		state = WollokTestState.RUNNING
 		startTime = System.currentTimeMillis
 	}
 	
 	def endedAssertError(AssertionException exception, int lineNumber, String resource) {
-		endTime = System.currentTimeMillis
-		state = WollokTestState.ASSERT
-		this.exception = exception
-		this.lineNumber = lineNumber
-		this.errorResource = URI.createURI(resource)
+		innerEnded(exception, lineNumber, resource, WollokTestState.ASSERT)
 	}
 	
-	def endedError(Exception exception, int lineNumber, String resource) {
-		endTime = System.currentTimeMillis
-		state = WollokTestState.ERROR
-		this.errorResource = URI.createURI(resource)
+	def endedError(String exceptionAsString, int lineNumber, String resource) {
+		innerEnded(null, lineNumber, resource, WollokTestState.ERROR)
+		this.exceptionAsString = exceptionAsString
+	}
+	
+	def innerEnded(Exception e, int lineNumber, String resource, WollokTestState state) {
+		ended(state)
+		this.exception = e
 		this.lineNumber = lineNumber
-		this.exception = exception;
+		if (resource != null)
+			this.errorResource = URI.createURI(resource)
+	}
+	
+	def ended(WollokTestState state) {
+		this.state = state 
+		endTime = System.currentTimeMillis
 	}
 	
 	def getAssertException(){
@@ -58,6 +74,17 @@ class WollokTestResult {
 	
 	override toString() {
 		"Test: " + testResource.toString + " State: " + state
+	}
+	
+	def getErrorOutput() {
+		if (exception != null) {
+			val sw = new StringWriter
+			exception.printStackTrace(new PrintWriter(sw))
+			sw.toString	
+		}
+		else {
+			exceptionAsString
+		}
 	}
 	
 }

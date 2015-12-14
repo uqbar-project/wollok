@@ -4,6 +4,7 @@
 <plugin>
    <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
    <extension-point id="wollokTypeSystemLabelExtension" name="wollokTypeSystemLabelExtension" schema="schema/wollokTypeSystemLabelExtension.exsd"/>
+   <extension-point id="startup" name="org.uqbar.project.wollok.ui.startup" schema="schema/startup.exsd"/>
 
     <extension
             point="org.eclipse.ui.editors">
@@ -498,6 +499,7 @@
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             icon="icons/w.png"
+            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             id="org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             name="%wollokProject"
             project="true">
@@ -509,7 +511,7 @@
       <wizard
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
-            descriptionImage="icons/wollok-logo-32.fw.png"
+            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-object_16.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
@@ -518,7 +520,7 @@
       <wizard
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
-            descriptionImage="icons/wollok-logo-32.fw.png"
+            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-message_16.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
@@ -527,7 +529,7 @@
       <wizard
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
-            descriptionImage="icons/wollok-logo-32.fw.png"
+            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-program_16.png"
             id="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"

@@ -61,7 +61,7 @@ WVariableDeclaration returns WExpression:
 
 WMethodDeclaration:
 	(overrides?='override')? 'method'
-		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )? ')' 
+		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )?')' 
 		(native?='native')? 
 		
 		((expression=WBlockExpression) | (expressionReturns?='=' expression=WOrExpression))?
@@ -73,7 +73,7 @@ WMethodName:
 ;
 
 WParameter:
-	name=ID
+	name=ID (varArg?='...')?
 ;
 
 WVariable:
@@ -199,7 +199,7 @@ WFeatureCall : WSuperInvocation | WMemberFeatureCall;
 WMemberFeatureCall returns WExpression:
 	WPrimaryExpression
 	(
-		=>({WMemberFeatureCall.memberCallTarget=current} ("."|nullSafe?="?.")) 
+		=>({WMemberFeatureCall.memberCallTarget=current} ("."| nullSafe?="?.")) 
 		=>feature=FeatureCallID 
 		(('(' 
 			(memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
@@ -311,16 +311,20 @@ WSetLiteral returns WCollectionLiteral:
 	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 
 WNamedObject:
-	'object' name=ID ('extends' parent=[WClass|QualifiedName])?'{'
+	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
 
+WCanExtendClass:
+	WClass | WNamedObject
+;
+
 // CLASSES
 
 WClass:
-	'class' name=ID ('extends' parent=[WClass|QualifiedName])? '{'
+	'class' name=ID ('inherits' parent=[WClass|QualifiedName])? '{'
 		(members+=WVariableDeclaration ';'?)*
 		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
@@ -367,7 +371,7 @@ WTry:
 ;
 
 WCatch:
-	=>'catch' exceptionVarName=WVariable ':' exceptionType=[WClass|QualifiedName]
+	=>'catch' exceptionVarName=WVariable (':' exceptionType=[WClass|QualifiedName])?
 		expression=WExpression 
 ;
 

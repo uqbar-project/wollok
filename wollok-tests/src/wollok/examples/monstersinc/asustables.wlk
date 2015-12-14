@@ -2,7 +2,7 @@ class Asustable {
 	method teVaAAsustar(asustador)
 }
 
-class Ninio extends Asustable {
+class Ninio inherits Asustable {
 	var edad = 0
 	
 	new(e) { edad = e }
@@ -13,7 +13,7 @@ class Ninio extends Asustable {
 	}
 }
 
-class Piyamada extends Asustable {
+class Piyamada inherits Asustable {
 	var ninios = #[]
 	method agregarNinio(n) { ninios.add(n) }
 	override method teVaAAsustar(asustador) {
@@ -23,10 +23,10 @@ class Piyamada extends Asustable {
 	}
 }
 
-class Adulto extends Asustable {
+class Adulto inherits Asustable {
 }
 
-class Adolescente extends Asustable {
+class Adolescente inherits Asustable {
 	override method teVaAAsustar(asustador) {
 		var factor = 0.10
 		asustador.reducirMotivacion(factor)

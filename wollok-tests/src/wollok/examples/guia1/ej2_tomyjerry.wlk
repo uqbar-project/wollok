@@ -37,7 +37,5 @@ object tom {
 object raton {
 	var peso = 30
 	
-	method peso() {
-		peso
-	}
+	method peso() = peso
 }

@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -36,10 +37,6 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Before
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
-
-	//		val resource = resourceSet.createResource(URI.createURI("../org.uqbar.project.wollok.lib/src/wollok.wlk", true))
-	//		resource.load(new HashMap())
-	//		resourceSet.getResources().add(resource);
 	}
 
 	@After
@@ -60,7 +57,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrors(Pair<String, String>... programAsString) {
-		this.interpret(true, programAsString)
+		interpret(true, programAsString)
 	}
 
 	def interpretPropagatingErrorsWithoutStaticChecks(String... programAsString) {
@@ -68,7 +65,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpretPropagatingErrorsWithoutStaticChecks(Pair<String, String>... programAsString) {
-		this.interpret(true, true, programAsString)
+		interpret(true, true, programAsString)
 	}
 
 	def interpretPropagatingErrors(File fileToRead) {
@@ -83,11 +80,24 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, Pair<String, String>... programAsString) {
-		(programAsString.map[parse(resourceSet)].clone => [
+		interpret(propagatingErrors, ignoreStaticErrors, false, programAsString)
+	}
+
+	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, boolean saveFilesToDisk, Pair<String, String>... programAsString) {
+		(programAsString.map[parse(resourceSet, saveFilesToDisk)].clone => [
 			if (!ignoreStaticErrors)
 				forEach[assertNoErrors]
-			forEach[it.interpret(propagatingErrors)]
+			forEach[
+				try
+					it.interpret(propagatingErrors)
+				catch (WollokProgramExceptionWrapper e)
+					fail(e.wollokStackTrace)
+			]
 		]).last
+	}
+	
+	def interpretAsFilesPropagatingErrors(Pair<String, String>... programAsString) {
+		interpret(true, false, true, programAsString)
 	}
 
 	def evaluate(String expression) {
@@ -101,11 +111,12 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 
 	def void assertIsException(Throwable exception, Class<? extends Throwable> clazz) {
-		if(!clazz.isInstance(exception)){
-			if(exception.cause == null){
+		if (!clazz.isInstance(exception)) {
+			if (exception.cause == null) {
 				exception.printStackTrace
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
-			}else{
+			}
+			else{
 				assertIsException(exception.cause, clazz)
 			}
 		}
@@ -113,10 +124,11 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 	
 	def getMessageOf(Throwable exception, Class<? extends Throwable> clazz) {
-		if(clazz.isInstance(exception)){
+		if (clazz.isInstance(exception)) {
 			exception.message
-		}else{
-			if(exception.cause == null)
+		}
+		else{
+			if (exception.cause == null)
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
 			else{
 				getMessageOf(exception.cause, clazz)

@@ -1,9 +1,8 @@
 
 object barcoPirata {
-	var mision = buscarTesoro
 	var capacidad = 50
 	var tripulacion = 42
-	var ancla
+	var ancla = null
 	
 	method getAncla() = ancla
 		
@@ -29,7 +28,6 @@ object barcoPirata2 {
 
 object barbanegra {
 	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
-	var nivelEbriedad = 50
 	var dinero = 10
 	
 	method esUtilParaUnaMision(mision) {
@@ -47,7 +45,6 @@ object barbanegra {
 
 object jack {
 	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
-	var nivelEbriedad = 50
 	var dinero = 2
 	
 	method esUtilParaUnaMision(mision) {
@@ -82,7 +79,6 @@ object serLeyenda {
 
 object saquear {
 	var victima = barcoPirata
-	var saqueador = barcoPirata2
 	var cantidadDeDineroMaxima = 5
 	
 	method puedeSerCumplidaPor(pirata) {

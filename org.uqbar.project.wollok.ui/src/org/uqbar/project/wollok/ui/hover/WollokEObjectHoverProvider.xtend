@@ -7,6 +7,8 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
+import static extension org.uqbar.project.wollok.WollokModelUtils.*
+
 /**
  * Customizes default hover provider to avoid including the grammar rule's
  * exact name which would be tricky for the end user.
@@ -22,7 +24,7 @@ class WollokEObjectHoverProvider extends DefaultEObjectHoverProvider {
 	}
 	
 	// default: removes the "W" prefix and uses the class name
-	def dispatch modelTypeDescription(EObject it) { if (eClass.name.startsWith("W")) eClass.name.substring(1) else eClass.name }
+	def dispatch modelTypeDescription(EObject it) { eClass.humanReadableModelTypeName }
 	def dispatch modelTypeDescription(WNamedObject it) { "Object" }
 	def dispatch modelTypeDescription(WObjectLiteral it) { "Object" }
 	def dispatch modelTypeDescription(WMethodDeclaration it) { "Method" }

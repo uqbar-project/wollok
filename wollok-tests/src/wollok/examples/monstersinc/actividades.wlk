@@ -2,7 +2,7 @@ class Actividad {
 	method calcularMejora()
 }
 
-class EstudiarMateria extends Actividad {
+class EstudiarMateria inherits Actividad {
 	var materia
 	var puntos = 0
 	
@@ -14,7 +14,7 @@ class EstudiarMateria extends Actividad {
 	override method calcularMejora() = puntos
 }
 
-class EjercitarEnSimulador extends Actividad {
+class EjercitarEnSimulador inherits Actividad {
 	var horas = 0
 	new(h) { horas = h }
 	override method calcularMejora() = 10 * horas

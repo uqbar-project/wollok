@@ -6,7 +6,7 @@ class Golondrina {
 	method energia() {
 		// XPECT errors --> "Super can only be used in an overriding method" at "super()"
 		super()
-		energia
+		return energia
 	}
 	
 	method comer(alimento, postre) {
@@ -15,7 +15,7 @@ class Golondrina {
 
 }
 
-class GolondrinaSarasa extends Golondrina {
+class GolondrinaSarasa inherits Golondrina {
 	override method comer(a, p) {
 		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
 		super()

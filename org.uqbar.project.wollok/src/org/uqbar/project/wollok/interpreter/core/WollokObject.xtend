@@ -7,23 +7,29 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
 import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
-import static org.uqbar.project.wollok.WollokDSLKeywords.*
+import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * A wollok user defined (dynamic) object.
@@ -32,8 +38,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext {
-	val extension WollokInterpreterAccess = new WollokInterpreterAccess
-	@Accessors val Map<String,Object> instanceVariables = newHashMap
+	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext parentContext
 	
@@ -55,23 +60,38 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	override getThisObject() { this }
 	
-	override call(String message, Object... parameters) {
-		val method = behavior.lookupMethod(message)
-		if (method != null)
-			return method.call(parameters)
-
-		// TODO: Adding special case for equals, but we have to fix it	
-		if (message == "=="){
-			val javaMethod = this.class.methods.findFirst[name == "equals"]
-			return javaMethod.invoke(this, parameters).asWollokObject
-		}
-		
-		throw new MessageNotUnderstood('''Message not understood: «this» does not understand «message»''')
+	override call(String message, WollokObject... parameters) {
+		val method = behavior.lookupMethod(message, parameters)
+		if (method == null)
+			throwMessageNotUnderstood(message, parameters)
+		method.call(parameters)
 	}
 	
+	def throwMessageNotUnderstood(String name, Object... parameters) {
+		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
+		if (this.behavior instanceof WObjectLiteral) {
+			throw messageNotUnderstood("does not understand message " + name)
+		}
+		
+		try {
+			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// this one is ok because calling messageNotUnderstood actually throws the exception!
+			throw e
+		}
+		catch (RuntimeException e) {
+			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
+		}
+	}
+	
+	def messageNotUnderstood(String message) {
+		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
+		new WollokProgramExceptionWrapper(e)
+	}
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
-	def invokeConstructor(Object... objects) {
+	def invokeConstructor(WollokObject... objects) {
 		var constructor = behavior.resolveConstructor(objects)
 		
 		// no-args constructor automatic execution 
@@ -82,7 +102,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			evaluateConstructor(constructor, objects)
 	}
 	
-	def void evaluateConstructor(WConstructor constructor, Object[] objects) {
+	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
 		val constructorEvalContext = constructor.createEvaluationContext(objects)
 		// delegation
 		val other = constructor.delegatingConstructorCall
@@ -98,7 +118,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		
 		// actual call
 		if (constructor.expression != null) {
-			val context = constructorEvalContext.then(this)
+			val context = then(constructorEvalContext, this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
 	}
@@ -110,8 +130,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 		]
 	} 
 	
-	def static createEvaluationContext(WConstructor declaration, Object... values) {
-		declaration.parameters.map[name].createEvaluationContext(values)
+	def createEvaluationContext(WConstructor declaration, WollokObject... values) {
+		asEvaluationContext(declaration.parameters.createMap(values))
 	}
 	
 	override resolve(String variableName) {
@@ -123,7 +143,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 			parentContext.resolve(variableName)				
  	}
  	
-	override setReference(String name, Object value) {
+	override setReference(String name, WollokObject value) {
 		if (name == THIS)
 			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
 		if (!instanceVariables.containsKey(name))
@@ -141,10 +161,26 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	override toString() {
-		new ToStringBuilder().smartToString(this)
+		try {
+			//TODO: java string shouldn't call wollok string
+			// it should be a low-lever WollokVM debugging method
+			val string = call("toString", #[]) as WollokObject
+			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
+		}
+		// this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
+		// they don't understand the toString() message
+		catch (WollokProgramExceptionWrapper e) {
+			if (e.isMessageNotUnderstood) {
+				this.behavior.objectDescription
+			}
+			else
+				throw e
+		}
 	}
 		
 	def getKind() { behavior }
+	
+	def isVoid() { this == WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
 	
@@ -158,13 +194,25 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 	
 	// UFFF no estoy seguro de esto ya 
-	override addReference(String variable, Object value) {
+	override addReference(String variable, WollokObject value) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		interpreter.addGlobalReference(name, value)
 	}
+	
+	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
+	def <T> getNativeObject(String clazz) {
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz) 
+		this.nativeObjects.values.findFirst[ transformedClassName == class.name ] as T
+	}
+	
+	def hasNativeType(String type) {
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
+		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
+	}
+	
 }
 
 /**

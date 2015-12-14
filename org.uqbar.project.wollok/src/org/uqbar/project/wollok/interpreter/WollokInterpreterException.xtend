@@ -34,7 +34,7 @@ class WollokInterpreterException extends RuntimeException {
 			trim»'''
 	}
 
-	def ObjectURI() {
+	def objectURI() {
 		EcoreUtil2.getURI(this.sourceElement)
 	}
 

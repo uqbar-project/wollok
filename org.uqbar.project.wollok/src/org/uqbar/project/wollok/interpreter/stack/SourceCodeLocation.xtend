@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.stack
 
 import java.io.Serializable
 import org.eclipse.emf.common.util.URI
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Represents a source code segment.
@@ -11,13 +12,14 @@ import org.eclipse.emf.common.util.URI
  * 
  * @author jfernandes
  */
+@Accessors
 class SourceCodeLocation implements Serializable {
-	@Property String fileURI
-	@Property int startLine
-	@Property int endLine
-	@Property int offset
-	@Property int length
-	@Property String contextDescription
+	var String fileURI
+	var int startLine
+	var int endLine
+	var int offset
+	var int length
+	var String contextDescription
 	
 	new(URI fileURI, int startLine, int endLine, int offset, int length) {
 		this.fileURI = fileURI.toString
@@ -26,5 +28,7 @@ class SourceCodeLocation implements Serializable {
 		this.offset = offset
 		this.length = length
 	}
+	
+	override toString() '''«fileURI»:«startLine» [«offset»->«offset + length»]'''
 	
 }

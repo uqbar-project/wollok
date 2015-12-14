@@ -19,11 +19,14 @@ import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 //TODO: must rebuild project on apply/save
 class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	static val SETTINGS_SECTION_NAME = "TypeSystemConfigurationBlock"
+	public static final String PROPERTY_PREFIX = "TypeSystemConfiguration";
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
 		store.setDefault(XSemanticsWollokValidationExtension.TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
 	}
+	
+	override getPropertyPrefix() {  PROPERTY_PREFIX }
 	
 	override doCreateContents(Composite parent) {
 		new Composite(parent, SWT.NONE) => [

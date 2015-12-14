@@ -1,0 +1,93 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+	var energy = 0
+
+	// this is the void method	
+	method eat(something) {
+		energy -= something
+	}
+}
+
+class A {
+	method toBeOverriden(a) {}
+}
+
+class MethodsCalledOnWellKnowObjects inherits A {
+	var e
+	method setA(a) { e = a }
+
+	method asParameter() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		this.setA(pepita.eat(10))
+	}
+	
+	method initialization(aParam) {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		val a = pepita.eat(10)
+		
+		this.setA(a)
+	}
+	
+	method assignment(aParam) {
+		var a = null
+		
+		// XPECT errors --> "This message call produces no value" at "eat"
+		a = pepita.eat(10)
+		
+		this.setA(a)
+	}
+	
+	method asReturnValue() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		return pepita.eat(10)
+	}
+	
+	method asAnIfCondition() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		return if (pepita.eat(10))
+			20
+		else 
+			30	
+	}
+	
+	method asABinaryOperatorArgument() = {
+		#[
+			// XPECT errors --> "This message call produces no value" at "eat" 
+			10 + pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat" 
+			10 * pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat"
+			true && pepita.eat(10),
+			// XPECT errors --> "This message call produces no value" at "eat"
+			true || pepita.eat(10)
+		]
+	}
+	
+	method asTargetForNewMessageSend() {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		pepita.eat(10).cantina() 
+	}
+	
+	method asListLiteralElement() = {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		#[1, 2, 3, pepita.eat(10)] 
+	}
+	
+	override method toBeOverriden(a) {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		super(pepita.eat(10))
+	}
+	
+	method asConstructorArg() = {
+		// XPECT errors --> "This message call produces no value" at "eat"
+		new B(pepita.eat(10)) 
+	}
+	
+	// XPECT errors --> "This message call produces no value" at "eat"
+	method asExpressionOnMethodShortcut() = pepita.eat(10) 
+}
+
+class B {
+	new(a) {}
+}

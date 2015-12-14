@@ -21,6 +21,7 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculato
 import org.eclipse.xtext.ui.util.PluginProjectFactory;
 import org.eclipse.xtext.ui.wizard.IProjectCreator;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
+import org.uqbar.project.wollok.interpreter.WollokClassFinder;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper;

@@ -6,26 +6,26 @@ class A {
 	}
 }
 
-class B extends A {
+class B inherits A {
 	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
-	override method giveMeANumber() { 20 * 20 }
+	override method giveMeANumber() { console.println("blah") }
 }
 
-class C extends A {
+class C inherits A {
 	override method giveMeANumber() { 
 		return 0
 	}
 }
 
-class D extends C {
+class D inherits C {
 }
 
-class E extends D {
+class E inherits D {
 	// XPECT errors --> "Must return a value since overridden method returns a value" at "giveMeANumber"
-	override method giveMeANumber() { 20 * 20 }
+	override method giveMeANumber() { console.println("blah") }
 }
 
-class F extends A {
+class F inherits A {
 	override method giveMeANumber() = 6
 }
 
@@ -38,7 +38,7 @@ class Z {
 	}
 }
 
-class Y extends Z {
+class Y inherits Z {
 	// XPECT errors --> "Must NOT return a value since overridden method does not return a value" at "doSomething"
 	override method doSomething() {
 		return 23
@@ -53,16 +53,30 @@ class M {
 }
 
 // returns
-class N extends M {
+class N inherits M {
 	override method anAbstractMethod() { return 2 }
 }
 
 // doesn't return
-class O extends M {
+class O inherits M {
 	override method anAbstractMethod() { console.println("blah") }
 }
 
 // return shortcut
-class P extends M {
+class P inherits M {
 	override method anAbstractMethod() = 2
+}
+
+
+///  case where overriding method throws exception should raise an error
+
+class Persona {
+  method quiereSubirA(unMicro) {
+    return false
+  }
+}
+class Indeciso inherits Persona {
+  override method quiereSubirA(unMicro) {
+    throw new Exception()
+  }
 }

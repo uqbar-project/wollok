@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+import libForImports.apu
+import libForImports.Burns
+import libForImports.simpsons.*
+import libForImports.flanders.Ned
+import libForImports.flanders.mod
+
+// XPECT errors --> "Cannot resolve import abc" at "abc"
+import abc
+
+import wollok.lang.Object
+
+class A {
+	method ungetBlah() {
+		console.println(new Homer() + " " + marge)
+	}
+}

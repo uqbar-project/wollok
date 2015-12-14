@@ -2,7 +2,7 @@
 <feature
       id="org.uqbar.project.wollok.sdk"
       label="Wollok Language Feature"
-      version="1.2.0.qualifier"
+      version="1.3.0.qualifier"
       provider-name="Uqbar Foundation"
       os="linux,macosx,win32">
 
@@ -193,49 +193,52 @@ Library.
          id="org.eclipse.pde"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.babel.nls_eclipse_es"
+         version="0.0.0"/>
+
    <requires>
-      <import plugin="org.eclipse.xtext" version="2.7.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.util" version="2.7.3" match="equivalent"/>
+      <import plugin="org.eclipse.xtext" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.antlr.runtime"/>
-      <import plugin="org.eclipse.xtext.common.types" version="2.7.3" match="equivalent"/>
-      <import plugin="org.eclipse.xtend.lib" version="2.7.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui" version="2.7.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ecore" version="2.7.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.xbase.lib" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.common.types" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtend.lib" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ecore" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.xbase.lib" version="2.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.core" version="3.9.2" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j"/>
-      <import plugin="org.uqbar.project.wollok" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.shared" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.shared" version="2.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.xtext.builder" version="2.7.3" match="equivalent"/>
-      <import plugin="org.eclipse.xtext.common.types.ui" version="2.7.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.ui.codetemplates.ui" version="2.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.builder" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.common.types.ui" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.codetemplates.ui" version="2.9.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.ui.console" version="3.5.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.debug" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.launching" version="3.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.xtend" version="2.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xpand"/>
+      <import plugin="org.eclipse.xpand" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.xtext.xbase.ui" version="2.9.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.7.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.core" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.ui" version="3.9.0" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.8.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.8.101" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.9.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.zest.core" version="1.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.zest.layouts" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.gef" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.10.2" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="4.11.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.2.0" match="compatible"/>
@@ -244,43 +247,59 @@ Library.
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="com.google.guava" version="15.0.0" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok.ui" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok.ui.launch" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.console" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.9.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.databinding"/>
+      <import plugin="org.eclipse.core.databinding.observable"/>
+      <import plugin="org.eclipse.core.databinding.property"/>
+      <import plugin="org.eclipse.jface.databinding"/>
+      <import plugin="org.eclipse.jdt.junit"/>
+      <import plugin="org.eclipse.jdt.junit.core"/>
+      <import plugin="org.uqbar.project.wollok.game" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok.launch" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="org.uqbar.project.wollok.launch"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.jface" version="3.10.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.uqbar.project.wollok"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.ui"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.launch"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.ui.diagrams"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.uqbar.project.wollok.ui.launch"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -298,49 +317,14 @@ Library.
          unpack="false"/>
 
    <plugin
-         id="org.tigris.subversion.clientadapter"
+         id="org.uqbar.project.wollok.game"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.tigris.subversion.subclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tigris.subversion.subclipse.doc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tigris.subversion.subclipse.tools.usage"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tigris.subversion.subclipse.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tigris.subversion.clientadapter.svnkit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.tmatesoft.svnkit"
+         id="org.uqbar.project.wollok.game.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -5,21 +5,23 @@ package org.uqbar.project.wollok;
 
 import org.eclipse.xtext.common.types.TypesFactory;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
+import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
-import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory;
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory;
+import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
-import org.uqbar.project.wollok.utils.DummyJvmModelAssociations;
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory;
 
 import com.google.inject.Binder;
@@ -34,14 +36,19 @@ public class WollokDslRuntimeModule extends
 	@Override
 	public void configure(Binder binder) {
 		super.configure(binder);
+		
+		binder.bind(NativeObjectFactory.class).to(DefaultNativeObjectFactory.class);
+		
 		// TYPE SYSTEM
 		// binder.bind(TypeSystem.class).to(ConstraintBasedTypeSystem.class);
 		
 		
 		// Hacks to be able to reuse the logic to extract method from refactoring
-		binder.bind(IJvmModelAssociations.class).to(DummyJvmModelAssociations.class); 
+//		binder.bind(IJvmModelAssociations.class).to(DummyJvmModelAssociations.class); 
 		binder.bind(IJvmTypeProvider.Factory.class).to(DummyJvmTypeProviderFactory.class);
 		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
+		
+		binder.bind(ILinkingDiagnosticMessageProvider.Extended.class).to(WollokLinkingDiagnosticMessageProvider.class);
 	}
 
 	// customize exported objects

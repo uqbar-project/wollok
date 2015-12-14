@@ -7,7 +7,7 @@
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
               class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.classes.ClassDiagramView"
-              icon="class_diagram_icon.png"
+              icon="icons/class_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.class"
               name="%staticDiagramView"
               restorable="true">
@@ -15,7 +15,7 @@
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
               class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.objects.ObjectDiagramView"
-              icon="class_diagram_icon.png"
+              icon="icons/class_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.object"
               name="Object Diagram"
               restorable="true">
@@ -25,5 +25,14 @@
               id="org.uqbar.project.wollok.ui.diagrams.category"
               name="Wollok Diagrams">
         </category>
+     </extension>
+     <extension
+           point="org.eclipse.ui.perspectiveExtensions">
+        <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+        	<view id="org.uqbar.project.wollok.ui.diagrams.object" 
+                relative="org.eclipse.ui.views.ContentOutline"
+                relationship="stack"
+                visible="true"/>
+        </perspectiveExtension>
      </extension>
 </plugin>

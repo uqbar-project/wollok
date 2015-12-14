@@ -7,12 +7,10 @@ program objectLiteralsAsParameters {
 		method comer(comida) {
 			energia = energia + comida.energia()
 		}
-		method energia() {
-			energia
-		}
+		method energia() = energia
 	}
 
-	pepona.comer(object { method energia() { 100.0 } })
+	pepona.comer(object { method energia() = 100.0 })
 
 	assert.that(pepona.energia() == 200)
 

@@ -7,6 +7,11 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+/**
+ * Does nothing (?)
+ * 
+ * @author tesonep
+ */
 class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
@@ -15,14 +20,16 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override reportTestOk(WTest test) {}
 	
-	override testsToRun(WFile file, List<WTest> tests) {
-	}
+	override testsToRun(WFile file, List<WTest> tests) {}
 	
-	override testStart(WTest test) {
-	}
+	override testStart(WTest test) {}
 	
-	override reportTestError(WTest test, WollokInterpreterException exception, int lineNumber, URI resource) {
+	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		throw exception
+	}
+	
+	override finished() {
+	
 	}
 	
 }

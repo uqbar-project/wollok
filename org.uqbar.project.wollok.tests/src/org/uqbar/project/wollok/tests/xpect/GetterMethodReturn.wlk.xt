@@ -4,13 +4,13 @@ class A {
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"
 	
-	// XPECT errors --> "Getter should return a value" at "getAge"
-	method getAge() { 20 }
+	// XPECT warnings --> "Getter should return a value" at "getAge"
+	method getAge() { console.println("blah") }
 
 	// this are not getters	
-	method geton() { 20 }
-	method get() { 20 }
-	method ungetBlah() { 20 }
+	method geton() { console.println("blah") }
+	method get() { console.println("blah") }
+	method ungetBlah() { console.println("blah") }
 }
 
 // same goes for objects
@@ -19,11 +19,11 @@ object anObject {
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"
 	
-	// XPECT errors --> "Getter should return a value" at "getAge"
-	method getAge() { 20 }
+	// XPECT warnings --> "Getter should return a value" at "getAge"
+	method getAge() { console.println("blah") }
 
 	// this are not getters	
-	method geton() { 20 }
-	method get() { 20 }
-	method ungetBlah() { 20 }
+	method geton() { console.println("blah") }
+	method get() { console.println("blah") }
+	method ungetBlah() { console.println("blah") }
 }

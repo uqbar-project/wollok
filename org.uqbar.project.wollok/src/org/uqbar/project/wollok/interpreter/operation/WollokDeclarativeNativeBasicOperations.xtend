@@ -1,16 +1,16 @@
 package org.uqbar.project.wollok.interpreter.operation
 
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import org.uqbar.project.wollok.interpreter.IllegalBinaryOperation
-import org.uqbar.project.wollok.interpreter.MessageNotUnderstood
-import org.uqbar.project.wollok.interpreter.core.WCallable
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokDouble
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInteger
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumber
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -28,22 +28,26 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokRange
  */
 // I18N !
 class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperations {
-	
+		
 	override asBinaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
 		if (op != null) {
-			[Object a, Object b| op.invoke(this, a, b) ]
+			[a, b| 
+				try {
+					op.invoke(this, a, b).javaToWollok
+				}
+				catch(InvocationTargetException e) {
+					if (e.cause instanceof WollokProgramExceptionWrapper)
+						throw e.cause
+					else
+						throw new WollokRuntimeException('''Error while resolving «a» «operationSymbol» «b»''', e.cause)
+				}
+			]
 		}
 		else
-			[Object a, Object b | 
-				unknownOperator(a, operationSymbol, b)
+			[a, b | 
+				a.call(operationSymbol, b.apply)
 			]
-	}
-	
-	// if not resolved by methods in this class: overload or fail
-	def dispatch unknownOperator(WCallable callable, String operationSymbol, Object b) { callable.call(operationSymbol, b) }
-	def dispatch unknownOperator(Object a, String operationSymbol, Object b) {
-		throw new IllegalBinaryOperation("Operation '" + operationSymbol + "' not supported by interpreter")
 	}
 	
 	def hasAnnotationForOperation(Method m, String op) {
@@ -55,177 +59,70 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	// ********************************************************************************************
 	
 	@BinaryOperation('+') // needed 2 methods: 1st for the annotation, then the multi-dispatch
-	def Object sumOperation(Object a, Object b) {
-		if (a == null) b
+	def WollokObject sumOperation(WollokObject a, ()=>WollokObject e) {
+		val b = e.apply;
+		if (a == null) b 
 		else if (b == null) a
 		else sum(a, b)
 	}  
-		def dispatch sum(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to add «a» + «b»''') }
-		def dispatch sum(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped + b.wrapped) }
-		def dispatch sum(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue + b.doubleValue) }
-		def dispatch sum(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») + «b» («b.class?.simpleName»)''') }
-		def dispatch sum(String a, Object b) { a + b }
-		//
-		def dispatch sum(WCallable a, Object b) { a.call("+", b) }
+	def sum(WollokObject a, WollokObject b) { a.call("+", b) }
 	
-	def zero(Object nonNull) { minus(nonNull, nonNull) }
+	def zero(WollokObject nonNull) { minusOperation(nonNull, [nonNull]) }
 	
 	@BinaryOperation('-')	
-	def Object minusOperation(Object a, Object b) { 
+	def WollokObject minusOperation(WollokObject a, ()=>WollokObject eb) {
+		val b = eb.apply
 		if (a == null) { 
-			if (b != null) minus(b.zero, b)
+			if (b != null) b.zero.call("-", b)
 			else null
 		}
 		else if (b == null) a
-		else minus(a, b)
+		else a.call("-", b)
 	}
-		def dispatch minus(Object a, Object b) { throw new IllegalBinaryOperation('''Unable tu subtract «a» - «b»''') }  
-		def dispatch minus(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped - b.wrapped) }
-		def dispatch minus(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue - b.doubleValue) }
-		def dispatch minus(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») - «b» («b.class?.simpleName»)''') }
-		def dispatch minus(String a, WollokInteger b) { a.substring(0, a.length - b.wrapped) }
-		def dispatch minus(String a, String b) { a.replace(b, "") }
-		def dispatch minus(WCallable a, Object b) { a.call("-", b) }
 	
 	@BinaryOperation('*')  
-	def Object multiplyOperation(Object a, Object b) { 
+	def multiplyOperation(WollokObject a, ()=>WollokObject eb) { 
+		val b = eb.apply
 		if (a == null || b == null) null
-		else multiply(a, b)
+		else a.call("*", b)
 	}
-		def dispatch multiply(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped * b.wrapped) }
-		def dispatch multiply(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue * b.doubleValue) }
-		def dispatch multiply(String a, WollokInteger b) { (1..b.wrapped).map[a].join }
-		def dispatch multiply(WollokInteger a, String b) { (1..a.wrapped).map[b].join }
-		def dispatch multiply(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») * «b» («b.class?.simpleName»)''') }
-		def dispatch multiply(WCallable a, Object b) { a.call("*", b) }
-		def dispatch multiply(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to multiply «a» * «b»''') }
 	
-	@BinaryOperation('/')
-	def Object divideOperation(Object a, Object b) { divide(a, b) }
-		def dispatch divide(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to divide «a» / «b»''') }  
-		def dispatch divide(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped / b.wrapped) }
-		def dispatch divide(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue / b.doubleValue) }
-		def dispatch divide(WollokNumber<?> a, Object b) { throw new IllegalBinaryOperation('''Unable to perform «a» («a.class?.simpleName») / «b» («b.class?.simpleName»)''') }
-		def dispatch divide(WCallable a, Object b) { a.call("/", b) }
-	
-	@BinaryOperation('**')
-	def Object raiseOperation(Object a, Object b) { raise(a, b) }
-		def dispatch raise(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to raise «a» ** «b»''') }  
-		def dispatch raise(WCallable a, Object b) { a.call("**", b) }
-		def dispatch raise(WollokInteger a, WollokInteger b) { new WollokInteger((a.wrapped ** b.wrapped) as int) }
-		def dispatch raise(WollokNumber<?> a, WollokNumber<?> b) { new WollokDouble(a.doubleValue ** b.doubleValue) }
-	
-	@BinaryOperation('%')
-	def Object moduleOperation(Object a, Object b) { module(a, b) }
-		def dispatch module(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compute module «a» % «b»''' ) }  
-		def dispatch module(WCallable a, Object b) { a.call("%", b) }
-		def dispatch module(WollokInteger a, WollokInteger b) { new WollokInteger(a.wrapped % b.wrapped) }
-
 	// ********************************************************************************************
 	// ** Booleans
 	// ********************************************************************************************	
 	
 	@BinaryOperation('&&')
-	def Object andOperation(Object a, Object b) { and(a, b) }  
-		def dispatch and(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand && operator" ) }
-		def dispatch and(WollokObject a, Object b) { a.call("&&", b) }
-		def dispatch and(Boolean a, Boolean b) { a && b }
+	//TODO: hack we are sending the xtend closure here to the wollok object for shortcircuit
+	//   the WBoolean implementation. If someone overloads the && message he will receive this 
+	//   non-wollok object. I think that we should send a WollokClosure
+	//   or have some language-level construction for "lazy" parameters
+	def andOperation(WollokObject a, ()=>WollokObject b) { a.call("&&", b.lazyObject ) }
+	
+	def WollokObject getLazyObject(()=>WollokObject closure) { new LazyWollokObject(interpreter, null, closure) }
+	def getInterpreter() { WollokInterpreter.getInstance }
+	
 	@BinaryOperation('and')	
-	def Object andPhrase(Object a, Object b) { andOperation(a, b)}
+	def andPhrase(WollokObject a, ()=>WollokObject b) { andOperation(a, b) }
 	
 	@BinaryOperation('||')
-	def Object orOperation(Object a, Object b) { or(a, b) }
-		def dispatch or(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand || operator" ) }  
-		def dispatch or(WollokObject a, Object b) { a.call("||", b) }
-		def dispatch or(Boolean a, Boolean b) { a || b }
+	def orOperation(WollokObject a, ()=>WollokObject b) { a.call("||", b.lazyObject) }
 	@BinaryOperation('or')	
-	def Object orPhrase(Object a, Object b) { orOperation(a, b)}
+	def orPhrase(WollokObject a, ()=>WollokObject b) { orOperation(a, b) }
 
-	// ********************************************************************************************
-	// ** Equality comparisons
-	// ********************************************************************************************	
-	
 	@BinaryOperation('==')
-	def Object equalsOperation(Object a, Object b) { 
-		if (bothNull(a,b)) true				// Two nulls => they are equal
-		else if (noneAreNull(a,b)) a.eq(b) 	// Two not nulls => they can handle => dispatch
-		else false							// Only one is null => they aren't equal
+	def equalsOperation(WollokObject a, ()=>WollokObject eb) {
+		val b = eb.apply 
+		if (bothNull(a,b)) evaluator.theTrue		// Two nulls => they are equal
+		else if (noneAreNull(a,b)) a.call("==", b) 	// Two not nulls => they can handle => dispatch
+		else evaluator.theFalse						// Only one is null => they aren't equal
 	}
-		def dispatch eq(Object a, Object b) { a == b }
-		def dispatch eq(WCallable a, Object b) { a.call("==", b) }
-		def dispatch eq(WollokInteger a, WollokInteger b) { a.wrapped == b.wrapped }
-		def dispatch eq(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue == b.doubleValue }
 	
 	@BinaryOperation('!=')
-	def Object notEqualsOperation(Object a, Object b) {
-		if  (bothNull(a,b)) false  				// Two nulls => they are equal => false
-		else if (noneAreNull(a,b)) a.neq(b)		// Two not nulls => they can handle => dispatch
-		else true 								// Only one is null => they aren't equal
+	def notEqualsOperation(WollokObject a, ()=>WollokObject eb) {
+		val b = eb.apply
+		if  (bothNull(a,b)) evaluator.theFalse  				// Two nulls => they are equal => false
+		else if (noneAreNull(a,b)) a.call("!=", b)	// Two not nulls => they can handle => dispatch
+		else evaluator.theTrue 								// Only one is null => they aren't equal
 	}	
-		def dispatch neq(Object a, Object b) { a != b }
-		def dispatch neq(WCallable a, Object b) { a.call("!=", b) }
-		def dispatch neq(WollokInteger a, WollokInteger b) { a.wrapped != b.wrapped }
-		def dispatch neq(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue != b.doubleValue }
 
-	@BinaryOperation('===')
-	def Object identicalOperation(Object a, Object b) { overloadOr(a, '===', b) [| a === b ] }
-
-	@BinaryOperation('!==')
-	def Object notIdenticalOperation(Object a, Object b) { overloadOr(a, '!==', b) [| a !== b ] }
-	
-	/** 
-	 * Tries sending the message to the wollok object so it can be overloading, otherwise the block
-	 */
-	def protected overloadOr(Object a, String message, Object b, ()=>Object otherwise) {
-		if (a instanceof WollokObject)
-			try
-				return a.call(message, b)
-			catch(MessageNotUnderstood e) {
-				// not understood, fallback !
-			}
-		otherwise.apply
-	}
-	
-	// ********************************************************************************************
-	// ** Inequality operators
-	// ********************************************************************************************	
-	
-	@BinaryOperation('>=')
-	def Boolean greaterOrEqualsOperation(Object a, Object b) { ge(a, b) }  
-		def dispatch ge(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» >= «b»''') }
-		def dispatch ge(WCallable a, Object b) { a.call(">=", b) as Boolean }
-		def dispatch ge(WollokInteger a, WollokInteger b) { a.wrapped >= b.wrapped }
-		def dispatch ge(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue >= b.doubleValue }
-
-	@BinaryOperation('<=')
-	def Boolean lesserOrEqualsOperation(Object a, Object b) { le(a, b) }
-		def dispatch le(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» <= «b»''') }  
-		def dispatch le(WCallable a, Object b) { a.call("<=", b) as Boolean }
-		def dispatch le(WollokInteger a, WollokInteger b) { a.wrapped <= b.wrapped }
-		def dispatch le(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue <= b.doubleValue }
-
-	@BinaryOperation('>')
-	def Boolean greaterOperation(Object a, Object b) { gt(a, b) }
-		def dispatch gt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» > «b»''') }
-		def dispatch gt(WCallable a, Object b) { a.call(">", b) as Boolean }
-		def dispatch gt(WollokInteger a, WollokInteger b) { a.wrapped > b.wrapped }
-		def dispatch gt(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue > b.doubleValue }
-
-	@BinaryOperation('<')
-	def Boolean lesserOperation(Object a, Object b) { lt(a, b) as Boolean }
-		def dispatch lt(Object a, Object b) { throw new IllegalBinaryOperation('''Unable to compare «a» < «b»''') }  
-		def dispatch lt(WCallable a, Object b) { a.call("<", b) }
-		def dispatch lt(WollokInteger a, WollokInteger b) { a.wrapped < b.wrapped }
-		def dispatch lt(WollokNumber<?> a, WollokNumber<?> b) { a.doubleValue < b.doubleValue }
-		
-	// ********************************************************************************************
-	// ** Ranges
-	// ********************************************************************************************
-	
-	@BinaryOperation('..')
-	def WollokRange rangeOperation(Object a, Object b) { range(a, b) }
-		def dispatch range(Object a, Object b) { throw new IllegalBinaryOperation(a + " does not understand .. operator" ) }  
-		def dispatch range(WCallable a, Object b) { a.call("..", b) as WollokRange }
-		def dispatch range(WollokInteger a, WollokInteger b) { new WollokRange(a.wrapped .. b.wrapped) }
-		def dispatch range(WollokNumber<?> a, WollokNumber<?> b) { throw new IllegalBinaryOperation("Operator .. can only be used for integer numbers") }
 }

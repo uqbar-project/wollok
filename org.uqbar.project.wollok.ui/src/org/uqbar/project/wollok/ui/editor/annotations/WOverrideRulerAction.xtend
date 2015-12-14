@@ -97,7 +97,7 @@ class WOverrideRulerAction extends ResourceAction implements IActionContributor,
 	def runInternal() {
 		editor.document.readOnly[XtextResource resource |
 			val method = resource.getEObject(overrideIndicatorAnnotation.methodURI) as WMethodDeclaration
-			val overridden = method.declaringContext.parent.lookupMethod(method.name)
+			val overridden = method.declaringContext.parent.lookupMethod(method.name, method.parameters)
 			uriEditorOpener.open(EcoreUtil.getURI(overridden), true)
 		]
 	}

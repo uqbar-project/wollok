@@ -14,7 +14,7 @@ import wollok.lib.AssertionException
  * This class represents the model of the results of an execution.
  */
  @Singleton
-class WollokTestResults extends Observable implements WollokRemoteUITestNotifier{
+class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
 	
 	@Accessors
 	var WollokTestContainer container
@@ -53,8 +53,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.tests.findFirst[name == testName]
 	}
 	
-	override error(String testName, Exception exception, int lineNumber, String resource) {
-		testByName(testName).endedError(exception, lineNumber, resource);
+	override error(String testName, String exceptionAsString, int lineNumber, String resource) {
+		testByName(testName).endedError(exceptionAsString, lineNumber, resource);
 		
 		this.setChanged
 		this.notifyObservers		

@@ -2,7 +2,14 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
 import java.util.ArrayList
 import java.util.List
+import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.Property
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * 
@@ -19,20 +26,36 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
+	def addClass(WClass c) {
+		addClass(new ClassModel(c) => [
+			location = new Point(100, 100)
+		])
+	}
+	
 	def addNamedObject(NamedObjectModel s) {
 		if (s != null && objects.add(s))
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
 	def connectRelations() {
-		classes.forEach[c|
-			val parent = c.clazz.parent
-			if (parent != null) {
-				val parentModel = classes.findFirst[clazz == parent]
-				new Connection(null, c, parentModel)
-			}
-		]
+		classes.clone.forEach[createRelation(clazz)]
+		objects.forEach[createRelation(obj)]
 	}
+	
+	def createRelation(Shape it, WMethodContainer c) {
+		val parent = c.parent
+		if (parent != null) {
+			val parentModel = classes.findFirst[clazz == parent]
+			if (parentModel == null) {
+				throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
+//				addClass(parent)
+			}
+			else
+				new Connection(null, it, parentModel)
+		}
+	}
+	
+	
 
 	def getChildren() {
 		(classes + objects).toList

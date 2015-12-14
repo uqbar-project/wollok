@@ -1,0 +1,35 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object sarasita {
+	
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ if (x % 2 == 0) \"even\" else \"odd\" }"
+	method whatIf(x) {
+		if (x % 2 == 0)
+			"even"
+		else
+			"odd"
+	}
+	
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ false }"
+	method booleanLiteral() {
+		false
+	}
+	
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ #[1, 2, 3] }"
+	method collectionLiteral() {
+		#[1, 2, 3]
+	}
+	
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ 1 + 2 }"
+	method binaryOperation() {
+		1 + 2
+	}
+	
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ this.returningAValue() }"
+	method hasAMessageToThisWhichReturnsAValue() {
+		this.returningAValue()
+	}
+	
+	method returningAValue() { return 2 }
+	
+}

@@ -27,7 +27,7 @@ class Asustador {
 	}
 }
 
-class AsustadorNato extends Asustador {
+class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
 	new(e, p) = super(e) { 
 		puntosTerrorInnatos = p
@@ -37,7 +37,7 @@ class AsustadorNato extends Asustador {
 	}
 }
 
-class AsustadorPerseverante extends Asustador {
+class AsustadorPerseverante inherits Asustador {
 	var puntosDeTerror = 0
 	
 	new(e) = super(e)

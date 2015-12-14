@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
+import com.google.inject.Injector
 import java.io.Serializable
-import org.apache.log4j.Logger
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
@@ -11,6 +13,7 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ObservableStack
@@ -28,13 +31,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
  */
  // Rename to XInterpreter
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
-	static Logger log = Logger.getLogger(WollokInterpreter)
+	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 	
-	@Accessors val globalVariables = <String,Object>newHashMap
+	@Accessors val globalVariables = <String,WollokObject> newHashMap
 	@Accessors val programVariables = <WVariable>newArrayList
 
-	override addGlobalReference(String name, Object value) {
+	override addGlobalReference(String name, WollokObject value) {
 		globalVariables.put(name,value)
 		value
 	}
@@ -45,9 +48,14 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	@Inject
 	WollokInterpreterConsole console
 	
+	@Inject
+	Injector injector
+	
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 
 	var executionStack = new ObservableStack<XStackFrame>
+	
+	@Accessors var EObject evaluating
 
 	static var WollokInterpreter instance = null 
 
@@ -55,7 +63,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		instance = this
 	}
 	
-	def static getInstance(){instance}
+	def static getInstance(){ instance }
+	def getInjector() { injector }
+	
+	def getEvaluator() { evaluator }
 	
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 	
@@ -67,7 +78,13 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	// ***********************
 	
 	override interpret(EObject rootObject) {
-		interpret(rootObject, false)
+		try {
+			interpret(rootObject, false)
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// todo: what about "propagating errors?"
+			e.wollokException.call("printStackTrace")
+		}
 	}
 	
 	override interpret(EObject rootObject, Boolean propagatingErrors) {
@@ -77,7 +94,11 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			executionStack.push(stackFrame)
 			debugger.started
 			
+			evaluating = rootObject
+			
 			evaluator.evaluate(rootObject)
+			
+//			evaluating = null
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			throw e
@@ -85,7 +106,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		catch (Throwable e)
 			if (propagatingErrors)
 				throw e
-			else{
+			else {
 				console.logError(e)
 				null
 			}
@@ -97,19 +118,19 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		new XStackFrame(root, new WollokNativeLobby(console, this))
 	}
 	
-	override performOnStack(EObject executable, EvaluationContext newContext, ()=>Object something) {
+	override performOnStack(EObject executable, EvaluationContext newContext, ()=>WollokObject something) {
 		stack.push(new XStackFrame(executable, newContext))
 		try 
 			return something.apply
-		catch(ReturnValueException e)
+		catch (ReturnValueException e)
 			return e.value	
 		finally
 			stack.pop
 	}
 
 	
-	def evalBinary(Object a, String operand, Object b) {
-		evaluator.resolveBinaryOperation(operand).apply(a, b)
+	def evalBinary(WollokObject a, String operand, WollokObject b) {
+		evaluator.resolveBinaryOperation(operand).apply(a, [|b])
 	}
 
 	/**
@@ -126,7 +147,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
 		} catch (ReturnValueException ex) {
-			throw ex // a user-level exception, fine !
+			throw ex // a return
 		} catch (WollokProgramExceptionWrapper ex) {
 			throw ex // a user-level exception, fine !
 		}

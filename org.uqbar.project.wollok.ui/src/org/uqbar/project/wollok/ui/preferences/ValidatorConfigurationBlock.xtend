@@ -32,6 +32,7 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
  */
 class ValidatorConfigurationBlock extends OptionsConfigurationBlock {
 	static val SETTINGS_SECTION_NAME = "ValidatorConfigurationBlock"
+	public static final String PROPERTY_PREFIX = "StaticValidatorConfiguration";
 	
 	IPreferenceStore store
 	
@@ -39,6 +40,8 @@ class ValidatorConfigurationBlock extends OptionsConfigurationBlock {
 		super(project, store, container)
 		this.store = store
 	}
+	
+	override getPropertyPrefix() { PROPERTY_PREFIX }
 	
 	override protected doCreateContents(Composite parent) {
 		new Composite(parent, SWT.NONE) => [

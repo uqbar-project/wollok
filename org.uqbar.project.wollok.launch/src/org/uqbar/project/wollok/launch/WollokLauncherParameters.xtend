@@ -8,6 +8,10 @@ import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
 
+/**
+ * @author jfernandes
+ * @author tesonep
+ */
 class WollokLauncherParameters {
 	@Accessors
 	Integer requestsPort = null
@@ -16,21 +20,22 @@ class WollokLauncherParameters {
 	@Accessors
 	List<String> wollokFiles = new ArrayList();
 	@Accessors
-	boolean hasRepl = false;
-
+	boolean hasRepl = false
 	@Accessors
-	Integer testPort = null;
-
+	Integer testPort = null
 	@Accessors
-	boolean tests = false;
+	boolean jsonOutput = false
+	@Accessors
+	boolean tests = false
 	
-	def build(){
+	def build() {
 		val sb = new StringBuilder
-		if(hasRepl)sb.append("-r").append(" ")
-		if(requestsPort != null)sb.append("-requestsPort " + requestsPort.toString).append(" ")
-		if(eventsPort != null)sb.append("-eventsPort " + eventsPort.toString).append(" ")
-		if(testPort != null)sb.append("-testPort " + testPort.toString).append(" ")
-		if(tests)sb.append("-t ")
+		if (hasRepl)sb.append("-r").append(" ")
+		if (requestsPort != null) sb.append("-requestsPort " + requestsPort.toString).append(" ")
+		if (eventsPort != null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
+		if (testPort != null) sb.append("-testPort " + testPort.toString).append(" ")
+		if (tests) sb.append("-t ")
+		if (jsonOutput) sb.append("-jsonOutput ")
 		wollokFiles.forEach [ sb.append(it).append(" ") ]
 		sb.toString
 	}
@@ -42,6 +47,8 @@ class WollokLauncherParameters {
 		
 		tests = cmdLine.hasOption("t")
 		testPort = parseParameter(cmdLine, "testPort")
+		
+		jsonOutput = cmdLine.hasOption("jsonOutput")
 
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
@@ -63,35 +70,37 @@ class WollokLauncherParameters {
 		if (cmdLine.hasOption(paramName)) {
 			val s = cmdLine.getOptionValue(paramName)
 			try {
-				Integer::parseInt(s);
+				Integer::parseInt(s)
 			} catch (NumberFormatException e) {
 				throw new RuntimeException("Invalid number value for " + paramName)
 			}
 		}
 	}
 	
-	def hasDebuggerPorts(){
+	def hasDebuggerPorts() {
 		this.eventsPort != 0
 	}
 
 	def options() {
-		val options = new Options
-		options.addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
-		options.addOption(new Option("t", "Running tests") => [longOpt = "tests"])
-		options.addOption(
-			new Option("testPort", "Server port for tests") => [
-				argName = "port"
-				args = 1
-			])
-		options.addOption(
-			new Option("requestsPort", "Request ports") => [
-				argName = "port"
-				args = 1
-			])
-		options.addOption(
-			new Option("eventsPort", "Events ports") => [
-				argName = "port"
-				args = 1
-			])
+		new Options => [
+			addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
+			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
+			
+			addOption(new Option("jsonOutput", "JSON test report output"))
+			
+			add("testPort", "Server port for tests", "port", 1)
+			add("requestsPort", "Request ports", "port", 1)
+			add("eventsPort", "Events ports", "port", 1)			
+		]
 	}
+	
+	def add(Options options, String opt, String description, String argName, int args) {
+		options.addOption(
+			new Option(opt, description) => [
+				it.argName = argName
+				it.args = args
+			]
+		)
+	}
+	
 }

@@ -1,6 +1,9 @@
 package org.uqbar.project.wollok.ui;
 
+import java.util.Properties;
+
 import org.eclipse.osgi.util.NLS;
+import org.uqbar.project.wollok.utils.WNLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.ui.messages"; //$NON-NLS-1$
@@ -29,18 +32,44 @@ public class Messages extends NLS {
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;
-	public static String WollokTemplateProposalProvider_createProgram_name;
-	public static String WollokTemplateProposalProvider_createProgram_description;
-	public static String WollokTemplateProposalProvider_createPackage_name;
-	public static String WollokTemplateProposalProvider_createPackage_description;
-	public static String WollokTemplateProposalProvider_createClass_name;
-	public static String WollokTemplateProposalProvider_createClass_description;
-	public static String WollokTemplateProposalProvider_createObject_name;
-	public static String WollokTemplateProposalProvider_createObject_description;
-	public static String WollokTemplateProposalProvider_createReference_name;
-	public static String WollokTemplateProposalProvider_createReference_description;
-	public static String WollokTemplateProposalProvider_createMethod_name;
-	public static String WollokTemplateProposalProvider_createMethod_description;
+	public static String WollokTemplateProposalProvider_WProgram_name;
+	public static String WollokTemplateProposalProvider_WProgram_description;
+	
+	public static String WollokTemplateProposalProvider_WPackage_name;
+	public static String WollokTemplateProposalProvider_WPackage_description;
+	
+	public static String WollokTemplateProposalProvider_WClass_name;
+	public static String WollokTemplateProposalProvider_WClass_description;
+	
+	public static String WollokTemplateProposalProvider_WNamedObject_name;
+	public static String WollokTemplateProposalProvider_WNamedObject_description;
+	
+	public static String WollokTemplateProposalProvider_WObjectLiteral_name;
+	public static String WollokTemplateProposalProvider_WObjectLiteral_description;
+	
+	public static String WollokTemplateProposalProvider_WVariableDeclaration_name;
+	public static String WollokTemplateProposalProvider_WVariableDeclaration_description;
+	public static String WollokTemplateProposalProvider_WMethodDeclaration_name;
+	public static String WollokTemplateProposalProvider_WMethodDeclaration_description;
+	
+	public static String WollokTemplateProposalProvider_WConstructorCall_name;
+	public static String WollokTemplateProposalProvider_WConstructorCall_description;
+	
+	public static String WollokTemplateProposalProvider_WIfExpression_name;
+	public static String WollokTemplateProposalProvider_WIfExpression_description;
+	
+	public static String WollokTemplateProposalProvider_WListLiteral_name;
+	public static String WollokTemplateProposalProvider_WListLiteral_description;
+	
+	public static String WollokTemplateProposalProvider_WSetLiteral_name;
+	public static String WollokTemplateProposalProvider_WSetLiteral_description;
+	
+	public static String WollokTemplateProposalProvider_WClosure_name;
+	public static String WollokTemplateProposalProvider_WClosure_description;
+	
+	public static String WollokTemplateProposalProvider_WTry_name;
+	public static String WollokTemplateProposalProvider_WTry_description;
+	
 	public static String WollokDslQuickfixProvider_capitalize_name;
 	public static String WollokDslQuickfixProvider_capitalize_description;
 	public static String WollokDslQuickfixProvider_lowercase_name;
@@ -63,6 +92,8 @@ public class Messages extends NLS {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+	
+	public static Properties loadProperties() { return WNLS.load(BUNDLE_NAME, Messages.class); }
 
 	private Messages() {
 	}

@@ -9,8 +9,6 @@ program polymorphism {
 		method energia() { return energia }
 	}
 
-	pepe.comer(algo)
-
 	/* el alpiste tambien tiene energia  */
 	val alpiste = object {
 		method energia() {		
@@ -20,6 +18,6 @@ program polymorphism {
 
 	pepona.comer(alpiste)
 
-	tester.assert(pepona.energia() == 105)
+	assert.that(pepona.energia() == 105)
 
 }

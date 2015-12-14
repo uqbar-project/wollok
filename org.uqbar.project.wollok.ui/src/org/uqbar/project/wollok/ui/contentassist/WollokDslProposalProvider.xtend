@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.contentassist
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.uqbar.project.wollok.ui.WollokActivator
@@ -10,23 +11,31 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WLibraryElement
+import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamed
 
 /**
  * 
  * @author jfernandes
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
+	var extension BasicTypeResolver typeResolver = new BasicTypeResolver 
 	
 	// This whole implementation is just an heuristic until we have a type system
 	
@@ -46,30 +55,52 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		memberProposalsForTarget(ref.ref, assignment, context, acceptor)
 	}
-	
+
+	// any referenciable shows all messages that you already sent to it	
 	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMessageSent.filter[feature != null].forEach[m|
-			acceptor.addProposal(context, m.asProposalText, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
-		]
+		ref.messageSentAsProposals(context, acceptor)
+	}
+	
+	// for variables tries to resolve the type based on the initial value (for literal objects like strings, lists, etc)
+	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		val WMethodContainer type = ref.resolveType
+		if (type != null)
+			type.methodsAsProposals(context, acceptor)
+		else
+			ref.messageSentAsProposals(context, acceptor)
+	}
+	
+	// message to WKO's (shows the object's methods)
+	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.methodsAsProposals(context, acceptor)
 	}
 	
 	// messages to this
 	def dispatch void memberProposalsForTarget(WThis dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		dis.declaringContext.allMethods.forEach[m|
-			acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
-		]
+		dis.declaringContext.methodsAsProposals(context, acceptor)
 	}
 	
-	def asProposal(WMethodDeclaration it) {
-		name + "(" + parameters.map[p| p.name ].join(", ") + ")" 
-	}
-		
 	// *****************************
 	// ** proposing methods and how they are completed
 	// *****************************
+
+	def messageSentAsProposals(WReferenciable ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMessageSent.filter[feature != null].forEach[ context.addProposal(it, acceptor) ]
+	}
+	def methodsAsProposals(WMethodContainer ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		ref.allMethods.forEach[ context.addProposal(it, acceptor) ]
+	}
 	
-	def asProposalText(WMemberFeatureCall call) {
+	def addProposal(ContentAssistContext context, WMember m, ICompletionProposalAcceptor acceptor) {
+		acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)
+	}
+	
+	def dispatch asProposal(WMemberFeatureCall call) {
 		call.feature + "(" + call.memberCallArguments.map[asProposalParameter].join(",") + ")"
+	}
+	
+	def dispatch asProposal(WMethodDeclaration it) {
+		name + "(" + parameters.map[p| p.name ].join(", ") + ")" 
 	}
 	
 	def dispatch asProposalParameter(WVariableReference r) {  r.ref.name }
@@ -93,6 +124,20 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	
 	def addProposal(ICompletionProposalAcceptor acceptor, ContentAssistContext context, String feature, Image image) {
 		if (feature != null) acceptor.accept(context.createProposal(feature, image))
+	}
+	
+	// ****************************************
+	// ** imports
+	// ****************************************
+	
+	override completeImport_ImportedNamespace(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		val content = model.file.resourceSet.allContents.filter(WLibraryElement)
+		// add other files content here
+		
+		content.forEach[
+			if (it instanceof WMethodContainer)
+				acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
+		]
 	}
 	
 		//@Inject

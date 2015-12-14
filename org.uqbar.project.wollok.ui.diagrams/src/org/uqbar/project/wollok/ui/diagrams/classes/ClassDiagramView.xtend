@@ -2,8 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 
 import com.google.inject.Inject
 import java.util.ArrayList
-import java.util.List
-import org.eclipse.core.resources.IResource
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
@@ -12,7 +10,7 @@ import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
 import org.eclipse.draw2d.graph.Node
-import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.gef.DefaultEditDomain
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.GraphicalEditPart
@@ -27,6 +25,8 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
+import org.eclipse.jface.text.DocumentEvent
+import org.eclipse.jface.text.IDocumentListener
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.ISelectionChangedListener
@@ -49,32 +49,37 @@ import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
+import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * 
  * @author jfernandes
  */
-class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener {
+class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
 	ActionRegistry actionRegistry
 	
-	IXtextDocument xtextDocument;
+	IXtextDocument xtextDocument
 	
 	@Inject
 	XtextResourceSet resourceSet
@@ -101,29 +106,45 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def createDiagramModel() {
 		new ClassDiagram => [
 			// classes
-			val classes = xtextDocument.readOnly[XtextResource resource| getClasses(resource) ]
-			classes.forEach[c|
-				addClass(new ClassModel(c) => [
-					location = new Point(100, 100)
-				])
+			val classes = xtextDocument.readOnly[ classes /* + importedClasses */ ].toSet
+			classes.addAll(classes.map[c| c.superClassesIncludingYourself].flatten)
+
+			// objects (first so that we collect parents in the "classes" set
+			val objects = xtextDocument.readOnly[ namedObjects ]
+			objects.forEach[o| 
+				addNamedObject(new NamedObjectModel(o) => [ location = new Point(100, 100) ])
+				if (o.parent != null)
+					classes.add(o.parent)
 			]
-			// objects
-			val objects = xtextDocument.readOnly[XtextResource resource| getNamedObjects(resource) ]
-			objects.forEach[c| 
-				addNamedObject(new NamedObjectModel(c) => [ location = new Point(100, 100) ])
-			]
-			
+
+			// classes
+			classes.forEach[c| addClass(c)]
+
 			// relations
 			connectRelations
 		]
 	}
 	
-	def getClasses(XtextResource r) {
-		(r.contents.get(0) as WFile).eAllContents.filter(WClass).toList
+	def getClasses(XtextResource it) { getAllOfType(WClass) }
+	def getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
+	
+	def <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
+		if (contents.empty) #[]
+		else  (contents.get(0) as WFile).eAllContents.filter(type).toList
 	}
 	
-	def getNamedObjects(XtextResource r) {
-		(r.contents.get(0) as WFile).eAllContents.filter(WNamedObject).toList
+	
+	@Inject WollokClassFinder finder
+	
+	def getImportedClasses(XtextResource it) {
+		val imports = getAllOfType(Import)
+		imports.fold(newArrayList)[l, i |
+			try {
+				l.add(finder.getCachedClass(i, i.importedNamespace))
+			}
+			catch(WollokRuntimeException e) { }
+			l
+		]
 	}
 	
 	override createPartControl(Composite parent) {
@@ -311,12 +332,23 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def updateDocument(IXtextDocument doc) {
-		xtextDocument = doc
-		if (xtextDocument != null) {
-			diagram = createDiagramModel
-			initializeGraphicalViewer
+		if (doc != null) {
+			if (xtextDocument != null) xtextDocument.removeDocumentListener(this)
+			xtextDocument = doc
+			xtextDocument.addDocumentListener(this)
+			refresh()
 		}
 	}
+	
+	def refresh() {
+		diagram = createDiagramModel
+		initializeGraphicalViewer
+	}
+	
+	// IDocumentListener
+	
+	override documentAboutToBeChanged(DocumentEvent event) { }
+	override documentChanged(DocumentEvent event) { refresh }
 	
 	// ****************************	
 	// ** Palette
@@ -337,8 +369,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	// ** Part listener (listen for open editor)
 	// ****************************
 	
-	override partActivated(IWorkbenchPart part) {
-	}
+	override partActivated(IWorkbenchPart part) {}
 	
 	override partBroughtToTop(IWorkbenchPart part) {
 		if (part instanceof XtextEditor) {
@@ -348,9 +379,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	override partClosed(IWorkbenchPart part) {	}
-	
 	override partDeactivated(IWorkbenchPart part) { }
-	
 	override partOpened(IWorkbenchPart part) { }
 	
 	// workbench -> gef editor
@@ -379,19 +408,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	val listeners = new ArrayList<ISelectionChangedListener>
 	var ISelection selection = null
 	
-	override addSelectionChangedListener(ISelectionChangedListener listener) {
-		listeners += listener
-	}
-	
+	override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
 	override getSelection() { selection }
-	
-	override setSelection(ISelection selection) {
-		// nop 
-	}
-	
-	override removeSelectionChangedListener(ISelectionChangedListener listener) {
-		listeners -= listener
-	}
+	override setSelection(ISelection selection) {}
+	override removeSelectionChangedListener(ISelectionChangedListener listener) { listeners -= listener }
 	
 	// ISelectionChangedListeners:
 	//   listen for changes in the gef editor, publish selection using the model

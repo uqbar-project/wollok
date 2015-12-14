@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.tests.interpreter
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
-import org.uqbar.project.wollok.WollokDSLKeywords
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Test cases for operators such as: +=, -=, etc.
@@ -46,11 +46,11 @@ class MultiOpAssignTestCase extends AbstractWollokInterpreterTestCase {
 	def void testMatches() {
 		// valid
 		#["+=", "-=", "*=", "/=", "%="].forEach[s|
-			assertTrue(s.matches(WollokDSLKeywords.MULTIOPS_REGEXP))
+			assertTrue(s.matches(MULTIOPS_REGEXP))
 		]
 		// not valid
 		#["++=", "+_", "a="].forEach[s|
-			assertFalse(s.matches(WollokDSLKeywords.MULTIOPS_REGEXP))
+			assertFalse(s.matches(MULTIOPS_REGEXP))
 		]
 	}
 }
