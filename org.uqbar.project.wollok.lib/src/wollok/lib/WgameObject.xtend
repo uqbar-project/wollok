@@ -30,7 +30,7 @@ class WgameObject {
 	def addVisualWithReferenceMethod(Object element, Object properties) {		
 		val wollokObject = WollokObject.cast(element)
 		val wollokList = WollokObject.cast(properties)
-		this.addComponent(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
+		addComponent(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
 	}
 
 	@NativeMessage("whenKeyPressedSay")
@@ -60,7 +60,7 @@ class WgameObject {
 	def whenCollideDoMethod(Object object, WollokObject action) {
 		val visualObject = board.getComponents().findFirst[ c | c.domainObject.equals(WollokObject.cast(object))]
 		val function = action.asClosure
-		val listener = new CollisionListener(visualObject, [ e | function.doApply(e.domainObject) ])
+		val listener = new CollisionListener(visualObject, [ VisualComponent e | function.doApply(e.domainObject) ])
 		board.addListener(listener)
 	}
 	
