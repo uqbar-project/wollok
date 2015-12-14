@@ -22,13 +22,11 @@ class RemoveWizardsStartup implements WollokUIStartup {
 	override startup() { removeEclipseFeatures }
 	
 	def removeEclipseFeatures() {
-		println(">>>>> Removing Eclipse FEATURES FROM STARTUP!")
 		val wizardRegistry = PlatformUI.workbench.newWizardRegistry as AbstractExtensionWizardRegistry
 		val categories = PlatformUI.workbench.newWizardRegistry.rootCategory.categories
 		for (wizard : getAllWizards(categories)) {
 	        if (!wizard.id.includeWizards) {
 				val wizardElement = wizard as WorkbenchWizardElement
-				println(">>>>> Removing wizard " + wizard.id)
 				wizardRegistry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}
 		}
