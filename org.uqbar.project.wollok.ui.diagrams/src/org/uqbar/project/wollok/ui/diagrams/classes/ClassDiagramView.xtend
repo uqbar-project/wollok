@@ -106,8 +106,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def createDiagramModel() {
 		new ClassDiagram => [
 			// classes
-			val classes = xtextDocument.readOnly[ classes /* + importedClasses */ ].toSet
-			classes.addAll(classes.map[c| c.superClassesIncludingYourself].flatten)
+			val classes = xtextDocument.readOnly[ classes ].toSet
+			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
