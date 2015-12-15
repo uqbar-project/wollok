@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem
 
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * @author jfernandes

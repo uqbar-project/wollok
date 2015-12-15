@@ -1,6 +1,5 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
-import it.xsemantics.runtime.RuleEnvironment
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
@@ -8,6 +7,7 @@ import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.typesystem.TypeSystem
 
 /**
  * 
@@ -15,14 +15,12 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class ClassBasedWollokType extends BasicType implements ConcreteType {
 	WClass clazz
-	WollokDslTypeSystem system
-	RuleEnvironment env
+	TypeSystem typeSystem
 
-	new(WClass clazz, WollokDslTypeSystem system, RuleEnvironment env) {
+	new(WClass clazz, TypeSystem typeSystem) {
 		super(clazz.name)
 		this.clazz = clazz
-		this.system = system
-		this.env = env
+		this.typeSystem = typeSystem
 	}
 	
 	override understandsMessage(MessageType message) {
@@ -49,10 +47,10 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 			null
 	}
 	
-	override resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g) {
+	override resolveReturnType(MessageType message) {
 		val method = lookupMethod(message)
 		//	TODO: si no está, debería ir al archivo del método (podría estar en otro archivo) e inferir
-		system.env(g, method, WollokType)
+		typeSystem.type(method)
 	}
 	
 	// ***************************************************************************
@@ -60,24 +58,24 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 	// ** the var is later assigned to this type.
 	// ***************************************************************************
 	
-	override refine(WollokType previouslyInferred, RuleEnvironment g) {
-		doRefine(previouslyInferred, g)
+	override refine(WollokType previouslyInferred) {
+		doRefine(previouslyInferred)
 	}
 	
 	// by default uses super
-	def dispatch doRefine(WollokType previous, RuleEnvironment g) {
-		super.refine(previous, g)
+	def dispatch doRefine(WollokType previous) {
+		super.refine(previous)
 	}
 	
-	def dispatch doRefine(ClassBasedWollokType previous, RuleEnvironment g) {
+	def dispatch doRefine(ClassBasedWollokType previous) {
 		val commonType = commonSuperclass(clazz, previous.clazz)
 		if (commonType == null)
 			throw new TypeSystemException("Incompatible types. Expected " + previous.name + " <=> " + name)
-		new ClassBasedWollokType(commonType, system, env)
+		new ClassBasedWollokType(commonType, typeSystem)
 	}
 	
-	def dispatch doRefine(ObjectLiteralWollokType previous, RuleEnvironment g) {
-		val intersectMessages = getAllMessages(g).filter[previous.understandsMessage(it)]
+	def dispatch doRefine(ObjectLiteralWollokType previous) {
+		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}
 	
@@ -97,11 +95,7 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 	}
 	
 	override getAllMessages() {
-		getAllMessages(env)
-	}
-	
-	def getAllMessages(RuleEnvironment g) {
-		clazz.allMethods.map[m| system.queryMessageTypeForMethod(g, m).first]
+		clazz.allMethods.map[m| typeSystem.queryMessageTypeForMethod(m)]
 	}
 	
 	// *******************************

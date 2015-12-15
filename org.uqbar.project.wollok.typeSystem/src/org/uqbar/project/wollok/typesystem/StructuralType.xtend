@@ -1,6 +1,5 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
-import it.xsemantics.runtime.RuleEnvironment
 import java.util.Iterator
 import java.util.List
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl
@@ -26,16 +25,16 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 			throw new TypeSystemException("Incompatible type. Type «" + other + "» does not complaint the following messages: " + notSupported)
 	}
 	
-	override refine(WollokType previous, RuleEnvironment g) {
-		doRefine(previous, g)
+	override refine(WollokType previous) {
+		doRefine(previous)
 	}
 	
-	def dispatch doRefine(StructuralType previouslyInferred, RuleEnvironment g) {
+	def dispatch doRefine(StructuralType previouslyInferred) {
 		val intersection = messages.filter[m| previouslyInferred.understandsMessage(m)]
 		new StructuralType(intersection.iterator)
 	}
 	
-	def dispatch doRefine(WollokType previouslyInferred, RuleEnvironment g) {
+	def dispatch doRefine(WollokType previouslyInferred) {
 		throw new TypeSystemException("Incompatible types")		
 	}
 	
@@ -43,7 +42,7 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 		messages.exists[message.isSubtypeof(it)]
 	}
 	
-	override resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g) {
+	override resolveReturnType(MessageType message) {
 		//TODO !
 		WAny
 	}

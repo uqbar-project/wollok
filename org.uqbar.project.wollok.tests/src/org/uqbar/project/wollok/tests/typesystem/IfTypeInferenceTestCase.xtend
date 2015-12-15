@@ -1,8 +1,7 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
-
-import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * Test type inference in if expressions

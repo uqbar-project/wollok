@@ -2,15 +2,16 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.uqbar.project.wollok.semantics.ClassBasedWollokType
-import org.uqbar.project.wollok.semantics.WollokType
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 
 /**
@@ -131,7 +132,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	}
 	
 	def classType(String className) {
-		new ClassBasedWollokType(findClass(className), null, null)
+		new ClassBasedWollokType(findClass(className), null)
 	}
 	
 }

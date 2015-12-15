@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 

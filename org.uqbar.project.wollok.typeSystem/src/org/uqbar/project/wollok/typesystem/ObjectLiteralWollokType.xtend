@@ -1,6 +1,6 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
-import it.xsemantics.runtime.RuleEnvironment
+import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
@@ -13,14 +13,12 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	WObjectLiteral object
-	WollokDslTypeSystem system
-	RuleEnvironment env
+	TypeSystem typeSystem
 	
-	new(WObjectLiteral obj, WollokDslTypeSystem system, RuleEnvironment env) {
+	new(WObjectLiteral obj, TypeSystem typeSystem) {
 		super("<object>")
 		object = obj
-		this.system = system
-		this.env = env
+		this.typeSystem = typeSystem
 	}
 	
 	override getName() { '{ ' + object.methods.map[name].join(' ; ') + ' }'	}
@@ -37,11 +35,11 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	}
 	
 	def returnTypeSignature(WMethodDeclaration m) {
-		val rType = system.queryTypeFor(env, m)
-		if (rType.failed || rType.first == WollokType.WVoid)
+		val rType = typeSystem.type(m)
+		if (rType == WollokType.WVoid)
 			''
 		else
-		 	' : ' + rType.first
+		 	' : ' + rType
 	}
 	
 	override understandsMessage(MessageType message) {
@@ -58,21 +56,20 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 			null
 	}
 	
-	override resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g) {
+	override resolveReturnType(MessageType message) {
 		val method = lookupMethod(message)
 		//	TODO: si no está, debería ir al archivo del método (podría estar en otro archivo) e inferir
-		system.env(g, method, WollokType)
+		typeSystem.type(method)
 	}
 	
-	override getAllMessages() { object.methods.map[messageType.first] }
+	override getAllMessages() { object.methods.map[messageType] }
 	
-	override refine(WollokType previous, RuleEnvironment g) {
-		//TODO deberia usar el G !
+	override refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}
 	
-	def messageType(WMethodDeclaration m) { system.queryMessageTypeForMethod(env, m) }
-	def type(WParameter p) { system.queryTypeFor(env, p).first }
+	def messageType(WMethodDeclaration m) { typeSystem.queryMessageTypeForMethod(m) }
+	def type(WParameter p) { typeSystem.type(p) }
 	
 }

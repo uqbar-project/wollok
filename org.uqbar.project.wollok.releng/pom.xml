@@ -18,6 +18,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		<module>../org.uqbar.project.wollok.ui</module>
 		<module>../org.uqbar.project.wollok.ui.diagrams</module>
 		<module>../org.uqbar.project.wollok.ui.launch</module>
+		<module>../org.uqbar.project.wollok.typeSystem</module>
 		<module>../org.uqbar.project.wollok.typeSystem.xsemantics</module>
 		<module>../org.uqbar.project.wollok.typeSystem.xsemantics.ui</module>
 		<module>../org.uqbar.project.wollok.tests</module>

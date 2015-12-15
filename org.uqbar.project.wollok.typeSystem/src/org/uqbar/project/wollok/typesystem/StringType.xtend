@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
 class StringType extends BasicType implements WollokType {
 	new() {

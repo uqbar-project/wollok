@@ -1,6 +1,5 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
-import it.xsemantics.runtime.RuleEnvironment
 import java.util.Iterator
 
 /**
@@ -29,7 +28,7 @@ interface WollokType {
 	
 	def boolean understandsMessage(MessageType message)
 	
-	def WollokType resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g)
+	def WollokType resolveReturnType(MessageType message)
 
 	/** 
 	 * This type was found while inferring a type.
@@ -37,7 +36,7 @@ interface WollokType {
 	 * If he founds that they are not compatible at all, then it could fail
 	 * throwing TypeSystemException which will cause a type check error.
 	 */
-	def WollokType refine(WollokType previouslyInferred, RuleEnvironment g)
+	def WollokType refine(WollokType previouslyInferred)
 	
 	/**
 	 * Returns all messages that this types defines.

@@ -1,6 +1,5 @@
-package org.uqbar.project.wollok.semantics
+package org.uqbar.project.wollok.typesystem
 
-import it.xsemantics.runtime.RuleEnvironment
 import org.eclipse.xtend.lib.Property
 
 /**
@@ -24,9 +23,9 @@ abstract class BasicType implements WollokType {
 	// eventualmente cada type tiene que ir sobrescribiendo esto e implemetando la resolucion
 	// de mensajes que entiende a metodos
 	override understandsMessage(MessageType message) { true }
-	override resolveReturnType(MessageType message, WollokDslTypeSystem system, RuleEnvironment g) { WAny }
+	override resolveReturnType(MessageType message) { WAny }
 	
-	override refine(WollokType previouslyInferred, RuleEnvironment g) {
+	override refine(WollokType previouslyInferred) {
 		if (previouslyInferred != this) 
 			throw new TypeSystemException("Incompatible type " + this + " is not compatible with " + previouslyInferred)
 		// dummy impl

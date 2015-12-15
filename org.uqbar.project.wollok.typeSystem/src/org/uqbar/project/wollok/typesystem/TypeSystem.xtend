@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.WollokType
-import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
-import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.typesystem.MessageType
 
 /**
  * An engine that performs type inference and type checks.
@@ -32,4 +32,9 @@ interface TypeSystem {
 	 */
 	def WollokType type(EObject obj)
 	def Iterable<TypeExpectationFailedException> issues(EObject obj)
+
+	// this was bringed up from xsemantics impl/
+	// maybe it should be something particular to xsemantincs	
+	def MessageType queryMessageTypeForMethod(WMethodDeclaration declaration)
+	
 }
