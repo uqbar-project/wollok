@@ -29,7 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
  * 
  * @author jfernandes
  */
- // Rename to XInterpreter this could be refactored to become generic
+ // Rename to XInterpreter and move up to "xinterpreter" project
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
 	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
@@ -43,7 +43,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	}
 
 	@Inject
-	XInterpreterEvaluator evaluator
+	XInterpreterEvaluator<WollokObject> evaluator
 
 	@Inject
 	WollokInterpreterConsole console
@@ -116,11 +116,11 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	}
 	
 	def createInitialStackElement(EObject root) {
-		new XStackFrame(root, new WollokNativeLobby(console, this))
+		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
 	}
 	
-	override performOnStack(EObject executable, EvaluationContext newContext, ()=>WollokObject something) {
-		stack.push(new XStackFrame(executable, newContext))
+	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
+		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try 
 			return something.apply
 		catch (ReturnValueException e)

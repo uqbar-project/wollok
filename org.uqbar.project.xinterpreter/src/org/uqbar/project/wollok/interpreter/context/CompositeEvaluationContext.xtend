@@ -1,8 +1,5 @@
 package org.uqbar.project.wollok.interpreter.context
 
-import org.uqbar.project.wollok.interpreter.UnresolvableReference
-import org.uqbar.project.wollok.interpreter.core.WollokObject
-
 /**
  * Composes two evaluation context in order.
  * Like if one (inner) is inside the other (outer)
@@ -12,12 +9,11 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 // es un hack esto que por la interfaz tenga que ejecutar, esperar la exception
 // catchear y reenviar a otro contexto.
 // Hay que evitar las exceptions que van a relentizar todo.
-class CompositeEvaluationContext implements EvaluationContext {
-	static val THIS = new WVariable('this', false)
-	EvaluationContext inner
-	EvaluationContext outer
+class CompositeEvaluationContext<O> implements EvaluationContext<O> {
+	EvaluationContext<O> inner
+	EvaluationContext<O> outer
 
-	new(EvaluationContext inner, EvaluationContext outer) {
+	new(EvaluationContext<O> inner, EvaluationContext<O> outer) {
 		this.inner = inner
 		this.outer = outer
 	}
@@ -28,8 +24,9 @@ class CompositeEvaluationContext implements EvaluationContext {
 	}
 	
 	override allReferenceNames() {
-		(if (outer instanceof WollokObject) #[THIS] else outer.allReferenceNames)
-			+ inner.allReferenceNames 
+//		(if (outer instanceof WollokObject) #[THIS] else outer.allReferenceNames)
+//			+ inner.allReferenceNames 
+		outer.allReferenceNames + inner.allReferenceNames 
 	}
 
 	override resolve(String variableName) {
@@ -39,19 +36,19 @@ class CompositeEvaluationContext implements EvaluationContext {
 			outer.resolve(variableName)
 	}
 
-	override setReference(String name, WollokObject value) {
+	override setReference(String name, O value) {
 		try
 			inner.setReference(name, value)
 		catch (UnresolvableReference e)
 			outer.setReference(name, value)
 	}
 
-	override addReference(String variable, WollokObject value) {
+	override addReference(String variable, O value) {
 		inner.addReference(variable, value)
 		value
 	}
 	
-	override addGlobalReference(String name, WollokObject value) {
+	override addGlobalReference(String name, O value) {
 		outer.addGlobalReference(name,value)
 	}
 

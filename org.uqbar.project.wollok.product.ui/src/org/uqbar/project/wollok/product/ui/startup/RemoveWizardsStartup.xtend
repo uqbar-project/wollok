@@ -7,8 +7,8 @@ import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry
 import org.eclipse.ui.wizards.IWizardCategory
 import org.eclipse.ui.wizards.IWizardDescriptor
-import org.uqbar.project.wollok.ui.WollokUIStartup
 import org.eclipse.ui.wizards.IWizardRegistry
+import org.uqbar.project.wollok.ui.WollokUIStartup
 
 /**
  * Programmatically hacks eclipse workbench to
@@ -24,6 +24,12 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		PlatformUI.workbench.newWizardRegistry.removeWizards
 		PlatformUI.workbench.exportWizardRegistry.removeWizards
 		PlatformUI.workbench.importWizardRegistry.removeWizards
+		
+		// TODO: find a way to remove extensions
+//		Platform.extensionRegistry.extensionPoints.map[p | p.extensions.toList ].flatten.forEach[
+//			println('''Extension  «extensionPointUniqueIdentifier» :: «it.simpleIdentifier» | «label»''')
+//			Platform.extensionRegistry.remove
+//		]
 	}
 	
 	// reusable code
@@ -34,8 +40,9 @@ class RemoveWizardsStartup implements WollokUIStartup {
 	
 	def removeWizards(AbstractExtensionWizardRegistry registry) {
 		val categories = registry.rootCategory.categories
-		for (wizard : getAllWizards(categories)) {
+		for (wizard : categories.allWizards) {
 	        if (!wizard.id.includeWizards) {
+	        	println("Removing wizard " + wizard.id)
 				val wizardElement = wizard as WorkbenchWizardElement
 				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}

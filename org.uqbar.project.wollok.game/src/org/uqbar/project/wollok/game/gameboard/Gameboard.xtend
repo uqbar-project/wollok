@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import com.badlogic.gdx.Gdx
 
 /**
  * 
@@ -38,7 +39,10 @@ class Gameboard {
 	}
 
 	def void start() {
-		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this));
+		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this))
+		Runtime.runtime.addShutdownHook(new Thread([
+			Gdx.app.exit
+		]))
 	}
 	
 	def void draw(Window window) {

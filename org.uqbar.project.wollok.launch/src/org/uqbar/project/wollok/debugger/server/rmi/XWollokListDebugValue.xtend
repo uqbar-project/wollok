@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 /**
  * Special value for wollok lists.
  * Shows its content as children
+ * 
  * @author jfernandes
  */
 class XWollokListDebugValue extends XDebugValue {

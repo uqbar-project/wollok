@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.debugger.server
+package org.uqbar.project.wollok.debugger.server.out
 
 /**
  * An object that your interpreter will have in order to publish events.

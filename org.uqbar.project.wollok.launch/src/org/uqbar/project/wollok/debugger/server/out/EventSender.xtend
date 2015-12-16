@@ -1,15 +1,15 @@
-package org.uqbar.project.wollok.launch
+package org.uqbar.project.wollok.debugger.server.out
 
 import org.uqbar.project.wollok.debugger.server.AbstractCommunicationHandlerRunnable
-import org.uqbar.project.wollok.debugger.server.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.launch.io.CommunicationChannel
 
 import static org.uqbar.project.wollok.debugger.WollokDebugCommands.*
 
 /**
  * Gateway that handles communication with the client debugger.
- * It implements the interfeace XTextInterpreterEventPublisher that the interpreter
+ * It implements the interface XTextInterpreterEventPublisher that the interpreter
  * uses to publish events.
+ * 
  * But it also implements the thread logic to control communication with the remote process
  * through CommuncationChannels.
  * 

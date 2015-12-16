@@ -4,7 +4,8 @@ import java.io.Serializable
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Represents a stack execution element.
@@ -17,17 +18,20 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class XStackFrame implements Serializable {
-	@Property SourceCodeLocation currentLocation
-	@Property EvaluationContext context
+	SourceCodeLocation currentLocation
+	EvaluationContext context
+	SourceCodeLocator sl
 	
-	new(EObject currentLocation, EvaluationContext context) {
-		this.currentLocation = currentLocation.toSourceCodeLocation
+	new(EObject currentLocation, EvaluationContext context, extension SourceCodeLocator sl) {
+		this.sl = sl
+		this.currentLocation = currentLocation.toSourceCodeLocation(sl)
 		this.context = context
 	}
 	
 	def void defineCurrentLocation(EObject object) {
-		currentLocation = object.toSourceCodeLocation
+		currentLocation = object.toSourceCodeLocation(sl)
 	}
 	
 	override toString() '''«context» («currentLocation»)'''

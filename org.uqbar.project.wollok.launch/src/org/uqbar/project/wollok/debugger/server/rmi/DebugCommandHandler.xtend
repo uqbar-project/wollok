@@ -4,7 +4,7 @@ import java.net.URI
 import java.util.List
 
 /**
- * Service interface to connecto to the remote interpreter
+ * Service interface to connect to the remote interpreter
  * for debugging.
  * This interface is exposed through lipeRMI
  * 

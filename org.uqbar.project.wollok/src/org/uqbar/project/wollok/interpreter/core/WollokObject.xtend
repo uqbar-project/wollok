@@ -7,12 +7,14 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
-import org.uqbar.project.wollok.interpreter.UnresolvableReference
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -28,8 +30,6 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * A wollok user defined (dynamic) object.
@@ -37,10 +37,11 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
  * @author jfernandes
  * @author npasserini
  */
-class WollokObject extends AbstractWollokCallable implements EvaluationContext {
+class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
+	public static val THIS_VAR = new WVariable('this', false)
 	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
-	val EvaluationContext parentContext
+	val EvaluationContext<WollokObject> parentContext
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
@@ -154,7 +155,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	// query (kind of reflection api)
-	override allReferenceNames() { instanceVariables.keySet.map[new WVariable(it, false)] }
+	override allReferenceNames() { 
+		instanceVariables.keySet.map[new WVariable(it, false)]
+		+ 
+		#[THIS_VAR]
+	}
 	def allMethods() {
 		// TODO: include inherited methods!
 		behavior.methods
