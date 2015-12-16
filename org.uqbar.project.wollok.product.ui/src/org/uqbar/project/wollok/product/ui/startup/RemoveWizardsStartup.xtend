@@ -8,6 +8,7 @@ import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry
 import org.eclipse.ui.wizards.IWizardCategory
 import org.eclipse.ui.wizards.IWizardDescriptor
 import org.uqbar.project.wollok.ui.WollokUIStartup
+import org.eclipse.ui.wizards.IWizardRegistry
 
 /**
  * Programmatically hacks eclipse workbench to
@@ -19,15 +20,24 @@ import org.uqbar.project.wollok.ui.WollokUIStartup
  */
 class RemoveWizardsStartup implements WollokUIStartup {
 	
-	override startup() { removeEclipseFeatures }
+	override startup() { 
+		PlatformUI.workbench.newWizardRegistry.removeWizards
+		PlatformUI.workbench.exportWizardRegistry.removeWizards
+		PlatformUI.workbench.importWizardRegistry.removeWizards
+	}
 	
-	def removeEclipseFeatures() {
-		val wizardRegistry = PlatformUI.workbench.newWizardRegistry as AbstractExtensionWizardRegistry
-		val categories = PlatformUI.workbench.newWizardRegistry.rootCategory.categories
+	// reusable code
+
+	def removeWizards(IWizardRegistry it) {
+		(it as AbstractExtensionWizardRegistry).removeWizards
+	}	
+	
+	def removeWizards(AbstractExtensionWizardRegistry registry) {
+		val categories = registry.rootCategory.categories
 		for (wizard : getAllWizards(categories)) {
 	        if (!wizard.id.includeWizards) {
 				val wizardElement = wizard as WorkbenchWizardElement
-				wizardRegistry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
+				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}
 		}
 	}

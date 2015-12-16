@@ -29,7 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
  * 
  * @author jfernandes
  */
- // Rename to XInterpreter
+ // Rename to XInterpreter this could be refactored to become generic
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
 	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
