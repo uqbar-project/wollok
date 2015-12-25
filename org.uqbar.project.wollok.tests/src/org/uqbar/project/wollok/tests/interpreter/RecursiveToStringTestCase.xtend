@@ -20,7 +20,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			object obj1 {
-				var x = #[]
+				var x = []
 				method addX(anObject){
 					x.add(anObject)
 				}

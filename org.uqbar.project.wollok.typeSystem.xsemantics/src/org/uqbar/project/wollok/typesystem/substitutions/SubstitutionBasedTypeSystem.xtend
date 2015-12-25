@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
@@ -128,7 +128,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		if (^else != null) 	addCheck(it, SUPER_OF, ^else)
 	}
 	
-	def dispatch void doAnalyse(WBlockExpression it) {
+	def dispatch void doAnalyse(WBlock it) {
 		if (!expressions.empty) {
 			expressions.analyze
 			addCheck(it, SAME_AS, expressions.last)

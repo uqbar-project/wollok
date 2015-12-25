@@ -9,11 +9,11 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 class ListTestCase extends AbstractWollokInterpreterTestCase {
 	
 	def instantiateCollectionAsNumbersVariable() {
-		"val numbers = #[22, 2, 10]"
+		"val numbers = [22, 2, 10]"
 	}
 	
 	def instantiateStrings() {
-		"val strings = #['hello', 'hola', 'bonjour', 'ciao', 'hi']"
+		"val strings = ['hello', 'hola', 'bonjour', 'ciao', 'hi']"
 	}
 	
 	@Test
@@ -21,7 +21,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateStrings»		
-			assert.equals('hi', strings.min[e| e.length() ])
+			assert.equals('hi', strings.min{e-> e.length() })
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -31,8 +31,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateStrings»
-			val r = strings.max[e| e.length() ]	
-			assert.equals('bonjour', strings.max[e| e.length() ])
+			val r = strings.max{e-> e.length() }	
+			assert.equals('bonjour', strings.max{e-> e.length() })
 		}'''.interpretPropagatingErrors
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
@@ -63,9 +63,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.exists[e| e > 20])
-			assert.that(numbers.exists[e| e > 0])
-			assert.notThat(numbers.exists[e| e < 0])
+			assert.that(numbers.exists{e-> e > 20})
+			assert.that(numbers.exists{e-> e > 0})
+			assert.notThat(numbers.exists{e-> e < 0})
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -105,7 +105,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			«instantiateCollectionAsNumbersVariable»
 			
 			var sum = 0
-			numbers.forEach([n | sum += n])
+			numbers.forEach({n -> sum += n})
 			
 			assert.equals(34, sum)
 		}'''.interpretPropagatingErrors
@@ -116,8 +116,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.forAll([n | n > 0]))
-			assert.notThat(numbers.forAll([n | n > 5]))
+			assert.that(numbers.forAll({n -> n > 0}))
+			assert.notThat(numbers.forAll({n -> n > 5}))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -126,7 +126,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var greaterThanFiveElements = numbers.filter([n | n > 5])
+			var greaterThanFiveElements = numbers.filter({n -> n > 5})
 			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
@@ -136,7 +136,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var halfs = numbers.map([n | n / 2])
+			var halfs = numbers.map({n -> n / 2})
 
 			assert.equals(3, halfs.size())
 			assert.that(halfs.contains(11))
@@ -150,7 +150,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			var greaterThanFiveElements = numbers.filter[n | n > 5]
+			var greaterThanFiveElements = numbers.filter{n -> n > 5}
 			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
@@ -169,8 +169,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithMethodName() {
 		'''
 		program p {
-			val a = #[23, 2, 1]
-			val b = #[23, 2, 1]
+			val a = [23, 2, 1]
+			val b = [23, 2, 1]
 			assert.that(a.equals(b))
 		}'''.interpretPropagatingErrors
 	}
@@ -179,8 +179,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithEqualsEquals() {
 		'''
 		program p {
-			val a = #[23, 2, 1]
-			val b = #[23, 2, 1]
+			val a = [23, 2, 1]
+			val b = [23, 2, 1]
 			assert.that(a == b)
 		}'''.interpretPropagatingErrors
 	}
@@ -190,7 +190,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.equals("#[22, 2, 10]", numbers.toString())
+			assert.equals("[22, 2, 10]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -201,8 +201,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 			method internalToSmartString(alreadyShown) = "My Object"
 		}
 		program p {
-			val a = #[23, 2, 1, myObject]
-			assert.equals("#[23, 2, 1, My Object]", a.toString())
+			val a = [23, 2, 1, myObject]
+			assert.equals("[23, 2, 1, My Object]", a.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -211,8 +211,8 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.equals(22, numbers.detect[e| e > 20])
-			assert.equals(null, numbers.detect[e| e > 1000])
+			assert.equals(22, numbers.detect{e-> e > 20})
+			assert.equals(null, numbers.detect{e-> e > 1000})
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -222,9 +222,9 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.equals(1, numbers.count[e| e > 20])
-			assert.equals(3, numbers.count[e| e > 0])
-			assert.equals(0, numbers.count[e| e < 0])
+			assert.equals(1, numbers.count{e-> e > 20})
+			assert.equals(3, numbers.count{e-> e > 0})
+			assert.equals(0, numbers.count{e-> e < 0})
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -235,7 +235,7 @@ class ListTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			
-			assert.equals(34, numbers.sum([n | n]))
+			assert.equals(34, numbers.sum({n -> n}))
 		}'''.interpretPropagatingErrors
 	}
 	

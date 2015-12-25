@@ -76,7 +76,7 @@ class SetTest extends ListTestCase {
 			
 			val list = set.asList()
 			assert.equals(3, list.size())
-			#[1,2,3].forEach[i|assert.equals(list.contains(i))]
+			{1,2,3].forEach[i->assert.equals(list.contains(i))}
 		}'''.interpretPropagatingErrors
 	}
 }

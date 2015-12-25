@@ -5,10 +5,9 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -29,6 +28,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 
 /**
  * Extension methods related to validating values
@@ -58,14 +58,14 @@ class WEvaluationExtension {
 		|| it == WBINARY_OPERATION__LEFT_OPERAND
 		|| it == WBINARY_OPERATION__RIGHT_OPERAND
 		// collections literals
-		|| it == WCOLLECTION_LITERAL__ELEMENTS
+		|| it == WLIST_LITERAL__ELEMENTS
 		|| it == WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
 		|| it == WCONSTRUCTOR_CALL__ARGUMENTS
 		|| it == WTHROW__EXCEPTION
 	}
 	
 	// literals
-	def static dispatch boolean isEvaluatesToAValue(WCollectionLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WListLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WNumberLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WStringLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it, WollokClassFinder finder) { true }
@@ -82,7 +82,7 @@ class WEvaluationExtension {
 	// constructions
 	def static dispatch boolean isEvaluatesToAValue(WReturnExpression it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WIfExpression it, WollokClassFinder finder) { then.isEvaluatesToAValue(finder) && (^else == null || ^else.isEvaluatesToAValue(finder)) }
-	def static dispatch boolean isEvaluatesToAValue(WBlockExpression it, WollokClassFinder finder) { expressions.last.isEvaluatesToAValue(finder) }
+	def static dispatch boolean isEvaluatesToAValue(WBlock it, WollokClassFinder finder) { expressions.last.isEvaluatesToAValue(finder) }
 	def static dispatch boolean isEvaluatesToAValue(WTry it, WollokClassFinder finder) { expression.isEvaluatesToAValue(finder) && catchBlocks.forall[c| c.expression.isEvaluatesToAValue(finder) ] }
 	// calls
 	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it, WollokClassFinder finder) { method.overridenMethod != null && method.overridenMethod.supposedToReturnValue }

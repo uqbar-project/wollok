@@ -23,7 +23,7 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -43,7 +43,6 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -319,7 +318,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	] }
 
 	def dispatch evaluate(WListLiteral it) { createCollection(LIST, elements) }
-	def dispatch evaluate(WSetLiteral it) { createCollection(SET, elements) }
 	
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
@@ -330,7 +328,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	// other expressions
-	def dispatch evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch evaluate(WBlock b) { b.expressions.evalAll }
 
 	def dispatch evaluate(WAssignment a) {
 		val newValue = a.value.eval

@@ -7,7 +7,6 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
 
@@ -32,7 +31,6 @@ class BasicTypeResolver {
 	}
 	
 	def dispatch WMethodContainer resolveType(WListLiteral it) { listClass }
-	def dispatch WMethodContainer resolveType(WSetLiteral it) { setClass }
 	def dispatch WMethodContainer resolveType(WStringLiteral it) { stringClass }
 	def dispatch WMethodContainer resolveType(WBooleanLiteral it) { booleanClass }
 	def dispatch WMethodContainer resolveType(WNumberLiteral it) { if (value.contains(".")) doubleClass else integerClass }

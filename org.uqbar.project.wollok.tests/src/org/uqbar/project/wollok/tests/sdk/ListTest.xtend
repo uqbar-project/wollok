@@ -18,7 +18,7 @@ class ListTest extends ListTestCase {
 	}
 	
 	override instantiateStrings() {
-		"val strings = new List(); \n #['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach[e| strings.add(e) ]"
+		"val strings = new List(); \n ['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach{e-> strings.add(e) }"
 	}
 	
 	@Test
@@ -26,7 +26,7 @@ class ListTest extends ListTestCase {
 		'''
 		program p {
 			val numbers = new List()
-			assert.equals("#[]", numbers.toString())
+			assert.equals("[]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -36,7 +36,7 @@ class ListTest extends ListTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			
-			val strings = numbers.map[e| e.toString()]
+			val strings = numbers.map{e-> e.toString()}
 			
 			assert.notEquals(numbers.identity(), strings.identity())
 			
@@ -53,7 +53,7 @@ class ListTest extends ListTestCase {
 		object o2 {}
 			
 		program p {
-			val list = #[o1, o2]
+			val list = [o1, o2]
 			
 			assert.that(list.contains(o1))
 			assert.that(list.contains(o2))
@@ -64,9 +64,9 @@ class ListTest extends ListTestCase {
 	def void testConversions() {
 		'''
 		program p {
-			val list = #[1,2,3]
+			val list = [1,2,3]
 			
-			assert.equals(#[1,2,3], list.asList())
+			assert.equals([1,2,3], list.asList())
 			assert.equals(#{1,2,3}, list.asSet())
 		}'''.interpretPropagatingErrors
 	}

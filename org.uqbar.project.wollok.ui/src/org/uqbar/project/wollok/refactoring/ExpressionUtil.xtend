@@ -12,7 +12,7 @@ import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.ILocationInFileProvider
 import org.eclipse.xtext.resource.XtextResource
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.eclipse.xtext.util.ITextRegion
 import org.eclipse.xtext.nodemodel.ICompositeNode
@@ -32,7 +32,7 @@ class ExpressionUtil {
 		val trimmedSelection = trimSelection(resource, selection)
 		val selectedExpression = findSelectedExpression(resource, trimmedSelection)
 		
-		if (selectedExpression instanceof WBlockExpression) {
+		if (selectedExpression instanceof WBlock) {
 			selectedExpression.expressions.filter[subExpression | intersects(getTextRegion(subExpression), trimmedSelection) ].toList
 		} 
 		else if (selectedExpression == null)

@@ -24,7 +24,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -94,9 +93,6 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 
 << WListLiteral >>
 '''#[${content}]'''
-
-<< WSetLiteral >>
-'''#{${content}}'''
 
 << WClosure >>
 '''[ ${params} | ${content} ]'''
