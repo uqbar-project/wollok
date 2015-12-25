@@ -110,10 +110,6 @@ package lang {
 		
 		method equals(other) = this == other
 		
-		method ->(other) {
-			return new Pair(this, other)
-		}
-		
 		method randomBetween(start, end) native
 		
 		method toString() {
@@ -318,7 +314,10 @@ package lang {
 	 * @since 1.3
 	 */	
 	class Set inherits Collection {
-	
+		new(elements ...) {
+			this.addAll(elements)
+		}
+		
 		override method newInstance() = [].asSet()
 		override method toStringPrefix() = "#{"
 		override method toStringSufix() = "}"
@@ -372,7 +371,7 @@ package lang {
 		override method asList() = this
 		
 		override method asSet() { 
-			val result = [].asSet()
+			val result = new Set()
 			result.addAll(this)
 			return result
 		}

@@ -250,11 +250,15 @@ WVariableReference:
 	{WVariableReference} ref=[WReferenciable]
 ;
 
+WBlockOrExpression returns WExpression:
+	WExpression | WBlock
+;
+
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
-		then=WExpression
+		then=WBlockOrExpression
 	(=>'else'
-		else=WExpression
+		else=WBlockOrExpression
 	)?
 ;
 
@@ -288,7 +292,7 @@ WNumberLiteral returns WExpression :
 WClosure returns WExpression:
 	=>({WClosure} 
 	'{') 
-		=>((parameters+=WParameter (',' parameters+=WParameter)*)? explicitSyntax?='->')? 
+		=>(parameters+=WParameter (',' parameters+=WParameter)*)? '->'
 		expression=WBlockInClosure 
 	'}';
 
@@ -329,7 +333,7 @@ WMember:
 WConstructor:
 	{WConstructor} 'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
 		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
-		(expression=WBlock)
+		(expression=WBlock)?
 ;
 
 WDelegatingConstructorCall:
@@ -356,14 +360,14 @@ WConstructorCall:
 
 WTry:
 	'try'
-		expression=WExpression
+		expression=WBlockOrExpression
 	(catchBlocks+=WCatch)*
-	(=>'then always' alwaysExpression=WExpression)?
+	(=>'then always' alwaysExpression=WBlockOrExpression)?
 ;
 
 WCatch:
 	=>'catch' exceptionVarName=WVariable (':' exceptionType=[WClass|QualifiedName])?
-		expression=WExpression 
+		expression=WBlockOrExpression 
 ;
 
 WReturnExpression:

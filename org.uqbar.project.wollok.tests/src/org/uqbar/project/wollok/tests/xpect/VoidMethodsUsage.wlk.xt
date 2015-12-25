@@ -51,8 +51,8 @@ class MethodsCalledOnWellKnowObjects inherits A {
 			30	
 	}
 	
-	method asABinaryOperatorArgument() = {
-		#[
+	method asABinaryOperatorArgument() {
+		[
 			// XPECT errors --> "This message call produces no value" at "eat" 
 			10 + pepita.eat(10),
 			// XPECT errors --> "This message call produces no value" at "eat" 
@@ -71,7 +71,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	
 	method asListLiteralElement() = {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		#[1, 2, 3, pepita.eat(10)] 
+		[1, 2, 3, pepita.eat(10)] 
 	}
 	
 	override method toBeOverriden(a) {

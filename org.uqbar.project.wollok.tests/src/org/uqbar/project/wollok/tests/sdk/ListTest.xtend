@@ -61,13 +61,25 @@ class ListTest extends ListTestCase {
 	}
 	
 	@Test
-	def void testConversions() {
+	def void testAsListConversion() {
 		'''
 		program p {
 			val list = [1,2,3]
 			
 			assert.equals([1,2,3], list.asList())
-			assert.equals(#{1,2,3}, list.asSet())
+		}'''.interpretPropagatingErrors
+	}
+	
+		@Test
+	def void testAsSetConversion() {
+		'''
+		program p {
+			val set = new Set()
+			set.add(1)
+			set.add(2)
+			set.add(3)
+		
+			assert.equals(set, set.asSet())
 		}'''.interpretPropagatingErrors
 	}
 	
