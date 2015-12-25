@@ -14,7 +14,7 @@ class MultiOpsOperations {
 		
 		val edad = 10
 		// XPECT errors --> "++ can only be applied to variable references" at "edad"
-		edad++
+		return edad++
 	}	
 }
 

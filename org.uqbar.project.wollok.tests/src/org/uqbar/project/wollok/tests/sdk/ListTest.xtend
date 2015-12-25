@@ -87,7 +87,7 @@ class ListTest extends ListTestCase {
 	def void testFirstAndHead() {
 		'''
 		program p {
-			val list = #[1,2,3]
+			val list = [1,2,3]
 			
 			assert.equals(1, list.first())
 			assert.equals(1, list.head())
