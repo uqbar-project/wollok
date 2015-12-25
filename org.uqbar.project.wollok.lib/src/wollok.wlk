@@ -395,18 +395,27 @@ package lang {
 	 * @since 1.4
 	 */
 	class Dictionary {
-		//TODO move to a mixin
-		/** Tells whether this map has no elements */
-		method isEmpty() = this.size() == 0
-
+		method values() native
+		method keys() native
+		
+		method map(closure) native
+		method filter(closure) native
+		
+		method anyOne() = this.values().anyOne()
+		
+		method count(closure) = this.values().count(closure)
+		method contains(value) = this.values().contain(value)
+		method fold(initialValue, closure) = this.values().fold(initialValue, closure)
+		method join(separator) = this.values().join(separator)
+		method join() = this.values().join()
+		
+		method isEmpty() = this.keys().isEmpty()
+		method size() = this.keys().size()
+		method containsKey(key) = this.keys().contains(key)
+			
 		method put(key, value) native
-		
 		method removeKey(key) native
-		
-		method containsKey(key) native
-		method containsValue(value) native
 
-		method size() native
 		method clear() native
 
 		method equals(other) native

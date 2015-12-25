@@ -30,5 +30,9 @@ class WollokInterpreterAccess {
 	def boolean wollokGreaterThan(WollokObject a, WollokObject b) {
 		operations.asBinaryOperation(">").apply(a, [|b]).isTrue
 	}
+	
+	def wollokFind(Collection collection, WollokObject x) {
+		collection.findFirst[it.wollokEquals(x)]
+	}
 
 }
