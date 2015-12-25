@@ -303,7 +303,7 @@ WBlockInClosure:
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral | WSetLiteral;
+	WListLiteral | WSetLiteral | WDictionatyLiteral;
 
 WListLiteral:
 	{WListLiteral} '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
@@ -311,6 +311,12 @@ WListLiteral:
 WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
+WDictionatyLiteral:
+	{WDictionatyLiteral} '{' ':' '}' | '{' elements+=WKeyValue (',' elements+=WKeyValue)* '}';
+
+WKeyValue:
+	key=ID ':' value=WExpression;
+
 WNamedObject:
 	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
 		(members+=WVariableDeclaration ';'?)*
