@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class PostFixOperations {
-	method run() = {
+	method run() {
 		val n = 1
 		
 		// XPECT errors --> "++ can only be applied to variable references" at "n"
@@ -11,7 +11,7 @@ class PostFixOperations {
 		(n == 1)++
 		
 		// XPECT errors --> "++ can only be applied to variable references" at "new Pepita()"
-		new Pepita()++
+		return new Pepita()++
 	}
 }
 

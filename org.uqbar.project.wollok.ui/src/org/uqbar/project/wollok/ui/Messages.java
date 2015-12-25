@@ -58,8 +58,8 @@ public class Messages extends NLS {
 	public static String WollokTemplateProposalProvider_WIfExpression_name;
 	public static String WollokTemplateProposalProvider_WIfExpression_description;
 	
-	public static String WollokTemplateProposalProvider_WListLiteral_name;
-	public static String WollokTemplateProposalProvider_WListLiteral_description;
+	public static String WollokTemplateProposalProvider_WCollectionLiteral_name;
+	public static String WollokTemplateProposalProvider_WCollectionLiteral_description;
 	
 	public static String WollokTemplateProposalProvider_WSetLiteral_name;
 	public static String WollokTemplateProposalProvider_WSetLiteral_description;

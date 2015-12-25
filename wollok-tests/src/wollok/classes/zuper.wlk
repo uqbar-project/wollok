@@ -11,7 +11,7 @@ class Golondrina {
 	
 	method gastoParaVolar(kms) = kms
 	
-	method blah(a) = {
+	method blah(a) {
 		this.gastoParaVolar(a)
 		// super(a) // FAIL OK !
 	}

@@ -6,7 +6,7 @@ object obj2 {
 }
 
 object obj1 {
-	var x = #[]
+	var x = []
 	method addX(anObject){
 		x.add(anObject)
 	}
@@ -21,5 +21,5 @@ program a {
 	obj2.setY(obj1)
 	obj1.addX(new Prb())
 	
-	assert.equals('obj2[y=obj1[x=#[anObject,aPrb]]]', obj2.toString())
+	assert.equals('obj2[y=obj1[x=[anObject,aPrb]]]', obj2.toString())
 }

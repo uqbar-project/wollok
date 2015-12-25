@@ -55,7 +55,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 			object mostaza {
 				method entrenar() {
-					return #[pepita, pepona].map[p| p.getNombre()].join(',')
+					return [pepita, pepona].map{p => p.getNombre()}.join(',')
 				} 
 			}
 		''',
@@ -83,7 +83,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.*
 			program a {
-				assert.equals('pepita,pepona', #[pepita, pepona].map[p| p.getNombre()].join())
+				assert.equals('pepita,pepona', [pepita, pepona].map{p => p.getNombre()}.join())
 			}
 		'''
 		].interpretAsFilesPropagatingErrors

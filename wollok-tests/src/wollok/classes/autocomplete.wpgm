@@ -35,9 +35,9 @@ program autocomplete {
 	// *************
 	// closures
 	
-	var aBlock = [auto |
+	var aBlock = {auto =>
 		// ufa, no anda acá.
-	]
+	}
 
-	var otro = [auto | auto.arrancar() ]
+	var otro = {auto => auto.arrancar() }
 }
