@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.api
 
+import java.util.Collection
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations

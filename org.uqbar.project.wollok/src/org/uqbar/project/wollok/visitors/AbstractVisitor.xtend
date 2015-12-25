@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -33,7 +34,6 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WDictionatyLiteral
 
 /**
  * Implements an abstract visitor for the AST
@@ -107,7 +107,7 @@ class AbstractVisitor {
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
 	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
 	def dispatch void visit(WCollectionLiteral it) { elements.visitAll }
-	def dispatch void visit(WDictionatyLiteral it) { elements.visitAll }
+	def dispatch void visit(WDictionaryLiteral it) { elements.visitAll }
 
 	def dispatch void visit(WObjectLiteral it) { members.visitAll }
 	def dispatch void visit(WNamedObject it) { members.visitAll }

@@ -41,6 +41,7 @@ class XWollokObjectDebugValue extends XDebugValue {
 	}
 	
 	def isList() { typeName == LIST }
+	def isDictionary() { typeName == DICTIONARY }
 	def isSet() { typeName == SET }
 	def isCollection() { isList || isSet }
 	def isInteger() { typeName == INTEGER }

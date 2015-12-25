@@ -60,7 +60,7 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WDictionatyLiteral
+import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
 import org.uqbar.project.wollok.wollokDsl.WKeyValue
 
 /**
@@ -318,7 +318,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch evaluate(WListLiteral it) { createCollection(LIST, elements) }
 	def dispatch evaluate(WSetLiteral it) { createCollection(SET, elements) }
-	def dispatch evaluate(WDictionatyLiteral it) { createDictionary(elements) }
+	def dispatch evaluate(WDictionaryLiteral it) { createDictionary(elements) }
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
@@ -331,7 +331,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	def createDictionary(EList<WKeyValue> elements) {
 		newInstance(DICTIONARY) => [
 			elements.forEach [ e |
-				call("putAt", newInstanceWithWrapped(STRING, e.key), e.value.eval)
+				call("put", newInstanceWithWrapped(STRING, e.key), e.value.eval)
 			]
 		]
 	}
@@ -391,7 +391,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	// ** HELPER FOR message sends
 	// ********************************************************************************************
 	
-	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
+	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen " + call) }
 
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
 

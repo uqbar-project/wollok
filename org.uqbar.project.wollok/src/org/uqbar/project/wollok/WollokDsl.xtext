@@ -313,7 +313,7 @@ WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
 WDictionaryLiteral:
-	{WDictionatyLiteral} '{' ':' '}' | '{' elements+=WKeyValue (',' elements+=WKeyValue)* '}';
+	{WDictionaryLiteral} '{' ':' '}' | '{' elements+=WKeyValue (',' elements+=WKeyValue)* '}';
 
 WKeyValue:
 	key=ID ':' value=WExpression;

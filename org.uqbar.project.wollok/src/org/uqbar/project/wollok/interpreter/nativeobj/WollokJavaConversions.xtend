@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import java.util.Map
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -39,6 +40,8 @@ class WollokJavaConversions {
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
 			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List>).wrapped
+		if (o.isNativeType(DICTIONARY) && (t == Map))
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
 			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
