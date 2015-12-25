@@ -36,7 +36,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 
 /**
  * Custom quickfixes.
@@ -271,7 +271,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Prepend "return"', 'Adds a "return" keyword', null) [ e, it |
 			val method = e as WMethodDeclaration
-			val body = (method.expression as WBlockExpression)
+			val body = (method.expression as WBlock)
 			insertBefore(body.expressions.last, RETURN + " ")
 		]
 	}

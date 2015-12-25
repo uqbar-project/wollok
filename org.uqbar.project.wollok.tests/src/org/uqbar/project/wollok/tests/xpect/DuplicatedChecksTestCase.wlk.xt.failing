@@ -60,7 +60,7 @@ class Person {
 		   "Unused variable" at "c"
 		   ---
 		 */
-		var c = [p1 | true ]
+		var c = {p1 -> true }
 	}
 	
 	// XPECT errors --> "Duplicated method" at "dupMethod"
@@ -106,11 +106,11 @@ class DuplicatedChecksTest {
 			---
 		*/
 		
-		val cl = [u | u.blah() ]
+		val cl = {u -> u.blah() }
 		// XPECT warnings --> "Unused variable" at "inner"
 		val inner = [a |
 			// XPECT errors --> "Duplicated name" at "a"
-			[a | true]
+			{a -> true}
 		]
 	}
 }

@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -256,12 +256,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// ************************************************************************
 	
 	def static dispatch boolean getIsReturnTrue(WExpression it) { false }
-	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
+	def static dispatch boolean getIsReturnTrue(WBlock it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
 	
 	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
-	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
+	def static dispatch boolean evaluatesToBoolean(WBlock it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
 	def static dispatch boolean evaluatesToBoolean(WReturnExpression it) { expression instanceof WBooleanLiteral }
 	def static dispatch boolean evaluatesToBoolean(WBooleanLiteral it) { true }
 

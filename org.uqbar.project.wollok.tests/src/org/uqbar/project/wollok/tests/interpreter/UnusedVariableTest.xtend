@@ -4,7 +4,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WProgram
 
@@ -46,11 +46,11 @@ class UnusedVariableTest extends AbstractWollokInterpreterTestCase {
 		val vaca1 = ((model.main as WProgram).elements.get(0) as WVariableDeclaration).right as WObjectLiteral
 		val vaca2 = ((model.main as WProgram).elements.get(1) as WVariableDeclaration).right as WObjectLiteral
 		val peso_vaca1 = (vaca1.members.get(0) as WVariableDeclaration).variable
-		val uso_peso_vaca1 = ((vaca1.members.get(2) as WMethodDeclaration).expression as WBlockExpression).expressions.
+		val uso_peso_vaca1 = ((vaca1.members.get(2) as WMethodDeclaration).expression as WBlock).expressions.
 			get(0) as WVariableReference
 
 		val peso_vaca2 = (vaca2.members.get(0) as WVariableDeclaration).variable
-		val uso_peso_vaca2 = ((vaca2.members.get(2) as WMethodDeclaration).expression as WBlockExpression).expressions.
+		val uso_peso_vaca2 = ((vaca2.members.get(2) as WMethodDeclaration).expression as WBlock).expressions.
 			get(0) as WVariableReference
 
 		assertEquals(peso_vaca1, uso_peso_vaca1.ref)
