@@ -28,7 +28,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 
 /**
  * Extension methods related to validating values
@@ -58,14 +58,14 @@ class WEvaluationExtension {
 		|| it == WBINARY_OPERATION__LEFT_OPERAND
 		|| it == WBINARY_OPERATION__RIGHT_OPERAND
 		// collections literals
-		|| it == WLIST_LITERAL__ELEMENTS
+		|| it == WCOLLECTION_LITERAL__ELEMENTS
 		|| it == WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
 		|| it == WCONSTRUCTOR_CALL__ARGUMENTS
 		|| it == WTHROW__EXCEPTION
 	}
 	
 	// literals
-	def static dispatch boolean isEvaluatesToAValue(WListLiteral it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WCollectionLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WNumberLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WStringLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it, WollokClassFinder finder) { true }

@@ -9,7 +9,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WMember
@@ -108,7 +108,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch asProposalParameter(WBooleanLiteral c) { "aBoolean" }
 	def dispatch asProposalParameter(WNumberLiteral c) { "aNumber" }
 	def dispatch asProposalParameter(WStringLiteral c) { "aString" }
-	def dispatch asProposalParameter(WListLiteral c) { "aList" }
+	def dispatch asProposalParameter(WCollectionLiteral c) { "aCollection" }
 	def dispatch asProposalParameter(WObjectLiteral c) { "anObject" }
 	def dispatch asProposalParameter(WNullLiteral c) { "null" } //mmm
 	def dispatch asProposalParameter(WThis c) { "this" } //mmm

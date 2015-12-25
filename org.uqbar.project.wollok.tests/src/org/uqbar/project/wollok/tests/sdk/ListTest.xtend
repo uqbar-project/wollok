@@ -74,7 +74,7 @@ class ListTest extends ListTestCase {
 	def void testAsSetConversion() {
 		'''
 		program p {
-			val set = new Set()
+			val set = #{}
 			set.add(1)
 			set.add(2)
 			set.add(3)

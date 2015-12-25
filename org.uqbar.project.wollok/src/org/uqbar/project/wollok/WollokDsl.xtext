@@ -272,7 +272,7 @@ WLiteral returns WExpression:
 	WStringLiteral |
 	WObjectLiteral |
 	WThis |
-	WListLiteral
+	WCollectionLiteral
 ;
 
 WBooleanLiteral returns WExpression :
@@ -302,8 +302,14 @@ WBlockInClosure:
 
 // COLLECTIONS
 
+WCollectionLiteral:
+	WListLiteral | WSetLiteral;
+
 WListLiteral:
 	{WListLiteral} '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+
+WSetLiteral:
+	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
 WNamedObject:
 	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'

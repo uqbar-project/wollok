@@ -10,14 +10,14 @@ import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 class SetTest extends ListTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
-		"val numbers = new Set(22, 2, 10)"
+		"val numbers = #{22, 2, 10}"
 	}
 	
 	@Test
 	def void testSizeWithDuplicates() {
 		'''
 		program p {
-			val numbers = new Set( 23, 2, 1, 1, 1 )		
+			val numbers = #{ 23, 2, 1, 1, 1 }		
 			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -26,7 +26,7 @@ class SetTest extends ListTestCase {
 	def void testSizeAddingDuplicates() {
 		'''
 		program p {
-			val numbers = new Set( 23, 2, 1, 1, 1 )
+			val numbers = #{ 23, 2, 1, 1, 1 }
 			numbers.add(1)
 			numbers.add(1)		
 			assert.equals(3, numbers.size())
@@ -37,8 +37,8 @@ class SetTest extends ListTestCase {
 	def void testSizeAddingDuplicatesWithAddAll() {
 		'''
 		program p {
-			val numbers = new Set( 23, 2, 1, 1, 1 )
-			numbers.add(new Set(1, 1, 1, 1, 4))
+			val numbers = #{ 23, 2, 1, 1, 1 }
+			numbers.add(#{1, 1, 1, 1, 4})
 			assert.equals(4, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -47,7 +47,7 @@ class SetTest extends ListTestCase {
 	override def void testToString() {
 		'''
 		program p {
-			val a = new Set(23, 2, 2)
+			val a = #{23, 2, 2}
 			val s = a.toString()
 			assert.that("#{2, 23}" == s or "#{23, 2}" == s)
 		}'''.interpretPropagatingErrors
@@ -60,10 +60,10 @@ class SetTest extends ListTestCase {
 	def void testFlatMap() {
 		'''
 		program p {
-			assert.equals(new Set(1,2,3,4), new Set(new Set(1,2), new Set(1,3,4)).flatten())
-			assert.equals(new Set(1,2, 3), new Set(new Set(1,2), new Set(), new Set(1,2, 3)).flatten())
-			assert.equals(new Set(), new Set().flatten())
-			assert.equals(new Set(), new Set(new Set()).flatten())
+			assert.equals(#{1,2,3,4}, #{#{1,2}, #{1,3,4}}.flatten())
+			assert.equals(#{1,2, 3}, #{#{1,2}, #{}, #{1,2, 3}}.flatten())
+			assert.equals(#{}, #{}.flatten())
+			assert.equals(#{}, #{#{}}.flatten())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -71,8 +71,8 @@ class SetTest extends ListTestCase {
 	def void testConversions() {
 		'''
 		program p {
-			val set= new Set(1,2,3)
-			assert.equals(new Set(1,2,3), set.asSet())
+			val set= #{1,2,3}
+			assert.equals(#{1,2,3}, set.asSet())
 			
 			val list = set.asList()
 			assert.equals(3, list.size())

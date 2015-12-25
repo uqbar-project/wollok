@@ -371,7 +371,7 @@ package lang {
 		override method asList() = this
 		
 		override method asSet() { 
-			val result = new Set()
+			val result = #{}
 			result.addAll(this)
 			return result
 		}

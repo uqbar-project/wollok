@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -241,7 +241,7 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WStringLiteral o) { true }
 	def static dispatch isTransparent(WBooleanLiteral o) { true }
 	def static dispatch isTransparent(WObjectLiteral o) { true }
-	def static dispatch isTransparent(WListLiteral o) { true }
+	def static dispatch isTransparent(WCollectionLiteral o) { true }
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 

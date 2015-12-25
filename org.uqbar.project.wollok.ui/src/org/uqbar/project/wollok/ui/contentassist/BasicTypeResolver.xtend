@@ -1,18 +1,18 @@
 package org.uqbar.project.wollok.ui.contentassist
 
-import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 
 /**
  * Really basic impl while we don't have the type system.
@@ -31,6 +31,7 @@ class BasicTypeResolver {
 	}
 	
 	def dispatch WMethodContainer resolveType(WListLiteral it) { listClass }
+	def dispatch WMethodContainer resolveType(WSetLiteral it) { setClass }
 	def dispatch WMethodContainer resolveType(WStringLiteral it) { stringClass }
 	def dispatch WMethodContainer resolveType(WBooleanLiteral it) { booleanClass }
 	def dispatch WMethodContainer resolveType(WNumberLiteral it) { if (value.contains(".")) doubleClass else integerClass }
