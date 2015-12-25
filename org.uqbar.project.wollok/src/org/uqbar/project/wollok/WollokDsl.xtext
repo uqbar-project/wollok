@@ -272,7 +272,8 @@ WLiteral returns WExpression:
 	WStringLiteral |
 	WObjectLiteral |
 	WThis |
-	WCollectionLiteral
+	WCollectionLiteral |
+	WDictionaryLiteral
 ;
 
 WBooleanLiteral returns WExpression :
@@ -303,7 +304,7 @@ WBlockInClosure:
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral | WSetLiteral | WDictionatyLiteral;
+	WListLiteral | WSetLiteral;
 
 WListLiteral:
 	{WListLiteral} '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
@@ -311,7 +312,7 @@ WListLiteral:
 WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
-WDictionatyLiteral:
+WDictionaryLiteral:
 	{WDictionatyLiteral} '{' ':' '}' | '{' elements+=WKeyValue (',' elements+=WKeyValue)* '}';
 
 WKeyValue:

@@ -60,6 +60,8 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WDictionatyLiteral
+import org.uqbar.project.wollok.wollokDsl.WKeyValue
 
 /**
  * It's the real "interpreter".
@@ -316,11 +318,20 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch evaluate(WListLiteral it) { createCollection(LIST, elements) }
 	def dispatch evaluate(WSetLiteral it) { createCollection(SET, elements) }
-	
+	def dispatch evaluate(WDictionatyLiteral it) { createDictionary(elements) }
+
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
-			elements.forEach[e| 
+			elements.forEach [ e |
 				call("add", e.eval)
+			]
+		]
+	}
+
+	def createDictionary(EList<WKeyValue> elements) {
+		newInstance(DICTIONARY) => [
+			elements.forEach [ e |
+				call("putAt", newInstanceWithWrapped(STRING, e.key), e.value.eval)
 			]
 		]
 	}

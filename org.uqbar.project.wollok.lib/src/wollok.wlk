@@ -391,6 +391,26 @@ package lang {
 	
 	/**
 	 *
+	 * @author flbulgarelli
+	 * @since 1.4
+	 */
+	class WDictionary {
+		//TODO move to a mixin
+		/** Tells whether this map has no elements */
+		method isEmpty() = this.size() == 0
+
+		method putAt(key, value) native
+		method removeAt(key) native
+
+		method size() native
+		method clear() native
+
+		method equals(other) native
+		method ==(other) native
+	}
+
+	/**
+	 *
 	 * @author jfernandes
 	 * @since 1.3
 	 * @noInstantiate
