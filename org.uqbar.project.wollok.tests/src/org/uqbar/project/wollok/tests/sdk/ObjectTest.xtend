@@ -75,10 +75,10 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 				val instVars = perro.instanceVariables()
 				assert.equals(2, instVars.size())
 				
-				val nombreInstVar = instVars.detect{e-> e.name() == "nombre"}
+				val nombreInstVar = instVars.find{e-> e.name() == "nombre"}
 				assert.equals("Colita", nombreInstVar.value())
 				
-				val edadInstVar = instVars.detect{e-> e.name() == "edad"}
+				val edadInstVar = instVars.find{e-> e.name() == "edad"}
 				assert.equals(7, edadInstVar.value())
 				
 «««				assert.equals("#[edad=7, nombre=Colita]",instVars.toString())

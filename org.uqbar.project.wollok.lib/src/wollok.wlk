@@ -118,7 +118,7 @@ package lang {
 			return this.toSmartString([])
 		}
 		method toSmartString(alreadyShown) {
-			if (alreadyShown.exists { e -> e.identity() == this.identity() } ) { 
+			if (alreadyShown.any { e -> e.identity() == this.identity() } ) { 
 				return this.kindName() 
 			}
 			else {
@@ -226,26 +226,26 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.forAll { plant -> plant.hasFlowers() }
+		 *      plants.all { plant -> plant.hasFlowers() }
 		 */
-		method forAll(predicate) = this.fold(true, { acc, e -> if (!acc) acc else predicate.apply(e) })
+		method all(predicate) = this.fold(true, { acc, e -> if (!acc) acc else predicate.apply(e) })
 		/**
 		 * Tells whether at least one element of this collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.exists { plant -> plant.hasFlowers() }
+		 *      plants.any { plant -> plant.hasFlowers() }
 		 */
-		method exists(predicate) = this.fold(false, { acc, e -> if (acc) acc else predicate.apply(e) })
+		method any(predicate) = this.fold(false, { acc, e -> if (acc) acc else predicate.apply(e) })
 		/**
 		 * Returns the element of this collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
 		 * Example:
-		 *      users.detect { user -> user.name() == "Cosme Fulanito" }
+		 *      users.find { user -> user.name() == "Cosme Fulanito" }
 		 */
-		method detect(predicate) = this.fold(null, { acc, e ->
+		method find(predicate) = this.fold(null, { acc, e ->
 			 if (acc != null)
 			 	acc
 			 else
@@ -293,7 +293,7 @@ package lang {
 			 acc
 		})
 
-		method contains(e) = this.exists{one -> e == one }
+		method contains(e) = this.any{one -> e == one }
 		method flatten() = this.flatMap{ e -> e }
 		
 		override method internalToSmartString(alreadyShown) {
@@ -330,7 +330,7 @@ package lang {
 		
 		override method asSet() = this
 
-		method any() native
+		override method anyOne() native
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
@@ -355,9 +355,9 @@ package lang {
 		
 		override method newInstance() = []
 		
-		method any() {
+		method anyOne() {
 			if (this.isEmpty()) 
-				throw new Exception("Illegal operation 'any' on empty collection")
+				throw new Exception("Illegal operation 'anyOne' on empty collection")
 			else 
 				return this.get(this.randomBetween(0, this.size()))
 		}
