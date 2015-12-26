@@ -403,8 +403,14 @@ package lang {
 		
 		method anyOne() = this.values().anyOne()
 		
+		method any(closure) = this.values().any(closure)
+		method all(closure) = this.values().all(closure)
+		method find(closure) = this.values().find(closure)
+		method sum(closure) = this.values().sum(closure)
+		method max(closure) = this.values().max(closure)
+		method min(closure) = this.values().min(closure)
 		method count(closure) = this.values().count(closure)
-		method contains(value) = this.values().contain(value)
+		method contains(value) = this.values().contains(value)
 		method fold(initialValue, closure) = this.values().fold(initialValue, closure)
 		method join(separator) = this.values().join(separator)
 		method join() = this.values().join()

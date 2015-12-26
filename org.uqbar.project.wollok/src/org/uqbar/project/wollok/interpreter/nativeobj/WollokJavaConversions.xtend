@@ -79,6 +79,7 @@ class WollokJavaConversions {
 	// cache strings ?
 	def static dispatch WollokObject convertJavaToWollok(String o) { evaluator.newInstanceWithWrapped(STRING, o) }
 	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
+	def static dispatch WollokObject convertJavaToWollok(Collection o) { evaluator.newInstanceWithWrapped(COLLECTION, o) }
 	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
 	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
 	def static dispatch WollokObject convertJavaToWollok(Map o) { evaluator.newInstanceWithWrapped(DICTIONARY, o) }

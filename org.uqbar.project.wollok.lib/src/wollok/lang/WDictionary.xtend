@@ -7,7 +7,8 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.uqbar.project.wollok.wollokDsl.WClosure
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import java.util.HashMap
 
 /**
  * Native part of the wollok.lang.List class
@@ -38,19 +39,20 @@ class WDictionary implements JavaWrapper<Map<WollokObject, WollokObject>> {
 		wrapped.remove(wrapped.keySet.findFirst[it.wollokEquals(k)])
 	}
 	
-	def WollokObject values() {
-		wrapped.values().convertJavaToWollok()
+	def Object values() {
+		wrapped.values().toList
 	}
 	
-	def WollokObject keys() {
-		wrapped.keySet().convertJavaToWollok()
+	def Object keys() {
+		wrapped.keySet()
 	}
 	
-	def WDictionary filter(Closure closure) {
-		val dict = new WDictionary()
+	def Object filter(WollokObject proc) {
+		val closure = proc.asClosure
+		val dict = newHashMap
 		
 		wrapped.entrySet.forEach[ 
-			if (closure.apply(it.value) as Boolean) {
+			if (closure.apply(it.value).wollokToJava(Boolean) as Boolean) {
 				dict.put(it.key, it.value)
 			}
 		]
@@ -58,8 +60,9 @@ class WDictionary implements JavaWrapper<Map<WollokObject, WollokObject>> {
 		dict
 	}
 	
-	def WDictionary map(Closure closure) {
-		val dict = new WDictionary()
+	def Object map(WollokObject proc) {
+		val closure = proc.asClosure
+		val dict = newHashMap
 		wrapped.entrySet.forEach [
 			dict.put(it.key, closure.apply(it.value) as WollokObject)
 		]

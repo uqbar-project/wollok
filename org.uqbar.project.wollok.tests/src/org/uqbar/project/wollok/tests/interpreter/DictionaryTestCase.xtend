@@ -21,7 +21,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»		
-			assert.equals('hi', strings.min{e-> e.length() })
+			assert.equals(1, dictionary.min {e -> e} )
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -31,8 +31,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			val r = strings.max{e-> e.length() }	
-			assert.equals('bonjour', strings.max{e-> e.length() })
+			assert.equals(3, dictionary.max {e -> e} )
 		}'''.interpretPropagatingErrors
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
@@ -94,19 +93,6 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateNumbersDictionary»
 			assert.notThat(dictionary.isEmpty())
-		}'''.interpretPropagatingErrors
-	}
-	
-	@Test
-	def void forEach() {
-		'''
-		program p {
-			«instantiateNumbersDictionary»
-			
-			var sum = 0
-			dictionary.forEach({n -> sum += n})
-			
-			assert.equals(5, sum)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -207,7 +193,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.equals(3, dictionary.find{e-> e > 20})
+			assert.equals(3, dictionary.find{e-> e > 2})
 			assert.equals(null, dictionary.find{e-> e > 1000})
 		}
 		'''.interpretPropagatingErrors
@@ -230,7 +216,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateNumbersDictionary»
 			
-			assert.equals(8, dictionary.sum {n -> n})
+			assert.equals(6, dictionary.sum {n -> n})
 		}'''.interpretPropagatingErrors
 	}
 	
