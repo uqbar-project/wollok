@@ -11,7 +11,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import java.util.Map
-import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -79,7 +78,6 @@ class WollokJavaConversions {
 	// cache strings ?
 	def static dispatch WollokObject convertJavaToWollok(String o) { evaluator.newInstanceWithWrapped(STRING, o) }
 	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
-	def static dispatch WollokObject convertJavaToWollok(Collection o) { evaluator.newInstanceWithWrapped(COLLECTION, o) }
 	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
 	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
 	def static dispatch WollokObject convertJavaToWollok(Map o) { evaluator.newInstanceWithWrapped(DICTIONARY, o) }

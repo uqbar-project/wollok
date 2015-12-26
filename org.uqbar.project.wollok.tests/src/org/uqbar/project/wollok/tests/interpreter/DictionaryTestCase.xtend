@@ -50,18 +50,26 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 	def void contains() {
 		'''
 		program p {
-			«instantiateObjectsDictionary»
+			«instantiateNumbersDictionary»
 			assert.that(!dictionary.contains(22))
 			assert.that(dictionary.contains(1))
 		}'''.interpretPropagatingErrors
 	}
-	
+
 	@Test
-	def void any() {
+	def void anyWhenTrue() {
 		'''
 		program p {
 			«instantiateObjectsDictionary»
 			assert.that(dictionary.any{e-> e == 'hello'})
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void anyWhenFalse() {
+		'''
+		program p {
+			«instantiateObjectsDictionary»
 			assert.notThat(dictionary.any{e-> e == 0})
 		}'''.interpretPropagatingErrors
 	}
@@ -111,8 +119,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			var greaterThanFiveElements = dictionary.filter({n -> n > 5})
-			assert.that(greaterThanFiveElements.size() == 2)
+			var filtered = dictionary.filter {n -> n > 2}
+			assert.that(filtered.size() == 1)
 		}'''.interpretPropagatingErrors
 	}
 	
