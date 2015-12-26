@@ -12,7 +12,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void bug_38() {
 			'''object pajarera {
-		    var pajaros = #[pepita,pepe,pepona]
+		    var pajaros = [pepita,pepe,pepona]
 		
 		    method agregarA(pajaro){
 		        pajaros.add(pajaro)
@@ -31,46 +31,46 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		
 		    method alimentarATodosCon(comida){
-		        pajaros.forEach[p|p.comer(comida)]
+		        pajaros.forEach{p->p.comer(comida)}
 		    }
 		
 		    method hacerVolarATodas20M(metros){
-		        pajaros.forEach[p|p.volar(metros)]
+		        pajaros.forEach{p->p.volar(metros)}
 		    }
 		
 		    method cualEstaSaludable(){
-		        return pajaros.filter[p|p.energia() > 100]
+		        return pajaros.filter{p->p.energia() > 100}
 		    }
 		
 		    method retornaEnergias(energiaMinima){
-		        return  pajaros.filter[p|p.energia() < energiaMinima]
+		        return  pajaros.filter{p->p.energia() < energiaMinima}
 		    }
 		
 		    method el(){
-		        var filtro1 = #[]
-		        var filtro2 = #[]
-		        var filtro3 = #[]
+		        var filtro1 = []
+		        var filtro2 = []
+		        var filtro3 = []
 		
-		        filtro1 = pajaros.filter[p|p.energia() <= pepita.energia()]
-		        filtro2 = filtro1.filter[pp|pp.energia() <= pepona.energia()]
-		        filtro3 = filtro2.filter[ppp|ppp.energia() <= pepe.energia()]
+		        filtro1 = pajaros.filter{p->p.energia() <= pepita.energia()}
+		        filtro2 = filtro1.filter{pp->pp.energia() <= pepona.energia()}
+		        filtro3 = filtro2.filter{ppp->ppp.energia() <= pepe.energia()}
 		
 		
-		        //var filtro2 = filtro1.filter[pp|pp.energia() > pepe.energia()]
-		        //return filtro2.filter[ppp|[ppp.energia() > pepona.energia()]]
+		        //var filtro2 = filtro1.filter{pp->pp.energia() > pepe.energia()}
+		        //return filtro2.filter{ppp->ppp.energia() > pepona.energia()}
 		
 		        return this.comparaEnergia(filtro3)
 		    }
 		
 		    method alimentaBajaEnergia(filtro3){
-		        filtro3.forEach[pppp|pppp.com()]
+		        filtro3.forEach{pppp->pppp.com()}
 		        //pepe.com()
 		        this.comparaEnergia(filtro3)
 		    }
 		
 		    method comparaEnergia(filtro3){
-		        var filtro4 = #[]
-		        filtro4 = filtro3.filter[p|p.energia() >= 30]
+		        var filtro4 = []
+		        filtro4 = filtro3.filter{p->p.energia() >= 30}
 		
 		        if (filtro4.size() == 0) {    
 		            this.alimentaBajaEnergia(filtro3)
@@ -85,11 +85,11 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		
 		    method getEnergias(){
-		        return pajaros.map[p|p.energia()]
+		        return pajaros.map{p->p.energia()}
 		    }
 		
 		    method estanTodosVivos(){
-		        return pajaros.forAll[p|p.energia() > 0]
+		        return pajaros.forAll{p->p.energia() > 0}
 		    }
 		}
 		object pepita {

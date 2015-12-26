@@ -8,12 +8,10 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
-import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
@@ -23,7 +21,7 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -62,8 +60,8 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
+import org.uqbar.project.wollok.wollokDsl.WKeyValue
 
 /**
  * It's the real "interpreter".
@@ -320,17 +318,26 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 
 	def dispatch evaluate(WListLiteral it) { createCollection(LIST, elements) }
 	def dispatch evaluate(WSetLiteral it) { createCollection(SET, elements) }
-	
+	def dispatch evaluate(WDictionaryLiteral it) { createDictionary(elements) }
+
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
-			elements.forEach[e| 
+			elements.forEach [ e |
 				call("add", e.eval)
 			]
 		]
 	}
 
+	def createDictionary(EList<WKeyValue> elements) {
+		newInstance(DICTIONARY) => [
+			elements.forEach [ e |
+				call("put", newInstanceWithWrapped(STRING, e.key), e.value.eval)
+			]
+		]
+	}
+
 	// other expressions
-	def dispatch evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch evaluate(WBlock b) { b.expressions.evalAll }
 
 	def dispatch evaluate(WAssignment a) {
 		val newValue = a.value.eval
@@ -384,7 +391,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	// ** HELPER FOR message sends
 	// ********************************************************************************************
 	
-	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
+	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen " + call) }
 
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
 

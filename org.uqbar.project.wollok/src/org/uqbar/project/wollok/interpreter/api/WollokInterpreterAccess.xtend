@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.api
 
+import java.util.Collection
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
@@ -28,6 +29,10 @@ class WollokInterpreterAccess {
 	 */
 	def boolean wollokGreaterThan(WollokObject a, WollokObject b) {
 		operations.asBinaryOperation(">").apply(a, [|b]).isTrue
+	}
+	
+	def wollokFind(Collection collection, WollokObject x) {
+		collection.findFirst[it.wollokEquals(x)]
 	}
 
 }

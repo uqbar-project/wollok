@@ -84,6 +84,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
 			e.wollokException.call("printStackTrace")
+			throw e
 		}
 	}
 	

@@ -1,5 +1,5 @@
 class Pirata {
-	var items = #[]
+	var items = []
 	var dinero
 	var nivelEbriedad
 	
@@ -48,7 +48,7 @@ object saquear {
 
 object main {
 	
-	var p = new Pirata(#["brujula", "cuchillo", "cuchillo"])	
+	var p = new Pirata(["brujula", "cuchillo", "cuchillo"])	
 	//var barco = new Barco()
 	
 	method getP() {
