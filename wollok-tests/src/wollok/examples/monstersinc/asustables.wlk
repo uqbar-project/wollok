@@ -5,7 +5,7 @@ class Asustable {
 class Ninio inherits Asustable {
 	var edad = 0
 	
-	new(e) { edad = e }
+	constructor(e) { edad = e }
 	method setEdad(e) { edad = e }
 	method getEdad() = edad
 	override method teVaAAsustar(asustador) {

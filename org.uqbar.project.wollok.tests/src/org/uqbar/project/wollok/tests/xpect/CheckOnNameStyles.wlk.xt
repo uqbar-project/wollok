@@ -9,7 +9,7 @@
 		var Carlota
 		
 		// XPECT errors --> "Referenciable name must start with lowercase" at "Car"
-		new(Car) {
+		constructor(Car) {
 			Carlota = Car	
 		}
 	}

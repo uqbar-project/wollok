@@ -54,7 +54,7 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 	def void varArgsInConstructor() { '''
 		class Sample {
 			var result
-			new(preffix, numbers...) {
+			constructor(preffix, numbers...) {
 				result = if (numbers.size() > 0) numbers.map{n=> preffix + n} else []
 			}
 			method getResult() = result

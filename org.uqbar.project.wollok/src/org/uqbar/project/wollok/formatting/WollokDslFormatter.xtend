@@ -87,10 +87,10 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WConstructorElements e) {
-		setLinewrap(1, 1, 2).before(newKeyword_1)
+		setLinewrap(1, 1, 2).before(constructorKeyword_1)
 		setLinewrap(1, 1, 1).after(expressionAssignment_6)
 		
-		setNoSpace.after(newKeyword_1)
+		setNoSpace.after(constructorKeyword_1)
 		
 		//TODO: delegating constructor format
 		

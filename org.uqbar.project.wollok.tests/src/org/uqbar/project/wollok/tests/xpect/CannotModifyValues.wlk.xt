@@ -3,7 +3,7 @@
 class A {
 	val x = "sarasa"
 	
-	new() {
+	constructor() {
 		// XPECT errors --> "Cannot modify values" at "x"
 		x = 23
 	}

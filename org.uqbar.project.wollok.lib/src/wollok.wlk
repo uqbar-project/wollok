@@ -16,9 +16,9 @@ package lang {
 		val message
 		val cause
 	
-		new()
-		new(_message) = this(_message, null)
-		new(_message, _cause) { message = _message ; cause = _cause }
+		constructor()
+		constructor(_message) = this(_message, null)
+		constructor(_message, _cause) { message = _message ; cause = _cause }
 		
 		method printStackTrace() { this.printStackTrace(console) }
 		method getStackTraceAsString() {
@@ -51,9 +51,9 @@ package lang {
 	}
 	
 	class MessageNotUnderstoodException inherits Exception {
-		new()
-		new(_message) = super(_message)
-		new(_message, _cause) = super(_message, _cause)
+		constructor()
+		constructor(_message) = super(_message)
+		constructor(_message, _cause) = super(_message, _cause)
 		
 		/*
 		'''«super.getMessage()»
@@ -67,7 +67,7 @@ package lang {
 	class StackTraceElement {
 		val contextDescription
 		val location
-		new(_contextDescription, _location) {
+		constructor(_contextDescription, _location) {
 			contextDescription = _contextDescription
 			location = _location
 		}
@@ -162,7 +162,7 @@ package lang {
 	class Pair {
 		val x
 		val y
-		new (_x, _y) {
+		constructor (_x, _y) {
 			x = _x
 			y = _y
 		}
@@ -318,7 +318,7 @@ package lang {
 	 * @since 1.3
 	 */	
 	class Set inherits Collection {
-		new(elements ...) {
+		constructor(elements ...) {
 			this.addAll(elements)
 		}
 		
@@ -545,7 +545,7 @@ package lang {
 	class Range {
 		val start
 		val end
-		new(_start, _end) { start = _start ; end = _end }
+		constructor(_start, _end) { start = _start ; end = _end }
 		
 		method forEach(closure) native
 		
@@ -615,13 +615,14 @@ package lib {
 		method setGround(image) native
 	}
 	
+	
 	class Position {
 		var x = 0
 		var y = 0
 		
-		new() { }
+		constructor() { }
 		
-		new(_x, _y) {
+		constructor(_x, _y) {
 			x = _x
 			y = _y
 		}
@@ -675,7 +676,7 @@ package game {
 	class Key {	
 		var keyCodes
 		
-		new(_keyCodes) {
+		constructor(_keyCodes) {
 			keyCodes = _keyCodes
 		}
 	
@@ -798,7 +799,7 @@ package mirror {
 	class InstanceVariableMirror {
 		val target
 		val name
-		new(_target, _name) { target = _target ; name = _name }
+		constructor(_target, _name) { target = _target ; name = _name }
 		method name() = name
 		method value() = target.resolve(name)
 		

@@ -37,7 +37,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			val b
 			var c
 			
-			new(anA, aB, aC) {
+			constructor(anA, aB, aC) {
 				a = anA
 				b = aB
 				c = aC
@@ -62,9 +62,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			var x
 			var y
 			
-			new () { x = 20 ; y = 20 }
+			constructor () { x = 20 ; y = 20 }
 			
-			new(ax, ay) {
+			constructor(ax, ay) {
 				x = ax
 				y = ay
 			}
@@ -91,7 +91,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				var x
 				var y
 				
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 			}
 			program t {
 				val p1 = new Point()
@@ -110,9 +110,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class Point {
 				var x
 				var y
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15) {
+				constructor() = this(10,15) {
 				}
 				
 				method getX() { return x }
@@ -132,9 +132,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class Point {
 				var x
 				var y
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15)
+				constructor() = this(10,15)
 				
 				method getX() { return x }
 				method getY() { return y }
@@ -153,12 +153,12 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class SuperClass {
 				var superX
-				new(a) { superX = a }
+				constructor(a) { superX = a }
 				
 				method getSuperX() { return superX }
 			}
 			class SubClass inherits SuperClass { 
-				new(n) = super(n + 1) {}
+				constructor(n) = super(n + 1) {}
 			}
 			program t {
 				val o = new SubClass(20)
@@ -172,15 +172,15 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				var x
-				new(a) { x = a }
+				constructor(a) { x = a }
 				
 				method getX() { return x }
 			}
 			class B inherits A { 
-				new(n) = super(n + 1) {}
+				constructor(n) = super(n + 1) {}
 			}
 			class C inherits B {
-				new(l) = super(l * 2) {}
+				constructor(l) = super(l * 2) {}
 			}
 			program t {
 				val o = new C(20)
@@ -195,23 +195,23 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class A {
 				var x
 				var y
-				new(p) = this(p.getX(), p.getY()) {}
-				new(_x,_y) { x = _x ; y = _y }
+				constructor(p) = this(p.getX(), p.getY()) {}
+				constructor(_x,_y) { x = _x ; y = _y }
 				
 				method getX() { return x }
 				method getY() { return y }
 			}
 			class B inherits A { 
-				new(p) = super(p + 10) {}
+				constructor(p) = super(p + 10) {}
 			}
 			class C inherits B {
-				new(_x, _y) = this(new Point(_x, _y)) {}
-				new(p) = super(p) {}
+				constructor(_x, _y) = this(new Point(_x, _y)) {}
+				constructor(p) = super(p) {}
 			}
 			class Point {
 				var x
 				var y
-				new(_x,_y) { x = _x ; y = _y }
+				constructor(_x,_y) { x = _x ; y = _y }
 				method +(delta) {
 					x += delta
 					y += delta
@@ -238,7 +238,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class SuperClass {
 				var superX
-				new() { superX = 20 }
+				constructor() { superX = 20 }
 				
 				method getSuperX() { return superX }
 			}
@@ -256,7 +256,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class SuperClass {
 				var superX
 				var otherX
-				new() { 
+				constructor() { 
 					superX = 20
 					otherX = 30
 				}
@@ -267,7 +267,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			class SubClass inherits SuperClass {
 				var subX
-				new() {
+				constructor() {
 					subX = 10
 					this.setSuperX(this.getSuperX() + 20) // 20 + 20
 				}
@@ -287,7 +287,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				var x
-				new() { x = 20 }
+				constructor() { x = 20 }
 				
 				method getX() { return x }
 			}
@@ -295,7 +295,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			class C inherits B {
 				var c1
-				new() {
+				constructor() {
 					c1 = 10
 				}
 				method getC1() { return c1 }

@@ -336,7 +336,7 @@ WMember:
 ;
 
 WConstructor:
-	{WConstructor} 'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
 		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
 		(expression=WBlockExpression)?
 ;
