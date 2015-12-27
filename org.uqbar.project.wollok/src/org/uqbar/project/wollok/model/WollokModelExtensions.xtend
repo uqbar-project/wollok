@@ -42,11 +42,12 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarchy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WCatch
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Extension methods to Wollok semantic model.
@@ -64,26 +65,24 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static dispatch name(WClass it) { name }
-	def static dispatch name(WNamedObject it) { name }
+	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
 
-	def static dispatch fqn(WClass it) { 
-		fileName + "." + (if (package != null) (package.name + ".") else "") + name
-	}
-	def static dispatch fqn(WNamedObject it) {
-		 fileName + "." + 
-		 	if(package != null) package.name + "." + name
-		 		else name
+	def static dispatch fqn(WClass it) { nameWithPackage }
+	def static dispatch fqn(WNamedObject it) { nameWithPackage }
+	def static dispatch fqn(WMixin it) { nameWithPackage }
+
+	def static getNameWithPackage(WMethodContainer it) {
+		fileName + "." + if (package != null) package.name + "." + name else name
 	}
 	
 	def static dispatch fqn(WObjectLiteral it) {
 		//TODO: make it better (show containing class /object / package + linenumber ?)
 		fileName + "." + "anonymousObject" 
 	}
-
-	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
-	def static WPackage getPackage(WNamedObject it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
+	
+	// this doesn't work for object literals, although it could !
+	def static WPackage getPackage(WMethodContainer it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
 		a == b || (b.parent != null && a.isSuperTypeOf(b.parent))
@@ -135,6 +134,7 @@ class WollokModelExtensions {
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
 
 	def static void addMembersTo(WClass cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
+	def static void addMembersTo(WMixin cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
@@ -177,11 +177,13 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 	
-	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it, finder) }
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { 
+		resolveWKO(finder).isValidCall(it, finder)
+	}
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
 		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarhcy(finder)
+		obj.hookObjectInHierarchy(finder)
 		obj
 	}
 
@@ -218,14 +220,14 @@ class WollokModelExtensions {
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
 	// For objects or classes
-	def static dispatch declaredVariables(WObjectLiteral obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-	def static dispatch declaredVariables(WNamedObject obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-	def static dispatch declaredVariables(WClass clazz) { clazz.members.filter(WVariableDeclaration).map[variable] }
+	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 
 	def static dispatch WMethodDeclaration method(Void it) { null }
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
 	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
+	
+	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
 	// ****************************
 	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
@@ -266,12 +268,13 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WFile f, WNamedObject o) { f.elements.existsMoreThanOne(o) }
 	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
 	
-	def static dispatch boolean isDuplicated(WClass c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
+	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
-	def static dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) { c.variables.existsMoreThanOne(r) }
+	
+	// classes, objects and mixins
+	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 
-	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r){ namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WMethodDeclaration it, WReferenciable v) { parameters.existsMoreThanOne(v) || declaringContext.isDuplicated(v) }
 	def static dispatch boolean isDuplicated(WBlockExpression it, WReferenciable v) { expressions.existsMoreThanOne(v) || eContainer.isDuplicated(v) }
 	def static dispatch boolean isDuplicated(WClosure it, WReferenciable r) { parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r) }

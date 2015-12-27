@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.tests.interpreter
 import com.google.inject.Inject
 import java.io.File
 import java.io.FileInputStream
-import java.util.HashMap
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
@@ -14,8 +13,8 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -30,8 +29,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper
 	@Inject protected XtextResourceSet resourceSet;
-	@Inject
-	protected extension WollokInterpreter interpreter
+	@Inject	protected extension WollokInterpreter interpreter
 	public static val EXAMPLES_PROJECT_PATH = "../wollok-tests"
 
 	@Before
@@ -90,8 +88,11 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			forEach[
 				try
 					it.interpret(propagatingErrors)
-				catch (WollokProgramExceptionWrapper e)
-					fail(e.wollokStackTrace)
+				catch (WollokProgramExceptionWrapper e) {
+					println("MESSAGE = " + e.wollokException.resolve("message"))
+					fail(e.wollokException.resolve("message") + "\n" + e.wollokStackTrace)
+					println("after fail")
+				}
 			]
 		]).last
 	}

@@ -33,6 +33,10 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Implements an abstract visitor for the AST
@@ -94,7 +98,15 @@ class AbstractVisitor {
 		variable.doVisit
 		right.doVisit
 	}
+
+	// i'm not sure why tests fails if we just let the generic WMethodContainer impl for all.	
+	def dispatch void visit(WMethodContainer it) { eContents.visitAll }
+	
+	def dispatch void visit(WMixin it) { eContents.visitAll }
 	def dispatch void visit(WClass it) { eContents.visitAll }
+	def dispatch void visit(WObjectLiteral it) { eContents.visitAll }
+	def dispatch void visit(WNamedObject it) { eContents.visitAll }
+	
 	def dispatch void visit(WPackage it) { elements.visitAll }
 	def dispatch void visit(WUnaryOperation it) { operand.doVisit }
 	def dispatch void visit(WClosure it) { expression.doVisit }
@@ -106,8 +118,7 @@ class AbstractVisitor {
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
 	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
 	def dispatch void visit(WCollectionLiteral it) { elements.visitAll }
-	def dispatch void visit(WObjectLiteral it) { members.visitAll }
-	def dispatch void visit(WNamedObject it) { members.visitAll }
+	
 	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
 	def dispatch void visit(WPostfixOperation it) { operand.doVisit }
 	def dispatch void visit(WReturnExpression it) { expression.doVisit }
