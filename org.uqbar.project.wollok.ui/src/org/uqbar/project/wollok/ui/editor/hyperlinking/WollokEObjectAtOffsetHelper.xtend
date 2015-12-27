@@ -36,6 +36,8 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 		val semantic = node.semanticElement
 		if (semantic instanceof WMemberFeatureCall && (semantic as WMemberFeatureCall).isResolvedToMethod || semantic instanceof WSuperInvocation)
 			node
+		else if (semantic instanceof WSuperInvocation)
+			node
 		else
 			super.findCrossReferenceNode(node)
 	}

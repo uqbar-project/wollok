@@ -20,10 +20,7 @@ class CallableSuper extends AbstractWollokCallable {
 	}
 	
 	override call(String message, WollokObject... parameters) {
-		val method = behavior.lookupMethod(message, parameters)
-		if (method == null)
-			throw throwMessageNotUnderstood(this, message, parameters)
-		method.call(parameters)
+		receiver.callSuper(behavior, message, parameters)
 	}
 	
 	override getReceiver() { 

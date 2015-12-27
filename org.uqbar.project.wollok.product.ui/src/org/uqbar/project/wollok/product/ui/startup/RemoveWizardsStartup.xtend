@@ -49,7 +49,12 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		}
 	}
 	
-	static val includeWizards = #["org\\.eclipse\\.ui\\..*", "org\\.uqbar\\.project\\.wollok\\..*"]
+	static val includeWizards = #[
+		"org\\.eclipse\\.ui\\..*", 
+		"org\\.uqbar\\.project\\.wollok\\..*",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewPackageCreationWizard",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewSourceFolderCreationWizard"
+	]
 	def includeWizards(String id) {
 		includeWizards.exists[id.matches(it)]
 	}

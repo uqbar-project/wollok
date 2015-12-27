@@ -250,8 +250,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
-				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			classRef.mixins.forEach[addMembersTo(wo)]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
 	}
@@ -281,7 +282,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarhcy(classFinder)
+		namedObject.hookObjectInHierarchy(classFinder)
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
@@ -301,7 +302,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 	
-	def static hookObjectInHierarhcy(WNamedObject namedObject, WollokClassFinder finder) {
+	//TODO: duplicated WNamedObject & WObjectLiteral. I cannot make xtext generator
+	// pull up the "parent" attribute to a common instance !
+	def static hookObjectInHierarchy(WNamedObject namedObject, WollokClassFinder finder) {
+		if (namedObject.parent != null)
+			namedObject.parent.hookToObject(finder)
+		else {
+			val object = finder.getObjectClass(namedObject)
+			namedObject.parent = object
+			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
+		}
+	}
+	def static hookObjectInHierarchy(WObjectLiteral namedObject, WollokClassFinder finder) {
 		if (namedObject.parent != null)
 			namedObject.parent.hookToObject(finder)
 		else {
@@ -382,12 +394,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	
 	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
-
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
-
-	def dispatch evaluateTarget(WSuperInvocation call) {
-		new CallableSuper(interpreter, call.method.declaringContext.parent)
-	}
+	def dispatch evaluateTarget(WSuperInvocation call) { new CallableSuper(interpreter, call.declaringContext) }
 
 	def WollokObject getWKObject(String qualifiedName, EObject context) {
 		try {

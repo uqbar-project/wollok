@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.editor.annotations
 
 import com.google.inject.Inject
+import java.util.List
 import java.util.ResourceBundle
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.jface.text.BadLocationException
@@ -16,6 +17,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.XtextMarkerRulerAction
 import org.eclipse.xtext.ui.editor.actions.IActionContributor
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -97,8 +99,7 @@ class WOverrideRulerAction extends ResourceAction implements IActionContributor,
 	def runInternal() {
 		editor.document.readOnly[XtextResource resource |
 			val method = resource.getEObject(overrideIndicatorAnnotation.methodURI) as WMethodDeclaration
-			val overridden = method.declaringContext.parent.lookupMethod(method.name, method.parameters)
-			uriEditorOpener.open(EcoreUtil.getURI(overridden), true)
+			uriEditorOpener.open(EcoreUtil.getURI(method.overridenMethod), true)
 		]
 	}
 	
