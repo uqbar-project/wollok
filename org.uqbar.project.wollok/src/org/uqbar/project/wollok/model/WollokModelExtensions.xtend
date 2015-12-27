@@ -42,7 +42,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarchy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -181,7 +181,7 @@ class WollokModelExtensions {
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
 		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarhcy(finder)
+		obj.hookObjectInHierarchy(finder)
 		obj
 	}
 
@@ -224,6 +224,8 @@ class WollokModelExtensions {
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
 	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
+	
+	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
 	// ****************************
 	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)

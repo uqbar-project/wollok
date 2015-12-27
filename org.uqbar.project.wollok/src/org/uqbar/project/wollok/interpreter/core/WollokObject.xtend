@@ -70,20 +70,20 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
 		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-//		if (this.behavior instanceof WObjectLiteral) {
-			throw messageNotUnderstood("does not understand message " + name)
-//		}
-//		
-//		try {
-//			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
-//		}
-//		catch (WollokProgramExceptionWrapper e) {
-//			// this one is ok because calling messageNotUnderstood actually throws the exception!
-//			throw e
-//		}
-//		catch (RuntimeException e) {
-//			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
-//		}
+		if (this.behavior instanceof WObjectLiteral) {
+			throw messageNotUnderstood(behavior.name + " does not understand message " + name + "(" + parameters.join(",") + ")")
+		}
+		
+		try {
+			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
+		}
+		catch (WollokProgramExceptionWrapper e) {
+			// this one is ok because calling messageNotUnderstood actually throws the exception!
+			throw e
+		}
+		catch (RuntimeException e) {
+			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
+		}
 	}
 	
 	def messageNotUnderstood(String message) {
@@ -216,6 +216,23 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def hasNativeType(String type) {
 		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
 		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
+	}
+	
+	def callSuper(WMethodContainer superFrom, String message, WollokObject[] parameters) {
+		val hierarchy = behavior.linearizateHierarhcy
+		val subhierarhcy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
+		
+		val method = subhierarhcy.fold(null) [method, t |
+			if (method != null)
+				method
+			else 
+				t.methods.findFirst[matches(message, parameters)]
+		]
+
+		if (method == null)
+			// should be an specific error: no super method to call or something
+			throw throwMessageNotUnderstood(this, message, parameters)
+		method.call(parameters)
 	}
 	
 }

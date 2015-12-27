@@ -1,3 +1,14 @@
+		mixin Energy {
+			var energy = 100
+		}
+		
+		class Birdo mixed with Energy {
+			method fly(meters) {
+				energy -= meters
+			}
+			method energy() = energy
+		}
+
 
 mixin Flies {
 	method fly() {
@@ -16,6 +27,51 @@ mixin Walks {
 }
 
 class WalkingBird mixed with Walks {}
+
+
+		mixin Energyo {
+			var energy = 100
+			method reduceEnergy(amount) { energy -= amount }
+			method energy() = energy
+		}
+		
+		class Birdo mixed with Energyo {
+			override method reduceEnergy(amount) { 
+				super(1)
+			}
+		}
+
+mixin Energy {
+	var energy = 100
+	method energy() = energy
+	method reduceEnergy(amount) {
+		energy -= amount
+	}
+}
+		
+mixin Flying {
+	var fliedMeters = 0
+	method fly(meters) {
+		this.reduceEnergy(meters)
+		fliedMeters += meters
+	}
+	method fliedMeters() = fliedMeters
+}
+
+class BirdWithEnergyThatFlies mixed with Energy, Flying {}
+
+
+mixin FlyingShortcuts {
+	method fly100Meters() {
+		this.fly(100)
+	}
+}
+
+class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
+	var energy = 200
+	method fly(meters) { energy -= meters }
+	method energy() = energy
+}
 
 // **************************
 // ** tests
@@ -36,4 +92,19 @@ test "Class with mixin modifying its own state from the mixin" {
 	
 	console.println("Y ahora ?")
 }
+
+test "asd" {
+	val b = new BirdWithEnergyThatFlies()
+	b.fly(10)
+	assert.equals(90, b.energy())
+	assert.equals(10, b.fliedMeters())
+}
+
+
+test "Mixin method calls a method on the class" {
+	val b = new BirdWithFlyingShortCuts()
+	b.fly100meters()
+	assert.equals(100, b.energy())
+}
+
 

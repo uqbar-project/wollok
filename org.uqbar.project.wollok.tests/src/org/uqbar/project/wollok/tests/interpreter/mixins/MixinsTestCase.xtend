@@ -10,16 +10,14 @@ import org.junit.Test
 class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void testSimpleMixinWithMethod() {
+	def void simpleMixinWithMethod() {
 		'''
 		mixin Flies {
 			method fly() {
 				console.println("I'm flying")
 			}
 		}
-		class Bird mixed with Flies {
-			
-		}
+		class Bird mixed with Flies {}
 		program t {
 			val b = new Bird()
 			b.fly()
@@ -37,8 +35,8 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			method walkedDistance() = walkedDistance
 		}
-		
 		class WalkingBird mixed with Walks {}
+		
 		program t {
 				val b = new WalkingBird()
 				b.walk(10)
@@ -47,6 +45,8 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	// is it ok to have 'protected' variables ?
+	// this is inconsistent with the way wollok handles variables in classes in a hierarchy
 	@Test
 	def void classModifiesAVariableInheritedFromTheMixin() {
 		'''
@@ -121,27 +121,160 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		mixin Energy {
 			var energy = 100
 			method energy() = energy
+			method reduceEnergy(amount) {
+				energy -= amount
+			}
 		}
 		
 		mixin Flying {
 			var fliedMeters = 0
 			method fly(meters) {
-				energy -= meters
+				this.reduceEnergy(meters)
 				fliedMeters += meters
 			}
 			method fliedMeters() = fliedMeters
 		}
 		
-		class Bird mixed with Energy, Flying {
-		}
+		class BirdWithEnergyThatFlies mixed with Energy, Flying {}
+		
+		// order doesn't matter
+		
+		class BirdWithThatFliesWithEnergy mixed with Flying, Energy {}
 		
 		program t {
-				val b = new Bird()
+				val b = new BirdWithEnergyThatFlies()
 				b.fly(10)
 				assert.equals(90, b.energy())
 				assert.equals(10, b.fliedMeters())
+				
+				val b2 = new BirdWithThatFliesWithEnergy()
+				b2.fly(10)
+				assert.equals(90, b2.energy())
+				assert.equals(10, b2.fliedMeters())
 		}
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void mixinMethodCallsAMethodOnTheClass() {
+		'''
+		mixin FlyingShortcuts {
+			method fly100Meters() {
+				this.fly(100)
+			}
+		}
+		
+		class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
+			var energy = 200
+			method fly(meters) { energy -= meters }
+			method energy() = energy
+		}
+		
+		program t {
+			val b = new BirdWithFlyingShortCuts()
+			b.fly100Meters()
+			assert.equals(100, b.energy())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void mixinMethodCallsAMethodOnTheClassThatIsInherited() {
+		'''
+		mixin FlyingShortcuts {
+			method fly100Meters() {
+				this.fly(100)
+			}
+		}
+		
+		class Bird {
+			var energy = 200
+			method fly(meters) { energy -= meters }
+			method energy() = energy
+		}
+		
+		class MockingBird inherits Bird mixed with FlyingShortcuts {
+		}
+		
+		program t {
+			val b = new MockingBird()
+			b.fly100Meters()
+			assert.equals(100, b.energy())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void classOverridesMethodFromMixin() {
+		'''
+		mixin Energy {
+			var energy = 100
+			method reduceEnergy(amount) { energy -= amount }
+			method energy() = energy
+		}
+		
+		class Bird mixed with Energy {
+			override method reduceEnergy(amount) { 
+				// does nothing
+			}
+		}
+		
+		program t {
+			val b = new Bird()
+			b.reduceEnergy(100)
+			assert.equals(100, b.energy())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void classOverridesMethodFromMixinAndCallSuper() {
+		'''
+		mixin Energy {
+			var energy = 100
+			method reduceEnergy(amount) { energy -= amount }
+			method energy() = energy
+		}
+		
+		class Bird mixed with Energy {
+			override method reduceEnergy(amount) { 
+				super(1)
+			}
+		}
+		
+		program t {
+			val b = new Bird()
+			b.reduceEnergy(100)
+			assert.equals(99, b.energy())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void stackableMixinsPattern() {
+		'''
+		mixin M1 {
+			method doFoo(chain) { super(chain + " > M1") }
+		}
+		
+		mixin M2 {
+			method doFoo(chain) { super(chain + "> M2") }
+		}
+		
+		class C1 {
+			var foo = ""
+			method doFoo(chain) { foo = chain + " > C1" }
+			method foo() = foo
+		}
+		
+		class C2 inherits C1 mixed with M1, M2 {
+		}
+		
+		program t {
+			val c = new C2()
+			c.doFoo("Test ")
+			assert.equals("Test > M2 > M1 > C1", c.foo())
+		}
+		'''.interpretPropagatingErrors
+	}
 }

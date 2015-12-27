@@ -9,6 +9,7 @@ import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.eclipse.xtext.service.OperationCanceledManager;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
@@ -50,6 +51,9 @@ public class WollokDslRuntimeModule extends
 		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
 		
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended.class).to(WollokLinkingDiagnosticMessageProvider.class);
+		
+		// fixes for xtext 2.9
+		binder.bind(OperationCanceledManager.class).toInstance(new OperationCanceledManager());
 	}
 
 	// customize exported objects
