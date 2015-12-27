@@ -80,7 +80,7 @@ abstract class AbstractWollokCallable implements WCallable {
 		method.accesibleVersion.invokeConvertingArgs(nativeObject, parameters)
 	}
 	
-	def throwMessageNotUnderstood(Object nativeObject, String name, WollokObject[] parameters) {
+	def WollokProgramExceptionWrapper throwMessageNotUnderstood(Object nativeObject, String name, WollokObject[] parameters) {
 		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
 	}
 
