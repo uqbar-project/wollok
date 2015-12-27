@@ -70,20 +70,20 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
 		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral) {
+//		if (this.behavior instanceof WObjectLiteral) {
 			throw messageNotUnderstood("does not understand message " + name)
-		}
-		
-		try {
-			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
-		}
-		catch (WollokProgramExceptionWrapper e) {
-			// this one is ok because calling messageNotUnderstood actually throws the exception!
-			throw e
-		}
-		catch (RuntimeException e) {
-			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
-		}
+//		}
+//		
+//		try {
+//			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
+//		}
+//		catch (WollokProgramExceptionWrapper e) {
+//			// this one is ok because calling messageNotUnderstood actually throws the exception!
+//			throw e
+//		}
+//		catch (RuntimeException e) {
+//			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
+//		}
 	}
 	
 	def messageNotUnderstood(String message) {

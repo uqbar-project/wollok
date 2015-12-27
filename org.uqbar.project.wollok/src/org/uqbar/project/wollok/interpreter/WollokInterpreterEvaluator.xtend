@@ -250,8 +250,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
-				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			classRef.mixins.forEach[addMembersTo(wo)]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
 	}

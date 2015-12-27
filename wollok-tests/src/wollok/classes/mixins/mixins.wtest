@@ -1,0 +1,39 @@
+
+mixin Flies {
+	method fly() {
+		console.println("I'm flying")
+	}
+}
+
+class Bird mixed with Flies {}
+
+mixin Walks {
+	var walkedDistance = 0
+	method walk(distance) {
+		walkedDistance += distance
+	}
+	method walkedDistance() = walkedDistance
+}
+
+class WalkingBird mixed with Walks {}
+
+// **************************
+// ** tests
+// **************************
+
+test "Class with simple mixin inherits a method" {
+	val b = new Bird()
+	b.fly()
+}
+
+test "Class with mixin modifying its own state from the mixin" {
+	val b = new WalkingBird()
+	b.walk(10)
+//	console.println(b.walkedDistance())
+	val walked = b.walkedDistance()
+	console.println("sarasa = " + walked)
+	assert.that(10 == walked)
+	
+	console.println("Y ahora ?")
+}
+

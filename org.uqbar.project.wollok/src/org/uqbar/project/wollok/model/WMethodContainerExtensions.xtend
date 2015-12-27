@@ -34,6 +34,8 @@ import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEv
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import java.util.Collections
 
 /**
  * Extension methods for WMethodContainers.
@@ -130,19 +132,29 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 		
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass c) { c.parent }
-	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.Object class ?
-	def static dispatch WClass parent(WNamedObject c) { c.parent }
+	def static dispatch WClass parent(WClass it) { parent }
+	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
+	def static dispatch WClass parent(WNamedObject it) { parent }
+	// not supported yet !
+	def static dispatch WClass parent(WMixin it) { null }
+	
+	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
+	def static dispatch List<WMixin> mixins(WClass it) { mixins }
+	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
+	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
+	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
+	def static dispatch members(WMixin c) { c.members }
 	
 	def static dispatch contextName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
+	def static dispatch contextName(WMixin c) { c.fqn }
 	
 	def static boolean inheritsMethod(WMethodContainer c, String name, int argSize) { c.parent != null && c.parent.hasOrInheritMethod(name, argSize) }
 	
@@ -151,10 +163,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
-		val method = behavior.methods.findFirst[matches(message, params)]
+		var method = behavior.methods.findFirst[matches(message, params)]
 		
 		if (method != null) 
 			return method
+		
+		if (behavior.mixins != null) {
+			method = behavior.mixins.reverseView.fold(null) [WMethodDeclaration resolvedMethod, mixin|
+				if (resolvedMethod != null)
+					resolvedMethod
+				else
+					mixin.lookupMethod(message, params)
+			]
+			if (method != null)
+				return method
+		}
 		else if (behavior.parent != null)
 			behavior.parent.lookupMethod(message, params)
 		else 
