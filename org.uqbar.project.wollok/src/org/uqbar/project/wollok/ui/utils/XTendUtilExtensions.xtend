@@ -129,7 +129,7 @@ class XTendUtilExtensions {
 	}
 	
 	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
-	def static newException(String exceptionClassName, String message) {
+	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
 		new WollokProgramExceptionWrapper(evaluator.newInstance(exceptionClassName, message.javaToWollok)) 
 	}
 	
