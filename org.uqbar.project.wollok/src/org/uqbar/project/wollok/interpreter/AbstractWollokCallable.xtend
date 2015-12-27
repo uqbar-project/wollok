@@ -84,7 +84,7 @@ abstract class AbstractWollokCallable implements WCallable {
 		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
 	}
 
-	def dispatch invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, WollokObject... parameters) {
+	def dispatch WollokObject invokeNative(AbstractWollokDeclarativeNativeObject nativeObject, String name, WollokObject... parameters) {
 		nativeObject.call(name, parameters)
 	}
 
