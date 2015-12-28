@@ -297,4 +297,27 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		} 
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void mixinOnAWKOOverridingAMethod() {
+		'''
+		mixin Flies {
+			var times = 0
+			method fly() {
+				times = 1
+			}
+			method times() = times
+		}
+		
+		object pepita mixed with Flies {
+			override method fly() {}
+		}
+		
+		program t {
+			pepita.fly()
+			assert.equals(0, pepita.times())
+		} 
+		'''.interpretPropagatingErrors
+	}
+	
 }
