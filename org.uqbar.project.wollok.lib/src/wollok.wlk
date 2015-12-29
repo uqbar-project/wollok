@@ -401,6 +401,8 @@ package lang {
 			this.subList(n,this.size()-1)
 		}	
 		
+		method reverse() = this.subList(this.size()-1,0)
+	
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
 		method add(element) native
@@ -423,10 +425,9 @@ package lang {
 		method max(other) = if (this >= other) this else other
 		method min(other) = if (this <= other) this else other
 		
-		method limitBetween(infLimit,supLimit) = {
-			return infLimit.max(this).min(supLimit)
-		}
-		
+		method limitBetween(limitA,limitB) =if(limitA <= limitB) limitA.max(this).min(limitB) 
+											else limitB.max(this).min(limitA)
+			
 		method !=(other) = ! (this == other)
 	}
 	

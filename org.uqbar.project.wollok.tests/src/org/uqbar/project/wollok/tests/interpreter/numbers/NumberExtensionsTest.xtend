@@ -55,7 +55,20 @@ class NumberExtensionsTest extends AbstractWollokParameterizedInterpreterTest {
 			#["(4.0).limitBetween(2,3.0)", "3.0"],
 			
 			#["4.limitBetween(2,10)", "4"],
-			#["(4.0).limitBetween(2,10)", "4.0"]
+			#["(4.0).limitBetween(2,10)", "4.0"],
+			
+			#["1.limitBetween(3,2)", "2"],
+			#["(1.0).limitBetween(3,2)", "2"],
+			#["1.limitBetween(3,2.0)", "2.0"],
+			#["(1.0).limitBetween(3,2.0)", "2.0"],
+
+			#["4.limitBetween(3,2)", "3"],
+			#["(4.0).limitBetween(3,2)", "3"],
+			#["4.limitBetween(3.0,2)", "3.0"],
+			#["(4.0).limitBetween(3.0,2)", "3.0"],
+			
+			#["4.limitBetween(10,2)", "4"],
+			#["(4.0).limitBetween(10,2)", "4.0"]
 		]
 	}
 	
