@@ -2,12 +2,13 @@ package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.ListTestCase
+import org.uqbar.project.wollok.tests.interpreter.CollectionTestCase
 
 /**
  * @author jfernandes
  */
 // the inheritance needs to be reviewed if we add list specific tests it won't work here
-class SetTest extends ListTestCase {
+class SetTest extends CollectionTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
 		"val numbers = #{22, 2, 10}"
