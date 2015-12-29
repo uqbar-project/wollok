@@ -377,6 +377,29 @@ package lang {
 			return result
 		}
 		
+		method subList(start,end) = {
+			if(this.isEmpty)
+				return this.newInstance()
+			val newList = this.newInstance()
+			start = start.max(0).min(this.size()-1)
+			end = end.max(0).min(this.size()-1)
+			(start..end).forEach([i| newList.add(this.get(i))])
+			return newList
+		}
+		
+		method take(n) = {
+		if(n <= 0)
+			this.newInstance()
+		else
+			this.subList(0,n-1)
+		}
+		
+		method drop(n) =  {
+		if(n >= this.size())
+			this.newInstance()
+		else
+			this.subList(n,this.size()-1)
+		}	
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
