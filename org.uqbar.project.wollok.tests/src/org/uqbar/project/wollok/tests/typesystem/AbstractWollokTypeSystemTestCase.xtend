@@ -97,7 +97,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	def static findByText(EObject model, String token) {
 		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
 			.findFirst[n| 
-				escapeNodeTextToCompare(n.text) == token && n.hasDirectSemanticElement 
+				escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement 
 			]
 		assertNotNull("Could NOT find program token '" + token + "'", found)
 		found.semanticElement
