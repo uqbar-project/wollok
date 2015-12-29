@@ -381,9 +381,9 @@ package lang {
 			if(this.isEmpty)
 				return this.newInstance()
 			val newList = this.newInstance()
-			start = start.limitBetween(0,this.size()-1)
-			end = end.limitBetween(0,this.size()-1)
-			(start..end).forEach([i| newList.add(this.get(i))])
+			val _start = start.limitBetween(0,this.size()-1)
+			val _end = end.limitBetween(0,this.size()-1)
+			(_start.._end).forEach[i| newList.add(this.get(i))]
 			return newList
 		}
 		
