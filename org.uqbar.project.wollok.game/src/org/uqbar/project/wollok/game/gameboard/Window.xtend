@@ -13,7 +13,7 @@ import org.uqbar.project.wollok.game.AbstractPosition
 import org.uqbar.project.wollok.game.Image
 
 class Window {
-	val patch = new NinePatch(new Texture(Gdx.files.internal("assets/speech.png")), 30, 60, 40, 50)
+	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
 	val textBitmap = new BitmapFont()
 	val batch = new SpriteBatch()
 	val font = new BitmapFont()
