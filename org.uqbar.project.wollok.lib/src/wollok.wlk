@@ -381,8 +381,8 @@ package lang {
 			if(this.isEmpty)
 				return this.newInstance()
 			val newList = this.newInstance()
-			start = start.max(0).min(this.size()-1)
-			end = end.max(0).min(this.size()-1)
+			start = start.limitBetween(0,this.size()-1)
+			end = end.limitBetween(0,this.size()-1)
 			(start..end).forEach([i| newList.add(this.get(i))])
 			return newList
 		}
@@ -422,6 +422,10 @@ package lang {
 	class Number {
 		method max(other) = if (this >= other) this else other
 		method min(other) = if (this <= other) this else other
+		
+		method limitBetween(infLimit,supLimit) = {
+			return infLimit.max(this).min(supLimit)
+		}
 		
 		method !=(other) = ! (this == other)
 	}
