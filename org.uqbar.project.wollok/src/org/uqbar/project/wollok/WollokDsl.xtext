@@ -251,8 +251,7 @@ WVariableReference:
 ;
 
 WBlockOrExpression returns WExpression:
-	WExpression | WBlockExpression
-;
+	(=> WBlockExpression) | WExpression;
 
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
@@ -292,7 +291,7 @@ WNumberLiteral returns WExpression :
 WClosure returns WExpression:
 	=>({WClosure} 
 	'{') 
-		=>(parameters+=WParameter (',' parameters+=WParameter)*)? '=>'
+		=>((parameters+=WParameter (',' parameters+=WParameter)*)? '=>')?
 		expression=WBlockInClosure 
 	'}';
 

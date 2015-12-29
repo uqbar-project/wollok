@@ -8,6 +8,16 @@ import org.junit.Test
 class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
+	def void applyNoArgsClosure() {
+		'''
+		program p {
+			val helloWorld = { "helloWorld" }
+			val response = helloWorld.apply()
+			assert.equals("helloWorld", response)
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
 	def void applyClosureWithOneArgument() {
 		'''
 		program p {
