@@ -70,4 +70,15 @@ class ListTest extends ListTestCase {
 			assert.equals(#{1,2,3}, list.asSet())
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void testFirstAndHead() {
+		'''
+		program p {
+			val list = #[1,2,3]
+			
+			assert.equals(1, list.first())
+			assert.equals(1, list.head())
+		}'''.interpretPropagatingErrors
+	}
 }

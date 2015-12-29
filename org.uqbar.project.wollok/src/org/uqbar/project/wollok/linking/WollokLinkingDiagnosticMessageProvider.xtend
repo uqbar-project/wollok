@@ -22,7 +22,6 @@ class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessagePro
 		val referenceType = context.reference.EReferenceType
 		var linkText = try context.linkText catch (IllegalNodeException e) e.node.text
 		
-		// TODO: transform EClass names
 		val msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.humanReadableModelTypeName + " '" + linkText + "'."
 		new DiagnosticMessage(msg, Severity.ERROR, Diagnostic.LINKING_DIAGNOSTIC)
 	}

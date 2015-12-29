@@ -363,6 +363,9 @@ package lang {
 				return this.get(this.randomBetween(0, this.size()))
 		}
 		
+		method first() = this.head()
+		method head() = this.get(0)
+		
 		override method toStringPrefix() = "#["
 		override method toStringSufix() = "]"
 
