@@ -110,7 +110,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
-		@Test
+	@Test
 	def void orShortcirtuitMustNOTEvaluateSecondPart() {
 		'''
 			object p {
@@ -123,7 +123,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 				method getModified() = modified
 				method setModified(n) { modified = n }
 			}
-		program a {
+		test "a" {
 			assert.that(true || p.getModifying())
 			assert.notThat(p.getModified())
 			

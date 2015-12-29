@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * type(from) == type(to)

@@ -1,8 +1,7 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
-import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtend.lib.Property
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * A type expectation.
@@ -13,23 +12,5 @@ import org.uqbar.project.wollok.semantics.WollokType
 interface TypeExpectation {
 	
 	def void check(WollokType actualType) throws TypeExpectationFailedException
-	
-}
-
-/**
- * @author jfernandes
- */
-class TypeExpectationFailedException extends RuntimeException {
-	/** The semantic model (ast) which had this issue */
-	@Property EObject model
-	
-	new(String message) {
-		super(message)
-	}
-	
-	new(EObject m, String message) {
-		super(message)
-		model = m
-	}
 	
 }

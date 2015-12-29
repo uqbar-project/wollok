@@ -33,7 +33,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		this.interpreter = interpreter
 	}
 
-	override call(String message, WollokObject... parameters) {
+	override WollokObject call(String message, WollokObject... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
 		if (method == null)
 			throw doesNotUnderstand(message, parameters)

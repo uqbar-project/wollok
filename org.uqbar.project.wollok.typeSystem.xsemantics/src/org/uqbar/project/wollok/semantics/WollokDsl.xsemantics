@@ -25,15 +25,21 @@ import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.MessageType
 
-import static org.uqbar.project.wollok.semantics.TypeInferrer.*
-import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.TypeInferrer.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WProgram
-
-// AUXILIAR HEADERS
+import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.BasicType
+import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
+import org.uqbar.project.wollok.typesystem.VoidType
 
 // JUDGMENTS
 
@@ -168,8 +174,7 @@ from {
 		t = G.env(c, WollokType)
 	}
 	else {
-		
-		t = new ClassBasedWollokType(c, this, G)
+		t = new ClassBasedWollokType(c, G.env(TypeSystem, TypeSystem))
 		G.add(c, t)
 		// G |- c
 	}
@@ -330,7 +335,7 @@ from {
 		if (thisType instanceof ClassBasedWollokType) {
 			G |- call ~> var MessageType typeOfMessage
 			var method = thisType.lookupMethod(typeOfMessage)
-			if (method != null && thisType.resolveReturnType(typeOfMessage, this, G) == WAny) {
+			if (method != null && thisType.resolveReturnType(typeOfMessage) == WAny) {
 				G.add(method, newType)
 				// then re-evaluate method (some body vars might change type based on returnType)
 				G |- method
@@ -375,7 +380,7 @@ from {
 	}
 	else {
 		try {
-			var refinedType = valueType.refine(expectedType, G)
+			var refinedType = valueType.refine(expectedType)
 			G.add(assignment.^feature.ref, refinedType)
 		}
 		catch (TypeSystemException e) {
@@ -420,7 +425,7 @@ from {
 				i++
 			}
 		}
-		returnType = receiverType.resolveReturnType(message, this, G)
+		returnType = receiverType.resolveReturnType(message)
 	}
 	else { 
 		fail error "An object of type " + receiverType + " does not understand the message " 
@@ -465,7 +470,7 @@ from {
 		t = G.env(obj, ObjectLiteralWollokType)
 	}
 	else {
-		var newType = new ObjectLiteralWollokType(obj, this, G)
+		var newType = new ObjectLiteralWollokType(obj, G.env(TypeSystem, TypeSystem))
 		G.add(obj, newType)
 		
 		for (v : obj.variableDeclarations) { G |- v : var WollokType varType }

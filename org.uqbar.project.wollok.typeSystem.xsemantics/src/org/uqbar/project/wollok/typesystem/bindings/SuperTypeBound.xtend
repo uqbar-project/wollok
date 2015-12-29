@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * The target node is the same or a super type of

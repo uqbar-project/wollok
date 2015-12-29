@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
-import org.uqbar.project.wollok.interpreter.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
 
@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  * 
  * @author jfernandes
  */
-class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext {
+class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext<WollokObject> {
 	static var Map<String, WollokObject> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
 	

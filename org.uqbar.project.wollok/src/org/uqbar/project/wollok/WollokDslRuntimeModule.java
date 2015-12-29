@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory;
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory;
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider;
@@ -81,7 +82,7 @@ public class WollokDslRuntimeModule extends
 		return WollokQualifiedNameProvider.class;
 	}
 
-	public Class<? extends XInterpreterEvaluator> bindXInterpreterEvaluator() {
+	public Class<? extends XInterpreterEvaluator<WollokObject>> bindXInterpreterEvaluator() {
 		return WollokInterpreterEvaluator.class;
 	}
 
