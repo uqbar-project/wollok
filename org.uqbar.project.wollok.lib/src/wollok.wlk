@@ -377,7 +377,32 @@ package lang {
 			return result
 		}
 		
+		method subList(start,end) = {
+			if(this.isEmpty)
+				return this.newInstance()
+			val newList = this.newInstance()
+			start = start.limitBetween(0,this.size()-1)
+			end = end.limitBetween(0,this.size()-1)
+			(start..end).forEach([i| newList.add(this.get(i))])
+			return newList
+		}
 		
+		method take(n) = {
+		if(n <= 0)
+			this.newInstance()
+		else
+			this.subList(0,n-1)
+		}
+		
+		method drop(n) =  {
+		if(n >= this.size())
+			this.newInstance()
+		else
+			this.subList(n,this.size()-1)
+		}	
+		
+		method reverse() = this.subList(this.size()-1,0)
+	
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
 		method add(element) native
@@ -400,6 +425,9 @@ package lang {
 		method max(other) = if (this >= other) this else other
 		method min(other) = if (this <= other) this else other
 		
+		method limitBetween(limitA,limitB) =if(limitA <= limitB) limitA.max(this).min(limitB) 
+											else limitB.max(this).min(limitA)
+			
 		method !=(other) = ! (this == other)
 	}
 	

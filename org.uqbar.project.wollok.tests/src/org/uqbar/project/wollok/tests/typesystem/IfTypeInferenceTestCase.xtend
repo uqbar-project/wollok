@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
 import static org.uqbar.project.wollok.typesystem.WollokType.*
+import org.junit.Ignore
 
 /**
  * Test type inference in if expressions
@@ -41,6 +42,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void testCheckIfConditionMustBeBoolean() { ''' program p {
 			val n = 23
 			val number = if (n) 2 else 6
