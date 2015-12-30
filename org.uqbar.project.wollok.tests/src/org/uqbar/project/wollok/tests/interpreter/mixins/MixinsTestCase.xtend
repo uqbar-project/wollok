@@ -324,4 +324,46 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	// OBJECT LITERALS
+	
+	@Test
+	def void mixinOnObjectLiterals() {
+		'''
+		mixin Flies {
+			var times = 0
+			method fly() {
+				times = 1
+			}
+			method times() = times
+		}
+		
+		program t {
+			val pepita = object mixed with Flies {}
+			pepita.fly()
+			assert.equals(1, pepita.times())
+		} 
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void mixinOnObjectLiteralOverridingAMethod() {
+		'''
+		mixin Flies {
+			var times = 0
+			method fly() {
+				times = 1
+			}
+			method times() = times
+		}
+		
+		program t {
+			val pepita = object mixed with Flies {
+				override method fly() {}
+			}
+			pepita.fly()
+			assert.equals(0, pepita.times())
+		} 
+		'''.interpretPropagatingErrors
+	}
+	
 }
