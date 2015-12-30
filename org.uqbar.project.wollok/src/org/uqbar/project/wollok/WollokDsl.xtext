@@ -295,7 +295,7 @@ WClosure returns WExpression:
 		expression=WBlockInClosure 
 	'}';
 
-WBlockInClosure: 
+WBlockInClosure returns WExpression: 
 	{WBlockExpression}
 	(expressions+=WExpressionOrVarDeclaration ';'?)*;
 
