@@ -13,9 +13,9 @@ class WithUnusedVariables {
 	
 	val usedOnlyWithUnary = ""
 	
-	var equipos = #[]
+	var equipos = []
 	
-	method doSomething() = {
+	method doSomething() {
 		a = a + 1 + c + x
 		d = 123
 		//XPECT errors --> "Cannot modify values" at "z"
@@ -53,10 +53,10 @@ class UnusedVariables {
 			}
 			method peso() = peso
 		}
-		val vacas = #[vaca1, vaca2]
+		val vacas = [vaca1, vaca2]
 		
-		vacas.forEach([v | v.engordar(2)])
-		return vacas.forAll([v | v.peso() == 1002])
+		vacas.forEach({v => v.engordar(2)})
+		return vacas.forAll({v => v.peso() == 1002})
 	}
 	
 }
