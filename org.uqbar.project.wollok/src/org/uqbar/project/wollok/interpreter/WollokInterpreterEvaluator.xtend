@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -51,7 +52,6 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -60,7 +60,6 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 
 /**
  * It's the real "interpreter".
@@ -222,7 +221,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def doInstantiateNumber(String className, Object value) {
 		val obj = newInstance(className)
 		// hack because this project doesn't depend on wollok.lib project so we don't see the classes !
-		val intNative = obj.getNativeObject(className) as JavaWrapper
+		val intNative = obj.getNativeObject(className) as JavaWrapper<Object>
 		intNative.wrapped = value
 		obj
 	}
@@ -245,8 +244,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 	
 	def newInstance(WClass classRef, WollokObject... arguments) {
-		classRef.hookToObject(classFinder)
-		
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
@@ -254,18 +251,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
-	}
-	
-	def static void hookToObject(WClass wClass, WollokClassFinder finder) {
-		if (wClass.parent != null)
-			wClass.parent.hookToObject(finder)
-		else {
-			val object = finder.getObjectClass(wClass)
-			if (wClass.fqn != object.fqn) { 
-				wClass.parent = object
-				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
-			}
-		}
 	}
 	
 	def dispatch evaluate(WNamedObject namedObject) {
@@ -281,8 +266,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarhcy(classFinder)
-		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
 			
@@ -301,16 +284,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 	
-	def static hookObjectInHierarhcy(WNamedObject namedObject, WollokClassFinder finder) {
-		if (namedObject.parent != null)
-			namedObject.parent.hookToObject(finder)
-		else {
-			val object = finder.getObjectClass(namedObject)
-			namedObject.parent = object
-			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
-		}
-	}
-
 	def dispatch evaluate(WClosure l) { newInstance(CLOSURE) => [
 		(getNativeObject(CLOSURE) as NodeAware<WClosure>).EObject = l
 	] }
