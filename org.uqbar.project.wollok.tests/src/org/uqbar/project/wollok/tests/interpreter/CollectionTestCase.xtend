@@ -195,7 +195,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void testToStringWithObjectRedefiningToStringInWollok() {
 		'''
 		object myObject {
-			method internalToSmartString(alreadyShown) = "My Object"
+			override method internalToSmartString(alreadyShown) = "My Object"
 		}
 		program p {
 			val a = [23, 2, 1, myObject]
