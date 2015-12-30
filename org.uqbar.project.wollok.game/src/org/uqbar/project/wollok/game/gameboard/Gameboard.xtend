@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication
+import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -12,7 +12,6 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import com.badlogic.gdx.Gdx
 
 /**
  * 
@@ -39,7 +38,7 @@ class Gameboard {
 	}
 
 	def void start() {
-		new LwjglApplication(new GameboardRendering(this), new GameboardConfiguration(this))
+		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
 		Runtime.runtime.addShutdownHook(new Thread([
 			Gdx.app.exit
 		]))
