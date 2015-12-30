@@ -591,7 +591,8 @@ package lib {
 			buffer += obj.toString() + "\n"
 		}
 		method getBuffer() = buffer
-	}
+	}	
+	
 
 	object wgame {
 		method addVisual(element) native
@@ -612,29 +613,6 @@ package lib {
 		method setHeight(height) native
 		method getHeight() native
 		method setGround(image) native
-	}
-	
-	object keys {
-		method getKeyCode(aKey) native
-		
-		method onPress(key) {
-			return new ProtoKeyListener(this.getKeyCode(key))
-		}
-	}
-	
-	class ProtoKeyListener {
-		val key
-	
-		new(_key) {
-			key = _key
-		}
-	
-		method characterSay(function){
-			wgame.whenKeyPressedSay(key, function)
-		}	
-		method do(action) {
-			wgame.whenKeyPressedDo(key, action)
-		}
 	}
 	
 	class Position {
@@ -690,7 +668,227 @@ package lib {
 		method setY(_y) { y = _y }
 		
 	}
+}
+
+package game {
+		
+	class Key {	
+		method onPressDo(action) {
+			this.getKeyCodes().forEach{ key => wgame.whenKeyPressedDo(key, action) }
+		}
+		
+		method onPressCharacterSay(function) {
+			this.getKeyCodes().forEach{ key => wgame.whenKeyPressedSay(key, function) }
+		}
+	}
+
+	object ANY_KEY inherits Key {		
+		method getKeyCodes() = [-1]
+	}
+  
+	object NUM_0 inherits Key {		
+		method getKeyCodes() = [7, 144]
+	}
 	
+	object NUM_1 inherits Key {		
+		method getKeyCodes() = [8, 145]
+	}
+	
+	object NUM_2 inherits Key {		
+		method getKeyCodes() = [9, 146]
+	}
+	
+	object NUM_3 inherits Key {		
+		method getKeyCodes() = [10, 147]
+	}
+	
+	object NUM_4 inherits Key {		
+		method getKeyCodes() = [11, 148]
+	}
+	
+	object NUM_5 inherits Key {		
+		method getKeyCodes() = [12, 149]
+	}
+	
+	object NUM_6 inherits Key {		
+		method getKeyCodes() = [13, 150]
+	}
+	
+	object NUM_7 inherits Key {		
+		method getKeyCodes() = [14, 151]
+	}
+	
+	object NUM_8 inherits Key {		
+		method getKeyCodes() = [15, 152]
+	}
+	
+	object NUM_9 inherits Key {		
+		method getKeyCodes() = [16, 153]
+	}
+	
+	object A inherits Key {		
+		method getKeyCodes() = [29]
+	}
+	
+	object ALT inherits Key {		
+		method getKeyCodes() = [57, 58]
+	}
+	
+	object B inherits Key {		
+		method getKeyCodes() = [30]
+	}
+  
+	object BACKSPACE inherits Key {		
+		method getKeyCodes() = [67]
+	}
+	
+	object C inherits Key {		
+		method getKeyCodes() = [31]
+	}
+  
+	object CONTROL inherits Key {		
+		method getKeyCodes() = [129, 130]
+	}
+  
+	object D inherits Key {		
+		method getKeyCodes() = [32]
+	}
+	
+	object DEL inherits Key {		
+		method getKeyCodes() = [67]
+	}
+  
+	object CENTER inherits Key {		
+		method getKeyCodes() = [23]
+	}
+	
+	object DOWN inherits Key {		
+		method getKeyCodes() = [20]
+	}
+	
+	object LEFT inherits Key {		
+		method getKeyCodes() = [21]
+	}
+	
+	object RIGHT inherits Key {		
+		method getKeyCodes() = [22]
+	}
+	
+	object UP inherits Key {		
+		method getKeyCodes() = [19]
+	}
+	
+	object E inherits Key {		
+		method getKeyCodes() = [33]
+	}
+	
+	object ENTER inherits Key {		
+		method getKeyCodes() = [66]
+	}
+	
+	object F inherits Key {		
+		method getKeyCodes() = [34]
+	}
+	
+	object G inherits Key {		
+		method getKeyCodes() = [35]
+	}
+	
+	object H inherits Key {		
+		method getKeyCodes() = [36]
+	}
+	
+	object I inherits Key {		
+		method getKeyCodes() = [37]
+	}
+	
+	object J inherits Key {		
+		method getKeyCodes() = [38]
+	}
+	
+	object K inherits Key {		
+		method getKeyCodes() = [39]
+	}
+	
+	object L inherits Key {		
+		method getKeyCodes() = [40]
+	}
+	
+	object M inherits Key {		
+		method getKeyCodes() = [41]
+	}
+	
+	object MINUS inherits Key {		
+		method getKeyCodes() = [69]
+	}
+	
+	object N inherits Key {		
+		method getKeyCodes() = [42]
+	}
+	
+	object O inherits Key {		
+		method getKeyCodes() = [43]
+	}
+	
+	object P inherits Key {		
+		method getKeyCodes() = [44]
+	}
+	
+	object PLUS inherits Key {		
+		method getKeyCodes() = [81]
+	}
+	
+	object Q inherits Key {		
+		method getKeyCodes() = [45]
+	}
+	
+	object R inherits Key {		
+		method getKeyCodes() = [46]
+	}
+	
+	object S inherits Key {		
+		method getKeyCodes() = [47]
+	}
+	
+	object SHIFT inherits Key {		
+		method getKeyCodes() = [59, 60]
+	}
+	
+	object SLASH inherits Key {		
+		method getKeyCodes() = [76]
+	}
+	
+	object SPACE inherits Key {		
+		method getKeyCodes() = [62]
+	}
+	
+	object T inherits Key {		
+		method getKeyCodes() = [48]
+	}
+	
+	object U inherits Key {		
+		method getKeyCodes() = [49]
+	}
+	
+	object V inherits Key {		
+		method getKeyCodes() = [50]
+	}
+	
+	object W inherits Key {		
+		method getKeyCodes() = [51]
+	}
+	
+	object X inherits Key {		
+		method getKeyCodes() = [52]
+	}
+	
+	object Y inherits Key {		
+		method getKeyCodes() = [53]
+	}
+	
+	object Z inherits Key {		
+		method getKeyCodes() = [54]
+	}
 }
 
 package mirror {
