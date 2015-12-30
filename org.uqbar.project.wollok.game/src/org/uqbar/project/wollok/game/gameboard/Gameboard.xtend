@@ -5,7 +5,6 @@ import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.AbstractPosition
-import org.uqbar.project.wollok.game.GameboardFactory
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
@@ -33,7 +32,6 @@ class Gameboard {
 	def static getInstance() {
 		if (instance == null) {
 			instance = new Gameboard()
-			GameboardFactory.setGame(instance)
 		}
 		return instance
 	}
