@@ -31,5 +31,6 @@ object sarasita {
 	}
 	
 	method returningAValue() { return 2 }
+	method returningWithShortSyntax() = 2
 	
 }
