@@ -605,12 +605,13 @@ package lib {
 		method clear() native
 		method start() native
 		
-		method setTittle() native
-		method getTittle() native
-		method setWidth() native
+		method setTitle(title) native
+		method getTitle() native
+		method setWidth(width) native
 		method getWidth() native
-		method setHeight() native
+		method setHeight(height) native
 		method getHeight() native
+		method setGround(image) native
 	}
 	
 	object keys {
