@@ -133,6 +133,8 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 				fliedMeters += meters
 			}
 			method fliedMeters() = fliedMeters
+			
+			method reduceEnergy(meters)
 		}
 		
 		class BirdWithEnergyThatFlies mixed with Energy, Flying {}
@@ -162,11 +164,12 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			method fly100Meters() {
 				this.fly(100)
 			}
+			method fly(meters)
 		}
 		
 		class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
 			var energy = 200
-			method fly(meters) { energy -= meters }
+			override method fly(meters) { energy -= meters }
 			method energy() = energy
 		}
 		
@@ -181,16 +184,17 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void mixinMethodCallsAMethodOnTheClassThatIsInherited() {
 		'''
-		mixin FlyingShortcuts {
-			method fly100Meters() {
-				this.fly(100)
-			}
-		}
-		
 		class Bird {
 			var energy = 200
 			method fly(meters) { energy -= meters }
 			method energy() = energy
+		}
+		
+		mixin FlyingShortcuts {
+			method fly100Meters() {
+				this.fly(100)
+			}
+			method fly(meters)
 		}
 		
 		class MockingBird inherits Bird mixed with FlyingShortcuts {

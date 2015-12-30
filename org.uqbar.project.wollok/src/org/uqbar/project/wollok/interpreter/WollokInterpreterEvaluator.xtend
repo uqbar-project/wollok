@@ -323,7 +323,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		else {
 			val object = finder.getObjectClass(namedObject)
 			namedObject.parent = object
-			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
+			namedObject.eSet(WollokDslPackage.Literals.WOBJECT_LITERAL__PARENT, object)
 		}
 	}
 

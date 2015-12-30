@@ -36,6 +36,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import java.util.Collections
+import org.uqbar.project.wollok.wollokDsl.WThis
 
 /**
  * Extension methods for WMethodContainers.
@@ -50,41 +51,55 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
-	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
-	def static boolean isAbstract(WNamedObject it) { parent != null && parent.hasUnimplementedInheritedMethods }
+	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
+
+	def static unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
+	
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 	
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
 
-	def static allAbstractMethods(WClass c) {
-		val unimplementedMethods = <WMethodDeclaration>newArrayList
-		c.superClassesIncludingYourselfTopDownDo [ claz |
-			unimplementedMethods.removeAllSuchAs[claz.overrides(it)]
-			unimplementedMethods.addAll(claz.abstractMethods);
+	// rename: should be non-implemented abstract methods
+	def static allAbstractMethods(WMethodContainer c) {
+		val hierarchy = c.linearizateHierarhcy
+		
+		val concreteMethods = <WMethodDeclaration>newArrayList
+		
+		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
+			concreteMethods.addAll(chunk.methods.filter[!abstract])
+			// remove implemented
+			unimplementedMethods.removeAllSuchAs[chunk.overrides(it)]	
+			// add NEW abstracts (abstracts on mixins can be overriden by an upper class / mixin in the chain!)
+			val newAbstractsNotImplementedUpInTheHierarchy = chunk.abstractMethods.filter[abstractM |
+				!concreteMethods.exists[m| abstractM.matches(m.name, m.parameters) ]
+			]
+			unimplementedMethods.addAll(newAbstractsNotImplementedUpInTheHierarchy)
+			unimplementedMethods
 		]
-		unimplementedMethods
 	}
 	
-	def static Iterable<WMethodDeclaration> unimplementedAbstractMethods(WNamedObject it) { parent.allAbstractMethods.filter[m| !it.overrides(m)] }
-
-	def static hasUnimplementedInheritedMethods(WClass c) { !c.allAbstractMethods.empty }
+	def static getAllMessageSentToThis(WMethodContainer it) {
+		eAllContents.filter(WMemberFeatureCall).filter[memberCallTarget.isThis].toIterable
+	}
+	
+	def static dispatch isThis(WThis it) { true }
+	def static dispatch isThis(EObject it) { false }
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
-	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
+	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
-	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[matches(m.name, m.parameters.size)] }
+	
+	def static dispatch boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[matches(m.name, m.parameters.size)] }
+	// mixins can be overriding a method without explicitly declaring it
+	def static dispatch boolean overrides(WMixin c, WMethodDeclaration m) { c.methods.exists[!abstract && matches(m.name, m.parameters.size)] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.overridenMethod(m.name, m.parameters) }
 	def protected static overridenMethod(WMethodContainer it, String name, List parameters) {
-		var found = lookupMethodInMixins(name, parameters)
-		if (found != null)
-			found
-		else 
-			parent?.lookupMethod(name, parameters)
+		lookUpMethod(linearizateHierarhcy.tail, name, parameters)
 	}
 	
 	def static superMethod(WSuperInvocation it) { method.overridenMethod }
@@ -185,27 +200,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) {
-		// own methods 
-		var method = behavior.methods.findFirst[matches(message, params)]
-		if (method != null) 
-			method
-		else
-			behavior.lookupMethodInHierarchy(message, params)
+		lookUpMethod(behavior.linearizateHierarhcy, message, params)		
 	}
 	
-	def static lookupMethodInHierarchy(WMethodContainer behavior, String message, List params) {
-		// mixins
-		var method = behavior.lookupMethodInMixins(message, params)
-		if (method != null)
-			return method
-		
-		// parent
-		if (behavior.parent != null)
-			behavior.parent.lookupMethod(message, params)
-		else 
-			null
+	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List params) {
+		for (chunk : hierarchy) {
+			val method = chunk.methods.findFirst[!it.abstract && matches(message, params)]
+			if (method != null)
+				return method;			
+		}
+		null
 	}
 	
+	/**
+	 * The full hierarchy chain top->down
+	 */	
 	// TODO: currently doesn't support inheritance between mixins
 	def static List<WMethodContainer> linearizateHierarhcy(WMethodContainer it) {
 		var chain = newLinkedList
@@ -219,18 +228,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		chain
 	}
 	
-	def static lookupMethodInMixins(WMethodContainer it, String message, List params) {
-		if (mixins == null)
-			return null
-		
-		mixins.reverseView.fold(null) [WMethodDeclaration resolvedMethod, mixin|
-			if (resolvedMethod != null)
-				resolvedMethod
-			else
-				mixin.lookupMethod(message, params)
-		]
-	}
-	
 	def static matches(WMethodDeclaration it, String message, List params) { matches(message, params.size) }
 	
 	def static matches(WMethodDeclaration it, String message, int nrOfArgs) {
@@ -242,12 +239,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	// all calls to 'this' are valid in mixins
-	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
+//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static dispatch boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
 		c.hookObjectSuperClass(finder)
 		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
 	
+	def static dispatch void hookObjectSuperClass(WMixin it, WollokClassFinder finder) { }
 	def static dispatch void hookObjectSuperClass(WClass it, WollokClassFinder finder) { hookToObject(finder) }
 	def static dispatch void hookObjectSuperClass(WNamedObject it, WollokClassFinder finder) { hookObjectInHierarchy(finder) }
 	def static dispatch void hookObjectSuperClass(WObjectLiteral it, WollokClassFinder finder) { hookObjectInHierarchy(finder) } // nothing !

@@ -132,9 +132,12 @@ class WollokModelExtensions {
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	
+	def static methodName(WMethodDeclaration d) {
+		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
+	}
 
-	def static void addMembersTo(WClass cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
-	def static void addMembersTo(WMixin cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
+	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }

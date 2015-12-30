@@ -1,0 +1,84 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+mixin M1 {
+   method m() {
+   	  this.doIt()      // expected abstract method
+   }
+   method doIt()
+}
+
+class C mixed with M1 {} // should be considered abstract
+
+class D inherits C {}
+
+
+mixin M2 {}
+
+class E inherits D mixed with M2 {}
+
+mixin M3 {
+	method blah() { this.sarasa() }
+	method sarasa()
+}
+
+class F inherits E mixed with M3 {}
+
+mixin DoIt {
+	method doIt() {}
+}
+
+class G inherits E mixed with DoIt {}
+
+class DoItClass {
+	method doIt() {}
+}
+
+class H inherits DoItClass mixed with M2 {}
+
+class I mixed with M2 {
+	method doIt() {}
+}
+
+object p {
+	method run() {
+		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "C"
+		val c = new C()
+		console.println(c)
+		
+		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "D"
+		val d = new D()
+		console.println(d)
+		
+		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "E"
+		val e = new E()
+		console.println(e)
+		
+		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt(), M3.sarasa()" at "F"
+		val f = new F()
+		console.println(f)
+		
+		console.println(new G())
+		
+		console.println(new H())
+		
+		console.println(new I())
+	}
+}
+
+// checks mixin must explicitly tell required methods
+
+mixin M3 {
+	method blah() {
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "sarasa"
+		this.sarasa()
+	}
+}
+
+// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "a"
+object a mixed with M1 {
+}
+
+// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "b"
+object b mixed with M1, M2 {
+}
+

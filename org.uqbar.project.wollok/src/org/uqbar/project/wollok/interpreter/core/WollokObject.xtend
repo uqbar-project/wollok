@@ -62,6 +62,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override getThisObject() { this }
 	
 	override call(String message, WollokObject... parameters) {
+//		println("calling " + message + " " + parameters.map[toString].join(','))
 		val method = behavior.lookupMethod(message, parameters)
 		if (method == null)
 			throwMessageNotUnderstood(message, parameters)
@@ -70,7 +71,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
 		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral) {
+		if (this.behavior instanceof WObjectLiteral || name == "messageNotUnderstood" || name == "toString") {
 			throw messageNotUnderstood(behavior.name + " does not understand message " + name + "(" + parameters.join(",") + ")")
 		}
 		
