@@ -32,8 +32,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -58,7 +56,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static allAbstractMethods(WClass c) {
 		val unimplementedMethods = <WMethodDeclaration>newArrayList
 		c.superClassesIncludingYourselfTopDownDo [ claz |
-			unimplementedMethods.removeAllSuchAs[claz.overrides(it)]
+			unimplementedMethods.removeIf[claz.overrides(it)]
 			unimplementedMethods.addAll(claz.abstractMethods);
 		]
 		unimplementedMethods
@@ -121,14 +119,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
-	def static List<WClass> _parents(WMethodContainer c, List l) {
+	def static List<WClass> _parents(WClass c, List<WClass> l) {
 		if (c == null) {
 			return l
 		}
 		l.add(c)
 		return _parents(c.parent, l)
 	}
-		
+
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass c) { c.parent }
 	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.Object class ?
@@ -172,14 +170,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.hookObjectSuperClass(finder)
 		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
 	
-	def static dispatch void hookObjectSuperClass(WClass it, WollokClassFinder finder) { hookToObject(finder) }
-	def static dispatch void hookObjectSuperClass(WNamedObject it, WollokClassFinder finder) { hookObjectInHierarhcy(finder) }
-	def static dispatch void hookObjectSuperClass(WObjectLiteral it, WollokClassFinder finder) { } // nothing !
-
 	// ************************************************************************
 	// ** Basic methods
 	// ************************************************************************

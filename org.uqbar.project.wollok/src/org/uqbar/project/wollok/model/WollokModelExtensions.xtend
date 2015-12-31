@@ -18,12 +18,12 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -46,9 +46,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 
 /**
  * Extension methods to Wollok semantic model.
@@ -129,7 +127,7 @@ class WollokModelExtensions {
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 	
-	def static first(WBlockExpression it, Class type) { expressions.findFirst[ type.isInstance(it) ] }
+	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
@@ -182,9 +180,7 @@ class WollokModelExtensions {
 	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it, finder) }
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
-		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarhcy(finder)
-		obj
+		(memberCallTarget as WVariableReference).ref as WNamedObject
 	}
 
 
