@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.editor.hyperlinking
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -10,11 +9,9 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.xbase.interpreter.UnresolvableFeatureException
 
 /**
  * Extends the default xtext class
@@ -71,19 +68,13 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	def dispatch resolveReference(WMemberFeatureCall it, INode node) { resolveMethod(classFinder) }
 	def dispatch resolveReference(WSuperInvocation it, INode node) { superMethod }
 	def dispatch resolveReference(Import it, INode node) {
-		val found = it.scope.getElements(upTo(node.text).toFQN)
+		val found = it.getScope(scopeProvider).getElements(upTo(node.text).toFQN)
 		if (found.empty)
 			throw new UnresolvableCrossReference
 		else
 			found.get(0).EObjectOrProxy			
 	}
 
-	// helpers	
-	def toFQN(String string) { QualifiedName.create(string.split("\\.")) }
-	// hack uses another grammar ereference to any
-	def getScope(Import it) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
-	def upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
-	
 /*	
 
  *TODO: Hacer un extension point
