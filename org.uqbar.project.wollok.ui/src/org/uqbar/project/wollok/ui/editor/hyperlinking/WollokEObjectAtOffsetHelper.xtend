@@ -40,7 +40,6 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	WollokGlobalScopeProvider scopeProvider
 
 	override protected findCrossReferenceNode(INode node) {
-		println("Looking for reference on [" + node.text + "]")
 		val semantic = node.semanticElement
 		if (semantic.isCrossReference(node))
 			node
