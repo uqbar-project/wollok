@@ -1,6 +1,7 @@
 import otherFile.a.A
 import otherFile.b.*
 import otherFile.objetin
+//import otherFile.carpuza
 
 class I inherits A {
 	

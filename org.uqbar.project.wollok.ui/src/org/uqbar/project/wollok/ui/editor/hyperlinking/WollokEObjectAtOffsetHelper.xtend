@@ -2,18 +2,19 @@ package org.uqbar.project.wollok.ui.editor.hyperlinking
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.xbase.interpreter.UnresolvableFeatureException
 
 /**
  * Extends the default xtext class
@@ -39,41 +40,50 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	WollokGlobalScopeProvider scopeProvider
 
 	override protected findCrossReferenceNode(INode node) {
+		println("Looking for reference on [" + node.text + "]")
 		val semantic = node.semanticElement
-		if (isCrossReference(semantic))
+		if (semantic.isCrossReference(node))
 			node
 		else
 			super.findCrossReferenceNode(node)
 	}
 	
-	protected def dispatch isCrossReference(EObject it) { false }
-	protected def dispatch isCrossReference(WMemberFeatureCall it) { isResolvedToMethod }
-	protected def dispatch isCrossReference(WSuperInvocation it) { true }
-	protected def dispatch isCrossReference(Import it) { !importedNamespace.endsWith(".*") }
+	protected def dispatch isCrossReference(EObject it, INode node) { false }
+	protected def dispatch isCrossReference(WMemberFeatureCall it, INode node) { isResolvedToMethod }
+	protected def dispatch isCrossReference(WSuperInvocation it, INode node) { true }
+	protected def dispatch isCrossReference(Import it, INode node) { node.text != "*" }
 	
 	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) != null }
 	
 	override getCrossReferencedElement(INode node) {
-		val ref = node.semanticElement.resolveReference
-		if (ref != null)
-			ref
-		else
-			super.getCrossReferencedElement(node)
+		try {
+			val ref = node.semanticElement.resolveReference(node)
+			if (ref != null)
+				ref
+			else
+				super.getCrossReferencedElement(node)
+		}
+		catch (UnresolvableCrossReference e) {
+			null
+		}
 	}
 	
-	def dispatch resolveReference(WMemberFeatureCall it) { resolveMethod(classFinder) }
-	def dispatch resolveReference(WSuperInvocation it) { superMethod }
-	def dispatch resolveReference(Import it) { 
-		// hack uses another grammar ereference
-		val scope = scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT)
-		val fqn = QualifiedName.create(importedNamespace.split("\\."))
-		val found = scope.getElements(fqn)
+	def dispatch resolveReference(EObject it, INode node) { null }
+	def dispatch resolveReference(WMemberFeatureCall it, INode node) { resolveMethod(classFinder) }
+	def dispatch resolveReference(WSuperInvocation it, INode node) { superMethod }
+	def dispatch resolveReference(Import it, INode node) {
+		val found = it.scope.getElements(upTo(node.text).toFQN)
 		if (found.empty)
-			null
+			throw new UnresolvableCrossReference
 		else
 			found.get(0).EObjectOrProxy			
 	}
-	def dispatch resolveReference(EObject it) { null }
+
+	// helpers	
+	def toFQN(String string) { QualifiedName.create(string.split("\\.")) }
+	// hack uses another grammar ereference to any
+	def getScope(Import it) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
+	def upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
 	
 /*	
 
