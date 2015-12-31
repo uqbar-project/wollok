@@ -4,7 +4,7 @@ class Direccion {
 	var calle
 	var numero
 	
-	new(c, n) {
+	constructor(c, n) {
 		calle = c
 		numero = n
 	}
@@ -14,8 +14,8 @@ class Point {
 	var x
 	var y
 	
-	new() { x = 0; y = 0 }
-	new(ax, ay) {
+	constructor() { x = 0; y = 0 }
+	constructor(ax, ay) {
 		x = ax ; y = ay
 	}
 }
@@ -23,16 +23,16 @@ class Point {
 class Circle {
 	var r
 	var p
-	new(ap, ar) { r = ar ; p = ap }
-	new (x, y, ar) { p = new Point(x, y) ; r = ar }
+	constructor(ap, ar) { r = ar ; p = ap }
+	constructor (x, y, ar) { p = new Point(x, y) ; r = ar }
 }
 
 class WithDuplicatedConstructors {
 	// XPECT errors --> "Duplicated constructor with same number of parameters" at "a"
-	new(a, b) {
+	constructor(a, b) {
 	}
 	// XPECT errors --> "Duplicated constructor with same number of parameters" at "b"
-	new (b, c) {
+	constructor (b, c) {
 	}
 }
 

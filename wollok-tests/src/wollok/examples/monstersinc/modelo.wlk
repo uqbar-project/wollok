@@ -27,7 +27,7 @@ object monstersInc {
 
 class Puerta {
 	var contenido
-	new(c) { contenido = c }
+	constructor(c) { contenido = c }
 
 	method entra(asustador) { 
 		return contenido.teVaAAsustar(asustador)
@@ -39,7 +39,7 @@ class Equipo {
 	var asistente
 	var energiaGenerada = 0
 
-	new(asus, asis) { 
+	constructor(asus, asis) { 
 		asustador = asus
 		asistente = asis
 	}

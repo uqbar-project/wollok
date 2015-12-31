@@ -13,7 +13,7 @@ class Camion {
 	var cargaMaxima
 	var estado = disponible
 	
-	new(cargaMaximaPosible) { cargaMaxima = cargaMaximaPosible }
+	constructor(cargaMaximaPosible) { cargaMaxima = cargaMaximaPosible }
 
 	method getCosos() = cosos
 
@@ -45,7 +45,7 @@ class Camion {
 class CamionReutilizable inherits Camion {
 	var destinos = []
 	
-	new(cargaMaximaPosible) = super(cargaMaximaPosible)
+	constructor(cargaMaximaPosible) = super(cargaMaximaPosible)
 	
 	override method getCosos() = destinos.map{destino => destino.getCosos()}.flatten() 
 	
@@ -69,7 +69,7 @@ class Destino {
 	var lugar
 	var cosos = []
 	
-	new(unLugar) { lugar = unLugar }
+	constructor(unLugar) { lugar = unLugar }
 	method getLugar() = lugar 
 	method getCosos() = cosos
 }
@@ -80,7 +80,7 @@ class Bulto {
 	var pesoEstructura
 	var contenido
 	
-	new(unaCantidadCajas, pesoCadaCaja, pesoEstructuraMadera, contenidoCaja) {
+	constructor(unaCantidadCajas, pesoCadaCaja, pesoEstructuraMadera, contenidoCaja) {
 		cantidadCajas - unaCantidadCajas
 		pesoCaja = pesoCadaCaja
 		pesoEstructura = pesoEstructuraMadera
@@ -96,7 +96,7 @@ class Caja {
 	var pesoCaja
 	var contenido
 	
-	new(pesoCadaCaja, contenidoCaja) {
+	constructor(pesoCadaCaja, contenidoCaja) {
 		pesoCaja = pesoCadaCaja
 		contenido = contenidoCaja
 	}
@@ -111,7 +111,7 @@ class Bidon {
 	var densidad
 	var contenido
 	
-	new(capacidadLitros, densidadLiquido) {
+	constructor(capacidadLitros, densidadLiquido) {
 		capacidad = capacidadLitros
 		densidad = densidadLiquido
 	}

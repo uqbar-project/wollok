@@ -30,7 +30,7 @@ class Locomotora {
 	var peso
 	var pesoMaximoArrastre
 	var velocidadMaxima
-	new(pes, pesoMaxA, veloMax) { peso = pes ; pesoMaximoArrastre = pesoMaxA ; velocidadMaxima = veloMax }
+	constructor(pes, pesoMaxA, veloMax) { peso = pes ; pesoMaximoArrastre = pesoMaxA ; velocidadMaxima = veloMax }
 	method getVelocidadMaxima() = velocidadMaxima 
 	
 	method esEficiente() = pesoMaximoArrastre >= 5 * peso
@@ -46,7 +46,7 @@ class Vagon {
 class VagonPasajeros inherits Vagon {
 	var ancho
 	var largo
-	new(a, la) { ancho = a ; largo = la }
+	constructor(a, la) { ancho = a ; largo = la }
 	
 	override method getCantidadPasajeros() {
 		return largo * if (ancho < 2.5) 8 else 10
@@ -58,7 +58,7 @@ class VagonPasajeros inherits Vagon {
 
 class VagonCarga inherits Vagon {
 	var cargaMaxima
-	new(cargaM) {
+	constructor(cargaM) {
 		cargaMaxima = cargaM
 	}
 	override method getCantidadPasajeros() = 0

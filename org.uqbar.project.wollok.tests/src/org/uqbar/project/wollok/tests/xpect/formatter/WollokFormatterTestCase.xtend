@@ -180,14 +180,14 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     def void constructorDefParametersOnLineConstructorStaysLikeThat() throws Exception {
     	assertFormatting('''class Direccion {
 	var calle
-	var numero  new  (  c  ,   n   ) { calle = c numero = n } }''',
+	var numero  constructor  (  c  ,   n   ) { calle = c numero = n } }''',
         '''
         
         class Direccion {
         	var calle
         	var numero
 
-        	new(c, n) { calle = c numero = n }
+        	constructor(c, n) { calle = c numero = n }
         }''')
     }
     
@@ -196,7 +196,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     def void constructorDefParametersMultipleLinesConstructor() throws Exception {
     	assertFormatting('''class Direccion {
 	var calle
-	var numero  new  (  c  ,   n   ) { 
+	var numero  constructor  (  c  ,   n   ) { 
 		calle = c
 		numero = n
 	} }''',
@@ -206,7 +206,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
         	var calle
         	var numero
 
-        	new(c, n) {
+        	constructor(c, n) {
         		calle = c numero = n
         	}
         }''')
@@ -217,7 +217,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     def void constructorCallParameters() throws Exception {
     	assertFormatting('''class Direccion {
 	var calle
-	var numero  new  (  c  ,   n  , b  ,  d ) { calle = c numero = n } }
+	var numero  constructor  (  c  ,   n  , b  ,  d ) { calle = c numero = n } }
 	class Client {
 		method blah() {
 			val a = ""
@@ -231,7 +231,7 @@ class Direccion {
 	var calle
 	var numero
 
-	new(c, n, b, d) { calle = c numero = n }
+	constructor(c, n, b, d) { calle = c numero = n }
 }
 class Client {
 	method blah() {

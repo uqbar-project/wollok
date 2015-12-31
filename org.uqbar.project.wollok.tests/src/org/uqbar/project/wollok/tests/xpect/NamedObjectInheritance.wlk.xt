@@ -9,7 +9,7 @@ object innheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
 // test case
 
 class WithSingleOneArgConstructor {
-	new(param) { }	
+	constructor(param) { }	
 }
 
 // XPECT errors --> "No default constructor in super type WithSingleOneArgConstructor. You must explicitly call a constructor: (param)" at "WithSingleOneArgConstructor"
@@ -19,8 +19,8 @@ object one inherits WithSingleOneArgConstructor { }
 // test case
 
 class TwoConstructors {
-	new(param) { }
-	new(p1, p2) { }
+	constructor(param) { }
+	constructor(p1, p2) { }
 }
 
 // XPECT errors --> "No default constructor in super type TwoConstructors. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
@@ -36,7 +36,7 @@ object o4 inherits TwoConstructors("hola", 23, "chau") { }
 // test case
 
 class WithExplicitDefaultConstructor {
-	new() {}
+	constructor() {}
 }
 
 object explicit inherits WithExplicitDefaultConstructor { }
@@ -45,8 +45,8 @@ object explicit inherits WithExplicitDefaultConstructor { }
 // test case
 
 class WithExplicitDefaultConstructorAndAnother {
-	new() {}
-	new(a) {}
+	constructor() {}
+	constructor(a) {}
 }
 
 object explicitWithAnother inherits WithExplicitDefaultConstructorAndAnother { }

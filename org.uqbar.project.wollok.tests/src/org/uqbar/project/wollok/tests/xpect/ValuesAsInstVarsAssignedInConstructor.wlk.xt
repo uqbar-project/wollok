@@ -5,7 +5,7 @@
         val end
         val step
 
-        new(s, e, st) {
+        constructor(s, e, st) {
             start = s
             end = e
             step = st
