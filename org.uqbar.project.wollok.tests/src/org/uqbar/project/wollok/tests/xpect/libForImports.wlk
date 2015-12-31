@@ -2,11 +2,11 @@ package simpsons {
 
 	class Homer {}
 	
-	object marge
+	object marge {}
 
 }
 
-object apu
+object apu {}
 
 class Burns {}
 
