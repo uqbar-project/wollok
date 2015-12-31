@@ -56,13 +56,13 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void exists() {
+	def void any() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.exists{e=> e > 20})
-			assert.that(numbers.exists{e=> e > 0})
-			assert.notThat(numbers.exists{e=> e < 0})
+			assert.that(numbers.any{e=> e > 20})
+			assert.that(numbers.any{e=> e > 0})
+			assert.notThat(numbers.any{e=> e < 0})
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -109,12 +109,12 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void forAll() {
+	def void all() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.forAll({n => n > 0}))
-			assert.notThat(numbers.forAll({n => n > 5}))
+			assert.that(numbers.all({n => n > 0}))
+			assert.notThat(numbers.all({n => n > 5}))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -153,12 +153,12 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void any() {
+	def void anyOne() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			val any = numbers.any()
-			assert.that(numbers.contains(any))
+			val anyOne = numbers.anyOne()
+			assert.that(numbers.contains(anyOne))
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -204,12 +204,12 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void detect() {
+	def void find() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.equals(22, numbers.detect{e=> e > 20})
-			assert.equals(null, numbers.detect{e=> e > 1000})
+			assert.equals(22, numbers.find{e=> e > 20})
+			assert.equals(null, numbers.find{e=> e > 1000})
 		}
 		'''.interpretPropagatingErrors
 	}
