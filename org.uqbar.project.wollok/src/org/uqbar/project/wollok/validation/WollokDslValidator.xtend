@@ -68,6 +68,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	List<WollokValidatorExtension> wollokValidatorExtensions
 	@Inject
 	WollokClassFinder classFinder
+	@Inject
+	WollokGlobalScopeProvider scopeProvider
 
 	// ERROR KEYS	
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -532,18 +534,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def wrongImport(Import it) {
-		try {
-			// hack here to avoid checking references to the SDK which
-			// is resolved "magically"
-			if (importedNamespace.startsWith("wollok."))
-				return 
-			val r = WollokGlobalScopeProvider.toResource(it, eResource)
-			if (r == null || !r.exists)
+		val importedString = importedNamespaceWithoutWildcard
+		val found = it.getScope(scopeProvider).getElements(importedString.toFQN)
+		if (found.empty)
 				report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
-		}
-		catch (RuntimeException e) {
-			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
-		}
 	}
 
 	@Check
