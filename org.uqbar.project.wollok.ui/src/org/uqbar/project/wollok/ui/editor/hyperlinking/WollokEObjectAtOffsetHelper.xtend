@@ -1,15 +1,19 @@
 package org.uqbar.project.wollok.ui.editor.hyperlinking
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import com.google.inject.Inject
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+import org.eclipse.xtext.naming.QualifiedName
 
 /**
  * Extends the default xtext class
@@ -31,14 +35,21 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	@Inject
 	WollokClassFinder classFinder
+	@Inject
+	WollokGlobalScopeProvider scopeProvider
 
 	override protected findCrossReferenceNode(INode node) {
 		val semantic = node.semanticElement
-		if (semantic instanceof WMemberFeatureCall && (semantic as WMemberFeatureCall).isResolvedToMethod || semantic instanceof WSuperInvocation)
+		if (isCrossReference(semantic))
 			node
 		else
 			super.findCrossReferenceNode(node)
 	}
+	
+	protected def dispatch isCrossReference(EObject it) { false }
+	protected def dispatch isCrossReference(WMemberFeatureCall it) { isResolvedToMethod }
+	protected def dispatch isCrossReference(WSuperInvocation it) { true }
+	protected def dispatch isCrossReference(Import it) { !importedNamespace.endsWith(".*") }
 	
 	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) != null }
 	
@@ -52,6 +63,16 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	
 	def dispatch resolveReference(WMemberFeatureCall it) { resolveMethod(classFinder) }
 	def dispatch resolveReference(WSuperInvocation it) { superMethod }
+	def dispatch resolveReference(Import it) { 
+		// hack uses another grammar ereference
+		val scope = scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT)
+		val fqn = QualifiedName.create(importedNamespace.split("\\."))
+		val found = scope.getElements(fqn)
+		if (found.empty)
+			null
+		else
+			found.get(0).EObjectOrProxy			
+	}
 	def dispatch resolveReference(EObject it) { null }
 	
 /*	

@@ -1,5 +1,6 @@
 import otherFile.a.A
 import otherFile.b.*
+import otherFile.objetin
 
 class I inherits A {
 	
