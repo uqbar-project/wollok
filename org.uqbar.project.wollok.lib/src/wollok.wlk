@@ -261,13 +261,7 @@ package lang {
 
 		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
 		
-		method findOrElse(predicate, continuation) {
-			this.forEach { e =>
-				if (predicate.apply(e)) 
-					return e
-			}
-			return continuation.apply()
-		}
+		method findOrElse(predicate, continuation) native
 
 		/**
 		 * Counts all elements of this collection that satisfy a given condition
@@ -352,6 +346,7 @@ package lang {
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
+		method findOrElse(predicate, continuation) native
 		method add(element) native
 		method remove(element) native
 		method size() native
@@ -422,6 +417,7 @@ package lang {
 	
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
+		method findOrElse(predicate, continuation) native
 		method add(element) native
 		method remove(element) native
 		method size() native

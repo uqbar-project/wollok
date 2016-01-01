@@ -73,4 +73,26 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test(expected = AssertionError)
+	def void testWithExpectedExceptionWithErrors() {
+		'''
+			program p {
+				assert.throwsException { 4 }	
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testWithExpectedExceptionWithoutErrors() {
+		'''
+			program p {
+				assert.throwsException { 
+					val x = null
+					x.foo()
+				}	
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }
