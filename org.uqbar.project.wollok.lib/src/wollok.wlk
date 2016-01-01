@@ -50,6 +50,11 @@ package lang {
 		method getMessage() = message
 	}
 	
+	class ElementNotFoundException inherits Exception {
+		constructor(_message) = super(_message)
+		constructor(_message, _cause) = super(_message, _cause)
+	}
+
 	class MessageNotUnderstoodException inherits Exception {
 		constructor()
 		constructor(_message) = super(_message)
@@ -246,15 +251,24 @@ package lang {
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
+		 * @throws
 		 * Example:
 		 *      users.find { user => user.name() == "Cosme Fulanito" }
 		 */
-		method find(predicate) = this.fold(null, { acc, e =>
-			 if (acc != null)
-			 	acc
-			 else
-			 	if (predicate.apply(e)) e else null
+		method find(predicate) = this.findOrElse(predicate, { 
+			throw new ElementNotFoundException("there is no element that satisfies the predicate")
 		})
+
+		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
+		
+		method findOrElse(predicate, continuation) {
+			this.forEach { e =>
+				if (predicate.apply(e)) 
+					return e
+			}
+			return continuation.apply()
+		}
+
 		/**
 		 * Counts all elements of this collection that satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a number.
