@@ -251,7 +251,7 @@ package lang {
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
-		 * @throws
+		 * @throws ElementNotFoundException if no element matched the given predicate
 		 * Example:
 		 *      users.find { user => user.name() == "Cosme Fulanito" }
 		 */
@@ -259,8 +259,25 @@ package lang {
 			throw new ElementNotFoundException("there is no element that satisfies the predicate")
 		})
 
+		/**
+		 * Returns the element of this collection that satisfy a given condition, or the given default otherwise, if no element matched the predicate
+		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * will be returned
+		 * @returns the element that complies the condition or the default value
+		 * Example:
+		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, homer)
+		 */
 		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
 		
+		/**
+		 * Returns the element of this collection that satisfy a given condition, 
+		 * or the the result of evaluating the given continuation 
+		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * will be returned
+		 * @returns the element that complies the condition or the result of evaluating the continuation
+		 * Example:
+		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, { homer })
+		 */
 		method findOrElse(predicate, continuation) native
 
 		/**
