@@ -218,7 +218,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			assert.throwsExceptions { numbers.find{e => e > 1000} }
+			assert.throwsException { numbers.find{e => e > 1000} }
 		}
 		'''.interpretPropagatingErrors
 	}

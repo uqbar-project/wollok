@@ -596,6 +596,7 @@ package lib {
 		method notThat(value) native
 		method equals(expected, actual) native
 		method notEquals(expected, actual) native
+		method throwsException(block) native
 		method fail(message) native
 	}
 	
