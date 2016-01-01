@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperation
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBasicOperations
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 /**
  * 
@@ -38,6 +39,18 @@ class AssertObject {
 	
 	def fail(String message) {
 		throw AssertionException.fail(message)
+	}
+
+	def throwsException(WollokObject proc) {
+		val c = proc.asClosure
+		var continued = false;
+		try {
+			c.doApply()
+			continued = true;
+		} catch (Exception e) {
+			// ok
+		}
+		if(continued) throw AssertionException.blockDidNotFail();
 	}
 
 }

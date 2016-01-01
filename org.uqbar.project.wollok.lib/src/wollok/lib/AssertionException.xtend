@@ -37,6 +37,10 @@ abstract class AssertionException extends Exception {
 		return new ValueWasNotFalseException()
 	}
 
+	static def blockDidNotFail() {
+		return new BlockDidNotFailException()
+	}
+
 	static def valueNotWasEquals(Object expected, Object actual) {
 		val strExpected = if(expected == null) "null" else expected.toString
 		val strActual = if(actual == null) "null" else actual.toString
@@ -71,5 +75,11 @@ class ValueWasNotTrueException extends AssertionException {
 class ValueWasNotFalseException extends AssertionException {
 	new() {
 		super("Value was not false")
+	}
+}
+
+class BlockDidNotFailException extends AssertionException {
+	new() {
+		super("Block should have failed")
 	}
 }

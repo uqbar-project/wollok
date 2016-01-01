@@ -204,12 +204,51 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void find() {
+	def void findWhenElementExists() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			assert.equals(22, numbers.find{e=> e > 20})
-			assert.equals(null, numbers.find{e=> e > 1000})
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void findOrElse() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(50, numbers.findOrElse({e=> e > 1000}, { 50 }))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void findWhenElementDoesNotExist() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.throwsException { numbers.find{e => e > 1000} }
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void findOrDefaultWhenElementDoesNotExist() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(50, numbers.findOrDefault({e=> e > 1000}, 50))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void findOrDefaultWhenElementExists() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(22, numbers.findOrDefault({e=> e > 20}, 50))
 		}
 		'''.interpretPropagatingErrors
 	}

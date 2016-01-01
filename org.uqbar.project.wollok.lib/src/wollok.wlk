@@ -50,6 +50,11 @@ package lang {
 		method getMessage() = message
 	}
 	
+	class ElementNotFoundException inherits Exception {
+		constructor(_message) = super(_message)
+		constructor(_message, _cause) = super(_message, _cause)
+	}
+
 	class MessageNotUnderstoodException inherits Exception {
 		constructor()
 		constructor(_message) = super(_message)
@@ -246,15 +251,35 @@ package lang {
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
+		 * @throws ElementNotFoundException if no element matched the given predicate
 		 * Example:
 		 *      users.find { user => user.name() == "Cosme Fulanito" }
 		 */
-		method find(predicate) = this.fold(null, { acc, e =>
-			 if (acc != null)
-			 	acc
-			 else
-			 	if (predicate.apply(e)) e else null
+		method find(predicate) = this.findOrElse(predicate, { 
+			throw new ElementNotFoundException("there is no element that satisfies the predicate")
 		})
+
+		/**
+		 * Returns the element of this collection that satisfy a given condition, or the given default otherwise, if no element matched the predicate
+		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * will be returned
+		 * @returns the element that complies the condition or the default value
+		 * Example:
+		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, homer)
+		 */
+		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
+		
+		/**
+		 * Returns the element of this collection that satisfy a given condition, 
+		 * or the the result of evaluating the given continuation 
+		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * will be returned
+		 * @returns the element that complies the condition or the result of evaluating the continuation
+		 * Example:
+		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, { homer })
+		 */
+		method findOrElse(predicate, continuation) native
+
 		/**
 		 * Counts all elements of this collection that satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a number.
@@ -338,6 +363,7 @@ package lang {
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
+		method findOrElse(predicate, continuation) native
 		method add(element) native
 		method remove(element) native
 		method size() native
@@ -408,6 +434,7 @@ package lang {
 	
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
+		method findOrElse(predicate, continuation) native
 		method add(element) native
 		method remove(element) native
 		method size() native
@@ -582,6 +609,7 @@ package lib {
 		method notThat(value) native
 		method equals(expected, actual) native
 		method notEquals(expected, actual) native
+		method throwsException(block) native
 		method fail(message) native
 	}
 	
