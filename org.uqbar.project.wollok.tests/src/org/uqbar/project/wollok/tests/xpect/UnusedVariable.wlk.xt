@@ -84,11 +84,21 @@ class WithUsedVariablesClass {
 }
 
 
-object jigglypuff  {
+object sampleWithPostFixOperator {
 	var cantAtaques
 	
 	method cantaAtaques() = cantAtaques
 	method atacarA(otro) {
 		return cantAtaques++
+	}
+}
+
+object sampleWithMultiAssignOperator {
+	var a
+	
+	method a() = a
+	method atacarA(otro) {
+		a += 10
+		return false
 	}
 }

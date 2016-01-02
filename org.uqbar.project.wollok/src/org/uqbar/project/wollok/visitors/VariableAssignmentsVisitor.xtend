@@ -4,11 +4,14 @@ import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WExpression
+
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * This visitor get all the assignments of the lookedFor variable
@@ -40,6 +43,7 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	override dispatch visit(WVariableDeclaration it) { addIf[ variable == lookedFor && right != null ] }
 	override dispatch visit(WAssignment it) { addIf[feature.ref == lookedFor] }
 	override dispatch visit(WPostfixOperation it) { addIf[ operand.isReferenceTo(lookedFor) ] }
+	override dispatch visit(WBinaryOperation it) { addIf[ isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor) ]}
 	
 	// helpers
 	
