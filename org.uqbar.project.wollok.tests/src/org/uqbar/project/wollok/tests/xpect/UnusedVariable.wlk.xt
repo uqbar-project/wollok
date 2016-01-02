@@ -82,3 +82,13 @@ class WithUsedVariablesClass {
 		x = 1
 	}
 }
+
+
+object jigglypuff  {
+	var cantAtaques
+	
+	method cantaAtaques() = cantAtaques
+	method atacarA(otro) {
+		return cantAtaques++
+	}
+}
