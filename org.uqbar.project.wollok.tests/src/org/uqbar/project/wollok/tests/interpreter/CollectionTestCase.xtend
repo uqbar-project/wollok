@@ -3,6 +3,9 @@ package org.uqbar.project.wollok.tests.interpreter
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+/**
+ * 
+ */
 class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	
 	def instantiateCollectionAsNumbersVariable() {
@@ -52,6 +55,24 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.that(numbers.contains(22))
 			assert.that(numbers.contains(2))
 			assert.that(numbers.contains(10))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void containsForAListOfWKOs() {
+		'''
+		object a {}
+		object b {}
+		object c {}
+		object d {}
+		program p {
+			val l = [a, b, c]
+			assert.that(l.contains(a))
+			assert.that(l.contains(b))
+			assert.that(l.contains(c))
+			assert.notThat(l.contains(d))
+			assert.notThat(l.contains("hello world"))
+			assert.notThat(l.contains(4))
 		}'''.interpretPropagatingErrors
 	}
 	

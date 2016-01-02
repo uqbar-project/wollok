@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
@@ -39,7 +40,13 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	override toString() { wrapped.toString() }
 	
 	override equals(Object obj) {
-		return this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
+		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
+	}
+	
+	@NativeMessage("===")
+	def wollokEquals(WollokObject other) {
+		val n = other.nativeNumber
+		n != null && n.doubleValue == this.doubleValue
 	}
 	
 	def <T> T asWollokObject(Object obj) { WollokJavaConversions.javaToWollok(obj) as T }

@@ -452,13 +452,14 @@ package lang {
 	 * @noInstantiate
 	 */	
 	class Number {
+	
 		method max(other) = if (this >= other) this else other
 		method min(other) = if (this <= other) this else other
 		
-		method limitBetween(limitA,limitB) =if(limitA <= limitB) limitA.max(this).min(limitB) 
-											else limitB.max(this).min(limitA)
-			
-		method !=(other) = ! (this == other)
+		method limitBetween(limitA,limitB) = if(limitA <= limitB) 
+												limitA.max(this).min(limitB) 
+											 else 
+											 	limitB.max(this).min(limitA)
 	}
 	
 	/**
@@ -467,7 +468,9 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Integer inherits Number {
-		method ==(other) native
+		// the whole wollok identity impl is based on this method
+		method ===(other) native
+	
 		method +(other) native
 		method -(other) native
 		method *(other) native
@@ -497,7 +500,9 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Double inherits Number {
-		method ==(other) native
+		// the whole wollok identity impl is based on this method
+		method ===(other) native
+	
 		method +(other) native
 		method -(other) native
 		method *(other) native
