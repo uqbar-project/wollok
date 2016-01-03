@@ -26,6 +26,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void times() {
+		'''program a {
+			var x = 0
+			6.times { x += 1 }
+			assert.equals(6, x)
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
 	def void integersFromNativeObjects() {
 		'''program a {
 		

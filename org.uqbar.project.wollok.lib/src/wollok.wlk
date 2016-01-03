@@ -492,6 +492,11 @@ package lang {
 		
 		method abs() native
 		method invert() native
+
+		/**
+		 * Executes the given action as much times as the receptor object
+		 */
+		method times(action) = (1..this).forEach(action)
 	}
 	
 	/**
