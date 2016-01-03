@@ -79,7 +79,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	var WollokObject trueObject
 	var WollokObject falseObject
 	
-	@Inject	WollokInterpreter interpreter
+	@Inject	protected WollokInterpreter interpreter
 	@Inject	WollokQualifiedNameProvider qualifiedNameProvider
 	@Inject WollokClassFinder classFinder
 	@Inject extension NativeObjectFactory nativesFactory

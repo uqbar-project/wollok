@@ -18,8 +18,13 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
  */
 // this should be generalized (remove WollokObject type) and be moved up to xinterpreter
 interface IWollokInterpreter {
+	
 	def WollokObject eval(EObject e)
+	
 	def WollokObject performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something)
+	
 	def WollokObject addGlobalReference(String name, WollokObject value)
+	
 	def EvaluationContext<WollokObject> getCurrentContext()
+
 }
