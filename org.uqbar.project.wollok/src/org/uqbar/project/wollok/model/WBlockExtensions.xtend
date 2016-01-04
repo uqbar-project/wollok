@@ -1,11 +1,11 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
-import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WExpression
 
 /**
- * Extension methods for WBlocks
+ * Extension methods for WBlockExpressions
  * 
  * @author jfernandes
  */

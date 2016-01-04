@@ -13,27 +13,27 @@ class Person {
 		 ---
 	*/
 	var name = "asdd"
-	// XPECT warnings -=> "Unused variable" at "toBeHidden"
+	// XPECT warnings --> "Unused variable" at "toBeHidden"
 	var toBeHidden = 23
 	
 	new(
-		// XPECT errors -=> "Duplicated name" at "a"
+		// XPECT errors --> "Duplicated name" at "a"
 		a, 
-		// XPECT errors -=> "Duplicated name" at "a"
+		// XPECT errors --> "Duplicated name" at "a"
 		a
 	) {}
 	
 	
 	method repeatedParameters(
-		// XPECT errors -=> "Duplicated name" at "p1"
+		// XPECT errors --> "Duplicated name" at "p1"
 		p1,
-		// XPECT errors -=> "Duplicated name" at "p1"
+		// XPECT errors --> "Duplicated name" at "p1"
 		p1
 	) {}  
 	
 	
 	method hidingFieldWithParameter(
-		// XPECT errors -=> "Duplicated name" at "toBeHidden"
+		// XPECT errors --> "Duplicated name" at "toBeHidden"
 		toBeHidden
 	) {}
 	
@@ -60,14 +60,14 @@ class Person {
 		   "Unused variable" at "c"
 		   ---
 		 */
-		var c = {p1 => true }
+		var c = [p1 | true ]
 	}
 	
-	// XPECT errors -=> "Duplicated method" at "dupMethod"
+	// XPECT errors --> "Duplicated method" at "dupMethod"
 	method dupMethod() {}
-	// XPECT errors -=> "Duplicated method" at "dupMethod"
+	// XPECT errors --> "Duplicated method" at "dupMethod"
 	method dupMethod() {}
-	// XPECT errors -=> "Duplicated method" at "dupMethod"
+	// XPECT errors --> "Duplicated method" at "dupMethod"
 	method dupMethod(withParam) {}
 	
 }
@@ -89,11 +89,11 @@ class DuplicatedChecksTest {
 		val u = 566
 		
 		// dup closures params
-		// XPECT warnings -=> "Unused variable" at "closure"
+		// XPECT warnings --> "Unused variable" at "closure"
 		val closure = [
-			// XPECT errors -=> "Duplicated name" at "y"
+			// XPECT errors --> "Duplicated name" at "y"
 			y,
-			// XPECT errors -=> "Duplicated name" at "y"
+			// XPECT errors --> "Duplicated name" at "y"
 			y |
 			y.blah()
 		]
@@ -106,28 +106,28 @@ class DuplicatedChecksTest {
 			---
 		*/
 		
-		val cl = {u => u.blah() }
-		// XPECT warnings -=> "Unused variable" at "inner"
+		val cl = [u | u.blah() ]
+		// XPECT warnings --> "Unused variable" at "inner"
 		val inner = [a |
-			// XPECT errors -=> "Duplicated name" at "a"
-			{a => true}
+			// XPECT errors --> "Duplicated name" at "a"
+			[a | true]
 		]
 	}
 }
 
 
 package myPackage {
-	// XPECT errors -=> "Duplicated class name in package myPackage" at "A"
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
 	class A {}
-	// XPECT errors -=> "Duplicated class name in package myPackage" at "A"
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
 	class A {}
 }
 
-// XPECT errors -=> "Duplicated package name otherPackage" at "otherPackage"
+// XPECT errors --> "Duplicated package name otherPackage" at "otherPackage"
 package otherPackage {
 	class A {} // this one is ok, it's in another package
 }
 
-// XPECT errors -=> "Duplicated package name otherPackage" at "otherPackage"
+// XPECT errors --> "Duplicated package name otherPackage" at "otherPackage"
 package otherPackage {}
 

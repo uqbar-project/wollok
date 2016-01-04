@@ -1,6 +1,6 @@
 program collections {
 
-val numbers = [2, 23, 25]
+val numbers = #[2, 23, 25]
 
 this.println(numbers)
 
@@ -8,7 +8,7 @@ val y = 23
 val z = 2.2
 
 val x = "Hola"
-val bag = [x,y,z]
+val bag = #[x,y,z]
 this.println(bag)
 
 // ***************************
@@ -21,8 +21,8 @@ assert.that(numbers.contains(23))
 this.assertFalse(numbers.contains(1))
 
 // forAll
-assert.that([20, 22, 34].forAll({n => n > 18}))
-this.assertFalse([20, 22, 34].forAll({n => n > 30}))
+assert.that(#[20, 22, 34].forAll([n | n > 18]))
+this.assertFalse(#[20, 22, 34].forAll([n | n > 30]))
 
 // forEach
 val vaca1 = object {
@@ -40,18 +40,18 @@ val vaca2 = object {
 	}
 	method peso() = peso
 }
-val vacas = [vaca1, vaca2]
+val vacas = #[vaca1, vaca2]
 
-vacas.forEach{v => v.engordar(2)}
-assert.that(vacas.forAll{v => v.peso() == 1002})
+vacas.forEach[v | v.engordar(2)]
+assert.that(vacas.forAll[v | v.peso() == 1002])
 
 // map
-val mapped = vacas.map{v => v.peso()}
-assert.that(mapped.forAll{p => p == 1002})
+val mapped = vacas.map[v | v.peso()]
+assert.that(mapped.forAll[p | p == 1002])
 
 
 // filter
-val r = [10, 20, 30, 40, 50].filter{n=> n > 30}
+val r = #[10, 20, 30, 40, 50].filter[n| n > 30]
 assert.that(r.size() == 2)
 assert.that(r.contains(40))
 assert.that(r.contains(50))

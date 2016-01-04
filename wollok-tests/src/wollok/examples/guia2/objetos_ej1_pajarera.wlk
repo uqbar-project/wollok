@@ -77,7 +77,7 @@ object golondrina1 {
 
 object pajarera {
 	
-	val pajaros = [pepita, pepona, otraPepita]
+	val pajaros = #[pepita, pepona, otraPepita]
 	
 	method cuantosHay() {
 		return pajaros.size()
@@ -92,16 +92,16 @@ object pajarera {
 	}
 
 	method alimentarATodosCon(alpiste) {
-		pajaros.forEach{p => p.comer(alpiste)}
+		pajaros.forEach[p | p.comer(alpiste)]
 	}
  	
  	method sonTodosSaludables() {
- 		var suma = pajaros.sum{p => p.energia()}
+ 		var suma = pajaros.sum[p | p.energia()]
  		return suma
  	}
  	
  	method alimentarALaPeor() {
- 		return pajaros.min{p => p.energia()}
+ 		return pajaros.min[p | p.energia()]
  	
  	}
 }

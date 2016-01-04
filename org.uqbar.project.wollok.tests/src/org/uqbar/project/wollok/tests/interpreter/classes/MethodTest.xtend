@@ -29,9 +29,9 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 		class Sample {
 			method preffix(preffix, numbers...) {
 				if (numbers.size() > 0)
-					return numbers.map{n=> preffix + n}
+					return numbers.map[n| preffix + n]
 				else
-					return []
+					return #[]
 			}
 		}
 		test "Var args method must automatically box params as a list" {
@@ -55,7 +55,7 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 		class Sample {
 			var result
 			constructor(preffix, numbers...) {
-				result = if (numbers.size() > 0) numbers.map{n=> preffix + n} else []
+				result = if (numbers.size() > 0) numbers.map[n| preffix + n] else #[]
 			}
 			method getResult() = result
 		}

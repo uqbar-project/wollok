@@ -24,11 +24,11 @@
 			
 			var aBlock =
 			// XPECT errors --> "Referenciable name must start with lowercase" at "A" 
-			{A 
-				=> A > 23
-			}
+			[A 
+				| A > 23
+			]
 			
-			return [car, Lota, aBlock]
+			return #[car, Lota, aBlock]
 		}
 		
 	}

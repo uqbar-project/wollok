@@ -27,7 +27,7 @@ object barcoPirata2 {
 
 
 object barbanegra {
-	var items = ["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
+	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
 	var dinero = 10
 	
 	method esUtilParaUnaMision(mision) {
@@ -44,7 +44,7 @@ object barbanegra {
 }
 
 object jack {
-	var items = ["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
+	var items = #["brujula", "cuchillo", "cuchillo", "dienteDeOro", "grodXD", "grodXD", "grodXD"]
 	var dinero = 2
 	
 	method esUtilParaUnaMision(mision) {
