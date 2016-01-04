@@ -5,6 +5,7 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
@@ -18,14 +19,12 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WNamedObjectElem
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WObjectLiteralElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WPackageElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WProgramElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSetLiteralElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuperInvocationElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTestElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTestElements
 
 /**
  * This class contains custom formatting description.
@@ -255,18 +254,14 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_6)
 	}
 	
-	def dispatch formatting(FormattingConfig it, extension WSetLiteralElements l) {
-		// nospace ',' then space 
-		setNoSpace.before(commaKeyword_2_1_0)
-		setSpace(' ').after(commaKeyword_2_1_0)
-	}
-	
 	def dispatch formatting(FormattingConfig it, extension WListLiteralElements l) {
+		// #[  together
+		setNoSpace.after(numberSignKeyword_1)
+		
 		// nospace ',' then space 
-		setNoSpace.before(commaKeyword_2_1_0)
-		setSpace(' ').after(commaKeyword_2_1_0)
+		setNoSpace.before(commaKeyword_3_1_0)
+		setSpace(' ').after(commaKeyword_3_1_0)
 	}
-	
 	
 	def dispatch formatting(FormattingConfig it, extension WIfExpressionElements i) {
 		setNoSpace.after(leftParenthesisKeyword_1)

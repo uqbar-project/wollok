@@ -19,7 +19,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 			
 			assert.that(range != null)
 			
-			range.forEach { i => sum += i }
+			range.forEach [ i | sum += i ]
 			
 			assert.equals(55, sum)
 		}

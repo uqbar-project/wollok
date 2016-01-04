@@ -34,9 +34,9 @@ package lang {
 			printer.println(preffix +  this.className() + (if (message != null) (": " + message.toString()) else "")
 			
 			// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
-			this.getStackTrace().forEach { e =>
+			this.getStackTrace().forEach[e|
 				printer.println("\tat " + e.contextDescription() + " [" + e.location() + "]")
-			}
+			]
 			
 			if (cause != null)
 				cause.printStackTraceWithPreffix("Caused by: ", printer)
@@ -115,19 +115,19 @@ package lang {
 		
 		method equals(other) = this == other
 		
-		method randomBetween(start, end) native
-		
 		method ->(other) {
 			return new Pair(this, other)
 		}
-
+		
+		method randomBetween(start, end) native
+		
 		method toString() {
 			// TODO: should be a set
 			// return this.toSmartString(#{})
-			return this.toSmartString([])
+			return this.toSmartString(#[])
 		}
 		method toSmartString(alreadyShown) {
-			if (alreadyShown.any { e => e.identity() == this.identity() } ) { 
+			if (alreadyShown.any[e| e.identity() == this.identity()] ) { 
 				return this.kindName() 
 			}
 			else {
@@ -137,9 +137,9 @@ package lang {
 		} 
 		method internalToSmartString(alreadyShown) {
 			return this.kindName() + "[" 
-				+ this.instanceVariables().map { v => 
+				+ this.instanceVariables().map[v| 
 					v.name() + "=" + v.valueToSmartString(alreadyShown)
-				}.join(', ') 
+				].join(', ') 
 			+ "]"
 		}
 		
@@ -150,7 +150,7 @@ package lang {
 					 	this.kindName()
 			message += " does not understand " + name
 			if (parameters.size() > 0)
-				message += "(" + (0..(parameters.size()-1)).map { i => "p" + i }.join(',') + ")"
+				message += "(" + (0..(parameters.size()-1)).map[i| "p" + i].join(',') + ")"
 			else
 				message += "()"
 			throw new MessageNotUnderstoodException(message)
@@ -183,21 +183,21 @@ package lang {
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
+		  *       #["a", "ab", "abc", "d" ].max[e| e.length() ]    ->  returns "abc"		 
 		  */
-		method max(closure) = this.absolute(closure, { a, b => a > b })
+		method max(closure) = this.absolute(closure, [a,b | a > b])
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].max { e => e.length() }    =>  returns "wollok world"		 
+		  *       #["ab", "abc", "hello", "wollok world"].max[e| e.length() ]    ->  returns "wollok world"		 
 		  */
-		method min(closure) = this.absolute(closure, { a, b => a < b} )
+		method min(closure) = this.absolute(closure, [a,b | a < b])
 		
 		method absolute(closure, criteria) {
-			val result = this.fold(null, { acc, e =>
+			val result = this.fold(null, [acc, e|
 				val n = closure.apply(e) 
 				if (acc == null)
 					new Pair(e, n)
@@ -207,7 +207,7 @@ package lang {
 					else
 						acc
 				}
-			})
+			])
 			return if (result == null) null else result.getX()
 		}
 		 
@@ -216,7 +216,7 @@ package lang {
 		/**
 		  * Adds all elements from the given collection parameter to this collection
 		  */
-		method addAll(elements) { elements.forEach { e => this.add(e) } }
+		method addAll(elements) { elements.forEach[e| this.add(e) ] }
 		
 		/** Tells whether this collection has no elements */
 		method isEmpty() = this.size() == 0
@@ -226,26 +226,26 @@ package lang {
 		 * The logic to execute is passed as a closure that takes a single parameter.
 		 * @returns nothing
 		 * Example:
-		 *      plants.forEach { plant => plant.takeSomeWater() }
+		 *      plants.forEach[ plant |   plant.takeSomeWater() ]
 		 */
-		method forEach(closure) { this.fold(null, { acc, e => closure.apply(e) }) }
+		method forEach(closure) { this.fold(null, [ acc, e | closure.apply(e) ]) }
 		
 		/**
 		 * Tells whether all the elements of this collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.all { plant -> plant.hasFlowers() }
+		 *      plants.all [ plant | plant.hasFlowers() ]
 		 */
-		method all(predicate) = this.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+		method all(predicate) = this.fold(true, [ acc, e | if (!acc) acc else predicate.apply(e) ])
 		/**
 		 * Tells whether at least one element of this collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.any { plant => plant.hasFlowers() }
+		 *      plants.any [ plant | plant.hasFlowers() ]
 		 */
-		method any(predicate) = this.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+		method exists(predicate) = this.fold(false, [ acc, e | if (acc) acc else predicate.apply(e) ])
 		/**
 		 * Returns the element of this collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
@@ -253,7 +253,7 @@ package lang {
 		 * @returns the element that complies the condition
 		 * @throws ElementNotFoundException if no element matched the given predicate
 		 * Example:
-		 *      users.find { user => user.name() == "Cosme Fulanito" }
+		 *      users.find [ user | user.name() == "Cosme Fulanito" ]
 		 */
 		method find(predicate) = this.findOrElse(predicate, { 
 			throw new ElementNotFoundException("there is no element that satisfies the predicate")
@@ -265,9 +265,9 @@ package lang {
 		 * will be returned
 		 * @returns the element that complies the condition or the default value
 		 * Example:
-		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, homer)
+		 *      users.findOrElse([ user | user.name() == "Cosme Fulanito" ], homer)
 		 */
-		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
+		method findOrDefault(predicate, value) =  this.findOrElse(predicate, [ value ])
 		
 		/**
 		 * Returns the element of this collection that satisfy a given condition, 
@@ -276,7 +276,7 @@ package lang {
 		 * will be returned
 		 * @returns the element that complies the condition or the result of evaluating the continuation
 		 * Example:
-		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, { homer })
+		 *      users.findOrElse([ user | user.name() == "Cosme Fulanito" ], [ homer ])
 		 */
 		method findOrElse(predicate, continuation) native
 
@@ -285,18 +285,18 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a number.
 		 * @returns an integer number
 		 * Example:
-		 *      plants.count { plant => plant.hasFlowers() }
+		 *      plants.count[ plant | plant.hasFlowers() ]
 		 */
-		method count(predicate) = this.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+		method count(predicate) = this.fold(0, [ acc, e | if (predicate.apply(e)) acc++ else acc  ])
 		/**
 		 * Collects the sum of each value for all e
-		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
+		 * This is similar to call a map[] to transform each element into a number object and then adding all those numbers.
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns an integer
 		 * Example:
-		 *      val totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
+		 *      val totalNumberOfFlowers = plants.sum[ plant | plant.numberOfFlowers() ]
 		 */
-		method sum(closure) = this.fold(0, { acc, e => acc + closure.apply(e) })
+		method sum(closure) = this.fold(0, [ acc, e | acc + closure.apply(e) ])
 		
 		/**
 		 * Returns a new collection that contains the result of transforming each of this collection's elements
@@ -304,29 +304,29 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns an object.
 		 * @returns another collection (same type as this one)
 		 * Example:
-		 *      val ages = users.map{ user => user.age() }
+		 *      val ages = users.map[ user | user.age() ]
 		 */
-		method map(closure) = this.fold(this.newInstance(), { acc, e =>
+		method map(closure) = this.fold(this.newInstance(), [ acc, e |
 			 acc.add(closure.apply(e))
 			 acc
-		})
+		])
 		
-		method flatMap(closure) = this.fold(this.newInstance(), { acc, e =>
+		method flatMap(closure) = this.fold(this.newInstance(), [ acc, e |
 			acc.addAll(closure.apply(e))
 			acc
-		})
+		])
 
-		method filter(closure) = this.fold(this.newInstance(), { acc, e =>
+		method filter(closure) = this.fold(this.newInstance(), [ acc, e |
 			 if (closure.apply(e))
 			 	acc.add(e)
 			 acc
-		})
+		])
 
-		method contains(e) = this.any {one => e == one }
-		method flatten() = this.flatMap { e => e }
+		method contains(e) = this.any [ one => e == one ]
+		method flatten() = this.flatMap [ e => e ]
 		
 		override method internalToSmartString(alreadyShown) {
-			return this.toStringPrefix() + this.map{e=> e.toSmartString(alreadyShown) }.join(', ') + this.toStringSufix()
+			return this.toStringPrefix() + this.map[e| e.toSmartString(alreadyShown) ].join(', ') + this.toStringSufix()
 		}
 		
 		method toStringPrefix()
@@ -352,7 +352,7 @@ package lang {
 		override method toStringSufix() = "}"
 		
 		override method asList() { 
-			val result = []
+			val result = #[]
 			result.addAll(this)
 			return result
 		}
@@ -383,7 +383,7 @@ package lang {
 
 		method get(index) native
 		
-		override method newInstance() = []
+		override method newInstance() = #[]
 		
 		method anyOne() {
 			if (this.isEmpty()) 
@@ -395,7 +395,7 @@ package lang {
 		method first() = this.head()
 		method head() = this.get(0)
 		
-		override method toStringPrefix() = "["
+		override method toStringPrefix() = "#["
 		override method toStringSufix() = "]"
 
 		override method asList() = this
@@ -406,29 +406,29 @@ package lang {
 			return result
 		}
 		
-		method subList(start,end) {
+		method subList(start,end) = {
 			if(this.isEmpty)
 				return this.newInstance()
 			val newList = this.newInstance()
 			val _start = start.limitBetween(0,this.size()-1)
 			val _end = end.limitBetween(0,this.size()-1)
-			(_start.._end).forEach { i => newList.add(this.get(i)) }
+			(_start.._end).forEach[i| newList.add(this.get(i))]
 			return newList
 		}
 		
-		method take(n) =
-			if(n <= 0)
-				this.newInstance()
-			else
-				this.subList(0,n-1)
-			
+		method take(n) = {
+		if(n <= 0)
+			this.newInstance()
+		else
+			this.subList(0,n-1)
+		}
 		
-		method drop(n) = 
-			if(n >= this.size())
-				this.newInstance()
-			else
-				this.subList(n,this.size()-1)
-			
+		method drop(n) =  {
+		if(n >= this.size())
+			this.newInstance()
+		else
+			this.subList(n,this.size()-1)
+		}	
 		
 		method reverse() = this.subList(this.size()-1,0)
 	
@@ -577,8 +577,8 @@ package lang {
 		method forEach(closure) native
 		
 		method map(closure) {
-			val l = []
-			this.forEach{e=> l.add(closure.apply(e)) }
+			val l = #[]
+			this.forEach[e| l.add(closure.apply(e)) ]
 			return l
 		}
 		

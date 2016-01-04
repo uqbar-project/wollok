@@ -25,13 +25,13 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 	def void shadowing() {
 		val model = '''
 			class Tren {
-			    val vagones = []
+			    val vagones = #[]
 			
 			    method agregarVagon(v) {
 			        vagones.add(v)
 			    }
 			    method getCantidadPasajeros() {
-			        vagones.fold(0, {v=> v.getCantidadPasajeros()})
+			        vagones.fold(0, [v| v.getCantidadPasajeros()])
 			    }
 			}
 			

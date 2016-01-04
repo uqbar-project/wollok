@@ -3,11 +3,11 @@
 class A {
 	// XPECT errors --> "Must return a value on every possible flow" at "inABlock"
 	method inABlock() {
-		val aBlock = {a =>
+		val aBlock = [a |
 			return a
 			// XPECT errors --> "Unexpected expression after return" at "a > 23"
 			a > 23
-		}
+		]
 		return aBlock
 		
 		// XPECT errors --> "Unexpected expression after return" at "val b = '23'"
