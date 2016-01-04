@@ -155,10 +155,11 @@ WOtherOperatorExpression returns WExpression:
 	rightOperand=WAdditiveExpression)*;
 
 OpOther:
-	  '..<'
+	  '->' 
+	| '..<'
 	| '>' '..'
 	| '..'
-	| '->' 
+	| '=>' 
 	| '>' (=>('>' '>') | '>') 
 	| '<' (=>('<' '<') | '<' | '=>')
 	| '<>'
@@ -213,6 +214,7 @@ WThis returns WExpression:
 ;
 
 WPrimaryExpression returns WExpression:
+	WBlockExpression |
 	WVariableReference |
 	WLiteral |
 	WConstructorCall |
@@ -250,14 +252,11 @@ WVariableReference:
 	{WVariableReference} ref=[WReferenciable]
 ;
 
-WBlockOrExpression returns WExpression:
-	(=> WBlockExpression) | WExpression;
-
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
-		then=WBlockOrExpression
+		then=WExpression
 	(=>'else'
-		else=WBlockOrExpression
+		else=WExpression
 	)?
 ;
 
@@ -290,26 +289,27 @@ WNumberLiteral returns WExpression :
 
 WClosure returns WExpression:
 	=>({WClosure} 
-	'{') 
-		=>((parameters+=WParameter (',' parameters+=WParameter)*)? '=>')?
-		expression=WBlockInClosure 
-	'}';
+	'[') 
+		=>((parameters+=WParameter (',' parameters+=WParameter)*)? explicitSyntax?='|')? 
+		expression=WExpressionInClosure 
+	']';
 
-WBlockInClosure returns WExpression: 
+WExpressionInClosure returns WExpression: 
 	{WBlockExpression}
 	(expressions+=WExpressionOrVarDeclaration ';'?)*;
 
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral | WSetLiteral;
+	WListLiteral | WSetLiteral
+;
 
-WListLiteral:
-	{WListLiteral} '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
-
-WSetLiteral:
-	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
+WListLiteral returns WCollectionLiteral:
+	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
 	
+WSetLiteral returns WCollectionLiteral:
+	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
+
 WNamedObject:
 	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
 		(members+=WVariableDeclaration ';'?)*
@@ -365,14 +365,14 @@ WConstructorCall:
 
 WTry:
 	'try'
-		expression=WBlockOrExpression
+		expression=WExpression
 	(catchBlocks+=WCatch)*
-	(=>'then always' alwaysExpression=WBlockOrExpression)?
+	(=>'then always' alwaysExpression=WExpression)?
 ;
 
 WCatch:
 	=>'catch' exceptionVarName=WVariable (':' exceptionType=[WClass|QualifiedName])?
-		expression=WBlockOrExpression 
+		expression=WExpression 
 ;
 
 WReturnExpression:

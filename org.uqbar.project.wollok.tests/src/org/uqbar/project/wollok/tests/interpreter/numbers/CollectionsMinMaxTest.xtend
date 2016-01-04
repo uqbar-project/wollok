@@ -19,7 +19,7 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 				}				
 
 				program a {
-					assert.equals(x1, [x1, x2, x3].min{ o => o.value()})
+					assert.equals(x1, #[x1, x2, x3].min[ o | o.value()])
 				}
 			'''
 		.interpretPropagatingErrors
@@ -39,7 +39,7 @@ class CollectionsMinMaxTest extends AbstractWollokInterpreterTestCase {
 				}
 
 				program a {
-					assert.equals(x3, [x1, x2, x3].max{ o => o.value()})
+					assert.equals(x3, #[x1, x2, x3].max[ o | o.value()])
 				}
 			'''
 		.interpretPropagatingErrors

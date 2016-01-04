@@ -14,20 +14,20 @@ import org.eclipse.xtext.ui.editor.templates.ContextTypeIdHelper
 import org.eclipse.xtext.ui.editor.templates.DefaultTemplateProposalProvider
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
-import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.ui.Messages.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WTry
 
 /**
  * Provides code templates for the editor.

@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
@@ -32,6 +31,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
+import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.eclipse.xtext.EcoreUtil2.*
+import org.uqbar.project.wollok.wollokDsl.WClosure
 
 /**
  * Extension methods for WMethodContainers.

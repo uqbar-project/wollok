@@ -12,7 +12,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testMultipleReferencesToSameObjectCreatesJustOneInstance() { '''
 		object pp {
-		    var ps = [pepita]
+		    var ps = #[pepita]
 		    method unMethod(){
 		        var x = pepita
 		        return x

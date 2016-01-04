@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.NullProgressMonitor
 class WollokParseHelper extends ParseHelper<WFile>{
 	
 	/**
-	 * file is a pair fileName => content
+	 * file is a pair fileName -> content
 	 */
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse) throws Exception {
 		parse(file, resourceSetToUse, false)
