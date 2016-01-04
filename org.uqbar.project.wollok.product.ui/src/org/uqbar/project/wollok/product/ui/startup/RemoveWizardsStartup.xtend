@@ -42,7 +42,7 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		val categories = registry.rootCategory.categories
 		for (wizard : categories.allWizards) {
 	        if (!wizard.id.includeWizards) {
-	        	println("Removing wizard " + wizard.id)
+//	        	println("Removing wizard " + wizard.id)
 				val wizardElement = wizard as WorkbenchWizardElement
 				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}

@@ -3,23 +3,26 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.draw2d.geometry.Point
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * 
  * @author jfernandes
  */
+@Accessors
 class ClassDiagram extends ModelElement {
 	public static val CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved"
 	public static val CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded"
-	@Property List<ClassModel> classes = new ArrayList
-	@Property List<NamedObjectModel> objects = new ArrayList
+	List<ClassModel> classes = new ArrayList
+	List<MixinModel> mixins = new ArrayList
+	List<NamedObjectModel> objects = new ArrayList
 
 	def addClass(ClassModel s) {
 		if (s != null && classes.add(s))
@@ -28,6 +31,17 @@ class ClassDiagram extends ModelElement {
 	
 	def addClass(WClass c) {
 		addClass(new ClassModel(c) => [
+			location = new Point(100, 100)
+		])
+	}
+	
+	def addMixin(MixinModel s) {
+		if (s != null && mixins.add(s))
+			firePropertyChange(CHILD_ADDED_PROP, null, s)
+	}
+	
+	def addMixin(WMixin c) {
+		addMixin(new MixinModel(c) => [
 			location = new Point(100, 100)
 		])
 	}
@@ -48,17 +62,21 @@ class ClassDiagram extends ModelElement {
 			val parentModel = classes.findFirst[clazz == parent]
 			if (parentModel == null) {
 				throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
-//				addClass(parent)
 			}
 			else
 				new Connection(null, it, parentModel)
 		}
+		// mixins
+		c.mixins.forEach[m |
+			val mixinEditPart = mixins.findFirst[ mixin == m ]
+			new Connection(null, it, mixinEditPart)
+		]
 	}
 	
 	
 
 	def getChildren() {
-		(classes + objects).toList
+		(classes + objects + mixins).toList
 	}
 
 	def removeChild(Shape s) {

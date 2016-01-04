@@ -57,7 +57,7 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getEndPoint(Connection conn) {
-		conn.targetAnchor.owner.bounds.middleBottom
+		conn.targetAnchor?.owner?.bounds?.middleBottom
 	}
 	
 	def getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
