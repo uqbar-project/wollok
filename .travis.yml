@@ -10,7 +10,7 @@ before_install:
 script: 
 - cd org.uqbar.project.wollok.releng/ 
 - export PROFILES=normalProfile
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ;fi
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ; fi
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev-natives-to-wollok" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev-natives-to-wollok" ;fi
 - if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
