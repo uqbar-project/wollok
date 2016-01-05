@@ -38,7 +38,7 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 	}
 	
 	override lookupMethod(MessageType message) {
-		val m = clazz.lookupMethod(message.name, message.parameterTypes)
+		val m = clazz.lookupMethod(message.name, message.parameterTypes, true)
 		// TODO: por ahora solo checkea misma cantidad de parametros
 		// 		debería en realidad checkear tipos !  
 		if (m != null && m.parameters.size == message.parameterTypes.size)

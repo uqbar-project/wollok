@@ -82,3 +82,10 @@ object a mixed with M1 {
 object b mixed with M1, M2 {
 }
 
+// positive case: object does implement the abstract methods from the mixins
+object c mixed with M1, M2 {
+	override method doIt() { 
+		// blah
+	}
+}
+
