@@ -5,6 +5,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 abstract class AbstractPosition {
 	override public int hashCode() {
@@ -55,7 +56,12 @@ class WPosition extends AbstractPosition {
 	WollokObject position
 	
 	new(WollokObject wObject) {
-		this.position = wObject
+		var method = wObject.allMethods.map[it.name].findFirst[this.isPositionGetter(it)]
+		this.position = wObject.call(method)
+	}
+	
+	def isPositionGetter(String methodName) {
+		#["getPosicion", "getPosition", "posicion", "position"].contains(methodName)
 	}
 	
 	override getX() { position.getInt("getX") }

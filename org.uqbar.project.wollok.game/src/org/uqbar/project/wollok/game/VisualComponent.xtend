@@ -28,7 +28,7 @@ class VisualComponent {
 	
 	new (WollokObject object) {
 		domainObject = object
-		position = new WPosition(WollokObject.cast(domainObject.call("getPosicion")))
+		position = new WPosition(object)
 		image = new WImage(object)
 	}
 	
