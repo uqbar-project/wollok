@@ -7,13 +7,12 @@ import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
-import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicBinaryOperations
 import org.uqbar.project.wollok.interpreter.operation.WollokBasicUnaryOperations
@@ -62,8 +61,6 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.uqbar.project.wollok.sdk.WollokDSK
 
 /**
  * It's the real "interpreter".
@@ -74,7 +71,7 @@ import org.uqbar.project.wollok.sdk.WollokDSK
  * 
  * @author jfernandes
  */
-class WollokInterpreterEvaluator implements XInterpreterEvaluator {
+class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> {
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
 	
@@ -231,7 +228,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 
 	def dispatch evaluate(WObjectLiteral l) {
-		new WollokObject(interpreter, l) => [l.members.forEach[m|addMember(m)]]
+		new WollokObject(interpreter, l) => [
+			l.mixins.forEach[m|m.addMembersTo(it)]
+			l.members.forEach[m|addMember(m)]
+		]
 	}
 	
 	def dispatch evaluate(WReturnExpression it) {
@@ -253,8 +253,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
-				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			classRef.mixins.forEach[addMembersTo(wo)]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
 	}
@@ -284,15 +285,19 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarhcy(classFinder)
+		namedObject.hookObjectInHierarchy(classFinder)
 		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
 			
+			// parents
 			namedObject.parent.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			
+			// mixins
+			namedObject.mixins.forEach[addMembersTo(wo)]
 			
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
@@ -304,13 +309,24 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 		]
 	}
 	
-	def static hookObjectInHierarhcy(WNamedObject namedObject, WollokClassFinder finder) {
+	//TODO: duplicated WNamedObject & WObjectLiteral. I cannot make xtext generator
+	// pull up the "parent" attribute to a common instance !
+	def static hookObjectInHierarchy(WNamedObject namedObject, WollokClassFinder finder) {
 		if (namedObject.parent != null)
 			namedObject.parent.hookToObject(finder)
 		else {
 			val object = finder.getObjectClass(namedObject)
 			namedObject.parent = object
 			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
+		}
+	}
+	def static hookObjectInHierarchy(WObjectLiteral namedObject, WollokClassFinder finder) {
+		if (namedObject.parent != null)
+			namedObject.parent.hookToObject(finder)
+		else {
+			val object = finder.getObjectClass(namedObject)
+			namedObject.parent = object
+			namedObject.eSet(WollokDslPackage.Literals.WOBJECT_LITERAL__PARENT, object)
 		}
 	}
 
@@ -385,12 +401,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator {
 	// ********************************************************************************************
 	
 	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
-
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
-
-	def dispatch evaluateTarget(WSuperInvocation call) {
-		new CallableSuper(interpreter, call.method.declaringContext.parent)
-	}
+	def dispatch evaluateTarget(WSuperInvocation call) { new CallableSuper(interpreter, call.declaringContext) }
 
 	def WollokObject getWKObject(String qualifiedName, EObject context) {
 		try {

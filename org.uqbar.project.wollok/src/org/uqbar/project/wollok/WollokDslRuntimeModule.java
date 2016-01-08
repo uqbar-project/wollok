@@ -9,10 +9,12 @@ import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.eclipse.xtext.service.OperationCanceledManager;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory;
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory;
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider;
@@ -49,6 +51,9 @@ public class WollokDslRuntimeModule extends
 		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
 		
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended.class).to(WollokLinkingDiagnosticMessageProvider.class);
+		
+		// fixes for xtext 2.9
+		binder.bind(OperationCanceledManager.class).toInstance(new OperationCanceledManager());
 	}
 
 	// customize exported objects
@@ -81,7 +86,7 @@ public class WollokDslRuntimeModule extends
 		return WollokQualifiedNameProvider.class;
 	}
 
-	public Class<? extends XInterpreterEvaluator> bindXInterpreterEvaluator() {
+	public Class<? extends XInterpreterEvaluator<WollokObject>> bindXInterpreterEvaluator() {
 		return WollokInterpreterEvaluator.class;
 	}
 

@@ -15,7 +15,7 @@ class Lager inherits Levadura {
 	override method fermentar(mosto, tiempo) {}
 	
 	method create() {
-		// XPECT errors --> "Cannot instantiate abstract class" at "Lager"
+		// XPECT errors --> "Must implement inherited abstract methods: Levadura.fermentar(mosto)" at "Lager"
 		return new Lager()
 	}	
 }

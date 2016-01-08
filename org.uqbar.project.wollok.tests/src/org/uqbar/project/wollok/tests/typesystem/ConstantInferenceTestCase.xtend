@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
+import wollok.lang.WBoolean
+import wollok.lang.WString
 
-import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * The most basic inference tests

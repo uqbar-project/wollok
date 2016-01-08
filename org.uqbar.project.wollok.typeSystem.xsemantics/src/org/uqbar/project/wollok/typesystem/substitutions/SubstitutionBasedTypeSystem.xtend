@@ -3,10 +3,10 @@ package org.uqbar.project.wollok.typesystem.substitutions
 import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.ClassBasedWollokType
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -27,12 +27,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.semantics.WollokType.*
 import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * Implementation that builds up rules
@@ -88,11 +89,11 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	
 	def dispatch void doAnalyse(WMemberFeatureCall it) {
 		if (memberCallTarget instanceof WThis)
-			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments))
+			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments, true))
 	}
 	
 	def dispatch void doAnalyse(WConstructorCall it) {
-		isA(new ClassBasedWollokType(classRef, null, null))
+		isA(new ClassBasedWollokType(classRef, null))
 	}
 
 	// literals	
@@ -230,6 +231,10 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	
 	override toString() {
 		'{\n\t' + rules.join("\n\t") + '\n}'
+	}
+	
+	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 }

@@ -7,6 +7,7 @@ import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry
 import org.eclipse.ui.wizards.IWizardCategory
 import org.eclipse.ui.wizards.IWizardDescriptor
+import org.eclipse.ui.wizards.IWizardRegistry
 import org.uqbar.project.wollok.ui.WollokUIStartup
 
 /**
@@ -19,20 +20,41 @@ import org.uqbar.project.wollok.ui.WollokUIStartup
  */
 class RemoveWizardsStartup implements WollokUIStartup {
 	
-	override startup() { removeEclipseFeatures }
+	override startup() { 
+		PlatformUI.workbench.newWizardRegistry.removeWizards
+		PlatformUI.workbench.exportWizardRegistry.removeWizards
+		PlatformUI.workbench.importWizardRegistry.removeWizards
+		
+		// TODO: find a way to remove extensions
+//		Platform.extensionRegistry.extensionPoints.map[p | p.extensions.toList ].flatten.forEach[
+//			println('''Extension  «extensionPointUniqueIdentifier» :: «it.simpleIdentifier» | «label»''')
+//			Platform.extensionRegistry.remove
+//		]
+	}
 	
-	def removeEclipseFeatures() {
-		val wizardRegistry = PlatformUI.workbench.newWizardRegistry as AbstractExtensionWizardRegistry
-		val categories = PlatformUI.workbench.newWizardRegistry.rootCategory.categories
-		for (wizard : getAllWizards(categories)) {
+	// reusable code
+
+	def removeWizards(IWizardRegistry it) {
+		(it as AbstractExtensionWizardRegistry).removeWizards
+	}	
+	
+	def removeWizards(AbstractExtensionWizardRegistry registry) {
+		val categories = registry.rootCategory.categories
+		for (wizard : categories.allWizards) {
 	        if (!wizard.id.includeWizards) {
+//	        	println("Removing wizard " + wizard.id)
 				val wizardElement = wizard as WorkbenchWizardElement
-				wizardRegistry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
+				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}
 		}
 	}
 	
-	static val includeWizards = #["org\\.eclipse\\.ui\\..*", "org\\.uqbar\\.project\\.wollok\\..*"]
+	static val includeWizards = #[
+		"org\\.eclipse\\.ui\\..*", 
+		"org\\.uqbar\\.project\\.wollok\\..*",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewPackageCreationWizard",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewSourceFolderCreationWizard"
+	]
 	def includeWizards(String id) {
 		includeWizards.exists[id.matches(it)]
 	}

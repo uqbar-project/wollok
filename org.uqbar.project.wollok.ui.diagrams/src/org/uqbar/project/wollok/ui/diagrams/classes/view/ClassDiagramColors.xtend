@@ -19,6 +19,9 @@ class ClassDiagramColors {
 	public static val NAMED_OBJECTS_FOREGROUND = new Color(null, 255, 255, 255)
 	public static val NAMED_OBJECTS__BACKGROUND = new Color(null, 155, 129, 136)
 	
+	public static val MIXIN_FOREGROUND = new Color(null, 0, 0, 0)
+	public static val MIXIN_BACKGROUND = new Color(null, 185, 109, 255)
+	
 	// Object-diagram
 	
 	public static val OBJECTS_VALUE_DEFAULT = CLASS_BACKGROUND

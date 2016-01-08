@@ -132,8 +132,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotInstantiateAbstractClasses(WConstructorCall c) {
-		if(c.classRef.isAbstract) report(WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS, c, WCONSTRUCTOR_CALL__CLASS_REF, CANNOT_INSTANTIATE_ABSTRACT_CLASS)
+	def cannotInstantiateAbstractClasses(WConstructorCall it) {
+		val abstractMethods = classRef.unimplementedAbstractMethods
+		if (!abstractMethods.empty) {
+			val methodDescriptions = abstractMethods.map[methodName].join(", ")
+			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WCONSTRUCTOR_CALL__CLASS_REF)
+		}
 	}
 
 	@Check
@@ -347,11 +351,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def objectMustImplementAbstractMethods(WNamedObject it) {
-		if (parent != null) {
-			val abstractMethods = unimplementedAbstractMethods
-			if (!abstractMethods.empty) {
-				report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
-			}
+		val abstractMethods = unimplementedAbstractMethods
+		if (!abstractMethods.empty) {
+			val methodDescriptions = abstractMethods.map[methodName].join(", ")
+			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WNAMED__NAME)
 		}
 	}
 	
@@ -381,9 +384,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
-		if (sup.method.declaringContext instanceof WObjectLiteral)
-			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, sup)
-		else if (!sup.method.overrides)
+		if (!sup.method.overrides && !sup.isInMixin)
 			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
 			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', sup)

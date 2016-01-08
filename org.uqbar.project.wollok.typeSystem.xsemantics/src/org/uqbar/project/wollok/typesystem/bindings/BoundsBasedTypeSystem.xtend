@@ -3,9 +3,9 @@ package org.uqbar.project.wollok.typesystem.bindings
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.ClassBasedWollokType
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -23,7 +23,7 @@ import org.uqbar.project.wollok.wollokDsl.WThis
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.semantics.WollokType.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -107,7 +107,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	}
 	
 	def dispatch void bind(WClass c) {
-		new ClassBasedWollokType(c, null, null).fixedNode(c)
+		new ClassBasedWollokType(c, this).fixedNode(c)
 		c.variableDeclarations.forEach[bind]
 		c.methods.forEach[bind]
 	}
@@ -175,7 +175,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		call.inferredNode
 		// solo se vincula con un método de this
 		if (call.memberCallTarget instanceof WThis) {
-			val referencedMethod = call.method.declaringContext.lookupMethod(call.feature, call.memberCallArguments)
+			val referencedMethod = call.method.declaringContext.lookupMethod(call.feature, call.memberCallArguments, true)
 			call <=> referencedMethod
 		}
 	}
@@ -208,6 +208,12 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	
 	def getBounds(TypedNode node) {
 		bounds.filter[b| b.isFor(node)]
+	}
+	
+	// others
+	
+	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 }
