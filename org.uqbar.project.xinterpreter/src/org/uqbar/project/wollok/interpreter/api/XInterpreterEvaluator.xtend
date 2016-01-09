@@ -23,5 +23,5 @@ interface XInterpreterEvaluator<O> extends Serializable {
 
 	// this will be deleted eventually
 	def (O,()=>O)=>O resolveBinaryOperation(String operator)
-	
+
 }

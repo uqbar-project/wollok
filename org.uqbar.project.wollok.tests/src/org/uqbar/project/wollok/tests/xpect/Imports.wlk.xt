@@ -6,8 +6,26 @@ import libForImports.simpsons.*
 import libForImports.flanders.Ned
 import libForImports.flanders.mod
 
+// wrong imports
+
 // XPECT errors --> "Cannot resolve import abc" at "abc"
 import abc
+// XPECT errors --> "Cannot resolve import abc.*" at "abc.*"
+import abc.*
+// XPECT errors --> "Cannot resolve import abc.anObject" at "abc.anObject"
+import abc.anObject
+// XPECT errors --> "Cannot resolve import abc.AClass" at "abc.AClass"
+import abc.AClass
+
+// XPECT errors --> "Cannot resolve import abc.pack" at "abc.pack"
+import abc.pack
+// XPECT errors --> "Cannot resolve import abc.pack.*" at "abc.pack.*"
+import abc.pack.*
+// XPECT errors --> "Cannot resolve import abc.pack.anObject" at "abc.pack.anObject"
+import abc.pack.anObject
+// XPECT errors --> "Cannot resolve import abc.pack.AClass" at "abc.pack.AClass"
+import abc.pack.AClass
+
 
 import wollok.lang.Object
 

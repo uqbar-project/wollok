@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
@@ -30,10 +31,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import java.util.Collections
 import org.uqbar.project.wollok.wollokDsl.WThis
@@ -69,7 +67,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
 			concreteMethods.addAll(chunk.methods.filter[!abstract])
 			// remove implemented
-			unimplementedMethods.removeAllSuchAs[chunk.overrides(it)]	
+			unimplementedMethods.removeIf[chunk.overrides(it)]	
 			// add NEW abstracts (abstracts on mixins can be overriden by an upper class / mixin in the chain!)
 			val newAbstractsNotImplementedUpInTheHierarchy = chunk.abstractMethods.filter[abstractM |
 				!concreteMethods.exists[m| abstractM.matches(m.name, m.parameters) ]
@@ -157,14 +155,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
-	def static List<WClass> _parents(WMethodContainer c, List l) {
+	def static List<WClass> _parents(WClass c, List<WClass> l) {
 		if (c == null) {
 			return l
 		}
 		l.add(c)
 		return _parents(c.parent, l)
 	}
-		
+
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
@@ -241,14 +239,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static dispatch boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.hookObjectSuperClass(finder)
 		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
-	
-	def static dispatch void hookObjectSuperClass(WMixin it, WollokClassFinder finder) { }
-	def static dispatch void hookObjectSuperClass(WClass it, WollokClassFinder finder) { hookToObject(finder) }
-	def static dispatch void hookObjectSuperClass(WNamedObject it, WollokClassFinder finder) { hookObjectInHierarchy(finder) }
-	def static dispatch void hookObjectSuperClass(WObjectLiteral it, WollokClassFinder finder) { hookObjectInHierarchy(finder) } // nothing !
 
 	// ************************************************************************
 	// ** Basic methods

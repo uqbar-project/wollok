@@ -1,13 +1,13 @@
 object monstersInc {
-	var equipos = #[]
-	var puertas = #[]
+	var equipos = []
+	var puertas = []
 
 	method getEquipos() = equipos	
 	method agregarPuerta(p) { puertas.add(p) }
 	method agregarEquipo(e) { equipos.add(e) }
 	method removerEquipo(e) { equipos.remove(e) }
 	method getEnergiaTotalGenerada() {
-		return equipos.sum([e| e.getEnergiaGenerada()])
+		return equipos.sum({e=> e.getEnergiaGenerada()})
 	}
 	
 	method cualquierPuerta() {
@@ -17,17 +17,17 @@ object monstersInc {
 	}
 	
 	method diaLaboral() {
-		equipos.forEach([e| e.visitar(this.cualquierPuerta())])
+		equipos.forEach({e=> e.visitar(this.cualquierPuerta())})
 	}
 	
 	method equipoMasAsustador() {
-		return equipos.max([e| e.getEnergiaGenerada()])
+		return equipos.max({e=> e.getEnergiaGenerada()})
 	} 
 }
 
 class Puerta {
 	var contenido
-	new(c) { contenido = c }
+	constructor(c) { contenido = c }
 
 	method entra(asustador) { 
 		return contenido.teVaAAsustar(asustador)
@@ -39,7 +39,7 @@ class Equipo {
 	var asistente
 	var energiaGenerada = 0
 
-	new(asus, asis) { 
+	constructor(asus, asis) { 
 		asustador = asus
 		asistente = asis
 	}

@@ -163,6 +163,10 @@ class XTendUtilExtensions {
 			javaToWollok(returnVal)
 		}
 		catch (InvocationTargetException e) {
+			val cause = e.cause
+			if (cause instanceof WollokProgramExceptionWrapper) {
+				throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException("Error while calling native method '" + m + " with parameters: " + result, cause.wollokException))
+			}
 			throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
 		}
 		catch (IllegalArgumentException e) {

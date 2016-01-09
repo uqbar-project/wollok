@@ -52,7 +52,6 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -80,7 +79,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	var WollokObject trueObject
 	var WollokObject falseObject
 	
-	@Inject	WollokInterpreter interpreter
+	@Inject	protected WollokInterpreter interpreter
 	@Inject	WollokQualifiedNameProvider qualifiedNameProvider
 	@Inject WollokClassFinder classFinder
 	@Inject extension NativeObjectFactory nativesFactory
@@ -222,7 +221,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def doInstantiateNumber(String className, Object value) {
 		val obj = newInstance(className)
 		// hack because this project doesn't depend on wollok.lib project so we don't see the classes !
-		val intNative = obj.getNativeObject(className) as JavaWrapper
+		val intNative = obj.getNativeObject(className) as JavaWrapper<Object>
 		intNative.wrapped = value
 		obj
 	}
@@ -248,8 +247,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 	
 	def newInstance(WClass classRef, WollokObject... arguments) {
-		classRef.hookToObject(classFinder)
-		
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
@@ -258,18 +255,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			classRef.mixins.forEach[addMembersTo(wo)]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
-	}
-	
-	def static void hookToObject(WClass wClass, WollokClassFinder finder) {
-		if (wClass.parent != null)
-			wClass.parent.hookToObject(finder)
-		else {
-			val object = finder.getObjectClass(wClass)
-			if (wClass.fqn != object.fqn) { 
-				wClass.parent = object
-				wClass.eSet(WollokDslPackage.Literals.WCLASS__PARENT, object)
-			}
-		}
 	}
 	
 	def dispatch evaluate(WNamedObject namedObject) {
@@ -285,8 +270,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 	
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
-		namedObject.hookObjectInHierarchy(classFinder)
-		
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
 			
@@ -307,27 +290,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 		]
-	}
-	
-	//TODO: duplicated WNamedObject & WObjectLiteral. I cannot make xtext generator
-	// pull up the "parent" attribute to a common instance !
-	def static hookObjectInHierarchy(WNamedObject namedObject, WollokClassFinder finder) {
-		if (namedObject.parent != null)
-			namedObject.parent.hookToObject(finder)
-		else {
-			val object = finder.getObjectClass(namedObject)
-			namedObject.parent = object
-			namedObject.eSet(WollokDslPackage.Literals.WNAMED_OBJECT__PARENT, object)
-		}
-	}
-	def static hookObjectInHierarchy(WObjectLiteral namedObject, WollokClassFinder finder) {
-		if (namedObject.parent != null)
-			namedObject.parent.hookToObject(finder)
-		else {
-			val object = finder.getObjectClass(namedObject)
-			namedObject.parent = object
-			namedObject.eSet(WollokDslPackage.Literals.WOBJECT_LITERAL__PARENT, object)
-		}
 	}
 
 	def dispatch evaluate(WClosure l) { newInstance(CLOSURE) => [
@@ -358,7 +320,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ** operations (unary, binary, multiops, postfix)
 	// ********************************************************
 	def dispatch evaluate(WBinaryOperation binary) {
-		if (binary.feature.isMultiOpAssignment) {
+		if (binary.isMultiOpAssignment) {
 			val operator = binary.feature.substring(0, 1)
 			val reference = binary.leftOperand
 

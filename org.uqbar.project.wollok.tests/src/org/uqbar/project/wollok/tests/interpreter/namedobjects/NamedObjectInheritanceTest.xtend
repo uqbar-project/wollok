@@ -82,7 +82,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class Dog {
 				val name
-				new(param) {
+				constructor(param) {
 					name = param
 				}	
 				method name() = name
@@ -101,7 +101,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class Dog {
 				val owner
-				new(param) {
+				constructor(param) {
 					owner = param
 				}	
 				method owner() = owner
@@ -124,7 +124,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class Dog {
 				val owner
-				new(param) {
+				constructor(param) {
 					owner = param
 				}	
 				method owner() = owner

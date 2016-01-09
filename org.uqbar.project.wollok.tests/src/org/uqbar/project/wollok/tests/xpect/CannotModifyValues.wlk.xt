@@ -3,16 +3,16 @@
 class A {
 	val x = "sarasa"
 	
-	new() {
+	constructor() {
 		// XPECT errors --> "Cannot modify values" at "x"
 		x = 23
 	}
 	
 	method s() {
-		val aBlock = [a |
+		val aBlock = {a =>
 			// XPECT errors --> "Cannot modify values" at "a"
 			a = 23
-		]
+		}
 		// XPECT errors --> "Cannot modify values" at "aBlock"
 		aBlock = null
 	}

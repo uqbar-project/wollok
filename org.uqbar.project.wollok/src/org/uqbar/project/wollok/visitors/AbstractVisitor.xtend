@@ -13,7 +13,9 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -33,10 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
-
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Implements an abstract visitor for the AST

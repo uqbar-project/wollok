@@ -1,3 +1,4 @@
+
 package org.uqbar.project.wollok.model
 
 import java.util.List
@@ -6,14 +7,18 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.naming.QualifiedName
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -25,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -33,21 +39,19 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarchy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WThrow
-import org.uqbar.project.wollok.wollokDsl.WCatch
-import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Extension methods to Wollok semantic model.
@@ -126,7 +130,7 @@ class WollokModelExtensions {
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 	
-	def static first(WBlockExpression it, Class type) { expressions.findFirst[ type.isInstance(it) ] }
+	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
@@ -185,9 +189,7 @@ class WollokModelExtensions {
 	}
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
-		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarchy(finder)
-		obj
+		(memberCallTarget as WVariableReference).ref as WNamedObject
 	}
 
 
@@ -315,4 +317,14 @@ class WollokModelExtensions {
 	
 	def static tri(WCatch it) { eContainer as WTry }
 	def static catchesBefore(WCatch it) { tri.catchBlocks.subList(0, tri.catchBlocks.indexOf(it)) }
+	
+	// *******************************
+	// ** imports
+	// *******************************
+	
+	def static importedNamespaceWithoutWildcard(Import it) { if (importedNamespace.endsWith(".*")) importedNamespace.substring(0, importedNamespace.length - 2) else importedNamespace }
+	def static toFQN(String string) { QualifiedName.create(string.split("\\.")) }
+	// hack uses another grammar ereference to any
+	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
+	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
 }

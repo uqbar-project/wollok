@@ -98,10 +98,10 @@ class A {
 	}
 	
 	method cargar() {
-		#["hola", "chau"]
-			.map[ p |
+		["hola", "chau"]
+			.map{ p =>
 				return p
-			]
+			}
 	}
 
 }

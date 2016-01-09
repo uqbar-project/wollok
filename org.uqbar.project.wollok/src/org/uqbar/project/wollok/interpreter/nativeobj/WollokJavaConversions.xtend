@@ -87,6 +87,10 @@ class WollokJavaConversions {
 		evaluator.newInstance(EXCEPTION, message.javaToWollok)
 	}
 	
+	def static newWollokException(String message, WollokObject cause) {
+		evaluator.newInstance(EXCEPTION, message.javaToWollok, cause)
+	}
+	
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 	
 }

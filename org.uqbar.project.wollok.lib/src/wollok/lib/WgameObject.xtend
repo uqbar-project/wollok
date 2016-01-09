@@ -89,12 +89,12 @@ class WgameObject {
 	}
 	
 //	 ACCESSORS
-	@NativeMessage("setTittle")
+	@NativeMessage("setTitle")
 	def setTittleMethod(String title) {
 		board.title = title.wollokToJava(String) as String
 	}
 	
-	@NativeMessage("getTittle")
+	@NativeMessage("getTitle")
 	def getTittleMethod() { board.title.javaToWollok }
 	
 	@NativeMessage("setWidth")
@@ -113,4 +113,8 @@ class WgameObject {
 	@NativeMessage("getHeight")
 	def getHeightMethod() { board.height.javaToWollok }
 	
+	@NativeMessage("setGround")
+	def setGroundMethod(WollokObject image) {
+		board.createCells(image.wollokToJava(String) as String)
+	}
 }

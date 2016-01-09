@@ -63,17 +63,8 @@ class WDouble extends WNumber<Double> implements Comparable<WDouble> {
 	@NativeMessage("<=")
 	def lesserOrEquals(WollokObject other) { wrapped.doubleValue <= other.nativeNumber.wrapped.doubleValue }
 
-	@NativeMessage("==")
-	def wollokEquals(WollokObject other) {
-		this.doubleValue == other.nativeNumber.doubleValue
-	}
-	
 	def invert() { (-wrapped).asWollokObject }
 	
 	override compareTo(WDouble o) { wrapped.compareTo(o.wrapped) }
-
-	override equals(Object other) {
-		other instanceof WDouble && wrapped == (other as WDouble).wrapped
-	}
 	
 }

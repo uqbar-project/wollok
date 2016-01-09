@@ -3,13 +3,13 @@ class Direccion {
 	var numero = 0
 	val a
 	
-	new(c, n) {
+	constructor(c, n) {
 		calle = c
 		numero = n
 		a = 23
 	}
 	
-	new (c) = this(c, 3) {
+	constructor (c) = this(c, 3) {
 		// ...
 	}
 	

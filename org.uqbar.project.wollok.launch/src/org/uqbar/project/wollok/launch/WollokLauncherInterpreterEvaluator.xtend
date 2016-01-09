@@ -23,14 +23,22 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	
 	// EVALUATIONS (as multimethods)
 	override dispatch evaluate(WFile it) { 
-		// Files should are not allowed to have both a main program and tests at the same time.
+		// Files are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
 			wollokTestsReporter.testsToRun(it, tests)
-			try 
-				tests.evalAll
+			try {
+				tests.fold(null) [a, e|
+					resetGlobalState
+					e.eval
+				]
+			}
 			finally
 				wollokTestsReporter.finished
 		}
+	}
+
+	def resetGlobalState() {
+		interpreter.globalVariables.clear
 	}
 	
 	override dispatch evaluate(WTest test) {
