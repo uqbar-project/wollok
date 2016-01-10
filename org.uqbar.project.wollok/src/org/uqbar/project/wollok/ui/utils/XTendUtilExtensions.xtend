@@ -86,12 +86,17 @@ class XTendUtilExtensions {
 		col.collectComparing(func, [a,b| a < b])
 	}
 	
-	def static <E,K,V> Map<K,V> mapBy(Collection<E> col, (E)=>Pair<K,V> func) {
+	def static <E,K,V> Map<K,V> mapBy(Iterable<E> col, (E)=>Pair<K,V> func) {
 		newHashMap(col.map(func))
 	}
 	
 	def static <A,B,O> Collection<O> zip(Iterable<A> colA, Iterable<B> colB, (A,B)=>O zipFunc) {
 		colA.map[i,a| zipFunc.apply(a, colB.get(i)) ]
+	}
+	
+	def static <A,B> Map<A,B> pairWith(Iterable<A> colA, Iterable<B> colB) {
+		val values = colB.iterator
+		colA.mapBy[ k | k -> values.next ]
 	}
 	
 	/** reused method between maxBy and minBy */

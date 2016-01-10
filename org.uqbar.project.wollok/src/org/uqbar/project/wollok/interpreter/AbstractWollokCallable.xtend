@@ -21,6 +21,8 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.MethodRequirement
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -47,23 +49,48 @@ abstract class AbstractWollokCallable implements WCallable {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
+
+			method.checkRequirements
+			
 			if (method.native) {
-				// reflective call to native method:
-				val nativeObject = receiver.nativeObjects.get(method.declaringContext)
-				val WollokObject r = nativeObject.invokeNative(method.name, parameters)
-				if (nativeObject.isVoid(method.name, parameters))
-					return theVoid
-				else
-					return r
+				callNative(method, parameters)
 			}
 			else {
-				val WollokObject r = method.expression.eval as WollokObject
+				val result = method.expression.eval
 				return if (method.expressionReturns)
-						r
+						result
 					else
 						theVoid
 			}
 		]
+	}
+	
+	def protected void checkRequirements(WMethodDeclaration method) {
+		if (method.requirements == null || method.requirements.empty)
+			return;
+		// evaluate
+		val evaluations = method.requirements.map[r| r -> r.condition.eval]
+		
+		// check and fail
+		val failing = evaluations.filter[ !value.isTrue ]
+		if (!failing.empty)
+			throw newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, 
+				"Method requirements not met: " + 
+				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', ')) 
+	}
+	
+	def getMessageOrDefault(MethodRequirement it) {
+		if (message != null) message else "Not satisfied"
+	}
+	
+	def protected WollokObject callNative(WMethodDeclaration method, WollokObject... parameters) {
+		// reflective call to native method:
+		val nativeObject = receiver.nativeObjects.get(method.declaringContext)
+		val result = nativeObject.invokeNative(method.name, parameters)
+		return if (nativeObject.isVoid(method.name, parameters))
+					theVoid
+				else
+					result
 	}
 
 	def WollokObject getReceiver()

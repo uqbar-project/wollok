@@ -1,0 +1,20 @@
+
+class Bird {
+	var energy = 1000
+
+	method fly(kms) {
+		energy -= kms
+	}
+	requires 
+		kms > 0 : 'Cannot fly negative distances'
+		energy >= kms : 'Cannot fly more than its energy $energy'
+	
+}
+test "simplePreConditionForSingleParameterInClass" {
+	val b = new Bird()
+	try
+		b.fly(0)
+	catch e	{
+		assert.equals('Method requirements not met:  kms > 0 and energy >= kms', e.getMessage())
+	}
+}

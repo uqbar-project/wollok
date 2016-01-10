@@ -66,8 +66,12 @@ WMethodDeclaration:
 	(overrides?='override')? 'method'
 		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )?')' 
 		(native?='native')? 
-		
-		((expression=WBlockExpression) | (expressionReturns?='=' expression=WOrExpression))?
+		(expression=WBlockExpression | (expressionReturns?='=' expression=WOrExpression))?
+		('requires' requirements+=MethodRequirement*)?
+;
+
+MethodRequirement:
+	condition=WOrExpression (':' message=STRING)?
 ;
 
 WMethodName:
@@ -216,16 +220,19 @@ WThis returns WExpression:
 ;
 
 WPrimaryExpression returns WExpression:
+	// simples
 	WVariableReference |
 	WLiteral |
-	WConstructorCall |
+	// syntactic
 	WParenthesizedExpression |
+	// inheritance
+	WConstructorCall |
 	WSuperInvocation |
+	// statements
 	WIfExpression |
 	WTry |
 	WReturnExpression | 
 	WThrow
-//	XForLoopExpression |
 ;
 
 WSuperInvocation returns WExpression: 
