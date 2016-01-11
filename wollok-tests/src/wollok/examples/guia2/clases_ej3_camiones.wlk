@@ -1,15 +1,15 @@
 class Deposito {
-	var camiones = []
+	var camiones = #[]
 	
-	method cargaEnViaje() = camiones.sum{camion => camion.capacidadDisponible()}
+	method cargaEnViaje() = camiones.sum[camion | camion.capacidadDisponible()]
 	
-	method camionesQueCargan(unContenido) = camiones.filter{camion => camion.estaCargando(unContenido)}
+	method camionesQueCargan(unContenido) = camiones.filter[camion | camion.estaCargando(unContenido)]
 	
-	method camionConMayorCantidadDeCosos() = camiones.max{camion => camion.getCosos().size()}
+	method camionConMayorCantidadDeCosos() = camiones.max[camion | camion.getCosos().size()]
 }
 
 class Camion {
-	var cosos = []
+	var cosos = #[]
 	var cargaMaxima
 	var estado = disponible
 	
@@ -17,7 +17,7 @@ class Camion {
 
 	method getCosos() = cosos
 
-	method cargaActual() =this.getCosos().sum{bulto => bulto.peso()}
+	method cargaActual() =this.getCosos().sum[bulto | bulto.peso()]
 
 	method puedeCargar(unCoso) = this.tieneLugarPara(unCoso) && estado.sePuedeCargar()
 	
@@ -35,25 +35,25 @@ class Camion {
 	
 	method getCargaMaxima() = cargaMaxima
 	
-	method estaCargando(unContenido) = this.tieneLugar() && this.getCosos().exists{coso => coso.getContenido() == unContenido}
+	method estaCargando(unContenido) = this.tieneLugar() && this.getCosos().exists[coso | coso.getContenido() == unContenido]
 	
-	method cosoMasLiviano() = this.getCosos().min{coso => coso.peso()}
+	method cosoMasLiviano() = this.getCosos().min[coso | coso.peso()]
 	
-	method elementosEnComunCon(otroCamion) = this.getCosos().filter{coso => otroCamion.getCosos().contains(coso)} 
+	method elementosEnComunCon(otroCamion) = this.getCosos().filter[coso | otroCamion.getCosos().contains(coso)] 
 }
 
 class CamionReutilizable inherits Camion {
-	var destinos = []
+	var destinos = #[]
 	
 	constructor(cargaMaximaPosible) = super(cargaMaximaPosible)
 	
-	override method getCosos() = destinos.map{destino => destino.getCosos()}.flatten() 
+	override method getCosos() = destinos.map[destino | destino.getCosos()].flatten() 
 	
-	method descargarCamionEn(unLugar) { destino.remove(destinos.detect{destino => destino.getLugar() == unLugar}) }
+	method descargarCamionEn(unLugar) { destino.remove(destinos.detect[destino | destino.getLugar() == unLugar]) }
 	
 	method cargarUnCosoEnDestino(unCoso, unLugar) {
 		if(this.puedeCargar(unCoso)) {
-			var destino = destinos.detect{destino => destino.getLugar() == unLugar}
+			var destino = destinos.detect[destino | destino.getLugar() == unLugar]
 			if (destino == null) {
 				var nuevoDestino = new Destino(unLugar)
 				nuevoDestino.getCosos().add(unCoso)
@@ -67,7 +67,7 @@ class CamionReutilizable inherits Camion {
 
 class Destino {
 	var lugar
-	var cosos = []
+	var cosos = #[]
 	
 	constructor(unLugar) { lugar = unLugar }
 	method getLugar() = lugar 

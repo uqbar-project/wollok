@@ -222,7 +222,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
 		method blah() {
 			val a = ""
 			val b = 2
-			val c = new    Direccion  (  a   ,  b   ,  "blah"   ,   [1,2,3]    )
+			val c = new    Direccion  (  a   ,  b   ,  "blah"   ,   #[1,2,3]    )
 		}
 	}''',
         '''
@@ -237,7 +237,7 @@ class Client {
 	method blah() {
 		val a = ""
 		val b = 2
-		val c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
+		val c = new Direccion(a, b, "blah", #[ 1, 2, 3 ])
 	}
 }''')
     }

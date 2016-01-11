@@ -20,7 +20,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			object obj1 {
-				var x = []
+				var x = #[]
 				method addX(anObject){
 					x.add(anObject)
 				}
@@ -35,7 +35,7 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 				obj2.setY(obj1)
 				obj1.addX(new Prb())
 				
-				assert.equals('obj2[y=obj1[x=[obj2, a Prb[]]]]', obj2.toString())
+				assert.equals('obj2[y=obj1[x=#[obj2, a Prb[]]]]', obj2.toString())
 			}
 		'''.interpretPropagatingErrors
 	}

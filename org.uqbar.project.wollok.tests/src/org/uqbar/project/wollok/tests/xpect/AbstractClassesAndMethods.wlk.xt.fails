@@ -24,7 +24,7 @@ val b = new B()
 class C extends B {
 	override foo() { 42 }
 }
-// XPECT warnings -=> "Unused variable" at "c"
+// XPECT warnings --> "Unused variable" at "c"
 val c = new C()
 
 
@@ -45,5 +45,5 @@ class E extends D {
 	override bar() { 'bar' }
 }
 
-// XPECT warnings -=> "Unused variable" at "e"
+// XPECT warnings --> "Unused variable" at "e"
 val e = new E()

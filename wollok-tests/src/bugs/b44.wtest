@@ -1,6 +1,6 @@
 
 test "Testing regretion of Bug #44" {
-	val aList = [ 1, 2, 3, 4]
+	val aList = #[ 1, 2, 3, 4]
 	val clone = aList.clone()
 	
 	assert.equals(aList.getClass(), clone.getClass())

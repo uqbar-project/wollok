@@ -1,29 +1,29 @@
 class Deposito {
-	val formaciones = []
+	val formaciones = #[]
 	
 	method agregarFormacion(unTren) { formaciones.add(unTren) }
-	method vagonesMasPesados() { formaciones.map({t=> t.vagonMasPesado()}).flatten() }
+	method vagonesMasPesados() { formaciones.map([t| t.vagonMasPesado()]).flatten() }
 }
 
 class Tren {
-	val vagones = []
-	val locomotoras = []
+	val vagones = #[]
+	val locomotoras = #[]
 	
 	method agregarVagon(v) { vagones.add(v) }
-	method getCantidadPasajeros() = vagones.sum{v=> v.getCantidadPasajeros()}
-	method getCantidadVagonesLivianos() = vagones.count{v=> v.esLiviano()}
-	method getVelocidadMaxima() = locomotoras.min{l=> l.getVelocidadMaxima() }.getVelocidadMaxima()
+	method getCantidadPasajeros() = vagones.sum[v| v.getCantidadPasajeros()] 
+	method getCantidadVagonesLivianos() = vagones.count[v| v.esLiviano()]
+	method getVelocidadMaxima() = locomotoras.min[l| l.getVelocidadMaxima() ].getVelocidadMaxima()
 	method agregarLocomotora(loco) { locomotoras.add(loco)	}
-	method esEficiente() = locomotoras.forAll{l=> l.esEficiente()}
+	method esEficiente() = locomotoras.forAll[l| l.esEficiente()]
 	method puedeMoverse() = this.arrastreUtilTotalLocomotoras() >= this.pesoMaximoTotalDeVagones()
-	method arrastreUtilTotalLocomotoras() = locomotoras.sum{l=> l.arrastreUtil()}
-	method pesoMaximoTotalDeVagones() = vagones.sum{v=> v.getPesoMaximo()}
+	method arrastreUtilTotalLocomotoras() = locomotoras.sum[l| l.arrastreUtil()]
+	method pesoMaximoTotalDeVagones() = vagones.sum[v| v.getPesoMaximo()]
 	method getKilosEmpujeFaltantes() =
 		if (this.puedeMoverse())
 			0
 		else
 			this.pesoMaximoTotalDeVagones() - this.arrastreUtilTotalLocomotoras()
-	method vagonMasPesado() = vagones.max({v=> v.getPesoMaximo() })
+	method vagonMasPesado() = vagones.max([v| v.getPesoMaximo() ])
 }
 
 class Locomotora {

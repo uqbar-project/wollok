@@ -13,7 +13,7 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCollectionAsInstanceVariable() { #['''
 		object pajarera{
-			val pajaros = []
+			val pajaros = #[]
 			method agregar(unPajaro){
 				pajaros.add(unPajaro)
 			}
@@ -41,9 +41,9 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 		'''
 		object pajarera {
 		    var energiaMenor = 100 
-		    var pajaros = [pepita, pepe]
+		    var pajaros = #[pepita, pepe]
 		    method menorValor(){
-		        pajaros.forEach{a => a.sosMenor(energiaMenor)}
+		        pajaros.forEach[a | a.sosMenor(energiaMenor)]
 		        return energiaMenor
 		    }      
 		
@@ -74,10 +74,10 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	def void testAddAll() { 
 		'''
 		program p {
-			val unos = [1,2,3,4]
-			val otros = [5,6,7,8]
+			val unos = #[1,2,3,4]
+			val otros = #[5,6,7,8]
 			
-			val todos = []
+			val todos = #[]
 			todos.addAll(unos)
 			todos.addAll(otros)			
 			assert.equals(8, todos.size())
@@ -88,10 +88,10 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 	def void testFlatMap() {
 		'''
 		program p {
-			assert.equals([1,2,3,4], [[1,2], [3,4]].flatten())
-			assert.equals([1,2,3,4], [[1,2], [], [3,4]].flatten())
-			assert.equals([], [].flatten())
-			assert.equals([], [[]].flatten())
+			assert.equals(#[1,2,3,4], #[#[1,2], #[3,4]].flatten())
+			assert.equals(#[1,2,3,4], #[#[1,2], #[], #[3,4]].flatten())
+			assert.equals(#[], #[].flatten())
+			assert.equals(#[], #[#[]].flatten())
 		}'''.interpretPropagatingErrors
 	}
 }
