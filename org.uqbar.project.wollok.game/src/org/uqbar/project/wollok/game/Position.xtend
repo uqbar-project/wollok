@@ -57,18 +57,26 @@ class Position extends AbstractPosition {
 }
 
 class WPosition extends AbstractPosition {
+	public static val CONVENTIONS = #["posicion", "position"]
+
 	WollokObject position
 
 	new(WollokObject wObject) {
-		var method = wObject.allMethods.map[it.name].findFirst[isPositionGetter(it)]
-		this.position = wObject.call(method)
+		position = wObject.getPosition()
 	}
 
-	def isPositionGetter(String methodName) {
-		#[
-			"getPosicion", "getPosition",
-			"posicion", "position"
-		].contains(methodName)
+	def getPosition(WollokObject it) {
+		var method = allMethods.map[it.name].findFirst[isPositionGetter]
+		if (method != null)
+			return call(method)
+
+		var position = CONVENTIONS.map[c|instanceVariables.get(c)].filterNull.head
+		if (position != null)
+			return position
+	}
+
+	def isPositionGetter(String it) {
+		CONVENTIONS.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
 	}
 
 	override getX() { position.getInt("getX") }
