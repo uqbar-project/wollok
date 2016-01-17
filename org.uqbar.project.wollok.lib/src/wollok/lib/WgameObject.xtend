@@ -1,22 +1,24 @@
 package wollok.lib
 
 import java.util.List
+import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * 
  * @author ?
  */
 class WgameObject {
+	public static val CONVENTIONS = #["posicion", "position"]
 	
 	@NativeMessage("addVisual")
 	def addVisualMethod(Object it) { addComponent(asVisualComponent) }
@@ -24,13 +26,40 @@ class WgameObject {
 	@NativeMessage("addVisualCharacter")
 	def addVisualCharacterMethod(Object it) { addCharacter(asVisualComponent) }
 
-	def asVisualComponent(Object it) { new VisualComponent(WollokObject.cast(it)) }
+	def asVisualComponent(Object it) { 
+		var wObj = it as WollokObject
+		new VisualComponent(new WPosition(wObj.position), new WImage(wObj), wObj)
+	}
+	
+	def getPosition(WollokObject it) {
+		var method = allMethods.map[it.name].findFirst[isPositionGetter]
+		if (method != null)
+			return call(method)
+
+		var position = CONVENTIONS.map[c|instanceVariables.get(c)].filterNull.head
+		if (position != null)
+			return position
+
+		throw new WollokRuntimeException(String.format("Visual object doesn't have any position: %s", it.toString))
+	}
+
+	def isPositionGetter(String it) {
+		CONVENTIONS.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
+	}
+	
+	def wollokToList(Object it) { 
+		WollokObject.cast(it).wollokToJava(List) as List
+	}
+	
+	def asVisualComponent(Object it, List<String> attrs) { 
+		asVisualComponent => [
+			attributes = attrs
+		]
+	}
 	
 	@NativeMessage("addVisualWithReference")
-	def addVisualWithReferenceMethod(Object element, Object properties) {		
-		val wollokObject = WollokObject.cast(element)
-		val wollokList = WollokObject.cast(properties)
-		addComponent(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
+	def addVisualWithReferenceMethod(Object it, Object properties) {
+		addComponent(asVisualComponent(properties.wollokToList))
 	}
 
 	@NativeMessage("whenKeyPressedSay")
@@ -43,9 +72,7 @@ class WgameObject {
 	
 	@NativeMessage("addVisualCharacterWithReference")
 	def addVisualCharacterWithReferenceMethod(Object element, Object properties) {		
-		var wollokObject = WollokObject.cast(element)
-		var wollokList = WollokObject.cast(properties)
-		this.addCharacter(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
+		addCharacter(asVisualComponent(properties.wollokToList))
 	}
 	
 	@NativeMessage("whenKeyPressedDo")
@@ -66,8 +93,8 @@ class WgameObject {
 	
 	@NativeMessage("getObjectsIn")
 	def getObjectsInMethod(Object position) {
-		val wollokObject = WollokObject.cast(position)
-		val wPosition = new WPosition(wollokObject)
+		val wollokObject = position as WollokObject
+		val wPosition = new WPosition(wollokObject) 
 		val list = board.getComponentsInPosition(wPosition).map[ domainObject ].toList
 		list.javaToWollok
 	}

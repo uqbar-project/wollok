@@ -2,12 +2,11 @@ package org.uqbar.project.wollok.tests.game
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
-import org.uqbar.project.wollok.game.WPosition
-import wollok.lib.AssertionException
+import wollok.lib.WgameObject
 
 class PositionTest extends AbstractWollokInterpreterTestCase {
 
-	val conventions = WPosition.CONVENTIONS
+	val conventions = WgameObject.CONVENTIONS
 
 	@Test
 	def void positionAccessedByGetterMethod() {

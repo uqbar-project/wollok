@@ -26,15 +26,9 @@ class VisualComponent {
 		this.image = image
 	}
 	
-	new (WollokObject object) {
-		domainObject = object
-		position = new WPosition(object)
-		image = new WImage(object)
-	}
-	
-	new (WollokObject object, Collection<Object> attrs) {
-		this(object);
-		attributes.addAll(attrs.map[toString])
+	new(AbstractPosition position, Image image, WollokObject wollokObject) {
+		this(position, image)
+		domainObject = wollokObject
 	}
 	
 	def say(String aText) {
