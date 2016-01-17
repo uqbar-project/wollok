@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.game
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
 import org.uqbar.project.wollok.game.WPosition
+import wollok.lib.AssertionException
 
 class PositionTest extends AbstractWollokInterpreterTestCase {
 
@@ -43,5 +44,21 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 				wgame.addVisual(visual)
 			}'''.interpretPropagatingErrors
 		]
+	}
+	
+	@Test
+	def void visualsWithoutPositionCantBeRendered() {
+		try {
+			'''
+			object visual {
+				method getImagen() = "anImage.png"
+			}
+			
+			program p {
+				wgame.addVisual(visual)
+			}'''.interpretPropagatingErrors
+		} catch (AssertionError exception) {
+			assertTrue(exception.message.contains("Visual object doesn't have any position"))
+		}
 	}
 }

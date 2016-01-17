@@ -5,6 +5,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 abstract class AbstractPosition {
 	override public int hashCode() {
@@ -73,6 +74,8 @@ class WPosition extends AbstractPosition {
 		var position = CONVENTIONS.map[c|instanceVariables.get(c)].filterNull.head
 		if (position != null)
 			return position
+			
+		throw new WollokRuntimeException(String.format("Visual object doesn't have any position: %s", it.toString))
 	}
 
 	def isPositionGetter(String it) {
