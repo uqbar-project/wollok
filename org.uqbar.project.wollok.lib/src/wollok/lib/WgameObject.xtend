@@ -1,6 +1,5 @@
 package wollok.lib
 
-import java.util.List
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
@@ -21,16 +20,16 @@ class WgameObject {
 	def addVisualCharacter(WollokObject it) { position.drawWollokCharacter(it) }
 	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
-		var num = key.wollokToJava(Integer) as Integer
+		var num = key.asInteger
 		val function = action.asClosure
 		var listener = new KeyboardListener(num, [ function.doApply ])
 		board.addListener(listener)
 	}
 
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
-		val num = key.wollokToJava(Integer) as Integer
+		val num = key.asInteger
 		val function = functionObj.asClosure
-		var listener = new KeyboardListener(num,  [ board.characterSay(function.doApply.wollokToJava(String) as String) ]) 
+		var listener = new KeyboardListener(num,  [ board.characterSay(function.doApply.asString) ]) 
 		board.addListener(listener)
 	}
 	
@@ -54,26 +53,24 @@ class WgameObject {
 	def addComponent(VisualComponent component) {
 		board.addComponent(component)
 	}
-
-	def wollokToList(WollokObject it) { it.wollokToJava(List) as List }
 	
 //	 ACCESSORS
 	def getTitle() { board.title.javaToWollok }
-	def setTitle(String title) {
-		board.title = title.wollokToJava(String) as String
+	def setTitle(WollokObject title) {
+		board.title = title.asString
 	}
 	
 	def getWidth() { board.width.javaToWollok }
 	def setWidth(WollokObject cant) {
-		board.width =  cant.wollokToJava(Integer) as Integer
+		board.width =  cant.asInteger
 	}
 	
 	def getHeight() { board.height.javaToWollok }
 	def setHeight(WollokObject cant) {
-		board.height = cant.wollokToJava(Integer) as Integer
+		board.height = cant.asInteger
 	}
 	
 	def setGround(WollokObject image) {
-		board.createCells(image.wollokToJava(String) as String)
+		board.createCells(image.asString)
 	}
 }
