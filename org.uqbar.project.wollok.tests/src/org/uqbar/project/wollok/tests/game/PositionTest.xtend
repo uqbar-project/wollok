@@ -1,56 +1,59 @@
 package org.uqbar.project.wollok.tests.game
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameter
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import wollok.lib.Position
 
-class PositionTest extends AbstractWollokInterpreterTestCase {
+class PositionTest extends AbstractWollokParameterizedInterpreterTest {
+	@Parameter(0)
+	public String convention
 
-	val conventions = Position.CONVENTIONS
+	@Parameters(name="{0}")
+	static def Iterable<Object[]> data() {
+		Position.CONVENTIONS.asParameters
+	}
 
 	@Test
 	def void canInstancePosition() {
 		'''
-			program p {
-				var p = new Position(0,0)
-			}'''.interpretPropagatingErrors
+		program p {
+			var p = new Position(0,0)
+		}'''.interpretPropagatingErrors
 	}
 
 	@Test
-	def void positionAccessedByGetterMethod() {
-		conventions.forEach [
-			'''
-			program p {
-				var aVisual = object {
-					method get«it.toFirstUpper»() = new Position(0,0)
-					method getImagen() = "anImage.png"
-				}
+	def void positionCanBeAccessedByGetterMethod() {
+		'''
+		program p {
+			var aVisual = object {
+				method get«convention.toFirstUpper»() = new Position(0,0)
+				method getImage() = "image.png"
+			}
+			
+			var otherVisual = object {
+				method «convention»() = new Position(0,0)
+				method getImage() = "image.png"
+			}
+		
+			wgame.addVisual(aVisual)
+			wgame.addVisual(otherVisual)
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void positionCanBeAccessedByProperty() {
+		'''
+		program p {
+			var visual = object {
+				var «convention» = new Position(0,0)
 				
-				var otherVisual = object {
-					method «it»() = new Position(0,0)
-					method getImagen() = "anImage.png"
-				}
-			
-				wgame.addVisual(aVisual)
-				wgame.addVisual(otherVisual)
-			}'''.interpretPropagatingErrors
-		]
-	}
-
-	@Test
-	def void positionAccessedByProperty() {
-		conventions.forEach [
-			'''
-			program p {
-				var visual = object {
-					var «it» = new Position(0,0)
-					
-					method getImagen() = "anImage.png"
-				}
-			
-				wgame.addVisual(visual)
-			}'''.interpretPropagatingErrors
-		]
+				method getImagen() = "image.png"
+			}
+		
+			wgame.addVisual(visual)
+		}'''.interpretPropagatingErrors
 	}
 
 	@Test
@@ -58,7 +61,7 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 		try {
 			'''
 			object visual {
-				method getImagen() = "anImage.png"
+				method getImage() = "image.png"
 			}
 			
 			program p {
@@ -73,7 +76,7 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 	def void positionsCanDrawVisualsWithoutPosition() {
 		'''
 		object visual {
-			method getImagen() = "anImage.png"
+			method getImage() = "image.png"
 		}
 		
 		program p {

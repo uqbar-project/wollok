@@ -1,18 +1,60 @@
 package org.uqbar.project.wollok.tests.game
 
 import org.junit.Test
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.runners.Parameterized.Parameter
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import wollok.lib.WImage
 
-class ImageTest  extends AbstractWollokInterpreterTestCase {
+class ImageTest extends AbstractWollokParameterizedInterpreterTest {
+	@Parameter(0)
+	public String convention
 
-	val conventions = WImage.CONVENTIONS
+	@Parameters(name="{0}")
+	static def Iterable<Object[]> data() {
+		WImage.CONVENTIONS.asParameters
+	}
 
 	@Test
-	def void canInstancePosition() {
+	def void imageCanBeAccessedByGetterMethod() {
 		'''
+		program p {
+			var aVisual = object {
+				method get«convention.toFirstUpper»() = "image.png"
+			}
+			
+			var otherVisual = object {
+				method «convention»() = "image.png"
+			}
+		
+			new Position(0,0).drawElement(aVisual)
+			new Position(0,0).drawElement(otherVisual)
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void imageCanBeAccessedByProperty() {
+		'''
+		program p {
+			var visual = object {
+				var «convention» = "image.png"
+			}
+		
+			new Position(0,0).drawElement(visual)
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void visualsWithoutImageCantBeRendered() {
+		try {
+			'''
+			object visual { }
+			
 			program p {
-				var p = new Position(0,0)
+				new Position(0,0).drawElement(visual)
 			}'''.interpretPropagatingErrors
+		} catch (AssertionError exception) {
+			assertTrue(exception.message.contains("Visual object doesn't have any position"))
+		}
 	}
 }
