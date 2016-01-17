@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.game.AbstractPosition
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
@@ -88,7 +87,7 @@ class Gameboard {
 		this.character.say(aText);
 	}
 	
-	def getComponentsInPosition(AbstractPosition p) {
+	def getComponentsInPosition(Position p) {
 		components.filter [
 			position == p
 		]

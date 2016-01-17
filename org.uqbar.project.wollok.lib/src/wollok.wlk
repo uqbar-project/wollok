@@ -631,12 +631,9 @@ package lib {
 		method getBuffer() = buffer
 	}	
 	
-
 	object wgame {
 		method addVisual(element) native
 		method addVisualCharacter(element) native
-		method addVisualWithReference(element, property) native
-		method addVisualCharacterWithReference(element, property) native
 		method whenKeyPressedDo(key, action) native
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
@@ -653,59 +650,27 @@ package lib {
 		method setGround(image) native
 	}
 	
-	
 	class Position {
-		var x = 0
-		var y = 0
-		
-		constructor() { }
-		
+
 		constructor(_x, _y) {
-			x = _x
-			y = _y
+			this.setNativeX(_x)
+			this.setNativeY(_y)
 		}
+	
+		method clone() = new Position(this.getNativeX(), this.getNativeY())
 		
-		method moveLeft(num) { x = x - num }
-		method moveRight(num) { x = x + num }
-		method moveDown(num) { y = y - num }
-		method moveUp(num) { y = y + num }
+		method moveDown(cant) native
+		method moveUp(cant) native
+		method moveLeft(cant) native
+		method moveRight(cant) native
+		method drawElement(element) native
+		method drawCharacter(element) native
+		method getAllElements() native	
 		
-		method clone() = new Position(x, y)
-		
-		override method == (other) {
-			return x == other.getX() and y == other.getY()
-		}
-		
-		method drawCharacterWithReferences(element, reference) {
-			element.setPosicion(this.clone())
-			wgame.addVisualCharacterWithReference(element, reference)
-		}
-		
-		method drawCharacter(element) {
-			element.setPosicion(this.clone())
-			wgame.addVisualCharacter(element)
-		}
-		
-		method drawElementWithReferences(element, reference) {
-			element.setPosicion(this.clone())
-			wgame.addVisualWithReference(element, reference)
-		}
-		
-		method drawElement(element) {
-			element.setPosicion(this.clone())
-			wgame.addVisual(element)
-		}
-		
-		method getAllElements() = wgame.getObjectsIn(this)
-		
-		method getX() = x
-		
-		method setX(_x) { x = _x }
-		
-		method getY() = y
-		
-		method setY(_y) { y = _y }
-		
+		method getNativeX() native
+		method setNativeX(x) native
+		method getNativeY() native
+		method setNativeY(y) native
 	}
 }
 

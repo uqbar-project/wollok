@@ -15,18 +15,18 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
  */
 @Accessors
 class VisualComponent {
-	AbstractPosition position
+	Position position
 	Image image
 	WollokObject domainObject
 	Collection<String> attributes = newArrayList
 	List<BalloonMessage> balloonMessages = newArrayList
 	
-	new (AbstractPosition position, Image image) {
+	new (Position position, Image image) {
 		this.position = position
 		this.image = image
 	}
 	
-	new(AbstractPosition position, Image image, WollokObject wollokObject) {
+	new(Position position, Image image, WollokObject wollokObject) {
 		this(position, image)
 		domainObject = wollokObject
 	}

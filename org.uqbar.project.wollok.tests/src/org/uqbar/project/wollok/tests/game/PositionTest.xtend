@@ -2,11 +2,19 @@ package org.uqbar.project.wollok.tests.game
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
-import wollok.lib.WgameObject
+import wollok.lib.Position
 
 class PositionTest extends AbstractWollokInterpreterTestCase {
 
-	val conventions = WgameObject.CONVENTIONS
+	val conventions = Position.CONVENTIONS
+
+	@Test
+	def void canInstancePosition() {
+		'''
+			program p {
+				var p = new Position(0,0)
+			}'''.interpretPropagatingErrors
+	}
 
 	@Test
 	def void positionAccessedByGetterMethod() {
@@ -28,7 +36,7 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 			}'''.interpretPropagatingErrors
 		]
 	}
-	
+
 	@Test
 	def void positionAccessedByProperty() {
 		conventions.forEach [
@@ -44,7 +52,7 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 			}'''.interpretPropagatingErrors
 		]
 	}
-	
+
 	@Test
 	def void visualsWithoutPositionCantBeRendered() {
 		try {
@@ -59,5 +67,17 @@ class PositionTest extends AbstractWollokInterpreterTestCase {
 		} catch (AssertionError exception) {
 			assertTrue(exception.message.contains("Visual object doesn't have any position"))
 		}
+	}
+
+	@Test
+	def void positionsCanDrawVisualsWithoutPosition() {
+		'''
+		object visual {
+			method getImagen() = "anImage.png"
+		}
+		
+		program p {
+			new Position(0,0).drawElement(visual)
+		}'''.interpretPropagatingErrors
 	}
 }
