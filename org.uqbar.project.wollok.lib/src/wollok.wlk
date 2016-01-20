@@ -662,6 +662,22 @@ package lib {
 			x = _x
 			y = _y
 		}
+		
+		method moveRight(num) {
+			x += num
+		}
+		
+		method moveLeft(num) {
+			x -= num
+		}
+		
+		method moveUp(num) {
+			y += num
+		}
+		
+		method moveDown(num) {
+			y -= num
+		}
 	
 		method drawElement(element) { wgame.addVisualIn(element, this) }
 		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
