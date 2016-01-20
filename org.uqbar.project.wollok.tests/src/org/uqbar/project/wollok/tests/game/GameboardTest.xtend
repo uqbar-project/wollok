@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Cell
 import org.uqbar.project.wollok.game.helpers.Keyboard
+import org.uqbar.project.wollok.game.WGPosition
 
 /**
  * @author ?
@@ -35,10 +36,10 @@ class GameboardTest {
 		
 		listener = mock(GameboardListener)
 		gameboard.addListener(listener)
+		component = createComponent(new WGPosition(0, 0))
 		
-		component = createComponent(new Position(0, 0))
 		gameboard.addComponent(component)
-		character = createComponent(new Position(1, 0))
+		character = createComponent(new WGPosition(1, 0))
 		gameboard.addCharacter(character)
 	}
 	
@@ -50,9 +51,9 @@ class GameboardTest {
 	
 	@Test
 	def can_return_all_components_in_a_position() {
-		var otherComponent = createComponent(new Position(1, 0))
+		var otherComponent = createComponent(new WGPosition(1, 0))
 		gameboard.addComponent(otherComponent)
-		Assert.assertArrayEquals(#[character, otherComponent], gameboard.getComponentsInPosition(new Position(1, 0)))
+		Assert.assertArrayEquals(#[character, otherComponent], gameboard.getComponentsInPosition(new WGPosition(1, 0)))
 	}
 	
 	@Test

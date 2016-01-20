@@ -6,7 +6,8 @@ import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.helpers.Keyboard
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.game.WGVisualComponent
+import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.Image
 
 import org.junit.Before
@@ -24,7 +25,7 @@ class ArrowListenerTest {
 	def void init() {
 		gameboard = mock(Gameboard)
 		keyboard = mock(Keyboard)
-		character = new VisualComponent(new Position(0, 0), new Image())
+		character = new WGVisualComponent(new WGPosition(0, 0), new Image())
 		
 		Keyboard.instance = keyboard
 		arrowListener = new ArrowListener(character)
@@ -35,7 +36,7 @@ class ArrowListenerTest {
 		this.press("UP")
 		
 		arrowListener.notify(gameboard);
-		Assert.assertEquals(new Position(0, 1), character.position) 
+		Assert.assertEquals(new WGPosition(0, 1), character.position) 
 	}
 	
 	@Test
@@ -43,7 +44,7 @@ class ArrowListenerTest {
 		this.press("DOWN")
 		
 		arrowListener.notify(gameboard);
-		Assert.assertEquals(new Position(0, -1), character.position) 
+		Assert.assertEquals(new WGPosition(0, -1), character.position) 
 	}
 	
 	@Test
@@ -51,7 +52,7 @@ class ArrowListenerTest {
 		this.press("LEFT")
 		
 		arrowListener.notify(gameboard);
-		Assert.assertEquals(new Position(-1, 0), character.position) 
+		Assert.assertEquals(new WGPosition(-1, 0), character.position) 
 	}
 	
 	@Test
@@ -59,7 +60,7 @@ class ArrowListenerTest {
 		this.press("RIGHT")
 		
 		arrowListener.notify(gameboard);
-		Assert.assertEquals(new Position(1, 0), character.position) 
+		Assert.assertEquals(new WGPosition(1, 0), character.position) 
 	}
 	
 	def press(String key) {

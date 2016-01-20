@@ -8,6 +8,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import wollok.lang.WList
 import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import wollok.lib.WVisual
 
 /**
  * Extension methods to WollokObject
@@ -23,6 +24,16 @@ class WollokSDKExtensions {
 	def static asString(WollokObject it) { wollokToJava(String) as String }
 	def static asClosure(WollokObject it) { getNativeObject(CLOSURE) as Closure }
 	def static asList(WollokObject it) { getNativeObject(LIST) as WList }
+	
+	def static asVisual(WollokObject it) { new WVisual(it) }
+	
+		
+	public static val POSITION_CONVENTIONS = #["posicion", "position"]
+
+	def static getPosition(WollokObject it) {
+		findConvention(POSITION_CONVENTIONS)
+	}
+	
 	
 	def static findConvention(WollokObject it, List<String> conventions) {
 		var getter = allMethods.map[it.name].findFirst[isGetter(conventions)]

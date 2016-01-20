@@ -651,26 +651,26 @@ package lib {
 	}
 	
 	class Position {
-
+		var x = 0
+		var y = 0
+		
+		constructor() { }		
+				
 		constructor(_x, _y) {
-			this.setNativeX(_x)
-			this.setNativeY(_y)
+			x = _x
+			y = _y
 		}
 	
-		method clone() = new Position(this.getNativeX(), this.getNativeY())
+		method drawElement(element) { wgame.addVisual(element) }
+		method drawCharacter(element) { wgame.addVisualCharacter(element) }		
+		method allElements() = wgame.getObjectsIn(this)
 		
-		method moveDown(cant) native
-		method moveUp(cant) native
-		method moveLeft(cant) native
-		method moveRight(cant) native
-		method drawElement(element) native
-		method drawCharacter(element) native
-		method getAllElements() native	
-		
-		method getNativeX() native
-		method setNativeX(x) native
-		method getNativeY() native
-		method setNativeY(y) native
+		method clone() = new Position(x, y)
+
+		method getX() = x
+		method setX(_x) { x = _x }
+		method getY() = y
+		method setY(_y) { y = _y }
 	}
 }
 

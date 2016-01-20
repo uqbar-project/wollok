@@ -4,7 +4,8 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.junit.Before
 import org.junit.Test
 import org.uqbar.project.wollok.game.Image
-import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.WGVisualComponent
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
@@ -27,9 +28,9 @@ class CollisionListenerTest {
 		gameboard = new Gameboard
 		
 		var image = new Image("path")
-		mario = new VisualComponent(new Position(2, 2), image)
-		aCoin = new VisualComponent(new Position(3, 3), image)
-		otherCoin = new VisualComponent(new Position(4, 4), image)
+		mario = new WGVisualComponent(new WGPosition(2, 2), image)
+		aCoin = new WGVisualComponent(new WGPosition(3, 3), image)
+		otherCoin = new WGVisualComponent(new WGPosition(4, 4), image)
 		
 		gameboard.addComponents(newArrayList(mario, aCoin, otherCoin))
 		

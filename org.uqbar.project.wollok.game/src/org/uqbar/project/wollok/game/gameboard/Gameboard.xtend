@@ -3,13 +3,14 @@ package org.uqbar.project.wollok.game.gameboard;
 import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.game.WGPosition
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * 
@@ -65,7 +66,7 @@ class Gameboard {
 	def createCells(String groundImage) {
 		for (var i = 0; i < height; i++) {
 			for (var j = 0; j < width; j++) {
-				cells.add(new Cell(new Position(i, j), new Image(groundImage)));
+				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
 			}
 		}
 	}

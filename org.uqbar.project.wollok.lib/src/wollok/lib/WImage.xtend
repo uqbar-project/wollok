@@ -3,7 +3,6 @@ package wollok.lib
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 class WImage extends Image {
@@ -21,6 +20,6 @@ class WImage extends Image {
 	}
 	
 	override getPath() { 
-		object.getImage.wollokToJava(String) as String
+		object.getImage.asString
 	}
 }

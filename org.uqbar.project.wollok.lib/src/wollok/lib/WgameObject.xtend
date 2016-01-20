@@ -1,6 +1,5 @@
 package wollok.lib
 
-import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.CollisionListener
@@ -9,16 +8,16 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
-import static extension wollok.lib.Position.*
 
 /**
  * 
  * @author ?
  */
 class WgameObject {
-	def addVisual(WollokObject it) { position.drawWollokElement(it) }
 	
-	def addVisualCharacter(WollokObject it) { position.drawWollokCharacter(it) }
+	def addVisual(WollokObject it) { board.addComponent(asVisual) }
+	
+	def addVisualCharacter(WollokObject it) { board.addCharacter(asVisual) }
 	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.asInteger
@@ -35,11 +34,18 @@ class WgameObject {
 	}
 	
 	def whenCollideDo(WollokObject object, WollokObject action) {
-		val visualObject = board.getComponents().findFirst[ c | c.domainObject.equals(object)]
+		var components = board.components.map[it as WVisual] 
+		val visualObject = components.findFirst[ it.wObject.equals(object)]
 		val function = action.asClosure
-		val listener = new CollisionListener(visualObject, [ VisualComponent e | function.doApply(e.domainObject) ])
+		val listener = new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ])
 		addListener(listener)
 	}
+	
+	def getObjectsIn(WollokObject position) {
+		var pos = new WPosition(position)
+		board.getComponentsInPosition(pos).javaToWollok
+	}
+	
 	
 	def clear() { board.clear }
 	
@@ -50,6 +56,7 @@ class WgameObject {
 	def addListener(GameboardListener listener) {
 		board.addListener(listener)
 	}
+	
 	
 //	 ACCESSORS
 	def getTitle() { board.title.javaToWollok }
