@@ -11,13 +11,19 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class WVisual extends VisualComponent {
 
 	public WollokObject wObject
+	WollokObject wPosition
 
 	new(WollokObject object) {
 		wObject = object
 	}
 
+	new(WollokObject object, WollokObject position) {
+		this(object)
+		this.wPosition = position
+	}
+
 	override getAttributes() {
-		wObject.instanceVariables.entrySet.map[key.toString + ":" + value.toString].toList
+		wObject.instanceVariables.entrySet.map[key + ":" /*TODO: value.toString*/].toList
 	}
 
 	override getImage() {
@@ -32,7 +38,10 @@ class WVisual extends VisualComponent {
 		objectPosition.copyFrom(position)
 	}
 
-	def getObjectPosition() { 
+	def getObjectPosition() {
+		if (wPosition != null)
+			return new WPosition(wPosition)
+
 		new WPosition(wObject.position)
 	}
 }

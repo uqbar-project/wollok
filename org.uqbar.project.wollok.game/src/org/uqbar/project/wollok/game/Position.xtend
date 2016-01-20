@@ -18,6 +18,19 @@ abstract class Position {
 
 	def incY(int spaces) { y = y + spaces }
 
+	override public int hashCode() {
+		val prime = 31
+		val result = prime + x
+		prime * result + y
+	}
+
+	override equals(Object obj) {
+		if(obj == null) return false
+
+		var other = obj as Position
+		x == other.x && y == other.y
+	}
+	
 	override toString() { getX + "@" + getY }	
 }
 
@@ -31,18 +44,5 @@ class WGPosition extends Position {
 	new(int x, int y) {
 		this.x = x
 		this.y = y
-	}		
-
-	override public int hashCode() {
-		val prime = 31
-		val result = prime + x
-		prime * result + y
-	}
-
-	override equals(Object obj) {
-		if(obj == null) return false
-
-		var other = obj as Position
-		x == other.x && y == other.y
 	}
 }

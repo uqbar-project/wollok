@@ -15,9 +15,21 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  */
 class WgameObject {
 	
-	def addVisual(WollokObject it) { board.addComponent(asVisual) }
+	def addVisual(WollokObject it) { 
+		board.addComponent(asVisual)
+	}
+
+	def addVisualIn(WollokObject it, WollokObject position) { 
+		board.addComponent(asVisualIn(position))
+	}
 	
-	def addVisualCharacter(WollokObject it) { board.addCharacter(asVisual) }
+	def addVisualCharacter(WollokObject it) { 
+		board.addCharacter(asVisual)
+	}
+	
+	def addVisualCharacterIn(WollokObject it, WollokObject position) { 
+		board.addCharacter(asVisualIn(position))
+	}
 	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.asInteger
@@ -43,9 +55,11 @@ class WgameObject {
 	
 	def getObjectsIn(WollokObject position) {
 		var pos = new WPosition(position)
-		board.getComponentsInPosition(pos).javaToWollok
+		board.getComponentsInPosition(pos)
+		.map[ it as WVisual ]
+		.map [ it.wObject ]
+		.toList.javaToWollok
 	}
-	
 	
 	def clear() { board.clear }
 	

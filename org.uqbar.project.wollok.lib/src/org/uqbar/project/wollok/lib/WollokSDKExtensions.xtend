@@ -26,6 +26,7 @@ class WollokSDKExtensions {
 	def static asList(WollokObject it) { getNativeObject(LIST) as WList }
 	
 	def static asVisual(WollokObject it) { new WVisual(it) }
+	def static asVisualIn(WollokObject it, WollokObject position) { new WVisual(it, position) }
 	
 		
 	public static val POSITION_CONVENTIONS = #["posicion", "position"]

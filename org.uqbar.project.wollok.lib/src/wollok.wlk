@@ -633,7 +633,9 @@ package lib {
 	
 	object wgame {
 		method addVisual(element) native
+		method addVisualIn(element, position) native
 		method addVisualCharacter(element) native
+		method addVisualCharacterIn(element, position) native
 		method whenKeyPressedDo(key, action) native
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
@@ -661,8 +663,8 @@ package lib {
 			y = _y
 		}
 	
-		method drawElement(element) { wgame.addVisual(element) }
-		method drawCharacter(element) { wgame.addVisualCharacter(element) }		
+		method drawElement(element) { wgame.addVisualIn(element, this) }
+		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
 		method allElements() = wgame.getObjectsIn(this)
 		
 		method clone() = new Position(x, y)
