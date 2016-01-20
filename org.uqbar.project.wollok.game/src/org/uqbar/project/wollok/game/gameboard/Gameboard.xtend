@@ -19,14 +19,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class Gameboard {
 	public static Gameboard instance
 	public static final int CELLZISE = 50
-	private VisualComponent character
-	private List<Cell> cells = newArrayList
 	
-	public String title
-	public int height
-	public int width
-	public List<VisualComponent> components = newArrayList
-	public List<GameboardListener> listeners = newArrayList
+	String title
+	int height
+	int width
+	List<Cell> cells = newArrayList
+	List<VisualComponent> components = newArrayList
+	List<GameboardListener> listeners = newArrayList
+	VisualComponent character
 	
 	def static getInstance() {
 		if (instance == null) {
@@ -49,12 +49,14 @@ class Gameboard {
 				this.listeners.get(i).notify(this);
 			} 
 			catch (WollokProgramExceptionWrapper e) {
-				var Object message = e.getWollokException().getInstanceVariables().get("message");
+				var Object message = e.wollokMessage
 				if (message == null)
-					message = "NO MESSAGE";
+					message = "NO MESSAGE"
 				
 				if (character != null)
-					character.scream("ERROR: " + message.toString());
+					character.scream("ERROR: " + message.toString())
+					
+				System.out.println(e.wollokStackTrace)
 			} 
 		}
 
@@ -80,16 +82,17 @@ class Gameboard {
 	}
 	
 	def clear() {
-		this.components.clear();
-		this.listeners.clear();
+		components.clear()
+		listeners.clear()
+		character = null
 	}
 
 	def characterSay(String aText) {
-		this.character.say(aText);
+		character.say(aText);
 	}
 	
 	def getComponentsInPosition(Position p) {
-		components.filter [
+		this.getComponents.filter [
 			position == p
 		]
 	}
@@ -98,8 +101,8 @@ class Gameboard {
 
 	def addCharacter(VisualComponent character) {
 		this.character = character
-		this.addComponent(character)
-		this.addListener(new ArrowListener(character))
+		addComponent(character)
+		addListener(new ArrowListener(character))
 	}
 
 	def addComponent(VisualComponent component) {
@@ -111,10 +114,6 @@ class Gameboard {
 	}
 
 	def addListener(GameboardListener aListener){
-		this.listeners.add(aListener);
-	}
-
-	def getComponents() {
-		this.components
+		listeners.add(aListener);
 	}
 }
