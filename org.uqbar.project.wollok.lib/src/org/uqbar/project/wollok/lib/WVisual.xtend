@@ -23,11 +23,13 @@ class WVisual extends VisualComponent {
 	}
 
 	override getAttributes() {
-		wObject.instanceVariables.entrySet
-		.map[key + ":" /*TODO: value.toString*/]
+		wObject
+		.printableVariables
+		.filter[value != null]
+		.map[key + ":" + value.toString]
 		.toList
 	}
-
+	
 	override getImage() {
 		new WImage(wObject.image)
 	}
