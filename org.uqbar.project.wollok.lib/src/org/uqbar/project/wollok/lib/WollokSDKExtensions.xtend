@@ -2,13 +2,10 @@ package org.uqbar.project.wollok.lib
 
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import wollok.lang.Closure
+import wollok.lang.WList
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import wollok.lang.WList
-import java.util.List
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import wollok.lib.WVisual
 
 /**
  * Extension methods to WollokObject
@@ -27,28 +24,4 @@ class WollokSDKExtensions {
 	
 	def static asVisual(WollokObject it) { new WVisual(it) }
 	def static asVisualIn(WollokObject it, WollokObject position) { new WVisual(it, position) }
-	
-		
-	public static val POSITION_CONVENTIONS = #["posicion", "position"]
-
-	def static getPosition(WollokObject it) {
-		findConvention(POSITION_CONVENTIONS)
-	}
-	
-	
-	def static findConvention(WollokObject it, List<String> conventions) {
-		var getter = allMethods.map[it.name].findFirst[isGetter(conventions)]
-		if (getter != null)
-			return call(getter)
-
-		var attribute = conventions.map[c|instanceVariables.get(c)].filterNull.head
-		if (attribute != null)
-			return attribute
-
-		throw new WollokRuntimeException(String.format("Visual object doesn't have any position: %s", it.toString))
-	}
-
-	def static isGetter(String it, List<String> conventions) {
-		conventions.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
-	}
 }

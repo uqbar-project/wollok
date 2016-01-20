@@ -1,10 +1,10 @@
-package wollok.lib
+package org.uqbar.project.wollok.lib
 
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static extension org.uqbar.project.wollok.lib.WollokConventionExtensions.*
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
@@ -23,11 +23,13 @@ class WVisual extends VisualComponent {
 	}
 
 	override getAttributes() {
-		wObject.instanceVariables.entrySet.map[key + ":" /*TODO: value.toString*/].toList
+		wObject.instanceVariables.entrySet
+		.map[key + ":" /*TODO: value.toString*/]
+		.toList
 	}
 
 	override getImage() {
-		new WImage(wObject)
+		new WImage(wObject.image)
 	}
 
 	override getPosition() {

@@ -1,5 +1,7 @@
 package wollok.lib
 
+import org.uqbar.project.wollok.lib.WVisual
+import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.CollisionListener

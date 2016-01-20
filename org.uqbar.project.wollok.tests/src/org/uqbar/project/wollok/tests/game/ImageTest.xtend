@@ -3,8 +3,8 @@ package org.uqbar.project.wollok.tests.game
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.lib.WollokConventionExtensions
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import wollok.lib.WImage
 
 class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
@@ -12,7 +12,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 
 	@Parameters(name="{0}")
 	static def Iterable<Object[]> data() {
-		WImage.CONVENTIONS.asParameters
+		WollokConventionExtensions.IMAGE_CONVENTIONS.asParameters
 	}
 
 	@Test

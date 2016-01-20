@@ -1,4 +1,4 @@
-package wollok.lib
+package org.uqbar.project.wollok.lib
 
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.interpreter.core.WollokObject

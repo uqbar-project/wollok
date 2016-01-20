@@ -4,7 +4,7 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import org.uqbar.project.wollok.lib.WollokSDKExtensions
+import org.uqbar.project.wollok.lib.WollokConventionExtensions
 
 class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
@@ -12,7 +12,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 
 	@Parameters(name="{0}")
 	static def Iterable<Object[]> data() {
-		WollokSDKExtensions.POSITION_CONVENTIONS.asParameters
+		WollokConventionExtensions.POSITION_CONVENTIONS.asParameters
 	}
 
 	@Test
