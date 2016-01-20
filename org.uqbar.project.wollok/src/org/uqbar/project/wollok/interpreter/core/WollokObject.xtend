@@ -160,9 +160,12 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		+ 
 		#[THIS_VAR]
 	}
+	
 	def allMethods() {
-		// TODO: include inherited methods!
-		behavior.methods
+		if (behavior.parent != null)
+			behavior.methods + behavior.parent.methods
+		else
+			behavior.methods
 	}
 	
 	override toString() {

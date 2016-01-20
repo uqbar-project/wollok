@@ -3,14 +3,14 @@ package org.uqbar.project.wollok.game.gameboard;
 import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.game.AbstractPosition
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.game.WGPosition
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * 
@@ -19,14 +19,14 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 class Gameboard {
 	public static Gameboard instance
 	public static final int CELLZISE = 50
-	private VisualComponent character
-	private List<Cell> cells = newArrayList
 	
-	public String title
-	public int height
-	public int width
-	public List<VisualComponent> components = newArrayList
-	public List<GameboardListener> listeners = newArrayList
+	String title
+	int height
+	int width
+	List<Cell> cells = newArrayList
+	List<VisualComponent> components = newArrayList
+	List<GameboardListener> listeners = newArrayList
+	VisualComponent character
 	
 	def static getInstance() {
 		if (instance == null) {
@@ -49,12 +49,14 @@ class Gameboard {
 				this.listeners.get(i).notify(this);
 			} 
 			catch (WollokProgramExceptionWrapper e) {
-				var Object message = e.getWollokException().getInstanceVariables().get("message");
+				var Object message = e.wollokMessage
 				if (message == null)
-					message = "NO MESSAGE";
+					message = "NO MESSAGE"
 				
 				if (character != null)
-					character.scream("ERROR: " + message.toString());
+					character.scream("ERROR: " + message.toString())
+					
+				System.out.println(e.wollokStackTrace)
 			} 
 		}
 
@@ -66,7 +68,7 @@ class Gameboard {
 	def createCells(String groundImage) {
 		for (var i = 0; i < height; i++) {
 			for (var j = 0; j < width; j++) {
-				cells.add(new Cell(new Position(i, j), new Image(groundImage)));
+				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
 			}
 		}
 	}
@@ -80,16 +82,17 @@ class Gameboard {
 	}
 	
 	def clear() {
-		this.components.clear();
-		this.listeners.clear();
+		components.clear()
+		listeners.clear()
+		character = null
 	}
 
 	def characterSay(String aText) {
-		this.character.say(aText);
+		character.say(aText);
 	}
 	
-	def getComponentsInPosition(AbstractPosition p) {
-		components.filter [
+	def getComponentsInPosition(Position p) {
+		this.getComponents.filter [
 			position == p
 		]
 	}
@@ -98,8 +101,8 @@ class Gameboard {
 
 	def addCharacter(VisualComponent character) {
 		this.character = character
-		this.addComponent(character)
-		this.addListener(new ArrowListener(character))
+		addComponent(character)
+		addListener(new ArrowListener(character))
 	}
 
 	def addComponent(VisualComponent component) {
@@ -111,10 +114,6 @@ class Gameboard {
 	}
 
 	def addListener(GameboardListener aListener){
-		this.listeners.add(aListener);
-	}
-
-	def getComponents() {
-		this.components
+		listeners.add(aListener);
 	}
 }

@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import org.uqbar.project.wollok.game.AbstractPosition
 import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.Position
 
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
@@ -24,7 +24,7 @@ class Window {
 		this.camera = camera
 	}
 	
-	def draw(Image image, AbstractPosition position) {
+	def draw(Image image, Position position) {
 		drawIn(image, position.xinPixels, position.yinPixels)
 	}
 	
@@ -32,13 +32,13 @@ class Window {
 		batch.draw(image.texture, x, y)
 	}
 	
-	def writeAttributes(String text, AbstractPosition position, Color color) {
+	def writeAttributes(String text, Position position, Color color) {
 		glyphLayout.reset()
 		glyphLayout.setText(font, text, color, 220, 3, true)
 		font.draw(batch, glyphLayout, position.xinPixels - 80, position.yinPixels)
 	}
 	
-	def drawBallon(String text, AbstractPosition position, Color color) {		
+	def drawBallon(String text, Position position, Color color) {		
 		val baseWidth = 75
 		var newText = text
 		
