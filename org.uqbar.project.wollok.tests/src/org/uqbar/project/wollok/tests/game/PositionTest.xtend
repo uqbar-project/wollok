@@ -80,9 +80,10 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
+			wgame.clear()
 			var position = new Position(0,0)
 			position.drawElement(visual)
-			var expected = position.allElements().get(0)
+			var expected = position.allElements().head()
 			assert.equals(expected, visual)
 		}'''.interpretPropagatingErrors
 	}
