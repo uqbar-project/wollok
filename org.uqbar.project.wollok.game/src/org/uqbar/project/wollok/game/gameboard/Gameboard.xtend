@@ -116,4 +116,9 @@ class Gameboard {
 	def addListener(GameboardListener aListener){
 		listeners.add(aListener);
 	}
+	
+	def remove(VisualComponent component) {
+		components.remove(component)
+	}
+	
 }

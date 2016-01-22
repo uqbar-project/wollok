@@ -636,6 +636,7 @@ package lib {
 		method addVisualIn(element, position) native
 		method addVisualCharacter(element) native
 		method addVisualCharacterIn(element, position) native
+		method removeVisual(element) native
 		method whenKeyPressedDo(key, action) native
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
@@ -663,21 +664,10 @@ package lib {
 			y = _y
 		}
 		
-		method moveRight(num) {
-			x += num
-		}
-		
-		method moveLeft(num) {
-			x -= num
-		}
-		
-		method moveUp(num) {
-			y += num
-		}
-		
-		method moveDown(num) {
-			y -= num
-		}
+		method moveRight(num) { x += num }
+		method moveLeft(num) { x -= num }
+		method moveUp(num) { y += num }
+		method moveDown(num) { y -= num }
 	
 		method drawElement(element) { wgame.addVisualIn(element, this) }
 		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		

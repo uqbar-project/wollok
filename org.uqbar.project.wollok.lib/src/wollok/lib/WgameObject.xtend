@@ -33,6 +33,11 @@ class WgameObject {
 		board.addCharacter(asVisualIn(position))
 	}
 	
+	def removeVisual(WollokObject it) {
+		var visual = board.findVisual(it)
+		board.remove(visual)
+	}
+	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.asInteger
 		val function = action.asClosure
@@ -47,9 +52,8 @@ class WgameObject {
 		addListener(listener)
 	}
 	
-	def whenCollideDo(WollokObject object, WollokObject action) {
-		var components = board.components.map[it as WVisual] 
-		val visualObject = components.findFirst[ it.wObject.equals(object)]
+	def whenCollideDo(WollokObject visual, WollokObject action) {
+		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
 		val listener = new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ])
 		addListener(listener)
@@ -71,6 +75,12 @@ class WgameObject {
 	
 	def addListener(GameboardListener listener) {
 		board.addListener(listener)
+	}
+	
+	def findVisual(Gameboard it, WollokObject visual) {
+		it.components
+		.map[it as WVisual]
+		.findFirst[ it.wObject.equals(visual)]
 	}
 	
 	
