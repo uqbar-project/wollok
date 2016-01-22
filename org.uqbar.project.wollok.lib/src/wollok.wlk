@@ -192,7 +192,7 @@ package lang {
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].max { e => e.length() }    =>  returns "wollok world"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
 		  */
 		method min(closure) = this.absolute(closure, { a, b => a < b} )
 		
