@@ -33,7 +33,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 
 	@Test
-	def void shouldAddVisualObjectsToBoard() {
+	def void shouldDrawVisualObjectsInBoard() {
 		'''
 		program p {
 			var visual = object {
@@ -47,7 +47,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 
 	@Test
-	def void shouldremoveVisualObjectsFromBoard() {
+	def void shouldDeleteVisualObjectsFromBoard() {
 		'''
 		program p {
 			var visual = object {
@@ -56,7 +56,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 
 			var position = new Position(0,0)
 			position.drawElement(visual)
-			position.removeElement(visual)
+			position.deleteElement(visual)
 		}'''.interpretPropagatingErrors
 		
 		assertEquals(0, gameboard.components.size)
