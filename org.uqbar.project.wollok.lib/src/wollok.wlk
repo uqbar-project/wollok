@@ -671,6 +671,7 @@ package lib {
 	
 		method drawElement(element) { wgame.addVisualIn(element, this) }
 		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
+		method removeElement(element) { wgame.removeVisual(element) }
 		method allElements() = wgame.getObjectsIn(this)
 		
 		method clone() = new Position(x, y)

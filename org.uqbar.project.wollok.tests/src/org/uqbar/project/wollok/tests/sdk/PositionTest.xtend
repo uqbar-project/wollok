@@ -1,10 +1,12 @@
-package org.uqbar.project.wollok.tests.game
+package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.lib.WollokConventionExtensions
+import org.uqbar.project.wollok.game.gameboard.Gameboard
+import org.junit.Before
 
 class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
@@ -15,6 +17,13 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		WollokConventionExtensions.POSITION_CONVENTIONS.asParameters
 	}
 
+	var gameboard = Gameboard.getInstance
+	
+	@Before
+	def void init() {
+		gameboard.clear()
+	}
+
 	@Test
 	def void canInstancePosition() {
 		'''
@@ -23,6 +32,36 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void shouldAddVisualObjectsToBoard() {
+		'''
+		program p {
+			var visual = object {
+				method image() = "image.png"
+			}
+
+			new Position(0,0).drawElement(visual)
+		}'''.interpretPropagatingErrors
+		
+		assertEquals(1, gameboard.components.size)
+	}
+
+	@Test
+	def void shouldremoveVisualObjectsFromBoard() {
+		'''
+		program p {
+			var visual = object {
+				method image() = "image.png"
+			}
+
+			var position = new Position(0,0)
+			position.drawElement(visual)
+			position.removeElement(visual)
+		}'''.interpretPropagatingErrors
+		
+		assertEquals(0, gameboard.components.size)
+	}
+	
 	@Test
 	def void positionCanBeAccessedByGetterMethod() {
 		'''
@@ -80,7 +119,6 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			wgame.clear()
 			var position = new Position(0,0)
 			position.drawElement(visual)
 			var expected = position.allElements().head()
