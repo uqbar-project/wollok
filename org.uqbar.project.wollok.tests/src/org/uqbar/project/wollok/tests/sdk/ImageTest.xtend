@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.game
+package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter

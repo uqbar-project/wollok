@@ -192,7 +192,7 @@ package lang {
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].max { e => e.length() }    =>  returns "wollok world"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
 		  */
 		method min(closure) = this.absolute(closure, { a, b => a < b} )
 		
@@ -636,6 +636,7 @@ package lib {
 		method addVisualIn(element, position) native
 		method addVisualCharacter(element) native
 		method addVisualCharacterIn(element, position) native
+		method removeVisual(element) native
 		method whenKeyPressedDo(key, action) native
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
@@ -663,24 +664,14 @@ package lib {
 			y = _y
 		}
 		
-		method moveRight(num) {
-			x += num
-		}
-		
-		method moveLeft(num) {
-			x -= num
-		}
-		
-		method moveUp(num) {
-			y += num
-		}
-		
-		method moveDown(num) {
-			y -= num
-		}
+		method moveRight(num) { x += num }
+		method moveLeft(num) { x -= num }
+		method moveUp(num) { y += num }
+		method moveDown(num) { y -= num }
 	
 		method drawElement(element) { wgame.addVisualIn(element, this) }
 		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
+		method deleteElement(element) { wgame.removeVisual(element) }
 		method allElements() = wgame.getObjectsIn(this)
 		
 		method clone() = new Position(x, y)
