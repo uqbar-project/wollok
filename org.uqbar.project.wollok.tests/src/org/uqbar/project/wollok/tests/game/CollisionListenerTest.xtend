@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 
 import static org.mockito.Mockito.*
-import org.junit.Assert
+import static org.junit.Assert.*
 
 /**
  * @author ? 
@@ -75,9 +75,9 @@ class CollisionListenerTest {
 	@Test
 	def void should_remove_listener_from_board_when_mario_is_removed(){
 		gameboard.addListener(listener)
-		Assert.assertTrue(containsListener)
+		assertTrue(containsListener)
 		gameboard.remove(mario)
-		Assert.assertFalse(containsListener)
+		assertFalse(containsListener)
 	}
 	
 	def containsListener() {

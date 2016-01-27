@@ -676,6 +676,10 @@ package lib {
 		
 		method clone() = new Position(x, y)
 
+		method clear() {
+			this.allElements().forEach{it => wgame.removeVisual(it)}
+		}
+		
 		method getX() = x
 		method setX(_x) { x = _x }
 		method getY() = y

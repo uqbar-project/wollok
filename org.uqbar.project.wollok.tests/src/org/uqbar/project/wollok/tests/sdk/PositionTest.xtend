@@ -125,4 +125,25 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 			assert.equals(expected, visual)
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void whenClearShouldRemoveAllVisualsInIt() {
+		'''
+		class Visual {
+			method getImage() = "image.png"
+		}
+		
+		program p {
+			2.times{ new Position(0,0).drawElement(new Visual()) }
+			new Position(1,1).drawElement(new Visual())
+		}'''.interpretPropagatingErrors
+		
+		assertEquals(3, gameboard.components.size)
+		'''
+		program p {
+			new Position(0,0).clear()
+		}'''.interpretPropagatingErrors
+		
+		assertEquals(1, gameboard.components.size)
+	}
 }
