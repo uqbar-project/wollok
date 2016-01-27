@@ -22,53 +22,12 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 
 	@Parameters(name="{0}")
 	static def Iterable<Object[]> data() {
-		val files = newArrayList => [
-			addAll(path.listWollokPrograms)
-		]
-		
-		files.asParameters
+		path.listWollokPrograms.asParameters
 	}
 	
 	@Test
 	def void runWollok() throws Exception {
 		program.interpretPropagatingErrors
-	}
-	
-	// ********************************************************************************************
-	// ** Helpers
-	// ********************************************************************************************
-	
-	// isFile && (name.endsWith(".wlk") || name.endsWith(".wpgm")) 
-	
-	static def dispatch Iterable<File> listWollokPrograms(String path) {
-		new File(path).listWollokPrograms
-	}
-	
-	static def dispatch Iterable<File> listWollokPrograms(File it){
-		if (file) {
-			if((name.endsWith(".wlk") || name.endsWith(".wpgm") || name.endsWith(".wtest")) && !ignore(it))
-				#[it]
-			else
-				#[]
-		} 
-		else {
-			listFiles.map[listWollokPrograms].flatten
-		}
-	}
-	
-	def static ignore(File file) {
-		var BufferedReader reader = null
-		try {
-			reader = new BufferedReader(new FileReader(file))
-			val r = reader.readLine.contains("@test IGNORE")
-			if (r)
-				println("IGNORING " + file.name)
-			r
-		}
-		finally {
-			if (reader != null)
-				reader.close
-		} 
 	}
 	
 }

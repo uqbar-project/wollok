@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import java.io.File
 import java.io.FileInputStream
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
 import org.eclipse.xtext.junit4.validation.ValidationTestHelper
@@ -69,8 +70,22 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def interpretPropagatingErrors(File fileToRead) {
 		new FileInputStream(fileToRead).parse(URI.createFileURI(fileToRead.path), null, resourceSet) => [
 			assertNoErrors
-			interpret(true)
+			it.safeInterpret
 		]
+	}
+	
+	def safeInterpret(EObject it) {
+		try
+			it.interpret(true)
+		catch (WollokProgramExceptionWrapper e) {
+			try {
+				fail(e.wollokMessage + '\n' + e.wollokStackTrace)
+			}
+			catch (Exception e2) {
+				println("Error while trying to print the original wollok exception stack trace")
+			}
+			throw e
+		}
 	}
 
 	def interpret(Boolean propagatingErrors, Pair<String, String>... programAsString) {
@@ -84,7 +99,9 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def interpret(Boolean propagatingErrors, boolean ignoreStaticErrors, boolean saveFilesToDisk, Pair<String, String>... programAsString) {
 		(programAsString.map[parse(resourceSet, saveFilesToDisk)].clone => [
 			if (!ignoreStaticErrors)
-				forEach[assertNoErrors]
+				forEach[
+					assertNoErrors
+				]
 			forEach[
 				try
 					it.interpret(propagatingErrors)

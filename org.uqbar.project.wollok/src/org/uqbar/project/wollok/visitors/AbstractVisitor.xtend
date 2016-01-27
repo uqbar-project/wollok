@@ -35,6 +35,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.Invariant
 
 /**
  * Implements an abstract visitor for the AST
@@ -87,7 +88,7 @@ class AbstractVisitor {
 		rightOperand.doVisit
 	}
 	
-	def dispatch void visit(WMemberFeatureCall it){
+	def dispatch void visit(WMemberFeatureCall it) {
 		memberCallTarget.doVisit
 		memberCallArguments.visitAll
 	}
@@ -120,6 +121,8 @@ class AbstractVisitor {
 	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
 	def dispatch void visit(WPostfixOperation it) { operand.doVisit }
 	def dispatch void visit(WReturnExpression it) { expression.doVisit }
+	
+	def dispatch void visit(Invariant it) { condition.doVisit }
 	
 	// terminal elements
 	

@@ -31,6 +31,10 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
+import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+
 /**
  * A wollok user defined (dynamic) object.
  * 
@@ -88,7 +92,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	def messageNotUnderstood(String message) {
-		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
+		val e = XTendUtilExtensions.evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
 		new WollokProgramExceptionWrapper(e)
 	}
 	
@@ -146,13 +150,26 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
  	}
  	
 	override setReference(String name, WollokObject value) {
-		if (name == THIS)
-			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
-		if (!instanceVariables.containsKey(name))
-			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
+		// TODO: change this exceptions to wollok exceptions
+		if (name == THIS) throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
+		if (!instanceVariables.containsKey(name)) throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
 		val oldValue = instanceVariables.put(name, value)
-		listeners.forEach[fieldChanged(name, oldValue, value)]
+		checkInvariants
+		listeners.forEach[ fieldChanged(name, oldValue, value) ]
+	}
+	
+	def checkInvariants() {
+		val invariants = behavior.allInvariants
+		// evaluate
+		val evaluations = invariants.map[i| i -> i.condition.eval]
+		
+		// check and fail
+		val failing = evaluations.filter[ !value.isTrue ]
+		if (!failing.empty)
+			throw newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, 
+				"Violated invariant: " +
+				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', '))
 	}
 	
 	// query (kind of reflection api)

@@ -191,21 +191,21 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap.after(leftCurlyBracketKeyword_4)
 		
 		// wrap before and after close bracket
-		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_8)
-		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_8)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_9)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_9)
 		
 		// indentation
-		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_8)
+		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_9)
 		
 		// after all variables
 		setLinewrap(1, 2, 2).after(group_5)
 		
 		// constructor
-		setLinewrap(2, 2, 2).around(constructorsAssignment_6)
+		setLinewrap(2, 2, 2).around(constructorsAssignment_7)
 		
 		// members (after var, after method)
 		setLinewrap(1, 1, 2).after(membersAssignment_5_0)
-		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_7_0_0)
+		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_8_0_0)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WObjectLiteralElements e) {
@@ -214,18 +214,19 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		
 		setLinewrap.after(leftCurlyBracketKeyword_4)
 		
-		setLinewrap(1, 2, 2).after(group_5)
+		setLinewrap(1, 2, 2).after(group_6)
 		
 		// wrap before and after close bracket
-		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_7)
-		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_7)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_8)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_8)
 		
-		// wrap after var, and method
+		// wrap after var, methods and invariants
 		setLinewrap(1, 1, 2).after(membersAssignment_5_0)
-		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_6_0_0)
+		setLinewrap(1, 1, 2).after(invariantsAssignment_6_0)
+		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_7_0_0)
 		
 		// increase indentation of content
-		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_7)
+		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_8)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WNamedObjectElements o) {
@@ -233,13 +234,13 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 2, 2).before(objectKeyword_0)
 		
 		setLinewrap.after(leftCurlyBracketKeyword_4)
-		setLinewrap.after(rightCurlyBracketKeyword_7)
+		setLinewrap.after(rightCurlyBracketKeyword_8)
 		setLinewrap(1, 2, 2).after(group_5)
 		
 		// wrap after var, and method
 		setLinewrap(1, 1, 2).after(membersWVariableDeclarationParserRuleCall_5_0_0)
 		setLinewrap(1, 1, 2).after(membersAssignment_5_0)
-		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_6_0_0)
+		setLinewrap(1, 2, 2).after(membersWMethodDeclarationParserRuleCall_7_0_0)
 		
 		// after all variables
 		setLinewrap(1, 2, 2).after(group_5)
@@ -248,11 +249,11 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setLinewrap(1, 2, 2).after(group_6)
 		
 		// increase indentation of content
-		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_7)
+		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_8)
 		
 		// wrap before and after close bracket
-		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_7)
-		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_7)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_8)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_8)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WSetLiteralElements l) {

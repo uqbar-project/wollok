@@ -20,6 +20,10 @@ class WollokConstants {
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	
+	public static def isWollokExtension(String name) {
+		#[CLASS_OBJECTS_EXTENSION, PROGRAM_EXTENSION, TEST_EXTENSION].exists[name.endsWith("." + it)]
+	}
+	
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	

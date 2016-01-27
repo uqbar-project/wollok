@@ -1,0 +1,29 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+class Bird {
+	var energy = 100
+	
+	invariant energy >= 0
+	
+	method fly(kms) {
+		energy -= kms
+	}
+}
+
+test "invariant fails when trying to modify the instance variable" {
+	val b = new Bird()
+	assert.throwsException { =>
+		b.fly(200)
+	}
+}
+
+test "Generated exception message for default invariant message" {
+	val b = new Bird()
+	try
+		b.fly(200)
+	catch e
+		assert.equals('Violated invariant: Not satisfied (energy >= 0)', e.getMessage())	
+}

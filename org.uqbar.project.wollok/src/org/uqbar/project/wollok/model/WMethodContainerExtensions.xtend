@@ -35,6 +35,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import java.util.Collections
 import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.Invariant
 
 /**
  * Extension methods for WMethodContainers.
@@ -331,5 +332,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(WExpression it) { false }
+	
+	// invariants
+	def static dispatch List<Invariant> invariants(WMixin it) { #[] }
+	def static dispatch List<Invariant> invariants(WNamedObject it) { invariants }
+	def static dispatch List<Invariant>invariants(WObjectLiteral it) { invariants }
+	def static dispatch List<Invariant> invariants(WClass it) { invariants }
+	
+	def static Iterable<Invariant> allInvariants(WMethodContainer it) {
+		linearizateHierarhcy.map[invariants].flatten
+	}
 	
 }

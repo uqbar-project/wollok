@@ -8,7 +8,7 @@ import org.junit.Test
  * 
  * @author jfernandes
  */
-class ContractsTestCase extends AbstractWollokInterpreterTestCase {
+class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void simplePreConditionForSingleParameterInClass() {
@@ -33,7 +33,7 @@ class ContractsTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			class Bird {
 				var energy = 10
-				
+
 				method fly(kms) {
 					energy -= kms
 				}

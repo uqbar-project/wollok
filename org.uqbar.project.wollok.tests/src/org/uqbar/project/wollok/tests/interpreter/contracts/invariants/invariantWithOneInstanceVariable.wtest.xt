@@ -1,0 +1,48 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+class Bird {
+	var energy = 100
+	
+	invariant energy >= 0
+	
+	method fly(kms) {
+		energy -= kms
+	}
+}
+
+class AnotherBird inherits Bird {
+	method doSomething() {
+		energy = -10
+	}
+}
+
+class BigBird inherits Bird {
+	invariant energy >= 10 : 'A big bird needs to always have at least 10 points of energy'
+}
+
+test "invariant gets checked for subclasses when calling inherited method" {
+	val b = new AnotherBird()
+	assert.throwsException { =>
+		b.fly(200)
+	}
+}
+
+test "invariant gets checked for subclasses when calling a subclass method" {
+	val b = new AnotherBird()
+	assert.throwsException { =>
+		b.doSomething()
+	}
+}
+
+test "Executes a new invariant from subclass" {
+	val b = new BigBird()
+	try {
+		b.fly(95)
+		assert.fail('Should have failed')
+	}
+	catch e
+		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy')	
+}

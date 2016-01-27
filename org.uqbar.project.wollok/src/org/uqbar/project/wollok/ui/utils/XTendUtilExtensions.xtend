@@ -133,7 +133,7 @@ class XTendUtilExtensions {
 		newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, nativeObject.createMessage(name, parameters))
 	}
 	
-	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
+	def static getEvaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
 	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
 		new WollokProgramExceptionWrapper(evaluator.newInstance(exceptionClassName, message.javaToWollok)) 
 	}

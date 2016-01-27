@@ -53,8 +53,13 @@ WObjectLiteral returns WExpression:
 	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
+		(invariants+=Invariant ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
+;
+
+Invariant:
+	'invariant' condition=WOrExpression (':' message=STRING)?
 ;
 
 WVariableDeclaration returns WExpression:
@@ -326,6 +331,7 @@ WNamedObject:
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
+		(invariants+=Invariant ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
@@ -342,6 +348,7 @@ WClass:
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
+		(invariants+=Invariant ';'?)*
 		(constructors+=WConstructor)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
