@@ -641,6 +641,7 @@ package lib {
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
 		method getObjectsIn(position) native
+		method say(element, message) native
 		method clear() native
 		method start() native
 		method stop() native
@@ -673,6 +674,7 @@ package lib {
 		method drawElement(element) { wgame.addVisualIn(element, this) }
 		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
 		method deleteElement(element) { wgame.removeVisual(element) }
+		method say(element, message) { wgame.say(element, message) }
 		method allElements() = wgame.getObjectsIn(this)
 		
 		method clone() = new Position(x, y)

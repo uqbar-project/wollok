@@ -146,4 +146,21 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		
 		assertEquals(1, gameboard.components.size)
 	}
+	
+	@Test
+	def void sayShouldAddBallonMessageToVisualObject() {
+		var message = "A message"
+		'''
+		object visual {
+			method getImage() = "image.png"
+		}
+		
+		program p {
+			var position = new Position(0,0)
+			position.drawCharacter(visual)
+			position.say(visual, "«message»")
+		}'''.interpretPropagatingErrors
+		
+		assertEquals(message, gameboard.character.balloonMessages.head.text)
+	}
 }

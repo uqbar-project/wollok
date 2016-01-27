@@ -67,6 +67,10 @@ class WgameObject {
 		.toList.javaToWollok
 	}
 	
+	def say(WollokObject visual, WollokObject message) {
+		board.findVisual(visual).say(message.asString)
+	}
+	
 	def clear() { board.clear }
 	
 	def start() { board.start }
