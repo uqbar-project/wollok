@@ -11,12 +11,13 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 
 import static org.mockito.Mockito.*
+import static org.junit.Assert.*
 
 /**
  * @author ? 
  */
 class CollisionListenerTest {
-	CollisionListener collisionListener
+	CollisionListener listener
 	Gameboard gameboard
 	VisualComponent mario
 	VisualComponent aCoin
@@ -35,18 +36,18 @@ class CollisionListenerTest {
 		gameboard.addComponents(newArrayList(mario, aCoin, otherCoin))
 		
 		block = mock(Function1)
-		collisionListener = new CollisionListener(mario, block)
+		listener = new CollisionListener(mario, block)
 	}
 	
 	@Test
 	def void nothing_happens_when_components_dont_collide_with_itself(){
-		collisionListener.notify(gameboard)
+		listener.notify(gameboard)
 		verify(block, never).apply(mario)
 	}
 	
 	@Test
 	def void when_no_components_are_colliding_with_mario_then_nothing_happens(){
-		collisionListener.notify(gameboard)
+		listener.notify(gameboard)
 		verify(block, never).apply(aCoin)
 		verify(block, never).apply(otherCoin)
 	}
@@ -56,7 +57,7 @@ class CollisionListenerTest {
 		aCoin.position = mario.position
 		otherCoin.position = mario.position
 		
-		collisionListener.notify(gameboard)
+		listener.notify(gameboard)
 		
 		verify(block).apply(aCoin)
 		verify(block).apply(otherCoin)
@@ -66,8 +67,20 @@ class CollisionListenerTest {
 	def void when_components_are_colliding_but_anyone_is_mario_then_nothing_happens(){
 		aCoin.position = otherCoin.position
 		
-		collisionListener.notify(gameboard)
+		listener.notify(gameboard)
 		
 		verifyZeroInteractions(block)
+	}
+	
+	@Test
+	def void should_remove_listener_from_board_when_mario_is_removed(){
+		gameboard.addListener(listener)
+		assertTrue(containsListener)
+		gameboard.remove(mario)
+		assertFalse(containsListener)
+	}
+	
+	def containsListener() {
+		gameboard.listeners.contains(listener)
 	}
 }

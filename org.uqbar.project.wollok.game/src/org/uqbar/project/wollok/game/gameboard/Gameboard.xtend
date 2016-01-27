@@ -37,17 +37,18 @@ class Gameboard {
 
 	def void start() {
 		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
-		Runtime.runtime.addShutdownHook(new Thread([
-			Gdx.app.exit
-		]))
+		Runtime.runtime.addShutdownHook(new Thread[stop])
+	}
+	
+	def stop() {
+		Gdx.app.exit
 	}
 	
 	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
-		for (var i=0; i < this.listeners.size(); i++){
-			try {
-				this.listeners.get(i).notify(this);
-			} 
+		for (var i=0; i < listeners.size(); i++) {
+			try 
+				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
 				if (message == null)
@@ -60,9 +61,8 @@ class Gameboard {
 			} 
 		}
 
-		this.cells.forEach[ it.draw(window) ]
-
-		this.getComponents().forEach[ it.draw(window) ]		
+		cells.forEach[ it.draw(window) ]
+		components.forEach[it.draw(window)]
 	}
 
 	def createCells(String groundImage) {
@@ -119,6 +119,7 @@ class Gameboard {
 	
 	def remove(VisualComponent component) {
 		components.remove(component)
+		listeners.removeIf[it.isObserving(component)]
 	}
 	
 }

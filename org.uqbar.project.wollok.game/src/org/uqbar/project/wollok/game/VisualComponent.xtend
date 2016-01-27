@@ -19,14 +19,6 @@ abstract class VisualComponent {
 	def abstract Image getImage()
 	def abstract Position getPosition()
 	def abstract void setPosition(Position image)
-	
-	def say(String aText) {
-		balloonMessages.add(new BalloonMessage(aText, Color.BLACK))
-	}
-	
-	def scream(String aText) {
-		balloonMessages.add(new BalloonMessage(aText, Color.RED))
-	}
 
 	def void draw(Window window) {
 		window => [
@@ -50,6 +42,26 @@ abstract class VisualComponent {
 	def drawBallonIfNecesary(Window window) {
 		if (hasMessages)
 			currentMessage.draw(window, this)
+	}
+
+	def say(String aText) {
+		addMessage(aText, Color.BLACK)
+	}
+	
+	def scream(String aText) {
+		addMessage(aText, Color.RED)
+	}
+	
+	def addMessage(String message, Color color) {
+		if (message.length > 50) {
+			var beginning = message.substring(0, 45) + ".."
+			var end = ".." + message.substring(46, message.length)
+			this.addMessage(beginning, color)
+			this.addMessage(end, color)
+			return 
+		}
+		
+		balloonMessages.add(new BalloonMessage(message, color))
 	}
 
 	def isInMyZone(){

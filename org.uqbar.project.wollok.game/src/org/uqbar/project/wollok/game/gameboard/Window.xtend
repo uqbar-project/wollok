@@ -41,15 +41,11 @@ class Window {
 	def drawBallon(String text, Position position, Color color) {		
 		val baseWidth = 75
 		var newText = text
-		
-		if (text.length > 50)
-			newText = text.substring(0,49) + "..."
-		
 		var plusWidth = 0	
 		glyphLayout.reset
 		this.setText(newText, baseWidth, color)
 		
-		while(glyphLayout.height > 29){
+		while(glyphLayout.height > 29) {
 			glyphLayout.reset
 			plusWidth += 10
 			this.setText(newText, baseWidth + plusWidth, color)

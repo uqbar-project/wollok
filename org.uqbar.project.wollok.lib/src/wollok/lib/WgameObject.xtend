@@ -67,9 +67,16 @@ class WgameObject {
 		.toList.javaToWollok
 	}
 	
+	def say(WollokObject visual, WollokObject message) {
+		board.findVisual(visual).say(message.asString)
+	}
+	
 	def clear() { board.clear }
 	
 	def start() { board.start }
+	
+	def stop() { board.stop }
+	
 	
 	def board() { Gameboard.getInstance }
 	
@@ -78,9 +85,9 @@ class WgameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		it.components
+		components
 		.map[it as WVisual]
-		.findFirst[ it.wObject.equals(visual)]
+		.findFirst[ wObject.equals(visual)]
 	}
 	
 	
