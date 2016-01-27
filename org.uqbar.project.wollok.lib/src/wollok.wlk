@@ -643,6 +643,7 @@ package lib {
 		method getObjectsIn(position) native
 		method clear() native
 		method start() native
+		method stop() native
 		
 		method setTitle(title) native
 		method getTitle() native

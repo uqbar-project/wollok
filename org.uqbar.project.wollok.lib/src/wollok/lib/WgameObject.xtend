@@ -71,6 +71,9 @@ class WgameObject {
 	
 	def start() { board.start }
 	
+	def stop() { board.stop }
+	
+	
 	def board() { Gameboard.getInstance }
 	
 	def addListener(GameboardListener listener) {
