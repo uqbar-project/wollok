@@ -78,9 +78,9 @@ class WgameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		it.components
+		components
 		.map[it as WVisual]
-		.findFirst[ it.wObject.equals(visual)]
+		.findFirst[ wObject.equals(visual)]
 	}
 	
 	
