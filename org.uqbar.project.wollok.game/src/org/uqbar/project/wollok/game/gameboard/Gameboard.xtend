@@ -46,10 +46,9 @@ class Gameboard {
 	
 	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
-		for (var i=0; i < this.listeners.size(); i++){
-			try {
-				this.listeners.get(i).notify(this);
-			} 
+		for (var i=0; i < listeners.size(); i++) {
+			try 
+				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
 				if (message == null)
@@ -62,9 +61,8 @@ class Gameboard {
 			} 
 		}
 
-		this.cells.forEach[ it.draw(window) ]
-
-		this.getComponents().forEach[ it.draw(window) ]		
+		cells.forEach[ it.draw(window) ]
+		components.forEach[it.draw(window)]
 	}
 
 	def createCells(String groundImage) {
