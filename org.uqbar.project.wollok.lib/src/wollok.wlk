@@ -192,7 +192,7 @@ package lang {
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].max { e => e.length() }    =>  returns "wollok world"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
 		  */
 		method min(closure) = this.absolute(closure, { a, b => a < b} )
 		
@@ -631,18 +631,20 @@ package lib {
 		method getBuffer() = buffer
 	}	
 	
-
 	object wgame {
 		method addVisual(element) native
+		method addVisualIn(element, position) native
 		method addVisualCharacter(element) native
-		method addVisualWithReference(element, property) native
-		method addVisualCharacterWithReference(element, property) native
+		method addVisualCharacterIn(element, position) native
+		method removeVisual(element) native
 		method whenKeyPressedDo(key, action) native
 		method whenKeyPressedSay(key, function) native
 		method whenCollideDo(element, action) native
 		method getObjectsIn(position) native
+		method say(element, message) native
 		method clear() native
 		method start() native
+		method stop() native
 		
 		method setTitle(title) native
 		method getTitle() native
@@ -653,59 +655,38 @@ package lib {
 		method setGround(image) native
 	}
 	
-	
 	class Position {
 		var x = 0
 		var y = 0
 		
-		constructor() { }
-		
+		constructor() { }		
+				
 		constructor(_x, _y) {
 			x = _x
 			y = _y
 		}
 		
-		method moveLeft(num) { x = x - num }
-		method moveRight(num) { x = x + num }
-		method moveDown(num) { y = y - num }
-		method moveUp(num) { y = y + num }
+		method moveRight(num) { x += num }
+		method moveLeft(num) { x -= num }
+		method moveUp(num) { y += num }
+		method moveDown(num) { y -= num }
+	
+		method drawElement(element) { wgame.addVisualIn(element, this) }
+		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
+		method deleteElement(element) { wgame.removeVisual(element) }
+		method say(element, message) { wgame.say(element, message) }
+		method allElements() = wgame.getObjectsIn(this)
 		
 		method clone() = new Position(x, y)
-		
-		override method == (other) {
-			return x == other.getX() and y == other.getY()
+
+		method clear() {
+			this.allElements().forEach{it => wgame.removeVisual(it)}
 		}
-		
-		method drawCharacterWithReferences(element, reference) {
-			element.setPosicion(this.clone())
-			wgame.addVisualCharacterWithReference(element, reference)
-		}
-		
-		method drawCharacter(element) {
-			element.setPosicion(this.clone())
-			wgame.addVisualCharacter(element)
-		}
-		
-		method drawElementWithReferences(element, reference) {
-			element.setPosicion(this.clone())
-			wgame.addVisualWithReference(element, reference)
-		}
-		
-		method drawElement(element) {
-			element.setPosicion(this.clone())
-			wgame.addVisual(element)
-		}
-		
-		method getAllElements() = wgame.getObjectsIn(this)
 		
 		method getX() = x
-		
 		method setX(_x) { x = _x }
-		
 		method getY() = y
-		
 		method setY(_y) { y = _y }
-		
 	}
 }
 

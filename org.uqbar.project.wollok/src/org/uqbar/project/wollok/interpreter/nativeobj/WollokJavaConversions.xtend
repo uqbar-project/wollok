@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -81,6 +82,10 @@ class WollokJavaConversions {
 	
 	def static dispatch WollokObject convertJavaToWollok(Object o) { 
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
+	}
+	
+	def static newWollokExceptionAsJava(String message) {
+		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 	
 	def static newWollokException(String message) {

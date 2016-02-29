@@ -166,4 +166,28 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void bug_578() {
+		'''
+		object link {
+			var arma
+			method atacarA(alguien) {
+				arma.causarDanio(alguien)
+			}
+		}
+		object captainFalcon {}
+		
+		program p {
+			try {
+				#{1}.forEach({ each => link.atacarA(captainFalcon)})
+				assert.fail("should have thrown a wollok exception")
+			}
+			catch e {
+				// OK ! a NPE
+			}
+			
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 }

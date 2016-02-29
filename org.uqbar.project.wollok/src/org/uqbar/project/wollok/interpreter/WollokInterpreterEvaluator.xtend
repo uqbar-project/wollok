@@ -61,6 +61,8 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
+
 /**
  * It's the real "interpreter".
  * This object implements the logic to evaluate all Expression's and programs elements.
@@ -355,7 +357,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	// member call
 	def dispatch evaluate(WFeatureCall call) {
-		call.evaluateTarget.call(call.feature, call.memberCallArguments.evalEach)
+		val target = call.evaluateTarget
+		if (target == null)
+			throw newWollokExceptionAsJava('''Cannot send message «call.feature»(«call.memberCallArguments.map[sourceCode].join(',')») to null''')
+		target.call(call.feature, call.memberCallArguments.evalEach)
 	}
 
 	// ********************************************************************************************

@@ -22,4 +22,9 @@ class CollisionListener implements GameboardListener {
 				block.apply(it)
 			]
 	}
+	
+	override isObserving(VisualComponent otherComponent) {
+		component.equals(otherComponent)
+	}
+	
 }

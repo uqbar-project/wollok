@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.WGPosition
 
 class GameboardInputProcessor implements InputProcessor {
 
@@ -27,7 +27,7 @@ class GameboardInputProcessor implements InputProcessor {
 	override boolean touchDown(int x, int y, int pointer, int button) {
 		
 		var inverseY = Gameboard.getInstance().pixelHeight() - y;
-		var position = new Position(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
+		var position = new WGPosition(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
 		
 		var Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
 		
