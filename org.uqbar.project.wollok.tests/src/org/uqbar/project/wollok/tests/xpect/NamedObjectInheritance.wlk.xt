@@ -57,7 +57,7 @@ class A {
 	method blah()
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: blah()" at "anA"
+// XPECT errors --> "Must implement inherited abstract methods: A.blah()" at "anA"
 object anA inherits A {
 }
 
@@ -65,5 +65,5 @@ class B inherits A {
 	method otherAbstract(one, two)
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: blah(), otherAbstract(one, two)" at "aB"
+// XPECT errors --> "Must implement inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
 object aB inherits B {}

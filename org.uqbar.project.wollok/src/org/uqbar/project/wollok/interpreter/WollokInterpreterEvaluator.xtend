@@ -229,7 +229,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WObjectLiteral l) {
-		new WollokObject(interpreter, l) => [l.members.forEach[m|addMember(m)]]
+		new WollokObject(interpreter, l) => [
+			l.mixins.forEach[m|m.addMembersTo(it)]
+			l.members.forEach[m|addMember(m)]
+		]
 	}
 	
 	def dispatch evaluate(WReturnExpression it) {
@@ -249,8 +252,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
-				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			classRef.mixins.forEach[addMembersTo(wo)]
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
 	}
@@ -271,10 +275,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		new WollokObject(interpreter, namedObject) => [ wo |
 			namedObject.members.forEach[wo.addMember(it)]
 			
+			// parents
 			namedObject.parent.superClassesIncludingYourselfTopDownDo [
 				addMembersTo(wo)
 				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
 			]
+			
+			// mixins
+			namedObject.mixins.forEach[addMembersTo(wo)]
 			
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
@@ -285,7 +293,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
 		]
 	}
-	
+
 	def dispatch evaluate(WClosure l) { newInstance(CLOSURE) => [
 		(getNativeObject(CLOSURE) as NodeAware<WClosure>).EObject = l
 	] }
@@ -360,12 +368,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************************************************
 	
 	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
-
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
-
-	def dispatch evaluateTarget(WSuperInvocation call) {
-		new CallableSuper(interpreter, call.method.declaringContext.parent)
-	}
+	def dispatch evaluateTarget(WSuperInvocation call) { new CallableSuper(interpreter, call.declaringContext) }
 
 	def WollokObject getWKObject(String qualifiedName, EObject context) {
 		try {

@@ -42,14 +42,19 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		val categories = registry.rootCategory.categories
 		for (wizard : categories.allWizards) {
 	        if (!wizard.id.includeWizards) {
-	        	println("Removing wizard " + wizard.id)
+//	        	println("Removing wizard " + wizard.id)
 				val wizardElement = wizard as WorkbenchWizardElement
 				registry.removeExtension(wizardElement.configurationElement.declaringExtension, #[wizardElement])
 			}
 		}
 	}
 	
-	static val includeWizards = #["org\\.eclipse\\.ui\\..*", "org\\.uqbar\\.project\\.wollok\\..*"]
+	static val includeWizards = #[
+		"org\\.eclipse\\.ui\\..*", 
+		"org\\.uqbar\\.project\\.wollok\\..*",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewPackageCreationWizard",
+		"org\\.eclipse\\.jdt\\.ui\\.wizards\\.NewSourceFolderCreationWizard"
+	]
 	def includeWizards(String id) {
 		includeWizards.exists[id.matches(it)]
 	}

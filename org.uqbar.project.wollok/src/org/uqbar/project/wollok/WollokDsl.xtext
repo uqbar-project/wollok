@@ -41,14 +41,17 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WLibraryElement: (WPackage | WClass | WNamedObject );
-WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
-WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin );
+WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
-	=>'object' '{'
+	=>'object'
+	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -311,7 +314,10 @@ WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
 WNamedObject:
-	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
+	'object' name=ID 
+		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -324,9 +330,21 @@ WCanExtendClass:
 // CLASSES
 
 WClass:
-	'class' name=ID ('inherits' parent=[WClass|QualifiedName])? '{'
+	'class' name=ID 
+		('inherits' parent=[WClass|QualifiedName])? 
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(constructors+=WConstructor)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
+// MIXINS
+
+WMixin:
+	'mixin' name=ID '{'
+		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;

@@ -89,7 +89,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	
 	def dispatch void doAnalyse(WMemberFeatureCall it) {
 		if (memberCallTarget instanceof WThis)
-			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments))
+			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments, true))
 	}
 	
 	def dispatch void doAnalyse(WConstructorCall it) {

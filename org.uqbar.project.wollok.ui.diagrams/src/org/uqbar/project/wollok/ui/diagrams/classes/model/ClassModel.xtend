@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
@@ -8,8 +8,9 @@ import org.uqbar.project.wollok.wollokDsl.WClass
  * 
  * @author jfernandes
  */
+@Accessors
 class ClassModel extends Shape {
-	@Property WClass clazz
+	WClass clazz
 	
 	new(WClass wClass) {
 		clazz = wClass

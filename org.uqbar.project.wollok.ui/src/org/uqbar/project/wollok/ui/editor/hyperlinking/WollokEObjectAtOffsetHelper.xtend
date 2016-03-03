@@ -46,7 +46,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	
 	protected def dispatch isCrossReference(EObject it, INode node) { false }
 	protected def dispatch isCrossReference(WMemberFeatureCall it, INode node) { isResolvedToMethod }
-	protected def dispatch isCrossReference(WSuperInvocation it, INode node) { true }
+	protected def dispatch isCrossReference(WSuperInvocation it, INode node) { !isInMixin }
 	protected def dispatch isCrossReference(Import it, INode node) { node.text != "*" }
 	
 	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) != null }
