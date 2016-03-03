@@ -22,7 +22,7 @@ public class NewWollokProgramWizard extends AbstractNewWollokFileWizard implemen
 	@Override
 	protected InputStream openContentStream() {
 		String contents =
-			"\nprogram abc {\n\n\tthis.println('Hello Wollok')\n\n}";
+			"\nprogram abc {\n\n\tconsole.println('Hello Wollok')\n\n}";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 }
