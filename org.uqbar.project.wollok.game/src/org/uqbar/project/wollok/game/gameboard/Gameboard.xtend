@@ -66,8 +66,8 @@ class Gameboard {
 	}
 
 	def createCells(String groundImage) {
-		for (var i = 0; i < height; i++) {
-			for (var j = 0; j < width; j++) {
+		for (var i = 0; i < width ; i++) {
+			for (var j = 0; j < height; j++) {
 				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
 			}
 		}
