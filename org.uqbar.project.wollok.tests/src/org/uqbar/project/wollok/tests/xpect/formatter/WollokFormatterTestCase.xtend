@@ -55,6 +55,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     }
     
    	def assertFormatting(String program, String expected) {
+   		println(formatCode(program))
 		Assert.assertEquals(expected, formatCode(program));		  
 	}
     
@@ -255,7 +256,32 @@ test "aSimpleTest" {
 }''')
     }
 
-
+    @Test
+    def void keepNewlinesInSequences() throws Exception {
+    	assertFormatting(
+    	'''
+    	object foo {
+    		method bar() {
+    			this.bar().bar().bar()
+    			
+    			console.println("") console.println("")
+    			
+    			console.println("") 
+    			console.println("")
+    		}
+    	}''', '''
+    	
+    	object foo {
+    		method bar() {
+    			this.bar().bar().bar()
+    	
+    			console.println("") console.println("")
+    	
+    			console.println("")
+    			console.println("")
+    		}
+    	}''')
+    }
 	// TODO: test 
 	//     	- named objects and object literals
 	//		- method parameter declaration
