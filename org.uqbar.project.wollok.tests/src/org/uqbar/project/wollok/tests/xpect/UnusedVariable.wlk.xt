@@ -8,10 +8,10 @@ class WithUnusedVariables {
 	var c 
 	var d
 	// XPECT errors --> "Variable is never assigned" at "x" 
-	val x 
-	val z = 1
+	const x 
+	const z = 1
 	
-	val usedOnlyWithUnary = ""
+	const usedOnlyWithUnary = ""
 	
 	var equipos = []
 	
@@ -29,7 +29,7 @@ class UnusedVariables {
 	
 	method run() {
 		// XPECT warnings --> "Unused variable" at "vaca"	
-		val vaca = object {
+		const vaca = object {
 			var peso = 1000
 			method engordar(cuanto) {
 				peso = peso + cuanto
@@ -38,7 +38,7 @@ class UnusedVariables {
 		}
 		
 		// forEach
-		val vaca1 = object {
+		const vaca1 = object {
 			var peso = 1000
 			method engordar(cuanto) {
 				peso = peso + cuanto
@@ -46,14 +46,14 @@ class UnusedVariables {
 			method peso() = peso
 		}
 		
-		val vaca2 = object {
+		const vaca2 = object {
 			var peso = 1000
 			method engordar(cuanto) {
 				peso = peso + cuanto
 			}
 			method peso() = peso
 		}
-		val vacas = [vaca1, vaca2]
+		const vacas = [vaca1, vaca2]
 		
 		vacas.forEach({v => v.engordar(2)})
 		return vacas.forAll({v => v.peso() == 1002})

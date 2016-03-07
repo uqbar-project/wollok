@@ -2,11 +2,11 @@ import templateMethod.*
 
 program templateMethod {
 	
-	val pepita = new Golondrina()
+	const pepita = new Golondrina()
 	pepita.volar(50)
 	assert.that(pepita.energia() == 50) // Mismo comportamiento de siempre
 	
-	val pepona = new NoSeCansa()
+	const pepona = new NoSeCansa()
 	pepona.volar(50)
 	assert.that(pepona.energia() == 100) // Mantiene energía inicial
 	

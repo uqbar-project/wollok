@@ -19,7 +19,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		class Bird mixed with Flies {}
 		program t {
-			val b = new Bird()
+			const b = new Bird()
 			b.fly()
 		}
 		'''.interpretPropagatingErrors
@@ -38,7 +38,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		class WalkingBird mixed with Walks {}
 		
 		program t {
-				val b = new WalkingBird()
+				const b = new WalkingBird()
 				b.walk(10)
 				assert.equals(10, b.walkedDistance())
 		}
@@ -61,7 +61,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			method energy() = energy
 		}
 		program t {
-				val b = new Bird()
+				const b = new Bird()
 				b.fly(10)
 				assert.equals(90, b.energy())
 		}
@@ -77,7 +77,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		class C mixed with M1 and M2 {
 		}
 		program t {
-				val b = new C()
+				const b = new C()
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -103,7 +103,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			
 		}
 		program t {
-				val b = new Bird()
+				const b = new Bird()
 				b.fly(10)
 				assert.equals(90, b.energy())
 				assert.equals(1, b.mojo())
@@ -144,12 +144,12 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		class BirdWithThatFliesWithEnergy mixed with Flying, Energy {}
 		
 		program t {
-				val b = new BirdWithEnergyThatFlies()
+				const b = new BirdWithEnergyThatFlies()
 				b.fly(10)
 				assert.equals(90, b.energy())
 				assert.equals(10, b.fliedMeters())
 				
-				val b2 = new BirdWithThatFliesWithEnergy()
+				const b2 = new BirdWithThatFliesWithEnergy()
 				b2.fly(10)
 				assert.equals(90, b2.energy())
 				assert.equals(10, b2.fliedMeters())
@@ -174,7 +174,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val b = new BirdWithFlyingShortCuts()
+			const b = new BirdWithFlyingShortCuts()
 			b.fly100Meters()
 			assert.equals(100, b.energy())
 		}
@@ -201,7 +201,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val b = new MockingBird()
+			const b = new MockingBird()
 			b.fly100Meters()
 			assert.equals(100, b.energy())
 		}
@@ -224,7 +224,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val b = new Bird()
+			const b = new Bird()
 			b.reduceEnergy(100)
 			assert.equals(100, b.energy())
 		}
@@ -247,7 +247,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val b = new Bird()
+			const b = new Bird()
 			b.reduceEnergy(100)
 			assert.equals(99, b.energy())
 		}
@@ -275,7 +275,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val c = new C2()
+			const c = new C2()
 			c.doFoo("Test ")
 			assert.equals("Test > M2 > M1 > C1", c.foo())
 		}
@@ -338,7 +338,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val pepita = object mixed with Flies {}
+			const pepita = object mixed with Flies {}
 			pepita.fly()
 			assert.equals(1, pepita.times())
 		} 
@@ -357,7 +357,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		
 		program t {
-			val pepita = object mixed with Flies {
+			const pepita = object mixed with Flies {
 				override method fly() {}
 			}
 			pepita.fly()

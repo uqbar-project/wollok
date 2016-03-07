@@ -2,7 +2,7 @@ program varRefVsMethodCalls {
 
 // 5to diferenciar acceso a properties de methods
 
-val pepin = object {
+const pepin = object {
 	var altura = 1.40
 	
 	method crecer(cuanto) {

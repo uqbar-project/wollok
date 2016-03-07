@@ -9,11 +9,11 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	
 	def instantiateCollectionAsNumbersVariable() {
-		"val numbers = [22, 2, 10]"
+		"const numbers = [22, 2, 10]"
 	}
 	
 	def instantiateStrings() {
-		"val strings = ['hello', 'hola', 'bonjour', 'ciao', 'hi']"
+		"const strings = ['hello', 'hola', 'bonjour', 'ciao', 'hi']"
 	}
 	
 	@Test
@@ -31,7 +31,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateStrings»
-			val r = strings.max{e=> e.length() }	
+			const r = strings.max{e=> e.length() }	
 			assert.equals('bonjour', strings.max{e=> e.length() })
 		}'''.interpretPropagatingErrors
 		catch (WollokProgramExceptionWrapper e)
@@ -66,7 +66,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		object c {}
 		object d {}
 		program p {
-			val l = [a, b, c]
+			const l = [a, b, c]
 			assert.that(l.contains(a))
 			assert.that(l.contains(b))
 			assert.that(l.contains(c))
@@ -178,7 +178,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			val anyOne = numbers.anyOne()
+			const anyOne = numbers.anyOne()
 			assert.that(numbers.contains(anyOne))
 		}'''.interpretPropagatingErrors
 	}
@@ -187,8 +187,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithMethodName() {
 		'''
 		program p {
-			val a = [23, 2, 1]
-			val b = [23, 2, 1]
+			const a = [23, 2, 1]
+			const b = [23, 2, 1]
 			assert.that(a.equals(b))
 		}'''.interpretPropagatingErrors
 	}
@@ -197,8 +197,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithEqualsEquals() {
 		'''
 		program p {
-			val a = [23, 2, 1]
-			val b = [23, 2, 1]
+			const a = [23, 2, 1]
+			const b = [23, 2, 1]
 			assert.that(a == b)
 		}'''.interpretPropagatingErrors
 	}
@@ -219,7 +219,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			override method internalToSmartString(alreadyShown) = "My Object"
 		}
 		program p {
-			val a = [23, 2, 1, myObject]
+			const a = [23, 2, 1, myObject]
 			assert.equals("[23, 2, 1, My Object]", a.toString())
 		}'''.interpretPropagatingErrors
 	}

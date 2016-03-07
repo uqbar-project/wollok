@@ -40,41 +40,41 @@ class ConstructorCallTest {
 
 	method run() {
 		// XPECT warnings --> "Unused variable" at "direccion"
-		val direccion = new Direccion("Jose Marti", 155)
+		const direccion = new Direccion("Jose Marti", 155)
 		
 		/* XPECT issues --- 
 		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion()"
 		   "Unused variable" at "d1"
 		   ---
 		*/
-		val d1 = new Direccion()
+		const d1 = new Direccion()
 		
 		/* XPECT issues --- 
 		   "Wrong number of arguments. Should be new Direccion(c,n)" at "\"Juan\""
 		   "Unused variable" at "d2"
 		   ---
 		*/
-		val d2 = new Direccion("Juan")
+		const d2 = new Direccion("Juan")
 		
 		/* XPECT issues --- 
 		   "Wrong number of arguments. Should be new Direccion(c,n)" at "1"
 		   "Unused variable" at "d3"
 		   ---
 		*/
-		val d3 = new Direccion(1, 2, 3)	
+		const d3 = new Direccion(1, 2, 3)	
 		
-		val p1 = new Point()
+		const p1 = new Point()
 		p1.blah()
 
-		val p2 = new Point(2,3)
+		const p2 = new Point(2,3)
 		p2.blah()
 		
 		// XPECT errors --> "Wrong number of arguments. Should be new Point() or (ax,ay)" at "1"
-		val p3 = new Point(1, 2, 3)
+		const p3 = new Point(1, 2, 3)
 		p3.blah()
 		
 		// XPECT errors --> "Wrong number of arguments. Should be new Circle(ap,ar) or (x,y,ar)" at "new Circle()"
-		val c1 = new Circle()
+		const c1 = new Circle()
 		c1.blah()
 	}	
 	

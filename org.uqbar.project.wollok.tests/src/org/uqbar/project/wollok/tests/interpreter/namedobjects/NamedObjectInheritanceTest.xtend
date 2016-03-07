@@ -81,7 +81,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructor() {
 		'''
 			class Dog {
-				val name
+				const name
 				constructor(param) {
 					name = param
 				}	
@@ -100,7 +100,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructorPassingAnotherWKOAsArgument() {
 		'''
 			class Dog {
-				val owner
+				const owner
 				constructor(param) {
 					owner = param
 				}	
@@ -123,7 +123,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructorPassingAnotherWKOMessageReturnValue() {
 		'''
 			class Dog {
-				val owner
+				const owner
 				constructor(param) {
 					owner = param
 				}	

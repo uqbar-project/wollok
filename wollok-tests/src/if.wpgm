@@ -8,8 +8,8 @@ class S {
 }
 
 program ifs {
-	val number = 2
-	val oddOrEven = if (number % 2 == 0) "even" else "odd"
+	const number = 2
+	const oddOrEven = if (number % 2 == 0) "even" else "odd"
 	
 	assert.that("even" == oddOrEven)
 	
@@ -17,7 +17,7 @@ program ifs {
 	
 	// now in a method
 	
-	val s = new S()
+	const s = new S()
 	
 	assert.that("even" == s.whatIf(2))
 	assert.that("odd" == s.whatIf(3))

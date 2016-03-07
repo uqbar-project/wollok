@@ -22,7 +22,7 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 			}
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				assert.equals(10, a.getI())
 				assert.equals(0.10, a.getJ())
 			}
@@ -35,8 +35,8 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 			object before { method get() = "before" }
 		
 			class A {
-				val b = before
-				val a = after 
+				const b = before
+				const a = after 
 				
 				method getB() = b
 				method getA() = a
@@ -45,7 +45,7 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 			object after { method get() = "before" }
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				assert.equals(before, a.getB())
 				assert.equals(after, a.getA())
 			}

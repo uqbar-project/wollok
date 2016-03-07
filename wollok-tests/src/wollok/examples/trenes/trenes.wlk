@@ -1,13 +1,13 @@
 class Deposito {
-	val formaciones = []
+	const formaciones = []
 	
 	method agregarFormacion(unTren) { formaciones.add(unTren) }
 	method vagonesMasPesados() { formaciones.map({t=> t.vagonMasPesado()}).flatten() }
 }
 
 class Tren {
-	val vagones = []
-	val locomotoras = []
+	const vagones = []
+	const locomotoras = []
 	
 	method agregarVagon(v) { vagones.add(v) }
 	method getCantidadPasajeros() = vagones.sum{v=> v.getCantidadPasajeros()}

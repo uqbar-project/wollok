@@ -18,7 +18,7 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 			method capacidadDeVuelo() = 10
 		}
 		program p {
-			val pepona = new Golondrina()
+			const pepona = new Golondrina()
 			assert.equals(pepona.energia(), 100)
 			assert.equals(pepona.capacidadDeVuelo(), 10)
 		}'''.interpretPropagatingErrors
@@ -35,16 +35,16 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		test "Var args method must automatically box params as a list" {
-			val p = new Sample()
+			const p = new Sample()
 			assert.equals("#1, #2, #3, #4", p.preffix("#", 1, 2, 3, 4).join(", "))
 		}
 		test "Var args in method with just 1" {
-			val p = new Sample()
+			const p = new Sample()
 			assert.equals("#1", p.preffix("#", 1).join(", "))
 		}
 		
 		test "Var args in method without elements" {
-			val p = new Sample()
+			const p = new Sample()
 			assert.equals("", p.preffix("#").join(", "))
 		}
 		'''.interpretPropagatingErrors
@@ -60,15 +60,15 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 			method getResult() = result
 		}
 		test "Var arg in constructor with 4 elements" {
-			val p = new Sample("#", 1, 2, 3, 4)
+			const p = new Sample("#", 1, 2, 3, 4)
 			assert.equals("#1, #2, #3, #4", p.getResult().join(", "))
 		}
 		test "Var arg in constructor with just 1 element" {
-			val p = new Sample("#", 1)
+			const p = new Sample("#", 1)
 			assert.equals("#1", p.getResult().join(", "))
 		}
 		test "Var args in method without elements" {
-			val p = new Sample("#")
+			const p = new Sample("#")
 			assert.equals("", p.getResult().join(", "))
 		}
 		'''.interpretPropagatingErrors

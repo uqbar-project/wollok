@@ -25,7 +25,7 @@ class GolondrinaSarasa inherits Golondrina {
 class SuperInvocationTest {
 	
 	method run() {
-		val o = object {
+		const o = object {
 			method valak(a) {
 				// XPECT errors --> "Super can only be used in an overriding method" at "super(a)"
 				super(a)

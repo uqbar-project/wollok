@@ -13,7 +13,7 @@ class Asustador {
 	}
 	
 	method asustar(ninio) {
-		val a = this.getPorcentaje()
+		const a = this.getPorcentaje()
 		return a * this.puntosDeTerror() / ninio.getEdad()
 	}
 	method getPorcentaje() {
