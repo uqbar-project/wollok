@@ -212,7 +212,7 @@ FeatureCallID:
 	ID;
 
 WThis returns WExpression:
-	{WThis} 'this'
+	{WThis} ('this' | 'self')
 ;
 
 WPrimaryExpression returns WExpression:
