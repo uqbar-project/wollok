@@ -14,15 +14,15 @@ import actividades.*
 test "Asustador Nato con Ninio genera energia" {
 	// -----------------------------------------
 	// punto 1
-	val sullivan = new AsustadorNato(25, 200)
-	val puertaConNinio4 = new Puerta(new Ninio(4))
+	const sullivan = new AsustadorNato(25, 200)
+	const puertaConNinio4 = new Puerta(new Ninio(4))
 	assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
 }
 
 test "Asustador Perseverante mejora estudiando y ejercitando" {
 	// -----------------------------------------
 	// punto 2
-	val mike = new AsustadorPerseverante(0)
+	const mike = new AsustadorPerseverante(0)
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))
 	mike.mejora(new EjercitarEnSimulador(2))
 	
@@ -30,31 +30,31 @@ test "Asustador Perseverante mejora estudiando y ejercitando" {
 }
 
 test "Mike asusta una piyamada" {
-	val piyamada = new Piyamada()
+	const piyamada = new Piyamada()
 	piyamada.agregarNinio(new Ninio(2))
 	piyamada.agregarNinio(new Ninio(3))
 	piyamada.agregarNinio(new Ninio(4))
 	
-	val puertaConPiyamada = new Puerta(piyamada)
+	const puertaConPiyamada = new Puerta(piyamada)
 	
-	val mike = new AsustadorPerseverante(0)
+	const mike = new AsustadorPerseverante(0)
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))
 	mike.mejora(new EjercitarEnSimulador(2))
-	val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
+	const energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
 	assert.equals(75, energiaMike)   // 70/2 + 70/3 + 70/4 = 75
 }
 
 test "Asustar a un adolescente disminuye la motivacion" {
-	val puertaConNinio4 = new Puerta(new Ninio(4))
-	val mike = new AsustadorPerseverante(0)
+	const puertaConNinio4 = new Puerta(new Ninio(4))
+	const mike = new AsustadorPerseverante(0)
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))
 	mike.mejora(new EjercitarEnSimulador(2))
-	val sullivan = new AsustadorNato(25, 200)
+	const sullivan = new AsustadorNato(25, 200)
 	
 	// -----------------------------------------
 	// punto 3
-	val equipo = new Equipo(sullivan, new AsistenteNormal())
+	const equipo = new Equipo(sullivan, new AsistenteNormal())
 	equipo.visitar(new Puerta(new Adolescente()))
 	
 	assert.equals(90.0, sullivan.getNivelMotivacion())
@@ -74,7 +74,7 @@ test "Asustar a un adolescente disminuye la motivacion" {
 	// punto 5
 	assert.that(equipo == monstersInc.equipoMasAsustador())
 
-	val equipoCapo = object {
+	const equipoCapo = object {
 		method getEnergiaGenerada() = 90000.0
 	}
 	monstersInc.agregarEquipo(equipoCapo)

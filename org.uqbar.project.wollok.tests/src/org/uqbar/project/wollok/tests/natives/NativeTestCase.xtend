@@ -20,8 +20,8 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 
 		program nativeSample {
-			val obj = new MyNative()
-			val response = obj.aNativeMethod()
+			const obj = new MyNative()
+			const response = obj.aNativeMethod()
 			assert.equals('Native hello message!', response)
 			
 			assert.equals('NATIVE HELLO MESSAGE!', obj.uppercased())
@@ -45,7 +45,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 
 		program nativeSample {
-			val obj = new ANativeSubclass()
+			const obj = new ANativeSubclass()
 			
 			assert.equals('Native hello message!', obj.aNativeMethod())
 			assert.equals('A Subclass Native Method', obj.subclassNativeMethod())
@@ -93,7 +93,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 
 		program nativeSample {
-			val obj = new MyNativeWithAccessToObject()
+			const obj = new MyNativeWithAccessToObject()
 			
 			assert.equals(42, obj.initialValue())
 			assert.equals(100 + 42, obj.lifeMeaning())
@@ -114,7 +114,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 			}
 
 		program nativeSample {
-			val obj = new MyNativeWithAccessToObject()
+			const obj = new MyNativeWithAccessToObject()
 			
 			assert.equals(500, obj.final())
 		}

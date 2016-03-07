@@ -1,0 +1,35 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Foo {
+	// Allowed
+    override method == (other) {
+        return true
+    }
+}
+
+object foo {
+	// Allowed
+    override method == (other) {
+        return true
+    }
+}
+
+class Bar {
+	// XPECT errors --> "Method must be marked as overrides, since it overrides a superclass method" at "=="
+    method == (other) {
+        return true
+    }
+
+	// XPECT errors --> "Method does not override anything" at "fafafa"
+	override method fafafa() {}
+}
+
+object bar {
+	// XPECT errors --> "Method must be marked as overrides, since it overrides a superclass method" at "=="
+    method == (other) {
+        return true
+    }
+
+	// XPECT errors --> "Method does not override anything" at "fafafa"
+	override method fafafa() {}
+}

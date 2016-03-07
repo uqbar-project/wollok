@@ -31,7 +31,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import entrenador.mostaza
 			program a {
-				val nombre = mostaza.entrenar()
+				const nombre = mostaza.entrenar()
 				
 				assert.equals('pepita', nombre)
 			}
@@ -55,14 +55,14 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 			object mostaza {
 				method entrenar() {
-					return #[pepita, pepona].map[p| p.getNombre()].join(',')
+					return [pepita, pepona].map{p => p.getNombre()}.join(',')
 				} 
 			}
 		''',
 		'programa' -> '''
 			import entrenador.mostaza
 			program a {
-				val nombre = mostaza.entrenar()
+				const nombre = mostaza.entrenar()
 				
 				assert.equals('pepita,pepona', nombre)
 			}
@@ -83,7 +83,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'programa' -> '''
 			import aves.*
 			program a {
-				assert.equals('pepita,pepona', #[pepita, pepona].map[p| p.getNombre()].join())
+				assert.equals('pepita,pepona', [pepita, pepona].map{p => p.getNombre()}.join())
 			}
 		'''
 		].interpretAsFilesPropagatingErrors
@@ -139,7 +139,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				object pepita {
 					method volar() { 
 						console.println('abc')
-						val p = new Pair(1, 2)
+						const p = new Pair(1, 2)
 					}
 				}	
 			}
@@ -151,7 +151,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'''
 			object pepita {
 				method volar() { 
-					val p = new Pair(1, 2)
+					const p = new Pair(1, 2)
 				}
 			}	
 		'''.interpretPropagatingErrors
@@ -275,7 +275,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		''',
 		'programa' -> '''
 			program zuper {
-			        val pepona = new b.Golondrina()
+			        const pepona = new b.Golondrina()
 			}
 		'''
 		].interpretPropagatingErrors

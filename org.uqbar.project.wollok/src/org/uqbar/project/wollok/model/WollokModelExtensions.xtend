@@ -1,3 +1,4 @@
+
 package org.uqbar.project.wollok.model
 
 import java.util.List
@@ -6,14 +7,18 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.naming.QualifiedName
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -25,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -33,20 +39,19 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.hookObjectInHierarhcy
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WThrow
-import org.uqbar.project.wollok.wollokDsl.WCatch
 
 /**
  * Extension methods to Wollok semantic model.
@@ -64,26 +69,24 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
-	def static dispatch name(WClass it) { name }
-	def static dispatch name(WNamedObject it) { name }
+	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
 
-	def static dispatch fqn(WClass it) { 
-		fileName + "." + (if (package != null) (package.name + ".") else "") + name
-	}
-	def static dispatch fqn(WNamedObject it) {
-		 fileName + "." + 
-		 	if(package != null) package.name + "." + name
-		 		else name
+	def static dispatch fqn(WClass it) { nameWithPackage }
+	def static dispatch fqn(WNamedObject it) { nameWithPackage }
+	def static dispatch fqn(WMixin it) { nameWithPackage }
+
+	def static getNameWithPackage(WMethodContainer it) {
+		fileName + "." + if (package != null) package.name + "." + name else name
 	}
 	
 	def static dispatch fqn(WObjectLiteral it) {
 		//TODO: make it better (show containing class /object / package + linenumber ?)
 		fileName + "." + "anonymousObject" 
 	}
-
-	def static WPackage getPackage(WClass it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
-	def static WPackage getPackage(WNamedObject it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
+	
+	// this doesn't work for object literals, although it could !
+	def static WPackage getPackage(WMethodContainer it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
 		a == b || (b.parent != null && a.isSuperTypeOf(b.parent))
@@ -127,14 +130,18 @@ class WollokModelExtensions {
 
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 	
-	def static first(WBlockExpression it, Class type) { expressions.findFirst[ type.isInstance(it) ] }
+	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	
+	def static methodName(WMethodDeclaration d) {
+		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
+	}
 
-	def static void addMembersTo(WClass cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
+	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
 	def dispatch messagesSentTo(WVariable v) { v.allMessageSent }
@@ -177,12 +184,12 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WNamedObject it) { true }
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 	
-	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { resolveWKO(finder).isValidCall(it, finder) }
+	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) { 
+		resolveWKO(finder).isValidCall(it, finder)
+	}
 	
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) { 
-		val obj = (memberCallTarget as WVariableReference).ref as WNamedObject
-		obj.hookObjectInHierarhcy(finder)
-		obj
+		(memberCallTarget as WVariableReference).ref as WNamedObject
 	}
 
 
@@ -218,14 +225,14 @@ class WollokModelExtensions {
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
 	// For objects or classes
-	def static dispatch declaredVariables(WObjectLiteral obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-	def static dispatch declaredVariables(WNamedObject obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-	def static dispatch declaredVariables(WClass clazz) { clazz.members.filter(WVariableDeclaration).map[variable] }
+	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
 
 	def static dispatch WMethodDeclaration method(Void it) { null }
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
 	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
+	
+	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
 	// ****************************
 	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
@@ -266,12 +273,13 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WFile f, WNamedObject o) { f.elements.existsMoreThanOne(o) }
 	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
 	
-	def static dispatch boolean isDuplicated(WClass c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
+	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
-	def static dispatch boolean isDuplicated(WNamedObject c, WReferenciable r) { c.variables.existsMoreThanOne(r) }
+	
+	// classes, objects and mixins
+	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 
-	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r){ namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WMethodDeclaration it, WReferenciable v) { parameters.existsMoreThanOne(v) || declaringContext.isDuplicated(v) }
 	def static dispatch boolean isDuplicated(WBlockExpression it, WReferenciable v) { expressions.existsMoreThanOne(v) || eContainer.isDuplicated(v) }
 	def static dispatch boolean isDuplicated(WClosure it, WReferenciable r) { parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r) }
@@ -309,4 +317,14 @@ class WollokModelExtensions {
 	
 	def static tri(WCatch it) { eContainer as WTry }
 	def static catchesBefore(WCatch it) { tri.catchBlocks.subList(0, tri.catchBlocks.indexOf(it)) }
+	
+	// *******************************
+	// ** imports
+	// *******************************
+	
+	def static importedNamespaceWithoutWildcard(Import it) { if (importedNamespace.endsWith(".*")) importedNamespace.substring(0, importedNamespace.length - 2) else importedNamespace }
+	def static toFQN(String string) { QualifiedName.create(string.split("\\.")) }
+	// hack uses another grammar ereference to any
+	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
+	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
 }

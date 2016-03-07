@@ -1,0 +1,5 @@
+*._trace
+xtend-gen
+.classpath
+.project
+.settings

@@ -9,9 +9,10 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.semantics.WollokDslTypeSystem
-import org.uqbar.project.wollok.semantics.WollokType
 import org.uqbar.project.wollok.ui.labeling.WollokTypeSystemLabelExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
+
+import org.uqbar.project.wollok.typesystem.WollokType
 
 class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelExtension {
 	@Inject

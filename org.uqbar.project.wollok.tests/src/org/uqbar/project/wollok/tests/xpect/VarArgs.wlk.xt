@@ -3,7 +3,7 @@
 class A {
 
 	method preffix(preffix, numbers...) {
-		return numbers.map[n| preffix + n]
+		return numbers.map{n=> preffix + n}
 	}
 	
 	// XPECT errors --> "Only the last parameter can be a vararg" at "..."	

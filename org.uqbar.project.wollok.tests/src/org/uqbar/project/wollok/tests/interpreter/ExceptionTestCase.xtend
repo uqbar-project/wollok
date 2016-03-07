@@ -20,7 +20,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				method m1() { throw new MyException() }
 			}
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -45,7 +45,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 		
 			program p {	
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -71,7 +71,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -100,7 +100,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = null
 				
 				try {
@@ -122,7 +122,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try {
@@ -144,7 +144,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try 
@@ -167,7 +167,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m2()
@@ -192,7 +192,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -209,16 +209,16 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testMultipleMatchingCatchesWillOnlyExecuteTheFirstOne() {
 		'''
-			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
-			class BException inherits AException {  new(m) = super(m) }
-			class CException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class BException inherits AException {  constructor(m) = super(m) }
+			class CException inherits wollok.lang.Exception {  constructor(m) = super(m) }
 			
 			class A { 
 				method m1() { throw new BException("hello you see") }
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -240,15 +240,15 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingJustTheFirstCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
 			
 			class A { 
 				method m1() { throw new AException("hello you see") }
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -270,15 +270,15 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingJustTheSecondCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
 			
 			class A { 
 				method m1() { throw new BException("hello you see") }
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -300,16 +300,16 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testCatchWithoutTypeMatchingTheLastCatch() {
 		'''
-			class AException inherits wollok.lang.Exception {  new(m) = super(m) }
-			class BException inherits wollok.lang.Exception {  new(m) = super(m) }
-			class CException inherits wollok.lang.Exception {  new(m) = super(m) }
+			class AException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class BException inherits wollok.lang.Exception {  constructor(m) = super(m) }
+			class CException inherits wollok.lang.Exception {  constructor(m) = super(m) }
 			
 			class A { 
 				method m1() { throw new CException("hello you see") }
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -353,7 +353,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			program p {
 				try {
-					val f = new C()
+					const f = new C()
 					f.foo()
 				}
 				catch e {

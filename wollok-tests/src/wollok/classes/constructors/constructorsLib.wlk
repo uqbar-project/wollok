@@ -1,15 +1,15 @@
 class Direccion {
 	var calle = ""
 	var numero = 0
-	val a
+	const a
 	
-	new(c, n) {
+	constructor(c, n) {
 		calle = c
 		numero = n
 		a = 23
 	}
 	
-	new (c) = this(c, 3) {
+	constructor (c) = this(c, 3) {
 		// ...
 	}
 	

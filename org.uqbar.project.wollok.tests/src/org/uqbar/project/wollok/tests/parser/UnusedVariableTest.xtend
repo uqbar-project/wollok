@@ -25,18 +25,18 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 	def void shadowing() {
 		val model = '''
 			class Tren {
-			    val vagones = #[]
+			    const vagones = []
 			
 			    method agregarVagon(v) {
 			        vagones.add(v)
 			    }
 			    method getCantidadPasajeros() {
-			        vagones.fold(0, [v| v.getCantidadPasajeros()])
+			        vagones.fold(0, {v=> v.getCantidadPasajeros()})
 			    }
 			}
 			
 			program shadowing {
-				val t = new Tren()
+				const t = new Tren()
 			}
 		'''.parse
 		model.validate
@@ -60,7 +60,7 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 	def void testInObjectLiterals() {
 		val model = '''
 			program {
-				val vaca1 = object {
+				const vaca1 = object {
 					var peso = 1000
 					method engordar(cuanto) {
 						peso = peso + cuanto
@@ -70,7 +70,7 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 					}
 				}
 				
-				val vaca2 = object {
+				const vaca2 = object {
 					var peso = 1000
 					method engordar(cuanto) {
 						peso = peso + cuanto

@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * @author jfernandes
@@ -22,7 +23,19 @@ class WCollection<T extends Collection> {
 			c.doApply(i, e)
 		]
 	}
-	
+
+	def Object findOrElse(WollokObject _predicate, WollokObject _continuation) {
+		val predicate = _predicate.asClosure
+		val continuation = _continuation.asClosure
+
+		for(Object x : wrapped) {
+			if(predicate.doApply(x as WollokObject).wollokToJava(Boolean) as Boolean) {
+				return x
+			}
+		}
+		continuation.doApply()
+	}
+
 	def void add(WollokObject e) { wrapped.add(e) }
 	def void remove(WollokObject e) { 
 		// This is necessary because native #contains does not take into account Wollok object equality 

@@ -15,5 +15,5 @@ class A {
 }
 
 class MyException inherits wollok.lang.Exception {
-	new(message) = super(message)
+	constructor(message) = super(message)
 }

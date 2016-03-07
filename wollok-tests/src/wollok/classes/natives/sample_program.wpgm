@@ -1,8 +1,8 @@
 import wollok.classes.natives.MyNative
 
 program nativeSample {
-	val obj = new MyNative()
-	val response = obj.aNativeMethod()
+	const obj = new MyNative()
+	const response = obj.aNativeMethod()
 	
 	console.println(response)
 	

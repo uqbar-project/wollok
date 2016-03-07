@@ -15,14 +15,14 @@ class Asustador {
 	method puntosDeTerror()
 	
 	method reducirMotivacion(cuantoPorciento) {
-		val reduc = cuantoPorciento * nivelMotivacion 
+		const reduc = cuantoPorciento * nivelMotivacion 
 		nivelMotivacion = nivelMotivacion - reduc
 	}
 }
 
 class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
-	new (p) { puntosTerrorInnatos = p	}
+	constructor (p) { puntosTerrorInnatos = p	}
 	override method puntosDeTerror() = puntosTerrorInnatos * this.getEdad()
 }
 

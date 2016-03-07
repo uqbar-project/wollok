@@ -2,7 +2,7 @@ class Asustador {
 	var edad = 0
 	var nivelMotivacion = 100
 	
-	new(e) { edad = e }
+	constructor(e) { edad = e }
 	method getEdad() = edad  
 	method setEdad(e) { edad = e }
 	
@@ -13,7 +13,7 @@ class Asustador {
 	}
 	
 	method asustar(ninio) {
-		val a = this.getPorcentaje()
+		const a = this.getPorcentaje()
 		return a * this.puntosDeTerror() / ninio.getEdad()
 	}
 	method getPorcentaje() {
@@ -29,7 +29,7 @@ class Asustador {
 
 class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
-	new(e, p) = super(e) { 
+	constructor(e, p) = super(e) { 
 		puntosTerrorInnatos = p
 	}
 	override method puntosDeTerror() {
@@ -40,7 +40,7 @@ class AsustadorNato inherits Asustador {
 class AsustadorPerseverante inherits Asustador {
 	var puntosDeTerror = 0
 	
-	new(e) = super(e)
+	constructor(e) = super(e)
 	
 	method mejora(actividad) {
 		puntosDeTerror += actividad.calcularMejora()

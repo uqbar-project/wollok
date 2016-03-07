@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
@@ -30,10 +31,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static extension org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator.*
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import java.util.Collections
+import org.uqbar.project.wollok.wollokDsl.WThis
 
 /**
  * Extension methods for WMethodContainers.
@@ -48,36 +49,58 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
-	def static boolean isAbstract(WClass it) { hasUnimplementedInheritedMethods }
-	def static boolean isAbstract(WNamedObject it) { parent != null && parent.hasUnimplementedInheritedMethods }
+	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
+
+	def static unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
+	
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 	
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
 
-	def static allAbstractMethods(WClass c) {
-		val unimplementedMethods = <WMethodDeclaration>newArrayList
-		c.superClassesIncludingYourselfTopDownDo [ claz |
-			unimplementedMethods.removeAllSuchAs[claz.overrides(it)]
-			unimplementedMethods.addAll(claz.abstractMethods);
+	// rename: should be non-implemented abstract methods
+	def static allAbstractMethods(WMethodContainer c) {
+		val hierarchy = c.linearizateHierarhcy
+		
+		val concreteMethods = <WMethodDeclaration>newArrayList
+		
+		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
+			concreteMethods.addAll(chunk.methods.filter[!abstract])
+			// remove implemented
+			unimplementedMethods.removeIf[chunk.overrides(it)]	
+			// add NEW abstracts (abstracts on mixins can be overriden by an upper class / mixin in the chain!)
+			val newAbstractsNotImplementedUpInTheHierarchy = chunk.abstractMethods.filter[abstractM |
+				!concreteMethods.exists[m| abstractM.matches(m.name, m.parameters) ]
+			]
+			unimplementedMethods.addAll(newAbstractsNotImplementedUpInTheHierarchy)
+			unimplementedMethods
 		]
-		unimplementedMethods
 	}
 	
-	def static Iterable<WMethodDeclaration> unimplementedAbstractMethods(WNamedObject it) { parent.allAbstractMethods.filter[m| !it.overrides(m)] }
-
-	def static hasUnimplementedInheritedMethods(WClass c) { !c.allAbstractMethods.empty }
+	def static getAllMessageSentToThis(WMethodContainer it) {
+		eAllContents.filter(WMemberFeatureCall).filter[memberCallTarget.isThis].toIterable
+	}
+	
+	def static dispatch isThis(WThis it) { true }
+	def static dispatch isThis(EObject it) { false }
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
-	def static abstractMethods(WClass it) { methods.filter[isAbstract] }
+	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
-	def static boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[matches(m.name, m.parameters.size)] }
+	
+	def static dispatch boolean overrides(WMethodContainer c, WMethodDeclaration m) { c.overrideMethods.exists[matches(m.name, m.parameters.size)] }
+	// mixins can be overriding a method without explicitly declaring it
+	def static dispatch boolean overrides(WMixin c, WMethodDeclaration m) { c.methods.exists[!abstract && matches(m.name, m.parameters.size)] }
 	
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.parent?.lookupMethod(m.name, m.parameters) }
-	def static superMethod(WSuperInvocation sup) { sup.method.overridenMethod }
+	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.overridenMethod(m.name, m.parameters) }
+	def protected static overridenMethod(WMethodContainer it, String name, List parameters) {
+		lookUpMethod(linearizateHierarhcy.tail, name, parameters, true)
+	}
+	
+	def static superMethod(WSuperInvocation it) { method.overridenMethod }
 	
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
 	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { matches(other.name, other.parameters) }
@@ -103,10 +126,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
 	}
 	
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject o) { o.methods + if (o.parent != null) o.parent.allMethods else #[] }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral o) { o.methods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
 		val methods = newArrayList
+		// TODO: should we replace this with the "linearization()" method call ?
 		c.superClassesIncludingYourselfTopDownDo[cl |
 			// remove overriden
 			cl.overrideMethods.forEach[methods.remove(it.overridenMethod)]
@@ -115,50 +140,90 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		]
 		methods
 	}
+	
+	def static getInheritedMethods(WMethodContainer it) {
+		linearizateHierarhcy.fold(newArrayList) [methods, type |
+			val currents = type.methods
+			val newMethods = currents.filter[m | ! methods.exists[m2 | m.matches(m2.name, m2.parameters)]]
+			methods.addAll(newMethods)
+			methods
+		]
+	}
 
 	def static actuallyOverrides(WMethodDeclaration m) {
 		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
 	}
 	
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
-	def static List<WClass> _parents(WMethodContainer c, List l) {
+	def static List<WClass> _parents(WClass c, List<WClass> l) {
 		if (c == null) {
 			return l
 		}
 		l.add(c)
 		return _parents(c.parent, l)
 	}
-		
+
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
-	def static dispatch WClass parent(WClass c) { c.parent }
-	def static dispatch WClass parent(WObjectLiteral c) { null } // can we just reply with wollok.lang.Object class ?
-	def static dispatch WClass parent(WNamedObject c) { c.parent }
+	def static dispatch WClass parent(WClass it) { parent }
+	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
+	def static dispatch WClass parent(WNamedObject it) { parent }
+	// not supported yet !
+	def static dispatch WClass parent(WMixin it) { null }
+	
+	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
+	def static dispatch List<WMixin> mixins(WClass it) { mixins }
+	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
+	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
+	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
+	def static dispatch members(WMixin c) { c.members }
 	
 	def static dispatch contextName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
+	def static dispatch contextName(WMixin c) { c.fqn }
 	
-	def static boolean inheritsMethod(WMethodContainer c, String name, int argSize) { c.parent != null && c.parent.hasOrInheritMethod(name, argSize) }
+	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
+		(mixins != null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
+		|| (parent != null && parent.hasOrInheritMethod(name, argSize))
+	}
 	
-	def static boolean hasOrInheritMethod(WClass c, String mname, int argsSize) { 
+	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) { 
 		c != null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
-	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params) { 
-		val method = behavior.methods.findFirst[matches(message, params)]
-		
-		if (method != null) 
-			return method
-		else if (behavior.parent != null)
-			behavior.parent.lookupMethod(message, params)
-		else 
-			null
+	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params, boolean acceptsAbstract) {
+		lookUpMethod(behavior.linearizateHierarhcy, message, params, acceptsAbstract)
+	}
+	
+	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List params, boolean acceptsAbstract) {
+		for (chunk : hierarchy) {
+			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
+			if (method != null)
+				return method;			
+		}
+		null
+	}
+	
+	/**
+	 * The full hierarchy chain top->down
+	 */	
+	// TODO: currently doesn't support inheritance between mixins
+	def static List<WMethodContainer> linearizateHierarhcy(WMethodContainer it) {
+		var chain = newLinkedList
+		chain.add(it)
+		if (mixins != null) {
+			val reversed = mixins.clone.reverse
+			chain.addAll(reversed)
+		}
+		if (parent != null)
+			chain.addAll(parent.linearizateHierarhcy)
+		chain
 	}
 	
 	def static matches(WMethodDeclaration it, String message, List params) { matches(message, params.size) }
@@ -171,14 +236,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nrOfArgs == parameters.size
 	}
 
-	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.hookObjectSuperClass(finder)
+	// all calls to 'this' are valid in mixins
+//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
+	def static dispatch boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
 		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
-	
-	def static dispatch void hookObjectSuperClass(WClass it, WollokClassFinder finder) { hookToObject(finder) }
-	def static dispatch void hookObjectSuperClass(WNamedObject it, WollokClassFinder finder) { hookObjectInHierarhcy(finder) }
-	def static dispatch void hookObjectSuperClass(WObjectLiteral it, WollokClassFinder finder) { } // nothing !
 
 	// ************************************************************************
 	// ** Basic methods

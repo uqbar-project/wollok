@@ -1,13 +1,12 @@
 package wollok.lib
 
-import java.util.List
-import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WPosition
+import org.uqbar.project.wollok.lib.WVisual
+import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.CollisionListener
+import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
@@ -18,99 +17,97 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  */
 class WgameObject {
 	
-	@NativeMessage("addVisual")
-	def addVisualMethod(Object it) { addComponent(asVisualComponent) }
-	
-	@NativeMessage("addVisualCharacter")
-	def addVisualCharacterMethod(Object it) { addCharacter(asVisualComponent) }
-
-	def asVisualComponent(Object it) { new VisualComponent(WollokObject.cast(it)) }
-	
-	@NativeMessage("addVisualWithReference")
-	def addVisualWithReferenceMethod(Object element, Object properties) {		
-		val wollokObject = WollokObject.cast(element)
-		val wollokList = WollokObject.cast(properties)
-		addComponent(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
+	def addVisual(WollokObject it) { 
+		board.addComponent(asVisual)
 	}
 
-	@NativeMessage("whenKeyPressedSay")
-	def whenKeyPressedSayMethod(Object key, WollokObject functionObj) {	
-		val num = WollokObject.cast(key).wollokToJava(Integer) as Integer
-		val function = functionObj.asClosure
-		var listener = new KeyboardListener(num,  [ Gameboard.getInstance.characterSay(function.doApply.wollokToJava(String) as String) ]) 
-		board.addListener(listener)
+	def addVisualIn(WollokObject it, WollokObject position) { 
+		board.addComponent(asVisualIn(position))
 	}
 	
-	@NativeMessage("addVisualCharacterWithReference")
-	def addVisualCharacterWithReferenceMethod(Object element, Object properties) {		
-		var wollokObject = WollokObject.cast(element)
-		var wollokList = WollokObject.cast(properties)
-		this.addCharacter(new VisualComponent(wollokObject, wollokList.wollokToJava(List) as List))
+	def addVisualCharacter(WollokObject it) { 
+		board.addCharacter(asVisual)
 	}
 	
-	@NativeMessage("whenKeyPressedDo")
-	def whenKeyPressedDoMethod(Object key, WollokObject action) {
-		var num = WollokObject.cast(key).wollokToJava(Integer) as Integer
+	def addVisualCharacterIn(WollokObject it, WollokObject position) { 
+		board.addCharacter(asVisualIn(position))
+	}
+	
+	def removeVisual(WollokObject it) {
+		var visual = board.findVisual(it)
+		board.remove(visual)
+	}
+	
+	def whenKeyPressedDo(WollokObject key, WollokObject action) {
+		var num = key.asInteger
 		val function = action.asClosure
 		var listener = new KeyboardListener(num, [ function.doApply ])
-		board.addListener(listener)
+		addListener(listener)
 	}
 
-	@NativeMessage("whenCollideDo")
-	def whenCollideDoMethod(Object object, WollokObject action) {
-		val visualObject = board.getComponents().findFirst[ c | c.domainObject.equals(WollokObject.cast(object))]
+	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
+		val num = key.asInteger
+		val function = functionObj.asClosure
+		var listener = new KeyboardListener(num,  [ board.characterSay(function.doApply.asString) ]) 
+		addListener(listener)
+	}
+	
+	def whenCollideDo(WollokObject visual, WollokObject action) {
+		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		val listener = new CollisionListener(visualObject, [ VisualComponent e | function.doApply(e.domainObject) ])
-		board.addListener(listener)
+		val listener = new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ])
+		addListener(listener)
 	}
 	
-	@NativeMessage("getObjectsIn")
-	def getObjectsInMethod(Object position) {
-		val wollokObject = WollokObject.cast(position)
-		val wPosition = new WPosition(wollokObject)
-		val list = board.getComponentsInPosition(wPosition).map[ domainObject ].toList
-		list.javaToWollok
+	def getObjectsIn(WollokObject position) {
+		var pos = new WPosition(position)
+		board.getComponentsInPosition(pos)
+		.map[ it as WVisual ]
+		.map [ it.wObject ]
+		.toList.javaToWollok
 	}
 	
-	@NativeMessage("clear")
-	def clearMethod() { board.clear }
+	def say(WollokObject visual, WollokObject message) {
+		board.findVisual(visual).say(message.asString)
+	}
 	
-	@NativeMessage("start")
-	def startMethod() { board.start }
+	def clear() { board.clear }
+	
+	def start() { board.start }
+	
+	def stop() { board.stop }
+	
 	
 	def board() { Gameboard.getInstance }
 	
-	def addCharacter(VisualComponent component) {
-		board.addCharacter(component)
+	def addListener(GameboardListener listener) {
+		board.addListener(listener)
 	}
 	
-	def addComponent(VisualComponent component) {
-		board.addComponent(component)
+	def findVisual(Gameboard it, WollokObject visual) {
+		components
+		.map[it as WVisual]
+		.findFirst[ wObject.equals(visual)]
 	}
+	
 	
 //	 ACCESSORS
-	@NativeMessage("setTittle")
-	def setTittleMethod(String title) {
-		board.title = title.wollokToJava(String) as String
+	def getTitle() { board.title.javaToWollok }
+	def setTitle(WollokObject title) {
+		board.title = title.asString
 	}
 	
-	@NativeMessage("getTittle")
-	def getTittleMethod() { board.title.javaToWollok }
-	
-	@NativeMessage("setWidth")
-	def setWeightMethod(WollokObject cant) {
-		board.width =  cant.wollokToJava(Integer) as Integer
-	}
-		
-	@NativeMessage("getWidth")
-	def getWeightMethod() { board.width.javaToWollok }
-	
-	@NativeMessage("setHeight")
-	def setHeightMethod(WollokObject cant) {
-		board.height = cant.wollokToJava(Integer) as Integer
+	def getWidth() { board.width.javaToWollok }
+	def setWidth(WollokObject cant) {
+		board.width =  cant.asInteger
 	}
 	
-	@NativeMessage("getHeight")
-	def getHeightMethod() { board.height.javaToWollok }
+	def getHeight() { board.height.javaToWollok }
+	def setHeight(WollokObject cant) {
+		board.height = cant.asInteger
+	}
 	
+	def setGround(WollokObject image) {
+		board.createCells(image.asString)
+	}
 }

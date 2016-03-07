@@ -2,16 +2,16 @@
 
 class A {
 	method inABlock() {
-		val aBlock = [a |
+		const aBlock = {a =>
 			throw new Exception()
 			// XPECT errors --> "Unexpected expression after throw" at "a > 23"
 			a > 23
-		]
+		}
 		aBlock.apply(23)
 		throw new Exception()
 		
-		// XPECT errors --> "Unexpected expression after throw" at "val b = '23'"
-		val b = '23'
+		// XPECT errors --> "Unexpected expression after throw" at "const b = '23'"
+		const b = '23'
 		// XPECT errors --> "Unexpected expression after throw" at "return b"
 		return b
 	}

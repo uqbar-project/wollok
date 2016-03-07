@@ -24,7 +24,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	
 	method initialization(aParam) {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		val a = pepita.eat(10)
+		const a = pepita.eat(10)
 		
 		this.setA(a)
 	}
@@ -51,8 +51,8 @@ class MethodsCalledOnWellKnowObjects inherits A {
 			30	
 	}
 	
-	method asABinaryOperatorArgument() = {
-		#[
+	method asABinaryOperatorArgument() {
+		return [
 			// XPECT errors --> "This message call produces no value" at "eat" 
 			10 + pepita.eat(10),
 			// XPECT errors --> "This message call produces no value" at "eat" 
@@ -69,9 +69,9 @@ class MethodsCalledOnWellKnowObjects inherits A {
 		pepita.eat(10).cantina() 
 	}
 	
-	method asListLiteralElement() = {
+	method asListLiteralElement() {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		#[1, 2, 3, pepita.eat(10)] 
+		return [1, 2, 3, pepita.eat(10)] 
 	}
 	
 	override method toBeOverriden(a) {
@@ -79,9 +79,9 @@ class MethodsCalledOnWellKnowObjects inherits A {
 		super(pepita.eat(10))
 	}
 	
-	method asConstructorArg() = {
+	method asConstructorArg() {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		new B(pepita.eat(10)) 
+		return new B(pepita.eat(10)) 
 	}
 	
 	// XPECT errors --> "This message call produces no value" at "eat"
@@ -89,5 +89,5 @@ class MethodsCalledOnWellKnowObjects inherits A {
 }
 
 class B {
-	new(a) {}
+	constructor(a) {}
 }

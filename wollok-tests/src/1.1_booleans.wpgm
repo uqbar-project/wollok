@@ -3,7 +3,7 @@
 program booleans {
 	
 
-val trueB = true
+const trueB = true
 var a = "a"
 // a = 1  // FAILS OK!
 
@@ -50,8 +50,8 @@ var n2 = 2
 assert.that(n1 == n2)
 this.assertFalse(2 == 3)
 
-val object1 = object {}
-val object2 = object {}
+const object1 = object {}
+const object2 = object {}
 assert.that(object1 == object1)
 this.assertFalse(object1 == object2)
 
@@ -72,13 +72,13 @@ assert.that(3 >= 3)
 // ** errores de tipos (PASAR A UN XPect)
 // **************************
 
-//val unN = 2
-//val otroN = 4
+//const unN = 2
+//const otroN = 4
 //
-//val unoYotro = unN && otroN
-//val otraComp = true && otroN
+//const unoYotro = unN && otroN
+//const otraComp = true && otroN
 //
-//val compValida = true && false
+//const compValida = true && false
 //this.println(compValida)
 
 }

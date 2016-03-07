@@ -1,7 +1,7 @@
 import exceptionsLib.*
 
 program exceptions {
-	val a = new A()
+	const a = new A()
 	
 	var i = 0
 	try {

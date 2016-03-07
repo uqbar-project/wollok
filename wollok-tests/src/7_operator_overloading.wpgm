@@ -1,8 +1,8 @@
 program operatorOverloading {
 
 
-val sumable = object {
-	val value = 15
+const sumable = object {
+	const value = 15
 	method +(otro) = value + otro
 }
 

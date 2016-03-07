@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * Expect the exact given type.

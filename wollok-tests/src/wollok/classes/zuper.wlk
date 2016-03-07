@@ -11,7 +11,7 @@ class Golondrina {
 	
 	method gastoParaVolar(kms) = kms
 	
-	method blah(a) = {
+	method blah(a) {
 		this.gastoParaVolar(a)
 		// super(a) // FAIL OK !
 	}
@@ -19,7 +19,7 @@ class Golondrina {
 
 class SeCansaMucho inherits Golondrina {
 	override method gastoParaVolar(kms) {
-		val r = super(kms)
+		const r = super(kms)
 		return 2 * r
 	}
 }

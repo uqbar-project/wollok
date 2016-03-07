@@ -17,7 +17,7 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name, ClassDiagramColors.CLASS_FOREGROUND, ClassDiagramColors.CLASS_BACKGROUND) => [ f |
 			f.abstract = castedModel.clazz.abstract
-		]		
+		]
 	}
 	
 	override getLanguageElement() { castedModel.clazz }

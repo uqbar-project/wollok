@@ -9,12 +9,16 @@ import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
+import org.eclipse.xtext.service.OperationCanceledManager;
+import org.eclipse.xtext.serializer.sequencer.ISyntacticSequencer;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator;
+import org.uqbar.project.wollok.interpreter.core.WollokObject;
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory;
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory;
+import org.uqbar.project.wollok.linking.WollokLinker;
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
@@ -22,6 +26,7 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
+import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking;
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory;
 
 import com.google.inject.Binder;
@@ -30,6 +35,7 @@ import com.google.inject.Binder;
  * Use this class to register components to be used at runtime / without the
  * Equinox extension registry.
  */
+@SuppressWarnings("restriction")
 public class WollokDslRuntimeModule extends
 		org.uqbar.project.wollok.AbstractWollokDslRuntimeModule {
 
@@ -49,6 +55,9 @@ public class WollokDslRuntimeModule extends
 		binder.bind(TypesFactory.class).toInstance(org.eclipse.xtext.common.types.TypesFactory.eINSTANCE);
 		
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended.class).to(WollokLinkingDiagnosticMessageProvider.class);
+		
+		// fixes for xtext 2.9
+		binder.bind(OperationCanceledManager.class).toInstance(new OperationCanceledManager());
 	}
 
 	// customize exported objects
@@ -81,11 +90,19 @@ public class WollokDslRuntimeModule extends
 		return WollokQualifiedNameProvider.class;
 	}
 
-	public Class<? extends XInterpreterEvaluator> bindXInterpreterEvaluator() {
+	public Class<? extends XInterpreterEvaluator<WollokObject>> bindXInterpreterEvaluator() {
 		return WollokInterpreterEvaluator.class;
 	}
 
 	public Class<? extends WollokInterpreterConsole> bindWollokInterpreterConsole() {
 		return SysoutWollokInterpreterConsole.class;
+	}
+
+	public Class<? extends org.eclipse.xtext.linking.ILinker> bindILinker() {
+		return WollokLinker.class;
+	}
+
+	public Class<? extends ISyntacticSequencer> bindISyntacticSequencer() {
+		return WollokDslSyntacticSequencerWithSyntheticLinking.class;
 	}
 }

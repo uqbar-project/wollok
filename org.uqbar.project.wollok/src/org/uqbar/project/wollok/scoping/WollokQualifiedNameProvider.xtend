@@ -9,6 +9,9 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
+ * Customizes FQN named provider for
+ * <li>objectliterals</li>
+ * <li>Wfile name</li>
  * 
  */
 class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvider {

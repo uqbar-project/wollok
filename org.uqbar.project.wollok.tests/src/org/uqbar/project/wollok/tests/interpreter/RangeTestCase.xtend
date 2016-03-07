@@ -13,13 +13,13 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForEach() {
 		'''
 		program a {
-			val range = 0 .. 10
+			const range = 0 .. 10
 			
 			var sum = 0
 			
 			assert.that(range != null)
 			
-			range.forEach [ i | sum += i ]
+			range.forEach { i => sum += i }
 			
 			assert.equals(55, sum)
 		}
