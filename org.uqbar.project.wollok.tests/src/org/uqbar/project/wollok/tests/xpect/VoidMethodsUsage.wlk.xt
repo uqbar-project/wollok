@@ -24,7 +24,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	
 	method initialization(aParam) {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		val a = pepita.eat(10)
+		const a = pepita.eat(10)
 		
 		this.setA(a)
 	}

@@ -89,7 +89,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			program p {
 				assert.throwsException { 
-					val x = null
+					const x = null
 					x.foo()
 				}	
 			}
@@ -99,26 +99,26 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testsAreIsolatedInTermsOfStateWKO() {
 		'''
-		   object globalin {
-		   	    var a = 10
-		   	    method a(nuevo) { a = nuevo }
-		   	    method a() = a
-		   }
-		   test "Changing a to 20" {
+			object globalin {
+				var a = 10
+				method a(nuevo) { a = nuevo }
+				method a() = a
+			}
+			test "Changing a to 20" {
 				assert.equals(10, globalin.a())
-		   	    globalin.a(20)
-		   	    assert.equals(20, globalin.a())
-		   }
-		   test "Is back in 10 and change it to 30" {
-		   	    // starts with 10 again !
-		   		assert.equals(10, globalin.a())
-		   	    globalin.a(30)
-		   	    assert.equals(30, globalin.a())
-		   }
-		   test "Changing a to 10" {
-   		   	    // starts with 10 again !
-   		   		assert.equals(10, globalin.a())
-   		   }
+				globalin.a(20)
+				assert.equals(20, globalin.a())
+			}
+			test "Is back in 10 and change it to 30" {
+				// starts with 10 again !
+				assert.equals(10, globalin.a())
+				globalin.a(30)
+				assert.equals(30, globalin.a())
+			}
+			test "Changing a to 10" {
+				// starts with 10 again !
+				assert.equals(10, globalin.a())
+			}
 		'''.interpretPropagatingErrors
 	}
 	

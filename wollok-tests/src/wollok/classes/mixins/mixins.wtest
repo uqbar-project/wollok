@@ -79,15 +79,15 @@ object pepita mixed with Flies {}
 // **************************
 
 test "Class with simple mixin inherits a method" {
-	val b = new Bird()
+	const b = new Bird()
 	b.fly()
 }
 
 test "Class with mixin modifying its own state from the mixin" {
-	val b = new WalkingBird()
+	const b = new WalkingBird()
 	b.walk(10)
 //	console.println(b.walkedDistance())
-	val walked = b.walkedDistance()
+	const walked = b.walkedDistance()
 	console.println("sarasa = " + walked)
 	assert.that(10 == walked)
 	
@@ -95,7 +95,7 @@ test "Class with mixin modifying its own state from the mixin" {
 }
 
 test "asd" {
-	val b = new BirdWithEnergyThatFlies()
+	const b = new BirdWithEnergyThatFlies()
 	b.fly(10)
 	assert.equals(90, b.energy())
 	assert.equals(10, b.fliedMeters())
@@ -103,7 +103,7 @@ test "asd" {
 
 
 test "Mixin method calls a method on the class" {
-	val b = new BirdWithFlyingShortCuts()
+	const b = new BirdWithFlyingShortCuts()
 	b.fly100meters()
 	assert.equals(100, b.energy())
 }

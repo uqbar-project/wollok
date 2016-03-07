@@ -9,7 +9,7 @@ class A {
 }
 			
 object p {	
-	val a = new A()
+	const a = new A()
 	method unreachableCatches() {			
 		try {
 			a.m1()

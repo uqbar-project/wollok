@@ -2,14 +2,14 @@ import simpleClass.Golondrina
 
 program simpleClass {
 	
-	val pepita = new Golondrina()
+	const pepita = new Golondrina()
 
 	var r = pepita.getEnergia() == 50
 	assert.that(r)
 	
 	//// una segunda
 	//
-	val pepona = new Golondrina()
+	const pepona = new Golondrina()
 	pepona.volar(2)
 	assert.equals(98, pepona.getEnergia())
 	assert.equals(50, pepita.getEnergia())  // pepita no se altero

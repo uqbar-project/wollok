@@ -1,7 +1,7 @@
 program polymorphism {
 
 	// golondrina pepona con energia
-	val pepona = object {
+	const pepona = object {
 		var energia = 100
 		method comer(comida) {
 			energia = energia + comida.energia()
@@ -10,7 +10,7 @@ program polymorphism {
 	}
 
 	/* el alpiste tambien tiene energia  */
-	val alpiste = object {
+	const alpiste = object {
 		method energia() {		
 			return 5
 		} 

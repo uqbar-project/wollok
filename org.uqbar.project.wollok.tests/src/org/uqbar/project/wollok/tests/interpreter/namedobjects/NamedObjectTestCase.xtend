@@ -38,7 +38,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			var n = 33
 			
-			val o = object {
+			const o = object {
 				method getN() {
 					return n
 				}
@@ -66,7 +66,7 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 			program p {
 				var n = 33
 				
-				val o = new Pepe() 
+				const o = new Pepe() 
 				
 				assert.that(33 == o.getN())
 			}'''.interpretPropagatingErrors

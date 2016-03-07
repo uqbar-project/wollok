@@ -13,8 +13,8 @@ package lang {
 	 * @since 1.0
 	 */
 	class Exception {
-		val message
-		val cause
+		const message
+		const cause
 	
 		constructor()
 		constructor(_message) = this(_message, null)
@@ -22,7 +22,7 @@ package lang {
 		
 		method printStackTrace() { this.printStackTrace(console) }
 		method getStackTraceAsString() {
-			val printer = new StringPrinter()
+			const printer = new StringPrinter()
 			this.printStackTrace(printer)
 			return printer.getBuffer()
 		}
@@ -70,8 +70,8 @@ package lang {
 	}
 	
 	class StackTraceElement {
-		val contextDescription
-		val location
+		const contextDescription
+		const location
 		constructor(_contextDescription, _location) {
 			contextDescription = _contextDescription
 			location = _location
@@ -165,8 +165,8 @@ package lang {
 	
 	
 	class Pair {
-		val x
-		val y
+		const x
+		const y
 		constructor (_x, _y) {
 			x = _x
 			y = _y
@@ -197,8 +197,8 @@ package lang {
 		method min(closure) = this.absolute(closure, { a, b => a < b} )
 		
 		method absolute(closure, criteria) {
-			val result = this.fold(null, { acc, e =>
-				val n = closure.apply(e) 
+			const result = this.fold(null, { acc, e =>
+				const n = closure.apply(e) 
 				if (acc == null)
 					new Pair(e, n)
 				else {
@@ -294,7 +294,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns an integer
 		 * Example:
-		 *      val totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
+		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = this.fold(0, { acc, e => acc + closure.apply(e) })
 		
@@ -304,7 +304,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns an object.
 		 * @returns another collection (same type as this one)
 		 * Example:
-		 *      val ages = users.map{ user => user.age() }
+		 *      const ages = users.map{ user => user.age() }
 		 */
 		method map(closure) = this.fold(this.newInstance(), { acc, e =>
 			 acc.add(closure.apply(e))
@@ -352,7 +352,7 @@ package lang {
 		override method toStringSufix() = "}"
 		
 		override method asList() { 
-			val result = []
+			const result = []
 			result.addAll(this)
 			return result
 		}
@@ -401,7 +401,7 @@ package lang {
 		override method asList() = this
 		
 		override method asSet() { 
-			val result = #{}
+			const result = #{}
 			result.addAll(this)
 			return result
 		}
@@ -409,9 +409,9 @@ package lang {
 		method subList(start,end) {
 			if(this.isEmpty)
 				return this.newInstance()
-			val newList = this.newInstance()
-			val _start = start.limitBetween(0,this.size()-1)
-			val _end = end.limitBetween(0,this.size()-1)
+			const newList = this.newInstance()
+			const _start = start.limitBetween(0,this.size()-1)
+			const _end = end.limitBetween(0,this.size()-1)
 			(_start.._end).forEach { i => newList.add(this.get(i)) }
 			return newList
 		}
@@ -580,14 +580,14 @@ package lang {
 	 * @since 1.3
 	 */
 	class Range {
-		val start
-		val end
+		const start
+		const end
 		constructor(_start, _end) { start = _start ; end = _end }
 		
 		method forEach(closure) native
 		
 		method map(closure) {
-			val l = []
+			const l = []
 			this.forEach{e=> l.add(closure.apply(e)) }
 			return l
 		}
@@ -816,14 +816,14 @@ package game {
 package mirror {
 
 	class InstanceVariableMirror {
-		val target
-		val name
+		const target
+		const name
 		constructor(_target, _name) { target = _target ; name = _name }
 		method name() = name
 		method value() = target.resolve(name)
 		
 		method valueToSmartString(alreadyShown) {
-			val v = this.value()
+			const v = this.value()
 			return if (v == null) "null" else v.toSmartString(alreadyShown)
 		}
 

@@ -13,7 +13,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	def void testForEach() {
 		'''
 		program a {
-			val range = 0 .. 10
+			const range = 0 .. 10
 			
 			var sum = 0
 			

@@ -18,7 +18,7 @@ class UnusedVariableTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testUnusedInObjectLiteral() {
 		val model = ''' program p {
-			val vaca1 = object {
+			const vaca1 = object {
 				var peso = 1000
 				method engordar(cuanto) {
 					peso = peso + cuanto
@@ -28,7 +28,7 @@ class UnusedVariableTest extends AbstractWollokInterpreterTestCase {
 				}
 			}
 			
-			val vaca2 = object {
+			const vaca2 = object {
 				var peso = 1000
 				method engordar(cuanto) {
 					peso = peso + cuanto

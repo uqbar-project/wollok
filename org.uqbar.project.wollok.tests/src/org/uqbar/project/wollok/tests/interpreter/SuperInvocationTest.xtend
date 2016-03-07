@@ -34,7 +34,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val pepona = new SeCansaMucho()
+				const pepona = new SeCansaMucho()
 				pepona.volar(50)
 				assert.that(pepona.energia() == 0) // Gastó el doble de energia
 			}

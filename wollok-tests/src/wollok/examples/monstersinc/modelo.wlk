@@ -48,7 +48,7 @@ class Equipo {
 		asistente = a
 	}
 	method visitar(puerta) {
-		val energiaPorAsustar = energiaGenerada + asustador.entrarAPuerta(puerta)
+		const energiaPorAsustar = energiaGenerada + asustador.entrarAPuerta(puerta)
 		energiaGenerada = asistente.calcularEnergia(energiaPorAsustar)
 	}
 	method getEnergiaGenerada() = energiaGenerada

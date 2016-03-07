@@ -1,7 +1,7 @@
 class Direccion {
 	var calle = ""
 	var numero = 0
-	val a
+	const a
 	
 	constructor(c, n) {
 		calle = c

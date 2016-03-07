@@ -1,6 +1,6 @@
 program tomYJerry {
 	
-	val tom = object {
+	const tom = object {
 		var energia = 100
 		var posicion = 0
 		method getVelocidad() {
@@ -20,7 +20,7 @@ program tomYJerry {
 		}
 	}
 	
-	val jerry = object {
+	const jerry = object {
 		var peso = 10
 		var posicion = 10
 		method getVelocidad() {

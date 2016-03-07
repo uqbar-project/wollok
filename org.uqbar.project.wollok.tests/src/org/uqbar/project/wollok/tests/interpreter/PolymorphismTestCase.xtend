@@ -14,7 +14,7 @@ class PolymorphismTestCase extends AbstractWollokInterpreterTestCase {
 	def void testPolymorphicParameterWithObjectLiterals() {
 		'''
 		program p {
-			val pepona = object {
+			const pepona = object {
 				var energia = 100
 				method comer(comida) {
 					energia = energia + comida.energia()
@@ -24,7 +24,7 @@ class PolymorphismTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 
-			val alpiste = object {
+			const alpiste = object {
 				method energia() { 
 					return 5
 				}

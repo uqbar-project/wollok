@@ -19,7 +19,7 @@ class Golondrina {
 
 class SeCansaMucho inherits Golondrina {
 	override method gastoParaVolar(kms) {
-		val r = super(kms)
+		const r = super(kms)
 		return 2 * r
 	}
 }

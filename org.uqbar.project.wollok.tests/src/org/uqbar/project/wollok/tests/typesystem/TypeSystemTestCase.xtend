@@ -14,31 +14,31 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testInferSimpleVariableAssignment() {
 		''' program p {
-			val number = 23
+			const number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'val number = 23')
+			assertTypeOf(WInt, 'const number = 23')
 		]
 	}
 
 	@Test
 	def void testInferIndirectVar() {
 		''' program p {
-			val number
+			const number
 			number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'val number')
+			assertTypeOf(WInt, 'const number')
 		]
 	}
 
 	@Test
 	def void testInferIndirectAssignedToBinaryExpression() {
 		''' program p {
-			val number
-			val a = 2
-			val b = 3
+			const number
+			const a = 2
+			const b = 3
 			number = a + b
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'val number')
+			assertTypeOf(WInt, 'const number')
 		]
 	}
 
@@ -46,7 +46,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testIncompatibleTypesInAssignment() {
 		''' program p {
 			var a = 2
-			val b = "aString"
+			const b = "aString"
 			a = b
 		}'''.parseAndInfer.asserting [
 			assertIssues("a = b", "Expecting super type of <<Int>> but found <<String>> which is not")
@@ -59,11 +59,11 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			class Pato {
 				method cuack() { 'cuack!' }
 		 	program p {
-				val pato = new Pato()
+				const pato = new Pato()
 				pato.cuack()
 			}'''.parseAndInfer.asserting [
 			noIssues
-			assertTypeOf(classType("Pato"), 'val pato = new Pato()')
+			assertTypeOf(classType("Pato"), 'const pato = new Pato()')
 		]
 	}
 

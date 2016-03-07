@@ -3,7 +3,7 @@ import trenes.*
 // 1)
 program trenes {
 
-val tren = new Tren()
+const tren = new Tren()
 tren.agregarVagon(new VagonPasajeros(2, 10))
 assert.equals(80, tren.getCantidadPasajeros())
 
@@ -40,7 +40,7 @@ assert.that(tren.puedeMoverse())
 
 assert.that(0 == tren.getKilosEmpujeFaltantes())
 
-val trenNoSeMueve = new Tren()
+const trenNoSeMueve = new Tren()
 trenNoSeMueve.agregarVagon(new VagonPasajeros(3, 12))
 trenNoSeMueve.agregarLocomotora(new Locomotora(1200, 4000, 55))
 this.assertFalse(trenNoSeMueve.puedeMoverse())
@@ -48,7 +48,7 @@ assert.equals(6800, trenNoSeMueve.getKilosEmpujeFaltantes())
 
 // 7) Dado un depósito, obtener el conjunto formado por el vagón más pesado de cada formación;
 
-val deposito = new Deposito()
+const deposito = new Deposito()
 deposito.agregarFormacion(tren)
 deposito.agregarFormacion(trenNoSeMueve)
 

@@ -2,7 +2,7 @@ program objectLiteralsAsParameters {
 
 // 4to: polimorfismo con objeto literal como parametro
 
-	val pepona = object {
+	const pepona = object {
 		var energia = 100
 		method comer(comida) {
 			energia = energia + comida.energia()

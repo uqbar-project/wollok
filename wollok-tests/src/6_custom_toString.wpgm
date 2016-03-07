@@ -1,6 +1,6 @@
 program customToString {
 
-val pepe = object {
+const pepe = object {
 	method toString() {
 		return 'Pepe'
 	}

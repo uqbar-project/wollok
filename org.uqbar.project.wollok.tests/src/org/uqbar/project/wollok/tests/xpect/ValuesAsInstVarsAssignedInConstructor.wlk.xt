@@ -1,9 +1,9 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 	
 	class Range {
-        val start
-        val end
-        val step
+        const start
+        const end
+        const step
 
         constructor(s, e, st) {
             start = s

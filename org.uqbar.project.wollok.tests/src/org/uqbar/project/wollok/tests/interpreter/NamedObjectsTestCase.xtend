@@ -58,7 +58,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 	def void referencingObject() {
 		'''
 			object pp {
-			    val ps = [pepita]
+			    const ps = [pepita]
 			    
 			    method unMethod(){
 			        var x = pepita

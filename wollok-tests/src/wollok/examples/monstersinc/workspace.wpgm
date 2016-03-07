@@ -17,33 +17,33 @@ import actividades.*
 program monstersInc {
 
 	// 1)
-	val sullivan = new AsustadorNato(25, 200)
-	val puertaConNinio4 = new Puerta(new Ninio(4))
+	const sullivan = new AsustadorNato(25, 200)
+	const puertaConNinio4 = new Puerta(new Ninio(4))
 	
 	assert.equals(1250, sullivan.entrarAPuerta(puertaConNinio4))
 
 	// 2)
-	val mike = new AsustadorPerseverante(20)
+	const mike = new AsustadorPerseverante(20)
 	mike.mejora(new EstudiarMateria("Sustos 2", 50))
 	mike.mejora(new EjercitarEnSimulador(2))
 	
 	assert.that(70 == mike.puntosDeTerror())
 	
-	val piyamada = new Piyamada()
+	const piyamada = new Piyamada()
 	piyamada.agregarNinio(new Ninio(2))
 	piyamada.agregarNinio(new Ninio(3))
 	piyamada.agregarNinio(new Ninio(4))
 	
-	val puertaConPiyamada = new Puerta(piyamada)
+	const puertaConPiyamada = new Puerta(piyamada)
 	
-	val energiaMike = mike.entrarAPuerta(puertaConPiyamada)
+	const energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
 	console.println(mike)
 	assert.that(75 == energiaMike)   // 70/2 + 70/3 + 70/4 = 75
 
 
 	// 3)
-	val equipo = new Equipo(sullivan, new AsistenteNormal())
+	const equipo = new Equipo(sullivan, new AsistenteNormal())
 	equipo.visitar(new Puerta(new Adolescente()))
 	
 	assert.equals(90.0, sullivan.getNivelMotivacion())
@@ -52,7 +52,7 @@ program monstersInc {
 
 	// 4)
 
-	val emp = monstersInc
+	const emp = monstersInc
 	emp.agregarEquipo(equipo)
 	emp.agregarPuerta(puertaConNinio4)
 	emp.diaLaboral()
@@ -61,7 +61,7 @@ program monstersInc {
 	// 5)
 	assert.that(equipo == emp.equipoMasAsustador())
 	
-	val equipoCapo = object {
+	const equipoCapo = object {
 		method getEnergiaGenerada() { return 90000.0 }
 	}
 	emp.agregarEquipo(equipoCapo)

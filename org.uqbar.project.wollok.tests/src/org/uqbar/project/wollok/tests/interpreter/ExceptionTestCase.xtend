@@ -20,7 +20,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				method m1() { throw new MyException() }
 			}
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -45,7 +45,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 		
 			program p {	
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -71,7 +71,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -100,7 +100,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = null
 				
 				try {
@@ -122,7 +122,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try {
@@ -144,7 +144,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try 
@@ -167,7 +167,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m2()
@@ -192,7 +192,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -218,7 +218,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -248,7 +248,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -278,7 +278,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -309,7 +309,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -353,7 +353,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			program p {
 				try {
-					val f = new C()
+					const f = new C()
 					f.foo()
 				}
 				catch e {

@@ -15,7 +15,7 @@ class Asustador {
 	method puntosDeTerror()
 	
 	method reducirMotivacion(cuantoPorciento) {
-		val reduc = cuantoPorciento * nivelMotivacion 
+		const reduc = cuantoPorciento * nivelMotivacion 
 		nivelMotivacion = nivelMotivacion - reduc
 	}
 }

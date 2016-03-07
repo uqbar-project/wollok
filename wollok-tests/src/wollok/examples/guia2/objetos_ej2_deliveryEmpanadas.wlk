@@ -27,7 +27,7 @@ object biciNueva {
 }
 
 object motoGrande {
-	val distanciaMaxima = 100
+	const distanciaMaxima = 100
 	var distanciaRecorrida = 0
 
 	method capacidad() { return 60 }
@@ -44,7 +44,7 @@ object motoGrande {
 }
 
 object motoChica {
-	val distanciaMaxima = 70
+	const distanciaMaxima = 70
 	var distanciaRecorrida = 0
 
 	method capacidad() {
@@ -66,7 +66,7 @@ object motoChica {
 object jose {
 	var capacidad = 20
 	var cantidadDeViajes = 0
-	val distanciaMaxima = 15
+	const distanciaMaxima = 15
 
 	method capacidad() {
 		return capacidad - ( 2 * cantidadDeViajes )
@@ -85,7 +85,7 @@ object jose {
 }
 
 object delivery {
-	val transportes = [ biciVieja, biciNueva, motoGrande, motoChica, jose ]
+	const transportes = [ biciVieja, biciNueva, motoGrande, motoChica, jose ]
 
 	method cantidadTotalQueSePuedeTransportar() {
 		return transportes.sum{ t => t.capacidad() }

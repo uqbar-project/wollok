@@ -104,7 +104,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def evaluate(String expression) {
 		'''
 			program evaluateExpression {
-				val __expression__ = «expression» 
+				const __expression__ = «expression» 
 			}
 		'''.toString.interpretPropagatingErrors
 

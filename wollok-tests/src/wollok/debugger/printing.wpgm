@@ -1,5 +1,5 @@
 program printing {
-	val a = 23 + 1
+	const a = 23 + 1
 	
 	this.println(a)
 	

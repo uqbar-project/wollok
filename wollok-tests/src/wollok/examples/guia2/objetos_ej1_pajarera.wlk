@@ -29,7 +29,7 @@ object pepita {
 }
 
 object alpiste {
-	val energia = 10
+	const energia = 10
 	
 	method energia() {
 		return energia
@@ -77,7 +77,7 @@ object golondrina1 {
 
 object pajarera {
 	
-	val pajaros = [pepita, pepona, otraPepita]
+	const pajaros = [pepita, pepona, otraPepita]
 	
 	method cuantosHay() {
 		return pajaros.size()
