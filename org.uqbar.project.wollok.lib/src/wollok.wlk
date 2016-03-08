@@ -333,6 +333,12 @@ package lang {
 		method toStringSufix()
 		method asList()
 		method asSet()
+		method copy() {
+			var copy = this.newInstance()
+			copy.addAll(this)
+			return copy
+		}
+		method sortedBy(closure) = this.copy().asList().sortBy(closure)
 		
 		method newInstance()
 	}
@@ -415,6 +421,8 @@ package lang {
 			(_start.._end).forEach { i => newList.add(this.get(i)) }
 			return newList
 		}
+		 
+		method sortBy(closure) native
 		
 		method take(n) =
 			if(n <= 0)
