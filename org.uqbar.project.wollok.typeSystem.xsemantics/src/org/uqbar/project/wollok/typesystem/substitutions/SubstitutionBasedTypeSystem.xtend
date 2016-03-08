@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -38,32 +38,32 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
 /**
  * Implementation that builds up rules
  * and the goes through several steps substituting types.
- * 
- * @author jfernandes 
+ *
+ * @author jfernandes
  */
 class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
 	// esto me gustaria evitarlo :S
 	Set<EObject> analyzed = newHashSet
-	
+
 	override analyse(EObject p) { p.eContents.forEach[analyze] }
-	
+
 	def analyze(EObject node) {
 		if (!analyzed.contains(node)) {
 			analyzed.add(node)
 			node.doAnalyse
 		}
 	}
-	
+
 	def analyze(Iterable<? extends EObject> objects) { objects.forEach[analyze] }
-	
+
 	// ***************************
 	// ** analysis rules
 	// ***************************
-	
+
 	def dispatch void doAnalyse(WProgram it) { elements.analyze }
 	def dispatch void doAnalyse(WTest it) { elements.analyze }
-	
+
 	def dispatch void doAnalyse(WClass it) { if (members != null) members.forEach[analyze] }
 	def dispatch void doAnalyse(WMethodDeclaration it) {
 		parameters.analyze
@@ -79,24 +79,24 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		else
 			addCheck(it, SUPER_OF, expression)
 	}
-	
+
 	def dispatch void doAnalyse(WVariableDeclaration it) {
 		addCheck(it, SAME_AS, variable)
 		if (right != null) addCheck(variable, SUPER_OF, right)
 	}
-	
+
 	def dispatch void doAnalyse(WVariable v) { /* does nothing */ }
-	
+
 	def dispatch void doAnalyse(WMemberFeatureCall it) {
-		if (memberCallTarget instanceof WThis)
+		if (memberCallTarget instanceof WSelf)
 			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments, true))
 	}
-	
+
 	def dispatch void doAnalyse(WConstructorCall it) {
 		isA(new ClassBasedWollokType(classRef, null))
 	}
 
-	// literals	
+	// literals
 	def dispatch void doAnalyse(WNumberLiteral it) { isAn(WInt)  }
 	def dispatch void doAnalyse(WStringLiteral it) { isA(WString) }
 	def dispatch void doAnalyse(WBooleanLiteral it) { isA(WBoolean) }
@@ -105,37 +105,37 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		// here it should inherit type from supermethod (if any)
 		// also, if it's a closure parameter, it could infer type from usage
 	}
-	
+
 	def dispatch void doAnalyse(WAssignment it) {
 		isA(WVoid)
 		addCheck(feature, SUPER_OF, value)
 	}
-	
+
 	def dispatch void doAnalyse(WBinaryOperation it) {
 		val opType = typeOfOperation(feature)
 		// esto esta mal, no deberian ser facts, Sino expectations
 		addFact(it, opType.value)
 		addFact(leftOperand, opType.key.get(0))
-		addFact(rightOperand, opType.key.get(1))			
+		addFact(rightOperand, opType.key.get(1))
 	}
-	
+
 	def dispatch void doAnalyse(WVariableReference it) {
 		addCheck(it, SAME_AS, ref)
 	}
-	
+
 	def dispatch void doAnalyse(WIfExpression it) {
 		addFact(condition, WBoolean)
 		addCheck(it, SUPER_OF, then)
 		if (^else != null) 	addCheck(it, SUPER_OF, ^else)
 	}
-	
+
 	def dispatch void doAnalyse(WBlockExpression it) {
 		if (!expressions.empty) {
 			expressions.analyze
 			addCheck(it, SAME_AS, expressions.last)
 		}
 	}
-	
+
 	// ***************************
 	// ** Inference (unification)
 	// ***************************
@@ -144,7 +144,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		resolveRules
 		unifyConstraints
 	}
-	
+
 	protected def resolveRules() {
 		var nrSteps = 0
 		var resolved = true
@@ -158,21 +158,21 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 			]
 		}
 	}
-	
+
 	protected def unifyConstraints() {
-		
+
 	}
-	
+
 	// ***************************
 	// ** Query
 	// ***************************
-	
+
 	override type(EObject obj) {
 		val t = typeForExcept(obj, null) // horrible
 		if (t == null) WAny
 		else t
 	}
-	
+
 	override issues(EObject obj) {
 		val allIssues = rules.fold(newArrayList) [l, r|
 			try
@@ -206,19 +206,19 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 			// multiple options ! conflict !
 			null
 	}
-	
+
 	// ***************************
 	// ** Rules
 	// ***************************
-	
+
 	def addRule(TypeRule rule) {
 		if (!rules.contains(rule)) rules += rule
 	}
-	
+
 	// shortcuts
-	
+
 	def addFact(EObject source, EObject model, WollokType knownType) {
-		model.analyze 
+		model.analyze
 		addRule(new FactTypeRule(source, model, knownType))
 	}
 	def isAn(EObject model, WollokType knownType) { model.isA(knownType)	}
@@ -228,11 +228,11 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		b.analyze
 		addRule(new CheckTypeRule(source, a, check, b))
 	}
-	
+
 	override toString() {
 		'{\n\t' + rules.join("\n\t") + '\n}'
 	}
-	
+
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
