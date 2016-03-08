@@ -125,7 +125,7 @@ package myPackage {
 
 // XPECT errors -=> "Duplicated package name otherPackage" at "otherPackage"
 package otherPackage {
-	class A {} // this one is ok, it's in another package
+	class A {} // self one is ok, it's in another package
 }
 
 // XPECT errors -=> "Duplicated package name otherPackage" at "otherPackage"

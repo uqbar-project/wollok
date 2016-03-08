@@ -105,14 +105,14 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThis() {
+	def void constructorDelegationToSelf() {
 		'''
 			class Point {
 				var x
 				var y
 				constructor(ax, ay) { x = ax ; y = ay }
 				
-				constructor() = this(10,15) {
+				constructor() = self(10,15) {
 				}
 				
 				method getX() { return x }
@@ -127,14 +127,14 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThisWithoutBody() {
+	def void constructorDelegationToSelfWithoutBody() {
 		'''
 			class Point {
 				var x
 				var y
 				constructor(ax, ay) { x = ax ; y = ay }
 				
-				constructor() = this(10,15)
+				constructor() = self(10,15)
 				
 				method getX() { return x }
 				method getY() { return y }
@@ -190,12 +190,12 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void mixedThisAndSuperDelegation() {
+	def void mixedSelfAndSuperDelegation() {
 		'''
 			class A {
 				var x
 				var y
-				constructor(p) = this(p.getX(), p.getY()) {}
+				constructor(p) = self(p.getX(), p.getY()) {}
 				constructor(_x,_y) { x = _x ; y = _y }
 				
 				method getX() { return x }
@@ -205,7 +205,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				constructor(p) = super(p + 10) {}
 			}
 			class C inherits B {
-				constructor(_x, _y) = this(new Point(_x, _y)) {}
+				constructor(_x, _y) = self(new Point(_x, _y)) {}
 				constructor(p) = super(p) {}
 			}
 			class Point {
@@ -215,7 +215,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				method +(delta) {
 					x += delta
 					y += delta
-					return this
+					return self
 				}
 				method getX() { return x }
 				method getY() { return y }
@@ -269,7 +269,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				var subX
 				constructor() {
 					subX = 10
-					this.setSuperX(this.getSuperX() + 20) // 20 + 20
+					self.setSuperX(self.getSuperX() + 20) // 20 + 20
 				}
 				method getSubX() { return subX }
 			}

@@ -17,24 +17,24 @@ package lang {
 		const cause
 	
 		constructor()
-		constructor(_message) = this(_message, null)
+		constructor(_message) = self(_message, null)
 		constructor(_message, _cause) { message = _message ; cause = _cause }
 		
-		method printStackTrace() { this.printStackTrace(console) }
+		method printStackTrace() { self.printStackTrace(console) }
 		method getStackTraceAsString() {
 			const printer = new StringPrinter()
-			this.printStackTrace(printer)
+			self.printStackTrace(printer)
 			return printer.getBuffer()
 		}
 		
-		method printStackTrace(printer) { this.printStackTraceWithPreffix("", printer) }
+		method printStackTrace(printer) { self.printStackTraceWithPreffix("", printer) }
 		
 		/** @private */
 		method printStackTraceWithPreffix(preffix, printer) {
-			printer.println(preffix +  this.className() + (if (message != null) (": " + message.toString()) else "")
+			printer.println(preffix +  self.className() + (if (message != null) (": " + message.toString()) else "")
 			
 			// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
-			this.getStackTrace().forEach { e =>
+			self.getStackTrace().forEach { e =>
 				printer.println("\tat " + e.contextDescription() + " [" + e.location() + "]")
 			}
 			
@@ -94,50 +94,50 @@ package lang {
 		method className() native
 		
 		/**
-		 * Tells whether this object is "equals" to the given object
+		 * Tells whether self object is "equals" to the given object
 		 * The default behavior compares them in terms of identity (===)
 		 */
 		method ==(other) {
-			return this === other
+			return self === other
 		}
 		
-		/** Tells whether this object is not equals to the given one */
-		method !=(other) = ! (this == other)
+		/** Tells whether self object is not equals to the given one */
+		method !=(other) = ! (self == other)
 		
 		/**
-		 * Tells whether this object is identical (the same) to the given one.
+		 * Tells whether self object is identical (the same) to the given one.
 		 * It does it by comparing their identities.
-		 * So this basically relies on the wollok.lang.Integer equality (which is native)
+		 * So self basically relies on the wollok.lang.Integer equality (which is native)
 		 */
 		method ===(other) {
-			return this.identity() == other.identity()
+			return self.identity() == other.identity()
 		}
 		
-		method equals(other) = this == other
+		method equals(other) = self == other
 		
 		method randomBetween(start, end) native
 		
 		method ->(other) {
-			return new Pair(this, other)
+			return new Pair(self, other)
 		}
 
 		method toString() {
 			// TODO: should be a set
-			// return this.toSmartString(#{})
-			return this.toSmartString([])
+			// return self.toSmartString(#{})
+			return self.toSmartString([])
 		}
 		method toSmartString(alreadyShown) {
-			if (alreadyShown.any { e => e.identity() == this.identity() } ) { 
-				return this.kindName() 
+			if (alreadyShown.any { e => e.identity() == self.identity() } ) { 
+				return self.kindName() 
 			}
 			else {
-				alreadyShown.add(this)
-				return this.internalToSmartString(alreadyShown)
+				alreadyShown.add(self)
+				return self.internalToSmartString(alreadyShown)
 			}
 		} 
 		method internalToSmartString(alreadyShown) {
-			return this.kindName() + "[" 
-				+ this.instanceVariables().map { v => 
+			return self.kindName() + "[" 
+				+ self.instanceVariables().map { v => 
 					v.name() + "=" + v.valueToSmartString(alreadyShown)
 				}.join(', ') 
 			+ "]"
@@ -145,9 +145,9 @@ package lang {
 		
 		method messageNotUnderstood(name, parameters) {
 			var message = if (name != "toString") 
-						this.toString()
+						self.toString()
 					 else 
-					 	this.kindName()
+					 	self.kindName()
 			message += " does not understand " + name
 			if (parameters.size() > 0)
 				message += "(" + (0..(parameters.size()-1)).map { i => "p" + i }.join(',') + ")"
@@ -173,8 +173,8 @@ package lang {
 		}
 		method getX() { return x }
 		method getY() { return y }
-		method getKey() { return this.getX() }
-		method getValue() { return this.getY() }
+		method getKey() { return self.getX() }
+		method getValue() { return self.getY() }
 	}
 	
 	class Collection {
@@ -185,7 +185,7 @@ package lang {
 		  * Example:
 		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
 		  */
-		method max(closure) = this.absolute(closure, { a, b => a > b })
+		method max(closure) = self.absolute(closure, { a, b => a > b })
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
@@ -194,10 +194,10 @@ package lang {
 		  * Example:
 		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
 		  */
-		method min(closure) = this.absolute(closure, { a, b => a < b} )
+		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
 		method absolute(closure, criteria) {
-			const result = this.fold(null, { acc, e =>
+			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
 				if (acc == null)
 					new Pair(e, n)
@@ -214,40 +214,40 @@ package lang {
 		// non-native methods
 		
 		/**
-		  * Adds all elements from the given collection parameter to this collection
+		  * Adds all elements from the given collection parameter to self collection
 		  */
-		method addAll(elements) { elements.forEach { e => this.add(e) } }
+		method addAll(elements) { elements.forEach { e => self.add(e) } }
 		
-		/** Tells whether this collection has no elements */
-		method isEmpty() = this.size() == 0
+		/** Tells whether self collection has no elements */
+		method isEmpty() = self.size() == 0
 				
 		/**
-		 * Performs an operation on every elements of this collection.
+		 * Performs an operation on every elements of self collection.
 		 * The logic to execute is passed as a closure that takes a single parameter.
 		 * @returns nothing
 		 * Example:
 		 *      plants.forEach { plant => plant.takeSomeWater() }
 		 */
-		method forEach(closure) { this.fold(null, { acc, e => closure.apply(e) }) }
+		method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
 		
 		/**
-		 * Tells whether all the elements of this collection satisfy a given condition
+		 * Tells whether all the elements of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
 		 *      plants.all { plant -> plant.hasFlowers() }
 		 */
-		method all(predicate) = this.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
 		/**
-		 * Tells whether at least one element of this collection satisfy a given condition
+		 * Tells whether at least one element of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
 		 *      plants.any { plant => plant.hasFlowers() }
 		 */
-		method any(predicate) = this.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
 		/**
-		 * Returns the element of this collection that satisfy a given condition.
+		 * Returns the element of self collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
@@ -255,22 +255,22 @@ package lang {
 		 * Example:
 		 *      users.find { user => user.name() == "Cosme Fulanito" }
 		 */
-		method find(predicate) = this.findOrElse(predicate, { 
+		method find(predicate) = self.findOrElse(predicate, { 
 			throw new ElementNotFoundException("there is no element that satisfies the predicate")
 		})
 
 		/**
-		 * Returns the element of this collection that satisfy a given condition, or the given default otherwise, if no element matched the predicate
+		 * Returns the element of self collection that satisfy a given condition, or the given default otherwise, if no element matched the predicate
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition or the default value
 		 * Example:
 		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, homer)
 		 */
-		method findOrDefault(predicate, value) =  this.findOrElse(predicate, { value })
+		method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
 		
 		/**
-		 * Returns the element of this collection that satisfy a given condition, 
+		 * Returns the element of self collection that satisfy a given condition, 
 		 * or the the result of evaluating the given continuation 
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
@@ -281,13 +281,13 @@ package lang {
 		method findOrElse(predicate, continuation) native
 
 		/**
-		 * Counts all elements of this collection that satisfy a given condition
+		 * Counts all elements of self collection that satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a number.
 		 * @returns an integer number
 		 * Example:
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
-		method count(predicate) = this.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
 		/**
 		 * Collects the sum of each value for all e
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
@@ -296,37 +296,37 @@ package lang {
 		 * Example:
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
-		method sum(closure) = this.fold(0, { acc, e => acc + closure.apply(e) })
+		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
 		
 		/**
-		 * Returns a new collection that contains the result of transforming each of this collection's elements
+		 * Returns a new collection that contains the result of transforming each of self collection's elements
 		 * using a given closure.
 		 * The condition is a closure argument that takes a single element and returns an object.
-		 * @returns another collection (same type as this one)
+		 * @returns another collection (same type as self one)
 		 * Example:
 		 *      const ages = users.map{ user => user.age() }
 		 */
-		method map(closure) = this.fold(this.newInstance(), { acc, e =>
+		method map(closure) = self.fold(self.newInstance(), { acc, e =>
 			 acc.add(closure.apply(e))
 			 acc
 		})
 		
-		method flatMap(closure) = this.fold(this.newInstance(), { acc, e =>
+		method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 			acc.addAll(closure.apply(e))
 			acc
 		})
 
-		method filter(closure) = this.fold(this.newInstance(), { acc, e =>
+		method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 			 if (closure.apply(e))
 			 	acc.add(e)
 			 acc
 		})
 
-		method contains(e) = this.any {one => e == one }
-		method flatten() = this.flatMap { e => e }
+		method contains(e) = self.any {one => e == one }
+		method flatten() = self.flatMap { e => e }
 		
 		override method internalToSmartString(alreadyShown) {
-			return this.toStringPrefix() + this.map{e=> e.toSmartString(alreadyShown) }.join(', ') + this.toStringSufix()
+			return self.toStringPrefix() + self.map{e=> e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
 		}
 		
 		method toStringPrefix()
@@ -344,7 +344,7 @@ package lang {
 	 */	
 	class Set inherits Collection {
 		constructor(elements ...) {
-			this.addAll(elements)
+			self.addAll(elements)
 		}
 		
 		override method newInstance() = #{}
@@ -353,11 +353,11 @@ package lang {
 		
 		override method asList() { 
 			const result = []
-			result.addAll(this)
+			result.addAll(self)
 			return result
 		}
 		
-		override method asSet() = this
+		override method asSet() = self
 
 		override method anyOne() native
 		
@@ -386,51 +386,51 @@ package lang {
 		override method newInstance() = []
 		
 		method anyOne() {
-			if (this.isEmpty()) 
+			if (self.isEmpty()) 
 				throw new Exception("Illegal operation 'anyOne' on empty collection")
 			else 
-				return this.get(this.randomBetween(0, this.size()))
+				return self.get(self.randomBetween(0, self.size()))
 		}
 		
-		method first() = this.head()
-		method head() = this.get(0)
+		method first() = self.head()
+		method head() = self.get(0)
 		
 		override method toStringPrefix() = "["
 		override method toStringSufix() = "]"
 
-		override method asList() = this
+		override method asList() = self
 		
 		override method asSet() { 
 			const result = #{}
-			result.addAll(this)
+			result.addAll(self)
 			return result
 		}
 		
 		method subList(start,end) {
-			if(this.isEmpty)
-				return this.newInstance()
-			const newList = this.newInstance()
-			const _start = start.limitBetween(0,this.size()-1)
-			const _end = end.limitBetween(0,this.size()-1)
-			(_start.._end).forEach { i => newList.add(this.get(i)) }
+			if(self.isEmpty)
+				return self.newInstance()
+			const newList = self.newInstance()
+			const _start = start.limitBetween(0,self.size()-1)
+			const _end = end.limitBetween(0,self.size()-1)
+			(_start.._end).forEach { i => newList.add(self.get(i)) }
 			return newList
 		}
 		
 		method take(n) =
 			if(n <= 0)
-				this.newInstance()
+				self.newInstance()
 			else
-				this.subList(0,n-1)
+				self.subList(0,n-1)
 			
 		
 		method drop(n) = 
-			if(n >= this.size())
-				this.newInstance()
+			if(n >= self.size())
+				self.newInstance()
 			else
-				this.subList(n,this.size()-1)
+				self.subList(n,self.size()-1)
 			
 		
-		method reverse() = this.subList(this.size()-1,0)
+		method reverse() = self.subList(self.size()-1,0)
 	
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
@@ -453,13 +453,13 @@ package lang {
 	 */	
 	class Number {
 	
-		method max(other) = if (this >= other) this else other
-		method min(other) = if (this <= other) this else other
+		method max(other) = if (self >= other) self else other
+		method min(other) = if (self <= other) self else other
 		
 		method limitBetween(limitA,limitB) = if(limitA <= limitB) 
-												limitA.max(this).min(limitB) 
+												limitA.max(self).min(limitB) 
 											 else 
-											 	limitB.max(this).min(limitA)
+											 	limitB.max(self).min(limitA)
 	}
 	
 	/**
@@ -468,7 +468,7 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Integer inherits Number {
-		// the whole wollok identity impl is based on this method
+		// the whole wollok identity impl is based on self method
 		method ===(other) native
 	
 		method +(other) native
@@ -480,10 +480,10 @@ package lang {
 		
 		method toString() native
 		
-		override method internalToSmartString(alreadyShown) { return this.stringValue() }
+		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
-		method ..(end) = new Range(this, end)
+		method ..(end) = new Range(self, end)
 		
 		method >(other) native
 		method >=(other) native
@@ -496,7 +496,7 @@ package lang {
 		/**
 		 * Executes the given action as much times as the receptor object
 		 */
-		method times(action) = (1..this).forEach(action)
+		method times(action) = (1..self).forEach(action)
 	}
 	
 	/**
@@ -505,7 +505,7 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Double inherits Number {
-		// the whole wollok identity impl is based on this method
+		// the whole wollok identity impl is based on self method
 		method ===(other) native
 	
 		method +(other) native
@@ -517,7 +517,7 @@ package lang {
 		
 		method toString() native
 		
-		override method internalToSmartString(alreadyShown) { return this.stringValue() }
+		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
 		method >(other) native
@@ -553,7 +553,7 @@ package lang {
 		method ==(other) native
 		
 		
-		method size() = this.length()
+		method size() = self.length()
 	}
 	
 	/**
@@ -588,7 +588,7 @@ package lang {
 		
 		method map(closure) {
 			const l = []
-			this.forEach{e=> l.add(closure.apply(e)) }
+			self.forEach{e=> l.add(closure.apply(e)) }
 			return l
 		}
 		
@@ -671,16 +671,16 @@ package lib {
 		method moveUp(num) { y += num }
 		method moveDown(num) { y -= num }
 	
-		method drawElement(element) { wgame.addVisualIn(element, this) }
-		method drawCharacter(element) { wgame.addVisualCharacterIn(element, this) }		
+		method drawElement(element) { wgame.addVisualIn(element, self) }
+		method drawCharacter(element) { wgame.addVisualCharacterIn(element, self) }		
 		method deleteElement(element) { wgame.removeVisual(element) }
 		method say(element, message) { wgame.say(element, message) }
-		method allElements() = wgame.getObjectsIn(this)
+		method allElements() = wgame.getObjectsIn(self)
 		
 		method clone() = new Position(x, y)
 
 		method clear() {
-			this.allElements().forEach{it => wgame.removeVisual(it)}
+			self.allElements().forEach{it => wgame.removeVisual(it)}
 		}
 		
 		method getX() = x
@@ -823,10 +823,10 @@ package mirror {
 		method value() = target.resolve(name)
 		
 		method valueToSmartString(alreadyShown) {
-			const v = this.value()
+			const v = self.value()
 			return if (v == null) "null" else v.toSmartString(alreadyShown)
 		}
 
-		method toString() = name + "=" + this.value()
+		method toString() = name + "=" + self.value()
 	}
 }

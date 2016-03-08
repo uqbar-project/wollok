@@ -5,7 +5,7 @@ class Golondrina {
 	method getEnergia() {
 		/* XPECT proposals at 'energia' ---
 			"Value", #, (,
-			Create Object - Create a new object element, [, false, if, new, null, object, return, super, this, throw, true, try, {
+			Create Object - Create a new object element, [, false, if, new, null, object, return, super, self, throw, true, try, {
 		--- */
 		return energia
 	}

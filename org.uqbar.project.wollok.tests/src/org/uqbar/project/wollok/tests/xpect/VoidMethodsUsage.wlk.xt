@@ -3,7 +3,7 @@
 object pepita {
 	var energy = 0
 
-	// this is the void method	
+	// self is the void method	
 	method eat(something) {
 		energy -= something
 	}
@@ -19,14 +19,14 @@ class MethodsCalledOnWellKnowObjects inherits A {
 
 	method asParameter() {
 		// XPECT errors --> "This message call produces no value" at "eat"
-		this.setA(pepita.eat(10))
+		self.setA(pepita.eat(10))
 	}
 	
 	method initialization(aParam) {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		const a = pepita.eat(10)
 		
-		this.setA(a)
+		self.setA(a)
 	}
 	
 	method assignment(aParam) {
@@ -35,7 +35,7 @@ class MethodsCalledOnWellKnowObjects inherits A {
 		// XPECT errors --> "This message call produces no value" at "eat"
 		a = pepita.eat(10)
 		
-		this.setA(a)
+		self.setA(a)
 	}
 	
 	method asReturnValue() {

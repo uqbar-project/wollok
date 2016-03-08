@@ -3,7 +3,7 @@ import withClassesLib.GuybrushTreepWood
 program guybrush {
 
 	const guy = new GuybrushTreepWood()
-	this.println(guy.fightSwordMaster())
-	this.println("end of program")
+	self.println(guy.fightSwordMaster())
+	self.println("end of program")
 
 }

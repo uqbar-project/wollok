@@ -14,10 +14,10 @@ object pepe {
 	}
 	method sueldo() {
 		if (bonoproductividad) {
-			return this.sueldobase() * (1 + this.bono())
+			return self.sueldobase() * (1 + self.bono())
 		}
 		else {
-			return this.sueldobase()
+			return self.sueldobase()
 		}
 	}
 	method bono() {

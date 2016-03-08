@@ -15,7 +15,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 				method aNativeMethod() native
 				
 				method uppercased() {
-					return this.aNativeMethod().toUpperCase()
+					return self.aNativeMethod().toUpperCase()
 				} 
 			}
 
@@ -36,7 +36,7 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 				method aNativeMethod() native
 				
 				method uppercased() {
-					return this.aNativeMethod().toUpperCase()
+					return self.aNativeMethod().toUpperCase()
 				} 
 			}
 			

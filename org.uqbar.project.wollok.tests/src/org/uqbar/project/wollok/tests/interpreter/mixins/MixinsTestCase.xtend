@@ -129,7 +129,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		mixin Flying {
 			var fliedMeters = 0
 			method fly(meters) {
-				this.reduceEnergy(meters)
+				self.reduceEnergy(meters)
 				fliedMeters += meters
 			}
 			method fliedMeters() = fliedMeters
@@ -162,7 +162,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		mixin FlyingShortcuts {
 			method fly100Meters() {
-				this.fly(100)
+				self.fly(100)
 			}
 			method fly(meters)
 		}
@@ -192,7 +192,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		
 		mixin FlyingShortcuts {
 			method fly100Meters() {
-				this.fly(100)
+				self.fly(100)
 			}
 			method fly(meters)
 		}

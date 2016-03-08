@@ -51,7 +51,7 @@ mixin Energy {
 mixin Flying {
 	var fliedMeters = 0
 	method fly(meters) {
-		this.reduceEnergy(meters)
+		self.reduceEnergy(meters)
 		fliedMeters += meters
 	}
 	method fliedMeters() = fliedMeters
@@ -62,7 +62,7 @@ class BirdWithEnergyThatFlies mixed with Energy, Flying {}
 
 mixin FlyingShortcuts {
 	method fly100Meters() {
-		this.fly(100)
+		self.fly(100)
 	}
 }
 
