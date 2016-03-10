@@ -98,7 +98,7 @@ class ListTest extends ListTestCase {
 	def void testSortBy() {
 		''' 
 		program p {
-			val list = [1,2,3]
+			const list = [1,2,3]
 			
 			assert.equals([3,2,1], list.sortBy({x,y => x > y}))
 			assert.that(list === list.sortBy({x,y => x < y}))
@@ -109,7 +109,7 @@ class ListTest extends ListTestCase {
 	def void testSortedBy() {
 		'''
 		program p {
-			val list = [1,2,3]
+			const list = [1,2,3]
 			
 			assert.equals([3,2,1], list.sortedBy({x,y => x > y}))
 			assert.notThat(list === list.sortedBy({x,y => x < y}))
