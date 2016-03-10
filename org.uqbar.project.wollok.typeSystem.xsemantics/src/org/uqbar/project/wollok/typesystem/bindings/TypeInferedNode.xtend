@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.bindings
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * 

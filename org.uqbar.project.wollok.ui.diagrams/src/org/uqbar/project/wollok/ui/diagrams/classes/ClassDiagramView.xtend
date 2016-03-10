@@ -16,6 +16,7 @@ import org.eclipse.gef.EditPart
 import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.GraphicalViewer
 import org.eclipse.gef.commands.CommandStack
+import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.ui.actions.ActionRegistry
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
@@ -50,6 +51,8 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
@@ -57,17 +60,17 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 
 /**
  * 
@@ -106,8 +109,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def createDiagramModel() {
 		new ClassDiagram => [
 			// classes
-			val classes = xtextDocument.readOnly[ classes /* + importedClasses */ ].toSet
-			classes.addAll(classes.map[c| c.superClassesIncludingYourself].flatten)
+			val classes = xtextDocument.readOnly[ classes ].toSet
+			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
@@ -115,10 +118,15 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				addNamedObject(new NamedObjectModel(o) => [ location = new Point(100, 100) ])
 				if (o.parent != null)
 					classes.add(o.parent)
+				o.mixins.forEach[m | addMixin(m) ]
 			]
 
-			// classes
-			classes.forEach[c| addClass(c)]
+			// mixins
+			classes.forEach[c| 
+				addClass(c)
+				c.mixins.forEach[m | addMixin(m) ]
+			]
+			//TODO: add mixins from document
 
 			// relations
 			connectRelations
@@ -208,31 +216,12 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val graph = new DirectedGraph
 		graph.direction = PositionConstants.SOUTH
 		
-		val classToNodeMapping = classEditParts.fold(newHashMap)[map, e | 
-			map.put(e.model as ClassModel, new Node(e.model) => [
-				width = e.figure.preferredSize.width
-				height = e.figure.preferredSize.height
-			])
-			map
-		]
-		graph.nodes.addAll(classToNodeMapping.values)
+		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
+		val nodes = parts.map[e | e.createNode ]
 		
-		// objects
-		graph.nodes.addAll(objectsEditParts.map[e| new Node(e.model) => [
-			width = e.figure.preferredSize.width
-			height = e.figure.preferredSize.height
-		]])
-		
-		// superclass relations		
-		val relations = model.classes.fold(newArrayList, [l, c| 
-			if (c.clazz.parent != null)
-				l.add(new Edge(
-						classToNodeMapping.get(c), 
-						classToNodeMapping.get(model.classes.findFirst[it.clazz == c.clazz.parent])
-				))
-			l
+		graph.edges.addAll(connectionsEditParts.map[c| 
+			new Edge(nodes.findFirst[n| n.data == c.source.model], nodes.findFirst[n| n.data == c.target.model])
 		])
-		graph.edges.addAll(relations)
 		
 		// layout
 		val directedGraphLayout = new DirectedGraphLayout
@@ -251,12 +240,20 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		]
 	}
 	
-	def getClassEditParts() {
-		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(ClassEditPart)
+	def createNode(AbstractGraphicalEditPart e) {
+		new Node(e.model) => [
+			width = e.figure.preferredSize.width
+			height = e.figure.preferredSize.height
+		]
 	}
 	
-	def getObjectsEditParts() {
-		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(NamedObjectEditPart)
+	def getClassEditParts() { getEditPartsOfType(ClassEditPart) }
+	def getObjectsEditParts() { getEditPartsOfType(NamedObjectEditPart) }
+	def getMixinsEditParts() { getEditPartsOfType(MixinEditPart) }
+	def getConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+	
+	def <T> Iterable<T> getEditPartsOfType(Class<T> t) {
+		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
 	}
 	
 	def setGraphicalViewer(GraphicalViewer viewer) {

@@ -26,17 +26,18 @@ import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
-import org.uqbar.project.wollok.semantics.BasicType;
-import org.uqbar.project.wollok.semantics.BooleanType;
-import org.uqbar.project.wollok.semantics.ClassBasedWollokType;
-import org.uqbar.project.wollok.semantics.IntType;
-import org.uqbar.project.wollok.semantics.MessageType;
-import org.uqbar.project.wollok.semantics.ObjectLiteralWollokType;
-import org.uqbar.project.wollok.semantics.StringType;
-import org.uqbar.project.wollok.semantics.TypeInferrer;
-import org.uqbar.project.wollok.semantics.TypeSystemException;
-import org.uqbar.project.wollok.semantics.VoidType;
-import org.uqbar.project.wollok.semantics.WollokType;
+import org.uqbar.project.wollok.typesystem.BasicType;
+import org.uqbar.project.wollok.typesystem.BooleanType;
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
+import org.uqbar.project.wollok.typesystem.IntType;
+import org.uqbar.project.wollok.typesystem.MessageType;
+import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType;
+import org.uqbar.project.wollok.typesystem.StringType;
+import org.uqbar.project.wollok.typesystem.TypeInferrer;
+import org.uqbar.project.wollok.typesystem.TypeSystem;
+import org.uqbar.project.wollok.typesystem.TypeSystemException;
+import org.uqbar.project.wollok.typesystem.VoidType;
+import org.uqbar.project.wollok.typesystem.WollokType;
 import org.uqbar.project.wollok.wollokDsl.WAssignment;
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation;
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression;
@@ -54,9 +55,9 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WReferenciable;
+import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation;
-import org.uqbar.project.wollok.wollokDsl.WThis;
 import org.uqbar.project.wollok.wollokDsl.WVariable;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
@@ -94,7 +95,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   public final static String WCONSTRUCTORCALL = "org.uqbar.project.wollok.semantics.WConstructorCall";
   
-  public final static String WTHISTYPE = "org.uqbar.project.wollok.semantics.WThisType";
+  public final static String WSELFTYPE = "org.uqbar.project.wollok.semantics.WSelfType";
   
   public final static String SUPERCALLTYPE = "org.uqbar.project.wollok.semantics.SuperCallType";
   
@@ -830,7 +831,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       WollokType _env = this.<WollokType>env(G, c, WollokType.class);
       t = _env;
     } else {
-      ClassBasedWollokType _classBasedWollokType = new ClassBasedWollokType(c, this, G);
+      TypeSystem _env_1 = this.<TypeSystem>env(G, TypeSystem.class, TypeSystem.class);
+      ClassBasedWollokType _classBasedWollokType = new ClassBasedWollokType(c, _env_1);
       t = _classBasedWollokType;
       /* G.add(c, t) */
       if (!G.add(c, t)) {
@@ -1045,26 +1047,26 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     return new Result<WollokType>(t);
   }
   
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThis thiz) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSelf thiz) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
-    	final Result<WollokType> _result_ = applyRuleWThisType(G, _subtrace_, thiz);
+    	final Result<WollokType> _result_ = applyRuleWSelfType(G, _subtrace_, thiz);
     	addToTrace(_trace_, new Provider<Object>() {
     		public Object get() {
-    			return ruleName("WThisType") + stringRepForEnv(G) + " |- " + stringRep(thiz) + " : " + stringRep(_result_.getFirst());
+    			return ruleName("WSelfType") + stringRepForEnv(G) + " |- " + stringRep(thiz) + " : " + stringRep(_result_.getFirst());
     		}
     	});
     	addAsSubtrace(_trace_, _subtrace_);
     	return _result_;
-    } catch (Exception e_applyRuleWThisType) {
-    	typeThrowException(ruleName("WThisType") + stringRepForEnv(G) + " |- " + stringRep(thiz) + " : " + "WollokType",
-    		WTHISTYPE,
-    		e_applyRuleWThisType, thiz, new ErrorInformation[] {new ErrorInformation(thiz)});
+    } catch (Exception e_applyRuleWSelfType) {
+    	typeThrowException(ruleName("WSelfType") + stringRepForEnv(G) + " |- " + stringRep(thiz) + " : " + "WollokType",
+    		WSELFTYPE,
+    		e_applyRuleWSelfType, thiz, new ErrorInformation[] {new ErrorInformation(thiz)});
     	return null;
     }
   }
   
-  protected Result<WollokType> applyRuleWThisType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThis thiz) throws RuleFailedException {
+  protected Result<WollokType> applyRuleWSelfType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSelf thiz) throws RuleFailedException {
     WollokType t = null; // output parameter
     final WMethodDeclaration containingMethod = WollokModelExtensions.method(thiz);
     boolean _equals = Objects.equal(containingMethod, null);
@@ -1383,7 +1385,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleRefineMethodReturnType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WMemberFeatureCall call, final WollokType newType) throws RuleFailedException {
     WExpression _memberCallTarget = call.getMemberCallTarget();
-    if ((_memberCallTarget instanceof WThis)) {
+    if ((_memberCallTarget instanceof WSelf)) {
       /* G |- call.memberCallTarget : var WollokType thisType */
       WExpression _memberCallTarget_1 = call.getMemberCallTarget();
       WollokType thisType = null;
@@ -1404,7 +1406,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         if (!_notEquals) {
           _and = false;
         } else {
-          WollokType _resolveReturnType = ((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage, this, G);
+          WollokType _resolveReturnType = ((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage);
           boolean _equals = Objects.equal(_resolveReturnType, WollokType.WAny);
           _and = _equals;
         }
@@ -1541,7 +1543,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       refineTypeInternal(G, _trace_, _value_1, expectedType);
     } else {
       try {
-        WollokType refinedType = valueType.refine(expectedType, G);
+        WollokType refinedType = valueType.refine(expectedType);
         WVariableReference _feature_1 = assignment.getFeature();
         WReferenciable _ref_1 = _feature_1.getRef();
         /* G.add(assignment.^feature.ref, refinedType) */
@@ -1644,7 +1646,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
           i++;
         }
       }
-      WollokType _resolveReturnType = receiverType.resolveReturnType(message, this, G);
+      WollokType _resolveReturnType = receiverType.resolveReturnType(message);
       returnType = _resolveReturnType;
     } else {
       /* fail error "An object of type " + receiverType + " does not understand the message " + featureCall.^feature + "(" + argumentTypes.join(",") + ")" source featureCall */
@@ -1770,7 +1772,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       ObjectLiteralWollokType _env = this.<ObjectLiteralWollokType>env(G, obj, ObjectLiteralWollokType.class);
       t = _env;
     } else {
-      ObjectLiteralWollokType newType = new ObjectLiteralWollokType(obj, this, G);
+      TypeSystem _env_1 = this.<TypeSystem>env(G, TypeSystem.class, TypeSystem.class);
+      ObjectLiteralWollokType newType = new ObjectLiteralWollokType(obj, _env_1);
       boolean _add = G.add(obj, newType);
       /* G.add(obj, newType) */
       if (!_add) {

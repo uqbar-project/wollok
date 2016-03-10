@@ -2,7 +2,8 @@ package org.uqbar.project.wollok.typesystem.bindings
 
 import java.util.List
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * An AST node complemented with typing information.

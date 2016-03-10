@@ -8,7 +8,7 @@ test "exported test from REPL session" {
 	pepita.energia()
 	pepita.volar(22)
 	
-//	val a = new A()
+//	const a = new A()
 	
 //	a.m1()
 	

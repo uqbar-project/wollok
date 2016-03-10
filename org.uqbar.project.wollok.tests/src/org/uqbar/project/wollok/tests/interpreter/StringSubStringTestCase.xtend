@@ -12,7 +12,7 @@ class SubstringTestTestCase extends AbstractWollokInterpreterTestCase {
 	def void testWithAssertsOk() {
 		'''
 			test "pepita" {
-				val x = "Hola, wollok!".substring(0,3)
+				const x = "Hola, wollok!".substring(0,3)
 				assert.equals("Hol", x)			
 			}
 		'''.interpretPropagatingErrors

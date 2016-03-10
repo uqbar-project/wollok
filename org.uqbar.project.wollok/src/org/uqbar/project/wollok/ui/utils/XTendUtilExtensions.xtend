@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.utils
 
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.Collection
@@ -11,13 +12,13 @@ import java.util.Random
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import java.lang.reflect.InvocationTargetException
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 
 /**
  * Utilities for xtend code
@@ -128,7 +129,7 @@ class XTendUtilExtensions {
 	}
 	
 	def static evaluator() { WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator }
-	def static newException(String exceptionClassName, String message) {
+	def static WollokProgramExceptionWrapper newException(String exceptionClassName, String message) {
 		new WollokProgramExceptionWrapper(evaluator.newInstance(exceptionClassName, message.javaToWollok)) 
 	}
 	
@@ -136,7 +137,7 @@ class XTendUtilExtensions {
 		'''«target» («target.class.simpleName») does not understand «message»(«args.map['p'].join(',')»)'''.toString
 	}
 
-	def static invokeConvertingArgs(Method m, Object o, Object... args) {
+	def static WollokObject invokeConvertingArgs(Method m, Object o, Object... args) {
 		if ((!m.varArgs && m.parameterTypes.size != args.size) || (m.varArgs && args.length < m.parameterTypes.length - 1)) {
 			throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»(«m.parameterTypes.length»)". Given arguments «args» («args.length»)''') 
 		}
@@ -162,11 +163,22 @@ class XTendUtilExtensions {
 			javaToWollok(returnVal)
 		}
 		catch (InvocationTargetException e) {
-			throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+			throw wrapNativeException(e, m, result)
 		}
 		catch (IllegalArgumentException e) {
 			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + result, e)
 		}
+	}
+	
+	def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
+		val cause = e.cause
+		new WollokProgramExceptionWrapper(
+			if (cause instanceof WollokProgramExceptionWrapper)
+				WollokJavaConversions.newWollokException("Error while calling native method '" + m.shortDescription + " with parameters: " + params.join(', '), cause.wollokException)
+			else 
+				WollokJavaConversions.newWollokException(e.cause.message)	
+		)
+		
 	}
 	
 	def static accesibleVersion(Method m) {
@@ -178,6 +190,8 @@ class XTendUtilExtensions {
 		}
 		metodin
 	}
+	
+	def static getShortDescription(Method method) '''«method.declaringClass.simpleName».«method.name»(«method.parameterTypes.map[simpleName].join(', ')»)'''
 	
 	def static cannotBeCalled(Method m) {
 		!m.isPublic || !m.declaringClass.isPublic

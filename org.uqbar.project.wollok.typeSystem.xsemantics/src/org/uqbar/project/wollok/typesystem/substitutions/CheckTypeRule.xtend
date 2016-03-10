@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.semantics.TypeSystemException
-import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 

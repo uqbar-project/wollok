@@ -15,9 +15,9 @@ object sarasita {
 		false
 	}
 	
-	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ #[1, 2, 3] }"
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ [1, 2, 3] }"
 	method collectionLiteral() {
-		#[1, 2, 3]
+		[1, 2, 3]
 	}
 	
 	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ 1 + 2 }"
@@ -25,11 +25,12 @@ object sarasita {
 		1 + 2
 	}
 	
-	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ this.returningAValue() }"
+	// XPECT warnings --> "Method produces a value but you are not returning it. Did you forget the return ?" at "{ self.returningAValue() }"
 	method hasAMessageToThisWhichReturnsAValue() {
-		this.returningAValue()
+		self.returningAValue()
 	}
 	
 	method returningAValue() { return 2 }
+	method returningWithShortSyntax() = 2
 	
 }

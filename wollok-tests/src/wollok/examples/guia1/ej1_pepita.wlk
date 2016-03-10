@@ -27,7 +27,7 @@ object pepita {
 }
 
 object alpiste {
-	val energia = 10
+	const energia = 10
 	
 	method energia() = energia
 }

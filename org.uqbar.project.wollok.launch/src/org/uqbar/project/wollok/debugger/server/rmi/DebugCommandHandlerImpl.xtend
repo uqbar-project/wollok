@@ -7,6 +7,9 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 /**
  * DebugCommandHandler implementation.
  * It delegates messages to the debugger.
+ * And handles the RMI Server object.
+ * 
+ * Also "adapts" the stack elements
  * 
  * @author jfernandes
  */

@@ -41,14 +41,17 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WLibraryElement: (WPackage | WClass | WNamedObject );
-WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
-WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin );
+WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
-	=>'object' '{'
+	=>'object'
+	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -56,7 +59,7 @@ WObjectLiteral returns WExpression:
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
-	(writeable?='var'|'val') variable=WVariable ('=' right=WExpression)?
+	(writeable?='var'|'const') variable=WVariable ('=' right=WExpression)?
 ;
 
 WMethodDeclaration:
@@ -155,11 +158,10 @@ WOtherOperatorExpression returns WExpression:
 	rightOperand=WAdditiveExpression)*;
 
 OpOther:
-	  '->' 
-	| '..<'
+	  '..<'
 	| '>' '..'
 	| '..'
-	| '=>' 
+	| '->' 
 	| '>' (=>('>' '>') | '>') 
 	| '<' (=>('<' '<') | '<' | '=>')
 	| '<>'
@@ -209,12 +211,11 @@ WMemberFeatureCall returns WExpression:
 FeatureCallID:
 	ID;
 
-WThis returns WExpression:
-	{WThis} 'this'
+WSelf returns WExpression:
+	{WSelf} 'self'
 ;
 
 WPrimaryExpression returns WExpression:
-	WBlockExpression |
 	WVariableReference |
 	WLiteral |
 	WConstructorCall |
@@ -252,11 +253,14 @@ WVariableReference:
 	{WVariableReference} ref=[WReferenciable]
 ;
 
+WBlockOrExpression returns WExpression:
+	(=> WBlockExpression) | WExpression;
+
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
-		then=WExpression
+		then=WBlockOrExpression
 	(=>'else'
-		else=WExpression
+		else=WBlockOrExpression
 	)?
 ;
 
@@ -269,7 +273,7 @@ WLiteral returns WExpression:
 	WNullLiteral |
 	WStringLiteral |
 	WObjectLiteral |
-	WThis |
+	WSelf |
 	WCollectionLiteral
 ;
 
@@ -289,29 +293,31 @@ WNumberLiteral returns WExpression :
 
 WClosure returns WExpression:
 	=>({WClosure} 
-	'[') 
-		=>((parameters+=WParameter (',' parameters+=WParameter)*)? explicitSyntax?='|')? 
-		expression=WExpressionInClosure 
-	']';
+	'{') 
+		=>((parameters+=WParameter (',' parameters+=WParameter)*)? '=>')?
+		expression=WBlockInClosure 
+	'}';
 
-WExpressionInClosure returns WExpression: 
+WBlockInClosure returns WExpression: 
 	{WBlockExpression}
 	(expressions+=WExpressionOrVarDeclaration ';'?)*;
 
 // COLLECTIONS
 
 WCollectionLiteral:
-	WListLiteral | WSetLiteral
-;
+	WListLiteral | WSetLiteral;
 
-WListLiteral returns WCollectionLiteral:
-	{WListLiteral} '#' '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+WListLiteral:
+	{WListLiteral} '[' (elements+=WExpression (',' elements+=WExpression )*)? ']';
+
+WSetLiteral:
+	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
-WSetLiteral returns WCollectionLiteral:
-	{WSetLiteral} '#' '{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
-
 WNamedObject:
-	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
+	'object' name=ID 
+		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -324,9 +330,21 @@ WCanExtendClass:
 // CLASSES
 
 WClass:
-	'class' name=ID ('inherits' parent=[WClass|QualifiedName])? '{'
+	'class' name=ID 
+		('inherits' parent=[WClass|QualifiedName])? 
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(constructors+=WConstructor)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
+// MIXINS
+
+WMixin:
+	'mixin' name=ID '{'
+		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
@@ -336,18 +354,18 @@ WMember:
 ;
 
 WConstructor:
-	{WConstructor} 'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
 		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
 		(expression=WBlockExpression)?
 ;
 
 WDelegatingConstructorCall:
-	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
 ;
 
 // some how this should be referecens to WConstructor
-WThisDelegatingConstructorCall:
-	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+WSelfDelegatingConstructorCall:
+	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
 // some how this should be referecens to WConstructor
@@ -365,14 +383,14 @@ WConstructorCall:
 
 WTry:
 	'try'
-		expression=WExpression
+		expression=WBlockOrExpression
 	(catchBlocks+=WCatch)*
-	(=>'then always' alwaysExpression=WExpression)?
+	(=>'then always' alwaysExpression=WBlockOrExpression)?
 ;
 
 WCatch:
 	=>'catch' exceptionVarName=WVariable (':' exceptionType=[WClass|QualifiedName])?
-		expression=WExpression 
+		expression=WBlockOrExpression 
 ;
 
 WReturnExpression:

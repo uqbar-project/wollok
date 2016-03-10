@@ -6,7 +6,7 @@ class EstudiarMateria inherits Actividad {
 	var materia
 	var puntos = 0
 	
-	new(m, p) {
+	constructor(m, p) {
 		materia = m
 		puntos = p
 	}
@@ -16,6 +16,6 @@ class EstudiarMateria inherits Actividad {
 
 class EjercitarEnSimulador inherits Actividad {
 	var horas = 0
-	new(h) { horas = h }
+	constructor(h) { horas = h }
 	override method calcularMejora() = 10 * horas
 }

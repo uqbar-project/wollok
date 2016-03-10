@@ -64,19 +64,14 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	@NativeMessage("<=")
 	def lesserOrEquals(WollokObject other) { wrapped.doubleValue <= other.nativeNumber.wrapped.doubleValue }
 	
-	@NativeMessage("==")
-	def wollokEquals(WollokObject other) {
-		this.doubleValue == other.nativeNumber.doubleValue
-	}
-	
 	def invert() { (-wrapped).asWollokObject }
 	
 	/// java methods
-
+	
 	override equals(Object other) {
 		other instanceof WInteger && wrapped == (other as WInteger).wrapped
 	}
-	
+
 	override compareTo(WInteger o) { wrapped.compareTo(o.wrapped) }
 
 }

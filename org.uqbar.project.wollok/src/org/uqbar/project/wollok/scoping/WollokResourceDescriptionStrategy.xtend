@@ -23,7 +23,7 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 	
 	override createEObjectDescriptions(EObject eObject, IAcceptor<IEObjectDescription> acceptor) {
 		if (eObject instanceof WFile)
-			true
+			super.createEObjectDescriptions(eObject, acceptor)
 		else if (eObject instanceof WPackage)
 			super.createEObjectDescriptions(eObject, acceptor)
 		else if (eObject instanceof WClass) {

@@ -24,7 +24,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			var y
 		}
 		program t {
-			val p1 = new Point()
+			const p1 = new Point()
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -34,10 +34,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 		class C {
 			var a = 10
-			val b
+			const b
 			var c
 			
-			new(anA, aB, aC) {
+			constructor(anA, aB, aC) {
 				a = anA
 				b = aB
 				c = aC
@@ -47,7 +47,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			method getC() { return c }
 		}
 		program t {
-			val c = new C (1,2,3)
+			const c = new C (1,2,3)
 			assert.equals(1, c.getA())
 			assert.equals(2, c.getB())
 			assert.equals(3, c.getC())
@@ -62,9 +62,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			var x
 			var y
 			
-			new () { x = 20 ; y = 20 }
+			constructor () { x = 20 ; y = 20 }
 			
-			new(ax, ay) {
+			constructor(ax, ay) {
 				x = ax
 				y = ay
 			}
@@ -72,11 +72,11 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			method getY() { return y }
 		}
 		program t {
-			val p1 = new Point(1,2)
+			const p1 = new Point(1,2)
 			assert.equals(1, p1.getX())
 			assert.equals(2, p1.getY())
 
-			val p2 = new Point()
+			const p2 = new Point()
 			assert.equals(20, p2.getX())
 			assert.equals(20, p2.getY())
 		}
@@ -91,10 +91,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				var x
 				var y
 				
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 			}
 			program t {
-				val p1 = new Point()
+				const p1 = new Point()
 			}
 			'''].interpretPropagatingErrorsWithoutStaticChecks
 			fail("Should have failed !!")
@@ -105,21 +105,21 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThis() {
+	def void constructorDelegationToSelf() {
 		'''
 			class Point {
 				var x
 				var y
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15) {
+				constructor() = self(10,15) {
 				}
 				
 				method getX() { return x }
 				method getY() { return y }
 			}
 			program t {
-				val p = new Point()
+				const p = new Point()
 				assert.equals(10, p.getX())
 				assert.equals(15, p.getY())
 			}
@@ -127,20 +127,20 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void constructorDelegationToThisWithoutBody() {
+	def void constructorDelegationToSelfWithoutBody() {
 		'''
 			class Point {
 				var x
 				var y
-				new(ax, ay) { x = ax ; y = ay }
+				constructor(ax, ay) { x = ax ; y = ay }
 				
-				new() = this(10,15)
+				constructor() = self(10,15)
 				
 				method getX() { return x }
 				method getY() { return y }
 			}
 			program t {
-				val p = new Point()
+				const p = new Point()
 				console.println(p)
 				assert.equals(10, p.getX())
 				assert.equals(15, p.getY())
@@ -153,15 +153,15 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class SuperClass {
 				var superX
-				new(a) { superX = a }
+				constructor(a) { superX = a }
 				
 				method getSuperX() { return superX }
 			}
 			class SubClass inherits SuperClass { 
-				new(n) = super(n + 1) {}
+				constructor(n) = super(n + 1) {}
 			}
 			program t {
-				val o = new SubClass(20)
+				const o = new SubClass(20)
 				assert.equals(21, o.getSuperX())
 			}
 			'''.interpretPropagatingErrors
@@ -172,57 +172,57 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				var x
-				new(a) { x = a }
+				constructor(a) { x = a }
 				
 				method getX() { return x }
 			}
 			class B inherits A { 
-				new(n) = super(n + 1) {}
+				constructor(n) = super(n + 1) {}
 			}
 			class C inherits B {
-				new(l) = super(l * 2) {}
+				constructor(l) = super(l * 2) {}
 			}
 			program t {
-				val o = new C(20)
+				const o = new C(20)
 				assert.equals(41, o.getX())
 			}
 			'''.interpretPropagatingErrors
 	}
 	
 	@Test
-	def void mixedThisAndSuperDelegation() {
+	def void mixedSelfAndSuperDelegation() {
 		'''
 			class A {
 				var x
 				var y
-				new(p) = this(p.getX(), p.getY()) {}
-				new(_x,_y) { x = _x ; y = _y }
+				constructor(p) = self(p.getX(), p.getY()) {}
+				constructor(_x,_y) { x = _x ; y = _y }
 				
 				method getX() { return x }
 				method getY() { return y }
 			}
 			class B inherits A { 
-				new(p) = super(p + 10) {}
+				constructor(p) = super(p + 10) {}
 			}
 			class C inherits B {
-				new(_x, _y) = this(new Point(_x, _y)) {}
-				new(p) = super(p) {}
+				constructor(_x, _y) = self(new Point(_x, _y)) {}
+				constructor(p) = super(p) {}
 			}
 			class Point {
 				var x
 				var y
-				new(_x,_y) { x = _x ; y = _y }
+				constructor(_x,_y) { x = _x ; y = _y }
 				method +(delta) {
 					x += delta
 					y += delta
-					return this
+					return self
 				}
 				method getX() { return x }
 				method getY() { return y }
 			}
 			
 			program t {
-				val o = new C(10, 20)
+				const o = new C(10, 20)
 				assert.equals(20, o.getX())
 				assert.equals(30, o.getY())
 			}
@@ -238,13 +238,13 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class SuperClass {
 				var superX
-				new() { superX = 20 }
+				constructor() { superX = 20 }
 				
 				method getSuperX() { return superX }
 			}
 			class SubClass inherits SuperClass { }
 			program t {
-				val o = new SubClass()
+				const o = new SubClass()
 				assert.equals(20, o.getSuperX())
 			}
 			'''.interpretPropagatingErrors
@@ -256,7 +256,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class SuperClass {
 				var superX
 				var otherX
-				new() { 
+				constructor() { 
 					superX = 20
 					otherX = 30
 				}
@@ -267,14 +267,14 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			class SubClass inherits SuperClass {
 				var subX
-				new() {
+				constructor() {
 					subX = 10
-					this.setSuperX(this.getSuperX() + 20) // 20 + 20
+					self.setSuperX(self.getSuperX() + 20) // 20 + 20
 				}
 				method getSubX() { return subX }
 			}
 			program t {
-				val o = new SubClass()
+				const o = new SubClass()
 				assert.equals(10, o.getSubX())
 				assert.equals(40, o.getSuperX())
 				assert.equals(30, o.getOtherX())
@@ -287,7 +287,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				var x
-				new() { x = 20 }
+				constructor() { x = 20 }
 				
 				method getX() { return x }
 			}
@@ -295,14 +295,14 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			class C inherits B {
 				var c1
-				new() {
+				constructor() {
 					c1 = 10
 				}
 				method getC1() { return c1 }
 			}
 			class D inherits C {}
 			program t {
-				val o = new D()
+				const o = new D()
 				assert.equals(20, o.getX())
 				assert.equals(10, o.getC1())
 			}

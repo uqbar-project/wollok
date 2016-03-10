@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.launch
 import com.google.inject.Injector
 import java.io.File
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
+import org.uqbar.project.wollok.debugger.server.out.EventSender
 import org.uqbar.project.wollok.debugger.server.rmi.CommandHandlerFactory
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XDebugger
@@ -10,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-import static extension org.uqbar.project.wollok.launch.io.IOUtils.*
+import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 /**
  * Main program launcher for the interpreter.
@@ -26,14 +27,20 @@ class WollokLauncher extends WollokChecker {
 	}
 
 	override doSomething(WFile parsed, Injector injector, File mainFile, WollokLauncherParameters parameters) {
-		log.debug("Interpreting: " + mainFile.absolutePath)
-		val interpreter = injector.getInstance(WollokInterpreter)
-		val debugger = createDebugger(interpreter, parameters)
-		interpreter.setDebugger(debugger)
-		interpreter.interpret(parsed)
-
-		if (parameters.hasRepl) {
-			new WollokRepl(this, injector, interpreter, mainFile, parsed).startRepl
+		try {
+			log.debug("Interpreting: " + mainFile.absolutePath)
+			val interpreter = injector.getInstance(WollokInterpreter)
+			val debugger = createDebugger(interpreter, parameters)
+			interpreter.setDebugger(debugger)
+			interpreter.interpret(parsed)
+	
+			if (parameters.hasRepl) {
+				new WollokRepl(this, injector, interpreter, mainFile, parsed).startRepl
+			}
+			System.exit(0)
+		}
+		catch (Exception e) {
+			System.exit(-1)
 		}
 	}
 
@@ -55,7 +62,7 @@ class WollokLauncher extends WollokChecker {
 		log.debug("Opening " + sendEventsPort)
 		val eventSender = new EventSender(openSocket(sendEventsPort))
 		debugger.eventSender = eventSender
-		eventSender.startDaemon
+		startDaemon(eventSender)
 		log.debug(sendEventsPort + " opened !")
 		debugger
 	}

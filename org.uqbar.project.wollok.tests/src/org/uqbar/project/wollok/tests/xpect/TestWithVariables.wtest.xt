@@ -4,24 +4,24 @@ import wollok.lib.assert
 test "testX" {
 
 	// 1 param
-	val incrementClosure = [param | param + 1]
+	const incrementClosure = {param => param + 1}
 	assert.that(incrementClosure.apply(2) == 3)
 	
 	// 2 params
-	val addition = [a, b | a + b]
+	const addition = {a, b => a + b}
 	assert.that(addition.apply(10, 15) == 25)
 	
 	
 	// using outside context VALUE
-	val n1 = 2
-	val multiplyByN1 = [i| i * n1]
+	const n1 = 2
+	const multiplyByN1 = {i=> i * n1}
 	
 	assert.that(multiplyByN1.apply(3) == 6)
 	
 	
 	// using outside context VARIABLE (mutating)
 	var n2 = 2
-	val multiplyByN2 = [i| i * n2]
+	const multiplyByN2 = {i=> i * n2}
 	n2 = 10
 	
 	assert.equals(30,multiplyByN2.apply(3))

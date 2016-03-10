@@ -2,7 +2,7 @@
 
 class MultiOpsOperations {
 	
-	method run() = {
+	method run() {
 		var n = 1
 		n++  // OK
 		
@@ -12,9 +12,9 @@ class MultiOpsOperations {
 		// XPECT errors --> "-= can only be applied to variable references" at "new Pepita()"
 		new Pepita()-= 3
 		
-		val edad = 10
+		const edad = 10
 		// XPECT errors --> "++ can only be applied to variable references" at "edad"
-		edad++
+		return edad++
 	}	
 }
 

@@ -24,6 +24,7 @@ public enum WollokTestState {
 		public URI getURI(WollokTestResult result) {
 			return result.getTestResource();
 		}
+
 		@Override
 		public String getOutputText(WollokTestResult result) {
 			return getText();
@@ -63,9 +64,12 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			return result.getErrorResource();
+			// Temporarily not linking to error resource because its URI is not available.
+			// return result.getErrorResource();
+
+			 return result.getTestResource();
 		}
-		
+
 		@Override
 		public String getOutputText(WollokTestResult result) {
 			return result.getErrorOutput();
@@ -107,7 +111,11 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			return result.getErrorResource();
+			// Temporarily not linking to error resource because its URI is not
+			// available.
+			// return result.getErrorResource();
+
+			return result.getTestResource();
 		}
 
 		@Override
@@ -126,7 +134,6 @@ public enum WollokTestState {
 	public abstract String getOutputText(WollokTestResult result);
 
 	public Image getImage() {
-		return Activator.getDefault().getImageDescriptor(this.getImageName())
-				.createImage();
+		return Activator.getDefault().getImageDescriptor(this.getImageName()).createImage();
 	}
 }

@@ -1,12 +1,13 @@
 package org.uqbar.project.wollok.semantics
 
 import com.google.inject.Inject
+import it.xsemantics.runtime.RuleEnvironment
 import it.xsemantics.runtime.RuleFailedException
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import it.xsemantics.runtime.RuleEnvironment
+import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 /**
  * Type system implementation based on xsemantics
@@ -21,6 +22,7 @@ class XSemanticsTypeSystem implements TypeSystem {
 	
 	override analyse(EObject p) {
 		env = xsemanticsSystem.emptyEnvironment;
+		env.add(XSemanticsTypeSystem, this)
 		// infer types for whole program.
 		p.eContents.forEach[e|
 			xsemanticsSystem.inferTypes(env, e)
@@ -48,6 +50,10 @@ class XSemanticsTypeSystem implements TypeSystem {
 	
 	override issues(EObject obj) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override queryMessageTypeForMethod(WMethodDeclaration m) {
+		xsemanticsSystem.queryMessageTypeForMethod(env, m).first
 	}
 	
 }

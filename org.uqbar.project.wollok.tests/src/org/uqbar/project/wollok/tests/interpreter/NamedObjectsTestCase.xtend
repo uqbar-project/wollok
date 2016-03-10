@@ -41,11 +41,11 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void usingThis() {
+	def void usingSelf() {
 		'''
 			object pepita {
 				method uno(){
-					return this.otro()
+					return self.otro()
 				}
 				method otro(){
 					return 5
@@ -58,7 +58,7 @@ class NamedObjectsTestCase extends AbstractWollokInterpreterTestCase {
 	def void referencingObject() {
 		'''
 			object pp {
-			    val ps = #[pepita]
+			    const ps = [pepita]
 			    
 			    method unMethod(){
 			        var x = pepita

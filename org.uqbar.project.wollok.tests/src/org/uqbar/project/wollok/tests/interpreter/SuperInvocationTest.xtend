@@ -19,7 +19,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 				}
 			
 				method volar(kms) {
-					energia = energia - this.gastoParaVolar(kms) // Invocacion a método que se va a sobreescribir
+					energia = energia - self.gastoParaVolar(kms) // Invocacion a método que se va a sobreescribir
 				}
 				
 				method gastoParaVolar(kms) {
@@ -34,7 +34,7 @@ class SuperInvocationTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val pepona = new SeCansaMucho()
+				const pepona = new SeCansaMucho()
 				pepona.volar(50)
 				assert.that(pepona.energia() == 0) // Gastó el doble de energia
 			}

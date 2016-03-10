@@ -11,22 +11,22 @@ import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 class ListTest extends ListTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
-		"val numbers = new List()
+		"const numbers = new List()
 		numbers.add(22)
 		numbers.add(2)
 		numbers.add(10)"
 	}
 	
 	override instantiateStrings() {
-		"val strings = new List(); \n #['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach[e| strings.add(e) ]"
+		"const strings = new List(); \n ['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach{e=> strings.add(e) }"
 	}
 	
 	@Test
 	def void toStringOnEmptyCollection() {
 		'''
 		program p {
-			val numbers = new List()
-			assert.equals("#[]", numbers.toString())
+			const numbers = new List()
+			assert.equals("[]", numbers.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -36,7 +36,7 @@ class ListTest extends ListTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			
-			val strings = numbers.map[e| e.toString()]
+			const strings = numbers.map{e=> e.toString()}
 			
 			assert.notEquals(numbers.identity(), strings.identity())
 			
@@ -53,7 +53,7 @@ class ListTest extends ListTestCase {
 		object o2 {}
 			
 		program p {
-			val list = #[o1, o2]
+			const list = [o1, o2]
 			
 			assert.that(list.contains(o1))
 			assert.that(list.contains(o2))
@@ -61,13 +61,58 @@ class ListTest extends ListTestCase {
 	}
 	
 	@Test
-	def void testConversions() {
+	def void testAsListConversion() {
 		'''
 		program p {
-			val list = #[1,2,3]
+			const list = [1,2,3]
 			
-			assert.equals(#[1,2,3], list.asList())
-			assert.equals(#{1,2,3}, list.asSet())
+			assert.equals([1,2,3], list.asList())
+		}'''.interpretPropagatingErrors
+	}
+	
+		@Test
+	def void testAsSetConversion() {
+		'''
+		program p {
+			const set = #{}
+			set.add(1)
+			set.add(2)
+			set.add(3)
+		
+			assert.equals(set, set.asSet())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testFirstAndHead() {
+		'''
+		program p {
+			const list = [1,2,3]
+			
+			assert.equals(1, list.first())
+			assert.equals(1, list.head())
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testSortBy() {
+		''' 
+		program p {
+			const list = [1,2,3]
+			
+			assert.equals([3,2,1], list.sortBy({x,y => x > y}))
+			assert.that(list === list.sortBy({x,y => x < y}))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testSortedBy() {
+		'''
+		program p {
+			const list = [1,2,3]
+			
+			assert.equals([3,2,1], list.sortedBy({x,y => x > y}))
+			assert.notThat(list === list.sortedBy({x,y => x < y}))
 		}'''.interpretPropagatingErrors
 	}
 }

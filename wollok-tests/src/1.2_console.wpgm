@@ -1,5 +1,5 @@
 program console {
-	val console = this // TODO esto debería volar
+	const console = self // TODO esto debería volar
 
 	// console es un objeto que me permite escribir en pantalla
 	// otros objetos útiles son los strings
@@ -10,10 +10,10 @@ program console {
 	console.println(1+2)
 
 	// Las constantes y variables me sirven para guardarme 'referencias' a un objeto
-	val x = 2
+	const x = 2
 	console.println(x)
 
-	val y = 3
+	const y = 3
 	var z = 0
 	console.println(z)
 	

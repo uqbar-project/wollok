@@ -1,6 +1,9 @@
 package org.uqbar.project.wollok;
 
+import java.util.Properties;
+
 import org.eclipse.osgi.util.NLS;
+import org.uqbar.project.wollok.utils.WNLS;
 
 /**
  * Holds keys for all i18nized texts.
@@ -78,6 +81,8 @@ public class Messages extends NLS {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+	
+	public static Properties loadProperties() { return WNLS.load(BUNDLE_NAME, Messages.class); }
 
 	private Messages() {
 	}

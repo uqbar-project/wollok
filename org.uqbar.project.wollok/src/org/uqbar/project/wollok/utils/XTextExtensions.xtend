@@ -50,6 +50,8 @@ class XTextExtensions {
 	
 	def static objectURI(EObject o) { (o.eResource as XtextResource).getURIFragment(o) }
 	
+	def static getSiblings(EObject o) { o.eContainer.eContents.filter[it != 0] }
+	
 	def static allSiblingsBefore(EObject o) {
 		val beforeNodes = newArrayList
 		for(c : o.eContainer.eContents) {

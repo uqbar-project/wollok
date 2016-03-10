@@ -7,12 +7,14 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
-import org.uqbar.project.wollok.interpreter.UnresolvableReference
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
+import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -28,8 +30,6 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * A wollok user defined (dynamic) object.
@@ -37,10 +37,11 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
  * @author jfernandes
  * @author npasserini
  */
-class WollokObject extends AbstractWollokCallable implements EvaluationContext {
+class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
+	public static val THIS_VAR = new WVariable('this', false)
 	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
-	val EvaluationContext parentContext
+	val EvaluationContext<WollokObject> parentContext
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
@@ -61,7 +62,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	override getThisObject() { this }
 	
 	override call(String message, WollokObject... parameters) {
-		val method = behavior.lookupMethod(message, parameters)
+//		println("calling " + message + " " + parameters.map[toString].join(','))
+		val method = behavior.lookupMethod(message, parameters, false)
 		if (method == null)
 			throwMessageNotUnderstood(message, parameters)
 		method.call(parameters)
@@ -69,8 +71,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
 		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral) {
-			throw messageNotUnderstood("does not understand message " + name)
+		if (this.behavior instanceof WObjectLiteral || name == "messageNotUnderstood" || name == "toString") {
+			throw messageNotUnderstood(behavior.name + " does not understand message " + name + "(" + parameters.join(",") + ")")
 		}
 		
 		try {
@@ -154,10 +156,17 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	}
 	
 	// query (kind of reflection api)
-	override allReferenceNames() { instanceVariables.keySet.map[new WVariable(it, false)] }
+	override allReferenceNames() { 
+		instanceVariables.keySet.map[new WVariable(it, false)]
+		+ 
+		#[THIS_VAR]
+	}
+	
 	def allMethods() {
-		// TODO: include inherited methods!
-		behavior.methods
+		if (behavior.parent != null)
+			behavior.methods + behavior.parent.methods
+		else
+			behavior.methods
 	}
 	
 	override toString() {
@@ -211,6 +220,23 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext {
 	def hasNativeType(String type) {
 		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
 		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
+	}
+	
+	def callSuper(WMethodContainer superFrom, String message, WollokObject[] parameters) {
+		val hierarchy = behavior.linearizateHierarhcy
+		val subhierarhcy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
+		
+		val method = subhierarhcy.fold(null) [method, t |
+			if (method != null)
+				method
+			else 
+				t.methods.findFirst[matches(message, parameters)]
+		]
+
+		if (method == null)
+			// should be an specific error: no super method to call or something
+			throw throwMessageNotUnderstood(this, message, parameters)
+		method.call(parameters)
 	}
 	
 }
