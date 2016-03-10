@@ -334,11 +334,11 @@ package lang {
 		method asList()
 		method asSet()
 		method copy() {
-			var copy = this.newInstance()
-			copy.addAll(this)
+			var copy = self.newInstance()
+			copy.addAll(self)
 			return copy
 		}
-		method sortedBy(closure) = this.copy().asList().sortBy(closure)
+		method sortedBy(closure) = self.copy().asList().sortBy(closure)
 		
 		method newInstance()
 	}
