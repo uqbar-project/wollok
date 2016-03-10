@@ -67,7 +67,7 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	def dispatch IScope scope(WMixin it) { declaredVariables.asScope }
 
 	def dispatch IScope scope(WNamedObject namedObject) {
-		namedObject.declaredVariables.asScope
+		namedObject.parent.scope + namedObject.declaredVariables
 	}
 	
 	// containers which declares elements
