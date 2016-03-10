@@ -93,4 +93,26 @@ class ListTest extends ListTestCase {
 			assert.equals(1, list.head())
 		}'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void testSortBy() {
+		''' 
+		program p {
+			const list = [1,2,3]
+			
+			assert.equals([3,2,1], list.sortBy({x,y => x > y}))
+			assert.that(list === list.sortBy({x,y => x < y}))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testSortedBy() {
+		'''
+		program p {
+			const list = [1,2,3]
+			
+			assert.equals([3,2,1], list.sortedBy({x,y => x > y}))
+			assert.notThat(list === list.sortedBy({x,y => x < y}))
+		}'''.interpretPropagatingErrors
+	}
 }
