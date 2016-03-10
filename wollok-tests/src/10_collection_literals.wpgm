@@ -2,14 +2,14 @@ program collections {
 
 const numbers = [2, 23, 25]
 
-this.println(numbers)
+self.println(numbers)
 
 const y = 23
 const z = 2.2
 
 const x = "Hola"
 const bag = [x,y,z]
-this.println(bag)
+self.println(bag)
 
 // ***************************
 // ** calling native methods
@@ -18,11 +18,11 @@ this.println(bag)
 // size (a forwarded message to java.util.List)
 assert.equals(3, numbers.size())
 assert.that(numbers.contains(23))
-this.assertFalse(numbers.contains(1))
+self.assertFalse(numbers.contains(1))
 
 // forAll
 assert.that([20, 22, 34].forAll({n => n > 18}))
-this.assertFalse([20, 22, 34].forAll({n => n > 30}))
+self.assertFalse([20, 22, 34].forAll({n => n > 30}))
 
 // forEach
 const vaca1 = object {

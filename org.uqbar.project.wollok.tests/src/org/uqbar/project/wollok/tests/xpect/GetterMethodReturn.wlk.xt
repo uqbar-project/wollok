@@ -7,7 +7,7 @@ class A {
 	// XPECT warnings --> "Getter should return a value" at "getAge"
 	method getAge() { console.println("blah") }
 
-	// this are not getters	
+	// self are not getters	
 	method geton() { console.println("blah") }
 	method get() { console.println("blah") }
 	method ungetBlah() { console.println("blah") }
@@ -22,7 +22,7 @@ object anObject {
 	// XPECT warnings --> "Getter should return a value" at "getAge"
 	method getAge() { console.println("blah") }
 
-	// this are not getters	
+	// self are not getters	
 	method geton() { console.println("blah") }
 	method get() { console.println("blah") }
 	method ungetBlah() { console.println("blah") }

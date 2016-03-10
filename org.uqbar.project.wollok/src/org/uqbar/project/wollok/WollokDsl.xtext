@@ -211,8 +211,8 @@ WMemberFeatureCall returns WExpression:
 FeatureCallID:
 	ID;
 
-WThis returns WExpression:
-	{WThis} 'this'
+WSelf returns WExpression:
+	{WSelf} 'self'
 ;
 
 WPrimaryExpression returns WExpression:
@@ -273,7 +273,7 @@ WLiteral returns WExpression:
 	WNullLiteral |
 	WStringLiteral |
 	WObjectLiteral |
-	WThis |
+	WSelf |
 	WCollectionLiteral
 ;
 
@@ -360,12 +360,12 @@ WConstructor:
 ;
 
 WDelegatingConstructorCall:
-	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
 ;
 
 // some how this should be referecens to WConstructor
-WThisDelegatingConstructorCall:
-	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+WSelfDelegatingConstructorCall:
+	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
 // some how this should be referecens to WConstructor

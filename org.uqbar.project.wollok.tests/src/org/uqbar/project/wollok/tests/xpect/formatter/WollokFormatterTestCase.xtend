@@ -63,13 +63,13 @@ class WollokFormatterTestCase extends AbstractXtextTests {
 
     @Test
     def void testSimpleProgramWithVariablesAndMessageSend() throws Exception {
-    	assertFormatting('''program p { const a = 10 const b = 20 this.println(a + b) }''',
+    	assertFormatting('''program p { const a = 10 const b = 20 self.println(a + b) }''',
         '''
         
         program p {
         	const a = 10
         	const b = 20
-        	this.println(a + b)
+        	self.println(a + b)
         }''')
     }
     
@@ -262,7 +262,7 @@ test "aSimpleTest" {
     	'''
     	object foo {
     		method bar() {
-    			this.bar().bar().bar()
+    			self.bar().bar().bar()
     			
     			console.println("") console.println("")
     			
@@ -273,7 +273,7 @@ test "aSimpleTest" {
     	
     	object foo {
     		method bar() {
-    			this.bar().bar().bar()
+    			self.bar().bar().bar()
     	
     			console.println("") console.println("")
     	

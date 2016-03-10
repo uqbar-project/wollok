@@ -17,29 +17,29 @@ class Camion {
 
 	method getCosos() = cosos
 
-	method cargaActual() =this.getCosos().sum{bulto => bulto.peso()}
+	method cargaActual() =self.getCosos().sum{bulto => bulto.peso()}
 
-	method puedeCargar(unCoso) = this.tieneLugarPara(unCoso) && estado.sePuedeCargar()
+	method puedeCargar(unCoso) = self.tieneLugarPara(unCoso) && estado.sePuedeCargar()
 	
-	method tieneLugarPara(unCoso) = this.cargaActual() + unCoso.peso() <= cargaMaxima
+	method tieneLugarPara(unCoso) = self.cargaActual() + unCoso.peso() <= cargaMaxima
 	
-	method tieneLugar() = this.cargaActual() < cargaMaxima
+	method tieneLugar() = self.cargaActual() < cargaMaxima
 	
-	method cargar(unCoso) { if (this.puedeCargar(unCoso)) this.getCosos().add(unCoso) }
+	method cargar(unCoso) { if (self.puedeCargar(unCoso)) self.getCosos().add(unCoso) }
 	
 	method cambiarEstado(nuevoEstado) { estado = nuevoEstado }
 	
-	method estaListoParaSalir() = estado.estaListoParaSalir(this)
+	method estaListoParaSalir() = estado.estaListoParaSalir(self)
 	
-	method capacidadDisponible() = estado.capacidadDisponible(this)
+	method capacidadDisponible() = estado.capacidadDisponible(self)
 	
 	method getCargaMaxima() = cargaMaxima
 	
-	method estaCargando(unContenido) = this.tieneLugar() && this.getCosos().exists{coso => coso.getContenido() == unContenido}
+	method estaCargando(unContenido) = self.tieneLugar() && self.getCosos().exists{coso => coso.getContenido() == unContenido}
 	
-	method cosoMasLiviano() = this.getCosos().min{coso => coso.peso()}
+	method cosoMasLiviano() = self.getCosos().min{coso => coso.peso()}
 	
-	method elementosEnComunCon(otroCamion) = this.getCosos().filter{coso => otroCamion.getCosos().contains(coso)} 
+	method elementosEnComunCon(otroCamion) = self.getCosos().filter{coso => otroCamion.getCosos().contains(coso)} 
 }
 
 class CamionReutilizable inherits Camion {
@@ -52,7 +52,7 @@ class CamionReutilizable inherits Camion {
 	method descargarCamionEn(unLugar) { destino.remove(destinos.detect{destino => destino.getLugar() == unLugar}) }
 	
 	method cargarUnCosoEnDestino(unCoso, unLugar) {
-		if(this.puedeCargar(unCoso)) {
+		if(self.puedeCargar(unCoso)) {
 			var destino = destinos.detect{destino => destino.getLugar() == unLugar}
 			if (destino == null) {
 				var nuevoDestino = new Destino(unLugar)

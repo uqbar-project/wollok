@@ -2,7 +2,7 @@
 
 mixin M1 {
    method m() {
-   	  this.doIt()      // expected abstract method
+   	  self.doIt()      // expected abstract method
    }
    method doIt()
 }
@@ -17,7 +17,7 @@ mixin M2 {}
 class E inherits D mixed with M2 {}
 
 mixin M3 {
-	method blah() { this.sarasa() }
+	method blah() { self.sarasa() }
 	method sarasa()
 }
 
@@ -70,7 +70,7 @@ object p {
 mixin M3 {
 	method blah() {
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "sarasa"
-		this.sarasa()
+		self.sarasa()
 	}
 }
 

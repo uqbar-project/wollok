@@ -8,9 +8,9 @@ class Asustador {
 	method getNivelMotivacion() = nivelMotivacion
 	
 	method entrarAPuerta(puerta) {
-		puerta.entra(this)
+		puerta.entra(self)
 	}
-	method asustar(ninio) = (nivelMotivacion / 100) * (this.puntosDeTerror() / ninio.getEdad())
+	method asustar(ninio) = (nivelMotivacion / 100) * (self.puntosDeTerror() / ninio.getEdad())
 	
 	method puntosDeTerror()
 	
@@ -23,6 +23,6 @@ class Asustador {
 class AsustadorNato inherits Asustador {
 	var puntosTerrorInnatos
 	constructor (p) { puntosTerrorInnatos = p	}
-	override method puntosDeTerror() = puntosTerrorInnatos * this.getEdad()
+	override method puntosDeTerror() = puntosTerrorInnatos * self.getEdad()
 }
 
