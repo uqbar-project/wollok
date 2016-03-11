@@ -303,6 +303,31 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void mixinVariablesAreInScopeOnAWKO() {
+		'''
+		mixin Flies {
+			var times = 0
+			method fly() {
+				times = 1
+			}
+			method times() = times
+		}
+		
+		object pepita mixed with Flies {
+			method rest() {
+				times = 0
+			}
+		}
+		
+		program t {
+			pepita.fly()
+			assert.equals(1, pepita.times())
+			pepita.rest()
+			assert.equals(0, pepita.times())
+		} 
+		'''.interpretPropagatingErrors
+	}
+	@Test
 	def void mixinOnAWKOOverridingAMethod() {
 		'''
 		mixin Flies {
