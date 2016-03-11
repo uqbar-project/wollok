@@ -67,7 +67,10 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	def dispatch IScope scope(WMixin it) { declaredVariables.asScope }
 
 	def dispatch IScope scope(WNamedObject namedObject) {
-		namedObject.declaredVariables.asScope
+		val scope = namedObject.parent.scope + namedObject.declaredVariables
+		namedObject.mixins.fold(scope) [s, mixin|
+			s + mixin.declaredVariables
+		]
 	}
 	
 	// containers which declares elements
