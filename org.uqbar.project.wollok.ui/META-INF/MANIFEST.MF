@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.ui
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.4.1.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
