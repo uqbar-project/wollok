@@ -91,6 +91,30 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void lazyPartOfTheAndShortCircuitAccessingTheContext() {
+		'''
+			object liberarAFiona {
+				var cantidadTrolls = 0
+				var solicitante = ""
+			
+				method solicitante() = return solicitante
+				method solicitante(_solicitante) { solicitante = _solicitante }
+				method cantidadTrolls(cant) { cantidadTrolls = cant }
+				method esDificil() {
+					const result = (cantidadTrolls > 3) and (cantidadTrolls < 6)
+					console.println(result)
+					return result
+				}
+				method puntosRecompensa() = return cantidadTrolls * 2
+			}
+			program a {
+				liberarAFiona.cantidadTrolls(5)
+				liberarAFiona.esDificil()
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
 	def void orShortcirtuitMustEvaluateSecondPart() {
 		'''
 			object p {

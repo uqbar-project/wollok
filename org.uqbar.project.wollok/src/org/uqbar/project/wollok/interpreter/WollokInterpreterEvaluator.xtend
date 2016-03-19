@@ -334,7 +334,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def lazyEval(EObject expression) {
-		[| expression.eval ]
+		val lazyContext = interpreter.currentContext
+		return [| 
+			interpreter.performOnStack(expression, lazyContext, [| expression.eval])
+		]
 	}
 
 	def dispatch evaluate(WPostfixOperation op) {
