@@ -1,5 +1,10 @@
 package org.uqbar.project.wollok.ui.console
 
+import java.io.ByteArrayInputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.List
+import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.debug.core.model.IProcess
@@ -15,20 +20,12 @@ import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.tools.OrderedBoundedSet
 import org.uqbar.project.wollok.ui.launch.Activator
+import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 
 import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import java.util.List
-import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
-import org.eclipse.core.resources.IFile
-import java.io.InputStream
-import java.io.ByteArrayInputStream
-import java.io.File
-import org.eclipse.core.resources.IContainer
-import java.util.Date
-import java.text.SimpleDateFormat
 
 /**
  * @author tesonep
@@ -73,8 +70,8 @@ class WollokReplConsole extends TextConsole {
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
 			runInUI("WollokReplConsole-UpdateText") [
 				page.viewer.textWidget.append(text)
-				outputTextEnd += text.length
-				page.viewer.textWidget.caretOffset = outputTextEnd
+				outputTextEnd = page.viewer.textWidget.charCount
+				page.viewer.textWidget.selection = outputTextEnd
 				updateInputBuffer
 				activate
 			]
@@ -167,9 +164,9 @@ class WollokReplConsole extends TextConsole {
 		sessionCommands += inputBuffer
 		
 		streamsProxy.write(x)
-		outputTextEnd += x.length
+		outputTextEnd = page.viewer.textWidget.charCount
 		updateInputBuffer
-		page.viewer.textWidget.caretOffset = outputTextEnd
+		page.viewer.textWidget.selection = outputTextEnd
 	}
 	
 	def numberOfHistories() { lastCommands.size }
