@@ -9,6 +9,9 @@ import org.uqbar.project.wollok.WollokDslStandaloneSetup
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.parser.antlr.internal.InternalWollokDslLexer
 
+/**
+ * @author tesonep
+ */
 class WollokLauncherSetup extends WollokDslStandaloneSetup {
 
 	val WollokLauncherParameters params 

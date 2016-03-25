@@ -9,7 +9,7 @@ class Golondrina {
 	}
 	
 	method comer(alimento) {
-		alimento.sum { x ->
+		alimento.sum { x =>
 			// XPECT errors --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
 			energia = energia 
 		}

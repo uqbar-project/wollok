@@ -1,15 +1,15 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class A {
-	val x = "sarasa"
+	const x = "sarasa"
 	
-	new() {
+	constructor() {
 		// XPECT errors --> "Cannot modify values" at "x"
 		x = 23
 	}
 	
 	method s() {
-		val aBlock = {a ->
+		const aBlock = {a =>
 			// XPECT errors --> "Cannot modify values" at "a"
 			a = 23
 		}

@@ -26,6 +26,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		DICTIONARY -> "wollok.lang.WDictionary",
 		INTEGER -> "wollok.lang.WInteger",
 		DOUBLE -> "wollok.lang.WDouble",
+		NUMBER -> "wollok.lang.WNumber",
 		STRING -> "wollok.lang.WString",
 		BOOLEAN -> "wollok.lang.WBoolean"
 	}
@@ -52,7 +53,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		tryInstantiate(
 			[|javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)],
 			[|javaClass.getConstructor(WollokObject).newInstance(obj)],
-			[|javaClass.newInstance]	
+			[|javaClass.newInstance]
 		)
 	}
 	

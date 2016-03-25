@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem.substitutions
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.Property
-import org.uqbar.project.wollok.semantics.WollokType
+import org.uqbar.project.wollok.typesystem.WollokType
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 

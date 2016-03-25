@@ -16,7 +16,7 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 		class MyClass {
 		}
 		program p {
-			val myObject = new MyClass()
+			const myObject = new MyClass()
 			assert.that(myObject.identity() != null)
 		}'''.interpretPropagatingErrors
 	}

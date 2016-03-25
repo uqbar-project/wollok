@@ -16,6 +16,7 @@ import org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage
 
 import static org.eclipse.xtext.ui.XtextProjectHelper.*
 import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * Preferences page for validator
@@ -34,6 +35,7 @@ class ValidatorPreferencePage extends PropertyAndPreferencePage {
 		val container = container as IWorkbenchPreferenceContainer
 		val preferenceStore = preferenceStoreAccess.getWritablePreferenceStore(project)
 		configurationBlock = new ValidatorConfigurationBlock(project, preferenceStore, container)
+		WollokActivator.instance.getInjector(languageName).injectMembers(configurationBlock)
 		configurationBlock.statusChangeListener = newStatusChangedListener
 		super.createControl(parent)
 	}

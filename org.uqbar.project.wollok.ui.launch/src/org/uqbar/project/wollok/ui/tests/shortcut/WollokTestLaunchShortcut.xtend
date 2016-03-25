@@ -12,6 +12,9 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 
+/**
+ * @author tesonep
+ */
 class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	override createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_TEST_CONFIGURATION_TYPE.configType

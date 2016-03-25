@@ -2,7 +2,7 @@ object pajarera {
     var energiaMenor = 100 
     var pajaros = [pepita, pepe]
     method menorValor(){
-        pajaros.forEach{a->a.sosMenor(energiaMenor)}
+        pajaros.forEach{a=>a.sosMenor(energiaMenor)}
         return energiaMenor
     }      
 
@@ -28,7 +28,7 @@ class Arturo {
 	var energiaMenor = 100 
     var pajaros = [pepita, pepe]
     method menorValor(){
-        pajaros.forEach{a -> a.sosMenor(energiaMenor)}
+        pajaros.forEach{a => a.sosMenor(energiaMenor)}
         return energiaMenor
     }      
 

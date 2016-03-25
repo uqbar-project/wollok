@@ -5,11 +5,11 @@ class Asustable {
 class Ninio inherits Asustable {
 	var edad = 0
 	
-	new(e) { edad = e }
+	constructor(e) { edad = e }
 	method setEdad(e) { edad = e }
 	method getEdad() = edad
 	override method teVaAAsustar(asustador) {
-		return asustador.asustar(this)
+		return asustador.asustar(self)
 	}
 }
 
@@ -17,7 +17,7 @@ class Piyamada inherits Asustable {
 	var ninios = []
 	method agregarNinio(n) { ninios.add(n) }
 	override method teVaAAsustar(asustador) {
-		return ninios.fold(0, {a, n-> 
+		return ninios.fold(0, {a, n=> 
 			a + asustador.asustar(n)
 		})
 	}

@@ -4,12 +4,13 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 
-import static org.uqbar.project.wollok.semantics.WollokType.*
 import static org.uqbar.project.wollok.typesystem.constraints.TypeVariablesFactory.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * @author npasserini
@@ -62,6 +63,10 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 
 	override issues(EObject obj) {
 		#[]
+	}
+	
+	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
 }

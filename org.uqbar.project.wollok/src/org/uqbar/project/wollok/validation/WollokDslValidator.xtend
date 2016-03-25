@@ -9,6 +9,8 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlock
@@ -26,13 +28,14 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
+import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
@@ -43,33 +46,28 @@ import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
-import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.Path
-import java.io.File
 
 /**
  * Custom validation rules.
  *
  * see http://www.eclipse.org/Xtext/documentation.html#validation
- * 
+ *
  * @author jfernandes
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
 	List<WollokValidatorExtension> wollokValidatorExtensions
 	@Inject
 	WollokClassFinder classFinder
+	@Inject
+	WollokGlobalScopeProvider scopeProvider
 
-	// ERROR KEYS	
+	// ERROR KEYS
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
 	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
@@ -82,7 +80,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
 	public static val OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE = "OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE"
-	public static val GETTER_METHOD_SHOULD_RETURN_VALUE = "GETTER_METHOD_SHOULD_RETURN_VALUE" 
+	public static val GETTER_METHOD_SHOULD_RETURN_VALUE = "GETTER_METHOD_SHOULD_RETURN_VALUE"
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
@@ -96,51 +94,57 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
-	
+
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
-	
+
 	def validatorExtensions() {
 		if (wollokValidatorExtensions != null)
 			return wollokValidatorExtensions
-			
+
 		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
-	
+
 	@Check
 	@NotConfigurable
 	def checkValidationExtensions(WFile wfile){
 		validatorExtensions.forEach[ check(wfile, this)]
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def classNameMustStartWithUpperCase(WClass c) {
 		if (Character.isLowerCase(c.name.charAt(0))) report(WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE, c, WNAMED__NAME, CLASS_NAME_MUST_START_UPPERCASE)
 	}
-	
+
 	@Check
-	@DefaultSeverity(ERROR) 
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
 		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	}
-	
+
 	// **************************************
-	// ** instantiation and constructors	
+	// ** instantiation and constructors
 	// **************************************
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotInstantiateAbstractClasses(WConstructorCall c) {
-		if(c.classRef.isAbstract) report(WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS, c, WCONSTRUCTOR_CALL__CLASS_REF, CANNOT_INSTANTIATE_ABSTRACT_CLASS)
+	def cannotInstantiateAbstractClasses(WConstructorCall it) {
+		val abstractMethods = classRef.unimplementedAbstractMethods
+		if (!abstractMethods.empty) {
+			val methodDescriptions = abstractMethods.map[methodName].join(", ")
+			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WCONSTRUCTOR_CALL__CLASS_REF)
+		}
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = 
+			val expectedMessage =
 				" new " + c.classRef.name +
 					if (c.classRef.constructors == null)
 						""
@@ -153,10 +157,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def requiredSuperClassConstructorCall(WClass it) {
-		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor) 
+		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor)
 			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''', it, WNAMED__NAME, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
@@ -165,7 +169,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS, DUPLICATED_CONSTRUCTOR)
 		]
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def construtorMustExpliclityCallSuper(WConstructor it) {
@@ -173,21 +177,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotUseThisInConstructorDelegation(WThis it) {
+	def cannotUseThisInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access instance methods within constructor delegation.", it)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access super methods within constructor delegation.", it)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
@@ -197,7 +201,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			}
 		]
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def delegatedConstructorExists(WDelegatingConstructorCall it) {
@@ -222,7 +226,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (overrides && !m.overrides)
 			m.report(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def overridingMethodMustReturnAValueIfOriginalMethodReturnsAValue(WMethodDeclaration m) {
@@ -236,14 +240,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			}
 		}
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodDoesNotReturnAValueOnEveryPossibleFlow(WMethodDeclaration it) {
 		if (supposedToReturnValue  && !returnsOnAllPossibleFlows)
 			report(WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW)
 	}
-	
+
 	@Check
 	@DefaultSeverity(WARN)
 	def getterMethodShouldReturnAValue(WMethodDeclaration m) {
@@ -265,9 +269,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotAssignToItself(WAssignment a) {
 		if(!(a.value instanceof WVariableReference))
 			return
-			
+
 		val rightSide = a.value as WVariableReference
-		if(a.feature.ref == rightSide.ref) 
+		if(a.feature.ref == rightSide.ref)
 			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WASSIGNMENT__FEATURE, CANNOT_ASSIGN_TO_ITSELF)
 	}
 
@@ -276,20 +280,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotAssignToItselfInVariableDeclaration(WVariableDeclaration a) {
 		if(!(a.right instanceof WVariableReference))
 			return
-			
+
 		val rightSide = a.right as WVariableReference
-		if(a.variable == rightSide.ref) 
+		if(a.variable == rightSide.ref)
 			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WVARIABLE_DECLARATION__VARIABLE, CANNOT_ASSIGN_TO_ITSELF)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedMethod(WMethodDeclaration it) {
-		// can we allow methods with same name but different arg size ? 
+		// can we allow methods with same name but different arg size ?
 		if (declaringContext.methods.exists[m | m != it && hasSameSignatureThan(m)] )
 			report(WollokDslValidator_DUPLICATED_METHOD, DUPLICATED_METHOD)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedVariableFromSuperclass(WMethodContainer m) {
@@ -313,7 +317,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
 		}
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
@@ -326,7 +330,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			throw e
 		}
 	}
-	
+
 	// WKO
 	@Check
 	@DefaultSeverity(ERROR)
@@ -343,20 +347,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report('''No superclass constructor or wrong number of arguments. You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''', it, WNAMED_OBJECT__PARENT)
 		}
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def objectMustImplementAbstractMethods(WNamedObject it) {
-		if (parent != null) {
-			val abstractMethods = unimplementedAbstractMethods
-			if (!abstractMethods.empty) {
-				report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «abstractMethods.map[name + "(" + parameters.map[name].join(", ") + ")"].join(", ")»''', it, WNAMED__NAME)
-			}
+		val abstractMethods = unimplementedAbstractMethods
+		if (!abstractMethods.empty) {
+			val methodDescriptions = abstractMethods.map[methodName].join(", ")
+			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WNAMED__NAME)
 		}
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def voidMessagesCannotBeUsedAsValues(WMemberFeatureCall call) {
 		val method = call.resolveMethod(classFinder)
 		if (method != null && !method.native && !method.abstract && !method.supposedToReturnValue && call.isUsedAsValue(classFinder)) {
@@ -366,75 +370,66 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	//TODO: a single method performs many checks ! cannot configure that
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedVariables(WVariableDeclaration it) {
 		val assignments = variable.assignments
 		if (assignments.empty) {
 			if (writeable)
 				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)
 			else if (!writeable)
-				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)	
+				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE, VARIABLE_NEVER_ASSIGNED)
 		}
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def superInvocationOnlyInValidMethod(WSuperInvocation sup) {
-		if (sup.method.declaringContext instanceof WObjectLiteral)
-			report(WollokDslValidator_SUPER_ONLY_IN_CLASSES, sup)
-		else if (!sup.method.overrides)
+		if (!sup.method.overrides && !sup.isInMixin)
 			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
 			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''', sup)
 	}
-	
+
 	// ***********************
 	// ** Exceptions
 	// ***********************
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def tryMustHaveEitherCatchOrAlways(WTry tri) {
 		if ((tri.catchBlocks == null || tri.catchBlocks.empty) && tri.alwaysExpression == null)
 			report(WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS, tri, WTRY__EXPRESSION, ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	}
-	
-	@Check 
+
+	@Check
 	@DefaultSeverity(ERROR)
 	def catchExceptionTypeMustExtendException(WCatch it) {
 		if (exceptionType != null && !exceptionType.exception) report(WollokDslValidator_CATCH_ONLY_EXCEPTION, it, WCATCH__EXCEPTION_TYPE)
 	}
-	
-	@Check 
+
+	@Check
 	@DefaultSeverity(ERROR)
 	def unreachableCatch(WCatch it) {
-		val hidingCatch = catchesBefore.findFirst[c| 
+		val hidingCatch = catchesBefore.findFirst[c|
 			c.exceptionType == null || c.exceptionType.isSameOrSuperClassOf(it.exceptionType)
 		]
-		if (hidingCatch != null) 
+		if (hidingCatch != null)
 			report(WollokDslValidator_UNREACHABLE_CATCH, it, WCATCH__EXCEPTION_VAR_NAME)
 	}
-	
+
 	def boolean isSameOrSuperClassOf(WClass one, WClass other) {
 		one == other || one.isSuperTypeOf(other)
 	}
-	
-	
-	
-// requires type system in order to infer type of the WExpression being thrown ! "throw <??>"
-//	@Check
-//	def canOnlyThrowExceptionTypeObjects(WThrow it) {
-//		if (!it.exception.type.isException) error("Can only throw wollok.lang.Exception or a subclass of it", it, WCATCH__EXCEPTION_TYPE)
-//	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def postFixOperationOnlyValidforVariables(WPostfixOperation op) {
 		if (!(op.operand.isWritableVarRef))
 			report(op.feature + WollokDslValidator_POSTFIX_ONLY_FOR_VAR, op, WPOSTFIX_OPERATION__OPERAND)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def classNameCannotBeDuplicatedWithinPackage(WPackage p) {
@@ -444,49 +439,50 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + p.name, it, WNAMED__NAME)
 		]
 	}
-	
-	@Check 
+
+	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedPackageName(WPackage p) {
 		if (p.eContainer.eContents.filter(WPackage).exists[it != p && name == p.name])
 			report(WollokDslValidator_DUPLICATED_PACKAGE + " " + p.name, p, WNAMED__NAME)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
 		if (op.feature.isMultiOpAssignment && !op.leftOperand.isWritableVarRef)
 			report(op.feature + WollokDslValidator_BINARYOP_ONLY_ON_VARS, op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def programInProgramFile(WProgram p){
 		if(p.eResource.URI.nonXPectFileExtension != WollokConstants.PROGRAM_EXTENSION)
-			report(WollokDslValidator_PROGRAM_IN_FILE + ''' «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)					
+			report(WollokDslValidator_PROGRAM_IN_FILE + ''' «WollokConstants.PROGRAM_EXTENSION»''', p, WPROGRAM__NAME)
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def testInTestFile(WTest t) {
-		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION) 
+		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION)
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
 		if (t.then?.evaluatesToBoolean && t.^else?.evaluatesToBoolean) {
 			val inlineResult = if (t.then.isReturnTrue) t.condition.sourceCode else ("!(" + t.condition.sourceCode + ")")
-			val replacement = " return " + inlineResult 
+			val replacement = " return " + inlineResult
 			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + replacement, t, WIF_EXPRESSION__CONDITION, BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
 		}
 	}
-	
+
 	/**
 	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
-	 * 
-	 * This is a workaround for XPext testing. XPect test definition requires to add ".xt" to program file names, 
+	 *
+	 * This is a workaround for XPext testing. XPect test definition requires to add ".xt" to program file names,
 	 * therefore fileExtension-dependent validations will fail if this is not taken into account.
 	 */
 	def nonXPectFileExtension(URI uri) {
@@ -497,7 +493,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 		else uri.fileExtension
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def noExtraSentencesAfterReturnStatement(WBlock it){
@@ -505,7 +501,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		checkNoAfter(first(WThrow), WollokDslValidator_NO_EXPRESSION_AFTER_THROW)
 		expressions.filter(WTry).filter[t | t.cutsTheFlow ].forEach[t | checkNoAfter(t, WollokDslValidator_UNREACHABLE_CODE)]
 	}
-	
+
 	def checkNoAfter(WBlock it, WExpression riturn, String errorKey) {
 		if (riturn != null) {
 			it.getExpressionsAfter(riturn).forEach[e|
@@ -513,37 +509,30 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			]
 		}
 	}
-	
-	
+
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def noReturnStatementInConstructor(WReturnExpression it){
 		if(it.inConstructor)
-			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)				
+			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
-	
+
 	@Check
 	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
-			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)				
+			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def wrongImport(Import it) {
-		try {
-			// hack here to avoid checking references to the SDK which
-			// is resolved "magically"
-			if (importedNamespace.startsWith("wollok."))
-				return 
-			val r = WollokGlobalScopeProvider.toResource(it, eResource)
-			if (r == null || !r.exists)
+		val importedString = importedNamespaceWithoutWildcard
+		val found = it.getScope(scopeProvider).getElements(importedString.toFQN)
+		if (found.empty)
 				report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
-		}
-		catch (RuntimeException e) {
-			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
-		}
 	}
 
 	@Check
@@ -553,11 +542,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE, it, WPARAMETER__VAR_ARG, VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE)
 		}
 	}
-	
-	// ******************************	
+
+	// ******************************
 	// ** native methods
 	// ******************************
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def nativeMethodsChecks(WMethodDeclaration it) {

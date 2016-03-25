@@ -34,6 +34,8 @@ class WDictionary implements JavaWrapper<Map<WollokObject, WollokObject>> {
 	def wollokEqualsEquals(WollokObject other) { wollokEquals(other) }
 
 	def void put(WollokObject k, WollokObject v) { wrapped.put(k, v) }
+	
+	def WollokObject get(WollokObject k) { wrapped.get(k) }
 
 	def void removeKey(WollokObject k) {
 		wrapped.remove(wrapped.keySet.findFirst[it.wollokEquals(k)])

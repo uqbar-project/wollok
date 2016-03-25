@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
-import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 
 /**
  * Extension methods for WBlocks

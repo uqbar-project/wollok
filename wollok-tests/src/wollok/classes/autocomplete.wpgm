@@ -10,7 +10,7 @@ program autocomplete {
 	
 	perro.caminar(23)
 	
-	val km = 2
+	const km = 2
 	perro.correr(km)
 	perro.moverLaCola()
 	
@@ -19,7 +19,7 @@ program autocomplete {
 	// *************
 	// instance variables usage
 	
-	val loro = object {
+	const loro = object {
 		var plumas = object {}
 		method moverPlumas() {
 	//		plumas.mover()
@@ -35,9 +35,9 @@ program autocomplete {
 	// *************
 	// closures
 	
-	var aBlock = {auto ->
+	var aBlock = {auto =>
 		// ufa, no anda acá.
 	}
 
-	var otro = {auto -> auto.arrancar() }
+	var otro = {auto => auto.arrancar() }
 }

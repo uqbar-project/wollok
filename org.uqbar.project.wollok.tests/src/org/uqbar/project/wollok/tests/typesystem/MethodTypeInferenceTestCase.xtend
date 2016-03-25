@@ -54,7 +54,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				var energia = 100
 				method getEnergia() { energia }
 				method getEnergiaDelegando() {
-					this.getEnergia()
+					self.getEnergia()
 				}
 			}
 		'''.parseAndInfer.asserting [
@@ -70,7 +70,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				var energia = 100
 				var gasto
 				method volar() {
-					energia = energia - this.gastoPorVolar() 
+					energia = energia - self.gastoPorVolar() 
 				}
 				method gastoPorVolar() {
 					gasto

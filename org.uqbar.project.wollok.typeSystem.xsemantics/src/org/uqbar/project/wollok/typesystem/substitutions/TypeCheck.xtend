@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
-import org.uqbar.project.wollok.semantics.TypeSystemException
-import org.uqbar.project.wollok.semantics.WollokType
-import org.uqbar.project.wollok.typesystem.bindings.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
+import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * An object that checks a relation between two types.

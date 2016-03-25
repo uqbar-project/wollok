@@ -3,7 +3,7 @@ class Pirata {
 	var dinero
 	var nivelEbriedad
 	
-	new(itemsPirata) {
+	constructor(itemsPirata) {
 		items = itemsPirata
 	}
 	

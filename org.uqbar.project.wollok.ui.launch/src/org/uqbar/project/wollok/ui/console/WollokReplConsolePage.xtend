@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.ui.console
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
-import org.eclipse.swt.graphics.Point
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
@@ -62,14 +61,14 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		if (e.keyCode == SWT.ARROW_UP) {
 			increaseHistoryPosition
 			console.loadHistory(historyPosition)
-			viewer.textWidget.caretOffset = viewer.textWidget.text.length
+			viewer.textWidget.selection = viewer.textWidget.charCount
 			return
 		}
 	
 		if (e.keyCode == SWT.ARROW_DOWN) {
 			decreaseHistoryPosition
 			console.loadHistory(historyPosition)
-			viewer.textWidget.caretOffset = viewer.textWidget.text.length
+			viewer.textWidget.selection = viewer.textWidget.charCount
 			return
 		}
 

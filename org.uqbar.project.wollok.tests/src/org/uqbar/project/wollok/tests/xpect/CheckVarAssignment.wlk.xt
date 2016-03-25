@@ -5,7 +5,7 @@
 		var current
 		// XPECT warnings --> "Variable is never assigned" at "unassigned"
 		var unassigned
-		new(rang) {
+		constructor(rang) {
 			range = rang
 			current = rang.getStart()
 		}

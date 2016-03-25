@@ -9,11 +9,11 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 	
 	def instantiateObjectsDictionary() {
-		"val dictionary = {foo:1, bar:'hello', baz: {:}}"
+		"const dictionary = {foo:1, bar:'hello', baz: {:}}"
 	}
 	
 	def instantiateNumbersDictionary() {
-		"val dictionary = {foo:1, bar:2, baz: 3}"
+		"const dictionary = {foo:1, bar:2, baz: 3}"
 	}
 	
 	@Test
@@ -21,7 +21,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»		
-			assert.equals(1, dictionary.min {e -> e} )
+			assert.equals(1, dictionary.min {e => e} )
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -31,7 +31,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.equals(3, dictionary.max {e -> e} )
+			assert.equals(3, dictionary.max {e => e} )
 		}'''.interpretPropagatingErrors
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
@@ -61,7 +61,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateObjectsDictionary»
-			assert.that(dictionary.any{e-> e == 'hello'})
+			assert.that(dictionary.any{e=> e == 'hello'})
 		}'''.interpretPropagatingErrors
 	}
 
@@ -70,7 +70,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateObjectsDictionary»
-			assert.notThat(dictionary.any{e-> e == 0})
+			assert.notThat(dictionary.any{e=> e == 0})
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -79,7 +79,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateObjectsDictionary»
-			dictionary.removeKey('hello')		
+			dictionary.removeKey('bar')		
 			assert.that(2 == dictionary.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -109,8 +109,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.that(dictionary.all {n -> n > 0})
-			assert.notThat(dictionary.all {n -> n > 5})
+			assert.that(dictionary.all {n => n > 0})
+			assert.notThat(dictionary.all {n => n > 5})
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -119,7 +119,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			var filtered = dictionary.filter {n -> n > 2}
+			var filtered = dictionary.filter {n => n > 2}
 			assert.that(filtered.size() == 1)
 		}'''.interpretPropagatingErrors
 	}
@@ -129,9 +129,9 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			var succs = dictionary.map {n -> n + 1}
+			var succs = dictionary.map {n => n + 1}
 
-			assert.equals({foo:1, bar:2, baz: 3}, succs)
+			assert.equals({foo:2, bar:3, baz: 4}, succs)
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -140,7 +140,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			var greaterThanFiveElements = dictionary.filter{n -> n >1 }
+			var greaterThanFiveElements = dictionary.filter{n => n >1 }
 			assert.that(greaterThanFiveElements.size() == 2)
 		}'''.interpretPropagatingErrors
 	}
@@ -150,7 +150,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateObjectsDictionary»
-			val anyOne = dictionary.anyOne()
+			const anyOne = dictionary.anyOne()
 			assert.that(dictionary.contains(anyOne))
 		}'''.interpretPropagatingErrors
 	}
@@ -159,8 +159,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithMethodName() {
 		'''
 		program p {
-			val a = [23, 2, 1]
-			val b = [23, 2, 1]
+			const a = [23, 2, 1]
+			const b = [23, 2, 1]
 			assert.that(a.equals(b))
 		}'''.interpretPropagatingErrors
 	}
@@ -169,8 +169,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 	def void equalsWithEqualsEquals() {
 		'''
 		program p {
-			val a = [23, 2, 1]
-			val b = [23, 2, 1]
+			const a = [23, 2, 1]
+			const b = [23, 2, 1]
 			assert.that(a == b)
 		}'''.interpretPropagatingErrors
 	}
@@ -180,7 +180,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.equals("{foo:1, bar:2, baz: 3}", dictionary.toString())
+			assert.equals("{bar:2, foo:1, baz: 3}", dictionary.toString())
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -191,7 +191,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 			method internalToSmartString(alreadyShown) = "My Object"
 		}
 		program p {
-			val a = {x: 23, y: myObject}
+			const a = {x: 23, y: myObject}
 			assert.equals("{x:23, y:My Object}", a.toString())
 		}'''.interpretPropagatingErrors
 	}
@@ -201,8 +201,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.equals(3, dictionary.find{e-> e > 2})
-			assert.equals(null, dictionary.find{e-> e > 1000})
+			assert.equals(3, dictionary.find{e=> e > 2})
+			assert.equals(null, dictionary.find{e=> e > 1000})
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -212,8 +212,8 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateNumbersDictionary»
-			assert.equals(0, dictionary.count{e-> e > 20})
-			assert.equals(1, dictionary.count{e-> e > 2})
+			assert.equals(0, dictionary.count{e=> e > 20})
+			assert.equals(1, dictionary.count{e=> e > 2})
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -224,7 +224,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateNumbersDictionary»
 			
-			assert.equals(6, dictionary.sum {n -> n})
+			assert.equals(6, dictionary.sum {n => n})
 		}'''.interpretPropagatingErrors
 	}
 	

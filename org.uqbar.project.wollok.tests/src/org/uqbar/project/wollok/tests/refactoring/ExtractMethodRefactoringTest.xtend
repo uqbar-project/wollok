@@ -163,7 +163,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		assertRefactor('''
 			class A {
 				method foo() {
-					val tempVal = 2
+					const tempVal = 2
 					return 100 + 2 * tempVal
 				}
 			}
@@ -173,7 +173,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				method foo() {
-					val tempVal = 2
+					const tempVal = 2
 					return this.calculus()
 				}
 	

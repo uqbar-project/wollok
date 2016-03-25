@@ -4,6 +4,7 @@ import org.junit.Test
 
 /**
  * @author tesonep
+ * @author jfernades
  */
 class TestTestCase extends AbstractWollokInterpreterTestCase {
 	
@@ -73,4 +74,52 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test(expected = AssertionError)
+	def void testWithExpectedExceptionWithErrors() {
+		'''
+			program p {
+				assert.throwsException { 4 }	
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testWithExpectedExceptionWithoutErrors() {
+		'''
+			program p {
+				assert.throwsException { 
+					const x = null
+					x.foo()
+				}	
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testsAreIsolatedInTermsOfStateWKO() {
+		'''
+			object globalin {
+				var a = 10
+				method a(nuevo) { a = nuevo }
+				method a() = a
+			}
+			test "Changing a to 20" {
+				assert.equals(10, globalin.a())
+				globalin.a(20)
+				assert.equals(20, globalin.a())
+			}
+			test "Is back in 10 and change it to 30" {
+				// starts with 10 again !
+				assert.equals(10, globalin.a())
+				globalin.a(30)
+				assert.equals(30, globalin.a())
+			}
+			test "Changing a to 10" {
+				// starts with 10 again !
+				assert.equals(10, globalin.a())
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }

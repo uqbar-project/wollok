@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.debugger.server
 
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 

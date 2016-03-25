@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * This class contains custom scoping description.
@@ -53,18 +54,28 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 	
 	def dispatch IScope scope(WClass clazz) {
-		if (clazz.parent != null)
+		val scope = if (clazz.parent != null)
 			clazz.parent.scope + clazz.declaredVariables
 		else
 			clazz.declaredVariables.asScope
+			
+		clazz.mixins.fold(scope) [s, mixin|
+			s + mixin.declaredVariables
+		]
 	}
+	
+	def dispatch IScope scope(WMixin it) { declaredVariables.asScope }
 
 	def dispatch IScope scope(WNamedObject namedObject) {
-		namedObject.declaredVariables.asScope
+		val scope = namedObject.parent.scope + namedObject.declaredVariables
+		namedObject.mixins.fold(scope) [s, mixin|
+			s + mixin.declaredVariables
+		]
 	}
 	
 	// containers which declares elements
 	def dispatch IScope scope(WObjectLiteral it) { declaredVariables.asScope }
+	
 	def dispatch IScope scope(WConstructor it) { eContainer.scope + parameters }
 	def dispatch IScope scope(WClosure it) { eContainer.scope + parameters }
 	def dispatch IScope scope(WMethodDeclaration it) { eContainer.scope + parameters }

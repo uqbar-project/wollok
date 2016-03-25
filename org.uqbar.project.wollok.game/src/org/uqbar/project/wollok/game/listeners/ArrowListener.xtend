@@ -21,4 +21,8 @@ class ArrowListener implements GameboardListener {
 	override notify(Gameboard gameboard) {
 		listeners.forEach[it.notify(gameboard)]
 	}
+	
+	override isObserving(VisualComponent component) {
+		listeners.exists[it.isObserving(component)]
+	}
 }

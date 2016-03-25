@@ -2,22 +2,23 @@ package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.ListTestCase
+import org.uqbar.project.wollok.tests.interpreter.CollectionTestCase
 
 /**
  * @author jfernandes
  */
 // the inheritance needs to be reviewed if we add list specific tests it won't work here
-class SetTest extends ListTestCase {
+class SetTest extends CollectionTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
-		"val numbers = #{22, 2, 10}"
+		"const numbers = #{22, 2, 10}"
 	}
 	
 	@Test
 	def void testSizeWithDuplicates() {
 		'''
 		program p {
-			val numbers = #{ 23, 2, 1, 1, 1 }		
+			const numbers = #{ 23, 2, 1, 1, 1 }		
 			assert.equals(3, numbers.size())
 		}'''.interpretPropagatingErrors
 	}
@@ -26,7 +27,7 @@ class SetTest extends ListTestCase {
 	def void testSizeAddingDuplicates() {
 		'''
 		program p {
-			val numbers = #{ 23, 2, 1, 1, 1 }
+			const numbers = #{ 23, 2, 1, 1, 1 }
 			numbers.add(1)
 			numbers.add(1)		
 			assert.equals(3, numbers.size())
@@ -37,7 +38,7 @@ class SetTest extends ListTestCase {
 	def void testSizeAddingDuplicatesWithAddAll() {
 		'''
 		program p {
-			val numbers = #{ 23, 2, 1, 1, 1 }
+			const numbers = #{ 23, 2, 1, 1, 1 }
 			numbers.add(#{1, 1, 1, 1, 4})
 			assert.equals(4, numbers.size())
 		}'''.interpretPropagatingErrors
@@ -47,8 +48,8 @@ class SetTest extends ListTestCase {
 	override def void testToString() {
 		'''
 		program p {
-			val a = #{23, 2, 2}
-			val s = a.toString()
+			const a = #{23, 2, 2}
+			const s = a.toString()
 			assert.that("#{2, 23}" == s or "#{23, 2}" == s)
 		}'''.interpretPropagatingErrors
 	}
@@ -71,12 +72,12 @@ class SetTest extends ListTestCase {
 	def void testConversions() {
 		'''
 		program p {
-			val set= #{1,2,3}
+			const set= #{1,2,3}
 			assert.equals(#{1,2,3}, set.asSet())
 			
-			val list = set.asList()
+			const list = set.asList()
 			assert.equals(3, list.size())
-			[1,2,3].forEach{i->assert.equals(list.contains(i))}
+			[1,2,3].forEach{i=>assert.equals(list.contains(i))}
 		}'''.interpretPropagatingErrors
 	}
 }

@@ -7,6 +7,13 @@ import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterprete
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
+/**
+ * Tests for numbers equality
+ * 
+ * @author tesonep
+ * @author npasserini
+ * @author jfernandes
+ */
 class NumberEqualityTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
 	public String expression
@@ -32,7 +39,10 @@ class NumberEqualityTest extends AbstractWollokParameterizedInterpreterTest {
 			assert.notThat(1 != 1)
 			assert.notThat(1.0 != 1)
 			assert.notThat(1 != 1.0)
-			assert.notThat(1.0 != 1.0)			
+			assert.notThat(1.0 != 1.0)
+			
+			
+			assert.notThat(1 == "aString")
 		'''.lines.asParameters
 	}
 		

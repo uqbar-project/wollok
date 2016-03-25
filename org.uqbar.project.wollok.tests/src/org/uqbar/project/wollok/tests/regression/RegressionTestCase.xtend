@@ -31,19 +31,19 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		
 		    method alimentarATodosCon(comida){
-		        pajaros.forEach{p->p.comer(comida)}
+		        pajaros.forEach{p=>p.comer(comida)}
 		    }
 		
 		    method hacerVolarATodas20M(metros){
-		        pajaros.forEach{p->p.volar(metros)}
+		        pajaros.forEach{p=>p.volar(metros)}
 		    }
 		
 		    method cualEstaSaludable(){
-		        return pajaros.filter{p->p.energia() > 100}
+		        return pajaros.filter{p=>p.energia() > 100}
 		    }
 		
 		    method retornaEnergias(energiaMinima){
-		        return  pajaros.filter{p->p.energia() < energiaMinima}
+		        return  pajaros.filter{p=>p.energia() < energiaMinima}
 		    }
 		
 		    method el(){
@@ -51,29 +51,29 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		        var filtro2 = []
 		        var filtro3 = []
 		
-		        filtro1 = pajaros.filter{p->p.energia() <= pepita.energia()}
-		        filtro2 = filtro1.filter{pp->pp.energia() <= pepona.energia()}
-		        filtro3 = filtro2.filter{ppp->ppp.energia() <= pepe.energia()}
+		        filtro1 = pajaros.filter{p=>p.energia() <= pepita.energia()}
+		        filtro2 = filtro1.filter{pp=>pp.energia() <= pepona.energia()}
+		        filtro3 = filtro2.filter{ppp=>ppp.energia() <= pepe.energia()}
 		
 		
-		        //var filtro2 = filtro1.filter{pp->pp.energia() > pepe.energia()}
-		        //return filtro2.filter{ppp->ppp.energia() > pepona.energia()}
+		        //var filtro2 = filtro1.filter{pp=>pp.energia() > pepe.energia()}
+		        //return filtro2.filter{ppp=>ppp.energia() > pepona.energia()}
 		
-		        return this.comparaEnergia(filtro3)
+		        return self.comparaEnergia(filtro3)
 		    }
 		
 		    method alimentaBajaEnergia(filtro3){
-		        filtro3.forEach{pppp->pppp.com()}
+		        filtro3.forEach{pppp=>pppp.com()}
 		        //pepe.com()
-		        this.comparaEnergia(filtro3)
+		        self.comparaEnergia(filtro3)
 		    }
 		
 		    method comparaEnergia(filtro3){
 		        var filtro4 = []
-		        filtro4 = filtro3.filter{p->p.energia() >= 30}
+		        filtro4 = filtro3.filter{p=>p.energia() >= 30}
 		
 		        if (filtro4.size() == 0) {    
-		            this.alimentaBajaEnergia(filtro3)
+		            self.alimentaBajaEnergia(filtro3)
 		            return pepe.energia()
 		        }else{
 		            return "La energia de pepe es 30"
@@ -85,11 +85,11 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		
 		    method getEnergias(){
-		        return pajaros.map{p->p.energia()}
+		        return pajaros.map{p=>p.energia()}
 		    }
 		
 		    method estanTodosVivos(){
-		        return pajaros.forAll{p->p.energia() > 0}
+		        return pajaros.forAll{p=>p.energia() > 0}
 		    }
 		}
 		object pepita {
@@ -152,7 +152,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		class Golondrina {
 		    var energia = 100
 		    method volar(kms) {
-		        this.modificar(-kms * 2)
+		        self.modificar(-kms * 2)
 		    }
 		    method modificar(n) {
 		        energia += n 
@@ -162,6 +162,30 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		
 		program p {
 			pepita.volar(2)		
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void bug_578() {
+		'''
+		object link {
+			var arma
+			method atacarA(alguien) {
+				arma.causarDanio(alguien)
+			}
+		}
+		object captainFalcon {}
+		
+		program p {
+			try {
+				#{1}.forEach({ each => link.atacarA(captainFalcon)})
+				assert.fail("should have thrown a wollok exception")
+			}
+			catch e {
+				// OK ! a NPE
+			}
+			
 		}
 		'''.interpretPropagatingErrors
 	}

@@ -35,7 +35,7 @@ class AbstractJavaWrapper<T> implements JavaWrapper<T> {
 	}
 	
 	def newInstanceWithWrapped(T wrapped) {
-		val transformedClassName = DefaultNativeObjectFactory.javaToWollokFQN(class.name)
+		val String transformedClassName = DefaultNativeObjectFactory.javaToWollokFQN(class.name)
 		evaluator.newInstanceWithWrapped(transformedClassName, wrapped)
 	} 
 }

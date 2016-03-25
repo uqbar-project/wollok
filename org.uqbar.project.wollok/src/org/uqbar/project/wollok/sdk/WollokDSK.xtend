@@ -29,6 +29,7 @@ class WollokDSK {
 	public static val STRING = "wollok.lang.String"
 	public static val INTEGER = "wollok.lang.Integer"
 	public static val DOUBLE = "wollok.lang.Double"
+	public static val NUMBER = "wollok.lang.Number"
 	public static val BOOLEAN = "wollok.lang.Boolean"
 
 	public static val COLLECTION = "wollok.lang.Collection"

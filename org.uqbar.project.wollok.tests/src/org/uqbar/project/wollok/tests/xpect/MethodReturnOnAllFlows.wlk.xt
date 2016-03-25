@@ -10,7 +10,7 @@ class A {
 	method getFoo() { return "Foo" }
 	
 	method getBar() { 
-		if (this.getFoo() == "Foo")  
+		if (self.getFoo() == "Foo")  
 			return "Foo"
 		else
 			return "Bar"
@@ -18,13 +18,13 @@ class A {
 	
 	// XPECT errors --> "Must return a value on every possible flow" at "getZoo"
 	method getZoo() { 
-		if (this.getFoo() == "Foo")  
+		if (self.getFoo() == "Foo")  
 			return "Foo"
 	}
 	
 	// XPECT errors --> "Must return a value on every possible flow" at "getZoo2"
 	method getZoo2() { 
-		if (this.getFoo() == "Foo")  
+		if (self.getFoo() == "Foo")  
 			return "Foo"
 		
 		var a = 2
@@ -33,7 +33,7 @@ class A {
 	
 	// XPECT errors --> "Must return a value on every possible flow" at "getXoo"
 	method getXoo() { 
-		if (this.getFoo() == "Foo")  
+		if (self.getFoo() == "Foo")  
 			return "Foo"
 		else
 			"Bar"
@@ -41,7 +41,7 @@ class A {
 	
 	// XPECT errors --> "Must return a value on every possible flow" at "getXoo2"
 	method getXoo2() { 
-		if (this.getFoo() == "Foo") {
+		if (self.getFoo() == "Foo") {
 			var a = 23
 			a += 2
 			return a
@@ -52,7 +52,7 @@ class A {
 	
 	// XPECT errors --> "Must return a value on every possible flow" at "getXoo3"
 	method getXoo3() { 
-		if (this.getFoo() == "Foo") {
+		if (self.getFoo() == "Foo") {
 			"Foo"
 		}
 		else {
@@ -61,7 +61,7 @@ class A {
 	}
 	
 	method getThrowingException() {
-		if (this.getFoo() == "Foo") {
+		if (self.getFoo() == "Foo") {
 			throw new Exception() 
 		}
 		else {
@@ -70,7 +70,7 @@ class A {
 	}
 	
 	method getThrowingExceptionAtIf() {
-		if (this.getFoo() == "Foo") {
+		if (self.getFoo() == "Foo") {
 			throw new Exception() 
 		}
 		var a = 23
@@ -79,7 +79,7 @@ class A {
 	}
 	
 	method getThrowingExceptionAtBody() {
-		if (this.getFoo() == "Foo") {
+		if (self.getFoo() == "Foo") {
 			return "Foo" 
 		}
 		var a = 23
@@ -92,14 +92,14 @@ class A {
 	         return 23
 	    }
 	    catch e : Exception {
-	         this.setC("saasas")
+	         self.setC("saasas")
 	         throw e
 	    }
 	}
 	
 	method cargar() {
 		["hola", "chau"]
-			.map{ p ->
+			.map{ p =>
 				return p
 			}
 	}

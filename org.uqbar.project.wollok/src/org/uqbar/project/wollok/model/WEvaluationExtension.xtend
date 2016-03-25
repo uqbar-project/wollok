@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -33,12 +33,12 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 /**
  * Extension methods related to validating values
  * and expression.
- * 
+ *
  * @author jfernandes
  */
 class WEvaluationExtension {
-	
-	def static boolean isUsedAsValue(WMemberFeatureCall call, WollokClassFinder finder) { 
+
+	def static boolean isUsedAsValue(WMemberFeatureCall call, WollokClassFinder finder) {
 		call.eContainingFeature.isEvaluatesContent(finder) || (call.eContainer instanceof WMethodDeclaration && (call.eContainer as WMethodDeclaration).isExpressionReturns)
 	}
 
@@ -63,7 +63,7 @@ class WEvaluationExtension {
 		|| it == WCONSTRUCTOR_CALL__ARGUMENTS
 		|| it == WTHROW__EXCEPTION
 	}
-	
+
 	// literals
 	def static dispatch boolean isEvaluatesToAValue(WCollectionLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WNumberLiteral it, WollokClassFinder finder) { true }
@@ -71,7 +71,7 @@ class WEvaluationExtension {
 	def static dispatch boolean isEvaluatesToAValue(WObjectLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WNullLiteral it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WBooleanLiteral it, WollokClassFinder finder) { true }
-	def static dispatch boolean isEvaluatesToAValue(WThis it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WSelf it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WClosure it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WVariableReference it, WollokClassFinder finder) { true }
 	// ops

@@ -6,7 +6,6 @@ import java.io.FileReader
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.launch.io.IOUtils
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 
 /**

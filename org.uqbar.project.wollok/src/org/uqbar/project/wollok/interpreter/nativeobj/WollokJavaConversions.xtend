@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import java.util.Map
 
 /**
@@ -87,8 +88,16 @@ class WollokJavaConversions {
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 	
+	def static newWollokExceptionAsJava(String message) {
+		new WollokProgramExceptionWrapper(newWollokException(message))
+	}
+	
 	def static newWollokException(String message) {
 		evaluator.newInstance(EXCEPTION, message.javaToWollok)
+	}
+	
+	def static newWollokException(String message, WollokObject cause) {
+		evaluator.newInstance(EXCEPTION, message.javaToWollok, cause)
 	}
 	
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }

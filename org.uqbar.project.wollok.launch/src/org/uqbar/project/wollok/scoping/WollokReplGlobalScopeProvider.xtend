@@ -10,6 +10,10 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.eclipse.xtext.naming.QualifiedName
 
+/**
+ * 
+ * @author tesonep
+ */
 class WollokReplGlobalScopeProvider extends WollokGlobalScopeProvider {
 	
 	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type, Predicate<IEObjectDescription> filter) {

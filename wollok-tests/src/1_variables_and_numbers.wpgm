@@ -1,10 +1,10 @@
 program variablesAndNumbers {
 	
 	// values
-	val a = 23
-	val b = a + 1
+	const a = 23
+	const b = a + 1
 	
-	//val y = a + "23"
+	//const y = a + "23"
 	
 	//b = 23 //CANNOT MODIFY VALUES!
 	

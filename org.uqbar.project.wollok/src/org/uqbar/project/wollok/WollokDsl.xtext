@@ -41,14 +41,17 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WLibraryElement: (WPackage | WClass | WNamedObject );
-WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass;
-WMethodContainer: WClass | {WObjectLiteral} | WNamedObject;
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin );
+WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
-	=>'object' '{'
+	=>'object'
+	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -56,7 +59,7 @@ WObjectLiteral returns WExpression:
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
-	(writeable?='var'|'val') variable=WVariable ('=' right=WExpression)?
+	(writeable?='var'|'const') variable=WVariable ('=' right=WExpression)?
 ;
 
 WMethodDeclaration:
@@ -158,7 +161,7 @@ OpOther:
 	  '..<'
 	| '>' '..'
 	| '..'
-	| '=>' 
+	| '->' 
 	| '>' (=>('>' '>') | '>') 
 	| '<' (=>('<' '<') | '<' | '=>')
 	| '<>'
@@ -208,8 +211,8 @@ WMemberFeatureCall returns WExpression:
 FeatureCallID:
 	ID;
 
-WThis returns WExpression:
-	{WThis} 'this'
+WSelf returns WExpression:
+	{WSelf} 'self'
 ;
 
 WPrimaryExpression returns WExpression:
@@ -251,8 +254,7 @@ WVariableReference:
 ;
 
 WBlockOrExpression returns WExpression:
-	WExpression | WBlock
-;
+	(=> WBlock) | WExpression;
 
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
@@ -271,7 +273,7 @@ WLiteral returns WExpression:
 	WNullLiteral |
 	WStringLiteral |
 	WObjectLiteral |
-	WThis |
+	WSelf |
 	WCollectionLiteral |
 	WDictionaryLiteral
 ;
@@ -293,11 +295,11 @@ WNumberLiteral returns WExpression :
 WClosure returns WExpression:
 	=>({WClosure} 
 	'{') 
-		=>(parameters+=WParameter (',' parameters+=WParameter)*)? '->'
+		=>((parameters+=WParameter (',' parameters+=WParameter)*)? '=>')?
 		expression=WBlockInClosure 
 	'}';
 
-WBlockInClosure: 
+WBlockInClosure returns WExpression: 
 	{WBlock}
 	(expressions+=WExpressionOrVarDeclaration ';'?)*;
 
@@ -319,7 +321,10 @@ WKeyValue:
 	key=ID ':' value=WExpression;
 
 WNamedObject:
-	'object' name=ID ('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?'{'
+	'object' name=ID 
+		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
@@ -332,9 +337,21 @@ WCanExtendClass:
 // CLASSES
 
 WClass:
-	'class' name=ID ('inherits' parent=[WClass|QualifiedName])? '{'
+	'class' name=ID 
+		('inherits' parent=[WClass|QualifiedName])? 
+		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)? 
+	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(constructors+=WConstructor)*
+		(members+=WMethodDeclaration ';'?)*
+	'}'
+;
+
+// MIXINS
+
+WMixin:
+	'mixin' name=ID '{'
+		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;
@@ -344,18 +361,18 @@ WMember:
 ;
 
 WConstructor:
-	{WConstructor} 'new' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
+	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
 		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
 		(expression=WBlock)?
 ;
 
 WDelegatingConstructorCall:
-	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
 ;
 
 // some how this should be referecens to WConstructor
-WThisDelegatingConstructorCall:
-	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+WSelfDelegatingConstructorCall:
+	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
 // some how this should be referecens to WConstructor
