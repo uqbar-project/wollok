@@ -13,7 +13,7 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -496,16 +496,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def noExtraSentencesAfterReturnStatement(WBlockExpression it){
+	def noExtraSentencesAfterReturnStatement(WBlock it){
 		checkNoAfter(first(WReturnExpression), WollokDslValidator_NO_EXPRESSION_AFTER_RETURN)
 		checkNoAfter(first(WThrow), WollokDslValidator_NO_EXPRESSION_AFTER_THROW)
 		expressions.filter(WTry).filter[t | t.cutsTheFlow ].forEach[t | checkNoAfter(t, WollokDslValidator_UNREACHABLE_CODE)]
 	}
 
-	def checkNoAfter(WBlockExpression it, WExpression riturn, String errorKey) {
+	def checkNoAfter(WBlock it, WExpression riturn, String errorKey) {
 		if (riturn != null) {
 			it.getExpressionsAfter(riturn).forEach[e|
-				report(errorKey, it, WBLOCK_EXPRESSION__EXPRESSIONS, it.expressions.indexOf(e))
+				report(errorKey, it, WBLOCK__EXPRESSIONS, it.expressions.indexOf(e))				
 			]
 		}
 	}

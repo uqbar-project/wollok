@@ -16,17 +16,17 @@ import org.uqbar.project.wollok.visitors.VariableUsesVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -43,6 +43,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariable
@@ -126,11 +127,11 @@ class WollokModelExtensions {
 
 	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
 
-	def static dispatch WBlockExpression block(WBlockExpression b) { b }
+	def static dispatch WBlock block(WBlock b) { b }
 
-	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
-
-	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
+	def static dispatch WBlock block(EObject b) { b.eContainer.block }
+	
+	def static first(WBlock it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
@@ -240,7 +241,7 @@ class WollokModelExtensions {
 	// containers
 	def static dispatch isTransparent(EObject o) { false }
 	def static dispatch isTransparent(WTry o) { true }
-	def static dispatch isTransparent(WBlockExpression o) { true }
+	def static dispatch isTransparent(WBlock o) { true }
 	def static dispatch isTransparent(WIfExpression o) { true }
 	// literals or leafs
 	def static dispatch isTransparent(WSelf o) { true }
@@ -281,7 +282,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 
 	def static dispatch boolean isDuplicated(WMethodDeclaration it, WReferenciable v) { parameters.existsMoreThanOne(v) || declaringContext.isDuplicated(v) }
-	def static dispatch boolean isDuplicated(WBlockExpression it, WReferenciable v) { expressions.existsMoreThanOne(v) || eContainer.isDuplicated(v) }
+	def static dispatch boolean isDuplicated(WBlock it, WReferenciable v) { expressions.existsMoreThanOne(v) || eContainer.isDuplicated(v) }
 	def static dispatch boolean isDuplicated(WClosure it, WReferenciable r) { parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r) }
 	def static dispatch boolean isDuplicated(WConstructor it, WReferenciable r) { parameters.existsMoreThanOne(r) || eContainer.isDuplicated(r) }
 	// default case is to delegate up to container
@@ -307,7 +308,7 @@ class WollokModelExtensions {
 	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it) { expressionReturns || expression.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it) { true }
 	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
-	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }
+	def static dispatch boolean returnsOnAllPossibleFlows(WBlock it) { expressions.last.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
 	def static dispatch boolean returnsOnAllPossibleFlows(WTry it) { expression.returnsOnAllPossibleFlows && catchBlocks.forall[c | c.returnsOnAllPossibleFlows ] }
 	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }

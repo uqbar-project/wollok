@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.validation.AbstractWollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
@@ -242,7 +242,7 @@ from {
 }
 
 rule WBlockExpressionType
-	G |- WBlockExpression exps : WollokType t
+	G |- WBlock exps : WollokType t
 from {
 	t = if (exps.expressions.isEmpty)
 		WVoid
@@ -320,7 +320,7 @@ from {
 }
 
 rule RefineBlockType
-	G |- WBlockExpression b << WollokType newType
+	G |- WBlock b << WollokType newType
 from {
 	if (!b.expressions.isEmpty) {
 		G |- b.expressions.last << newType

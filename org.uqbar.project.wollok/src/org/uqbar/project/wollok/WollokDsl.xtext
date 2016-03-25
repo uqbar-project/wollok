@@ -67,7 +67,7 @@ WMethodDeclaration:
 		name=WMethodName '(' (parameters+=WParameter (',' parameters+=WParameter)* )?')' 
 		(native?='native')? 
 		
-		((expression=WBlockExpression) | (expressionReturns?='=' expression=WOrExpression))?
+		((expression=WBlock) | (expressionReturns?='=' expression=WOrExpression))?
 ;
 
 WMethodName:
@@ -240,8 +240,8 @@ WParenthesizedExpression returns WExpression:
 	'(' WExpression ')';
 
 
-WBlockExpression returns WExpression: 
-	{WBlockExpression}
+WBlock returns WExpression: 
+	{WBlock}
 	'{'
 		(expressions+=WExpressionOrVarDeclaration ';'?)*
 	'}';
@@ -254,7 +254,7 @@ WVariableReference:
 ;
 
 WBlockOrExpression returns WExpression:
-	(=> WBlockExpression) | WExpression;
+	(=> WBlock) | WExpression;
 
 WIfExpression:
 	'if' '(' condition=WExpression ')' 
@@ -274,7 +274,8 @@ WLiteral returns WExpression:
 	WStringLiteral |
 	WObjectLiteral |
 	WSelf |
-	WCollectionLiteral
+	WCollectionLiteral |
+	WDictionaryLiteral
 ;
 
 WBooleanLiteral returns WExpression :
@@ -299,7 +300,7 @@ WClosure returns WExpression:
 	'}';
 
 WBlockInClosure returns WExpression: 
-	{WBlockExpression}
+	{WBlock}
 	(expressions+=WExpressionOrVarDeclaration ';'?)*;
 
 // COLLECTIONS
@@ -313,6 +314,12 @@ WListLiteral:
 WSetLiteral:
 	{WSetLiteral} '#{' (elements+=WExpression (',' elements+=WExpression )*)? '}';
 	
+WDictionaryLiteral:
+	{WDictionaryLiteral} '{' ':' '}' | '{' elements+=WKeyValue (',' elements+=WKeyValue)* '}';
+
+WKeyValue:
+	key=ID ':' value=WExpression;
+
 WNamedObject:
 	'object' name=ID 
 		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
@@ -356,7 +363,7 @@ WMember:
 WConstructor:
 	{WConstructor} 'constructor' '(' (parameters+=WParameter (',' parameters+=WParameter)*)? ')'
 		('=' delegatingConstructorCall=WDelegatingConstructorCall)?
-		(expression=WBlockExpression)?
+		(expression=WBlock)?
 ;
 
 WDelegatingConstructorCall:

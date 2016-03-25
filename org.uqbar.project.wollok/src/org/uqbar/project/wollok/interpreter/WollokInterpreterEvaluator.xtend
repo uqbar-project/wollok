@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -60,6 +60,8 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
+import org.uqbar.project.wollok.wollokDsl.WKeyValue
 
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
 
@@ -300,17 +302,27 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch evaluate(WListLiteral it) { createCollection(LIST, elements) }
 	def dispatch evaluate(WSetLiteral it) { createCollection(SET, elements) }
+	def dispatch evaluate(WDictionaryLiteral it) { createDictionary(elements) }
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
-			elements.forEach[e|
+			elements.forEach [ e |
 				call("add", e.eval)
 			]
 		]
 	}
 
+	def createDictionary(EList<WKeyValue> elements) {
+		newInstance(DICTIONARY) => [
+			elements.forEach [ e |
+				// REVIEW: dictionaries only support strings as keys ?
+				call("put", newInstanceWithWrapped(STRING, e.key), e.value.eval)
+			]
+		]
+	}
+
 	// other expressions
-	def dispatch evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch evaluate(WBlock b) { b.expressions.evalAll }
 
 	def dispatch evaluate(WAssignment a) {
 		val newValue = a.value.eval
@@ -370,7 +382,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ** HELPER FOR message sends
 	// ********************************************************************************************
 
-	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
+	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen " + call) }
 	def dispatch evaluateTarget(WMemberFeatureCall call) { call.memberCallTarget.eval }
 	def dispatch evaluateTarget(WSuperInvocation call) { new CallableSuper(interpreter, call.declaringContext) }
 

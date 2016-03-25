@@ -30,6 +30,7 @@ class WollokClassFinder {
 	def WClass getObjectClass(EObject context) { context.getCachedClass(OBJECT) }
 	def WClass getListClass(EObject context) { context.getCachedClass(LIST) }
 	def WClass getSetClass(EObject context) { context.getCachedClass(SET) }
+	def WClass getDictionaryClass(EObject context) { context.getCachedClass(DICTIONARY) }
 	def WClass getStringClass(EObject context) { context.getCachedClass(STRING) }
 	def WClass getIntegerClass(EObject context) { context.getCachedClass(INTEGER) }
 	def WClass getDoubleClass(EObject context) { context.getCachedClass(DOUBLE) }

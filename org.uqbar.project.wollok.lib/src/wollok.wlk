@@ -120,7 +120,9 @@ package lang {
 		method ->(other) {
 			return new Pair(self, other)
 		}
-
+		
+		method randomBetween(start, end) native
+		
 		method toString() {
 			// TODO: should be a set
 			// return self.toSmartString(#{})
@@ -192,7 +194,7 @@ package lang {
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
+		  *       ["ab", "abc", "hello", "wollok world"].max { e => e.length() }    ->  returns "wollok world"		 
 		  */
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
@@ -235,9 +237,10 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.all { plant -> plant.hasFlowers() }
+		 *      plants.all { plant => plant.hasFlowers() }
 		 */
 		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Tells whether at least one element of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
@@ -246,6 +249,7 @@ package lang {
 		 *      plants.any { plant => plant.hasFlowers() }
 		 */
 		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Returns the element of self collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
@@ -280,6 +284,7 @@ package lang {
 		 */
 		method findOrElse(predicate, continuation) native
 
+
 		/**
 		 * Counts all elements of self collection that satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a number.
@@ -287,14 +292,14 @@ package lang {
 		 * Example:
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
-		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc })
 		/**
 		 * Collects the sum of each value for all e
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns an integer
 		 * Example:
-		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
+		 *      const totalNumberOfFlowers = plants.sum { plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
 		
@@ -326,7 +331,7 @@ package lang {
 		method flatten() = self.flatMap { e => e }
 		
 		override method internalToSmartString(alreadyShown) {
-			return self.toStringPrefix() + self.map{e=> e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
+			return self.toStringPrefix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
 		}
 		
 		method toStringPrefix()
@@ -453,6 +458,50 @@ package lang {
 		method ==(other) native
 	}
 	
+	/**
+	 *
+	 * @author flbulgarelli
+	 * @since 1.4
+	 */
+	class Dictionary {
+		method values() native
+		method keys() native
+		
+		method map(closure) native
+		method filter(closure) native
+		
+		method anyOne() = self.values().anyOne()
+		
+		method any(closure) = self.values().any(closure)
+		method all(closure) = self.values().all(closure)
+		method find(closure) = self.values().find(closure)
+		method sum(closure) = self.values().sum(closure)
+		method max(closure) = self.values().max(closure)
+		method min(closure) = self.values().min(closure)
+		method count(closure) = self.values().count(closure)
+		method contains(value) = self.values().contains(value)
+		method fold(initialValue, closure) = self.values().fold(initialValue, closure)
+		method join(separator) = self.values().join(separator)
+		method join() = self.values().join()
+		
+		method isEmpty() = self.keys().isEmpty()
+		method size() = self.keys().size()
+		method containsKey(key) = self.keys().contains(key)
+		
+		override method internalToSmartString(alreadyShown) {
+			return "{" + self.keys().map{ k => k.toString() + ':' + self.get(k).toString() }.join(', ') + '}'
+		}
+			
+		method put(key, value) native
+		method removeKey(key) native
+		method get(key) native
+
+		method clear() native
+
+		method equals(other) native
+		method ==(other) native
+	}
+
 	/**
 	 *
 	 * @author jfernandes
@@ -596,7 +645,7 @@ package lang {
 		
 		method map(closure) {
 			const l = []
-			self.forEach{e=> l.add(closure.apply(e)) }
+			self.forEach { e => l.add(closure.apply(e)) }
 			return l
 		}
 		

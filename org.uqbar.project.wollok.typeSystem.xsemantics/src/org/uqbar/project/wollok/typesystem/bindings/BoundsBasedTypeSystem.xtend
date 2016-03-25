@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -112,7 +112,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		c.methods.forEach[bind]
 	}
 
-	def dispatch void bind(WBlockExpression e) {
+	def dispatch void bind(WBlock e) {
 		e.inferredNode
 		e.expressions.forEach[bind]
 		e <=> e.expressions.last

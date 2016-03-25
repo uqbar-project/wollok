@@ -36,7 +36,7 @@ import org.eclipse.xtext.xbase.compiler.ISourceAppender
 import org.eclipse.xtext.xbase.compiler.StringBuilderBasedAppendable
 import org.eclipse.xtext.xbase.ui.document.DocumentRewriter
 import org.eclipse.xtext.xbase.ui.imports.ReplaceConverter
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -202,9 +202,9 @@ class ExtractMethodRefactoring extends Refactoring {
 	
 	def isEndOfOriginalMethod() {
 		val eContainer = lastExpression.eContainer
-		if (eContainer instanceof WBlockExpression) {
+		if (eContainer instanceof WBlock) {
 			if (eContainer.eContainer == originalMethod) {
-				val siblings = (eContainer as WBlockExpression).expressions
+				val siblings = (eContainer as WBlock).expressions
 				return siblings.indexOf(lastExpression) == siblings.size -1
 			}
 		}
@@ -284,7 +284,7 @@ class ExtractMethodRefactoring extends Refactoring {
 	def isNeedsReturnExpression() {
 		returnExpression != null 
 			// TODO: this seems an oversimplification
-			&& !(lastExpression.eContainer instanceof WBlockExpression)  
+			&& !(lastExpression.eContainer instanceof WBlock)  
 	}
 	
 	def isFinalFeature(JvmIdentifiableElement returnFeature) {

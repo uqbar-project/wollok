@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.model
 
 import java.util.List
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 
 /**
  * Extension methods for WBlocks
@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
  */
 class WBlockExtensions {
 	
-	def static getExpressionsAfter(WBlockExpression it, WExpression one) {
+	def static getExpressionsAfter(WBlock it, WExpression one) {
 		expressions.allAfter(one) 
 	}
 	

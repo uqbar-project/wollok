@@ -40,7 +40,7 @@ import org.uqbar.project.wollok.typesystem.VoidType;
 import org.uqbar.project.wollok.typesystem.WollokType;
 import org.uqbar.project.wollok.wollokDsl.WAssignment;
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation;
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression;
+import org.uqbar.project.wollok.wollokDsl.WBlock;
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral;
 import org.uqbar.project.wollok.wollokDsl.WClass;
 import org.uqbar.project.wollok.wollokDsl.WClosure;
@@ -1127,7 +1127,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     return new Result<WollokType>(t);
   }
   
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlockExpression exps) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlock exps) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
     	final Result<WollokType> _result_ = applyRuleWBlockExpressionType(G, _subtrace_, exps);
@@ -1146,7 +1146,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     }
   }
   
-  protected Result<WollokType> applyRuleWBlockExpressionType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlockExpression exps) throws RuleFailedException {
+  protected Result<WollokType> applyRuleWBlockExpressionType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlock exps) throws RuleFailedException {
     WollokType t = null; // output parameter
     WollokType _xifexpression = null;
     EList<WExpression> _expressions = exps.getExpressions();
@@ -1332,7 +1332,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     return new Result<Boolean>(true);
   }
   
-  protected Result<Boolean> refineTypeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlockExpression b, final WollokType newType) throws RuleFailedException {
+  protected Result<Boolean> refineTypeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlock b, final WollokType newType) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
     	final Result<Boolean> _result_ = applyRuleRefineBlockType(G, _subtrace_, b, newType);
@@ -1351,7 +1351,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     }
   }
   
-  protected Result<Boolean> applyRuleRefineBlockType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlockExpression b, final WollokType newType) throws RuleFailedException {
+  protected Result<Boolean> applyRuleRefineBlockType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBlock b, final WollokType newType) throws RuleFailedException {
     EList<WExpression> _expressions = b.getExpressions();
     boolean _isEmpty = _expressions.isEmpty();
     boolean _not = (!_isEmpty);

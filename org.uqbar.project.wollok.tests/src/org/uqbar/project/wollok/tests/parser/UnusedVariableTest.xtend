@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.tests.parser
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -45,10 +45,10 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 		val agregarVagon = tren.members.get(1) as WMethodDeclaration
 		val getCantidadPasajeros = tren.members.get(2) as WMethodDeclaration
 		val v_param = agregarVagon.parameters.get(0) as WParameter
-		val msgSend = (getCantidadPasajeros.expression as WBlockExpression).expressions.get(0) as WMemberFeatureCall
+		val msgSend = (getCantidadPasajeros.expression as WBlock).expressions.get(0) as WMemberFeatureCall
 		val block = msgSend.memberCallArguments.get(1) as WClosure
 		val v_closureParam = block.parameters.get(0)
-		val v_usedInClosure = ((block.expression as WBlockExpression).expressions.get(0) as WMemberFeatureCall).
+		val v_usedInClosure = ((block.expression as WBlock).expressions.get(0) as WMemberFeatureCall).
 			memberCallTarget as WVariableReference
 
 		assertNotEquals(v_param, v_closureParam)
@@ -95,7 +95,7 @@ class ScopeTest extends AbstractWollokInterpreterTestCase {
 		
 		val ref_peso = [ WObjectLiteral unaVaca |
 			((((unaVaca.members.get(2) as WMethodDeclaration)
-				.expression as WBlockExpression)
+				.expression as WBlock)
 				.expressions.get(0) as WReturnExpression)
 				.expression as WVariableReference)
 				.ref

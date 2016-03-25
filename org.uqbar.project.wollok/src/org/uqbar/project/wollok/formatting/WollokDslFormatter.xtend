@@ -5,6 +5,7 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
@@ -25,7 +26,6 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 
 /**
@@ -137,7 +137,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setNoSpace.before(rightParenthesisKeyword_4)
 	}
 	
-	def dispatch formatting(FormattingConfig it, extension WBlockExpressionElements b) {
+	def dispatch formatting(FormattingConfig it, extension WBlockElements b) {
 		setLinewrap(0, 1, 1).after(leftCurlyBracketKeyword_1)
 		setLinewrap(0, 1, 1).before(rightCurlyBracketKeyword_3)
 		
@@ -269,7 +269,6 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setNoSpace.before(commaKeyword_2_1_0)
 		setSpace(' ').after(commaKeyword_2_1_0)
 	}
-	
 	
 	def dispatch formatting(FormattingConfig it, extension WIfExpressionElements i) {
 		setNoSpace.after(leftParenthesisKeyword_1)

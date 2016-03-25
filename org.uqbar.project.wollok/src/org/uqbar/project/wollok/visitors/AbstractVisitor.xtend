@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.visitors
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBlock
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WDictionaryLiteral
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -116,8 +117,10 @@ class AbstractVisitor {
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
 	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
 	def dispatch void visit(WCollectionLiteral it) { elements.visitAll }
+	def dispatch void visit(WDictionaryLiteral it) { elements.visitAll }
 
-	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
+
+	def dispatch void visit(WBlock it) { expressions.visitAll	}
 	def dispatch void visit(WPostfixOperation it) { operand.doVisit }
 	def dispatch void visit(WReturnExpression it) { expression.doVisit }
 
