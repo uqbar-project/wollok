@@ -18,6 +18,7 @@ import org.eclipse.ui.console.TextConsolePage
  */
 class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	static val KEY_RETURN = 0x0d
+	static val PROMPT = "[36m>>> [m"
 	val WollokReplConsole console
 	var int historyPosition = -1
 	
@@ -71,14 +72,26 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			viewer.textWidget.selection = viewer.textWidget.charCount
 			return
 		}
-
+		if (e.keyCode == SWT.HOME){
+			var strLine = viewer.textWidget.getLine(viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount))
+			viewer.textWidget.selection = viewer.textWidget.charCount - (strLine.length - PROMPT.length)
+			return
+		}
+		
+		if (e.keyCode == SWT.END){
+			viewer.textWidget.selection = viewer.textWidget.charCount
+			return
+		}
+		
 		// return key pressed 
 		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
 			console.sendInputBuffer
 			historyPosition = -1
+			return
 		}
 		else
 			console.updateInputBuffer
+		return
 	}
 	
 	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
