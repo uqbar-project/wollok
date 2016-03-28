@@ -33,6 +33,5 @@ Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.debugger.server.rmi,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.launch.io,
- org.uqbar.project.wollok.launch.repl,
  org.uqbar.project.wollok.launch.setup,
  org.uqbar.project.wollok.launch.tests

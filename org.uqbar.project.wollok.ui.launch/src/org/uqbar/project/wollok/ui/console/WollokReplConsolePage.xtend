@@ -6,7 +6,8 @@ import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
-import org.uqbar.project.wollok.launch.repl.WollokRepl
+import org.eclipse.swt.events.MouseAdapter
+import org.eclipse.swt.events.MouseEvent
 
 /**
  * Extends eclipse's console page for integrating
@@ -33,6 +34,13 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		viewer.textWidget.addVerifyListener [ event |
 			event.doit = console.isRunning && !console.canWriteAt(event.start)
 		]
+		viewer.textWidget.addMouseListener(
+		new MouseAdapter() {
+			override def mouseDown(MouseEvent e) {
+			if (isCursorInTheLasLine && isCursorInReadOnlyZone)
+				setCursorToEnd
+			}
+		})
 		viewer.textWidget.setFocus
 	}
 
@@ -74,7 +82,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			return
 		}
 		if (e.keyCode == SWT.HOME) {
-			viewer.textWidget.selection = getFirstCharOfLastLinePosition()
+			viewer.textWidget.selection = getHomePosition()
 			return
 		}
 
@@ -82,7 +90,6 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			setCursorToEnd
 			return
 		}
-
 		// return key pressed 
 		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
 			console.sendInputBuffer
@@ -96,13 +103,11 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		viewer.textWidget.getLineAtOffset(viewer.textWidget.getCaretOffset()) ==
 			viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount)
 	}
-
+	
+	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
 	def setCursorToEnd() { viewer.textWidget.selection = viewer.textWidget.charCount }
 
-	def getFirstCharOfLastLinePosition() {
-		var strLine = viewer.textWidget.getLine(viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount))
-		viewer.textWidget.charCount - (strLine.length - WollokRepl.getPrompt().length)
-	}
+	def getHomePosition() {	console.outputTextEnd }
 
 	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
 
