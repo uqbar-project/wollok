@@ -189,12 +189,15 @@ class WollokRepl {
 			handleException(e.cause)
 		}
 	}
-	
+	def static getPrompt(){
+		prompt.messageStyle.toString
+	}
 	// ********** STYLING
 	
 	// applies styles for errors
-	def errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset }
-	def importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset }
-	def messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset }
-	def returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset }
+	def static errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset }
+	def static importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset }
+	def static messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset }
+	def static returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset }
+	
 }

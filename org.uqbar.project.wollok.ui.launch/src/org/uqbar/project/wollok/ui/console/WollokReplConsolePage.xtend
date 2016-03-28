@@ -6,6 +6,7 @@ import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
+import org.uqbar.project.wollok.launch.repl.WollokRepl
 
 /**
  * Extends eclipse's console page for integrating
@@ -18,29 +19,29 @@ import org.eclipse.ui.console.TextConsolePage
  */
 class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	static val KEY_RETURN = 0x0d
-	static val PROMPT = "[36m>>> [m"
 	val WollokReplConsole console
 	var int historyPosition = -1
-	
+
 	new(WollokReplConsole console, IConsoleView view) {
 		super(console, view)
 		this.console = console
 	}
-	
+
 	override createControl(Composite oldParent) {
 		super.createControl(oldParent)
 		viewer.textWidget.addKeyListener(this)
 		viewer.textWidget.addVerifyListener [ event |
 			event.doit = console.isRunning && !console.canWriteAt(event.start)
 		]
+		viewer.textWidget.setFocus
 	}
 
 	def increaseHistoryPosition() {
 		historyPosition++
-		
+
 		if (historyPosition >= console.numberOfHistories)
 			historyPosition = 0
-		
+
 		if (historyPosition <= 0 && console.numberOfHistories == 0) {
 			historyPosition = -1
 		}
@@ -48,7 +49,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 
 	def decreaseHistoryPosition() {
 		historyPosition--
-		
+
 		if (historyPosition < 0)
 			historyPosition = console.numberOfHistories - 1
 	}
@@ -58,42 +59,51 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			e.doit = false
 			return;
 		}
-		
+
 		if (e.keyCode == SWT.ARROW_UP) {
 			increaseHistoryPosition
 			console.loadHistory(historyPosition)
-			viewer.textWidget.selection = viewer.textWidget.charCount
+			setCursorToEnd
 			return
 		}
-	
+
 		if (e.keyCode == SWT.ARROW_DOWN) {
 			decreaseHistoryPosition
 			console.loadHistory(historyPosition)
-			viewer.textWidget.selection = viewer.textWidget.charCount
+			setCursorToEnd
 			return
 		}
-		if (e.keyCode == SWT.HOME){
-			var strLine = viewer.textWidget.getLine(viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount))
-			viewer.textWidget.selection = viewer.textWidget.charCount - (strLine.length - PROMPT.length)
+		if (e.keyCode == SWT.HOME) {
+			viewer.textWidget.selection = getFirstCharOfLastLinePosition()
 			return
 		}
-		
-		if (e.keyCode == SWT.END){
-			viewer.textWidget.selection = viewer.textWidget.charCount
+
+		if (e.keyCode == SWT.END) {
+			setCursorToEnd
 			return
 		}
-		
+
 		// return key pressed 
 		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
 			console.sendInputBuffer
 			historyPosition = -1
-			return
-		}
-		else
+		} else
 			console.updateInputBuffer
 		return
 	}
-	
+
+	def isCursorInTheLasLine() {
+		viewer.textWidget.getLineAtOffset(viewer.textWidget.getCaretOffset()) ==
+			viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount)
+	}
+
+	def setCursorToEnd() { viewer.textWidget.selection = viewer.textWidget.charCount }
+
+	def getFirstCharOfLastLinePosition() {
+		var strLine = viewer.textWidget.getLine(viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount))
+		viewer.textWidget.charCount - (strLine.length - WollokRepl.getPrompt().length)
+	}
+
 	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
 
 	override keyReleased(KeyEvent e) {}
