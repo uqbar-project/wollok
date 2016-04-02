@@ -13,6 +13,7 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocument
+import org.eclipse.jface.text.ITypedRegion
 import org.eclipse.ui.console.IConsoleDocumentPartitioner
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
@@ -26,6 +27,7 @@ import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 
 /**
  * @author tesonep
@@ -38,12 +40,14 @@ class WollokReplConsole extends TextConsole {
 	@Accessors
 	int outputTextEnd = 0
 	@Accessors
+	int inputBufferStartOffset = 0
+	@Accessors
 	String inputBuffer = ""
 	@Accessors
 	WollokReplConsolePartitioner partitioner
 	@Accessors
 	List<String> sessionCommands = newArrayList
-
+	@Accessors
 	val lastCommands = new OrderedBoundedSet<String>(10)
 
 	def static getConsoleName() { "Wollok REPL Console" }
@@ -61,7 +65,7 @@ class WollokReplConsole extends TextConsole {
 		activate
 		outputTextEnd = 0
 		
-		runInUI[
+		runInUI [
 			clearConsole
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
@@ -71,6 +75,7 @@ class WollokReplConsole extends TextConsole {
 			runInUI("WollokReplConsole-UpdateText") [
 				page.viewer.textWidget.append(text)
 				outputTextEnd = page.viewer.textWidget.charCount
+				inputBufferStartOffset = page.viewer.textWidget.text.length
 				page.viewer.textWidget.selection = outputTextEnd
 				updateInputBuffer
 				activate
@@ -97,7 +102,6 @@ class WollokReplConsole extends TextConsole {
 	def exportSession() {
 		val fileName = WollokLaunchShortcut.getWollokFile(process.launch)
 		val project = WollokLaunchShortcut.getWollokProject(process.launch)
-		println("Exporting from project " + project + " and file " + fileName)
 		val file = (ResourcesPlugin.getWorkspace.root.findMember(project) as IContainer).findMember(fileName)
 		val newFile = file.parent.getFile(new Path(file.nameWithoutExtension + ".wtest"))
 
@@ -183,40 +187,6 @@ class WollokReplConsole extends TextConsole {
 		]
 	}
 	
-	def canWriteAt(int offset) { partitioner.isReadOnly(offset) }
+	def canWriteAt(int offset) { !partitioner.isReadOnly(offset) }
 	
-}
-
-class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
-	val WollokReplConsole console
-	
-	new(WollokReplConsole console) {
-		this.console = console
-	}
-	
-	override getStyleRanges(int offset, int length) { null }
-	
-	override isReadOnly(int offset) { offset < console.outputTextEnd }
-	
-	override computePartitioning(int offset, int length) { }
-	
-	override connect(IDocument document) { }
-	
-	override disconnect() { }
-	
-	override documentAboutToBeChanged(DocumentEvent event) { }
-	
-	override documentChanged(DocumentEvent event) { true }
-	
-	override getContentType(int offset) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	override getLegalContentTypes() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	override getPartition(int offset) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
 }
