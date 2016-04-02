@@ -9,6 +9,7 @@ import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.swt.events.MouseAdapter
 import org.eclipse.swt.events.MouseEvent
 import org.eclipse.swt.custom.StyledText
+import org.eclipse.swt.events.VerifyEvent
 
 /**
  * Extends eclipse's console page for integrating
@@ -35,6 +36,9 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		viewer.textWidget.addVerifyKeyListener [ event |
 			if (event.keyCode == SWT.ARROW_LEFT) {
 				event.doit = (event.widget as StyledText).caretOffset > console.inputBufferStartOffset
+			}
+			else if (event.keyCode == KEY_RETURN && !isAtTheEnd(event)) {
+				setCursorToEnd
 			}
 		]
 		viewer.textWidget.addVerifyListener [ event |
@@ -110,6 +114,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	
 	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
 	def setCursorToEnd() { viewer.textWidget.selection = viewer.textWidget.charCount }
+	def isAtTheEnd(VerifyEvent event) { event.start < viewer.textWidget.text.length }
 
 	def getHomePosition() {	console.outputTextEnd }
 
