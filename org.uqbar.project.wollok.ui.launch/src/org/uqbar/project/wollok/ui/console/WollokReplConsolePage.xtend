@@ -8,6 +8,7 @@ import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.swt.events.MouseAdapter
 import org.eclipse.swt.events.MouseEvent
+import org.eclipse.swt.custom.StyledText
 
 /**
  * Extends eclipse's console page for integrating
@@ -31,14 +32,17 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	override createControl(Composite oldParent) {
 		super.createControl(oldParent)
 		viewer.textWidget.addKeyListener(this)
-		viewer.textWidget.addVerifyListener [ event |
-			event.doit = console.isRunning && !console.canWriteAt(event.start)
+		viewer.textWidget.addVerifyKeyListener [ event |
+			if (event.keyCode == SWT.ARROW_LEFT) {
+				event.doit = (event.widget as StyledText).caretOffset > console.inputBufferStartOffset
+			}
 		]
-		viewer.textWidget.addMouseListener(
-		new MouseAdapter() {
+		viewer.textWidget.addVerifyListener [ event |
+			event.doit = console.isRunning && console.canWriteAt(event.start)
+		]
+		viewer.textWidget.addMouseListener(new MouseAdapter() {
 			override def mouseDown(MouseEvent e) {
-			if (isCursorInTheLasLine && isCursorInReadOnlyZone)
-				setCursorToEnd
+				if (isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
 			}
 		})
 		viewer.textWidget.setFocus
