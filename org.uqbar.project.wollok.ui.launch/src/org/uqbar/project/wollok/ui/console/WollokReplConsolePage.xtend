@@ -32,24 +32,26 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 
 	override createControl(Composite oldParent) {
 		super.createControl(oldParent)
-		viewer.textWidget.addKeyListener(this)
-		viewer.textWidget.addVerifyKeyListener [ event |
-			if (event.keyCode == SWT.ARROW_LEFT) {
-				event.doit = (event.widget as StyledText).caretOffset > console.inputBufferStartOffset
-			}
-			else if (event.keyCode == KEY_RETURN && !isAtTheEnd(event)) {
-				setCursorToEnd
-			}
+		viewer.textWidget => [
+			addKeyListener(this)
+			addVerifyKeyListener [ event |
+				if (event.keyCode == SWT.ARROW_LEFT) {
+					event.doit = (event.widget as StyledText).caretOffset > console.inputBufferStartOffset
+				}
+				else if (event.keyCode == KEY_RETURN && !isAtTheEnd(event)) {
+					setCursorToEnd
+				}
+			]
+			addVerifyListener [ event |
+				event.doit = console.isRunning && console.canWriteAt(event.start)
+			]
+			addMouseListener(new MouseAdapter() {
+				override def mouseDown(MouseEvent e) {
+					if (isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
+				}
+			})
+			setFocus			
 		]
-		viewer.textWidget.addVerifyListener [ event |
-			event.doit = console.isRunning && console.canWriteAt(event.start)
-		]
-		viewer.textWidget.addMouseListener(new MouseAdapter() {
-			override def mouseDown(MouseEvent e) {
-				if (isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
-			}
-		})
-		viewer.textWidget.setFocus
 	}
 
 	def increaseHistoryPosition() {
@@ -107,14 +109,18 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		return
 	}
 
-	def isCursorInTheLasLine() {
-		viewer.textWidget.getLineAtOffset(viewer.textWidget.getCaretOffset()) ==
-			viewer.textWidget.getLineAtOffset(viewer.textWidget.charCount)
-	}
+
+	// We could move this as extension methods to Jface
+	
+	def caretOffset() { viewer.textWidget.caretOffset }
+	def isCursorInTheLasLine() { caretLine == lastLine }
+	def caretLine() { viewer.textWidget.getLineAtOffset(caretOffset) }
+	def lastLine() { viewer.textWidget.getLineAtOffset(charCount) }
+	def charCount() { viewer.textWidget.charCount }
 	
 	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
-	def setCursorToEnd() { viewer.textWidget.selection = viewer.textWidget.charCount }
-	def isAtTheEnd(VerifyEvent event) { event.start < viewer.textWidget.text.length }
+	def setCursorToEnd() { viewer.textWidget.selection = charCount }
+	def isAtTheEnd(VerifyEvent event) { (event.widget as StyledText).caretOffset  == charCount }
 
 	def getHomePosition() {	console.outputTextEnd }
 
