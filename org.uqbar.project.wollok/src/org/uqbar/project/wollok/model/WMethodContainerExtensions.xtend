@@ -331,7 +331,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
-	def static dispatch boolean isWritableVarRef(WReferenciable it) { false }
+	def static dispatch boolean isWritableVarRef(EObject it) { false }
 	
 
 }
