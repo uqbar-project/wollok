@@ -35,7 +35,7 @@ class WollokJavaConversions {
 		if (o.isNativeType(INTEGER) && (t == Integer || t == Integer.TYPE))
 			return ((o as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
 		if (o.isNativeType(DOUBLE) && (t == Integer || t == Integer.TYPE))
-			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<Double>).wrapped
+			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<BigDecimal>).wrapped
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
