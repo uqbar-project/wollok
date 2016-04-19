@@ -615,6 +615,9 @@ Library.
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.pde"/>
       <feature id="org.eclipse.equinox.executable"/>
+      <feature id="org.tigris.subversion.subclipse" version="1.10.13"/>
+      <feature id="org.tigris.subversion.clientadapter.svnkit.feature" version="1.8.9"/>
+      <feature id="org.eclipse.babel.nls_eclipse_es"/>
    </features>
 
    <configurations>
