@@ -62,6 +62,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
+import java.math.BigDecimal
 
 /**
  * It's the real "interpreter".
@@ -214,7 +215,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def instantiateNumber(String value) {
 		if (value.contains('.'))
-			doInstantiateNumber(DOUBLE, Double.valueOf(value))
+			doInstantiateNumber(DOUBLE, new BigDecimal(value))
 		else {
 			doInstantiateNumber(INTEGER, Integer.valueOf(value))
 		}
