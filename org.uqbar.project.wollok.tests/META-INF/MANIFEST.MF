@@ -30,7 +30,7 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.uqbar.project.wollok.ui.launch,
  org.eclipse.xtext.xbase.lib,
  org.uqbar.project.wollok.typeSystem,
- org.uqbar.project.xinterpreter,
+ org.uqbar.project.xinterpreter
 Import-Package: org.apache.log4j,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
