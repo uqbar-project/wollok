@@ -30,6 +30,23 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 	}
 	
 	@Test
+	def void testCrossReferenceInitialization() {
+		'''
+			object abc {
+				var x = 20
+				var y = x * 2
+				
+				method getY() {
+					return y
+				}
+			}
+			program p {
+				assert.equals(40, abc.getY())
+			}			
+		'''.interpretPropagatingErrors
+	}
+		
+	@Test
 	def void assignmentToWKODeclared() {
 		'''
 			object before { method get() = "before" }
