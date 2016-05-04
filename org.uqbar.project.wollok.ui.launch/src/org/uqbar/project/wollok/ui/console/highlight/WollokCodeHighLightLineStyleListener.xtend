@@ -125,10 +125,12 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		]
 	}
 	
-	def checkerError(LineStyleEvent event, int offset, int length) { errorStyle(event, offset, length, "CHECK_ERROR") } 
-	def parserError(LineStyleEvent event, int offset, int length) { errorStyle(event, offset, length, "PARSER_ERROR") }
-	def errorStyle(LineStyleEvent event, int offset, int length, String type) {
-		new StyleRange(event.lineOffset + (offset - programHeader.length), length, PARSER_ERROR_COLOR, null, SWT.ITALIC) => [
+	def checkerError(LineStyleEvent event, Integer offset, Integer length) { errorStyle(event, offset, length, "CHECK_ERROR") } 
+	def parserError(LineStyleEvent event, Integer offset, Integer length) { errorStyle(event, offset, length, "PARSER_ERROR") }
+	def errorStyle(LineStyleEvent event, Integer offset, Integer length, String type) {
+		val theOffset = if (offset != null) offset else programHeader.length
+		val theLength = if (length != null) length else event.lineText.length
+		new StyleRange(event.lineOffset + (theOffset - programHeader.length), theLength, PARSER_ERROR_COLOR, null, SWT.ITALIC) => [
 			data = type
 		]
 	}

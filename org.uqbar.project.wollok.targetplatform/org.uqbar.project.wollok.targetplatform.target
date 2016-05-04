@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="32">
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="33">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
@@ -49,6 +49,12 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.5.0.v20151128060001"/>
 <repository location="http://download.eclipse.org/technology/babel/update-site/R0.13.1/mars"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.tmatesoft.svnkit.feature.group" version="1.8.12.r10533_v20160129_0158"/>
+<unit id="org.tigris.subversion.clientadapter.svnkit.feature.feature.group" version="1.8.9"/>
+<unit id="org.tigris.subversion.subclipse.feature.group" version="1.10.13"/>
+<repository location="http://subclipse.tigris.org/update_1.10.x"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>

@@ -35,6 +35,7 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import java.util.Collections
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 
 /**
  * Extension methods for WMethodContainers.
@@ -330,6 +331,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariableReference it) { ref.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
-	def static dispatch boolean isWritableVarRef(WExpression it) { false }
+	def static dispatch boolean isWritableVarRef(EObject it) { false }
+	
 
 }
