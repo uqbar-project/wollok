@@ -5,7 +5,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 
 /**
  * 
- * @author jfernandes
+ * @author jfernandes, tesonep
  */
 class MethodTest extends AbstractWollokInterpreterTestCase {
 	
@@ -73,5 +73,21 @@ class MethodTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
-	
+
+	@Test
+	def void initOfVariables(){
+		'''
+			class Subject{
+				var x = 4
+				var y = x * 2
+				
+				method getY() = y
+			}
+			
+			test "Init of variables" {
+				var obj = new Subject()
+				assert.equals(8, obj.getY())
+			}
+		'''.interpretPropagatingErrors
+	}	
 }

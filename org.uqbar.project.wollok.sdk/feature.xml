@@ -247,7 +247,7 @@ Library.
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.2.0" match="compatible"/>
       <import plugin="com.google.guava" version="15.0.0" match="greaterOrEqual"/>
-      <import plugin="org.uqbar.project.wollok" version="1.4.1" match="greaterOrEqual"/>
+      <import plugin="org.uqbar.project.wollok" version="1.4.3" match="greaterOrEqual"/>
       <import plugin="org.uqbar.project.wollok.ui" version="1.4.1" match="greaterOrEqual"/>
       <import plugin="org.uqbar.project.wollok.ui.launch" version="1.4.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.gef" version="3.5.0" match="compatible"/>
