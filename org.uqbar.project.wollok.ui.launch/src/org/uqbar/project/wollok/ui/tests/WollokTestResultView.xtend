@@ -5,6 +5,9 @@ import java.util.Observer
 import javax.inject.Inject
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
+import org.eclipse.jface.resource.JFaceResources
+import org.eclipse.jface.resource.LocalResourceManager
+import org.eclipse.jface.resource.ResourceManager
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.ITreeSelection
 import org.eclipse.jface.viewers.LabelProvider
@@ -45,6 +48,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	Color noResultColor
 	Color successColor
 	Color failedColor
+	var ResourceManager resManager
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
 	public val static BAR_COLOR_FAILED = new RGB(237, 17, 18)
@@ -55,6 +59,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	var GlobalURIEditorOpener opener
 
 	override createPartControl(Composite parent) {
+		resManager = new LocalResourceManager(JFaceResources.getResources(), parent);	
 		new GridLayout() => [
 			marginWidth = 0
 			marginHeight = 0
@@ -72,9 +77,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def createBar(Composite parent) {
 		bar = new Label(parent, SWT.BORDER)
 		// creates and cache colors
-		noResultColor = new Color(parent.display, BAR_COLOR_NO_RESULT)
-		successColor = new Color(parent.display, BAR_COLOR_SUCCESS)
-		failedColor = new Color(parent.display, BAR_COLOR_FAILED)
+		noResultColor =  resManager.createColor(BAR_COLOR_NO_RESULT);
+		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
+		failedColor = resManager.createColor(BAR_COLOR_FAILED)
 				
 		bar.background = noResultColor 
 		new GridData => [
@@ -177,6 +182,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	override dispose() {
 		super.dispose
+		resManager.dispose
 		results.deleteObserver(this)
 	}
 
@@ -227,12 +233,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 class WTestTreeLabelProvider extends LabelProvider {
 
+	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
+	
 	def dispatch getImage(WollokTestResult element) {
-		element.state.image
+		element.state.getImage(resourceManager)
 	}
 
 	def dispatch getImage(Object element) {
-		Activator.getDefault.getImageDescriptor("icons/w.png").createImage
+        var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
+        resourceManager.createImage(imageDescriptor)
 	}
 
 	def dispatch getText(WollokTestContainer element) {
@@ -243,7 +252,10 @@ class WTestTreeLabelProvider extends LabelProvider {
 	def dispatch getText(WollokTestResult element) {
 		element.testInfo.name
 	}
-
+	override def dispose(){
+		super.dispose
+		resourceManager.dispose
+	}
 }
 
 class WTestTreeContentProvider implements ITreeContentProvider {
