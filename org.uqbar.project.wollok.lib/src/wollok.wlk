@@ -472,7 +472,11 @@ package lang {
 		method limitBetween(limitA,limitB) = if(limitA <= limitB) 
 												limitA.max(self).min(limitB) 
 											 else 
+
 											 	limitB.max(self).min(limitA)
+
+		override method simplifiedToSmartString(){ return self.stringValue() }
+		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 	}
 	
 	/**
@@ -493,8 +497,6 @@ package lang {
 		
 		method toString() native
 		
-		override method simplifiedToSmartString(){ return self.stringValue() }
-		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
 		method ..(end) = new Range(self, end)
@@ -531,7 +533,6 @@ package lang {
 		
 		method toString() native
 		
-		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
 		method >(other) native
