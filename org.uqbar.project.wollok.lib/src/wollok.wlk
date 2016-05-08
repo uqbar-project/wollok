@@ -128,13 +128,18 @@ package lang {
 		}
 		method toSmartString(alreadyShown) {
 			if (alreadyShown.any { e => e.identity() == self.identity() } ) { 
-				return self.kindName() 
+				return self.simplifiedToSmartString() 
 			}
 			else {
 				alreadyShown.add(self)
 				return self.internalToSmartString(alreadyShown)
 			}
 		} 
+		
+		method simplifiedToSmartString(){
+			return self.kindName()
+		}
+		
 		method internalToSmartString(alreadyShown) {
 			return self.kindName() + "[" 
 				+ self.instanceVariables().map { v => 
@@ -488,6 +493,7 @@ package lang {
 		
 		method toString() native
 		
+		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
