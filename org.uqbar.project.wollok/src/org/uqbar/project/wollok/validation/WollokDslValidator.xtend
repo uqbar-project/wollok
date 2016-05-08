@@ -520,6 +520,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
+	@DefaultSeverity(ERROR)
+	def noSuperInConstructorBody(WSuperInvocation it){
+		if(it.isInConstructorBody)
+			report(WollokDslValidator_SUPER_EXPRESSION_IN_CONSTRUCTOR, it, WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS)
+	}
+
+	@Check
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def methodBodyProducesAValueButItIsNotBeingReturned(WMethodDeclaration it){
