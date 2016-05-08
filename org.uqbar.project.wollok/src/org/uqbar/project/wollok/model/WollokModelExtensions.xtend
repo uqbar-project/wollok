@@ -300,6 +300,9 @@ class WollokModelExtensions {
 	def static dispatch boolean isInConstructor(WClass obj){ false }
 	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
 
+	def static dispatch boolean isInConstructorBody(EObject obj) { obj.eContainer != null && obj.eContainer.isInConstructorBody }
+	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
+
 	// *****************************
 	// ** valid return
 	// *****************************

@@ -364,4 +364,40 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testExceptionWithMessage(){
+		'''
+			class UserException inherits wollok.lang.Exception {
+			    var valorInvalido = 0
+			    
+			    constructor(mensaje, value) = super(mensaje) { 	
+			    	valorInvalido = value
+			    }
+			}
+			
+			object monedero {
+			    var plata = 500
+			
+			    method plata() = return plata
+			
+			    method poner(cantidad) {
+			        if (cantidad < 0) {
+			            throw new UserException("La cantidad debe ser positiva", cantidad)
+			        } 
+			        plata += cantidad
+			    }
+			
+			    method sacar(cantidad) { plata -= cantidad }
+			}
+			
+			program p {
+				try{
+					monedero.poner(-2)
+					assert.fail('No should get here')
+				}catch e{
+					assert.equals("La cantidad debe ser positiva", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
 }
