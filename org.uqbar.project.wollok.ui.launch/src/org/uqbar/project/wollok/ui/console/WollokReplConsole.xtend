@@ -11,15 +11,12 @@ import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStreamsProxy
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
-import org.eclipse.jface.text.DocumentEvent
-import org.eclipse.jface.text.IDocument
-import org.eclipse.jface.text.ITypedRegion
-import org.eclipse.ui.console.IConsoleDocumentPartitioner
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.tools.OrderedBoundedSet
+import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 
@@ -27,7 +24,6 @@ import static org.uqbar.project.wollok.ui.console.RunInBackground.*
 import static org.uqbar.project.wollok.ui.console.RunInUI.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 
 /**
  * @author tesonep
