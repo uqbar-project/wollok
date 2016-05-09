@@ -128,13 +128,18 @@ package lang {
 		}
 		method toSmartString(alreadyShown) {
 			if (alreadyShown.any { e => e.identity() == self.identity() } ) { 
-				return self.kindName() 
+				return self.simplifiedToSmartString() 
 			}
 			else {
 				alreadyShown.add(self)
 				return self.internalToSmartString(alreadyShown)
 			}
 		} 
+		
+		method simplifiedToSmartString(){
+			return self.kindName()
+		}
+		
 		method internalToSmartString(alreadyShown) {
 			return self.kindName() + "[" 
 				+ self.instanceVariables().map { v => 
@@ -467,7 +472,11 @@ package lang {
 		method limitBetween(limitA,limitB) = if(limitA <= limitB) 
 												limitA.max(self).min(limitB) 
 											 else 
+
 											 	limitB.max(self).min(limitA)
+
+		override method simplifiedToSmartString(){ return self.stringValue() }
+		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 	}
 	
 	/**
@@ -488,7 +497,6 @@ package lang {
 		
 		method toString() native
 		
-		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
 		method ..(end) = new Range(self, end)
@@ -525,7 +533,6 @@ package lang {
 		
 		method toString() native
 		
-		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method stringValue() native	
 		
 		method >(other) native
