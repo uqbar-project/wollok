@@ -28,10 +28,11 @@ class WollokLauncher extends WollokChecker {
 
 	override doSomething(WFile parsed, Injector injector, File mainFile, WollokLauncherParameters parameters) {
 		try {
-			log.debug("Interpreting: " + mainFile.absolutePath)
 			val interpreter = injector.getInstance(WollokInterpreter)
 			val debugger = createDebugger(interpreter, parameters)
 			interpreter.setDebugger(debugger)
+
+			log.debug("Interpreting: " + mainFile.absolutePath)
 			interpreter.interpret(parsed)
 	
 			if (parameters.hasRepl) {

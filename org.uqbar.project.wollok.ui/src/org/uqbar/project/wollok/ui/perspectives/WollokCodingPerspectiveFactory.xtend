@@ -59,7 +59,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			"org.eclipse.debug.ui.launchActionSet",
 			"org.eclipse.jdt.junit.JUnitActionSet",
 			"org.eclipse.team.ui.actionSet",
-//			JavaUI.ID_ACTION_SET,
 			IPageLayout.ID_NAVIGATE_ACTION_SET
 		]
 		.forEach[ a| addActionSet(a) ]
