@@ -72,6 +72,14 @@ public class Messages extends NLS {
 	public static String CheckSeverity_INFO;
 	
 	// ****************************
+	// ** Check groups
+	// ****************************
+
+	public static String CheckGroup_DEFAULT_GROUP;
+	public static String CheckGroup_CODE_STYLE;
+	public static String CheckGroup_POTENTIAL_PROGRAMMING_PROBLEM;
+	
+	// ****************************
 	// ** runtime interpreter
 	// ****************************
 	
