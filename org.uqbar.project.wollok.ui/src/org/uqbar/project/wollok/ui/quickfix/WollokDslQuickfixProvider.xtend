@@ -148,7 +148,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
 			
-			val constructors = clazz.parent.constructors.map[ '''\tnew(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)'''].join('\n')
+			val constructors = clazz.parent.constructors.map[ '''constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)'''].join('\n')
 			addConstructor(clazz, constructors)
 		]
 	}
