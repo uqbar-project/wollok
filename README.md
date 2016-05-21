@@ -68,7 +68,7 @@ package fliers {
         }
   }
 
-  #[ superman, new Plane(), aBird ].forEach[ o |  o.fly() ]
+  [ superman, new Plane(), aBird ].forEach { o => o.fly() }
 ```
 
 Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) for a concrete idea of the syntax
