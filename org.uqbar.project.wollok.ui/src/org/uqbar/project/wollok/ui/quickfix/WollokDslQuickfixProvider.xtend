@@ -45,6 +45,9 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
  * @author jfernandes
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
+	val tabChar = "\t"
+	val returnChar ="\n"
+			
 	@Inject
 	WollokClassFinder classFinder
 
@@ -147,8 +150,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
-			
-			val constructors = clazz.parent.constructors.map[ '''\tnew(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)'''].join('\n')
+			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join('\n')
 			addConstructor(clazz, constructors)
 		]
 	}
