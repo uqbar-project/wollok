@@ -39,7 +39,7 @@
 											exec-maven-plugin
 										</artifactId>
 										<versionRange>
-											[1.2.1,)
+											[1.5.0,)
 										</versionRange>
 										<goals>
 											<goal>java</goal>
