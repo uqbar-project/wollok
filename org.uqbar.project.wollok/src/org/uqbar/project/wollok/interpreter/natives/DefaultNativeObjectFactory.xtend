@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.natives
 
+import java.util.Map
 import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -18,7 +19,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class DefaultNativeObjectFactory implements NativeObjectFactory {
 	// static public as a temporary "cut the refactor" method
-	public static val transformations = #{
+	public static val Map<String, String> transformations = #{
 		OBJECT -> "wollok.lang.WObject",
 		COLLECTION -> "wollok.lang.WCollection",
 		LIST -> "wollok.lang.WList",
@@ -57,7 +58,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	}
 	
 	def resolveNativeClass(String originalFqn, WollokObject obj, WollokInterpreter interpreter) {
-		val fqn = org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory.wollokToJavaFQN(originalFqn)
+		val fqn = DefaultNativeObjectFactory.wollokToJavaFQN(originalFqn)
 		val bundle = WollokActivator.getDefault
 		if (bundle != null)
 			try
