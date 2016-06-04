@@ -44,7 +44,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 											exec-maven-plugin
 										</artifactId>
 										<versionRange>
-											[1.5.0,)
+											[1.2.1,)
 										</versionRange>
 										<goals>
 											<goal>java</goal>
