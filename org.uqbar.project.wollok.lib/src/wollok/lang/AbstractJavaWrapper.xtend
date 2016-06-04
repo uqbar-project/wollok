@@ -1,5 +1,6 @@
 package wollok.lang
 
+import java.time.LocalDate
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
