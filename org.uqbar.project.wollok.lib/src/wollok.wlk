@@ -619,6 +619,20 @@ package lang {
 		method apply(parameters...) native
 		method toString() native
 	}
+	
+	/**
+	 *
+	 * @author dodain
+	 * @since 1.4
+	 */	
+	class WDate {
+		
+		constructor()  
+		constructor(_day, _month, _year)  
+		method equals(_aDate) native
+
+	}
+	
 }
  
 package lib {

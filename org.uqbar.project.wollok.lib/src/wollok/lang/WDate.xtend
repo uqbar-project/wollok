@@ -1,7 +1,6 @@
 package wollok.lang
 
 import java.time.LocalDate
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
@@ -11,22 +10,23 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
  * 
  * @author dodain
  */
-class WDate extends AbstractJavaWrapper<LocalDate> {
-	
-	new(WollokObject obj, WollokInterpreter interpreter) {
-		super(obj, interpreter)
-	}
+class WDate {
 
+	LocalDate wrapped 
+	
 	/**
 	 * Constructores
 	 */
-	def newInstance() {
-		newInstanceWithWrapped(LocalDate.now())
+	new() {
+		println("nothing")
+		wrapped = LocalDate.now()
 	}
 	
-	def newInstance(int day, int month, int year) {
-		newInstanceWithWrapped(LocalDate.of(year, month, day))
+	new(int day, int month, int year) {
+		println("day, month year")
+		wrapped = LocalDate.of(year, month, day)
 	}
+	
 	/** Fin constructores */
 
 	def plusDays(long days) { wrapped.plusDays(days) }
@@ -45,8 +45,9 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	
 	def year() { wrapped.year }
 
-	override equals(Object obj) {
-		this.class.isInstance(obj) && wrapped == (obj as WDate).wrapped 
+	@NativeMessage("equals")
+	def wollokEquals(WollokObject other) {
+		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped?.equals(this.wrapped))
 	}
 
 	def minus(WDate aDate) { aDate.wrapped.toEpochDay - wrapped.toEpochDay }
@@ -80,15 +81,15 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	def convertToWString(WollokObject it) { call("toString") as WollokObject }
 
 	@NativeMessage("==")
-	def wollokEquals(WollokObject other) {
-		val wDateTime = other.getNativeObject(WDate) as WDate
-		wDateTime != null && wrapped == wDateTime.wrapped
+	def wollokIdentityEquals(WollokObject other) {
+		val wDate = other.getNativeObject(WDate) as WDate
+		wDate != null && wrapped == wDate.wrapped
 	}
 	
 	def asWString(WollokObject it) { 
-		val wDateTime = it.getNativeObject(WDate) as WDate
-		if (wDateTime == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
-		wDateTime
+		val wDate = it.getNativeObject(WDate) as WDate
+		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
+		wDate
 	}
 	
 }

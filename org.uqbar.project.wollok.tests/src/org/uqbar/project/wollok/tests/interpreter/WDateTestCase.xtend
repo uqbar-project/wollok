@@ -15,7 +15,7 @@ class WDateTestCase extends AbstractWollokInterpreterTestCase {
 		'''program a {
 			const ahora1 = new WDate()
 			const ahora2 = new WDate() 
-			assert.equals(ahora1, ahora2)
+			assert.that(ahora1.equals(ahora2))
 		}
 		'''.interpretPropagatingErrors
 	}
