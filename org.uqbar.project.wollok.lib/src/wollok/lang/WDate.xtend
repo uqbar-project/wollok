@@ -18,16 +18,14 @@ class WDate {
 	 * Constructores
 	 */
 	new() {
-		println("nothing")
 		wrapped = LocalDate.now()
 	}
 	
-	new(int day, int month, int year) {
-		println("day, month year")
+	/** Fin constructores */
+
+	def void initialize(int day, int month, int year) {
 		wrapped = LocalDate.of(year, month, day)
 	}
-	
-	/** Fin constructores */
 
 	def plusDays(long days) { wrapped.plusDays(days) }
 

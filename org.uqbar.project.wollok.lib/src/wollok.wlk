@@ -627,9 +627,14 @@ package lang {
 	 */	
 	class WDate {
 		
-		constructor()  
-		constructor(_day, _month, _year)  
+		constructor()
+		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
 		method equals(_aDate) native
+		method plusDays(_days) native
+		method plusMonths(_months) native
+		method plusYears(_years) native
+		method isLeapYear() native
+		method initialize(_day, _month, _year) native
 
 	}
 	
