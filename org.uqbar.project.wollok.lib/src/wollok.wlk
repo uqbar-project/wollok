@@ -635,6 +635,24 @@ package lang {
 		method plusYears(_years) native
 		method isLeapYear() native
 		method initialize(_day, _month, _year) native
+		method day() native
+		method month() native	
+		method year() native
+		method minus(_aDate) native
+		method minusDays(_days) native
+		method minusMonths(_months) native
+		method minusYears(_years) native
+		method <(_aDate) native
+		method >(_aDate) native
+		method <=(_aDate) { 
+			return self < _aDate || self.equals(aDate) 
+		}
+		method >=(_aDate) { 
+			return self > _aDate || self.equals(aDate) 
+		}
+		method between(_startDate, _endDate) { 
+			return self >= _startDate && self <= _endDate 
+		}
 
 	}
 	

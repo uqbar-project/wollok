@@ -20,6 +20,10 @@ class WDate {
 	new() {
 		wrapped = LocalDate.now()
 	}
+
+	private new(LocalDate date) {
+		wrapped = date
+	}
 	
 	/** Fin constructores */
 
@@ -27,11 +31,11 @@ class WDate {
 		wrapped = LocalDate.of(year, month, day)
 	}
 
-	def plusDays(long days) { wrapped.plusDays(days) }
+	def plusDays(int days) { wrapped.plusDays(days) }
 
-	def plusMonths(long months) { wrapped.plusMonths(months) }
+	def plusMonths(int months) { wrapped.plusMonths(months) }
 
-	def plusYears(long years) { wrapped.plusDays(years) }
+	def plusYears(int years) { wrapped.plusDays(years) }
 
 	def isLeapYear() { wrapped.isLeapYear }
 	
@@ -50,24 +54,28 @@ class WDate {
 
 	def minus(WDate aDate) { aDate.wrapped.toEpochDay - wrapped.toEpochDay }
 	
-	def minusDays(long days) { wrapped.minusDays(days) }
+	def minusDays(int days) {
+		val minusDays = wrapped.minusDays(days)
+		println(minusDays)
+		val result = new WDate(minusDays)
+		println(result)
+		result
+	}
 	
-	def minusMonths(long months) { wrapped.minusMonths(months) }
+	def minusMonths(int months) { wrapped.minusMonths(months) }
 	
-	def minusYears(long years) { wrapped.minusYears(years) }
+	def minusYears(int years) { wrapped.minusYears(years) }
 	
 	def between(WDate startDate, WDate endDate) { this.lessThan(startDate) && this.greaterThan(endDate) }
 	
 	def dayOfWeek() { wrapped.dayOfWeek }
 	
-	def lessThan(WDate aDate) { compareTo(aDate) == -1 }
+	@NativeMessage("<")
+	def lessThan(WDate aDate) { println(aDate) compareTo(aDate) == -1 }
 	
-	def lessOrEqualThan(WDate aDate) { lessThan(aDate) || equals(aDate) }
-	
+	@NativeMessage(">")
 	def greaterThan(WDate aDate) { compareTo(aDate) == 1 }
 	 
-	def greaterOrEqualThan(WDate aDate) { greaterThan(aDate) || equals(aDate) }
-	
 	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
 	
 	override toString() { wrapped.toString() }

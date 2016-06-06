@@ -19,6 +19,17 @@ class WDateTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void dosDatesIgualesPuedenSerDistintosObjetos() {
+		'''program a {
+			const ahora1 = new WDate()
+			const ahora2 = new WDate() 
+			assert.that(ahora1.equals(ahora2))
+			assert.notThat(ahora1 == ahora2)
+		}
+		'''.interpretPropagatingErrors
+	}
 	
 	@Test
 	def void El2000FueBisiesto() {
@@ -52,6 +63,28 @@ class WDateTestCase extends AbstractWollokInterpreterTestCase {
 		'''program a {
 			const el2100 = new WDate(4, 5, 2100)
 			assert.notThat(el2100.isLeapYear())
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void ayerEsMenorQueHoy() {
+		'''program a {
+			var ayer = new WDate()
+			console.println(ayer.minusDays(1))
+			ayer = ayer.minusDays(1)
+			const hoy = new WDate()
+			assert.that(ayer < hoy) 
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void unaFechaDel2001EsMenorQueHoy() {
+		'''program a {
+			const elAyer = new WDate(10, 6, 2001)
+			const hoy = new WDate()
+			assert.that(elAyer < hoy) 
 		}
 		'''.interpretPropagatingErrors
 	}
