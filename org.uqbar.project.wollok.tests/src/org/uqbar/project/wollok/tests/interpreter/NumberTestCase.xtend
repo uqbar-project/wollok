@@ -44,5 +44,25 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void integersBetwenTrue() {
+		'''program a {
+		
+			assert.that(3.between(1, 5))
+		
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void integersBetweenFalse() {
+		'''program a {
+		
+			assert.notThat(3.between(5, 9))
+		
+		}
+		'''.interpretPropagatingErrors
+	}
 	
 }
