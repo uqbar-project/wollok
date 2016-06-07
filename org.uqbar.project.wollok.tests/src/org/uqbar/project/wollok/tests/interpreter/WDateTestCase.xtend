@@ -71,7 +71,6 @@ class WDateTestCase extends AbstractWollokInterpreterTestCase {
 	def void ayerEsMenorQueHoy() {
 		'''program a {
 			var ayer = new WDate()
-			console.println(ayer.minusDays(1))
 			ayer = ayer.minusDays(1)
 			const hoy = new WDate()
 			assert.that(ayer < hoy) 

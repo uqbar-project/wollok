@@ -8,9 +8,9 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -44,6 +44,9 @@ class WollokJavaConversions {
 			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
+		if (o.isNativeType(DATE)) {
+			return (o as WollokObject).getNativeObject(DATE)
+		}
 		
 //		if (t.array && t.componentType == Object) {
 //			val a = newArrayOfSize(1)

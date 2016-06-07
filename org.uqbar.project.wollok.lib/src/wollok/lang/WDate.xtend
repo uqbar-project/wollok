@@ -1,8 +1,11 @@
 package wollok.lang
 
 import java.time.LocalDate
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 /**
@@ -43,7 +46,7 @@ class WDate {
 	
 	def day() { wrapped.dayOfMonth }
 	
-	def month() { wrapped.month }
+	def month() { wrapped.month.value }
 	
 	def year() { wrapped.year }
 
@@ -55,11 +58,11 @@ class WDate {
 	def minus(WDate aDate) { aDate.wrapped.toEpochDay - wrapped.toEpochDay }
 	
 	def minusDays(int days) {
-		val minusDays = wrapped.minusDays(days)
-		println(minusDays)
-		val result = new WDate(minusDays)
-		println(result)
-		result
+		val dateSubtracted = wrapped.minusDays(days)
+		val obj = evaluator.newInstance("wollok.lang.WDate") as WollokObject
+		val native = obj.getNativeObject("wollok.lang.WDate") as WDate
+		native.wrapped = dateSubtracted
+		obj 
 	}
 	
 	def minusMonths(int months) { wrapped.minusMonths(months) }
@@ -71,10 +74,12 @@ class WDate {
 	def dayOfWeek() { wrapped.dayOfWeek }
 	
 	@NativeMessage("<")
-	def lessThan(WDate aDate) { println(aDate) compareTo(aDate) == -1 }
+	def lessThan(WDate aDate) {
+		compareTo(aDate) < 0
+	}
 	
 	@NativeMessage(">")
-	def greaterThan(WDate aDate) { compareTo(aDate) == 1 }
+	def greaterThan(WDate aDate) { compareTo(aDate) > 0 }
 	 
 	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
 	
@@ -97,5 +102,7 @@ class WDate {
 		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
 		wDate
 	}
-	
+
+	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
+		
 }
