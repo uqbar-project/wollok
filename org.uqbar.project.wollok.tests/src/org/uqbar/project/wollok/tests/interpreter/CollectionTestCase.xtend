@@ -301,11 +301,11 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
-			const lista1 = [1,4]
-			const lista2 = [2,7]
+			const lista1 = [1, 4]
+			const lista2 = [2, 7]
 			const lista3 = lista1 + lista2
-			assert.equals([1,4], lista1)
-			assert.equals([1,4,2,7, 9], lista3)
+			assert.equals([1, 4], lista1)
+			assert.equals([1, 4, 2, 7], lista3)
 		}'''.interpretPropagatingErrors
 	}
 	
