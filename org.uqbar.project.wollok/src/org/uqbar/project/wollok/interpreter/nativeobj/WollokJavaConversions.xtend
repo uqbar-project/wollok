@@ -18,20 +18,24 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class WollokJavaConversions {
-	
-	def static asInteger(WollokObject it) { ((it as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped }
-	
+
+	def static asInteger(WollokObject it) {
+		((it as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
+	}
+
 	def static isWBoolean(Object it) { it instanceof WollokObject && (it as WollokObject).hasNativeType(BOOLEAN) }
-	
-	def static isTrue(Object it) { it instanceof WollokObject && ((it as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped }
-	
+
+	def static isTrue(Object it) {
+		it instanceof WollokObject && ((it as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
+	}
+
 	def static Object wollokToJava(Object o, Class<?> t) {
-		if (o == null) return null
-		if (t.isInstance(o)) return o
-		if (t == Object) return o
+		if(o == null) return null
+		if(t.isInstance(o)) return o
+		if(t == Object) return o
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
-			return [Object a | ((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
+			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
 		if (o.isNativeType(INTEGER) && (t == Integer || t == Integer.TYPE))
 			return ((o as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
 		if (o.isNativeType(DOUBLE) && (t == Integer || t == Integer.TYPE))
@@ -47,58 +51,87 @@ class WollokJavaConversions {
 		if (o.isNativeType(DATE)) {
 			return (o as WollokObject).getNativeObject(DATE)
 		}
-		
+
 //		if (t.array && t.componentType == Object) {
 //			val a = newArrayOfSize(1)
 //			a.set(0, o)
 //			return a
 //		}
-			
 		if (t == Collection || t == List)
 			return #[o]
-		
+
 		// remove this ?
-		if (t.primitive)
-			return o	
-		
+		if (t.
+			primitive)
+			return o
+
 		throw new RuntimeException('''Cannot convert parameter "«o»" of type «o.class.name» to type "«t.simpleName»""''')
 	}
-	
+
 	def static dispatch isNativeType(Object o, String type) { false }
+
 	def static dispatch isNativeType(Void o, String type) { false }
+
 	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
-	
+
 	def static WollokObject javaToWollok(Object o) {
-		if (o == null) return null
+		if(o == null) return null
 		convertJavaToWollok(o)
 	}
-	
+
 	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
+
 	def static dispatch WollokObject convertJavaToWollok(Double o) { evaluator.getOrCreateNumber(o.toString) }
+
 	def static dispatch WollokObject convertJavaToWollok(BigDecimal o) { evaluator.getOrCreateNumber(o.toString) }
+
 	// cache strings ?
 	def static dispatch WollokObject convertJavaToWollok(String o) { evaluator.newInstanceWithWrapped(STRING, o) }
+
 	def static dispatch WollokObject convertJavaToWollok(Boolean o) { evaluator.booleanValue(o) }
+
 	def static dispatch WollokObject convertJavaToWollok(List o) { evaluator.newInstanceWithWrapped(LIST, o) }
+
 	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
+
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
-	
-	def static dispatch WollokObject convertJavaToWollok(Object o) { 
-		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
+
+	def static dispatch WollokObject convertJavaToWollok(Object o) {
+		try {
+			return convertJavaToWollokWithWrappedValue(o)
+		} catch (Exception e) {
+			throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''',
+				e)
+		}
 	}
-	
+
+	/**
+	 * Este método envuelve cualquier objeto wrappeable a un WollokObject, inspeccionando sus variables de instancia
+	 */
+	def static convertJavaToWollokWithWrappedValue(Object o) {
+		val clazz = o.class
+		val result = evaluator.newInstance(clazz.name) as WollokObject
+		val native = result.getNativeObject(clazz.name)
+		clazz.declaredFields.toList.forEach [ field |
+			field.accessible = true
+			val wrappedValueFromO = field.get(o)
+			field.set(native, wrappedValueFromO)
+		]
+		return result
+	}
+
 	def static newWollokExceptionAsJava(String message) {
 		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
-	
+
 	def static newWollokException(String message) {
 		evaluator.newInstance(EXCEPTION, message.javaToWollok)
 	}
-	
+
 	def static newWollokException(String message, WollokObject cause) {
 		evaluator.newInstance(EXCEPTION, message.javaToWollok, cause)
 	}
-	
+
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
-	
+
 }

@@ -5,7 +5,6 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 /**
@@ -34,11 +33,20 @@ class WDate {
 		wrapped = LocalDate.of(year, month, day)
 	}
 
-	def plusDays(int days) { wrapped.plusDays(days) }
+	def plusDays(int days) { 
+		val dateAdded = wrapped.plusDays(days)
+		new WDate(dateAdded)
+	}
 
-	def plusMonths(int months) { wrapped.plusMonths(months) }
+	def plusMonths(int months) {
+		val dateAdded = wrapped.plusMonths(months)
+		new WDate(dateAdded)
+	}
 
-	def plusYears(int years) { wrapped.plusDays(years) }
+	def plusYears(int years) { 
+		val dateAdded = wrapped.plusYears(years) 
+		new WDate(dateAdded)
+	}
 
 	def isLeapYear() { wrapped.isLeapYear }
 	
@@ -55,23 +63,28 @@ class WDate {
 		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped?.equals(this.wrapped))
 	}
 
-	def minus(WDate aDate) { aDate.wrapped.toEpochDay - wrapped.toEpochDay }
+	@NativeMessage("-")
+	def minus(WDate aDate) { 
+		val difference = (aDate.wrapped.toEpochDay - wrapped.toEpochDay) as int
+		Math.abs(difference)
+	}
 	
 	def minusDays(int days) {
 		val dateSubtracted = wrapped.minusDays(days)
-		val obj = evaluator.newInstance("wollok.lang.WDate") as WollokObject
-		val native = obj.getNativeObject("wollok.lang.WDate") as WDate
-		native.wrapped = dateSubtracted
-		obj 
+		new WDate(dateSubtracted) 
 	}
 	
-	def minusMonths(int months) { wrapped.minusMonths(months) }
+	def minusMonths(int months) { 
+		val dateSubtracted = wrapped.minusMonths(months)
+		new WDate(dateSubtracted)
+	}
 	
-	def minusYears(int years) { wrapped.minusYears(years) }
+	def minusYears(int years) { 
+		val dateSubtracted = wrapped.minusYears(years)
+		new WDate(dateSubtracted)
+	}
 	
-	def between(WDate startDate, WDate endDate) { this.lessThan(startDate) && this.greaterThan(endDate) }
-	
-	def dayOfWeek() { wrapped.dayOfWeek }
+	def dayOfWeek() { wrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
 	def lessThan(WDate aDate) {
