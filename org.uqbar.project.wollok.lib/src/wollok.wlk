@@ -217,6 +217,16 @@ package lang {
 		}
 		 
 		// non-native methods
+
+		/**
+		  * Concatenates all elements from the given collection parameter to self collection giving a new collection
+		  * (no side effect) 
+		  */
+		method +(elements) {
+			const newCol = self.copy() 
+			newCol.addAll(elements)
+			return newCol 
+		}
 		
 		/**
 		  * Adds all elements from the given collection parameter to self collection
