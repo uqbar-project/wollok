@@ -64,5 +64,25 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void absoluteValueOfAPositiveInteger() {
+		'''program a {
+		
+			assert.equals(3, 3.abs())
+		
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void absoluteValueOfANegativeInteger() {
+		'''program a {
+		
+			assert.equals(3, (-3).abs())
+		
+		}
+		'''.interpretPropagatingErrors
+	}
 	
 }
