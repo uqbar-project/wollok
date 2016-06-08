@@ -193,12 +193,12 @@ package lang {
 		method max(closure) = self.absolute(closure, { a, b => a > b })
 
 		/**
-		  * Returns the element that is the maximum value, considering the standard 
-		  * comparison ">".
+		  * Returns the element that represents the maximum value in the collection.
+		  * The criteria is by direct comparison of the elements.
 		  * Example:
-		  *       ["ab", "z", "hello", "wollok world"].min()    =>  returns "z"		 
+		  *       [11, 1, 4, 8, 3, 15, 6].max()    =>  returns 15		 
 		  */
-		method max(closure) = self.max({it =>  it})		
+		method max() = self.max({it => it})		
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
@@ -210,12 +210,12 @@ package lang {
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
 		/**
-		  * Returns the element that is the minimum value, considering the standard 
-		  * comparison "<".
+		  * Returns the element that represents the minimum value in the collection.
+		  * The criteria is by direct comparison of the elements.
 		  * Example:
-		  *       ["ab", "aaaa", "hello", "wollok world"].min()    =>  returns "aaaa"		 
+		  *       [11, 1, 4, 8, 3, 15, 6].min()    =>  returns 1 
 		  */
-		method min(closure) = self.min({it =>  it})
+		method min() = self.min({it => it})
 
 		method absolute(closure, criteria) {
 			const result = self.fold(null, { acc, e =>

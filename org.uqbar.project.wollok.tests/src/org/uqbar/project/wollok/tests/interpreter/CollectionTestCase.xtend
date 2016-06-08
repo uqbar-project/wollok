@@ -29,8 +29,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void minNoArgs() {
 		'''
 		program p {
-			«instantiateStrings»		
-			assert.equals('ciao', strings.min())
+			«instantiateCollectionAsNumbersVariable»		
+			assert.equals(2, numbers.min() )
 		}'''.interpretPropagatingErrors
 	}
 		
@@ -51,8 +51,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void maxNoArgs() {
 		'''
 		program p {
-			«instantiateStrings»		
-			assert.equals('hola', strings.max())
+			«instantiateCollectionAsNumbersVariable»		
+			assert.equals(22, numbers.max() )
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -311,6 +311,15 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			«instantiateCollectionAsNumbersVariable»
 			
 			assert.equals(34, numbers.sum {n => n})
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void sumNoArgs() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			assert.equals(34, numbers.sum())
 		}'''.interpretPropagatingErrors
 	}
 	
