@@ -26,6 +26,15 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void minNoArgs() {
+		'''
+		program p {
+			«instantiateStrings»		
+			assert.equals('ciao', strings.min())
+		}'''.interpretPropagatingErrors
+	}
+		
+	@Test
 	def void max() {
 		try 
 		'''
@@ -36,6 +45,15 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
+	}
+	
+	@Test
+	def void maxNoArgs() {
+		'''
+		program p {
+			«instantiateStrings»		
+			assert.equals('hola', strings.max())
+		}'''.interpretPropagatingErrors
 	}
 	
 	@Test

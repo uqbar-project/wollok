@@ -191,16 +191,32 @@ package lang {
 		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
 		  */
 		method max(closure) = self.absolute(closure, { a, b => a > b })
+
+		/**
+		  * Returns the element that is the maximum value, considering the standard 
+		  * comparison ">".
+		  * Example:
+		  *       ["ab", "z", "hello", "wollok world"].min()    =>  returns "z"		 
+		  */
+		method max(closure) = self.max({it =>  it})		
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  returns "ab"		 
 		  */
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
+		/**
+		  * Returns the element that is the minimum value, considering the standard 
+		  * comparison "<".
+		  * Example:
+		  *       ["ab", "aaaa", "hello", "wollok world"].min()    =>  returns "aaaa"		 
+		  */
+		method min(closure) = self.min({it =>  it})
+
 		method absolute(closure, criteria) {
 			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
@@ -302,6 +318,14 @@ package lang {
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+		
+		/**
+		 * Sums all elements in the collection.
+		 * @returns an integer
+		 * Example:
+		 *      const total = [1, 2, 3, 4, 5].sum() 
+		 */
+		method sum() = self.sum( {it => it} )
 		
 		/**
 		 * Returns a new collection that contains the result of transforming each of self collection's elements
