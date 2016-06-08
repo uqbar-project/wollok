@@ -609,7 +609,15 @@ package lang {
 	class Range {
 		const start
 		const end
-		constructor(_start, _end) { start = _start ; end = _end }
+		
+		constructor(_start, _end) {
+			self.validate(_start)
+			self.validate(_end) 
+			start = _start 
+			end = _end
+		}
+		
+		method validate(_limit) native
 		
 		method forEach(closure) native
 		
@@ -635,7 +643,7 @@ package lang {
 	/**
 	 *
 	 * @author dodain
-	 * @since 1.4
+	 * @since 1.4.5
 	 */	
 	class WDate {
 		
