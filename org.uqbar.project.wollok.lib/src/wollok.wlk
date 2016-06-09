@@ -218,6 +218,8 @@ package lang {
 		method min() = self.min({it => it})
 
 		method absolute(closure, criteria) {
+			if (self.isEmpty())
+				throw new ElementNotFoundException("collection is empty")
 			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
 				if (acc == null)
@@ -229,7 +231,7 @@ package lang {
 						acc
 				}
 			})
-			return if (result == null) null else result.getX()
+			return result.getX()
 		}
 		 
 		// non-native methods

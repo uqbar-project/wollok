@@ -31,6 +31,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»		
 			assert.equals(2, numbers.min() )
+			assert.equals(1, [1].min())
+			assert.throwsException({[].min()})
 		}'''.interpretPropagatingErrors
 	}
 		
@@ -53,6 +55,8 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»		
 			assert.equals(22, numbers.max() )
+			assert.equals(1, [1].max())
+			assert.throwsException({[].max()})
 		}'''.interpretPropagatingErrors
 	}
 	
@@ -320,7 +324,9 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			assert.equals(34, numbers.sum())
+			assert.equals(0, [].sum())
+			assert.equals(5, [5].sum())
 		}'''.interpretPropagatingErrors
 	}
-	
+
 }
