@@ -72,6 +72,9 @@
 								<product>
 									<id>wollok-ide</id>
 									<archiveFileName>wollok</archiveFileName>
+									<rootFolders>
+                      								<macosx>Wollok.app</macosx>
+                      							</rootFolders>
 								</product>
 							</products>
 						</configuration>
