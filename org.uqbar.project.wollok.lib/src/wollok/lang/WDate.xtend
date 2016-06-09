@@ -2,7 +2,6 @@ package wollok.lang
 
 import java.time.LocalDate
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
@@ -12,21 +11,16 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
  * 
  * @author dodain
  */
-class WDate {
+class WDate extends AbstractJavaWrapper<LocalDate> {
 
-	LocalDate wrapped 
-	
 	/**
 	 * Constructores
 	 */
-	new() {
+	new(WollokObject obj, WollokInterpreter interpreter) {
+		super(obj, interpreter)
 		wrapped = LocalDate.now()
 	}
-
-	private new(LocalDate date) {
-		wrapped = date
-	}
-	
+	 
 	/** Fin constructores */
 
 	def void initialize(int day, int month, int year) {
@@ -34,18 +28,15 @@ class WDate {
 	}
 
 	def plusDays(int days) { 
-		val dateAdded = wrapped.plusDays(days)
-		new WDate(dateAdded)
+		wrapped.plusDays(days)
 	}
 
 	def plusMonths(int months) {
-		val dateAdded = wrapped.plusMonths(months)
-		new WDate(dateAdded)
+		wrapped.plusMonths(months)
 	}
 
 	def plusYears(int years) { 
-		val dateAdded = wrapped.plusYears(years) 
-		new WDate(dateAdded)
+		wrapped.plusYears(years) 
 	}
 
 	def isLeapYear() { wrapped.isLeapYear }
@@ -70,18 +61,15 @@ class WDate {
 	}
 	
 	def minusDays(int days) {
-		val dateSubtracted = wrapped.minusDays(days)
-		new WDate(dateSubtracted) 
+		wrapped.minusDays(days)
 	}
 	
 	def minusMonths(int months) { 
-		val dateSubtracted = wrapped.minusMonths(months)
-		new WDate(dateSubtracted)
+		wrapped.minusMonths(months)
 	}
 	
 	def minusYears(int years) { 
-		val dateSubtracted = wrapped.minusYears(years)
-		new WDate(dateSubtracted)
+		wrapped.minusYears(years)
 	}
 	
 	def dayOfWeek() { wrapped.dayOfWeek.value }
@@ -116,6 +104,4 @@ class WDate {
 		wDate
 	}
 
-	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
-		
 }

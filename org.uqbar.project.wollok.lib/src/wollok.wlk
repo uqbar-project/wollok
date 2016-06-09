@@ -646,7 +646,7 @@ package lang {
 	 * @since 1.4.5
 	 */	
 	class WDate {
-		
+
 		constructor()
 		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
 		method equals(_aDate) native

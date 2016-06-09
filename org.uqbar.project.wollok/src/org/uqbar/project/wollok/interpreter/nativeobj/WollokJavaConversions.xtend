@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.Collection
 import java.util.List
 import java.util.Set
@@ -94,15 +95,12 @@ class WollokJavaConversions {
 
 	def static dispatch WollokObject convertJavaToWollok(Set o) { evaluator.newInstanceWithWrapped(SET, o) }
 
+	def static dispatch WollokObject convertJavaToWollok(LocalDate o) { evaluator.newInstanceWithWrapped(DATE, o) }
+
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		try {
-			return convertJavaToWollokWithWrappedValue(o)
-		} catch (Exception e) {
-			throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''',
-				e)
-		}
+		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 
 	/**
