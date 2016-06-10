@@ -245,7 +245,7 @@ package lang {
 		method isEmpty() = self.size() == 0
 				
 		/**
-		 * Performs an operation on every elements of self collection.
+		 * Performs an operation on every element of self collection.
 		 * The logic to execute is passed as a closure that takes a single parameter.
 		 * @returns nothing
 		 * Example:
@@ -254,13 +254,14 @@ package lang {
 		method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
 		
 		/**
-		 * Tells whether all the elements of self collection satisfy a given condition
+		 * Answers whether all the elements of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.all { plant -> plant.hasFlowers() }
+		 *      plants.all { plant => plant.hasFlowers() }
 		 */
 		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Tells whether at least one element of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
@@ -269,6 +270,7 @@ package lang {
 		 *      plants.any { plant => plant.hasFlowers() }
 		 */
 		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Returns the element of self collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
@@ -311,6 +313,7 @@ package lang {
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
 		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+		
 		/**
 		 * Collects the sum of each value for all e
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
@@ -347,7 +350,14 @@ package lang {
 			acc
 		})
 
-		method filter(closure) = self.fold(self.newInstance(), { acc, e =>
+		/**
+		 * Returns a new collection that contains the elements that meet a given condition.
+		 * The condition is a closure argument that takes a single element and returns a boolean.
+		 * @returns another collection (same type as self one)
+		 * Example:
+		 *      const ages = users.filter{ user => user.age() >= 18 }
+		 */
+		 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 			 if (closure.apply(e))
 			 	acc.add(e)
 			 acc
