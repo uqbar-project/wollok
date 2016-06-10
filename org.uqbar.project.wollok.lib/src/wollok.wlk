@@ -191,17 +191,35 @@ package lang {
 		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
 		  */
 		method max(closure) = self.absolute(closure, { a, b => a > b })
+
+		/**
+		  * Returns the element that represents the maximum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].max()    =>  returns 15		 
+		  */
+		method max() = self.max({it => it})		
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  returns "ab"		 
 		  */
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
+		/**
+		  * Returns the element that represents the minimum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].min()    =>  returns 1 
+		  */
+		method min() = self.min({it => it})
+
 		method absolute(closure, criteria) {
+			if (self.isEmpty())
+				throw new ElementNotFoundException("collection is empty")
 			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
 				if (acc == null)
@@ -213,7 +231,7 @@ package lang {
 						acc
 				}
 			})
-			return if (result == null) null else result.getX()
+			return result.getX()
 		}
 		 
 		// non-native methods
@@ -302,6 +320,14 @@ package lang {
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+		
+		/**
+		 * Sums all elements in the collection.
+		 * @returns an integer
+		 * Example:
+		 *      const total = [1, 2, 3, 4, 5].sum() 
+		 */
+		method sum() = self.sum( {it => it} )
 		
 		/**
 		 * Returns a new collection that contains the result of transforming each of self collection's elements
