@@ -329,4 +329,16 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void occurrencesOf() {
+		'''
+		program p {
+			assert.equals(0, [].occurrencesOf(4))
+			assert.equals(1, [4].occurrencesOf(4))
+			assert.equals(0, [4].occurrencesOf('Hola'))
+			assert.equals(3, [1, 2, 3, 4, 4, 1, 2, 4, 0].occurrencesOf(4))
+			assert.equals(1, [1, 'Hola', 'mundo'].occurrencesOf('Hola'))
+			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
+		}'''.interpretPropagatingErrors
+	}
 }

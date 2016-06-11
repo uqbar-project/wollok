@@ -313,6 +313,14 @@ package lang {
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
 		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+
+		/**
+		 * Counts the occurrences of a given element in self collection.
+		 * @returns an integer number
+		 * Example:
+		 *      [1, 8, 4, 1].occurrencesOf(1)	=> returns 2
+		 */
+		method occurrencesOf(element) = self.count({it => it == element})
 		
 		/**
 		 * Collects the sum of each value for all e
@@ -355,7 +363,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean.
 		 * @returns another collection (same type as self one)
 		 * Example:
-		 *      const ages = users.filter{ user => user.age() >= 18 }
+		 *      const overageUsers = users.filter{ user => user.age() >= 18 }
 		 */
 		 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 			 if (closure.apply(e))
@@ -374,13 +382,37 @@ package lang {
 		method toStringSufix()
 		method asList()
 		method asSet()
+
+		/**
+		 * Returns a new collection of the same type and with the same content 
+		 * as self.
+		 * @returns a new collection
+		 * Example:
+		 *      const usersCopy = users.copy() 
+		 */
 		method copy() {
 			var copy = self.newInstance()
 			copy.addAll(self)
 			return copy
 		}
+		
+		/**
+		 * Returns a new List that contains the elements of self collection 
+		 * sorted by a criteria given by a closure. The closure receives two objects
+		 * X and Y and returns a boolean, true if X should come before Y in the 
+		 * resulting collection.
+		 * @returns a new List
+		 * Example:
+		 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() }) 
+		 */
 		method sortedBy(closure) = self.copy().asList().sortBy(closure)
 		
+		/**
+		 * Returns a new, empty collection of the same type as self.
+		 * @returns a new collection
+		 * Example:
+		 *      const newCollection = users.newInstance() 
+		 */
 		method newInstance()
 	}
 
