@@ -416,12 +416,12 @@ package lang {
 		method newInstance()
 		
 		/**
-		 * Returns a Set with the elements of both the receiver collection and the 
-		 * parameter collection.
+		 * Returns a Set with the elements of both the receiver collection and 
+		 * the parameter collection.
 		 * @returns a new set
 		 */
 		 method union(aCollection) = {
-		 	var copy = self.copy()
+		 	var copy = self.copy().asSet()
 		 	copy.addAll(aCollection)
 		 	return copy
 		 }
