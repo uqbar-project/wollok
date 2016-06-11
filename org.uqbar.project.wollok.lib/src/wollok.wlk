@@ -414,6 +414,24 @@ package lang {
 		 *      const newCollection = users.newInstance() 
 		 */
 		method newInstance()
+		
+		/**
+		 * Returns a Set with the elements of both the receiver collection and the 
+		 * parameter collection.
+		 * @returns a new set
+		 */
+		 method union(aCollection) = {
+		 	var copy = self.copy()
+		 	copy.addAll(aCollection)
+		 	return copy
+		 }
+
+		/**
+		 * Returns a Set with the elements of self that exist in aCollection
+		 * @returns a new set
+		 */
+		 method intersection(aCollection) = 
+		 	self.asSet().filter({it => self.contains(it)})
 	}
 
 	/**
