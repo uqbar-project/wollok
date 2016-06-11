@@ -645,7 +645,7 @@ package lang {
 	 * @author dodain
 	 * @since 1.4.5
 	 */	
-	class WDate {
+	class Date {
 
 		constructor()
 		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  

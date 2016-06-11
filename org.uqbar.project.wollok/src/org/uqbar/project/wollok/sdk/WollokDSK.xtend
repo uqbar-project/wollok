@@ -31,7 +31,7 @@ class WollokDSK {
 	public static val DOUBLE = "wollok.lang.Double"
 	public static val NUMBER = "wollok.lang.Number"
 	public static val BOOLEAN = "wollok.lang.Boolean"
-	public static val DATE = "wollok.lang.WDate"
+	public static val DATE = "wollok.lang.Date"
 
 	public static val COLLECTION = "wollok.lang.Collection"
 	public static val LIST = "wollok.lang.List"
