@@ -488,6 +488,7 @@ package lang {
 		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method between(min, max) { return (self >= min) && (self <= max) }
+		method squareRoot() { return self * self }
 		
 	}
 	
