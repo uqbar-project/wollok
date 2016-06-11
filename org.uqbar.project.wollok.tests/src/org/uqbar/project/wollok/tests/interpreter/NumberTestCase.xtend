@@ -182,5 +182,39 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			assertTrue(e.message.startsWith("java.math.BigDecimal cannot be cast to java.lang.Integer"))
 		}
 	}
+
+	@Test
+	def void lcm() {
+		'''program a {
+			const lcm1 = 5.lcm(25)
+			const lcm2 = 7.lcm(8)
+			const lcm3 = 10.lcm(15)
+			assert.equals(25, lcm1)
+			assert.equals(56, lcm2)
+			assert.equals(30, lcm3)
+		}
+		'''.interpretPropagatingErrors
+	}
 	
+	@Test
+	def void digits() {
+		'''program a {
+			assert.equals(4, 1024.digits())
+			assert.equals(3, (-220).digits())
+		}
+		'''.interpretPropagatingErrors
+	}	
+
+	@Test
+	def void prime() {
+		'''program a {
+			assert.that(3.prime())
+			assert.notThat(4.prime())
+			assert.that(5.prime())
+			assert.notThat(88.prime())
+			assert.that(17.prime())			
+		}
+		'''.interpretPropagatingErrors
+	}	
+
 }

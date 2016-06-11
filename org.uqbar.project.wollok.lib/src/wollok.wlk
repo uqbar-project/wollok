@@ -525,6 +525,27 @@ package lang {
 		method abs() native
 		method invert() native
 		method gcd(other) native
+		method lcm(other) {
+			const mcd = self.gcd(other)
+			return self * (other / mcd)
+		}
+		method digits() {
+			var digits = self.toString().size()
+			if (self < 0) {
+				digits -= 1
+			}
+			return digits
+		}
+		method prime() {
+			if (self == 1) return false
+			var isPrime = true
+			(2..self - 1).forEach({ i =>
+				// Horrible definition, but return doesn't exit from loop
+				// and I need fold, any methods in Range
+				if(self % i == 0) isPrime = false 
+			})
+			return isPrime
+		}
 
 		/**
 		 * Executes the given action as much times as the receptor object
