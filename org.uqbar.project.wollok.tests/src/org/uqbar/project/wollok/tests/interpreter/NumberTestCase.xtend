@@ -89,7 +89,17 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void squareRoot() {
 		'''program a {
 		
-			assert.equals(9, 3.squareRoot())
+			assert.equals(3, 9.squareRoot())
+		
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void square() {
+		'''program a {
+		
+			assert.equals(9, 3.square())
 		
 		}
 		'''.interpretPropagatingErrors
