@@ -1,6 +1,5 @@
 package wollok.lang
 
-import java.util.ArrayList
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -58,6 +57,10 @@ class WString extends AbstractJavaWrapper<String> {
 	def wollokEquals(WollokObject other) {
 		val wString = other.getNativeObject(WString)
 		wString != null && wrapped == wString.wrapped
+	}
+	
+	def replace(String expression, String replacement) {
+		wrapped.replaceAll(expression, replacement)
 	}
 	
 	def convertToWString(WollokObject it) { call("toString") as WollokObject }

@@ -65,13 +65,23 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testSplit() {
 		'''program a {
-				const result = "Esto|Es|una|prueba".split("|")
-				const comparison = new List()
-				comparison.add("Esto")
-				comparison.add("Es")
-				comparison.add("una")
-				comparison.add("prueba")
+				const result = "Esto Es una prueba".split(" ")
+				const result2 = "Esto|Es|una|prueba".split("|")
+				const result3 = "Esto,Es,una,prueba".split(",")
+				const comparison = ["Esto", "Es", "una", "prueba"]
 				(0..3).forEach { i => assert.that(result.get(i) == comparison.get(i)) }
+				(0..3).forEach { i => assert.that(result2.get(i) == comparison.get(i)) }
+				(0..3).forEach { i => assert.that(result3.get(i) == comparison.get(i)) }
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testReplace() {
+		'''program a {
+				const mardel = "Mar del Plata"
+				const tuyu = mardel.replace("Plata", "Tuyu")
+				assert.that("Mar del Tuyu" == tuyu)			
 			}
 		'''.interpretPropagatingErrors
 	}

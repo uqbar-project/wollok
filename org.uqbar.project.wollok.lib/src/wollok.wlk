@@ -604,6 +604,7 @@ package lang {
 			return result
 		}
 
+		method replace(expression, replacement) native
 		method toString() native
 		method toSmartString(alreadyShown) native
 		method ==(other) native
