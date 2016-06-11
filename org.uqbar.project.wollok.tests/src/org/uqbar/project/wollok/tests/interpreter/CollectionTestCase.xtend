@@ -341,4 +341,14 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void last() {
+		'''
+		program p {
+			assert.equals(4, [1, 2, 3, 4].last())
+			assert.equals('Hola', ['Hola'].last())
+			assert.throwsException({ [].last() })
+		}'''.interpretPropagatingErrors
+	}
 }

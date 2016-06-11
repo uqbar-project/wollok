@@ -474,6 +474,14 @@ package lang {
 		method first() = self.head()
 		method head() = self.get(0)
 		
+		/**
+		 * Returns the last element of the list.
+		 * @returns last element
+		 * Example:
+		 *		[1, 2, 3, 4].last()		=> returns 4	
+		 */
+		method last() = self.get(self.size() - 1)
+		 
 		override method toStringPrefix() = "["
 		override method toStringSufix() = "]"
 
