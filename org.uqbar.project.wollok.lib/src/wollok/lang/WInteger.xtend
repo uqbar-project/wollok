@@ -1,10 +1,11 @@
 package wollok.lang
 
+import java.math.BigDecimal
+import java.math.BigInteger
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import java.math.BigDecimal
 
 /**
  * @author jfernandes
@@ -66,6 +67,12 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	def lesserOrEquals(WollokObject other) { wrapped.doubleValue <= other.nativeNumber.wrapped.doubleValue }
 	
 	def invert() { (-wrapped).asWollokObject }
+	
+	def gcd(WollokObject other) {
+		val num1 = BigInteger.valueOf(wrapped)
+    	val num2 = BigInteger.valueOf((other.nativeNumber as WNumber<Integer>).wrapped.intValue)
+    	num1.gcd(num2).intValue
+	}
 	
 	/// java methods
 	

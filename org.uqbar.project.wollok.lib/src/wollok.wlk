@@ -488,12 +488,10 @@ package lang {
 		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
 		method between(min, max) { return (self >= min) && (self <= max) }
-		method squareRoot() {
-			return self ** 0.5 
-		}
-		method square() {
-			return self * self
-		}
+		method squareRoot() { return self ** 0.5 }
+		method square() { return self * self }
+		method even() { return self % 2 == 0 }
+		method odd() { return self.even().negate() }
 		
 	}
 	
@@ -526,6 +524,7 @@ package lang {
 		
 		method abs() native
 		method invert() native
+		method gcd(other) native
 
 		/**
 		 * Executes the given action as much times as the receptor object
