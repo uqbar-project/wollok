@@ -571,19 +571,48 @@ package lang {
 		method toLowerCase() native
 		method toUpperCase() native
 		method trim() native
-		
+		method <(aString) native
+		method <=(aString) {
+			return self.<(aString) && self.equalsIgnoreCase(aString)
+		}
+		method >(aString) native
+		method >=(aString) {
+			return self.>(aString) && self.equalsIgnoreCase(aString)
+		}
+		method contains(other) {
+			return self.indexOf(other) > 0
+		}
+		method isEmpty() {
+			return self.size() == 0
+		}
+
+		method equalsIgnoreCase(aString) {
+			return self.toUpperCase() == aString.toUpperCase()
+		}
 		method substring(length) native
 		method substring(startIndex, length) native
+		method split(expression) {
+			const result = []
+			var me = self.toString() + expression
+			var first = 0
+			(0..me.size() - 1).forEach { i =>
+				if (me.charAt(i) == expression) {
+					result.add(me.substring(first, i))
+					first = i + 1
+				}
+			}
+			return result
+		}
 
 		method toString() native
 		method toSmartString(alreadyShown) native
 		method ==(other) native
 		
-		
 		method size() = self.length()
 	}
 	
 	/**
+	
 	 * @author jfernandes
 	 * @noinstantiate
 	 */
