@@ -298,9 +298,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void concatenation() {
-		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
+		'''program p {
 			const lista1 = [1, 4]
 			const lista2 = [2, 7]
 			const lista3 = lista1 + lista2

@@ -46,7 +46,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void integersBetwenTrue() {
+	def void integersBetweenTrue() {
 		'''program a {
 		
 			assert.that(3.between(1, 5))
@@ -118,8 +118,8 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void remainder() {
 		'''program a {
-			const remainder = 17 % 7
-			const remainder2 = 12 % 6
+			const remainder = 17.rem(7)
+			const remainder2 = 12.rem(6)
 			assert.equals(3, remainder)
 			assert.equals(0, remainder2)
 		}
@@ -164,7 +164,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			(5.5).gcd(12)
 		}
 		'''.interpretPropagatingErrors
-			fail("GCD is UNDEFINED for BigDecimals")
+			fail("decimals should not understand gcd message")
 		} catch (AssertionError e) {
 			assertTrue(e.message.startsWith("5.5 does not understand gcd(p0)"))
 		}
@@ -177,9 +177,9 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			console.println((5).gcd(12.3))
 		}
 		'''.interpretPropagatingErrors
-			fail("You cannot pass a BigDecimal as first parameter in GCD")
+			fail("gcd works also for decimal argument!!")
 		} catch (AssertionError e) {
-			assertTrue(e.message.startsWith("java.math.BigDecimal cannot be cast to java.lang.Integer"))
+			assertTrue(e.message.startsWith("gcd expects an integer as first argument"))
 		}
 	}
 
@@ -206,13 +206,13 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}	
 
 	@Test
-	def void prime() {
+	def void isPrime() {
 		'''program a {
-			assert.that(3.prime())
-			assert.notThat(4.prime())
-			assert.that(5.prime())
-			assert.notThat(88.prime())
-			assert.that(17.prime())			
+			assert.that(3.isPrime())
+			assert.notThat(4.isPrime())
+			assert.that(5.isPrime())
+			assert.notThat(88.isPrime())
+			assert.that(17.isPrime())			
 		}
 		'''.interpretPropagatingErrors
 	}	

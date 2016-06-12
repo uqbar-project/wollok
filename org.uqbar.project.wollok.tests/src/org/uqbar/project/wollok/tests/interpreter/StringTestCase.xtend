@@ -27,6 +27,40 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void testLessThanFalseCondition() {
+		'''program a {
+				assert.notThat("zapallo" <= "ufa")			
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testGreaterOrEqualThan() {
+		'''program a {
+				assert.that("zapallo" >= "ufa")
+				assert.that("zapallo" >= "zapallo")
+				assert.notThat("aguacero" >= "guarecer")			
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testLessOrEqualThanForLess() {
+		'''program a {
+				assert.that("miau" <= "ufa")			
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testLessOrEqualThanForEqual() {
+		'''program a {
+				assert.that("miau" <= "miau")			
+			}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
 	def void testContains() {
 		'''program a {
 				assert.that("aguacate".contains("cat"))

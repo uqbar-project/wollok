@@ -492,6 +492,7 @@ package lang {
 		method square() { return self * self }
 		method even() { return self % 2 == 0 }
 		method odd() { return self.even().negate() }
+		method rem(other) { return self % other }
 		
 	}
 	
@@ -536,15 +537,15 @@ package lang {
 			}
 			return digits
 		}
-		method prime() {
+		method isPrime() {
 			if (self == 1) return false
-			var isPrime = true
+			var _prime = true
 			(2..self - 1).forEach({ i =>
 				// Horrible definition, but return doesn't exit from loop
 				// and I need fold, any methods in Range
-				if(self % i == 0) isPrime = false 
+				if(self % i == 0) _prime = false 
 			})
-			return isPrime
+			return _prime
 		}
 
 		/**
@@ -599,11 +600,11 @@ package lang {
 		method trim() native
 		method <(aString) native
 		method <=(aString) {
-			return self.<(aString) && self.equalsIgnoreCase(aString)
+			return self < aString || (self.equals(aString))
 		}
 		method >(aString) native
 		method >=(aString) {
-			return self.>(aString) && self.equalsIgnoreCase(aString)
+			return self > aString || (self.equals(aString))
 		}
 		method contains(other) {
 			return self.indexOf(other) > 0
@@ -698,7 +699,6 @@ package lang {
 	
 	/**
 	 *
-	 * @author dodain
 	 * @since 1.4.5
 	 */	
 	class Date {

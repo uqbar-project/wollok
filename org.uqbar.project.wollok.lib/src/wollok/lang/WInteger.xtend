@@ -70,8 +70,12 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	
 	def gcd(WollokObject other) {
 		val num1 = BigInteger.valueOf(wrapped)
-    	val num2 = BigInteger.valueOf((other.nativeNumber as WNumber<Integer>).wrapped.intValue)
-    	num1.gcd(num2).intValue
+		try {
+	    	val num2 = BigInteger.valueOf((other.nativeNumber as WNumber<Integer>).wrapped.intValue)
+	    	return num1.gcd(num2).intValue
+		} catch (ClassCastException e) {
+			throw new IllegalArgumentException("gcd expects an integer as first argument") 
+		}
 	}
 	
 	/// java methods

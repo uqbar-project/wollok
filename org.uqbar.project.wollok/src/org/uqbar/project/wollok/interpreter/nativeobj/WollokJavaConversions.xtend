@@ -103,21 +103,6 @@ class WollokJavaConversions {
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 
-	/**
-	 * Este método envuelve cualquier objeto wrappeable a un WollokObject, inspeccionando sus variables de instancia
-	 */
-	def static convertJavaToWollokWithWrappedValue(Object o) {
-		val clazz = o.class
-		val result = evaluator.newInstance(clazz.name) as WollokObject
-		val native = result.getNativeObject(clazz.name)
-		clazz.declaredFields.toList.forEach [ field |
-			field.accessible = true
-			val wrappedValueFromO = field.get(o)
-			field.set(native, wrappedValueFromO)
-		]
-		return result
-	}
-
 	def static newWollokExceptionAsJava(String message) {
 		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
