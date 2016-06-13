@@ -241,6 +241,11 @@ package lang {
 		  */
 		method addAll(elements) { elements.forEach { e => self.add(e) } }
 		
+		/**
+		  * Removes all elements of the given collection parameter from self collection
+		  */
+		method removeAll(elements) { elements.forEach { e => self.remove(e) } }
+
 		/** Tells whether self collection has no elements */
 		method isEmpty() = self.size() == 0
 				
@@ -416,12 +421,12 @@ package lang {
 		method newInstance()
 		
 		/**
-		 * Returns a Set with the elements of both the receiver collection and 
+		 * Returns a new collection with the elements of both the receiver collection and 
 		 * the parameter collection.
-		 * @returns a new set
+		 * @returns a collection
 		 */
 		 method union(aCollection) = {
-		 	var copy = self.copy().asSet()
+		 	var copy = self.copy()
 		 	copy.addAll(aCollection)
 		 	return copy
 		 }
@@ -431,7 +436,15 @@ package lang {
 		 * @returns a new set
 		 */
 		 method intersection(aCollection) = 
-		 	self.asSet().filter({it => self.contains(it)})
+		 	self.filter({it => self.contains(it)})
+		 	
+		/**
+		 * Returns a new collection with the elements of both collections, 
+		 * receiver and parameter, but that don't occurr in both of them.
+		 * @returns a collection
+		 */
+		 method difference(aCollection) =
+		 	self.union(aCollection).removeAll(self.intersection(aCollection))
 	}
 
 	/**
