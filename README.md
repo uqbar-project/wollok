@@ -117,6 +117,9 @@ Distributed under the terms of LGPLv3
 * [Carlos Lombardi](http://dblp.uni-trier.de/pers/hd/l/Lombardi:Carlos)
 * [Alfredo Sanzo](https://www.linkedin.com/in/alfredo-sanzo-13a9785)
 * [Nicolás Scarcella](https://www.linkedin.com/in/nscarcella)
+* [Leonardo Gassman](https://github.com/orgs/uqbar-project/people/lgassman)
+* [Federico Aloi](https://github.com/orgs/uqbar-project/people/faloi)
+* [Estefanía Miguel](https://github.com/orgs/uqbar-project/people/estefaniamiguel)
 
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
