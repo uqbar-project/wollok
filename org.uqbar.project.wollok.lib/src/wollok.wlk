@@ -710,6 +710,17 @@ package lang {
 			return l
 		}
 		
+		method toList() {
+			return self.map({ elem => return elem })
+		}
+		method fold(seed, foldClosure) { return self.toList().fold(seed, foldClosure) }
+		
+		method size() { return end - start + 1 }
+		
+		method any(closure) { return self.toList().any(closure) }
+		
+		method anyOne() { return self.toList().anyOne() }
+		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}
 	
