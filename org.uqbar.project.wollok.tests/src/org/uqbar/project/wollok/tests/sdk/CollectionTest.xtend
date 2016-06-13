@@ -94,4 +94,5 @@ class CollectionTest extends AbstractWollokInterpreterTestCase {
 			assert.equals([], [[]].flatten())
 		}'''.interpretPropagatingErrors
 	}
+	
 }

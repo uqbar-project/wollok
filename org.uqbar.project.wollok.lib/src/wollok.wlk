@@ -235,6 +235,16 @@ package lang {
 		}
 		 
 		// non-native methods
+
+		/**
+		  * Concatenates all elements from the given collection parameter to self collection giving a new collection
+		  * (no side effect) 
+		  */
+		method +(elements) {
+			const newCol = self.copy() 
+			newCol.addAll(elements)
+			return newCol 
+		}
 		
 		/**
 		  * Adds all elements from the given collection parameter to self collection
@@ -503,6 +513,13 @@ package lang {
 
 		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
+		method between(min, max) { return (self >= min) && (self <= max) }
+		method squareRoot() { return self ** 0.5 }
+		method square() { return self * self }
+		method even() { return self % 2 == 0 }
+		method odd() { return self.even().negate() }
+		method rem(other) { return self % other }
+		
 	}
 	
 	/**
@@ -534,6 +551,28 @@ package lang {
 		
 		method abs() native
 		method invert() native
+		method gcd(other) native
+		method lcm(other) {
+			const mcd = self.gcd(other)
+			return self * (other / mcd)
+		}
+		method digits() {
+			var digits = self.toString().size()
+			if (self < 0) {
+				digits -= 1
+			}
+			return digits
+		}
+		method isPrime() {
+			if (self == 1) return false
+			var _prime = true
+			(2..self - 1).forEach({ i =>
+				// Horrible definition, but return doesn't exit from loop
+				// and I need fold, any methods in Range
+				if(self % i == 0) _prime = false 
+			})
+			return _prime
+		}
 
 		/**
 		 * Executes the given action as much times as the receptor object
@@ -585,19 +624,49 @@ package lang {
 		method toLowerCase() native
 		method toUpperCase() native
 		method trim() native
-		
+		method <(aString) native
+		method <=(aString) {
+			return self < aString || (self.equals(aString))
+		}
+		method >(aString) native
+		method >=(aString) {
+			return self > aString || (self.equals(aString))
+		}
+		method contains(other) {
+			return self.indexOf(other) > 0
+		}
+		method isEmpty() {
+			return self.size() == 0
+		}
+
+		method equalsIgnoreCase(aString) {
+			return self.toUpperCase() == aString.toUpperCase()
+		}
 		method substring(length) native
 		method substring(startIndex, length) native
+		method split(expression) {
+			const result = []
+			var me = self.toString() + expression
+			var first = 0
+			(0..me.size() - 1).forEach { i =>
+				if (me.charAt(i) == expression) {
+					result.add(me.substring(first, i))
+					first = i + 1
+				}
+			}
+			return result
+		}
 
+		method replace(expression, replacement) native
 		method toString() native
 		method toSmartString(alreadyShown) native
 		method ==(other) native
-		
 		
 		method size() = self.length()
 	}
 	
 	/**
+	
 	 * @author jfernandes
 	 * @noinstantiate
 	 */
@@ -623,7 +692,15 @@ package lang {
 	class Range {
 		const start
 		const end
-		constructor(_start, _end) { start = _start ; end = _end }
+		
+		constructor(_start, _end) {
+			self.validate(_start)
+			self.validate(_end) 
+			start = _start 
+			end = _end
+		}
+		
+		method validate(_limit) native
 		
 		method forEach(closure) native
 		
@@ -645,6 +722,43 @@ package lang {
 		method apply(parameters...) native
 		method toString() native
 	}
+	
+	/**
+	 *
+	 * @since 1.4.5
+	 */	
+	class Date {
+
+		constructor()
+		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
+		method equals(_aDate) native
+		method plusDays(_days) native
+		method plusMonths(_months) native
+		method plusYears(_years) native
+		method isLeapYear() native
+		method initialize(_day, _month, _year) native
+		method day() native
+		method dayOfWeek() native
+		method month() native	
+		method year() native
+		method -(_aDate) native
+		method minusDays(_days) native
+		method minusMonths(_months) native
+		method minusYears(_years) native
+		method <(_aDate) native
+		method >(_aDate) native
+		method <=(_aDate) { 
+			return (self < _aDate) || (self.equals(_aDate))
+		}
+		method >=(_aDate) { 
+			return (self > _aDate) || (self.equals(_aDate)) 
+		}
+		method between(_startDate, _endDate) { 
+			return (self >= _startDate) && (self <= _endDate) 
+		}
+
+	}
+	
 }
  
 package lib {

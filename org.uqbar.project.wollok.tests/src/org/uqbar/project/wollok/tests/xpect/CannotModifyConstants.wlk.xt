@@ -4,21 +4,21 @@ class A {
 	const x = "sarasa"
 	
 	constructor() {
-		// XPECT errors --> "Cannot modify values" at "x"
+		// XPECT errors --> "Cannot modify constants" at "x"
 		x = 23
 	}
 	
 	method s() {
 		const aBlock = {a =>
-			// XPECT errors --> "Cannot modify values" at "a"
+			// XPECT errors --> "Cannot modify constants" at "a"
 			a = 23
 		}
-		// XPECT errors --> "Cannot modify values" at "aBlock"
+		// XPECT errors --> "Cannot modify constants" at "aBlock"
 		aBlock = null
 	}
 	
 	method xxx(aParam) {
-		// XPECT errors --> "Cannot modify values" at "aParam"
+		// XPECT errors --> "Cannot modify constants" at "aParam"
 		aParam = 23
 	}
 }

@@ -23,9 +23,23 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	}
 	
 	def initWrapped() {
-		if (wrapped == null)
-			wrapped = new IntegerRange(obj.resolve("start").wollokToJava(Integer) as Integer, obj.resolve("end").wollokToJava(Integer) as Integer)
+		if (wrapped == null) {
+			val start = solve("start")
+			val end = solve("end")
+			wrapped = new IntegerRange(start, end)
+		}
 		wrapped
 	}
 	
+	def solve(String fieldName) {
+		obj.resolve(fieldName).wollokToJava(Integer) as Integer
+	}
+	
+	def Integer validate(Object value) {
+		try {
+			return value.wollokToJava(Integer) as Integer
+		} catch (Throwable e) {
+			throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")
+		}
+	}
 }

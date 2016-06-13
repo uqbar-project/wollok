@@ -17,7 +17,10 @@ class WString extends AbstractJavaWrapper<String> {
 
 	def length() { wrapped.length }
 	
-	def charAt(Integer index) {}
+	def charAt(Integer index) {
+		wrapped.charAt(index).toString
+	}
+	
 	@NativeMessage("+")
 	def concat(Object other) { doConcatWith(other) }
 		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
@@ -37,11 +40,27 @@ class WString extends AbstractJavaWrapper<String> {
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
 	def toSmartString(Object alreadyShown) { wollokToString }
-	
+
+	@NativeMessage("<")
+	def lessThan(WollokObject other) {
+		val wString = other.getNativeObject(WString)
+		wrapped < wString.wrapped
+	}
+
+	@NativeMessage(">")
+	def greaterThan(WollokObject other) {
+		val wString = other.getNativeObject(WString)
+		wrapped > wString.wrapped
+	}
+
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		val wString = other.getNativeObject(WString)
 		wString != null && wrapped == wString.wrapped
+	}
+	
+	def replace(String expression, String replacement) {
+		wrapped.replaceAll(expression, replacement)
 	}
 	
 	def convertToWString(WollokObject it) { call("toString") as WollokObject }

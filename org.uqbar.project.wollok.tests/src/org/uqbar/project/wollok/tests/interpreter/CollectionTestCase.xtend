@@ -317,6 +317,17 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals(34, numbers.sum {n => n})
 		}'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void concatenation() {
+		'''program p {
+			const lista1 = [1, 4]
+			const lista2 = [2, 7]
+			const lista3 = lista1 + lista2
+			assert.equals([1, 4], lista1)
+			assert.equals([1, 4, 2, 7], lista3)
+		}'''.interpretPropagatingErrors
+	}
 	
 	@Test
 	def void sumNoArgs() {

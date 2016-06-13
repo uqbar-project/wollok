@@ -28,7 +28,8 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		DOUBLE -> "wollok.lang.WDouble",
 		NUMBER -> "wollok.lang.WNumber",
 		STRING -> "wollok.lang.WString",
-		BOOLEAN -> "wollok.lang.WBoolean"
+		BOOLEAN -> "wollok.lang.WBoolean",
+		DATE -> "wollok.lang.WDate"
 	}
 	
 	override createNativeObject(WClass it, WollokObject obj, WollokInterpreter interpreter) {
