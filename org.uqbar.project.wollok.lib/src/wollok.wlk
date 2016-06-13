@@ -565,13 +565,7 @@ package lang {
 		}
 		method isPrime() {
 			if (self == 1) return false
-			var _prime = true
-			(2..self - 1).forEach({ i =>
-				// Horrible definition, but return doesn't exit from loop
-				// and I need fold, any methods in Range
-				if(self % i == 0) _prime = false 
-			})
-			return _prime
+			return (2..self - 1).any({ i => self % i == 0 }).negate()
 		}
 
 		/**
