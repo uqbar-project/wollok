@@ -244,7 +244,9 @@ package lang {
 		/**
 		  * Removes all elements of the given collection parameter from self collection
 		  */
-		method removeAll(elements) { elements.forEach { e => self.remove(e) } }
+		method removeAll(elements) { 
+			elements.forEach { e => self.remove(e) } 
+		}
 
 		/** Tells whether self collection has no elements */
 		method isEmpty() = self.size() == 0
@@ -439,12 +441,12 @@ package lang {
 		 	self.filter({it => self.contains(it)})
 		 	
 		/**
-		 * Returns a new collection with the elements of both collections, 
-		 * receiver and parameter, but that don't occurr in both of them.
+		 * Returns a new collection with the elements of either of the collections, 
+		 * receiver and parameter, but that don't occur in both of them.
 		 * @returns a collection
 		 */
 		 method difference(aCollection) =
-		 	self.union(aCollection).removeAll(self.intersection(aCollection))
+		 	self.copy().removeAll(aCollection)
 	}
 
 	/**
