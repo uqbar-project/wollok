@@ -243,5 +243,38 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors	
 	}
-		
+
+	@Test
+	def void sumStep3() {
+		'''
+		program a {
+			const range = 1 .. 14
+			range.step(3)
+			assert.equals(35, range.sum())
+		}
+		'''.interpretPropagatingErrors	
+	}
+
+	@Test
+	def void countStepMinus3() {
+		'''
+		program a {
+			const range = 8 .. 1
+			range.step(-3)
+			assert.equals(2, range.count({ elem => elem.even() }))
+		}
+		'''.interpretPropagatingErrors	
+	}
+
+	@Test
+	def void filterStepMinus3() {
+		'''
+		program a {
+			const range = 8 .. 1
+			range.step(-3)
+			assert.equals([8,2], range.filter({ elem => elem.even() }))
+		}
+		'''.interpretPropagatingErrors	
+	}
+
 }

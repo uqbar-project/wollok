@@ -691,13 +691,21 @@ package lang {
 	class Range {
 		const start
 		const end
+		var step
 		
 		constructor(_start, _end) {
 			self.validate(_start)
-			self.validate(_end) 
+			self.validate(_end)
 			start = _start 
 			end = _end
+			if (_start > _end) { 
+				step = -1 
+			} else {
+				step = 1
+			}  
 		}
+		
+		method step(_step) { step = _step }
 		
 		method validate(_limit) native
 		
@@ -709,6 +717,7 @@ package lang {
 			return l
 		}
 		
+		/** @private */
 		method asList() {
 			return self.map({ elem => return elem })
 		}
