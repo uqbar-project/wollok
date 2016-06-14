@@ -535,7 +535,7 @@ package lang {
 		method /(other) native
 		method div(other) native
 		/**
-		 * high
+		 * raisedTo
 		 * 3 ** 2 = 9
 		 */
 		method **(other) native
