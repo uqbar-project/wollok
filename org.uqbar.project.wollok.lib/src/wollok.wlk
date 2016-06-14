@@ -533,7 +533,15 @@ package lang {
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
+		/**
+		 * high
+		 * 3 ** 2 = 9
+		 */
 		method **(other) native
+		/**
+		 * returns remainder of division between self and other
+		 */
 		method %(other) native
 		
 		method toString() native
@@ -548,15 +556,29 @@ package lang {
 		method <=(other) native
 		
 		method abs() native
+		/**
+		 * 3.invert() ==> -3
+		 * (-2).invert() ==> 2
+		 */
 		method invert() native
 		/*
-		 * greater common denominator
+		 * greater common divisor
+		 * 8.gcd(12) ==> 4
+		 * 5.gcd(10) ==> 5
 		 */
 		method gcd(other) native
+		/**
+		 * least common multiple
+		 * 3.lcm(4) ==> 12
+		 * 6.lcm(12) ==> 12
+		 */
 		method lcm(other) {
 			const mcd = self.gcd(other)
 			return self * (other / mcd)
 		}
+		/**
+		 * number of digits of this numbers (without sign)
+		 */
 		method digits() {
 			var digits = self.toString().size()
 			if (self < 0) {
@@ -566,7 +588,7 @@ package lang {
 		}
 		method isPrime() {
 			if (self == 1) return false
-			return (2..self - 1).any({ i => self % i == 0 }).negate()
+			return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 		}
 		/**
 		 * Returns a random between self and max
@@ -591,6 +613,7 @@ package lang {
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
 		method **(other) native
 		method %(other) native
 		
@@ -731,13 +754,31 @@ package lang {
 		method filter(closure) { return self.asList().filter(closure) }
 		method min() { return self.asList().min() }
 		method max() { return self.asList().max() }
+		/**
+		 * returns a random integer contained in the range
+		 */		
 		method anyOne() native
 		method contains(e) { return self.asList().contains(e) }
 		method sum() { return self.asList().sum() }
+		/**
+		 * sums all elements that match the boolean closure 
+		 */
 		method sum(closure) { return self.asList().sum(closure) }
+		/**
+		 * counts how many elements match the boolean closure
+		 */
 		method count(closure) { return self.asList().count(closure) }
 		method find(closure) { return self.asList().find(closure) }
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or evaluates the continuation block closure if no element is found
+		 */
 		method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
+		
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or returns a default value otherwise
+		 */
 		method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
 		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		

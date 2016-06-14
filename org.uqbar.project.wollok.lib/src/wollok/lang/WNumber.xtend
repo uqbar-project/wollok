@@ -31,6 +31,11 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
 	def dispatch doMin(WNumber<?> a, WNumber<?> b) { Math.min(a.doubleValue, b.doubleValue) }
 
+	def div(WollokObject other) {
+		val n = other.nativeNumber
+		Math.floor(this.doubleValue / n.doubleValue).intValue
+	}
+
 	// ********************************************************************************************
 	// ** Basics
 	// ********************************************************************************************	

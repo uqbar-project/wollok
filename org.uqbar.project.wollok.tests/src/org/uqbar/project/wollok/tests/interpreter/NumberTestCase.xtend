@@ -237,4 +237,15 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}	
 
+	@Test
+	def void integerDivision() {
+		'''program a {
+			assert.equals(4, 16.div(4))
+			assert.equals(4, 18.div(4))
+			assert.equals(5, 21.div(4))
+			assert.equals(5, (21.2).div(4.1))
+		}
+		'''.interpretPropagatingErrors
+	}	
+
 }
