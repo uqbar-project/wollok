@@ -28,8 +28,6 @@ class WObject {
 	
 	def identity() { System.identityHashCode(obj) }
 	
-	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
-	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
 	def className() { (obj.kind).fqn }
 	

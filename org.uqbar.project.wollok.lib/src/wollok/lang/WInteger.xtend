@@ -85,5 +85,9 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	}
 
 	override compareTo(WInteger o) { wrapped.compareTo(o.wrapped) }
+	
+	def randomUpTo(Integer max) {
+		((Math.random * (max - wrapped)) + wrapped).intValue()
+	}
 
 }

@@ -115,8 +115,6 @@ package lang {
 		
 		method equals(other) = self == other
 		
-		method randomBetween(start, end) native
-		
 		method ->(other) {
 			return new Pair(self, other)
 		}
@@ -436,7 +434,7 @@ package lang {
 			if (self.isEmpty()) 
 				throw new Exception("Illegal operation 'anyOne' on empty collection")
 			else 
-				return self.get(self.randomBetween(0, self.size()))
+				return self.get(0.randomUpTo(self.size()))
 		}
 		
 		method first() = self.head()
@@ -551,6 +549,9 @@ package lang {
 		
 		method abs() native
 		method invert() native
+		/*
+		 * greater common denominator
+		 */
 		method gcd(other) native
 		method lcm(other) {
 			const mcd = self.gcd(other)
@@ -567,7 +568,10 @@ package lang {
 			if (self == 1) return false
 			return (2..self - 1).any({ i => self % i == 0 }).negate()
 		}
-
+		/**
+		 * Returns a random between self and max
+		 */
+		method randomUpTo(max) native
 		/**
 		 * Executes the given action as much times as the receptor object
 		 */
@@ -601,6 +605,7 @@ package lang {
 		
 		method abs() native
 		method invert() native
+		method randomUpTo(max) native
 	}
 	
 	/**
@@ -704,16 +709,28 @@ package lang {
 			return l
 		}
 		
-		method toList() {
+		method asList() {
 			return self.map({ elem => return elem })
 		}
-		method fold(seed, foldClosure) { return self.toList().fold(seed, foldClosure) }
 		
+		method isEmpty() = self.size() == 0
+
+		method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
 		method size() { return end - start + 1 }
-		
-		method any(closure) { return self.toList().any(closure) }
-		
-		method anyOne() { return self.toList().anyOne() }
+		method any(closure) { return self.asList().any(closure) }
+		method all(closure) { return self.asList().all(closure) }
+		method filter(closure) { return self.asList().filter(closure) }
+		method min() { return self.asList().min() }
+		method max() { return self.asList().max() }
+		method anyOne() native
+		method contains(e) { return self.asList().contains(e) }
+		method sum() { return self.asList().sum() }
+		method sum(closure) { return self.asList().sum(closure) }
+		method count(closure) { return self.asList().count(closure) }
+		method find(closure) { return self.asList().find(closure) }
+		method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
+		method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
+		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}

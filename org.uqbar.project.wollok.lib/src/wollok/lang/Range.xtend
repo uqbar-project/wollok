@@ -12,7 +12,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * @author jfernandes
  */
 class Range extends AbstractJavaWrapper<IntegerRange> {
-	
+
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter) 
 	}
@@ -42,4 +42,10 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 			throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")
 		}
 	}
+	
+	def anyOne() {
+		val wrapped = initWrapped()
+		((Math.random * (wrapped.end - wrapped.start)) + wrapped.start).intValue()
+	}
+	
 }
