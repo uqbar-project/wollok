@@ -221,7 +221,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void randomForIntegers() {
 		'''program a {
 			const random1 = 3.randomUpTo(8)
-			console.println(random1)
 			assert.that(random1.between(3, 8))
 			assert.notThat(random1.between(9, 10))
 		}
@@ -232,7 +231,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void randomForReals() {
 		'''program a {
 			const random1 = (3.2).randomUpTo(8.9)
-			console.println(random1)
 			assert.that(random1.between(3.2, 8.9))
 			assert.notThat(random1.between(9.0, 10.11))
 		}
