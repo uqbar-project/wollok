@@ -115,8 +115,6 @@ package lang {
 		
 		method equals(other) = self == other
 		
-		method randomBetween(start, end) native
-		
 		method ->(other) {
 			return new Pair(self, other)
 		}
@@ -191,17 +189,35 @@ package lang {
 		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
 		  */
 		method max(closure) = self.absolute(closure, { a, b => a > b })
+
+		/**
+		  * Returns the element that represents the maximum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].max()    =>  returns 15		 
+		  */
+		method max() = self.max({it => it})		
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  returns "ab"		 
 		  */
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
+		/**
+		  * Returns the element that represents the minimum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].min()    =>  returns 1 
+		  */
+		method min() = self.min({it => it})
+
 		method absolute(closure, criteria) {
+			if (self.isEmpty())
+				throw new ElementNotFoundException("collection is empty")
 			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
 				if (acc == null)
@@ -213,10 +229,20 @@ package lang {
 						acc
 				}
 			})
-			return if (result == null) null else result.getX()
+			return result.getX()
 		}
 		 
 		// non-native methods
+
+		/**
+		  * Concatenates all elements from the given collection parameter to self collection giving a new collection
+		  * (no side effect) 
+		  */
+		method +(elements) {
+			const newCol = self.copy() 
+			newCol.addAll(elements)
+			return newCol 
+		}
 		
 		/**
 		  * Adds all elements from the given collection parameter to self collection
@@ -302,6 +328,14 @@ package lang {
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+		
+		/**
+		 * Sums all elements in the collection.
+		 * @returns an integer
+		 * Example:
+		 *      const total = [1, 2, 3, 4, 5].sum() 
+		 */
+		method sum() = self.sum( {it => it} )
 		
 		/**
 		 * Returns a new collection that contains the result of transforming each of self collection's elements
@@ -400,7 +434,7 @@ package lang {
 			if (self.isEmpty()) 
 				throw new Exception("Illegal operation 'anyOne' on empty collection")
 			else 
-				return self.get(self.randomBetween(0, self.size()))
+				return self.get(0.randomUpTo(self.size()))
 		}
 		
 		method first() = self.head()
@@ -477,6 +511,13 @@ package lang {
 
 		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
+		method between(min, max) { return (self >= min) && (self <= max) }
+		method squareRoot() { return self ** 0.5 }
+		method square() { return self * self }
+		method even() { return self % 2 == 0 }
+		method odd() { return self.even().negate() }
+		method rem(other) { return self % other }
+		
 	}
 	
 	/**
@@ -492,7 +533,15 @@ package lang {
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
+		/**
+		 * raisedTo
+		 * 3 ** 2 = 9
+		 */
 		method **(other) native
+		/**
+		 * returns remainder of division between self and other
+		 */
 		method %(other) native
 		
 		method toString() native
@@ -507,8 +556,44 @@ package lang {
 		method <=(other) native
 		
 		method abs() native
+		/**
+		 * 3.invert() ==> -3
+		 * (-2).invert() ==> 2
+		 */
 		method invert() native
-
+		/*
+		 * greater common divisor
+		 * 8.gcd(12) ==> 4
+		 * 5.gcd(10) ==> 5
+		 */
+		method gcd(other) native
+		/**
+		 * least common multiple
+		 * 3.lcm(4) ==> 12
+		 * 6.lcm(12) ==> 12
+		 */
+		method lcm(other) {
+			const mcd = self.gcd(other)
+			return self * (other / mcd)
+		}
+		/**
+		 * number of digits of this numbers (without sign)
+		 */
+		method digits() {
+			var digits = self.toString().size()
+			if (self < 0) {
+				digits -= 1
+			}
+			return digits
+		}
+		method isPrime() {
+			if (self == 1) return false
+			return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
+		}
+		/**
+		 * Returns a random between self and max
+		 */
+		method randomUpTo(max) native
 		/**
 		 * Executes the given action as much times as the receptor object
 		 */
@@ -528,6 +613,7 @@ package lang {
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
 		method **(other) native
 		method %(other) native
 		
@@ -542,6 +628,7 @@ package lang {
 		
 		method abs() native
 		method invert() native
+		method randomUpTo(max) native
 	}
 	
 	/**
@@ -559,19 +646,49 @@ package lang {
 		method toLowerCase() native
 		method toUpperCase() native
 		method trim() native
-		
+		method <(aString) native
+		method <=(aString) {
+			return self < aString || (self.equals(aString))
+		}
+		method >(aString) native
+		method >=(aString) {
+			return self > aString || (self.equals(aString))
+		}
+		method contains(other) {
+			return self.indexOf(other) > 0
+		}
+		method isEmpty() {
+			return self.size() == 0
+		}
+
+		method equalsIgnoreCase(aString) {
+			return self.toUpperCase() == aString.toUpperCase()
+		}
 		method substring(length) native
 		method substring(startIndex, length) native
+		method split(expression) {
+			const result = []
+			var me = self.toString() + expression
+			var first = 0
+			(0..me.size() - 1).forEach { i =>
+				if (me.charAt(i) == expression) {
+					result.add(me.substring(first, i))
+					first = i + 1
+				}
+			}
+			return result
+		}
 
+		method replace(expression, replacement) native
 		method toString() native
 		method toSmartString(alreadyShown) native
 		method ==(other) native
-		
 		
 		method size() = self.length()
 	}
 	
 	/**
+	
 	 * @author jfernandes
 	 * @noinstantiate
 	 */
@@ -597,7 +714,23 @@ package lang {
 	class Range {
 		const start
 		const end
-		constructor(_start, _end) { start = _start ; end = _end }
+		var step
+		
+		constructor(_start, _end) {
+			self.validate(_start)
+			self.validate(_end)
+			start = _start 
+			end = _end
+			if (_start > _end) { 
+				step = -1 
+			} else {
+				step = 1
+			}  
+		}
+		
+		method step(_step) { step = _step }
+		
+		method validate(_limit) native
 		
 		method forEach(closure) native
 		
@@ -606,6 +739,48 @@ package lang {
 			self.forEach{e=> l.add(closure.apply(e)) }
 			return l
 		}
+		
+		/** @private */
+		method asList() {
+			return self.map({ elem => return elem })
+		}
+		
+		method isEmpty() = self.size() == 0
+
+		method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
+		method size() { return end - start + 1 }
+		method any(closure) { return self.asList().any(closure) }
+		method all(closure) { return self.asList().all(closure) }
+		method filter(closure) { return self.asList().filter(closure) }
+		method min() { return self.asList().min() }
+		method max() { return self.asList().max() }
+		/**
+		 * returns a random integer contained in the range
+		 */		
+		method anyOne() native
+		method contains(e) { return self.asList().contains(e) }
+		method sum() { return self.asList().sum() }
+		/**
+		 * sums all elements that match the boolean closure 
+		 */
+		method sum(closure) { return self.asList().sum(closure) }
+		/**
+		 * counts how many elements match the boolean closure
+		 */
+		method count(closure) { return self.asList().count(closure) }
+		method find(closure) { return self.asList().find(closure) }
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or evaluates the continuation block closure if no element is found
+		 */
+		method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
+		
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or returns a default value otherwise
+		 */
+		method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
+		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}
@@ -619,6 +794,43 @@ package lang {
 		method apply(parameters...) native
 		method toString() native
 	}
+	
+	/**
+	 *
+	 * @since 1.4.5
+	 */	
+	class Date {
+
+		constructor()
+		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
+		method equals(_aDate) native
+		method plusDays(_days) native
+		method plusMonths(_months) native
+		method plusYears(_years) native
+		method isLeapYear() native
+		method initialize(_day, _month, _year) native
+		method day() native
+		method dayOfWeek() native
+		method month() native	
+		method year() native
+		method -(_aDate) native
+		method minusDays(_days) native
+		method minusMonths(_months) native
+		method minusYears(_years) native
+		method <(_aDate) native
+		method >(_aDate) native
+		method <=(_aDate) { 
+			return (self < _aDate) || (self.equals(_aDate))
+		}
+		method >=(_aDate) { 
+			return (self > _aDate) || (self.equals(_aDate)) 
+		}
+		method between(_startDate, _endDate) { 
+			return (self >= _startDate) && (self <= _endDate) 
+		}
+
+	}
+	
 }
  
 package lib {

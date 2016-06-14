@@ -197,6 +197,13 @@
             id="org.uqbar.project.wollok.ui.tests.shortcut.debug"
             name="%wollok.debug.tests">
       </command>
+      <command
+            categoryId="org.eclipse.debug.ui.category.run"
+            defaultHandler="org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
+            description="%wollok.launch.replWithoutFile.desc"
+            id="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
+            name="%wollok.launch.replWithoutFile">
+      </command>
    </extension>
    	<extension
           point="org.eclipse.ui.bindings">
@@ -204,27 +211,27 @@
             sequence="M2+M3+X W"
             commandId="org.uqbar.project.wollok.ui.launch.shortcut.run"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-    </extension>
-   <extension
-          point="org.eclipse.ui.bindings">
         <key
-            sequence="M2+M3+D W"
-            commandId="org.uqbar.project.wollok.ui.launch.shortcut.debug"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-    </extension>
-   	<extension
-          point="org.eclipse.ui.bindings">
+              commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
+              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+              sequence="M2+M3+D R">
+        </key>
         <key
-            sequence="M2+M3+X R"
-            commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.run"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-    </extension>
-   <extension
-          point="org.eclipse.ui.bindings">
+              commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.run"
+              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+              sequence="M2+M3+X R">
+        </key>
         <key
-            sequence="M2+M3+D R"
-            commandId="org.uqbar.project.wollok.ui.launch.shortcut.repl.debug"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+              commandId="org.uqbar.project.wollok.ui.launch.shortcut.debug"
+              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+              sequence="M2+M3+D W">
+        </key>
+        <key
+              commandId="org.uqbar.project.wollok.ui.launch.commands.sampleCommand"
+              contextId="org.eclipse.ui.contexts.window"
+              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+              sequence="M1+6">
+        </key>
     </extension>
    <!-- SHORTCUTS & BINDINGS -->
    
@@ -339,6 +346,23 @@
             <instanceof value="org.uqbar.project.wollok.ui.console.WollokReplConsole"/>
          </enablement>
       </consolePageParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.eclipse.debug.ui.launchActionSet">
+            <command
+                  commandId="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
+                  icon="icons/wollok_run_repl.png"
+                  label="%wollok.launch.replWithoutFile"
+                  style="push"
+                  tooltip="%wollok.launch.replWithoutFile.desc">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
   <!-- /REPL -->
 

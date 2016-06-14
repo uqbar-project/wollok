@@ -48,6 +48,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
         val imageDescriptor = ImageDescriptor.createFromFile(getClass, "/icons/stop_active.gif")
         this.stop = new Action("Stop", imageDescriptor) {
             override run() {
+            	this.enabled = false
             	console.shutdown
             }
         };

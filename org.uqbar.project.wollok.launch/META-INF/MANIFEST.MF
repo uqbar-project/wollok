@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.launch
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.4.3
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.uqbar.project.xinterpreter;bundle-version="1.4.3",
+ org.uqbar.project.xinterpreter,
  org.uqbar.project.wollok,
  org.eclipse.debug.core;bundle-version="3.8.0",
  org.eclipse.debug.ui;bundle-version="3.9.0",
@@ -29,9 +29,9 @@ Bundle-ClassPath: lib/lipermi-0-4-2.jar,
  lib/gson-2.4.jar,
  .
 Export-Package: org.uqbar.project.wollok.debugger,
- org.uqbar.project.wollok.debugger.server,
- org.uqbar.project.wollok.debugger.server.rmi,
  org.uqbar.project.wollok.launch,
- org.uqbar.project.wollok.launch.io,
  org.uqbar.project.wollok.launch.setup,
- org.uqbar.project.wollok.launch.tests
+ org.uqbar.project.wollok.launch.io,
+ org.uqbar.project.wollok.launch.tests,
+ org.uqbar.project.wollok.debugger.server,
+ org.uqbar.project.wollok.debugger.server.rmi
