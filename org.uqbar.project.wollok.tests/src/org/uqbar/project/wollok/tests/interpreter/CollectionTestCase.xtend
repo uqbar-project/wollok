@@ -433,6 +433,10 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals([2], numbers)
 			numbers.removeAllSuchThat({it => it.odd()})
 			assert.equals([2], numbers)
+			numbers.removeAllSuchThat({it => it.even()})
+			assert.equals([], numbers)
+			numbers.removeAllSuchThat({it => it.even()})
+			assert.equals([], numbers)
 		}'''.interpretPropagatingErrors
 	}
 }
