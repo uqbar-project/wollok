@@ -4,7 +4,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
- * @author jfernandes
+ * @author matifreyre
  */
 class SetTestCase extends CollectionTestCase {
 	
