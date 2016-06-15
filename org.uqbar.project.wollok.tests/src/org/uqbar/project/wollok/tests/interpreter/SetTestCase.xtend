@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * @author matifreyre

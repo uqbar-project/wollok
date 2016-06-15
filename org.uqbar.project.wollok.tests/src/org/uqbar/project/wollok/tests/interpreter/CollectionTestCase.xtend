@@ -413,4 +413,26 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals(4, [1, 2, 3, 4].last())
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void removeAll() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			numbers.removeAll(numbers.drop(1))
+			assert.equals([numbers.head()], numbers)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void removeAllSuchThat() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			numbers.removeAllSuchThat({it => it >= 10})
+			assert.equals([2], numbers)
+			numbers.removeAllSuchThat({it => it.odd()})
+			assert.equals([2], numbers)
+		}'''.interpretPropagatingErrors
+	}
 }

@@ -94,7 +94,7 @@ package lang {
 		method className() native
 		
 		/**
-		 * Tells whether self object is "equals" to the given object
+		 * Tells whether self object is "equal" to the given object
 		 * The default behavior compares them in terms of identity (===)
 		 */
 		method ==(other) {
@@ -257,6 +257,13 @@ package lang {
 		method removeAll(elements) { 
 			elements.forEach { e => self.remove(e) } 
 		}
+		
+		/**
+		 * Removes those elements that meet a given condition
+		 */
+		 method removeAllSuchThat(closure) {
+		 	self.removeAll( self.filter(closure) )
+		 }
 
 		/** Tells whether self collection has no elements */
 		method isEmpty() = self.size() == 0
