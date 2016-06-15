@@ -30,6 +30,9 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 	}
 	
 	def qualifiedName(WFile ele) {
+		if(ele.file.URI.trimFileExtension.toString.startsWith("classpath:/")){
+			return QualifiedName.create(ele.file.URI.trimFileExtension.segments)
+		}
 		QualifiedName.create(ele.fileName)		
 	}
 	
