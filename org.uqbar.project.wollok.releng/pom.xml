@@ -160,17 +160,9 @@
 											<exclude>.gitignore</exclude>
 										</excludes>
 									</fileset>
-									<!--
-									<fileset>
-										<directory>${basedir}/xsemantics-gen</directory>
-										<includes>
-											<include>**</include>
-										</includes>
-										<excludes>
-											<exclude>.gitignore</exclude>
-										</excludes>
-									</fileset>
-									 -->
+									<!-- <fileset> <directory>${basedir}/xsemantics-gen</directory> 
+										<includes> <include>**</include> </includes> <excludes> <exclude>.gitignore</exclude> 
+										</excludes> </fileset> -->
 								</filesets>
 							</configuration>
 						</execution>

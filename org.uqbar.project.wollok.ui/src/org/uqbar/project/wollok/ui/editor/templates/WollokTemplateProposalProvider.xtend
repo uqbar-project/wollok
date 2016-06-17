@@ -85,7 +85,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 '''var ${name} = ${value}'''
 
 << WConstructorCall >>
-'''new ${Class}}()'''
+'''new ${Class}()'''
 
 << WIfExpression >>
 '''if (${condition}) {
@@ -99,7 +99,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 '''#{${content}}'''
 
 << WClosure >>
-'''[ ${params} | ${content} ]'''
+'''[ ${params} => ${content} ]'''
 
 << WTest >>
 '''test "${name}" {
