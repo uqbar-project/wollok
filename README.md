@@ -102,7 +102,7 @@ Distributed under the terms of LGPLv3
 ## Contributors ##
 * [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
 * [Nicolás Passerini](https://github.com/npasserini)
-* [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
+* [Pablo Tesone](http://github.com/tesonep)
 * [Nahuel Palumbo](https://github.com/PalumboN)
 * [Juan Contardo](https://github.com/Juancete)
 * [Franco Bulgarelli](https://github.com/flbulgarelli)
