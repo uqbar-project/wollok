@@ -184,17 +184,35 @@
 		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
 		  */
 		method max(closure) = self.absolute(closure, { a, b => a > b })
+
+		/**
+		  * Returns the element that represents the maximum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].max()    =>  returns 15		 
+		  */
+		method max() = self.max({it => it})		
 		
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["ab", "abc", "hello", "wollok world"].min { e => e.length() }    =>  returns "ab"		 
+		  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  returns "ab"		 
 		  */
 		method min(closure) = self.absolute(closure, { a, b => a < b} )
 		
+		/**
+		  * Returns the element that represents the minimum value in the collection.
+		  * The criteria is by direct comparison of the elements.
+		  * Example:
+		  *       [11, 1, 4, 8, 3, 15, 6].min()    =>  returns 1 
+		  */
+		method min() = self.min({it => it})
+
 		method absolute(closure, criteria) {
+			if (self.isEmpty())
+				throw new ElementNotFoundException("collection is empty")
 			const result = self.fold(null, { acc, e =>
 				const n = closure.apply(e) 
 				if (acc == null)
@@ -206,10 +224,20 @@
 						acc
 				}
 			})
-			return if (result == null) null else result.getX()
+			return result.getX()
 		}
 		 
 		// non-native methods
+
+		/**
+		  * Concatenates all elements from the given collection parameter to self collection giving a new collection
+		  * (no side effect) 
+		  */
+		method +(elements) {
+			const newCol = self.copy() 
+			newCol.addAll(elements)
+			return newCol 
+		}
 		
 		/**
 		  * Adds all elements from the given collection parameter to self collection
@@ -295,6 +323,14 @@
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
 		method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+		
+		/**
+		 * Sums all elements in the collection.
+		 * @returns an integer
+		 * Example:
+		 *      const total = [1, 2, 3, 4, 5].sum() 
+		 */
+		method sum() = self.sum( {it => it} )
 		
 		/**
 		 * Returns a new collection that contains the result of transforming each of self collection's elements
@@ -470,6 +506,13 @@
 
 		override method simplifiedToSmartString(){ return self.stringValue() }
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
+		method between(min, max) { return (self >= min) && (self <= max) }
+		method squareRoot() { return self ** 0.5 }
+		method square() { return self * self }
+		method even() { return self % 2 == 0 }
+		method odd() { return self.even().negate() }
+		method rem(other) { return self % other }
+		
 	}
 	
 	/**
@@ -501,6 +544,28 @@
 		
 		method abs() native
 		method invert() native
+		method gcd(other) native
+		method lcm(other) {
+			const mcd = self.gcd(other)
+			return self * (other / mcd)
+		}
+		method digits() {
+			var digits = self.toString().size()
+			if (self < 0) {
+				digits -= 1
+			}
+			return digits
+		}
+		method isPrime() {
+			if (self == 1) return false
+			var _prime = true
+			(2..self - 1).forEach({ i =>
+				// Horrible definition, but return doesn't exit from loop
+				// and I need fold, any methods in Range
+				if(self % i == 0) _prime = false 
+			})
+			return _prime
+		}
 
 		/**
 		 * Executes the given action as much times as the receptor object
@@ -552,19 +617,49 @@
 		method toLowerCase() native
 		method toUpperCase() native
 		method trim() native
-		
+		method <(aString) native
+		method <=(aString) {
+			return self < aString || (self.equals(aString))
+		}
+		method >(aString) native
+		method >=(aString) {
+			return self > aString || (self.equals(aString))
+		}
+		method contains(other) {
+			return self.indexOf(other) > 0
+		}
+		method isEmpty() {
+			return self.size() == 0
+		}
+
+		method equalsIgnoreCase(aString) {
+			return self.toUpperCase() == aString.toUpperCase()
+		}
 		method substring(length) native
 		method substring(startIndex, length) native
+		method split(expression) {
+			const result = []
+			var me = self.toString() + expression
+			var first = 0
+			(0..me.size() - 1).forEach { i =>
+				if (me.charAt(i) == expression) {
+					result.add(me.substring(first, i))
+					first = i + 1
+				}
+			}
+			return result
+		}
 
+		method replace(expression, replacement) native
 		method toString() native
 		method toSmartString(alreadyShown) native
 		method ==(other) native
-		
 		
 		method size() = self.length()
 	}
 	
 	/**
+	
 	 * @author jfernandes
 	 * @noinstantiate
 	 */
@@ -590,7 +685,15 @@
 	class Range {
 		const start
 		const end
-		constructor(_start, _end) { start = _start ; end = _end }
+		
+		constructor(_start, _end) {
+			self.validate(_start)
+			self.validate(_end) 
+			start = _start 
+			end = _end
+		}
+		
+		method validate(_limit) native
 		
 		method forEach(closure) native
 		
@@ -612,3 +715,266 @@
 		method apply(parameters...) native
 		method toString() native
 	}
+	
+	/**
+	 *
+	 * @since 1.4.5
+	 */	
+	class Date {
+
+		constructor()
+		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
+		method equals(_aDate) native
+		method plusDays(_days) native
+		method plusMonths(_months) native
+		method plusYears(_years) native
+		method isLeapYear() native
+		method initialize(_day, _month, _year) native
+		method day() native
+		method dayOfWeek() native
+		method month() native	
+		method year() native
+		method -(_aDate) native
+		method minusDays(_days) native
+		method minusMonths(_months) native
+		method minusYears(_years) native
+		method <(_aDate) native
+		method >(_aDate) native
+		method <=(_aDate) { 
+			return (self < _aDate) || (self.equals(_aDate))
+		}
+		method >=(_aDate) { 
+			return (self > _aDate) || (self.equals(_aDate)) 
+		}
+		method between(_startDate, _endDate) { 
+			return (self >= _startDate) && (self <= _endDate) 
+		}
+
+	}
+	
+}
+ 
+package lib {
+
+	object console {
+		method println(obj) native
+		method readLine() native
+		method readInt() native
+	}
+	
+	object assert {
+		method that(value) native
+		method notThat(value) native
+		method equals(expected, actual) native
+		method notEquals(expected, actual) native
+		method throwsException(block) native
+		method fail(message) native
+	}
+	
+	class StringPrinter {
+		var buffer = ""
+		method println(obj) {
+			buffer += obj.toString() + "\n"
+		}
+		method getBuffer() = buffer
+	}	
+	
+	object wgame {
+		method addVisual(element) native
+		method addVisualIn(element, position) native
+		method addVisualCharacter(element) native
+		method addVisualCharacterIn(element, position) native
+		method removeVisual(element) native
+		method whenKeyPressedDo(key, action) native
+		method whenKeyPressedSay(key, function) native
+		method whenCollideDo(element, action) native
+		method getObjectsIn(position) native
+		method say(element, message) native
+		method clear() native
+		method start() native
+		method stop() native
+		
+		method setTitle(title) native
+		method getTitle() native
+		method setWidth(width) native
+		method getWidth() native
+		method setHeight(height) native
+		method getHeight() native
+		method setGround(image) native
+	}
+	
+	class Position {
+		var x = 0
+		var y = 0
+		
+		constructor() { }		
+				
+		constructor(_x, _y) {
+			x = _x
+			y = _y
+		}
+		
+		method moveRight(num) { x += num }
+		method moveLeft(num) { x -= num }
+		method moveUp(num) { y += num }
+		method moveDown(num) { y -= num }
+	
+		method drawElement(element) { wgame.addVisualIn(element, self) }
+		method drawCharacter(element) { wgame.addVisualCharacterIn(element, self) }		
+		method deleteElement(element) { wgame.removeVisual(element) }
+		method say(element, message) { wgame.say(element, message) }
+		method allElements() = wgame.getObjectsIn(self)
+		
+		method clone() = new Position(x, y)
+
+		method clear() {
+			self.allElements().forEach{it => wgame.removeVisual(it)}
+		}
+		
+		method getX() = x
+		method setX(_x) { x = _x }
+		method getY() = y
+		method setY(_y) { y = _y }
+	}
+}
+
+package game {
+		
+	class Key {	
+		var keyCodes
+		
+		constructor(_keyCodes) {
+			keyCodes = _keyCodes
+		}
+	
+		method onPressDo(action) {
+			keyCodes.forEach{ key => wgame.whenKeyPressedDo(key, action) }
+		}
+		
+		method onPressCharacterSay(function) {
+			keyCodes.forEach{ key => wgame.whenKeyPressedSay(key, function) }
+		}
+	}
+
+	object ANY_KEY inherits Key([-1]) { }
+  
+	object NUM_0 inherits Key([7, 144]) { }
+	
+	object NUM_1 inherits Key([8, 145]) { }
+	
+	object NUM_2 inherits Key([9, 146]) { }
+	
+	object NUM_3 inherits Key([10, 147]) { }
+	
+	object NUM_4 inherits Key([11, 148]) { }
+	
+	object NUM_5 inherits Key([12, 149]) { }
+	
+	object NUM_6 inherits Key([13, 150]) { }
+	
+	object NUM_7 inherits Key([14, 151]) { }
+	
+	object NUM_8 inherits Key([15, 152]) { }
+	
+	object NUM_9 inherits Key([16, 153]) { }
+	
+	object A inherits Key([29]) { }
+	
+	object ALT inherits Key([57, 58]) { }
+	
+	object B inherits Key([30]) { }
+  
+	object BACKSPACE inherits Key([67]) { }
+	
+	object C inherits Key([31]) { }
+  
+	object CONTROL inherits Key([129, 130]) { }
+  
+	object D inherits Key([32]) { }
+	
+	object DEL inherits Key([67]) { }
+  
+	object CENTER inherits Key([23]) { }
+	
+	object DOWN inherits Key([20]) { }
+	
+	object LEFT inherits Key([21]) { }
+	
+	object RIGHT inherits Key([22]) { }
+	
+	object UP inherits Key([19]) { }
+	
+	object E inherits Key([33]) { }
+	
+	object ENTER inherits Key([66]) { }
+	
+	object F inherits Key([34]) { }
+	
+	object G inherits Key([35]) { }
+	
+	object H inherits Key([36]) { }
+	
+	object I inherits Key([37]) { }
+	
+	object J inherits Key([38]) { }
+	
+	object K inherits Key([39]) { }
+	
+	object L inherits Key([40]) { }
+	
+	object M inherits Key([41]) { }
+	
+	object MINUS inherits Key([69]) { }
+	
+	object N inherits Key([42]) { }
+	
+	object O inherits Key([43]) { }
+	
+	object P inherits Key([44]) { }
+	
+	object PLUS inherits Key([81]) { }
+	
+	object Q inherits Key([45]) { }
+	
+	object R inherits Key([46]) { }
+	
+	object S inherits Key([47]) { }
+	
+	object SHIFT inherits Key([59, 60]) { }
+	
+	object SLASH inherits Key([76]) { }
+	
+	object SPACE inherits Key([62]) { }
+	
+	object T inherits Key([48]) { }
+	
+	object U inherits Key([49]) { }
+	
+	object V inherits Key([50]) { }
+	
+	object W inherits Key([51]) { }
+	
+	object X inherits Key([52]) { }
+	
+	object Y inherits Key([53]) { }
+	
+	object Z inherits Key([54]) { }
+}
+
+package mirror {
+
+	class InstanceVariableMirror {
+		const target
+		const name
+		constructor(_target, _name) { target = _target ; name = _name }
+		method name() = name
+		method value() = target.resolve(name)
+		
+		method valueToSmartString(alreadyShown) {
+			const v = self.value()
+			return if (v == null) "null" else v.toSmartString(alreadyShown)
+		}
+
+		method toString() = name + "=" + self.value()
+	}
+}
