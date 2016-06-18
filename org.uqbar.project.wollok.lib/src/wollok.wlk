@@ -708,6 +708,8 @@ package lang {
 	}
 	
 	/**
+	 * Integer range that is enumerable
+	 *
 	 * @author jfernandes
 	 * @since 1.3
 	 */
@@ -783,6 +785,28 @@ package lang {
 		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
+	}
+
+	/**
+	 * An interval is a continuous set of (real) numbers
+	 * It is not enumerable
+	 * 
+	 * @since 1.5
+	 */
+	class Interval {
+		const start
+		const end
+		
+		constructor(_start, _end) {
+			self.validate(_start)
+			self.validate(_end)
+			start = _start 
+			end = _end
+		}
+		
+		method validate() native
+		method contains(element) = element >= start && element < end
+		method random() native		
 	}
 	
 	/**
