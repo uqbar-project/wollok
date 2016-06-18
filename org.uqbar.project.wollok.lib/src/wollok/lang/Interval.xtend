@@ -1,6 +1,6 @@
 package wollok.lang
 
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
@@ -8,27 +8,31 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 class Interval {
 	
 	WollokObject obj
-	double start 
-	double end
 	
-	new(WollokObject obj, WollokInterpreter interpreter) {
-		start = solve("start")
-		end = solve("end")
+	new(WollokObject _obj) {
+		obj = _obj
 	}
 	
 	def solve(String fieldName) {
-		obj.resolve(fieldName).wollokToJava(Double) as Double
+		obj.resolve(fieldName).wollokToJava(Double) as BigDecimal
 	}
 	
-	def Double validate(Object value) {
+	def void validate(WollokObject value) {
 		try {
-			return value.wollokToJava(Double) as Double
+			value.wollokToJava(Double) as BigDecimal
 		} catch (Throwable e) {
-			throw new IllegalArgumentException(value.toString() + " : only reals are allowed in an Interval")
+			try {
+				// Permitimos casteo de entero a BigDecimal
+				value.wollokToJava(Integer) as BigDecimal
+			} catch (Throwable eInt) {
+				throw new IllegalArgumentException(value.toString() + " : only reals are allowed in an Interval")
+			}
 		}
 	}
 	
 	def random() {
+		val start = solve("start")
+		val end = solve("end")
 		(Math.random * (end - start)) + start
 	}
 	

@@ -804,8 +804,8 @@ package lang {
 			end = _end
 		}
 		
-		method validate() native
-		method contains(element) = element >= start && element < end
+		method validate(value) native
+		method contains(element) = element >= start && element <= end
 		method random() native		
 	}
 	
