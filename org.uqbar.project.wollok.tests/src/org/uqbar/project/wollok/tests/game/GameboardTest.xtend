@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Cell
 import org.uqbar.project.wollok.game.helpers.Keyboard
 import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.Image
 
 /**
  * @author ?
@@ -49,6 +50,7 @@ class GameboardTest {
 		Assert.assertEquals("Wollok Game", gameboard.title)
 		Assert.assertEquals(5, gameboard.width)
 		Assert.assertEquals(5, gameboard.height)
+		Assert.assertEquals(new Image("ground.png"), gameboard.cells.head.image)
 	}
 	
 	@Test
