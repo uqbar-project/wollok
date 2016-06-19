@@ -44,7 +44,15 @@ class GameboardTest {
 	}
 	
 	@Test
-	def can_create_all_cells() {
+	def should_init_with_defaults() {
+		gameboard = new Gameboard
+		Assert.assertEquals("Wollok Game", gameboard.title)
+		Assert.assertEquals(5, gameboard.width)
+		Assert.assertEquals(5, gameboard.height)
+	}
+	
+	@Test
+	def should_create_all_cells() {
 		gameboard.createCells("UnaImagen")
 		Assert.assertEquals(10, gameboard.cells.size)
 	}
