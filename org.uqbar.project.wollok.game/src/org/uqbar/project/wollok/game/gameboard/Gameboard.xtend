@@ -39,6 +39,7 @@ class Gameboard {
 		title = "Wollok Game"
 		height = 5
 		width = 5
+		createCells("ground.png")
 	}
 
 	def void start() {
@@ -72,6 +73,7 @@ class Gameboard {
 	}
 
 	def createCells(String groundImage) {
+		cells.clear
 		for (var i = 0; i < width ; i++) {
 			for (var j = 0; j < height; j++) {
 				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));

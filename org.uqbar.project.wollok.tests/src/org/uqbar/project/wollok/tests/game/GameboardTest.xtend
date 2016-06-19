@@ -50,7 +50,7 @@ class GameboardTest {
 		Assert.assertEquals("Wollok Game", gameboard.title)
 		Assert.assertEquals(5, gameboard.width)
 		Assert.assertEquals(5, gameboard.height)
-		Assert.assertEquals(new Image("ground.png"), gameboard.cells.head.image)
+		Assert.assertEquals("ground.png", gameboard.cells.head.image.path)
 	}
 	
 	@Test
