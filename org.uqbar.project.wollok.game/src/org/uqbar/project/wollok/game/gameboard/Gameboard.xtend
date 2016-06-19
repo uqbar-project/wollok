@@ -34,6 +34,12 @@ class Gameboard {
 		}
 		return instance
 	}
+	
+	new() {
+		title = "Wollok Game"
+		height = 5
+		width = 5
+	}
 
 	def void start() {
 		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
