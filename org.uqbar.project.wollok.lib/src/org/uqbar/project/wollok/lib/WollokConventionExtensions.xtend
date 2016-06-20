@@ -30,15 +30,18 @@ class WollokConventionExtensions {
 		instanceVariables.entrySet.filter[key.printableVariable]
 	}
 	
-	
 	def static findConvention(WollokObject it, List<String> conventions) {
-		var getter = allMethods.map[it.name].findFirst[isGetter(conventions)]
-		if (getter != null)
-			return Optional.of(call(getter))
-
+		var WollokObject value = null
+		
 		var attribute = conventions.map[c|instanceVariables.get(c)].filterNull.head
 		if (attribute != null)
-			return Optional.of(attribute)
+			value = attribute
+			
+		var getter = allMethods.map[it.name].findFirst[isGetter(conventions)]
+		if (getter != null)
+			value = call(getter)
+			
+		Optional.ofNullable(value)
 	}
 
 	def static isGetter(String it, List<String> conventions) {
