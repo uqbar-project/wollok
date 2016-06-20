@@ -105,7 +105,11 @@ package lang {
 		method !=(other) = ! (self == other)
 		
 		/**
-		 * Tells whether self object is identical (the same) to the given one.
+		 *
+		 
+		 
+		 
+		  Tells whether self object is identical (the same) to the given one.
 		 * It does it by comparing their identities.
 		 * So self basically relies on the wollok.lang.Integer equality (which is native)
 		 */
@@ -490,6 +494,24 @@ package lang {
 		method join() native
 		method equals(other) native
 		method ==(other) native
+	}
+	
+	class Dictionary {
+	
+		constructor() { }
+		method put(_key, _value) native
+		method get(_key) native
+		method size() = return self.values().size()
+		method isEmpty() = return self.size() == 0
+		method containsKey(_key) = return self.keys().contains(_key)
+		method containsValue(_value) = return self.values().contains(_value)
+		method remove(_key) native
+		method keys() native
+		method values() native
+		method forEach(closure) native
+		method newInstance() = return new Dictionary()
+		method clear() native
+		
 	}
 	
 	/**
