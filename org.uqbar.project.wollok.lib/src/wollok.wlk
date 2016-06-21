@@ -496,20 +496,71 @@ package lang {
 		method ==(other) native
 	}
 	
+	/**
+	 * Represents a set of key -> values
+	 * 
+	 */
 	class Dictionary {
 	
 		constructor() { }
+		/**
+		 * Adds or updates a value based on a key
+		 */
 		method put(_key, _value) native
+		
+		/*
+		 * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.
+		 */
 		method get(_key) native
-		method size() = return self.values().size()
-		method isEmpty() = return self.size() == 0
-		method containsKey(_key) = return self.keys().contains(_key)
-		method containsValue(_value) = return self.values().contains(_value)
+		
+		/**
+		 * Returns the number of key-value mappings in this map.
+		 */
+		method size() = self.values().size()
+		
+		method isEmpty() = self.size() == 0
+		
+		/**
+		 * Returns true if this map contains a mapping for the specified key.
+		 */
+		method containsKey(_key) = self.keys().contains(_key)
+		
+		/**
+		 * Returns true if this map maps one or more keys to the specified value.
+		 */
+		method containsValue(_value) = self.values().contains(_value)
+		
+		/**
+		 * Removes the mapping for a key from this map if it is present 
+		 */
 		method remove(_key) native
+		
+		/**
+		 * Returns a list of the keys contained in this map.
+		 */
 		method keys() native
+		
+		/**
+		 * Returns a list of the values contained in this map.
+		 */
 		method values() native
+		
+		/**
+		 * Performs the given action for each entry in this map until all entries have been 
+		 * processed or the action throws an exception.
+		 * 
+		 * Expected closure with two parameters: the first associated with key and second with value.
+		 *
+		 * Example:
+		 * 		mapaTelefonos.forEach({ k, v => result += k.size() + v.size() })
+		 * 
+		 */
 		method forEach(closure) native
-		method newInstance() = return new Dictionary()
+		method newInstance() = new Dictionary()
+		
+		/**
+		 * Removes all of the mappings from this map. This is a side-effect operation
+		 */
 		method clear() native
 		
 	}
