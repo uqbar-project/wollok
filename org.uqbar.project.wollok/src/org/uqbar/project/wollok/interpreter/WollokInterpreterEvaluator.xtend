@@ -142,7 +142,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		try
 			t.expression.eval
 		catch (WollokProgramExceptionWrapper e) {
-			val cach = t.catchBlocks.findFirst[c|c.matches(e.wollokException)]
+			val cach = t.catchBlocks.findFirst[ it.matches(e.wollokException) ]
 			if (cach != null) {
 				cach.evaluate(e)
 			} else

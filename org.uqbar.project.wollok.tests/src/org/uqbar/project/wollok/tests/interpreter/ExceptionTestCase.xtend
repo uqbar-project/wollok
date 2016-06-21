@@ -394,10 +394,67 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				try{
 					monedero.poner(-2)
 					assert.fail('No should get here')
-				}catch e{
+				} catch e {
 					assert.equals("La cantidad debe ser positiva", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithAReturnStatement() {
+		'''
+		object cuenta {
+			method sacar() {
+				try {
+					throw new Exception("saldo insuficiente")
+				} 
+				catch e {
+					return 20
+				}
+			}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithAReturnStatementReturningFromTryBodyAndFromCatch() {
+		'''
+		object cuenta {
+			method sacar(c) {
+				try {
+					if (c > 0)
+						throw new Exception("saldo insuficiente")
+					return 19
+				} 
+				catch e {
+					return 20
+				}
+			}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar(10))
+			assert.equals(19, cuenta.sacar(0))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchEvaluationInAShortCutMethod() {
+		'''
+		object cuenta {
+			method sacar(c) = try { 
+					if (c > 0) 
+						throw new Exception("saldo insuficiente") 
+					else 19
+				} catch e {
+					20
+				}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar(10))
+			assert.equals(19, cuenta.sacar(0))
+		}'''.interpretPropagatingErrors
 	}
 }
