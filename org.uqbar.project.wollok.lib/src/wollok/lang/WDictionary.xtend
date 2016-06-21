@@ -24,7 +24,7 @@ class WDictionary implements JavaWrapper<Map> {
 	
 	def clear() { wrapped.clear }
 	
-	def get(WollokObject key) { wrapped.get(getInternalKey(key)) }
+	def basicGet(WollokObject key) { wrapped.get(getInternalKey(key)) }
 	
 	def put(WollokObject key, WollokObject value) { wrapped.put(key, value) }
 

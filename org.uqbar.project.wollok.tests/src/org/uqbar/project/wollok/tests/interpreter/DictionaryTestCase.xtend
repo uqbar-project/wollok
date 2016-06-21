@@ -15,6 +15,28 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void testGetValueNotFound() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		mapaTelefonos.put("choli", "2142-5980")
+		mapaTelefonos.put("mario", "5302-6617")
+		assert.throwsException({ => mapaTelefonos.get("betty") })
+		'''.test
+	}
+
+	@Test
+	def void testGetOrElseForValueNotFound() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		mapaTelefonos.put("choli", "2142-5980")
+		mapaTelefonos.put("mario", "5302-6617")
+		var notFound = false
+		mapaTelefonos.getOrElse("betty", { => notFound = true } )
+		assert.that(notFound)
+		'''.test
+	}
+
+	@Test
 	def void testSize() {
 		'''
 		const mapaTelefonos = new Dictionary()
