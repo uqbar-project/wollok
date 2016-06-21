@@ -7,8 +7,8 @@ import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
-import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 /**
  * @author jfernandes
@@ -51,9 +51,10 @@ class WCollection<T extends Collection> {
 		wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(separator)
 	}
 	
-	@NativeMessage("equals")
 	def wollokEquals(WollokObject other) {
-		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped == this.wrapped)		
+		val otherWrapped = other.getNativeObject(this.class).wrapped
+		otherWrapped.forEach [ println(it.class.name)]
+		other.hasNativeType(this.class.name) && ((otherWrapped).equals(this.wrapped))		
 	}
 	
 	@NativeMessage("==")
