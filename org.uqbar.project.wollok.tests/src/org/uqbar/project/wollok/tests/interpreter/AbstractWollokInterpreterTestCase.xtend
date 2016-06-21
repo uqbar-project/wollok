@@ -49,6 +49,15 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	def interpretPropagatingErrors(CharSequence programAsString) {
 		interpretPropagatingErrors(newArrayList(null as String -> programAsString.toString))
 	}
+	
+	def test(CharSequence testCode) {
+	    '''
+	    program a {
+    		«testCode»
+	    } 
+    	'''.interpretPropagatingErrors
+	}
+	
 
 	def interpretPropagatingErrors(String... programAsString) {
 		interpretPropagatingErrors(programAsString.map[null -> it])
@@ -137,4 +146,5 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		}
 		
 	}
+	
 }
