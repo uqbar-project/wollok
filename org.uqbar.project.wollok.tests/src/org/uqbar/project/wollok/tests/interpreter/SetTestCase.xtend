@@ -80,4 +80,28 @@ class SetTestCase extends CollectionTestCase {
 			assert.equals(#{4, 5}, anotherSet.difference(aSet))
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void equalityCaseTrue() {
+		'''
+			program p {
+				assert.equals(#{'Hello'}, #{'Hello'})
+				assert.equals(#{5, 4, 9}, #{4, 5, 9})
+				assert.equals(#{true}, #{true})
+				assert.equals(#{}, #{})
+			}
+		'''.interpretPropagatingErrors		
+	}
+			
+	@Test
+	def void equalityCaseFalse() {
+		'''
+			program p {
+				assert.notEquals(#{'Hello'}, #{'Hellou'})
+				assert.notEquals(#{5, 4, 9}, #{4, 5, 3})
+				assert.notEquals(#{4, 5, 9}, [4, 5, 9])
+			}
+		'''.interpretPropagatingErrors		
+	}	
+	
 }
