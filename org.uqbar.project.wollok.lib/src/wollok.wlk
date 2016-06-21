@@ -105,11 +105,7 @@ package lang {
 		method !=(other) = ! (self == other)
 		
 		/**
-		 *
-		 
-		 
-		 
-		  Tells whether self object is identical (the same) to the given one.
+		 * Tells whether self object is identical (the same) to the given one.
 		 * It does it by comparing their identities.
 		 * So self basically relies on the wollok.lang.Integer equality (which is native)
 		 */
