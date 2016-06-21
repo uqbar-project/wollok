@@ -11,6 +11,14 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def instantiateCollectionAsNumbersVariable() {
 		"const numbers = [22, 2, 10]"
 	}
+
+	def instantiateCollectionWithA2() {
+		"const collectionWithA2 = [2]"
+	}
+
+	def instantiateEmptyCollection() {
+		"const emptyCollection = []"
+	}
 	
 	def instantiateStrings() {
 		"const strings = ['hello', 'hola', 'bonjour', 'ciao', 'hi']"
@@ -429,14 +437,16 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
+			«instantiateCollectionWithA2»
+			«instantiateEmptyCollection»
 			numbers.removeAllSuchThat({it => it >= 10})
-			assert.equals([2], numbers)
+			assert.equals(collectionWithA2, numbers)
 			numbers.removeAllSuchThat({it => it.odd()})
-			assert.equals([2], numbers)
+			assert.equals(collectionWithA2, numbers)
 			numbers.removeAllSuchThat({it => it.even()})
-			assert.equals([], numbers)
+			assert.equals(emptyCollection, numbers)
 			numbers.removeAllSuchThat({it => it.even()})
-			assert.equals([], numbers)
+			assert.equals(emptyCollection, numbers)
 		}'''.interpretPropagatingErrors
 	}
 }
