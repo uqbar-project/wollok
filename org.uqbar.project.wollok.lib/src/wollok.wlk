@@ -572,7 +572,6 @@ package lang {
 		 * 
 		 */
 		method forEach(closure) native
-		method newInstance() = new Dictionary()
 		
 		/**
 		 * Removes all of the mappings from this Dictionary. This is a side-effect operation.

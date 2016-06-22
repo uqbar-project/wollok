@@ -143,5 +143,18 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
-		
+	@Test
+	def void testPutNullKeyShouldThrowAnException() {
+		'''
+		assert.throwsException({ new Dictionary().put(null, 2184) })
+		'''.test		
+	}
+	
+	@Test
+	def void testPutNullValueShouldThrowAnException() {
+		'''
+		assert.throwsException({ new Dictionary().put(2145, null) })
+		'''.test		
+	}		
+	
 }

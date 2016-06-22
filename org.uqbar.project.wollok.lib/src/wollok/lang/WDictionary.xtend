@@ -26,7 +26,11 @@ class WDictionary implements JavaWrapper<Map> {
 	
 	def basicGet(WollokObject key) { wrapped.get(getInternalKey(key)) }
 	
-	def put(WollokObject key, WollokObject value) { wrapped.put(key, value) }
+	def put(WollokObject key, WollokObject value) {
+		if (key == null) throw new IllegalArgumentException("You cannot put a null key in a Dictionary") 
+		if (value == null) throw new IllegalArgumentException("You cannot put a null value in a Dictionary")
+		wrapped.put(key, value)
+	}
 
 	def void remove(WollokObject key) {
 		wrapped.remove(getInternalKey(key))
