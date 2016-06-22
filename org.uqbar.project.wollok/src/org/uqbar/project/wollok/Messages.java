@@ -18,6 +18,9 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS;
 	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
 	public static String WollokDslValidator_METHOD_NOT_OVERRIDING;
