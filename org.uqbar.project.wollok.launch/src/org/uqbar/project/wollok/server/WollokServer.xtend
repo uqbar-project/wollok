@@ -1,0 +1,95 @@
+package org.uqbar.project.wollok.server
+
+import com.google.gson.Gson
+import com.google.inject.Inject
+import com.google.inject.Provider
+import java.io.InputStream
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.jetty.server.Request
+import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.handler.AbstractHandler
+import org.eclipse.xtext.resource.IResourceFactory
+import org.eclipse.xtext.resource.XtextResourceSet
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
+import org.uqbar.project.wollok.launch.Wollok
+import org.uqbar.project.wollok.launch.WollokLauncherParameters
+import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+class WollokServer extends AbstractHandler {
+	val gson = new Gson
+	val parameters = new WollokLauncherParameters().parse(#["-r"])
+	val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration => [
+		injectMembers(this)
+	]
+
+	@Inject
+	private Provider<XtextResourceSet> resourceSetProvider
+
+	@Inject
+	private IResourceFactory resourceFactory
+
+	override handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
+		val interpreter = injector.getInstance(WollokInterpreter)
+		interpreter.debugger = new XDebuggerOff
+
+		response => [
+			characterEncoding = "utf8"
+			contentType = "application/json"
+			status = HttpServletResponse.SC_OK
+		]
+		baseRequest.handled = true
+		val writer = gson.newJsonWriter(response.writer)
+		writer => [
+			beginObject => [
+				name("wollokVersion").value(Wollok.VERSION)
+
+				try {
+					val parsed = request.inputStream.parse
+					interpreter.interpret(parsed, true)	
+				}
+				catch (WollokProgramExceptionWrapper exception) {
+					writer.name("runtimeErrors").value(exception.wollokStackTrace)
+				}
+			]
+			endObject
+		]
+
+
+
+		writer.close
+	}
+
+	def <T extends EObject> T parse(InputStream input) {
+		val resourceSet = resourceSetProvider.get()
+
+		val resource = resourceFactory.createResource(resourceSet.computeUnusedUri)
+		resourceSet.resources.add(resource)
+		resource.load(input, null)
+
+		return if(resource.contents.isEmpty) null else resource.contents.get(0) as T
+	}
+
+	def URI computeUnusedUri(ResourceSet resourceSet) {
+		val String name = "__synthetic"
+		for (var i = 0; i < Integer.MAX_VALUE; i++) {
+			val syntheticUri = URI.createURI(name + i + ".wlk")
+			if (resourceSet.getResource(syntheticUri, false) == null)
+				return syntheticUri
+		}
+		throw new IllegalStateException()
+	}
+
+	def static void main(String[] args) {
+		new Server(8080) => [
+			handler = new WollokServer
+			start
+			join
+		]
+	}
+}
