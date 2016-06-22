@@ -16,16 +16,18 @@ class Interval {
 	def solve(String fieldName) {
 		obj.resolve(fieldName).wollokToJava(Double) as BigDecimal
 	}
-	
+
+	/**
+	 * Type constraint: only numbers allowed, integers and doubles
+	 */	
 	def void validate(WollokObject value) {
 		try {
 			value.wollokToJava(Double) as BigDecimal
 		} catch (Throwable e) {
 			try {
-				// Permitimos casteo de entero a BigDecimal
 				value.wollokToJava(Integer) as BigDecimal
 			} catch (Throwable eInt) {
-				throw new IllegalArgumentException(value.toString() + " : only reals are allowed in an Interval")
+				throw new IllegalArgumentException(value.toString() + " : only numbers are allowed in an Interval")
 			}
 		}
 	}
