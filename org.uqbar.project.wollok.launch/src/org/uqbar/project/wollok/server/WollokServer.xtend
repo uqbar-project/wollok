@@ -15,11 +15,13 @@ import org.eclipse.jetty.server.handler.AbstractHandler
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.Wollok
+import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 
 class WollokServer extends AbstractHandler {
 	val gson = new Gson
@@ -33,6 +35,7 @@ class WollokServer extends AbstractHandler {
 
 	@Inject
 	private IResourceFactory resourceFactory
+
 
 	override handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
 		val interpreter = injector.getInstance(WollokInterpreter)
@@ -50,8 +53,25 @@ class WollokServer extends AbstractHandler {
 				name("wollokVersion").value(Wollok.VERSION)
 
 				try {
-					val parsed = request.inputStream.parse
-					interpreter.interpret(parsed, true)	
+					val extension handler = new WollokLauncherIssueHandlerJSON
+					val issues = newArrayList
+					val resource = request.inputStream.parse
+
+					new WollokChecker().validate(
+						injector,
+						resource,
+						[issues.add(it)],
+						[]
+					)
+					
+					if (issues.empty) {
+						interpreter.interpret(resource.contents.get(0), true)	
+					}
+					else {
+						name("checks").beginArray
+							issues.forEach[issue|renderIssue(issue)]						
+						endArray
+					}	
 				}
 				catch (WollokProgramExceptionWrapper exception) {
 					writer.name("runtimeErrors").value(exception.wollokStackTrace)
@@ -60,25 +80,22 @@ class WollokServer extends AbstractHandler {
 			endObject
 		]
 
-
-
 		writer.close
 	}
 
-	def <T extends EObject> T parse(InputStream input) {
+	def parse(InputStream input) {
 		val resourceSet = resourceSetProvider.get()
 
 		val resource = resourceFactory.createResource(resourceSet.computeUnusedUri)
 		resourceSet.resources.add(resource)
 		resource.load(input, null)
-
-		return if(resource.contents.isEmpty) null else resource.contents.get(0) as T
+		resource
 	}
 
 	def URI computeUnusedUri(ResourceSet resourceSet) {
 		val String name = "__synthetic"
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
-			val syntheticUri = URI.createURI(name + i + ".wlk")
+			val syntheticUri = URI.createURI(name + i + ".wpgm")
 			if (resourceSet.getResource(syntheticUri, false) == null)
 				return syntheticUri
 		}
