@@ -87,7 +87,7 @@ class WollokRepl {
 						«FOR a : parsedMainFile.imports.map[importedNamespace]»
 						import «a»
 						«ENDFOR»
-						import «parsedMainFile.fileName».*
+						import «parsedMainFile.implicitPackage».*
 						program repl {
 						«input»
 						}

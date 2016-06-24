@@ -47,43 +47,67 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(new SimpleScope(defaultScope, exportedObjects), explicitImportedObjects)
 	}
-	
-	def importedObjects(Resource resource, Iterable<IEObjectDescription> objectsFromManifests) {
-		val rootObject = resource.contents.get(0)
+	/**
+	 * Loads all imported elements from a context
+	 */
+	def importedObjects(Resource context, Iterable<IEObjectDescription> objectsFromManifests) {
+		val rootObject = context.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
 		
 		imports.filter[
-			// filters those imported from libraries, we won't handle them as regular imports
-			// this needs further works if we add more complex imports like *, or aliases.
-			importedNamespace != null && !objectsFromManifests.exists[o| o.qualifiedName.toString == importedNamespace]
+			importedNamespace != null && !objectsFromManifests.exists[o| o.matchesImport(importedNamespace)]
 		]
 		.map[ 
-			toResource(resource)
+			toResource(context)
 		]
 		.filter[it != null]
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten
 	}
-	
-	def static toResource(Import it, Resource resource) {
+
+	def matchesImport(IEObjectDescription o, String importedNamespace){
+		if(importedNamespace.endsWith(".*")){
+			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
+			o.qualifiedName.toString.startsWith(pattern)
+		}else{
+			o.qualifiedName.toString == importedNamespace 
+		}
+	}
+
+	/**
+	 * Resolves the import to a ECore resource. Here is where the magic of resolving the libraries is performed for the
+	 * things that are not in the wollok classpath (found by the WollokManifestFinder).
+	 */	
+	def static toResource(Import imp, Resource resource) {
 		try {
-			var uri = generateUri(resource, importedNamespace)
+			var uri = generateUri(resource, imp.importedNamespace)
 			EcoreUtil2.getResource(resource, uri)
 		}
 		catch (RuntimeException e) {
-			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
+			throw new WollokRuntimeException("Error while resolving import '" + imp.importedNamespace + "'", e)
 		}
 	}
 	
-	def static generateUri(Resource resource, String importedName) {
-		resource.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
+	/**
+	 * Converts the importedName to a Resource relative to a context
+	 */
+	def static generateUri(Resource context, String importedName) {
+		println(importedName)
+		context.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
+	/**
+	 * Load all resources in the manifests found.
+	 */
 	def handleManifest(WollokManifest manifest, ResourceSet resourceSet) {
 		manifest.allURIs.map[loadResource(resourceSet)].flatten
 	}
 
+	/**
+	 * This message resolves the loading of a resource, is used by the resources listed in manifests. For the ones not in manifests (in relative locations)
+	 * see WollokGlobalScopeProvider#toResource(Import imp, Resource resource)
+	 */
 	def loadResource(URI uri, ResourceSet resourceSet) {
 		try {
 			val resource = resourceSet.getResource(uri, true)

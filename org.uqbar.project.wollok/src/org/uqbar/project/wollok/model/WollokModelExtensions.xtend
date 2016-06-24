@@ -62,9 +62,13 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class WollokModelExtensions {
 
-	def static fileName(EObject it) {
-		file.URI.trimFileExtension.lastSegment
+	def static implicitPackage(EObject it) {
+		if(file.URI.toString.startsWith("classpath:/"))
+			file.URI.trimFileExtension.segments.join(".")
+		else
+			file.URI.trimFileExtension.lastSegment
 	}
+	
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
@@ -77,12 +81,12 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 
 	def static getNameWithPackage(WMethodContainer it) {
-		fileName + "." + if (package != null) package.name + "." + name else name
+		implicitPackage + "." + if (package != null) package.name + "." + name else name
 	}
 
 	def static dispatch fqn(WObjectLiteral it) {
 		//TODO: make it better (show containing class /object / package + linenumber ?)
-		fileName + "." + "anonymousObject"
+		implicitPackage + "." + "anonymousObject"
 	}
 
 	// this doesn't work for object literals, although it could !
