@@ -3,9 +3,9 @@ package org.uqbar.project.wollok.lib
 import java.util.List
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import java.util.Optional
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.utils.OptionalExtensions.*
 
 class WollokConventionExtensions {
 		
@@ -30,18 +30,21 @@ class WollokConventionExtensions {
 		instanceVariables.entrySet.filter[key.printableVariable]
 	}
 	
-	def static findConvention(WollokObject it, List<String> conventions) {
-		var WollokObject value = null
-		
-		var attribute = conventions.map[c|instanceVariables.get(c)].filterNull.head
-		if (attribute != null)
-			value = attribute
-			
-		var getter = allMethods.map[it.name].findFirst[isGetter(conventions)]
-		if (getter != null)
-			value = call(getter)
-			
-		Optional.ofNullable(value)
+	def static findConvention(WollokObject it, List<String> conventions) {		
+		findVariable(conventions)
+		.or(findGetter(conventions))
+	}
+	
+	def static findVariable(WollokObject it, List<String> conventions) {
+		conventions
+		.map[c | instanceVariables.get(c)]
+		.firstNotNull
+	}
+	
+	def static findGetter(WollokObject it, List<String> conventions) {
+		allMethods
+		.firstOrOptional[it.name.isGetter(conventions)]
+		.map[m | call(m)]
 	}
 
 	def static isGetter(String it, List<String> conventions) {
