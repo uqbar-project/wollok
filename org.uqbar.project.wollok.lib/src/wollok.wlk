@@ -578,6 +578,90 @@ package lang {
 	}
 	
 	/**
+	 * Represents a set of key -> values
+	 * 
+	 */
+	class Dictionary {
+	
+		constructor() { }
+		/**
+		 * Adds or updates a value based on a key
+		 */
+		method put(_key, _value) native
+		
+		/*
+		 * Returns the value to which the specified key is mapped, or null if this Dictionary contains no mapping for the key.
+		 */
+		method basicGet(_key) native
+
+		/*
+		 * Returns the value to which the specified key is mapped, or evaluates a non-parameter closure otherwise 
+		 */
+		method getOrElse(_key, _closure) {
+			const value = self.basicGet(_key)
+			if (value == null) 
+				_closure.apply()
+			else 
+				return value
+		}
+		
+		/*
+		 * Returns the value to which the specified key is mapped. If this Dictionary contains no mapping for the key, an error is thrown.
+		 */
+		method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
+
+		/**
+		 * Returns the number of key-value mappings in this Dictionary.
+		 */
+		method size() = self.values().size()
+		
+		method isEmpty() = self.size() == 0
+		
+		/**
+		 * Returns true if this Dictionary contains a mapping for the specified key.
+		 */
+		method containsKey(_key) = self.keys().contains(_key)
+		
+		/**
+		 * Returns true if this Dictionary maps one or more keys to the specified value.
+		 */
+		method containsValue(_value) = self.values().contains(_value)
+		
+		/**
+		 * Removes the mapping for a key from this Dictionary if it is present 
+		 */
+		method remove(_key) native
+		
+		/**
+		 * Returns a list of the keys contained in this Dictionary.
+		 */
+		method keys() native
+		
+		/**
+		 * Returns a list of the values contained in this Dictionary.
+		 */
+		method values() native
+		
+		/**
+		 * Performs the given action for each entry in this Dictionary until all entries have been 
+		 * processed or the action throws an exception.
+		 * 
+		 * Expected closure with two parameters: the first associated with key and second with value.
+		 *
+		 * Example:
+		 * 		mapaTelefonos.forEach({ k, v => result += k.size() + v.size() })
+		 * 
+		 */
+		method forEach(closure) native
+		
+		/**
+		 * Removes all of the mappings from this Dictionary. This is a side-effect operation.
+		 */
+		method clear() native
+		
+	}
+	
+	/**
 	 *
 	 * @author jfernandes
 	 * @since 1.3
