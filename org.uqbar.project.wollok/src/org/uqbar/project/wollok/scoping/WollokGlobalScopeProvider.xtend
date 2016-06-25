@@ -93,7 +93,6 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Converts the importedName to a Resource relative to a context
 	 */
 	def static generateUri(Resource context, String importedName) {
-		println(importedName)
 		context.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
