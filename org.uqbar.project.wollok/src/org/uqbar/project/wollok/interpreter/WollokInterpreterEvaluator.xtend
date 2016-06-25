@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter
 
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
+import java.math.BigDecimal
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
@@ -34,6 +35,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -42,11 +44,11 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
@@ -60,10 +62,7 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
-import java.math.BigDecimal
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 /**
  * It's the real "interpreter".
@@ -334,12 +333,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (binary.isMultiOpAssignment) {
 			val operator = binary.feature.substring(0, 1)
 			val reference = binary.leftOperand
-
 			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
-		} else
-			binary.feature.asBinaryOperation.apply(binary.leftOperand.eval, binary.rightOperand.lazyEval)
+		} else {
+			val leftOperand = binary.leftOperand.eval
+			val operand = binary.feature
+			if (leftOperand == null && !#["==","!="].contains(operand)) {
+				throw new WollokRuntimeException("Cannot send message " + operand + " to null")
+			}
+			operand.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval)
 				// this is just for the null == null comparisson. Otherwise is re-retrying to convert
 				.javaToWollok
+		}
+			
 	}
 
 	def lazyEval(EObject expression) {
