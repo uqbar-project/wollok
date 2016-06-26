@@ -34,6 +34,13 @@ class Gameboard {
 		}
 		return instance
 	}
+	
+	new() {
+		title = "Wollok Game"
+		height = 5
+		width = 5
+		createCells("ground.png")
+	}
 
 	def void start() {
 		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
@@ -66,6 +73,7 @@ class Gameboard {
 	}
 
 	def createCells(String groundImage) {
+		cells.clear
 		for (var i = 0; i < width ; i++) {
 			for (var j = 0; j < height; j++) {
 				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));

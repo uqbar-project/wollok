@@ -2,7 +2,9 @@ package org.uqbar.project.wollok.game.gameboard
 
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
+import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors
 class Cell {
 	var Image image
 	var Position position

@@ -30,4 +30,16 @@ class Image {
 		
 		return this.texture
 	}
+	
+	override public int hashCode() {
+		val prime = 31
+		prime + getPath.hashCode
+	}
+
+	override equals(Object obj) {
+		if(obj == null) return false
+
+		var other = obj as Image
+		getPath == other.getPath
+	}
 }
