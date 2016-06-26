@@ -36,14 +36,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public ImageDescriptor getImageDescriptor(String name) {
-//		try {
-//			URL u = new URL(getDescriptor().getInstallURL(), name);
-			URL u = find(this.getDefault().getStateLocation().append(name));
-			return ImageDescriptor.createFromURL(u);
-//		}
-//		catch (MalformedURLException e) {
-//			throw new WollokLauncherException("Error while loading image [" + name + "]", e);
-//		}
+		URL u = find(this.getDefault().getStateLocation().append(name));
+		return ImageDescriptor.createFromURL(u);
 	}
 
 	public static Activator getDefault() {
