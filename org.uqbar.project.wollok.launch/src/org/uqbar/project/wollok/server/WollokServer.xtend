@@ -68,9 +68,13 @@ class WollokServer extends AbstractHandler {
 						interpreter.interpret(resource.contents.get(0), true)	
 					}
 					else {
-						name("checks").beginArray
-							issues.forEach[issue|renderIssue(issue)]						
-						endArray
+						name("compilation").beginObject => [
+							name("issues")
+							beginArray
+								issues.forEach[issue|renderIssue(issue)]						
+							endArray							
+						]
+						endObject
 					}	
 				}
 				catch (WollokProgramExceptionWrapper exception) {
@@ -89,7 +93,7 @@ class WollokServer extends AbstractHandler {
 		val resource = resourceFactory.createResource(resourceSet.computeUnusedUri)
 		resourceSet.resources.add(resource)
 		resource.load(input, null)
-		resource
+		resource	
 	}
 
 	def URI computeUnusedUri(ResourceSet resourceSet) {
