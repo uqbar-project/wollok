@@ -73,8 +73,8 @@
 									<id>wollok-ide</id>
 									<archiveFileName>wollok</archiveFileName>
 									<rootFolders>
-                      								<macosx>Wollok.app</macosx>
-                      							</rootFolders>
+										<macosx>Wollok.app</macosx>
+									</rootFolders>
 								</product>
 							</products>
 						</configuration>
@@ -97,7 +97,7 @@
 					</plugin>
 					<!-- extract git info -->
 
-					<!-- Upload the repo to the server -->
+					<!-- Upload the repo to the server
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>
@@ -119,6 +119,7 @@
 							</execution>
 						</executions>
 					</plugin>
+					 -->
 				</plugins>
 			</build>
 		</profile>
@@ -131,7 +132,7 @@
 
 			<build>
 				<plugins>
-					<!-- Upload the repo to the server -->
+					<!-- Upload the repo to the server
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>
@@ -153,6 +154,7 @@
 							</execution>
 						</executions>
 					</plugin>
+					 -->
 				</plugins>
 			</build>
 		</profile>

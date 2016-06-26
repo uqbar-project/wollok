@@ -55,6 +55,7 @@ mixin Flying {
 		fliedMeters += meters
 	}
 	method fliedMeters() = fliedMeters
+	method reduceEnergy(meters)
 }
 
 class BirdWithEnergyThatFlies mixed with Energy, Flying {}
@@ -64,11 +65,13 @@ mixin FlyingShortcuts {
 	method fly100Meters() {
 		self.fly(100)
 	}
+	
+	method fly(meters)
 }
 
 class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
 	var energy = 200
-	method fly(meters) { energy -= meters }
+	override method fly(meters) { energy -= meters }
 	method energy() = energy
 }
 
