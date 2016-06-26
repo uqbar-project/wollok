@@ -6,7 +6,6 @@ jdk:
 before_install:
 - openssl aes-256-cbc -K $encrypted_d4a7eb0181c9_key -iv $encrypted_d4a7eb0181c9_iv -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
-- rm -rf $HOME/.m2
 
 script: 
 - cd org.uqbar.project.wollok.releng/ 
@@ -25,6 +24,6 @@ notifications:
     on_failure: always
     on_start: false
 
-#cache:
-#  directories:
-#  - $HOME/.m2
+cache:
+  directories:
+  - $HOME/.m2
