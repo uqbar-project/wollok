@@ -34,8 +34,7 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 					var altura = 1.7
 				}
 				
-«««				//TODO
-«««				assert.equals("anObject[edad=23, altura=1.7]", anonymousObject.toString())
+				assert.equals("anObject[edad=23, altura=1.7]", anonymousObject.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
