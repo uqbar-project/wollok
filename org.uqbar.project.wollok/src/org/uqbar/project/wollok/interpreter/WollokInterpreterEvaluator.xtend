@@ -230,9 +230,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WObjectLiteral l) {
-		new WollokObject(interpreter, l) => [
-			l.mixins.forEach[m|m.addMembersTo(it)]
-			l.members.forEach[m|addMember(m)]
+		new WollokObject(interpreter, l) => [ wo |
+			l.members.forEach[m|wo.addMember(m)]
+			l.parent.superClassesIncludingYourselfTopDownDo [
+				addMembersTo(wo)
+				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+			]
+			l.mixins.forEach[m|m.addMembersTo(wo)]
 		]
 	}
 
