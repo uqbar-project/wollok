@@ -8,13 +8,32 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 	def void messageSentToNull() {
 		'''
 		assert.throwsException({ null.sayHi() })
+		assert.throwsException({ null.toString() })
 		'''.test
 	}
 
 	@Test
-	def void operatorSentToNull() {
+	def void numberOperatorsSentToNull() {
 		'''
 		assert.throwsException({ null + 3 })
+		assert.throwsException({ null - 3 })
+		assert.throwsException({ null * 3 })
+		assert.throwsException({ null / 3 })
+		'''.test
+	}
+	
+	@Test
+	def void booleanOperatorsSentToNull() {
+		'''
+		assert.throwsException({ null || true })
+		assert.throwsException({ null && true })
+		'''.test
+	}
+	
+	@Test
+	def void equalEqualOperatorSentToNull() {
+		'''
+		assert.notThat(null == 8)
 		'''.test
 	}
 	

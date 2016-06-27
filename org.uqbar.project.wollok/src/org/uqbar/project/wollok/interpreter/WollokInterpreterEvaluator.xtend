@@ -336,15 +336,19 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
 		} else {
 			val leftOperand = binary.leftOperand.eval
-			val operand = binary.feature
-			if (leftOperand == null && !#["==","!="].contains(operand)) {
-				throw new WollokRuntimeException("Cannot send message " + operand + " to null")
-			}
-			operand.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval)
+			val operation = binary.feature
+			validateNullOperand(leftOperand, operation)
+			operation.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval)
 				// this is just for the null == null comparisson. Otherwise is re-retrying to convert
 				.javaToWollok
 		}
 			
+	}
+	
+	private def validateNullOperand(WollokObject leftOperand, String operand) {
+		if (leftOperand == null && !#["==","!="].contains(operand)) {
+			throw new WollokRuntimeException("Cannot send message " + operand + " to null")
+		}
 	}
 
 	def lazyEval(EObject expression) {
@@ -368,7 +372,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		newValue
 	}
 
-	def dispatch evaluate(WUnaryOperation oper) { oper.feature.asUnaryOperation.apply(oper.operand.eval) }
+	def dispatch evaluate(WUnaryOperation oper) {
+		val operation = oper.feature
+		val leftOperand = oper.operand.eval
+		validateNullOperand(leftOperand, operation) 
+		operation.asUnaryOperation.apply(leftOperand) 
+	}
 
 	def dispatch evaluate(WSelf t) { interpreter.currentContext.thisObject }
 
