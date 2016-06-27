@@ -103,6 +103,13 @@ class SetTestCase extends CollectionTestCase {
 	} 	
 
 	@Test
+	def void elementsAreUniqueWithCommonRepresentations() {
+		'''
+		assert.equals(4, #{"4", 4.01, 4, "Cuatro"}.size())
+		'''.test
+	} 	
+
+	@Test
 	def void elementsAreUniqueForClasses() {
 		'''
 		class Alumno { 
