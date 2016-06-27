@@ -27,32 +27,29 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void min() {
 		'''
-		program p {
-			«instantiateStrings»		
-			assert.equals('hi', strings.min{e=> e.length() })
-		}'''.interpretPropagatingErrors
+		«instantiateStrings»		
+		assert.equals('hi', strings.min{e=> e.length() })
+		'''.test
 	}
 	
 	@Test
 	def void minNoArgs() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»		
-			assert.equals(2, numbers.min() )
-			assert.equals(1, [1].min())
-			assert.throwsException({[].min()})
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»		
+		assert.equals(2, numbers.min() )
+		assert.equals(1, [1].min())
+		assert.throwsException({[].min()})
+		'''.test
 	}
 		
 	@Test
 	def void max() {
 		try 
 		'''
-		program p {
-			«instantiateStrings»
-			const r = strings.max{e=> e.length() }	
-			assert.equals('bonjour', strings.max{e=> e.length() })
-		}'''.interpretPropagatingErrors
+		«instantiateStrings»
+		const r = strings.max{e=> e.length() }	
+		assert.equals('bonjour', strings.max{e=> e.length() })
+		'''.test
 		catch (WollokProgramExceptionWrapper e)
 					fail(e.message)
 	}
@@ -60,32 +57,29 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void maxNoArgs() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»		
-			assert.equals(22, numbers.max() )
-			assert.equals(1, [1].max())
-			assert.throwsException({[].max()})
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»		
+		assert.equals(22, numbers.max() )
+		assert.equals(1, [1].max())
+		assert.throwsException({[].max()})
+		'''.test
 	}
 	
 	@Test
 	def void size() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»		
-			assert.equals(3, numbers.size())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»		
+		assert.equals(3, numbers.size())
+		'''.test
 	}
 	
 	@Test
 	def void contains() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.contains(22))
-			assert.that(numbers.contains(2))
-			assert.that(numbers.contains(10))
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.that(numbers.contains(22))
+		assert.that(numbers.contains(2))
+		assert.that(numbers.contains(10))
+		'''.test
 	}
 	
 	@Test
@@ -109,137 +103,124 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void any() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.any{e=> e > 20})
-			assert.that(numbers.any{e=> e > 0})
-			assert.notThat(numbers.any{e=> e < 0})
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.that(numbers.any{e=> e > 20})
+		assert.that(numbers.any{e=> e > 0})
+		assert.notThat(numbers.any{e=> e < 0})
+		'''.test
 	}
 	
 	@Test
 	def void remove() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			numbers.remove(22)		
-			assert.that(2 == numbers.size())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		numbers.remove(22)		
+		assert.that(2 == numbers.size())
+		'''.test
 	}
 	
 	@Test
 	def void clear() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			numbers.clear()		
-			assert.that(0 == numbers.size())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		numbers.clear()		
+		assert.that(0 == numbers.size())
+		'''.test
 	}
 	
 	@Test
 	def void isEmpty() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.notThat(numbers.isEmpty())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.notThat(numbers.isEmpty())
+		'''.test
 	}
 	
 	@Test
 	def void forEach() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			
-			var sum = 0
-			numbers.forEach({n => sum += n})
-			
-			assert.equals(34, sum)
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		
+		var sum = 0
+		numbers.forEach({n => sum += n})
+		
+		assert.equals(34, sum)
+		'''.test
 	}
 	
 	@Test
 	def void all() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.that(numbers.all({n => n > 0}))
-			assert.notThat(numbers.all({n => n > 5}))
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.that(numbers.all({n => n > 0}))
+		assert.notThat(numbers.all({n => n > 5}))
+		'''.test
 	}
 	
 	@Test
 	def void filter() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			var greaterThanFiveElements = numbers.filter({n => n > 5})
-			assert.that(greaterThanFiveElements.size() == 2)
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		var greaterThanFiveElements = numbers.filter({n => n > 5})
+		assert.that(greaterThanFiveElements.size() == 2)
+		'''.test
 	}
 	
 	@Test
 	def void map() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			var halfs = numbers.map({n => n / 2})
+		«instantiateCollectionAsNumbersVariable»
+		var halfs = numbers.map({n => n / 2})
 
-			assert.equals(3, halfs.size())
-			assert.that(halfs.contains(11))
-			assert.that(halfs.contains(5))
-			assert.that(halfs.contains(1))
-		}'''.interpretPropagatingErrors
+		assert.equals(3, halfs.size())
+		assert.that(halfs.contains(11))
+		assert.that(halfs.contains(5))
+		assert.that(halfs.contains(1))
+		'''.test
 	}
 	
 	@Test
 	def void shortCutAvoidingParenthesis() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			var greaterThanFiveElements = numbers.filter{n => n > 5}
-			assert.that(greaterThanFiveElements.size() == 2)
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		var greaterThanFiveElements = numbers.filter{n => n > 5}
+		assert.that(greaterThanFiveElements.size() == 2)
+		'''.test
 	}
 	
 	@Test
 	def void anyOne() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			const anyOne = numbers.anyOne()
-			assert.that(numbers.contains(anyOne))
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		const anyOne = numbers.anyOne()
+		assert.that(numbers.contains(anyOne))
+		'''.test
 	}
 	
 	@Test
 	def void equalsWithMethodName() {
 		'''
-		program p {
-			const a = [23, 2, 1]
-			const b = [23, 2, 1]
-			assert.that(a.equals(b))
-		}'''.interpretPropagatingErrors
+		const a = [23, 2, 1]
+		const b = [23, 2, 1]
+		assert.that(a.equals(b))
+		'''.test
 	}
 	
 	@Test
 	def void equalsWithEqualsEquals() {
 		'''
-		program p {
-			const a = [23, 2, 1]
-			const b = [23, 2, 1]
-			assert.that(a == b)
-		}'''.interpretPropagatingErrors
+		const a = [23, 2, 1]
+		const b = [23, 2, 1]
+		assert.that(a == b)
+		'''.test
 	}
 	
 	@Test
 	def void testToString() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals("[22, 2, 10]", numbers.toString())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals("[22, 2, 10]", numbers.toString())
+		'''.test
 	}
 	
 	@Test
@@ -257,196 +238,171 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void findWhenElementExists() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(22, numbers.find{e=> e > 20})
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(22, numbers.find{e=> e > 20})
+		'''.test
 	}
 	
 	@Test
 	def void findOrElse() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(50, numbers.findOrElse({e=> e > 1000}, { 50 }))
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(50, numbers.findOrElse({e=> e > 1000}, { 50 }))
+		'''.test
 	}
 
 	@Test
 	def void findWhenElementDoesNotExist() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.throwsException { numbers.find{e => e > 1000} }
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.throwsException { numbers.find{e => e > 1000} }
+		'''.test
 	}
 	
 	@Test
 	def void findOrDefaultWhenElementDoesNotExist() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(50, numbers.findOrDefault({e=> e > 1000}, 50))
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(50, numbers.findOrDefault({e=> e > 1000}, 50))
+		'''.test
 	}
 
 	@Test
 	def void findOrDefaultWhenElementExists() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(22, numbers.findOrDefault({e=> e > 20}, 50))
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(22, numbers.findOrDefault({e=> e > 20}, 50))
+		'''.test
 	}
 	
 	@Test
 	def void count() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(1, numbers.count{e=> e > 20})
-			assert.equals(3, numbers.count{e=> e > 0})
-			assert.equals(0, numbers.count{e=> e < 0})
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(1, numbers.count{e=> e > 20})
+		assert.equals(3, numbers.count{e=> e > 0})
+		assert.equals(0, numbers.count{e=> e < 0})
+		'''.test
 	}
 	
 	@Test
 	def void sum() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			
-			assert.equals(34, numbers.sum {n => n})
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		
+		assert.equals(34, numbers.sum {n => n})
+		'''.test
 	}
 
 	@Test
 	def void concatenation() {
-		'''program p {
-			const lista1 = [1, 4]
-			const lista2 = [2, 7]
-			const lista3 = lista1 + lista2
-			assert.equals([1, 4], lista1)
-			assert.equals([1, 4, 2, 7], lista3)
-		}'''.interpretPropagatingErrors
+		'''
+		const lista1 = [1, 4]
+		const lista2 = [2, 7]
+		const lista3 = lista1 + lista2
+		assert.equals([1, 4], lista1)
+		assert.equals([1, 4, 2, 7], lista3)
+		'''.test
 	}
 	
 	@Test
 	def void sumNoArgsWithManyElements() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			assert.equals(34, numbers.sum())
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(34, numbers.sum())
+		'''.test
 	}
 
 	@Test
 	def void sumNoArgsWithNoElementsSucceeds() {
 		'''
-		program p {
-			assert.equals(0, [].sum())
-		}'''.interpretPropagatingErrors
+		assert.equals(0, [].sum())
+		'''.test
 	}
 
 			
 	@Test
 	def void sumNoArgsWithSingleElement() {
 		'''
-		program p {
-			assert.equals(5, [5].sum())
-		}'''.interpretPropagatingErrors
+		assert.equals(5, [5].sum())
+		'''.test
 	}					
 	
 	@Test
 	def void occurrencesOfInEmptyCollectionIsZero() {
 		'''
-		program p {
-			assert.equals(0, [].occurrencesOf(4))
-		}'''.interpretPropagatingErrors
+		assert.equals(0, [].occurrencesOf(4))
+		'''.test
 	}
 	
 	@Test
 	def void occurrencesOfInSingleElementCollection() {
 		'''
-		program p {
-			assert.equals(1, [4].occurrencesOf(4))
-			assert.equals(0, [4].occurrencesOf('Hola'))
-		}'''.interpretPropagatingErrors
+		assert.equals(1, [4].occurrencesOf(4))
+		assert.equals(0, [4].occurrencesOf('Hola'))
+		'''.test
 	}
 	
 	@Test
 	def void occurrencesOfInMultiElementCollection() {
 		'''
-		program p {
-			assert.equals(3, [1, 2, 3, 4, 4, 1, 2, 4, 0].occurrencesOf(4))
-			assert.equals(1, [1, 'Hola', 'mundo'].occurrencesOf('Hola'))
-			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
-		}'''.interpretPropagatingErrors
+		assert.equals(3, [1, 2, 3, 4, 4, 1, 2, 4, 0].occurrencesOf(4))
+		assert.equals(1, [1, 'Hola', 'mundo'].occurrencesOf('Hola'))
+		assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
+		'''.test
 	}
 	
 	@Test
 	def void occurrencesOfInSetsNotGreaterThanOne() {
 		'''
-		program p {
-			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
-		}'''.interpretPropagatingErrors
+		assert.equals(1, #{'Hola', 3.0, 4, 4}.occurrencesOf(4))
+		'''.test
 	}
 
 	@Test
 	def void lastWithNoElementsFails() {
 		'''
-		program p {
-			assert.throwsException({ [].last() })
-		}'''.interpretPropagatingErrors
+		assert.throwsException({ [].last() })
+		'''.test
 	}
 
 	@Test
 	def void lastWithSingleElementSucceeds() {
 		'''
-		program p {
-			assert.equals('Hola', ['Hola'].last())
-		}'''.interpretPropagatingErrors
+		assert.equals('Hola', ['Hola'].last())
+		'''.test
 	}
 
 	@Test
 	def void lastWithManyElementsSucceeds() {
 		'''
-		program p {
-			assert.equals(4, [1, 2, 3, 4].last())
-		}'''.interpretPropagatingErrors
+		assert.equals(4, [1, 2, 3, 4].last())
+		'''.test
 	}
 	
 	@Test
 	def void removeAll() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			numbers.removeAll(numbers.drop(1))
-			assert.equals([numbers.head()], numbers)
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		numbers.removeAll(numbers.drop(1))
+		assert.equals([numbers.head()], numbers)
+		'''.test
 	}
 	
 	@Test
 	def void removeAllSuchThat() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			«instantiateCollectionWithA2»
-			«instantiateEmptyCollection»
-			numbers.removeAllSuchThat({it => it >= 10})
-			assert.equals(collectionWithA2, numbers)
-			numbers.removeAllSuchThat({it => it.odd()})
-			assert.equals(collectionWithA2, numbers)
-			numbers.removeAllSuchThat({it => it.even()})
-			assert.equals(emptyCollection, numbers)
-			numbers.removeAllSuchThat({it => it.even()})
-			assert.equals(emptyCollection, numbers)
-		}'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		«instantiateCollectionWithA2»
+		«instantiateEmptyCollection»
+		numbers.removeAllSuchThat({it => it >= 10})
+		assert.equals(collectionWithA2, numbers)
+		numbers.removeAllSuchThat({it => it.odd()})
+		assert.equals(collectionWithA2, numbers)
+		numbers.removeAllSuchThat({it => it.even()})
+		assert.equals(emptyCollection, numbers)
+		numbers.removeAllSuchThat({it => it.even()})
+		assert.equals(emptyCollection, numbers)
+		'''.test
 	}
 }
