@@ -101,5 +101,35 @@ class SetTestCase extends CollectionTestCase {
 		assert.equals(2, #{5, 7, 7, 5, 5, 5, 7, 7, 5, 5, 7}.size())
 		'''.test
 	} 	
+
+	@Test
+	def void elementsAreUniqueForClasses() {
+		'''
+		class Alumno { 
+			var nombre 
+			constructor(_nombre) { nombre = _nombre }
+		}
+		
+		program a {
+			assert.equals(2, #{new Alumno("juan"), new Alumno("manuel"), new Alumno("juan")}.size())
+		}'''.interpretPropagatingErrors
+	} 	
+
+	@Test
+	def void elementsAreUniqueForClassesAndObjects() {
+		'''
+		class Alumno { 
+			var nombre 
+			constructor(_nombre) { nombre = _nombre }
+		}
+		
+		object manuel {
+			var nombre = "ElManu"
+		}
+		
+		program a {
+			assert.equals(2, #{new Alumno("juan"), manuel, new Alumno("juan"), manuel, manuel}.size())
+		}'''.interpretPropagatingErrors
+	} 	
 	
 }

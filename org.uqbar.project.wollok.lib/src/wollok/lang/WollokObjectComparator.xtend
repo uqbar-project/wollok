@@ -12,7 +12,7 @@ class WollokObjectComparator implements Comparator<WollokObject> {
 		if (o1.wollokEquals(o2)) {
 			return 0
 		}
-		return o1?.toString.compareTo(o2?.toString)
+		return (o1?.kind.toString + o1?.toString).compareTo(o2?.kind.toString + o2?.toString)
 	}
 	
 }
