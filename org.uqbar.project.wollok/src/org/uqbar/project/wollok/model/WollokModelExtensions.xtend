@@ -2,6 +2,7 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
+
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -53,6 +54,8 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
+import static extension org.uqbar.project.wollok.scoping.WollokRootLocator.*
+
 /**
  * Extension methods to Wollok semantic model.
  *
@@ -66,7 +69,7 @@ class WollokModelExtensions {
 		if(file.URI.toString.startsWith("classpath:/"))
 			file.URI.trimFileExtension.segments.join(".")
 		else
-			file.URI.trimFileExtension.lastSegment
+			file.fullPackageName
 	}
 	
 	def static file(EObject it) { eResource }
