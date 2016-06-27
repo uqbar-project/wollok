@@ -63,6 +63,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
 import java.math.BigDecimal
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 /**
  * It's the real "interpreter".
@@ -231,13 +232,25 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch evaluate(WObjectLiteral l) {
 		new WollokObject(interpreter, l) => [ wo |
-			l.members.forEach[m|wo.addMember(m)]
-			l.parent.superClassesIncludingYourselfTopDownDo [
-				addMembersTo(wo)
-				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
-			]
-			l.mixins.forEach[m|m.addMembersTo(wo)]
+			l.addObjectMembers(wo)
+			l.parent.addInheritsMembers(wo)
+			l.addMixinsMembers(wo)
 		]
+	}
+	
+	def addObjectMembers(WMethodContainer it, WollokObject wo) {
+		members.forEach[wo.addMember(it)]
+	}
+	
+	def addInheritsMembers(WClass it, WollokObject wo) {
+		superClassesIncludingYourselfTopDownDo [
+			addMembersTo(wo)
+			if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
+		]
+	}
+	
+	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
+		mixins.forEach[addMembersTo(wo)]
 	}
 
 	def dispatch evaluate(WReturnExpression it) {
@@ -255,11 +268,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def newInstance(WClass classRef, WollokObject... arguments) {
 		new WollokObject(interpreter, classRef) => [ wo |
-			classRef.superClassesIncludingYourselfTopDownDo [
-				addMembersTo(wo)
-				if (native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
-			]
-			classRef.mixins.forEach[addMembersTo(wo)]
+			classRef.addInheritsMembers(wo)
+			classRef.addMixinsMembers(wo)
+			
 			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
 		]
 	}
@@ -278,16 +289,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
 		new WollokObject(interpreter, namedObject) => [ wo |
-			namedObject.members.forEach[wo.addMember(it)]
-
-			// parents
-			namedObject.parent.superClassesIncludingYourselfTopDownDo [
-				addMembersTo(wo)
-				if(native) wo.nativeObjects.put(it, createNativeObject(wo, interpreter))
-			]
-
-			// mixins
-			namedObject.mixins.forEach[addMembersTo(wo)]
+			namedObject.addObjectMembers(wo)
+			namedObject.parent.addInheritsMembers(wo)
+			namedObject.addMixinsMembers(wo)
 
 			if (namedObject.native)
 				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
