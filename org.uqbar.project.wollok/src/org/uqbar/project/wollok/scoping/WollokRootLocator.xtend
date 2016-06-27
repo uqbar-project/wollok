@@ -46,7 +46,7 @@ class WollokRootLocator {
 			if (!file.canRead)
 				return 1
 
-			if (!file.listFiles[name == ".WOLLOKROOT"].empty) {
+			if (!file.listFiles[name == "wollok.root"].empty) {
 				return levels
 			}
 
