@@ -23,7 +23,9 @@ class WDictionary implements JavaWrapper<Map> {
 		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
 	}
 	
-	def clear() { wrapped.clear }
+	def clear() { 
+		wrapped.clear
+	}
 	
 	def basicGet(WollokObject key) { 
 		wrapped.get(key)
