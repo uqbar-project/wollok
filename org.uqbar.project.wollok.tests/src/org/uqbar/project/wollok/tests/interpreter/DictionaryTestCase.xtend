@@ -95,10 +95,21 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		mapaTelefonos.put("mario", "5302-6617")
 		assert.that(mapaTelefonos.containsKey("choli"))
 		mapaTelefonos.remove("choli")
-		assert.notThat(mapaTelefonos.containsKey("choli"))	
+		assert.notThat(mapaTelefonos.containsKey("choli"))
 		'''.test
 	}
 
+	@Test
+	def void testRemoveNonExistentKey() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		mapaTelefonos.put("choli", "2142-5980")
+		mapaTelefonos.put("mario", "5302-6617")
+		mapaTelefonos.remove("pepe")
+		assert.equals(2, mapaTelefonos.size())
+		'''.test
+	}
+	
 	@Test
 	def void testKeys() {
 		'''
