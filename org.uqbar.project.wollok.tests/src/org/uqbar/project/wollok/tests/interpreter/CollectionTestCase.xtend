@@ -114,7 +114,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void remove() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		numbers.remove(22)		
+		numbers.remove(22)
 		assert.that(2 == numbers.size())
 		'''.test
 	}
