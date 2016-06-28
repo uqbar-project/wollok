@@ -17,8 +17,6 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	}
 	
 	def abs() { Math.abs(wrapped).asWollokObject }
-	
-	def stringValue() { wrapped.toString }
 
 	@NativeMessage("+")
 	def plus(WollokObject other) { operate(other) [ doPlus(it) ] }

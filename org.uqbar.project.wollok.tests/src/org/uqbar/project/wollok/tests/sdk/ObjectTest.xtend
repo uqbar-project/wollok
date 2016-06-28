@@ -39,6 +39,20 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void toStringWithDoubleField() {
+		'''
+			object persona {
+				var edad = 23
+				var altura = 1.7
+			}
+			
+			program p {
+				assert.equals("persona[edad=23, altura=1.7]", persona.toString())
+			}
+		'''.interpretPropagatingErrors
+	}
 
 	@Test
 	def void instanceVariableFor() {
