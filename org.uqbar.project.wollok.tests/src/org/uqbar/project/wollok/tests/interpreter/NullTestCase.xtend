@@ -33,7 +33,11 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void equalEqualOperatorSentToNull() {
 		'''
+		var valorNulo
 		assert.notThat(null == 8)
+		assert.notThat(valorNulo == 8)
+		assert.that(valorNulo == null)
+		assert.notThat(valorNulo != null)
 		'''.test
 	}
 
