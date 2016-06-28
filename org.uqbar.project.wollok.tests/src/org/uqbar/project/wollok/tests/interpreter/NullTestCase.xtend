@@ -36,5 +36,21 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		assert.notThat(null == 8)
 		'''.test
 	}
+
+	@Test
+	def void ifInANullExpression() {
+		'''
+		var expresionNula
+		var mensajeError
+		try {
+			if (expresionNula) {
+				console.println("ooo")
+			}
+		} catch e: Exception {
+			mensajeError = e.getMessage()
+		}
+		assert.equals("Cannot use null in 'if' expression", mensajeError)
+		'''.test
+	}
 	
 }

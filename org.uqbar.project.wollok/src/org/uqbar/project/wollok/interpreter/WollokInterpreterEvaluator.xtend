@@ -130,6 +130,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		val cond = condition.eval
 
 		// I18N !
+		if (cond == null) {
+			throw newWollokExceptionAsJava('''Cannot use null in 'if' expression''')
+		}
 		if (!(cond.isWBoolean))
 			throw new WollokInterpreterException('''Expression in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
 		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
@@ -345,9 +348,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			
 	}
 	
-	private def validateNullOperand(WollokObject leftOperand, String operand) {
-		if (leftOperand == null && !#["==","!="].contains(operand)) {
-			throw new WollokRuntimeException("Cannot send message " + operand + " to null")
+	private def validateNullOperand(WollokObject leftOperand, String operation) {
+		if (leftOperand == null && !#["==","!="].contains(operation)) {
+			throw newWollokExceptionAsJava('''Cannot send message «operation» to null''')
 		}
 	}
 
