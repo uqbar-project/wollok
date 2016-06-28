@@ -44,7 +44,6 @@ class Gameboard {
 
 	def void start() {
 		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
-		Runtime.runtime.addShutdownHook(new Thread[stop])
 	}
 	
 	def stop() {
