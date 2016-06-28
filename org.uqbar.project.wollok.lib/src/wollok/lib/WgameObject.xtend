@@ -73,7 +73,9 @@ class WgameObject {
 	
 	def clear() { board.clear }
 	
-	def start() { board.start }
+	def start() { board.start(false) }
+	
+	def run() { board.start(true) }
 	
 	def stop() { board.stop }
 	

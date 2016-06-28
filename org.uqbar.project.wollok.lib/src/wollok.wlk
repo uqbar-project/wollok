@@ -1040,6 +1040,7 @@ package lib {
 		method say(element, message) native
 		method clear() native
 		method start() native
+		method run() native
 		method stop() native
 		
 		method setTitle(title) native
