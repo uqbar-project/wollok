@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-Version: 1.5.0.qualifier
-Bundle-ClassPath: .,lib/mockito-all-1.9.5.jar
+Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok.tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
@@ -30,7 +30,8 @@ Require-Bundle: org.uqbar.project.wollok;visibility:=reexport,
  org.uqbar.project.wollok.ui.launch,
  org.eclipse.xtext.xbase.lib,
  org.uqbar.project.wollok.typeSystem,
- org.uqbar.project.xinterpreter
+ org.uqbar.project.xinterpreter,
+ org.mockito;bundle-version="1.9.5"
 Import-Package: org.apache.log4j,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
