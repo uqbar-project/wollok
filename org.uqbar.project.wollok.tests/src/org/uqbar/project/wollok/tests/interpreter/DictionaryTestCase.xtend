@@ -166,6 +166,25 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.throwsException({ new Dictionary().put(2145, null) })
 		'''.test		
+	}
+	
+	@Test
+	def void addingSeveralSwallowsInAMap() {
+		'''
+		class Golondrina { }
+		
+		program a {
+			var pepa = new Golondrina()
+			var s = new Dictionary()
+			s.put(pepa, 0)
+			
+			(1..100).forEach({i => s.put(new Golondrina(), i)}) // all objects are not == to pepa
+			
+			assert.notEquals(pepa, new Golondrina())
+			assert.equals(101, s.size())
+			assert.equals(0, s.get(pepa))
+		}
+		'''.interpretPropagatingErrors
 	}		
 	
 }

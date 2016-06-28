@@ -118,7 +118,7 @@ class SetTestCase extends CollectionTestCase {
 		}
 		
 		program a {
-			assert.equals(2, #{new Alumno("juan"), new Alumno("manuel"), new Alumno("juan")}.size())
+			assert.equals(3, #{new Alumno("juan"), new Alumno("manuel"), new Alumno("juan")}.size())
 		}'''.interpretPropagatingErrors
 	} 	
 
@@ -135,7 +135,8 @@ class SetTestCase extends CollectionTestCase {
 		}
 		
 		program a {
-			assert.equals(2, #{new Alumno("juan"), manuel, new Alumno("juan"), manuel, manuel}.size())
+			var juancete = new Alumno("juan")
+			assert.equals(2, #{juancete, manuel, juancete, manuel, manuel}.size())
 		}'''.interpretPropagatingErrors
 	} 	
 	
