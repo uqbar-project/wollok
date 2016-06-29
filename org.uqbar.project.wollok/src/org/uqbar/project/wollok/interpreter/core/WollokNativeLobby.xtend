@@ -28,7 +28,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		this.console = console
 	}
 	
-	override getThisObject() { throw new UnsupportedOperationException("Cannot use this in a program's code !")}
+	override getThisObject() { throw new UnsupportedOperationException("Cannot use reference to self in a program's code !")}
 	
 	override allReferenceNames() {
 		localProgramVariables.keySet.map[new WVariable(it, true)]
