@@ -1,10 +1,10 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import java.math.BigDecimal
 
 /**
  * @author jfernandes
@@ -65,6 +65,12 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 	def lesserOrEquals(WollokObject other) { wrapped.doubleValue <= other.nativeNumber.wrapped.doubleValue }
 
 	def invert() { (-wrapped).asWollokObject }
+	
+	def randomUpTo(WollokObject other) {
+		val maximum = other.nativeNumber.wrapped.doubleValue
+		val minimum = wrapped.doubleValue()
+		((Math.random * (maximum - minimum)) + minimum).doubleValue()
+	}
 	
 	override compareTo(WDouble o) { wrapped.compareTo(o.wrapped) }
 	

@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.gameboard.Cell
 import org.uqbar.project.wollok.game.helpers.Keyboard
 import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.Image
 
 /**
  * @author ?
@@ -44,7 +45,16 @@ class GameboardTest {
 	}
 	
 	@Test
-	def can_create_all_cells() {
+	def should_init_with_defaults() {
+		gameboard = new Gameboard
+		Assert.assertEquals("Wollok Game", gameboard.title)
+		Assert.assertEquals(5, gameboard.width)
+		Assert.assertEquals(5, gameboard.height)
+		Assert.assertEquals(new Image("ground.png"), gameboard.cells.head.image)
+	}
+	
+	@Test
+	def should_create_all_cells() {
 		gameboard.createCells("UnaImagen")
 		Assert.assertEquals(10, gameboard.cells.size)
 	}

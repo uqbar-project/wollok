@@ -87,7 +87,7 @@
 		method className() native
 		
 		/**
-		 * Tells whether self object is "equals" to the given object
+		 * Tells whether self object is "equal" to the given object
 		 * The default behavior compares them in terms of identity (===)
 		 */
 		method ==(other) {
@@ -107,8 +107,6 @@
 		}
 		
 		method equals(other) = self == other
-		
-		method randomBetween(start, end) native
 		
 		method ->(other) {
 			return new Pair(self, other)
@@ -244,11 +242,25 @@
 		  */
 		method addAll(elements) { elements.forEach { e => self.add(e) } }
 		
+		/**
+		  * Removes all elements of the given collection parameter from self collection
+		  */
+		method removeAll(elements) { 
+			elements.forEach { e => self.remove(e) } 
+		}
+		
+		/**
+		 * Removes those elements that meet a given condition
+		 */
+		 method removeAllSuchThat(closure) {
+		 	self.removeAll( self.filter(closure) )
+		 }
+
 		/** Tells whether self collection has no elements */
 		method isEmpty() = self.size() == 0
 				
 		/**
-		 * Performs an operation on every elements of self collection.
+		 * Performs an operation on every element of self collection.
 		 * The logic to execute is passed as a closure that takes a single parameter.
 		 * @returns nothing
 		 * Example:
@@ -257,13 +269,14 @@
 		method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
 		
 		/**
-		 * Tells whether all the elements of self collection satisfy a given condition
+		 * Answers whether all the elements of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.all { plant -> plant.hasFlowers() }
+		 *      plants.all { plant => plant.hasFlowers() }
 		 */
 		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Tells whether at least one element of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
@@ -272,6 +285,7 @@
 		 *      plants.any { plant => plant.hasFlowers() }
 		 */
 		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+		
 		/**
 		 * Returns the element of self collection that satisfy a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
@@ -314,6 +328,15 @@
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
 		method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+
+		/**
+		 * Counts the occurrences of a given element in self collection.
+		 * @returns an integer number
+		 * Example:
+		 *      [1, 8, 4, 1].occurrencesOf(1)	=> returns 2
+		 */
+		method occurrencesOf(element) = self.count({it => it == element})
+		
 		/**
 		 * Collects the sum of each value for all e
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
@@ -350,7 +373,14 @@
 			acc
 		})
 
-		method filter(closure) = self.fold(self.newInstance(), { acc, e =>
+		/**
+		 * Returns a new collection that contains the elements that meet a given condition.
+		 * The condition is a closure argument that takes a single element and returns a boolean.
+		 * @returns another collection (same type as self one)
+		 * Example:
+		 *      const overageUsers = users.filter{ user => user.age() >= 18 }
+		 */
+		 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 			 if (closure.apply(e))
 			 	acc.add(e)
 			 acc
@@ -367,14 +397,39 @@
 		method toStringSufix()
 		method asList()
 		method asSet()
+
+		/**
+		 * Returns a new collection of the same type and with the same content 
+		 * as self.
+		 * @returns a new collection
+		 * Example:
+		 *      const usersCopy = users.copy() 
+		 */
 		method copy() {
 			var copy = self.newInstance()
 			copy.addAll(self)
 			return copy
 		}
+		
+		/**
+		 * Returns a new List that contains the elements of self collection 
+		 * sorted by a criteria given by a closure. The closure receives two objects
+		 * X and Y and returns a boolean, true if X should come before Y in the 
+		 * resulting collection.
+		 * @returns a new List
+		 * Example:
+		 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() }) 
+		 */
 		method sortedBy(closure) = self.copy().asList().sortBy(closure)
 		
+		/**
+		 * Returns a new, empty collection of the same type as self.
+		 * @returns a new collection
+		 * Example:
+		 *      const newCollection = users.newInstance() 
+		 */
 		method newInstance()
+		
 	}
 
 	/**
@@ -400,6 +455,26 @@
 		override method asSet() = self
 
 		override method anyOne() native
+
+		/**
+		 * Returns a new Set with the elements of both self and another collection.
+		 * @returns a Set
+		 */
+		 method union(another) = self + another
+
+		/**
+		 * Returns a new Set with the elements of self that exist in another collection
+		 * @returns a Set
+		 */
+		 method intersection(another) = 
+		 	self.filter({it => another.contains(it)})
+		 	
+		/**
+		 * Returns a new Set with the elements of self that don't exist in another collection
+		 * @returns a Set
+		 */
+		 method difference(another) =
+		 	self.filter({it => not another.contains(it)})
 		
 		// REFACTORME: DUP METHODS
 		method fold(initialValue, closure) native
@@ -429,12 +504,20 @@
 			if (self.isEmpty()) 
 				throw new Exception("Illegal operation 'anyOne' on empty collection")
 			else 
-				return self.get(self.randomBetween(0, self.size()))
+				return self.get(0.randomUpTo(self.size()))
 		}
 		
 		method first() = self.head()
 		method head() = self.get(0)
 		
+		/**
+		 * Returns the last element of the list.
+		 * @returns last element
+		 * Example:
+		 *		[1, 2, 3, 4].last()		=> returns 4	
+		 */
+		method last() = self.get(self.size() - 1)
+		 
 		override method toStringPrefix() = "["
 		override method toStringSufix() = "]"
 
@@ -488,6 +571,90 @@
 	}
 	
 	/**
+	 * Represents a set of key -> values
+	 * 
+	 */
+	class Dictionary {
+	
+		constructor() { }
+		/**
+		 * Adds or updates a value based on a key
+		 */
+		method put(_key, _value) native
+		
+		/*
+		 * Returns the value to which the specified key is mapped, or null if this Dictionary contains no mapping for the key.
+		 */
+		method basicGet(_key) native
+
+		/*
+		 * Returns the value to which the specified key is mapped, or evaluates a non-parameter closure otherwise 
+		 */
+		method getOrElse(_key, _closure) {
+			const value = self.basicGet(_key)
+			if (value == null) 
+				_closure.apply()
+			else 
+				return value
+		}
+		
+		/*
+		 * Returns the value to which the specified key is mapped. If this Dictionary contains no mapping for the key, an error is thrown.
+		 */
+		method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
+
+		/**
+		 * Returns the number of key-value mappings in this Dictionary.
+		 */
+		method size() = self.values().size()
+		
+		method isEmpty() = self.size() == 0
+		
+		/**
+		 * Returns true if this Dictionary contains a mapping for the specified key.
+		 */
+		method containsKey(_key) = self.keys().contains(_key)
+		
+		/**
+		 * Returns true if this Dictionary maps one or more keys to the specified value.
+		 */
+		method containsValue(_value) = self.values().contains(_value)
+		
+		/**
+		 * Removes the mapping for a key from this Dictionary if it is present 
+		 */
+		method remove(_key) native
+		
+		/**
+		 * Returns a list of the keys contained in this Dictionary.
+		 */
+		method keys() native
+		
+		/**
+		 * Returns a list of the values contained in this Dictionary.
+		 */
+		method values() native
+		
+		/**
+		 * Performs the given action for each entry in this Dictionary until all entries have been 
+		 * processed or the action throws an exception.
+		 * 
+		 * Expected closure with two parameters: the first associated with key and second with value.
+		 *
+		 * Example:
+		 * 		mapaTelefonos.forEach({ k, v => result += k.size() + v.size() })
+		 * 
+		 */
+		method forEach(closure) native
+		
+		/**
+		 * Removes all of the mappings from this Dictionary. This is a side-effect operation.
+		 */
+		method clear() native
+		
+	}
+	
+	/**
 	 *
 	 * @author jfernandes
 	 * @since 1.3
@@ -528,7 +695,15 @@
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
+		/**
+		 * raisedTo
+		 * 3 ** 2 = 9
+		 */
 		method **(other) native
+		/**
+		 * returns remainder of division between self and other
+		 */
 		method %(other) native
 		
 		method toString() native
@@ -543,12 +718,29 @@
 		method <=(other) native
 		
 		method abs() native
+		/**
+		 * 3.invert() ==> -3
+		 * (-2).invert() ==> 2
+		 */
 		method invert() native
+		/*
+		 * greater common divisor
+		 * 8.gcd(12) ==> 4
+		 * 5.gcd(10) ==> 5
+		 */
 		method gcd(other) native
+		/**
+		 * least common multiple
+		 * 3.lcm(4) ==> 12
+		 * 6.lcm(12) ==> 12
+		 */
 		method lcm(other) {
 			const mcd = self.gcd(other)
 			return self * (other / mcd)
 		}
+		/**
+		 * number of digits of this numbers (without sign)
+		 */
 		method digits() {
 			var digits = self.toString().size()
 			if (self < 0) {
@@ -558,15 +750,12 @@
 		}
 		method isPrime() {
 			if (self == 1) return false
-			var _prime = true
-			(2..self - 1).forEach({ i =>
-				// Horrible definition, but return doesn't exit from loop
-				// and I need fold, any methods in Range
-				if(self % i == 0) _prime = false 
-			})
-			return _prime
+			return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 		}
-
+		/**
+		 * Returns a random between self and max
+		 */
+		method randomUpTo(max) native
 		/**
 		 * Executes the given action as much times as the receptor object
 		 */
@@ -586,6 +775,7 @@
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		method div(other) native
 		method **(other) native
 		method %(other) native
 		
@@ -600,6 +790,7 @@
 		
 		method abs() native
 		method invert() native
+		method randomUpTo(max) native
 	}
 	
 	/**
@@ -685,13 +876,21 @@
 	class Range {
 		const start
 		const end
+		var step
 		
 		constructor(_start, _end) {
 			self.validate(_start)
-			self.validate(_end) 
+			self.validate(_end)
 			start = _start 
 			end = _end
+			if (_start > _end) { 
+				step = -1 
+			} else {
+				step = 1
+			}  
 		}
+		
+		method step(_step) { step = _step }
 		
 		method validate(_limit) native
 		
@@ -702,6 +901,48 @@
 			self.forEach{e=> l.add(closure.apply(e)) }
 			return l
 		}
+		
+		/** @private */
+		method asList() {
+			return self.map({ elem => return elem })
+		}
+		
+		method isEmpty() = self.size() == 0
+
+		method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
+		method size() { return end - start + 1 }
+		method any(closure) { return self.asList().any(closure) }
+		method all(closure) { return self.asList().all(closure) }
+		method filter(closure) { return self.asList().filter(closure) }
+		method min() { return self.asList().min() }
+		method max() { return self.asList().max() }
+		/**
+		 * returns a random integer contained in the range
+		 */		
+		method anyOne() native
+		method contains(e) { return self.asList().contains(e) }
+		method sum() { return self.asList().sum() }
+		/**
+		 * sums all elements that match the boolean closure 
+		 */
+		method sum(closure) { return self.asList().sum(closure) }
+		/**
+		 * counts how many elements match the boolean closure
+		 */
+		method count(closure) { return self.asList().count(closure) }
+		method find(closure) { return self.asList().find(closure) }
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or evaluates the continuation block closure if no element is found
+		 */
+		method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
+		
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or returns a default value otherwise
+		 */
+		method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
+		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}

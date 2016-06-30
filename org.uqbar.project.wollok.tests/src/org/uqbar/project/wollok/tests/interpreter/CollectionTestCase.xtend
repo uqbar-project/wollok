@@ -11,6 +11,14 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def instantiateCollectionAsNumbersVariable() {
 		"const numbers = [22, 2, 10]"
 	}
+
+	def instantiateCollectionWithA2() {
+		"const collectionWithA2 = [2]"
+	}
+
+	def instantiateEmptyCollection() {
+		"const emptyCollection = []"
+	}
 	
 	def instantiateStrings() {
 		"const strings = ['hello', 'hola', 'bonjour', 'ciao', 'hi']"
@@ -330,14 +338,115 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void sumNoArgs() {
+	def void sumNoArgsWithManyElements() {
 		'''
 		program p {
 			«instantiateCollectionAsNumbersVariable»
 			assert.equals(34, numbers.sum())
-			assert.equals(0, [].sum())
-			assert.equals(5, [5].sum())
 		}'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void sumNoArgsWithNoElementsSucceeds() {
+		'''
+		program p {
+			assert.equals(0, [].sum())
+		}'''.interpretPropagatingErrors
+	}
+
+			
+	@Test
+	def void sumNoArgsWithSingleElement() {
+		'''
+		program p {
+			assert.equals(5, [5].sum())
+		}'''.interpretPropagatingErrors
+	}					
+	
+	@Test
+	def void occurrencesOfInEmptyCollectionIsZero() {
+		'''
+		program p {
+			assert.equals(0, [].occurrencesOf(4))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void occurrencesOfInSingleElementCollection() {
+		'''
+		program p {
+			assert.equals(1, [4].occurrencesOf(4))
+			assert.equals(0, [4].occurrencesOf('Hola'))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void occurrencesOfInMultiElementCollection() {
+		'''
+		program p {
+			assert.equals(3, [1, 2, 3, 4, 4, 1, 2, 4, 0].occurrencesOf(4))
+			assert.equals(1, [1, 'Hola', 'mundo'].occurrencesOf('Hola'))
+			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void occurrencesOfInSetsNotGreaterThanOne() {
+		'''
+		program p {
+			assert.equals(1, #{'Hola', 'mundo', 4, 4}.occurrencesOf(4))
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void lastWithNoElementsFails() {
+		'''
+		program p {
+			assert.throwsException({ [].last() })
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void lastWithSingleElementSucceeds() {
+		'''
+		program p {
+			assert.equals('Hola', ['Hola'].last())
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void lastWithManyElementsSucceeds() {
+		'''
+		program p {
+			assert.equals(4, [1, 2, 3, 4].last())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void removeAll() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			numbers.removeAll(numbers.drop(1))
+			assert.equals([numbers.head()], numbers)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void removeAllSuchThat() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			«instantiateCollectionWithA2»
+			«instantiateEmptyCollection»
+			numbers.removeAllSuchThat({it => it >= 10})
+			assert.equals(collectionWithA2, numbers)
+			numbers.removeAllSuchThat({it => it.odd()})
+			assert.equals(collectionWithA2, numbers)
+			numbers.removeAllSuchThat({it => it.even()})
+			assert.equals(emptyCollection, numbers)
+			numbers.removeAllSuchThat({it => it.even()})
+			assert.equals(emptyCollection, numbers)
+		}'''.interpretPropagatingErrors
+	}
 }

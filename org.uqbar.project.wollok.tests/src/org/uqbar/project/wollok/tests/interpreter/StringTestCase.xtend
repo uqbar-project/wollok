@@ -119,5 +119,13 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void randomForStringsAreNotAllowedAnymore() {
+		'''program a {
+			assert.throwsException({ => "fafafa".randomUpTo(8.9)})
+		}
+		'''.interpretPropagatingErrors
+	}	
 	
 }
