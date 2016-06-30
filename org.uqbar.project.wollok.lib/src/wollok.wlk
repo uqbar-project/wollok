@@ -129,7 +129,7 @@ package lang {
 		 * The default behavior compares them in terms of identity (===)
 		 */
 		method ==(other) {
-			return other != null && self === equals(other) 
+			return other != null && self === other 
 		}
 		
 		/** Tells whether self object is not equals to the given one */
