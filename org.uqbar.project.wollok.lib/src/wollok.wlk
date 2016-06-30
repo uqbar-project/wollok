@@ -1,13 +1,8 @@
-/**
- * Base class for all Exceptions.
- * 
- * @author jfernandes
- * @since 1.0
- */
 package lang {
  
 	/**
 	 * Base class for all Exceptions.
+	 * Every exception and its subclasses indicates conditions that a reasonable application might want to catch.
 	 * 
 	 * @author jfernandes
 	 * @since 1.0
@@ -16,17 +11,24 @@ package lang {
 		const message
 		const cause
 	
+		/** Constructs a new exception with no detailed message. */
 		constructor()
+		/** Constructs a new exception with the specified detail message. */
 		constructor(_message) = self(_message, null)
+		/** Constructs a new exception with the specified detail message and cause. */
 		constructor(_message, _cause) { message = _message ; cause = _cause }
 		
+		/** Prints this exception and its backtrace to the console */
 		method printStackTrace() { self.printStackTrace(console) }
+
+		/** Prints this exception and its backtrace as a string value */
 		method getStackTraceAsString() {
 			const printer = new StringPrinter()
 			self.printStackTrace(printer)
 			return printer.getBuffer()
 		}
 		
+		/** Prints this throwable and its backtrace to the specified printer */
 		method printStackTrace(printer) { self.printStackTraceWithPreffix("", printer) }
 		
 		/** @private */
@@ -45,16 +47,24 @@ package lang {
 		/** @private */
 		method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
 		
+		/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
 		method getStackTrace() native
 		
+		/** Returns the detail message string of this exception. */
 		method getMessage() = message
 	}
 	
+	/**
+	 * An exception that is thrown when a specified element cannot be found
+	 */
 	class ElementNotFoundException inherits Exception {
 		constructor(_message) = super(_message)
 		constructor(_message, _cause) = super(_message, _cause)
 	}
 
+	/**
+	 * An exception that is thrown when an object cannot understand a certain message
+	 */
 	class MessageNotUnderstoodException inherits Exception {
 		constructor()
 		constructor(_message) = super(_message)
@@ -69,6 +79,9 @@ package lang {
 		*/
 	}
 	
+	/**
+	 * An element in a stack trace, represented by a context and a location of a method where a message was sent
+	 */
 	class StackTraceElement {
 		const contextDescription
 		const location
@@ -82,15 +95,30 @@ package lang {
 	
 	/**
 	 *
+	 * Representation of Wollok Object
+	 *
+	 * Class Object is the root of the class hierarchy. Every class has Object as a superclass.  
+	 * 
 	 * @author jfernandes
 	 * since 1.0
 	 */
 	class Object {
+		/** Returns object identity of a Wollok object, represented by a unique number in Wollok environment */
 		method identity() native
+		/** Returns a list of instance variables for this Wollok object */
 		method instanceVariables() native
+		/** Retrieves a specific variable. Expects a name */
 		method instanceVariableFor(name) native
+		/** Accesses a variable by name, in a reflexive way. */
 		method resolve(name) native
+		/** Object description in english/spanish/... (depending on i18n configuration)
+		 *
+		 * Examples:
+		 * 		"2".kindName()  => returns "a String"
+		 *  	2.kindName()    => returns "a Integer"
+		 */
 		method kindName() native
+		/** Full name of Wollok object class */
 		method className() native
 		
 		/**
@@ -112,18 +140,29 @@ package lang {
 		method ===(other) {
 			return self.identity() == other.identity()
 		}
-		
+
+		/**
+		 * o1.equals(o2) is a synonym for o1 == o2
+		 */
 		method equals(other) = self == other
-		
+
+		/**
+		 * Generates a Pair key-value association. @see Pair.
+		 */
 		method ->(other) {
 			return new Pair(self, other)
 		}
 
+		/**
+		 * String representation of Wollok object
+		 */
 		method toString() {
 			// TODO: should be a set
 			// return self.toSmartString(#{})
 			return self.toSmartString([])
 		}
+
+		/** @private */
 		method toSmartString(alreadyShown) {
 			if (alreadyShown.any { e => e.identity() == self.identity() } ) { 
 				return self.simplifiedToSmartString() 
@@ -134,10 +173,12 @@ package lang {
 			}
 		} 
 		
+		/** @private */
 		method simplifiedToSmartString(){
 			return self.kindName()
 		}
 		
+		/** @private */
 		method internalToSmartString(alreadyShown) {
 			return self.kindName() + "[" 
 				+ self.instanceVariables().map { v => 
@@ -146,6 +187,7 @@ package lang {
 			+ "]"
 		}
 		
+		/** @private */
 		method messageNotUnderstood(name, parameters) {
 			var message = if (name != "toString") 
 						self.toString()
@@ -158,15 +200,20 @@ package lang {
 				message += "()"
 			throw new MessageNotUnderstoodException(message)
 		}
-		
+
+		/** Builds an exception with a message */		
 		method error(message) {
 			throw new Exception(message)
 		}
 	}
 	
+	/** Representation for methods that only have side effects */
 	object void { }
 	
-	
+	/** 
+	 * Representation of a Key/Value Association.
+	 * It is also useful if you want to model a Point. 
+	 */
 	class Pair {
 		const x
 		const y
@@ -179,14 +226,18 @@ package lang {
 		method getKey() { return self.getX() }
 		method getValue() { return self.getY() }
 	}
-	
+
+	/**
+	 * The root class in the collection hierarchy. 
+	 * A collection represents a group of objects, known as its elements.
+	 */	
 	class Collection {
 		/**
 		  * Returns the element that is considered to be/have the maximum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
 		  * The closure must return a comparable value (something that understands the >, >= messages).
 		  * Example:
-		  *       ["a", "ab", "abc", "d" ].max { e => e.length() }    =>  returns "abc"		 
+		  *       ["a", "ab", "abc", "d" ].max({ e => e.length() })    =>  returns "abc"		 
 		  */
 		method max(closure) = self.absolute(closure, { a, b => a > b })
 
@@ -280,7 +331,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.all { plant => plant.hasFlowers() }
+		 *      plants.all({ plant => plant.hasFlowers() })
 		 */
 		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
 		
@@ -289,7 +340,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
-		 *      plants.any { plant => plant.hasFlowers() }
+		 *      plants.any({ plant => plant.hasFlowers() })
 		 */
 		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
 		
@@ -312,7 +363,7 @@ package lang {
 		 * will be returned
 		 * @returns the element that complies the condition or the default value
 		 * Example:
-		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, homer)
+		 *      users.findDefault({ user => user.name() == "Cosme Fulanito" }, homer)
 		 */
 		method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
 		
@@ -368,13 +419,21 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns an object.
 		 * @returns another collection (same type as self one)
 		 * Example:
-		 *      const ages = users.map{ user => user.age() }
+		 *      const ages = users.map({ user => user.age() })
 		 */
 		method map(closure) = self.fold(self.newInstance(), { acc, e =>
 			 acc.add(closure.apply(e))
 			 acc
 		})
 		
+		/**
+		 * Map + flatten operation
+		 * @see map
+		 * @see flatten
+		 * 
+		 * Example
+		 * 		[ [1, 2], [3], [4, 0] ].flatMap({ e => [e.size()] }) => returns [2, 1, 2]
+		 */
 		method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 			acc.addAll(closure.apply(e))
 			acc
@@ -385,7 +444,7 @@ package lang {
 		 * The condition is a closure argument that takes a single element and returns a boolean.
 		 * @returns another collection (same type as self one)
 		 * Example:
-		 *      const overageUsers = users.filter{ user => user.age() >= 18 }
+		 *      const overageUsers = users.filter({ user => user.age() >= 18 })
 		 */
 		 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 			 if (closure.apply(e))
@@ -393,16 +452,32 @@ package lang {
 			 acc
 		})
 
+		/**
+		 * Returns true if this collection contains the specified element.
+		 */
 		method contains(e) = self.any {one => e == one }
+		
+		/**
+		 * Flattens a collection of collections
+		 *
+		 * Example:
+		 * 		[ [1, 2], [3], [4, 0] ].flatten()  => returns [1, 2, 3, 4, 0]
+		 *
+		 */
 		method flatten() = self.flatMap { e => e }
 		
+		/** @private */
 		override method internalToSmartString(alreadyShown) {
 			return self.toStringPrefix() + self.map{e=> e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
 		}
 		
 		method toStringPrefix()
 		method toStringSufix()
+		
+		/** Converts a collection to a list */
 		method asList()
+		
+		/** Converts a collection to a set (no duplicates) */
 		method asSet()
 
 		/**
@@ -441,6 +516,9 @@ package lang {
 
 	/**
 	 *
+	 * A collection that contains no duplicate elements. 
+	 * It models the mathematical set abstraction. A Set guarantees no order of elements.
+	 * 
 	 * @author jfernandes
 	 * @since 1.3
 	 */	
@@ -449,18 +527,33 @@ package lang {
 			self.addAll(elements)
 		}
 		
+		/** @private */
 		override method newInstance() = #{}
+		
+		/** @private */
 		override method toStringPrefix() = "#{"
+		
+		/** @private */
 		override method toStringSufix() = "}"
 		
+		/** 
+		 * Converts this set to a list
+		 * @see List
+		 */
 		override method asList() { 
 			const result = []
 			result.addAll(self)
 			return result
 		}
 		
+		/**
+		 * Converts an object to a Set. No effect on Sets.
+		 */
 		override method asSet() = self
 
+		/**
+		 * Returns any element of this collection 
+		 */
 		override method anyOne() native
 
 		/**
@@ -484,29 +577,90 @@ package lang {
 		 	self.filter({it => not another.contains(it)})
 		
 		// REFACTORME: DUP METHODS
+		/** 
+		 * Reduce a collection to a certain value, beginning with a seed or initial value
+		 * 
+		 * Examples
+		 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => returns 21
+		 *
+		 * var numbers = #{3, 2, 9, 1, 7}
+		 * numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9
+         *
+		 */
 		method fold(initialValue, closure) native
+		
+		/**
+		 * Tries to find an element in a collection (based on a closure) or
+		 * applies a continuation closure.
+		 *
+		 * Examples:
+		 * 		#{1, 9, 3, 8}.findOrElse({ n => n.even() }, { 100 })  => returns  8
+		 * 		#{1, 5, 3, 7}.findOrElse({ n => n.even() }, { 100 })  => returns  100
+		 */
 		method findOrElse(predicate, continuation) native
+		
+		/**
+		 * Adds the specified element to this set if it is not already present
+		 */
 		method add(element) native
+		
+		/**
+		 * Removes the specified element from this set if it is present
+		 */
 		method remove(element) native
+		
+		/** Returns the number of elements in this set (its cardinality) */
 		method size() native
+		
+		/** Removes all of the elements from this set */
 		method clear() native
+
+		/**
+		 * Returns the concatenated string representation of the elements in the given set.
+		 * You can pass an optional character as an element separator (default is ",")
+		 *
+		 * Examples:
+		 * 		[1, 5, 3, 7].join(":") => returns "1:5:3:7"
+		 * 		["you","will","love","wollok"].join(" ") => returns "you will love wollok"
+		 * 		["you","will","love","wollok"].join()    => returns "you,will,love,wollok"
+		 */
 		method join(separator) native
 		method join() native
+		
+		/**
+		 * @see Object#equals
+		 */
 		method equals(other) native
+		
+		/**
+		 * @see Object#==
+		 */
 		method ==(other) native
 	}
 	
 	/**
+	 *
+	 * An ordered collection (also known as a sequence). 
+	 * You iterate the list the same order elements are inserted. 
+	 * The user can access elements by their integer index (position in the list), and search for elements in the list.
+	 * A List can contain duplicate elements.
 	 *
 	 * @author jfernandes
 	 * @since 1.3
 	 */
 	class List inherits Collection {
 
+		/** Returns the element at the specified position in this list.
+		 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing. 
+		 */
 		method get(index) native
 		
+		/** Creates a new list */
 		override method newInstance() = []
 		
+		/**
+		 * Returns any element of this collection 
+		 */
 		method anyOne() {
 			if (self.isEmpty()) 
 				throw new Exception("Illegal operation 'anyOne' on empty collection")
@@ -514,11 +668,22 @@ package lang {
 				return self.get(0.randomUpTo(self.size()))
 		}
 		
+		/**
+		 * Returns first element of the non-empty list
+		 * @returns first element
+		 *
+		 * Example:
+		 *		[1, 2, 3, 4].first()	=> returns 1
+		 */
 		method first() = self.head()
+		
+		/**
+		 * Synonym for first method 
+		 */
 		method head() = self.get(0)
 		
 		/**
-		 * Returns the last element of the list.
+		 * Returns the last element of the non-empty list.
 		 * @returns last element
 		 * Example:
 		 *		[1, 2, 3, 4].last()		=> returns 4	
@@ -528,14 +693,29 @@ package lang {
 		override method toStringPrefix() = "["
 		override method toStringSufix() = "]"
 
+		/** 
+		 * Converts this collection to a list. No effect on Lists.
+		 * @see List
+		 */
 		override method asList() = self
 		
+		/** 
+		 * Converts this list to a set (removing duplicate elements)
+		 * @see List
+		 */
 		override method asSet() { 
 			const result = #{}
 			result.addAll(self)
 			return result
 		}
 		
+		/** 
+		 * Returns a view of the portion of this list between the specified fromIndex, 
+		 * inclusive, and toIndex, exclusive.
+		 * Example:
+		 *		[1, 2, 3, 4].last()		=> returns 4	
+		 * 
+		 */
 		method subList(start,end) {
 			if(self.isEmpty)
 				return self.newInstance()
@@ -546,8 +726,18 @@ package lang {
 			return newList
 		}
 		 
+		/**
+		 * @see List#sortedBy
+		 */
 		method sortBy(closure) native
 		
+		/**
+		 * Takes first n elements of a list
+		 * Examples:
+		 * 		[1,9,2,3].take(5)  ==> returns [1, 9, 2, 3]
+		 *  	[1,9,2,3].take(2)  ==> returns [1, 9]
+		 *  	[1,9,2,3].take(-2)  ==> returns []		 
+		 */
 		method take(n) =
 			if(n <= 0)
 				self.newInstance()
@@ -555,25 +745,80 @@ package lang {
 				self.subList(0,n-1)
 			
 		
+		/**
+		 * Returns a new list dropping first n elements of a list. 
+		 * This operation has no side effect.
+		 *
+		 * Examples:
+		 * 		[1,9,2,3].drop(3)  ==> returns [3]
+		 * 		[1,9,2,3].drop(1)  ==> returns [1, 9, 2]
+		 * 		[1,9,2,3].drop(-2) ==> returns [1,9,2,3]
+		 */
 		method drop(n) = 
 			if(n >= self.size())
 				self.newInstance()
 			else
 				self.subList(n,self.size()-1)
 			
-		
+		/**
+		 * Returns a new list reversing the elements, so that first element becomes last element of the new list.
+		 * This operation has no side effect.
+		 * 
+		 * Example:
+		 *  	[1,9,2,3].reverse()  ==> returns [3, 2, 9, 1]
+		 *
+		 */
 		method reverse() = self.subList(self.size()-1,0)
 	
 		// REFACTORME: DUP METHODS
+		/** 
+		 * Reduce a collection to a certain value, beginning with a seed or initial value
+		 * 
+		 * Examples
+		 * [1, 9, 3, 8].fold(0, {acum, each => acum + each}) => returns 21
+		 *
+		 * var numbers = [3, 2, 9, 1, 7]
+		 * numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9
+         *
+		 */
 		method fold(initialValue, closure) native
+		
+		/**
+		 * finds the first element matching the boolean closure, 
+		 * or evaluates the continuation block closure if no element is found
+		 */
 		method findOrElse(predicate, continuation) native
+		
+		/** Adds the specified element as last one */
 		method add(element) native
+		
+		/** Removes an element in this list */ 
 		method remove(element) native
+		
+		/** Returns the number of elements */
 		method size() native
+		
+		/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
 		method clear() native
+
+		/**
+		 * Returns the concatenated string representation of the elements in the given set.
+		 * You can pass an optional character as an element separator (default is ",")
+		 *
+		 * Examples:
+		 * 		[1, 5, 3, 7].join(":") => returns "1:5:3:7"
+		 * 		["you","will","love","wollok"].join(" ") => returns "you will love wollok"
+		 * 		["you","will","love","wollok"].join()    => returns "you,will,love,wollok"
+		 */
 		method join(separator) native
 		method join() native
+		
+		/**
+		 * @see == message
+		 */
 		method equals(other) native
+		
+		/** A list is == another list if all elements are equal (defined by == message) */
 		method ==(other) native
 	}
 	
@@ -654,9 +899,7 @@ package lang {
 		 */
 		method forEach(closure) native
 		
-		/**
-		 * Removes all of the mappings from this Dictionary. This is a side-effect operation.
-		 */
+		/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
 		method clear() native
 		
 	}
@@ -669,22 +912,60 @@ package lang {
 	 */	
 	class Number {
 	
+		/** 
+		 * Returns the greater number between two
+		 * Example:
+		 * 		5.max(8)    ==> returns 8 
+		 */
 		method max(other) = if (self >= other) self else other
+		
+		/** Returns the lower number between two. @see max */
 		method min(other) = if (self <= other) self else other
 		
+		/**
+		 * Given self and a range of integer values, returns self if it is in that range
+		 * or nearest value that fits in that range 
+		 *
+		 * Examples
+		 * 4.limitBetween(2, 10)   ==> returns 4, because 4 is in the range
+		 * 4.limitBetween(6, 10)   ==> returns 6, because 4 is not in range 6..10, and 6 is nearest value to 4
+		 * 4.limitBetween(1, 2)    ==> returns 2, because 4 is not in range 1..2, but 2 is nearest value to 4
+		 *
+		 */   
 		method limitBetween(limitA,limitB) = if(limitA <= limitB) 
 												limitA.max(self).min(limitB) 
 											 else 
-
 											 	limitB.max(self).min(limitA)
 
+		/** @private */
 		override method simplifiedToSmartString(){ return self.stringValue() }
+		
+		/** @private */
 		override method internalToSmartString(alreadyShown) { return self.stringValue() }
+		
+		/** Returns true if self is between min and max */
 		method between(min, max) { return (self >= min) && (self <= max) }
+		
+		/** Returns squareRoot of self
+		 * 		9.squareRoot() => returns 3 
+		 */
 		method squareRoot() { return self ** 0.5 }
+		
+		/** Returns square of self
+		 * 		3.square() => returns 9 
+		 */
 		method square() { return self * self }
+		
+		/** Returns whether self is an even number (divisible by 2, mathematically 2k) */
 		method even() { return self % 2 == 0 }
+		
+		/** Returns whether self is an odd number (not divisible by 2, mathematically 2k + 1) */
 		method odd() { return self.even().negate() }
+		
+		/** Returns remainder between self and other
+		 * Example:
+		 * 		5.rem(3) ==> returns 2
+		 */
 		method rem(other) { return self % other }
 		
 	}
@@ -695,47 +976,77 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Integer inherits Number {
-		// the whole wollok identity impl is based on self method
+		/**
+		 * The whole wollok identity implementation is based on self method
+		 */
 		method ===(other) native
 	
 		method +(other) native
 		method -(other) native
 		method *(other) native
 		method /(other) native
+		
+		/** Integer division between self and other
+		 *
+		 * Example:
+		 *		8.div(3)  ==> returns 2
+		 * 		15.div(5) ==> returns 3
+		 */
 		method div(other) native
+		
 		/**
 		 * raisedTo
-		 * 3 ** 2 = 9
+		 * 		3 ** 2 ==> returns 9
 		 */
 		method **(other) native
+		
 		/**
-		 * returns remainder of division between self and other
+		 * Returns remainder of division between self and other
 		 */
 		method %(other) native
 		
+		/** String representation of a self number */
 		method toString() native
 		
+		/** Self as a String value. Equivalent: toString() */
 		method stringValue() native	
 		
+		/** 
+		 * Builds a Range between self and end
+		 * 
+		 * Example:
+		 * 		1..4   returns ==> a new Range object from 1 to 4
+		 */
 		method ..(end) = new Range(self, end)
 		
 		method >(other) native
 		method >=(other) native
 		method <(other) native
 		method <=(other) native
-		
+
+		/** 
+		 * Returns absolute value of self 
+		 *
+		 * 		2.abs() ==> 2
+		 * 		(-3).abs() ==> 3 (be careful with parentheses)
+		 */		
 		method abs() native
+		
 		/**
-		 * 3.invert() ==> -3
-		 * (-2).invert() ==> 2
+		 * Inverts sign of self
+		 *
+		 * 		3.invert() ==> -3
+		 * 		(-2).invert() ==> 2 (be careful with parentheses)
 		 */
 		method invert() native
+		
 		/*
 		 * greater common divisor
 		 * 8.gcd(12) ==> 4
 		 * 5.gcd(10) ==> 5
 		 */
 		method gcd(other) native
+		
 		/**
 		 * least common multiple
 		 * 3.lcm(4) ==> 12
@@ -745,6 +1056,7 @@ package lang {
 			const mcd = self.gcd(other)
 			return self * (other / mcd)
 		}
+		
 		/**
 		 * number of digits of this numbers (without sign)
 		 */
@@ -755,16 +1067,26 @@ package lang {
 			}
 			return digits
 		}
+		
+		/** Returns whether self is a prime number, like 2, 3, 5, 7, 11 ... */
 		method isPrime() {
 			if (self == 1) return false
 			return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 		}
+		
 		/**
 		 * Returns a random between self and max
 		 */
 		method randomUpTo(max) native
+		
 		/**
-		 * Executes the given action as much times as the receptor object
+		 * Executes the given action n times (n = self)
+		 * Example:
+		 * 		4.times({ i => console.println(i) }) ==> returns 
+		 * 			1
+		 * 			2
+		 * 			3
+		 * 			4
 		 */
 		method times(action) = (1..self).forEach(action)
 	}
@@ -775,19 +1097,37 @@ package lang {
 	 * @noInstantiate
 	 */
 	class Double inherits Number {
-		// the whole wollok identity impl is based on self method
+		/** the whole wollok identity impl is based on self method */
 		method ===(other) native
 	
 		method +(other) native
 		method -(other) native
 		method *(other) native
 		method /(other) native
-		method div(other) native
-		method **(other) native
-		method %(other) native
 		
+		/** Integer division between self and other
+		 *
+		 * Example:
+		 *		8.2.div(3.3)  ==> returns 2
+		 * 		15.0.div(5) ==> returns 3
+		 */
+		method div(other) native
+		
+		/**
+		 * raisedTo
+		 * 3.2 ** 2 ==> returns 10.24
+		 */
+		method **(other) native
+		
+		/**
+		 * Returns remainder of division between self and other
+		 */
+		method %(other) native		
+	
+		/** String representation of a self number */
 		method toString() native
 		
+		/** Self as a String value. Equivalent: toString() */
 		method stringValue() native	
 		
 		method >(other) native
@@ -795,26 +1135,97 @@ package lang {
 		method <(other) native
 		method <=(other) native
 		
+		/** 
+		 * Returns absolute value of self 
+		 *
+		 * 2.7.abs() ==> 2.7
+		 * (-3.2).abs() ==> 3.2 (be careful with parentheses)
+		 */		
 		method abs() native
+		
+		/**
+		 * 3.2.invert() ==> -3.2
+		 * (-2.4).invert() ==> 2.4 (be careful with parentheses)
+		 */
 		method invert() native
+		
+		/**
+		 * Returns a random between self and max
+		 */
 		method randomUpTo(max) native
 	}
 	
 	/**
+	 * Strings are constant; their values cannot be changed after they are created.
+	 *
 	 * @author jfernandes
 	 * @noInstantiate
 	 */
 	class String {
+		/** Returns the number of elements */
 		method length() native
+		
+		/** 
+		 * Returns the char value at the specified index. An index ranges from 0 to length() - 1. 
+		 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+		 */
 		method charAt(index) native
+		
+		/** 
+		 * Concatenates the specified string to the end of this string.
+		 * Example:
+		 * 		"cares" + "s" => returns "caress"
+		 */
 		method +(other) native
+		
+		/** 
+		 * Tests if this string starts with the specified prefix. It is case sensitive.
+		 *
+		 * Examples:
+		 * 		"mother".startsWith("moth")  ==> returns true
+		 *      "mother".startsWith("Moth")  ==> returns false
+		 */ 
 		method startsWith(other) native
+		
+		/** Tests if this string ends with the specified suffix. It is case sensitive.
+		 * @see startsWith
+		 */
 		method endsWith(other) native
+		
+		/** 
+		 * Returns the index within this string of the first occurrence of the specified character.
+		 * If character is not present, returns -1
+		 * 
+		 * Examples:
+		 * 		"pototo".indexOf("o")  ==> returns 1
+		 * 		"unpredictable".indexOf("o")  ==> returns -1 		
+		 */
 		method indexOf(other) native
+		
+		/**
+		 * Returns the index within this string of the last occurrence of the specified character.
+		 * If character is not present, returns -1
+		 *
+		 * Examples:
+		 * 		"pototo".lastIndexOf("o")  ==> returns 5
+		 * 		"unpredictable".lastIndexOf("o")  ==> returns -1 		
+		 */
 		method lastIndexOf(other) native
+		
+		/** Converts all of the characters in this String to lower case */
 		method toLowerCase() native
+		
+		/** Converts all of the characters in this String to upper case */
 		method toUpperCase() native
+		
+		/** 
+		 * Returns a string whose value is this string, with any leading and trailing whitespace removed
+		 * 
+		 * Example:
+		 * 		"   emptySpace  ".trim()  ==> "emptySpace"
+		 */
 		method trim() native
+		
 		method <(aString) native
 		method <=(aString) {
 			return self < aString || (self.equals(aString))
@@ -823,18 +1234,61 @@ package lang {
 		method >=(aString) {
 			return self > aString || (self.equals(aString))
 		}
+		
+		/**
+		 * Returns true if and only if this string contains the specified sequence of char values.
+		 * It is a case sensitive test.
+		 *
+		 * Examples:
+		 * 		"unusual".contains("usual")  ==> returns true
+		 * 		"become".contains("CO")      ==> returns false
+		 */
 		method contains(other) {
 			return self.indexOf(other) > 0
 		}
+		
+		/** Returns true if this string has no characters */
 		method isEmpty() {
 			return self.size() == 0
 		}
 
+		/** 
+		 * Compares this String to another String, ignoring case considerations.
+		 *
+		 * Example:
+		 *		"WoRD".equalsIgnoreCase("Word")  ==> returns true
+		 */
 		method equalsIgnoreCase(aString) {
 			return self.toUpperCase() == aString.toUpperCase()
 		}
+		
+		/**
+		 * Returns a substring of this string beginning from an inclusive index. 
+		 *
+		 * Examples:
+		 * 		"substitute".substring(6)  ==> returns "tute", because second "t" is in position 6
+		 * 		"effect".substring(0)      ==> returns "effect", has no effect at all
+		 */
 		method substring(length) native
+		
+		/**
+		 * Returns a substring of this string beginning from an inclusive index up to another inclusive index
+		 *
+		 * Examples:
+		 * 		"walking".substring(2, 4)   ==> returns "lk"
+		 * 		"walking".substring(3, 5)   ==> returns "ki"
+		 *		"walking".substring(0, 5)	==> returns "walki"
+		 *		"walking".substring(0, 45)	==> throws an out of range exception (TODO: is it good?) 
+		 */
 		method substring(startIndex, length) native
+		
+		/**
+		 * Splits this string around matches of the given string.
+		 * Returns a list of strings.
+		 *
+		 * Example:
+		 * 		"this,could,be,a,list".split(",")   ==> returns ["this", "could", "be", "a", "list"]
+		 */
 		method split(expression) {
 			const result = []
 			var me = self.toString() + expression
@@ -848,35 +1302,67 @@ package lang {
 			return result
 		}
 
+		/** 
+		 * Returns a string resulting from replacing all occurrences of expression in this string with replacement
+		 *
+		 * Example:
+		 *		 "stupid is what stupid does".replace("stupid", "genius") ==> returns "genius is what genius does"
+		 */
 		method replace(expression, replacement) native
+		
+		/** This object (which is already a string!) is itself returned */
 		method toString() native
+		
+		/** @private */
 		method toSmartString(alreadyShown) native
+		
+		/** Compares this string to the specified object. The result is true if and only if the
+		 * argument is not null and is a String object that represents the same sequence of characters as this object.
+		 */
 		method ==(other) native
 		
+		/** A synonym for length */
 		method size() = self.length()
 	}
 	
 	/**
-	
+	 * Represents a Boolean value (true or false)
+	 *
 	 * @author jfernandes
 	 * @noinstantiate
 	 */
 	class Boolean {
 	
+		/** Returns the result of applying the logical AND operator to the specified boolean operands self and other */
 		method and(other) native
+		/** A synonym for and operation */
 		method &&(other) native
 		
+		/** Returns the result of applying the logical OR operator to the specified boolean operands self and other */
 		method or(other) native
+		/** A synonym for or operation */
 		method ||(other) native
 		
+		/** Returns a String object representing this Boolean's value. */
 		method toString() native
+		
+		/** @private */
 		method toSmartString(alreadyShown) native
+		
+		/** Compares this string to the specified object. The result is true if and only if the
+		 * argument is not null and represents same value (true or false)
+		 */
 		method ==(other) native
 		
+		/** NOT logical operation */
 		method negate() native
 	}
 	
 	/**
+	 * Represents a finite arithmetic progression of integer numbers with optional step
+	 * If start = 1, end = 8, Range will represent [1, 2, 3, 4, 5, 6, 7, 8]
+	 * If start = 1, end = 8, step = 3, Range will represent [1, 4, 7]
+	 *
 	 * @author jfernandes
 	 * @since 1.3
 	 */
@@ -898,9 +1384,13 @@ package lang {
 		}
 		
 		method step(_step) { step = _step }
-		
+
+		/** @private */		
 		method validate(_limit) native
 		
+		/** 
+		 * Iterates over a Range from start to end, based on step
+		 */
 		method forEach(closure) native
 		
 		method map(closure) {
@@ -914,78 +1404,164 @@ package lang {
 			return self.map({ elem => return elem })
 		}
 		
+		/** Returns true if this range contains no elements */
 		method isEmpty() = self.size() == 0
 
+		/** @see List#fold() */
 		method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
+		
+		/** Returns the number of elements */
 		method size() { return end - start + 1 }
+		
+		/** @see List#any() */
 		method any(closure) { return self.asList().any(closure) }
+		
+		/** @see List#all() */
 		method all(closure) { return self.asList().all(closure) }
+		
+		/** @see List#filter() */
 		method filter(closure) { return self.asList().filter(closure) }
+		
+		/** @see List#min() */
 		method min() { return self.asList().min() }
+		
+		/** @see List#max() */
 		method max() { return self.asList().max() }
+		
 		/**
-		 * returns a random integer contained in the range
+		 * Returns a random integer contained in the range
 		 */		
 		method anyOne() native
+		
+		/** Tests whether a number e is contained in the range */
 		method contains(e) { return self.asList().contains(e) }
+		
+		/** @see List#sum() */
 		method sum() { return self.asList().sum() }
+		
 		/**
-		 * sums all elements that match the boolean closure 
+		 * Sums all elements that match the boolean closure 
+		 *
+		 * Example:
+		 * 		(1..9).sum({ i => if (i.even()) i else 0 }) ==> returns 20
 		 */
 		method sum(closure) { return self.asList().sum(closure) }
+		
 		/**
-		 * counts how many elements match the boolean closure
+		 * Counts how many elements match the boolean closure
+		 *
+		 * Example:
+		 * 		(1..9).count({ i => i.even() }) ==> returns 4 (2, 4, 6 and 8 are even)
 		 */
 		method count(closure) { return self.asList().count(closure) }
+		
+		/** @see List#find(closure) */
 		method find(closure) { return self.asList().find(closure) }
-		/**
-		 * finds the first element matching the boolean closure, 
-		 * or evaluates the continuation block closure if no element is found
-		 */
+		
+		/** @see List#findOrElse(predicate, continuation)	 */
 		method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
 		
-		/**
-		 * finds the first element matching the boolean closure, 
-		 * or returns a default value otherwise
-		 */
+		/** @see List#findOrDefault(predicate, value) */
 		method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
+		
+		/** @see List#sortBy */
 		method sortedBy(closure) { return self.asList().sortedBy(closure) }
 		
+		/** @private */
 		override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
 	}
 	
 	/**
+	 * 
+	 * Represents an executable piece of code. You can create a closure, assign it to a reference,
+	 * evaluate it many times, send it as parameter to another object, and do many useful things.
+	 *
 	 * @author jfernandes
 	 * @since 1.3
 	 * @noInstantiate
 	 */
 	class Closure {
+	
+		/** Evaluates a closure passing its parameters
+		 *
+		 * Example: 
+		 * 		{ number => number + 1 }.apply(8) ==> returns 9 // 1 parameter
+		 *		{ "screw" + "driver" }.apply() ==> returns "screwdriver" // no parameter 
+		 */
 		method apply(parameters...) native
 		method toString() native
 	}
 	
 	/**
 	 *
+	 * Represents a Date (without time). A Date is immutable, once created you can not change it.
+	 *
 	 * @since 1.4.5
 	 */	
 	class Date {
 
 		constructor()
-		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }  
+		constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
+		
+		/** Two dates are equals if they represent the same date */
 		method equals(_aDate) native
+		
+		/** Returns a copy of this Date with the specified number of days added. */
 		method plusDays(_days) native
+		
+		/** Returns a copy of this Date with the specified number of months added. */
 		method plusMonths(_months) native
+		
+		/** Returns a copy of this Date with the specified number of years added. */
 		method plusYears(_years) native
+		
+		/** Checks if the year is a leap year, like 2000, 2008, 2012, 2016... */
 		method isLeapYear() native
+		
+		/** @private */
 		method initialize(_day, _month, _year) native
+		
+		/** Returns the day number of the Date */
 		method day() native
+		
+		/** Returns the day of week of the Date, where
+		 * 0 = SUNDAY
+		 * 1 = MONDAY
+		 * 2 = TUESDAY
+		 * 3 = WEDNESDAY ...
+		 */
 		method dayOfWeek() native
-		method month() native	
+		
+		/** Returns the month number of the Date */
+		method month() native
+		
+		/** Returns the year number of the Date */
 		method year() native
+		
+		/** 
+		 * Returns the difference in days between two dates.
+		 * 
+		 * Examples:
+		 * 		new Date().plusDays(4) - new Date() ==> returns 4
+		 *		new Date() - new Date().plusDays(2) ==> returns 2 (is it good?)
+		 */
 		method -(_aDate) native
+		
+		/** 
+		 * Returns a copy of this date with the specified number of days subtracted.
+		 * For example, 2009-01-01 minus one day would result in 2008-12-31.
+		 * This instance is immutable and unaffected by this method call.  
+		 */
 		method minusDays(_days) native
+		
+		/** 
+		 * Returns a copy of this date with the specified number of months subtracted.
+		 */
 		method minusMonths(_months) native
+		
+		/** Returns a copy of this LocalDate with the specified number of years subtracted. */
 		method minusYears(_years) native
+		
 		method <(_aDate) native
 		method >(_aDate) native
 		method <=(_aDate) { 
@@ -994,6 +1570,8 @@ package lang {
 		method >=(_aDate) { 
 			return (self > _aDate) || (self.equals(_aDate)) 
 		}
+		
+		/** Returns true if self between two dates (both inclusive comparison) */
 		method between(_startDate, _endDate) { 
 			return (self >= _startDate) && (self <= _endDate) 
 		}
@@ -1004,19 +1582,69 @@ package lang {
  
 package lib {
 
+	/** 
+	 * Console is a global wollok object that implements a character-based console device
+	 * called "standard input/output" stream 
+	 */
 	object console {
+	
+		/** Prints a String with end-of-line character */
 		method println(obj) native
+		
+		/** Reads a line from input stream */
 		method readLine() native
+		
+		/** Reads an int character from input stream */
 		method readInt() native
 	}
 	
+	/**
+	 * Assert object simplifies testing conditions
+	 */
 	object assert {
+	
+		/** 
+		 * Tests whether value is true. Otherwise throws an exception.
+		 * Example:
+		 * 		var number = 7
+		 *		assert.that(number.even())   ==> throws an exception "Value was not true"
+		 * 		var anotherNumber = 8
+		 *		assert.that(anotherNumber.even())   ==> no effect, ok		
+		 */
 		method that(value) native
+		
+		/** Tests whether value is false. Otherwise throws an exception. 
+		 * @see assert#that(value) 
+		 */
 		method notThat(value) native
+		
+		/** 
+		 * Tests whether two values are equal, based on wollok == method
+		 * 
+		 * Example:
+		 *		 assert.equals(10, 100.div(10)) ==> no effect, ok
+		 *		 assert.equals(10.0, 100.div(10)) ==> no effect, ok
+		 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
+		 */
 		method equals(expected, actual) native
+		
+		/** Tests whether two values are equal, based on wollok != method */
 		method notEquals(expected, actual) native
+		
+		/** 
+		 * Tests whether a block throws an exception. Otherwise an exception is thrown.
+		 *
+		 * Example:
+		 * 		assert.throwsException({ 7 / 0 })  ==> no effect, ok
+		 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
+		 */
 		method throwsException(block) native
+		
+		/**
+		 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
+		 */
 		method fail(message) native
+		
 	}
 	
 	class StringPrinter {
