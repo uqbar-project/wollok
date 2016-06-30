@@ -1524,7 +1524,7 @@ package lang {
 	 */
 	class Closure {
 	
-		/** Evaluates a closure passing its parameters
+		/** Evaluates this closure passing its parameters
 		 *
 		 * Example: 
 		 * 		{ number => number + 1 }.apply(8) ==> returns 9 // 1 parameter
@@ -1532,7 +1532,7 @@ package lang {
 		 */
 		method apply(parameters...) native
 		
-		/** String representation of a closure object */
+		/** Answers a string representation of this closure object */
 		method toString() native
 	}
 	
