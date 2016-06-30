@@ -436,7 +436,16 @@ package lang {
 		 * @see flatten
 		 * 
 		 * Example
-		 * 		[ [1, 2], [3], [4, 0] ].flatMap({ e => [e.size()] }) => returns [2, 1, 2]
+		 * 		object klaus {	var languages = ["c", "cobol", "pascal"]
+		 *  		method languages() = languages
+		 *		}
+		 *		object fritz {	var languages = ["java", "perl"]
+		 * 			method languages() = languages
+		 * 		}
+		 * 		program abc {
+		 * 			console.println([klaus, fritz].flatMap({ person => person.languages() }))
+		 *				=> returns ["c", "cobol", "pascal", "java", "perl"]
+		 * 		}	
 		 */
 		method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 			acc.addAll(closure.apply(e))
@@ -475,7 +484,10 @@ package lang {
 			return self.toStringPrefix() + self.map{e=> e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
 		}
 		
+		/** @private */
 		method toStringPrefix()
+		
+		/** @private */
 		method toStringSufix()
 		
 		/** Converts a collection to a list */
@@ -585,10 +597,10 @@ package lang {
 		 * Reduce a collection to a certain value, beginning with a seed or initial value
 		 * 
 		 * Examples
-		 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => returns 21
+		 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => returns 21, the sum of all elements
 		 *
-		 * var numbers = #{3, 2, 9, 1, 7}
-		 * numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9
+		 * 		var numbers = #{3, 2, 9, 1, 7}
+		 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9, the maximum of all elements
          *
 		 */
 		method fold(initialValue, closure) native
@@ -646,7 +658,7 @@ package lang {
 	 *
 	 * An ordered collection (also known as a sequence). 
 	 * You iterate the list the same order elements are inserted. 
-	 * The user can access elements by their integer index (position in the list), and search for elements in the list.
+	 * The user can access elements by their integer index (position in the list).
 	 * A List can contain duplicate elements.
 	 *
 	 * @author jfernandes
@@ -693,8 +705,11 @@ package lang {
 		 *		[1, 2, 3, 4].last()		=> returns 4	
 		 */
 		method last() = self.get(self.size() - 1)
-		 
+
+		/** @private */		 
 		override method toStringPrefix() = "["
+		
+		/** @private */
 		override method toStringSufix() = "]"
 
 		/** 
@@ -714,11 +729,13 @@ package lang {
 		}
 		
 		/** 
-		 * Returns a view of the portion of this list between the specified fromIndex, 
-		 * inclusive, and toIndex, exclusive.
+		 * Returns a view of the portion of this list between the specified fromIndex 
+		 * and toIndex, both inclusive. Remember first element is position 0, second is position 1, and so on.
+		 * If toIndex exceeds length of list, no error is thrown.
+		 *
 		 * Example:
-		 *		[1, 2, 3, 4].last()		=> returns 4	
-		 * 
+		 *		[1, 5, 3, 2, 7, 9].subList(2, 3)		=> returns [3, 2]	
+		 *		[1, 5, 3, 2, 7, 9].subList(4, 6)		=> returns [7, 9] 
 		 */
 		method subList(start,end) {
 			if(self.isEmpty)
@@ -737,6 +754,7 @@ package lang {
 		
 		/**
 		 * Takes first n elements of a list
+		 *
 		 * Examples:
 		 * 		[1,9,2,3].take(5)  ==> returns [1, 9, 2, 3]
 		 *  	[1,9,2,3].take(2)  ==> returns [1, 9]
@@ -754,9 +772,9 @@ package lang {
 		 * This operation has no side effect.
 		 *
 		 * Examples:
-		 * 		[1,9,2,3].drop(3)  ==> returns [3]
-		 * 		[1,9,2,3].drop(1)  ==> returns [1, 9, 2]
-		 * 		[1,9,2,3].drop(-2) ==> returns [1,9,2,3]
+		 * 		[1, 9, 2, 3].drop(3)  ==> returns [3]
+		 * 		[1, 9, 2, 3].drop(1)  ==> returns [9, 2, 3]
+		 * 		[1, 9, 2, 3].drop(-2) ==> returns [1, 9, 2, 3]
 		 */
 		method drop(n) = 
 			if(n >= self.size())
@@ -765,11 +783,11 @@ package lang {
 				self.subList(n,self.size()-1)
 			
 		/**
-		 * Returns a new list reversing the elements, so that first element becomes last element of the new list.
+		 * Returns a new list reversing the elements, so that first element becomes last element of the new list and so on.
 		 * This operation has no side effect.
 		 * 
 		 * Example:
-		 *  	[1,9,2,3].reverse()  ==> returns [3, 2, 9, 1]
+		 *  	[1, 9, 2, 3].reverse()  ==> returns [3, 2, 9, 1]
 		 *
 		 */
 		method reverse() = self.subList(self.size()-1,0)
@@ -779,16 +797,16 @@ package lang {
 		 * Reduce a collection to a certain value, beginning with a seed or initial value
 		 * 
 		 * Examples
-		 * [1, 9, 3, 8].fold(0, {acum, each => acum + each}) => returns 21
+		 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => returns 21, the sum of all elements
 		 *
-		 * var numbers = [3, 2, 9, 1, 7]
-		 * numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9
+		 * 		var numbers = #{3, 2, 9, 1, 7}
+		 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => returns 9, the maximum of all elements
          *
 		 */
 		method fold(initialValue, closure) native
 		
 		/**
-		 * finds the first element matching the boolean closure, 
+		 * Finds the first element matching the boolean closure, 
 		 * or evaluates the continuation block closure if no element is found
 		 */
 		method findOrElse(predicate, continuation) native
@@ -833,17 +851,18 @@ package lang {
 	class Dictionary {
 	
 		constructor() { }
+		
 		/**
 		 * Adds or updates a value based on a key
 		 */
 		method put(_key, _value) native
 		
-		/*
+		/**
 		 * Returns the value to which the specified key is mapped, or null if this Dictionary contains no mapping for the key.
 		 */
 		method basicGet(_key) native
 
-		/*
+		/**
 		 * Returns the value to which the specified key is mapped, or evaluates a non-parameter closure otherwise 
 		 */
 		method getOrElse(_key, _closure) {
@@ -854,8 +873,9 @@ package lang {
 				return value
 		}
 		
-		/*
-		 * Returns the value to which the specified key is mapped. If this Dictionary contains no mapping for the key, an error is thrown.
+		/**
+		 * Returns the value to which the specified key is mapped. 
+		 * If this Dictionary contains no mapping for the key, an error is thrown.
 		 */
 		method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
 
@@ -864,6 +884,9 @@ package lang {
 		 */
 		method size() = self.values().size()
 		
+		/**
+		 * Returns whether the dictionary has no elements
+		 */
 		method isEmpty() = self.size() == 0
 		
 		/**
@@ -928,7 +951,7 @@ package lang {
 		
 		/**
 		 * Given self and a range of integer values, returns self if it is in that range
-		 * or nearest value that fits in that range 
+		 * or nearest value from self to that range 
 		 *
 		 * Examples
 		 * 4.limitBetween(2, 10)   ==> returns 4, because 4 is in the range
@@ -1009,7 +1032,7 @@ package lang {
 		 */
 		method %(other) native
 		
-		/** String representation of a self number */
+		/** String representation of self number */
 		method toString() native
 		
 		/** Self as a String value. Equivalent: toString() */
@@ -1031,6 +1054,7 @@ package lang {
 		/** 
 		 * Returns absolute value of self 
 		 *
+		 * Example:
 		 * 		2.abs() ==> 2
 		 * 		(-3).abs() ==> 3 (be careful with parentheses)
 		 */		
@@ -1039,22 +1063,27 @@ package lang {
 		/**
 		 * Inverts sign of self
 		 *
-		 * 		3.invert() ==> -3
-		 * 		(-2).invert() ==> 2 (be careful with parentheses)
+		 * Example:
+		 * 		3.invert() ==> returns -3
+		 * 		(-2).invert() ==> returns 2 (be careful with parentheses)
 		 */
 		method invert() native
 		
-		/*
+		/**
 		 * greater common divisor
-		 * 8.gcd(12) ==> 4
-		 * 5.gcd(10) ==> 5
+		 *
+		 * Example:
+		 * 		8.gcd(12) ==> returns 4
+		 *		5.gcd(10) ==> returns 5
 		 */
 		method gcd(other) native
 		
 		/**
 		 * least common multiple
-		 * 3.lcm(4) ==> 12
-		 * 6.lcm(12) ==> 12
+		 *
+		 * Example:
+		 * 		3.lcm(4) ==> returns 12
+		 * 		6.lcm(12) ==> returns 12
 		 */
 		method lcm(other) {
 			const mcd = self.gcd(other)
@@ -1062,7 +1091,7 @@ package lang {
 		}
 		
 		/**
-		 * number of digits of this numbers (without sign)
+		 * number of digits of self (without sign)
 		 */
 		method digits() {
 			var digits = self.toString().size()
@@ -1142,8 +1171,9 @@ package lang {
 		/** 
 		 * Returns absolute value of self 
 		 *
-		 * 2.7.abs() ==> 2.7
-		 * (-3.2).abs() ==> 3.2 (be careful with parentheses)
+		 * Example:
+		 * 		2.7.abs() ==> returns 2.7
+		 *		(-3.2).abs() ==> returns 3.2 (be careful with parentheses)
 		 */		
 		method abs() native
 		
@@ -1397,6 +1427,14 @@ package lang {
 		 */
 		method forEach(closure) native
 		
+		/**
+		 * Returns a new collection that contains the result of transforming each of self collection's elements
+		 * using a given closure.
+		 * The condition is a closure argument that takes an integer and returns an object.
+		 * @returns another list
+		 * Example:
+		 *      (1..10).map({ n => n * 2}) ==> returns [2, 4, 6, 8, 10, 12, 14, 16, 18, 20] 
+		 */
 		method map(closure) {
 			const l = []
 			self.forEach{e=> l.add(closure.apply(e)) }
@@ -1411,19 +1449,19 @@ package lang {
 		/** Returns true if this range contains no elements */
 		method isEmpty() = self.size() == 0
 
-		/** @see List#fold() */
+		/** @see List#fold(seed, foldClosure) */
 		method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
 		
 		/** Returns the number of elements */
 		method size() { return end - start + 1 }
 		
-		/** @see List#any() */
+		/** @see List#any(closure) */
 		method any(closure) { return self.asList().any(closure) }
 		
-		/** @see List#all() */
+		/** @see List#all(closure) */
 		method all(closure) { return self.asList().all(closure) }
 		
-		/** @see List#filter() */
+		/** @see List#filter(closure) */
 		method filter(closure) { return self.asList().filter(closure) }
 		
 		/** @see List#min() */
@@ -1478,7 +1516,7 @@ package lang {
 	/**
 	 * 
 	 * Represents an executable piece of code. You can create a closure, assign it to a reference,
-	 * evaluate it many times, send it as parameter to another object, and do many useful things.
+	 * evaluate it many times, send it as parameter to another object, and many useful things.
 	 *
 	 * @author jfernandes
 	 * @since 1.3
@@ -1493,6 +1531,8 @@ package lang {
 		 *		{ "screw" + "driver" }.apply() ==> returns "screwdriver" // no parameter 
 		 */
 		method apply(parameters...) native
+		
+		/** String representation of a closure object */
 		method toString() native
 	}
 	
@@ -1519,7 +1559,7 @@ package lang {
 		/** Returns a copy of this Date with the specified number of years added. */
 		method plusYears(_years) native
 		
-		/** Checks if the year is a leap year, like 2000, 2008, 2012, 2016... */
+		/** Checks if the year is a leap year, like 2000, 2004, 2008, 2012, 2016... */
 		method isLeapYear() native
 		
 		/** @private */
@@ -1547,7 +1587,7 @@ package lang {
 		 * 
 		 * Examples:
 		 * 		new Date().plusDays(4) - new Date() ==> returns 4
-		 *		new Date() - new Date().plusDays(2) ==> returns 2 (is it good?)
+		 *		new Date() - new Date().plusDays(2) ==> returns 2 (is it good? should we return -2 instead?)
 		 */
 		method -(_aDate) native
 		
@@ -1563,7 +1603,7 @@ package lang {
 		 */
 		method minusMonths(_months) native
 		
-		/** Returns a copy of this LocalDate with the specified number of years subtracted. */
+		/** Returns a copy of this date with the specified number of years subtracted. */
 		method minusYears(_years) native
 		
 		method <(_aDate) native
@@ -1639,7 +1679,7 @@ package lib {
 		 * Tests whether a block throws an exception. Otherwise an exception is thrown.
 		 *
 		 * Example:
-		 * 		assert.throwsException({ 7 / 0 })  ==> no effect, ok
+		 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
 		 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
 		 */
 		method throwsException(block) native
