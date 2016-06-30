@@ -366,7 +366,7 @@ package lang {
 		 * will be returned
 		 * @returns the element that complies the condition or the default value
 		 * Example:
-		 *      users.findDefault({ user => user.name() == "Cosme Fulanito" }, homer)
+		 *      users.findOrDefault({ user => user.name() == "Cosme Fulanito" }, homer)
 		 */
 		method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
 		
