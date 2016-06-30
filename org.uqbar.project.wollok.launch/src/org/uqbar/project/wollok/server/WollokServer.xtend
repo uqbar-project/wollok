@@ -7,7 +7,6 @@ import java.io.InputStream
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.eclipse.emf.common.util.URI
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.Server
@@ -15,18 +14,18 @@ import org.eclipse.jetty.server.handler.AbstractHandler
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 
 class WollokServer extends AbstractHandler {
 	val gson = new Gson
 	val parameters = new WollokLauncherParameters().parse(#["-r"])
-	val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration => [
+	val injector = new WollokServerSetup(parameters).createInjectorAndDoEMFRegistration => [
 		injectMembers(this)
 	]
 
@@ -35,7 +34,6 @@ class WollokServer extends AbstractHandler {
 
 	@Inject
 	private IResourceFactory resourceFactory
-
 
 	override handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
 		val interpreter = injector.getInstance(WollokInterpreter)
@@ -65,7 +63,9 @@ class WollokServer extends AbstractHandler {
 					)
 					
 					if (issues.empty) {
-						interpreter.interpret(resource.contents.get(0), true)	
+						interpreter.interpret(resource.contents.get(0), true)
+						name("console")
+						value((interpreter.console as WollokServerConsole).consoleOutput)	
 					}
 					else {
 						name("compilation").beginObject => [
