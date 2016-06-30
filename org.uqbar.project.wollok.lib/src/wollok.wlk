@@ -28,7 +28,7 @@ package lang {
 			return printer.getBuffer()
 		}
 		
-		/** Prints this throwable and its backtrace to the specified printer */
+		/** Prints this exception and its backtrace to the specified printer */
 		method printStackTrace(printer) { self.printStackTraceWithPreffix("", printer) }
 		
 		/** @private */
@@ -252,7 +252,7 @@ package lang {
 		/**
 		  * Returns the element that is considered to be/have the minimum value.
 		  * The criteria is given by a closure that receives a single element as input (one of the element)
-		  * The closure must return a comparable value (something that understands the >, >= messages).
+		  * The closure must return a comparable value (something that understands the <, <= messages).
 		  * Example:
 		  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  returns "ab"		 
 		  */
@@ -266,6 +266,7 @@ package lang {
 		  */
 		method min() = self.min({it => it})
 
+		/** @private */
 		method absolute(closure, criteria) {
 			if (self.isEmpty())
 				throw new ElementNotFoundException("collection is empty")
@@ -286,7 +287,7 @@ package lang {
 		// non-native methods
 
 		/**
-		  * Concatenates all elements from the given collection parameter to self collection giving a new collection
+		  * Concatenates this collection to all elements from the given collection parameter giving a new collection
 		  * (no side effect) 
 		  */
 		method +(elements) {
@@ -296,19 +297,19 @@ package lang {
 		}
 		
 		/**
-		  * Adds all elements from the given collection parameter to self collection
+		  * Adds all elements from the given collection parameter to self collection. This is a side-effect operation.
 		  */
 		method addAll(elements) { elements.forEach { e => self.add(e) } }
 		
 		/**
-		  * Removes all elements of the given collection parameter from self collection
+		  * Removes all elements of the given collection parameter from self collection. This is a side-effect operation.
 		  */
 		method removeAll(elements) { 
 			elements.forEach { e => self.remove(e) } 
 		}
 		
 		/**
-		 * Removes those elements that meet a given condition
+		 * Removes those elements that meet a given condition. This is a side-effect operation.
 		 */
 		 method removeAllSuchThat(closure) {
 		 	self.removeAll( self.filter(closure) )
@@ -336,7 +337,7 @@ package lang {
 		method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
 		
 		/**
-		 * Tells whether at least one element of self collection satisfy a given condition
+		 * Tells whether at least one element of self collection satisfies a given condition.
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns true/false
 		 * Example:
@@ -345,7 +346,7 @@ package lang {
 		method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
 		
 		/**
-		 * Returns the element of self collection that satisfy a given condition.
+		 * Returns the element of self collection that satisfies a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition
@@ -358,8 +359,10 @@ package lang {
 		})
 
 		/**
-		 * Returns the element of self collection that satisfy a given condition, or the given default otherwise, if no element matched the predicate
-		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * Returns the element of self collection that satisfies a given condition, 
+		 * or the given default otherwise, if no element matched the predicate.
+		 * If more than one element satisfies the condition then it depends on the specific
+		 * collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition or the default value
 		 * Example:
@@ -368,9 +371,10 @@ package lang {
 		method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
 		
 		/**
-		 * Returns the element of self collection that satisfy a given condition, 
-		 * or the the result of evaluating the given continuation 
-		 * If more than one element satisfies the condition then it depends on the specific collection class which element
+		 * Returns the element of self collection that satisfies a given condition, 
+		 * or the the result of evaluating the given continuation. 
+		 * If more than one element satisfies the condition then it depends on the
+		 * specific collection class which element
 		 * will be returned
 		 * @returns the element that complies the condition or the result of evaluating the continuation
 		 * Example:
@@ -379,7 +383,7 @@ package lang {
 		method findOrElse(predicate, continuation) native
 
 		/**
-		 * Counts all elements of self collection that satisfy a given condition
+		 * Counts all elements of self collection that satisfies a given condition
 		 * The condition is a closure argument that takes a single element and returns a number.
 		 * @returns an integer number
 		 * Example:
@@ -396,7 +400,7 @@ package lang {
 		method occurrencesOf(element) = self.count({it => it == element})
 		
 		/**
-		 * Collects the sum of each value for all e
+		 * Collects the sum of each value for all elements.
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
 		 * The condition is a closure argument that takes a single element and returns a boolean value.
 		 * @returns an integer
