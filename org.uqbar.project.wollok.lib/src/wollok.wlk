@@ -132,7 +132,7 @@ package lang {
 			return other != null && self === other 
 		}
 		
-		/** Tells whether self object is not equals to the given one */
+		/** Tells whether self object is not equal to the given one */
 		method !=(other) = ! (self == other)
 		
 		/**
