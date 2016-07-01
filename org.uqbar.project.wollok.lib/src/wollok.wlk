@@ -323,7 +323,7 @@ package lang {
 		/**
 		 * Performs an operation on every element of self collection.
 		 * The logic to execute is passed as a closure that takes a single parameter.
-		 * @Answers nothing
+		 * @returns nothing
 		 * Example:
 		 *      plants.forEach { plant => plant.takeSomeWater() }
 		 */
@@ -332,7 +332,7 @@ package lang {
 		/**
 		 * Answers whether all the elements of self collection satisfy a given condition
 		 * The condition is a closure argument that takes a single element and Answers a boolean value.
-		 * @Answers true/false
+		 * @returns true/false
 		 * Example:
 		 *      plants.all({ plant => plant.hasFlowers() })
 		 */
@@ -341,7 +341,7 @@ package lang {
 		/**
 		 * Tells whether at least one element of self collection satisfies a given condition.
 		 * The condition is a closure argument that takes a single element and Answers a boolean value.
-		 * @Answers true/false
+		 * @returns true/false
 		 * Example:
 		 *      plants.any({ plant => plant.hasFlowers() })
 		 */
@@ -351,7 +351,7 @@ package lang {
 		 * Answers the element of self collection that satisfies a given condition.
 		 * If more than one element satisfies the condition then it depends on the specific collection class which element
 		 * will be returned
-		 * @Answers the element that complies the condition
+		 * @returns the element that complies the condition
 		 * @throws ElementNotFoundException if no element matched the given predicate
 		 * Example:
 		 *      users.find { user => user.name() == "Cosme Fulanito" }
@@ -366,7 +366,7 @@ package lang {
 		 * If more than one element satisfies the condition then it depends on the specific
 		 * collection class which element
 		 * will be returned
-		 * @Answers the element that complies the condition or the default value
+		 * @returns the element that complies the condition or the default value
 		 * Example:
 		 *      users.findOrDefault({ user => user.name() == "Cosme Fulanito" }, homer)
 		 */
@@ -378,7 +378,7 @@ package lang {
 		 * If more than one element satisfies the condition then it depends on the
 		 * specific collection class which element
 		 * will be returned
-		 * @Answers the element that complies the condition or the result of evaluating the continuation
+		 * @returns the element that complies the condition or the result of evaluating the continuation
 		 * Example:
 		 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, { homer })
 		 */
@@ -387,7 +387,7 @@ package lang {
 		/**
 		 * Counts all elements of self collection that satisfies a given condition
 		 * The condition is a closure argument that takes a single element and Answers a number.
-		 * @Answers an integer number
+		 * @returns an integer number
 		 * Example:
 		 *      plants.count { plant => plant.hasFlowers() }
 		 */
@@ -395,7 +395,7 @@ package lang {
 
 		/**
 		 * Counts the occurrences of a given element in self collection.
-		 * @Answers an integer number
+		 * @returns an integer number
 		 * Example:
 		 *      [1, 8, 4, 1].occurrencesOf(1)	=> Answers 2
 		 */
@@ -405,7 +405,7 @@ package lang {
 		 * Collects the sum of each value for all elements.
 		 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
 		 * The condition is a closure argument that takes a single element and Answers a boolean value.
-		 * @Answers an integer
+		 * @returns an integer
 		 * Example:
 		 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
 		 */
@@ -413,7 +413,7 @@ package lang {
 		
 		/**
 		 * Sums all elements in the collection.
-		 * @Answers an integer
+		 * @returns an integer
 		 * Example:
 		 *      const total = [1, 2, 3, 4, 5].sum() 
 		 */
@@ -423,7 +423,7 @@ package lang {
 		 * Answers a new collection that contains the result of transforming each of self collection's elements
 		 * using a given closure.
 		 * The condition is a closure argument that takes a single element and Answers an object.
-		 * @Answers another collection (same type as self one)
+		 * @returns another collection (same type as self one)
 		 * Example:
 		 *      const ages = users.map({ user => user.age() })
 		 */
@@ -457,7 +457,7 @@ package lang {
 		/**
 		 * Answers a new collection that contains the elements that meet a given condition.
 		 * The condition is a closure argument that takes a single element and Answers a boolean.
-		 * @Answers another collection (same type as self one)
+		 * @returns another collection (same type as self one)
 		 * Example:
 		 *      const overageUsers = users.filter({ user => user.age() >= 18 })
 		 */
@@ -501,7 +501,7 @@ package lang {
 		/**
 		 * Answers a new collection of the same type and with the same content 
 		 * as self.
-		 * @Answers a new collection
+		 * @returns a new collection
 		 * Example:
 		 *      const usersCopy = users.copy() 
 		 */
@@ -516,7 +516,7 @@ package lang {
 		 * sorted by a criteria given by a closure. The closure receives two objects
 		 * X and Y and Answers a boolean, true if X should come before Y in the 
 		 * resulting collection.
-		 * @Answers a new List
+		 * @returns a new List
 		 * Example:
 		 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() }) 
 		 */
@@ -524,7 +524,7 @@ package lang {
 		
 		/**
 		 * Answers a new, empty collection of the same type as self.
-		 * @Answers a new collection
+		 * @returns a new collection
 		 * Example:
 		 *      const newCollection = users.newInstance() 
 		 */
@@ -576,20 +576,20 @@ package lang {
 
 		/**
 		 * Answers a new Set with the elements of both self and another collection.
-		 * @Answers a Set
+		 * @returns a Set
 		 */
 		 method union(another) = self + another
 
 		/**
 		 * Answers a new Set with the elements of self that exist in another collection
-		 * @Answers a Set
+		 * @returns a Set
 		 */
 		 method intersection(another) = 
 		 	self.filter({it => another.contains(it)})
 		 	
 		/**
 		 * Answers a new Set with the elements of self that don't exist in another collection
-		 * @Answers a Set
+		 * @returns a Set
 		 */
 		 method difference(another) =
 		 	self.filter({it => not another.contains(it)})
@@ -688,7 +688,7 @@ package lang {
 		
 		/**
 		 * Answers first element of the non-empty list
-		 * @Answers first element
+		 * @returns first element
 		 *
 		 * Example:
 		 *		[1, 2, 3, 4].first()	=> Answers 1
@@ -702,7 +702,7 @@ package lang {
 		
 		/**
 		 * Answers the last element of the non-empty list.
-		 * @Answers last element
+		 * @returns last element
 		 * Example:
 		 *		[1, 2, 3, 4].last()		=> Answers 4	
 		 */
@@ -1433,7 +1433,7 @@ package lang {
 		 * Answers a new collection that contains the result of transforming each of self collection's elements
 		 * using a given closure.
 		 * The condition is a closure argument that takes an integer and Answers an object.
-		 * @Answers another list
+		 * @returns another list
 		 * Example:
 		 *      (1..10).map({ n => n * 2}) ==> Answers [2, 4, 6, 8, 10, 12, 14, 16, 18, 20] 
 		 */
