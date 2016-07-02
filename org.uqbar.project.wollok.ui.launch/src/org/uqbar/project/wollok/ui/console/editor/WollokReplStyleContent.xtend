@@ -20,7 +20,7 @@ class WollokReplStyleContent implements StyledTextContent {
 	}
 	
 	override getLine(int lineIndex) {
-		AnsiUtils.escapeAnsi(textContent.getLine(lineIndex), '')
+		AnsiUtils.escapeAnsi(textContent.getLine(lineIndex), '').trim
 	}
 	
 	override getLineAtOffset(int offset) {
