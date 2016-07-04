@@ -50,6 +50,9 @@ package lang {
 		/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
 		method getStackTrace() native
 		
+		/** Answers the cause of the exception, if present */
+		method getCause() = cause
+		
 		/** Answers the detail message string of this exception. */
 		method getMessage() = message
 	}
@@ -126,10 +129,10 @@ package lang {
 		 * The default behavior compares them in terms of identity (===)
 		 */
 		method ==(other) {
-			return self === other
+			return other != null && self === other 
 		}
 		
-		/** Tells whether self object is not equals to the given one */
+		/** Tells whether self object is not equal to the given one */
 		method !=(other) = ! (self == other)
 		
 		/**
