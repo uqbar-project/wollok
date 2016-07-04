@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.scoping
+package org.uqbar.project.wollok.scoping.root
 
 import java.io.File
 import org.apache.commons.collections.map.LRUMap
@@ -22,7 +22,7 @@ class WollokRootLocator {
 	}
 
 	def levelsToRoot(Resource resource) {
-		if(!resource.URI.file)
+		if(resource.URI.toFileString == null)
 			return 1
 		
 		var file = new File(resource.URI.toFileString).absoluteFile.parentFile

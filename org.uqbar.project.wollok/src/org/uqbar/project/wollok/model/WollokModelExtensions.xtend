@@ -54,7 +54,7 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
-import static extension org.uqbar.project.wollok.scoping.WollokRootLocator.*
+import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 /**
  * Extension methods to Wollok semantic model.

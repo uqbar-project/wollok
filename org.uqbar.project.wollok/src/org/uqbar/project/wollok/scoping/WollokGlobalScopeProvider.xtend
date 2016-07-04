@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.common.base.Predicate
 import com.google.inject.Inject
+import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
@@ -15,15 +16,12 @@ import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
+import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.wollokDsl.Import
 
-import static extension org.eclipse.xtext.EcoreUtil2.*
-
 import static org.uqbar.project.wollok.WollokConstants.*
-import org.eclipse.xtext.diagnostics.ExceptionDiagnostic
-import org.eclipse.xtext.validation.EObjectDiagnosticImpl
-import org.eclipse.xtext.diagnostics.Severity
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+
+import static extension org.eclipse.xtext.EcoreUtil2.*
 
 /**
  * 
@@ -33,26 +31,33 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	@Inject
+	WollokGlobalScopeCache cache
+
+	@Inject
 	IResourceDescription.Manager resourceDescriptionManager
 	@Inject
 	WollokManifestFinder manifestFinder
 
 	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
-		val resourceSet = context.resourceSet
 
-		val exportedObjects = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
-		val explicitImportedObjects = importedObjects(context, exportedObjects)
+		val explicitImportedObjects = context.importedObjects
 
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
-		new SimpleScope(new SimpleScope(defaultScope, exportedObjects), explicitImportedObjects)
+		new SimpleScope(defaultScope, explicitImportedObjects)
 	}
 	/**
 	 * Loads all imported elements from a context
 	 */
-	def importedObjects(Resource context, Iterable<IEObjectDescription> objectsFromManifests) {
+	def importedObjects(Resource context) {
 		val rootObject = context.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
+		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
+	}
+	
+	def doImportedObjects(Resource context, List<Import> imports){
+				val resourceSet = context.resourceSet
+		val objectsFromManifests = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
 		
 		imports.filter[
 			importedNamespace != null && !objectsFromManifests.exists[o| o.matchesImport(importedNamespace)]
@@ -63,7 +68,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		.filter[it != null]
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
-		].flatten
+		].flatten + objectsFromManifests
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace){
