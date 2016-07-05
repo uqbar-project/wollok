@@ -3,6 +3,7 @@ package wollok.lang
 import java.util.Collection
 import java.util.Map
 import java.util.Map.Entry
+import java.util.TreeMap
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -19,12 +20,16 @@ class WDictionary implements JavaWrapper<Map> {
 		 
 	new(WollokObject o) {
 		wollokInstance = o
-		wrapped = newHashMap
+		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
 	}
 	
-	def clear() { wrapped.clear }
+	def clear() { 
+		wrapped.clear
+	}
 	
-	def basicGet(WollokObject key) { wrapped.get(getInternalKey(key)) }
+	def basicGet(WollokObject key) { 
+		wrapped.get(key)
+	}
 	
 	def put(WollokObject key, WollokObject value) {
 		if (key == null) throw new IllegalArgumentException("You cannot put a null key in a Dictionary") 
@@ -33,13 +38,7 @@ class WDictionary implements JavaWrapper<Map> {
 	}
 
 	def void remove(WollokObject key) {
-		wrapped.remove(getInternalKey(key))
-	}
-	
-	private def Object getInternalKey(WollokObject key) {
-		wrapped.keySet.findFirst [ WollokObject itKey |
-			itKey.wollokEquals(key)
-		]
+		wrapped.remove(key)
 	}
 	
 	def keys() {
