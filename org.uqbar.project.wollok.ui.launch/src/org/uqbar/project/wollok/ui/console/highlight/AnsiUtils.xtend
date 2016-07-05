@@ -16,9 +16,8 @@ class AnsiUtils {
             escaped = escaped.replace(matcher, ' ')
 		}
 		escaped
-
 	}
-
+	
 	def static deleteAnsiCharacters(String text) {
 		var escaped = text
 		val matcher = WollokAnsiColorLineStyleListener.pattern.matcher(text)

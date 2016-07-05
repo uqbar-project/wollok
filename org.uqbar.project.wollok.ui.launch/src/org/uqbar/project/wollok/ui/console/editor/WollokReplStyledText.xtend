@@ -1,9 +1,16 @@
 package org.uqbar.project.wollok.ui.console.editor
 
 import java.lang.reflect.Field
+import org.eclipse.swt.SWTError
 import org.eclipse.swt.custom.StyledText
-import org.eclipse.swt.custom.StyledTextContent
+import org.eclipse.swt.dnd.Clipboard
+import org.eclipse.swt.dnd.DND
+import org.eclipse.swt.dnd.RTFTransfer
+import org.eclipse.swt.dnd.TextTransfer
+import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.widgets.Composite
+
+import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 
 /**
  * Styled Text Wrapper for Wollok
@@ -11,41 +18,103 @@ import org.eclipse.swt.widgets.Composite
  */
 class WollokReplStyledText extends StyledText {
 
-	StyledTextContent originalContent
-	 
 	new(Composite parent, int style) {
 		super(parent, style)
 	}
 
-	override setContent(StyledTextContent newContent) {
-		super.setContent(newContent)
-		this.originalContent = newContent
+	override copy(int clipboardType) {
+		checkWidget()
+		doCopySelection(clipboardType)
 	}
 
 	override copy() {
-		wrapContentAction([ | super.copy() ])
-	}
-	
-	override cut() {
-		wrapContentAction([ | super.copy() ])
-	}
-	
-	override copy(int clipboardType) {
-		wrapContentAction([ | super.copy(clipboardType) ])
+		checkWidget()
+		this.doCopySelection(DND.CLIPBOARD);
 	}
 
-	/**
-	 * Sorry, but it was nearly impossible to solve it without this hack
-	 * sending content setter to StyledText initializes x, y variables and overrides user selection
-	 * subclassing of StyledText is not allowed (lot of privates variables)
-	 */	
-	private def wrapContentAction(() => void contentAction) {
-		val Field fieldContent = typeof(StyledText).getDeclaredField("content")
-		fieldContent => [
-			accessible = true
-			set(this, new WollokReplStyleContent(originalContent))
-			contentAction.apply()
-			set(this, originalContent)
-		]
-	}	
+	def doCopySelection(int type) {
+		if(type != DND.CLIPBOARD && type != DND.SELECTION_CLIPBOARD) return false
+		try {
+			val blockXLocation = getFieldValue("blockXLocation") as Integer
+			if (blockSelection && blockXLocation != -1) {
+				val text = getEscapedBlockText()
+				if (text.length() > 0) {
+					// TODO RTF support
+					val plainTextTransfer = TextTransfer.getInstance()
+					val Object[] data = #{ text }
+					val Transfer[] types = #{ plainTextTransfer	}
+					val clipboard = getFieldValue("clipboard") as Clipboard
+					clipboard.setContents(data, types, type)
+					return true
+				}
+			} else {
+				val int	length = selection.y - selection.x
+				if (length > 0) {
+					setClipboardContent(selection.x, length, type)
+					return true
+				}
+			}
+		} catch (SWTError error) {
+			if (error.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
+				throw error
+			}
+		}
+		return false
+	}
+	
+	def void setClipboardContent(int start, int length, int clipboardType) throws SWTError {
+		val boolean isGtk = getFieldValue("IS_GTK") as Boolean
+		if (clipboardType == DND.SELECTION_CLIPBOARD && !isGtk) return
+		val TextTransfer plainTextTransfer = TextTransfer.getInstance()
+		//val plainTextWriter = createWriter("StyledText$TextWriter", start, escapedBlockText.length)
+		//val String plainText = getEscapedDelimitedText(plainTextWriter)
+		val plainText = content.getTextRange(start, length).deleteAnsiCharacters
+		var Object[] data
+		var Transfer[] types
+		if (clipboardType == DND.SELECTION_CLIPBOARD) {
+			data = #[ plainText ]
+			types = #[ plainTextTransfer ]
+		} else {
+			val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
+			//val rtfText = rtfTransfer.nativeToJava(plainText)
+			
+			//val rtfWriter = createWriter("StyledText$RTFWriter", start, escapedBlockText.length)
+			//val String rtfText = getEscapedDelimitedText(rtfWriter)
+			// NO ME TOMA
+			//data = #[ plainText, plainText  ]
+			//types = #[ rtfTransfer, plainTextTransfer ]
+			data = #[ plainText  ]
+			types = #[ plainTextTransfer ]
+		}
+		val clipboard = getFieldValue("clipboard") as Clipboard
+		clipboard.setContents(data, types, clipboardType);
+	}
+	
+	def createWriter(String clazz, int start, int end) {
+		val writerClass = Class.forName(clazz)
+		val constructor = writerClass.getConstructor(Integer.TYPE, Integer.TYPE)
+		constructor.newInstance(#{start, end})
+	}
+
+	private def getEscapedBlockText() {
+		val text = executeMethod("getBlockSelectionText", #{System.getProperty("line.separator")}) as String
+		text.deleteAnsiCharacters
+	}
+
+	private def getField(String name) {
+		val Field field = typeof(StyledText).getDeclaredField(name) as Field
+		field.accessible = true
+		field
+	}
+	
+	private def getFieldValue(String name) {
+		getField(name).get(this)
+	}
+
+	def executeMethod(String methodName, Object[] args) {
+		val method = typeof(StyledText).getDeclaredMethod(methodName, args.map [ it.class ])
+		method.accessible = true
+		method.invoke(this, args)
+	}
+
 }
