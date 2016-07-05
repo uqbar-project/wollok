@@ -1210,6 +1210,12 @@ package game {
 	object Z inherits Key([54]) { }
 }
 
+package vm {
+	object runtime {
+		method native isRepl()
+	}
+}
+
 package mirror {
 
 	class InstanceVariableMirror {
