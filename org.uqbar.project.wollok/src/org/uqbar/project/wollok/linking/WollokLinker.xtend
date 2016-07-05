@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.eclipse.emf.ecore.EReference
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
 class WollokLinker extends LazyLinker {
 	@Inject
@@ -32,10 +33,14 @@ class WollokLinker extends LazyLinker {
 	}	
 	def dispatch shouldSetParent(WNamedObject wObject) {
 		wObject.parent == null
+	}	
+	def dispatch shouldSetParent(WObjectLiteral wObject) {
+		wObject.parent == null
 	}
 	def dispatch shouldSetParent(EObject obj) { false }
 
 	def dispatch EReference getParentRef(WClass wClass) { WollokDslPackage.Literals.WCLASS__PARENT }
 	def dispatch EReference getParentRef(WNamedObject wObject) { WollokDslPackage.Literals.WNAMED_OBJECT__PARENT }
-
+	def dispatch EReference getParentRef(WObjectLiteral wObject) { WollokDslPackage.Literals.WOBJECT_LITERAL__PARENT }
+	def dispatch EReference getParentRef(EObject wObject) { null }
 }
