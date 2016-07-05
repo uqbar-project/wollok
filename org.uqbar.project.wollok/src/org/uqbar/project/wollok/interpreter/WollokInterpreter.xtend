@@ -59,6 +59,8 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	static var WollokInterpreter instance = null 
 
+	@Accessors var Boolean interactive = false
+
 	new() {
 		instance = this
 	}

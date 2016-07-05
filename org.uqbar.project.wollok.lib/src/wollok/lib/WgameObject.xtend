@@ -73,9 +73,7 @@ class WgameObject {
 	
 	def clear() { board.clear }
 	
-	def start() { board.start(false) }
-	
-	def run() { board.start(true) }
+	def doStart(Boolean isRepl) { board.start(isRepl) }
 	
 	def stop() { board.stop }
 	

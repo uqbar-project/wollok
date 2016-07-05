@@ -1,3 +1,5 @@
+import wollok.vm.runtime
+
 package lang {
  
 	/**
@@ -1716,8 +1718,16 @@ package lib {
 		method getObjectsIn(position) native
 		method say(element, message) native
 		method clear() native
-		method start() native
-		method run() native
+
+		/** 
+		* @private
+		*/
+		method doStart(isRepl) native
+
+		method start(){
+			self.doStart(runtime.isInteractive())
+		}
+	
 		method stop() native
 		
 		method setTitle(title) native
@@ -1889,7 +1899,7 @@ package game {
 
 package vm {
 	object runtime {
-		method native isRepl()
+		method isInteractive() native
 	}
 }
 
