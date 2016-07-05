@@ -10,14 +10,20 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExten
 class AnsiUtils {
 	
 	def static escapeAnsi(String text) {
-		escapeAnsi(text, ' ')
-	}
-	
-	def static escapeAnsi(String text, String replaceChar) {
 		var escaped = text
 		val matcher = WollokAnsiColorLineStyleListener.pattern.matcher(text)
 		while (matcher.find) {
-            escaped = escaped.replace(matcher, replaceChar)
+            escaped = escaped.replace(matcher, ' ')
+		}
+		escaped
+
+	}
+
+	def static deleteAnsiCharacters(String text) {
+		var escaped = text
+		val matcher = WollokAnsiColorLineStyleListener.pattern.matcher(text)
+		while (matcher.find) {
+            escaped = matcher.replaceAll('')
 		}
 		escaped
 	}

@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.ui.console.editor
 
 import org.eclipse.swt.custom.StyledTextContent
 import org.eclipse.swt.custom.TextChangeListener
-import org.uqbar.project.wollok.ui.console.highlight.AnsiUtils
+import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 
 class WollokReplStyleContent implements StyledTextContent {
 	StyledTextContent textContent
@@ -20,7 +20,7 @@ class WollokReplStyleContent implements StyledTextContent {
 	}
 	
 	override getLine(int lineIndex) {
-		AnsiUtils.escapeAnsi(textContent.getLine(lineIndex), '').trim
+		textContent.getLine(lineIndex).deleteAnsiCharacters
 	}
 	
 	override getLineAtOffset(int offset) {
