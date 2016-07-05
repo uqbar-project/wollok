@@ -5,7 +5,6 @@ import org.eclipse.swt.SWTError
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.dnd.Clipboard
 import org.eclipse.swt.dnd.DND
-import org.eclipse.swt.dnd.RTFTransfer
 import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.widgets.Composite
@@ -75,27 +74,17 @@ class WollokReplStyledText extends StyledText {
 			data = #[ plainText ]
 			types = #[ plainTextTransfer ]
 		} else {
-			val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
-			//val rtfText = rtfTransfer.nativeToJava(plainText)
-			
-			//val rtfWriter = createWriter("StyledText$RTFWriter", start, escapedBlockText.length)
-			//val String rtfText = getEscapedDelimitedText(rtfWriter)
-			// NO ME TOMA
-			//data = #[ plainText, plainText  ]
+			// val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
+			// rtf = buscar una libreria que convierta de ASCII a RTF
+			//data = #[ rtfText,, plainText  ]
 			//types = #[ rtfTransfer, plainTextTransfer ]
-			data = #[ plainText  ]
+			data = #[  plainText  ]
 			types = #[ plainTextTransfer ]
 		}
 		val clipboard = getFieldValue("clipboard") as Clipboard
 		clipboard.setContents(data, types, clipboardType);
 	}
 	
-	def createWriter(String clazz, int start, int end) {
-		val writerClass = Class.forName(clazz)
-		val constructor = writerClass.getConstructor(Integer.TYPE, Integer.TYPE)
-		constructor.newInstance(#{start, end})
-	}
-
 	private def getEscapedBlockText() {
 		val text = executeMethod("getBlockSelectionText", #{System.getProperty("line.separator")}) as String
 		text.deleteAnsiCharacters
