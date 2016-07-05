@@ -8,4 +8,5 @@ import org.eclipse.xtext.resource.IEObjectDescription
 
 interface WollokGlobalScopeCache {
 	def Iterable<IEObjectDescription> get(URI uri, List<Import> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock)
+	def void clearCache()
 }

@@ -26,6 +26,11 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 		
 		cacheContent.result
 	}
+	
+	override clearCache() {
+		cache.clear
+	}
+	
 }
 
 @Accessors
