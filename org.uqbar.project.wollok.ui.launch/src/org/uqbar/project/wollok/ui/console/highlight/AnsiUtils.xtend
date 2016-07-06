@@ -18,4 +18,13 @@ class AnsiUtils {
 		escaped
 	}
 	
+	def static deleteAnsiCharacters(String text) {
+		var escaped = text
+		val matcher = WollokAnsiColorLineStyleListener.pattern.matcher(text)
+		while (matcher.find) {
+            escaped = matcher.replaceAll('')
+		}
+		escaped
+	}
+	
 }

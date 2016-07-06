@@ -49,7 +49,7 @@ class WTextExtensions {
 	def static between(int position, StyleRange range) { position >= range.start && position <= range.end }
 	
 	def static replace(String str, Matcher it, String replacement) {
-		str.substring(0, start) + (' ' * (end - start)) + str.substring(end)
+		str.substring(0, start) + (replacement * (end - start)) + str.substring(end)
 	}
 	
 	def static operator_multiply(String s, int n) { (1..n).map[' '].join }

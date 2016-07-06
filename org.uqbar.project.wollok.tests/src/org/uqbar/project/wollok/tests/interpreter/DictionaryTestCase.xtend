@@ -95,10 +95,21 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		mapaTelefonos.put("mario", "5302-6617")
 		assert.that(mapaTelefonos.containsKey("choli"))
 		mapaTelefonos.remove("choli")
-		assert.notThat(mapaTelefonos.containsKey("choli"))	
+		assert.notThat(mapaTelefonos.containsKey("choli"))
 		'''.test
 	}
 
+	@Test
+	def void testRemoveNonExistentKey() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		mapaTelefonos.put("choli", "2142-5980")
+		mapaTelefonos.put("mario", "5302-6617")
+		mapaTelefonos.remove("pepe")
+		assert.equals(2, mapaTelefonos.size())
+		'''.test
+	}
+	
 	@Test
 	def void testKeys() {
 		'''
@@ -155,6 +166,25 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.throwsException({ new Dictionary().put(2145, null) })
 		'''.test		
+	}
+	
+	@Test
+	def void addingSeveralSwallowsInAMap() {
+		'''
+		class Golondrina { }
+		
+		program a {
+			var pepa = new Golondrina()
+			var s = new Dictionary()
+			s.put(pepa, 0)
+			
+			(1..100).forEach({i => s.put(new Golondrina(), i)}) // all objects are not == to pepa
+			
+			assert.notEquals(pepa, new Golondrina())
+			assert.equals(101, s.size())
+			assert.equals(0, s.get(pepa))
+		}
+		'''.interpretPropagatingErrors
 	}		
 	
 }
