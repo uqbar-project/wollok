@@ -1375,7 +1375,7 @@ class String {
 		const capitalizedPhrase = self.words().fold("", { words, word => words + word.take(1).toUpperCase() + word.drop(1).toLowerCase() + " " })
 		return capitalizedPhrase.take(capitalizedPhrase.size() - 1)
 	}
-	
+ 	
 }
 
 /**
