@@ -130,5 +130,25 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("", "clearly".drop(8))
 		assert.equals("clearly", "clearly".drop(0))
 		'''.test
-	}	
+	}
+	
+	@Test
+	def void words() {
+		'''
+		const words = "in wollok everything is an object".words()
+		assert.equals("in", words.get(0))
+		assert.equals("object", words.get(5))
+		'''.test
+	}
+	
+	@Test
+	def void capitalize() {
+		'''
+		assert.equals("alfa romeo".capitalize(), "Alfa Romeo")
+		assert.equals("AUDI".capitalize(), "Audi")
+		assert.equals("bmw".capitalize(), "Bmw")
+		assert.equals("ONETWO THREE FOUR".capitalize(), "Onetwo Three Four")
+		'''.test
+	}
+
 }
