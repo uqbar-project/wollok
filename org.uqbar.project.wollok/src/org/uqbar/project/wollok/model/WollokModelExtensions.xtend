@@ -2,6 +2,7 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
+
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -53,6 +54,8 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
+import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
+
 /**
  * Extension methods to Wollok semantic model.
  *
@@ -62,9 +65,13 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class WollokModelExtensions {
 
-	def static fileName(EObject it) {
-		file.URI.trimFileExtension.lastSegment
+	def static implicitPackage(EObject it) {
+		if(file.URI.toString.startsWith("classpath:/"))
+			file.URI.trimFileExtension.segments.join(".")
+		else
+			file.fullPackageName
 	}
+	
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
@@ -77,12 +84,12 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 
 	def static getNameWithPackage(WMethodContainer it) {
-		fileName + "." + if (package != null) package.name + "." + name else name
+		implicitPackage + "." + if (package != null) package.name + "." + name else name
 	}
 
 	def static dispatch fqn(WObjectLiteral it) {
 		//TODO: make it better (show containing class /object / package + linenumber ?)
-		fileName + "." + "anonymousObject"
+		implicitPackage + "." + "anonymousObject"
 	}
 
 	// this doesn't work for object literals, although it could !
