@@ -1360,6 +1360,12 @@ class String {
 	
 	/** A synonym for length */
 	method size() = self.length()
+	
+	/** Takes first n characters of this string */
+	method take(n) = self.substring(0, n.min(self.size()))
+	
+	/** Answers a new string dropping first n characters of this string */
+	method drop(n) = self.substring(n.min(self.size()), self.size())
 }
 
 /**

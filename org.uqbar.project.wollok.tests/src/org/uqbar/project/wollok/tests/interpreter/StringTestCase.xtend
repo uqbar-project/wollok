@@ -127,5 +127,22 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
+
+	@Test
+	def void take() {
+		'''
+		assert.equals("cl", "clearly".take(2))
+		assert.equals("clearly", "clearly".take(8))
+		assert.equals("", "clearly".take(0))
+		'''.test
+	}
 	
+	@Test
+	def void drop() {
+		'''
+		assert.equals("early", "clearly".drop(2))
+		assert.equals("", "clearly".drop(8))
+		assert.equals("clearly", "clearly".drop(0))
+		'''.test
+	}	
 }
