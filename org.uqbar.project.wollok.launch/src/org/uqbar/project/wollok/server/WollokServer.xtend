@@ -14,13 +14,14 @@ import org.eclipse.jetty.server.handler.AbstractHandler
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 class WollokServer extends AbstractHandler {
 	val gson = new Gson
@@ -64,7 +65,7 @@ class WollokServer extends AbstractHandler {
 					
 					if (issues.empty) {
 						interpreter.interpret(resource.contents.get(0), true)
-						name("console")
+						name("consoleOutput")
 						value((interpreter.console as WollokServerConsole).consoleOutput)	
 					}
 					else {
@@ -78,7 +79,20 @@ class WollokServer extends AbstractHandler {
 					}	
 				}
 				catch (WollokProgramExceptionWrapper exception) {
-					writer.name("runtimeErrors").value(exception.wollokStackTrace)
+					writer.name("runtimeError").beginObject => [
+						name("message").value(exception.wollokException.call("getMessage").toString)
+						name("stackTrace")
+						beginArray
+							exception.wollokException.call("getStackTrace").asList.wrapped.forEach [ element |
+								val object = element as WollokObject
+								beginObject
+									name("contextDescription").value(object.call("contextDescription")?.toString)
+									name("location").value(object.call("location").toString)
+								endObject
+							]
+						endArray
+					]
+					endObject
 				}
 			]
 			endObject
