@@ -1,2 +1,5 @@
 *._trace
 xtend-gen
+.project
+.classpath
+.settings

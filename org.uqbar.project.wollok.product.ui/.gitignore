@@ -1,1 +1,4 @@
 xtend-gen/
+.project
+.classpath
+.settings

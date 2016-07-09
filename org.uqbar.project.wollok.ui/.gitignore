@@ -1,1 +1,4 @@
 plugin.xml_gen
+.project
+.classpath
+.settings/
