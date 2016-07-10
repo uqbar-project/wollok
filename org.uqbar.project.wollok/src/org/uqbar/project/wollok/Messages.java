@@ -69,6 +69,7 @@ public class Messages extends NLS {
 	
 	// SELF
 	public static String WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM;
+	public static String WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT;
 	
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;

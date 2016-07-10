@@ -337,9 +337,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	//
 	
 	def static isInASelfContext(EObject ele) {
+		ele.getSelfContext != null
+	}
+	
+	def static getSelfContext(EObject ele) {
 		for (var e = ele; e != null; e = e.eContainer)
-			if (e.isSelfContext) return true
-		false
+			if (e.isSelfContext) return e
+		null
 	}
 	
 	def static dispatch isSelfContext(WClass it) { true }
