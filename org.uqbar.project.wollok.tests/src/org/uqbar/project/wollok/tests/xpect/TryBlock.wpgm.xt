@@ -3,6 +3,6 @@
 program tryBlock {
 	// XPECT errors --> "Try block must specify either a 'catch' or a 'then always' clause" at "{ 	self.println("No exception raised") }"
 	try {
-		self.println("No exception raised")
+		console.println("No exception raised")
 	}
 }
