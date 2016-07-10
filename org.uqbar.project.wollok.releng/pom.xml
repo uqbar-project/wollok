@@ -401,7 +401,61 @@
 				</configuration>
 			</plugin>
 			<!-- code coverage -->
-
+			
+			<!-- CHANGELOG generation -->
+			<plugin>
+			    <groupId>com.github.danielflower.mavenplugins</groupId>
+			    <artifactId>gitlog-maven-plugin</artifactId>
+			    <version>1.13.2</version>
+			    <executions>
+			       <execution>
+			         <goals>
+			          <goal>generate</goal>
+			         </goals>
+			       </execution>
+			    </executions>
+			    <configuration>
+			    	<generateMarkdownChangeLog>true</generateMarkdownChangeLog>
+			    	<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
+			    	
+			    	<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
+			    	<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename>
+			    	
+			    	<generateJSONChangeLog>false</generateJSONChangeLog>
+			    	
+			    	<excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern>
+			    	<outputDirectory>${project.basedir}</outputDirectory>
+			    </configuration>
+			</plugin>
+			<!-- commit changelog  -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+		        <executions>
+		            <execution>
+		                <id>add-changelog-to-git</id>
+		                <goals>
+		                    <goal>add</goal>
+		                    <goal>checking</goal>
+		                </goals>
+		                <configuration>
+		                    <basedir>./</basedir>
+		                    <includes>CHANGELOG.md,	changelog.txt</includes>
+		                    <message>Adding changelog</message>
+		                </configuration>
+		            </execution>
+		        </executions>
+		    </plugin>
+		    <!-- invoke commit on release prepare -->
+		    <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-release-plugin</artifactId>
+		        <version>2.5.3</version>
+		        <configuration>
+		          <preparationGoals>clean verify gitlog:generate org.apache.maven.plugins:maven-scm-plugin:add org.apache.maven.plugins:maven-scm-plugin:checking</preparationGoals>
+		        </configuration>
+		      </plugin>
+			<!-- /CHANGELOG generation -->
 		</plugins>
 
 		<extensions>
