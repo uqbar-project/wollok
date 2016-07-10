@@ -178,12 +178,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
+	
+	// SELF
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotUseThisInConstructorDelegation(WSelf it) {
+	def cannotUseSelfInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access instance methods within constructor delegation.", it)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotUseSelfInAProgram(WSelf it) {
+		if (!it.isInASelfContext)
+			report(WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM, it)
 	}
 
 	@Check

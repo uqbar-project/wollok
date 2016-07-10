@@ -1,3 +1,3 @@
 program consoleObject {
-	self.println("Hola")
+	console.println("Hola")
 }

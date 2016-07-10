@@ -1,5 +1,5 @@
 program console {
-	const console = self // TODO esto debería volar
+//	const console = self // TODO esto debería volar
 
 	// console es un objeto que me permite escribir en pantalla
 	// otros objetos útiles son los strings
