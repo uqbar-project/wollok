@@ -436,7 +436,7 @@
 		                <id>add-changelog-to-git</id>
 		                <goals>
 		                    <goal>add</goal>
-		                    <goal>checking</goal>
+		                    <goal>checkin</goal>
 		                </goals>
 		                <configuration>
 		                    <basedir>./</basedir>
