@@ -392,6 +392,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInIfCondition(WIfExpression it) {
+		if (!condition.isBooleanOrUnknownType) {
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+		}
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
