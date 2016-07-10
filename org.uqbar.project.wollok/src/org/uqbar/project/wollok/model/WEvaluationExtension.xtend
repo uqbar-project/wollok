@@ -44,7 +44,7 @@ class WEvaluationExtension {
 
 	/**
 	 * Tells whether the feature (an attribute of the semantic model)
-	 * expects the content to be evaluted to a value.
+	 * expects the content to be evaluated to a value.
 	 * This is useful to check if the actual content produces a value.
 	 */
 	def static boolean isEvaluatesContent(EStructuralFeature it, WollokClassFinder finder) {

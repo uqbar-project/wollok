@@ -6,7 +6,7 @@ program exceptions {
 	var i = 0
 	try {
 		a.m0() 
-		self.println("No exception raised")
+		console.println("No exception raised")
 	}
 	catch e : MyException
 		e.printStackTrace()
@@ -14,11 +14,11 @@ program exceptions {
 		i = i + 1 
 	
 	if (i > 0) {
-		self.println("i is positive")
+		console.println("i is positive")
 	}
 	else {
-		self.println("i is zero !")
+		console.println("i is zero !")
 	}
-	self.println("End of program")
+	console.println("End of program")
 
 }

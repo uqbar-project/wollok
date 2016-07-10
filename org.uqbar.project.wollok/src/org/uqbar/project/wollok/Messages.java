@@ -67,6 +67,9 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_UNREACHABLE_CODE;
 	public static String WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION;
 	
+	// SELF
+	public static String WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM;
+	
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;
 	public static String CheckSeverity_INFO;
