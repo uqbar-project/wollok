@@ -401,6 +401,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
 		}
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInBooleanOperationComponent(WBinaryOperation it) {
+		if (isBooleanExpression) {
+			if(!leftOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
+			if(!rightOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)	
+		}
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)

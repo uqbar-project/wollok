@@ -54,6 +54,9 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import com.google.inject.Inject
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Extension methods to Wollok semantic model.
@@ -342,6 +345,8 @@ class WollokModelExtensions {
 	def static dispatch isBooleanOrUnknownType(WClosure it) { false }
 	def static dispatch isBooleanOrUnknownType(WVariableReference it) { !(ref instanceof WNamedObject) }
 	
+	def static isBooleanExpression(WBinaryOperation it) { feature.isBooleanOperand }
+	def static isBooleanOperand(String it) { WollokConstants.OP_BOOLEAN.contains(it) }
 
 	// *******************************
 	// ** imports
