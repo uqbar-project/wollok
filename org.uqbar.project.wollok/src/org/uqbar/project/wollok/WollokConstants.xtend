@@ -25,6 +25,9 @@ class WollokConstants {
 	
 	public static val OPMULTIASSIGN = #['+=', '-=', '*=', '/=', '%=', '<<=', '>>=']
 	
+	public static val OP_BOOLEAN_AND = #['and', "&&"]
+	public static val OP_BOOLEAN_OR = #["or", "||"]
+	
 	public static val OP_BOOLEAN = #['and', "&&", "or", "||"]
 	public static val OP_UNARY_BOOLEAN = #['!', "not"]
 	

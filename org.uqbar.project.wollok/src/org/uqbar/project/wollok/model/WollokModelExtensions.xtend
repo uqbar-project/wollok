@@ -350,6 +350,8 @@ class WollokModelExtensions {
 	def static isBooleanExpression(WBinaryOperation it) { feature.isBooleanOperand }
 	def static isBooleanOperand(String it) { WollokConstants.OP_BOOLEAN.contains(it) }
 
+	def static isAndExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_AND.contains(feature) }
+	def static isOrExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_OR.contains(feature) }
 	def static isNotOperation(WUnaryOperation it) { WollokConstants.OP_UNARY_BOOLEAN.contains(feature) }
 
 	// *******************************

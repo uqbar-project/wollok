@@ -1,0 +1,43 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+}
+
+object p {
+    method run() {
+    	var cond = true
+    	var algo = true
+    	
+    	//
+    	// AND
+    	//
+    	
+	    // XPECT errors --> "Unnecessary condition" at "true"
+		cond = true && algo
+		
+		// XPECT errors --> "Unreachable code" at "algo"
+		cond = false && algo
+		
+		// XPECT errors --> "Unnecessary condition" at "true"
+		cond = algo && true
+		
+		// XPECT errors --> "Always evaluates to false !" at "algo && false"
+		cond = algo && false
+		
+		//
+    	// OR
+    	//
+		
+		// XPECT errors --> "Unreachable code" at "algo"
+		cond = true || algo
+
+	    // XPECT errors --> "Unnecessary condition" at "false"
+		cond = false || algo
+		
+		// XPECT errors --> "Always evaluates to true !" at "algo || true"
+		cond = algo || true
+		
+		// XPECT errors --> "Unnecessary condition" at "false"
+		cond = algo || false 
+    }
+}
