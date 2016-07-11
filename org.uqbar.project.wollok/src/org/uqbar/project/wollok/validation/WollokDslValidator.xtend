@@ -52,6 +52,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Custom validation rules.
@@ -412,6 +413,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			if(!rightOperand.isBooleanOrUnknownType)
 				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)	
 		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInNotUnaryExpression(WUnaryOperation it) {
+		if (isNotOperation && !operand.isBooleanOrUnknownType)
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
 	}
 
 	@Check

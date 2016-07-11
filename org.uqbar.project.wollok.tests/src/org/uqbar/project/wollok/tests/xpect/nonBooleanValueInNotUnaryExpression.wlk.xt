@@ -1,0 +1,38 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+}
+
+object p {
+    method run() {
+        // XPECT errors --> "Expecting a boolean" at "null"
+        if (!null)
+            throw new Exception("asd")
+
+        // XPECT errors --> "Expecting a boolean" at "2"
+        if (!2)
+            throw new Exception("asd")
+        
+        var cond = true
+        // XPECT errors --> "Expecting a boolean" at "pepita"    
+        cond = !pepita
+
+		// XPECT errors --> "Expecting a boolean" at "new List()"	
+		cond = !new List()	 
+		
+		// XPECT errors --> "Expecting a boolean" at "\"un poco de suerte\""	
+		cond = not "un poco de suerte"	 
+			
+		// XPECT errors --> "Expecting a boolean" at "[1, 2, 3]"	
+		cond = ! [1, 2, 3]	 
+		
+		// XPECT errors --> "Expecting a boolean" at "#{1, 2, 3}"	
+		cond = ! #{1, 2, 3}	 
+		
+		// XPECT errors --> "Expecting a boolean" at "object {}"			
+		cond = ! object {}	 
+			
+		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"			
+		cond = not { a => a.toString() }	 
+    }
+}
