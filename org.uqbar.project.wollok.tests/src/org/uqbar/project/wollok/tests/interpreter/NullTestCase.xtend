@@ -50,7 +50,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 			extendedAssert.assertException({ null || null }, "Cannot send message || to null")
 			extendedAssert.assertException({ null && null }, "Cannot send message && to null")
 		}
-		'''.interpretPropagatingErrors
+		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test

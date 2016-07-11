@@ -67,6 +67,10 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		interpret(true, programAsString)
 	}
 
+	def interpretPropagatingErrorsWithoutStaticChecks(CharSequence programAsString) {
+		interpretPropagatingErrorsWithoutStaticChecks(newArrayList(null as String -> programAsString.toString))
+	}
+
 	def interpretPropagatingErrorsWithoutStaticChecks(String... programAsString) {
 		interpretPropagatingErrorsWithoutStaticChecks(programAsString.map[new Pair(null, it)])
 	}
