@@ -1274,7 +1274,7 @@ class String {
 	
 	/**
 	 * Answers whether this string contains the specified sequence of char values.
-	 * It is a case senfsitive test.
+	 * It is a case sensitive test.
 	 *
 	 * Examples:
 	 * 		"unusual".contains("usual")  ==> Answers true
