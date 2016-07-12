@@ -24,6 +24,7 @@ class WollokConstants {
 	// any code that generates wollok code
 	
 	public static val OPMULTIASSIGN = #['+=', '-=', '*=', '/=', '%=', '<<=', '>>=']
+	public static val OP_EQUALITY = #['==', '!=', '===', '!==']
 	
 	public static val THIS = "this"
 	public static val METHOD = "method"
