@@ -11,7 +11,11 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 				try {
 					closure.apply()
 				} catch e: Exception {
-					assert.equals(msg, e.getCause().getMessage())
+					var message = e.getMessage()
+					if (e.getCause() != null) {
+						message = e.getCause().getMessage()
+					}
+					assert.equals(msg, message)
 				}
 			}
 		}
