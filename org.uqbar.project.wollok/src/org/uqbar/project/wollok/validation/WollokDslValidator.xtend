@@ -524,8 +524,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noReturnStatementInConstructor(WReturnExpression it){
-		if(it.inConstructor)
+		if (it.inConstructor)
 			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReturnAssignment(WReturnExpression it){
+		if (expression != null && expression instanceof WAssignment)
+			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
 
 	@Check
