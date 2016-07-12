@@ -28,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.ui.Messages.*
+import org.uqbar.project.wollok.wollokDsl.WWhile
 
 /**
  * Provides code templates for the editor.
@@ -89,6 +90,11 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 
 << WIfExpression >>
 '''if (${condition}) {
+	${then}
+}'''
+
+<< WWhile >>
+'''while (${condition}) {
 	${then}
 }'''
 

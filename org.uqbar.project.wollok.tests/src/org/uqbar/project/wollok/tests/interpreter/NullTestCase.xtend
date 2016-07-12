@@ -106,7 +106,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		} catch e: Exception {
 			mensajeError = e.getMessage()
 		}
-		assert.equals("Cannot use null in 'if' expression", mensajeError)
+		assert.equals("Cannot use null in 'if' condition", mensajeError)
 		'''.test
 	}
 	

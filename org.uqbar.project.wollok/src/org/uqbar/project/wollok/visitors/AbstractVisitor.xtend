@@ -35,6 +35,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WWhile
 
 /**
  * Implements an abstract visitor for the AST
@@ -66,6 +67,11 @@ class AbstractVisitor {
 		condition.doVisit
 		then.doVisit
 		getElse.doVisit
+	}
+	
+	def dispatch void visit(WWhile it) {
+		condition.doVisit
+		then.doVisit
 	}
 
 	def dispatch void visit(WTry it) {

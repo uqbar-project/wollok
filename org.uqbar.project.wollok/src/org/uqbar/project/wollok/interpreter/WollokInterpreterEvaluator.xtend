@@ -63,6 +63,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
+import org.uqbar.project.wollok.wollokDsl.WWhile
 
 /**
  * It's the real "interpreter".
@@ -131,14 +132,36 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 		// I18N !
 		if (cond == null) {
-			throw newWollokExceptionAsJava('''Cannot use null in 'if' expression''')
+			throw newWollokExceptionAsJava('''Cannot use null in 'if' condition''')
 		}
 		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException('''Expression in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
-		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
+			throw new WollokInterpreterException('''Condition in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
+		
+		if (cond == trueObject)
 			then.eval
 		else
 			^else?.eval
+	}
+	
+	def dispatch evaluate(WWhile it) {
+		while(checkCondition) {
+			then.eval
+		}
+		theVoid
+	}
+	
+	def getTheVoid(EObject it) { getVoid(interpreter, it) }
+	
+	def checkCondition(WWhile it) {
+		val cond = condition.eval
+		// I18N !
+		if (cond == null) {
+			throw newWollokExceptionAsJava('''Cannot use null in 'while' condition''')
+		}
+		if (!(cond.isWBoolean))
+			throw new WollokInterpreterException('''Condition in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''', it)
+		
+		cond == trueObject
 	}
 
 	def dispatch evaluate(WTry t) {

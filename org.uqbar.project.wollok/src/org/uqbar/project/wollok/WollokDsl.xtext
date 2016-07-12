@@ -224,8 +224,8 @@ WPrimaryExpression returns WExpression:
 	WIfExpression |
 	WTry |
 	WReturnExpression | 
-	WThrow
-//	XForLoopExpression |
+	WThrow |
+	WWhile
 ;
 
 WSuperInvocation returns WExpression: 
@@ -262,6 +262,11 @@ WIfExpression:
 	(=>'else'
 		else=WBlockOrExpression
 	)?
+;
+
+WWhile:
+	'while' '(' condition=WExpression ')'
+		then=WBlockOrExpression
 ;
 
 // LITERALS
