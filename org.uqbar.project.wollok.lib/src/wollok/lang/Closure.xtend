@@ -44,12 +44,7 @@ class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>,
 	def doApply(WollokObject... args) {
 		val context = closure.createEvaluationContext(args).then(container)
 		interpreter.performOnStack(closure, context) [|
-			try {
-				interpreter.eval(closure.expression)
-			} catch (WollokProgramExceptionWrapper e) {
-				throw new RuntimeException(e.wollokMessage)
-			}
-			 
+			interpreter.eval(closure.expression)
 		]	
 	}
 	
