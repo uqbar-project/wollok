@@ -77,7 +77,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void equalEqualOperatorWithANullArgument() {
-		'''
+		interpretPropagatingErrorsWithoutStaticChecks('''
 		class Golondrina { var energia = 0 }
 		
 		program a {
@@ -91,7 +91,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 			assert.notThat(assert == null)
 			assert.notThat(new Golondrina() == null)
 		}
-		'''.interpretPropagatingErrors
+		''')
 	}
 	
 	@Test

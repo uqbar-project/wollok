@@ -52,6 +52,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
@@ -543,6 +544,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def multiOpOnlyValidforVarReferences(WBinaryOperation op) {
 		if (op.feature.isMultiOpAssignment && !op.leftOperand.isWritableVarRef)
 			report(op.feature + WollokDslValidator_BINARYOP_ONLY_ON_VARS, op, WBINARY_OPERATION__LEFT_OPERAND)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
+	def dontCompareAgainstTrueOrFalse(WBinaryOperation it) {
+		if (OP_EQUALITY.contains(feature) && leftOperand instanceof WBooleanLiteral)
+			report(WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE, it, WBINARY_OPERATION__LEFT_OPERAND)
+		if (OP_EQUALITY.contains(feature) && rightOperand instanceof WBooleanLiteral)
+			report(WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE, it, WBINARY_OPERATION__RIGHT_OPERAND)
 	}
 
 	@Check
