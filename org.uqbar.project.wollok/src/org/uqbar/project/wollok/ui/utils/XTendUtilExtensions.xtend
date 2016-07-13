@@ -171,14 +171,10 @@ class XTendUtilExtensions {
 	}
 	
 	def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
-		val cause = e.cause
-		new WollokProgramExceptionWrapper(
-			if (cause instanceof WollokProgramExceptionWrapper)
-				WollokJavaConversions.newWollokException("Error while calling native method '" + m.shortDescription + " with parameters: " + params.join(', '), cause.wollokException)
-			else 
-				WollokJavaConversions.newWollokException(e.cause.message)	
-		)
-		
+		if (e.cause instanceof WollokProgramExceptionWrapper)
+			e.cause
+		else 
+			new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
 	}
 	
 	def static accesibleVersion(Method m) {
