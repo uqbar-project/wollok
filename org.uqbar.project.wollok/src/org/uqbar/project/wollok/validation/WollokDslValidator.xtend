@@ -553,6 +553,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def overridingMethodMustHaveABody(WMethodDeclaration it) {
+		if (overrides && expression == null && !native)
+			report(WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY, it) 
+	}
+	
 
 	@Check
 	@DefaultSeverity(ERROR)
