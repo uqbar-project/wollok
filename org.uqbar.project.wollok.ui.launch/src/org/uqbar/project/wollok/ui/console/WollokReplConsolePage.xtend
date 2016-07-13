@@ -9,10 +9,10 @@ import org.eclipse.swt.events.MouseEvent
 import org.eclipse.swt.events.VerifyEvent
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.console.IConsoleView
+import org.eclipse.ui.console.IScrollLockStateProvider
+import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.ui.console.TextConsoleViewer
-import org.eclipse.ui.console.TextConsole
-import org.eclipse.ui.console.IScrollLockStateProvider
 import org.uqbar.project.wollok.ui.console.editor.WollokReplStyledText
 
 /**
@@ -80,7 +80,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	override keyPressed(KeyEvent e) {
 		if (!console.running) {
 			e.doit = false
-			return;
+			return
 		}
 
 		if (e.keyCode == SWT.ARROW_UP) {
@@ -105,12 +105,15 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			setCursorToEnd
 			return
 		}
-		// return key pressed 
+		// return key pressed
 		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
+			console.updateIfDirty
 			console.sendInputBuffer
 			historyPosition = -1
-		} else
-			console.updateInputBuffer
+		} else {
+			console.updateInputBuffer	
+		}
+		
 		return
 	}
 
