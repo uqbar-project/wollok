@@ -53,7 +53,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 
 /**
  * Custom validation rules.
@@ -624,6 +623,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def overridingMethodMustHaveABody(WMethodDeclaration it) {
+		if (overrides && expression == null && !native)
+			report(WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY, it) 
+	}
+	
 
 	@Check
 	@DefaultSeverity(ERROR)

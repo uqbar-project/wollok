@@ -1360,6 +1360,22 @@ class String {
 	
 	/** A synonym for length */
 	method size() = self.length()
+	
+	/** Takes first n characters of this string */
+	method take(n) = self.substring(0, n.min(self.size()))
+	
+	/** Answers a new string dropping first n characters of this string */
+	method drop(n) = self.substring(n.min(self.size()), self.size())
+	
+	/** Splits this strings into several words */
+	method words() = self.split(" ")
+	
+	/** Changes the first letter of every word to upper case in this string */
+	method capitalize() {
+		const capitalizedPhrase = self.words().fold("", { words, word => words + word.take(1).toUpperCase() + word.drop(1).toLowerCase() + " " })
+		return capitalizedPhrase.take(capitalizedPhrase.size() - 1)
+	}
+ 	
 }
 
 /**
