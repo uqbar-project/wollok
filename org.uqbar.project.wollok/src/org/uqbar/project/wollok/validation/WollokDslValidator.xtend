@@ -52,6 +52,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableReferenceElements
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
@@ -197,6 +198,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM, it)
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
+		if (it.ref == getSelfContext)
+			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it)
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
