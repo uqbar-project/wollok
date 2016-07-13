@@ -47,7 +47,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 	}
 	
   override createTemplates(TemplateContext templateContext, ContentAssistContext context, ITemplateAcceptor acceptor) {
-    //"regular templates"
+    // "regular templates"
     super.createTemplates(templateContext, context, acceptor)
     
     val extension builder = new TemplateBuilder(grammar, "org.uqbar.project.wollok", "WollokTemplateProposalProvider", getProperties,  [rule, name, description, id, content | 
@@ -93,7 +93,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 }'''
 
 << WListLiteral >>
-'''#[${content}]'''
+'''[${content}]'''
 
 << WSetLiteral >>
 '''#{${content}}'''
