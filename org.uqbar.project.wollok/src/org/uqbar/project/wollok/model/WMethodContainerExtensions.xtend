@@ -320,7 +320,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnTrue(WExpression it) { false }
 	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
-	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
+	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { isTrueLiteral }
+	
+	def static dispatch isTrueLiteral(WBooleanLiteral it) { isIsTrue }
+	def static dispatch isTrueLiteral(WExpression it) { false }
+	
+	def static dispatch isFalseLiteral(WBooleanLiteral it) { !isIsTrue }
+	def static dispatch isFalseLiteral(WExpression it) { false }
 
 	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
 	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }

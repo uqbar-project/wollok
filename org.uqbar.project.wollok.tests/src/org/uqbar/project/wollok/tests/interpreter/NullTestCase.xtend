@@ -11,7 +11,11 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 				try {
 					closure.apply()
 				} catch e: Exception {
-					assert.equals(msg, e.getCause().getMessage())
+					var message = e.getMessage()
+					if (e.getCause() != null) {
+						message = e.getCause().getMessage()
+					}
+					assert.equals(msg, message)
 				}
 			}
 		}
@@ -50,7 +54,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 			extendedAssert.assertException({ null || null }, "Cannot send message || to null")
 			extendedAssert.assertException({ null && null }, "Cannot send message && to null")
 		}
-		'''.interpretPropagatingErrors
+		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -77,7 +81,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void equalEqualOperatorWithANullArgument() {
-		'''
+		interpretPropagatingErrorsWithoutStaticChecks('''
 		class Golondrina { var energia = 0 }
 		
 		program a {
@@ -91,7 +95,7 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 			assert.notThat(assert == null)
 			assert.notThat(new Golondrina() == null)
 		}
-		'''.interpretPropagatingErrors
+		''')
 	}
 	
 	@Test
