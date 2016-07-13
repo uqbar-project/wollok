@@ -92,10 +92,6 @@ public class WollokDslUiModule extends org.uqbar.project.wollok.ui.AbstractWollo
 		  return org.eclipse.xtext.ui.shared.Access.getWorkspaceProjectsState();
 	}
 
-	public Class<? extends WollokManifestFinder> bindWollokManifestFinder(){
-		return BasicWollokManifestFinder.class;
-	}
-	
 	public Class<? extends PluginProjectFactory> bindPluginProjectFactory(){
 		return WollokProjectFactory.class;
 	}

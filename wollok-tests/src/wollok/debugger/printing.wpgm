@@ -1,21 +1,21 @@
 program printing {
 	const a = 23 + 1
 	
-	self.println(a)
+	console.println(a)
 	
 	var b = "hola"
 	
-	self.println(b)
+	console.println(b)
 	
-	self.println("linea1")
-	self.println("linea2")
-	self.println("linea3")
-	self.println("linea4")
-	self.println("linea5")
+	console.println("linea1")
+	console.println("linea2")
+	console.println("linea3")
+	console.println("linea4")
+	console.println("linea5")
 	
-	self.println("linea6")
-	self.println("linea7")
-	self.println("linea8")
-	self.println("linea9")
-	self.println("linea10")
+	console.println("linea6")
+	console.println("linea7")
+	console.println("linea8")
+	console.println("linea9")
+	console.println("linea10")
 }

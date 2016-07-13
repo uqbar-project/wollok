@@ -26,8 +26,10 @@ import abc.pack.anObject
 // XPECT errors --> "Cannot resolve import abc.pack.AClass" at "abc.pack.AClass"
 import abc.pack.AClass
 
+import wollok.game.*
 
 import wollok.lang.Object
+
 
 class A {
 	method ungetBlah() {

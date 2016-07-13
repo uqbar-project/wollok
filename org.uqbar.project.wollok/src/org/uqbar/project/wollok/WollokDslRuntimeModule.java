@@ -26,6 +26,8 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy;
+import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache;
+import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache;
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking;
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory;
 
@@ -69,11 +71,11 @@ public class WollokDslRuntimeModule extends
 		return WollokGlobalScopeProvider.class;
 	}
 
-	/*
-	 * public Class<? extends IScopeProvider> bindIScopeProvider() { return
-	 * WollokImportedNamespaceAwareLocalScopeProvider.class; }
-	 */
+	public Class<? extends WollokGlobalScopeCache> bindWollokGlobalScopeCache() {
+		return MapBasedWollokGlobalScopeCache.class;
+	}
 
+	
 	public Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
 		return BasicWollokManifestFinder.class;
 	}

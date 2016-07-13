@@ -71,6 +71,14 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
+import org.eclipse.ui.PlatformUI
+import org.eclipse.core.runtime.Platform
+import org.eclipse.ui.internal.UISynchronizer
+import org.eclipse.core.runtime.jobs.Job
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.IStatus
+import org.eclipse.core.runtime.Status
+import org.eclipse.ui.progress.UIJob
 
 /**
  * 
@@ -336,16 +344,24 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			refresh()
 		}
 	}
+	val refreshJob = new UIJob("Updating diagram view") {
+			override def runInUIThread(IProgressMonitor monitor) {
+				diagram = createDiagramModel
+				initializeGraphicalViewer
+				Status.OK_STATUS
+			}
+		}
 	
 	def refresh() {
-		diagram = createDiagramModel
-		initializeGraphicalViewer
+		refreshJob.schedule
 	}
 	
 	// IDocumentListener
 	
 	override documentAboutToBeChanged(DocumentEvent event) { }
-	override documentChanged(DocumentEvent event) { refresh }
+	override documentChanged(DocumentEvent event) { 
+		refresh
+	}
 	
 	// ****************************	
 	// ** Palette
