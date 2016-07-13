@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -33,11 +34,12 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -52,9 +54,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableReferenceElements
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
-import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Custom validation rules.
@@ -672,6 +671,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def varArgMustBeTheLastParameter(WParameter it) {
 		if (isVarArg && eContainer.parameters().last != it) {
 			report(WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE, it, WPARAMETER__VAR_ARG, VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	def dontUseLocalVarOnlyToReturn(WVariableDeclaration it) {
+		if (isLocalToMethod && onlyUsedInReturn) {
+			report(WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN, it, WVARIABLE_DECLARATION__VARIABLE)
 		}
 	}
 
