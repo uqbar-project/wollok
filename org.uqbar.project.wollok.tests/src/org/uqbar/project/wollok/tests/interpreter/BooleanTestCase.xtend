@@ -31,7 +31,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 
 			assert.notThat(false && false)
 			assert.notThat(false and false)
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 
 			assert.notThat(false || false)
 			assert.notThat(false or false)
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 			// evaluated
 			assert.that(true && p.getModifying())
 			assert.that(p.getModified())
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -87,7 +87,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 			assert.notThat(false && p.getModifying())
 			assert.notThat(p.getModified())
 			
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -131,7 +131,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 			// evaluated
 			assert.that(false || p.getModifying())
 			assert.that(p.getModified())
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	@Test
@@ -151,7 +151,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 			assert.that(true || p.getModifying())
 			assert.notThat(p.getModified())
 			
-		}'''.interpretPropagatingErrors
+		}'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 }

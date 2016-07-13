@@ -52,7 +52,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import javax.swing.text.NavigationFilter.FilterBypass
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Custom validation rules.
@@ -392,6 +392,86 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInIfCondition(WIfExpression it) {
+		if (!condition.isBooleanOrUnknownType) {
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInBooleanOperationComponent(WBinaryOperation it) {
+		if (isBooleanExpression) {
+			if(!leftOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
+			if(!rightOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)	
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInNotUnaryExpression(WUnaryOperation it) {
+		if (isNotOperation && !operand.isBooleanOrUnknownType)
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unnecessaryIf(WIfExpression it) {
+		if (^else == null && condition.isTrueLiteral)
+			report(WollokDslValidator_UNNECESSARY_IF, it, WIF_EXPRESSION__CONDITION)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unreachableCodeInIf(WIfExpression it) {
+		if (^else != null && condition.isTrueLiteral)
+			report(WollokDslValidator_UNREACHABLE_CODE, it, WIF_EXPRESSION__ELSE)
+		if (condition.isFalseLiteral)
+			report(WollokDslValidator_UNREACHABLE_CODE, it, WIF_EXPRESSION__THEN)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unreachableCodeInBooleanBinaryOperation(WBinaryOperation it) {
+		if (!isBooleanExpression || leftOperand == null || rightOperand == null)
+			return;
+		// and
+		if (isAndExpression) {
+			// left
+			if (leftOperand.isTrueLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__LEFT_OPERAND)
+			else if (leftOperand.isFalseLiteral)
+				report(WollokDslValidator_UNREACHABLE_CODE, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			// right
+			if (rightOperand.isTrueLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			else if (rightOperand.isFalseLiteral)
+				report(WollokDslValidator_ALWAYS_EVALUATES_TO_FALSE, it)
+		}
+		else if (isOrExpression) {
+			// left
+			if (leftOperand.isTrueLiteral)
+				report(WollokDslValidator_UNREACHABLE_CODE, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			else if (leftOperand.isFalseLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__LEFT_OPERAND)
+			// right
+			if (rightOperand.isTrueLiteral)
+				report(WollokDslValidator_ALWAYS_EVALUATES_TO_TRUE, it)
+			else if (rightOperand.isFalseLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__RIGHT_OPERAND)
+		}
 	}
 
 	@Check
