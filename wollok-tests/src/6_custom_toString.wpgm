@@ -1,12 +1,12 @@
 program customToString {
 
 const pepe = object {
-	method toString() {
+	override method toString() {
 		return 'Pepe'
 	}
 }
 
-self.println(pepe)
+console.println(pepe)
 assert.that(pepe.toString() == 'Pepe')
 
 }

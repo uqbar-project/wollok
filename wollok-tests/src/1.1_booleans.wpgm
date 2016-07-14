@@ -10,17 +10,17 @@ var a = "a"
 assert.that(trueB)
 
 assert.that(true)
-self.assertFalse(false)
+assert.notThat(false)
 
 //AND
 assert.that(true and true)
 assert.that(true && true)
 
-self.assertFalse(true and false)
-self.assertFalse(true && false)
+assert.notThat(true and false)
+assert.notThat(true && false)
 
-self.assertFalse(false && true)
-self.assertFalse(false && false)
+assert.notThat(false && true)
+assert.notThat(false && false)
 
 // or
 assert.that(true or true)
@@ -29,16 +29,16 @@ assert.that(true || true)
 assert.that(true || false)
 assert.that(false || true)
 
-self.assertFalse(false or false)
-self.assertFalse(false || false)
+assert.notThat(false or false)
+assert.notThat(false || false)
 
 // not operator
 
 assert.that(not false)
 assert.that(!false)
 
-self.assertFalse(not true)
-self.assertFalse(!true)
+assert.notThat(not true)
+assert.notThat(!true)
 
 assert.that(not(3>5))
 assert.that(!(3>5))
@@ -48,12 +48,12 @@ assert.that(2 == 2)
 var n1 = 2
 var n2 = 2
 assert.that(n1 == n2)
-self.assertFalse(2 == 3)
+assert.notThat(2 == 3)
 
 const object1 = object {}
 const object2 = object {}
 assert.that(object1 == object1)
-self.assertFalse(object1 == object2)
+assert.notThat(object1 == object2)
 
 // not equals
 assert.that(2 != 3)
@@ -79,6 +79,6 @@ assert.that(3 >= 3)
 //const otraComp = true && otroN
 //
 //const compValida = true && false
-//self.println(compValida)
+//console.println(compValida)
 
 }

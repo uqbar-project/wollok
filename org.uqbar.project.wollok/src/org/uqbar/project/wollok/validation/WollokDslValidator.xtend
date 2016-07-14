@@ -52,6 +52,9 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableReferenceElements
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Custom validation rules.
@@ -178,14 +181,30 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
+	
+	// SELF
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotUseThisInConstructorDelegation(WSelf it) {
+	def cannotUseSelfInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access instance methods within constructor delegation.", it)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotUseSelfInAProgram(WSelf it) {
+		if (!it.isInASelfContext)
+			report(WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM, it)
+	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
+		if (it.ref == getSelfContext)
+			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it)
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
@@ -383,6 +402,86 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInIfCondition(WIfExpression it) {
+		if (!condition.isBooleanOrUnknownType) {
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInBooleanOperationComponent(WBinaryOperation it) {
+		if (isBooleanExpression) {
+			if(!leftOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
+			if(!rightOperand.isBooleanOrUnknownType)
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)	
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def nonBooleanValueInNotUnaryExpression(WUnaryOperation it) {
+		if (isNotOperation && !operand.isBooleanOrUnknownType)
+			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WUNARY_OPERATION__OPERAND)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unnecessaryIf(WIfExpression it) {
+		if (^else == null && condition.isTrueLiteral)
+			report(WollokDslValidator_UNNECESSARY_IF, it, WIF_EXPRESSION__CONDITION)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unreachableCodeInIf(WIfExpression it) {
+		if (^else != null && condition.isTrueLiteral)
+			report(WollokDslValidator_UNREACHABLE_CODE, it, WIF_EXPRESSION__ELSE)
+		if (condition.isFalseLiteral)
+			report(WollokDslValidator_UNREACHABLE_CODE, it, WIF_EXPRESSION__THEN)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unreachableCodeInBooleanBinaryOperation(WBinaryOperation it) {
+		if (!isBooleanExpression || leftOperand == null || rightOperand == null)
+			return;
+		// and
+		if (isAndExpression) {
+			// left
+			if (leftOperand.isTrueLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__LEFT_OPERAND)
+			else if (leftOperand.isFalseLiteral)
+				report(WollokDslValidator_UNREACHABLE_CODE, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			// right
+			if (rightOperand.isTrueLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			else if (rightOperand.isFalseLiteral)
+				report(WollokDslValidator_ALWAYS_EVALUATES_TO_FALSE, it)
+		}
+		else if (isOrExpression) {
+			// left
+			if (leftOperand.isTrueLiteral)
+				report(WollokDslValidator_UNREACHABLE_CODE, it, WBINARY_OPERATION__RIGHT_OPERAND)
+			else if (leftOperand.isFalseLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__LEFT_OPERAND)
+			// right
+			if (rightOperand.isTrueLiteral)
+				report(WollokDslValidator_ALWAYS_EVALUATES_TO_TRUE, it)
+			else if (rightOperand.isFalseLiteral)
+				report(WollokDslValidator_UNNECESSARY_CONDITION, it, WBINARY_OPERATION__RIGHT_OPERAND)
+		}
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
@@ -454,6 +553,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (op.feature.isMultiOpAssignment && !op.leftOperand.isWritableVarRef)
 			report(op.feature + WollokDslValidator_BINARYOP_ONLY_ON_VARS, op, WBINARY_OPERATION__LEFT_OPERAND)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
+	def dontCompareAgainstTrueOrFalse(WBinaryOperation it) {
+		if (OP_EQUALITY.contains(feature) && leftOperand instanceof WBooleanLiteral)
+			report(WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE, it, WBINARY_OPERATION__LEFT_OPERAND)
+		if (OP_EQUALITY.contains(feature) && rightOperand instanceof WBooleanLiteral)
+			report(WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE, it, WBINARY_OPERATION__RIGHT_OPERAND)
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
@@ -515,8 +624,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noReturnStatementInConstructor(WReturnExpression it){
-		if(it.inConstructor)
+		if (it.inConstructor)
 			report(WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR, it, WRETURN_EXPRESSION__EXPRESSION)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReturnAssignment(WReturnExpression it){
+		if (expression != null && expression instanceof WAssignment)
+			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
 
 	@Check
@@ -533,6 +649,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def overridingMethodMustHaveABody(WMethodDeclaration it) {
+		if (overrides && expression == null && !native)
+			report(WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY, it) 
+	}
+	
 
 	@Check
 	@DefaultSeverity(ERROR)

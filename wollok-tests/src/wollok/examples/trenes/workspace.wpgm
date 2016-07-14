@@ -28,7 +28,7 @@ assert.equals(60, tren.getVelocidadMaxima())
 
 assert.that(new Locomotora(10, 50, 0).esEficiente())
 assert.that(new Locomotora(10, 51, 0).esEficiente())
-self.assertFalse(new Locomotora(10, 49, 0).esEficiente())
+assert.notThat(new Locomotora(10, 49, 0).esEficiente())
 
 assert.that(tren.esEficiente())
 
@@ -43,7 +43,7 @@ assert.that(0 == tren.getKilosEmpujeFaltantes())
 const trenNoSeMueve = new Tren()
 trenNoSeMueve.agregarVagon(new VagonPasajeros(3, 12))
 trenNoSeMueve.agregarLocomotora(new Locomotora(1200, 4000, 55))
-self.assertFalse(trenNoSeMueve.puedeMoverse())
+assert.that(trenNoSeMueve.puedeMoverse())
 assert.equals(6800, trenNoSeMueve.getKilosEmpujeFaltantes())
 
 // 7) Dado un depósito, obtener el conjunto formado por el vagón más pesado de cada formación;
@@ -54,5 +54,5 @@ deposito.agregarFormacion(trenNoSeMueve)
 
 assert.that(2 == deposito.vagonesMasPesados().size())
 
-self.println("FIIIIN")
+console.println("FIIIIN")
 }
