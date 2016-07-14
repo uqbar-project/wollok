@@ -1553,6 +1553,17 @@ class Closure {
 	
 	/** Answers a string representation of this closure object */
 	method toString() native
+	
+	/**
+	 * Evaluates this closure as times as necessary until the given predicate
+	 * is false.
+	 * It evaluates the closure, and then evaluates the predicate (a closure returning a boolean)
+	 * If the predicate is true then it evaluates again, and so on.
+	 *
+	 * Example:
+	 *     var i = 0; { i++ }.while { i < 10 }    // at the end i == 9 
+	 */
+	method while(predicate) native
 }
 
 /**

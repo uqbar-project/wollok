@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
+import junit.framework.Assert
 
 /**
  * @author jfernandes
@@ -80,6 +81,17 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 			const result = op.fold(0, {acc, o =>  o.apply(acc) })
 			
 			assert.equals(36, result)
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void whileInClosure() {
+		Assert.assertEquals("asd", "asdblah")
+		'''
+		program p {
+			var i = 0
+			{ i++ }.while { i < 10 } 
+			assert.equals(10, i) 
 		}'''.interpretPropagatingErrors
 	}
 	

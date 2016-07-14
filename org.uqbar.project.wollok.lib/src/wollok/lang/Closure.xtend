@@ -14,7 +14,10 @@ import java.util.List
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+
 /**
+ * Native class implementation for wollok.lang.Closure
  * 
  * @author jfernandes
  */
@@ -46,6 +49,14 @@ class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>,
 		interpreter.performOnStack(closure, context) [|
 			interpreter.eval(closure.expression)
 		]	
+	}
+	
+	@NativeMessage("while")
+	def _while(WollokObject predicate) {
+		val pred = predicate.asClosure
+		do {
+			doApply
+		} while (pred.doApply.wollokToJava(Boolean) as Boolean)
 	}
 	
 	def static createEvaluationContext(org.uqbar.project.wollok.wollokDsl.WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }

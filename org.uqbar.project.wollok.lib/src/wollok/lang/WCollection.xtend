@@ -28,8 +28,8 @@ class WCollection<T extends Collection> {
 		val predicate = _predicate.asClosure
 		val continuation = _continuation.asClosure
 
-		for(Object x : wrapped) {
-			if(predicate.doApply(x as WollokObject).wollokToJava(Boolean) as Boolean) {
+		for (Object x : wrapped) {
+			if (predicate.doApply(x as WollokObject).wollokToJava(Boolean) as Boolean) {
 				return x
 			}
 		}
