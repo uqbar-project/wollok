@@ -19,7 +19,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
  * @author jfernandes
  */
 @Accessors
-class XStackFrame implements Serializable {
+class XStackFrame implements Serializable, Cloneable {
 	SourceCodeLocation currentLocation
 	EvaluationContext context
 	SourceCodeLocator sl
@@ -35,5 +35,9 @@ class XStackFrame implements Serializable {
 	}
 	
 	override toString() '''«context» («currentLocation»)'''
+	
+	override XStackFrame clone() {
+		super.clone as XStackFrame
+	}
 	
 }

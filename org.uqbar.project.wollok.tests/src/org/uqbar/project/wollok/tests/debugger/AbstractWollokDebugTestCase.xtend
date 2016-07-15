@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.debugger
 
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
@@ -13,6 +14,23 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * @author jfernandes
  */
 class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
+	
+	def debugSteppingInto(CharSequence programAsString, (DebugAsserter)=>Object assertion) {
+		val program = programAsString.toString()
+		val steps = debugSteppingInto(program)
+		
+		val asserter = new DebugAsserter
+		asserter.program = program
+		assertion.apply(asserter)
+		
+		assertEquals("Number of steps executed was different than expected !", 6, asserter.expectedSteps.size)
+		
+		var i = 0
+		for (s : steps) {
+			assertEquals(asserter.expectedSteps.get(i), s.code(program))
+			i++
+		}
+	}
 	
 	def debugSteppingInto(CharSequence program) {
 		val programContent = program.toString
@@ -40,22 +58,28 @@ class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
 	// utils
 	
 	private def runSteppingInto(TestTextInterpreterEventPublisher clientSide, XDebuggerImpl realDebugger, String programContent) {
-		var steps = newArrayList
+		var List<XStackFrame> steps = newArrayList
 		var XStackFrame lastStackElement = null
-		while (!clientSide.isTerminated) {
+		do {
 			Thread.sleep(100)
 			
-			lastStackElement = realDebugger.stack.last
-			steps.add(lastStackElement)
+			lastStackElement = realDebugger.stack.lastElement
+			steps += lastStackElement.clone
 			
-			val offset = lastStackElement.currentLocation.offset
-			val length = lastStackElement.currentLocation.length
-			val content = programContent.substring(offset, offset + length) 
-
-			println("Evaluating "+ realDebugger.stack.last + " => " + content.replaceAll('\n', '¶'))
+			val code = lastStackElement.code(programContent)
+			
+//			println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
 			realDebugger.stepInto()	
-		}
+		} while (!clientSide.isTerminated);
+		
+		println("Steps " + steps.map[System.identityHashCode(it)].join(', '))
 		steps
+	}
+	
+	def code(XStackFrame element, String program) {
+		val offset = element.currentLocation.offset
+		val length = element.currentLocation.length
+		program.substring(offset, offset + length)
 	}
 	
 	private def doInAnotherThread(Runnable a) {
