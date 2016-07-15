@@ -42,6 +42,7 @@ class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
 				i++
 			}
 		}
+		// there are more steps because of the methods you call objects outside of the test
 //		assertEquals("Number of steps executed was different than expected ! ", asserter.expectedSteps.size, steps.size)
 	}
 	

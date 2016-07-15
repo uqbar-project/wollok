@@ -2,6 +2,10 @@ package org.uqbar.project.wollok.tests.debugger
 
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
+import java.util.List
 
 /**
  * A test implementation for the debugger
@@ -9,17 +13,17 @@ import org.eclipse.emf.ecore.EObject
  * 
  * @author jfernandes
  */
+@Accessors
 class TestDebugger extends XDebuggerOff {
-	val expectations = newArrayList
+	val WollokInterpreter interpreter
+	val List<Pair<EObject, SourceCodeLocation>> evaluated = newArrayList
 	
-	def atLine(int i) {
-		val lineExpectation = new LineExpectation(i)
-		expectations.add(lineExpectation)
-		lineExpectation
+	new(WollokInterpreter interpreter) {
+		this.interpreter = interpreter
 	}
 	
-	override aboutToEvaluate(EObject element) {
-//		eleme
+	override evaluated(EObject e) {
+		evaluated += (e -> interpreter.stack.peek.currentLocation)
 	}
 	
 }
