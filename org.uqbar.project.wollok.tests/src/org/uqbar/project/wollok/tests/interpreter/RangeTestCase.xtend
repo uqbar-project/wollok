@@ -26,4 +26,22 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testRangeForDecimalsNotAllowed() {
+		'''
+		program a {
+			assert.throwsException({ => new Range(2.0, 5.0)})
+		}
+		'''.interpretPropagatingErrors
+	}	
+
+	@Test
+	def void testRangeForStringsNotAllowed() {
+		'''
+		program a {
+			assert.throwsException({ => new Range("ABRACADBRA", "PATA")})
+		}
+		'''.interpretPropagatingErrors
+	}	
+	
 }

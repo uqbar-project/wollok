@@ -49,7 +49,7 @@
 			</includes>
 		</fileSet>
 		<!-- al distribuir multiplataforma debemos tener en cuenta que el entorno puede ser windows o unix. 
-      Los sctips para ambos serán empaquetados bajo el directorio bin. -->
+      Los scripts para ambos serán empaquetados bajo el directorio bin. -->
 		<fileSet>
 			<directory>wdk/bin</directory>
 			<outputDirectory>bin</outputDirectory>
