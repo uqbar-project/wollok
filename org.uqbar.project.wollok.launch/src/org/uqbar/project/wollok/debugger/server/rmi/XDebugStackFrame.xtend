@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.debugger.server.rmi
 import java.io.Serializable
 import java.util.List
 import org.eclipse.xtend.lib.Property
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -23,7 +24,7 @@ class XDebugStackFrame implements Serializable {
 	}
 	
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
-		newArrayList(context.allReferenceNames.map[toVariable(context)])
+		newArrayList(context.allReferenceNames.filter[name != WollokConstants.SELF].map[toVariable(context)])
 	}
 	
 	def static toVariable(WVariable variable, EvaluationContext<WollokObject> context) {

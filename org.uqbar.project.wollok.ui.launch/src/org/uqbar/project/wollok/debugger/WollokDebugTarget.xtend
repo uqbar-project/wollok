@@ -28,6 +28,9 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import java.net.ConnectException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * @author jfernandes
@@ -69,9 +72,22 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	def createCommandHandler(int port) {
-		Thread.sleep(sleepTime)
-		client = new Client("localhost", port, new CallHandler)
-		client.getGlobal(DebugCommandHandler) as DebugCommandHandler
+		var retries = 1
+		do {
+			try {
+				Thread.sleep(sleepTime)
+				println("Connecting to Wollok VM (attempt " + retries + "/4) ...")
+				client = new Client("localhost", port, new CallHandler)
+				println("Connected !")
+				return client.getGlobal(DebugCommandHandler) as DebugCommandHandler
+			}
+			catch (ConnectException e) {
+				e.printStackTrace
+				retries++
+			}
+		} while (retries < 4)
+		
+		throw new WollokRuntimeException("Could NOT connect to Wollok JVM !")
 	}
 	
 	def getSleepTime() {
