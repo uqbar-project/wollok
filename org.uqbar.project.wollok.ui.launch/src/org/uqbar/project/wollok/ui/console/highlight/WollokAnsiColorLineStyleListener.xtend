@@ -23,7 +23,7 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
 	var lastAttributes = new WollokConsoleAttributes
     var currentAttributes = new WollokConsoleAttributes
     public static val Pattern pattern = Pattern.compile("\u001b\\[[\\d;]*[A-HJKSTfimnsu]")
-    static val Character ESCAPE_SGR = 'm'
+    public static val Character ESCAPE_SGR = 'm'
 
     int lastRangeEnd = 0;
 	

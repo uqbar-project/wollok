@@ -5,11 +5,13 @@ import org.eclipse.swt.SWTError
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.dnd.Clipboard
 import org.eclipse.swt.dnd.DND
+import org.eclipse.swt.dnd.RTFTransfer
 import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.widgets.Composite
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
+import org.uqbar.project.wollok.ui.console.highlight.WollokAnsiColorLineStyleListener
 
 /**
  * Styled Text Wrapper for Wollok
@@ -63,23 +65,39 @@ class WollokReplStyledText extends StyledText {
 	
 	def void setClipboardContent(int start, int length, int clipboardType) throws SWTError {
 		val boolean isGtk = getFieldValue("IS_GTK") as Boolean
-		if (clipboardType == DND.SELECTION_CLIPBOARD && !isGtk) return
+		if (clipboardType == DND.SELECTION_CLIPBOARD && !isGtk) return;
+		
+		// Fix: when you select a line from start, it doesn't catch special characters
+		val lineNumber = content.getLineAtOffset(start)
+		var newLength = length
+		val offsetAtLine = content.getOffsetAtLine(lineNumber)
+		var newStart = start
+		if (offsetAtLine < start) {
+			val chars = content.getTextRange(offsetAtLine, start - offsetAtLine)
+			if (chars.startsWith(WollokRTFWriter.ESCAPE_INIT) && chars.charAt(chars.length - 1) == WollokAnsiColorLineStyleListener.ESCAPE_SGR) {
+				// TODO: chars.length - 2 should be a number or last character of ESCAPE_INIT , another class
+				// should be included
+				newStart = offsetAtLine
+				newLength += start - newStart
+			}
+		}
+		// end fix
+		
 		val TextTransfer plainTextTransfer = TextTransfer.getInstance()
-		//val plainTextWriter = createWriter("StyledText$TextWriter", start, escapedBlockText.length)
-		//val String plainText = getEscapedDelimitedText(plainTextWriter)
-		val plainText = content.getTextRange(start, length).deleteAnsiCharacters
+		val originalText = content.getTextRange(newStart, newLength)
+		val plainText = originalText.deleteAnsiCharacters
 		var Object[] data
 		var Transfer[] types
 		if (clipboardType == DND.SELECTION_CLIPBOARD) {
 			data = #[ plainText ]
 			types = #[ plainTextTransfer ]
 		} else {
-			// val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
+			val rtfWriter = new WollokRTFWriter(originalText)
+			val String rtfText = rtfWriter.RTFText
+			val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
 			// rtf = buscar una libreria que convierta de ASCII a RTF
-			//data = #[ rtfText,, plainText  ]
-			//types = #[ rtfTransfer, plainTextTransfer ]
-			data = #[  plainText  ]
-			types = #[ plainTextTransfer ]
+			data = #[ rtfText, plainText  ]
+			types = #[ rtfTransfer, plainTextTransfer ]
 		}
 		val clipboard = getFieldValue("clipboard") as Clipboard
 		clipboard.setContents(data, types, clipboardType)
