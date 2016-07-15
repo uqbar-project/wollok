@@ -51,5 +51,14 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	override addGlobalReference(String name, O value) {
 		outer.addGlobalReference(name,value)
 	}
+	
+	override toString() {
+		class.simpleName + "[inner = " + inner.asText + ", outer =" + outer.asText + "]" 
+	}
+
+	// avoid a weird stackoverflow 	
+	def dispatch asText(CompositeEvaluationContext it) { toString }
+	def dispatch asText(MapBasedEvaluationContext it) { toString }
+	def dispatch asText(EvaluationContext it) { class.simpleName }
 
 }
