@@ -62,21 +62,20 @@ class WollokServer extends AbstractHandler {
 						[issues.add(it)],
 						[]
 					)
-					
-					if (issues.empty) {
-						interpreter.interpret(resource.contents.get(0), true)
-						name("consoleOutput")
-						value((interpreter.console as WollokServerConsole).consoleOutput)	
-					}
-					else {
+
+					if (!issues.empty) {
 						name("compilation").beginObject => [
 							name("issues")
 							beginArray
-								issues.forEach[issue|renderIssue(issue)]						
-							endArray							
+								issues.forEach[issue|renderIssue(issue)]
+							endArray
 						]
 						endObject
-					}	
+					}
+
+					interpreter.interpret(resource.contents.get(0), true)
+					name("consoleOutput")
+					value((interpreter.console as WollokServerConsole).consoleOutput)
 				}
 				catch (WollokProgramExceptionWrapper exception) {
 					writer.name("runtimeError").beginObject => [
