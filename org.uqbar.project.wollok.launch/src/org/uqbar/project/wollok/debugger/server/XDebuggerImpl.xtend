@@ -14,6 +14,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+// Migrate to java8 "ReentrantLock" to be able to check if it is paused (locked) or not
 class XDebuggerImpl implements XDebugger {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
 	XInterpreter<?> interpreter

@@ -14,6 +14,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * Extension methods and utilities for xtext
@@ -42,7 +43,12 @@ class XTextExtensions {
 		new SourceCodeLocation(file, t.lineNumber, t.endLineNumber, t.offset, t.length)
 	}
 	
-	def static astNode(EObject o) { NodeModelUtils.findActualNodeFor(o) }
+	def static astNode(EObject o) { 
+		val node = NodeModelUtils.findActualNodeFor(o)
+		if (node == null)
+			throw new WollokRuntimeException("Could NOT find AST Node for EObject " + o)
+		node
+	}
 	def static fileURI(EObject o) { o.eResource.URI }
 	def static lineNumber(EObject o) { o.astNode.startLine }
 	def static sourceCode(EObject o) { o.astNode.text }

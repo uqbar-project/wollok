@@ -77,5 +77,12 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		interpreter.globalVariables.put(name,value)
 		value
 	}
+	
+	
+	// ******************************
+	// ** Object methods (for debugging interpreter)
+	// ******************************
+	
+	override toString() { "Lobby" }
 
 }

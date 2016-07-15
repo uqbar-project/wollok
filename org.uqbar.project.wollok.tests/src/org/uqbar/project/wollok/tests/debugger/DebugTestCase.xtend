@@ -1,15 +1,11 @@
 package org.uqbar.project.wollok.tests.debugger
 
-import org.eclipse.xtext.xbase.scoping.batch.ITypeImporter.Client
-import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.mockito.Mockito
+import org.eclipse.emf.ecore.EObject
+import org.junit.Test
+import org.mockito.ArgumentCaptor
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 
 import static extension org.mockito.Mockito.*
-import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.eclipse.emf.ecore.EObject
 
 /**
  * Tests the wollok interpreter debugging functions.
@@ -17,7 +13,7 @@ import org.eclipse.emf.ecore.EObject
  * 
  * @author jfernandes
  */
-class DebugTestCase extends AbstractWollokInterpreterTestCase {
+class DebugTestCase extends AbstractWollokDebugTestCase {
 	
 	@Test
 	def void callsStartedAndTerminated() {
@@ -57,8 +53,19 @@ class DebugTestCase extends AbstractWollokInterpreterTestCase {
 		println(aboutToEvaluateCaptor.allValues.join(','))
 	}
 	
-	
-	
-	
+	@Test
+	def void stepByStepEvaluation() {
+		val steps = debugSteppingInto('''
+				program a {
+					const one = 1
+					const two = 2
+					const sum = one + two
+				}''')
+		
+		// 6 ? This was reverse engineer. Maybe the test is not right.		
+		assertEquals(6, steps.size)
+		
+		// TODO: evaluate the stack state on each step
+	}
 	
 }
