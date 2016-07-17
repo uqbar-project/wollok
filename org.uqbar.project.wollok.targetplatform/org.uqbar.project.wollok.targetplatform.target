@@ -44,17 +44,17 @@
 <unit id="org.eclipse.xpand" version="0.0.0"/>
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
+<unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/mars/201506241002/"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
+<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="0.0.0"/>
+<repository location="http://community.polarion.com/projects/subversive/download/eclipse/5.0/mars-site/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.5.0.v20151128060001"/>
 <repository location="http://download.eclipse.org/technology/babel/update-site/R0.13.1/mars"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.tmatesoft.svnkit.feature.group" version="1.8.12.r10533_v20160129_0158"/>
-<unit id="org.tigris.subversion.clientadapter.svnkit.feature.feature.group" version="1.8.9"/>
-<unit id="org.tigris.subversion.subclipse.feature.group" version="1.10.13"/>
-<repository location="http://subclipse.tigris.org/update_1.10.x"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
