@@ -10,10 +10,10 @@ class A {
 		aBlock.apply(23)
 		throw new Exception()
 		
-		// XPECT errors --> "Unexpected expression after throw" at "const b = '23'"
-		const b = '23'
-		// XPECT errors --> "Unexpected expression after throw" at "return b"
-		return b
+		// XPECT errors --> "Unexpected expression after throw" at "aBlock.apply(23)"
+		aBlock.apply(23)
+		// XPECT errors --> "Unexpected expression after throw" at "return '23'"
+		return '23'
 	}
 	
 	method withinAnIf(aParam) {

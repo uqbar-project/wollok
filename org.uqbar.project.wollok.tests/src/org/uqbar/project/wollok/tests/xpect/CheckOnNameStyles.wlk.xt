@@ -20,6 +20,7 @@
 	class Program {
 		
 		method run() {
+			
 			var car = 23
 			
 			// XPECT errors --> "Variable name must start with lowercase" at "Lota"
@@ -31,7 +32,9 @@
 				=> A > 23
 			}
 			
-			return [car, Lota, aBlock]
+			[car, Lota, aBlock];
+			
+			return "algo"
 		}
 		
 	}

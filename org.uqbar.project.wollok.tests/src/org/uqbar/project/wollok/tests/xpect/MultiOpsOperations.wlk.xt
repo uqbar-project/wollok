@@ -12,6 +12,7 @@ class MultiOpsOperations {
 		// XPECT errors --> "-= can only be applied to variable references" at "new Pepita()"
 		new Pepita()-= 3
 		
+		// XPECT warnings --> "Local variable used just to return. Consider removing it" at "edad"
 		const edad = 10
 		// XPECT errors --> "++ can only be applied to variable references" at "edad"
 		return edad++

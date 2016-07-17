@@ -1,0 +1,33 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	var empleados = []
+	var ahorros = 2
+	
+	method costos(persona, cant_hambiente, cant_pisos) {
+		 // XPECT warnings --> "Local variable used just to return. Consider removing it" at "costo"
+	     var costo = empleados.sum { per => persona.presupuesto(cant_hambiente, cant_pisos) } 
+	     return costo
+	}
+	method presupuestoMaximo() {
+		// XPECT warnings --> "Local variable used just to return. Consider removing it" at "presupuesto_maximo"
+	    var presupuesto_maximo = 0.20  * ahorros
+	    return presupuesto_maximo
+	}
+	
+	method localVarWithoutReturningItDirectly() {
+		// XPECT warnings --> "Local variable used just to return. Consider removing it" at "a"
+		var a = 23
+		return a * 3
+	}
+	
+	method localVarReusedInTheBody() {
+		var a = 23
+		
+		[1,2,3].forEach {i => 
+			a += i
+		}
+		return a
+	}
+	
+}
