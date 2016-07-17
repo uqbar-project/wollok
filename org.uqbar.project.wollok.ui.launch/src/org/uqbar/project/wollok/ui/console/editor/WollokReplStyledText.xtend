@@ -28,7 +28,7 @@ class WollokReplStyledText extends StyledText {
 
 	override copy() {
 		checkWidget()
-		this.doCopySelection(DND.CLIPBOARD);
+		this.doCopySelection(DND.CLIPBOARD)
 	}
 
 	def doCopySelection(int type) {
@@ -82,7 +82,7 @@ class WollokReplStyledText extends StyledText {
 			types = #[ plainTextTransfer ]
 		}
 		val clipboard = getFieldValue("clipboard") as Clipboard
-		clipboard.setContents(data, types, clipboardType);
+		clipboard.setContents(data, types, clipboardType)
 	}
 	
 	private def getEscapedBlockText() {
@@ -105,5 +105,5 @@ class WollokReplStyledText extends StyledText {
 		method.accessible = true
 		method.invoke(this, args)
 	}
-
+	
 }
