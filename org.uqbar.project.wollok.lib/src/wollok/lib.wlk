@@ -1,3 +1,5 @@
+import wollok.vm.*
+
 /** 
  * Console is a global wollok object that implements a character-based console device
  * called "standard input/output" stream 
@@ -83,8 +85,15 @@ object wgame {
 	method getObjectsIn(position) native
 	method say(element, message) native
 	method clear() native
-	method start() native
 	method stop() native
+	method start() {
+		self.doStart(runtime.isInteractive())
+	}
+	
+	/** 
+	* @private
+	*/
+	method doStart(isRepl) native
 	
 	method setTitle(title) native
 	method getTitle() native
