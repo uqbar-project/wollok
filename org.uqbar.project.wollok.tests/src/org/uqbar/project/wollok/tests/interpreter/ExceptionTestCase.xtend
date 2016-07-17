@@ -79,7 +79,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					counter = counter + 1
 				}
 				catch e : MyException
-					self.println("Exception raised!") // OK!
+					console.println("Exception raised!") // OK!
 				then always
 					counter = counter + 1 
 			}

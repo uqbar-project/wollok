@@ -6,7 +6,7 @@ const sumable = object {
 	method +(otro) = value + otro
 }
 
-self.println(sumable + 15)
+console.println(sumable + 15)
 assert.that(sumable + 15 == 30)
 
 }

@@ -15,10 +15,11 @@ class WVisual extends VisualComponent {
 
 	new(WollokObject object) {
 		wObject = object
+		wObject.position // Force evaluate position when is added
 	}
 
 	new(WollokObject object, WollokObject position) {
-		this(object)
+		wObject = object
 		this.wPosition = position
 	}
 

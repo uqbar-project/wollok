@@ -1,6 +1,7 @@
 package wollok.lang
 
 import java.util.Set
+import java.util.TreeSet
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
@@ -10,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 class WSet extends WCollection<Set> {
 	
 	new() {
-		wrapped = newHashSet
+		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator)
 	}
 	
 	def anyOne() { wrapped.head }

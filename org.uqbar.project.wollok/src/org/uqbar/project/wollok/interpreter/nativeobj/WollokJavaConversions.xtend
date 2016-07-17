@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Collection
 import java.util.List
+import java.util.Map
 import java.util.Set
 import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -45,6 +46,8 @@ class WollokJavaConversions {
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
 			return ((o as WollokObject).getNativeObject(LIST) as JavaWrapper<List>).wrapped
+		if (o.isNativeType(DICTIONARY) && (t == Collection || t == Map))
+			return ((o as WollokObject).getNativeObject(DICTIONARY) as JavaWrapper<Map>).wrapped
 		if (o.isNativeType(SET) && (t == Collection || t == Set))
 			return ((o as WollokObject).getNativeObject(SET) as JavaWrapper<Set>).wrapped
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))

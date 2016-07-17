@@ -52,6 +52,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import javax.swing.text.NavigationFilter.FilterBypass
 
 /**
  * Custom validation rules.
@@ -178,12 +179,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
+	
+	// SELF
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotUseThisInConstructorDelegation(WSelf it) {
+	def cannotUseSelfInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) != null)
 			report("Cannot access instance methods within constructor delegation.", it)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotUseSelfInAProgram(WSelf it) {
+		if (!it.isInASelfContext)
+			report(WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM, it)
 	}
 
 	@Check
@@ -533,6 +543,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!native && !abstract && !supposedToReturnValue && expression.isEvaluatesToAValue(classFinder))
 			report(WollokDslValidator_RETURN_FORGOTTEN, it, WMETHOD_DECLARATION__EXPRESSION, RETURN_FORGOTTEN)
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def overridingMethodMustHaveABody(WMethodDeclaration it) {
+		if (overrides && expression == null && !native)
+			report(WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY, it) 
+	}
+	
 
 	@Check
 	@DefaultSeverity(ERROR)
