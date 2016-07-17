@@ -1,0 +1,20 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+}
+
+object p {
+    method run() {
+        if (true)
+            throw new Exception("asd")
+        else 
+	        // XPECT errors --> "Unreachable code" at "throw new Exception(\"else\")"
+        	throw new Exception("else")
+        	
+        if (false)
+	        // XPECT errors --> "Unreachable code" at "throw new Exception(\"asd\")"
+            throw new Exception("asd")
+        else 
+        	throw new Exception("else")	
+    }
+}

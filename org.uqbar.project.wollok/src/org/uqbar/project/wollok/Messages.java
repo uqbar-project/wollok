@@ -18,6 +18,9 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS;
 	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
 	
@@ -58,7 +61,10 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	public static String WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS;
 	
+	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
+	
 	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_CANNOT_RETURN_ASSIGNMENT;
 	public static String WollokDslValidator_SUPER_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_RETURN_FORGOTTEN;
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
@@ -73,6 +79,13 @@ public class Messages extends NLS {
 	
 	// SELF
 	public static String WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM;
+	public static String WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT;
+	
+	public static String WollokDslValidator_EXPECTING_BOOLEAN;
+	public static String WollokDslValidator_UNNECESSARY_IF;
+	public static String WollokDslValidator_UNNECESSARY_CONDITION;
+	public static String WollokDslValidator_ALWAYS_EVALUATES_TO_FALSE;
+	public static String WollokDslValidator_ALWAYS_EVALUATES_TO_TRUE;
 	
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;

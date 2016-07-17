@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object a {
+   var ahorro = 100
+   
+   method m() {
+   	   // XPECT errors --> "Cannot return an assignment" at "ahorro = ahorro * 0.20"
+   	   return ahorro = ahorro * 0.20
+   }
+
+}

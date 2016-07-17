@@ -11,6 +11,7 @@ import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStreamsProxy
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
+import org.eclipse.swt.events.KeyEvent
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
@@ -53,20 +54,20 @@ class WollokReplConsole extends TextConsole {
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 	}
-	
+
 	def startForProcess(IProcess process) {
 		loadHistory
 		this.process = process
 		streamsProxy = process.streamsProxy
 		activate
 		outputTextEnd = 0
-		
+
 		runInUI [
 			clearConsole
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
 		]
-		
+
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
 			runInUI("WollokReplConsole-UpdateText") [
 				page.viewer.textWidget.append(text)
@@ -78,23 +79,24 @@ class WollokReplConsole extends TextConsole {
 			]
 		]
 	}
-	
+
 	def shutdown() { process.terminate }
+
 	def isRunning() { !process.terminated }
-	
+
 	def getOutputText() { document.get(0, outputTextEnd) }
-	
+
 	override clearConsole() {
 		super.clearConsole
 		outputTextEnd = 0
 	}
-	
+
 	override createPage(IConsoleView view) {
 		this.page = new WollokReplConsolePage(this, view) => [
 			setFocus
 		]
 	}
-	
+
 	def exportSession() {
 		val fileName = WollokLaunchShortcut.getWollokFile(process.launch)
 		val project = WollokLaunchShortcut.getWollokProject(process.launch)
@@ -123,7 +125,7 @@ class WollokReplConsole extends TextConsole {
 		}
 		inputBuffer = document.get(outputTextEnd, document.length - outputTextEnd)
 	}
-	
+
 	def addCommandToHistory() {
 		if (!inputBuffer.empty) {
 			lastCommands => [
@@ -133,7 +135,7 @@ class WollokReplConsole extends TextConsole {
 			saveHistory
 		}
 	}
-	
+
 	def saveHistory() {
 		runInBackground [
 			historyFilePath.asObjectStream.writeObject(lastCommands)
@@ -143,7 +145,7 @@ class WollokReplConsole extends TextConsole {
 	def loadHistory() {
 		runInBackground [
 			val javaFile = historyFilePath.asJavaFile
-			
+
 			if (javaFile.exists) {
 				lastCommands => [
 					clear
@@ -152,37 +154,45 @@ class WollokReplConsole extends TextConsole {
 			}
 		]
 	}
-	
+
 	def historyFilePath() {
 		ResourcesPlugin.workspace.root.location.append(new Path("repl.history"))
 	}
-	
+
 	def sendInputBuffer() {
 		val x = inputBuffer + "\n";
-		
+
 		addCommandToHistory
 		sessionCommands += inputBuffer
-		
+
 		streamsProxy.write(x)
 		outputTextEnd = page.viewer.textWidget.charCount
 		updateInputBuffer
 		page.viewer.textWidget.selection = outputTextEnd
 	}
-	
+
 	def numberOfHistories() { lastCommands.size }
-	
+
 	def loadHistory(int pos) {
 		runInUI [
-			inputBuffer = if (lastCommands.size == 0) ""
+			inputBuffer = if (lastCommands.size == 0)
+				""
 			else {
-				val ps = if (pos >= lastCommands.size) 0 else pos
+				val ps = if(pos >= lastCommands.size) 0 else pos
 				lastCommands.last(ps)
 			}
-			
+
 			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer)
 		]
 	}
-	
+
 	def canWriteAt(int offset) { !partitioner.isReadOnly(offset) }
-	
+
+	def void updateIfDirty() {
+		if (inputBuffer.empty) {
+			updateInputBuffer
+			// hack - delete all RETURN keys to avoid several >>> 
+			inputBuffer = inputBuffer.replaceAll('\n', '')
+		}
+	}
 }
