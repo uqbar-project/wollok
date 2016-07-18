@@ -2,13 +2,13 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
-
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
@@ -34,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -41,11 +42,12 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -53,7 +55,6 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-
 import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 /**
@@ -327,6 +328,45 @@ class WollokModelExtensions {
 
 	def static tri(WCatch it) { eContainer as WTry }
 	def static catchesBefore(WCatch it) { tri.catchBlocks.subList(0, tri.catchBlocks.indexOf(it)) }
+
+	// *******************************
+	// ** Boolean evaluation
+	// *******************************
+	
+	def static dispatch isBooleanOrUnknownType(EObject it) { true }
+	def static dispatch isBooleanOrUnknownType(WBooleanLiteral it) { true }
+	def static dispatch isBooleanOrUnknownType(WNullLiteral it) { false }
+	def static dispatch isBooleanOrUnknownType(WNumberLiteral it) { false }
+	def static dispatch isBooleanOrUnknownType(WStringLiteral it) { false }
+	def static dispatch isBooleanOrUnknownType(WConstructorCall it) { false }
+	def static dispatch isBooleanOrUnknownType(WCollectionLiteral it) { false }
+	def static dispatch isBooleanOrUnknownType(WObjectLiteral it) { false }
+	def static dispatch isBooleanOrUnknownType(WClosure it) { false }
+	def static dispatch isBooleanOrUnknownType(WUnaryOperation it) { isNotOperation }
+	def static dispatch isBooleanOrUnknownType(WVariableReference it) { !(ref instanceof WNamedObject) }
+	
+	def static isBooleanExpression(WBinaryOperation it) { feature.isBooleanOperand }
+	def static isBooleanOperand(String it) { WollokConstants.OP_BOOLEAN.contains(it) }
+
+	def static isAndExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_AND.contains(feature) }
+	def static isOrExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_OR.contains(feature) }
+	def static isNotOperation(WUnaryOperation it) { WollokConstants.OP_UNARY_BOOLEAN.contains(feature) }
+
+	// *******************************
+	// ** variables
+	// *******************************
+	
+	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) != null }
+
+	def static onlyUsedInReturn(WVariableDeclaration it) {
+		val visitor = new VariableUsesVisitor
+		visitor.lookedFor = variable
+		visitor.visit(EcoreUtil2.getContainerOfType(it, WMethodDeclaration))
+		visitor.uses.length == 1 && visitor.uses.get(0).isReturnOrInReturn
+	}
+	
+	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
+	def static boolean isInReturn(EObject e) { e.eContainer != null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports

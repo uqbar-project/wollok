@@ -1,0 +1,14 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+	var energia = 0
+	
+    method volar(kms) {
+    	// XPECT errors --> "Don't use the name within the object. Use 'self' instead." at "pepita"
+        pepita.reducirEnergia(kms * 10)
+    }
+
+   method reducirEnergia(cant) {
+       energia = (energia - cant).max(0)
+   }
+}

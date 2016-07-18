@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Foo {
+    method foo() { console.println('foo') }
+    
+    method bar() { console.println('bar') }
+}
+
+class Baz inherits Foo {
+	
+	// XPECT errors --> "Overriding method must have a body" at "override method foo()"
+    override method foo()
+    
+    // this one is ok in terms of not having a body
+    // this other check is because of a limitation in our natives. Still I don't want the test to fail
+    // XPECT errors --> "Native methods cannot override anything" at "override"
+    override method bar() native
+}
