@@ -1283,7 +1283,7 @@ class String {
 	method contains(other) {
 		try {
 			return self.indexOf(other) >= 0
-		} catch {
+		} catch e {
 			return false
 		}
 	}
