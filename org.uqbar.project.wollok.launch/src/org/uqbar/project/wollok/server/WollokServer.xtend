@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.WollokChecker
+import org.uqbar.project.wollok.launch.WollokLauncherInterpreterEvaluator
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 
@@ -50,6 +51,10 @@ class WollokServer extends AbstractHandler {
 		]
 		baseRequest.handled = true
 		val writer = response.writer.newJsonWriter
+		val evaluator = interpreter.evaluator as WollokLauncherInterpreterEvaluator
+		val testReporter = evaluator.wollokTestsReporter as WollokServerTestsReporter
+		testReporter.writer = writer
+
 		writer => [
 			beginObject => [
 				name("wollokVersion").value(Wollok.VERSION)
@@ -57,7 +62,8 @@ class WollokServer extends AbstractHandler {
 				try {
 					val extension handler = new WollokLauncherIssueHandlerJSON
 
-					val resource = request.resource
+					val wollokRequest = request.wollokRequest
+					val resource = wollokRequest.program.parseString(wollokRequest.programType)
 
 					val issues = newArrayList
 					new WollokChecker().validate(
@@ -71,7 +77,7 @@ class WollokServer extends AbstractHandler {
 						name("compilation").beginObject => [
 							name("issues")
 							beginArray
-								issues.forEach[issue|renderIssue(issue)]
+							issues.forEach[issue|renderIssue(issue)]
 							endArray
 						]
 						endObject
@@ -80,19 +86,18 @@ class WollokServer extends AbstractHandler {
 					interpreter.interpret(resource.contents.get(0), true)
 					name("consoleOutput")
 					value((interpreter.console as WollokServerConsole).consoleOutput)
-				}
-				catch (WollokProgramExceptionWrapper exception) {
+				} catch (WollokProgramExceptionWrapper exception) {
 					writer.name("runtimeError").beginObject => [
 						name("message").value(exception.wollokException.call("getMessage").toString)
 						name("stackTrace")
 						beginArray
-							exception.wollokException.call("getStackTrace").asList.wrapped.forEach [ element |
-								val object = element as WollokObject
-								beginObject
-									name("contextDescription").value(object.call("contextDescription")?.toString)
-									name("location").value(object.call("location").toString)
-								endObject
-							]
+						exception.wollokException.call("getStackTrace").asList.wrapped.forEach [ element |
+							val object = element as WollokObject
+							beginObject
+							name("contextDescription").value(object.call("contextDescription")?.toString)
+							name("location").value(object.call("location").toString)
+							endObject
+						]
 						endArray
 					]
 					endObject
@@ -110,7 +115,7 @@ class WollokServer extends AbstractHandler {
 		val resource = resourceFactory.createResource(resourceSet.computeUnusedUri(fileExtension))
 		resourceSet.resources.add(resource)
 		resource.load(input, null)
-		resource	
+		resource
 	}
 
 	def URI computeUnusedUri(ResourceSet resourceSet, String fileExtension) {
@@ -126,21 +131,18 @@ class WollokServer extends AbstractHandler {
 	// ************************************************************************
 	// ** Request and streams handling
 	// ************************************************************************
-
-	def getResource(HttpServletRequest request) {
-		val reader = new InputStreamReader(request.inputStream)
-		val wollokRequest = reader.fromJson(WollokServerRequest)
-		wollokRequest.program.parseString(wollokRequest.programType)
-	}
-
 	def parseString(String program, String programType) {
 		new ByteArrayInputStream(program.getBytes("UTF-8")).parse(programType)
+	}
+
+	def wollokRequest(HttpServletRequest request) {
+		val reader = new InputStreamReader(request.inputStream)
+		reader.fromJson(WollokServerRequest)
 	}
 
 	// ************************************************************************
 	// ** Main
 	// ************************************************************************
-
 	def static void main(String[] args) {
 		new Server(8080) => [
 			handler = new WollokServer

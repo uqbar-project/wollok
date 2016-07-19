@@ -105,7 +105,19 @@ class WollokServerTest {
 			    assert.equals(100, pepita.energia())
 			}
 		'''
-		.sendAndValidate("wtest") [] 
+		.sendAndValidate("wtest") 
+		[
+			assertEquals(1, tests.size)
+			tests.get(0) => [
+				assertEquals("pepita arranca con energia=100", name)			
+				assertEquals("passed", state)			
+			]
+			summary => [
+				assertEquals(1, passed)
+				assertEquals(0, failures)
+				assertEquals(0, errors)
+			]
+		] 
 	}
 
 	@Test
@@ -151,8 +163,15 @@ class WollokServerTest {
 		]
 	}
 
+	def sendAndPrint(CharSequence program, String programType) {
+		sendAndDo(program, programType) [
+			println(contentAsString)
+		]
+	}
+
 	def sendAndValidate(CharSequence program, String programType, (WollokServerResponse)=>void validation) {
 		sendAndDo(program, programType) [
+			println(contentAsString)
 			contentAsString.fromJson(WollokServerResponse) => validation
 		]
 	}

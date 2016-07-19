@@ -25,86 +25,120 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	var testPassed = 0
 	var testFailures = 0
 	var testErrors = 0
-	JsonWriter writer
-	
-	override testsToRun(WFile file, List<WTest> tests) { 
-		val gson = new Gson
-		writer = gson.newJsonWriter(new PrintWriter(System.out))
+
+	var JsonWriter _writer
+
+	override testsToRun(WFile file, List<WTest> tests) {
 		writer.beginObject => [
 			name("version").value(Wollok.VERSION)
 			name("tests").beginArray
 		]
-}
-	
+	}
+
 	override finished() {
 		writer => [
 			endArray
-			name("summary") beginObject => [
-				name("passed").value(testPassed)
-				name("failures").value(testFailures)
-				name("errors").value(testErrors)
-				endObject
-			]
-			endObject
+			writeSummary
 			close
 		]
 	}
-	
+
+	def writeSummary(JsonWriter it) {
+		name("summary").beginObject => [
+			name("passed").value(testPassed)
+			name("failures").value(testFailures)
+			name("errors").value(testErrors)
+		]
+		endObject
+	}
+
 	override testStart(WTest test) {}
 
-	def static operator_doubleArrow(JsonWriter writer, Pair<String, Object> pair) { 
+	def static operator_doubleArrow(JsonWriter writer, Pair<String, Object> pair) {
 		pair.value.interpret(writer.name(pair.key))
 	}
-	
+
 	def static dispatch interpret(String it, JsonWriter w) { w.value(it) }
+
 	def static dispatch interpret(Number it, JsonWriter w) { w.value(it) }
-	def static dispatch interpret((JsonWriter)=>JsonWriter it, JsonWriter w) { 
+
+	def static dispatch interpret((JsonWriter)=>JsonWriter it, JsonWriter w) {
 		apply(w.beginObject).endObject
 	}
+
 	def static operator_doubleGreaterThan(WollokJSONTestsReporter it, (JsonWriter)=>JsonWriter closure) {
 		closure.apply(writer.beginObject).endObject
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
-		writer => [ beginObject	
-			name("name").value(test.name)
-			name("state").value("failed")
-			name("error").beginObject
-				name("message").value(assertionError.message)
-				name("file").value(resource.trimFragment.toString)
-				name("lineNumber").value(lineNumber)
-				name("stackTrace").value(assertionError.stackTraceAsString)
+		writer => [
+			beginObject
+				name("name").value(test.name)
+				name("state").value("failed")
+				name("error").beginObject
+					name("message").value(assertionError.message)
+					name("file").value(resource.trimFragment.toString)
+					name("lineNumber").value(lineNumber)
+					name("stackTrace").value(assertionError.stackTraceAsString)
+				endObject
 			endObject
-		endObject]
+		]
 		testFailures++
 	}
-	
-	override reportTestOk(WTest test) { 
-		writer => [ beginObject	
-			name("name").value(test.name)
-			name("state").value("passed")
-		endObject]
-    	testPassed++
-    }
-	
-	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		writer => [ beginObject	
-			name("name").value(test.name)
-			name("state").value("error")
-			name("error").beginObject
-				name("message").value(exception.theWollokMessage)
-				name("file").value(resource.trimFragment.toString)
-				name("lineNumber").value(lineNumber)
-				name("stackTrace").value(exception.wollokStackTraceAsString)
+
+	override reportTestOk(WTest test) {
+		writer => [
+			beginObject 
+				name("name").value(test.name) 
+				name("state").value("passed") 
 			endObject
-		endObject]
+		]
+		testPassed++
+	}
+
+	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
+		writer => [
+			beginObject
+				name("name").value(test.name)
+				name("state").value("error")
+				name("error").beginObject
+					name("message").value(exception.theWollokMessage)
+					name("file").value(resource.trimFragment.toString)
+					name("lineNumber").value(lineNumber)
+					name("stackTrace").value(exception.wollokStackTraceAsString)
+				endObject
+			endObject
+		]
 		testErrors++
 	}
-	
+
+	// ************************************************************************
+	// ** Util
+	// ************************************************************************
+
 	def dispatch String getTheWollokMessage(Exception exception) { exception.message }
+
 	def dispatch String getTheWollokMessage(WollokProgramExceptionWrapper exception) { exception.wollokMessage }
-	
+
 	def dispatch String getWollokStackTraceAsString(Exception exception) { exception.stackTraceAsString }
-	def dispatch String getWollokStackTraceAsString(WollokProgramExceptionWrapper exception) { exception.wollokStackTrace }
+
+	def dispatch String getWollokStackTraceAsString(WollokProgramExceptionWrapper exception) {
+		exception.wollokStackTrace
+	}
+
+	// ************************************************************************
+	// ** Accessors
+	// ************************************************************************
+
+	def getWriter() {
+		if (_writer == null) {
+			_writer = (new Gson).newJsonWriter(new PrintWriter(System.out))
+		}
+		_writer
+	}
 	
+	def setWriter(JsonWriter writer) {
+		_writer = writer
+	}
+
 }

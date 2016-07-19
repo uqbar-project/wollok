@@ -16,5 +16,4 @@ class WollokServerSetup extends WollokLauncherSetup {
 	override createInjector() {
 		return Guice.createInjector(new WollokServerModule(params), this);
 	}
-
 }
