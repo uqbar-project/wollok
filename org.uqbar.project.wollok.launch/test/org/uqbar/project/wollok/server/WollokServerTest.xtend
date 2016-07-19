@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.server
 
 import com.google.gson.Gson
 import org.eclipse.jetty.client.HttpClient
+import org.eclipse.jetty.client.api.ContentResponse
 import org.eclipse.jetty.client.util.StringContentProvider
 import org.eclipse.jetty.http.HttpMethod
 import org.eclipse.jetty.util.ssl.SslContextFactory
@@ -27,7 +28,7 @@ class WollokServerTest {
 			program prueba {
 			    console.println(pepita.energia())
 			}
-		'''.sendAndValidate [
+		'''.sendAndValidate("wpgm") [
 			assertEquals('100\n', consoleOutput)
 		]
 	}
@@ -43,7 +44,7 @@ class WollokServerTest {
 			    console.println(pepita.energia())
 			}			
 		'''
-		.sendAndValidate [
+		.sendAndValidate("wpgm") [
 			assertEquals(2, compilation.issues.length)
 			compilation.issues.get(0) => [
 				assertEquals("WARNING", severity)
@@ -74,7 +75,7 @@ class WollokServerTest {
 			    console.println("Should not be printed")
 			}			
 		'''
-		.sendAndValidate [ runtimeError => [ 
+		.sendAndValidate("wpgm") [ runtimeError => [ 
 			// This assertions just follow current status of stack traces that should eventually evolve, 
 			// you can change them if you are improving stack traces, but you should be careful to inform
 			// the clients of wollok server, that might depend on this.
@@ -91,6 +92,37 @@ class WollokServerTest {
 			]			
 		]]
 	}
+	
+	@Test
+	def void testWithAssertsOk() {
+		'''
+			object pepita {
+			    var energia = 100
+			    method energia() = energia
+			}
+			
+			test "pepita arranca con energia=100" {
+			    assert.equals(100, pepita.energia())
+			}
+		'''
+		.sendAndValidate("wtest") [] 
+	}
+
+	@Test
+	def void testWithFailingAsserts() {
+		'''
+			object pepita {
+			    var energia = 100
+			    method energia() = energia
+			}
+			
+			test "pepita arranca con energia=100" {
+			    assert.equals(101, pepita.energia())
+			}
+		'''
+		.sendAndValidate("wtest") [] 
+	}
+	
 
 	// ************************************************************************
 	// ** Utilities
@@ -109,18 +141,19 @@ class WollokServerTest {
 		httpClient = null
 	}
 
-	def sendAndValidate(CharSequence program, (WollokServerResponse)=>void validation) {
+	def sendAndDo(CharSequence program, String programType, (ContentResponse)=>void action) {
 		httpClient.newRequest("http://localhost:8080/run") => [
 			method(HttpMethod.POST)
 			accept("application/json")
-			content(new StringContentProvider(program.toString), "application/json")
+			content(new StringContentProvider(new WollokServerRequest(program, programType).toJson), "application/json")
 			
-			send => [
-				println(contentAsString)
-				val content = contentAsString.fromJson(WollokServerResponse)
-				content => validation
-			]
+			send => action
 		]
-		
+	}
+
+	def sendAndValidate(CharSequence program, String programType, (WollokServerResponse)=>void validation) {
+		sendAndDo(program, programType) [
+			contentAsString.fromJson(WollokServerResponse) => validation
+		]
 	}
 }
