@@ -74,9 +74,22 @@ class WollokServerTest {
 			    console.println("Should not be printed")
 			}			
 		'''
-		.sendAndValidate [
-//			println(runtimeErrors)
-		]
+		.sendAndValidate [ runtimeError => [ 
+			// This assertions just follow current status of stack traces that should eventually evolve, 
+			// you can change them if you are improving stack traces, but you should be careful to inform
+			// the clients of wollok server, that might depend on this.
+			
+			assertEquals("a Golondrina[] does not understand volar()", message)
+			assertEquals(2, stackTrace.size)
+			stackTrace.get(0) => [
+				assertEquals("wollok.lang.Object.messageNotUnderstood(name,parameters)", contextDescription)
+				assertEquals("/lang.wlk:202", location)
+			]			
+			stackTrace.get(1) => [
+				assertNull(contextDescription)
+				assertEquals("__synthetic0.wpgm", location)
+			]			
+		]]
 	}
 
 	// ************************************************************************

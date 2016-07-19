@@ -14,6 +14,7 @@ class WollokServerResponse {
 	String consoleOutput
 	CompilationInfo compilation
 	TestResult[] tests
+	RuntimeError runtimeError
 	
 	@Accessors
 	static class CompilationInfo {
@@ -44,6 +45,18 @@ class WollokServerResponse {
 		String name
 		String errorMessage
 		String[] stackTrace
+	}
+
+	@Accessors 
+	static class RuntimeError {
+		String message
+		StackTraceElement[] stackTrace
+	}
+
+	@Accessors
+	static class StackTraceElement {
+		String contextDescription
+		String location	
 	}
 	
 	enum CompilationResult { PASSED, FAILED }
