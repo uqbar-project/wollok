@@ -1,4 +1,4 @@
-# Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog
+# Wollok Game v1.5.0-SNAPSHOT git changelog
 
 2016-07-13 07:09:18 -0300    Issue [#681](https://github.com/uqbar-project/wollok/issues/681) - Static diagram temporarily hidden for Wollok perspective (fdodino)  
 2016-07-13 05:11:38 -0300    Fixing some messages. (GitHub)  

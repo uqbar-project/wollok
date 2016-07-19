@@ -1281,7 +1281,11 @@ class String {
 	 * 		"become".contains("CO")      ==> Answers false
 	 */
 	method contains(other) {
-		return self.indexOf(other) > 0
+		try {
+			return self.indexOf(other) >= 0
+		} catch {
+			return false
+		}
 	}
 	
 	/** Answers whether this string has no characters */

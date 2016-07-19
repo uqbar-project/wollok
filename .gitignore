@@ -7,3 +7,4 @@
 */workspace/
 org.eclipse.*
 pom.xml.versionsBackup
+*._trace
