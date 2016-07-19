@@ -1,15 +1,16 @@
-package org.uqbar.project.wollok.launch
+package org.uqbar.project.wollok.server
 
 import com.google.gson.Gson
 import org.eclipse.jetty.client.HttpClient
 import org.eclipse.jetty.client.util.StringContentProvider
 import org.eclipse.jetty.http.HttpMethod
 import org.eclipse.jetty.util.ssl.SslContextFactory
+import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
+import org.uqbar.project.wollok.launch.WollokServerResponse
 
 import static org.junit.Assert.*
-import org.junit.AfterClass
 
 class WollokServerTest {
 	extension Gson = new Gson
