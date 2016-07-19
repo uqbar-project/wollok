@@ -55,58 +55,64 @@ class WollokServer extends AbstractHandler {
 		val testReporter = evaluator.wollokTestsReporter as WollokServerTestsReporter
 		testReporter.writer = writer
 
-		writer => [
-			beginObject => [
-				name("wollokVersion").value(Wollok.VERSION)
-
-				try {
-					val extension handler = new WollokLauncherIssueHandlerJSON
-
-					val wollokRequest = request.wollokRequest
-					val resource = wollokRequest.program.parseString(wollokRequest.programType)
-
-					val issues = newArrayList
-					new WollokChecker().validate(
-						injector,
-						resource,
-						[issues.add(it)],
-						[]
-					)
-
-					if (!issues.empty) {
-						name("compilation").beginObject => [
-							name("issues")
+		try {
+			writer => [
+				beginObject => [
+					name("wollokVersion").value(Wollok.VERSION)
+	
+					try {
+						val extension handler = new WollokLauncherIssueHandlerJSON
+	
+						val wollokRequest = request.wollokRequest
+						val resource = wollokRequest.program.parseString(wollokRequest.programType)
+	
+						val issues = newArrayList
+						new WollokChecker().validate(
+							injector,
+							resource,
+							[issues.add(it)],
+							[]
+						)
+	
+						if (!issues.empty) {
+							name("compilation").beginObject => [
+								name("issues")
+								beginArray
+								issues.forEach[issue|renderIssue(issue)]
+								endArray
+							]
+							endObject
+						}
+	
+						interpreter.interpret(resource.contents.get(0), true)
+						name("consoleOutput")
+						value((interpreter.console as WollokServerConsole).consoleOutput)
+					} catch (WollokProgramExceptionWrapper exception) {
+						writer.name("runtimeError").beginObject => [
+							name("message").value(exception.wollokException.call("getMessage").toString)
+							name("stackTrace")
 							beginArray
-							issues.forEach[issue|renderIssue(issue)]
+							exception.wollokException.call("getStackTrace").asList.wrapped.forEach [ element |
+								val object = element as WollokObject
+								beginObject
+								name("contextDescription").value(object.call("contextDescription")?.toString)
+								name("location").value(object.call("location").toString)
+								endObject
+							]
 							endArray
 						]
 						endObject
 					}
-
-					interpreter.interpret(resource.contents.get(0), true)
-					name("consoleOutput")
-					value((interpreter.console as WollokServerConsole).consoleOutput)
-				} catch (WollokProgramExceptionWrapper exception) {
-					writer.name("runtimeError").beginObject => [
-						name("message").value(exception.wollokException.call("getMessage").toString)
-						name("stackTrace")
-						beginArray
-						exception.wollokException.call("getStackTrace").asList.wrapped.forEach [ element |
-							val object = element as WollokObject
-							beginObject
-							name("contextDescription").value(object.call("contextDescription")?.toString)
-							name("location").value(object.call("location").toString)
-							endObject
-						]
-						endArray
-					]
-					endObject
-				}
+				]
+				endObject
 			]
-			endObject
-		]
-
-		writer.close
+		}
+		catch (Exception e) {
+			e.printStackTrace
+		}
+		finally {
+			writer.close		
+		}
 	}
 
 	def parse(InputStream input, String fileExtension) {

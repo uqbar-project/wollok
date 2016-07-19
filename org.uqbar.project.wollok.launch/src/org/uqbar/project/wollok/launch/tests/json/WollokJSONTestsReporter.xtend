@@ -103,7 +103,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 				name("state").value("error")
 				name("error").beginObject
 					name("message").value(exception.theWollokMessage)
-					name("file").value(resource.trimFragment.toString)
+					// name("file").value(resource.trimFragment.toString)
 					name("lineNumber").value(lineNumber)
 					name("stackTrace").value(exception.wollokStackTraceAsString)
 				endObject
