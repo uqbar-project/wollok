@@ -61,7 +61,24 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		assert.notThat("aguacate".contains("managua"))			
 		'''.test
 	}
+	
+	@Test
+	def void testIndexOf(){
+		'''
+		assert.equals(0, "aguacate".indexOf("agua"))
+		assert.equals(4, "aguacate".indexOf("cat"))
+		assert.throwsException( {"aguacate".indexOf("trinitrotolueno")} )
+		'''.test
+	}
 
+	@Test
+	def void testLastIndexOf(){
+		'''
+		assert.equals(6, "aguacate".lastIndexOf("te"))
+		assert.equals(5, "aguacate".lastIndexOf("a"))
+		assert.throwsException( {"aguacate".lastIndexOf("trinitrotolueno")} )
+		'''.test
+	}
 	@Test
 	def void testisEmpty() {
 		'''
