@@ -68,7 +68,7 @@ object assert {
 class StringPrinter {
 	var buffer = ""
 	method println(obj) {
-		buffer += obj.toString() + "\r\n"
+		buffer += obj.toString() + "\n"
 	}
 	method getBuffer() = buffer
 }	
