@@ -230,7 +230,8 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	override toString() {
-		'{\n\t' + rules.join("\n\t") + '\n}'
+		'{' + System.lineSeparator + '\t' + 
+		rules.join(System.lineSeparator + "\t") + System.lineSeparator
 	}
 
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {

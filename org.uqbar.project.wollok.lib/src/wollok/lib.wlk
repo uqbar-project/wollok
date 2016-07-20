@@ -14,6 +14,12 @@ object console {
 	
 	/** Reads an int character from input stream */
 	method readInt() native
+	
+	/** Returns the system's representation of a new line:
+	 * - \n in Unix systems
+	 * - \r\n in Windows systems
+	 */
+	 method newline() native
 }
 
 /**
@@ -68,7 +74,7 @@ object assert {
 class StringPrinter {
 	var buffer = ""
 	method println(obj) {
-		buffer += obj.toString() + "\n"
+		buffer += obj.toString() + console.newline()
 	}
 	method getBuffer() = buffer
 }	

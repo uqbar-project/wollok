@@ -26,4 +26,8 @@ class ConsoleObject {
 		val line = reader.readLine
 		Integer.parseInt(line)
 	}
+	
+	def newline() {
+		System.lineSeparator
+	}
 }

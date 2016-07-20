@@ -86,7 +86,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 		
 		val nonCompliant = expectedIssues.filter[expected| !issues.exists[message == expected]]
 		if (!nonCompliant.empty)
-			fail("Expecting the following issues on '" +  programToken + "' but they were not present: " + nonCompliant + "\nAlthough there were the following errors: " + issues)
+			fail("Expecting the following issues on '" +  programToken + "' but they were not present: " + nonCompliant + System.lineSeparator + "Although there were the following errors: " + issues)
 		
 		val unexpecteds = issues.filter[i| !expectedIssues.contains(i.message)]
 		if (!unexpecteds.empty)
@@ -105,7 +105,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	}
 	
 	def static String escapeNodeTextToCompare(String nodeText) {
-		if (nodeText.startsWith("\n"))
+		if (nodeText.startsWith(System.lineSeparator))
 			nodeText.substring(1).escapeNodeTextToCompare
 		else if (nodeText.startsWith("\t"))
 			nodeText.substring(1).escapeNodeTextToCompare
