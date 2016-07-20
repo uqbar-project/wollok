@@ -122,16 +122,34 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
-			objects.forEach[o| 
-				addNamedObject(new NamedObjectModel(o) => [ location = new Point(100, 100) ])
-				if (o.parent != null)
-					classes.add(o.parent)
+			objects.forEach[ o, i | 
+				addNamedObject(new NamedObjectModel(o) => [ 
+					location = new Point(i * 110, 10)
+				])
+				
+				// Why should we add Object as a parent?
+				//if (o.parent != null)
+				//	classes.add(o.parent)
+				//
+				
 				o.mixins.forEach[m | addMixin(m) ]
 			]
 
+			// classes
+			// first, superclasses
+			var classesCopy = classes.clone.filter [ it.parent == null ].toList
+			var int level = 0
+			while (!classesCopy.isEmpty) {
+				level++
+				val levelCopy = level
+				classesCopy.forEach [ c, i | addClass(c, i, levelCopy) ]
+				val parentClasses = classesCopy
+				// then subclasses of parent classes and recursively...
+				classesCopy = classes.clone.filter [ parentClasses.contains(it.parent) ].toList
+			}
+
 			// mixins
-			classes.forEach[c| 
-				addClass(c)
+			classes.forEach[c, i| 
 				c.mixins.forEach[m | addMixin(m) ]
 			]
 			//TODO: add mixins from document

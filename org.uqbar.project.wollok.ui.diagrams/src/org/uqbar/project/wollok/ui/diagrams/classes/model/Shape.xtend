@@ -5,6 +5,7 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * @author jfernandes
@@ -142,4 +143,9 @@ public abstract class Shape extends ModelElement {
 	def getBounds() {
 		new Rectangle(location, size)
 	}
+	
+	def boolean shouldShowConnectorTo(WClass model) {
+		true
+	}
+	
 }

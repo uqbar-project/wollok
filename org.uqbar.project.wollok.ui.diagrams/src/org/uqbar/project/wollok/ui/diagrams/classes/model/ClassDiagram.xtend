@@ -29,9 +29,9 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
-	def addClass(WClass c) {
+	def addClass(WClass c, int i, int level) {
 		addClass(new ClassModel(c) => [
-			location = new Point(100, 100)
+			location = new Point(i * 120 + (20 * (10 / level)), level * 130)
 		])
 	}
 	
@@ -42,7 +42,7 @@ class ClassDiagram extends ModelElement {
 	
 	def addMixin(WMixin c) {
 		addMixin(new MixinModel(c) => [
-			location = new Point(100, 100)
+			location = new Point(100, 400)
 		])
 	}
 	
@@ -58,13 +58,14 @@ class ClassDiagram extends ModelElement {
 	
 	def createRelation(Shape it, WMethodContainer c) {
 		val parent = c.parent
-		if (parent != null) {
+		if (parent != null && it.shouldShowConnectorTo(parent)) {
 			val parentModel = classes.findFirst[clazz == parent]
 			if (parentModel == null) {
 				throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
 			}
-			else
+			else {
 				new Connection(null, it, parentModel)
+			}
 		}
 		// mixins
 		c.mixins.forEach[m |
@@ -73,8 +74,6 @@ class ClassDiagram extends ModelElement {
 		]
 	}
 	
-	
-
 	def getChildren() {
 		(classes + objects + mixins).toList
 	}
