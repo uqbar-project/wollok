@@ -34,7 +34,7 @@ class WollokRTFWriter {
 		wollokRTFColorMatcher.colorTable +
 		'''
 		}
-		{\fonttbl {\f0 \fmodern Consolas;}}
+		{\fonttbl {\f0 \fmodern Courier;}}
 		\f0
 		\b
 		\cf1
