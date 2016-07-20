@@ -24,12 +24,12 @@ public class NewWollokTestWizard extends AbstractNewWollokFileWizard implements 
 		String contents =
 			System.lineSeparator() + 
 			"test \"testX\" {" +
-			System.lineSeparator() +
-			System.lineSeparator() +
-			"\tassert.that(true)" +
-			System.lineSeparator() +
-			System.lineSeparator() +
-		"}";
+				System.lineSeparator() +
+				System.lineSeparator() +
+				"\tassert.that(true)" +
+				System.lineSeparator() +
+				System.lineSeparator() +
+			"}";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 }
