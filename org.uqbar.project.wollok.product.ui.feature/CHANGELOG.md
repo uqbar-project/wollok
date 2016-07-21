@@ -1,4 +1,4 @@
-# Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog
+# Wollok Product UI Feature v1.5.0-SNAPSHOT git changelog
 
 2016-07-20 00:19:38 +0200    Support for failing tests (Nicolás Passerini)  
 2016-07-20 00:02:35 +0200    Run a test reporting errors to the user. First step, tests validating information for a correctly running test (Nicolás Passerini)  

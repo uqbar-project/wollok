@@ -3,9 +3,11 @@ package org.uqbar.project.wollok.tests.multithread
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
@@ -52,6 +54,7 @@ class WollokMultiInterpreterTest {
 	}
 
 	@Test
+	@Ignore
 	def void testRunALotOfPrograms() {
 		val numberOfThreads = 4
 		val numberOfTimes = 5
@@ -85,14 +88,22 @@ class WollokMultiInterpreterTest {
 				start.await
 				val interpreter = injector.getInstance(WollokInterpreter)
 				interpreter.debugger = new XDebuggerOff
-				interpreter.interpret(program.parse, true)
+				try{
+					interpreter.interpret(program.parse, true)
+				}catch(WollokProgramExceptionWrapper e){
+					println(e.wollokMessage)
+					println(e.wollokStackTrace)
+				}
 				stop.countDown
 			]
 
 			val threads = (1..numberOfThreads).map[new Thread(block)]
 			threads.forEach[it.start]
 			start.countDown
-			stop.await			
+			if(!stop.await(2, TimeUnit.MINUTES)){
+				threads.forEach[if(alive)interrupt]
+				fail("This have taken longer as expected")
+			}	
 		]
 		
 		var time = System.currentTimeMillis - startTime
