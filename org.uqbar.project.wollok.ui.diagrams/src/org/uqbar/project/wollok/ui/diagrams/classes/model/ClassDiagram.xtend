@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
 import java.util.ArrayList
 import java.util.List
-import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -29,9 +28,9 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
-	def addClass(WClass c, int i, int level) {
+	def addClass(WClass c, int level) {
 		addClass(new ClassModel(c) => [
-			location = new Point(i * 120 + (20 * (10 / level)), level * 130)
+			locate(level)
 		])
 	}
 	
@@ -42,7 +41,7 @@ class ClassDiagram extends ModelElement {
 	
 	def addMixin(WMixin c) {
 		addMixin(new MixinModel(c) => [
-			location = new Point(100, 400)
+			locate
 		])
 	}
 	

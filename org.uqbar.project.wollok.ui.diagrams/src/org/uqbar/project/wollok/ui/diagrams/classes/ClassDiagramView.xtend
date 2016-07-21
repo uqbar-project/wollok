@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 
 import com.google.inject.Inject
 import java.util.ArrayList
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
@@ -43,6 +45,7 @@ import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
+import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
@@ -55,11 +58,13 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
@@ -70,15 +75,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
-import org.eclipse.ui.PlatformUI
-import org.eclipse.core.runtime.Platform
-import org.eclipse.ui.internal.UISynchronizer
-import org.eclipse.core.runtime.jobs.Job
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.core.runtime.IStatus
-import org.eclipse.core.runtime.Status
-import org.eclipse.ui.progress.UIJob
+import java.util.Comparator
 
 /**
  * 
@@ -115,16 +112,20 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def createDiagramModel() {
+		NamedObjectModel.init()
+		MixinModel.init()
 		new ClassDiagram => [
 			// classes
 			val classes = xtextDocument.readOnly[ classes ].toSet
+			ClassModel.init(classes.clone)
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
-			objects.forEach[ o, i | 
+			
+			objects.forEach[ o | 
 				addNamedObject(new NamedObjectModel(o) => [ 
-					location = new Point(i * 110, 10)
+					locate
 				])
 				
 				// Why should we add Object as a parent?
@@ -142,10 +143,19 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			while (!classesCopy.isEmpty) {
 				level++
 				val levelCopy = level
-				classesCopy.forEach [ c, i | addClass(c, i, levelCopy) ]
+				classesCopy.forEach [ c | addClass(c, levelCopy) ]
 				val parentClasses = classesCopy
 				// then subclasses of parent classes and recursively...
-				classesCopy = classes.clone.filter [ parentClasses.contains(it.parent) ].toList
+				classesCopy = classes
+					.clone
+					.filter [ parentClasses.contains(it.parent) ]
+					.sortWith([ WClass a, WClass b | 
+						val parentA = a.parent?.name ?: ""
+						val parentB = b.parent?.name ?: ""
+						parentA.compareTo(parentB)
+					] as Comparator<WClass>)
+					.toList
+					
 			}
 
 			// mixins
@@ -157,6 +167,13 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			// relations
 			connectRelations
 		]
+	}
+	
+	def getParentClass(WClass wclass) {
+		if (wclass.parent == null) {
+			return ""
+		}
+		wclass.parent.name
 	}
 	
 	def getClasses(XtextResource it) { getAllOfType(WClass) }

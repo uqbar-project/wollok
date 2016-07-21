@@ -47,7 +47,7 @@ public abstract class Shape extends ModelElement {
 	
 	def static validate(String value) {
 		try 
-			if (Integer.parseInt(value) >= 0)  null else "Value must be >=  0"
+			if (Integer.parseInt(value) >= 0)  null else "Value must be >= 0"
 		catch (NumberFormatException exc)
 			"Not a number"
 	}
