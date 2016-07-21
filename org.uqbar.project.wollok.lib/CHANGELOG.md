@@ -1,4 +1,4 @@
-# Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog
+# Wollok Lib v1.5.0-SNAPSHOT git changelog
 
 2016-07-21 11:10:47 +0200    Skipping a test (Pablo Tesone)  
 2016-07-20 00:19:38 +0200    Support for failing tests (Nicolás Passerini)  

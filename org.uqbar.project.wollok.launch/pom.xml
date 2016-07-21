@@ -18,6 +18,10 @@
 	
 	<properties>
 		<updateSiteFolder>dev</updateSiteFolder>
+		<!-- Properties relative to the distant host where to upload the repo -->
+		<ftp.url>ftp://uqbar-wiki.org</ftp.url>
+		<!-- Relative path to the repo being uploaded -->
+		<products.path>${project.build.directory}</products.path>
 	</properties>
 
 	<build>
@@ -26,7 +30,49 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
-	</plugins>
+			<!-- copy all dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/allDeps</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- create WDKs -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.4</version>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly/wollok-assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package-native</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- -->
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
@@ -69,58 +115,9 @@
 		<!-- This profile is used to generate and upload the SDK packages -->
 		<profile>
 			<id>uploadProducts</id>
-			<properties>
-				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
-				<!-- Relative path to the repo being uploaded -->
-				<products.path>${project.build.directory}</products.path>
-			</properties>
 
 			<build>
-				<plugins>
-					<!-- copy all dependencies -->
-		         	<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-dependency-plugin</artifactId>
-			        <version>2.10</version>
-			        <executions>
-			          <execution>
-			            <id>copy-dependencies</id>
-			            <phase>package</phase>
-			            <goals>
-			              <goal>copy-dependencies</goal>
-			            </goals>
-			            <configuration>
-			              <outputDirectory>${project.build.directory}/allDeps</outputDirectory>
-			              <overWriteReleases>false</overWriteReleases>
-			              <overWriteSnapshots>false</overWriteSnapshots>
-			              <overWriteIfNewer>true</overWriteIfNewer>
-			            </configuration>
-			          </execution>
-			        </executions>
-			      </plugin>
-					
-					<!-- create WDKs --> 
-					<plugin>
-				        <artifactId>maven-assembly-plugin</artifactId>
-				        <version>2.5.4</version>
-				        <configuration>  
-				            <descriptors>  
-				               <descriptor>assembly/wollok-assembly.xml</descriptor>  
-				            </descriptors>  
-			            </configuration>  
-			            <executions>  
-			               <execution>  
-			                  <id>package-native</id>  
-			                  <phase>package</phase>  
-			                  <goals>  
-			                     <goal>attached</goal>  
-			                  </goals>  
-			              </execution>  
-			            </executions>  
-				      </plugin>
-				     <!-- -->
-				
+				<plugins>				
 					<!-- upload -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>

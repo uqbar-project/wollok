@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title>Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog</title>
+    <title>Wollok UI v1.5.0-SNAPSHOT git changelog</title>
     <style type="text/css">
         body {
             font-family: Arial;
@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-<h1>Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog</h1>
+<h1>Wollok UI v1.5.0-SNAPSHOT git changelog</h1>
 
 	<table class="changelog">
 		<tbody>
