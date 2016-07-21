@@ -33,7 +33,7 @@ abstract class VisualComponent {
 	}
 
 	def drawAttributesIfNecesary(Window window) {		
-		var printableString = getAttributes.join("\n")
+		var printableString = getAttributes.join(System.lineSeparator)
 		if (printableString != "" && inMyZone) {
 			window.writeAttributes(printableString, position, Color.WHITE)
 		}
