@@ -48,7 +48,7 @@ class XDebuggerImpl implements XDebugger {
 	}
 	
 	protected def logEvent(String event, EObject element) {
-		log.trace('''ON STATE [«state»] «event» [«element.fileURI.lastSegment»:«element.lineNumber» - id=«System.identityHashCode(currentStepObject)»]: «element.shortSouceCode»''')
+		log.trace('''ON STATE [«state»] «event» [«element.fileURI.lastSegment»:«element.lineNumber» - id=«System.identityHashCode(currentStepObject)»]: «element.shortSourceCode»''')
 	}
 	
 	override evaluated(EObject element) {

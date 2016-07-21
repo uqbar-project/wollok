@@ -46,7 +46,7 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
-	val returnChar ="\n"
+	val returnChar = System.lineSeparator
 			
 	@Inject
 	WollokClassFinder classFinder
@@ -95,9 +95,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			context.xtextDocument.replace(
 				placeToAdd,
 				0,
-				"\n" + "\t" + METHOD + " " + call.feature +
+				System.lineSeparator + "\t" + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
-					" {\n\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + "\n\t}"
+					" {" + System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + System.lineSeparator + "\t}"
 			)
 		]
 	}
@@ -150,7 +150,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
-			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join('\n')
+			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join(System.lineSeparator)
 			addConstructor(clazz, constructors)
 		]
 	}
@@ -310,7 +310,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, 'Create new class', 'Create a new class definition.', "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = (e as WExpression).method.declaringContext
-			context.xtextDocument.replace(container.after, 0, "\n" + CLASS + newClassName + " {\n}\n")
+			context.xtextDocument.replace(container.after, 0, System.lineSeparator + CLASS + newClassName + " {" + System.lineSeparator + "}" + System.lineSeparator)
 		]
 		
 	}

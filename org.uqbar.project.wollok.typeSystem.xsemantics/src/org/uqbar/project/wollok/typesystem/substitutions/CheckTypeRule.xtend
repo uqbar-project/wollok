@@ -56,7 +56,7 @@ class CheckTypeRule extends TypeRule {
 
 	// object
 
-	override toString() { '''«a» «check.operandString» «b» ''' + "\t\t\t\t(" + source.lineNumber + ": " + source.sourceCode.trim.replaceAll('\n', ' ') + ")" }
+	override toString() { '''«a» «check.operandString» «b» ''' + "\t\t\t\t(" + source.lineNumber + ": " + source.sourceCode.trim.replaceAll(System.lineSeparator, ' ') + ")" }
 
 	override equals(Object obj) {
 		if (obj instanceof CheckTypeRule)

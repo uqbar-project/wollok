@@ -18,7 +18,7 @@ class ListTest extends ListTestCase {
 	}
 	
 	override instantiateStrings() {
-		"const strings = new List(); \n ['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach{e=> strings.add(e) }"
+		"const strings = new List(); " + System.lineSeparator + " ['hello', 'hola', 'bonjour', 'ciao', 'hi'].forEach{e=> strings.add(e) }"
 	}
 	
 	@Test
