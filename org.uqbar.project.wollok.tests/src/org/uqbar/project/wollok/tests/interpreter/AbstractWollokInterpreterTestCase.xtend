@@ -103,7 +103,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 					it.interpret(propagatingErrors)
 				catch (WollokProgramExceptionWrapper e) {
 					println("MESSAGE = " + e.wollokException.resolve("message"))
-					fail(e.wollokException.resolve("message") + "\n" + e.wollokStackTrace)
+					fail(e.wollokException.resolve("message") + System.lineSeparator + e.wollokStackTrace)
 					println("after fail")
 				}
 			]

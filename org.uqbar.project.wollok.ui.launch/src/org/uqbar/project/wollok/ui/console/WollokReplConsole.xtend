@@ -160,7 +160,7 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def sendInputBuffer() {
-		val x = inputBuffer + "\n";
+		val x = inputBuffer + System.lineSeparator;
 
 		addCommandToHistory
 		sessionCommands += inputBuffer
@@ -192,7 +192,7 @@ class WollokReplConsole extends TextConsole {
 		if (inputBuffer.empty) {
 			updateInputBuffer
 			// hack - delete all RETURN keys to avoid several >>> 
-			inputBuffer = inputBuffer.replaceAll('\n', '')
+			inputBuffer = inputBuffer.replaceAll(System.lineSeparator, '')
 		}
 	}
 }
