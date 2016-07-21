@@ -42,11 +42,13 @@
 
 	<table class="changelog">
 		<tbody>
+		<tr><td class="date">2016-07-21 11:10:47 +0200</td><td><span class="committer">Pablo Tesone</span></td><td>Skipping a test</td></tr>
 		<tr><td class="date">2016-07-20 00:19:38 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Support for failing tests</td></tr>
 		<tr><td class="date">2016-07-20 00:02:35 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Run a test reporting errors to the user. First step, tests validating information for a correctly running test</td></tr>
 		<tr><td class="date">2016-07-19 21:57:26 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Allow to run different kinds of programs. Now input to the server is a json containing program and programType</td></tr>
 		<tr><td class="date">2016-07-19 19:23:51 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Add assertions to runtimeErrors (temporary, subject to improvements in stack traces</td></tr>
 		<tr><td class="date">2016-07-19 18:20:51 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Moved test to a more adecquate folder</td></tr>
+		<tr><td class="date">2016-07-18 14:07:14 +0200</td><td><span class="committer">Pablo Tesone</span></td><td>Fixing dependencies of commons collections</td></tr>
 		<tr><td class="date">2016-07-18 00:19:48 +0200</td><td><span class="committer">Franco Leonardo Bulgarelli</span></td><td>Executing server program regardless warnings</td></tr>
 		<tr><td class="date">2016-07-18 00:19:48 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Improved stack trace in wollok server on runtime error</td></tr>
 		<tr><td class="date">2016-07-18 00:19:48 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Fixes 757 - Capture console output and send it to the client. Created a new setup and module to configure the new console, I think there should be a simpler way, we should come back here later. Fixed hard coded reference from ConsoleObject to Interpreter singleton. Another thing to review is the need for casting the console in order to get its output from the server</td></tr>

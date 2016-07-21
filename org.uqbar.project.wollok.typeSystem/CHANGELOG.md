@@ -1,10 +1,12 @@
 # Wollok TypeSystem API v1.5.0-SNAPSHOT git changelog
 
+2016-07-21 11:10:47 +0200    Skipping a test (Pablo Tesone)  
 2016-07-20 00:19:38 +0200    Support for failing tests (Nicolás Passerini)  
 2016-07-20 00:02:35 +0200    Run a test reporting errors to the user. First step, tests validating information for a correctly running test (Nicolás Passerini)  
 2016-07-19 21:57:26 +0200    Allow to run different kinds of programs. Now input to the server is a json containing program and programType (Nicolás Passerini)  
 2016-07-19 19:23:51 +0200    Add assertions to runtimeErrors (temporary, subject to improvements in stack traces (Nicolás Passerini)  
 2016-07-19 18:20:51 +0200    Moved test to a more adecquate folder (Nicolás Passerini)  
+2016-07-18 14:07:14 +0200    Fixing dependencies of commons collections (Pablo Tesone)  
 2016-07-18 00:19:48 +0200    Executing server program regardless warnings (Nicolás Passerini)  
 2016-07-18 00:19:48 +0200    Improved stack trace in wollok server on runtime error (Nicolás Passerini)  
 2016-07-18 00:19:48 +0200    Fixes 757 - Capture console output and send it to the client. Created a new setup and module to configure the new console, I think there should be a simpler way, we should come back here later. Fixed hard coded reference from ConsoleObject to Interpreter singleton. Another thing to review is the need for casting the console in order to get its output from the server (Nicolás Passerini)  
