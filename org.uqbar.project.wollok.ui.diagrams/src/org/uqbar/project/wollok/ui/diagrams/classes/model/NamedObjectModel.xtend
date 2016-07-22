@@ -35,7 +35,7 @@ class NamedObjectModel extends Shape {
 	}
 	
 	/**
-	 * TODO: Define a strategy based on how many  
+	 * TODO: Define a strategy based on custom size (with/without methods)  
 	 */
 	def width() {
 		110

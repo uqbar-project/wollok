@@ -117,8 +117,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		new ClassDiagram => [
 			// classes
 			val classes = xtextDocument.readOnly[ classes ].toSet
-			ClassModel.init(classes.clone)
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
+			ClassModel.init(classes.clone)
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
@@ -127,13 +127,6 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				addNamedObject(new NamedObjectModel(o) => [ 
 					locate
 				])
-				
-				// Why should we add Object as a parent?
-				//if (o.parent != null)
-				//	classes.add(o.parent)
-				//
-				
-				o.mixins.forEach[m | addMixin(m) ]
 			]
 
 			// classes
@@ -158,10 +151,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 					
 			}
 
-			// mixins
-			classes.forEach[c, i| 
-				c.mixins.forEach[m | addMixin(m) ]
-			]
+			// mixins (for classes and objects)
+			(classes + objects).map [ o | o.mixins ].flatten.toSet.forEach [ m | addMixin(m) ]
+			
 			//TODO: add mixins from document
 
 			// relations
@@ -269,7 +261,6 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// layout
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
-		
 		
 		// map back positions to model inverting the Y coordinates
 		// because the directed graph only supports layout directo to SOUTH, meaning

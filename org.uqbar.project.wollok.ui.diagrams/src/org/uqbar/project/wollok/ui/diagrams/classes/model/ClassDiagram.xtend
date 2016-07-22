@@ -14,6 +14,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 /**
  * 
  * @author jfernandes
+ * 
+ * http://www.programcreek.com/2013/03/eclipse-gef-tutorial/
+ * 
  */
 @Accessors
 class ClassDiagram extends ModelElement {

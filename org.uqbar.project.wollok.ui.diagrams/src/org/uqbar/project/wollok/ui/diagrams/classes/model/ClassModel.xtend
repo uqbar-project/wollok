@@ -18,7 +18,7 @@ class ClassModel extends Shape {
 	WClass clazz
 	
 	static def void init(List<WClass> _classes) {
-		org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel.levelWidth = newHashMap
+		levelWidth = newHashMap
 		classes = _classes
 	}
 	
