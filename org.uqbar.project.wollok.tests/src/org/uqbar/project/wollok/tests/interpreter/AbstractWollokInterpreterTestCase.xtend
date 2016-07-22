@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 
 /**
  * Abstract base class for all interpreter tests cases.
@@ -24,7 +24,7 @@ import org.uqbar.project.wollok.tests.interpreter.repl.WollokReplInjector
  * @author jfernandes
  */
 @RunWith(XtextRunner)
-@InjectWith(WollokReplInjector)
+@InjectWith(WollokTestInjector)
 abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper

@@ -2,15 +2,17 @@ package org.uqbar.project.wollok.tests.interpreter.repl
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.junit.Test
-import org.uqbar.project.wollok.tests.injectors.WollokReplInjector
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
- * Tests that the REPL implementation of the interpreter remember the state.
+ * Tests that the default implementation of the interpreter
+ * does not remember state between runs.
+ * 
  * @author tesonep
  */
- @InjectWith(WollokReplInjector)
-class ReplMemoryTest extends AbstractWollokInterpreterTestCase {
+ @InjectWith(WollokTestInjector)
+class WithoutReplMemoryTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void testMemory() {
@@ -21,7 +23,8 @@ class ReplMemoryTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 		'''
 		program p {
-			assert.equals(17, xxx)
+			var xxx
+			assert.equals(null, xxx)
 		}
 		'''.interpretPropagatingErrors
 	}

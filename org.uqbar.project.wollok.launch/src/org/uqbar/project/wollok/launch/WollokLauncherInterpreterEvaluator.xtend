@@ -12,8 +12,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 /**
  * Subclasses the wollok evaluator to support tests
  * 
- * // TODO: should we need this subclass ? why don't we just move this code up ?
- * 
  * @author tesonep
  */
 class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {

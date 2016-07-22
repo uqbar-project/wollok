@@ -4,7 +4,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerTestCase
 
 import static org.uqbar.project.wollok.tests.debugger.util.asserters.Asserters.*
-import static org.uqbar.project.wollok.tests.debugger.util.matchers.InterpreterElementMatcher.*
+import static org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter.*
 
 /**
  * Tests the interpreter evaluation asserting the evaluation context (scope)

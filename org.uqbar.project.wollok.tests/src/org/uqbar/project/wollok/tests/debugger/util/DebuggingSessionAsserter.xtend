@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.tests.debugger.util.assertions.AfterAssertion
 import org.uqbar.project.wollok.tests.debugger.util.assertions.BeforeAssertion
+import org.uqbar.project.wollok.tests.debugger.util.matchers.InterpreterElementMatcher
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
@@ -40,5 +41,11 @@ class DebuggingSessionAsserter {
 		return this
 	}
 	
+	/** Matches if the AST node being evaluated is equals to the given sentence string (without taking into account spaces and newlines) */
+	def static InterpreterElementMatcher codeIs(String sentence) {
+		[
+			key.escapedCode == sentence
+		]
+	}
 }
 
