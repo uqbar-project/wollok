@@ -1,3 +1,5 @@
+import wollok.vm.*
+
 /** 
  * Console is a global wollok object that implements a character-based console device
  * called "standard input/output" stream 
@@ -12,6 +14,12 @@ object console {
 	
 	/** Reads an int character from input stream */
 	method readInt() native
+	
+	/** Returns the system's representation of a new line:
+	 * - \n in Unix systems
+	 * - \r\n in Windows systems
+	 */
+	 method newline() native
 }
 
 /**
@@ -66,7 +74,7 @@ object assert {
 class StringPrinter {
 	var buffer = ""
 	method println(obj) {
-		buffer += obj.toString() + "\n"
+		buffer += obj.toString() + console.newline()
 	}
 	method getBuffer() = buffer
 }	
@@ -83,8 +91,15 @@ object wgame {
 	method getObjectsIn(position) native
 	method say(element, message) native
 	method clear() native
-	method start() native
 	method stop() native
+	method start() {
+		self.doStart(runtime.isInteractive())
+	}
+	
+	/** 
+	* @private
+	*/
+	method doStart(isRepl) native
 	
 	method setTitle(title) native
 	method getTitle() native

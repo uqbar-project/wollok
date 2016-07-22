@@ -2,3 +2,4 @@ wollok/lang.wlk
 wollok/lib.wlk
 wollok/mirror.wlk
 wollok/game.wlk
+wollok/vm.wlk

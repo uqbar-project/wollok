@@ -52,7 +52,7 @@ class XTextExtensions {
 	def static fileURI(EObject o) { o.eResource.URI }
 	def static lineNumber(EObject o) { o.astNode.startLine }
 	def static sourceCode(EObject o) { o.astNode.text }
-	def static shortSouceCode(EObject o) { o.sourceCode.trim.replaceAll('\n', ' ') }
+	def static shortSourceCode(EObject o) { o.sourceCode.trim.replaceAll(System.lineSeparator, ' ') }
 	
 	def static objectURI(EObject o) { (o.eResource as XtextResource).getURIFragment(o) }
 	

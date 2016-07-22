@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -33,11 +34,12 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -52,9 +54,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableReferenceElements
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
-import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Custom validation rules.
@@ -77,6 +76,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
+	public static val PARAMETER_NAME_MUST_START_LOWERCASE = "PARAMETER_NAME_MUST_START_LOWERCASE"
+	public static val VARIABLE_NAME_MUST_START_LOWERCASE = "VARIABLE_NAME_MUST_START_LOWERCASE"
+	public static val OBJECT_NAME_MUST_START_LOWERCASE = "OBJECT_NAME_MUST_START_LOWERCASE"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
 	public static val METHOD_ON_WKO_DOESNT_EXIST = "METHOD_ON_WKO_DOESNT_EXIST"
 	public static val VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES = "VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES"
@@ -125,10 +127,23 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.CODE_STYLE)
-	def referenciableNameMustStartWithLowerCase(WReferenciable c) {
-		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, REFERENCIABLE_NAME_MUST_START_LOWERCASE)
+	def referenciableNameMustStartWithLowerCase(WNamedObject c) {
+		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, OBJECT_NAME_MUST_START_LOWERCASE)
 	}
-
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
+	def referenciableNameMustStartWithLowerCase(WParameter c) {
+		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, PARAMETER_NAME_MUST_START_LOWERCASE)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
+	def referenciableNameMustStartWithLowerCase(WVariable c) {
+		if (Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE, c, WNAMED__NAME, VARIABLE_NAME_MUST_START_LOWERCASE)
+	}	
 	// **************************************
 	// ** instantiation and constructors
 	// **************************************
@@ -672,6 +687,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def varArgMustBeTheLastParameter(WParameter it) {
 		if (isVarArg && eContainer.parameters().last != it) {
 			report(WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE, it, WPARAMETER__VAR_ARG, VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(WARN)
+	def dontUseLocalVarOnlyToReturn(WVariableDeclaration it) {
+		if (isLocalToMethod && onlyUsedInReturn) {
+			report(WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN, it, WVARIABLE_DECLARATION__VARIABLE)
 		}
 	}
 

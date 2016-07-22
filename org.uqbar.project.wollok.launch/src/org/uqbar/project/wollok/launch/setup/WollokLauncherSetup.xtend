@@ -13,12 +13,13 @@ import org.uqbar.project.wollok.parser.antlr.internal.InternalWollokDslLexer
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokREPLInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokREPLInterpreter
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * @author tesonep
  */
 class WollokLauncherSetup extends WollokDslStandaloneSetup {
-
+	@Accessors
 	val WollokLauncherParameters params 
 
 	new(WollokLauncherParameters params) {

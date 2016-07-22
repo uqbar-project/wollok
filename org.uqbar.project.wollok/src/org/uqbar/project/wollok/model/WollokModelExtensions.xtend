@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
@@ -46,6 +47,7 @@ import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -54,10 +56,6 @@ import wollok.lang.Exception
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
-import com.google.inject.Inject
-import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 
 /**
  * Extension methods to Wollok semantic model.
@@ -353,6 +351,22 @@ class WollokModelExtensions {
 	def static isAndExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_AND.contains(feature) }
 	def static isOrExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_OR.contains(feature) }
 	def static isNotOperation(WUnaryOperation it) { WollokConstants.OP_UNARY_BOOLEAN.contains(feature) }
+
+	// *******************************
+	// ** variables
+	// *******************************
+	
+	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) != null }
+
+	def static onlyUsedInReturn(WVariableDeclaration it) {
+		val visitor = new VariableUsesVisitor
+		visitor.lookedFor = variable
+		visitor.visit(EcoreUtil2.getContainerOfType(it, WMethodDeclaration))
+		visitor.uses.length == 1 && visitor.uses.get(0).isReturnOrInReturn
+	}
+	
+	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
+	def static boolean isInReturn(EObject e) { e.eContainer != null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports

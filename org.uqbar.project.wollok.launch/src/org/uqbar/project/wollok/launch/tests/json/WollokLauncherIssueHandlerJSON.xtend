@@ -31,18 +31,20 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 	}
 	
 	def renderIssues(JsonWriter it) {
-		issues.forEach[i |
-			obj [
-				with("severity", i.severity.name)
-				with("code", i.code)
-				with("message", i.message)
-				with("lineNumber", i.lineNumber)
-				with("offset", i.offset)
-				with("length", i.length)
-				with("uri", i.uriToProblem.toFileString)
-				with("syntaxError", i.syntaxError)
-				array("data", i.data)
-			]
+		issues.forEach[issue | renderIssue(issue)]
+	}
+	
+	def renderIssue(JsonWriter it, Issue i) {
+		obj [
+			with("severity", i.severity.name)
+			with("code", i.code)
+			with("message", i.message)
+			with("lineNumber", i.lineNumber)
+			with("offset", i.offset)
+			with("length", i.length)
+			with("uri", i.uriToProblem.toFileString)
+			with("syntaxError", i.syntaxError)
+			array("data", i.data)
 		]
 	}
 	

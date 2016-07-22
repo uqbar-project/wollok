@@ -18,6 +18,9 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE;
+	public static String WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS;
 	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
 	
@@ -66,6 +69,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_RETURN_FORGOTTEN;
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
+	
+	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
 	public static String WollokDslValidator_WRONG_IMPORT;
 	

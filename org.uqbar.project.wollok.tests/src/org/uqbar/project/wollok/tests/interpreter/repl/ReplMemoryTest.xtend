@@ -25,4 +25,5 @@ class ReplMemoryTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+	
 }

@@ -51,7 +51,7 @@ class SteppingOver extends XDebuggerState {
 			d.state = new PauseOnNext
 		}
 	}
-	override toString() { "STEPPING_OVER(" + currentStepObject.shortSouceCode + "-" + System.identityHashCode(currentStepObject) + ")" }
+	override toString() { "STEPPING_OVER(" + currentStepObject.shortSourceCode + "-" + System.identityHashCode(currentStepObject) + ")" }
 }
 
 /**

@@ -27,6 +27,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/lipermi-0-4-2.jar,
  lib/jansi-1.11.jar,
  lib/gson-2.4.jar,
+ lib/jetty-all-9.3.9.v20160517-uber.jar,
  .
 Export-Package: org.uqbar.project.wollok.debugger,
  org.uqbar.project.wollok.debugger.server,
