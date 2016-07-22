@@ -1,23 +1,35 @@
-package org.uqbar.project.wollok.tests.debugger
+package org.uqbar.project.wollok.tests.debugger.util
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
-import org.uqbar.project.wollok.interpreter.stack.XStackFrame
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.uqbar.project.wollok.tests.debugger.util.DebugAsserter
+import org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter
+import org.uqbar.project.wollok.tests.debugger.util.TestDebugger
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
- * Base class for testing the debugger.
- * Adds methods to evaluate a program step by step, and so on
+ * Base class for testing the debugger XDebuggerImpl'ementation
+ * Adds methods to evaluate a program step by step, and so on.
+ * 
+ * It tests full wollok code evaluation by using the real XDebuggerImpl
+ * which can be configured to be paused, to do step-in, step-out, etc.
  * 
  * @author jfernandes
  */
-class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
+abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTestCase {
 	// couldn't reuse the one from xtext because it is hardcoded
 	static val SYNTHETIC_FILE_PREFFIX = "__synthetic"
 	
+	
+	/**
+	 * Used to test evaluation order by comparing only the code evaluated
+	 * on each step.
+	 * It uses a #debugSteppingInto()
+	 */
 	def debugSteppingInto(CharSequence programAsString, (DebugAsserter)=>Object assertion) {
 		val program = programAsString.toString()
 		val steps = debugSteppingInto(program)
@@ -26,13 +38,8 @@ class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
 		asserter.program = program
 		assertion.apply(asserter)
 		
-//		assertEquals("Number of steps executed was different than expected ! ", asserter.expectedSteps.size, steps.size)
-		
 		var i = 0
 		for (s : steps) {
-			// REVIEW: we are ignoring steps that are in another files 
-			// like wollok/lang.wlk
-			// Eventually the test infrastructure needs to add support for this
 			if (s.currentLocation.fileURI.contains(SYNTHETIC_FILE_PREFFIX)) {
 				println("Asserting " + s.currentLocation.fileURI)
 				if (i >= asserter.expectedSteps.size) {
@@ -42,10 +49,15 @@ class AbstractWollokDebugTestCase extends AbstractWollokInterpreterTestCase {
 				i++
 			}
 		}
-		// there are more steps because of the methods you call objects outside of the test
-//		assertEquals("Number of steps executed was different than expected ! ", asserter.expectedSteps.size, steps.size)
 	}
 	
+	/**
+	 * Debugs a program and return the executed steps in the form
+	 * of a list of XStackFrame representing the states at each step execution.
+	 * It does a full step-into execution (F5).
+	 * So it will go deep in the evaluation.
+	 * It tests the XDebuggerImpl
+	 */
 	def debugSteppingInto(CharSequence program) {
 		val programContent = program.toString
 		val clientSide = new TestTextInterpreterEventPublisher

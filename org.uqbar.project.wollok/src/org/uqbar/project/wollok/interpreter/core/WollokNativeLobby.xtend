@@ -20,7 +20,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  * @author jfernandes
  */
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext<WollokObject> {
-	static var Map<String, WollokObject> localProgramVariables = newHashMap
+	var Map<String, WollokObject> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
 	
 	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {

@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.debugger
+package org.uqbar.project.wollok.tests.debugger.util
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors

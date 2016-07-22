@@ -1,8 +1,17 @@
 package org.uqbar.project.wollok.tests.debugger
 
-import org.uqbar.project.wollok.tests.debugger.AbstractWollokDebugTestCase
+import java.util.List
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.junit.Test
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
+import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
+import static org.junit.Assert.*
+
+import static extension org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -10,14 +19,24 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * but also without multithreading (pausing, resuming, stepping, etc).
  * Use a simple listener on the interpreter to find out what it evaluated
  * 
+ * This test was kind of first start to increase "coverage" in debugger testing.
+ * But it is fragile and very simplistic.
+ * Just asserts on a given execution evaluated code.
+ * 
  * @author jfernandes
  */
-class DebugWithoutThreadingTestCase extends AbstractWollokDebugTestCase {
+class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
+	
+	def debugger() {
+		val debugger = new PostEvaluationTestDebugger(interpreter)
+		interpreter.debugger = debugger
+		debugger
+	}
 	
 	@Test
-	def void stepByStepEvaluationWithAForEach() {
-		val debugger = new TestDebugger(interpreter)
-		interpreter.debugger = debugger
+	def void evaluatedCalled() {
+		val deb = debugger()
+		deb.childrenFirst = true
 		
 		'''
 		program a {
@@ -29,7 +48,8 @@ class DebugWithoutThreadingTestCase extends AbstractWollokDebugTestCase {
 			assert.equals(6, sum)
 		}'''.interpretPropagatingErrors
 		
-		val expected = #[
+		deb
+			.assertEvaluated(#[
 			// program
 					"1",
 					"2",
@@ -92,18 +112,135 @@ class DebugWithoutThreadingTestCase extends AbstractWollokDebugTestCase {
 						"{ return other != null && self === other }",
 				"assert.equals(6, sum)",
 			"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }"
-		]
+		])
+	}
+	
+	@Test
+	def void aboutToEvaluateCalled() {
+		val deb = debugger()
+		deb.childrenFirst = false 
+		'''
+		program a {
+			const strings = [1, 2, 3]
+			var sum = 0
+			strings.forEach { s =>
+				sum += s
+			}
+			assert.equals(6, sum)
+		}'''.interpretPropagatingErrors
 		
-		assertEquals(expected.size, debugger.evaluated.size)
+		deb
+			.assertEvaluated(#[
+				"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }",
+					"const strings = [1, 2, 3]",
+						"[1, 2, 3]",
+							"1",
+							"2",
+							"3",
+					"var sum = 0",
+						"0",
+					"strings.forEach { s => sum += s }",
+						"strings",
+						"{ s => sum += s }",
+						// forEach
+						"{ self.fold(null, { acc, e => closure.apply(e) }) }",
+							"self.fold(null, { acc, e => closure.apply(e) })",
+								"self",
+								"null",
+								"{ acc, e => closure.apply(e) }",
+									// fold (1st)
+									"closure.apply(e)",
+									"closure.apply(e)",
+										"closure",
+										"e",
+											// closure apply
+											"sum += s",
+											"sum += s",
+												"sum",
+												"s",
+									// fold (2nd)
+									"closure.apply(e)",
+									"closure.apply(e)",
+										"closure",
+										"e",
+											// closure apply
+											"sum += s",   // why is it duplicated ?
+											"sum += s",
+												"sum",
+												"s",
+									// fold (3rd)
+									"closure.apply(e)",
+									"closure.apply(e)",
+										"closure",
+										"e",
+											// closure apply
+											"sum += s",
+											"sum += s",
+												"sum",
+												"s",
+						"assert.equals(6, sum)",
+							// target and args
+							"assert",
+							'/** * Assert object simplifies testing conditions */ object assert { /** * Tests whether value is true. Otherwise throws an exception. * Example: * var number = 7 * assert.that(number.even()) ==> throws an exception "Value was not true" * var anotherNumber = 8 * assert.that(anotherNumber.even()) ==> no effect, ok */ method that(value) native /** Tests whether value is false. Otherwise throws an exception. * @see assert#that(value) */ method notThat(value) native /** * Tests whether two values are equal, based on wollok == method * * Example: * assert.equals(10, 100.div(10)) ==> no effect, ok * assert.equals(10.0, 100.div(10)) ==> no effect, ok * assert.equals(10.01, 100.div(10)) ==> throws an exception */ method equals(expected, actual) native /** Tests whether two values are equal, based on wollok != method */ method notEquals(expected, actual) native /** * Tests whether a block throws an exception. Otherwise an exception is thrown. * * Example: * assert.throwsException({ 7 / 0 }) ==> Division by zero error, it is expected, ok * assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed" */ method throwsException(block) native /** * Throws an exception with a custom message. Useful when you reach an unwanted code in a test. */ method fail(message) native }',
+							"6",
+							"sum",
+							// body
+							"{ return other != null && self === other }",
+								"return other != null && self === other",
+									"other != null && self === other",
+										"other != null",
+											"other",
+											"null",
+									"self === other",
+										"self",
+											"other"
+		])
+	}
+	
+}
+
+@Accessors
+class PostEvaluationTestDebugger extends XDebuggerOff {
+	var boolean childrenFirst = true
+	var boolean logSession = false
+	val List<Pair<EObject, XStackFrame>> evaluated = newArrayList
+	WollokInterpreter interpreter
+	
+	new(WollokInterpreter interpreter) {
+		this.interpreter = interpreter
+	}
+	
+	override aboutToEvaluate(EObject element) {
+		if (!childrenFirst)
+			store(element)
+	}
+	
+	override evaluated(EObject element) {
+		if (childrenFirst)
+			store(element)
+	}
+	
+	def store(EObject element) {
+		if (logSession)
+			println('"' + element.sourceCode.replaceAll('\n', ' ').replaceAll('\\s+', ' ').trim() + '",')
+		evaluated += (element -> interpreter.stack.peek.clone)
+	}
+	
+		/**
+	 * This method is for backward compatibility in tests.
+	 * It is expected to be called AFTER execution
+	 */
+	def assertEvaluated(List<String> expected) {
+		assertEquals(expected.size, evaluated.size)
 		
 		var i = 0
-		for (t : debugger.evaluated) {
-//			println(/*t.key.class.simpleName + " >> " + */t.key.sourceCode.replaceAll('\n', ' ').replaceAll('\\s+', ' ').trim()  /* + " >> "+ t.value.contextDescription*/)
-			assertEquals(expected.get(i), t.key.sourceCode.replaceAll('\n', ' ').replaceAll('\\s+', ' ').trim())
+		for (t : evaluated) {
+			val escaped = t.key.escapedCode 
+			if (logSession)
+				println(escaped)
+			assertEquals(expected.get(i), escaped)
 			i++
 		}
-		
-		
 	}
 	
 }
