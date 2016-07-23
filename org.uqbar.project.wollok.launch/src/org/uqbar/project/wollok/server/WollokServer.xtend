@@ -29,7 +29,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 
 class WollokServer extends AbstractHandler {
 	extension Gson = new Gson
-	val parameters = new WollokLauncherParameters().parse(#["-r"])
+	val parameters = new WollokLauncherParameters()
 	val injector = new WollokServerSetup(parameters).createInjectorAndDoEMFRegistration => [
 		injectMembers(this)
 	]

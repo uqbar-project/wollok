@@ -18,7 +18,7 @@ import static org.junit.Assert.*
 class WollokMultiInterpreterTest {
 	@Test
 	def void testRunSameProgramTwice() {
-		val parameters = new WollokLauncherParameters().parse(#["-r"])
+		val parameters = new WollokLauncherParameters()
 		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
@@ -60,7 +60,7 @@ class WollokMultiInterpreterTest {
 		val numberOfTimes = 5
 		var startTime = System.currentTimeMillis
 
-		val parameters = new WollokLauncherParameters().parse(#["-r"])
+		val parameters = new WollokLauncherParameters()
 		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
@@ -117,7 +117,7 @@ class WollokMultiInterpreterTest {
 		val numberOfThreads = 4
 		var startTime = System.currentTimeMillis
 
-		val parameters = new WollokLauncherParameters().parse(#["-r"])
+		val parameters = new WollokLauncherParameters()
 		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
@@ -160,7 +160,7 @@ class WollokMultiInterpreterTest {
 
 	@Test
 	def void testGetInjectorTwice() {
-		val parameters = new WollokLauncherParameters().parse(#["-r"])
+		val parameters = new WollokLauncherParameters()
 		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 		
 		assertNotSame(injector.getInstance(WollokInterpreter), injector.getInstance(WollokInterpreter))
