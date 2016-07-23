@@ -2,9 +2,10 @@ package org.uqbar.project.gef
 
 import org.eclipse.draw2d.AbstractRouter
 import org.eclipse.draw2d.Connection
+import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PointList
-import org.eclipse.draw2d.geometry.Rectangle
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
 
 /**
  * Routes the connection in a tree-like form unifying connections
@@ -57,11 +58,19 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getStartPoint(Connection conn) {
+		// Fix: anchor when source is below
+		if (conn.sourceAnchor.below(conn.targetAnchor)) {
+			return new DefaultWollokAnchor(conn.sourceAnchor.owner).referencePoint	
+		}
 		conn.sourceAnchor.referencePoint
 	}
 	
 	override protected getEndPoint(Connection conn) {
 		conn.targetAnchor?.getLocation(endPoint)
+	}
+
+	def boolean below(ConnectionAnchor source, ConnectionAnchor target) {
+		source.owner.bounds.top.y > target.owner.bounds.bottom()
 	}
 	
 }

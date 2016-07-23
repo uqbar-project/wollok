@@ -31,11 +31,10 @@ class ClassModel extends Shape {
 	}
 	
 	def locate(int level) {
-		// TODO: If autorefresh set to true, define padding based on how many clazzes are
 		var int calculatedWidth = levelWidth.get(level) ?: 0
 		val subclassesCount = classes.clone.filter [ it.parent != null && it.parent == this.clazz ].size
 		val adjustedWidth = calculatedWidth + width + adjustedWidth(subclassesCount)
-		location = new Point(adjustedWidth, level * height)
+		location = new Point(adjustedWidth, (level * height) - adjustedHeight)
 		levelWidth.put(level, calculatedWidth + nextWidth(subclassesCount))
 	}
 	
@@ -62,6 +61,14 @@ class ClassModel extends Shape {
 
 	def height() {
 		130
+	}
+	
+	def adjustedHeight() {
+		if (NamedObjectModel.objectsCount + MixinModel.mixinsCount > 0) {
+			0
+		} else {
+			100
+		}
 	}
 	
 }

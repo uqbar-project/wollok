@@ -7,6 +7,10 @@ import org.eclipse.draw2d.geometry.Rectangle
 
 class DefaultWollokAnchor extends ChopboxAnchor {
 	
+	new() {
+		super()
+	}
+	
 	new(IFigure owner) {
 		super(owner)	
 	}
@@ -25,10 +29,10 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		owner.bounds.middleBottom.translateToAbsolute
 	}
 	
-	def getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
-	def getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
+	def static getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
+	def static getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
 	
-	def getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
-	def getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }
+	def static getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
+	def static getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }
 	
 }

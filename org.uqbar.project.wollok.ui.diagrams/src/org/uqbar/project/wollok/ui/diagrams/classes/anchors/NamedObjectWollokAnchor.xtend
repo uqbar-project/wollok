@@ -16,7 +16,8 @@ class NamedObjectWollokAnchor extends DefaultWollokAnchor {
 	}
 	
 	override getReferencePoint() {
-		new Point(owner.bounds.center.x, owner.bounds.bottomLeft.y).translateToAbsolute
+		//new Point(owner.bounds.center.x, owner.bounds.bottomLeft.y).translateToAbsolute
+		owner.bounds.middleBottom.translateToAbsolute
 	}
 	
 }
