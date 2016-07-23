@@ -1,6 +1,10 @@
 # Wollok Parent (Releng) v1.5.0-SNAPSHOT git changelog
 
-2016-07-21 11:10:47 +0200    Skipping a test (Pablo Tesone)  
+2016-07-22 17:08:04 +0200    Organizing the way the REPL keeps the state of previous runs and removing this behavior for normal runs (Pablo Tesone)  
+2016-07-22 02:21:06 +0200    Refactoring debugger tests cases to clean up code and add javadocs. Separating the different kinds of tests and working on the fluent API' (Javier Fernandes)  
+2016-07-21 16:04:03 +0200    Skipping a test (Pablo Tesone)  
+2016-07-20 18:29:50 +0200    Tidy up some methods. (Matías Freyre)  
+2016-07-20 17:46:24 +0200    Add newline() method to the console WKO. Replace all \n with System.lineSeparator. (Matías Freyre)  
 2016-07-20 00:19:38 +0200    Support for failing tests (Nicolás Passerini)  
 2016-07-20 00:02:35 +0200    Run a test reporting errors to the user. First step, tests validating information for a correctly running test (Nicolás Passerini)  
 2016-07-19 21:57:26 +0200    Allow to run different kinds of programs. Now input to the server is a json containing program and programType (Nicolás Passerini)  
@@ -18,6 +22,11 @@
 2016-07-18 00:17:02 +0200    Tests that proof the behavior of the interpreter in paralelism (Nicolás Passerini)  
 2016-07-16 22:21:05 +0200    Adding missing import (PalumboN)  
 2016-07-16 21:27:07 +0200    Adding wollok package: vm (PalumboN)  
+2016-07-15 20:51:22 +0200    Trying out new test for the debugger which does a full assertion of all evalution steps, based on the source code of each EObject to be evaluated. Even those that are for objects defined in another file, like Collection.forEach() (Javier Fernandes)  
+2016-07-15 18:59:41 +0200    Adding a new debugger test for a foreach execution. Found that the test infra failed when trying to step in, into code that is outside of the current test code (like the forEach method). Currently made it work skipping those steps. Would be great to have that working later (Javier Fernandes)  
+2016-07-15 17:38:48 +0200    Refactorign debugger test code to make it reusable (Javier Fernandes)  
+2016-07-15 05:39:47 +0200    Adding new test that uses the XDebuggerImpl for real stepping with multithreading yeah :) It is still a raw test but a really good progress. Eventually we will want to have a whole API to make assertions on the state of the program at different moments. At the end it might even end up as an XPECT extension to have the expectations declarative as comments (Javier Fernandes)  
+2016-07-15 04:14:51 +0200    Updating this strings in code to Self. Adding retries to connect to remote interpreter while debugging. Adding first testscases for the debugger (server/interpreter part, not client code) with mockito. Filtering 'self' from debugger client code to avoid stack overflow. Still getting stack overflow :S (Javier Fernandes)  
 2016-07-14 01:44:28 +0200    Fixing issue [#819](https://github.com/uqbar-project/wollok/issues/819) (fdodino)  
 2016-07-14 00:05:41 +0200    Fixes [#746](https://github.com/uqbar-project/wollok/issues/746) validate if a variable is only used to return it. Its a first approach. Limited let say (Javier Fernandes)  
 2016-07-13 12:09:18 +0200    Issue [#681](https://github.com/uqbar-project/wollok/issues/681) - Static diagram temporarily hidden for Wollok perspective (fdodino)  
