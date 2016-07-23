@@ -15,6 +15,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 class XDebugStackFrameVariable implements Serializable {
 	@Accessors WVariable variable
 	@Accessors XDebugValue value
+	
+	new() {} // compatible with serialization
 		
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable

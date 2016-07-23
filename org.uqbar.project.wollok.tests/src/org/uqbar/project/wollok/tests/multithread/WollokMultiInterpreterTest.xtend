@@ -15,6 +15,10 @@ import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 
 import static org.junit.Assert.*
 
+/**
+ * 
+ * @author npasserini
+ */
 class WollokMultiInterpreterTest {
 	@Test
 	def void testRunSameProgramTwice() {

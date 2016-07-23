@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
+import com.google.common.collect.Lists
 import java.net.URI
+import java.util.List
 import net.sf.lipermi.net.Server
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 
@@ -41,8 +43,14 @@ class DebugCommandHandlerImpl implements DebugCommandHandler {
 		debugger.clearBreakpoint(fileURI.toString, lineNumber)
 	}
 	
-	override getStackFrames() {
-		newArrayList(debugger.stack.map[new XDebugStackFrame(it)])
+	override List<XDebugStackFrame> getStackFrames() {
+//		println("[VM] Client asked for stack frames ")
+		val n = Lists.newArrayList(debugger.stack.map[
+//			println("[VM] Mapping stack element " + it)
+			new XDebugStackFrame(it)
+		])
+//		println("[VM] Returning stack frames to client")
+		n
 	}
 	
 }

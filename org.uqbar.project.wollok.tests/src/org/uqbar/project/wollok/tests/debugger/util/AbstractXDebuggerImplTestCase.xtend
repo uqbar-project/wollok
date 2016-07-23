@@ -6,10 +6,9 @@ import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
-import org.uqbar.project.wollok.tests.debugger.util.DebugAsserter
-import org.uqbar.project.wollok.tests.debugger.util.DebuggingSessionAsserter
-import org.uqbar.project.wollok.tests.debugger.util.TestDebugger
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
+import java.net.URI
 
 /**
  * Base class for testing the debugger XDebuggerImpl'ementation
@@ -118,35 +117,90 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		program.substring(offset, Math.min(program.length, offset + length))
 	}
 	
-	private def doInAnotherThread(Runnable a) {
+	def doInAnotherThread(Runnable a) {
 		val thread = new Thread([
-			try {
+			try 
 				a.run
-			}	
-			catch (Throwable t) {
+			catch (Throwable t)
 				t.printStackTrace
-			}
 		])
 		thread.start
 		thread
 	}
 	
-	private def waitUntilStarted(TestTextInterpreterEventPublisher clientSide) {
-		while (!clientSide.isStarted) Thread.sleep(100)
-	}
-	
 }
 
 @Accessors
-class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher {
+class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher, DebuggerEventAssertion {
 	var boolean started = false
 	var boolean terminated = false
+	List<DebuggerEventListener> listeners = newArrayList
+	// an object to manipulate the VM: pause, resume, etc.
+	DebugCommandHandler vm
 	
-	override started() { started = true }
-	override terminated() { terminated = true	}
+	override started() { 
+		println("STARTED")
+		started = true
+		notify [ started(vm) ]
+	}
 	
-	override suspendStep() {}
-	override resumeStep() { }
-	override breakpointHit(String fileName, int lineNumber) { }
+	override terminated() {
+		println("TERMINATED") 
+		terminated = true
+		notify [ terminated(vm) ]
+	}
+	
+	override suspendStep() {
+		println("SUSPENDED")
+		notify [ suspended(vm) ]
+	}
+	override resumeStep() {
+		println("RESUME")
+		notify [ resumed(vm) ]
+	}
+	override breakpointHit(String fileName, int lineNumber) {
+		println("BREAKPOINT HIT")
+		notify [ breakpointHit(fileName, lineNumber, vm) ]
+	}
+	
+	def waitUntilStarted() { waitUntil [isStarted] }
+	def waitUntilTerminated() { waitUntil [isTerminated] }
+	
+	// utils
+	
+	protected def notify((DebuggerEventListener)=>void what) {
+		listeners.forEach(what)
+	}
+	
+	protected def waitUntil(()=>Boolean condition) {
+		// REVIEW: this is an active wait. Not good, but well.. just for testing.
+		while (!condition.apply) Thread.sleep(100)
+	}
+	
+	def expect((DebuggerEventAssertion)=>Object director) {
+		director.apply(this)
+		this
+	}
+	
+ 	override DebugEventListenerAsserter on(DebugEventListenerAsserter listener) {
+ 		listeners += listener
+ 		listener
+ 	}
+	
+	def setCommandHandler(DebugCommandHandler handler) {
+		this.vm = handler
+	}
+	
+	/**
+	 * Shortcut. Assumes you mean the line on the current program you are testing.
+	 */
+	def setBreakPoint(int lineNumber) {
+		setBreakPoint("__synthetic0.wpgm", lineNumber)
+	}
+	
+	def setBreakPoint(String fileName, int lineNumber) {
+		vm.setBreakpoint(new URI(fileName), lineNumber)
+		this
+	}
 	
 }

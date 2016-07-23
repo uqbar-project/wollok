@@ -33,7 +33,7 @@ class EventSender extends AbstractCommunicationHandlerRunnable implements XTextI
 	// bps
 	
 	override breakpointHit(String fileName, int lineNumber) {
-		//ojo, sin el this no anda. Parece un bug en xtend
+		// BEWARE ! without the "this" it fails ! Seems like a bug in xtend !
 		this.sendEvent(EVENT_SUSPENDED_BREAKPOINT, fileName, lineNumber)
 	}
 	

@@ -23,5 +23,4 @@ interface DebugCommandHandler {
 	
 	def List<XDebugStackFrame> getStackFrames()
 	
-	
 }

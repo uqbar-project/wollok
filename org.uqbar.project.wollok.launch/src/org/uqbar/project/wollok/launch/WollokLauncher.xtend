@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
+import net.sf.lipermi.handler.CallHandler
 
 /**
  * Main program launcher for the interpreter.
@@ -57,7 +58,7 @@ class WollokLauncher extends WollokChecker {
 		debugger.interpreter = interpreter
 
 		log.debug("Opening " + listenCommandsPort)
-		createCommandHandler(debugger, listenCommandsPort)
+		registerCommandHandler(debugger, listenCommandsPort)
 		log.debug(listenCommandsPort + " opened !")
 
 		log.debug("Opening " + sendEventsPort)
@@ -68,7 +69,7 @@ class WollokLauncher extends WollokChecker {
 		debugger
 	}
 
-	def createCommandHandler(XDebugger debugger, int listenPort) {
+	def void registerCommandHandler(XDebugger debugger, int listenPort) {
 		CommandHandlerFactory.createCommandHandler(debugger, listenPort)
 	}
 

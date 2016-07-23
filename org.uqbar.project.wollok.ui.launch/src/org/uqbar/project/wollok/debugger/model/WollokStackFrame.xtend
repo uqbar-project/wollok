@@ -19,16 +19,16 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 	private int id
 	XDebugStackFrame frame
 	private IVariable[] variables = #[]
-	DebugCommandHandler remoteContext
+	private URI uri
 	
-	new(WollokThread thread, XDebugStackFrame frame, int id, DebugCommandHandler remoteContext) {
+	new(WollokThread thread, XDebugStackFrame frame, int id) {
 		super(thread.debugTarget)
 		this.id = id
 		this.thread = thread
 		this.frame = frame
-		this.remoteContext = remoteContext
+		this.uri = URI.createURI(frame.sourceLocation.fileURI)
 		
-		variables = frame.variables.map[toEclipseVariable(target)]
+//		variables = frame.variables.map[toEclipseVariable(target)]
 	}
 	
 	def static toEclipseVariable(XDebugStackFrameVariable variable, WollokDebugTarget target) { new WollokVariable(target, variable) }
@@ -46,7 +46,7 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 	// source code
 
 	def String getSourceName() { fileURI.lastSegment }
- 	def URI getFileURI() { URI.createURI(frame.sourceLocation.fileURI) }	
+ 	def URI getFileURI() { uri }	
 	override getLineNumber() throws DebugException { frame.sourceLocation.startLine }	
 	override getCharStart() throws DebugException { frame.sourceLocation.offset }
 	override getCharEnd() throws DebugException { frame.sourceLocation.offset + frame.sourceLocation.length }
@@ -85,11 +85,12 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 					obj.lineNumber == lineNumber &&
 					obj.id == id;
 			} catch (DebugException e) {
+				e.printStackTrace
 			}
 		}
 		return false
 	}
 	
-	override hashCode() { sourceName.hashCode + id }
+	override hashCode() { sourceName.hashCode - lineNumber  + id }
 	
 }

@@ -12,11 +12,11 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  */
 class CommandHandlerFactory {
 	
-	def static createCommandHandler(XDebugger debugger, int port) {
+	def static void createCommandHandler(XDebugger debugger, int port) {
 		new CallHandler => [
 			val server = new Server
 			registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server))
-			server.bind(port, it)
+			server.bind(port, it, new DebuggingProtocolFilter)
 		]
 	}
 	

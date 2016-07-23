@@ -33,6 +33,7 @@ abstract class AbstractCommunicationHandlerRunnable implements Runnable {
 			handleIncomingSafely(line)
 	      }
 	      catch (IOException e) {
+	      	e.printStackTrace
 	        log.error("Read failed")
 	        System.exit(-1)
 	      }
@@ -44,6 +45,7 @@ abstract class AbstractCommunicationHandlerRunnable implements Runnable {
 			incoming(line)
 		}
 		catch (Exception e) {
+			e.printStackTrace
 			log.error("Debugger error handling command: " + line, e)
 			System.exit(-1)
 		}
