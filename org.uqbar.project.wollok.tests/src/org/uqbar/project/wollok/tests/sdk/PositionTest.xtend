@@ -32,6 +32,13 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		var p = «position»
 		'''.test
 	}
+	
+	@Test
+	def void equalityByCoordinates() {
+		'''
+		assert.equals(new Position(0,0), «position»)
+		'''.test
+	}
 
 	@Test
 	def void shouldDrawVisualObjectsInBoard() {

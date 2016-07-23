@@ -148,4 +148,6 @@ class Position {
 	method setX(_x) { x = _x }
 	method getY() = y
 	method setY(_y) { y = _y }
+	
+	method == other { return x == other.getX() && y == other.getY()}
 }
