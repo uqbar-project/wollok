@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.classes.parts
+package org.uqbar.project.wollok.ui.diagrams.classes.anchors
 
 import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.IFigure
@@ -11,12 +11,18 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		super(owner)	
 	}
 	
+	def translateToAbsolute(Point point) {
+		val newPoint = point
+		owner.translateToAbsolute(newPoint)
+		newPoint	
+	}
+	
 	override getReferencePoint() {
-		owner.bounds.middleTop
+		owner.bounds.middleTop.translateToAbsolute
 	}
 	
 	override getLocation(Point reference) {
-		owner.bounds.middleBottom
+		owner.bounds.middleBottom.translateToAbsolute
 	}
 	
 	def getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }

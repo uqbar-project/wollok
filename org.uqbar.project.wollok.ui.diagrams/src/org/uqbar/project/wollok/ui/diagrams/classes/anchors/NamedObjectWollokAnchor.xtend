@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.classes.parts
+package org.uqbar.project.wollok.ui.diagrams.classes.anchors
 
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.geometry.Point
@@ -16,7 +16,7 @@ class NamedObjectWollokAnchor extends DefaultWollokAnchor {
 	}
 	
 	override getReferencePoint() {
-		new Point(owner.bounds.center.x, owner.bounds.bottomLeft.y)
+		new Point(owner.bounds.center.x, owner.bounds.bottomLeft.y).translateToAbsolute
 	}
 	
 }

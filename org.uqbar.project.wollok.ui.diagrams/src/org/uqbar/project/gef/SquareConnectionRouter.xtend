@@ -41,8 +41,6 @@ class SquareConnectionRouter extends AbstractRouter {
 		if (conn.sourceAnchor == null || conn.targetAnchor == null)
 			return;
 		
-		// TODO: Fix relative to absolute points
-		// http://wiki.eclipse.org/GEF/Troubleshooting_Guide#Implementing_Connection_Anchors
 		startPoint = getStartPoint(conn)
 		conn.translateToRelative(startPoint)
 		endPoint = getEndPoint(conn)

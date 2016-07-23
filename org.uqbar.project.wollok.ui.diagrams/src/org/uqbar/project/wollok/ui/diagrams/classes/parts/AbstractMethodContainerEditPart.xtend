@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import org.eclipse.draw2d.ChopboxAnchor
 import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.gef.ConnectionEditPart
@@ -14,6 +13,7 @@ import org.eclipse.gef.Request
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
 import org.eclipse.gef.requests.CreateRequest
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
