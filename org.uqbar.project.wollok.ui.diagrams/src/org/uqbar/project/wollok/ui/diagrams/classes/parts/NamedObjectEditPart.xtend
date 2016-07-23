@@ -13,13 +13,17 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
  * @author jfernandes
  */
 class NamedObjectEditPart extends AbstractMethodContainerEditPart implements PropertyChangeListener, NodeEditPart {
-	
+
 	override NamedObjectModel getCastedModel() { model as NamedObjectModel }
 	override getModelChildren() { castedModel.obj.members }
 	override WNamedObject getLanguageElement() { castedModel.obj }
 	
 	override createFigure() {
 		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND)
+	}
+
+	override createConnectionAnchor() {
+		new NamedObjectWollokAnchor(figure)
 	}
 	
 }

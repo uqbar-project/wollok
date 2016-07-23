@@ -28,18 +28,24 @@ import org.eclipse.draw2d.geometry.Rectangle
  *    * B*: to stop adjusting y and then moving forward to the end point 
  * 
  * @author jfernandes
+ * 
+ * Enhancement: delegates to every kind of node
  */
 // currently only works fine for LEFT to RIGHT diagrams
 class SquareConnectionRouter extends AbstractRouter {
 	public static val DISTANCE_FROM_TARGET = 20
+	Point startPoint 
+	Point endPoint
 	
 	override route(Connection conn) {
 		if (conn.sourceAnchor == null || conn.targetAnchor == null)
-			return
+			return;
 		
-		val startPoint = getStartPoint(conn)
+		// TODO: Fix relative to absolute points
+		// http://wiki.eclipse.org/GEF/Troubleshooting_Guide#Implementing_Connection_Anchors
+		startPoint = getStartPoint(conn)
 		conn.translateToRelative(startPoint)
-		val endPoint = getEndPoint(conn)
+		endPoint = getEndPoint(conn)
 		conn.translateToRelative(endPoint)
 		
 		conn.points = new PointList => [
@@ -53,17 +59,11 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getStartPoint(Connection conn) {
-		conn.sourceAnchor.owner.bounds.middleTop
+		conn.sourceAnchor.referencePoint
 	}
 	
 	override protected getEndPoint(Connection conn) {
-		conn.targetAnchor?.owner?.bounds?.middleBottom
+		conn.targetAnchor?.getLocation(endPoint)
 	}
-	
-	def getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
-	def getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
-	
-	def getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
-	def getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }
 	
 }

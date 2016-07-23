@@ -23,7 +23,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
  * @author jfernandes
  */
 abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEditPart implements PropertyChangeListener, NodeEditPart {
-	ConnectionAnchor anchor
+	protected ConnectionAnchor anchor
 
 	def Shape getCastedModel()
 
@@ -46,10 +46,14 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		}
 	}
 	
-		def getConnectionAnchor() {
+	def getConnectionAnchor() {
 		if (anchor == null)
-			anchor = new ChopboxAnchor(figure)
+			anchor = createConnectionAnchor
 		anchor
+	}
+	
+	def ConnectionAnchor createConnectionAnchor() {
+		new DefaultWollokAnchor(figure)
 	}
 	
 	override createEditPolicies() {

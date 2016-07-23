@@ -2,12 +2,12 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 
 import com.google.inject.Inject
 import java.util.ArrayList
+import java.util.Comparator
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
-import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
@@ -60,7 +60,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
@@ -75,7 +74,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import java.util.Comparator
 
 /**
  * 
@@ -249,7 +247,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def layout() {
 		// create graph
 		val graph = new DirectedGraph
-		graph.direction = PositionConstants.SOUTH
+		//graph.direction = PositionConstants.SOUTH
+		graph.direction = PositionConstants.RIGHT
 		
 		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
 		val nodes = parts.map[e | e.createNode ]
@@ -265,6 +264,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// map back positions to model inverting the Y coordinates
 		// because the directed graph only supports layout directo to SOUTH, meaning
 		// super classes will be at the bottom. So we invert them
+		/*
 		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
 
 		graph.nodes.forEach[ val n = it as Node
@@ -272,6 +272,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (n != bottomNode) deltaY += bottomNode.height;
 			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
+		*/
 	}
 	
 	def createNode(AbstractGraphicalEditPart e) {

@@ -20,5 +20,5 @@ class MixinEditPart extends AbstractMethodContainerEditPart {
 //			f.abstract = castedModel.mixin.abstract
 		]
 	}
-	
+
 }
