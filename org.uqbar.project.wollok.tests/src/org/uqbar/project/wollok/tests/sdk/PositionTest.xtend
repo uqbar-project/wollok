@@ -29,9 +29,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void canInstancePosition() {
 		'''
-		program p {
-			var p = «position»
-		}'''.interpretPropagatingErrors
+		var p = «position»
+		'''.test
 	}
 
 	@Test

@@ -92,14 +92,15 @@ object game {
 	method say(element, message) native
 	method clear() native
 	method stop() native
+	
 	method start() {
 		self.doStart(runtime.isInteractive())
 	}
 	
-	/** 
-	* @private
-	*/
-	method doStart(isRepl) native
+	method at(x, y) {
+		return new Position(x, y)
+	}
+	
 	
 	method setTitle(title) native
 	method getTitle() native
@@ -108,6 +109,11 @@ object game {
 	method setHeight(height) native
 	method getHeight() native
 	method setGround(image) native
+	
+	/** 
+	* @private
+	*/
+	method doStart(isRepl) native
 }
 
 class Position {
