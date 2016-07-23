@@ -74,8 +74,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			wgame.addVisual(aVisual)
-			wgame.addVisual(otherVisual)
+			game.addVisual(aVisual)
+			game.addVisual(otherVisual)
 		}'''.interpretPropagatingErrors
 		
 		validatePosition
@@ -90,7 +90,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			wgame.addVisual(visual)
+			game.addVisual(visual)
 		}'''.interpretPropagatingErrors
 		
 		validatePosition
@@ -101,7 +101,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		'''
 		«visualObjectWithoutPosition»
 		program p {
-			assert.throwsException{ wgame.addVisual(visual) }
+			assert.throwsException{ game.addVisual(visual) }
 		}'''.interpretPropagatingErrors
 	}
 
