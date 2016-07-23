@@ -15,7 +15,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  * 
  * @author ?
  */
-class WgameObject {
+class GameObject {
 	
 	def addVisual(WollokObject it) { 
 		board.addComponent(asVisual)

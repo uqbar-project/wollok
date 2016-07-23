@@ -6,11 +6,11 @@ class Key {
 	}
 
 	method onPressDo(action) {
-		keyCodes.forEach{ key => wgame.whenKeyPressedDo(key, action) }
+		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) }
 	}
 	
 	method onPressCharacterSay(function) {
-		keyCodes.forEach{ key => wgame.whenKeyPressedSay(key, function) }
+		keyCodes.forEach{ key => game.whenKeyPressedSay(key, function) }
 	}
 }
 
