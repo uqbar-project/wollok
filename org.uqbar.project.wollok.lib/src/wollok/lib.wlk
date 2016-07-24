@@ -64,6 +64,41 @@ object assert {
 	 */
 	method throwsException(block) native
 	
+	/** 
+	 * Tests whether a block throws an exception and this is the same expected. Otherwise an exception is thrown.
+	 *
+	 * Example:
+	 * 		
+	 *		assert.throwsExceptionLike(new BusinessException("hola"),{ => throw new BusinessException("hola") } => Works! this is the same exception class and same message.
+	 *		assert.throwsExceptionLike(new BusinessException("chau"),{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
+	 *		assert.throwsExceptionLike(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
+	 */	 
+	method throwsExceptionLike(exceptionExpected, block) {
+		self.throwsExceptionByComparing( block,{a => a.equals(exceptionExpected)})
+	}
+
+	method throwsExceptionWithMessage(errorMessage, block) {
+		self.throwsExceptionByComparing(block,{a => errorMessage.equals(a.getMessage())})
+	}
+	
+	method throwsExceptionWithType(exceptionExpected, block) {
+	self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
+	}
+		
+	method throwsExceptionByComparing(block,comparision){
+		var continue = false
+		try {
+			block.apply()
+			continue = true
+			} 
+		catch ex {
+			if(comparision.apply(ex))
+				assert.that(true)
+			else
+				throw new Exception("Expected other Exception")
+		}
+		if (continue) throw new Exception("Should have thrown an exception")	
+	}
 	/**
 	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
 	 */
