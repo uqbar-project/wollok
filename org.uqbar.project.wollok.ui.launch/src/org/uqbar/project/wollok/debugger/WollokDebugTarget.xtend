@@ -87,9 +87,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 		do {
 			try {
 				Thread.sleep(sleepTime)
-				println("[UI] Connecting to Wollok VM on port " + port + " (attempt " + retries + "/3) ...")
 				client = new Client("localhost", port, new CallHandler)
-				println("[UI] Connected !")
 				return client.getGlobal(DebugCommandHandler) as DebugCommandHandler
 			}
 			catch (ConnectException e) {
@@ -103,7 +101,6 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	
 	def listenForVM(int port) {
 		new Server => [
-			println("[UI] Listening for Wollok VM events on " + port)
 			bind(port, new CallHandler => [
 				registerGlobal(XTextInterpreterEventPublisher, new DebuggerUIInterpreterEventListener(this))	
 			])	
@@ -162,20 +159,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	
 	def synchronized IStackFrame[] getStackFrames() throws DebugException {
 		if (stackCache == null) {
-			println("Getting stack frames from the debugger...")
-			new Thread([|
-				stackCache = commandHandler.stackFrames.map[i, f|
-					println("[UI] mapping frame " + f) 
-					val a = f.toIStackFrame(i)
-					println("[UI] mapped frame " + f)
-					a
-				].toList.reverse	
-			]) => [
-				start()
-				join(15000)
-			]
-			
-			println("Returned from remote process. stackCache = " + stackCache )
+			stackCache = commandHandler.stackFrames.map[i, f| f.toIStackFrame(i) ].toList.reverse
 		}
 		stackCache
 	}
@@ -233,18 +217,15 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	def getBreakpoints() { ID_DEBUG_MODEL.getBreakpoints }
 	
 	def resumed(int detail) {
-//		println("VM resumed")
 		stackCache = null
 		suspended = false
 		wollokThread.fireResumeEvent(detail)
 	}
 	def suspended(int detail) {
-//		println("VM suspended " + detail)
 		suspended = true
 		wollokThread.fireSuspendEvent(detail)
 	}
 	def terminated() {
-//		println("VM terminated")
 		stackCache = null
 		
 		client.close
@@ -257,7 +238,6 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	def breakpointHit(String fileURI, int lineNumber) {
-//		println("VM breakpoint hit")
 		stackCache = null
 		findAndSetCurrentBreakpoint(fileURI, lineNumber)
 		suspended(DebugEvent.BREAKPOINT)

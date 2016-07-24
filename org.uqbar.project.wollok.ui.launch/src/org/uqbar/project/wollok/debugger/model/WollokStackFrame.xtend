@@ -28,7 +28,7 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 		this.frame = frame
 		this.uri = URI.createURI(frame.sourceLocation.fileURI)
 		
-//		variables = frame.variables.map[toEclipseVariable(target)]
+		variables = frame.variables.map[toEclipseVariable(target)]
 	}
 	
 	def static toEclipseVariable(XDebugStackFrameVariable variable, WollokDebugTarget target) { new WollokVariable(target, variable) }

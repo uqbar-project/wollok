@@ -16,7 +16,8 @@ class CommandHandlerFactory {
 		new CallHandler => [
 			val server = new Server
 			registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server, onReady))
-			server.bind(port, it, new DebuggingProtocolFilter)
+//			server.bind(port, it, new DebuggingProtocolFilter) // use this to debug RMI
+			server.bind(port, it)
 		]
 	}
 	

@@ -11,8 +11,6 @@ class XDebugValue implements Serializable {
 	static val ArrayList<XDebugStackFrameVariable> EMPTY_LIST = newArrayList
 	@Accessors String stringValue
 	
-	new() {} // compatible with serialization
-	
 	new(String stringValue) {
 		this.stringValue = stringValue
 	}

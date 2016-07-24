@@ -77,9 +77,9 @@ class WollokLauncher extends WollokChecker {
 		do {
 			try {
 				Thread.sleep(1000)
-				println("[VM] Connecting to Client on port " + port + " (attempt " + retries + "/3) ...")
+				log.debug("[VM] Connecting to Client on port " + port + " (attempt " + retries + "/3) ...")
 				val client = new Client("localhost", port, new CallHandler)
-				println("[VM] Connected !")
+				log.debug("[VM] Connected !")
 				val remoteObject = client.getGlobal(XTextInterpreterEventPublisher) as XTextInterpreterEventPublisher
 				// client events are async, don't want to block the interpreter
 				return new AsyncXTextInterpreterEventPublisher(remoteObject)
@@ -96,17 +96,17 @@ class WollokLauncher extends WollokChecker {
 	Object debuggerStartLock = new Object()
 
 	def void registerCommandHandler(XDebugger debugger, int listenPort) {
-		println("[VM] Listening for clients on port " + listenPort)
+		log.debug("[VM] Listening for clients on port " + listenPort)
 		CommandHandlerFactory.createCommandHandler(debugger, listenPort, [
 			synchronized(debuggerStartLock) {
 				debuggerStartLock.notify
 			}
 		])
 		synchronized(debuggerStartLock) {
-			println("Waiting for client call to start up")
+			log.debug("Waiting for client call to start up")
 			debuggerStartLock.wait
 		}
-		println("Client connected now proceeding with execution")
+		log.debug("Client connected now proceeding with execution")
 	}
 
 }

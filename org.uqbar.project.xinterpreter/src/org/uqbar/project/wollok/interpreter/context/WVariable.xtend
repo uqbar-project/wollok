@@ -11,11 +11,8 @@ class WVariable implements Serializable {
 	String name
 	boolean local
 	
-	new() {} // compatible with serialization
-	
 	new(String name, boolean local) {
 		this.name = name
 		this.local = local
 	}
-
 }

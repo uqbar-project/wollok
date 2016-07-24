@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.debugger.server.rmi
 import com.google.common.collect.Lists
 import java.io.Serializable
 import java.util.ArrayList
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
@@ -18,20 +19,15 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 @Accessors
 class XDebugStackFrame implements Serializable {
 	SourceCodeLocation sourceLocation
-	ArrayList<XDebugStackFrameVariable> variables
-	
-	new() {} // compatible with serialization
+	List<XDebugStackFrameVariable> variables
 	
 	new(XStackFrame frame) {
 		sourceLocation = frame.currentLocation
 		variables = frame.context.debugVariables
-//		variables = new ArrayList
-//		variables.add(new XDebugStackFrameVariable(new WVariable("abc", true), null))
 	}
 	
 	def static ArrayList<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
 		Lists.newArrayList(context.allReferenceNames.filter[name != WollokConstants.SELF].map[
-//			println("[VM] Mapping variable " + it.name)
 			toVariable(context)
 		])
 	}

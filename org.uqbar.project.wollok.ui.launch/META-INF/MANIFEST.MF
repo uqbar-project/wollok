@@ -9,6 +9,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.uqbar.project.wollok,
+ org.uqbar.project.xinterpreter,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.lib,
  org.eclipse.debug.core;bundle-version="3.8.0",
