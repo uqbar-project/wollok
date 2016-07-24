@@ -23,6 +23,14 @@ object console {
 }
 
 /**
+ * Exception to handle other values in assert.trowException*
+ */
+class OtherValueExpectedException inherits wollok.lang.Exception {
+	constructor(_message) = super(_message)	
+	constructor(_message,_cause) = super(_message,_cause)
+}
+
+/**
  * Assert object simplifies testing conditions
  */
 object assert {
@@ -74,7 +82,14 @@ object assert {
 	 *		assert.throwsExceptionLike(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
 	 */	 
 	method throwsExceptionLike(exceptionExpected, block) {
-		self.throwsExceptionByComparing( block,{a => a.equals(exceptionExpected)})
+		try 
+		{
+			self.throwsExceptionByComparing( block,{a => a.equals(exceptionExpected)})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The Exception expected was " + exceptionExpected + " but got " + ex.getCause())
+		} 
 	}
 
 	/** 
@@ -87,7 +102,14 @@ object assert {
 	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
 	 */	 
 	method throwsExceptionWithMessage(errorMessage, block) {
-		self.throwsExceptionByComparing(block,{a => errorMessage.equals(a.getMessage())})
+		try 
+		{
+			self.throwsExceptionByComparing(block,{a => errorMessage.equals(a.getMessage())})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The error message expected was " + errorMessage + " but got " + ex.getCause().getMessage())
+		}
 	}
 
 	/** 
@@ -100,7 +122,14 @@ object assert {
 	 *		assert.throwsExceptionWithType(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
 	 */	 	
 	method throwsExceptionWithType(exceptionExpected, block) {
-	self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
+		try 
+		{
+			self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The exception expected was " + exceptionExpected.className() + " but got " + ex.getCause().className())
+		}
 	}
 
 	/** 
@@ -115,16 +144,18 @@ object assert {
 	 */		
 	method throwsExceptionByComparing(block,comparison){
 		var continue = false
-		try {
-			block.apply()
-			continue = true
+		try 
+			{
+				block.apply()
+				continue = true
 			} 
-		catch ex {
-			if(comparison.apply(ex))
-				assert.that(true)
-			else
-				throw new Exception("Expected other Exception")
-		}
+		catch ex 
+			{
+				if(comparison.apply(ex))
+					assert.that(true)
+				else
+					throw new OtherValueExpectedException("Expected other value", ex)
+			}
 		if (continue) throw new Exception("Should have thrown an exception")	
 	}
 	/**
