@@ -19,14 +19,14 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 	private int id
 	XDebugStackFrame frame
 	private IVariable[] variables = #[]
-	private URI uri
+	// uris are not serializable
+	private transient URI uri  
 	
 	new(WollokThread thread, XDebugStackFrame frame, int id) {
 		super(thread.debugTarget)
 		this.id = id
 		this.thread = thread
 		this.frame = frame
-		this.uri = URI.createURI(frame.sourceLocation.fileURI)
 		
 		variables = frame.variables.map[toEclipseVariable(target)]
 	}
@@ -46,7 +46,11 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 	// source code
 
 	def String getSourceName() { fileURI.lastSegment }
- 	def URI getFileURI() { uri }	
+ 	def synchronized URI getFileURI() { 
+ 		if (uri == null)
+ 			uri = URI.createURI(frame.sourceLocation.fileURI)
+ 		uri
+ 	}	
 	override getLineNumber() throws DebugException { frame.sourceLocation.startLine }	
 	override getCharStart() throws DebugException { frame.sourceLocation.offset }
 	override getCharEnd() throws DebugException { frame.sourceLocation.offset + frame.sourceLocation.length }
