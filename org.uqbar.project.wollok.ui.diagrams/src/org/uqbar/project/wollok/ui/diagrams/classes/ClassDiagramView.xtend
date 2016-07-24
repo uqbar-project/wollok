@@ -114,7 +114,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		exportAction = new ExportAction => [
 				imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
-				toolTipText = "Export this diagram to PNG" // TODO i18n!
+				toolTipText = "Export this diagram to an image" // TODO i18n!
 			] 
 		site.actionBars.toolBarManager => [
 			add(exportAction)

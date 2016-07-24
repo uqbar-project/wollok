@@ -24,7 +24,7 @@ class ImageSaveUtil {
 		Assert.isNotNull(viewer, "null viewer passed to ImageSaveUtil::save")
 		Assert.isNotNull(saveFilePath, "null saveFilePath passed to ImageSaveUtil::save")
 		
-		if (format != SWT.IMAGE_BMP && format != SWT.IMAGE_JPEG && format != SWT.IMAGE_ICO)
+		if (!validFormats.contains(format))
 			throw new IllegalArgumentException("Save format not supported")
 				
 		try {
@@ -36,6 +36,10 @@ class ImageSaveUtil {
 			return false
 		}
 		return true
+	}
+	
+	def static validFormats() {
+		#[SWT.IMAGE_BMP, SWT.IMAGE_JPEG, SWT.IMAGE_PNG]
 	}
 	
 	def static boolean save(GraphicalViewer viewer) {
