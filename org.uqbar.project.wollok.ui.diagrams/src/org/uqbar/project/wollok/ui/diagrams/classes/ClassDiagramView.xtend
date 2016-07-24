@@ -28,6 +28,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
+import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
 import org.eclipse.jface.text.source.ISourceViewer
@@ -56,6 +57,7 @@ import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
@@ -96,6 +98,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	FlyoutPaletteComposite splitter
 	CustomPalettePage page
 	PaletteViewerProvider provider
+
+	ExportAction exportAction
 	
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -107,6 +111,14 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
+		
+		exportAction = new ExportAction => [
+				imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
+				toolTipText = "Export this diagram to PNG" // TODO i18n!
+			] 
+		site.actionBars.toolBarManager => [
+			add(exportAction)
+		]
 	}
 	
 	def createDiagramModel() {
@@ -151,7 +163,6 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 			// mixins (for classes and objects)
 			(classes + objects).map [ o | o.mixins ].flatten.toSet.forEach [ m | addMixin(m) ]
-			
 			//TODO: add mixins from document
 
 			// relations
@@ -217,6 +228,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// provides selection
 		site.selectionProvider = graphicalViewer
+		exportAction.viewer = graphicalViewer
 	}
 	
 	def configureGraphicalViewer() {
@@ -247,8 +259,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def layout() {
 		// create graph
 		val graph = new DirectedGraph
-		//graph.direction = PositionConstants.SOUTH
-		graph.direction = PositionConstants.RIGHT
+		graph.direction = PositionConstants.SOUTH
 		
 		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
 		val nodes = parts.map[e | e.createNode ]
