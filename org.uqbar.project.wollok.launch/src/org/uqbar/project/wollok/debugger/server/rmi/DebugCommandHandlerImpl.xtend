@@ -18,10 +18,16 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 class DebugCommandHandlerImpl implements DebugCommandHandler {
 	Server server
 	XDebugger debugger
+	()=>void onReady
 	
-	new(XDebugger debugger, Server server) {
+	new(XDebugger debugger, Server server, ()=>void onReady) {
 		this.debugger = debugger
 		this.server = server
+		this.onReady = onReady
+	}
+	
+	override clientReady() {
+		onReady.apply()
 	}
 	
 	override pause() { debugger.pause }

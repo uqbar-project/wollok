@@ -1,16 +1,15 @@
 package org.uqbar.project.wollok.tests.debugger
 
+import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
-import net.sf.lipermi.handler.CallHandler;
 import org.junit.Test
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
+import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.rmi.CommandHandlerFactory
 import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerImplTestCase
-import org.uqbar.project.wollok.tests.debugger.util.TestTextInterpreterEventPublisher
-import java.net.URI
 import org.uqbar.project.wollok.tests.debugger.util.DebugEventListenerAsserter
-import org.uqbar.project.wollok.tests.debugger.util.AsyncXTextInterpreterEventPublisher
+import org.uqbar.project.wollok.tests.debugger.util.TestTextInterpreterEventPublisher
 
 /**
  * Tests a breakpoint being hit by the debugger/interpreter
@@ -30,12 +29,9 @@ class BreakPointHitTestCase extends AbstractXDebuggerImplTestCase {
 		'''.debugSession [
 			setBreakPoint(4)
 		   	expect [ 
-				on(started).thenDo[ println("notified about program started") ]
-				on(suspended).thenDo[
-					resume
-				]
+				on(suspended).thenDo[ resume ]
 				on(breakPointHit(4))
-					.checkThat [vm|
+					.checkThat [vm |
 						val frames = vm.stackFrames
 						// 1 stack level
 						assertNotNull(frames)
@@ -43,13 +39,12 @@ class BreakPointHitTestCase extends AbstractXDebuggerImplTestCase {
 						
 						// 1 variable (a = 123)
 						assertEquals(1, frames.get(0).variables.size)
-						val variable = frames.get(0).variables.get(0)
-						assertEquals("a", variable.variable.name)
-						assertEquals("123", variable.value.stringValue)
+						frames.get(0).variables.get(0) => [
+							assertEquals("a", variable.name)
+							assertEquals("123", value.stringValue)	
+						]
 					]
-					.thenDo [
-						resume
-					]
+					.thenDo [ resume ]
 			]
 		]		
 	}
@@ -67,7 +62,8 @@ class BreakPointHitTestCase extends AbstractXDebuggerImplTestCase {
 			
 			// server-side (VM)
 			var commandsPort = 7890
-			CommandHandlerFactory.createCommandHandler(realDebugger, commandsPort)
+			CommandHandlerFactory.createCommandHandler(realDebugger, commandsPort, [])
+			
 			// client-side (test/ui)
 			var commandClient = new Client("localhost", commandsPort, new CallHandler)
 			val commandHandler = commandClient.getGlobal(DebugCommandHandler) as DebugCommandHandler

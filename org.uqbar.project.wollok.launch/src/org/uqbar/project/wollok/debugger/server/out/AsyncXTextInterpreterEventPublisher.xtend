@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.debugger.util
+package org.uqbar.project.wollok.debugger.server.out
 
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import java.util.concurrent.ExecutorService

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.debugger
 import java.net.ConnectException
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
+import net.sf.lipermi.net.Server
 import org.eclipse.core.resources.IMarkerDelta
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.debug.core.DebugEvent
@@ -16,10 +17,10 @@ import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IThread
 import org.eclipse.jface.preference.IPreferenceStore
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
-import org.uqbar.project.wollok.debugger.client.EventDispatchJob
 import org.uqbar.project.wollok.debugger.model.WollokDebugElement
 import org.uqbar.project.wollok.debugger.model.WollokStackFrame
 import org.uqbar.project.wollok.debugger.model.WollokThread
+import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -30,7 +31,6 @@ import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import org.eclipse.debug.core.DebugPlugin
 
 /**
  * This is probably the main class of the debugger client side (UI).
@@ -44,11 +44,11 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	private IProcess process
 	protected ILaunch launch
 	
-	//commands
+	// commands
 	Client client
 	DebugCommandHandler commandHandler
 	// events
-	EventDispatchJob eventHandler
+	Server server
 	
 	protected boolean suspended = true
 	protected boolean fTerminated = false
@@ -65,24 +65,31 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 		target = this
 		this.process = process
 		
-		// el orden importa! hace dos conexiones
-		commandHandler = createCommandHandler(requestPort) 
-		eventHandler = new EventDispatchJob(this, eventPort)
-		
 		wollokThread = new WollokThread(this)
 		wollokThreads = #[wollokThread]
-		eventHandler.schedule
+		
+		// Order matters ! there are two connections !
+
+		// UI <- VM (events)
+		server = listenForVM(eventPort)
+		
+		// UI -> VM (orders)
+		commandHandler = connectToVM(requestPort)
+		
 		breakpointManager.addBreakpointListener(this)
+		
+		// start VM execution !
+		commandHandler.clientReady
 	}
 	
-	def createCommandHandler(int port) {
+	def connectToVM(int port) {
 		var retries = 1
 		do {
 			try {
 				Thread.sleep(sleepTime)
-//				println("Connecting to Wollok VM (attempt " + retries + "/4) ...")
+				println("[UI] Connecting to Wollok VM on port " + port + " (attempt " + retries + "/3) ...")
 				client = new Client("localhost", port, new CallHandler)
-//				println("Connected !")
+				println("[UI] Connected !")
 				return client.getGlobal(DebugCommandHandler) as DebugCommandHandler
 			}
 			catch (ConnectException e) {
@@ -91,7 +98,16 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 			}
 		} while (retries < 4)
 		
-		throw new WollokRuntimeException("Could NOT connect to Wollok JVM !")
+		throw new WollokRuntimeException("Could NOT connect to Wollok VM !")
+	}
+	
+	def listenForVM(int port) {
+		new Server => [
+			println("[UI] Listening for Wollok VM events on " + port)
+			bind(port, new CallHandler => [
+				registerGlobal(XTextInterpreterEventPublisher, new DebuggerUIInterpreterEventListener(this))	
+			])	
+		]
 	}
 	
 	def getSleepTime() {
@@ -146,12 +162,12 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	
 	def synchronized IStackFrame[] getStackFrames() throws DebugException {
 		if (stackCache == null) {
-//			println("Getting stack frames from the debugger...")
+			println("Getting stack frames from the debugger...")
 			new Thread([|
 				stackCache = commandHandler.stackFrames.map[i, f|
-//					println("[UI] mapping frame " + f) 
+					println("[UI] mapping frame " + f) 
 					val a = f.toIStackFrame(i)
-//					println("[UI] mapped frame " + f)
+					println("[UI] mapped frame " + f)
 					a
 				].toList.reverse	
 			]) => [
@@ -159,7 +175,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 				join(15000)
 			]
 			
-//			println("Returned from remote process. stackCache = " + stackCache )
+			println("Returned from remote process. stackCache = " + stackCache )
 		}
 		stackCache
 	}
@@ -230,7 +246,10 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	def terminated() {
 //		println("VM terminated")
 		stackCache = null
+		
 		client.close
+		server.close
+		
 		fTerminated = true
 		suspended = false
 		breakpointManager.removeBreakpointListener(this)

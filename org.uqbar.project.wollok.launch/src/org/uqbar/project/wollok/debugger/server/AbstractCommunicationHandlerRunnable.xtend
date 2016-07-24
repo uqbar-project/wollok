@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.launch.io.CommunicationChannel
  * 
  * @author jfernandes
  */
+@Deprecated 
 abstract class AbstractCommunicationHandlerRunnable implements Runnable {
 	protected Logger log = Logger.getLogger(AbstractCommunicationHandlerRunnable)
 	@Accessors CommunicationChannel channel

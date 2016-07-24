@@ -11,6 +11,13 @@ import java.util.List
  * @author jfernandes
  */
 interface DebugCommandHandler {
+	
+	/**
+	 * The client tells the VM that is ready so that the VM
+	 * can proceed.
+	 */
+	def void clientReady()
+	
 	def void pause()
 	def void resume()
 	def void stepOver()
