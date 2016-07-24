@@ -50,7 +50,9 @@ class WollokDSK {
 	
 	def static isBasicType(WollokObject it) {
 		val fqn = behavior.fqn
-		fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
+		val bt = fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
+//		println("[VM] \t\tis " + fqn + " basic type " + bt)
+		bt
 	}
 	
 }

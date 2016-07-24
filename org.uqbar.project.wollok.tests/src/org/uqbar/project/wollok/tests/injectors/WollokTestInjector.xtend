@@ -1,12 +1,11 @@
-package org.uqbar.project.wollok.tests.interpreter.repl
+package org.uqbar.project.wollok.tests.injectors
 
 import org.uqbar.project.wollok.WollokDslInjectorProvider
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 
-class WollokReplInjector extends WollokDslInjectorProvider {
+class WollokTestInjector extends WollokDslInjectorProvider {
 	
 	override protected internalCreateInjector() {
 		new WollokLauncherSetup().createInjectorAndDoEMFRegistration
 	}
-	
 }

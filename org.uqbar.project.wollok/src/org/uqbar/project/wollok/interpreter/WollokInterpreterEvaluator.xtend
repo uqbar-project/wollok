@@ -111,9 +111,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 
 	def dispatch evaluate(WVariableDeclaration it) {
-		if (it.eContainer instanceof WProgram) {
-			interpreter.addProgramVariable(variable)
-		}
 		interpreter.currentContext.addReference(variable.name, right?.eval)
 	}
 
