@@ -707,7 +707,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
 			 if (expression != null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
+//			I remove this because I'm not sure if it is needed (Pablo 2016/07/25)
+//			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
 			 if (declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
 			 // this is currently a limitation on native objects
 //			 if(declaringContext instanceof WClass)

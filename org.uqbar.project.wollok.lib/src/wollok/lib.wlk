@@ -152,7 +152,7 @@ object assert {
 		catch ex 
 			{
 				if(comparison.apply(ex))
-					assert.that(true)
+					self.that(true)
 				else
 					throw new OtherValueExpectedException("Expected other value", ex)
 			}
@@ -243,5 +243,5 @@ class Position {
 	method getY() = y
 	method setY(_y) { y = _y }
 	
-	method == other { return x == other.getX() && y == other.getY()}
+	override method ==(other) { return x == other.getX() && y == other.getY()}
 }

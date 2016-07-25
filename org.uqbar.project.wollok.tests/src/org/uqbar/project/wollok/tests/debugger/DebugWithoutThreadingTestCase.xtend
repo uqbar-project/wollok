@@ -198,7 +198,8 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	def assertCode(){
-'''/**
+'''
+/**
  * Assert object simplifies testing conditions
  */
 object assert {
@@ -320,7 +321,7 @@ object assert {
 		catch ex 
 			{
 				if(comparison.apply(ex))
-					assert.that(true)
+					self.that(true)
 				else
 					throw new OtherValueExpectedException("Expected other value", ex)
 			}

@@ -10,5 +10,5 @@ class InstanceVariableMirror {
 		return if (v == null) "null" else v.toSmartString(alreadyShown)
 	}
 
-	method toString() = name + "=" + self.value()
+	override method toString() = name + "=" + self.value()
 }
