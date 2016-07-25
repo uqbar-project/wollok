@@ -38,7 +38,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
-	public static val THIS_VAR = new WVariable('this', false)
+	public static val SELF_VAR = new WVariable(SELF, false)
 	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext<WollokObject> parentContext
@@ -137,7 +137,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	override resolve(String variableName) {
-		if (variableName == THIS)
+		if (variableName == SELF)
 			this
 		else if (instanceVariables.containsKey(variableName))
 			instanceVariables.get(variableName)
@@ -146,8 +146,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
  	}
  	
 	override setReference(String name, WollokObject value) {
-		if (name == THIS)
-			throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
+		if (name == SELF)
+			throw new RuntimeException("Cannot modify \"" +  SELF + "\" variable")
 		if (!instanceVariables.containsKey(name))
 			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
@@ -159,7 +159,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override allReferenceNames() { 
 		instanceVariables.keySet.map[new WVariable(it, false)]
 		+ 
-		#[THIS_VAR]
+		#[SELF_VAR]
 	}
 	
 	def allMethods() {

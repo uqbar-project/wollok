@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
@@ -20,7 +21,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeN
  * @author jfernandes
  */
 class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements EvaluationContext<WollokObject> {
-	static var Map<String, WollokObject> localProgramVariables = newHashMap
+	val Map<String, WollokObject> localProgramVariables = newHashMap
 	WollokInterpreterConsole console
 	
 	new(WollokInterpreterConsole console, WollokInterpreter interpreter) {
@@ -37,20 +38,12 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	override resolve(String variableName) throws UnresolvableReference {
 		if (localProgramVariables.containsKey(variableName))
 			localProgramVariables.get(variableName)
-		else if (interpreter.globalVariables.containsKey(variableName))
-			interpreter.globalVariables.get(variableName)
-		else
-			// I18N !
-			throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+		else interpreter.resolve(variableName)
 	}
 	
 	override setReference(String variableName, WollokObject value) {
 		if (!localProgramVariables.containsKey(variableName)){
-			if (!interpreter.globalVariables.containsKey(variableName))
-				// I18N !
-				throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
-			else
-				interpreter.globalVariables.put(variableName,value)
+			interpreter.setReference(variableName, value)
 		}
 		else
 			localProgramVariables.put(variableName,value)
@@ -77,5 +70,12 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		interpreter.globalVariables.put(name,value)
 		value
 	}
+	
+	
+	// ******************************
+	// ** Object methods (for debugging interpreter)
+	// ******************************
+	
+	override toString() { "Lobby" }
 
 }
