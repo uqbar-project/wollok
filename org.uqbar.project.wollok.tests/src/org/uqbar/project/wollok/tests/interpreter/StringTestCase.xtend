@@ -58,7 +58,8 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.that("aguacate".contains("cat"))
 		assert.that("aguacate".contains("agua"))
-		assert.notThat("aguacate".contains("managua"))			
+		assert.notThat("aguacate".contains("managua"))
+		assert.notThat("aguacate".contains("AGUA"))
 		'''.test
 	}
 	
