@@ -32,7 +32,8 @@ class WollokConstants {
 	public static val OP_BOOLEAN = #['and', "&&", "or", "||"]
 	public static val OP_UNARY_BOOLEAN = #['!', "not"]
 	
-	public static val THIS = "this"
+	public static val SELF = "self"
+	public static val NULL = "null"
 	public static val METHOD = "method"
 	public static val VAR = "var"
 	public static val OVERRIDE = "override"

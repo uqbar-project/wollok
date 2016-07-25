@@ -14,6 +14,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+// Migrate to java8 "ReentrantLock" to be able to check if it is paused (locked) or not
 class XDebuggerImpl implements XDebugger {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
 	XInterpreter<?> interpreter
@@ -62,24 +63,26 @@ class XDebuggerImpl implements XDebugger {
 	// helper methods
 	
 	def checkBreakpointsAndSuspendIfHit(EObject element) {
-		val bp = breakpoints.findFirst[hits(element)]
+		val bp = breakpoints.findFirst[ hits(element) ]
 		if (bp != null && bp != lastBreakpointHit) {
 			eventSender.breakpointHit(bp.fileURI, bp.lineNumber)
 			lastBreakpointHit = bp
-			sleep
+			sleep(false) // avoid sending two events (suspended by BP, suspended by step)
 		}
 	}
 	
-	protected def sleep() {
-		eventSender.suspendStep
-		synchronized(suspendedLock) {
+	protected def sleep() { this.sleep(true) }
+	
+	protected def sleep(boolean sendingEvent) {
+		if (sendingEvent) eventSender.suspendStep
+		synchronized (suspendedLock) {
 			suspendedLock.wait
 		}
 		eventSender.resumeStep
 	}
 	
 	protected def wakeUp() {
-		synchronized(suspendedLock) { 
+		synchronized (suspendedLock) {
 			suspendedLock.notify
 		}
 	} 

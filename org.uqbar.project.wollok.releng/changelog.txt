@@ -42,7 +42,11 @@
 
 	<table class="changelog">
 		<tbody>
-		<tr><td class="date">2016-07-21 11:10:47 +0200</td><td><span class="committer">Pablo Tesone</span></td><td>Skipping a test</td></tr>
+		<tr><td class="date">2016-07-22 17:08:04 +0200</td><td><span class="committer">Pablo Tesone</span></td><td>Organizing the way the REPL keeps the state of previous runs and removing this behavior for normal runs</td></tr>
+		<tr><td class="date">2016-07-22 02:21:06 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Refactoring debugger tests cases to clean up code and add javadocs. Separating the different kinds of tests and working on the fluent API'</td></tr>
+		<tr><td class="date">2016-07-21 16:04:03 +0200</td><td><span class="committer">Pablo Tesone</span></td><td>Skipping a test</td></tr>
+		<tr><td class="date">2016-07-20 18:29:50 +0200</td><td><span class="committer">Matías Freyre</span></td><td>Tidy up some methods.</td></tr>
+		<tr><td class="date">2016-07-20 17:46:24 +0200</td><td><span class="committer">Matías Freyre</span></td><td>Add newline() method to the console WKO. Replace all \n with System.lineSeparator.</td></tr>
 		<tr><td class="date">2016-07-20 00:19:38 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Support for failing tests</td></tr>
 		<tr><td class="date">2016-07-20 00:02:35 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Run a test reporting errors to the user. First step, tests validating information for a correctly running test</td></tr>
 		<tr><td class="date">2016-07-19 21:57:26 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Allow to run different kinds of programs. Now input to the server is a json containing program and programType</td></tr>
@@ -60,6 +64,11 @@
 		<tr><td class="date">2016-07-18 00:17:02 +0200</td><td><span class="committer">Nicolás Passerini</span></td><td>Tests that proof the behavior of the interpreter in paralelism</td></tr>
 		<tr><td class="date">2016-07-16 22:21:05 +0200</td><td><span class="committer">PalumboN</span></td><td>Adding missing import</td></tr>
 		<tr><td class="date">2016-07-16 21:27:07 +0200</td><td><span class="committer">PalumboN</span></td><td>Adding wollok package: vm</td></tr>
+		<tr><td class="date">2016-07-15 20:51:22 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Trying out new test for the debugger which does a full assertion of all evalution steps, based on the source code of each EObject to be evaluated. Even those that are for objects defined in another file, like Collection.forEach()</td></tr>
+		<tr><td class="date">2016-07-15 18:59:41 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Adding a new debugger test for a foreach execution. Found that the test infra failed when trying to step in, into code that is outside of the current test code (like the forEach method). Currently made it work skipping those steps. Would be great to have that working later</td></tr>
+		<tr><td class="date">2016-07-15 17:38:48 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Refactorign debugger test code to make it reusable</td></tr>
+		<tr><td class="date">2016-07-15 05:39:47 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Adding new test that uses the XDebuggerImpl for real stepping with multithreading yeah :) It is still a raw test but a really good progress. Eventually we will want to have a whole API to make assertions on the state of the program at different moments. At the end it might even end up as an XPECT extension to have the expectations declarative as comments</td></tr>
+		<tr><td class="date">2016-07-15 04:14:51 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Updating this strings in code to Self. Adding retries to connect to remote interpreter while debugging. Adding first testscases for the debugger (server/interpreter part, not client code) with mockito. Filtering 'self' from debugger client code to avoid stack overflow. Still getting stack overflow :S</td></tr>
 		<tr><td class="date">2016-07-14 01:44:28 +0200</td><td><span class="committer">fdodino</span></td><td>Fixing issue <a href="https://github.com/uqbar-project/wollok/issues/819">#819</a></td></tr>
 		<tr><td class="date">2016-07-14 00:05:41 +0200</td><td><span class="committer">Javier Fernandes</span></td><td>Fixes <a href="https://github.com/uqbar-project/wollok/issues/746">#746</a> validate if a variable is only used to return it. Its a first approach. Limited let say</td></tr>
 		<tr><td class="date">2016-07-13 12:09:18 +0200</td><td><span class="committer">fdodino</span></td><td>Issue <a href="https://github.com/uqbar-project/wollok/issues/681">#681</a> - Static diagram temporarily hidden for Wollok perspective</td></tr>
