@@ -41,6 +41,7 @@ class WString extends AbstractJavaWrapper<String> {
 			throw new WollokRuntimeException("Element not found")
 		result
 	} 		
+	def contains(WollokObject other) {wrapped.contains(other.asWString.wrapped)}
 	def toLowerCase() { wrapped.toLowerCase }
 	def toUpperCase() { wrapped.toUpperCase }
 	def trim() { wrapped.trim }

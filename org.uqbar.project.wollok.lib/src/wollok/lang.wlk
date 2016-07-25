@@ -1280,13 +1280,7 @@ class String {
 	 * 		"unusual".contains("usual")  ==> Answers true
 	 * 		"become".contains("CO")      ==> Answers false
 	 */
-	method contains(other) {
-		try {
-			return self.indexOf(other) >= 0
-		} catch e {
-			return false
-		}
-	}
+	method contains(other) native
 	
 	/** Answers whether this string has no characters */
 	method isEmpty() {
