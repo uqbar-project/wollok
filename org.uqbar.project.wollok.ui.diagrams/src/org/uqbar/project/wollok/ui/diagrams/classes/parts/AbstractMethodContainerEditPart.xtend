@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.List
 import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.gef.ConnectionEditPart
@@ -15,6 +16,9 @@ import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
 import org.eclipse.gef.requests.CreateRequest
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.wollokDsl.WMember
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * Abstract base class for edit parts for (named) objects and classes
@@ -87,5 +91,34 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 	override refreshVisuals() {
 		(parent as GraphicalEditPart).setLayoutConstraint(this, figure, castedModel.bounds)
 	}
+
+	override getModelChildren() {
+		// avoiding getters & setters
+		val variables = doGetModelChildren
+			.filter [ member | member.isVariable ]
+			.map [ member | (member as WVariableDeclaration).variable.name ]
+			.toList
+		
+		doGetModelChildren.filter [ member | member.isNotAccessor(variables) ].toList
+	}
+	
+	def List doGetModelChildren()
+
+	def dispatch boolean isNotAccessor(WMember member, List<String> variables) {
+		true
+	}
+	
+	def dispatch boolean isNotAccessor(WMethodDeclaration method, List<String> variables) {
+		!variables.contains(method.name)  		
+	}
+
+	def dispatch Boolean isVariable(WMember member) {
+		false
+	}
+
+	def dispatch Boolean isVariable(WVariableDeclaration member) {
+		true
+	}
+	
 	
 }
