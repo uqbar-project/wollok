@@ -45,4 +45,8 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
+	override toString() {
+		class.simpleName + "{" + values.entrySet.map[key + ":" + value].join(',') + '}'
+	}
+	
 }

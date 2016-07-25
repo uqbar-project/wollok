@@ -2,11 +2,11 @@ package org.uqbar.project.wollok.tests.interpreter.repl
 
 import org.eclipse.xtext.junit4.InjectWith
 import org.junit.Test
+import org.uqbar.project.wollok.tests.injectors.WollokReplInjector
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
- * Tests that the repl can remember the variables setted.
- * 
+ * Tests that the REPL implementation of the interpreter remember the state.
  * @author tesonep
  */
  @InjectWith(WollokReplInjector)

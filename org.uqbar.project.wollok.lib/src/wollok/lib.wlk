@@ -173,7 +173,7 @@ class StringPrinter {
 	method getBuffer() = buffer
 }	
 
-object wgame {
+object game {
 	method addVisual(element) native
 	method addVisualIn(element, position) native
 	method addVisualCharacter(element) native
@@ -186,14 +186,15 @@ object wgame {
 	method say(element, message) native
 	method clear() native
 	method stop() native
+	
 	method start() {
 		self.doStart(runtime.isInteractive())
 	}
 	
-	/** 
-	* @private
-	*/
-	method doStart(isRepl) native
+	method at(x, y) {
+		return new Position(x, y)
+	}
+	
 	
 	method setTitle(title) native
 	method getTitle() native
@@ -202,6 +203,11 @@ object wgame {
 	method setHeight(height) native
 	method getHeight() native
 	method setGround(image) native
+	
+	/** 
+	* @private
+	*/
+	method doStart(isRepl) native
 }
 
 class Position {
@@ -220,20 +226,22 @@ class Position {
 	method moveUp(num) { y += num }
 	method moveDown(num) { y -= num }
 
-	method drawElement(element) { wgame.addVisualIn(element, self) }
-	method drawCharacter(element) { wgame.addVisualCharacterIn(element, self) }		
-	method deleteElement(element) { wgame.removeVisual(element) }
-	method say(element, message) { wgame.say(element, message) }
-	method allElements() = wgame.getObjectsIn(self)
+	method drawElement(element) { game.addVisualIn(element, self) }
+	method drawCharacter(element) { game.addVisualCharacterIn(element, self) }		
+	method deleteElement(element) { game.removeVisual(element) }
+	method say(element, message) { game.say(element, message) }
+	method allElements() = game.getObjectsIn(self)
 	
 	method clone() = new Position(x, y)
 
 	method clear() {
-		self.allElements().forEach{it => wgame.removeVisual(it)}
+		self.allElements().forEach{it => game.removeVisual(it)}
 	}
 	
 	method getX() = x
 	method setX(_x) { x = _x }
 	method getY() = y
 	method setY(_y) { y = _y }
+	
+	method == other { return x == other.getX() && y == other.getY()}
 }

@@ -29,9 +29,15 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void canInstancePosition() {
 		'''
-		program p {
-			var p = «position»
-		}'''.interpretPropagatingErrors
+		var p = «position»
+		'''.test
+	}
+	
+	@Test
+	def void equalityByCoordinates() {
+		'''
+		assert.equals(new Position(0,0), «position»)
+		'''.test
 	}
 
 	@Test
@@ -74,8 +80,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			wgame.addVisual(aVisual)
-			wgame.addVisual(otherVisual)
+			game.addVisual(aVisual)
+			game.addVisual(otherVisual)
 		}'''.interpretPropagatingErrors
 		
 		validatePosition
@@ -90,7 +96,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			wgame.addVisual(visual)
+			game.addVisual(visual)
 		}'''.interpretPropagatingErrors
 		
 		validatePosition
@@ -101,7 +107,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		'''
 		«visualObjectWithoutPosition»
 		program p {
-			assert.throwsException{ wgame.addVisual(visual) }
+			assert.throwsException{ game.addVisual(visual) }
 		}'''.interpretPropagatingErrors
 	}
 
