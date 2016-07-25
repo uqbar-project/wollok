@@ -24,7 +24,7 @@ class WollokReplConsolePageParticipant implements IConsolePageParticipant {
             viewer = page.control as StyledText
             
             //TODO: eventually this will be configurable (to enable / disable)
-            #[new WollokAnsiColorLineStyleListener, new WollokCodeHighLightLineStyleListener].forEach[
+            #[new WollokAnsiColorLineStyleListener, new WollokCodeHighLightLineStyleListener, new WollokStyleRangeListener(viewer)].forEach[
             	viewer.addLineStyleListener(it)
             	listeners += it	
             ]

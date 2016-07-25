@@ -1,13 +1,18 @@
 package org.uqbar.project.wollok.ui.console.editor
 
 import java.lang.reflect.Field
+import java.util.List
 import org.eclipse.swt.SWTError
+import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.dnd.Clipboard
 import org.eclipse.swt.dnd.DND
+import org.eclipse.swt.dnd.RTFTransfer
 import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.widgets.Composite
+import org.uqbar.project.wollok.ui.console.editor.rtf.WollokRTFWriter
+import org.uqbar.project.wollok.ui.console.highlight.WollokAnsiColorLineStyleListener
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 
@@ -16,6 +21,8 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.
  * 
  */
 class WollokReplStyledText extends StyledText {
+
+	WollokStyle style = new WollokStyle(this)
 
 	new(Composite parent, int style) {
 		super(parent, style)
@@ -40,14 +47,14 @@ class WollokReplStyledText extends StyledText {
 				if (text.length() > 0) {
 					// TODO RTF support
 					val plainTextTransfer = TextTransfer.getInstance()
-					val Object[] data = #{ text }
-					val Transfer[] types = #{ plainTextTransfer	}
+					val Object[] data = #{text}
+					val Transfer[] types = #{plainTextTransfer}
 					val clipboard = getFieldValue("clipboard") as Clipboard
 					clipboard.setContents(data, types, type)
 					return true
 				}
 			} else {
-				val int	length = selection.y - selection.x
+				val int length = selection.y - selection.x
 				if (length > 0) {
 					setClipboardContent(selection.x, length, type)
 					return true
@@ -60,31 +67,37 @@ class WollokReplStyledText extends StyledText {
 		}
 		return false
 	}
-	
+
 	def void setClipboardContent(int start, int length, int clipboardType) throws SWTError {
 		val boolean isGtk = getFieldValue("IS_GTK") as Boolean
-		if (clipboardType == DND.SELECTION_CLIPBOARD && !isGtk) return
+		if(clipboardType == DND.SELECTION_CLIPBOARD && !isGtk) return;
+
+		// Fix: when you select a line from start, it doesn't catch special characters
 		val TextTransfer plainTextTransfer = TextTransfer.getInstance()
-		//val plainTextWriter = createWriter("StyledText$TextWriter", start, escapedBlockText.length)
-		//val String plainText = getEscapedDelimitedText(plainTextWriter)
-		val plainText = content.getTextRange(start, length).deleteAnsiCharacters
+		val originalText = content.getTextRange(start, length)
+		val plainText = originalText.deleteAnsiCharacters
 		var Object[] data
 		var Transfer[] types
 		if (clipboardType == DND.SELECTION_CLIPBOARD) {
-			data = #[ plainText ]
-			types = #[ plainTextTransfer ]
+			data = #[plainText]
+			types = #[plainTextTransfer]
 		} else {
-			// val RTFTransfer	rtfTransfer = RTFTransfer.getInstance()
-			// rtf = buscar una libreria que convierta de ASCII a RTF
-			//data = #[ rtfText,, plainText  ]
-			//types = #[ rtfTransfer, plainTextTransfer ]
-			data = #[  plainText  ]
-			types = #[ plainTextTransfer ]
+			try {
+				style.adjustBoundaryOffsets(start, length)
+				val rtfWriter = new WollokRTFWriter(style)
+				val rtfText = rtfWriter.RTFText
+				val RTFTransfer rtfTransfer = RTFTransfer.getInstance()
+				data = #[rtfText, plainText]
+				types = #[rtfTransfer, plainTextTransfer]
+			} catch (Exception e) {
+				data = #[plainText]
+				types = #[plainTextTransfer]
+			}
 		}
 		val clipboard = getFieldValue("clipboard") as Clipboard
 		clipboard.setContents(data, types, clipboardType)
 	}
-	
+
 	private def getEscapedBlockText() {
 		val text = executeMethod("getBlockSelectionText", #{System.getProperty("line.separator")}) as String
 		text.deleteAnsiCharacters
@@ -95,15 +108,20 @@ class WollokReplStyledText extends StyledText {
 		field.accessible = true
 		field
 	}
-	
+
 	private def getFieldValue(String name) {
 		getField(name).get(this)
 	}
 
 	def executeMethod(String methodName, Object[] args) {
-		val method = typeof(StyledText).getDeclaredMethod(methodName, args.map [ it.class ])
+		val method = typeof(StyledText).getDeclaredMethod(methodName, args.map[it.class])
 		method.accessible = true
 		method.invoke(this, args)
+	}
+	
+	def void addStyle(int offset, List<StyleRange> styles) {
+		val line = content.getLineAtOffset(offset)
+		style.applyStyle(line, styles)
 	}
 	
 }
