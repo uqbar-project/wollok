@@ -53,6 +53,9 @@ class Exception {
 	
 	/** Answers the detail message string of this exception. */
 	method getMessage() = message
+	
+	/** Overrides the behavior to compare exceptions */
+	override equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
 }
 
 /**

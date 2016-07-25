@@ -23,6 +23,14 @@ object console {
 }
 
 /**
+ * Exception to handle other values in assert.trowException*
+ */
+class OtherValueExpectedException inherits wollok.lang.Exception {
+	constructor(_message) = super(_message)	
+	constructor(_message,_cause) = super(_message,_cause)
+}
+
+/**
  * Assert object simplifies testing conditions
  */
 object assert {
@@ -64,6 +72,92 @@ object assert {
 	 */
 	method throwsException(block) native
 	
+	/** 
+	 * Tests whether a block throws an exception and this is the same expected. Otherwise an exception is thrown.
+	 *
+	 * Example:
+	 * 		
+	 *		assert.throwsExceptionLike(new BusinessException("hola"),{ => throw new BusinessException("hola") } => Works! this is the same exception class and same message.
+	 *		assert.throwsExceptionLike(new BusinessException("chau"),{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
+	 *		assert.throwsExceptionLike(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
+	 */	 
+	method throwsExceptionLike(exceptionExpected, block) {
+		try 
+		{
+			self.throwsExceptionByComparing( block,{a => a.equals(exceptionExpected)})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The Exception expected was " + exceptionExpected + " but got " + ex.getCause())
+		} 
+	}
+
+	/** 
+	 * Tests whether a block throws an exception and it have the error message as is expected. Otherwise an exception is thrown.
+	 *
+	 * Example:
+	 * 		
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException("hola") } => Works! this is the same message.
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException("hola") } => Works! this is the same message.
+	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
+	 */	 
+	method throwsExceptionWithMessage(errorMessage, block) {
+		try 
+		{
+			self.throwsExceptionByComparing(block,{a => errorMessage.equals(a.getMessage())})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The error message expected was " + errorMessage + " but got " + ex.getCause().getMessage())
+		}
+	}
+
+	/** 
+	 * Tests whether a block throws an exception and this is the same exception class expected. Otherwise an exception is thrown.
+	 *
+	 * Example:
+	 * 		
+	 *		assert.throwsExceptionWithType(new BusinessException("hola"),{ => throw new BusinessException("hola") } => Works! this is the same exception class.
+	 *		assert.throwsExceptionWithType(new BusinessException("chau"),{ => throw new BusinessException("hola") } => Works again! this is the same exception class.
+	 *		assert.throwsExceptionWithType(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
+	 */	 	
+	method throwsExceptionWithType(exceptionExpected, block) {
+		try 
+		{
+			self.throwsExceptionByComparing(block,{a => exceptionExpected.className().equals(a.className())})
+		}
+		catch ex : OtherValueExpectedException 
+		{
+			throw new OtherValueExpectedException("The exception expected was " + exceptionExpected.className() + " but got " + ex.getCause().className())
+		}
+	}
+
+	/** 
+	 * Tests whether a block throws an exception and compare this exception with other block called comparison. Otherwise an exception is thrown.
+	 * The block comparison have to receive a value (an exception thrown) that is compared in a boolean expression returning the result.
+	 *
+	 * Example:
+	 * 		
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "hola".equals(a.getMessage())}} => Works!.
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => new BusinessException("lele").className().equals(a.className())} } => Works again!
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "chau!".equals(a.getMessage())} } => Doesn't work. The block evaluation resolve a false value.
+	 */		
+	method throwsExceptionByComparing(block,comparison){
+		var continue = false
+		try 
+			{
+				block.apply()
+				continue = true
+			} 
+		catch ex 
+			{
+				if(comparison.apply(ex))
+					assert.that(true)
+				else
+					throw new OtherValueExpectedException("Expected other value", ex)
+			}
+		if (continue) throw new Exception("Should have thrown an exception")	
+	}
 	/**
 	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
 	 */
