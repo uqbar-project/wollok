@@ -21,5 +21,9 @@ class WAttributteFigure extends AbstractClassMemberFigure<WVariableDeclaration> 
 		repaint
 	}
 	
+	override doGetText() {
+		labelProvider.getText(member.variable)
+	}
+	
 	
 }

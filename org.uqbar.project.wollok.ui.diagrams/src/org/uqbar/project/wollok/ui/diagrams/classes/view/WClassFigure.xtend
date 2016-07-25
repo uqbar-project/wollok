@@ -9,6 +9,7 @@ import org.eclipse.draw2d.ToolbarLayout
 import org.eclipse.swt.graphics.Color
 
 import static org.uqbar.project.wollok.ui.utils.GefUtils.*
+import org.eclipse.draw2d.RoundedRectangle
 
 /**
  * 
@@ -29,7 +30,7 @@ class WClassFigure extends Figure {
 		
 		backgroundColor = bgColor
 		foregroundColor = fgColor
-
+		
 		nameLabel = new Label(name) => [
 			border = margin(2, 2, 5, 2)
 		]
