@@ -29,8 +29,19 @@ class WString extends AbstractJavaWrapper<String> {
 		
 	def startsWith(WollokObject other) { wrapped.startsWith(other.asWString.wrapped) }
 	def endsWith(WollokObject other ) { wrapped.endsWith(other.asWString.wrapped) }
-	def indexOf(WollokObject other) { wrapped.indexOf(other.asWString.wrapped) }
-	def lastIndexOf(WollokObject other ) { wrapped.lastIndexOf(other.asWString.wrapped) }
+	def indexOf(WollokObject other) { 
+		val result = wrapped.indexOf(other.asWString.wrapped)
+		if(result == -1)
+			throw new WollokRuntimeException("Element not found")
+		result
+	}
+	def lastIndexOf(WollokObject other ){ 
+		val result = wrapped.lastIndexOf(other.asWString.wrapped)
+		if(result == -1)
+			throw new WollokRuntimeException("Element not found")
+		result
+	} 		
+	def contains(WollokObject other) {wrapped.contains(other.asWString.wrapped)}
 	def toLowerCase() { wrapped.toLowerCase }
 	def toUpperCase() { wrapped.toUpperCase }
 	def trim() { wrapped.trim }

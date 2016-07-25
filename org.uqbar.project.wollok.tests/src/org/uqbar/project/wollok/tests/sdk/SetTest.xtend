@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
-import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 import org.uqbar.project.wollok.tests.interpreter.CollectionTestCase
 
 /**

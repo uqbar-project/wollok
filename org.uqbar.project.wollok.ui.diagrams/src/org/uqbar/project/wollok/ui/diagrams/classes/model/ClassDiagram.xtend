@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
 import java.util.ArrayList
 import java.util.List
-import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -15,6 +14,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 /**
  * 
  * @author jfernandes
+ * 
+ * http://www.programcreek.com/2013/03/eclipse-gef-tutorial/
+ * 
  */
 @Accessors
 class ClassDiagram extends ModelElement {
@@ -29,9 +31,9 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
-	def addClass(WClass c) {
+	def addClass(WClass c, int level) {
 		addClass(new ClassModel(c) => [
-			location = new Point(100, 100)
+			locate(level)
 		])
 	}
 	
@@ -42,7 +44,7 @@ class ClassDiagram extends ModelElement {
 	
 	def addMixin(WMixin c) {
 		addMixin(new MixinModel(c) => [
-			location = new Point(100, 100)
+			locate
 		])
 	}
 	
@@ -58,13 +60,14 @@ class ClassDiagram extends ModelElement {
 	
 	def createRelation(Shape it, WMethodContainer c) {
 		val parent = c.parent
-		if (parent != null) {
+		if (parent != null && it.shouldShowConnectorTo(parent)) {
 			val parentModel = classes.findFirst[clazz == parent]
 			if (parentModel == null) {
 				throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
 			}
-			else
+			else {
 				new Connection(null, it, parentModel)
+			}
 		}
 		// mixins
 		c.mixins.forEach[m |
@@ -73,8 +76,6 @@ class ClassDiagram extends ModelElement {
 		]
 	}
 	
-	
-
 	def getChildren() {
 		(classes + objects + mixins).toList
 	}
