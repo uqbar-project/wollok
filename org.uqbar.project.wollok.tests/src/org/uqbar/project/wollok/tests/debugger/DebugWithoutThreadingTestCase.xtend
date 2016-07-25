@@ -332,7 +332,7 @@ object assert {
 	method fail(message) native
 	
 }
-'''.toString.replaceAll('\n', ' ').replaceAll('\\s+', ' ').trim()		
+'''.toString.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim()		
 	}
 }
 
@@ -359,7 +359,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 	
 	def store(EObject element) {
 		if (logSession)
-			println('"' + element.sourceCode.replaceAll('\n', ' ').replaceAll('\\s+', ' ').trim() + '",')
+			println('"' + element.sourceCode.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim() + '",')
 		evaluated += (element -> interpreter.stack.peek.clone)
 	}
 	
