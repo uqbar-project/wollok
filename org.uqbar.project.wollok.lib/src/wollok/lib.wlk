@@ -245,3 +245,13 @@ class Position {
 	
 	method == other { return x == other.getX() && y == other.getY()}
 }
+
+object error {
+	/**
+	 * Throws an exception with a given message.
+	 * This action alters the normal flow of the program. 
+	 */
+	method throw(aMessage) {
+		throw new Exception(aMessage)
+	}
+}
