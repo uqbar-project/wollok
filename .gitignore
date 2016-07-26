@@ -8,3 +8,5 @@
 org.eclipse.*
 pom.xml.versionsBackup
 *._trace
+changelog.txt
+CHANGELOG.md

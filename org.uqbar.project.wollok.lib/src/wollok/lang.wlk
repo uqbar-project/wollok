@@ -31,7 +31,7 @@ class Exception {
 	
 	/** @private */
 	method printStackTraceWithPreffix(preffix, printer) {
-		printer.println(preffix +  self.className() + (if (message != null) (": " + message.toString()) else "")
+		printer.println(preffix +  self.className() + (if (message != null) (": " + message.toString()) else ""))
 		
 		// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
 		self.getStackTrace().forEach { e =>
@@ -55,7 +55,7 @@ class Exception {
 	method getMessage() = message
 	
 	/** Overrides the behavior to compare exceptions */
-	override equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
+	override method equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
 }
 
 /**
@@ -395,7 +395,7 @@ class Collection {
 	 * Example:
 	 *      plants.count { plant => plant.hasFlowers() }
 	 */
-	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc++ else acc  })
+	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
 
 	/**
 	 * Counts the occurrences of a given element in self collection.
@@ -534,6 +534,11 @@ class Collection {
 	 */
 	method newInstance()
 	
+	method anyOne() = throw new Exception("Should be implemented by the subclasses")
+	method add(element) = throw new Exception("Should be implemented by the subclasses")
+	method remove(element) = throw new Exception("Should be implemented by the subclasses")
+	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
+	method size() = throw new Exception("Should be implemented by the subclasses")
 }
 
 /**
@@ -609,7 +614,7 @@ class Set inherits Collection {
 	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => Answers 9, the maximum of all elements
      *
 	 */
-	method fold(initialValue, closure) native
+	override method fold(initialValue, closure) native
 	
 	/**
 	 * Tries to find an element in a collection (based on a closure) or
@@ -619,20 +624,20 @@ class Set inherits Collection {
 	 * 		#{1, 9, 3, 8}.findOrElse({ n => n.even() }, { 100 })  => Answers  8
 	 * 		#{1, 5, 3, 7}.findOrElse({ n => n.even() }, { 100 })  => Answers  100
 	 */
-	method findOrElse(predicate, continuation) native
+	override method findOrElse(predicate, continuation) native
 	
 	/**
 	 * Adds the specified element to this set if it is not already present
 	 */
-	method add(element) native
+	override method add(element) native
 	
 	/**
 	 * Removes the specified element from this set if it is present
 	 */
-	method remove(element) native
+	override method remove(element) native
 	
 	/** Answers the number of elements in this set (its cardinality) */
-	method size() native
+	override method size() native
 	
 	/** Removes all of the elements from this set */
 	method clear() native
@@ -652,12 +657,12 @@ class Set inherits Collection {
 	/**
 	 * @see Object#equals
 	 */
-	method equals(other) native
+	override method equals(other) native
 	
 	/**
 	 * @see Object#==
 	 */
-	method ==(other) native
+	override method ==(other) native
 }
 
 /**
@@ -683,7 +688,7 @@ class List inherits Collection {
 	/**
 	 * Answers any element of this collection 
 	 */
-	method anyOne() {
+	override method anyOne() {
 		if (self.isEmpty()) 
 			throw new Exception("Illegal operation 'anyOne' on empty collection")
 		else 
@@ -744,7 +749,7 @@ class List inherits Collection {
 	 *		[1, 5, 3, 2, 7, 9].subList(4, 6)		=> Answers [7, 9] 
 	 */
 	method subList(start,end) {
-		if(self.isEmpty)
+		if(self.isEmpty())
 			return self.newInstance()
 		const newList = self.newInstance()
 		const _start = start.limitBetween(0,self.size()-1)
@@ -809,22 +814,22 @@ class List inherits Collection {
 	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => Answers 9, the maximum of all elements
      *
 	 */
-	method fold(initialValue, closure) native
+	override method fold(initialValue, closure) native
 	
 	/**
 	 * Finds the first element matching the boolean closure, 
 	 * or evaluates the continuation block closure if no element is found
 	 */
-	method findOrElse(predicate, continuation) native
+	override method findOrElse(predicate, continuation) native
 	
 	/** Adds the specified element as last one */
-	method add(element) native
+	override method add(element) native
 	
 	/** Removes an element in this list */ 
-	method remove(element) native
+	override method remove(element) native
 	
 	/** Answers the number of elements */
-	method size() native
+	override method size() native
 	
 	/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
 	method clear() native
@@ -844,10 +849,10 @@ class List inherits Collection {
 	/**
 	 * @see == message
 	 */
-	method equals(other) native
+	override method equals(other) native
 	
 	/** A list is == another list if all elements are equal (defined by == message) */
-	method ==(other) native
+	override method ==(other) native
 }
 
 /**
@@ -874,7 +879,7 @@ class Dictionary {
 	method getOrElse(_key, _closure) {
 		const value = self.basicGet(_key)
 		if (value == null) 
-			_closure.apply()
+			return _closure.apply()
 		else 
 			return value
 	}
@@ -1001,6 +1006,8 @@ class Number {
 	 */
 	method rem(other) { return self % other }
 	
+	method stringValue() = throw new Exception("Should be implemented in the subclass")
+	
 }
 
 /**
@@ -1012,7 +1019,7 @@ class Integer inherits Number {
 	/**
 	 * The whole wollok identity implementation is based on self method
 	 */
-	method ===(other) native
+	override method ===(other) native
 
 	method +(other) native
 	method -(other) native
@@ -1039,10 +1046,10 @@ class Integer inherits Number {
 	method %(other) native
 	
 	/** String representation of self number */
-	method toString() native
+	override method toString() native
 	
 	/** Self as a String value. Equivalent: toString() */
-	method stringValue() native	
+	override method stringValue() native	
 	
 	/** 
 	 * Builds a Range between self and end
@@ -1137,7 +1144,7 @@ class Integer inherits Number {
  */
 class Double inherits Number {
 	/** the whole wollok identity impl is based on self method */
-	method ===(other) native
+	override method ===(other) native
 
 	method +(other) native
 	method -(other) native
@@ -1164,10 +1171,10 @@ class Double inherits Number {
 	method %(other) native		
 
 	/** String representation of a self number */
-	method toString() native
+	override method toString() = self.stringValue()
 	
 	/** Self as a String value. Equivalent: toString() */
-	method stringValue() native	
+	override method stringValue() native	
 	
 	method >(other) native
 	method >=(other) native
@@ -1349,15 +1356,15 @@ class String {
 	method replace(expression, replacement) native
 	
 	/** This object (which is already a string!) is itself returned */
-	method toString() native
+	override method toString() native
 	
 	/** @private */
-	method toSmartString(alreadyShown) native
+	override method toSmartString(alreadyShown) native
 	
 	/** Compares this string to the specified object. The result is true if and only if the
 	 * argument is not null and is a String object that represents the same sequence of characters as this object.
 	 */
-	method ==(other) native
+	override method ==(other) native
 	
 	/** A synonym for length */
 	method size() = self.length()
@@ -1398,15 +1405,15 @@ class Boolean {
 	method ||(other) native
 	
 	/** Answers a String object representing this Boolean's value. */
-	method toString() native
+	override method toString() native
 	
 	/** @private */
-	method toSmartString(alreadyShown) native
+	override method toSmartString(alreadyShown) native
 	
 	/** Compares this string to the specified object. The result is true if and only if the
 	 * argument is not null and represents same value (true or false)
 	 */
-	method ==(other) native
+	override method ==(other) native
 	
 	/** NOT logical operation */
 	method negate() native
@@ -1553,7 +1560,7 @@ class Closure {
 	method apply(parameters...) native
 	
 	/** Answers a string representation of this closure object */
-	method toString() native
+	override method toString() native
 }
 
 /**
@@ -1568,7 +1575,7 @@ class Date {
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
 	/** Two dates are equals if they represent the same date */
-	method equals(_aDate) native
+	override method equals(_aDate) native
 	
 	/** Answers a copy of this Date with the specified number of days added. */
 	method plusDays(_days) native

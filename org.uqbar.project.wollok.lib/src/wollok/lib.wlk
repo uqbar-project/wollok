@@ -152,7 +152,7 @@ object assert {
 		catch ex 
 			{
 				if(comparison.apply(ex))
-					assert.that(true)
+					self.that(true)
 				else
 					throw new OtherValueExpectedException("Expected other value", ex)
 			}
@@ -243,7 +243,7 @@ class Position {
 	method getY() = y
 	method setY(_y) { y = _y }
 	
-	method == other { return x == other.getX() && y == other.getY()}
+	override method ==(other) { return x == other.getX() && y == other.getY()}
 }
 
 object error {
@@ -251,7 +251,7 @@ object error {
 	 * Throws an exception with a given message.
 	 * This action alters the normal flow of the program. 
 	 */
-	method throw(aMessage) {
+	method throwWithMessage(aMessage) {
 		throw new Exception(aMessage)
 	}
 }

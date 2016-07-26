@@ -12,7 +12,5 @@ class Baz inherits Foo {
     override method foo()
     
     // this one is ok in terms of not having a body
-    // this other check is because of a limitation in our natives. Still I don't want the test to fail
-    // XPECT errors --> "Native methods cannot override anything" at "override"
     override method bar() native
 }
