@@ -42,7 +42,7 @@ Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for docum
 * Non "class-centered". Allows you to create **objects as first-class citizens without the need of classes**. To start working with objects without introducing complex subjects and mechanisms as hierarchies, overriding methods, etc.
 * Tries to **maximize compile-time checks** while keeping the **power of a dynamic language.**
 * With **implicit types**: by means of a type system and type inference mechanism.
-* A **clean modern syntax** avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming) 
+* A **clean modern syntax** avoiding unnecessary symbols (java) while keeping it simple and even familiar for those who already have some experience in programming)
 * **Interpreted**: means that the code is being evaluated as it's being read. Although its **declarative syntax** makes it feel like a compiled language
 
 ```xtend
@@ -100,11 +100,26 @@ Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)
 
 ## Contributors ##
-
 * [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
-* [Nicolás Passerini](http://ar.linkedin.com/in/nicolaspasserini)
-* [Pablo Tesone](http://ar.linkedin.com/in/tesonep)
-
+* [Nicolás Passerini](https://github.com/npasserini)
+* [Pablo Tesone](http://github.com/tesonep)
+* [Nahuel Palumbo](https://github.com/PalumboN)
+* [Juan Contardo](https://github.com/Juancete)
+* [Franco Bulgarelli](https://github.com/flbulgarelli)
+* [Carlos Raffelini](https://github.com/charlyraffellini)
+* [Juan Manuel Fernandes dos Santos](https://github.com/JuanFdS)
+* [Juan Martín Ríos](https://github.com/JuanchiRios)
+* [Mariana Matos](https://github.com/mmatos)
+* [Débora Fortini](https://github.com/dfortini)
+* [Matías Freyre](https://github.com/matifreyre)
+* [Fernando Dodino](https://github.com/fdodino)
+* [Lucas Spigariol](https://www.linkedin.com/in/lucas-spigariol-a764a35)
+* [Carlos Lombardi](http://dblp.uni-trier.de/pers/hd/l/Lombardi:Carlos)
+* [Alfredo Sanzo](https://www.linkedin.com/in/alfredo-sanzo-13a9785)
+* [Nicolás Scarcella](https://www.linkedin.com/in/nscarcella)
+* [Leonardo Gassman](https://github.com/orgs/uqbar-project/people/lgassman)
+* [Federico Aloi](https://github.com/orgs/uqbar-project/people/faloi)
+* [Estefanía Miguel](https://github.com/orgs/uqbar-project/people/estefaniamiguel)
 
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
