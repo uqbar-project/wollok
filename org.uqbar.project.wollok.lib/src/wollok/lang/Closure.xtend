@@ -12,6 +12,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import java.util.List
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
@@ -46,8 +47,6 @@ class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>,
 			interpreter.eval(closure.expression)
 		]	
 	}
-	
-	
 	
 	def static createEvaluationContext(org.uqbar.project.wollok.wollokDsl.WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }
 	

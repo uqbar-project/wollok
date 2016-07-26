@@ -12,8 +12,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class ClassEditPart extends AbstractMethodContainerEditPart {
 	
-	override getModelChildren() { castedModel.clazz.members }
-
 	override createFigure() {
 		new WClassFigure(castedModel.clazz.name, ClassDiagramColors.CLASS_FOREGROUND, ClassDiagramColors.CLASS_BACKGROUND) => [ f |
 			f.abstract = castedModel.clazz.abstract
@@ -24,4 +22,8 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	
 	override ClassModel getCastedModel() { model as ClassModel }
 	
+	override doGetModelChildren() {
+		castedModel.clazz.members
+	}
+
 }

@@ -113,5 +113,29 @@ class ListTestCase extends CollectionTestCase {
 			}
 		'''.interpretPropagatingErrors		
 	}
-	
+
+	@Test
+	def void equalityCaseTrue() {
+		'''
+			program p {
+				assert.equals(['Hello'], ['Hello'])
+				assert.equals([4, 5, 9], [4, 5, 9])
+				assert.equals([true], [true])
+				assert.equals([], [])
+			}
+		'''.interpretPropagatingErrors		
+	}
+			
+	@Test
+	def void equalityCaseFalse() {
+		'''
+			program p {
+				assert.notEquals(['Hello'], ['Hellou'])
+				assert.notEquals([4, 5, 9], [5, 4, 9])
+				assert.notEquals([4, 5, 9], #{4, 5, 9})
+			}
+		'''.interpretPropagatingErrors		
+	}	
+		
+		
 }

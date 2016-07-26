@@ -1,0 +1,16 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Foo {
+    method foo() { console.println('foo') }
+    
+    method bar() { console.println('bar') }
+}
+
+class Baz inherits Foo {
+	
+	// XPECT errors --> "Overriding method must have a body" at "override method foo()"
+    override method foo()
+    
+    // this one is ok in terms of not having a body
+    override method bar() native
+}

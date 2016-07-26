@@ -22,6 +22,8 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+
 /**
  * Methods to be shared between WollokObject and CallableSuper
  * 
@@ -58,7 +60,7 @@ abstract class AbstractWollokCallable implements WCallable {
 			}
 			else {
 				val WollokObject r = method.expression.eval as WollokObject
-				return if (method.expressionReturns)
+				return if (method.supposedToReturnValue)
 						r
 					else
 						theVoid

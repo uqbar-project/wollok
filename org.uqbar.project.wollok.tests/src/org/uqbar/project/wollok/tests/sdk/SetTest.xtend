@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.tests.sdk
 
 import org.junit.Test
-import org.uqbar.project.wollok.tests.interpreter.ListTestCase
 import org.uqbar.project.wollok.tests.interpreter.CollectionTestCase
 
 /**
@@ -12,6 +11,14 @@ class SetTest extends CollectionTestCase {
 	
 	override instantiateCollectionAsNumbersVariable() {
 		"const numbers = #{22, 2, 10}"
+	}
+
+	override instantiateCollectionWithA2() {
+		"const collectionWithA2 = #{2}"
+	}
+	
+	override instantiateEmptyCollection() {
+		"const emptyCollection = #{}"
 	}
 	
 	@Test
@@ -80,4 +87,13 @@ class SetTest extends CollectionTestCase {
 			[1,2,3].forEach{i=>assert.equals(list.contains(i))}
 		}'''.interpretPropagatingErrors
 	}
+	
+	override removeAll() {
+		'''
+		program p {
+			«instantiateCollectionAsNumbersVariable»
+			numbers.removeAll(#{2, 10})
+			assert.equals(#{22}, numbers)
+		}'''.interpretPropagatingErrors
+	}	
 }

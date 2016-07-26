@@ -41,8 +41,8 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	
 	var PARSER_ERROR_COLOR = newColor(255, 0, 0)
 	
-	val programHeader = "program repl {\n"
-	val programFooter =  "\n}"
+	val programHeader = "program repl {" + System.lineSeparator
+	val programFooter =  System.lineSeparator + "}"
 	val headerLength = programHeader.length
 	
 	@Inject ISemanticHighlightingCalculator calculator

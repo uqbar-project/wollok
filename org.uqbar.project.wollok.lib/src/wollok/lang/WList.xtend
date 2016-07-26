@@ -4,6 +4,7 @@ import java.util.Comparator
 import java.util.List
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
@@ -37,5 +38,24 @@ class WList extends WCollection<List> implements JavaWrapper<List> {
 		}
 		wrapped = wrapped.sortWith(comparator)
 		return wollokInstance
-	}	
+	}
+	
+	@NativeMessage("equals")
+	override wollokEquals(WollokObject other) {
+		if (!other.hasNativeType(this.class.name)) {
+				return false
+		}
+		val otherWrapped = other.getNativeObject(this.class).wrapped
+		if (this.wrapped.isEmpty && otherWrapped.isEmpty) {
+			return true
+		}
+		
+		val size = otherWrapped.size - 1
+		(0..size).forall [ i |
+			val obj1 = otherWrapped.get(i) as WollokObject
+			val obj2 = wrapped.get(i) as WollokObject
+			obj1.wollokEquals(obj2)
+		]
+	}
+	
 }

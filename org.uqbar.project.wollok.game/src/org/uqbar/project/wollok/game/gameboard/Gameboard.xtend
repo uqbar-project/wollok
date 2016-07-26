@@ -12,9 +12,6 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.game.WGPosition
 import org.eclipse.xtend.lib.annotations.Accessors
 
-/**
- * 
- */
 @Accessors
 class Gameboard {
 	public static Gameboard instance
@@ -34,10 +31,16 @@ class Gameboard {
 		}
 		return instance
 	}
+	
+	new() {
+		title = "Wollok Game"
+		height = 5
+		width = 5
+		createCells("ground.png")
+	}
 
-	def void start() {
-		new WollokGDXApplication(new GameboardRendering(this), new GameboardConfiguration(this))
-		Runtime.runtime.addShutdownHook(new Thread[stop])
+	def void start(Boolean fromREPL) {
+		new WollokGDXApplication(this, fromREPL)
 	}
 	
 	def stop() {
@@ -66,6 +69,7 @@ class Gameboard {
 	}
 
 	def createCells(String groundImage) {
+		cells.clear
 		for (var i = 0; i < width ; i++) {
 			for (var j = 0; j < height; j++) {
 				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));

@@ -52,15 +52,16 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	}
 	
 	method asABinaryOperatorArgument() {
+		var cond = true
 		return [
 			// XPECT errors --> "This message call produces no value" at "eat" 
 			10 + pepita.eat(10),
 			// XPECT errors --> "This message call produces no value" at "eat" 
 			10 * pepita.eat(10),
 			// XPECT errors --> "This message call produces no value" at "eat"
-			true && pepita.eat(10),
+			cond && pepita.eat(10),
 			// XPECT errors --> "This message call produces no value" at "eat"
-			true || pepita.eat(10)
+			cond || pepita.eat(10)
 		]
 	}
 	

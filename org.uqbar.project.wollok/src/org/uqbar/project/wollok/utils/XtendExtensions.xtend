@@ -7,5 +7,5 @@ class XtendExtensions {
 	/**
 	 * Divides a string into lines
 	 */
-	static def lines(CharSequence input) { input.toString.split("[\r\n]+") }
+	static def lines(CharSequence input) { input.toString.split("[" + System.lineSeparator() + "]+") }
 }

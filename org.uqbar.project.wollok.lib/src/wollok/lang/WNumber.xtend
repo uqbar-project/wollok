@@ -17,7 +17,7 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
-	}
+	}	
 	
 	def max(WNumber<?> other) { doMax(this, other).asWollokObject }
 
@@ -31,13 +31,20 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
 	def dispatch doMin(WNumber<?> a, WNumber<?> b) { Math.min(a.doubleValue, b.doubleValue) }
 
+	def div(WollokObject other) {
+		val n = other.nativeNumber
+		Math.floor(this.doubleValue / n.doubleValue).intValue
+	}
+
 	// ********************************************************************************************
 	// ** Basics
 	// ********************************************************************************************	
 	
-	def doubleValue() { wrapped.doubleValue() }
+	def doubleValue() { wrapped.doubleValue }
 
-	override toString() { wrapped.toString() }
+	def stringValue() { wrapped.toString }
+	
+	override toString() { wrapped.toString }
 	
 	override equals(Object obj) {
 		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 

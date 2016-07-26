@@ -12,7 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WMixin
 class MixinEditPart extends AbstractMethodContainerEditPart {
 	
 	override MixinModel getCastedModel() { model as MixinModel }
-	override getModelChildren() { languageElement.members }
+	override doGetModelChildren() { languageElement.members }
 	override WMixin getLanguageElement() { castedModel.mixin }
 	
 	override protected createFigure() {
@@ -20,5 +20,5 @@ class MixinEditPart extends AbstractMethodContainerEditPart {
 //			f.abstract = castedModel.mixin.abstract
 		]
 	}
-	
+
 }
