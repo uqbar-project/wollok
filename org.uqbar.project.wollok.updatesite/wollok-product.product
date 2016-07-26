@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Wollok" uid="wollok-ide" id="org.uqbar.project.wollok.product.org_uqbar_project_wollok_product" application="org.eclipse.ui.ide.workbench" version="1.5.0" useFeatures="true" includeLaunchers="true">
+<product name="Wollok" uid="wollok-ide" id="org.uqbar.project.wollok.product.org_uqbar_project_wollok_product" application="org.eclipse.ui.ide.workbench" version="1.5.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.uqbar.project.wollok.ui/icons/wollok-logo-about.fw.png"/>
       <text>
          Wollok Programming Language and IDE
-Version 1.4.3
+Version 1.5.1
 
 http://uqbar-project.org
 http://wollok.uqbar-project.org
