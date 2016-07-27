@@ -8,10 +8,14 @@
 
    <description url="https://github.com/uqbar-project/wollok">
       Wollok Programming Language SDK
-
-Contains code editor as well as a runtime-engine, debugger, and REPL.
+Contains code editor as well as a runtime-engine, debugger, and
+REPL.
 All elements to work with the Wollok Programming Language.
    </description>
+
+   <copyright>
+      Copyright © 2014, Uqbar Project Foundation, All Rights Reserved.
+   </copyright>
 
    <license url="https://www.gnu.org/licenses/lgpl-3.0.txt">
       Copyright © 2014, Uqbar Project Foundation, All Rights Reserved.
