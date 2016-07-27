@@ -1,11 +1,9 @@
 package org.uqbar.project.wollok.server
 
-import com.google.gson.Gson
 import com.google.inject.Inject
 import com.google.inject.Provider
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.util.List
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -27,9 +25,14 @@ import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import static extension org.uqbar.project.wollok.server.JSonWriter.*
 
+/**
+ * The wollok server allows you to send wollok programs, executes them 
+ * and responds with a json with the static and/or runtime errors, 
+ * tests results or console output.
+ */
 class WollokServer extends AbstractHandler {
-	extension Gson = new Gson
 	val parameters = new WollokLauncherParameters()
 	val injector = new WollokServerSetup(parameters).createInjectorAndDoEMFRegistration => [
 		injectMembers(this)
@@ -51,61 +54,56 @@ class WollokServer extends AbstractHandler {
 			status = HttpServletResponse.SC_OK
 		]
 		baseRequest.handled = true
-		val gsonWriter = response.writer.newJsonWriter
 		val evaluator = interpreter.evaluator as WollokLauncherInterpreterEvaluator
 		val testReporter = evaluator.wollokTestsReporter as WollokServerTestsReporter
-		testReporter.writer = gsonWriter
-		
-		val writer = new JSonWriter(gsonWriter)
 
-		try {
-			writer.object [
-				value("wollokVersion", Wollok.VERSION)
+		response.writer.writeJson [
+			testReporter.writer = writer
+			try {
+				object [
+					value("wollokVersion", Wollok.VERSION)
 
-				try {
-					val extension handler = new WollokLauncherIssueHandlerJSON
+					try {
+						val extension handler = new WollokLauncherIssueHandlerJSON
 
-					val wollokRequest = request.wollokRequest
-					val resource = wollokRequest.program.parseString(wollokRequest.programType)
+						val wollokRequest = request.wollokRequest
+						val resource = wollokRequest.program.parseString(wollokRequest.programType)
 
-					val issues = newArrayList
-					new WollokChecker().validate(
-						injector,
-						resource,
-						[issues.add(it)],
-						[]
-					)
+						val issues = newArrayList
+						new WollokChecker().validate(
+							injector,
+							resource,
+							[issues.add(it)],
+							[]
+						)
 
-					if (!issues.empty) {
-						object("compilation") [
-							array("issues", issues) [ it, issue | renderIssue(issue)]
-						]
-					}
+						if (!issues.empty) {
+							object("compilation") [
+								array("issues", issues)[it, issue|renderIssue(issue)]
+							]
+						}
 
-					interpreter.interpret(resource.contents.get(0), true)
-					value("consoleOutput", interpreter.consoleOutput)
-					
-				} catch (WollokProgramExceptionWrapper exception) {
-					object("runtimeError") [
-						value("message", exception.wollokMessage)
-						array("stackTrace", exception.wollokStrackTrace) [ it, element|
-							object [
-								value("contextDescription", element.call("contextDescription"))
-								value("location", element.call("location"))
+						interpreter.interpret(resource.contents.get(0), true)
+						value("consoleOutput", interpreter.consoleOutput)
+
+					} catch (WollokProgramExceptionWrapper exception) {
+						object("runtimeError") [
+							value("message", exception.wollokMessage)
+							array("stackTrace", exception.wollokStrackTrace) [ it, element |
+								object [
+									value("contextDescription", element.call("contextDescription"))
+									value("location", element.call("location"))
+								]
 							]
 						]
-					]
-				}
-			]
-		}
-		catch (Exception e) {
-			e.printStackTrace
-		}
-		finally {
-			gsonWriter.close		
-		}
+					}
+				]
+			} catch (Exception e) {
+				e.printStackTrace
+			}
+		]
 	}
-	
+
 	def parse(InputStream input, String fileExtension) {
 		val resourceSet = resourceSetProvider.get()
 
@@ -128,20 +126,18 @@ class WollokServer extends AbstractHandler {
 	// ************************************************************************
 	// ** Request and streams handling
 	// ************************************************************************
-	
 	def parseString(String program, String programType) {
 		new ByteArrayInputStream(program.getBytes("UTF-8")).parse(programType)
 	}
 
 	def wollokRequest(HttpServletRequest request) {
-		val reader = new InputStreamReader(request.inputStream)
-		reader.fromJson(WollokServerRequest)
+		request.inputStream.fromJson(WollokServerRequest)
 	}
-	
+
 	def consoleOutput(WollokInterpreter interpreter) {
 		(interpreter.console as WollokServerConsole).consoleOutput
 	}
-	
+
 	def getWollokStrackTrace(WollokProgramExceptionWrapper exception) {
 		exception.wollokException.call("getStackTrace").asList.wrapped as List<WollokObject>
 	}
@@ -149,7 +145,6 @@ class WollokServer extends AbstractHandler {
 	// ************************************************************************
 	// ** Main
 	// ************************************************************************
-	
 	def static void main(String[] args) {
 		new Server(8080) => [
 			handler = new WollokServer

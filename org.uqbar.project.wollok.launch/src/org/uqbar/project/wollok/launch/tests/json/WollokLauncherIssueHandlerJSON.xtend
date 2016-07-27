@@ -1,17 +1,18 @@
 package org.uqbar.project.wollok.launch.tests.json
 
-import com.google.gson.Gson
 import java.io.PrintWriter
 import java.util.List
 import org.eclipse.xtext.validation.Issue
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.WollokLauncherIssueHandler
 import org.uqbar.project.wollok.server.JSonWriter
+import static extension org.uqbar.project.wollok.server.JSonWriter.*
 
 /**
  * JSON handler
  * 
  * @author jfernandes
+ * @author npasserini
  */
 class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 	val List<Issue> issues = newArrayList
@@ -19,17 +20,12 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 	override handleIssue(Issue issue) { issues += issue }
 	
 	override finished() {
-		new JSonWriter(new Gson().newJsonWriter(new PrintWriter(System.out))) => [
+		new PrintWriter(System.out).writeJson [
 			object [
 				value("version", Wollok.VERSION)
-				array("checks") [ renderIssues ]		
+				array("checks", issues) [ it, issue | renderIssue(issue) ]		
 			]
-			writer.close
 		]
-	}
-	
-	def renderIssues(JSonWriter it) {
-		issues.forEach[issue | renderIssue(issue)]
 	}
 	
 	def renderIssue(JSonWriter it, Issue i) {
