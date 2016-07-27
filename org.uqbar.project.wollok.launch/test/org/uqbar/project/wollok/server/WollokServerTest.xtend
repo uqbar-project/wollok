@@ -84,7 +84,7 @@ class WollokServerTest {
 			assertEquals(2, stackTrace.size)
 			stackTrace.get(0) => [
 				assertEquals("wollok.lang.Object.messageNotUnderstood(name,parameters)", contextDescription)
-				assertEquals("/lang.wlk:202", location)
+				assertTrue(location.contains("/lang.wlk:"))
 			]			
 			stackTrace.get(1) => [
 				assertNull(contextDescription)
@@ -171,7 +171,7 @@ class WollokServerTest {
 
 	def sendAndValidate(CharSequence program, String programType, (WollokServerResponse)=>void validation) {
 		sendAndDo(program, programType) [
-			println(contentAsString)
+			println("pepe" + contentAsString)
 			contentAsString.fromJson(WollokServerResponse) => validation
 		]
 	}
