@@ -42,6 +42,10 @@ class JSonWriter {
 		]								
 	}
 
+	def array(String name, Object[] values) { 
+		array(name, values) [ it, each | writer.value(each.toString)]
+   }
+	
 	/**
 	 * This method should only be used in an array or at top level 
 	 */

@@ -135,6 +135,30 @@ class WollokServerTest {
 		.sendAndValidate("wtest") [] 
 	}
 	
+	@Test
+	def void testCannotResolveReferenciable() {
+		'''
+			program foo { cosole.foo() }
+		'''
+		.sendAndValidate("wpgm") [
+			assertEquals(1, compilation.issues.size)
+			compilation.issues.get(0) => [
+				assertEquals("ERROR", severity)
+				assertTrue(message.contains("cosole"))
+			]
+		]
+	}
+
+	@Test
+	def void testMalformedProgram() {
+		'''
+			{
+				assert.equals(4, 5)
+			}
+		'''
+		.sendAndValidate("wpgm") []
+		
+	}
 
 	// ************************************************************************
 	// ** Utilities
@@ -171,7 +195,7 @@ class WollokServerTest {
 
 	def sendAndValidate(CharSequence program, String programType, (WollokServerResponse)=>void validation) {
 		sendAndDo(program, programType) [
-			println("pepe" + contentAsString)
+			println(contentAsString)
 			contentAsString.fromJson(WollokServerResponse) => validation
 		]
 	}

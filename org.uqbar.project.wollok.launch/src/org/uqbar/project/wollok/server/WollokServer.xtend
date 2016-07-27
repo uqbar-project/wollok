@@ -78,7 +78,7 @@ class WollokServer extends AbstractHandler {
 
 					if (!issues.empty) {
 						object("compilation") [
-							array("issues", issues) [ json, issue | renderIssue(json.writer, issue)]
+							array("issues", issues) [ it, issue | renderIssue(issue)]
 						]
 					}
 
@@ -128,6 +128,7 @@ class WollokServer extends AbstractHandler {
 	// ************************************************************************
 	// ** Request and streams handling
 	// ************************************************************************
+	
 	def parseString(String program, String programType) {
 		new ByteArrayInputStream(program.getBytes("UTF-8")).parse(programType)
 	}
@@ -148,6 +149,7 @@ class WollokServer extends AbstractHandler {
 	// ************************************************************************
 	// ** Main
 	// ************************************************************************
+	
 	def static void main(String[] args) {
 		new Server(8080) => [
 			handler = new WollokServer
