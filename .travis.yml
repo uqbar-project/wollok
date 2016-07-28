@@ -37,7 +37,7 @@ deploy:
   bucket: wollokserverrepo
   local_dir: results-server
   upload-dir: $TRAVIS_BRANCH
-  acl: public_read_write
+  acl: public_read
   skip_cleanup: true
   region: us-west-2
   on:
