@@ -25,20 +25,24 @@ notifications:
 cache:
   directories:
   - $HOME/.m2
+before_deploy:
+- cd ..
+- mkdir results-server
+- cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
 deploy:
   provider: s3
   access_key_id: AKIAJLCGMGO45ZQFSLJA
   secret_access_key:
     secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
   bucket: wollokserverrepo
-  file: "org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip"
+  local_dir: results-server
   upload-dir: $TRAVIS_BRANCH
   acl: public_read_write
   skip_cleanup: true
   region: us-west-2
   on:
     repo: uqbar-project/wollok
-    branch: 
-      - dev
-      - master
-      - dev-*.*
+    branch:
+    - dev
+    - master
+    - dev-*.*
