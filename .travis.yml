@@ -34,6 +34,8 @@ deploy:
   file: "org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip"
   upload-dir: $TRAVIS_BRANCH
   acl: public_read_write
+  skip_cleanup: true
+  region: us-west-2
   on:
     repo: uqbar-project/wollok
     branch: 
