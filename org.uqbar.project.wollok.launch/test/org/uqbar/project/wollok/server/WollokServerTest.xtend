@@ -84,7 +84,7 @@ class WollokServerTest {
 			assertEquals(2, stackTrace.size)
 			stackTrace.get(0) => [
 				assertEquals("wollok.lang.Object.messageNotUnderstood(name,parameters)", contextDescription)
-				assertEquals("/lang.wlk:202", location)
+				assertTrue(location.contains("/lang.wlk:"))
 			]			
 			stackTrace.get(1) => [
 				assertNull(contextDescription)
@@ -135,6 +135,30 @@ class WollokServerTest {
 		.sendAndValidate("wtest") [] 
 	}
 	
+	@Test
+	def void testCannotResolveReferenciable() {
+		'''
+			program foo { cosole.foo() }
+		'''
+		.sendAndValidate("wpgm") [
+			assertEquals(1, compilation.issues.size)
+			compilation.issues.get(0) => [
+				assertEquals("ERROR", severity)
+				assertTrue(message.contains("cosole"))
+			]
+		]
+	}
+
+	@Test
+	def void testMalformedProgram() {
+		'''
+			{
+				assert.equals(4, 5)
+			}
+		'''
+		.sendAndValidate("wpgm") []
+		
+	}
 
 	// ************************************************************************
 	// ** Utilities
