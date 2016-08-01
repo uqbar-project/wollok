@@ -25,12 +25,17 @@ notifications:
 cache:
   directories:
   - $HOME/.m2
+
 before_deploy:
 - cd ..
 - mkdir results-server
 - cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
+- mkdir results-products
+- cp org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
+- cp org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
+
 deploy:
-  provider: s3
+- provider: s3
   access_key_id: AKIAJLCGMGO45ZQFSLJA
   secret_access_key:
     secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
@@ -46,3 +51,17 @@ deploy:
     - dev
     - master
     - dev-*.*
+
+- provider: s3
+  access_key_id: AKIAJLCGMGO45ZQFSLJA
+  secret_access_key:
+    secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
+  bucket: wollokversions
+  local_dir: results-products
+  upload-dir: $TRAVIS_TAG
+  acl: public_read
+  skip_cleanup: true
+  region: us-west-2
+  on:
+    repo: uqbar-project/wollok
+    condition: "$TRAVIS_TAG =~ ^v[0-9.]*"
