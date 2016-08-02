@@ -24,26 +24,22 @@ class ListTest extends ListTestCase {
 	@Test
 	def void toStringOnEmptyCollection() {
 		'''
-		program p {
-			const numbers = new List()
-			assert.equals("[]", numbers.toString())
-		}'''.interpretPropagatingErrors
+		const numbers = new List()
+		assert.equals("[]", numbers.toString())
+		'''.test
 	}
 	
 	@Test
 	def void identityOnMap() {
 		'''
-		program p {
-			«instantiateCollectionAsNumbersVariable»
-			
-			const strings = numbers.map{e=> e.toString()}
-			
-			assert.notEquals(numbers.identity(), strings.identity())
-			
-			assert.that(strings.contains("22"))
-			assert.that(strings.contains("2"))
-		}
-		'''.interpretPropagatingErrors
+		«instantiateCollectionAsNumbersVariable»
+		const strings = numbers.map{e=> e.toString()}
+		
+		assert.notEquals(numbers.identity(), strings.identity())
+		
+		assert.that(strings.contains("22"))
+		assert.that(strings.contains("2"))
+		'''.test
 	}
 	
 	@Test
@@ -63,46 +59,48 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testAsListConversion() {
 		'''
-		program p {
-			const list = [1,2,3]
-			
-			assert.equals([1,2,3], list.asList())
-		}'''.interpretPropagatingErrors
+		const list = [1,2,3]
+		assert.equals([1,2,3], list.asList())
+		'''.test
 	}
 	
 		@Test
 	def void testAsSetConversion() {
 		'''
-		program p {
-			const set = #{}
-			set.add(1)
-			set.add(2)
-			set.add(3)
+		const set = #{}
+		set.add(1)
+		set.add(2)
+		set.add(3)
 		
-			assert.equals(set, set.asSet())
-		}'''.interpretPropagatingErrors
+		assert.equals(set, set.asSet())
+		'''.test
 	}
 	
 	@Test
 	def void testFirstAndHead() {
 		'''
-		program p {
-			const list = [1,2,3]
-			
-			assert.equals(1, list.first())
-			assert.equals(1, list.head())
-		}'''.interpretPropagatingErrors
+		const list = [1,2,3]		
+		assert.equals(1, list.first())
+		assert.equals(1, list.head())
+		'''.test
 	}
 
 	@Test
 	def void testSortBy() {
 		''' 
-		program p {
-			const list = [1,2,3]
-			
-			assert.equals([3,2,1], list.sortBy({x,y => x > y}))
-			assert.that(list === list.sortBy({x,y => x < y}))
-		}'''.interpretPropagatingErrors
+		const list = [1,2,3]		
+		assert.equals([3,2,1], list.sortBy({x,y => x > y}))
+		assert.that(list === list.sortBy({x,y => x < y}))
+		'''.test
+	}
+	
+	@Test
+	def void testSortedBy() {
+		'''
+		const list = [1,2,3]
+		assert.equals([3,2,1], list.sortedBy({x,y => x > y}))
+		assert.notThat(list === list.sortedBy({x,y => x < y}))
+		'''.test
 	}
 	
 	
@@ -123,16 +121,5 @@ class ListTest extends ListTestCase {
 		assert.notEquals([1,2], [2,1])
 		assert.notEquals([1,3], [1,2])
 		'''.test
-	}
-	
-	@Test
-	def void testSortedBy() {
-		'''
-		program p {
-			const list = [1,2,3]
-			
-			assert.equals([3,2,1], list.sortedBy({x,y => x > y}))
-			assert.notThat(list === list.sortedBy({x,y => x < y}))
-		}'''.interpretPropagatingErrors
 	}
 }
