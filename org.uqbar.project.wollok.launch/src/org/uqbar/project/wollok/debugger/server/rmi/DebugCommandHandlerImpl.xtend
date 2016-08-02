@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  * 
  * @author jfernandes
  */
+// this should probably have a better name
 class DebugCommandHandlerImpl implements DebugCommandHandler {
 	Server server
 	XDebugger debugger
@@ -48,10 +49,15 @@ class DebugCommandHandlerImpl implements DebugCommandHandler {
 		debugger.clearBreakpoint(fileURI.toString, lineNumber)
 	}
 	
-	override getStackFrames() {
-		Lists.newArrayList(debugger.stack.map[
-			new XDebugStackFrame(it)
-		])
+	override getStackFrames() throws WollokDebuggerException {
+		try {
+			Lists.newArrayList(debugger.stack.map[
+				new XDebugStackFrame(it)
+			])
+		}
+		catch (RuntimeException e) {
+			throw new WollokDebuggerException("Error while getting current stack trace", e)
+		}
 	}
 	
 }

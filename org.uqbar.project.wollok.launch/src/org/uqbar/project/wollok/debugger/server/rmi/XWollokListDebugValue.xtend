@@ -1,11 +1,12 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
-import java.util.ArrayList
+import java.util.Collection
+import java.util.Collections
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
+import wollok.lang.WCollection
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -16,7 +17,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class XWollokListDebugValue extends XDebugValue {
-	@Accessors ArrayList<XDebugStackFrameVariable> variables = newArrayList
+	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
 	
 	new(WollokObject list) {
 		super('''List (id=«System.identityHashCode(list)»)''')
@@ -26,8 +27,8 @@ class XWollokListDebugValue extends XDebugValue {
 	}
 	
 	def getElements(WollokObject object) {
-		val wrapped = object.getNativeObject(LIST) as JavaWrapper<List<WollokObject>>
-		wrapped.wrapped
+		val wrapped = object.getNativeObject(COLLECTION) as WCollection<Collection<WollokObject>>
+		if (wrapped.wrapped == null) Collections.EMPTY_LIST else wrapped.wrapped
 	}
 	
 }
