@@ -18,13 +18,18 @@ class WSet extends WCollection<Set> {
 
 	@NativeMessage("equals")
 	override wollokEquals(WollokObject other) {
-		if (!other.hasNativeType(this.class.name)) {
-			return false
-		}
-		if (!verifyWollokElementsContained(wrapped, other.getNativeObject(this.class).wrapped)) {
-			return false
-		}
-		verifyWollokElementsContained(other.getNativeObject(this.class).wrapped, wrapped)
+		other.hasNativeType(this.class.name) &&
+		verifySizes(wrapped, other.asSet) &&
+		verifyWollokElementsContained(wrapped, other.asSet) &&
+		verifyWollokElementsContained(other.asSet, wrapped)
+	}
+	
+	private def asSet(WollokObject it) {
+		getNativeObject(this.class).wrapped
+	}
+	
+	private def verifySizes(Set<WollokObject> set, Set<WollokObject> set2) {
+		set.size.equals(set2.size)
 	}
 	
 	private def verifyWollokElementsContained(Set<WollokObject> set, Set<WollokObject> set2) {
