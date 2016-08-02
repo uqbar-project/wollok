@@ -105,6 +105,26 @@ class ListTest extends ListTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	
+	@Test
+	def void testEquals() {
+		'''
+		assert.equals([], [])
+		assert.equals([1,2,1], [1,2,1])
+		'''.test
+	}
+	
+	@Test
+	def void testNotEquals() {
+		'''
+		assert.notEquals([], [1])
+		assert.notEquals([1], [])
+		assert.notEquals([1,2], [1])
+		assert.notEquals([1,2], [2,1])
+		assert.notEquals([1,3], [1,2])
+		'''.test
+	}
+	
 	@Test
 	def void testSortedBy() {
 		'''
