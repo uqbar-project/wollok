@@ -255,7 +255,10 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WNumberLiteral o) { true }
 	def static dispatch isTransparent(WStringLiteral o) { true }
 	def static dispatch isTransparent(WBooleanLiteral o) { true }
+	
 	def static dispatch isTransparent(WObjectLiteral o) { true }
+	def static dispatch isTransparent(WNamedObject o) { true }
+	
 	def static dispatch isTransparent(WCollectionLiteral o) { true }
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
