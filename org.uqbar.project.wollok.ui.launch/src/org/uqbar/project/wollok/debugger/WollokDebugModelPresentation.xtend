@@ -27,15 +27,6 @@ import org.uqbar.project.wollok.ui.launch.Activator
 class WollokDebugModelPresentation extends LabelProvider implements IDebugModelPresentation {
 	private ResourceManager resourceManager
 	
-	new() {
-		new UIJob("Creating resource manager for debug model presentation") {
-			override def runInUIThread(IProgressMonitor monitor) {
-				resourceManager = new LocalResourceManager(JFaceResources.getResources());
-				Status.OK_STATUS
-			}
-		}.schedule
-	}
-
 	override computeDetail(IValue value, IValueDetailListener listener) {
 		var detail = try
 			value.getValueString
@@ -57,6 +48,9 @@ class WollokDebugModelPresentation extends LabelProvider implements IDebugModelP
 	}
 	
 	def synchronized getOrCreateResourceManager() {
+		if (resourceManager == null) {
+			resourceManager = new LocalResourceManager(JFaceResources.getResources())
+		} 
 		resourceManager
 	}
 

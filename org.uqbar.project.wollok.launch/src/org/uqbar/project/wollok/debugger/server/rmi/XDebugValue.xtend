@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.debugger.server.rmi
 
 import java.io.Serializable
 import java.util.ArrayList
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
@@ -15,6 +16,6 @@ class XDebugValue implements Serializable {
 		this.stringValue = stringValue
 	}
 	
-	def ArrayList<XDebugStackFrameVariable> getVariables() { EMPTY_LIST }
+	def List<XDebugStackFrameVariable> getVariables() { EMPTY_LIST }
 	
 }
