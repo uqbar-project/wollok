@@ -1,21 +1,20 @@
 language: java
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 before_install:
-- openssl aes-256-cbc -K $encrypted_d4a7eb0181c9_key -iv $encrypted_d4a7eb0181c9_iv -in settings.xml.enc -out settings.xml -d
+- openssl aes-256-cbc -K $encrypted_d4a7eb0181c9_key -iv $encrypted_d4a7eb0181c9_iv
+  -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
-
-script: 
-- cd org.uqbar.project.wollok.releng/ 
+script:
+- cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ; fi
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev-natives-to-wollok" ] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev-natives-to-wollok" ;fi
-- if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
+- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export
+  PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="dev" ; fi
+- if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then
+  export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
-- mvn -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install jacoco:report coveralls:report -P $PROFILES
-
+- mvn -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
+  jacoco:report coveralls:report -P $PROFILES
 notifications:
   webhooks:
     urls:
@@ -23,7 +22,46 @@ notifications:
     on_success: change
     on_failure: always
     on_start: false
-
 cache:
   directories:
   - $HOME/.m2
+
+before_deploy:
+- cd ..
+- mkdir results-server
+- cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
+- mkdir results-products
+- cp org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
+- cp org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
+
+deploy:
+- provider: s3
+  access_key_id: AKIAJLCGMGO45ZQFSLJA
+  secret_access_key:
+    secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
+  bucket: wollokserverrepo
+  local_dir: results-server
+  upload-dir: $TRAVIS_BRANCH
+  acl: public_read
+  skip_cleanup: true
+  region: us-west-2
+  on:
+    repo: uqbar-project/wollok
+    branch:
+    - dev
+    - master
+    - dev-*.*
+
+- provider: s3
+  access_key_id: AKIAJLCGMGO45ZQFSLJA
+  secret_access_key:
+    secure: S2sP/SZJVO4uJtMrUYud3/qyLm7bN5ohTZrxO3TzONA5qiHYFnQdX+WUiEgbtUL0OZI6ZR5L29E/SRuH07zKEfWODsA7PDsAF7XfpgYi3LC20tqHBMq+07w4HPnRI/K19SC6V1/lnEBCRyGuOd5RIpC3VXccTRcPZDQIAqUviR4=
+  bucket: wollokversions
+  local_dir: results-products
+  upload-dir: $TRAVIS_TAG
+  acl: public_read
+  skip_cleanup: true
+  region: us-west-2
+  on:
+    repo: uqbar-project/wollok
+    condition: "$TRAVIS_TAG =~ ^v[0-9.]*"
