@@ -21,6 +21,8 @@ import org.uqbar.project.wollok.interpreter.stack.ObservableStack
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 /**
  * XInterpreter impl for Wollok language.
  * Control's the execution flow and stack.
@@ -31,6 +33,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  */
 // Rename to XInterpreter and move up to "xinterpreter" project
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
+	static val int MAX_STACK_SIZE = 500
 	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 
@@ -40,7 +43,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		globalVariables.put(name, value)
 		value
 	}
-
+	
 	@Inject
 	XInterpreterEvaluator<WollokObject> evaluator
 
@@ -59,7 +62,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	static var WollokInterpreter instance = null
 
 	@Accessors var Boolean interactive = false
-
+	
 	new() {
 		instance = this
 	}
@@ -118,8 +121,15 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
 	}
 
-	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext,
-		()=>WollokObject something) {
+	boolean instantiatingStackOverFlow = false
+
+	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
+		if (!instantiatingStackOverFlow && stack.size > MAX_STACK_SIZE) {
+			instantiatingStackOverFlow = true
+			val e = (evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
+			instantiatingStackOverFlow = false
+			throw new WollokProgramExceptionWrapper(e)
+		}
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try
 			return something.apply
