@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 /**
  * @author jfernandes
  */
-class WSet extends WCollection<Set> {
+class WSet extends WCollection<Set<WollokObject>> {
 	
 	new() {
 		wrapped = new TreeSet<WollokObject>(new WollokObjectComparator)
