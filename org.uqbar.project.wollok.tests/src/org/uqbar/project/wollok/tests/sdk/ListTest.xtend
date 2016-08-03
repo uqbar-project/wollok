@@ -7,6 +7,8 @@ import org.uqbar.project.wollok.tests.interpreter.ListTestCase
  * Tests the wollok List class included in the Wollok SDK.
  * 
  * @author jfernandes
+ * @author PalumboN
+ * @author tesonep
  */
 class ListTest extends ListTestCase {
 	
@@ -120,6 +122,16 @@ class ListTest extends ListTestCase {
 		assert.notEquals([1,2], [1])
 		assert.notEquals([1,2], [2,1])
 		assert.notEquals([1,3], [1,2])
+		'''.test
+	}
+	
+	@Test
+	def void testEqualityWithOtherObjects(){
+		'''
+			assert.notEquals(2, [])
+			assert.notEquals(2, [2])
+			assert.notEquals(2, [2,3,4])
+			assert.notEquals(console, [])
 		'''.test
 	}
 }

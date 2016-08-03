@@ -5,6 +5,8 @@ import org.uqbar.project.wollok.tests.interpreter.CollectionTestCase
 
 /**
  * @author jfernandes
+ * @author palumboN
+ * @author tesonep
  */
 // the inheritance needs to be reviewed if we add list specific tests it won't work here
 class SetTest extends CollectionTestCase {
@@ -108,4 +110,15 @@ class SetTest extends CollectionTestCase {
 		assert.notEquals(#{1,3}, #{1,2})
 		'''.test
 	}	
+	
+		@Test
+	def void testEqualityWithOtherObjects(){
+		'''
+			assert.notEquals(2, #{})
+			assert.notEquals(2, #{2})
+			assert.notEquals(2, #{2,3,4})
+			assert.notEquals(console, #{})
+		'''.test
+	}
+	
 }
