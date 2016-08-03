@@ -52,6 +52,10 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 		outer.addGlobalReference(name,value)
 	}
 	
+	override removeGlobalReference(String name) {
+		outer.removeGlobalReference(name)
+	}
+	
 	override toString() {
 		class.simpleName + "[inner = " + inner.asText + ", outer =" + outer.asText + "]" 
 	}

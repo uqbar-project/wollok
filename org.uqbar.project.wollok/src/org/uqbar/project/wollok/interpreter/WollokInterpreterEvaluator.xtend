@@ -288,17 +288,24 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
 		new WollokObject(interpreter, namedObject) => [ wo |
-			namedObject.addObjectMembers(wo)
-			namedObject.parent.addInheritsMembers(wo)
-			namedObject.addMixinsMembers(wo)
-
-			if (namedObject.native)
-				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
-
-			if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
-				wo.invokeConstructor(namedObject.parentParameters.evalEach)
-
+			// first add it to solve cross-refs !
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
+			try {
+				namedObject.addObjectMembers(wo)
+				namedObject.parent.addInheritsMembers(wo)
+				namedObject.addMixinsMembers(wo)
+	
+				if (namedObject.native)
+					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+	
+				if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
+					wo.invokeConstructor(namedObject.parentParameters.evalEach)
+			}
+			catch (RuntimeException e) {
+				// if init failed remove it !
+				interpreter.currentContext.removeGlobalReference(qualifiedName)
+				throw e
+			}
 		]
 	}
 
