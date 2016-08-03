@@ -18,6 +18,8 @@ import org.eclipse.ui.progress.UIJob
 import org.uqbar.project.wollok.debugger.model.WollokVariable
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 import org.uqbar.project.wollok.ui.launch.Activator
+import org.eclipse.swt.widgets.Display
+import org.eclipse.ui.PlatformUI
 
 /**
  * 
@@ -49,7 +51,7 @@ class WollokDebugModelPresentation extends LabelProvider implements IDebugModelP
 	
 	def synchronized getOrCreateResourceManager() {
 		if (resourceManager == null) {
-			resourceManager = new LocalResourceManager(JFaceResources.getResources())
+			resourceManager = new LocalResourceManager(JFaceResources.getResources(Display.^default))
 		} 
 		resourceManager
 	}
