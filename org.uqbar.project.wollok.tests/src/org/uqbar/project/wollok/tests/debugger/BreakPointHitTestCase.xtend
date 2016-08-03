@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.debugger
 
 import org.junit.Test
+import org.uqbar.project.wollok.debugger.server.rmi.XWollokListDebugValue
 
 /**
  * Tests a breakpoint being hit by the debugger/interpreter
@@ -40,7 +41,7 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 		]		
 	}
 	
-//	@Test
+	@Test
 	def void listShouldHaveElements() {
 		'''
 			program abc {
@@ -62,10 +63,16 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 						assertEquals(1, frames.get(0).variables.size)
 						frames.get(0).variables.get(0) => [
 							assertEquals("aList", variable.name)
-							assertTrue(value.stringValue.startsWith("List (id="))	
+							assertTrue(value.stringValue + " didn't match List", value.stringValue.startsWith("List (id="))
+							
+							assertEquals(XWollokListDebugValue, value.class)	
 							
 							// list should have elements
 							assertEquals(3, value.variables.length)
+							
+							assertEquals("1", value.variables.get(0).value.stringValue)
+							assertEquals("2", value.variables.get(1).value.stringValue)
+							assertEquals("3", value.variables.get(2).value.stringValue)
 						]
 					]
 					.thenDo [ resume ]

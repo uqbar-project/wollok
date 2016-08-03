@@ -19,16 +19,15 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 class XWollokListDebugValue extends XDebugValue {
 	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
 	
-	new(WollokObject list) {
+	new(WollokObject list, String concreteNativeType) {
 		super('''List (id=«System.identityHashCode(list)»)''')
 		var i = 0
-		for (e : list.elements) 
+		for (e : list.getElements(concreteNativeType)) 
 			variables.add(new XDebugStackFrameVariable(new WVariable(String.valueOf(i++), false), e))
 	}
 	
-	def getElements(WollokObject object) {
-		val native = object.getNativeObject(COLLECTION) as WCollection<Collection<WollokObject>>
-//		println("Mapping list elements: " + native.wrapped + " " + object)
+	def getElements(WollokObject object, String concreteNativeType) {
+		val native = object.getNativeObject(concreteNativeType) as WCollection<Collection<WollokObject>>
 		if (native.wrapped == null) Collections.EMPTY_LIST else native.wrapped
 	}
 	

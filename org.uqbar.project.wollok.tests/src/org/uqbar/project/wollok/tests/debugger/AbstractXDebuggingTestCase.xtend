@@ -50,7 +50,8 @@ abstract class AbstractXDebuggingTestCase extends AbstractXDebuggerImplTestCase 
 
 		// now wait !
 		clientSide.waitUntilTerminated
-		interpreterThread.join(5000)
+//		interpreterThread.join(5000)
+		interpreterThread.join()
 		if (interpreterThread.alive) interpreterThread.stop 
 		
 		clientSide.close()
