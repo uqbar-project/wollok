@@ -13,7 +13,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 /**
  * @author jfernandes
  */
-class WCollection<T extends Collection> {
+class WCollection<T extends Collection<WollokObject>> {
 	@Accessors var T wrapped
 	protected extension WollokInterpreterAccess = new WollokInterpreterAccess
 	

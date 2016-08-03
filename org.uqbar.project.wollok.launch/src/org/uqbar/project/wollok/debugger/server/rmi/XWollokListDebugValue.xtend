@@ -27,8 +27,9 @@ class XWollokListDebugValue extends XDebugValue {
 	}
 	
 	def getElements(WollokObject object) {
-		val wrapped = object.getNativeObject(COLLECTION) as WCollection<Collection<WollokObject>>
-		if (wrapped.wrapped == null) Collections.EMPTY_LIST else wrapped.wrapped
+		val native = object.getNativeObject(COLLECTION) as WCollection<Collection<WollokObject>>
+//		println("Mapping list elements: " + native.wrapped + " " + object)
+		if (native.wrapped == null) Collections.EMPTY_LIST else native.wrapped
 	}
 	
 }

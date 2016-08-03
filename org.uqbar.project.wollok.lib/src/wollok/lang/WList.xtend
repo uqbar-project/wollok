@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  * 
  * @author jfernandes
  */
-class WList extends WCollection<List> implements JavaWrapper<List> {
+class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<WollokObject>> {
 
  	val WollokObject wollokInstance
  
