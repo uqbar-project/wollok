@@ -46,7 +46,7 @@
      	 <!-- INTRO -->
      	 <property  
                name="introBrandingImage"  
-               value="product:/icons/wollok-logo-64.fw.png">  
+               value="product:/icons/icon_64x64.png">  
          </property>  
          <property  
                name="introTitle"  
