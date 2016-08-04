@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="40">
+<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="42">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.1.0.201508191347"/>
@@ -8,21 +8,6 @@
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="it.xsemantics.runtime.feature.feature.group" version="1.10.0.v20160527-0805"/>
-<unit id="it.xsemantics.sdk.feature.group" version="1.10.0.v20160527-0805"/>
-<unit id="it.xsemantics.feature.feature.group" version="1.10.0.v20160527-0805"/>
-<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.10/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
-<unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
-<repository location="http://download.itemis.com/updates/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160723060001"/>
-<repository location="http://build.eclipse.org/technology/babel/update-site/I20160723-0600/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
@@ -38,6 +23,17 @@
 <repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="it.xsemantics.runtime.feature.feature.group" version="1.10.0.v20160527-0805"/>
+<unit id="it.xsemantics.sdk.feature.group" version="1.10.0.v20160527-0805"/>
+<unit id="it.xsemantics.feature.feature.group" version="1.10.0.v20160527-0805"/>
+<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.10/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
+<unit id="de.itemis.xtext.antlr.sdk.feature.group" version="2.1.1.v201405091103"/>
+<repository location="http://download.itemis.com/updates/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.pde.feature.group" version="3.12.0.v20160606-1100"/>
 <unit id="org.eclipse.platform.ide" version="4.6.0.I20160606-1100"/>
 <unit id="org.eclipse.jdt.feature.group" version="3.12.0.v20160606-1100"/>
@@ -47,6 +43,10 @@
 <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
 <unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160723060001"/>
+<repository location="http://build.eclipse.org/technology/babel/update-site/I20160723-0600/neon/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
