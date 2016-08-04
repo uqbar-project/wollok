@@ -617,6 +617,7 @@ Library.
       <feature id="org.eclipse.equinox.executable"/>
       <feature id="org.eclipse.babel.nls_eclipse_es"/>
       <feature id="org.eclipse.jdt"/>
+      <feature id="org.eclipse.team.svn"/>
    </features>
 
    <configurations>
