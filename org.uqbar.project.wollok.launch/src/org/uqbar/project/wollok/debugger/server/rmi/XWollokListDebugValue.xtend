@@ -1,12 +1,13 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
 /**
  * Special value for wollok lists.
@@ -15,7 +16,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
  * @author jfernandes
  */
 class XWollokListDebugValue extends XDebugValue {
-	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
+	@Accessors ArrayList<XDebugStackFrameVariable> variables = newArrayList
 	
 	new(WollokObject list) {
 		super('''List (id=«System.identityHashCode(list)»)''')

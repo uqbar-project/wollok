@@ -1,15 +1,19 @@
 package org.uqbar.project.wollok.ui.console
 
 import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
-import org.eclipse.swt.widgets.Composite
-import org.eclipse.ui.console.IConsoleView
-import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.swt.events.MouseAdapter
 import org.eclipse.swt.events.MouseEvent
-import org.eclipse.swt.custom.StyledText
 import org.eclipse.swt.events.VerifyEvent
+import org.eclipse.swt.widgets.Composite
+import org.eclipse.ui.console.IConsoleView
+import org.eclipse.ui.console.IScrollLockStateProvider
+import org.eclipse.ui.console.TextConsole
+import org.eclipse.ui.console.TextConsolePage
+import org.eclipse.ui.console.TextConsoleViewer
+import org.uqbar.project.wollok.ui.console.editor.WollokReplStyledText
 
 /**
  * Extends eclipse's console page for integrating
@@ -23,11 +27,13 @@ import org.eclipse.swt.events.VerifyEvent
 class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	static val KEY_RETURN = 0x0d
 	val WollokReplConsole console
+	val IConsoleView view
 	var int historyPosition = -1
 
 	new(WollokReplConsole console, IConsoleView view) {
 		super(console, view)
 		this.console = console
+		this.view = view
 	}
 
 	override createControl(Composite oldParent) {
@@ -37,8 +43,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			addVerifyKeyListener [ event |
 				if (event.keyCode == SWT.ARROW_LEFT) {
 					event.doit = (event.widget as StyledText).caretOffset > console.inputBufferStartOffset
-				}
-				else if (event.keyCode == KEY_RETURN && !isAtTheEnd(event)) {
+				} else if (event.keyCode == KEY_RETURN && !isAtTheEnd(event)) {
 					setCursorToEnd
 				}
 			]
@@ -47,10 +52,10 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			]
 			addMouseListener(new MouseAdapter() {
 				override def mouseDown(MouseEvent e) {
-					if (isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
+					if(isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
 				}
 			})
-			setFocus			
+			setFocus
 		]
 	}
 
@@ -75,7 +80,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	override keyPressed(KeyEvent e) {
 		if (!console.running) {
 			e.doit = false
-			return;
+			return
 		}
 
 		if (e.keyCode == SWT.ARROW_UP) {
@@ -100,32 +105,55 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			setCursorToEnd
 			return
 		}
-		// return key pressed 
+		// return key pressed
 		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
+			console.updateIfDirty
 			console.sendInputBuffer
 			historyPosition = -1
-		} else
-			console.updateInputBuffer
+		} else {
+			console.updateInputBuffer	
+		}
+		
 		return
 	}
 
-
 	// We could move this as extension methods to Jface
-	
 	def caretOffset() { viewer.textWidget.caretOffset }
-	def isCursorInTheLasLine() { caretLine == lastLine }
-	def caretLine() { viewer.textWidget.getLineAtOffset(caretOffset) }
-	def lastLine() { viewer.textWidget.getLineAtOffset(charCount) }
-	def charCount() { viewer.textWidget.charCount }
-	
-	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
-	def setCursorToEnd() { viewer.textWidget.selection = charCount }
-	def isAtTheEnd(VerifyEvent event) { (event.widget as StyledText).caretOffset  == charCount }
 
-	def getHomePosition() {	console.outputTextEnd }
+	def isCursorInTheLasLine() { caretLine == lastLine }
+
+	def caretLine() { viewer.textWidget.getLineAtOffset(caretOffset) }
+
+	def lastLine() { viewer.textWidget.getLineAtOffset(charCount) }
+
+	def charCount() { viewer.textWidget.charCount }
+
+	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
+
+	def setCursorToEnd() { viewer.textWidget.selection = charCount }
+
+	def isAtTheEnd(VerifyEvent event) { (event.widget as StyledText).caretOffset == charCount }
+
+	def getHomePosition() { console.outputTextEnd }
 
 	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
 
 	override keyReleased(KeyEvent e) {}
 
+	override createViewer(Composite parent) {
+		return new WollokReplConsoleViewer(parent, console, view)
+	}
+}
+
+class WollokReplConsoleViewer extends TextConsoleViewer {
+
+	new(Composite parent, TextConsole console, IScrollLockStateProvider scrollLockStateProvider) {
+		super(parent, console, scrollLockStateProvider)
+	}
+
+	override createTextWidget(Composite parent, int styles) {
+		val styledText = new WollokReplStyledText(parent, styles)
+		styledText.setLeftMargin(Math.max(styledText.getLeftMargin(), 2))
+		return styledText
+	}
 }

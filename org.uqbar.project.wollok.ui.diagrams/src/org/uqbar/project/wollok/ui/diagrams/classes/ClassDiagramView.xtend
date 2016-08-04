@@ -2,10 +2,12 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 
 import com.google.inject.Inject
 import java.util.ArrayList
+import java.util.Comparator
+import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
-import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
@@ -26,6 +28,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
+import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
 import org.eclipse.jface.text.source.ISourceViewer
@@ -43,6 +46,7 @@ import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
+import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
@@ -53,13 +57,15 @@ import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
@@ -70,7 +76,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 
 /**
  * 
@@ -93,6 +98,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	FlyoutPaletteComposite splitter
 	CustomPalettePage page
 	PaletteViewerProvider provider
+
+	ExportAction exportAction
 	
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -104,33 +111,70 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
+		
+		exportAction = new ExportAction => [
+				imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
+				toolTipText = "Export this diagram to an image" // TODO i18n!
+			] 
+		site.actionBars.toolBarManager => [
+			add(exportAction)
+		]
 	}
 	
 	def createDiagramModel() {
+		NamedObjectModel.init()
+		MixinModel.init()
 		new ClassDiagram => [
 			// classes
 			val classes = xtextDocument.readOnly[ classes ].toSet
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
+			ClassModel.init(classes.clone)
 
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
-			objects.forEach[o| 
-				addNamedObject(new NamedObjectModel(o) => [ location = new Point(100, 100) ])
-				if (o.parent != null)
-					classes.add(o.parent)
-				o.mixins.forEach[m | addMixin(m) ]
+			
+			objects.forEach[ o | 
+				addNamedObject(new NamedObjectModel(o) => [ 
+					locate
+				])
 			]
 
-			// mixins
-			classes.forEach[c| 
-				addClass(c)
-				c.mixins.forEach[m | addMixin(m) ]
-			]
+			// classes
+			// first, superclasses
+			var classesCopy = classes.clone.filter [ it.parent == null ].toList
+			var int level = 0
+			while (!classesCopy.isEmpty) {
+				level++
+				val levelCopy = level
+				classesCopy.forEach [ c | addClass(c, levelCopy) ]
+				val parentClasses = classesCopy
+				// then subclasses of parent classes and recursively...
+				classesCopy = classes
+					.clone
+					.filter [ parentClasses.contains(it.parent) ]
+					.sortWith([ WClass a, WClass b | 
+						val parentA = a.parent?.name ?: ""
+						val parentB = b.parent?.name ?: ""
+						parentA.compareTo(parentB)
+					] as Comparator<WClass>)
+					.toList
+					
+			}
+
+			// mixins (for classes and objects)
+			(classes + objects).map [ o | o.mixins ].flatten.toSet.forEach [ m | addMixin(m) ]
 			//TODO: add mixins from document
 
 			// relations
 			connectRelations
 		]
+	}
+	
+	def getParentClass(WClass wclass) {
+		if (wclass.parent == null) {
+			return ""
+		}
+		wclass.parent.name
 	}
 	
 	def getClasses(XtextResource it) { getAllOfType(WClass) }
@@ -184,6 +228,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// provides selection
 		site.selectionProvider = graphicalViewer
+		exportAction.viewer = graphicalViewer
 	}
 	
 	def configureGraphicalViewer() {
@@ -227,10 +272,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
 		
-		
 		// map back positions to model inverting the Y coordinates
 		// because the directed graph only supports layout directo to SOUTH, meaning
 		// super classes will be at the bottom. So we invert them
+		/*
 		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
 
 		graph.nodes.forEach[ val n = it as Node
@@ -238,6 +283,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (n != bottomNode) deltaY += bottomNode.height;
 			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
 		]
+		*/
 	}
 	
 	def createNode(AbstractGraphicalEditPart e) {
@@ -336,16 +382,24 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			refresh()
 		}
 	}
+	val refreshJob = new UIJob("Updating diagram view") {
+			override def runInUIThread(IProgressMonitor monitor) {
+				diagram = createDiagramModel
+				initializeGraphicalViewer
+				Status.OK_STATUS
+			}
+		}
 	
 	def refresh() {
-		diagram = createDiagramModel
-		initializeGraphicalViewer
+		refreshJob.schedule
 	}
 	
 	// IDocumentListener
 	
 	override documentAboutToBeChanged(DocumentEvent event) { }
-	override documentChanged(DocumentEvent event) { refresh }
+	override documentChanged(DocumentEvent event) { 
+		refresh
+	}
 	
 	// ****************************	
 	// ** Palette

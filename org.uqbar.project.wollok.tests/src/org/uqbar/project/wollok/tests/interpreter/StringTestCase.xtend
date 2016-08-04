@@ -11,121 +11,163 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testWithAssertsOk() {
 		'''
-			test "pepita" {
-				const x = "Hola, wollok!".substring(0,3)
-				assert.equals("Hol", x)			
-			}
-		'''.interpretPropagatingErrors
+		const x = "Hola, wollok!".substring(0,3)
+		assert.equals("Hol", x)			
+		'''.test
 	}
 
 	@Test
 	def void testLessThan() {
-		'''program a {
-				assert.that("miau" < "ufa")			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("miau" < "ufa")			
+		'''.test
 	}
 
 	@Test
 	def void testLessThanFalseCondition() {
-		'''program a {
-				assert.notThat("zapallo" <= "ufa")			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.notThat("zapallo" <= "ufa")			
+		'''.test
 	}
 
 	@Test
 	def void testGreaterOrEqualThan() {
-		'''program a {
-				assert.that("zapallo" >= "ufa")
-				assert.that("zapallo" >= "zapallo")
-				assert.notThat("aguacero" >= "guarecer")			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("zapallo" >= "ufa")
+		assert.that("zapallo" >= "zapallo")
+		assert.notThat("aguacero" >= "guarecer")			
+		'''.test
 	}
 
 	@Test
 	def void testLessOrEqualThanForLess() {
-		'''program a {
-				assert.that("miau" <= "ufa")			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("miau" <= "ufa")			
+		'''.test
 	}
 
 	@Test
 	def void testLessOrEqualThanForEqual() {
-		'''program a {
-				assert.that("miau" <= "miau")			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("miau" <= "miau")			
+		'''.test
 	}
 
 	@Test
 	def void testContains() {
-		'''program a {
-				assert.that("aguacate".contains("cat"))
-				assert.notThat("aguacate".contains("managua"))			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("aguacate".contains("cat"))
+		assert.that("aguacate".contains("agua"))
+		assert.notThat("aguacate".contains("managua"))
+		assert.notThat("aguacate".contains("AGUA"))
+		'''.test
+	}
+	
+	@Test
+	def void testIndexOf(){
+		'''
+		assert.equals(0, "aguacate".indexOf("agua"))
+		assert.equals(4, "aguacate".indexOf("cat"))
+		assert.throwsException( {"aguacate".indexOf("trinitrotolueno")} )
+		'''.test
 	}
 
 	@Test
+	def void testLastIndexOf(){
+		'''
+		assert.equals(6, "aguacate".lastIndexOf("te"))
+		assert.equals(5, "aguacate".lastIndexOf("a"))
+		assert.throwsException( {"aguacate".lastIndexOf("trinitrotolueno")} )
+		'''.test
+	}
+	@Test
 	def void testisEmpty() {
-		'''program a {
-				assert.that("".isEmpty())			
-				assert.notThat("pepe".isEmpty())
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("".isEmpty())			
+		assert.notThat("pepe".isEmpty())
+		'''.test
 	}
 
 	@Test
 	def void testEqualEqual() {
-		'''program a {
-				const unString = "perro"
-				const otroString = "per" + "ro"
-				assert.that(unString == otroString)			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		const unString = "perro"
+		const otroString = "per" + "ro"
+		assert.that(unString == otroString)			
+		'''.test
 	}
 	
 	@Test
 	def void testEqualsIgnoreCase() {
-		'''program a {
-				assert.that("mARejaDA".equalsIgnoreCase("MAREJADA"))			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		assert.that("mARejaDA".equalsIgnoreCase("MAREJADA"))			
+		'''.test
 	}
 
 	@Test
 	def void testSplit() {
-		'''program a {
-				const result = "Esto Es una prueba".split(" ")
-				const result2 = "Esto|Es|una|prueba".split("|")
-				const result3 = "Esto,Es,una,prueba".split(",")
-				const comparison = ["Esto", "Es", "una", "prueba"]
-				(0..3).forEach { i => assert.that(result.get(i) == comparison.get(i)) }
-				(0..3).forEach { i => assert.that(result2.get(i) == comparison.get(i)) }
-				(0..3).forEach { i => assert.that(result3.get(i) == comparison.get(i)) }
-			}
-		'''.interpretPropagatingErrors
+		'''
+		const result = "Esto Es una prueba".split(" ")
+		const result2 = "Esto|Es|una|prueba".split("|")
+		const result3 = "Esto,Es,una,prueba".split(",")
+		const comparison = ["Esto", "Es", "una", "prueba"]
+		(0..3).forEach { i => assert.that(result.get(i) == comparison.get(i)) }
+		(0..3).forEach { i => assert.that(result2.get(i) == comparison.get(i)) }
+		(0..3).forEach { i => assert.that(result3.get(i) == comparison.get(i)) }
+		'''.test
 	}
 
 	@Test
 	def void testReplace() {
-		'''program a {
-				const mardel = "Mar del Plata"
-				const tuyu = mardel.replace("Plata", "Tuyu")
-				assert.that("Mar del Tuyu" == tuyu)			
-			}
-		'''.interpretPropagatingErrors
+		'''
+		const mardel = "Mar del Plata"
+		const tuyu = mardel.replace("Plata", "Tuyu")
+		assert.that("Mar del Tuyu" == tuyu)			
+		'''.test
 	}
 
 	@Test
 	def void randomForStringsAreNotAllowedAnymore() {
-		'''program a {
-			assert.throwsException({ => "fafafa".randomUpTo(8.9)})
-		}
-		'''.interpretPropagatingErrors
+		'''
+		assert.throwsException({ => "fafafa".randomUpTo(8.9)})
+		'''.test
 	}	
+
+	@Test
+	def void take() {
+		'''
+		assert.equals("cl", "clearly".take(2))
+		assert.equals("clearly", "clearly".take(8))
+		assert.equals("", "clearly".take(0))
+		'''.test
+	}
 	
+	@Test
+	def void drop() {
+		'''
+		assert.equals("early", "clearly".drop(2))
+		assert.equals("", "clearly".drop(8))
+		assert.equals("clearly", "clearly".drop(0))
+		'''.test
+	}
+	
+	@Test
+	def void words() {
+		'''
+		const words = "in wollok everything is an object".words()
+		assert.equals("in", words.get(0))
+		assert.equals("object", words.get(5))
+		'''.test
+	}
+	
+	@Test
+	def void capitalize() {
+		'''
+		assert.equals("alfa romeo".capitalize(), "Alfa Romeo")
+		assert.equals("AUDI".capitalize(), "Audi")
+		assert.equals("bmw".capitalize(), "Bmw")
+		assert.equals("ONETWO THREE FOUR".capitalize(), "Onetwo Three Four")
+		'''.test
+	}
+
 }

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok;singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.10.0";visibility:=reexport,
  org.eclipse.xtext.xbase.lib;bundle-version="2.10.0",
  org.eclipse.jdt,
  org.eclipse.jdt.core,
- org.uqbar.project.xinterpreter
+ org.uqbar.project.xinterpreter,
+ org.apache.commons.collections;bundle-version="3.2.2";visibility:=reexport
 Import-Package: org.eclipse.xtext.xbase.lib,
  org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -46,6 +47,7 @@ Export-Package: org.uqbar.project.wollok,
  org.uqbar.project.wollok.parser.antlr,
  org.uqbar.project.wollok.parser.antlr.internal,
  org.uqbar.project.wollok.scoping,
+ org.uqbar.project.wollok.scoping.cache,
  org.uqbar.project.wollok.sdk,
  org.uqbar.project.wollok.serializer,
  org.uqbar.project.wollok.services,

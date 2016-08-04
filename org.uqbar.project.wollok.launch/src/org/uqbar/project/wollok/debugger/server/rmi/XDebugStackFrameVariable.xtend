@@ -12,10 +12,11 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * 
  * @author jfernandes
  */
+@Accessors
 class XDebugStackFrameVariable implements Serializable {
-	@Accessors WVariable variable
-	@Accessors XDebugValue value
-		
+	WVariable variable
+	XDebugValue value
+	
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
 		this.value = if (value == null) null else value.asRemoteValue

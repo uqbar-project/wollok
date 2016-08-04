@@ -28,6 +28,11 @@ import org.xpect.xtext.lib.setup.ThisOffset
 import org.xpect.xtext.lib.setup.ThisResource
 import org.junit.Ignore
 
+/**
+ * Test class for extending XPECT to have tests on static proposals (content assist)
+ * 
+ * @author jfernandes
+ */
 @SuppressWarnings("restriction")
 @RunWith(XpectRunner)
 class WollokContentAssistTest extends AbstractContentAssistProcessorTest {

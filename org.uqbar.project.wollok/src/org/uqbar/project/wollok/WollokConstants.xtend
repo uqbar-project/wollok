@@ -24,8 +24,16 @@ class WollokConstants {
 	// any code that generates wollok code
 	
 	public static val OPMULTIASSIGN = #['+=', '-=', '*=', '/=', '%=', '<<=', '>>=']
+	public static val OP_EQUALITY = #['==', '!=', '===', '!==']
 	
-	public static val THIS = "this"
+	public static val OP_BOOLEAN_AND = #['and', "&&"]
+	public static val OP_BOOLEAN_OR = #["or", "||"]
+	
+	public static val OP_BOOLEAN = #['and', "&&", "or", "||"]
+	public static val OP_UNARY_BOOLEAN = #['!', "not"]
+	
+	public static val SELF = "self"
+	public static val NULL = "null"
 	public static val METHOD = "method"
 	public static val VAR = "var"
 	public static val OVERRIDE = "override"

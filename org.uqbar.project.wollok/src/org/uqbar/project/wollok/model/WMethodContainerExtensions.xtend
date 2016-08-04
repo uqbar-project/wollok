@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.model
 
 import java.util.Arrays
+import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
@@ -17,25 +18,23 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.wollokDsl.WMixin
-import java.util.Collections
-import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WReferenciable
 
 /**
  * Extension methods for WMethodContainers.
@@ -321,7 +320,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnTrue(WExpression it) { false }
 	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
-	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
+	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { isTrueLiteral }
+	
+	def static dispatch isTrueLiteral(WBooleanLiteral it) { isIsTrue }
+	def static dispatch isTrueLiteral(WExpression it) { false }
+	
+	def static dispatch isFalseLiteral(WBooleanLiteral it) { !isIsTrue }
+	def static dispatch isFalseLiteral(WExpression it) { false }
 
 	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
 	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
@@ -332,6 +337,26 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
+	
+	// 
+	// SELF: target object/context
+	//
+	
+	def static isInASelfContext(EObject ele) {
+		ele.getSelfContext != null
+	}
+	
+	def static getSelfContext(EObject ele) {
+		for (var e = ele; e != null; e = e.eContainer)
+			if (e.isSelfContext) return e
+		null
+	}
+	
+	def static dispatch isSelfContext(WClass it) { true }
+	def static dispatch isSelfContext(WNamedObject it) { true }
+	def static dispatch isSelfContext(WObjectLiteral it) { true }
+	def static dispatch isSelfContext(WMixin it) { true }
+	def static dispatch isSelfContext(EObject it) { false }
 	
 
 }

@@ -1,0 +1,96 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	method a() {
+		const condA = true
+		var cond = true
+		
+		// TRUE
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = condA == true
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = condA === true
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = condA != true
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = condA !== true
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = true == condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = true === condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = true != condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		cond = true !== condA
+		
+		// FALSE
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = condA == false
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = condA === false
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = condA != false
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = condA !== false
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = false == condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = false === condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = false != condA
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		cond = false !== condA
+		
+		// IF
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		if (cond == true)
+			throw new Exception("Blah")
+
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		if (cond == false)
+			throw new Exception("Blah")
+			
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		if (cond != true)
+			throw new Exception("Blah")
+
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		if (cond != false)
+			throw new Exception("Blah")
+			
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		if (cond !== true)
+			throw new Exception("Blah")
+
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		if (cond !== false)
+			throw new Exception("Blah")		
+			
+		// if as left side
+		
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "true"
+		if (true == cond)
+			throw new Exception("Blah")
+
+		// XPECT errors --> "Don't compare with booleans. Use not or just the expression instead" at "false"
+		if (false == cond)
+			throw new Exception("Blah")
+	}
+}

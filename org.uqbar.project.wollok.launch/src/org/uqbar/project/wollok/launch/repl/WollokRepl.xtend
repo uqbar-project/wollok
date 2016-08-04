@@ -48,6 +48,7 @@ class WollokRepl {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
+		this.interpreter.interactive = true
 		this.mainFile = mainFile
 		this.parsedMainFile = parsedMainFile
 	}
@@ -87,7 +88,7 @@ class WollokRepl {
 						«FOR a : parsedMainFile.imports.map[importedNamespace]»
 						import «a»
 						«ENDFOR»
-						import «parsedMainFile.fileName».*
+						import «parsedMainFile.implicitPackage».*
 						program repl {
 						«input»
 						}

@@ -5,6 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * Represents the different states a debugger
@@ -39,7 +40,10 @@ class RunThroughDebuggerState extends XDebuggerState {
  */
 class SteppingOver extends XDebuggerState {
 	var EObject currentStepObject
-	new(EObject step) { currentStepObject = step }
+	new(EObject step) {
+		if (step == null) throw new WollokRuntimeException("Tried to create an instance with a null EObject") 
+		currentStepObject = step
+	}
 	
 	override before(XDebuggerImpl d, EObject e) { /* wont suspend for inner evaluations */ }
 	override after(XDebuggerImpl d, EObject e) {
@@ -47,7 +51,7 @@ class SteppingOver extends XDebuggerState {
 			d.state = new PauseOnNext
 		}
 	}
-	override toString() { "STEPPING_OVER(" + currentStepObject.shortSouceCode + "-" + System.identityHashCode(currentStepObject) + ")" }
+	override toString() { "STEPPING_OVER(" + currentStepObject.shortSourceCode + "-" + System.identityHashCode(currentStepObject) + ")" }
 }
 
 /**

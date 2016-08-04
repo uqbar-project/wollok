@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.ui.launch
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.5.0.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.ui.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.uqbar.project.wollok,
+ org.uqbar.project.xinterpreter,
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.lib,
  org.eclipse.debug.core;bundle-version="3.8.0",

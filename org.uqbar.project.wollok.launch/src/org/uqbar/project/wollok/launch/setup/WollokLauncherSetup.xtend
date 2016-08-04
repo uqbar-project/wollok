@@ -6,14 +6,20 @@ import com.google.inject.name.Names
 import org.eclipse.xtext.parser.antlr.Lexer
 import org.eclipse.xtext.ui.LexerUIBindings
 import org.uqbar.project.wollok.WollokDslStandaloneSetup
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.parser.antlr.internal.InternalWollokDslLexer
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokREPLInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokREPLInterpreter
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * @author tesonep
  */
 class WollokLauncherSetup extends WollokDslStandaloneSetup {
-
+	@Accessors
 	val WollokLauncherParameters params 
 
 	new(WollokLauncherParameters params) {
@@ -31,6 +37,10 @@ class WollokLauncherSetup extends WollokDslStandaloneSetup {
 	override configure(Binder binder) {
 		super.configure(binder)
 		binder.bind(WollokLauncherParameters).toInstance(params)
+
+		if(params.hasRepl){
+			binder.bind(WollokInterpreter).to(WollokREPLInterpreter)
+		}
 		
 		// for testing refactors
 		binder.bind(Lexer).annotatedWith(Names.named(LexerUIBindings.HIGHLIGHTING)).to(InternalWollokDslLexer)
