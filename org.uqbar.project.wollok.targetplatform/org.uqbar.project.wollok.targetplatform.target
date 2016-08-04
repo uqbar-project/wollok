@@ -21,8 +21,8 @@
 <repository location="http://download.itemis.com/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160626020003"/>
-<repository location="http://build.eclipse.org/technology/babel/update-site/N20160626-0200/neon/"/>
+<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160723060001"/>
+<repository location="http://build.eclipse.org/technology/babel/update-site/I20160723-0600/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
@@ -33,6 +33,8 @@
 <unit id="org.eclipse.xpand" version="0.0.0"/>
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
+<unit id="org.eclipse.team.svn" version="0.0.0"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
@@ -40,11 +42,6 @@
 <unit id="org.eclipse.platform.ide" version="4.6.0.I20160606-1100"/>
 <unit id="org.eclipse.jdt.feature.group" version="3.12.0.v20160606-1100"/>
 <repository location="http://download.eclipse.org/eclipse/updates/4.6/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
-<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="0.0.0"/>
-<repository location="http://community.polarion.com/projects/subversive/download/eclipse/5.0/mars-site/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
