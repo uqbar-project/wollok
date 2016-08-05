@@ -8,7 +8,7 @@ Import-Package: org.junit;version="4.11.0",
  org.uqbar.project.wollok.interpreter.core,
  org.uqbar.project.wollok.interpreter.nativeobj
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.9.0",
+Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.10.0",
  org.uqbar.project.wollok
 Bundle-ClassPath: lib/gdx-1.6.0.jar,
  lib/gdx-backend-lwjgl-1.6.0.jar,

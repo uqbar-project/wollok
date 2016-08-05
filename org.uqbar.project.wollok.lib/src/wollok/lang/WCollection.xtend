@@ -50,14 +50,29 @@ class WCollection<T extends Collection<WollokObject>> {
 	def join(String separator) {
 		wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(separator)
 	}
-	
+		
+	@NativeMessage("equals")
 	def wollokEquals(WollokObject other) {
-		val otherWrapped = other.getNativeObject(this.class).wrapped
-		otherWrapped.forEach [ println(it.class.name)]
-		other.hasNativeType(this.class.name) && ((otherWrapped).equals(this.wrapped))		
+		other.hasNativeType &&
+		verifySizes(wrapped, other.getNativeCollection) &&
+		verifyWollokElementsContained(wrapped, other.getNativeCollection) &&
+		verifyWollokElementsContained(other.getNativeCollection, wrapped)
 	}
 	
 	@NativeMessage("==")
 	def wollokEqualsEquals(WollokObject other) { wollokEquals(other) }
 	
+	protected def hasNativeType(WollokObject it) {
+		hasNativeType(this.class.name)
+	}
+	
+	protected def getNativeCollection(WollokObject it) {
+		getNativeObject(this.class).wrapped
+	}
+	
+	protected def verifySizes(Collection col, Collection col2) {
+		col.size.equals(col2.size)
+	}
+	
+	protected def verifyWollokElementsContained(Collection set, Collection set2) { false } // Abstract method
 }

@@ -615,10 +615,11 @@ Library.
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.pde"/>
       <feature id="org.eclipse.equinox.executable"/>
-      <feature id="org.eclipse.team.svn"/>
-      <feature id="org.polarion.eclipse.team.svn.connector.svnkit18"/>
-      <feature id="org.polarion.eclipse.team.svn.connector"/>
       <feature id="org.eclipse.babel.nls_eclipse_es"/>
+      <feature id="org.eclipse.jdt"/>
+      <feature id="org.eclipse.team.svn"/>
+      <feature id="org.polarion.eclipse.team.svn.connector"/>
+      <feature id="org.polarion.eclipse.team.svn.connector.svnkit18"/>
    </features>
 
    <configurations>
