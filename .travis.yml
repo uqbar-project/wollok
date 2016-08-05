@@ -6,14 +6,6 @@ before_install:
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 script:
-
-# Deploy the mirror site of SVNKit if it is in dev. Maybe something changed.
-- if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then 
-  cd org.uqbar.project.wollok.svnkit-mirror-site ;
-  mvn -U clean install ;
-  cd .. ;
-  fi
-
 # Creates the correct profile to run
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile

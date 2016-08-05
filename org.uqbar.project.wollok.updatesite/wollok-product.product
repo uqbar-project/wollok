@@ -618,7 +618,8 @@ Library.
       <feature id="org.eclipse.babel.nls_eclipse_es"/>
       <feature id="org.eclipse.jdt"/>
       <feature id="org.eclipse.team.svn"/>
-      <feature id="org.tmatesoft.svnkit" version="1.8.12.r10533_v20160129_0158"/>
+      <feature id="org.polarion.eclipse.team.svn.connector"/>
+      <feature id="org.polarion.eclipse.team.svn.connector.svnkit18"/>
    </features>
 
    <configurations>
