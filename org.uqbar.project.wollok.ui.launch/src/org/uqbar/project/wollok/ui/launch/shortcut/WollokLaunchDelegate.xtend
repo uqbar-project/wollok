@@ -20,6 +20,7 @@ import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import org.eclipse.ui.PlatformUI
 
 /**
  * Launches the process to execute the interpreter.
@@ -120,7 +121,16 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 					return
 				}
 			}
+			else if (event.isStarted) {
+				openDebugPerspective
+			}
 		}
+	}
+	
+	def openDebugPerspective() {
+		PlatformUI.workbench => [
+			showPerspective("org.eclipse.debug.ui.DebugPerspective", activeWorkbenchWindow)
+		]
 	}
 	
 }
