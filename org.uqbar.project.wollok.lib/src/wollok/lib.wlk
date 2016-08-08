@@ -191,9 +191,9 @@ object game {
 		self.doStart(runtime.isInteractive())
 	}
 	
-	method at(x, y) {
-		return new Position(x, y)
-	}
+	method at(x, y) = new Position(x, y)
+	method origin() = self.at(0, 0)
+	method center() = self.at(self.getWidth().div(2), self.getHeight().div(2))
 	
 	
 	method setTitle(title) native
