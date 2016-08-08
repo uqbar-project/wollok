@@ -1,9 +1,18 @@
 package org.uqbar.project.wollok.tests.sdk
 
+import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.junit.Test
+import org.junit.Before
 
 class GameTest extends AbstractWollokInterpreterTestCase {
+	
+	var gameboard = Gameboard.getInstance
+	
+	@Before
+	def void init() {
+		gameboard.clear
+	}
 	
 	@Test
 	def void canInstanceNewPosition() {
