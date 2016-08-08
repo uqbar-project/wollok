@@ -234,6 +234,12 @@ class Position {
 	
 	method clone() = new Position(x, y)
 
+	method distance(position) {
+	    const deltaX = self.getX() - position.getX()
+	    const deltaY = self.getY() - position.getY()
+	    return (deltaX.square() + deltaY.square()).squareRoot() 
+	}
+
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
@@ -243,7 +249,7 @@ class Position {
 	method getY() = y
 	method setY(_y) { y = _y }
 	
-	override method ==(other) { return x == other.getX() && y == other.getY()}
+	override method ==(other) = x == other.getX() && y == other.getY()
 }
 
 object error {
