@@ -67,6 +67,15 @@ class GameObject {
 		.toList.javaToWollok
 	}
 	
+	def colliders(WollokObject visual) {
+		val visualObject = board.findVisual(visual)
+		board.getComponentsInPosition(visualObject.position)
+		.map[ it as WVisual ]
+		.filter [ !it.equals(visualObject)]
+		.map [ it.wObject ]
+		.toList.javaToWollok
+	}
+		
 	def say(WollokObject visual, WollokObject message) {
 		board.findVisual(visual).say(message.asString)
 	}

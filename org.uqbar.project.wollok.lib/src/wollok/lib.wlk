@@ -183,6 +183,7 @@ object game {
 	method whenKeyPressedSay(key, function) native
 	method whenCollideDo(element, action) native
 	method getObjectsIn(position) native
+	method colliders(visual) native
 	method say(element, message) native
 	method clear() native
 	method stop() native

@@ -28,6 +28,22 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void shouldReturnVisualColliders() {
+		'''
+		object myVisual { }
+		class Visual { }
+		
+		program a {
+			«position(0,0)».drawElement(myVisual)
+			2.times{ «position(0,0)».drawElement(new Visual()) }
+			«position(0,1)».drawElement(new Visual())
+			
+			assert.equals(2, game.colliders(myVisual).size())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 	private def position(int x, int y) {
 		'''new Position(«x»,«y»)'''
 	}
