@@ -170,15 +170,21 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void map() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		var halfs = numbers.map({n => n / 2})
+		const halfs = numbers.map({n => n / 2})
 
-		assert.equals(3, halfs.size())
-		assert.that(halfs.contains(11))
-		assert.that(halfs.contains(5))
-		assert.that(halfs.contains(1))
+		assert.equals([11,1,5], halfs)
 		'''.test
 	}
 	
+	@Test
+	def void mapReturnsList() {
+		'''
+		const evens = #{1,2,3}.map({n => n.even()})
+
+		assert.equals([false,true,false], evens)
+		'''.test
+	}
+		
 	@Test
 	def void shortCutAvoidingParenthesis() {
 		'''
