@@ -8,10 +8,6 @@ class Key {
 	method onPressDo(action) {
 		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) }
 	}
-	
-	method onPressCharacterSay(function) {
-		keyCodes.forEach{ key => game.whenKeyPressedSay(key, function) }
-	}
 }
 
 object ANY_KEY inherits Key([-1]) { }

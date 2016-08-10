@@ -158,6 +158,7 @@ object assert {
 			}
 		if (continue) throw new Exception("Should have thrown an exception")	
 	}
+	
 	/**
 	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
 	 */
@@ -174,23 +175,75 @@ class StringPrinter {
 }	
 
 object game {
+	
+	/**
+	 * Adds an object to the board for drawing it.
+	 * That object should known a position.
+	 */
 	method addVisual(element) native
+
+	/**
+	 * Adds an object to the board for drawing it on a specific position.
+	 */
 	method addVisualIn(element, position) native
+	
+	/**
+	 * Adds an object to the board for drawing it and it can be moved with arrow keys.
+	 * That object should known a position.
+	 */
 	method addVisualCharacter(element) native
+
+	/**
+	 * Adds an object to the board for drawing it on a specific position and it can be moved with arrow keys.
+	 */	
 	method addVisualCharacterIn(element, position) native
+
+	/**
+	 * Removes an object from the board for stop drawing it.
+	 */
 	method removeVisual(element) native
+	
+	/**
+	 * Adds a block that will be executed always the specific key is pressed.
+	 */	
 	method whenKeyPressedDo(key, action) native
-	method whenKeyPressedSay(key, function) native
-	method whenCollideDo(element, action) native
+
+	/**
+	 * Adds a block that will be executed always the specific object collides with other. Two objects collide when are in the same position.
+	 * The block should expect the other object as parameter.
+	 */	
+	method whenCollideDo(visual, action) native
+
+	/**
+	 * Returns all objects that are on a position.
+	 */	
 	method getObjectsIn(position) native
-	method say(element, message) native
+
+	/**
+	 * Draw a dialog balloon with given message in the position where the object is.
+	 */	
+	method say(visual, message) native
+
+	/**
+	 * Removes all objects on board and configurations (colliders, keys, etc).
+	 */	
 	method clear() native
+
+	/**
+	 * Stops render the board.
+	 */	
 	method stop() native
 	
+	/**
+	 * Starts render the board in a new windows.
+	 */	
 	method start() {
 		self.doStart(runtime.isInteractive())
 	}
 	
+	/**
+	 * Returns a position for given coordinates.
+	 */	
 	method at(x, y) {
 		return new Position(x, y)
 	}
