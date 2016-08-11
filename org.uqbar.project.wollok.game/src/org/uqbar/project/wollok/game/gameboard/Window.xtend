@@ -15,7 +15,7 @@ import org.uqbar.project.wollok.game.Position
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
 	val defaultImage = new Texture(Gdx.files.internal("wko.png")) //TODO: Merge with WollokConventionExtensions DEFAULT_IMAGE
-	val notFoundText = "Image\nnot found"
+	val notFoundText = "IMAGE\nNOT\nFOUND"
 	val textBitmap = new BitmapFont()
 	val batch = new SpriteBatch()
 	val font = new BitmapFont()
@@ -40,7 +40,7 @@ class Window {
 	
 	def drawNotFoundImage(int x, int y) {
 		batch.draw(defaultImage, x, y)
-		write(notFoundText, Color.DARK_GRAY, x - 80, y + 40)
+		write(notFoundText, Color.BLACK, x - 80, y + 50)
 	}
 	
 	def writeAttributes(String text, Position position, Color color) {
