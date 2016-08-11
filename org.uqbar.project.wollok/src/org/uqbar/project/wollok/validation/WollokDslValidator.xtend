@@ -595,6 +595,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
+	def dontDuplicateTestDescription(WTest wtest){
+		val file = wtest.eContainer as WFile
+		if(file.tests.exists[ it !== wtest && name == wtest.name])
+			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
 		if (t.then?.evaluatesToBoolean && t.^else?.evaluatesToBoolean) {
