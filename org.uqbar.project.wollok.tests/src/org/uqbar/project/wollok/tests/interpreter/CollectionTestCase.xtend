@@ -180,6 +180,17 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void mapReturnsList() {
+		'''
+		const evens = #{1,2,3}.map({n => n.even()})
+
+		assert.equals(3, evens.size())
+		assert.equals(1, evens.occurrencesOf(true))
+		assert.equals(2, evens.occurrencesOf(false))
+		'''.test
+	}
+		
+	@Test
 	def void shortCutAvoidingParenthesis() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
