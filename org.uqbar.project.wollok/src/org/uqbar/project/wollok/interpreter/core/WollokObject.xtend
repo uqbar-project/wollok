@@ -211,6 +211,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		interpreter.addGlobalReference(name, value)
 	}
 	
+	override removeGlobalReference(String name) {
+		interpreter.removeGlobalReference(name)
+	}
+	
+	
 	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
 	def <T> getNativeObject(String clazz) {
 		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz) 

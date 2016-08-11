@@ -80,8 +80,10 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 
 	def isVoid(String message, Object... parameters) {
-		getMethod(message, parameters).returnType == Void.TYPE
+		getMethod(message, parameters).returnType.isVoidType
 	}
+	
+	def static boolean isVoidType(Class<?> it) { it == Void.TYPE || it == void }
 
 	def doesNotUnderstand(String message, Object[] objects) {
 		throwMessageNotUnderstood(this, message, objects)

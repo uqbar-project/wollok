@@ -183,6 +183,7 @@ object game {
 	method whenKeyPressedSay(key, function) native
 	method whenCollideDo(element, action) native
 	method getObjectsIn(position) native
+	method colliders(visual) native
 	method say(element, message) native
 	method clear() native
 	method stop() native
@@ -191,9 +192,9 @@ object game {
 		self.doStart(runtime.isInteractive())
 	}
 	
-	method at(x, y) {
-		return new Position(x, y)
-	}
+	method at(x, y) = new Position(x, y)
+	method origin() = self.at(0, 0)
+	method center() = self.at(self.getWidth().div(2), self.getHeight().div(2))
 	
 	
 	method setTitle(title) native
@@ -234,6 +235,12 @@ class Position {
 	
 	method clone() = new Position(x, y)
 
+	method distance(position) {
+	    const deltaX = self.getX() - position.getX()
+	    const deltaY = self.getY() - position.getY()
+	    return (deltaX.square() + deltaY.square()).squareRoot() 
+	}
+
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
@@ -243,7 +250,7 @@ class Position {
 	method getY() = y
 	method setY(_y) { y = _y }
 	
-	override method ==(other) { return x == other.getX() && y == other.getY()}
+	override method ==(other) = x == other.getX() && y == other.getY()
 }
 
 object error {
