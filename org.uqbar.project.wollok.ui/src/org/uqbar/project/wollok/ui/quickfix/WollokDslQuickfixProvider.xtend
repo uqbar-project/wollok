@@ -92,7 +92,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			
 			val placeToAdd = wko.findPlaceToAddMethod
 			
-			context.xtextDocument.replace(
+			context.getXtextDocument(wko.fileURI).replace(
 				placeToAdd,
 				0,
 				System.lineSeparator + "\t" + METHOD + " " + call.feature +
