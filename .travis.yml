@@ -53,7 +53,7 @@ deploy:
     branch:
     - dev
     - master
-    - dev-*.*
+    - dev-1.5
 
 - provider: s3
   access_key_id: AKIAJLCGMGO45ZQFSLJA
