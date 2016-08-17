@@ -84,7 +84,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
-	def createNonExistingMethod(Issue issue, IssueResolutionAcceptor acceptor) {
+	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
@@ -94,6 +94,26 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val placeToAdd = wko.findPlaceToAddMethod
 			
 			context.getXtextDocument(wko.fileURI).replace(
+				placeToAdd,
+				0,
+				System.lineSeparator + "\t" + METHOD + " " + call.feature +
+					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
+					" {" + System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + System.lineSeparator + "\t}"
+			)
+		]
+	}
+
+	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
+	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val callText = call.node.text
+			
+			val selfContainer = call.method.eContainer as WMethodContainer
+			
+			val placeToAdd = selfContainer.findPlaceToAddMethod
+			
+			context.getXtextDocument(selfContainer.fileURI).replace(
 				placeToAdd,
 				0,
 				System.lineSeparator + "\t" + METHOD + " " + call.feature +
