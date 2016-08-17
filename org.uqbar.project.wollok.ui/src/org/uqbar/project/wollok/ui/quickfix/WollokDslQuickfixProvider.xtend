@@ -74,10 +74,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(WollokDslValidator.CANNOT_ASSIGN_TO_VAL)
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name, Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
-			val feature = (e as WAssignment).feature
-			if (feature instanceof WVariableDeclaration) {
+			val f = (e as WAssignment).feature.ref.eContainer
+			if (f instanceof WVariableDeclaration) {
+				val feature = f as WVariableDeclaration
 				context.xtextDocument.replace(feature.before, feature.node.length,
-					VAR + " " + feature.ref.name + " =" + feature.right.node.text)
+					VAR + " " + feature.variable.name + " =" + feature.right.node.text)
 			}
 		]
 	}
@@ -131,9 +132,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val method = e as WMethodDeclaration
 			val parent = method.wollokClass.parent
 			
-			val constructor = '''method «method.name»(«method.parameters.map[name].join(",")») { 
-				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-			}'''
+			val constructor = "\t" + '''method «method.name»(«method.parameters.map[name].join(",")»){
+		//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+	}''' + System.lineSeparator 
 			
 			addConstructor(parent, constructor)
 		]
@@ -142,7 +143,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
-			xtextDocument.deleteToken(e, OVERRIDE)
+			xtextDocument.deleteToken(e, OVERRIDE + " ")
 		]
 	}
 	
