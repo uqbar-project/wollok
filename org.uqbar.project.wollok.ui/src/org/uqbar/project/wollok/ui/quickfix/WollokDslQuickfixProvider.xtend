@@ -156,7 +156,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 	}''' + System.lineSeparator 
 			
-			addConstructor(parent, constructor)
+			addMethod(parent, constructor)
 		]
 	}
 	
@@ -172,7 +172,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
 			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join(System.lineSeparator)
-			addConstructor(clazz, constructors)
+			addMethod(clazz, constructors)
 		]
 	}
 	
@@ -182,15 +182,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val delegatingConstructor = (e as WConstructor).delegatingConstructorCall
 			val parent = e.wollokClass.parent
 			
-			val constructor = '''new(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")») { 
-				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-			}'''
+			val constructor = '''
+				«tabChar»constructor(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")»){
+				«tabChar»«tabChar»//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+				«tabChar»}
+				'''
 			
-			addConstructor(parent, constructor)
+			addMethod(parent, constructor)
 		]
 	}
 	
-	protected def addConstructor(IModificationContext it, WClass parent, String constructor) {
+	protected def addMethod(IModificationContext it, WClass parent, String constructor) {
 		// TODO try to generalize and use findPlaceToAddMethod
 		
 		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
