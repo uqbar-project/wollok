@@ -36,6 +36,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -111,14 +112,14 @@ class WollokTestResultView extends ViewPart implements Observer {
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(toolbar)
 		
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
-			toolTipText = 'Run Again'
+			toolTipText = Messages.WollokTestResultView_runAgain
 			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
 			addListener(SWT.Selection) [ this.relaunch ]
 			enabled = false
 		]
 
 		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
-			toolTipText = 'Debug Again'
+			toolTipText = Messages.WollokTestResultView_debugAgain
 			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/debuglast_co.gif"))
 			addListener(SWT.Selection) [ this.relaunchDebug ]
 			enabled = false
