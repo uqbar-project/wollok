@@ -90,6 +90,9 @@ public class Messages extends NLS {
 
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
 	
+	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_debugAgain;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

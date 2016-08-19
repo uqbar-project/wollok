@@ -5,6 +5,7 @@ import java.util.Observer
 import javax.inject.Inject
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
+import org.eclipse.jface.layout.GridDataFactory
 import org.eclipse.jface.resource.JFaceResources
 import org.eclipse.jface.resource.LocalResourceManager
 import org.eclipse.jface.resource.ResourceManager
@@ -21,6 +22,8 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
+import org.eclipse.swt.widgets.ToolBar
+import org.eclipse.swt.widgets.ToolItem
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
@@ -30,6 +33,10 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
+
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -58,6 +65,31 @@ class WollokTestResultView extends ViewPart implements Observer {
 	@Inject
 	var GlobalURIEditorOpener opener
 
+	@Inject
+	WollokTestLaunchShortcut testLaunchShortcut
+	
+	ToolBar toolbar
+	
+	ToolItem runAgain
+	
+	ToolItem debugAgain
+
+	def canRelaunch(){
+		results != null && results.container != null && results.container.mainResource != null
+	}
+
+	def relaunch(){
+		this.relaunch("run")
+	}
+	
+	def relaunchDebug(){
+		this.relaunch("debug")
+	}
+
+	def relaunch(String mode){
+		testLaunchShortcut.launch(results.container.mainResource.toIFile, mode)
+	}
+
 	override createPartControl(Composite parent) {
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent);	
 		new GridLayout() => [
@@ -67,11 +99,31 @@ class WollokTestResultView extends ViewPart implements Observer {
 			verticalSpacing = 2
 			parent.setLayout(it)
 		]
-		
+		createToolbar(parent)
 		createResults(parent)
 		createBar(parent)
 		createTree(parent)
 		createTextOutput(parent)
+	}
+
+	def createToolbar(Composite parent){
+		toolbar = new ToolBar(parent, SWT.RIGHT)
+		
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(toolbar)
+		
+		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_runAgain
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
+			addListener(SWT.Selection) [ this.relaunch ]
+			enabled = false
+		]
+
+		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_debugAgain
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/debuglast_co.gif"))
+			addListener(SWT.Selection) [ this.relaunchDebug ]
+			enabled = false
+		]
 	}
 	
 	def createBar(Composite parent) {
@@ -197,11 +249,16 @@ class WollokTestResultView extends ViewPart implements Observer {
 			errorTextBox.text = errorCount.toString
 			
 			bar.background = if (errorCount > 0) failedColor else successColor
+			
+			runAgain.enabled = true
+			debugAgain.enabled = true
 		}
 		else {
 			totalTextBox.text = ""
 			runTextBox.text = ""
 			errorTextBox.text = ""
+			runAgain.enabled = false
+			debugAgain.enabled = false
 		}
 	}
 	
@@ -299,6 +356,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	def dispatch hasChildren(WollokTestContainer element) { true }
 	def dispatch hasChildren(WollokTestResults element) { true }
 	def dispatch hasChildren(Object element) { false }
+	
 	override dispose() {}
 	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
