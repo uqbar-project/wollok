@@ -171,7 +171,7 @@ class Object {
 	 * By default, same as toString but can be overriden
 	 * like in String
 	 */
-	method printString() = self.toString()
+	override method printString() = self.toString()
 
 	/** @private */
 	method toSmartString(alreadyShown) {
