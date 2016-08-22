@@ -113,6 +113,10 @@ class WollokRepl {
 		println(obj?.toString.returnStyle)
 	}
 
+	def dispatch doPrintReturnValue(WollokObject wo) {
+		println(wo?.call("printString").toString.returnStyle)
+	}
+
 	def dispatch doPrintReturnValue(String obj) {
 		println(('"' + obj + '"').returnStyle)
 	}
@@ -177,7 +181,19 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokProgramExceptionWrapper e) {
 		// Wollok-level user exception
-		printlnIdent(e.wollokStackTrace.errorStyle)
+		printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
+	}
+	
+	def String filterREPLLines(String originalStackTrace) {
+		val result = originalStackTrace
+			.split("\n")
+			.filter [ stack | !stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl") ]
+			.fold(new StringBuffer, [ acum, stackTrace | acum.append(stackTrace)
+														 acum.append("\n")
+														 acum 
+			])
+		result.deleteCharAt(result.length - 1)
+		result.toString
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {

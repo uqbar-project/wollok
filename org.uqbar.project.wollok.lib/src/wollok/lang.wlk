@@ -165,6 +165,13 @@ class Object {
 		// return self.toSmartString(#{})
 		return self.toSmartString([])
 	}
+	
+	/**
+	 * Provides a visual representation of Wollok Object
+	 * By default, same as toString but can be overriden
+	 * like in String
+	 */
+	method printString() = self.toString()
 
 	/** @private */
 	method toSmartString(alreadyShown) {
@@ -1357,6 +1364,11 @@ class String {
 	
 	/** This object (which is already a string!) is itself returned */
 	override method toString() native
+	
+	/** String implementation of printString, 
+	 * simply adds quotation marks 
+	 */
+	method printString() = '"' + self.toString() + '"'
 	
 	/** @private */
 	override method toSmartString(alreadyShown) native
