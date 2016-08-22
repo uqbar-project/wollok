@@ -171,7 +171,7 @@ class Object {
 	 * By default, same as toString but can be overriden
 	 * like in String
 	 */
-	override method printString() = self.toString()
+	method printString() = self.toString()
 
 	/** @private */
 	method toSmartString(alreadyShown) {
@@ -1368,7 +1368,7 @@ class String {
 	/** String implementation of printString, 
 	 * simply adds quotation marks 
 	 */
-	method printString() = '"' + self.toString() + '"'
+	overrides method printString() = '"' + self.toString() + '"'
 	
 	/** @private */
 	override method toSmartString(alreadyShown) native
