@@ -1368,7 +1368,7 @@ class String {
 	/** String implementation of printString, 
 	 * simply adds quotation marks 
 	 */
-	overrides method printString() = '"' + self.toString() + '"'
+	override method printString() = '"' + self.toString() + '"'
 	
 	/** @private */
 	override method toSmartString(alreadyShown) native
