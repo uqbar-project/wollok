@@ -250,11 +250,10 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def void printString() {
-		'''program a {
-			assert.equals("4", 4.printString())
-			assert.equals("4.1", (4.1).printString())
-		}
-		'''.interpretPropagatingErrors
+		'''
+		assert.equals("4", 4.printString())
+		assert.equals("4.1", (4.1).printString())
+		'''.test
 	}	
 
 }
