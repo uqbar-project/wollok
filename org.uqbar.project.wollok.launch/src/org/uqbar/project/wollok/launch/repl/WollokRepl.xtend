@@ -185,7 +185,7 @@ class WollokRepl {
 		printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
 	}
 	
-	def String filterREPLLines(String originalStackTrace) {
+	def CharSequence filterREPLLines(String originalStackTrace) {
 		val result = originalStackTrace
 			.split(System.lineSeparator)
 			.filter [ stack | !stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl") ]
