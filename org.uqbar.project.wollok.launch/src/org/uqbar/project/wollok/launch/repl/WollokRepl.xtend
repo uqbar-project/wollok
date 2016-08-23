@@ -117,6 +117,7 @@ class WollokRepl {
 		println(wo?.call("printString").toString.returnStyle)
 	}
 
+	// Unused
 	def dispatch doPrintReturnValue(String obj) {
 		println(('"' + obj + '"').returnStyle)
 	}
@@ -186,13 +187,14 @@ class WollokRepl {
 	
 	def String filterREPLLines(String originalStackTrace) {
 		val result = originalStackTrace
-			.split("\n")
+			.split(System.lineSeparator)
 			.filter [ stack | !stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl") ]
 			.fold(new StringBuffer, [ acum, stackTrace | acum.append(stackTrace)
-														 acum.append("\n")
+														 acum.append(System.lineSeparator)
 														 acum 
 			])
-		result.deleteCharAt(result.length - 1)
+		val endCharacters = System.lineSeparator.length			
+		result.deleteCharAt(result.length - endCharacters)
 		result.toString
 	}
 
