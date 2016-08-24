@@ -378,7 +378,7 @@ WSuperDelegatingConstructorCall:
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('
 		(arguments+=WExpression (',' arguments+=WExpression)*)?		
-	')'
+	')' ('with' mixins+=[WMixin])*
 ;
 
 WTry:

@@ -257,8 +257,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WConstructorCall call) {
-		// hook the implicit relation "* extends Object*
-		newInstance(call.classRef, call.arguments.evalEach)
+		if (call.mixins.empty)
+			newInstance(call.classRef, call.arguments.evalEach)
+		else {
+			val container = new MixedMethodContainer(call.classRef, call.mixins)
+			new WollokObject(interpreter, container) => [ wo |
+				// mixins first
+				call.mixins.forEach[addMembersTo(wo)]
+				call.classRef.addInheritsMembers(wo)
+			
+				wo.invokeConstructor(call.arguments.evalEach.toArray(newArrayOfSize(call.arguments.size)))
+			]
+		}
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
