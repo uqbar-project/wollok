@@ -146,6 +146,12 @@ class Object {
 	}
 
 	/**
+	 * Tells whether self object is not identical (the same) to the given one.
+	 * @See === message.
+	 */
+	method !==(other) = ! (self === other)
+	
+	/**
 	 * o1.equals(o2) is a synonym for o1 == o2
 	 */
 	method equals(other) = self == other
