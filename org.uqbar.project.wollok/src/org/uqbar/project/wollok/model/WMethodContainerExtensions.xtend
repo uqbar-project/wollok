@@ -35,6 +35,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 
 /**
  * Extension methods for WMethodContainers.
@@ -129,6 +130,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
 		val methods = newArrayList
 		// TODO: should we replace this with the "linearization()" method call ?
@@ -167,6 +169,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
 	def static dispatch WClass parent(WNamedObject it) { parent }
+	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 
@@ -174,18 +177,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<WMixin> mixins(WClass it) { mixins }
 	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
 	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
+	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
+	def static dispatch members(MixedMethodContainer c) { #[] }
 	def static dispatch members(WMixin c) { c.members }
 
 	def static dispatch contextName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
+	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
@@ -213,13 +219,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	/**
 	 * The full hierarchy chain top->down
 	 */
-	// TODO: currently doesn't support inheritance between mixins
 	def static List<WMethodContainer> linearizateHierarhcy(WMethodContainer it) {
 		var chain = newLinkedList
 		chain.add(it)
 		if (mixins != null) {
-			val reversed = mixins.clone.reverse
-			chain.addAll(reversed)
+			chain.addAll(mixins.clone.reverse)
 		}
 		if (parent != null)
 			chain.addAll(parent.linearizateHierarhcy)
@@ -297,6 +301,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
 		obj.parent.resolveConstructor(arguments)
 	}
+	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
+		obj.clazz.resolveConstructor(arguments)
+	}
+	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
 		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
 	}

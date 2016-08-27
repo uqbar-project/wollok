@@ -94,14 +94,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WollokObject... objects) {
-		var constructor = behavior.resolveConstructor(objects)
-		
-		// no-args constructor automatic execution 
-		if (constructor == null && objects.length == 0)
-			constructor = (behavior as WClass).findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
-			
-		if (constructor != null)
-			evaluateConstructor(constructor, objects)
+		behavior.resolveConstructor(objects)?.evaluateConstructor(objects)
 	}
 	
 	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
