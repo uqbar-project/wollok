@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.BasicType
 import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
 import org.uqbar.project.wollok.typesystem.VoidType
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 // JUDGMENTS
 
@@ -432,6 +433,12 @@ from {
 				+ featureCall.^feature + "(" + argumentTypes.join(",") + ")"
 		source featureCall
 	}
+}
+
+rule WReturnExpressionType
+	G |- WReturnExpression theReturn : WollokType typeOfBody
+from {
+	G |- theReturn.expression : typeOfBody
 }
 
 rule Ignore

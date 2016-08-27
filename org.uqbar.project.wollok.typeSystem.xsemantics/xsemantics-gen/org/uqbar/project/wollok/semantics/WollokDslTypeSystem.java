@@ -55,6 +55,7 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
 import org.uqbar.project.wollok.wollokDsl.WProgram;
 import org.uqbar.project.wollok.wollokDsl.WReferenciable;
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression;
 import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation;
@@ -116,6 +117,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   public final static String ASSIGNMENTTYPE = "org.uqbar.project.wollok.semantics.AssignmentType";
   
   public final static String MEMBERFEATURECALLTYPE = "org.uqbar.project.wollok.semantics.MemberFeatureCallType";
+  
+  public final static String WRETURNEXPRESSIONTYPE = "org.uqbar.project.wollok.semantics.WReturnExpressionType";
   
   public final static String IGNORE = "org.uqbar.project.wollok.semantics.Ignore";
   
@@ -1661,6 +1664,36 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       throwForExplicitFail(error, new ErrorInformation(source, null));
     }
     return new Result<WollokType>(returnType);
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WReturnExpression theReturn) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleWReturnExpressionType(G, _subtrace_, theReturn);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("WReturnExpressionType") + stringRepForEnv(G) + " |- " + stringRep(theReturn) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleWReturnExpressionType) {
+    	typeThrowException(ruleName("WReturnExpressionType") + stringRepForEnv(G) + " |- " + stringRep(theReturn) + " : " + "WollokType",
+    		WRETURNEXPRESSIONTYPE,
+    		e_applyRuleWReturnExpressionType, theReturn, new ErrorInformation[] {new ErrorInformation(theReturn)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleWReturnExpressionType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WReturnExpression theReturn) throws RuleFailedException {
+    WollokType typeOfBody = null; // output parameter
+    /* G |- theReturn.expression : typeOfBody */
+    WExpression _expression = theReturn.getExpression();
+    Result<WollokType> result = typeInternal(G, _trace_, _expression);
+    checkAssignableTo(result.getFirst(), WollokType.class);
+    typeOfBody = (WollokType) result.getFirst();
+    
+    return new Result<WollokType>(typeOfBody);
   }
   
   protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WExpression e) throws RuleFailedException {
