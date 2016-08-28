@@ -180,7 +180,7 @@ object game {
 	 * Adds an object to the board for drawing it.
 	 * That object should known a position.
 	 */
-	method addVisual(element) native
+	method addVisual(visual) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position.
@@ -192,7 +192,7 @@ object game {
 	 * Adds an object to the board for drawing it and it can be moved with arrow keys.
 	 * That object should known a position.
 	 */
-	method addVisualCharacter(element) native
+	method addVisualCharacter(visual) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position and it can be moved with arrow keys.
@@ -262,42 +262,42 @@ object game {
 	/**
 	 * Returns the center board position (rounded down).
 	 */	
-	method center() = self.at(self.getWidth().div(2), self.getHeight().div(2))
+	method center() = self.at(self.width().div(2), self.height().div(2))
 
 	/**
 	 * Sets game title.
 	 */		
-	method setTitle(title) native
+	method title(title) native
 
 	/**
 	 * Returns game title.
 	 */		
-	method getTitle() native
+	method title() native
 	
 	/**
 	 * Sets board width (in cells).
 	 */			
-	method setWidth(width) native
+	method width(width) native
 
 	/**
 	 * Returns board width (in cells).
 	 */		
-	method getWidth() native
+	method width() native
 
 	/**
 	 * Sets board height (in cells).
 	 */			
-	method setHeight(height) native
+	method height(height) native
 
 	/**
 	 * Returns board height (in cells).
 	 */		
-	method getHeight() native
+	method height() native
 
 	/**
 	 * Sets cells image.
 	 */			
-	method setGround(image) native
+	method ground(image) native
 	
 	/** 
 	* @private
@@ -373,8 +373,8 @@ class Position {
 	 * Returns the distance between given position and self.
 	 */	
 	method distance(position) {
-	    const deltaX = self.getX() - position.getX()
-	    const deltaY = self.getY() - position.getY()
+	    const deltaX = x - position.x()
+	    const deltaY = y - position.y()
 	    return (deltaX.square() + deltaY.square()).squareRoot() 
 	}
 
@@ -388,27 +388,27 @@ class Position {
 	/**
 	 * Returns x coordinate.
 	 */	
-	method getX() = x
+	method x() = x
 
 	/**
 	 * Sets x coordinate.
 	 */	
-	method setX(_x) { x = _x }
+	method x(_x) { x = _x }
 	
 	/**
 	 * Returns y coordinate.
 	 */	
-	method getY() = y
+	method y() = y
 
 	/**
 	 * Sets y coordinate.
 	 */	
-	method setY(_y) { y = _y }
+	method y(_y) { y = _y }
 	
 	/**
 	 * Two positions are equals if have same coordinates.
 	 */	
-	override method ==(other) = x == other.getX() && y == other.getY()
+	override method ==(other) = x == other.x() && y == other.y()
 }
 
 object error {

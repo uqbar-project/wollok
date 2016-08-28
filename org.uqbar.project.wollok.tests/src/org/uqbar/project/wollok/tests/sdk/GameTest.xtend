@@ -31,8 +31,8 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void centerShouldReturnCenteredCoordinatePosition() {
 		'''
-		game.setWidth(3)
-		game.setHeight(5)
+		game.width(2)
+		game.height(5)
 		assert.equals(«position(1,2)», game.center())
 		'''.test
 	}
