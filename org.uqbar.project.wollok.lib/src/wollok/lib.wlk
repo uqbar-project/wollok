@@ -186,6 +186,7 @@ object game {
 	 * Adds an object to the board for drawing it on a specific position.
 	 */
 	method addVisualIn(element, position) native
+
 	
 	/**
 	 * Adds an object to the board for drawing it and it can be moved with arrow keys.
@@ -215,7 +216,7 @@ object game {
 	method whenCollideDo(visual, action) native
 
 	/**
-	 * Returns all objects that are on a position.
+	 * Returns all objects in given position.
 	 */	
 	method getObjectsIn(position) native
 
@@ -308,41 +309,105 @@ class Position {
 	var x = 0
 	var y = 0
 	
-	constructor() { }		
+	/**
+	 * Returns the position at origin: x=0 y=0.
+	 */		
+	constructor() = self(0,0)
 			
+	/**
+	 * Returns a position with given x and y coordinates.
+	 */		
 	constructor(_x, _y) {
 		x = _x
 		y = _y
 	}
 	
-	method moveRight(num) { x += num }
+	/**
+	 * Sums n to x coordinate.
+	 */		
+	method moveRight(n) { x += n }
+	
+	/**
+	 * Substract n to x coordinate.
+	 */		
 	method moveLeft(num) { x -= num }
+	
+	/**
+	 * Sums n to y coordinate.
+	 */		
 	method moveUp(num) { y += num }
+	
+	/**
+	 * Substract n to y coordinate.
+	 */		
 	method moveDown(num) { y -= num }
-
+	
+	/**
+	 * Adds an object to the board for drawing it in self.
+	 */
 	method drawElement(element) { game.addVisualIn(element, self) }
+	
+	/**
+	 * Adds an object to the board for drawing it in self. It can be moved with arrow keys.
+	 */
 	method drawCharacter(element) { game.addVisualCharacterIn(element, self) }		
+
 	method deleteElement(element) { game.removeVisual(element) }
+
+	/**
+	 * Draw a dialog balloon with given message in the position where the object is.
+	 */	
 	method say(element, message) { game.say(element, message) }
+
+	/**
+	 * Returns all objects in self.
+	 */	
 	method allElements() = game.getObjectsIn(self)
 	
+	/**
+	 * Returns a new position with same coordinates.
+	 */	
 	method clone() = new Position(x, y)
 
+	/**
+	 * Returns the distance between given position and self.
+	 */	
 	method distance(position) {
 	    const deltaX = self.getX() - position.getX()
 	    const deltaY = self.getY() - position.getY()
 	    return (deltaX.square() + deltaY.square()).squareRoot() 
 	}
 
+	/**
+	 * Removes all objects in self from the board for stop drawing it.
+	 */
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
 	
+	/**
+	 * Returns x coordinate.
+	 */	
 	method getX() = x
+
+	/**
+	 * Sets x coordinate.
+	 */	
 	method setX(_x) { x = _x }
+	
+	/**
+	 * Returns y coordinate.
+	 */	
 	method getY() = y
+
+	/**
+	 * Sets y coordinate.
+	 */	
 	method setY(_y) { y = _y }
 	
+	/**
+	 * Two positions are equals if have same coordinates.
+	 */	
 	override method ==(other) = x == other.getX() && y == other.getY()
 }
 
