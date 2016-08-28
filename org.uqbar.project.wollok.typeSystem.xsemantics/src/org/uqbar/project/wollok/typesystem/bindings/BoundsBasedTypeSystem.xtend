@@ -28,6 +28,10 @@ import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.wollokDsl.WVariable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * An attempt to avoid directly manipulating xsemantics environment
@@ -38,6 +42,15 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class BoundsBasedTypeSystem implements TypeSystem {
 	Map<EObject, TypedNode> nodes = newHashMap()
 	List<TypeBound> bounds = newArrayList
+
+	override def name() { "Bounds Based" }
+	
+	override validate(WFile file, WollokDslValidator validator) {
+		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		this.analyse(file)
+		this.inferTypes
+		// TODO: report errors !
+	}
 
 	// node factory methods
 
@@ -124,10 +137,19 @@ class BoundsBasedTypeSystem implements TypeSystem {
 				v >= v.right
 		]
 	}
+	
+	def dispatch void bind(WVariable v) {
+		v.inferredNode
+	}
 
 	def dispatch void bind(WVariableReference v) {
 		v.inferredNode
 			v <=> v.ref
+	}
+	
+	def dispatch void bind(WReturnExpression v) {
+		v.inferredNode
+			v <=> v.expression
 	}
 
 	def dispatch void bind(WAssignment a) {

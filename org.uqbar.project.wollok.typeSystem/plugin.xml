@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.uqbar.project.wollok.typeSystem.implementation" name="Type System Implementation" schema="schema/org.uqbar.project.wollok.typeSystem.implementation.exsd"/>
+
+</plugin>

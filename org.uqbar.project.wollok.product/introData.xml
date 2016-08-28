@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extensions>
+   <page id="overview">
+      <group path="page-content/top-left">
+          	<!-- <extension id="foo1" importance="high"/>
+          	<extension id="bar"  importance="high"/>
+	  		<extension id="foo2" importance="medium"/> -->
+      </group>
+      <group path="page-content/top-right">
+           <!-- <extension id="foo3" importance="low"/>
+           <extension id="foo4" importance="low"/>
+           <extension id="foo5" importance="callout"/> -->
+      </group>
+      <hidden>
+            <!-- <extension id="foo6"/>
+            <extension id="foo7"/> -->
+      </hidden>
+   </page>
+
+   <page id="whatsnew">
+   </page>
+</extensions>

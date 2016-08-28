@@ -7,12 +7,14 @@ import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -20,20 +22,19 @@ import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import static org.uqbar.project.wollok.typesystem.WollokType.*
 import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
-import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * Implementation that builds up rules
@@ -45,6 +46,15 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
 	// esto me gustaria evitarlo :S
 	Set<EObject> analyzed = newHashSet
+	
+	override def name() { "Substitutions-based" }
+	
+	override validate(WFile file, WollokDslValidator validator) {
+		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		this.analyse(file)
+		this.inferTypes
+		// TODO: report errors !
+	}
 
 	override analyse(EObject p) { p.eContents.forEach[analyze] }
 

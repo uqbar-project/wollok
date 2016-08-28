@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.typesystem.MessageType
 
 /**
  * An engine that performs type inference and type checks.
@@ -13,6 +13,12 @@ import org.uqbar.project.wollok.typesystem.MessageType
  * @author jfernandes
  */
 interface TypeSystem {
+	
+	def String name()
+	
+	// This method is kind of a hack to use the type systems from the validator
+	//  it is supposed to analyze (#analyse, #inferTypes) the program and report any error to the validator
+	def void validate(WFile file, WollokDslValidator validator)
 	
 	/**
 	 * # 1: First step
@@ -33,7 +39,7 @@ interface TypeSystem {
 	def WollokType type(EObject obj)
 	def Iterable<TypeExpectationFailedException> issues(EObject obj)
 
-	// this was bringed up from xsemantics impl/
+	// this was brought up from xsemantics impl/
 	// maybe it should be something particular to xsemantincs	
 	def MessageType queryMessageTypeForMethod(WMethodDeclaration declaration)
 	
