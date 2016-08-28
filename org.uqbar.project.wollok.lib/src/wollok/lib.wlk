@@ -209,7 +209,7 @@ object game {
 	method whenKeyPressedDo(key, action) native
 
 	/**
-	 * Adds a block that will be executed always the specific object collides with other. Two objects collide when are in the same position.
+	 * Adds a block that will be executed always the given object collides with other. Two objects collide when are in the same position.
 	 * The block should expect the other object as parameter.
 	 */	
 	method whenCollideDo(visual, action) native
@@ -228,6 +228,10 @@ object game {
 	 * Removes all objects on board and configurations (colliders, keys, etc).
 	 */	
 	method clear() native
+
+	/**
+	 * Returns all objects that are in same position of given object.
+	 */	
 	method colliders(visual) native
 
 	/**
@@ -248,17 +252,50 @@ object game {
 	method at(x, y) {
 		return new Position(x, y)
 	}
-	
+
+	/**
+	 * Returns the position x=0 y=0.
+	 */	
 	method origin() = self.at(0, 0)
+
+	/**
+	 * Returns the center board position (rounded down).
+	 */	
 	method center() = self.at(self.getWidth().div(2), self.getHeight().div(2))
-	
-	
+
+	/**
+	 * Sets game title.
+	 */		
 	method setTitle(title) native
+
+	/**
+	 * Returns game title.
+	 */		
 	method getTitle() native
+	
+	/**
+	 * Sets board width (in cells).
+	 */			
 	method setWidth(width) native
+
+	/**
+	 * Returns board width (in cells).
+	 */		
 	method getWidth() native
+
+	/**
+	 * Sets board height (in cells).
+	 */			
 	method setHeight(height) native
+
+	/**
+	 * Returns board height (in cells).
+	 */		
 	method getHeight() native
+
+	/**
+	 * Sets cells image.
+	 */			
 	method setGround(image) native
 	
 	/** 
