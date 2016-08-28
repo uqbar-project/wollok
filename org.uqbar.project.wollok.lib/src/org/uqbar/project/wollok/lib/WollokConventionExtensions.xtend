@@ -11,6 +11,7 @@ class WollokConventionExtensions {
 		
 	public static val POSITION_CONVENTIONS = #["posicion", "position"]
 	public static val IMAGE_CONVENTIONS = #["imagen", "image"]
+	public static val DEFAULT_IMAGE = "wko.png"
 
 	def static getAllConventions() {
 		POSITION_CONVENTIONS + IMAGE_CONVENTIONS
@@ -23,7 +24,7 @@ class WollokConventionExtensions {
 
 	def static getImage(WollokObject it) {
 		findConvention(IMAGE_CONVENTIONS)
-		.orElse("wko.png".javaToWollok)
+		.orElse(DEFAULT_IMAGE.javaToWollok)
 	}
 	
 	def static getPrintableVariables(WollokObject it) {

@@ -146,6 +146,12 @@ class Object {
 	}
 
 	/**
+	 * Tells whether self object is not identical (the same) to the given one.
+	 * @See === message.
+	 */
+	method !==(other) = ! (self === other)
+	
+	/**
 	 * o1.equals(o2) is a synonym for o1 == o2
 	 */
 	method equals(other) = self == other
@@ -427,11 +433,11 @@ class Collection {
 	 * Answers a new collection that contains the result of transforming each of self collection's elements
 	 * using a given closure.
 	 * The condition is a closure argument that takes a single element and Answers an object.
-	 * @returns another collection (same type as self one)
+	 * @returns another list
 	 * Example:
 	 *      const ages = users.map({ user => user.age() })
 	 */
-	method map(closure) = self.fold(self.newInstance(), { acc, e =>
+	method map(closure) = self.fold([], { acc, e =>
 		 acc.add(closure.apply(e))
 		 acc
 	})

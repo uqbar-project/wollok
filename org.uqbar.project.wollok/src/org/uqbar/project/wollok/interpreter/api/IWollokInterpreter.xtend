@@ -24,6 +24,7 @@ interface IWollokInterpreter {
 	def WollokObject performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something)
 	
 	def WollokObject addGlobalReference(String name, WollokObject value)
+	def void removeGlobalReference(String name)
 	
 	def EvaluationContext<WollokObject> getCurrentContext()
 

@@ -296,7 +296,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if(!a.feature.ref.isModifiableFrom(a)) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
-	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
+	def dispatch String cannotModifyErrorId(WVariable it) { CANNOT_ASSIGN_TO_VAL } 
+	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
 
 	@Check
@@ -591,6 +592,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def testInTestFile(WTest t) {
 		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION)
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def dontDuplicateTestDescription(WTest wtest){
+		val file = wtest.eContainer as WFile
+		if(file.tests.exists[ it !== wtest && name == wtest.name])
+			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
 	}
 
 	@Check

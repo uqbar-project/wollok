@@ -19,6 +19,7 @@ interface EvaluationContext<O> extends Serializable {
 	def O addReference(String variable, O value) // new local variable
 	
 	def O addGlobalReference(String name, O value)
+	def void removeGlobalReference(String name)
 	
 	/** Returns an iterable with all available references names from this context */
 	def Iterable<WVariable> allReferenceNames()
