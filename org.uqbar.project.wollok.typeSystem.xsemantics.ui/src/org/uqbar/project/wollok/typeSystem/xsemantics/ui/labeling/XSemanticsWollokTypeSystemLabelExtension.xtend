@@ -11,6 +11,10 @@ import org.uqbar.project.wollok.ui.labeling.WollokTypeSystemLabelExtension
 class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelExtension {
 
 	override resolvedType(EObject o) {
+		// if disabeld
+		if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(o))
+			return null
+			
 		val x = this.doResolvedType(o)
 		if (x == null) 
 			null

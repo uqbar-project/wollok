@@ -57,6 +57,7 @@ class WollokTypeSystemActivator extends Plugin {
 		super.start(context)
 		this.context = context
 		injector.injectMembers(this)
+		
 		plugin = this
 	}
 	
@@ -73,8 +74,8 @@ class WollokTypeSystemActivator extends Plugin {
 		plugin
 	}
 	
-	def isTypeSystemEnabled(WFile file) {
-		!preferences(file).getBoolean(WollokTypeSystemActivator.PREF_TYPE_SYSTEM_CHECKS_ENABLED)
+	def isTypeSystemEnabled(EObject file) {
+		preferences(file).getBoolean(WollokTypeSystemActivator.PREF_TYPE_SYSTEM_CHECKS_ENABLED)
 	}
 	
 }
