@@ -412,6 +412,8 @@ class Position {
 	 * Two positions are equals if have same coordinates.
 	 */	
 	override method ==(other) = x == other.x() && y == other.y()
+	
+	override method toString() = "(" + x + "," + y + ")"
 }
 
 object error {
