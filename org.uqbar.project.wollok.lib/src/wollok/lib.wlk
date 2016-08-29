@@ -330,39 +330,42 @@ class Position {
 	/**
 	 * Substract n to x coordinate.
 	 */		
-	method moveLeft(num) { x -= num }
+	method moveLeft(n) { x -= n }
 	
 	/**
 	 * Sums n to y coordinate.
 	 */		
-	method moveUp(num) { y += num }
+	method moveUp(n) { y += n }
 	
 	/**
 	 * Substract n to y coordinate.
 	 */		
-	method moveDown(num) { y -= num }
+	method moveDown(n) { y -= n }
 	
 	/**
 	 * Adds an object to the board for drawing it in self.
 	 */
-	method drawElement(element) { game.addVisualIn(element, self) }
+	method drawElement(element) { game.addVisualIn(element, self) } //TODO: Implement native
 	
 	/**
 	 * Adds an object to the board for drawing it in self. It can be moved with arrow keys.
 	 */
-	method drawCharacter(element) { game.addVisualCharacterIn(element, self) }		
+	method drawCharacter(element) { game.addVisualCharacterIn(element, self) } //TODO: Implement native
 
-	method deleteElement(element) { game.removeVisual(element) }
+	/**
+	 * Removes an object from the board for stop drawing it.
+	 */
+	method deleteElement(element) { game.removeVisual(element) } //TODO: Remove
 
 	/**
 	 * Draw a dialog balloon with given message in the position where the object is.
 	 */	
-	method say(element, message) { game.say(element, message) }
+	method say(element, message) { game.say(element, message) } //TODO: Implement native
 
 	/**
 	 * Returns all objects in self.
 	 */	
-	method allElements() = game.getObjectsIn(self)
+	method allElements() = game.getObjectsIn(self) //TODO: Implement native
 	
 	/**
 	 * Returns a new position with same coordinates.
