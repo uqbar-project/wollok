@@ -34,7 +34,7 @@ class WollokStyle {
 		lines.put(line, content.getLine(line))
 		styles.put(line, styleAdapted)
 	}
-
+	
 	/**
 	 * Adapts offsets relative to selected line 
 	 */	
@@ -56,7 +56,6 @@ class WollokStyle {
 		}
 		
 		var List<StyleRange> newStyles = styles.get(lineNumber)
-		
 		// First line
 		if (lineNumber == lineStart) {
 			val oldLineStart = widget.getOffsetAtLine(lineNumber)
@@ -108,7 +107,31 @@ class WollokStyle {
 	}
 	
 	def getStylesAtLine(int lineNumber) {
-		getStylesSelected(lineNumber)
+		adjustStylesRange(getStylesSelected(lineNumber))
+	}
+	
+	def adjustStylesRange(List<StyleRange> ranges) {
+		// Style ranges often collide among each others!!
+		// I should split them to set bold/normal font, but for now I'll avoid repeating characters
+		for (var int i = 1; i < ranges.length; i++) { 
+			val currentRange = ranges.get(i)
+			val existentRange = ranges.subList(0, i - 1).findFirst [ range | range.start == currentRange.start ]
+			if (existentRange != null) {
+				if (currentRange.length < existentRange.length) {
+					currentRange.length = existentRange.length
+				}
+				ranges.remove(existentRange)
+			}
+		}
+		// first, style range overflow next range!!
+		for (var int i = 0; i < ranges.length - 1; i++) {
+			val currentRange = ranges.get(i)
+			val nextRange = ranges.get(i+1)
+			if (currentRange.start + currentRange.length > nextRange.start) {
+				currentRange.length = nextRange.start - currentRange.start
+			}
+		}
+		ranges
 	}
 
 	def getLine(Integer line) {

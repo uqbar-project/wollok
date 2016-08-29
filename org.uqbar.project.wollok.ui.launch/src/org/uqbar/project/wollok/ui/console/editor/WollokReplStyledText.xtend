@@ -12,7 +12,6 @@ import org.eclipse.swt.dnd.TextTransfer
 import org.eclipse.swt.dnd.Transfer
 import org.eclipse.swt.widgets.Composite
 import org.uqbar.project.wollok.ui.console.editor.rtf.WollokRTFWriter
-import org.uqbar.project.wollok.ui.console.highlight.WollokAnsiColorLineStyleListener
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 
@@ -86,6 +85,7 @@ class WollokReplStyledText extends StyledText {
 				style.adjustBoundaryOffsets(start, length)
 				val rtfWriter = new WollokRTFWriter(style)
 				val rtfText = rtfWriter.RTFText
+				println("RTF Text: " + rtfText)
 				val RTFTransfer rtfTransfer = RTFTransfer.getInstance()
 				data = #[rtfText, plainText]
 				types = #[rtfTransfer, plainTextTransfer]

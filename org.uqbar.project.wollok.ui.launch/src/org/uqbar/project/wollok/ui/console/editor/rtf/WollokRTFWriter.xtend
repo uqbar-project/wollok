@@ -67,11 +67,32 @@ class WollokRTFWriter {
 		result.append(" ")
 		val end = Math.min(line.length, _style.start + _style.length)
 		if (end > 0) {
-			result.append(line.substring(_style.start, end).deleteAnsiCharacters)
+			result.append(line.substring(_style.start, end).deleteAnsiCharacters.replaceRTFEscapeCharacters)
 		}
 		// Deactivate tags appended to a range style
 		tagsApplied.forEach[ tag | tag.deactivateTag(_style, result) ]
 		result.append("}")
 	}
+	
+	def replaceRTFEscapeCharacters(String text) {
+		// 
+		val result = new StringBuffer
+		val mapEscaped = mapEscapeChars
+		for (var int i = 0; i < text.length; i++) {
+			val actualChar = text.charAt(i)
+			val String replacement = mapEscaped.get("" + actualChar) ?: "" + actualChar
+			result.append(replacement)
+		} 
+		result.toString
+	}
+	
+	def mapEscapeChars() {
+		newHashMap => [
+			put("{", "\\{")
+			put("}", "\\}")
+		]
+	}
+	
+	
 	
 }
