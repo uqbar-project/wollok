@@ -45,8 +45,8 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		
 	def image(WPackage it) { 'package.png' }
 	def image(WProgram it) { 'wollok-icon-program_16.png' }
-	def image(WClass it) {	'wollok-icon-class_16.png' }
-	def image(WMixin it) {	'wollok-icon-mixin_16.png' }
+	def image(WClass it) { 'wollok-icon-class_16.png' }
+	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 	def image(WTest it) { 'wollok-icon-test_16.png' }
 	
 	def text(WObjectLiteral it) { 'object' }
@@ -97,11 +97,10 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	def text(WMethodDeclaration m) {
-		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
+		m.name + '(' + m.parameters.map[name + concatResolvedType(":",it) ].join(',') + ')' 
 				+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else ""
 	}
 	def text(WConstructor m) {
-		
 		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
 	}
 	
