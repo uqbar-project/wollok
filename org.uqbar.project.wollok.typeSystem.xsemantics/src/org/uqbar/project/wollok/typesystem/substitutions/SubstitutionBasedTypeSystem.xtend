@@ -35,6 +35,7 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 /**
  * Implementation that builds up rules
@@ -74,7 +75,16 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WProgram it) { elements.analyze }
 	def dispatch void doAnalyse(WTest it) { elements.analyze }
 
-	def dispatch void doAnalyse(WClass it) { if (members != null) members.forEach[analyze] }
+	def dispatch void doAnalyse(WClass it) { 
+		if (members != null) members.forEach[analyze]
+		if (constructors != null) constructors.forEach[analyze]
+	}
+	
+	def dispatch void doAnalyse(WConstructor it) {
+		parameters.analyze
+		expression?.analyze
+	}
+
 	def dispatch void doAnalyse(WMethodDeclaration it) {
 		parameters.analyze
 		if (overrides) {
@@ -239,9 +249,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		addRule(new CheckTypeRule(source, a, check, b))
 	}
 
-	override toString() {
+	def getStateAsString() {
 		'{' + System.lineSeparator + '\t' + 
-		rules.join(System.lineSeparator + "\t") + System.lineSeparator
+			rules.join(System.lineSeparator + "\t") + System.lineSeparator
 	}
 
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {

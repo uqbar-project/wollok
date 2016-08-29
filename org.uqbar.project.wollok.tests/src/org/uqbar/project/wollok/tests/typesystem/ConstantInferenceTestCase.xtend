@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
-import wollok.lang.WBoolean
-import wollok.lang.WString
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
@@ -13,15 +14,25 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
  */
 class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			new SubstitutionBasedTypeSystem,
+			new XSemanticsTypeSystem
+//			new ConstraintBasedTypeSystem			TO BE FIXED
+//			new BoundsBasedTypeSystem,    TO BE FIXED
+		]
+	}
+
 	@Test
 	def void testNumberLiteral() { 	'''program p {
 			const a = 46
 			const b = "Hello"
 			const c = true
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "const a = 46")
-			assertTypeOf(WString, 'const b = "Hello"')
-			assertTypeOf(WBoolean, "const c = true")
+			assertTypeOf(WInt, "a")
+			assertTypeOf(WString, 'b')
+			assertTypeOf(WBoolean, "c")
 		]
 	}
 }

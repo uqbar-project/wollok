@@ -113,6 +113,16 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	// ** bind (first steps: builds up a graph with all types relations)
 	// **********************************************************************
 
+	def dispatch void bind(WFile p) {
+		p.inferredNode
+			p.elements.forEach[bind]
+	}
+	
+	def dispatch void bind(WSelf p) {
+		p.inferredNode
+			p <=> p.declaringContext
+	}
+
 	def dispatch void bind(WProgram p) {
 		p.inferredNode
 		p.elements.forEach[bind]

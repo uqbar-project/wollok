@@ -10,6 +10,7 @@ import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * 
@@ -70,6 +71,10 @@ class WollokTypeSystemActivator extends Plugin {
 
 	static def getDefault() {
 		plugin
+	}
+	
+	def isTypeSystemEnabled(WFile file) {
+		!preferences(file).getBoolean(WollokTypeSystemActivator.PREF_TYPE_SYSTEM_CHECKS_ENABLED)
 	}
 	
 }

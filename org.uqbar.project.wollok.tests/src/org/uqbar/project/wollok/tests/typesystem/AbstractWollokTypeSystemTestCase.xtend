@@ -2,11 +2,12 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.Before
+import org.junit.runners.Parameterized.Parameter
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -21,16 +22,13 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
  * 
  * @author jfernandes
  */
-abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterpreterTestCase {
-	public extension TypeSystem ts
+abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameterizedInterpreterTest {
+	@Parameter
+	public extension TypeSystem tsystem
 	
-	new() { ts = createTypeSystem }
-	new(TypeSystem system) { ts = system }
-	
-	def TypeSystem createTypeSystem() {
-//		new BoundsBasedTypeSystem
-		new SubstitutionBasedTypeSystem
-//		new ConstraintBasedTypeSystem
+	@Before
+	def void setupTypeSystem() {
+		injector.injectMembers(tsystem)
 	}
 	
 	// Utility
@@ -56,7 +54,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	// ********************
 	
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
-		assertEquals(expectedType, program.findByText(programToken).type)
+		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
 	}
 	
 	def assertConstructorType(EObject program, String className, String paramsSignature) {
@@ -65,7 +63,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	}
 	
 	def assertMethodSignature(EObject program, String expectedSignature, String methodFQN) {
-		assertEquals(expectedSignature, findMethod(methodFQN).functionType(ts))
+		assertEquals(expectedSignature, findMethod(methodFQN).functionType(tsystem))
 	}
 	
 	def assertInstanceVarType(EObject program, WollokType expectedType, String instVarFQN) {
@@ -119,7 +117,9 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 	
 	def findMethod(String methodFQN) {
 		val fqn = methodFQN.split('\\.') 
-		findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
+		val m = findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
+		if (m == null) throw new RuntimeException("Could NOT find method " + methodFQN)
+		m
 	}
 	
 	def findInstanceVar(String instVarFQN) {

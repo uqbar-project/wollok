@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
@@ -11,6 +13,16 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
  */
  @Ignore
 class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
+	
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			new SubstitutionBasedTypeSystem
+//			new XSemanticsTypeSystem			// TODO 
+//			new ConstraintBasedTypeSystem			TO BE FIXED
+//			new BoundsBasedTypeSystem,    TO BE FIXED
+		]
+	}
 	
 	@Test
 	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() { #['''

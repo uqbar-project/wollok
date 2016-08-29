@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 /**
  * Groups together all test cases for method type inference.
@@ -9,6 +11,17 @@ import org.junit.Test
  * @author jfernandes
  */
 class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
+	
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			new SubstitutionBasedTypeSystem
+			// TODO: fix !
+//			new XSemanticsTypeSystem,		 
+//			new ConstraintBasedTypeSystem,
+//			new BoundsBasedTypeSystem
+		]
+	}
 	
 	@Test
 	def void testMethodReturnTypeInferredFromInstVarRef() {	 '''

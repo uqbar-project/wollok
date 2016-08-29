@@ -616,13 +616,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       G.add(p, WollokType.WAny);
     };
     _parameters.forEach(_function);
-    /* G |- c.expression : var WollokType returnType */
+    /* G |- c.expression */
     WExpression _expression = c.getExpression();
-    WollokType returnType = null;
-    Result<WollokType> result = typeInternal(G, _trace_, _expression);
-    checkAssignableTo(result.getFirst(), WollokType.class);
-    returnType = (WollokType) result.getFirst();
-    
+    inferTypesInternal(G, _trace_, _expression);
     return new Result<Boolean>(true);
   }
   
@@ -912,7 +908,10 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   }
   
   protected Result<WollokType> applyRuleNumberLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral num) throws RuleFailedException {
-    
+    /* G.add(num, WInt) */
+    if (!G.add(num, WollokType.WInt)) {
+      sneakyThrowRuleFailedException("G.add(num, WInt)");
+    }
     return new Result<WollokType>(_applyRuleNumberLiteralType_1(G, num));
   }
   
@@ -940,7 +939,10 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   }
   
   protected Result<WollokType> applyRuleStringLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral str) throws RuleFailedException {
-    
+    /* G.add(str, WString) */
+    if (!G.add(str, WollokType.WString)) {
+      sneakyThrowRuleFailedException("G.add(str, WString)");
+    }
     return new Result<WollokType>(_applyRuleStringLiteralType_1(G, str));
   }
   
@@ -968,7 +970,10 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   }
   
   protected Result<WollokType> applyRuleBooleanLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral num) throws RuleFailedException {
-    
+    /* G.add(num, WBoolean) */
+    if (!G.add(num, WollokType.WBoolean)) {
+      sneakyThrowRuleFailedException("G.add(num, WBoolean)");
+    }
     return new Result<WollokType>(_applyRuleBooleanLiteralType_1(G, num));
   }
   

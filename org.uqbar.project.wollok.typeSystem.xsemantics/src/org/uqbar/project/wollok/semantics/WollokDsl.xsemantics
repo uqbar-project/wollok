@@ -107,7 +107,8 @@ rule InferConstructor
 	G |- WConstructor c
 from {
 	c.parameters.forEach[p| G.add(p, WAny)]
-	G |- c.expression : var WollokType returnType
+	G |- c.expression
+//	G |- c.expression : var WollokType returnType
 }
 
 rule InferWMethod
@@ -128,7 +129,7 @@ from {
 	m.parameters.forEach[p| G.add(p, WAny)]
 
 	// Expression == null => método abstracto
-	if(m.expression != null) {
+	if (m.expression != null) {
 		val currentReturnType = G.env(m, WollokType)
 		if (currentReturnType != WAny) {
 			// si ya teniamos un return type inferido, refinar el tipo del body
@@ -197,9 +198,13 @@ from {
 // ** Expression Types
 // ****************************************************************************
 
-axiom NumberLiteralType G |- WNumberLiteral num : WInt
-axiom StringLiteralType G |- WStringLiteral str : WString
-axiom BooleanLiteralType G |- WBooleanLiteral num : WBoolean
+//axiom NumberLiteralType G |- WNumberLiteral num : WInt 
+
+rule NumberLiteralType G |- WNumberLiteral num : WInt from { G.add(num, WInt) }
+
+rule StringLiteralType G |- WStringLiteral str : WString from { G.add(str, WString) }
+rule BooleanLiteralType G |- WBooleanLiteral num : WBoolean from { G.add(num, WBoolean) }
+
 axiom VariableRefType G |- WVariableReference variable :
 	try env(G, variable.ref, WollokType) catch (RuleFailedException e) WAny
 
