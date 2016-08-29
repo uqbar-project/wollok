@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
@@ -17,25 +18,25 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	static def Object[] typeSystems() {
 		#[
 			new SubstitutionBasedTypeSystem
-//			new XSemanticsTypeSystem			// TODO 
+//			,new XSemanticsTypeSystem			// TODO 
 //			new ConstraintBasedTypeSystem			TO BE FIXED
 //			new BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
 	
 	@Test
-		@Ignore // FIX IT!
+	@Ignore // FIX IT!
 	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() { #['''
 			class Animal {}
-			class Golondrina extends Animal {}
-			class Perro extends Animal {}
+			class Golondrina inherits Animal {}
+			class Perro inherits Animal {}
 		''', ''' program p {
 			var animal
 			animal = new Golondrina()
 			animal = new Perro()
 		}'''].parseAndInfer.asserting [
-			noIssues
-			assertTypeOf(classType('Animal'), 'var animal')
+//			noIssues
+			assertTypeOf(classType('Animal'), 'animal')
 		]
 	}
 	

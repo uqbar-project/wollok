@@ -5,7 +5,7 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * The most basic inference tests
@@ -63,5 +63,6 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOf(classTypeFor(SET), "c")
 		]
 	}
+
 			
 }

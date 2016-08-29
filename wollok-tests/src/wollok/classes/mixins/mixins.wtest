@@ -74,6 +74,14 @@ class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
 	method energy() = energy
 }
 
+object example {
+			method aList() = [1,2,3]
+			method useTheList() {
+				const pepe = self.aList()
+				console.println(pepe)
+			}
+		}
+
 object pepita mixed with Flies {}
 
 // **************************
@@ -113,5 +121,7 @@ test "Mixin method calls a method on the class" {
 test "WKO with mixin" {
 	pepita.fly()
 }
+
+
 
 

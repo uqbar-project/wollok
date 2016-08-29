@@ -41,6 +41,10 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.typesystem.ClosureType
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 
 /**
  * Implementation that builds up rules
@@ -86,6 +90,10 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		if (constructors != null) constructors.forEach[analyze]
 	}
 	
+	def dispatch void doAnalyse(WNamedObject it) {
+		if (members != null) members.forEach[analyze]
+	}
+	
 	def dispatch void doAnalyse(WConstructor it) {
 		parameters.analyze
 		expression?.analyze
@@ -112,10 +120,17 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	def dispatch void doAnalyse(WVariable v) { /* does nothing */ }
+	
+	def dispatch void doAnalyse(WClosure it) {
+		parameters.analyze
+		expression.analyze
+		addRule(new ClosureTypeRule(it, parameters, expression))
+	}
 
 	def dispatch void doAnalyse(WMemberFeatureCall it) {
-		if (memberCallTarget instanceof WSelf)
+		if (memberCallTarget instanceof WSelf) {
 			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments, true))
+		}
 	}
 
 	def dispatch void doAnalyse(WConstructorCall it) {
@@ -163,12 +178,19 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	def dispatch void doAnalyse(WBlockExpression it) {
-		if (!expressions.empty) {
+		if (expressions.empty) {
+			addFact(it, WVoid)
+		}
+		else {
 			expressions.analyze
 			addCheck(it, SAME_AS, expressions.last)
 		}
 	}
-
+	
+	def dispatch void doAnalyse(WReturnExpression it) {
+		expression.analyze
+		addCheck(it, SAME_AS, expression)
+	}
 	// ***************************
 	// ** Inference (unification)
 	// ***************************

@@ -65,6 +65,10 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
 	}
 	
+	def assertTypeOfAsString(EObject program, String expectedType, String token) {
+		assertEquals("Unmatched type for '" + token + "'", expectedType, program.findByText(token).type.name)
+	}
+	
 	def assertConstructorType(EObject program, String className, String paramsSignature) {
 		val nrOfParams = paramsSignature.split(',').length;
 		assertEquals(paramsSignature, "(" + findConstructor(className, nrOfParams).parameters.map[type?.name].join(", ") + ")")
@@ -135,7 +139,9 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 	
 	def findClass(String className) {
-		resourceSet.allContents.filter(WClass).findFirst[name == className]
+		val c = resourceSet.allContents.filter(WClass).findFirst[name == className]
+		if (c == null) throw new RuntimeException("Could NOT find class [" + name + "] in :" + resourceSet.allContents.filter(WClass).map[name])
+		c
 	}
 	
 	def classType(String className) {

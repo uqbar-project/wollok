@@ -4,5 +4,4 @@ class StringType extends BasicType implements WollokType {
 	new() {
 		super("String")
 	}
-	
 }

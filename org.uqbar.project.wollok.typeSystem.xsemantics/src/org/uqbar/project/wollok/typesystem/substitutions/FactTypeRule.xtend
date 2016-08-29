@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
@@ -13,9 +13,10 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class FactTypeRule extends TypeRule {
-	@Property EObject model
-	@Property WollokType type
+	EObject model
+	WollokType type
 	
 	new(EObject source, EObject obj, WollokType type) {
 		super(source)

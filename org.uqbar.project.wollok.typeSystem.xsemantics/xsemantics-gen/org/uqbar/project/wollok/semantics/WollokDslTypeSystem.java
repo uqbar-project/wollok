@@ -32,6 +32,7 @@ import org.uqbar.project.wollok.model.WollokModelExtensions;
 import org.uqbar.project.wollok.sdk.WollokDSK;
 import org.uqbar.project.wollok.typesystem.BasicType;
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
+import org.uqbar.project.wollok.typesystem.ClosureType;
 import org.uqbar.project.wollok.typesystem.MessageType;
 import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType;
 import org.uqbar.project.wollok.typesystem.TypeInferrer;
@@ -130,6 +131,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   public final static String WRETURNEXPRESSIONTYPE = "org.uqbar.project.wollok.semantics.WReturnExpressionType";
   
   public final static String IGNORE = "org.uqbar.project.wollok.semantics.Ignore";
+  
+  public final static String WCLOSURETYPE = "org.uqbar.project.wollok.semantics.WClosureType";
   
   public final static String EXPECTEDTYPE = "org.uqbar.project.wollok.semantics.ExpectedType";
   
@@ -1928,6 +1931,45 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   private VoidType _applyRuleIgnore_1(final RuleEnvironment G, final WExpression e) throws RuleFailedException {
     return WollokType.WVoid;
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WClosure c) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleWClosureType(G, _subtrace_, c);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("WClosureType") + stringRepForEnv(G) + " |- " + stringRep(c) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleWClosureType) {
+    	typeThrowException(ruleName("WClosureType") + stringRepForEnv(G) + " |- " + stringRep(c) + " : " + "WollokType",
+    		WCLOSURETYPE,
+    		e_applyRuleWClosureType, c, new ErrorInformation[] {new ErrorInformation(c)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleWClosureType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WClosure c) throws RuleFailedException {
+    WollokType tipe = null; // output parameter
+    /* G |- c */
+    inferTypesInternal(G, _trace_, c);
+    EList<WParameter> _parameters = c.getParameters();
+    final Function1<WParameter, WollokType> _function = (WParameter p) -> {
+      return this.<WollokType>env(G, p, WollokType.class);
+    };
+    final List<WollokType> paramTypes = ListExtensions.<WParameter, WollokType>map(_parameters, _function);
+    WExpression _expression = c.getExpression();
+    final WollokType returnType = this.<WollokType>env(G, _expression, WollokType.class);
+    ClosureType _closureType = new ClosureType(paramTypes, returnType);
+    tipe = _closureType;
+    /* G.add(c, tipe) */
+    if (!G.add(c, tipe)) {
+      sneakyThrowRuleFailedException("G.add(c, tipe)");
+    }
+    return new Result<WollokType>(tipe);
   }
   
   protected Result<Boolean> expectedTypeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WExpression expression, final BasicType expectedType) throws RuleFailedException {

@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.BasicType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -485,6 +486,16 @@ rule Ignore
 	G |- WExpression e : WollokType.WVoid
 from {
 	 System.out.println("Ignoring type check for " + e.stringRep + " of class " + e.class.simpleName)
+}
+
+rule WClosureType 
+	G |- WClosure c : WollokType tipe
+from {
+	G |- c
+	val paramTypes = c.parameters.map[p| G.env(p, WollokType) ]
+	val returnType = G.env(c.expression, WollokType) 
+	tipe = new ClosureType(paramTypes, returnType)
+	G.add(c, tipe)
 }
 
 // ****************************************************************************

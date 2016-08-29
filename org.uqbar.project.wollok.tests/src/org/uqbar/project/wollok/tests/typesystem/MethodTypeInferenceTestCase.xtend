@@ -31,7 +31,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", "Golondrina.getEnergia")
+			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
 		]
 	}
 	
@@ -43,7 +43,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", "Golondrina.setEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.setEnergia")			
 		]
 	}
 	
@@ -57,7 +57,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", "Golondrina.multiplicarEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.multiplicarEnergia")			
 		]
 	}
 	
@@ -72,8 +72,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", 'Golondrina.getEnergia')
-			assertMethodSignature("() => Int", 'Golondrina.getEnergiaDelegando')
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergiaDelegando')
 		]
 	}	
 	
@@ -92,7 +92,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			noIssues
 			assertMethodSignature("() => Void", 'Golondrina.volar')
-			assertMethodSignature("() => Int", 'Golondrina.gastoPorVolar')
+			assertMethodSignature("() => Integer", 'Golondrina.gastoPorVolar')
 		]
 	}
 	
@@ -109,8 +109,20 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", 'Golondrina.comer')
-			assertMethodSignature("(Int) => Void", 'GolondrinaIneficiente.comer')
+			assertMethodSignature("(Integer) => Void", 'Golondrina.comer')
+			assertMethodSignature("(Integer) => Void", 'GolondrinaIneficiente.comer')
+		]
+	}
+	
+	@Test
+	def void variableAssignedToReturnValueOfMethod() { 	'''
+		object example {
+			method aList() = [1,2,3]
+			method useTheList() {
+				const pepe = self.aList()
+			}
+		}'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List", "pepe")
 		]
 	}
 	
