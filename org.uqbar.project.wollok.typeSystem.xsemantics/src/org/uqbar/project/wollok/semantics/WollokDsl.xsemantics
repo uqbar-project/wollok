@@ -4,6 +4,16 @@ validatorExtends AbstractWollokDslValidator
 
 import it.xsemantics.runtime.RuleFailedException
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.typesystem.BasicType
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.MessageType
+import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
+import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.VoidType
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.AbstractWollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -14,35 +24,27 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.MessageType
 
 import static org.uqbar.project.wollok.typesystem.TypeInferrer.*
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
-import org.uqbar.project.wollok.typesystem.TypeSystemException
-import org.uqbar.project.wollok.typesystem.BasicType
-import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
-import org.uqbar.project.wollok.typesystem.VoidType
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 
 inject WollokClassFinder finder
 
@@ -64,6 +66,8 @@ judgments {
 	// query env (consultas a lo ya inferido)
 	queryTypeFor ||- EObject r >> output WollokType
 	queryMessageTypeForMethod ||- WMethodDeclaration m :> output MessageType
+	
+	getType |- EObject context ~~ String name :> output WollokType
 
 }
 
@@ -169,6 +173,8 @@ from {
 // ** QUERY ENV
 // ****************************************************************************
 
+axiom getTypeFromSDK G |- EObject context ~~ String name :> new ClassBasedWollokType(finder.getCachedClass(context, name), G.env(TypeSystem, TypeSystem))
+
 axiom QueryTypeFor G ||- EObject e >> G.env(e, WollokType)
 
 // Esta, si no existe lo crea
@@ -208,7 +214,14 @@ rule NumberLiteralType G |- WNumberLiteral num : WInt from { G.add(num, WInt) }
 rule StringLiteralType G |- WStringLiteral str : WString from { G.add(str, WString) }
 rule BooleanLiteralType G |- WBooleanLiteral num : WBoolean from { G.add(num, WBoolean) }
 
-axiom ListLiteralType G |- WListLiteral lit : new ClassBasedWollokType(finder.getListClass(lit), G.env(TypeSystem, TypeSystem))
+rule ListLiteralType G |- WListLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.LIST :> tipe
+	G.add(lit, tipe)
+}
+rule SetLiteralType G |- WSetLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.SET :> tipe
+	G.add(lit, tipe)
+}
 
 axiom VariableRefType G |- WVariableReference variable :
 	try env(G, variable.ref, WollokType) catch (RuleFailedException e) WAny

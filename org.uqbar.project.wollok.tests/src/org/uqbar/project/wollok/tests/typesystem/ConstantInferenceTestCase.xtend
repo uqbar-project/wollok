@@ -56,5 +56,13 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOf(classTypeFor(WollokDSK.LIST), "c")
 		]
 	}
+	
+	@Test
+	def void setLiteral() { 	'''program p {
+			const c = #{1,2,3}
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(WollokDSK.SET), "c")
+		]
+	}
 			
 }

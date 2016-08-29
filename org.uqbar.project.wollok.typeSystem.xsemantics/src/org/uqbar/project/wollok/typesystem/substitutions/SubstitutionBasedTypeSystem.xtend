@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
+import com.google.inject.Inject
 import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -13,9 +15,11 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
@@ -23,23 +27,20 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import com.google.inject.Inject
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 
 /**
  * Implementation that builds up rules
@@ -122,11 +123,15 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	// literals
-	def dispatch void doAnalyse(WNumberLiteral it) { isAn(WInt)  }
+	def dispatch void doAnalyse(WNumberLiteral it) {
+		// TODO: use classes from SDK. if (value.contains('.')) isOfClass(Double) || isOfClass(Integer) 
+		isAn(WInt)
+	}
 	def dispatch void doAnalyse(WStringLiteral it) { isA(WString) }
 	def dispatch void doAnalyse(WBooleanLiteral it) { isA(WBoolean) }
 	def dispatch void doAnalyse(WNullLiteral it) { }
 	def dispatch void doAnalyse(WListLiteral it) { isOfClass(LIST) }
+	def dispatch void doAnalyse(WSetLiteral it) { isOfClass(SET) }
 	
 	
 	def dispatch void doAnalyse(WParameter it) {
