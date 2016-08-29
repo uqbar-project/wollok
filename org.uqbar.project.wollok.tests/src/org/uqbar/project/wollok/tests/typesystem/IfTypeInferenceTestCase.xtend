@@ -5,7 +5,7 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Test type inference in if expressions
@@ -31,8 +31,8 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const number = 23
 			number = if (true) a else b 
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "a")
-			assertTypeOf(WInt, "b")
+			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(INTEGER), "b")
 		]
 	}
 
@@ -41,7 +41,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const a
 			const number = if (true) a else 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "a")
+			assertTypeOf(classTypeFor(INTEGER), "a")
 		]
 	}
 
@@ -50,7 +50,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const a
 			const number = if (true) 23 else a
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "a")
+			assertTypeOf(classTypeFor(INTEGER), "a")
 		]
 	}
 

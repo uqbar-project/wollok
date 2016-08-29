@@ -7,12 +7,13 @@ import org.uqbar.project.wollok.typesystem.bindings.BoundsBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * The most basic inference tests
  * 
  * @author npasserini
+ * @author jfernandes
  */
 class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
@@ -30,7 +31,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testNumberLiteral() { 	''' program {
 		46
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "46")
+			assertTypeOf(classTypeFor(INTEGER), "46")
 		]
 	}
 
@@ -38,7 +39,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testStringLiteral() { 	''' program {
 		"Hello"
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WString, '''"Hello"''')
+			assertTypeOf(classTypeFor(STRING), '''"Hello"''')
 		]
 	}
 
@@ -46,7 +47,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testBooleanLiteral() { 	''' program p {
 		true
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WBoolean, "true")
+			assertTypeOf(classTypeFor(BOOLEAN), "true")
 		]
 	}
 }

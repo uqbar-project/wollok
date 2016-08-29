@@ -124,7 +124,8 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def findMethod(String methodFQN) {
 		val fqn = methodFQN.split('\\.') 
 		val m = findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
-		if (m == null) throw new RuntimeException("Could NOT find method " + methodFQN)
+		if (m == null) 
+			throw new RuntimeException("Could NOT find method " + methodFQN)
 		m
 	}
 	

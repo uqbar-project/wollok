@@ -124,11 +124,11 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	// literals
 	def dispatch void doAnalyse(WNumberLiteral it) {
-		// TODO: use classes from SDK. if (value.contains('.')) isOfClass(Double) || isOfClass(Integer) 
-		isAn(WInt)
+		// TODO: use classes from SDK. if (value.contains('.')) isOfClass(Double) || isOfClass(Integer)
+		isOfClass(if (value.contains('.')) DOUBLE else INTEGER) 
 	}
-	def dispatch void doAnalyse(WStringLiteral it) { isA(WString) }
-	def dispatch void doAnalyse(WBooleanLiteral it) { isA(WBoolean) }
+	def dispatch void doAnalyse(WStringLiteral it) { isOfClass(STRING) }
+	def dispatch void doAnalyse(WBooleanLiteral it) { isOfClass(BOOLEAN) }
 	def dispatch void doAnalyse(WNullLiteral it) { }
 	def dispatch void doAnalyse(WListLiteral it) { isOfClass(LIST) }
 	def dispatch void doAnalyse(WSetLiteral it) { isOfClass(SET) }
@@ -147,9 +147,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WBinaryOperation it) {
 		val opType = typeOfOperation(feature)
 		// esto esta mal, no deberian ser facts, Sino expectations
-		addFact(it, opType.value)
-		addFact(leftOperand, opType.key.get(0))
-		addFact(rightOperand, opType.key.get(1))
+		addFact(it, classType(opType.value))
+		addFact(leftOperand, classType(opType.key.get(0)))
+		addFact(rightOperand, classType(opType.key.get(1)))
 	}
 
 	def dispatch void doAnalyse(WVariableReference it) {
@@ -157,7 +157,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	def dispatch void doAnalyse(WIfExpression it) {
-		addFact(condition, WBoolean)
+		addFact(condition, classType(BOOLEAN))
 		addCheck(it, SUPER_OF, then)
 		if (^else != null) 	addCheck(it, SUPER_OF, ^else)
 	}
@@ -262,9 +262,12 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		addRule(new CheckTypeRule(source, a, check, b))
 	}
 	
-	def isOfClass(EObject model, String className) { 
+	def isOfClass(EObject model, String className) { model.isA(classType(model, className)) }
+	
+	protected def ClassBasedWollokType classType(EObject model, String className) {
 		val clazz = finder.getCachedClass(model, className)
-		model.isA(new ClassBasedWollokType(clazz, this))
+		// REVIEWME: should we have a cache ?
+		new ClassBasedWollokType(clazz, this)
 	}
 
 	def getStateAsString() {

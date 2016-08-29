@@ -31,12 +31,9 @@ import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
 import org.uqbar.project.wollok.sdk.WollokDSK;
 import org.uqbar.project.wollok.typesystem.BasicType;
-import org.uqbar.project.wollok.typesystem.BooleanType;
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
-import org.uqbar.project.wollok.typesystem.IntType;
 import org.uqbar.project.wollok.typesystem.MessageType;
 import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType;
-import org.uqbar.project.wollok.typesystem.StringType;
 import org.uqbar.project.wollok.typesystem.TypeInferrer;
 import org.uqbar.project.wollok.typesystem.TypeSystem;
 import org.uqbar.project.wollok.typesystem.TypeSystemException;
@@ -988,97 +985,117 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     return new Result<MessageType>(message);
   }
   
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral num) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral lit) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
-    	final Result<WollokType> _result_ = applyRuleNumberLiteralType(G, _subtrace_, num);
+    	final Result<WollokType> _result_ = applyRuleNumberLiteralType(G, _subtrace_, lit);
     	addToTrace(_trace_, new Provider<Object>() {
     		public Object get() {
-    			return ruleName("NumberLiteralType") + stringRepForEnv(G) + " |- " + stringRep(num) + " : " + stringRep(_result_.getFirst());
+    			return ruleName("NumberLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + stringRep(_result_.getFirst());
     		}
     	});
     	addAsSubtrace(_trace_, _subtrace_);
     	return _result_;
     } catch (Exception e_applyRuleNumberLiteralType) {
-    	typeThrowException(ruleName("NumberLiteralType") + stringRepForEnv(G) + " |- " + stringRep(num) + " : " + "IntType",
+    	typeThrowException(ruleName("NumberLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + "WollokType",
     		NUMBERLITERALTYPE,
-    		e_applyRuleNumberLiteralType, num, new ErrorInformation[] {new ErrorInformation(num)});
+    		e_applyRuleNumberLiteralType, lit, new ErrorInformation[] {new ErrorInformation(lit)});
     	return null;
     }
   }
   
-  protected Result<WollokType> applyRuleNumberLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral num) throws RuleFailedException {
-    /* G.add(num, WInt) */
-    if (!G.add(num, WollokType.WInt)) {
-      sneakyThrowRuleFailedException("G.add(num, WInt)");
+  protected Result<WollokType> applyRuleNumberLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral lit) throws RuleFailedException {
+    WollokType tipe = null; // output parameter
+    String _value = lit.getValue();
+    boolean _contains = _value.contains(".");
+    if (_contains) {
+      /* G |- lit ~~ WollokDSK.DOUBLE :> tipe */
+      Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.DOUBLE);
+      checkAssignableTo(result.getFirst(), WollokType.class);
+      tipe = (WollokType) result.getFirst();
+      
+      /* G.add(lit, tipe) */
+      if (!G.add(lit, tipe)) {
+        sneakyThrowRuleFailedException("G.add(lit, tipe)");
+      }
+    } else {
+      /* G |- lit ~~ WollokDSK.INTEGER :> tipe */
+      Result<WollokType> result_1 = getTypeInternal(G, _trace_, lit, WollokDSK.INTEGER);
+      checkAssignableTo(result_1.getFirst(), WollokType.class);
+      tipe = (WollokType) result_1.getFirst();
+      
+      /* G.add(lit, tipe) */
+      if (!G.add(lit, tipe)) {
+        sneakyThrowRuleFailedException("G.add(lit, tipe)");
+      }
     }
-    return new Result<WollokType>(_applyRuleNumberLiteralType_1(G, num));
+    return new Result<WollokType>(tipe);
   }
   
-  private IntType _applyRuleNumberLiteralType_1(final RuleEnvironment G, final WNumberLiteral num) throws RuleFailedException {
-    return WollokType.WInt;
-  }
-  
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral str) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral lit) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
-    	final Result<WollokType> _result_ = applyRuleStringLiteralType(G, _subtrace_, str);
+    	final Result<WollokType> _result_ = applyRuleStringLiteralType(G, _subtrace_, lit);
     	addToTrace(_trace_, new Provider<Object>() {
     		public Object get() {
-    			return ruleName("StringLiteralType") + stringRepForEnv(G) + " |- " + stringRep(str) + " : " + stringRep(_result_.getFirst());
+    			return ruleName("StringLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + stringRep(_result_.getFirst());
     		}
     	});
     	addAsSubtrace(_trace_, _subtrace_);
     	return _result_;
     } catch (Exception e_applyRuleStringLiteralType) {
-    	typeThrowException(ruleName("StringLiteralType") + stringRepForEnv(G) + " |- " + stringRep(str) + " : " + "StringType",
+    	typeThrowException(ruleName("StringLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + "WollokType",
     		STRINGLITERALTYPE,
-    		e_applyRuleStringLiteralType, str, new ErrorInformation[] {new ErrorInformation(str)});
+    		e_applyRuleStringLiteralType, lit, new ErrorInformation[] {new ErrorInformation(lit)});
     	return null;
     }
   }
   
-  protected Result<WollokType> applyRuleStringLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral str) throws RuleFailedException {
-    /* G.add(str, WString) */
-    if (!G.add(str, WollokType.WString)) {
-      sneakyThrowRuleFailedException("G.add(str, WString)");
+  protected Result<WollokType> applyRuleStringLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral lit) throws RuleFailedException {
+    WollokType tipe = null; // output parameter
+    /* G |- lit ~~ WollokDSK.STRING :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.STRING);
+    checkAssignableTo(result.getFirst(), WollokType.class);
+    tipe = (WollokType) result.getFirst();
+    
+    /* G.add(lit, tipe) */
+    if (!G.add(lit, tipe)) {
+      sneakyThrowRuleFailedException("G.add(lit, tipe)");
     }
-    return new Result<WollokType>(_applyRuleStringLiteralType_1(G, str));
+    return new Result<WollokType>(tipe);
   }
   
-  private StringType _applyRuleStringLiteralType_1(final RuleEnvironment G, final WStringLiteral str) throws RuleFailedException {
-    return WollokType.WString;
-  }
-  
-  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral num) throws RuleFailedException {
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral lit) throws RuleFailedException {
     try {
     	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
-    	final Result<WollokType> _result_ = applyRuleBooleanLiteralType(G, _subtrace_, num);
+    	final Result<WollokType> _result_ = applyRuleBooleanLiteralType(G, _subtrace_, lit);
     	addToTrace(_trace_, new Provider<Object>() {
     		public Object get() {
-    			return ruleName("BooleanLiteralType") + stringRepForEnv(G) + " |- " + stringRep(num) + " : " + stringRep(_result_.getFirst());
+    			return ruleName("BooleanLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + stringRep(_result_.getFirst());
     		}
     	});
     	addAsSubtrace(_trace_, _subtrace_);
     	return _result_;
     } catch (Exception e_applyRuleBooleanLiteralType) {
-    	typeThrowException(ruleName("BooleanLiteralType") + stringRepForEnv(G) + " |- " + stringRep(num) + " : " + "BooleanType",
+    	typeThrowException(ruleName("BooleanLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + "WollokType",
     		BOOLEANLITERALTYPE,
-    		e_applyRuleBooleanLiteralType, num, new ErrorInformation[] {new ErrorInformation(num)});
+    		e_applyRuleBooleanLiteralType, lit, new ErrorInformation[] {new ErrorInformation(lit)});
     	return null;
     }
   }
   
-  protected Result<WollokType> applyRuleBooleanLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral num) throws RuleFailedException {
-    /* G.add(num, WBoolean) */
-    if (!G.add(num, WollokType.WBoolean)) {
-      sneakyThrowRuleFailedException("G.add(num, WBoolean)");
+  protected Result<WollokType> applyRuleBooleanLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral lit) throws RuleFailedException {
+    WollokType tipe = null; // output parameter
+    /* G |- lit ~~ WollokDSK.BOOLEAN :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.BOOLEAN);
+    checkAssignableTo(result.getFirst(), WollokType.class);
+    tipe = (WollokType) result.getFirst();
+    
+    /* G.add(lit, tipe) */
+    if (!G.add(lit, tipe)) {
+      sneakyThrowRuleFailedException("G.add(lit, tipe)");
     }
-    return new Result<WollokType>(_applyRuleBooleanLiteralType_1(G, num));
-  }
-  
-  private BooleanType _applyRuleBooleanLiteralType_1(final RuleEnvironment G, final WBooleanLiteral num) throws RuleFailedException {
-    return WollokType.WBoolean;
+    return new Result<WollokType>(tipe);
   }
   
   protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WListLiteral lit) throws RuleFailedException {
@@ -1370,29 +1387,41 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleAdditionType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBinaryOperation op) throws RuleFailedException {
     WollokType returnType = null; // output parameter
+    /* G |- op ~~ WollokDSK.BOOLEAN :> var WollokType booleanType */
+    WollokType booleanType = null;
+    Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokDSK.BOOLEAN);
+    checkAssignableTo(result.getFirst(), WollokType.class);
+    booleanType = (WollokType) result.getFirst();
+    
+    /* G |- op ~~ WollokDSK.INTEGER :> var WollokType integerType */
+    WollokType integerType = null;
+    Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokDSK.INTEGER);
+    checkAssignableTo(result_1.getFirst(), WollokType.class);
+    integerType = (WollokType) result_1.getFirst();
+    
     WollokType t = null;
     String _feature = op.getFeature();
     boolean _contains = Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("&&", "||")).contains(_feature);
     if (_contains) {
-      returnType = WollokType.WBoolean;
-      t = WollokType.WBoolean;
+      returnType = booleanType;
+      t = booleanType;
     } else {
       String _feature_1 = op.getFeature();
       boolean _contains_1 = Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("==", "!=", "===", "<", "<=", ">", ">=")).contains(_feature_1);
       if (_contains_1) {
-        returnType = WollokType.WBoolean;
+        returnType = booleanType;
         t = WollokType.WAny;
       } else {
-        returnType = WollokType.WInt;
-        t = WollokType.WInt;
+        returnType = integerType;
+        t = integerType;
       }
     }
     /* G |- op.leftOperand : var WollokType leftType */
     WExpression _leftOperand = op.getLeftOperand();
     WollokType leftType = null;
-    Result<WollokType> result = typeInternal(G, _trace_, _leftOperand);
-    checkAssignableTo(result.getFirst(), WollokType.class);
-    leftType = (WollokType) result.getFirst();
+    Result<WollokType> result_2 = typeInternal(G, _trace_, _leftOperand);
+    checkAssignableTo(result_2.getFirst(), WollokType.class);
+    leftType = (WollokType) result_2.getFirst();
     
     boolean _equals = Objects.equal(leftType, WollokType.WAny);
     if (_equals) {
@@ -1426,9 +1455,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     /* G |- op.rightOperand : var WollokType rightType */
     WExpression _rightOperand = op.getRightOperand();
     WollokType rightType = null;
-    Result<WollokType> result_1 = typeInternal(G, _trace_, _rightOperand);
-    checkAssignableTo(result_1.getFirst(), WollokType.class);
-    rightType = (WollokType) result_1.getFirst();
+    Result<WollokType> result_3 = typeInternal(G, _trace_, _rightOperand);
+    checkAssignableTo(result_3.getFirst(), WollokType.class);
+    rightType = (WollokType) result_3.getFirst();
     
     boolean _equals_1 = Objects.equal(rightType, WollokType.WAny);
     if (_equals_1) {

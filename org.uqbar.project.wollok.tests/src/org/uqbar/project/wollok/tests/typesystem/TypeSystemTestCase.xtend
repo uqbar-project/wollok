@@ -6,6 +6,8 @@ import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSy
 
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 /**
  * Tests type system inference and checks
  * 
@@ -29,7 +31,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		''' program p {
 			const number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'number')
+			assertTypeOf(classType(INTEGER), 'number')
 		]
 	}
 
@@ -39,7 +41,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const number
 			number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'number')
+			assertTypeOf(classType(INTEGER), 'number')
 		]
 	}
 
@@ -51,7 +53,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const b = 3
 			number = a + b
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'number')
+			assertTypeOf(classType(INTEGER), 'number')
 		]
 	}
 

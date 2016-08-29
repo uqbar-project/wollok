@@ -1,7 +1,10 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
+import com.google.inject.Inject
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -11,13 +14,14 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
 import static org.uqbar.project.wollok.typesystem.constraints.TypeVariablesFactory.*
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * @author npasserini
  */
 class ConstraintBasedTypeSystem implements TypeSystem {
+	@Inject WollokClassFinder finder
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
 	
 	override def name() { "Constraints-based" }
@@ -48,16 +52,16 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 		println(node)
 	}
 
-	def dispatch void generateVariables(WNumberLiteral num) {
-		typeVariables.put(num, sealed(WInt))
+	def dispatch void generateVariables(WNumberLiteral it) {
+		typeVariables.put(it, sealed(classType(INTEGER)))
 	}
 
-	def dispatch void generateVariables(WStringLiteral string) {
-		typeVariables.put(string, sealed(WString))
+	def dispatch void generateVariables(WStringLiteral it) {
+		typeVariables.put(it, sealed(classType(STRING)))
 	}
 
-	def dispatch void generateVariables(WBooleanLiteral bool) {
-		typeVariables.put(bool, sealed(WBoolean))
+	def dispatch void generateVariables(WBooleanLiteral it) {
+		typeVariables.put(it, sealed(classType(BOOLEAN)))
 	}
 
 	// ************************************************************************
@@ -78,6 +82,12 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	protected def ClassBasedWollokType classType(EObject model, String className) {
+		val clazz = finder.getCachedClass(model, className)
+		// REVIEWME: should we have a cache ?
+		new ClassBasedWollokType(clazz, this)
 	}
 
 }

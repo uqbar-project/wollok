@@ -5,8 +5,7 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
-import org.uqbar.project.wollok.sdk.WollokDSK
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * The most basic inference tests
@@ -29,7 +28,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void numberLiteral() { 	'''program p {
 			const a = 46
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "a")
+			assertTypeOf(classTypeFor(INTEGER), "a")
 		]
 	}
 	
@@ -37,7 +36,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void stringLiteral() { 	'''program p {
 			const b = "Hello"
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WString, 'b')
+			assertTypeOf(classTypeFor(STRING), "b")
 		]
 	}
 	
@@ -45,7 +44,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void booleanLiteral() { 	'''program p {
 			const c = true
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WBoolean, "c")
+			assertTypeOf(classTypeFor(BOOLEAN), "c")
 		]
 	}
 	
@@ -53,7 +52,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void listLiteral() { 	'''program p {
 			const c = [1,2,3]
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(WollokDSK.LIST), "c")
+			assertTypeOf(classTypeFor(LIST), "c")
 		]
 	}
 	
@@ -61,7 +60,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void setLiteral() { 	'''program p {
 			const c = #{1,2,3}
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(WollokDSK.SET), "c")
+			assertTypeOf(classTypeFor(SET), "c")
 		]
 	}
 			
