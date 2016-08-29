@@ -178,7 +178,7 @@ object game {
 	
 	/**
 	 * Adds an object to the board for drawing it.
-	 * That object should known a position.
+	 * That object should known a position (by reference or getter method).
 	 */
 	method addVisual(visual) native
 
@@ -189,13 +189,13 @@ object game {
 
 	
 	/**
-	 * Adds an object to the board for drawing it and it can be moved with arrow keys.
-	 * That object should known a position.
+	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
+	 * That object should known a position (by reference or getter method).
 	 */
 	method addVisualCharacter(visual) native
 
 	/**
-	 * Adds an object to the board for drawing it on a specific position and it can be moved with arrow keys.
+	 * Adds an object to the board for drawing it on a specific position. It can be moved with arrow keys.
 	 */	
 	method addVisualCharacterIn(element, position) native
 
@@ -221,12 +221,12 @@ object game {
 	method getObjectsIn(position) native
 
 	/**
-	 * Draw a dialog balloon with given message in the position where the object is.
+	 * Draw a dialog balloon with given message in given visual object position.
 	 */	
 	method say(visual, message) native
 
 	/**
-	 * Removes all objects on board and configurations (colliders, keys, etc).
+	 * Removes all visual objects on board and configurations (colliders, keys, etc).
 	 */	
 	method clear() native
 
@@ -236,7 +236,7 @@ object game {
 	method colliders(visual) native
 
 	/**
-	 * Stops render the board.
+	 * Stops render the board and finish the game.
 	 */	
 	method stop() native
 	
@@ -255,7 +255,7 @@ object game {
 	}
 
 	/**
-	 * Returns the position x=0 y=0.
+	 * Returns the position (0,0).
 	 */	
 	method origin() = self.at(0, 0)
 
@@ -310,13 +310,13 @@ class Position {
 	var y = 0
 	
 	/**
-	 * Returns the position at origin: x=0 y=0.
+	 * Returns the position at origin: (0,0).
 	 */		
 	constructor() = self(0,0)
 			
 	/**
 	 * Returns a position with given x and y coordinates.
-	 */		
+	 */	
 	constructor(_x, _y) {
 		x = _x
 		y = _y
@@ -358,7 +358,7 @@ class Position {
 	method deleteElement(element) { game.removeVisual(element) } //TODO: Remove
 
 	/**
-	 * Draw a dialog balloon with given message in the position where the object is.
+	 * Draw a dialog balloon with given message in given visual object position.
 	 */	
 	method say(element, message) { game.say(element, message) } //TODO: Implement native
 
