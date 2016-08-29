@@ -35,7 +35,11 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import com.google.inject.Inject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 
 /**
  * Implementation that builds up rules
@@ -47,6 +51,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
 	// esto me gustaria evitarlo :S
 	Set<EObject> analyzed = newHashSet
+	@Inject WollokClassFinder finder
 	
 	override def name() { "Substitutions-based" }
 	
@@ -121,6 +126,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WStringLiteral it) { isA(WString) }
 	def dispatch void doAnalyse(WBooleanLiteral it) { isA(WBoolean) }
 	def dispatch void doAnalyse(WNullLiteral it) { }
+	def dispatch void doAnalyse(WListLiteral it) { isOfClass(LIST) }
+	
+	
 	def dispatch void doAnalyse(WParameter it) {
 		// here it should inherit type from supermethod (if any)
 		// also, if it's a closure parameter, it could infer type from usage
@@ -247,6 +255,11 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		a.analyze
 		b.analyze
 		addRule(new CheckTypeRule(source, a, check, b))
+	}
+	
+	def isOfClass(EObject model, String className) { 
+		val clazz = finder.getCachedClass(model, className)
+		model.isA(new ClassBasedWollokType(clazz, this))
 	}
 
 	def getStateAsString() {

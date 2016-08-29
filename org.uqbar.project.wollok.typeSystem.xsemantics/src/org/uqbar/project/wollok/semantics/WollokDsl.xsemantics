@@ -41,6 +41,10 @@ import org.uqbar.project.wollok.typesystem.BasicType
 import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
 import org.uqbar.project.wollok.typesystem.VoidType
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+
+inject WollokClassFinder finder
 
 // JUDGMENTS
 
@@ -89,16 +93,14 @@ from {
 
 		for (p : c.variableDeclarations) { G |- p : var WollokType pType }
 
-		if (c.constructors != null) 	{
-			c.constructors.forEach[cons|
-				G |- cons
-			]
-		}
+		if (c.constructors != null)
+			c.constructors.forEach[ G |- it ]
+
 		c.methods => [
 			// first setup WAny for all methods
-			forEach[m| G.add(m, WAny)]
+			forEach[ G.add(it, WAny)]
 			// then infer their types
-			forEach[m| G |- m ]
+			forEach[G |- it ]
 		]
 	}
 }
@@ -106,9 +108,10 @@ from {
 rule InferConstructor
 	G |- WConstructor c
 from {
-	c.parameters.forEach[p| G.add(p, WAny)]
+	c.parameters.forEach[ G.add(it, WAny) ]
 	G |- c.expression
 //	G |- c.expression : var WollokType returnType
+	println("Inferred constructor: " + c.eContainer + c.parameters.map[name + ":" + G.env(it, WollokType)])
 }
 
 rule InferWMethod
@@ -205,6 +208,8 @@ rule NumberLiteralType G |- WNumberLiteral num : WInt from { G.add(num, WInt) }
 rule StringLiteralType G |- WStringLiteral str : WString from { G.add(str, WString) }
 rule BooleanLiteralType G |- WBooleanLiteral num : WBoolean from { G.add(num, WBoolean) }
 
+axiom ListLiteralType G |- WListLiteral lit : new ClassBasedWollokType(finder.getListClass(lit), G.env(TypeSystem, TypeSystem))
+
 axiom VariableRefType G |- WVariableReference variable :
 	try env(G, variable.ref, WollokType) catch (RuleFailedException e) WAny
 
@@ -251,15 +256,15 @@ rule WBlockExpressionType
 	G |- WBlockExpression exps : WollokType t
 from {
 	t = if (exps.expressions.isEmpty)
-		WVoid
-	else {
-		var WollokType lastType = null
-		for (e : exps.expressions) {
-			G |- e : var WollokType expType
-			lastType = expType
+			WVoid
+		else {
+			var WollokType lastType = null
+			for (e : exps.expressions) {
+				G |- e : var WollokType expType
+				lastType = expType
+			}
+			lastType
 		}
-		lastType
-	}
 }
 
 rule AdditionType

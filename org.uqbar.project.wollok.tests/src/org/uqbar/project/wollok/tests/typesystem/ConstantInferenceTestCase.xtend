@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.typesystem.WollokType.*
+import org.uqbar.project.wollok.sdk.WollokDSK
 
 /**
  * The most basic inference tests
@@ -25,14 +26,35 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void testNumberLiteral() { 	'''program p {
+	def void numberLiteral() { 	'''program p {
 			const a = 46
-			const b = "Hello"
-			const c = true
 		}'''.parseAndInfer.asserting [
 			assertTypeOf(WInt, "a")
+		]
+	}
+	
+	@Test
+	def void stringLiteral() { 	'''program p {
+			const b = "Hello"
+		}'''.parseAndInfer.asserting [
 			assertTypeOf(WString, 'b')
+		]
+	}
+	
+	@Test
+	def void booleanLiteral() { 	'''program p {
+			const c = true
+		}'''.parseAndInfer.asserting [
 			assertTypeOf(WBoolean, "c")
 		]
 	}
+	
+	@Test
+	def void listLiteral() { 	'''program p {
+			const c = [1,2,3]
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(WollokDSK.LIST), "c")
+		]
+	}
+			
 }

@@ -16,7 +16,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 class ClassBasedWollokType extends BasicType implements ConcreteType {
 	WClass clazz
 	TypeSystem typeSystem
-
+	
 	new(WClass clazz, TypeSystem typeSystem) {
 		super(clazz.name)
 		this.clazz = clazz

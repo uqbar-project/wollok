@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -53,6 +55,12 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	// ** assertions
 	// ********************
 	
+	@Inject WollokClassFinder finder
+	
+	def classTypeFor(EObject context, String className) {
+		new ClassBasedWollokType(finder.getCachedClass(context, className), tsystem)
+	} 
+	
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
 		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
 	}
@@ -72,10 +80,8 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	
 	def noIssues(EObject program) {
 		val issues = program.eAllContents.map[issues].toList.flatten
-		assertTrue("Expecting no errors but found: " +  
-			issues.map['''[«model.class.simpleName» - «NodeModelUtils.getNode(model).text»]: «message»'''],
-			issues.isEmpty
-		)
+		val errorMessage = issues.map['''[«model?.class?.simpleName» - «NodeModelUtils.getNode(model)?.text»]: «message»''']
+		assertTrue("Expecting no errors but found: " + errorMessage, issues == null || issues.isEmpty)
 	}
 	
 	def assertIssues(EObject program, String programToken, String... expectedIssues) {

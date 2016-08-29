@@ -31,6 +31,7 @@ class XSemanticsTypeSystem implements TypeSystem {
 	}
 	
 	override analyse(EObject p) {
+		
 		env = xsemanticsSystem.emptyEnvironment;
 		env.add(TypeSystem, this)
 		// infer types for whole program.
@@ -60,6 +61,7 @@ class XSemanticsTypeSystem implements TypeSystem {
 	
 	override issues(EObject obj) {
 		// does nothing. xsemantics works in a different way
+		#[]
 	}
 	
 	override queryMessageTypeForMethod(WMethodDeclaration m) {

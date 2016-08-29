@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.semantics;
 
 import com.google.common.base.Objects;
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import it.xsemantics.runtime.ErrorInformation;
 import it.xsemantics.runtime.Result;
@@ -20,10 +21,12 @@ import org.eclipse.xtext.util.PolymorphicDispatcher;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.uqbar.project.wollok.interpreter.WollokClassFinder;
 import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
 import org.uqbar.project.wollok.typesystem.BasicType;
@@ -47,6 +50,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure;
 import org.uqbar.project.wollok.wollokDsl.WConstructor;
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall;
 import org.uqbar.project.wollok.wollokDsl.WExpression;
+import org.uqbar.project.wollok.wollokDsl.WListLiteral;
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall;
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer;
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration;
@@ -92,6 +96,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   public final static String BOOLEANLITERALTYPE = "org.uqbar.project.wollok.semantics.BooleanLiteralType";
   
+  public final static String LISTLITERALTYPE = "org.uqbar.project.wollok.semantics.ListLiteralType";
+  
   public final static String VARIABLEREFTYPE = "org.uqbar.project.wollok.semantics.VariableRefType";
   
   public final static String WCONSTRUCTORCALL = "org.uqbar.project.wollok.semantics.WConstructorCall";
@@ -130,6 +136,9 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   public final static String TYPEOFMESSAGE = "org.uqbar.project.wollok.semantics.TypeOfMessage";
   
+  @Inject
+  private WollokClassFinder finder;
+  
   private PolymorphicDispatcher<Result<Boolean>> inferTypesDispatcher;
   
   private PolymorphicDispatcher<Result<WollokType>> typeDispatcher;
@@ -167,6 +176,14 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     	"queryTypeForImpl", 3, "||-", ">>");
     queryMessageTypeForMethodDispatcher = buildPolymorphicDispatcher1(
     	"queryMessageTypeForMethodImpl", 3, "||-", ":>");
+  }
+  
+  public WollokClassFinder getFinder() {
+    return this.finder;
+  }
+  
+  public void setFinder(final WollokClassFinder finder) {
+    this.finder = finder;
   }
   
   public Result<Boolean> inferTypes(final EObject obj) {
@@ -568,21 +585,21 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
       boolean _notEquals_1 = (!Objects.equal(_constructors, null));
       if (_notEquals_1) {
         EList<WConstructor> _constructors_1 = c.getConstructors();
-        final Consumer<WConstructor> _function = (WConstructor cons) -> {
-          /* G |- cons */
-          inferTypesInternal(G, _trace_, cons);
+        final Consumer<WConstructor> _function = (WConstructor it) -> {
+          /* G |- it */
+          inferTypesInternal(G, _trace_, it);
         };
         _constructors_1.forEach(_function);
       }
       Iterable<WMethodDeclaration> _methods = WMethodContainerExtensions.methods(c);
       final Procedure1<Iterable<WMethodDeclaration>> _function_1 = (Iterable<WMethodDeclaration> it) -> {
-        final Consumer<WMethodDeclaration> _function_2 = (WMethodDeclaration m) -> {
-          G.add(m, WollokType.WAny);
+        final Consumer<WMethodDeclaration> _function_2 = (WMethodDeclaration it_1) -> {
+          G.add(it_1, WollokType.WAny);
         };
         it.forEach(_function_2);
-        final Consumer<WMethodDeclaration> _function_3 = (WMethodDeclaration m) -> {
-          /* G |- m */
-          inferTypesInternal(G, _trace_, m);
+        final Consumer<WMethodDeclaration> _function_3 = (WMethodDeclaration it_1) -> {
+          /* G |- it */
+          inferTypesInternal(G, _trace_, it_1);
         };
         it.forEach(_function_3);
       };
@@ -612,13 +629,25 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<Boolean> applyRuleInferConstructor(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WConstructor c) throws RuleFailedException {
     EList<WParameter> _parameters = c.getParameters();
-    final Consumer<WParameter> _function = (WParameter p) -> {
-      G.add(p, WollokType.WAny);
+    final Consumer<WParameter> _function = (WParameter it) -> {
+      G.add(it, WollokType.WAny);
     };
     _parameters.forEach(_function);
     /* G |- c.expression */
     WExpression _expression = c.getExpression();
     inferTypesInternal(G, _trace_, _expression);
+    EObject _eContainer = c.eContainer();
+    String _plus = ("Inferred constructor: " + _eContainer);
+    EList<WParameter> _parameters_1 = c.getParameters();
+    final Function1<WParameter, String> _function_1 = (WParameter it) -> {
+      String _name = it.getName();
+      String _plus_1 = (_name + ":");
+      WollokType _env = this.<WollokType>env(G, it, WollokType.class);
+      return (_plus_1 + _env);
+    };
+    List<String> _map = ListExtensions.<WParameter, String>map(_parameters_1, _function_1);
+    String _plus_1 = (_plus + _map);
+    InputOutput.<String>println(_plus_1);
     return new Result<Boolean>(true);
   }
   
@@ -979,6 +1008,37 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   private BooleanType _applyRuleBooleanLiteralType_1(final RuleEnvironment G, final WBooleanLiteral num) throws RuleFailedException {
     return WollokType.WBoolean;
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WListLiteral lit) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleListLiteralType(G, _subtrace_, lit);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("ListLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleListLiteralType) {
+    	typeThrowException(ruleName("ListLiteralType") + stringRepForEnv(G) + " |- " + stringRep(lit) + " : " + "ClassBasedWollokType",
+    		LISTLITERALTYPE,
+    		e_applyRuleListLiteralType, lit, new ErrorInformation[] {new ErrorInformation(lit)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleListLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WListLiteral lit) throws RuleFailedException {
+    
+    return new Result<WollokType>(_applyRuleListLiteralType_1(G, lit));
+  }
+  
+  private ClassBasedWollokType _applyRuleListLiteralType_1(final RuleEnvironment G, final WListLiteral lit) throws RuleFailedException {
+    WClass _listClass = this.finder.getListClass(lit);
+    TypeSystem _env = this.<TypeSystem>env(G, TypeSystem.class, TypeSystem.class);
+    ClassBasedWollokType _classBasedWollokType = new ClassBasedWollokType(_listClass, _env);
+    return _classBasedWollokType;
   }
   
   protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WVariableReference variable) throws RuleFailedException {
