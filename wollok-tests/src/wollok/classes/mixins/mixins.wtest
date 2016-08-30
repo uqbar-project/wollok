@@ -74,7 +74,7 @@ class BirdWithFlyingShortCuts mixed with FlyingShortcuts {
 	method energy() = energy
 }
 
-object example {
+		object example {
 			method aList() = [1,2,3]
 			method useTheList() {
 				const pepe = self.aList()

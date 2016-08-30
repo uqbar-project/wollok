@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem
 
-import org.eclipse.xtend.lib.Property
 import org.eclipse.xtend.lib.annotations.Accessors
 
 /**

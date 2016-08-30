@@ -114,8 +114,10 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 	
+	// Method Calls
+	
 	@Test
-	def void variableAssignedToReturnValueOfMethod() { 	'''
+	def void variableAssignedToReturnValueOfSelfMethod() { 	'''
 		object example {
 			method aList() = [1,2,3]
 			method useTheList() {
@@ -125,5 +127,21 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("List", "pepe")
 		]
 	}
+	
+//	@Test
+//	def void variableAssignedToReturnValueOfAnotherObjectsMethod() { 	'''
+//		object stringGenerator {
+//			method generateString() = "ABC"
+//		}
+//		object stringConsumer {
+//			method consume() {
+//				const pepe = stringGenerator.generateString()
+//			}
+//		}
+//		
+//		'''.parseAndInfer.asserting [
+//			assertTypeOfAsString("List", "pepe")
+//		]
+//	}
 	
 }

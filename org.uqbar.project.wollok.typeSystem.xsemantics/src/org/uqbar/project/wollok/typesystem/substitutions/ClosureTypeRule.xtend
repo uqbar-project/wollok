@@ -9,6 +9,8 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+
 /**
  * 
  * @author jfernandes
@@ -47,5 +49,9 @@ class ClosureTypeRule extends TypeRule {
 			super.typeOf(object)
 		}
 	}
+	
+	override ruleStateLeftPart() { '''t(«closure.formattedSourceCode») = «type»''' }
+	
+	override ruleStateRightPart() { "(" + source.lineNumber + ": " + source.formattedSourceCode + ")" }
 	
 }

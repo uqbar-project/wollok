@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder;
 import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
 import org.uqbar.project.wollok.sdk.WollokDSK;
+import org.uqbar.project.wollok.typesystem.AnyType;
 import org.uqbar.project.wollok.typesystem.BasicType;
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
 import org.uqbar.project.wollok.typesystem.ClosureType;
@@ -53,6 +54,7 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral;
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall;
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer;
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration;
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral;
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral;
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral;
 import org.uqbar.project.wollok.wollokDsl.WParameter;
@@ -63,6 +65,8 @@ import org.uqbar.project.wollok.wollokDsl.WSelf;
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral;
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral;
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation;
+import org.uqbar.project.wollok.wollokDsl.WThrow;
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation;
 import org.uqbar.project.wollok.wollokDsl.WVariable;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
@@ -131,6 +135,12 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   public final static String WRETURNEXPRESSIONTYPE = "org.uqbar.project.wollok.semantics.WReturnExpressionType";
   
   public final static String IGNORE = "org.uqbar.project.wollok.semantics.Ignore";
+  
+  public final static String WTHROWTYPE = "org.uqbar.project.wollok.semantics.WThrowType";
+  
+  public final static String UNARYOPERATIONTYPE = "org.uqbar.project.wollok.semantics.UnaryOperationType";
+  
+  public final static String WNULLLITERALTYPE = "org.uqbar.project.wollok.semantics.WNullLiteralType";
   
   public final static String WCLOSURETYPE = "org.uqbar.project.wollok.semantics.WClosureType";
   
@@ -1931,6 +1941,103 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   private VoidType _applyRuleIgnore_1(final RuleEnvironment G, final WExpression e) throws RuleFailedException {
     return WollokType.WVoid;
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThrow t) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleWThrowType(G, _subtrace_, t);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("WThrowType") + stringRepForEnv(G) + " |- " + stringRep(t) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleWThrowType) {
+    	typeThrowException(ruleName("WThrowType") + stringRepForEnv(G) + " |- " + stringRep(t) + " : " + "VoidType",
+    		WTHROWTYPE,
+    		e_applyRuleWThrowType, t, new ErrorInformation[] {new ErrorInformation(t)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleWThrowType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WThrow t) throws RuleFailedException {
+    
+    return new Result<WollokType>(_applyRuleWThrowType_1(G, t));
+  }
+  
+  private VoidType _applyRuleWThrowType_1(final RuleEnvironment G, final WThrow t) throws RuleFailedException {
+    return WollokType.WVoid;
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WUnaryOperation op) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleUnaryOperationType(G, _subtrace_, op);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("UnaryOperationType") + stringRepForEnv(G) + " |- " + stringRep(op) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleUnaryOperationType) {
+    	typeThrowException(ruleName("UnaryOperationType") + stringRepForEnv(G) + " |- " + stringRep(op) + " : " + "WollokType",
+    		UNARYOPERATIONTYPE,
+    		e_applyRuleUnaryOperationType, op, new ErrorInformation[] {new ErrorInformation(op)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleUnaryOperationType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WUnaryOperation op) throws RuleFailedException {
+    WollokType tipe = null; // output parameter
+    if ((Objects.equal(op.getFeature(), "!") || Objects.equal(op.getFeature(), "not"))) {
+      /* G |- op ~~ WollokDSK.BOOLEAN :> tipe */
+      Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokDSK.BOOLEAN);
+      checkAssignableTo(result.getFirst(), WollokType.class);
+      tipe = (WollokType) result.getFirst();
+      
+    } else {
+      /* G |- op ~~ WollokDSK.INTEGER :> tipe */
+      Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokDSK.INTEGER);
+      checkAssignableTo(result_1.getFirst(), WollokType.class);
+      tipe = (WollokType) result_1.getFirst();
+      
+    }
+    /* G.add(op, tipe) */
+    if (!G.add(op, tipe)) {
+      sneakyThrowRuleFailedException("G.add(op, tipe)");
+    }
+    return new Result<WollokType>(tipe);
+  }
+  
+  protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNullLiteral n) throws RuleFailedException {
+    try {
+    	final RuleApplicationTrace _subtrace_ = newTrace(_trace_);
+    	final Result<WollokType> _result_ = applyRuleWNullLiteralType(G, _subtrace_, n);
+    	addToTrace(_trace_, new Provider<Object>() {
+    		public Object get() {
+    			return ruleName("WNullLiteralType") + stringRepForEnv(G) + " |- " + stringRep(n) + " : " + stringRep(_result_.getFirst());
+    		}
+    	});
+    	addAsSubtrace(_trace_, _subtrace_);
+    	return _result_;
+    } catch (Exception e_applyRuleWNullLiteralType) {
+    	typeThrowException(ruleName("WNullLiteralType") + stringRepForEnv(G) + " |- " + stringRep(n) + " : " + "AnyType",
+    		WNULLLITERALTYPE,
+    		e_applyRuleWNullLiteralType, n, new ErrorInformation[] {new ErrorInformation(n)});
+    	return null;
+    }
+  }
+  
+  protected Result<WollokType> applyRuleWNullLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNullLiteral n) throws RuleFailedException {
+    
+    return new Result<WollokType>(_applyRuleWNullLiteralType_1(G, n));
+  }
+  
+  private AnyType _applyRuleWNullLiteralType_1(final RuleEnvironment G, final WNullLiteral n) throws RuleFailedException {
+    return WollokType.WAny;
   }
   
   protected Result<WollokType> typeImpl(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WClosure c) throws RuleFailedException {

@@ -46,6 +46,9 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
+import org.uqbar.project.wollok.wollokDsl.WThrow
 
 inject WollokClassFinder finder
 
@@ -487,6 +490,25 @@ rule Ignore
 from {
 	 System.out.println("Ignoring type check for " + e.stringRep + " of class " + e.class.simpleName)
 }
+
+axiom WThrowType
+	G |- WThrow t : WollokType.WVoid
+
+// REVIEW: this is only valid for "not" and "!" but not for
+rule UnaryOperationType
+	G |- WUnaryOperation op : WollokType tipe
+from {
+	if (op.^feature == "!" || op.^feature == "not") {
+		G |- op ~~ WollokDSK.BOOLEAN :> tipe
+	}
+	else {
+		G |- op ~~ WollokDSK.INTEGER :> tipe
+	}
+	G.add(op, tipe)
+} 
+
+axiom WNullLiteralType 
+	G |- WNullLiteral n : WollokType.WAny
 
 rule WClosureType 
 	G |- WClosure c : WollokType tipe

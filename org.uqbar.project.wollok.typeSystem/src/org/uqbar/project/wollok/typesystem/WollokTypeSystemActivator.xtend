@@ -40,6 +40,7 @@ class WollokTypeSystemActivator extends Plugin {
 	def getTypeSystem(EObject context) {
 		// TODO: some kind of cache ?
 		var selectedTypeSystem = context.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
+		println("Project " + context.IFile.project.name + " uses type system " + selectedTypeSystem)
 		if (selectedTypeSystem == null)
 			selectedTypeSystem = "XSemantics"
 		getTypeSystem(selectedTypeSystem)

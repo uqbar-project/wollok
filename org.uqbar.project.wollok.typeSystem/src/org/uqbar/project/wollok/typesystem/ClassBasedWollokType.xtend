@@ -4,28 +4,19 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.typesystem.TypeSystem
 
 /**
  * 
  * @author jfernandes
  */
-class ClassBasedWollokType extends BasicType implements ConcreteType {
-	WClass clazz
-	TypeSystem typeSystem
+class ClassBasedWollokType extends AbstractContainerWollokType {
 	
 	new(WClass clazz, TypeSystem typeSystem) {
-		super(clazz.name)
-		this.clazz = clazz
-		this.typeSystem = typeSystem
+		super(clazz, typeSystem)
 	}
 	
-	override understandsMessage(MessageType message) {
-		lookupMethod(message) != null
-	}
+	def clazz() { container as WClass }
 	
 	override acceptAssignment(WollokType other) {
 		val value = this == other ||
@@ -35,22 +26,6 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 			)
 		if (!value)
 			throw new TypeSystemException('''<<«other»>> is not a valid substitude for <<«this»>>''')	
-	}
-	
-	override lookupMethod(MessageType message) {
-		val m = clazz.lookupMethod(message.name, message.parameterTypes, true)
-		// TODO: por ahora solo checkea misma cantidad de parametros
-		// 		debería en realidad checkear tipos !  
-		if (m != null && m.parameters.size == message.parameterTypes.size)
-			m
-		else
-			null
-	}
-	
-	override resolveReturnType(MessageType message) {
-		val method = lookupMethod(message)
-		//	TODO: si no está, debería ir al archivo del método (podría estar en otro archivo) e inferir
-		typeSystem.type(method)
 	}
 	
 	// ***************************************************************************
@@ -93,19 +68,5 @@ class ClassBasedWollokType extends BasicType implements ConcreteType {
 	def boolean isSubclassOf(WClass potSub, WClass potSuper) {
 		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper))   
 	}
-	
-	override getAllMessages() {
-		clazz.allMethods.map[m| typeSystem.queryMessageTypeForMethod(m)]
-	}
-	
-	// *******************************
-	// ** object
-	// *******************************
-	
-	override equals(Object obj) { 
-		obj instanceof ClassBasedWollokType && (obj as ClassBasedWollokType).clazz == clazz
-	}
-	
-	override hashCode() { clazz.hashCode }
 	
 }

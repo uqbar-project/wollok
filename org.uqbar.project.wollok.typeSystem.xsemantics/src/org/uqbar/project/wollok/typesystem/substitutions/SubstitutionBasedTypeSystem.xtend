@@ -3,9 +3,11 @@ package org.uqbar.project.wollok.typesystem.substitutions
 import com.google.inject.Inject
 import java.util.List
 import java.util.Set
+import org.eclipse.emf.common.util.WeakInterningHashSet
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -15,6 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -22,10 +25,12 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
@@ -41,10 +46,7 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WClosure
-import org.uqbar.project.wollok.typesystem.ClosureType
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.utils.StringUtils
 
 /**
  * Implementation that builds up rules
@@ -55,16 +57,20 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
 	// esto me gustaria evitarlo :S
-	Set<EObject> analyzed = newHashSet
+	Set<EObject> analyzed = new WeakInterningHashSet
 	@Inject WollokClassFinder finder
 	
 	override def name() { "Substitutions-based" }
 	
 	override validate(WFile file, WollokDslValidator validator) {
+		this.analyzed = new WeakInterningHashSet
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
-		this.inferTypes
+		this.inferTypes()
 		// TODO: report errors !
+		(file.eAllContents.forEach[ issues.forEach[issue|
+			validator.report(issue.message, issue.model)
+		] ])
 	}
 
 	override analyse(EObject p) { p.eContents.forEach[analyze] }
@@ -91,6 +97,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 	
 	def dispatch void doAnalyse(WNamedObject it) {
+		addFact(it, new NamedObjectWollokType(it, this))
 		if (members != null) members.forEach[analyze]
 	}
 	
@@ -131,6 +138,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		if (memberCallTarget instanceof WSelf) {
 			addCheck(it, SAME_AS, method.declaringContext.lookupMethod(feature, memberCallArguments, true))
 		}
+		else {
+			addRule(new MessageSendRule(it))
+		}
 	}
 
 	def dispatch void doAnalyse(WConstructorCall it) {
@@ -156,7 +166,8 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	def dispatch void doAnalyse(WAssignment it) {
 		isA(WVoid)
-		addCheck(feature, SUPER_OF, value)
+		if (value != null)
+			addCheck(feature, SUPER_OF, value)
 	}
 
 	def dispatch void doAnalyse(WBinaryOperation it) {
@@ -204,8 +215,8 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		var nrSteps = 0
 		var resolved = true
 		while (resolved) {
-//			println('Unify #' + nrSteps++)
-//			println(this)
+			println('Unify #' + nrSteps++)
+			println(this.stateAsString)
 			resolved = rules.clone.fold(false)[r, rule|
 				// keep local variable to force execution (there's no non-shortcircuit 'or' in xtend! :S)
 				val ruleValue = rule.resolve(this)
@@ -293,8 +304,14 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	}
 
 	def getStateAsString() {
-		'{' + System.lineSeparator + '\t' + 
-			rules.join(System.lineSeparator + "\t") + System.lineSeparator
+		val leftValues = rules.map[ (ruleStateLeftPart -> ruleStateRightPart)]
+		val maxLength = leftValues.map[key].maxBy[a | a.length].length
+
+		'{' + System.lineSeparator + 
+			'\t' + 
+			leftValues.map[pair|
+				StringUtils.padRight(pair.key, maxLength) + "\t" + pair.value
+			].join(System.lineSeparator + "\t") + System.lineSeparator
 	}
 
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {

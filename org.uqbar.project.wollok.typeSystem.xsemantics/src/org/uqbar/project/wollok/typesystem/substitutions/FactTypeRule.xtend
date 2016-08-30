@@ -28,8 +28,11 @@ class FactTypeRule extends TypeRule {
 	
 	override typeOf(EObject object) { if (object == model) type else null }
 	
+	override def ruleStateLeftPart() { '''t(«model.formattedSourceCode») = «type»''' }
+	override def ruleStateRightPart() { '''«source.lineNumber»: «source.formattedSourceCode»)''' }
+	
 	// object
-	override toString() { '''t(«model.sourceCode.trim.replaceAll(System.lineSeparator, ' ')») = «type»''' + "\t\t\t\t(" + source.lineNumber + ": " + source.sourceCode.trim.replaceAll(System.lineSeparator, ' ') + ")" }
+
 	override equals(Object obj) {
 		obj instanceof FactTypeRule && model == (obj as FactTypeRule).model && type == (obj as FactTypeRule).type 
 	}
