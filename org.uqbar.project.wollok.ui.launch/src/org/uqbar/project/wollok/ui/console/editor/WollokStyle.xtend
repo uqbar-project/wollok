@@ -87,7 +87,7 @@ class WollokStyle {
 					.toList
 					.fold(0) [ acum, style | acum + style.length ]
 				
-				newStyles.last.length += (totalLengthOut - adjustLength) - diffLength 
+				newStyles.last.length += Math.max(0, (totalLengthOut - adjustLength) - diffLength) 
 			}
 		}
 		
@@ -111,27 +111,37 @@ class WollokStyle {
 	}
 	
 	def adjustStylesRange(List<StyleRange> ranges) {
+		var rangesSortedByStart = ranges.sortBy [ start ]
 		// Style ranges often collide among each others!!
-		// I should split them to set bold/normal font, but for now I'll avoid repeating characters
-		for (var int i = 1; i < ranges.length; i++) { 
-			val currentRange = ranges.get(i)
-			val existentRange = ranges.subList(0, i - 1).findFirst [ range | range.start == currentRange.start ]
-			if (existentRange != null) {
-				if (currentRange.length < existentRange.length) {
-					currentRange.length = existentRange.length
+		for (var int i = 1; i < rangesSortedByStart.length; i++) { 
+			val currentRange = rangesSortedByStart.get(i)
+			val sameRanges = rangesSortedByStart.filter [ range | range != currentRange && range.start == currentRange.start ]
+			if (!sameRanges.isEmpty) {
+				// Shift all ranges to set bold/normal font & colors
+				val allRanges = sameRanges + #[currentRange]
+				val sameRangesSorted = allRanges.sortBy [ length ]
+				var shiftedStart = currentRange.start
+				var totalShift = 0
+				for (var j = 0; j < sameRangesSorted.length; j++) {
+					val currentSameRange = sameRangesSorted.get(j)
+					currentSameRange.start = shiftedStart
+					currentSameRange.length -= totalShift
+					totalShift += currentSameRange.length
+					shiftedStart += currentSameRange.length
 				}
-				ranges.remove(existentRange)
 			}
 		}
+		
 		// first, style range overflow next range!!
-		for (var int i = 0; i < ranges.length - 1; i++) {
-			val currentRange = ranges.get(i)
-			val nextRange = ranges.get(i+1)
+		rangesSortedByStart = rangesSortedByStart.sortBy [ start ]
+		for (var int i = 0; i < rangesSortedByStart.length - 1; i++) {
+			val currentRange = rangesSortedByStart.get(i)
+			val nextRange = rangesSortedByStart.get(i+1)
 			if (currentRange.start + currentRange.length > nextRange.start) {
-				currentRange.length = nextRange.start - currentRange.start
+				currentRange.length = Math.min(0, nextRange.start - currentRange.start)
 			}
 		}
-		ranges
+		rangesSortedByStart
 	}
 
 	def getLine(Integer line) {

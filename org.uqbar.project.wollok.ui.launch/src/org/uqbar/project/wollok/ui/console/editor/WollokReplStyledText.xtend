@@ -85,11 +85,11 @@ class WollokReplStyledText extends StyledText {
 				style.adjustBoundaryOffsets(start, length)
 				val rtfWriter = new WollokRTFWriter(style)
 				val rtfText = rtfWriter.RTFText
-				println("RTF Text: " + rtfText)
 				val RTFTransfer rtfTransfer = RTFTransfer.getInstance()
 				data = #[rtfText, plainText]
 				types = #[rtfTransfer, plainTextTransfer]
 			} catch (Exception e) {
+				e.printStackTrace
 				data = #[plainText]
 				types = #[plainTextTransfer]
 			}

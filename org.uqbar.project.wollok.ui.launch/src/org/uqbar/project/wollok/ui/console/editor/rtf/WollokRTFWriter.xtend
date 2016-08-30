@@ -67,7 +67,11 @@ class WollokRTFWriter {
 		result.append(" ")
 		val end = Math.min(line.length, _style.start + _style.length)
 		if (end > 0) {
-			result.append(line.substring(_style.start, end).deleteAnsiCharacters.replaceRTFEscapeCharacters)
+			try {
+				result.append(line.substring(_style.start, end).deleteAnsiCharacters.replaceRTFEscapeCharacters)
+			} catch (IndexOutOfBoundsException e) {
+				throw new RuntimeException("Error applying RTF style " + _style + " - end " + end + " | out of range for line " + line + " ~ line length " + line.length, e)
+			}
 		}
 		// Deactivate tags appended to a range style
 		tagsApplied.forEach[ tag | tag.deactivateTag(_style, result) ]
