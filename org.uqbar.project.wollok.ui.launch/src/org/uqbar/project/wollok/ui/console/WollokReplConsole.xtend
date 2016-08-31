@@ -11,7 +11,6 @@ import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStreamsProxy
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
-import org.eclipse.swt.events.KeyEvent
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
@@ -160,7 +159,7 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def sendInputBuffer() {
-		val x = inputBuffer + System.lineSeparator;
+		val x = inputBuffer + System.lineSeparator
 
 		addCommandToHistory
 		sessionCommands += inputBuffer
