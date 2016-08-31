@@ -118,7 +118,9 @@ class WollokStyle {
 			val sameRanges = rangesSortedByStart.filter [ range | range != currentRange && range.start == currentRange.start ]
 			if (!sameRanges.isEmpty) {
 				// Shift all ranges to set bold/normal font & colors
-				val allRanges = sameRanges + #[currentRange]
+				val allRanges = #[currentRange] + sameRanges 
+				
+				/**
 				val sameRangesSorted = allRanges.sortBy [ length ]
 				var shiftedStart = currentRange.start
 				var totalShift = 0
@@ -129,6 +131,19 @@ class WollokStyle {
 					totalShift += currentSameRange.length
 					shiftedStart += currentSameRange.length
 				}
+				*/
+				
+				val maxLength = allRanges.maxBy [ length ].length
+				var totalLength = 0
+				for (var j = allRanges.length - 1; j >= 0; j--) {
+					val currentSameRange = allRanges.get(j)
+					currentSameRange.start += totalLength
+					val newLength = currentSameRange.length - totalLength
+					currentSameRange.length = Math.max(0, newLength)
+					totalLength += currentSameRange.length
+					totalLength = Math.min(totalLength, maxLength)
+				}
+				
 			}
 		}
 		
