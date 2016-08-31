@@ -1213,6 +1213,32 @@ class Double inherits Number {
 	 * Answers a random between self and max
 	 */
 	method randomUpTo(max) native
+	
+	/**
+	 * Answers the next integer greater than self
+	 * 13.224.roundUp() ==> 14
+	 * -13.224.roundUp() ==> -14
+	 * 15.942.roundUp() ==> 16
+	 */
+	method roundUp() = self.roundUp(0)
+	
+	/**
+	 * Rounds up self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.roundUp(3) ==> 1.224
+	 * -1.223445.roundUp(3) ==> -1.224
+	 * 14.6165.roundUp(3) ==> 14.617
+	 */
+	method roundUp(_decimals) native
+	
+	/**
+	 * Truncates self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.truncate(3) ==> 1.223
+	 * 14.6165.truncate(3) ==> 14.616
+	 * -14.6165.truncate(3) ==> -14.616
+	 */
+	method truncate(_decimals) native
 }
 
 /**
