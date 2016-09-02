@@ -163,7 +163,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
-			xtextDocument.deleteToken(e, OVERRIDE + " ")
+			xtextDocument.replace(e.before + e.node.text.indexOf(OVERRIDE) - 4, OVERRIDE.length, "")
 		]
 	}
 	
