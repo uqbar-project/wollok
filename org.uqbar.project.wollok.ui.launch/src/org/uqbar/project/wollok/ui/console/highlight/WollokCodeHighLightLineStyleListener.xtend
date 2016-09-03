@@ -96,9 +96,10 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 							.forEach [ styles.merge(it) ]
 		
 		// validations (checks)
-		checker.validate(Activator.getDefault.injector, resource, [], [issues |
-			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
-		])
+		// I HAVE TO DISABLED THIS AFTER FIXING THE WAY IT PARSES THE INPUT (because of linking errors like trying to set Object to object literals)
+//		checker.validate(Activator.getDefault.injector, resource, [], [issues |
+//			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
+//		])
 		
 		// REVIEW: I think this is not needed since we touch the original list
 		event.styles = styles.sortBy[start].toList 
@@ -118,11 +119,11 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	// *******************************************
 	
 	def parseIt(String content) {
-		new XtextResource => [
-			URI = resourceSet.computeUnusedUri("__repl_synthetic") 
-			Activator.getDefault.injector.injectMembers(it)
-			load(new ByteArrayInputStream(content.bytes), #{})			
-		]
+		val resource = resourceSet.createResource(resourceSet.computeUnusedUri("__repl_synthetic"))
+		resourceSet.resources.add(resource)
+		
+		resource.load(new ByteArrayInputStream(content.bytes), #{})
+		resource as XtextResource
 	}
 	
 	def checkerError(LineStyleEvent event, Integer offset, Integer length) { errorStyle(event, offset, length, "CHECK_ERROR") } 
