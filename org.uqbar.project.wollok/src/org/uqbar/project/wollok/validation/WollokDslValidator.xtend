@@ -54,6 +54,8 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Custom validation rules.
@@ -73,7 +75,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
 	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
-	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
+
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val PARAMETER_NAME_MUST_START_LOWERCASE = "PARAMETER_NAME_MUST_START_LOWERCASE"
@@ -158,6 +160,33 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WCONSTRUCTOR_CALL__CLASS_REF)
 		}
 	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	// TODO: generalize for objects ! and instantiation time mixing
+	def noSuperMethodRequiredByMixin(WClass it) {
+		val unboundedSuperCallingMethods = linearizateHierarhcy.fold(newArrayList)[scm, e |
+			// order matters ! otherwise superCallingM will cancel themselves
+			// remove methods fullfilled by this element
+			scm.removeIf [required | e.hasMethodWithSignature(required) ]
+			// accumulate requirements
+			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
+			scm
+		]
+		if (!unboundedSuperCallingMethods.empty) {
+			val methodDescriptions = unboundedSuperCallingMethods.map[methodName].join(", ")
+			report('''«WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED»: «methodDescriptions»''', it, WNAMED__NAME)
+		}
+	}
+	
+	def hasMethodWithSignature(WMethodContainer it, WMethodDeclaration method) {
+		methods.exists[m | m.hasSameSignatureThan(method) ]
+	}
+	
+	def superCallingMethods(WMixin it) { methods.filter[m | m.callsSuper ] }
+	def boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
+	def dispatch boolean callsSuper(WSuperInvocation it) { true }
+	def dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 
 	@Check
 	@DefaultSeverity(ERROR)

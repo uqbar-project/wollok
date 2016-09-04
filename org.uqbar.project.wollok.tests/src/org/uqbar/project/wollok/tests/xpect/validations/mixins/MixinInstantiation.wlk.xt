@@ -89,3 +89,41 @@ object c mixed with M1, M2 {
 	}
 }
 
+
+// Mixin Calling super() Mixed In A Class Without its implementation
+
+mixin Doctor {
+	
+	method name() = "Dr. " + super()
+	
+}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Tomato"
+class Tomato mixed with Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "TomatoWithNameBelowSuper"
+class TomatoWithNameBelowSuper mixed with Doctor {
+	override method name() = "23"
+}
+
+mixin Named {
+	method name() = "a name"
+}
+
+// OK !
+class Person mixed with Named and Doctor {}
+
+// NOT OK ! order matters !
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Person"
+class Person mixed with Doctor and Named {}
+
+// OK: super method comes from super class
+
+class WithName {
+	method name() = "name on a class"
+}
+class ANamed inherits WithName mixed with Doctor {
+}
+
+
+
