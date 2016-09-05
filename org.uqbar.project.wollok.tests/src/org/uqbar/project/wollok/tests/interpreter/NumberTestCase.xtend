@@ -38,6 +38,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void divideDecimals() {
 		'''
 		assert.equals(0.3, 3 / 10.0)
+		assert.equals(0.3, 3.0 / 10.0)
 		assert.equals(2.5, 5 / 2.0)
 		assert.equals(2, 4.0 / 2.0)
 		'''.test
