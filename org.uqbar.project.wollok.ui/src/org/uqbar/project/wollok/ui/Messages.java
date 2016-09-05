@@ -32,6 +32,7 @@ public class Messages extends NLS {
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;
+	public static String WollokDslNewProjectWizard_invalidChar;
 	public static String WollokTemplateProposalProvider_WProgram_name;
 	public static String WollokTemplateProposalProvider_WProgram_description;
 	
