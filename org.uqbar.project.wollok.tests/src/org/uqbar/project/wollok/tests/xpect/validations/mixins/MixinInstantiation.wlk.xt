@@ -89,3 +89,80 @@ object c mixed with M1, M2 {
 	}
 }
 
+//
+// Mixin Calling super() mixed in differnt combination
+//  checks for super implementation present
+//
+
+
+mixin Doctor {
+	
+	method name() = "Dr. " + super()
+	
+}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Tomato"
+class Tomato mixed with Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "TomatoWithNameBelowSuper"
+class TomatoWithNameBelowSuper mixed with Doctor {
+	override method name() = "23"
+}
+
+mixin Named {
+	method name() = "a name"
+}
+
+// OK !
+class Person mixed with Named and Doctor {}
+
+// NOT OK ! order matters !
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Person"
+class Person mixed with Doctor and Named {}
+
+// OK: super method comes from super class
+
+class WithName {
+	method name() = "name on a class"
+}
+class ANamed inherits WithName mixed with Doctor {
+}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o1"
+object o1 mixed with Doctor {
+}
+
+// OK
+object o2 inherits WithName mixed with Doctor {
+}
+
+// OK
+object o3 mixed with Named and Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
+object o4 mixed with Doctor and Named {}
+
+
+//
+// Instantiation Time Mixins
+//
+
+class Pepin {}
+
+object mixingAtInstantiation {
+	method doIt() {
+		
+		return [
+			// OK
+			new WithName() with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Object"
+			new Object() with Doctor,
+			
+			// OK 
+			new Pepin() with Named with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Pepin"
+			new Pepin() with Doctor with Named
+		]
+	}
+}
+

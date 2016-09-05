@@ -5,6 +5,7 @@ import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -35,7 +36,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 
 /**
  * Extension methods for WMethodContainers.
@@ -365,6 +365,27 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isSelfContext(WObjectLiteral it) { true }
 	def static dispatch isSelfContext(WMixin it) { true }
 	def static dispatch isSelfContext(EObject it) { false }
+	
+	
+	def static unboundedSuperCallingMethodsOnMixins(WMethodContainer it) {
+		return linearizateHierarhcy.fold(newArrayList)[scm, e |
+			// order matters ! otherwise superCallingM will cancel themselves
+			// remove methods fullfilled by this element
+			scm.removeIf [required | e.hasMethodWithSignature(required) ]
+			// accumulate requirements
+			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
+			scm
+		]
+	}
+	
+	def static hasMethodWithSignature(WMethodContainer it, WMethodDeclaration method) {
+		methods.exists[m | m.hasSameSignatureThan(method) ]
+	}
+	
+	def static superCallingMethods(WMixin it) { methods.filter[m | m.callsSuper ] }
+	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
+	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
+	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 	
 
 }

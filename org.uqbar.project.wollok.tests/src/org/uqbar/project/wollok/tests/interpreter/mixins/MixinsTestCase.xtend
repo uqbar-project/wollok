@@ -283,6 +283,35 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void mixinsCallingSuperMixedInAClassWithoutImplementingItMakesItAbstract() {
+		'''
+			mixin Organic {
+				
+				method dehydratate() = super() + " an organic"
+				
+			}
+			
+			class Tomato mixed with Organic {}
+			
+			program tomatoEater {
+				const t = new Tomato()
+				try {
+					t.dehydratate()
+				}
+				catch e:MessageNotUnderstoodException {
+					assert.equals("a Tomato[] (WollokObject) does not understand dehydratate()", e.getMessage())
+					assert.equals("wollok.lang.MessageNotUnderstoodException: a Tomato[] (WollokObject) does not understand dehydratate()
+				at __synthetic0.Organic.dehydratate() [__synthetic0.wpgm]
+				at  [__synthetic0.wpgm]
+			", e.getStackTraceAsString())
+				}
+			}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+	
+	
+	
+	@Test
 	def void mixinOnAWKO() {
 		'''
 		mixin Flies {
