@@ -41,7 +41,7 @@ class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
 			#["1.5 * 1.5", 2.25], // TODO Should be #["1.4*1.4", "1.96"], but it does not work
 
 			// Division
-			#["3 / 2", 1],
+			#["3 / 2", 1.5],
 			#["3 / 2.0", 1.5],
 			#["3.0 / 2", 1.5],
 			#["2.25 / 1.5", 1.5],
