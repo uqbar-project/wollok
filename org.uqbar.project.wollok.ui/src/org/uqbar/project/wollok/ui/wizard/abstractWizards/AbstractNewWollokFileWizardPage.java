@@ -24,9 +24,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.uqbar.project.wollok.ui.Messages;
+import org.uqbar.project.wollok.validation.ElementNameValidation;
+import org.uqbar.project.wollok.validation.Validation;
 
 /**
- * The abstract parent for all the file wizards. Because all do the same, but it only differes in the extension
+ * The abstract parent for all the file wizards. Because all do the same, but it only differs in the extension
  * of the file and the description.
  * @author tesonep
  */
@@ -170,6 +172,12 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeValid);
 			return;
 		}
+		Validation nameValidation = ElementNameValidation.validateName(fileName);
+		if (!nameValidation.isOk()) {
+			updateStatus(nameValidation.getMessage());
+			return;
+		}
+		
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
