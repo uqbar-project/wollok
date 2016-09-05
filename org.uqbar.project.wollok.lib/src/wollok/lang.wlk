@@ -1618,6 +1618,8 @@ class Date {
 	constructor()
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
+	override method toString() native 
+	
 	/** Two dates are equals if they represent the same date */
 	override method equals(_aDate) native
 	
