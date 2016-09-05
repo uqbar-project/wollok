@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
@@ -26,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -54,7 +57,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.eclipse.emf.ecore.EObject
 
 /**
@@ -163,18 +165,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	
 	@Check
 	@DefaultSeverity(ERROR)
-	// TODO: generalize instantiation time mixing
-	def noSuperMethodRequiredByMixin(WMethodContainer it) { doCheckUnboundedSuperCallingMethodsOnMixins }
-	def dispatch doCheckUnboundedSuperCallingMethodsOnMixins(WClass it) { checkUnboundedSuperCallingMethodsOnMixins }
-	def dispatch doCheckUnboundedSuperCallingMethodsOnMixins(WNamedObject it) { checkUnboundedSuperCallingMethodsOnMixins }
-	def dispatch doCheckUnboundedSuperCallingMethodsOnMixins(WObjectLiteral it) { checkUnboundedSuperCallingMethodsOnMixins }
-	def dispatch doCheckUnboundedSuperCallingMethodsOnMixins(WMixin it) { /* don't check mixin ! */ }
+	def noSuperMethodRequiredByMixin(WMethodContainer it) { checkUnboundedSuperCallingMethodsOnMixins(it, WNAMED__NAME) }
 	
-	def checkUnboundedSuperCallingMethodsOnMixins(WMethodContainer it) {
+	@Check
+	@DefaultSeverity(ERROR)
+	def noSuperMethodRequiredByMixinAtInstantiationTime(WConstructorCall it) { 
+		if (!mixins.empty)
+			checkUnboundedSuperCallingMethodsOnMixins(new MixedMethodContainer(classRef, mixins), it, WCONSTRUCTOR_CALL__CLASS_REF)
+	}
+	
+	def checkUnboundedSuperCallingMethodsOnMixins(WMethodContainer it, EObject target, EStructuralFeature attribute) {
+		if (it instanceof WMixin) return // no checks for mixin. Since a mixin by itself has no hierarchy
 		val methods = it.unboundedSuperCallingMethodsOnMixins
 		if (!methods.empty) {
 			val methodDescriptions = methods.map[methodName].join(", ")
-			report('''«WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED»: «methodDescriptions»''', it, WNAMED__NAME)
+			report('''«WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED»: «methodDescriptions»''', target, attribute)
 		}
 	}
 

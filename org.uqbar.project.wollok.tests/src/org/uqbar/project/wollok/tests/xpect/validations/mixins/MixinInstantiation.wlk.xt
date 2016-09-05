@@ -89,8 +89,11 @@ object c mixed with M1, M2 {
 	}
 }
 
+//
+// Mixin Calling super() mixed in differnt combination
+//  checks for super implementation present
+//
 
-// Mixin Calling super() Mixed In A Class Without its implementation
 
 mixin Doctor {
 	
@@ -138,4 +141,28 @@ object o3 mixed with Named and Doctor {}
 
 // XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
 object o4 mixed with Doctor and Named {}
+
+
+//
+// Instantiation Time Mixins
+//
+
+class Pepin {}
+
+object mixingAtInstantiation {
+	method doIt() {
+		
+		return [
+			// OK
+			new WithName() with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Object"
+			new Object() with Doctor,
+			
+			// OK 
+			new Pepin() with Named with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Pepin"
+			new Pepin() with Doctor with Named
+		]
+	}
+}
 
