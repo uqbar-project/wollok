@@ -19,8 +19,27 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void sum() {
-		'''
+		'''3 + 1
 		assert.equals(4, 3 + 1)
+		'''.test
+	}
+
+	@Test
+	def void divide() {
+		'''
+		assert.equals(0.3, 3 / 10)
+		assert.equals(2.5, 5 / 2)
+		assert.equals(2, 4 / 2)
+		assert.equals(2, 4 / 2.0)
+		'''.test
+	}
+
+	@Test
+	def void divideDecimals() {
+		'''
+		assert.equals(0.3, 3 / 10.0)
+		assert.equals(2.5, 5 / 2.0)
+		assert.equals(2, 4.0 / 2.0)
 		'''.test
 	}
 	
