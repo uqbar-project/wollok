@@ -25,6 +25,7 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_selectContainer;
 	public static String NewWollokObjectsWizardPage_description;
 	public static String NewWollokObjectsWizardPage_title;
+	public static String NewWollokObjectsWizardPage_elementName;
 	public static String NewWollokProgramWizardPage_description;
 	public static String NewWollokProgramWizardPage_title;
 	public static String NewWollokTestWizardPage_description;

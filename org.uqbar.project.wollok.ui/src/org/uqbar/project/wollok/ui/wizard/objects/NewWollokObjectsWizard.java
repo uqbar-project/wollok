@@ -23,12 +23,17 @@ public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implemen
 	protected InputStream openContentStream() {
 		String contents =
 			System.lineSeparator() + 
-			"object abc {" + 
+			"object " + getObjectName() + " {" + 
 					System.lineSeparator() + 
 					System.lineSeparator() + 
 					System.lineSeparator() + 
 					System.lineSeparator() + 
 			"}";
 		return new ByteArrayInputStream(contents.getBytes());
+	}
+
+	private String getObjectName() {
+		String objectName = ((NewWollokObjectsWizardPage) page).getElementName(); 
+		if (objectName == null || objectName.trim().equals("")) return "abc"; else return objectName;
 	}
 }

@@ -65,24 +65,29 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		layout.numColumns = 3;
+		layout.numColumns = 2;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
 		label.setText(Messages.AbstractNewWollokFileWizardPage_container);
-	
-		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
+
+		GridLayout gridLayout = new GridLayout(2, false);
+		Composite containerComposite = new Composite(container, SWT.NONE);
+		containerComposite.setLayout(gridLayout);
+
+		containerText = new Text(containerComposite, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.widthHint = 200;
+		gd.grabExcessHorizontalSpace = true;
+	    
 		containerText.setLayoutData(gd);
-		
 		containerText.setText(initialContainerValue());
-		
 		containerText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				dialogChanged();
 			}
 		});
 	
-		Button button = new Button(container, SWT.PUSH);
+		Button button = new Button(containerComposite, SWT.PUSH);
 		button.setText(Messages.AbstractNewWollokFileWizardPage_browse);
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -100,9 +105,16 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				dialogChanged();
 			}
 		});
+		
+		doCreateControl(container);
+		
 		initialize();
 		dialogChanged();
 		setControl(container);
+	}
+	
+	public void doCreateControl(Composite container) {
+		
 	}
 
 	/**
@@ -146,7 +158,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 	/**
 	 * Ensures that both text fields are set.
 	 */
-	private void dialogChanged() {
+	protected void dialogChanged() {
 		IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(getContainerName()));
 		String fileName = getFileName();
@@ -164,6 +176,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_projectMustBeWritable);
 			return;
 		}
+		
 		if (fileName.length() == 0) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeSpecified);
 			return;
@@ -186,10 +199,16 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				return;
 			}
 		}
-		updateStatus(null);
+		
+		boolean ok = doDialogChanged();
+		if (ok) updateStatus(null);
 	}
 
-	private void updateStatus(String message) {
+	protected boolean doDialogChanged() {
+		return true;
+	}
+	
+	protected void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
