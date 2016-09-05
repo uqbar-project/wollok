@@ -306,7 +306,7 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			", e.getStackTraceAsString())
 				}
 			}
-		'''.interpretPropagatingErrors
+		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 	
 	

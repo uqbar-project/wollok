@@ -125,5 +125,17 @@ class WithName {
 class ANamed inherits WithName mixed with Doctor {
 }
 
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o1"
+object o1 mixed with Doctor {
+}
 
+// OK
+object o2 inherits WithName mixed with Doctor {
+}
+
+// OK
+object o3 mixed with Named and Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
+object o4 mixed with Doctor and Named {}
 
