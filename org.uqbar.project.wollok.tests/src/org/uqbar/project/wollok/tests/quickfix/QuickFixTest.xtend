@@ -61,6 +61,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class MySubclass inherits MyClass {
+				
 				override method someMethod(){
 				}				
 			}
@@ -71,7 +72,8 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class MySubclass inherits MyClass {
-				method someMethod(){
+				
+				 method someMethod(){
 				}				
 			}
 		''']

@@ -39,7 +39,14 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 
 	@NativeMessage("/")
 	def divide(WollokObject other) { operate(other) [ doDivide(it) ] }
-		def dispatch Number doDivide(Integer w) { wrapped / w }
+		def dispatch Number doDivide(Integer w) {
+			val result = new BigDecimal(wrapped).divide(new BigDecimal(w))
+			val resultIntValue = result.intValue 
+			if (result == resultIntValue) {
+				return resultIntValue
+			}
+			return result
+		}
 		def dispatch Number doDivide(BigDecimal w) { new BigDecimal(wrapped) / w }
 		def dispatch Number doDivide(Object w) { throw new WollokRuntimeException("Cannot divide " + w) }
 		
