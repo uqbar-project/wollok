@@ -1,5 +1,6 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -71,5 +72,17 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	} 
 	
 	def WNumber<? extends Number> nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
+
+	protected def integerOrElse(BigDecimal decimal) {
+		val resultIntValue = decimal.intValue
+		 
+		if (decimal == resultIntValue) {
+			return resultIntValue
+		}
+		return decimal
+	}
 	
+	protected def integerOrElse(double decimal) {
+		integerOrElse(new BigDecimal(decimal))
+	}
 }
