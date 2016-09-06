@@ -198,6 +198,11 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				updateStatus(Messages.AbstractNewWollokFileWizardPage_fileExtensionMustBe + this.extension +"\""); //$NON-NLS-2$
 				return;
 			}
+		} else {
+			if (this.extension != null) {
+				updateStatus(Messages.AbstractNewWollokFileWizardPage_fileExtensionMustBe + this.extension +"\""); //$NON-NLS-2$
+				return;
+			}
 		}
 		
 		boolean ok = doDialogChanged();

@@ -13,6 +13,8 @@ import org.uqbar.project.wollok.ui.wizard.abstractWizards.AbstractNewWollokFileW
  */
 public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implements INewWizard {
 	public static final String ID = "org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard";
+	public static final int TYPE_OBJECT = 0;
+	public static final int TYPE_CLASS = 1;
 	
 	public void addPages() {
 		page = new NewWollokObjectsWizardPage(selection);
@@ -23,7 +25,7 @@ public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implemen
 	protected InputStream openContentStream() {
 		String contents =
 			System.lineSeparator() + 
-			"object " + getObjectName() + " {" + 
+			getType() + " " + adjustCase(getObjectName()) + " {" + 
 					System.lineSeparator() + 
 					System.lineSeparator() + 
 					System.lineSeparator() + 
@@ -32,8 +34,28 @@ public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implemen
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
+	private String adjustCase(String objectName) {
+		if (getTypeIndex() == TYPE_OBJECT) {
+			return ("" + objectName.charAt(0)).toLowerCase()  + objectName.substring(1);
+		} else {
+			return ("" + objectName.charAt(0)).toUpperCase()  + objectName.substring(1);
+		}
+	}
+
 	private String getObjectName() {
 		String objectName = ((NewWollokObjectsWizardPage) page).getElementName(); 
 		if (objectName == null || objectName.trim().equals("")) return "abc"; else return objectName;
+	}
+	
+	private String getType() {
+		if (getTypeIndex() == TYPE_OBJECT) { 
+			return "object";
+		} else {
+			return "class";
+		}
+	}
+
+	private int getTypeIndex() {
+		return ((NewWollokObjectsWizardPage) page).getElementIndex();
 	}
 }
