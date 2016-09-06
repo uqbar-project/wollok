@@ -1147,7 +1147,9 @@ class Integer inherits Number {
 	 * 			3
 	 * 			4
 	 */
-	method times(action) = (1..self).forEach(action)
+	method times(action) { 
+		(1..self).forEach(action) 
+	}
 }
 
 /**
