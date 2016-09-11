@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WPackage
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -27,6 +28,10 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 		else if (eObject instanceof WPackage)
 			super.createEObjectDescriptions(eObject, acceptor)
 		else if (eObject instanceof WClass) {
+			super.createEObjectDescriptions(eObject, acceptor)
+			false
+		}
+		else if (eObject instanceof WMixin) {
 			super.createEObjectDescriptions(eObject, acceptor)
 			false
 		}
