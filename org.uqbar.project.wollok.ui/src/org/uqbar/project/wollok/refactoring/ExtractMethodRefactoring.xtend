@@ -313,7 +313,7 @@ class ExtractMethodRefactoring extends Refactoring {
 				}
 			}
 		}
-		methodCallSection << "this." << methodName << "(" << parameterInfos.map[oldName].join(", ") << ")"
+		methodCallSection << "self." << methodName << "(" << parameterInfos.map[oldName].join(", ") << ")"
 		
 		if (needsSurroundingParentheses)
 			methodCallSection.append(")")
