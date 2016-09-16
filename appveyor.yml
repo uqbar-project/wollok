@@ -15,7 +15,7 @@ install:
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
 build_script:
   - cd org.uqbar.project.wollok.releng/
-  - mvn -e -U clean install
+  - mvn clean install
 test_script:
   - echo Already run :)
 cache:
