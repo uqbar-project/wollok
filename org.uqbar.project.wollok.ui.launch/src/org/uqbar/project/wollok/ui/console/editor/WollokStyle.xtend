@@ -107,58 +107,9 @@ class WollokStyle {
 	}
 	
 	def getStylesAtLine(int lineNumber) {
-		adjustStylesRange(getStylesSelected(lineNumber))
+		getStylesSelected(lineNumber).sortBy [ start ]
 	}
 	
-	def adjustStylesRange(List<StyleRange> ranges) {
-		var rangesSortedByStart = ranges.sortBy [ start ]
-		// Style ranges often collide among each others!!
-		for (var int i = 1; i < rangesSortedByStart.length; i++) { 
-			val currentRange = rangesSortedByStart.get(i)
-			val sameRanges = rangesSortedByStart.filter [ range | range != currentRange && range.start == currentRange.start ]
-			if (!sameRanges.isEmpty) {
-				// Shift all ranges to set bold/normal font & colors
-				val allRanges = #[currentRange] + sameRanges 
-				
-				/**
-				val sameRangesSorted = allRanges.sortBy [ length ]
-				var shiftedStart = currentRange.start
-				var totalShift = 0
-				for (var j = 0; j < sameRangesSorted.length; j++) {
-					val currentSameRange = sameRangesSorted.get(j)
-					currentSameRange.start = shiftedStart
-					currentSameRange.length -= totalShift
-					totalShift += currentSameRange.length
-					shiftedStart += currentSameRange.length
-				}
-				*/
-				
-				val maxLength = allRanges.maxBy [ length ].length
-				var totalLength = 0
-				for (var j = allRanges.length - 1; j >= 0; j--) {
-					val currentSameRange = allRanges.get(j)
-					currentSameRange.start += totalLength
-					val newLength = currentSameRange.length - totalLength
-					currentSameRange.length = Math.max(0, newLength)
-					totalLength += currentSameRange.length
-					totalLength = Math.min(totalLength, maxLength)
-				}
-				
-			}
-		}
-		
-		// first, style range overflow next range!!
-		rangesSortedByStart = rangesSortedByStart.sortBy [ start ]
-		for (var int i = 0; i < rangesSortedByStart.length - 1; i++) {
-			val currentRange = rangesSortedByStart.get(i)
-			val nextRange = rangesSortedByStart.get(i+1)
-			if (currentRange.start + currentRange.length > nextRange.start) {
-				currentRange.length = Math.min(0, nextRange.start - currentRange.start)
-			}
-		}
-		rangesSortedByStart
-	}
-
 	def getLine(Integer line) {
 		lines.get(line) ?: ""
 	}
