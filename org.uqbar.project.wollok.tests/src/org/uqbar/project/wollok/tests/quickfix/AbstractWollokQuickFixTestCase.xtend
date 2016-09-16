@@ -78,8 +78,8 @@ class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
-
-		sources.forEach [ assertEquals(expectedCode, xtextDocument.get)  ]
+		
+		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }
 

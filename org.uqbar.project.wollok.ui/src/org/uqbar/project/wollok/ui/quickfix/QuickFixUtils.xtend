@@ -36,7 +36,8 @@ class QuickFixUtils {
 	}
 	 
 	def static void deleteToken(IXtextDocument it, EObject e, String token) {
-		replace(e.before + e.node.text.indexOf(token) - 2, token.length, "")
+		val trimText = get.substring(e.before,e.after)
+		replace(e.before + trimText.indexOf(token), token.length, "")
 	}
 	
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {

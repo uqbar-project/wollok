@@ -17,7 +17,7 @@ public class WollokDslNewProjectWizard extends org.eclipse.xtext.ui.wizard.Xtext
 	public WollokDslNewProjectWizard(IProjectCreator projectCreator) {
 		super(projectCreator);
 		setWindowTitle(Messages.WollokDslNewProjectWizard_windowTitle);
-		setDefaultPageImageDescriptor(WollokActivator.getInstance().getImageDescriptor("icons/wollok-logo-64.fw.png")); //$NON-NLS-1$
+		setDefaultPageImageDescriptor(WollokActivator.getInstance().getImageDescriptor("icons/wollok-logo.iconset/icon_64x64.png")); //$NON-NLS-1$
 	}
 
 	/**
@@ -25,7 +25,7 @@ public class WollokDslNewProjectWizard extends org.eclipse.xtext.ui.wizard.Xtext
 	 * The one-time generated version of this class will add a default new project page to the wizard.
 	 */
 	public void addPages() {
-		mainPage = new WizardNewProjectCreationPage("basicNewProjectPage"); //$NON-NLS-1$
+		mainPage = new WollokDslNewProjectCreationPage("basicNewProjectPage"); //$NON-NLS-1$
 		mainPage.setTitle(Messages.WollokDslNewProjectWizard_pageTitle);
 		mainPage.setDescription(Messages.WollokDslNewProjectWizard_pageDescription);
 		addPage(mainPage);

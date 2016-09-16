@@ -243,4 +243,24 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}	
 
+	@Test
+	def void negativeExponentiation() {
+		'''
+		assert.equals(0.2, 5 ** (-1))
+		assert.equals(0.2, 5 ** (-1.0))
+		assert.equals(0.2, 5.0 ** (-1.0))
+		assert.equals(0.2, 5.0 ** (-1))
+		'''.test
+	}
+	
+	@Test
+	def void integerExponentiation() {
+		'''
+		assert.equals(25, 5 ** 2)
+		assert.equals(25, 5 ** 2.0)
+		assert.equals(25.0, 5.0 ** 2)
+		assert.equals(25.0, 5.0 ** 2.0)
+		'''.test
+	}
+
 }

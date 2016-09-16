@@ -45,7 +45,7 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 
 	@NativeMessage("**")
 	def raise(WollokObject other) { operate(other) [ doRaise(it) ] }
-		def dispatch Number doRaise(Integer w) { wrapped ** w }
+		def dispatch Number doRaise(Integer w) { integerOrElse(Math.pow(wrapped.doubleValue, w)) }
 		def dispatch Number doRaise(BigDecimal w) { Math.pow( wrapped.doubleValue , w.doubleValue) }
 		def dispatch Number doRaise(Object w) { throw new WollokRuntimeException("Cannot raise " + w) }
 	
