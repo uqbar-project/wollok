@@ -30,6 +30,8 @@ class WollokLauncherParameters {
 	boolean jsonOutput = false
 	@Accessors
 	boolean tests = false
+	@Accessors
+	boolean noAnsiFormat = false
 	
 	def build() {
 		val sb = new StringBuilder
@@ -39,6 +41,8 @@ class WollokLauncherParameters {
 		if (testPort != null) sb.append("-testPort " + testPort.toString).append(" ")
 		if (tests) sb.append("-t ")
 		if (jsonOutput) sb.append("-jsonOutput ")
+		if (noAnsiFormat) sb.append("-noAnsiFormat ")
+		
 		wollokFiles.forEach [ sb.append(it).append(" ") ]
 		sb.toString
 	}
@@ -52,6 +56,8 @@ class WollokLauncherParameters {
 		testPort = parseParameter(cmdLine, "testPort")
 		
 		jsonOutput = cmdLine.hasOption("jsonOutput")
+		
+		noAnsiFormat = cmdLine.hasOption("noAnsiFormat")
 
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
@@ -62,16 +68,16 @@ class WollokLauncherParameters {
 		
 		wollokFiles = cmdLine.argList
 		
-		if(!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
+		if (!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
 			throw new RuntimeException("Repl can only be used with .wlk files.")
 		}
 		
-		if(wollokFiles.empty && !hasRepl){
+		if (wollokFiles.empty && !hasRepl){
 			throw new RuntimeException("You must provide a file or use the REPL")
 		}
 		
 		//If the parameters are empty and we are in the REPL, I generate an empty file to be able of loading the REPL
-		if(wollokFiles.empty){
+		if (wollokFiles.empty){
 			val temp = new File("wollokREPL.wlk")
 			temp.deleteOnExit
 		
@@ -108,6 +114,8 @@ class WollokLauncherParameters {
 			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
 			
 			addOption(new Option("jsonOutput", "JSON test report output"))
+			
+			addOption(new Option("noAnsiFormat", "Disables ANSI colors for the console"))
 			
 			add("testPort", "Server port for tests", "port", 1)
 			add("requestsPort", "Request ports", "port", 1)
