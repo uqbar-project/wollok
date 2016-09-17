@@ -34,7 +34,7 @@ This is useful for example if you are going to develop with Sublime or any other
 
 ## Documentation ##
 
-Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](http://www.wollok.org/en/lang-ref/) and Environment.
 
 ## What's the language like ? ##
 
