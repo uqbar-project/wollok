@@ -536,7 +536,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def boolean isSameOrSuperClassOf(WClass one, WClass other) {
-		one == other || one.isSuperTypeOf(other)
+		other != null && (one.fqn == other.fqn || one.isSuperTypeOf(other))
 	}
 
 	@Check
