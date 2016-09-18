@@ -180,7 +180,7 @@ object game {
 	 * Adds an object to the board for drawing it.
 	 * That object should known a position (by reference or getter method).
 	 */
-	method addVisual(visual) native
+	method addVisual(positionable) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position.
@@ -192,7 +192,7 @@ object game {
 	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
 	 * That object should known a position (by reference or getter method).
 	 */
-	method addVisualCharacter(visual) native
+	method addVisualCharacter(positionable) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position. It can be moved with arrow keys.
@@ -202,7 +202,7 @@ object game {
 	/**
 	 * Removes an object from the board for stop drawing it.
 	 */
-	method removeVisual(element) native
+	method removeVisual(visual) native
 	
 	/**
 	 * Adds a block that will be executed always the specific key is pressed.
