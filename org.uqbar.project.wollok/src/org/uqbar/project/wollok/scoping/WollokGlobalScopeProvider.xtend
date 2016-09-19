@@ -56,7 +56,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	}
 	
 	def doImportedObjects(Resource context, List<Import> imports){
-				val resourceSet = context.resourceSet
+		val resourceSet = context.resourceSet
 		val objectsFromManifests = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
 		
 		imports.filter[
@@ -72,7 +72,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace){
-		if(importedNamespace.endsWith(".*")){
+		if (importedNamespace.endsWith(".*")) {
 			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
 			o.qualifiedName.toString.startsWith(pattern)
 		}else{

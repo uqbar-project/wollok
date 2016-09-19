@@ -14,13 +14,13 @@ class WPosition extends Position {
 		wObject = position
 	}
 
-	override getX() { wObject.getInt("getX") }
+	override getX() { wObject.getInt("x") }
 
-	override getY() { wObject.getInt("getY") }
+	override getY() { wObject.getInt("y") }
 
-	override setX(int num) { wObject.setInt("setX", num) }
+	override setX(int num) { wObject.setInt("x", num) }
 
-	override setY(int num) { wObject.setInt("setY", num) }
+	override setY(int num) { wObject.setInt("y", num) }
 
 
 	def getInt(WollokObject it, String methodName) { call(methodName).asInteger }

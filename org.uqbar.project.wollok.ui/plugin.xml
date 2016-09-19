@@ -548,7 +548,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspectiveFactory"
-            icon="icons/wollok-logo-16.fw.png"
+            icon="icons/wollok-logo.iconset/icon_16x16.png"
             id="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             name="Wollok">
       </perspective>

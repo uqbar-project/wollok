@@ -138,6 +138,8 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	// an object to manipulate the VM: pause, resume, etc.
 	DebugCommandHandler vm
 	
+	AssertionError assertionFailed
+	
 	override started() { 
 		println("STARTED")
 		started = true
@@ -169,12 +171,18 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	// utils
 	
 	protected def notify((DebuggerEventListener)=>void what) {
-		listeners.forEach(what)
+		try {
+			listeners.forEach(what)
+		}
+		catch (AssertionError e) {
+			assertionFailed = e
+			throw e
+		}
 	}
 	
 	protected def waitUntil(()=>Boolean condition) {
 		// REVIEW: this is an active wait. Not good, but well.. just for testing.
-		while (!condition.apply) Thread.sleep(100)
+		while (!condition.apply && assertionFailed != null) Thread.sleep(100)
 	}
 	
 	def expect((DebuggerEventAssertion)=>Object director) {
@@ -201,6 +209,12 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	def setBreakPoint(String fileName, int lineNumber) {
 		vm.setBreakpoint(new URI(fileName), lineNumber)
 		this
+	}
+	
+	def close() {
+		// todo: close connection ?
+		if (assertionFailed != null)
+			throw assertionFailed
 	}
 	
 }

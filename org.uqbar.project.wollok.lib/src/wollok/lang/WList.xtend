@@ -1,10 +1,10 @@
 package wollok.lang
 
-import java.util.Comparator
 import java.util.List
+import java.util.Comparator
+import java.util.Collection
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
-import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  * 
  * @author jfernandes
  */
-class WList extends WCollection<List> implements JavaWrapper<List> {
+class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<WollokObject>> {
 
  	val WollokObject wollokInstance
  
@@ -40,22 +40,13 @@ class WList extends WCollection<List> implements JavaWrapper<List> {
 		return wollokInstance
 	}
 	
-	@NativeMessage("equals")
-	override wollokEquals(WollokObject other) {
-		if (!other.hasNativeType(this.class.name)) {
-				return false
-		}
-		val otherWrapped = other.getNativeObject(this.class).wrapped
-		if (this.wrapped.isEmpty && otherWrapped.isEmpty) {
-			return true
-		}
-		
-		val size = otherWrapped.size - 1
+	override protected def verifyWollokElementsContained(Collection list, Collection list2) {
+		val size = list2.size - 1
+		list.empty ||
 		(0..size).forall [ i |
-			val obj1 = otherWrapped.get(i) as WollokObject
-			val obj2 = wrapped.get(i) as WollokObject
+			val obj1 = list2.get(i) as WollokObject
+			val obj2 = list.get(i) as WollokObject
 			obj1.wollokEquals(obj2)
 		]
 	}
-	
 }

@@ -1,8 +1,9 @@
 package wollok.lib
 
 import java.text.MessageFormat
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.core.runtime.AssertionFailedException
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * This exceptions are thrown when an assert is not ok.
@@ -41,17 +42,23 @@ abstract class AssertionException extends Exception {
 		return new BlockDidNotFailException()
 	}
 
-	static def valueNotWasEquals(Object expected, Object actual) {
-		val strExpected = if(expected == null) "null" else expected.toString
-		val strActual = if(actual == null) "null" else actual.toString
-		return new ValueWasNotEqualsException(MessageFormat.format("Expected [{0}] but found [{1}]", strExpected, strActual), strExpected, strActual)
+	static def valueNotWasEquals(Object _expected, Object _actual) {
+		val expected = _expected.printValue
+		val actual = _actual.printValue
+		return new ValueWasNotEqualsException(MessageFormat.format("Expected [{0}] but found [{1}]", expected, actual), expected, actual)
+	}
+	
+	static def valueNotWasNotEquals(Object _expected, Object _actual) {
+		val expected = _expected.printValue
+		val actual = _actual.printValue
+		return new ValueWasNotDifferentException(MessageFormat.format("Expected different to [{0}] but found [{1}]", expected, actual), expected, actual)
 	}
 
-	static def valueNotWasNotEquals(Object expected, Object actual) {
-		val strExpected = if(expected == null) "null" else expected.toString
-		val strActual = if(actual == null) "null" else actual.toString
-		return new ValueWasNotDifferentException(MessageFormat.format("Expected different to [{0}] but found [{1}]", strExpected, strActual), strExpected, strActual)
+	def static printValue(Object expected) {
+		if (expected == null) return "null" 
+		(expected as WollokObject).call("printString").toString
 	}
+	
 }
 
 class ValueWasNotEqualsException extends AssertionException {

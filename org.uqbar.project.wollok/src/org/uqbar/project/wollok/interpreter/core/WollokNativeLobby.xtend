@@ -71,6 +71,10 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		value
 	}
 	
+	override removeGlobalReference(String name) {
+		interpreter.globalVariables.remove(name)
+	}
+	
 	
 	// ******************************
 	// ** Object methods (for debugging interpreter)

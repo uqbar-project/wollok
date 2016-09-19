@@ -34,7 +34,7 @@ class WollokStyle {
 		lines.put(line, content.getLine(line))
 		styles.put(line, styleAdapted)
 	}
-
+	
 	/**
 	 * Adapts offsets relative to selected line 
 	 */	
@@ -56,7 +56,6 @@ class WollokStyle {
 		}
 		
 		var List<StyleRange> newStyles = styles.get(lineNumber)
-		
 		// First line
 		if (lineNumber == lineStart) {
 			val oldLineStart = widget.getOffsetAtLine(lineNumber)
@@ -88,7 +87,7 @@ class WollokStyle {
 					.toList
 					.fold(0) [ acum, style | acum + style.length ]
 				
-				newStyles.last.length += (totalLengthOut - adjustLength) - diffLength 
+				newStyles.last.length += Math.max(0, (totalLengthOut - adjustLength) - diffLength) 
 			}
 		}
 		
@@ -108,9 +107,9 @@ class WollokStyle {
 	}
 	
 	def getStylesAtLine(int lineNumber) {
-		getStylesSelected(lineNumber)
+		getStylesSelected(lineNumber).sortBy [ start ]
 	}
-
+	
 	def getLine(Integer line) {
 		lines.get(line) ?: ""
 	}

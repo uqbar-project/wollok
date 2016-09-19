@@ -12,8 +12,8 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 	def newManifest(String bundle, String manifestName){
 		val fullName = manifestName + WollokManifest.WOLLOK_MANIFEST_EXTENSION
 		
-		if(WollokActivator.getDefault !=null){
-			new WollokManifest(WollokActivator.getDefault.findResource(bundle,fullName))
+		if (WollokActivator.getDefault != null) {
+			new WollokManifest(WollokActivator.getDefault.findResource(bundle, fullName))
 		}
 		else
 			new WollokManifest(class.getResourceAsStream("/" + fullName))

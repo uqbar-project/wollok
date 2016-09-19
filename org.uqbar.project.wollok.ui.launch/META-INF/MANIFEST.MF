@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.ui.launch
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.5.0
+Bundle-Version: 1.5.1.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.ui.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
@@ -31,7 +31,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface,
  org.eclipse.jface.databinding,
  org.eclipse.jdt.junit,
- org.eclipse.jdt.junit.core
+ org.eclipse.jdt.junit.core,
+ org.eclipse.core.filesystem;bundle-version="1.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.uqbar.project.wollok.ui.launch.Activator
 Bundle-ClassPath: lib/lipermi-0-4-2.jar,

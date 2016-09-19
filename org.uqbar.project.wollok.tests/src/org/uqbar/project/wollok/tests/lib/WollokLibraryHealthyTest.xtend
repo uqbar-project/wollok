@@ -24,7 +24,7 @@ class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 			manifest.allURIs.forEach[ it.validateSyntax(sb) ]
 		]
 
-		if(sb.length > 0){
+		if (sb.length > 0) {
 			val errorText = sb.toString
 			throw new AssertionError( "Errors: " + errorText.split(System.lineSeparator).size + System.lineSeparator + errorText)
 		}

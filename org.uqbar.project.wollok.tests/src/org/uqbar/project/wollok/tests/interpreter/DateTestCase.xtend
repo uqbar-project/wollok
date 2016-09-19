@@ -11,171 +11,171 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 
 	
 	@Test
-	def void unDateNoTieneTiempoEntoncesDosNowEnMomentosDistintosSonIguales() {
-		'''program a {
-			const ahora1 = new Date()
-			const ahora2 = new Date() 
-			assert.that(ahora1.equals(ahora2))
-		}
-		'''.interpretPropagatingErrors
+	def void twoDatesAreEqualsBecauseTheyHaveNoTime() {
+		'''
+		const now1 = new Date()
+		const now2 = new Date() 
+		assert.that(now1.equals(now2))
+		'''.test
 	}
 
 	@Test
-	def void dosDatesIgualesPuedenSerDistintosObjetos() {
-		'''program a {
-			const ahora1 = new Date()
-			const ahora2 = new Date() 
-			assert.that(ahora1.equals(ahora2))
-			assert.notThat(ahora1 == ahora2)
-		}
-		'''.interpretPropagatingErrors
+	def void twoEqualDatesCanBeDifferentObject() {
+		'''
+		const now1 = new Date()
+		const now2 = new Date() 
+		assert.that(now1.equals(now2))
+		assert.notThat(now1 == now2)
+		'''.test
 	}
 	
 	@Test
-	def void El2000FueBisiesto() {
-		'''program a {
-			const el2000 = new Date(4, 5, 2000)
-			assert.that(el2000.isLeapYear())
-		}
-		'''.interpretPropagatingErrors
+	def void year2000WasLeap() {
+		'''
+		const year2000 = new Date(4, 5, 2000)
+		assert.that(year2000.isLeapYear())
+		'''.test
 	}
 
 	@Test
-	def void El2001NoFueBisiesto() {
-		'''program a {
-			const el2001 = new Date(4, 5, 2001)
-			assert.notThat(el2001.isLeapYear())
-		}
-		'''.interpretPropagatingErrors
+	def void year2001WasNotLeap() {
+		'''
+		const year2001 = new Date(4, 5, 2001)
+		assert.notThat(year2001.isLeapYear())
+		'''.test
 	}
 
 	@Test
-	def void El2004FueBisiesto() {
-		'''program a {
-			const el2004 = new Date(4, 5, 2004)
-			assert.that(el2004.isLeapYear())
-		}
-		'''.interpretPropagatingErrors
+	def void year2004WasLeap() {
+		'''
+		const year2004 = new Date(4, 5, 2004)
+		assert.that(year2004.isLeapYear())
+		'''.test
 	}
 
 	@Test
-	def void El2100NoSeraBisiesto() {
-		'''program a {
-			const el2100 = new Date(4, 5, 2100)
-			assert.notThat(el2100.isLeapYear())
-		}
-		'''.interpretPropagatingErrors
+	def void year2100WasNotLeap() {
+		'''
+		const year2100 = new Date(4, 5, 2100)
+		assert.notThat(year2100.isLeapYear())
+		'''.test
 	}
 
 	@Test
-	def void ayerEsMenorQueHoy() {
-		'''program a {
-			var ayer = new Date()
-			ayer = ayer.minusDays(1)
-			const hoy = new Date()
-			assert.that(ayer < hoy) 
-		}
-		'''.interpretPropagatingErrors
+	def void yesterdayIsLessThanToday() {
+		'''
+		var yesterday = new Date()
+		yesterday = yesterday.minusDays(1)
+		const today = new Date()
+		assert.that(yesterday < today) 
+		'''.test
 	}
 
 	@Test
-	def void unaFechaDel2001EsMenorQueHoy() {
-		'''program a {
-			const elAyer = new Date(10, 6, 2001)
-			const hoy = new Date()
-			assert.that(elAyer < hoy) 
-		}
-		'''.interpretPropagatingErrors
+	def void a2001DateIsLessThanToday() {
+		'''
+		const elyesterday = new Date(10, 6, 2001)
+		const today = new Date()
+		assert.that(elyesterday < today) 
+		'''.test
 	}
 
 	@Test
-	def void hoyEstaEntreAyerYManiana() {
-		'''program a {
-			var ayer = new Date()
-			ayer = ayer.minusDays(1)
-			const hoy = new Date()
-			var maniana = new Date()
-			maniana = maniana.plusDays(1)
-			assert.that(hoy > ayer)
-			assert.that(hoy >= ayer)
-			assert.that(hoy < maniana)
-			assert.that(hoy <= maniana)
-			assert.that(hoy.between(ayer, maniana)) 
-		}
-		'''.interpretPropagatingErrors
+	def void todayIsBetweenYesterdayAndTomorrow() {
+		'''
+		var yesterday = new Date()
+		yesterday = yesterday.minusDays(1)
+		const today = new Date()
+		var tomorrow = new Date()
+		tomorrow = tomorrow.plusDays(1)
+		assert.that(today > yesterday)
+		assert.that(today >= yesterday)
+		assert.that(today < tomorrow)
+		assert.that(today <= tomorrow)
+		assert.that(today.between(yesterday, tomorrow)) 
+		'''.test
 	}
 	
 	@Test
-	def void unDiaMartesEsElSegundoDiaDeLaSemana() {
-		'''program a {
-			const dia = new Date(7, 6, 2016)
-			assert.equals(dia.dayOfWeek(), 2) 
-		}
-		'''.interpretPropagatingErrors
+	def void tuesdayIsSecondDayOfWeek() {
+		'''
+		const aDay = new Date(7, 6, 2016)
+		assert.equals(aDay.dayOfWeek(), 2) 
+		'''.test
 	}
 
 	@Test
-	def void diferenciaDeDosFechasDistintas() {
-		'''program a {
-			const dia1 = new Date(7, 6, 2016)
-			const dia2 = new Date(9, 7, 2016)
-			assert.equals(dia2 - dia1, 32) 
-		}
-		'''.interpretPropagatingErrors
+	def void differenceBetweenDates() {
+		'''
+		const day1 = new Date(7, 6, 2016)
+		const day2 = new Date(9, 7, 2016)
+		assert.equals(day2 - day1, 32) 
+		'''.test
 	}
 
 	@Test
-	def void diferenciaDeDosFechasIguales() {
-		'''program a {
-			const dia1 = new Date()
-			const dia2 = new Date()
-			assert.equals(dia2 - dia1, 0) 
-		}
-		'''.interpretPropagatingErrors
+	def void differenceBetweenEqualDates() {
+		'''
+		const day1 = new Date()
+		const day2 = new Date()
+		assert.equals(day2 - day1, 0) 
+		'''.test
 	}
 
 	@Test
-	def void sumoDosMeses() {
-		'''program a {
-			const diaOriginal = new Date(31, 12, 2015)
-			const diaFinal = new Date(29, 2, 2016)
-			const result = diaOriginal.plusMonths(2)
-			assert.that(result.equals(diaFinal))
-		}
-		'''.interpretPropagatingErrors
+	def void addTwoMonths() {
+		'''
+		const originalDay = new Date(31, 12, 2015)
+		const finalDay = new Date(29, 2, 2016)
+		const result = originalDay.plusMonths(2)
+		assert.that(result.equals(finalDay))
+		'''.test
 	}
 
 	@Test
-	def void restoDosMeses() {
-		'''program a {
-			const diaOriginal = new Date(29, 2, 2016)
-			const diaFinal = new Date(29, 12, 2015)
-			const result = diaOriginal.minusMonths(2)
-			assert.that(result.equals(diaFinal))
-		}
-		'''.interpretPropagatingErrors
+	def void subtractTwoMonths() {
+		'''
+		const originalDay = new Date(29, 2, 2016)
+		const finalDay = new Date(29, 12, 2015)
+		const result = originalDay.minusMonths(2)
+		assert.that(result.equals(finalDay))
+		'''.test
 	}
 
 	@Test
-	def void sumoUnAnio() {
-		'''program a {
-			const diaOriginal = new Date(29, 2, 2016)
-			const diaFinal = new Date(28, 2, 2017)
-			const result = diaOriginal.plusYears(1)
-			assert.that(result.equals(diaFinal))
-		}
-		'''.interpretPropagatingErrors
+	def void addOneYear() {
+		'''
+		const originalDay = new Date(29, 2, 2016)
+		const finalDay = new Date(28, 2, 2017)
+		const result = originalDay.plusYears(1)
+		assert.that(result.equals(finalDay))
+		'''.test
 	}
 
 	@Test
-	def void restoUnAnio() {
-		'''program a {
-			const diaOriginal = new Date(28, 2, 2017)
-			const diaFinal = new Date(28, 2, 2016)
-			const result = diaOriginal.minusYears(1)
-			assert.that(result.equals(diaFinal))
-		}
-		'''.interpretPropagatingErrors
+	def void subtractOneYear() {
+		'''
+		const originalDay = new Date(28, 2, 2017)
+		const finalDay = new Date(28, 2, 2016)
+		const result = originalDay.minusYears(1)
+		assert.that(result.equals(finalDay))
+		'''.test
 	}
 		
+	@Test
+	def void toStringDefaultTest() {
+		'''
+		const aDay = new Date(28, 12, 2016)
+		assert.equals("Date[2016-12-28]", aDay.toString())
+		'''.test
+	}
+	
+	@Test
+	def void toStringWithA1DigitMonthTest() {
+		'''
+		const aDay = new Date(28, 2, 2016)
+		assert.equals("Date[2016-02-28]", aDay.toString())
+		'''.test
+	}
+
 }	
