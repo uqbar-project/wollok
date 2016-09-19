@@ -31,8 +31,8 @@ class GameboardInputProcessor implements InputProcessor {
 		
 		var Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
 		
-		System.out.println("Click en " + x + "," + y + " con boton" + button)
-		System.out.println("Hay " + lista.size + " elementos")
+		//System.out.println("Click en " + x + "," + y + " con boton" + button)
+		//System.out.println("Hay " + lista.size + " elementos")
 		if (button == 1) {
 			//Gameboard.getInstance.getStage.addActor(MenuBuilder.buildMenu(x, y))
 		}
