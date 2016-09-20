@@ -24,7 +24,7 @@ notifications:
     - env.GITTER_URL
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: never
 cache:
   directories:
   - $HOME/.m2
@@ -67,4 +67,4 @@ deploy:
   region: us-west-2
   on:
     repo: uqbar-project/wollok
-    condition: "$TRAVIS_TAG =~ ^v[0-9.]*"
+    tags: true
