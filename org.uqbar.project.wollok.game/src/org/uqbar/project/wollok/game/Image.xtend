@@ -23,7 +23,11 @@ class Image {
 	
 	def getTexture() {
 		if (this.texture == null || this.currentPath != this.path) {
-			this.texture = new Texture(Gdx.files.internal(this.getPath()))
+			var file = Gdx.files.internal(this.getPath())
+			
+			if (!file.exists) return null			
+				
+			this.texture = new Texture(file)
 			this.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
 			this.currentPath = this.getPath()
 		}

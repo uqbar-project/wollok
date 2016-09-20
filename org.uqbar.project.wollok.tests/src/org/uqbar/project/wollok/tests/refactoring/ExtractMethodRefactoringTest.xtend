@@ -49,7 +49,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				method foo() {
-					return 100 + this.calculus()
+					return 100 + self.calculus()
 				}
 				
 				method calculus() {
@@ -72,7 +72,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				method foo(bar) {
-					return 100 + this.calculus(bar)
+					return 100 + self.calculus(bar)
 				}
 				
 				method calculus(bar) {
@@ -97,7 +97,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class A {
 				method foo(bar) {
-					this.imprimir()
+					self.imprimir()
 					return 100 + bar * 2
 				}
 				
@@ -123,7 +123,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 			class A {
 				var bar = 20
 				method foo() {
-					return 100 + this.calculus()
+					return 100 + self.calculus()
 				}
 				
 				method calculus() {
@@ -148,7 +148,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 			class A {
 				var bar = 20
 				method foo(zoo) {
-					return 100 + this.calculus(zoo)
+					return 100 + self.calculus(zoo)
 				}
 	
 				method calculus(zoo) {
@@ -174,7 +174,7 @@ class ExtractMethodRefactoringTest extends AbstractWollokInterpreterTestCase {
 			class A {
 				method foo() {
 					const tempVal = 2
-					return this.calculus()
+					return self.calculus()
 				}
 	
 				method calculus() {

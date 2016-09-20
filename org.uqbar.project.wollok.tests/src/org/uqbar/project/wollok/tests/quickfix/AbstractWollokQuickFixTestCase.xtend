@@ -52,7 +52,7 @@ class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 			])
 		]
 
-		assertEquals("The number of issues should be exactly 1", issues.size, 1)
+		assertEquals("The number of issues should be exactly 1: " + issues, issues.size, 1)
 		val testedIssue = issues.get(0)
 
 		issueResolutionProvider = new WollokDslQuickfixProvider
@@ -70,7 +70,7 @@ class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 		
 		issueResolutionProvider.issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
 
-		assertTrue("There is not solution for the issue", issueResolutionProvider.hasResolutionFor(testedIssue.code))
+		assertTrue("There is not solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
 
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
@@ -78,8 +78,8 @@ class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
-
-		sources.forEach [ assertEquals(expectedCode, xtextDocument.get)  ]
+		
+		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }
 

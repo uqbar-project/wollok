@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.ui.Messages
 class CapitalizeClassQuickFixTest extends AbstractWollokQuickFixTestCase {
 	@Test
 	def testCapitalizeName(){
-				val initial = #['''
+		val initial = #['''
 			class myClass{
 				method someMethod(){
 					return null

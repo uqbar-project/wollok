@@ -320,7 +320,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if(!a.feature.ref.isModifiableFrom(a)) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
-	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
+	def dispatch String cannotModifyErrorId(WVariable it) { CANNOT_ASSIGN_TO_VAL } 
+	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
 
 	@Check
@@ -559,7 +560,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def boolean isSameOrSuperClassOf(WClass one, WClass other) {
-		one == other || one.isSuperTypeOf(other)
+		other != null && (one.fqn == other.fqn || one.isSuperTypeOf(other))
 	}
 
 	@Check
