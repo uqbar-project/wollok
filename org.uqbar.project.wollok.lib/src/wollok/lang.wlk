@@ -1020,7 +1020,26 @@ class Number {
 	method rem(other) { return self % other }
 	
 	method stringValue() = throw new Exception("Should be implemented in the subclass")
-	
+
+	/**
+	 * Rounds up self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.roundUp(3) ==> 1.224
+	 * -1.223445.roundUp(3) ==> -1.224
+	 * 14.6165.roundUp(3) ==> 14.617
+	 * 5.roundUp(3) ==> 5
+	 */
+	 method roundUp(_decimals)
+
+	/**
+	 * Truncates self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.truncate(3) ==> 1.223
+	 * 14.6165.truncate(3) ==> 14.616
+	 * -14.6165.truncate(3) ==> -14.616
+	 * 5.truncate(3) ==> 5
+	 */
+	method truncate(_decimals)
 }
 
 /**
@@ -1151,25 +1170,8 @@ class Integer inherits Number {
 		(1..self).forEach(action) 
 	}
 	
-	/**
-	 * Rounds up self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.roundUp(3) ==> 1.224
-	 * -1.223445.roundUp(3) ==> -1.224
-	 * 14.6165.roundUp(3) ==> 14.617
-	 * 5.roundUp(3) ==> 5
-	 */
-	method roundUp(_decimals) = self
-	
-	/**
-	 * Truncates self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.truncate(3) ==> 1.223
-	 * 14.6165.truncate(3) ==> 14.616
-	 * -14.6165.truncate(3) ==> -14.616
-	 * 5.truncate(3) ==> 5
-	 */
-	method truncate(_decimals) = self
+	override method roundUp(_decimals) = self
+	override method truncate(_decimals) = self
 }
 
 /**
@@ -1244,23 +1246,8 @@ class Double inherits Number {
 	 */
 	method roundUp() = self.roundUp(0)
 	
-	/**
-	 * Rounds up self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.roundUp(3) ==> 1.224
-	 * -1.223445.roundUp(3) ==> -1.224
-	 * 14.6165.roundUp(3) ==> 14.617
-	 */
-	method roundUp(_decimals) native
-	
-	/**
-	 * Truncates self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.truncate(3) ==> 1.223
-	 * 14.6165.truncate(3) ==> 14.616
-	 * -14.6165.truncate(3) ==> -14.616
-	 */
-	method truncate(_decimals) native
+	override method roundUp(_decimals) native
+	override method truncate(_decimals) native
 }
 
 /**
