@@ -262,5 +262,18 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(25.0, 5.0 ** 2.0)
 		'''.test
 	}
+	
+	@Test
+	def void integerRoundUp() {
+		'''
+		assert.equals(5, 10/2.roundUp())
+		'''.test
+	}
 
+	@Test
+	def void integerTruncate() {
+		'''
+		assert.equals(5, 10/2.truncate())
+		'''.test
+	}
 }
