@@ -2,6 +2,7 @@ package wollok.lang
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.RoundingMode
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -40,8 +41,8 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	@NativeMessage("/")
 	def divide(WollokObject other) { operate(other) [ doDivide(it) ] }
 		def dispatch Number doDivide(Integer w) {
-			val result = new BigDecimal(wrapped).divide(new BigDecimal(w))
-			val resultIntValue = result.intValue 
+			val result = new BigDecimal(wrapped).divide(new BigDecimal(w), 34, RoundingMode.HALF_UP)
+			val resultIntValue = result.intValue
 			if (result == resultIntValue) {
 				return resultIntValue
 			}

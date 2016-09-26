@@ -8,5 +8,7 @@
 org.eclipse.*
 pom.xml.versionsBackup
 *._trace
+CHANGELOG.txt
 changelog.txt
 CHANGELOG.md
+xtend-gen
