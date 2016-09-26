@@ -35,6 +35,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void dividePeriodicDecimals() {
+		'''
+		assert.equals(0.7272727272727272727272727272727273, 40 / 55)
+		assert.equals(0.7272727272727272727272727272727273, 40 / 55.0)
+		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55.0)
+		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55)
+		'''.test
+	}
+
+	@Test
 	def void divideDecimals() {
 		'''
 		assert.equals(0.3, 3 / 10.0)
