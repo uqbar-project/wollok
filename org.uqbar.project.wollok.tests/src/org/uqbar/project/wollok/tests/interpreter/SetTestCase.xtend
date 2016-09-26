@@ -140,4 +140,14 @@ class SetTestCase extends CollectionTestCase {
 		}'''.interpretPropagatingErrors
 	} 	
 	
+	@Test
+	def void anyOneOnSetThrowsExceptionWhenEmpty() {
+		'''
+		assert.equals(1, #{1}.anyOne())
+		assert.throwsExceptionWithMessage(
+			"Illegal operation 'anyOne' on empty collection", 
+			{ #{}.anyOne() })
+		'''.test
+	} 	
+	
 }
