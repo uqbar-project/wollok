@@ -53,7 +53,7 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 		
 	@NativeMessage("**")
 	def raise(WollokObject other) { operate(other) [ doRaise(it) ] }
-		def dispatch Number doRaise(Integer w) { (wrapped ** w).intValue }
+		def dispatch Number doRaise(Integer w) { integerOrElse(Math.pow(wrapped, w)) }
 		def dispatch Number doRaise(BigDecimal w) { Math.pow(wrapped, w.doubleValue) }
 		def dispatch Number doRaise(Object w) { throw new WollokRuntimeException("Cannot raise " + w) }
 

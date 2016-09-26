@@ -158,6 +158,7 @@ object assert {
 			}
 		if (continue) throw new Exception("Should have thrown an exception")	
 	}
+	
 	/**
 	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
 	 */
@@ -174,36 +175,129 @@ class StringPrinter {
 }	
 
 object game {
-	method addVisual(element) native
+	
+	/**
+	 * Adds an object to the board for drawing it.
+	 * That object should known a position (by reference or getter method).
+	 */
+	method addVisual(positionable) native
+
+	/**
+	 * Adds an object to the board for drawing it on a specific position.
+	 */
 	method addVisualIn(element, position) native
-	method addVisualCharacter(element) native
+
+	
+	/**
+	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
+	 * That object should known a position (by reference or getter method).
+	 */
+	method addVisualCharacter(positionable) native
+
+	/**
+	 * Adds an object to the board for drawing it on a specific position. It can be moved with arrow keys.
+	 */	
 	method addVisualCharacterIn(element, position) native
-	method removeVisual(element) native
+
+	/**
+	 * Removes an object from the board for stop drawing it.
+	 */
+	method removeVisual(visual) native
+	
+	/**
+	 * Adds a block that will be executed always the specific key is pressed.
+	 */	
 	method whenKeyPressedDo(key, action) native
-	method whenKeyPressedSay(key, function) native
-	method whenCollideDo(element, action) native
+
+	/**
+	 * Adds a block that will be executed always the given object collides with other. Two objects collide when are in the same position.
+	 * The block should expect the other object as parameter.
+	 */	
+	method whenCollideDo(visual, action) native
+
+	/**
+	 * Returns all objects in given position.
+	 */	
 	method getObjectsIn(position) native
-	method colliders(visual) native
-	method say(element, message) native
+
+	/**
+	 * Draw a dialog balloon with given message in given visual object position.
+	 */	
+	method say(visual, message) native
+
+	/**
+	 * Removes all visual objects on board and configurations (colliders, keys, etc).
+	 */	
 	method clear() native
+
+	/**
+	 * Returns all objects that are in same position of given object.
+	 */	
+	method colliders(visual) native
+
+	/**
+	 * Stops render the board and finish the game.
+	 */	
 	method stop() native
 	
+	/**
+	 * Starts render the board in a new windows.
+	 */	
 	method start() {
 		self.doStart(runtime.isInteractive())
 	}
 	
-	method at(x, y) = new Position(x, y)
+	/**
+	 * Returns a position for given coordinates.
+	 */	
+	method at(x, y) {
+		return new Position(x, y)
+	}
+
+	/**
+	 * Returns the position (0,0).
+	 */	
 	method origin() = self.at(0, 0)
-	method center() = self.at(self.getWidth().div(2), self.getHeight().div(2))
+
+	/**
+	 * Returns the center board position (rounded down).
+	 */	
+	method center() = self.at(self.width().div(2), self.height().div(2))
+
+	/**
+	 * Sets game title.
+	 */		
+	method title(title) native
+
+	/**
+	 * Returns game title.
+	 */		
+	method title() native
 	
-	
-	method setTitle(title) native
-	method getTitle() native
-	method setWidth(width) native
-	method getWidth() native
-	method setHeight(height) native
-	method getHeight() native
-	method setGround(image) native
+	/**
+	 * Sets board width (in cells).
+	 */			
+	method width(width) native
+
+	/**
+	 * Returns board width (in cells).
+	 */		
+	method width() native
+
+	/**
+	 * Sets board height (in cells).
+	 */			
+	method height(height) native
+
+	/**
+	 * Returns board height (in cells).
+	 */		
+	method height() native
+
+	/**
+	 * Sets cells image.
+	 */			
+	method ground(image) native
 	
 	/** 
 	* @private
@@ -215,42 +309,111 @@ class Position {
 	var x = 0
 	var y = 0
 	
-	constructor() { }		
+	/**
+	 * Returns the position at origin: (0,0).
+	 */		
+	constructor() = self(0,0)
 			
+	/**
+	 * Returns a position with given x and y coordinates.
+	 */	
 	constructor(_x, _y) {
 		x = _x
 		y = _y
 	}
 	
-	method moveRight(num) { x += num }
-	method moveLeft(num) { x -= num }
-	method moveUp(num) { y += num }
-	method moveDown(num) { y -= num }
-
-	method drawElement(element) { game.addVisualIn(element, self) }
-	method drawCharacter(element) { game.addVisualCharacterIn(element, self) }		
-	method deleteElement(element) { game.removeVisual(element) }
-	method say(element, message) { game.say(element, message) }
-	method allElements() = game.getObjectsIn(self)
+	/**
+	 * Sums n to x coordinate.
+	 */		
+	method moveRight(n) { x += n }
 	
+	/**
+	 * Substract n to x coordinate.
+	 */		
+	method moveLeft(n) { x -= n }
+	
+	/**
+	 * Sums n to y coordinate.
+	 */		
+	method moveUp(n) { y += n }
+	
+	/**
+	 * Substract n to y coordinate.
+	 */		
+	method moveDown(n) { y -= n }
+	
+	/**
+	 * Adds an object to the board for drawing it in self.
+	 */
+	method drawElement(element) { game.addVisualIn(element, self) } //TODO: Implement native
+	
+	/**
+	 * Adds an object to the board for drawing it in self. It can be moved with arrow keys.
+	 */
+	method drawCharacter(element) { game.addVisualCharacterIn(element, self) } //TODO: Implement native
+
+	/**
+	 * Removes an object from the board for stop drawing it.
+	 */
+	method deleteElement(element) { game.removeVisual(element) } //TODO: Remove
+
+	/**
+	 * Draw a dialog balloon with given message in given visual object position.
+	 */	
+	method say(element, message) { game.say(element, message) } //TODO: Implement native
+
+	/**
+	 * Returns all objects in self.
+	 */	
+	method allElements() = game.getObjectsIn(self) //TODO: Implement native
+	
+	/**
+	 * Returns a new position with same coordinates.
+	 */	
 	method clone() = new Position(x, y)
 
+	/**
+	 * Returns the distance between given position and self.
+	 */	
 	method distance(position) {
-	    const deltaX = self.getX() - position.getX()
-	    const deltaY = self.getY() - position.getY()
+	    const deltaX = x - position.x()
+	    const deltaY = y - position.y()
 	    return (deltaX.square() + deltaY.square()).squareRoot() 
 	}
 
+	/**
+	 * Removes all objects in self from the board for stop drawing it.
+	 */
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
 	
-	method getX() = x
-	method setX(_x) { x = _x }
-	method getY() = y
-	method setY(_y) { y = _y }
+	/**
+	 * Returns x coordinate.
+	 */	
+	method x() = x
+
+	/**
+	 * Sets x coordinate.
+	 */	
+	method x(_x) { x = _x }
 	
-	override method ==(other) = x == other.getX() && y == other.getY()
+	/**
+	 * Returns y coordinate.
+	 */	
+	method y() = y
+
+	/**
+	 * Sets y coordinate.
+	 */	
+	method y(_y) { y = _y }
+	
+	/**
+	 * Two positions are equals if have same coordinates.
+	 */	
+	override method ==(other) = x == other.x() && y == other.y()
+	
+	override method toString() = "(" + x + "," + y + ")"
 }
 
 object error {

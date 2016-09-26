@@ -41,6 +41,13 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 	
 	@Test
+	def void testToString() {
+		'''
+		assert.equals("(0,0)", «position».toString())
+		'''.test
+	}
+	
+	@Test
 	def void testDistance() {
 		'''
 		assert.equals(5, «position».distance(new Position(3,4)))
