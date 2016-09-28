@@ -35,6 +35,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void dividePeriodicDecimals() {
+		'''
+		assert.equals(0.7272727272727272727272727272727273, 40 / 55)
+		assert.equals(0.7272727272727272727272727272727273, 40 / 55.0)
+		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55.0)
+		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55)
+		'''.test
+	}
+
+	@Test
 	def void divideDecimals() {
 		'''
 		assert.equals(0.3, 3 / 10.0)
@@ -151,11 +161,11 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void gcdForDecimalsIsInvalid() {
 		try {
-		'''
-		program a {
-			(5.5).gcd(12)
-		}
-		'''.interpretPropagatingErrors 
+			'''
+			program a {
+				(5.5).gcd(12)
+			}
+			'''.interpretPropagatingErrors 
 			fail("decimals should not understand gcd message")
 		} catch (AssertionError e) {
 			assertTrue(e.message.startsWith("5.5 does not understand gcd(p0)"))
@@ -165,14 +175,14 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void gcdForDecimalsIsInvalid2() {
 		try {
-		'''
-		program a {
-			console.println((5).gcd(12.3))
-		}
-		'''.interpretPropagatingErrors
+			'''
+			program a {
+				console.println((5).gcd(12.3))
+			}
+			'''.interpretPropagatingErrors
 			fail("gcd works also for decimal argument!!")
 		} catch (AssertionError e) {
-		assertTrue(e.message.startsWith("gcd expects an integer as first argument"))
+			assertTrue(e.message.startsWith("gcd expects an integer as first argument"))
 		}
 	}
 
@@ -260,6 +270,34 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(25, 5 ** 2.0)
 		assert.equals(25.0, 5.0 ** 2)
 		assert.equals(25.0, 5.0 ** 2.0)
+		'''.test
+	}
+	
+	@Test
+	def void integerRoundUp() {
+		'''
+		assert.equals(5, (10/2).roundUp(2))
+		'''.test
+	}
+
+	@Test
+	def void integerTruncate() {
+		'''
+		assert.equals(5, (10/2).truncate(2))
+		'''.test
+	}
+	
+	@Test
+	def void doubleRoundUp() {
+		'''
+		assert.equals(1.3, (5/4).roundUp(1))
+		'''.test
+	}
+
+	@Test
+	def void doubleTruncate() {
+		'''
+		assert.equals(1.2, (5/4).truncate(1))
 		'''.test
 	}
 
