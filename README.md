@@ -1,4 +1,4 @@
-[![Codacy grade](https://img.shields.io/codacy/grade/e27821fb6289410b8f58338c7e0bc686.svg?maxAge=2592000)]()
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/77e46a36db0e475a81d674f2c72aff1a)](https://www.codacy.com/app/javier-fernandes/wollok?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uqbar-project/wollok&amp;utm_campaign=Badge_Grade)
 [![Travis](https://travis-ci.org/uqbar-project/wollok.svg?branch=master)](https://travis-ci.org/uqbar-project/wollok?branch=master)
 [![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
