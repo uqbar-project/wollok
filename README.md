@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
+[![Codacy grade](https://img.shields.io/codacy/grade/e27821fb6289410b8f58338c7e0bc686.svg?maxAge=2592000)]()
 [![Travis](https://travis-ci.org/uqbar-project/wollok.svg?branch=master)](https://travis-ci.org/uqbar-project/wollok?branch=master)
 [![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -125,9 +125,12 @@ Distributed under the terms of LGPLv3
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
 
-[![PRs](https://img.shields.io/github/issues-pr/cdnjs/cdnjs.svg?maxAge=2592000)]()
+[![PRs](https://img.shields.io/github/issues-pr/uqbar-project/wollok.svg?maxAge=2592000)]()
 [![closed PRs](https://img.shields.io/github/issues-pr-closed/uqbar-project/wollok.svg?maxAge=2592000)]()
 
-[![issues](https://img.shields.io/github/issues-raw/badges/shields/website.svg?maxAge=2592000)]()
+[![issues](https://img.shields.io/github/issues-raw/badges/uqbar-project/wollok.svg?maxAge=2592000)]()
 [![issue resolution](http://isitmaintained.com/badge/resolution/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Average time to resolve an issue")
+
+[![Stories in Ready](https://badge.waffle.io/uqbar-project/wollok.png?label=ready&title=Ready)](https://waffle.io/uqbar-project/wollok)
+
 [![open issues](http://isitmaintained.com/badge/open/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Percentage of issues still open")
