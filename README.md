@@ -30,7 +30,7 @@ Finally if you just want the headless Development Kit (WDK), for example to use 
 
 * http://download.uqbar.org/wollok/sdk/
 
-This is useful for example if you are going to develop with Sublime or any other lightweight text editor
+This is useful for example if you are going to develop with [Sublime](https://github.com/uqbar-project/wollok-sublime-linter/blob/master/README.md) or any other lightweight text editor
 
 ## Documentation ##
 
@@ -83,7 +83,7 @@ You can either use its IDE:
 * A **debugger**.
 
 Or use the WDK which has command line tools for running and checkin a program.
-This is also integrated with Sublime Editor.
+This is also integrated with [Sublime Editor](https://github.com/uqbar-project/wollok-sublime-linter/blob/master/README.md).
 
 ## How to Contribute ##
 
@@ -100,6 +100,7 @@ Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)
 
 ## Contributors ##
+
 * [Javier Fernandes](http://ar.linkedin.com/pub/javier-fernandes/4/441/14/)
 * [Nicolás Passerini](https://github.com/npasserini)
 * [Pablo Tesone](http://github.com/tesonep)
@@ -123,3 +124,10 @@ Distributed under the terms of LGPLv3
 
 ## Metrics ##
 [![Throughput Graph](https://graphs.waffle.io/uqbar-project/wollok/throughput.svg)](https://waffle.io/uqbar-project/wollok/metrics)
+
+[![PRs](https://img.shields.io/github/issues-pr/cdnjs/cdnjs.svg?maxAge=2592000)]()
+[![closed PRs](https://img.shields.io/github/issues-pr-closed/uqbar-project/wollok.svg?maxAge=2592000)]()
+
+[![issues](https://img.shields.io/github/issues-raw/badges/shields/website.svg?maxAge=2592000)]()
+[![issue resolution](http://isitmaintained.com/badge/resolution/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Average time to resolve an issue")
+[![open issues](http://isitmaintained.com/badge/open/uqbar-project/wollok.svg)](http://isitmaintained.com/project/uqbar-project/wollok "Percentage of issues still open")
