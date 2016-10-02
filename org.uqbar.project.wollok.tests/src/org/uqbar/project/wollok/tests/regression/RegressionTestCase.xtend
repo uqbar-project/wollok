@@ -59,13 +59,13 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		        //var filtro2 = filtro1.filter{pp=>pp.energia() > pepe.energia()}
 		        //return filtro2.filter{ppp=>ppp.energia() > pepona.energia()}
 		
-		        return this.comparaEnergia(filtro3)
+		        return self.comparaEnergia(filtro3)
 		    }
 		
 		    method alimentaBajaEnergia(filtro3){
 		        filtro3.forEach{pppp=>pppp.com()}
 		        //pepe.com()
-		        this.comparaEnergia(filtro3)
+		        self.comparaEnergia(filtro3)
 		    }
 		
 		    method comparaEnergia(filtro3){
@@ -73,7 +73,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		        filtro4 = filtro3.filter{p=>p.energia() >= 30}
 		
 		        if (filtro4.size() == 0) {    
-		            this.alimentaBajaEnergia(filtro3)
+		            self.alimentaBajaEnergia(filtro3)
 		            return pepe.energia()
 		        }else{
 		            return "La energia de pepe es 30"
@@ -152,7 +152,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		class Golondrina {
 		    var energia = 100
 		    method volar(kms) {
-		        this.modificar(-kms * 2)
+		        self.modificar(-kms * 2)
 		    }
 		    method modificar(n) {
 		        energia += n 
@@ -166,4 +166,64 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void bug_578() {
+		'''
+		object link {
+			var arma
+			method atacarA(alguien) {
+				arma.causarDanio(alguien)
+			}
+		}
+		object captainFalcon {}
+		
+		program p {
+			try {
+				#{1}.forEach({ each => link.atacarA(captainFalcon)})
+				assert.fail("should have thrown a wollok exception")
+			}
+			catch e {
+				// OK ! a NPE
+			}
+			
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void bug_896_stackOverFlow() {
+		'''object juan {
+		    method blah() {
+		        self.blah()
+		    }
+		}
+		
+		
+		program a {
+			try {
+		    	juan.blah()
+		    	throw new Exception("Should have failed!")
+		    }
+		    catch e : StackOverflowException {
+		    	// fine !
+		    }
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void bug_868() {
+		'''
+		object juan {
+		    var mascota = firulais
+		}
+		
+		object firulais {
+		    var duenio = juan
+		}
+		program a {
+			console.println(juan)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

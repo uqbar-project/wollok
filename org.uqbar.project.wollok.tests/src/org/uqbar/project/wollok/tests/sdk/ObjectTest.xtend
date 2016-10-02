@@ -24,18 +24,31 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val perro = new Perro()
+				const perro = new Perro()
 				
 				assert.equals("a Perro[nombre=Colita, edad=7]", perro.toString())
 				assert.equals("casa[direccion=San Juan 1234, ambientes=3]", casa.toString())
 				
-				val anonymousObject = object {
+				const anonymousObject = object {
 					var edad = 23
-					var altura = 1.7
+					var altura = 2
 				}
 				
-«««				//TODO
-«««				assert.equals("anObject[edad=23, altura=1.7]", anonymousObject.toString())
+				assert.equals("an Object[edad=23, altura=2]", anonymousObject.toString())
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void toStringWithDoubleField() {
+		'''
+			object persona {
+				var edad = 23
+				var altura = 1.7
+			}
+			
+			program p {
+				assert.equals("persona[edad=23, altura=1.7]", persona.toString())
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -49,9 +62,9 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val perro = new Perro()
+				const perro = new Perro()
 				
-				val instVar = perro.instanceVariableFor("nombre")
+				const instVar = perro.instanceVariableFor("nombre")
 				
 				assert.that(instVar != null)
 				
@@ -70,15 +83,15 @@ class ObjectTest extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val perro = new Perro()
+				const perro = new Perro()
 				
-				val instVars = perro.instanceVariables()
+				const instVars = perro.instanceVariables()
 				assert.equals(2, instVars.size())
 				
-				val nombreInstVar = instVars.find{e=> e.name() == "nombre"}
+				const nombreInstVar = instVars.find{e=> e.name() == "nombre"}
 				assert.equals("Colita", nombreInstVar.value())
 				
-				val edadInstVar = instVars.find{e=> e.name() == "edad"}
+				const edadInstVar = instVars.find{e=> e.name() == "edad"}
 				assert.equals(7, edadInstVar.value())
 				
 «««				assert.equals("#[edad=7, nombre=Colita]",instVars.toString())

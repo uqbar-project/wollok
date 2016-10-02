@@ -8,7 +8,7 @@
     <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
     <groupId>org.uqbar-project</groupId>
     <artifactId>wollok-parent</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
   </parent>
 
 	<artifactId>org.uqbar.project.wollok.ui.diagrams</artifactId>
@@ -43,7 +43,7 @@
 											exec-maven-plugin
 										</artifactId>
 										<versionRange>
-											[1.2.1,)
+											[1.5.0,)
 										</versionRange>
 										<goals>
 											<goal>java</goal>

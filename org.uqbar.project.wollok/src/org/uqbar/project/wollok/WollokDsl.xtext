@@ -64,7 +64,7 @@ Invariant:
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
-	(writeable?='var'|'val') variable=WVariable ('=' right=WExpression)?
+	(writeable?='var'|'const') variable=WVariable ('=' right=WExpression)?
 ;
 
 WMethodDeclaration:
@@ -220,8 +220,8 @@ WMemberFeatureCall returns WExpression:
 FeatureCallID:
 	ID;
 
-WThis returns WExpression:
-	{WThis} 'this'
+WSelf returns WExpression:
+	{WSelf} 'self'
 ;
 
 WPrimaryExpression returns WExpression:
@@ -285,7 +285,7 @@ WLiteral returns WExpression:
 	WNullLiteral |
 	WStringLiteral |
 	WObjectLiteral |
-	WThis |
+	WSelf |
 	WCollectionLiteral
 ;
 
@@ -374,12 +374,12 @@ WConstructor:
 ;
 
 WDelegatingConstructorCall:
-	WThisDelegatingConstructorCall | WSuperDelegatingConstructorCall
+	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
 ;
 
 // some how this should be referecens to WConstructor
-WThisDelegatingConstructorCall:
-	{WThisDelegatingConstructorCall} 'this' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+WSelfDelegatingConstructorCall:
+	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
 // some how this should be referecens to WConstructor
@@ -392,7 +392,7 @@ WSuperDelegatingConstructorCall:
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('
 		(arguments+=WExpression (',' arguments+=WExpression)*)?		
-	')'
+	')' ('with' mixins+=[WMixin])*
 ;
 
 WTry:

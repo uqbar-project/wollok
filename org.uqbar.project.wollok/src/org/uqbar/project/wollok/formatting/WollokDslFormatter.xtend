@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclara
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 
 /**
  * This class contains custom formatting description.
@@ -121,6 +122,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		// parenthesis
 		setNoSpace.around(leftParenthesisKeyword_1_2_0_0)
 		setNoSpace.before(rightParenthesisKeyword_1_2_0_2)
+		setLinewrap(0,1,2).after(rightParenthesisKeyword_1_2_0_2)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WConstructorCallElements e) {
@@ -141,11 +143,12 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		
 		setIndentation(leftCurlyBracketKeyword_1, rightCurlyBracketKeyword_3)
 		
-		setLinewrap(1, 1, 2).after(expressionsAssignment_2_0)
-		
 //		setLinewrap(1, 1, 2).before(expressionsAssignment_2_0)
 //		setLinewrap(1, 1, 2).before(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
 //		setLinewrap(1, 1, 2).after(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
+	}
+
+	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WPackageElements e) {
@@ -297,7 +300,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WVariableDeclarationElements i) {
-		setLinewrap(1, 1, 2).after(group)
+		 setLinewrap(1, 1, 2).after(group)
 	}
 	
 	// default

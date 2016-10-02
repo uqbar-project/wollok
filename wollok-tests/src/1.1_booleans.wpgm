@@ -3,24 +3,24 @@
 program booleans {
 	
 
-val trueB = true
+const trueB = true
 var a = "a"
 // a = 1  // FAILS OK!
 
 assert.that(trueB)
 
 assert.that(true)
-this.assertFalse(false)
+assert.notThat(false)
 
 //AND
 assert.that(true and true)
 assert.that(true && true)
 
-this.assertFalse(true and false)
-this.assertFalse(true && false)
+assert.notThat(true and false)
+assert.notThat(true && false)
 
-this.assertFalse(false && true)
-this.assertFalse(false && false)
+assert.notThat(false && true)
+assert.notThat(false && false)
 
 // or
 assert.that(true or true)
@@ -29,16 +29,16 @@ assert.that(true || true)
 assert.that(true || false)
 assert.that(false || true)
 
-this.assertFalse(false or false)
-this.assertFalse(false || false)
+assert.notThat(false or false)
+assert.notThat(false || false)
 
 // not operator
 
 assert.that(not false)
 assert.that(!false)
 
-this.assertFalse(not true)
-this.assertFalse(!true)
+assert.notThat(not true)
+assert.notThat(!true)
 
 assert.that(not(3>5))
 assert.that(!(3>5))
@@ -48,12 +48,12 @@ assert.that(2 == 2)
 var n1 = 2
 var n2 = 2
 assert.that(n1 == n2)
-this.assertFalse(2 == 3)
+assert.notThat(2 == 3)
 
-val object1 = object {}
-val object2 = object {}
+const object1 = object {}
+const object2 = object {}
 assert.that(object1 == object1)
-this.assertFalse(object1 == object2)
+assert.notThat(object1 == object2)
 
 // not equals
 assert.that(2 != 3)
@@ -72,13 +72,13 @@ assert.that(3 >= 3)
 // ** errores de tipos (PASAR A UN XPect)
 // **************************
 
-//val unN = 2
-//val otroN = 4
+//const unN = 2
+//const otroN = 4
 //
-//val unoYotro = unN && otroN
-//val otraComp = true && otroN
+//const unoYotro = unN && otroN
+//const otraComp = true && otroN
 //
-//val compValida = true && false
-//this.println(compValida)
+//const compValida = true && false
+//console.println(compValida)
 
 }

@@ -30,6 +30,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 	override createFigure() {
 		super.createFigure as PolylineConnection => [
 			targetDecoration = createEdgeDecoration()
+			
 			lineStyle = castedModel.lineStyle
 			
 			if (castedModel.name != null)
@@ -53,7 +54,9 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 	override propertyChange(PropertyChangeEvent event) {
 		val property = event.propertyName
 		if (Connection.LINESTYLE_PROP == property)
-			(figure as PolylineConnection).lineStyle = castedModel.lineStyle
+			(figure as PolylineConnection) => [
+				lineStyle = castedModel.lineStyle
+			]
 	}
 
 }

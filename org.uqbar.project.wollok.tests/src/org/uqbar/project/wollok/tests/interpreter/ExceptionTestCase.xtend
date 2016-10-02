@@ -20,7 +20,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				method m1() { throw new MyException() }
 			}
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -45,7 +45,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 		
 			program p {	
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -71,7 +71,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var counter = 0
 				
 				try {
@@ -79,7 +79,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					counter = counter + 1
 				}
 				catch e : MyException
-					this.println("Exception raised!") // OK!
+					console.println("Exception raised!") // OK!
 				then always
 					counter = counter + 1 
 			}
@@ -100,7 +100,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MyException() } }
 
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = null
 				
 				try {
@@ -122,7 +122,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try {
@@ -144,7 +144,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			class A { method m1() { throw new MySubclassException() } }
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				var result = 0
 				
 				try 
@@ -167,7 +167,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m2()
@@ -192,7 +192,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -218,7 +218,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -248,7 +248,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -278,7 +278,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -309,7 +309,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			
 			program p {	
-				val a = new A()
+				const a = new A()
 				
 				try {
 					a.m1()
@@ -348,12 +348,12 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 			class C {
 				method foo() {
-					this.error("Gently failling!")
+					self.error("Gently failling!")
 				}
 			}
 			program p {
 				try {
-					val f = new C()
+					const f = new C()
 					f.foo()
 				}
 				catch e {
@@ -364,4 +364,97 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testExceptionWithMessage(){
+		'''
+			class UserException inherits wollok.lang.Exception {
+			    var valorInvalido = 0
+			    
+			    constructor(mensaje, value) = super(mensaje) { 	
+			    	valorInvalido = value
+			    }
+			}
+			
+			object monedero {
+			    var plata = 500
+			
+			    method plata() = return plata
+			
+			    method poner(cantidad) {
+			        if (cantidad < 0) {
+			            throw new UserException("La cantidad debe ser positiva", cantidad)
+			        } 
+			        plata += cantidad
+			    }
+			
+			    method sacar(cantidad) { plata -= cantidad }
+			}
+			
+			program p {
+				try{
+					monedero.poner(-2)
+					assert.fail('No should get here')
+				} catch e {
+					assert.equals("La cantidad debe ser positiva", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithAReturnStatement() {
+		'''
+		object cuenta {
+			method sacar() {
+				try {
+					throw new Exception("saldo insuficiente")
+				} 
+				catch e {
+					return 20
+				}
+			}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar())
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchWithAReturnStatementReturningFromTryBodyAndFromCatch() {
+		'''
+		object cuenta {
+			method sacar(c) {
+				try {
+					if (c > 0)
+						throw new Exception("saldo insuficiente")
+					return 19
+				} 
+				catch e {
+					return 20
+				}
+			}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar(10))
+			assert.equals(19, cuenta.sacar(0))
+		}'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void testCatchEvaluationInAShortCutMethod() {
+		'''
+		object cuenta {
+			method sacar(c) = try { 
+					if (c > 0) 
+						throw new Exception("saldo insuficiente") 
+					else 19
+				} catch e {
+					20
+				}
+		}
+		program p {
+			assert.equals(20, cuenta.sacar(10))
+			assert.equals(19, cuenta.sacar(0))
+		}'''.interpretPropagatingErrors
+	}
 }

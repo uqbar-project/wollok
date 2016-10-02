@@ -20,7 +20,7 @@ class B inherits Levadura {
 }
 
 /**
- * this one duplicates a var that is two levels up
+ * self one duplicates a var that is two levels up
  */
 class C inherits B {
 	// XPECT errors --> "There is already an instance variable with this name in the hierarchy" at "biomasa"

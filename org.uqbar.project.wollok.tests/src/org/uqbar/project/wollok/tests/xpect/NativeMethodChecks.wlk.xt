@@ -18,6 +18,5 @@ class A {
 }
 
 class B inherits A {
-	// XPECT errors --> "Native methods cannot override anything" at "override"
 	override method m1() native
 }

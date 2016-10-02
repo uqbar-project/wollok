@@ -1,10 +1,8 @@
 package org.uqbar.project.wollok.game
 
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 class Image {
 	
@@ -12,37 +10,40 @@ class Image {
 	protected String currentPath
 	Texture texture
 	
-	new() { }
+	new() { 
+		this.currentPath = path
+	}
 	
 	new(String path) {
 		this.path = path
-		this.currentPath = path
 	}
 	
 	def getPath() { path }
 	
 	
 	def getTexture() {
-		if (this.texture == null || this.currentPath != this.getPath()) {
-			this.texture = new Texture(Gdx.files.internal(this.getPath()))
+		if (this.texture == null || this.currentPath != this.path) {
+			var file = Gdx.files.internal(this.getPath())
+			
+			if (!file.exists) return null			
+				
+			this.texture = new Texture(file)
 			this.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
 			this.currentPath = this.getPath()
 		}
 		
 		return this.texture
 	}
-}
-
-class WImage extends Image {
-		
-	WollokObject object
 	
-	new(WollokObject wObject) {
-		this.object = wObject
-		this.currentPath = this.getPath()
+	override public int hashCode() {
+		val prime = 31
+		prime + getPath.hashCode
 	}
-	
-	override getPath() { 
-		this.object.call("getImagen").wollokToJava(String) as String
+
+	override equals(Object obj) {
+		if(obj == null) return false
+
+		var other = obj as Image
+		getPath == other.getPath
 	}
 }

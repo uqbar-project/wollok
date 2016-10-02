@@ -1,15 +1,15 @@
 program collections {
 
-val numbers = [2, 23, 25]
+const numbers = [2, 23, 25]
 
-this.println(numbers)
+console.println(numbers)
 
-val y = 23
-val z = 2.2
+const y = 23
+const z = 2.2
 
-val x = "Hola"
-val bag = [x,y,z]
-this.println(bag)
+const x = "Hola"
+const bag = [x,y,z]
+console.println(bag)
 
 // ***************************
 // ** calling native methods
@@ -18,14 +18,14 @@ this.println(bag)
 // size (a forwarded message to java.util.List)
 assert.equals(3, numbers.size())
 assert.that(numbers.contains(23))
-this.assertFalse(numbers.contains(1))
+assert.notThat(numbers.contains(1))
 
 // forAll
 assert.that([20, 22, 34].forAll({n => n > 18}))
-this.assertFalse([20, 22, 34].forAll({n => n > 30}))
+assert.notThat([20, 22, 34].forAll({n => n > 30}))
 
 // forEach
-val vaca1 = object {
+const vaca1 = object {
 	var peso = 1000
 	method engordar(cuanto) {
 		peso = peso + cuanto
@@ -33,25 +33,25 @@ val vaca1 = object {
 	method peso() = peso
 }
 
-val vaca2 = object {
+const vaca2 = object {
 	var peso = 1000
 	method engordar(cuanto) {
 		peso = peso + cuanto
 	}
 	method peso() = peso
 }
-val vacas = [vaca1, vaca2]
+const vacas = [vaca1, vaca2]
 
 vacas.forEach{v => v.engordar(2)}
 assert.that(vacas.forAll{v => v.peso() == 1002})
 
 // map
-val mapped = vacas.map{v => v.peso()}
+const mapped = vacas.map{v => v.peso()}
 assert.that(mapped.forAll{p => p == 1002})
 
 
 // filter
-val r = [10, 20, 30, 40, 50].filter{n=> n > 30}
+const r = [10, 20, 30, 40, 50].filter{n=> n > 30}
 assert.that(r.size() == 2)
 assert.that(r.contains(40))
 assert.that(r.contains(50))

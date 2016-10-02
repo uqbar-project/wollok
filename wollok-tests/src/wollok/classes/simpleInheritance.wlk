@@ -8,6 +8,6 @@
 	}
 	class Golondrina inherits Ave {
 		method volar(kms) {
-			this.setEnergia(this.energia() - kms) // Uso métodos de la superclase
+			self.setEnergia(self.energia() - kms) // Uso métodos de la superclase
 		}
 	}

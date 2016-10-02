@@ -2,8 +2,8 @@ import withClassesLib.GuybrushTreepWood
 
 program guybrush {
 
-	val guy = new GuybrushTreepWood()
-	this.println(guy.fightSwordMaster())
-	this.println("end of program")
+	const guy = new GuybrushTreepWood()
+	console.println(guy.fightSwordMaster())
+	console.println("end of program")
 
 }

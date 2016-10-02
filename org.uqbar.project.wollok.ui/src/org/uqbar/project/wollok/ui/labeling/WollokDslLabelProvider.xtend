@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.labeling
 
 import com.google.inject.Inject
+import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
@@ -9,6 +10,8 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -16,14 +19,13 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.eclipse.core.runtime.Platform
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 /**
  * Provides labels for EObjects.
@@ -32,6 +34,8 @@ import org.uqbar.project.wollok.wollokDsl.WMixin
  */
 class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	WollokTypeSystemLabelExtension labelExtension = null
+	@Inject
+	WollokDslGrammarAccess grammar
 	var labelExtensionResolved = false
 
 	@Inject
@@ -43,6 +47,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WProgram it) { 'wollok-icon-program_16.png' }
 	def image(WClass it) {	'wollok-icon-class_16.png' }
 	def image(WMixin it) {	'wollok-icon-mixin_16.png' }
+	def image(WTest it) { 'wollok-icon-test_16.png' }
 	
 	def text(WObjectLiteral it) { 'object' }
 	def image(WObjectLiteral it) {	'wollok-icon-object_16.png' }
@@ -72,7 +77,12 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	def text(WVariableDeclaration it) { 
-		(if(writeable) "var " else "val ") + variable.name + concatResolvedType(": ", variable)
+		(if (writeable)
+			// var 
+			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
+			else
+			// const 
+			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name + concatResolvedType(": ", variable)
 	}
 	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
 
@@ -86,12 +96,13 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		name + concatResolvedType(": ", it)
 	}
 	
-	def text(WMethodDeclaration m) { 
+	def text(WMethodDeclaration m) {
 		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
-			+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else "" 
+				+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else ""
 	}
 	def text(WConstructor m) {
-		'new(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
+		
+		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
 	}
 	
 	def image(WMethodDeclaration ele) { 'wollok-icon-method_16.png' }

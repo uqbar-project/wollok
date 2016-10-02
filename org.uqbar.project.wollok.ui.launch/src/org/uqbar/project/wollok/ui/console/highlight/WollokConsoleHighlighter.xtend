@@ -13,7 +13,6 @@ import org.eclipse.xtext.TerminalRule
 import org.eclipse.xtext.nodemodel.INode
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
-import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 
 /**
  * Moved this logic to its own class.
@@ -67,9 +66,9 @@ class WollokConsoleHighlighter {
 	}
 	
 	def addStyle(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String data, Color fgColor, Color bgColor, int style) {
-		val s = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, fgColor, bgColor, style)
-		s.data = data
-		styles.merge(s)
+		val newStyle = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, fgColor, bgColor, style)
+		newStyle.data = data
+		styles.merge(newStyle)
 	}	
 	
 	def checkByName(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String name) {

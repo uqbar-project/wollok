@@ -1,13 +1,13 @@
 class Deposito {
-	val formaciones = []
+	const formaciones = []
 	
 	method agregarFormacion(unTren) { formaciones.add(unTren) }
 	method vagonesMasPesados() { formaciones.map({t=> t.vagonMasPesado()}).flatten() }
 }
 
 class Tren {
-	val vagones = []
-	val locomotoras = []
+	const vagones = []
+	const locomotoras = []
 	
 	method agregarVagon(v) { vagones.add(v) }
 	method getCantidadPasajeros() = vagones.sum{v=> v.getCantidadPasajeros()}
@@ -15,14 +15,14 @@ class Tren {
 	method getVelocidadMaxima() = locomotoras.min{l=> l.getVelocidadMaxima() }.getVelocidadMaxima()
 	method agregarLocomotora(loco) { locomotoras.add(loco)	}
 	method esEficiente() = locomotoras.forAll{l=> l.esEficiente()}
-	method puedeMoverse() = this.arrastreUtilTotalLocomotoras() >= this.pesoMaximoTotalDeVagones()
+	method puedeMoverse() = self.arrastreUtilTotalLocomotoras() >= self.pesoMaximoTotalDeVagones()
 	method arrastreUtilTotalLocomotoras() = locomotoras.sum{l=> l.arrastreUtil()}
 	method pesoMaximoTotalDeVagones() = vagones.sum{v=> v.getPesoMaximo()}
 	method getKilosEmpujeFaltantes() =
-		if (this.puedeMoverse())
+		if (self.puedeMoverse())
 			0
 		else
-			this.pesoMaximoTotalDeVagones() - this.arrastreUtilTotalLocomotoras()
+			self.pesoMaximoTotalDeVagones() - self.arrastreUtilTotalLocomotoras()
 	method vagonMasPesado() = vagones.max({v=> v.getPesoMaximo() })
 }
 
@@ -38,7 +38,7 @@ class Locomotora {
 }
 
 class Vagon {
-	method esLiviano() = this.getPesoMaximo() < 2500
+	method esLiviano() = self.getPesoMaximo() < 2500
 	method getCantidadPasajeros() 
 	method getPesoMaximo()
 }
@@ -52,7 +52,7 @@ class VagonPasajeros inherits Vagon {
 		return largo * if (ancho < 2.5) 8 else 10
 	}
 	override method getPesoMaximo() {
-		return this.getCantidadPasajeros() * 80
+		return self.getCantidadPasajeros() * 80
 	}
 }
 

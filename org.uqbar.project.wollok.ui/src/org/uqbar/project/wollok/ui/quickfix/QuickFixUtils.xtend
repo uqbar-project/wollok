@@ -22,12 +22,12 @@ class QuickFixUtils {
 	 * It will keep the same indentation as the previous line.
 	 */
 	def static insertAfter(IModificationContext context, EObject e, String textToInsert) {
-		val newBlock = ('\n' + textToInsert).replaceAll('\n', e.marginFromPreviousLine(context))
+		val newBlock = (System.lineSeparator + textToInsert).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.after, 0, newBlock)
 	}
 	
 	def static insertBefore(IModificationContext context, EObject e, String textToInsert) {
-		val newBlock = (textToInsert + "\n").replaceAll('\n', e.marginFromPreviousLine(context))
+		val newBlock = (textToInsert + System.lineSeparator).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.before, 0, newBlock)
 	}
 	
@@ -36,7 +36,8 @@ class QuickFixUtils {
 	}
 	 
 	def static void deleteToken(IXtextDocument it, EObject e, String token) {
-		replace(e.before + e.node.text.indexOf(token) - 2, token.length, "")
+		val trimText = get.substring(e.before,e.after)
+		replace(e.before + trimText.indexOf(token), token.length, "")
 	}
 	
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {
@@ -70,7 +71,7 @@ class QuickFixUtils {
 	}
 	
 	def static marginFromPreviousLine(EObject e, IModificationContext context) {
-		// finds out the text from the last line '\n' and ths first char of this object
+		// finds out the text from the last line System.lineSeparator and the first char of this object
 		val lastLine = context.getLineInfo(e.node.previousSibling)
 		context.textBetween(lastLine.endOfLine, e.before)
 	}

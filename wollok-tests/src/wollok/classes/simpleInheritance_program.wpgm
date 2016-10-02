@@ -2,7 +2,7 @@ import simpleInheritance.*
 
 program simpleInheritance {
 	
-	val pepita = new Golondrina()
+	const pepita = new Golondrina()
 	pepita.volar(50)
 
 	pepita.setEnergia(23)

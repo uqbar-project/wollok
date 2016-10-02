@@ -12,15 +12,15 @@ for i in `find . -name "pom.xml" -not -path "./.metadata/*" -not -path "*/target
 done
 
 echo -e "\t - MANIFEST VERSIONS"
-for i in `find . -name "MANIFEST.MF" | grep wollok | grep -v "/target"`;	do
+for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`;	do
     sed -e "s#Bundle-Version: \(.*\)#Bundle-Version: $NEW_VERSION.qualifier#g" $i > $i.tmp
     rm $i
     mv $i.tmp $i
 done
 
 echo -e "\t - MANIFESTS DEPENDENCIES"
-for i in `find . -name "MANIFEST.MF" | grep uqbar | grep -v "/target"`; do 
-    grep "bundle-version=\"" $i | grep uqbar > /dev/null
+for i in `find . -name "MANIFEST.MF" | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
+    grep "bundle-version=\"" $i | grep -E "uqbar|xinterpreter" > /dev/null
     if [ $? -eq 0 ] ; then
  	# echo "Modifying $i..."
 	sed -e "s#\(.*\)org\.uqbar\(.*\)bundle-version=\"[0-9][\.0-9]*\"\(.*\)#\1org\.uqbar\2bundle-version=\"$NEW_VERSION\"\3#g" $i > $i.tmp
@@ -30,7 +30,7 @@ for i in `find . -name "MANIFEST.MF" | grep uqbar | grep -v "/target"`; do
 done
 
 echo -e "\t - FEATURES"
-for i in `find . -name "feature.xml" | grep uqbar | grep -v "/target"`; do
+for i in `find . -name "feature.xml" | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
     sed -e "s#\(.*\)version=\"[0-9][\.0-9]*\.qualifier\"\(.*\)#\1version=\"$NEW_VERSION.qualifier\"\2#g" $i > $i.tmp
     rm $i
     mv $i.tmp $i
@@ -42,7 +42,7 @@ for i in `find . -name "feature.xml" | grep uqbar | grep -v "/target"`; do
 done
 
 echo -e "\t - PRODUCT"
-for i in `find . -name "*.product" -type f | grep uqbar | grep -v "/target"`; do
+for i in `find . -name "*.product" -type f | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
     sed -e "s#[0-9]\.[0-9]\.[0-9]\.qualifier#$NEW_VERSION.qualifier#g" $i > $i.tmp
     rm $i
     mv $i.tmp $i
@@ -54,7 +54,7 @@ done
 
 
 echo -e "\t - CATEGORY"
-for i in `find . -name "category.xml" -type f | grep uqbar | grep -v "/target"`; do
+for i in `find . -name "category.xml" -type f | grep -E "uqbar|xinterpreter" | grep -v "/target"`; do
     sed -e "s#[0-9]\.[0-9]\.[0-9]\.qualifier#$NEW_VERSION.qualifier#g" $i > $i.tmp
     rm $i
     mv $i.tmp $i

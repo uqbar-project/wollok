@@ -22,7 +22,7 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 			}
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				assert.equals(10, a.getI())
 				assert.equals(0.10, a.getJ())
 			}
@@ -30,13 +30,30 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 	}
 	
 	@Test
+	def void testCrossReferenceInitialization() {
+		'''
+			object abc {
+				var x = 20
+				var y = x * 2
+				
+				method getY() {
+					return y
+				}
+			}
+			program p {
+				assert.equals(40, abc.getY())
+			}			
+		'''.interpretPropagatingErrors
+	}
+		
+	@Test
 	def void assignmentToWKODeclared() {
 		'''
 			object before { method get() = "before" }
 		
 			class A {
-				val b = before
-				val a = after 
+				const b = before
+				const a = after 
 				
 				method getB() = b
 				method getA() = a
@@ -45,7 +62,7 @@ class InstanceVariableInitializationTest extends AbstractWollokInterpreterTestCa
 			object after { method get() = "before" }
 			
 			program p {
-				val a = new A()
+				const a = new A()
 				assert.equals(before, a.getB())
 				assert.equals(after, a.getA())
 			}

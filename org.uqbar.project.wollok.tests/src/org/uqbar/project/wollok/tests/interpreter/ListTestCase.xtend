@@ -97,4 +97,45 @@ class ListTestCase extends CollectionTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void printingDuplicatedElements(){
+		'''
+			program p {
+				const l1 = [[3,5,2], [4,2,6]].flatten()
+				assert.equals("[3, 5, 2, 4, 2, 6]", l1.toString())
+
+
+				const l2 = [1,2,3].flatMap({x => [x, x * 2, x * 3]})
+				assert.equals("[1, 2, 3, 2, 4, 6, 3, 6, 9]", l2.toString())
+
+				const l3 = [1,1,1]
+				assert.equals("[1, 1, 1]", l3.toString())
+			}
+		'''.interpretPropagatingErrors		
+	}
+
+	@Test
+	def void equalityCaseTrue() {
+		'''
+			program p {
+				assert.equals(['Hello'], ['Hello'])
+				assert.equals([4, 5, 9], [4, 5, 9])
+				assert.equals([true], [true])
+				assert.equals([], [])
+			}
+		'''.interpretPropagatingErrors		
+	}
+			
+	@Test
+	def void equalityCaseFalse() {
+		'''
+			program p {
+				assert.notEquals(['Hello'], ['Hellou'])
+				assert.notEquals([4, 5, 9], [5, 4, 9])
+				assert.notEquals([4, 5, 9], #{4, 5, 9})
+			}
+		'''.interpretPropagatingErrors		
+	}	
+		
+		
 }

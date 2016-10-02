@@ -1,7 +1,7 @@
 class Direccion {
 	var calle = ""
 	var numero = 0
-	val a
+	const a
 	
 	constructor(c, n) {
 		calle = c
@@ -9,7 +9,7 @@ class Direccion {
 		a = 23
 	}
 	
-	constructor (c) = this(c, 3) {
+	constructor (c) = self(c, 3) {
 		// ...
 	}
 	

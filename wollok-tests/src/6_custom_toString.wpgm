@@ -1,12 +1,12 @@
 program customToString {
 
-val pepe = object {
-	method toString() {
+const pepe = object {
+	override method toString() {
 		return 'Pepe'
 	}
 }
 
-this.println(pepe)
+console.println(pepe)
 assert.that(pepe.toString() == 'Pepe')
 
 }

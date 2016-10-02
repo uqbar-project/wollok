@@ -1,5 +1,5 @@
 program exception {
-	val a = 23
-	val b = 11
+	const a = 23
+	const b = 11
 	console.println(a+b)
 }

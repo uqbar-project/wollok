@@ -1,9 +1,8 @@
 package org.uqbar.project.wollok.ui.tests.model;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages;
 import org.uqbar.project.wollok.ui.launch.Activator;
@@ -24,6 +23,7 @@ public enum WollokTestState {
 		public URI getURI(WollokTestResult result) {
 			return result.getTestResource();
 		}
+
 		@Override
 		public String getOutputText(WollokTestResult result) {
 			return getText();
@@ -63,9 +63,12 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			return result.getErrorResource();
+			// Temporarily not linking to error resource because its URI is not available.
+			// return result.getErrorResource();
+
+			 return result.getTestResource();
 		}
-		
+
 		@Override
 		public String getOutputText(WollokTestResult result) {
 			return result.getErrorOutput();
@@ -107,7 +110,11 @@ public enum WollokTestState {
 
 		@Override
 		public URI getURI(WollokTestResult result) {
-			return result.getErrorResource();
+			// Temporarily not linking to error resource because its URI is not
+			// available.
+			// return result.getErrorResource();
+
+			return result.getTestResource();
 		}
 
 		@Override
@@ -125,8 +132,9 @@ public enum WollokTestState {
 
 	public abstract String getOutputText(WollokTestResult result);
 
-	public Image getImage() {
-		return Activator.getDefault().getImageDescriptor(this.getImageName())
-				.createImage();
+	public Image getImage(ResourceManager resourceManager) {
+		ImageDescriptor imageDescriptor = Activator.getDefault().getImageDescriptor(this.getImageName());
+		return resourceManager.createImage(imageDescriptor);
 	}
+
 }

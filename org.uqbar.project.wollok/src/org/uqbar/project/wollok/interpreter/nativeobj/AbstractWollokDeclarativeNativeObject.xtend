@@ -49,17 +49,17 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 				throw e
 			}
 			catch (IllegalArgumentException e) {
-				throw new WollokRuntimeException("Error while calling native java method " + method, e)				
+				throw new WollokRuntimeException("Error while calling native java method " + method.shortDescription, e)				
 			}
 			catch (InvocationTargetException e) {
-				throw e.cause
+				throw wrapNativeException(e, method, parameters)
 			}
 			catch (Throwable e) {
 				println(''' Method: «method.name» «method.parameterTypes» Parameters:«parameters.toString» Target:«this» ''')
 				e.printStackTrace
 				throw e
 			}
-	}	
+	}
 	
 	def String toJavaMethod(String messageName) {
 		if (messageName == "==") "equals"
@@ -80,8 +80,10 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	}
 
 	def isVoid(String message, Object... parameters) {
-		getMethod(message, parameters).returnType == Void.TYPE
+		getMethod(message, parameters).returnType.isVoidType
 	}
+	
+	def static boolean isVoidType(Class<?> it) { it == Void.TYPE || it == void }
 
 	def doesNotUnderstand(String message, Object[] objects) {
 		throwMessageNotUnderstood(this, message, objects)

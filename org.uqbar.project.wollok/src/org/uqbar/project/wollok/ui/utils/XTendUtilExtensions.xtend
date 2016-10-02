@@ -168,15 +168,18 @@ class XTendUtilExtensions {
 			javaToWollok(returnVal)
 		}
 		catch (InvocationTargetException e) {
-			val cause = e.cause
-			if (cause instanceof WollokProgramExceptionWrapper) {
-				throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException("Error while calling native method '" + m + " with parameters: " + result, cause.wollokException))
-			}
-			throw new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+			throw wrapNativeException(e, m, result)
 		}
 		catch (IllegalArgumentException e) {
 			throw new WollokRuntimeException("Error while calling java method " + m + " with parameters: " + result, e)
 		}
+	}
+	
+	def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
+		if (e.cause instanceof WollokProgramExceptionWrapper)
+			e.cause
+		else 
+			new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
 	}
 	
 	def static accesibleVersion(Method m) {
@@ -188,6 +191,8 @@ class XTendUtilExtensions {
 		}
 		metodin
 	}
+	
+	def static getShortDescription(Method method) '''«method.declaringClass.simpleName».«method.name»(«method.parameterTypes.map[simpleName].join(', ')»)'''
 	
 	def static cannotBeCalled(Method m) {
 		!m.isPublic || !m.declaringClass.isPublic

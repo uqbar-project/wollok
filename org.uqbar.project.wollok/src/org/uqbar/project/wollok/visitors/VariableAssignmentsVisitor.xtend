@@ -55,5 +55,12 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	def static isReferenceTo(WExpression it, WVariable variable) {
 		it instanceof WVariableReference && (it as WVariableReference).ref == variable
 	}
+	
+	// I'm not sure if this is a hack
+	//  why visiting the content of the reference ?
+	//  in a WKO referecing itself was introducing a stackoverflow
+	override dispatch void visit(WVariableReference it) { 
+		// does nothing ! 
+	}
 
 }

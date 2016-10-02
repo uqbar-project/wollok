@@ -3,47 +3,22 @@ package org.uqbar.project.wollok.game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import java.util.ArrayList
-import java.util.Collection
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.gameboard.Window
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * 
  */
 @Accessors
-class VisualComponent {
-	AbstractPosition position
-	Image image
-	WollokObject domainObject
-	Collection<String> attributes = newArrayList
+abstract class VisualComponent {
 	List<BalloonMessage> balloonMessages = newArrayList
 	
-	new (AbstractPosition position, Image image) {
-		this.position = position
-		this.image = image
-	}
-	
-	new (WollokObject object) {
-		domainObject = object
-		position = new WPosition(WollokObject.cast(domainObject.call("getPosicion")))
-		image = new WImage(object)
-	}
-	
-	new (WollokObject object, Collection<Object> attrs) {
-		this(object);
-		attributes.addAll(attrs.map[toString])
-	}
-	
-	def say(String aText) {
-		balloonMessages.add(new BalloonMessage(aText, Color.BLACK))
-	}
-	
-	def scream(String aText) {
-		balloonMessages.add(new BalloonMessage(aText, Color.RED))
-	}
+	def abstract List<String> getAttributes()
+	def abstract Image getImage()
+	def abstract Position getPosition()
+	def abstract void setPosition(Position image)
 
 	def void draw(Window window) {
 		window => [
@@ -58,7 +33,7 @@ class VisualComponent {
 	}
 
 	def drawAttributesIfNecesary(Window window) {		
-		var printableString = this.attributes.map[ showableAttribute ].join("\n")
+		var printableString = getAttributes.join(System.lineSeparator)
 		if (printableString != "" && inMyZone) {
 			window.writeAttributes(printableString, position, Color.WHITE)
 		}
@@ -67,6 +42,26 @@ class VisualComponent {
 	def drawBallonIfNecesary(Window window) {
 		if (hasMessages)
 			currentMessage.draw(window, this)
+	}
+
+	def say(String aText) {
+		addMessage(aText, Color.BLACK)
+	}
+	
+	def scream(String aText) {
+		addMessage(aText, Color.RED)
+	}
+	
+	def addMessage(String message, Color color) {
+		if (message.length > 50) {
+			var beginning = message.substring(0, 45) + ".."
+			var end = ".." + message.substring(46, message.length)
+			this.addMessage(beginning, color)
+			this.addMessage(end, color)
+			return 
+		}
+		
+		balloonMessages.add(new BalloonMessage(message, color))
 	}
 
 	def isInMyZone(){
@@ -80,10 +75,6 @@ class VisualComponent {
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 	
-	def getShowableAttribute(String attr) {
-		var value = domainObject.instanceVariables.get(attr)
-		attr + ":" + value.toString
-	}
 
 	def hasMessages() {
 		var textToDelete = new ArrayList<BalloonMessage>();
@@ -97,5 +88,17 @@ class VisualComponent {
 
 	def getCurrentMessage() {
 		balloonMessages.get(0)
+	}
+}
+
+@Accessors
+class WGVisualComponent extends VisualComponent {
+	Position position
+	Image image
+	List<String> attributes
+	
+	new (Position position, Image image) {
+		this.position = position
+		this.image = image
 	}
 }

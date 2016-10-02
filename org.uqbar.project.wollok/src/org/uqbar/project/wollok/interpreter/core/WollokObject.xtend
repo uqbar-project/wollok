@@ -42,7 +42,7 @@ import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
-	public static val THIS_VAR = new WVariable('this', false)
+	public static val SELF_VAR = new WVariable(SELF, false)
 	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext<WollokObject> parentContext
@@ -56,7 +56,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
 	def dispatch void addMember(WVariableDeclaration declaration) {
-		instanceVariables.put(declaration.variable.name, declaration.right?.eval)
+		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [| declaration.right?.eval ])
 	}
 		
 	// ******************************************
@@ -98,14 +98,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WollokObject... objects) {
-		var constructor = behavior.resolveConstructor(objects)
-		
-		// no-args constructor automatic execution 
-		if (constructor == null && objects.length == 0)
-			constructor = (behavior as WClass).findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
-			
-		if (constructor != null)
-			evaluateConstructor(constructor, objects)
+		behavior.resolveConstructor(objects)?.evaluateConstructor(objects)
 	}
 	
 	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
@@ -141,7 +134,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	override resolve(String variableName) {
-		if (variableName == THIS)
+		if (variableName == SELF)
 			this
 		else if (instanceVariables.containsKey(variableName))
 			instanceVariables.get(variableName)
@@ -151,7 +144,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
  	
 	override setReference(String name, WollokObject value) {
 		// TODO: change this exceptions to wollok exceptions
-		if (name == THIS) throw new RuntimeException("Cannot modify \"" +  THIS + "\" variable")
+		if (name == SELF) throw new RuntimeException("Cannot modify \"" +  SELF + "\" variable")
 		if (!instanceVariables.containsKey(name)) throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
 		val oldValue = instanceVariables.put(name, value)
@@ -176,11 +169,14 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override allReferenceNames() { 
 		instanceVariables.keySet.map[new WVariable(it, false)]
 		+ 
-		#[THIS_VAR]
+		#[SELF_VAR]
 	}
+	
 	def allMethods() {
-		// TODO: include inherited methods!
-		behavior.methods
+		if (behavior.parent != null)
+			behavior.methods + behavior.parent.methods
+		else
+			behavior.methods
 	}
 	
 	override toString() {
@@ -224,6 +220,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override addGlobalReference(String name, WollokObject value) {
 		interpreter.addGlobalReference(name, value)
 	}
+	
+	override removeGlobalReference(String name) {
+		interpreter.removeGlobalReference(name)
+	}
+	
 	
 	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
 	def <T> getNativeObject(String clazz) {

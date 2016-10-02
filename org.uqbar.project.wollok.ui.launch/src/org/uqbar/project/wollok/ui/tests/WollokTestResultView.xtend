@@ -5,6 +5,10 @@ import java.util.Observer
 import javax.inject.Inject
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
+import org.eclipse.jface.layout.GridDataFactory
+import org.eclipse.jface.resource.JFaceResources
+import org.eclipse.jface.resource.LocalResourceManager
+import org.eclipse.jface.resource.ResourceManager
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.ITreeSelection
 import org.eclipse.jface.viewers.LabelProvider
@@ -18,6 +22,8 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
+import org.eclipse.swt.widgets.ToolBar
+import org.eclipse.swt.widgets.ToolItem
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
@@ -27,6 +33,10 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
+
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -45,6 +55,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	Color noResultColor
 	Color successColor
 	Color failedColor
+	var ResourceManager resManager
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
 	public val static BAR_COLOR_FAILED = new RGB(237, 17, 18)
@@ -54,7 +65,33 @@ class WollokTestResultView extends ViewPart implements Observer {
 	@Inject
 	var GlobalURIEditorOpener opener
 
+	@Inject
+	WollokTestLaunchShortcut testLaunchShortcut
+	
+	ToolBar toolbar
+	
+	ToolItem runAgain
+	
+	ToolItem debugAgain
+
+	def canRelaunch(){
+		results != null && results.container != null && results.container.mainResource != null
+	}
+
+	def relaunch(){
+		this.relaunch("run")
+	}
+	
+	def relaunchDebug(){
+		this.relaunch("debug")
+	}
+
+	def relaunch(String mode){
+		testLaunchShortcut.launch(results.container.mainResource.toIFile, mode)
+	}
+
 	override createPartControl(Composite parent) {
+		resManager = new LocalResourceManager(JFaceResources.getResources(), parent);	
 		new GridLayout() => [
 			marginWidth = 0
 			marginHeight = 0
@@ -62,19 +99,39 @@ class WollokTestResultView extends ViewPart implements Observer {
 			verticalSpacing = 2
 			parent.setLayout(it)
 		]
-		
+		createToolbar(parent)
 		createResults(parent)
 		createBar(parent)
 		createTree(parent)
 		createTextOutput(parent)
 	}
+
+	def createToolbar(Composite parent){
+		toolbar = new ToolBar(parent, SWT.RIGHT)
+		
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(toolbar)
+		
+		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_runAgain
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
+			addListener(SWT.Selection) [ this.relaunch ]
+			enabled = false
+		]
+
+		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
+			toolTipText = Messages.WollokTestResultView_debugAgain
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/debuglast_co.gif"))
+			addListener(SWT.Selection) [ this.relaunchDebug ]
+			enabled = false
+		]
+	}
 	
 	def createBar(Composite parent) {
 		bar = new Label(parent, SWT.BORDER)
 		// creates and cache colors
-		noResultColor = new Color(parent.display, BAR_COLOR_NO_RESULT)
-		successColor = new Color(parent.display, BAR_COLOR_SUCCESS)
-		failedColor = new Color(parent.display, BAR_COLOR_FAILED)
+		noResultColor =  resManager.createColor(BAR_COLOR_NO_RESULT);
+		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
+		failedColor = resManager.createColor(BAR_COLOR_FAILED)
 				
 		bar.background = noResultColor 
 		new GridData => [
@@ -177,6 +234,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	override dispose() {
 		super.dispose
+		resManager.dispose
 		results.deleteObserver(this)
 	}
 
@@ -191,11 +249,16 @@ class WollokTestResultView extends ViewPart implements Observer {
 			errorTextBox.text = errorCount.toString
 			
 			bar.background = if (errorCount > 0) failedColor else successColor
+			
+			runAgain.enabled = true
+			debugAgain.enabled = true
 		}
 		else {
 			totalTextBox.text = ""
 			runTextBox.text = ""
 			errorTextBox.text = ""
+			runAgain.enabled = false
+			debugAgain.enabled = false
 		}
 	}
 	
@@ -227,12 +290,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 class WTestTreeLabelProvider extends LabelProvider {
 
+	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
+	
 	def dispatch getImage(WollokTestResult element) {
-		element.state.image
+		element.state.getImage(resourceManager)
 	}
 
 	def dispatch getImage(Object element) {
-		Activator.getDefault.getImageDescriptor("icons/w.png").createImage
+        var imageDescriptor = Activator.getDefault.getImageDescriptor("icons/w.png")
+        resourceManager.createImage(imageDescriptor)
 	}
 
 	def dispatch getText(WollokTestContainer element) {
@@ -243,7 +309,10 @@ class WTestTreeLabelProvider extends LabelProvider {
 	def dispatch getText(WollokTestResult element) {
 		element.testInfo.name
 	}
-
+	override def dispose(){
+		super.dispose
+		resourceManager.dispose
+	}
 }
 
 class WTestTreeContentProvider implements ITreeContentProvider {
@@ -287,6 +356,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	def dispatch hasChildren(WollokTestContainer element) { true }
 	def dispatch hasChildren(WollokTestResults element) { true }
 	def dispatch hasChildren(Object element) { false }
+	
 	override dispose() {}
 	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 

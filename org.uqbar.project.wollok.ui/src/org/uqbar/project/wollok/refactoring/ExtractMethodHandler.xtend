@@ -61,11 +61,11 @@ class ExtractMethodHandler extends AbstractHandler {
 		} 
 		catch (InterruptedException e) {
 			LOG.error("Error during refactoring", e)
-			MessageDialog.openError(Display.current.activeShell, "Error during refactoring", e.message + "\nSee log for details")
+			MessageDialog.openError(Display.current.activeShell, "Error during refactoring", e.message + System.lineSeparator + "See log for details")
 		} 
 		catch (Exception exc) {
 			LOG.error("Error during refactoring", exc)
-			MessageDialog.openError(Display.current.activeShell, "Error during refactoring", exc.message + "\nSee log for details")
+			MessageDialog.openError(Display.current.activeShell, "Error during refactoring", exc.message + System.lineSeparator + "See log for details")
 		}
 		null
 	}

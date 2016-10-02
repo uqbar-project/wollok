@@ -55,6 +55,7 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     }
     
    	def assertFormatting(String program, String expected) {
+   		println(formatCode(program))
 		Assert.assertEquals(expected, formatCode(program));		  
 	}
     
@@ -62,38 +63,38 @@ class WollokFormatterTestCase extends AbstractXtextTests {
 
     @Test
     def void testSimpleProgramWithVariablesAndMessageSend() throws Exception {
-    	assertFormatting('''program p { val a = 10 val b = 20 this.println(a + b) }''',
+    	assertFormatting('''program p { const a = 10 const b = 20 self.println(a + b) }''',
         '''
         
         program p {
-        	val a = 10
-        	val b = 20
-        	this.println(a + b)
+        	const a = 10
+        	const b = 20
+        	self.println(a + b)
         }''')
     }
     
     @Test
     def void testClassFormattingOneLineMethodStaysInOneLine() throws Exception {
-    	assertFormatting('''class Golondrina { val energia = 10 val kmRecorridos = 0 method comer(gr) { energia = energia + gr } }''',
+    	assertFormatting('''class Golondrina { const energia = 10 const kmRecorridos = 0 method comer(gr) { energia = energia + gr } }''',
         '''
         
         class Golondrina {
-        	val energia = 10
-        	val kmRecorridos = 0
+        	const energia = 10
+        	const kmRecorridos = 0
         	method comer(gr) { energia = energia + gr }
         }''')
     }
     
     @Test
     def void testClassFormattingOneLineMethodStaysInNewLine() throws Exception {
-    	assertFormatting('''class Golondrina { val energia = 10 val kmRecorridos = 0 method comer(gr) { 
+    	assertFormatting('''class Golondrina { const energia = 10 const kmRecorridos = 0 method comer(gr) { 
     		energia = energia + gr
     	} }''',
         '''
         
         class Golondrina {
-        	val energia = 10
-        	val kmRecorridos = 0
+        	const energia = 10
+        	const kmRecorridos = 0
         	method comer(gr) {
         		energia = energia + gr
         	}
@@ -103,8 +104,8 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     @Test
     def void classFormatting_twolinesBetweenVarsAndMethods() throws Exception {
     	assertFormatting('''class Golondrina { 
-    		val energia = 10 
-    		val kmRecorridos = 0
+    		const energia = 10 
+    		const kmRecorridos = 0
     		
     		method comer(gr) { 
     			energia = energia + gr
@@ -113,8 +114,8 @@ class WollokFormatterTestCase extends AbstractXtextTests {
         '''
         
         class Golondrina {
-        	val energia = 10
-        	val kmRecorridos = 0
+        	const energia = 10
+        	const kmRecorridos = 0
 
         	method comer(gr) {
         		energia = energia + gr
@@ -125,52 +126,52 @@ class WollokFormatterTestCase extends AbstractXtextTests {
     @Test
     def void program_ifInline() throws Exception {
     	assertFormatting('''program p { 
-    		val a = 10 
-    		val b = 0
+    		const a = 10 
+    		const b = 0
     		
-    		val c = if (a > 0) b else 0
+    		const c = if (a > 0) b else 0
     	}''',
     	'''
         
         program p {
-        	val a = 10
-        	val b = 0
+        	const a = 10
+        	const b = 0
         
-        	val c = if (a > 0) b else 0
+        	const c = if (a > 0) b else 0
         }''')
     }
     
     @Test
     def void program_maxTwoLinBreaksBetweenLines() throws Exception {
     	assertFormatting('''program p { 
-    		val a = 10 
-    		val b = 0
+    		const a = 10 
+    		const b = 0
     		
     		
     		
-    		val c = a + b
+    		const c = a + b
     	}''',
     	'''
         
         program p {
-        	val a = 10
-        	val b = 0
+        	const a = 10
+        	const b = 0
         
-        	val c = a + b
+        	const c = a + b
         }''')
     }
     
     @Test
     def void messageSendParameters() throws Exception {
     	assertFormatting('''program p { 
-    		val a = null
+    		const a = null
     		
     		a . doSomething  ( a, a,    a , a ,  a   )
     	}''',
     	'''
         
         program p {
-        	val a = null
+        	const a = null
         
         	a.doSomething(a, a, a, a, a)
         }''')
@@ -220,9 +221,9 @@ class WollokFormatterTestCase extends AbstractXtextTests {
 	var numero  constructor  (  c  ,   n  , b  ,  d ) { calle = c numero = n } }
 	class Client {
 		method blah() {
-			val a = ""
-			val b = 2
-			val c = new    Direccion  (  a   ,  b   ,  "blah"   ,   [1,2,3]    )
+			const a = ""
+			const b = 2
+			const c = new    Direccion  (  a   ,  b   ,  "blah"   ,   [1,2,3]    )
 		}
 	}''',
         '''
@@ -235,9 +236,9 @@ class Direccion {
 }
 class Client {
 	method blah() {
-		val a = ""
-		val b = 2
-		val c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
+		const a = ""
+		const b = 2
+		const c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
 	}
 }''')
     }
@@ -255,7 +256,32 @@ test "aSimpleTest" {
 }''')
     }
 
-
+    @Test
+    def void keepNewlinesInSequences() throws Exception {
+    	assertFormatting(
+    	'''
+    	object foo {
+    		method bar() {
+    			self.bar().bar().bar()
+    			
+    			console.println("") console.println("")
+    			
+    			console.println("") 
+    			console.println("")
+    		}
+    	}''', '''
+    	
+    	object foo {
+    		method bar() {
+    			self.bar().bar().bar()
+    	
+    			console.println("") console.println("")
+    	
+    			console.println("")
+    			console.println("")
+    		}
+    	}''')
+    }
 	// TODO: test 
 	//     	- named objects and object literals
 	//		- method parameter declaration

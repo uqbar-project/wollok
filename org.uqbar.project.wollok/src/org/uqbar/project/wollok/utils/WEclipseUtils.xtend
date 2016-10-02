@@ -77,6 +77,13 @@ class WEclipseUtils {
 		ResourcesPlugin.workspace.root.getFileForLocation(path)
 	}
 	
+	def static toIFile(java.net.URI uri) {
+		val path = Path.fromPortableString(uri.toString)
+		val file = path.toFile
+		var absolutePath = Path.fromOSString(file.absolutePath)
+		ResourcesPlugin.workspace.root.getFileForLocation(absolutePath)
+	}
+	
 	def static exists(IPath it) { ResourcesPlugin.getWorkspace.root.exists(it) }
 	def static exists(Resource it) {
 		if (isWorkspaceOpen && URI.isPlatform)

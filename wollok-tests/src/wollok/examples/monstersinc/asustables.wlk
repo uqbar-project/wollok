@@ -9,7 +9,7 @@ class Ninio inherits Asustable {
 	method setEdad(e) { edad = e }
 	method getEdad() = edad
 	override method teVaAAsustar(asustador) {
-		return asustador.asustar(this)
+		return asustador.asustar(self)
 	}
 }
 

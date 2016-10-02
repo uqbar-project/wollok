@@ -21,7 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WThis
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
@@ -46,16 +46,16 @@ import org.uqbar.project.wollok.typesystem.VoidType
 judgments {
 
 	inferTypes |- EObject obj
-	
+
 	type |- WExpression expression : output WollokType
 	expectedType |- WExpression expression ~~ WollokType type
 
 	// tipa una variable en base a su uso: usado solo para parametros (bloques y metodos)
-	typeOfVar |- WReferenciable r !> output WollokType	
+	typeOfVar |- WReferenciable r !> output WollokType
 	messageType |- WMemberFeatureCall call ~> output MessageType
-	
+
 	refineType |- WExpression e << WollokType newType
-	
+
 	// query env (consultas a lo ya inferido)
 	queryTypeFor ||- EObject r >> output WollokType
 	queryMessageTypeForMethod ||- WMethodDeclaration m :> output MessageType
@@ -82,12 +82,12 @@ rule InferClass
 from {
 	if (!G.environment.containsKey(c)) {
 		if (c.parent != null) { G |- c.parent }
-	
-		// create a new type for this class and register in env 
+
+		// create a new type for this class and register in env
 		G ||- c >> var WollokType classType
-		
+
 		for (p : c.variableDeclarations) { G |- p : var WollokType pType }
-		
+
 		if (c.constructors != null) 	{
 			c.constructors.forEach[cons|
 				G |- cons
@@ -120,31 +120,31 @@ from {
 		}
 		else {
 			WAny
-		} 
+		}
 		G.add(m, initialType)
 	}
-	
+
 	m.parameters.forEach[p| G.add(p, WAny)]
 
 	// Expression == null => método abstracto
 	if(m.expression != null) {
-		val currentReturnType = G.env(m, WollokType) 
+		val currentReturnType = G.env(m, WollokType)
 		if (currentReturnType != WAny) {
 			// si ya teniamos un return type inferido, refinar el tipo del body
-			G |- m.expression << currentReturnType  
+			G |- m.expression << currentReturnType
 		}
 		else {
 			// si no, al reves, del body inferir el tipo de retorno
 			G |- m.expression : var WollokType returnType
 			G.add(m, returnType)
 		}
-	
-	//	// if there's still parameters with Any type, then infer its structural type.	
+
+	//	// if there's still parameters with Any type, then infer its structural type.
 		for (p : m.parameters.filter[p| G.env(p, WollokType) == WAny]) {
 			G |- p !> var WollokType paramType
 			G.add(p, paramType)
 		}
-	}	
+	}
 }
 
 rule InferWClosure
@@ -180,17 +180,17 @@ from {
 	}
 }
 
-rule QueryMethodMessageType 
+rule QueryMethodMessageType
 	G ||- WMethodDeclaration m :> MessageType message
 from {
 	val paramTypes = newArrayList
 	for (p : m.parameters) {
-		G ||- p >> var WollokType paramType 
+		G ||- p >> var WollokType paramType
 		paramTypes += paramType
 	}
 	G ||- m >> var WollokType returnType
-	message = new MessageType(m.name, paramTypes, returnType) 
-} 
+	message = new MessageType(m.name, paramTypes, returnType)
+}
 
 // ****************************************************************************
 // ** Expression Types
@@ -199,19 +199,19 @@ from {
 axiom NumberLiteralType G |- WNumberLiteral num : WInt
 axiom StringLiteralType G |- WStringLiteral str : WString
 axiom BooleanLiteralType G |- WBooleanLiteral num : WBoolean
-axiom VariableRefType G |- WVariableReference variable : 
+axiom VariableRefType G |- WVariableReference variable :
 	try env(G, variable.ref, WollokType) catch (RuleFailedException e) WAny
 
 rule WConstructorCall G |- WConstructorCall call : WollokType t
 from {
 	// trigger inferring whoel class
 	G |- call.classRef
-	
-	G ||- call.classRef >> t
-} 
 
-rule WThisType 
-	G |- WThis thiz : WollokType t
+	G ||- call.classRef >> t
+}
+
+rule WSelfType
+	G |- WSelf thiz : WollokType t
 from {
 	val containingMethod = thiz.method
 	if (containingMethod == null) { // codigo suelto
@@ -239,10 +239,10 @@ from {
 		G |- overriden
 		t = G.env(overriden, WollokType)
 	}
-}	
+}
 
-rule WBlockExpressionType 
-	G |- WBlockExpression exps : WollokType t   
+rule WBlockExpressionType
+	G |- WBlockExpression exps : WollokType t
 from {
 	t = if (exps.expressions.isEmpty)
 		WVoid
@@ -261,7 +261,7 @@ rule AdditionType
 from {
 	var WollokType t = null
 	if (#["&&", "||"].contains(op.^feature)) {
-		returnType = WBoolean 
+		returnType = WBoolean
 		t = WBoolean
 	}
 	//TODO: esto es una puerta abierta
@@ -273,7 +273,7 @@ from {
 		returnType = WInt
 		t = WInt
 	}
-	
+
 	// left
 	G |- op.leftOperand : var WollokType leftType
 	if (leftType == WAny) {
@@ -281,13 +281,13 @@ from {
 	}
 	else {
 		G |- op.leftOperand ~~ t
-		or 
-			fail 
+		or
+			fail
 			error "Uncompatible operand type: " + type(G, op.leftOperand).first + " but expecting: " + t
 			source op
 			feature WollokDslPackage.Literals.WBINARY_OPERATION__LEFT_OPERAND
 	}
-	
+
 	// right
 	G |- op.rightOperand : var WollokType rightType
 	if (rightType == WAny) {
@@ -295,8 +295,8 @@ from {
 	}
 	else {
 		G |- op.rightOperand ~~ t
-		or 
-			fail 
+		or
+			fail
 			error "Uncompatible operand type: " + type(G, op.rightOperand).first + " but expecting: " + t
 			source op
 			feature WollokDslPackage.Literals.WBINARY_OPERATION__RIGHT_OPERAND
@@ -305,7 +305,7 @@ from {
 
 // REFINE TYPE
 
-rule RefineVariableRef 
+rule RefineVariableRef
 	G |- WVariableReference ref << WollokType newType
 from {
 	// si no estaba definido el tipo o era más genérico (Any por ahora)
@@ -322,15 +322,15 @@ from {
 rule RefineBlockType
 	G |- WBlockExpression b << WollokType newType
 from {
-	if (!b.expressions.isEmpty) { 
+	if (!b.expressions.isEmpty) {
 		G |- b.expressions.last << newType
 	}
 }
 
-rule RefineMethodReturnType 
+rule RefineMethodReturnType
 	G |- WMemberFeatureCall call << WollokType newType
 from {
-	if (call.memberCallTarget instanceof WThis) {
+	if (call.memberCallTarget instanceof WSelf) {
 		G |- call.memberCallTarget : var WollokType thisType
 		if (thisType instanceof ClassBasedWollokType) {
 			G |- call ~> var MessageType typeOfMessage
@@ -355,9 +355,9 @@ from {
 }
 
 
-// /REFINE TYPE   
+// /REFINE TYPE
 
-rule VariableDeclarationType 
+rule VariableDeclarationType
 	G |- WVariableDeclaration decl : WVoid
 from {
 	if (decl.right != null) {
@@ -374,7 +374,7 @@ rule AssignmentType
 from {
 	G |- assignment.value : var WollokType valueType
 	var expectedType = env(G, assignment.^feature.ref, WollokType)
-	
+
 	if (valueType == WAny) {
 		G |- assignment.value << expectedType
 	}
@@ -385,7 +385,7 @@ from {
 		}
 		catch (TypeSystemException e) {
 			fail
-				error assignment.value.stringRep + " of type " + valueType 
+				error assignment.value.stringRep + " of type " + valueType
 				+ " is not a valid value for variable " + assignment.^feature.ref.name + " of type " + expectedType
 				source assignment
 				feature WollokDslPackage.Literals.WASSIGNMENT__VALUE
@@ -397,27 +397,27 @@ rule MemberFeatureCallType
 	G |- WMemberFeatureCall featureCall : WollokType returnType
 from {
 	G |- featureCall.memberCallTarget : var WollokType receiverType
-	
+
 	// infer parameter types
 	var argumentTypes = newArrayList
 	for (arg : featureCall.memberCallArguments) {
 		G |- arg : var WollokType argumentType
 		argumentTypes += argumentType
 	}
-	
+
 	// check
 	var message = new MessageType(featureCall.^feature, argumentTypes, WAny)
 	if (receiverType.understandsMessage(message)) {
 		if (receiverType instanceof ClassBasedWollokType) {
 			var method = receiverType.lookupMethod(message)
-			
+
 			// inferir tipos del metodo y toda su clase (si todavia no se habia inferido)
 			G |- method.declaringContext
-			
+
 			// checkear parametro a parametro los tipos
 			var i = 0
 			for (param : method.parameters) {
-				var paramType = G.env(param, WollokType) 
+				var paramType = G.env(param, WollokType)
 				if (paramType != WAny) {
 					G |- featureCall.memberCallArguments.get(i) << paramType
 				}
@@ -427,8 +427,8 @@ from {
 		}
 		returnType = receiverType.resolveReturnType(message)
 	}
-	else { 
-		fail error "An object of type " + receiverType + " does not understand the message " 
+	else {
+		fail error "An object of type " + receiverType + " does not understand the message "
 				+ featureCall.^feature + "(" + argumentTypes.join(",") + ")"
 		source featureCall
 	}
@@ -452,15 +452,15 @@ from {
 			expectedType.acceptAssignment(type)
 		}
 		catch (TypeSystemException e) {
-			fail 
-			error expectedType.name + " expected but found " + expression.stringRep + " of type " + type 
+			fail
+			error expectedType.name + " expected but found " + expression.stringRep + " of type " + type
 			source expression
 		}
 }
 
 // ********************************
 // ** STRUCTURAL TYPES
-// ******************************** 
+// ********************************
 
 rule ObjectLiteralType
 	G |- WObjectLiteral obj : ObjectLiteralWollokType t
@@ -472,9 +472,9 @@ from {
 	else {
 		var newType = new ObjectLiteralWollokType(obj, G.env(TypeSystem, TypeSystem))
 		G.add(obj, newType)
-		
+
 		for (v : obj.variableDeclarations) { G |- v : var WollokType varType }
-	
+
 		obj.methods.forEach[ G |- it]
 		t = newType
 	}
@@ -504,7 +504,7 @@ rule TypeOfMessage
 	G |- WMemberFeatureCall call ~> MessageType t
 from {
 	val paramTypes = call.memberCallArguments.map[a|
-		try { 
+		try {
 			G |- a : var WollokType argType
 			argType
 		}

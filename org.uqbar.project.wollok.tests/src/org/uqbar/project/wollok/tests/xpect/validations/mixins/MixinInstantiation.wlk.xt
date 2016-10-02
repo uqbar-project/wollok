@@ -2,7 +2,7 @@
 
 mixin M1 {
    method m() {
-   	  this.doIt()      // expected abstract method
+   	  self.doIt()      // expected abstract method
    }
    method doIt()
 }
@@ -17,7 +17,7 @@ mixin M2 {}
 class E inherits D mixed with M2 {}
 
 mixin M3 {
-	method blah() { this.sarasa() }
+	method blah() { self.sarasa() }
 	method sarasa()
 }
 
@@ -42,19 +42,19 @@ class I mixed with M2 {
 object p {
 	method run() {
 		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "C"
-		val c = new C()
+		const c = new C()
 		console.println(c)
 		
 		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "D"
-		val d = new D()
+		const d = new D()
 		console.println(d)
 		
 		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "E"
-		val e = new E()
+		const e = new E()
 		console.println(e)
 		
 		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt(), M3.sarasa()" at "F"
-		val f = new F()
+		const f = new F()
 		console.println(f)
 		
 		console.println(new G())
@@ -70,7 +70,7 @@ object p {
 mixin M3 {
 	method blah() {
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "sarasa"
-		this.sarasa()
+		self.sarasa()
 	}
 }
 
@@ -86,6 +86,83 @@ object b mixed with M1, M2 {
 object c mixed with M1, M2 {
 	override method doIt() { 
 		// blah
+	}
+}
+
+//
+// Mixin Calling super() mixed in differnt combination
+//  checks for super implementation present
+//
+
+
+mixin Doctor {
+	
+	method name() = "Dr. " + super()
+	
+}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Tomato"
+class Tomato mixed with Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "TomatoWithNameBelowSuper"
+class TomatoWithNameBelowSuper mixed with Doctor {
+	override method name() = "23"
+}
+
+mixin Named {
+	method name() = "a name"
+}
+
+// OK !
+class Person mixed with Named and Doctor {}
+
+// NOT OK ! order matters !
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Person"
+class Person mixed with Doctor and Named {}
+
+// OK: super method comes from super class
+
+class WithName {
+	method name() = "name on a class"
+}
+class ANamed inherits WithName mixed with Doctor {
+}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o1"
+object o1 mixed with Doctor {
+}
+
+// OK
+object o2 inherits WithName mixed with Doctor {
+}
+
+// OK
+object o3 mixed with Named and Doctor {}
+
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "o4"
+object o4 mixed with Doctor and Named {}
+
+
+//
+// Instantiation Time Mixins
+//
+
+class Pepin {}
+
+object mixingAtInstantiation {
+	method doIt() {
+		
+		return [
+			// OK
+			new WithName() with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Object"
+			new Object() with Doctor,
+			
+			// OK 
+			new Pepin() with Named with Doctor,
+			// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Pepin"
+			new Pepin() with Doctor with Named
+		]
 	}
 }
 

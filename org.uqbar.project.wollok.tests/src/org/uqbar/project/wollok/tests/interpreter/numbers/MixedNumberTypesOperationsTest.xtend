@@ -28,4 +28,16 @@ class MixedNumberTypesOperationsTest extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	@Test
+	def void testFloatOperation(){
+		'''
+			program a {
+				assert.equals(100 * 1.1, 110.0)
+				assert.equals(100 * 1.1, 110.0)
+				
+				assert.equals(1.4 * 1.4, 1.96)
+				assert.equals(1.4 * 1.4, 1.96)
+			}
+		'''.interpretPropagatingErrors		
+	}	
 }

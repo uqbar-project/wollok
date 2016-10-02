@@ -42,6 +42,29 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void objectInheritFromCustomClassWithInstanceVariable() {
+		'''
+			class MyClass {
+				var inheritedVariable = "1234"
+			}
+			object myObject inherits MyClass {
+				method something() {
+					return inheritedVariable
+				}
+				method setInheritedVariable(aValue){
+					inheritedVariable = aValue
+				}
+			}
+			
+			program p {
+				assert.equals("1234", myObject.something())
+				myObject.setInheritedVariable("abc")
+				assert.equals("abc", myObject.something())
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
 	def void objectInheritFromCustomClassAndOverridesMethod() {
 		'''
 			class MyClass {
@@ -81,7 +104,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructor() {
 		'''
 			class Dog {
-				val name
+				const name
 				constructor(param) {
 					name = param
 				}	
@@ -100,7 +123,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructorPassingAnotherWKOAsArgument() {
 		'''
 			class Dog {
-				val owner
+				const owner
 				constructor(param) {
 					owner = param
 				}	
@@ -123,7 +146,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 	def void objectInheritFromClassThatHasConstructorPassingAnotherWKOMessageReturnValue() {
 		'''
 			class Dog {
-				val owner
+				const owner
 				constructor(param) {
 					owner = param
 				}	

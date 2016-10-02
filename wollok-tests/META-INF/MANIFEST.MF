@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: wollok-examples
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.3.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-SymbolicName: wollok-tests;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.ibm.icu,
@@ -14,6 +14,7 @@ Require-Bundle: com.ibm.icu,
  de.itemis.xtext.antlr;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.uqbar.project.wollok,
+ org.uqbar.project.xinterpreter;bundle-version="1.5.0",
  org.uqbar.project.wollok.launch,
  org.uqbar.project.wollok.lib,
  org.eclipse.xtext.ui;bundle-version="2.7.3"
