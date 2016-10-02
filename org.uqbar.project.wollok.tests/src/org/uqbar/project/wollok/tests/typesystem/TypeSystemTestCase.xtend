@@ -64,7 +64,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const b = "aString"
 			a = b
 		}'''.parseAndInfer.asserting [
-			assertIssues("a = b", "Expecting super type of <<Int>> but found <<String>> which is not")
+			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
 		]
 	}
 	
@@ -73,12 +73,15 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		'''
 			class Pato {
 				method cuack() { 'cuack!' }
-		 	program p {
+			}
+
+			program p {
 				const pato = new Pato()
 				pato.cuack()
-			}'''.parseAndInfer.asserting [
+			}
+		'''.parseAndInfer.asserting [
 			noIssues
-			assertTypeOf(classTypeFor("Pato"), 'pato')
+			assertTypeOf(classType("Pato"), 'pato')
 		]
 	}
 
