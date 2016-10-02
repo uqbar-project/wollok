@@ -36,7 +36,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			animal = new Perro()
 		}'''].parseAndInfer.asserting [
 //			noIssues
-			assertTypeOf(classType('Animal'), 'animal')
+			assertTypeOf(classTypeFor('Animal'), 'animal')
 		]
 	}
 	

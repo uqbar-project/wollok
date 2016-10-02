@@ -31,7 +31,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		''' program p {
 			const number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classType(INTEGER), 'number')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -41,7 +41,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const number
 			number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classType(INTEGER), 'number')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -53,7 +53,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const b = 3
 			number = a + b
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classType(INTEGER), 'number')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -78,7 +78,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 				pato.cuack()
 			}'''.parseAndInfer.asserting [
 			noIssues
-			assertTypeOf(classType("Pato"), 'pato')
+			assertTypeOf(classTypeFor("Pato"), 'pato')
 		]
 	}
 

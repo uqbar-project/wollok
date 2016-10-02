@@ -140,12 +140,8 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	
 	def findClass(String className) {
 		val c = resourceSet.allContents.filter(WClass).findFirst[name == className]
-		if (c == null) throw new RuntimeException("Could NOT find class [" + name + "] in :" + resourceSet.allContents.filter(WClass).map[name])
+		if (c == null) throw new RuntimeException(
+			'''Could NOT find class [«className»] in: «resourceSet.allContents.filter(WClass).map[name].toList»''')
 		c
 	}
-	
-	def classType(String className) {
-		new ClassBasedWollokType(findClass(className), null)
-	}
-	
 }
