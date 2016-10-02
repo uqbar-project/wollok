@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.ui.quickfix
 
 import com.google.inject.Inject
-import org.eclipse.emf.common.util.EList
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
@@ -34,9 +35,7 @@ import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 
 /**
  * Custom quickfixes.
@@ -46,7 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WBlockExpression
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
-	val returnChar ="\n"
+	val returnChar = System.lineSeparator
 			
 	@Inject
 	WollokClassFinder classFinder
@@ -74,16 +73,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Fix(WollokDslValidator.CANNOT_ASSIGN_TO_VAL)
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name, Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
-			val feature = (e as WAssignment).feature
-			if (feature instanceof WVariableDeclaration) {
+			val f = (e as WAssignment).feature.ref.eContainer
+			if (f instanceof WVariableDeclaration) {
+				val feature = f as WVariableDeclaration
 				context.xtextDocument.replace(feature.before, feature.node.length,
-					VAR + " " + feature.ref.name + " =" + feature.right.node.text)
+					VAR + " " + feature.variable.name + " =" + feature.right.node.text)
 			}
 		]
 	}
 
 	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
-	def createNonExistingMethod(Issue issue, IssueResolutionAcceptor acceptor) {
+	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
@@ -92,12 +92,32 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			
 			val placeToAdd = wko.findPlaceToAddMethod
 			
-			context.xtextDocument.replace(
+			context.getXtextDocument(wko.fileURI).replace(
 				placeToAdd,
 				0,
-				"\n" + "\t" + METHOD + " " + call.feature +
+				System.lineSeparator + "\t" + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
-					" {\n\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + "\n\t}"
+					" {" + System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + System.lineSeparator + "\t}"
+			)
+		]
+	}
+
+	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
+	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name, Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val callText = call.node.text
+			
+			val selfContainer = call.method.eContainer as WMethodContainer
+			
+			val placeToAdd = selfContainer.findPlaceToAddMethod
+			
+			context.getXtextDocument(selfContainer.fileURI).replace(
+				placeToAdd,
+				0,
+				System.lineSeparator + "\t" + METHOD + " " + call.feature +
+					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) +
+					" {" + System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub + System.lineSeparator + "\t}"
 			)
 		]
 	}
@@ -116,7 +136,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		return it.node.offset + it.node.text.indexOf("{") + 1
 	}
 	
-	def <T> T lastOf(EList<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
+	def <T> T lastOf(List<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -131,11 +151,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val method = e as WMethodDeclaration
 			val parent = method.wollokClass.parent
 			
-			val constructor = '''method «method.name»(«method.parameters.map[name].join(",")») { 
-				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-			}'''
+			val constructor = "\t" + '''method «method.name»(«method.parameters.map[name].join(",")»){
+		//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+	}''' + System.lineSeparator 
 			
-			addConstructor(parent, constructor)
+			addMethod(parent, constructor)
 		]
 	}
 	
@@ -150,8 +170,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
 			val clazz = e as WClass
-			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join('\n')
-			addConstructor(clazz, constructors)
+			val constructors = clazz.parent.constructors.map[ '''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''].join(System.lineSeparator)
+			addMethod(clazz, constructors)
 		]
 	}
 	
@@ -161,15 +181,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val delegatingConstructor = (e as WConstructor).delegatingConstructorCall
 			val parent = e.wollokClass.parent
 			
-			val constructor = '''new(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")») { 
-				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-			}'''
+			val constructor = '''
+				«tabChar»constructor(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")»){
+				«tabChar»«tabChar»//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+				«tabChar»}
+				'''
 			
-			addConstructor(parent, constructor)
+			addMethod(parent, constructor)
 		]
 	}
 	
-	protected def addConstructor(IModificationContext it, WClass parent, String constructor) {
+	protected def addMethod(IModificationContext it, WClass parent, String constructor) {
 		// TODO try to generalize and use findPlaceToAddMethod
 		
 		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
@@ -310,7 +332,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, 'Create new class', 'Create a new class definition.', "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = (e as WExpression).method.declaringContext
-			context.xtextDocument.replace(container.after, 0, "\n" + CLASS + newClassName + " {\n}\n")
+			context.xtextDocument.replace(container.after, 0, System.lineSeparator + CLASS + newClassName + " {" + System.lineSeparator + "}" + System.lineSeparator)
 		]
 		
 	}

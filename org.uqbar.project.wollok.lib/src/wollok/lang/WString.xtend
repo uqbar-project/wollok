@@ -17,7 +17,10 @@ class WString extends AbstractJavaWrapper<String> {
 
 	def length() { wrapped.length }
 	
-	def charAt(Integer index) {}
+	def charAt(Integer index) {
+		wrapped.charAt(index).toString
+	}
+	
 	@NativeMessage("+")
 	def concat(Object other) { doConcatWith(other) }
 		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
@@ -26,8 +29,19 @@ class WString extends AbstractJavaWrapper<String> {
 		
 	def startsWith(WollokObject other) { wrapped.startsWith(other.asWString.wrapped) }
 	def endsWith(WollokObject other ) { wrapped.endsWith(other.asWString.wrapped) }
-	def indexOf(WollokObject other) { wrapped.indexOf(other.asWString.wrapped) }
-	def lastIndexOf(WollokObject other ) { wrapped.lastIndexOf(other.asWString.wrapped) }
+	def indexOf(WollokObject other) { 
+		val result = wrapped.indexOf(other.asWString.wrapped)
+		if(result == -1)
+			throw new WollokRuntimeException("Element not found")
+		result
+	}
+	def lastIndexOf(WollokObject other ){ 
+		val result = wrapped.lastIndexOf(other.asWString.wrapped)
+		if(result == -1)
+			throw new WollokRuntimeException("Element not found")
+		result
+	} 		
+	def contains(WollokObject other) {wrapped.contains(other.asWString.wrapped)}
 	def toLowerCase() { wrapped.toLowerCase }
 	def toUpperCase() { wrapped.toUpperCase }
 	def trim() { wrapped.trim }
@@ -37,11 +51,27 @@ class WString extends AbstractJavaWrapper<String> {
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
 	def toSmartString(Object alreadyShown) { wollokToString }
-	
+
+	@NativeMessage("<")
+	def lessThan(WollokObject other) {
+		val wString = other.getNativeObject(WString)
+		wrapped < wString.wrapped
+	}
+
+	@NativeMessage(">")
+	def greaterThan(WollokObject other) {
+		val wString = other.getNativeObject(WString)
+		wrapped > wString.wrapped
+	}
+
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		val wString = other.getNativeObject(WString)
 		wString != null && wrapped == wString.wrapped
+	}
+	
+	def replace(String expression, String replacement) {
+		wrapped.replaceAll(expression, replacement)
 	}
 	
 	def convertToWString(WollokObject it) { call("toString") as WollokObject }

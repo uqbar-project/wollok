@@ -1,5 +1,6 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -17,7 +18,7 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
-	}
+	}	
 	
 	def max(WNumber<?> other) { doMax(this, other).asWollokObject }
 
@@ -31,13 +32,20 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
 	def dispatch doMin(WNumber<?> a, WNumber<?> b) { Math.min(a.doubleValue, b.doubleValue) }
 
+	def div(WollokObject other) {
+		val n = other.nativeNumber
+		Math.floor(this.doubleValue / n.doubleValue).intValue
+	}
+
 	// ********************************************************************************************
 	// ** Basics
 	// ********************************************************************************************	
 	
-	def doubleValue() { wrapped.doubleValue() }
+	def doubleValue() { wrapped.doubleValue }
 
-	override toString() { wrapped.toString() }
+	def stringValue() { wrapped.toString }
+	
+	override toString() { wrapped.toString }
 	
 	override equals(Object obj) {
 		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
@@ -64,5 +72,17 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	} 
 	
 	def WNumber<? extends Number> nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
+
+	protected def integerOrElse(BigDecimal decimal) {
+		val resultIntValue = decimal.intValue
+		 
+		if (decimal == resultIntValue) {
+			return resultIntValue
+		}
+		return decimal
+	}
 	
+	protected def integerOrElse(double decimal) {
+		integerOrElse(new BigDecimal(decimal))
+	}
 }

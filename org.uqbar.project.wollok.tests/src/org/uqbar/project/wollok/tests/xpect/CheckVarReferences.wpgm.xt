@@ -5,7 +5,7 @@ program p {
 	const a = 23
 	
 	// XPECT errors --> "Couldn't resolve reference to Referenciable 'x'." at "x"
-	self.println(x)
+	console.println(x)
 	
 	// XPECT warnings --> "Unused variable" at "objetin"
 	const objetin = object {

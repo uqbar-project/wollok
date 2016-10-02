@@ -47,14 +47,14 @@ class WollokChecker {
 			}
 			
 			val parameters = new WollokLauncherParameters().parse(args)
-			val fileName = parameters.wollokFiles.get(0)
-			val mainFile = new File(fileName)
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
+			val fileName = parameters.wollokFiles.get(0)
+			val mainFile = new File(fileName)
 			log.debug("Parsing program...")
 			val parsed = mainFile.parse
-			
+								
 			doSomething(parsed, injector, mainFile, parameters)
 			
 			log.debug("Program finished")

@@ -19,6 +19,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -58,7 +59,7 @@ abstract class AbstractWollokCallable implements WCallable {
 			}
 			else {
 				val WollokObject r = method.expression.eval as WollokObject
-				return if (method.expressionReturns)
+				return if (method.supposedToReturnValue)
 						r
 					else
 						theVoid
@@ -121,9 +122,8 @@ abstract class AbstractWollokCallable implements WCallable {
 	}
 
 	def dispatch isVoid(Object nativeObject, String message, Object... parameters) {
-		// TODO Por qué busca el método a mano en la clase en lugar de usar los mecanismos que ya tenemos?
-		var method = class.methods.findFirst[name == message]
-		method != null && method.returnType == Void.TYPE 
+		var method = AbstractWollokDeclarativeNativeObject.getMethod(nativeObject.class, message, parameters)
+		AbstractWollokDeclarativeNativeObject.isVoidType(method.returnType)
 	}
 
 	def dispatch isVoid(AbstractWollokDeclarativeNativeObject nativeObject, String name, Object... parameters){

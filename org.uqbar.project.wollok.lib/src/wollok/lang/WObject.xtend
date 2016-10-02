@@ -6,11 +6,9 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Wollok Object class. It's the native part
@@ -27,8 +25,6 @@ class WObject {
 	}
 	
 	def identity() { System.identityHashCode(obj) }
-	
-	def randomBetween(Integer start, Integer end) { XTendUtilExtensions.randomBetween(start, end) }
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
 	def className() { (obj.kind).fqn }

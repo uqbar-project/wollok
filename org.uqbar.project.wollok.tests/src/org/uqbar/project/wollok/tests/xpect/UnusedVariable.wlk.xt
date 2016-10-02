@@ -18,7 +18,7 @@ class WithUnusedVariables {
 	method doSomething() {
 		a = a + 1 + c + x
 		d = 123
-		//XPECT errors --> "Cannot modify values" at "z"
+		//XPECT errors --> "Cannot modify constants" at "z"
 		z = equipos.size()
 		
 		a = !usedOnlyWithUnary 

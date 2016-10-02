@@ -46,9 +46,10 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addView("org.eclipse.ui.views.ContentOutline");
 		]
 		
-		createFolder("right", IPageLayout.BOTTOM, 0.25f, "org.eclipse.ui.views.ContentOutline") => [
-			addView("org.uqbar.project.wollok.ui.diagrams.class");
-		]
+//		#681 - For release 1.5, static diagram will remain hidden for Wollok perspective
+//		createFolder("right", IPageLayout.BOTTOM, 0.25f, "org.eclipse.ui.views.ContentOutline") => [
+//			addView("org.uqbar.project.wollok.ui.diagrams.class");
+//		]
 		
 		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
 		addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f)
@@ -59,7 +60,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			"org.eclipse.debug.ui.launchActionSet",
 			"org.eclipse.jdt.junit.JUnitActionSet",
 			"org.eclipse.team.ui.actionSet",
-//			JavaUI.ID_ACTION_SET,
 			IPageLayout.ID_NAVIGATE_ACTION_SET
 		]
 		.forEach[ a| addActionSet(a) ]

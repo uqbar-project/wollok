@@ -31,6 +31,10 @@ class WDebugExtensions {
 		e.source instanceof IProcess && e.kind == DebugEvent.TERMINATE
 	}
 	
+	def static isStarted(DebugEvent e) {
+		e.source instanceof IProcess && e.kind == DebugEvent.CREATE
+	}
+	
 	// fire events
 	
 	def static void fireEvent(DebugEvent event) { DebugPlugin.getDefault.fireDebugEventSet(#[event]) }

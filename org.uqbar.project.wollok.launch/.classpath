@@ -5,7 +5,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/lipermi-0-4-2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jansi-1.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jetty-all-9.3.9.v20160517-uber.jar"/>
 	<classpathentry kind="src" path="src/"/>
-	<classpathentry kind="src" path="xtend-gen/"/>
+	<classpathentry kind="src" path="xtend-gen"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

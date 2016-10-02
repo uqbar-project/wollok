@@ -12,18 +12,21 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * 
  * @author jfernandes
  */
+@Accessors
 class XDebugStackFrameVariable implements Serializable {
-	@Accessors WVariable variable
-	@Accessors XDebugValue value
-		
+	WVariable variable
+	XDebugValue value
+	
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
 		this.value = if (value == null) null else value.asRemoteValue
 	}
 	
 	def asRemoteValue(WollokObject object) {
-		if (object.hasNativeType(LIST) || object.hasNativeType(COLLECTION))
-			 new XWollokListDebugValue(object)
+		if (object.hasNativeType(LIST))
+			 new XWollokListDebugValue(object, LIST)
+		else if (object.hasNativeType(SET))
+			 new XWollokListDebugValue(object, SET)
 		else
 			new XWollokObjectDebugValue(variable.name, object)
 	}

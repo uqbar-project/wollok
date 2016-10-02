@@ -190,4 +190,40 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void bug_896_stackOverFlow() {
+		'''object juan {
+		    method blah() {
+		        self.blah()
+		    }
+		}
+		
+		
+		program a {
+			try {
+		    	juan.blah()
+		    	throw new Exception("Should have failed!")
+		    }
+		    catch e : StackOverflowException {
+		    	// fine !
+		    }
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void bug_868() {
+		'''
+		object juan {
+		    var mascota = firulais
+		}
+		
+		object firulais {
+		    var duenio = juan
+		}
+		program a {
+			console.println(juan)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.model
 
 import java.util.Arrays
+import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -17,25 +19,23 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.wollokDsl.WMixin
-import java.util.Collections
-import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WReferenciable
 
 /**
  * Extension methods for WMethodContainers.
@@ -130,6 +130,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
 		val methods = newArrayList
 		// TODO: should we replace this with the "linearization()" method call ?
@@ -168,6 +169,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
 	def static dispatch WClass parent(WNamedObject it) { parent }
+	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
 
@@ -175,18 +177,21 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<WMixin> mixins(WClass it) { mixins }
 	def static dispatch List<WMixin> mixins(WObjectLiteral it) { mixins } // can we just reply with wollok.lang.Object class ?
 	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
+	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
 	def static dispatch members(WObjectLiteral c) { c.members }
 	def static dispatch members(WNamedObject c) { c.members }
+	def static dispatch members(MixedMethodContainer c) { #[] }
 	def static dispatch members(WMixin c) { c.members }
 
 	def static dispatch contextName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
+	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
@@ -214,13 +219,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	/**
 	 * The full hierarchy chain top->down
 	 */
-	// TODO: currently doesn't support inheritance between mixins
 	def static List<WMethodContainer> linearizateHierarhcy(WMethodContainer it) {
 		var chain = newLinkedList
 		chain.add(it)
 		if (mixins != null) {
-			val reversed = mixins.clone.reverse
-			chain.addAll(reversed)
+			chain.addAll(mixins.clone.reverse)
 		}
 		if (parent != null)
 			chain.addAll(parent.linearizateHierarhcy)
@@ -298,6 +301,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
 		obj.parent.resolveConstructor(arguments)
 	}
+	def static dispatch WConstructor resolveConstructor(MixedMethodContainer obj, Object... arguments) {
+		obj.clazz.resolveConstructor(arguments)
+	}
+	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
 		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
 	}
@@ -321,7 +328,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean getIsReturnTrue(WExpression it) { false }
 	def static dispatch boolean getIsReturnTrue(WBlockExpression it) { expressions.size == 1 && expressions.get(0).isReturnTrue }
 	def static dispatch boolean getIsReturnTrue(WReturnExpression it) { expression instanceof WBooleanLiteral && expression.isReturnTrue }
-	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { it.isIsTrue }
+	def static dispatch boolean getIsReturnTrue(WBooleanLiteral it) { isTrueLiteral }
+	
+	def static dispatch isTrueLiteral(WBooleanLiteral it) { isIsTrue }
+	def static dispatch isTrueLiteral(WExpression it) { false }
+	
+	def static dispatch isFalseLiteral(WBooleanLiteral it) { !isIsTrue }
+	def static dispatch isFalseLiteral(WExpression it) { false }
 
 	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
 	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }
@@ -332,6 +345,47 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
+	
+	// 
+	// SELF: target object/context
+	//
+	
+	def static isInASelfContext(EObject ele) {
+		ele.getSelfContext != null
+	}
+	
+	def static getSelfContext(EObject ele) {
+		for (var e = ele; e != null; e = e.eContainer)
+			if (e.isSelfContext) return e
+		null
+	}
+	
+	def static dispatch isSelfContext(WClass it) { true }
+	def static dispatch isSelfContext(WNamedObject it) { true }
+	def static dispatch isSelfContext(WObjectLiteral it) { true }
+	def static dispatch isSelfContext(WMixin it) { true }
+	def static dispatch isSelfContext(EObject it) { false }
+	
+	
+	def static unboundedSuperCallingMethodsOnMixins(WMethodContainer it) {
+		return linearizateHierarhcy.fold(newArrayList)[scm, e |
+			// order matters ! otherwise superCallingM will cancel themselves
+			// remove methods fullfilled by this element
+			scm.removeIf [required | e.hasMethodWithSignature(required) ]
+			// accumulate requirements
+			if (e instanceof WMixin) scm.addAll(e.superCallingMethods)
+			scm
+		]
+	}
+	
+	def static hasMethodWithSignature(WMethodContainer it, WMethodDeclaration method) {
+		methods.exists[m | m.hasSameSignatureThan(method) ]
+	}
+	
+	def static superCallingMethods(WMixin it) { methods.filter[m | m.callsSuper ] }
+	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
+	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
+	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 	
 
 }

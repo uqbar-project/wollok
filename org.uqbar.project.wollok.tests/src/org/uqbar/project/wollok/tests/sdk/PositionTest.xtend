@@ -1,12 +1,13 @@
 package org.uqbar.project.wollok.tests.sdk
 
+import org.junit.Before
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import org.uqbar.project.wollok.lib.WollokConventionExtensions
+import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.junit.Before
+import org.uqbar.project.wollok.lib.WollokConventionExtensions
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 
 class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)
@@ -17,109 +18,119 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		WollokConventionExtensions.POSITION_CONVENTIONS.asParameters
 	}
 
+	var position = "new Position(0,0)"
 	var gameboard = Gameboard.getInstance
 	
 	@Before
 	def void init() {
-		gameboard.clear()
+		gameboard.clear
 	}
 
 	@Test
 	def void canInstancePosition() {
 		'''
-		program p {
-			var p = new Position(0,0)
-		}'''.interpretPropagatingErrors
+		var p = «position»
+		'''.test
+	}
+	
+	@Test
+	def void equalityByCoordinates() {
+		'''
+		assert.equals(new Position(0,0), «position»)
+		'''.test
+	}
+	
+	@Test
+	def void testToString() {
+		'''
+		assert.equals("(0,0)", «position».toString())
+		'''.test
+	}
+	
+	@Test
+	def void testDistance() {
+		'''
+		assert.equals(5, «position».distance(new Position(3,4)))
+		'''.test
 	}
 
 	@Test
 	def void shouldDrawVisualObjectsInBoard() {
+		assertEquals(0, components.size)
+		
 		'''
+		«visualObjectWithoutPosition»
 		program p {
-			var visual = object {
-				method image() = "image.png"
-			}
-
-			new Position(0,0).drawElement(visual)
+			«position».drawElement(visual)
 		}'''.interpretPropagatingErrors
 		
-		assertEquals(1, gameboard.components.size)
+		assertEquals(1, components.size)
 	}
 
 	@Test
 	def void shouldDeleteVisualObjectsFromBoard() {
 		'''
+		«visualObjectWithoutPosition»
 		program p {
-			var visual = object {
-				method image() = "image.png"
-			}
-
-			var position = new Position(0,0)
+			var position = «position»
 			position.drawElement(visual)
 			position.deleteElement(visual)
 		}'''.interpretPropagatingErrors
 		
-		assertEquals(0, gameboard.components.size)
+		assertEquals(0, components.size)
 	}
 	
 	@Test
 	def void positionCanBeAccessedByGetterMethod() {
 		'''
-		program p {
-			var aVisual = object {
-				method get«convention.toFirstUpper»() = new Position(0,0)
-				method getImage() = "image.png"
-			}
-			
-			var otherVisual = object {
-				method «convention»() = new Position(0,0)
-				method getImage() = "image.png"
-			}
+		object aVisual {
+			method get«convention.toFirstUpper»() = «position»
+			«imageMethod»
+		}
 		
-			wgame.addVisual(aVisual)
-			wgame.addVisual(otherVisual)
+		object otherVisual {
+			method «convention»() = «position»
+			«imageMethod»
+		}
+		
+		program p {
+			game.addVisual(aVisual)
+			game.addVisual(otherVisual)
 		}'''.interpretPropagatingErrors
+		
+		validatePosition
 	}
 
 	@Test
 	def void positionCanBeAccessedByProperty() {
 		'''
-		program p {
-			var visual = object {
-				var «convention» = new Position(0,0)
-				
-				method getImagen() = "image.png"
-			}
+		object visual {
+			var «convention» = «position»
+			«imageMethod»
+		}
 		
-			wgame.addVisual(visual)
+		program p {
+			game.addVisual(visual)
 		}'''.interpretPropagatingErrors
+		
+		validatePosition
 	}
 
 	@Test
 	def void visualsWithoutPositionCantBeRendered() {
-		try {
-			'''
-			object visual {
-				method getImage() = "image.png"
-			}
-			
-			program p {
-				wgame.addVisual(visual)
-			}'''.interpretPropagatingErrors
-		} catch (AssertionError exception) {
-			assertTrue(exception.message.contains("Visual object doesn't have any position"))
-		}
+		'''
+		«visualObjectWithoutPosition»
+		program p {
+			assert.throwsException{ game.addVisual(visual) }
+		}'''.interpretPropagatingErrors
 	}
 
 	@Test
 	def void positionsCanDrawVisualsWithoutPosition() {
 		'''
-		object visual {
-			method getImage() = "image.png"
-		}
-		
+		«visualObjectWithoutPosition»
 		program p {
-			var position = new Position(0,0)
+			var position = «position»
 			position.drawElement(visual)
 			var expected = position.allElements().head()
 			assert.equals(expected, visual)
@@ -130,18 +141,18 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	def void whenClearShouldRemoveAllVisualsInIt() {
 		'''
 		class Visual {
-			method getImage() = "image.png"
+			«imageMethod»
 		}
 		
 		program p {
-			2.times{ new Position(0,0).drawElement(new Visual()) }
+			2.times{ «position».drawElement(new Visual()) }
 			new Position(1,1).drawElement(new Visual())
 		}'''.interpretPropagatingErrors
 		
 		assertEquals(3, gameboard.components.size)
 		'''
 		program p {
-			new Position(0,0).clear()
+			«position».clear()
 		}'''.interpretPropagatingErrors
 		
 		assertEquals(1, gameboard.components.size)
@@ -151,16 +162,37 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	def void sayShouldAddBallonMessageToVisualObject() {
 		var message = "A message"
 		'''
-		object visual {
-			method getImage() = "image.png"
-		}
-		
+		«visualObjectWithoutPosition»
 		program p {
-			var position = new Position(0,0)
+			var position = «position»
 			position.drawCharacter(visual)
 			position.say(visual, "«message»")
 		}'''.interpretPropagatingErrors
 		
 		assertEquals(message, gameboard.character.balloonMessages.head.text)
+	}
+	
+	def validatePosition() {
+		components.forEach[
+			assertEquals(new WGPosition(0,0), it.position)
+		]
+	}
+	
+	def components() {
+		gameboard.components
+	}
+	
+	def visualObjectWithoutPosition() {
+		'''
+		object visual {
+			«imageMethod»
+		}
+		'''
+	}
+	
+	def imageMethod() {
+		'''
+		method getImage() = "image.png"
+		'''
 	}
 }

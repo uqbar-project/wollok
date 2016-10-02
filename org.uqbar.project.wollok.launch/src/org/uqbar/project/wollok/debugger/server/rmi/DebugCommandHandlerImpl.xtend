@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
+import com.google.common.collect.Lists
 import java.net.URI
 import net.sf.lipermi.net.Server
 import org.uqbar.project.wollok.interpreter.api.XDebugger
@@ -13,13 +14,20 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  * 
  * @author jfernandes
  */
+// this should probably have a better name
 class DebugCommandHandlerImpl implements DebugCommandHandler {
 	Server server
 	XDebugger debugger
+	()=>void onReady
 	
-	new(XDebugger debugger, Server server) {
+	new(XDebugger debugger, Server server, ()=>void onReady) {
 		this.debugger = debugger
 		this.server = server
+		this.onReady = onReady
+	}
+	
+	override clientReady() {
+		onReady.apply()
 	}
 	
 	override pause() { debugger.pause }
@@ -41,8 +49,15 @@ class DebugCommandHandlerImpl implements DebugCommandHandler {
 		debugger.clearBreakpoint(fileURI.toString, lineNumber)
 	}
 	
-	override getStackFrames() {
-		newArrayList(debugger.stack.map[new XDebugStackFrame(it)])
+	override getStackFrames() throws WollokDebuggerException {
+		try {
+			Lists.newArrayList(debugger.stack.map[
+				new XDebugStackFrame(it)
+			])
+		}
+		catch (RuntimeException e) {
+			throw new WollokDebuggerException("Error while getting current stack trace", e)
+		}
 	}
 	
 }

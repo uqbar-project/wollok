@@ -1,10 +1,12 @@
 package wollok.lang
 
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.math.RoundingMode
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import java.math.BigDecimal
 
 /**
  * @author jfernandes
@@ -16,8 +18,6 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	}
 	
 	def abs() { Math.abs(wrapped).asWollokObject }
-	
-	def stringValue() { wrapped.toString }
 
 	@NativeMessage("+")
 	def plus(WollokObject other) { operate(other) [ doPlus(it) ] }
@@ -40,13 +40,20 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 
 	@NativeMessage("/")
 	def divide(WollokObject other) { operate(other) [ doDivide(it) ] }
-		def dispatch Number doDivide(Integer w) { wrapped / w }
+		def dispatch Number doDivide(Integer w) {
+			val result = new BigDecimal(wrapped).divide(new BigDecimal(w), 34, RoundingMode.HALF_UP)
+			val resultIntValue = result.intValue
+			if (result == resultIntValue) {
+				return resultIntValue
+			}
+			return result
+		}
 		def dispatch Number doDivide(BigDecimal w) { new BigDecimal(wrapped) / w }
 		def dispatch Number doDivide(Object w) { throw new WollokRuntimeException("Cannot divide " + w) }
 		
 	@NativeMessage("**")
 	def raise(WollokObject other) { operate(other) [ doRaise(it) ] }
-		def dispatch Number doRaise(Integer w) { (wrapped ** w).intValue }
+		def dispatch Number doRaise(Integer w) { integerOrElse(Math.pow(wrapped, w)) }
 		def dispatch Number doRaise(BigDecimal w) { Math.pow(wrapped, w.doubleValue) }
 		def dispatch Number doRaise(Object w) { throw new WollokRuntimeException("Cannot raise " + w) }
 
@@ -67,6 +74,16 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	
 	def invert() { (-wrapped).asWollokObject }
 	
+	def gcd(WollokObject other) {
+		val num1 = BigInteger.valueOf(wrapped)
+		try {
+	    	val num2 = BigInteger.valueOf((other.nativeNumber as WNumber<Integer>).wrapped.intValue)
+	    	return num1.gcd(num2).intValue
+		} catch (ClassCastException e) {
+			throw new IllegalArgumentException("gcd expects an integer as first argument") 
+		}
+	}
+	
 	/// java methods
 	
 	override equals(Object other) {
@@ -74,5 +91,9 @@ class WInteger extends WNumber<Integer> implements Comparable<WInteger> {
 	}
 
 	override compareTo(WInteger o) { wrapped.compareTo(o.wrapped) }
+	
+	def randomUpTo(Integer max) {
+		((Math.random * (max - wrapped)) + wrapped).intValue()
+	}
 
 }

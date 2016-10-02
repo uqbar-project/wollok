@@ -1,0 +1,76 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+}
+
+object p {
+    method run() {
+    	var value = false
+    	
+    	// AND / &&  (left)
+    	
+        // XPECT errors --> "Expecting a boolean" at "null"
+        value = null && value
+
+        // XPECT errors --> "Expecting a boolean" at "2"
+        value = 2 && value
+
+        // XPECT errors --> "Expecting a boolean" at "pepita"
+		value = pepita && value
+
+		// XPECT errors --> "Expecting a boolean" at "new List()"
+		value = new List() && value	
+		
+		// XPECT errors --> "Expecting a boolean" at "\"un poco de suerte\""	
+		value = "un poco de suerte" && value	 
+			
+		// XPECT errors --> "Expecting a boolean" at "[1, 2, 3]"	
+		value = [1, 2, 3] && value	 
+		
+		// XPECT errors --> "Expecting a boolean" at "#{1, 2, 3}"	
+		value = #{1, 2, 3} && value	 
+		
+		// XPECT errors --> "Expecting a boolean" at "object {}"			
+		value = object {} and value	 
+			
+		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"			
+		value = { a => a.toString() } && value	 
+
+		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"
+		value = value and { a => a.toString() }
+
+		// OR
+		
+		// XPECT errors --> "Expecting a boolean" at "null"
+        value = null || value
+
+        // XPECT errors --> "Expecting a boolean" at "2"
+        value = 2 or value
+
+        // XPECT errors --> "Expecting a boolean" at "pepita"
+		value = pepita || value
+
+		// XPECT errors --> "Expecting a boolean" at "new List()"
+		value = new List() or value	
+		
+		// XPECT errors --> "Expecting a boolean" at "\"un poco de suerte\""	
+		value = "un poco de suerte" && value	 
+			
+		// XPECT errors --> "Expecting a boolean" at "[1, 2, 3]"	
+		value = [1, 2, 3] || value	 
+		
+		// XPECT errors --> "Expecting a boolean" at "#{1, 2, 3}"	
+		value = #{1, 2, 3} or value	 
+		
+		// XPECT errors --> "Expecting a boolean" at "object {}"			
+		value = object {} || value	 
+			
+		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"			
+		value = { a => a.toString() } or value
+		
+		// right part
+		// XPECT errors --> "Expecting a boolean" at "\"un poco de suerte\""	
+		value = value || "un poco de suerte"
+
+    }
+}

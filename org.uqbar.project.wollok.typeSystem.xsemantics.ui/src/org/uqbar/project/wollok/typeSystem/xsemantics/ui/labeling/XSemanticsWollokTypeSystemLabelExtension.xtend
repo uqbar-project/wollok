@@ -14,6 +14,9 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 
 import org.uqbar.project.wollok.typesystem.WollokType
 
+/**
+ * 
+ */
 class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelExtension {
 	@Inject
 	protected WollokDslTypeSystem xsemanticsSystem

@@ -5,17 +5,17 @@ class Persona {
 		wellKnown.foo()
 		wellKnown.bar()
 		
-		// XPECT errors --> "Method does not exist in well-known object" at "fooBar"
+		// XPECT errors --> "The well-known object does not understand this message" at "fooBar"
 		wellKnown.fooBar()
 		
-		// XPECT errors --> "Method does not exist in well-known object" at "fooWithParam"
+		// XPECT errors --> "The well-known object does not understand this message" at "fooWithParam"
 		wellKnown.fooWithParam()
 	}
 }
 
 class B {
 	var i = wellKnown.foo()
-	// XPECT errors --> "Method does not exist in well-known object" at "zoo"
+	// XPECT errors --> "The well-known object does not understand this message" at "zoo"
 	var x = wellKnown.zoo()
 	
 	method a() = i + x

@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  *
@@ -110,8 +111,8 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch asProposalParameter(WStringLiteral c) { "aString" }
 	def dispatch asProposalParameter(WCollectionLiteral c) { "aCollection" }
 	def dispatch asProposalParameter(WObjectLiteral c) { "anObject" }
-	def dispatch asProposalParameter(WNullLiteral c) { "null" } //mmm
-	def dispatch asProposalParameter(WSelf c) { "this" } //mmm
+	def dispatch asProposalParameter(WNullLiteral c) { WollokConstants.NULL } //mmm
+	def dispatch asProposalParameter(WSelf c) { WollokConstants.SELF } //mmm
 	def dispatch asProposalParameter(WExpression r) { "something" }
 
 	// *****************************

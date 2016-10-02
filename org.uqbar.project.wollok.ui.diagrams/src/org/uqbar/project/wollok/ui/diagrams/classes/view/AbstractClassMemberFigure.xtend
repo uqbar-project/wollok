@@ -14,13 +14,13 @@ import org.uqbar.project.wollok.ui.WollokActivator
  * @author jfernandes
  */
 abstract class AbstractClassMemberFigure<T> extends Label {
-	val labelProvider = WollokActivator.getInstance.labelProvider
-	val T member
+	protected val labelProvider = WollokActivator.getInstance.labelProvider
+	protected val T member
 	
 	new(T member) {
 		this.member = member
 		
-		text = labelProvider.getText(member)
+		text = doGetText
 		icon = labelProvider.getImage(member)
 		labelAlignment = PositionConstants.LEFT
 		
@@ -32,4 +32,7 @@ abstract class AbstractClassMemberFigure<T> extends Label {
     	new Rectangle(new Point(bounds.x, bounds.y), size)
   	}
 	
+	def doGetText() {
+		labelProvider.getText(member)
+	}
 }

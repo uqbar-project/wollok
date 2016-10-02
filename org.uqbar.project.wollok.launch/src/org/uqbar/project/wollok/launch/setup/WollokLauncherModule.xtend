@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.launch.setup
 
 import org.uqbar.project.wollok.WollokDslRuntimeModule
+import org.uqbar.project.wollok.launch.DefaultWollokLauncherIssueHandler
 import org.uqbar.project.wollok.launch.WollokLauncherInterpreterEvaluator
 import org.uqbar.project.wollok.launch.WollokLauncherIssueHandler
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
@@ -11,7 +12,8 @@ import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.launch.tests.json.WollokJSONTestsReporter
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 import org.uqbar.project.wollok.scoping.WollokReplGlobalScopeProvider
-import org.uqbar.project.wollok.launch.DefaultWollokLauncherIssueHandler
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.interpreter.WollokREPLInterpreterEvaluator
 
 /**
  * Runtime module for the launcher.
@@ -27,11 +29,17 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 	}
 	
 	override bindIGlobalScopeProvider() {
-		return WollokReplGlobalScopeProvider
+		if(params.hasRepl)
+			return WollokReplGlobalScopeProvider
+		else 
+			return WollokGlobalScopeProvider
 	}
 	
 	override bindXInterpreterEvaluator() {
-		return WollokLauncherInterpreterEvaluator
+		if(params.hasRepl)
+			return WollokREPLInterpreterEvaluator
+		else
+			return WollokLauncherInterpreterEvaluator
 	}
 	
 	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
@@ -52,6 +60,5 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 			WollokLauncherIssueHandlerJSON
 		else
 			DefaultWollokLauncherIssueHandler
-	}
-	
+	}	
 }

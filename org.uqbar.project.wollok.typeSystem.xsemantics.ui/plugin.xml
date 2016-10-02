@@ -38,7 +38,7 @@
     <extension
           point="org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension">
        <wollokTypeSystemLabelExtension
-             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.labeling.XSemanticsWollokTypeSystemLabelExtension">
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.xsemantics.ui.labeling.XSemanticsWollokTypeSystemLabelExtension">
        </wollokTypeSystemLabelExtension>
     </extension>
     <extension

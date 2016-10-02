@@ -5,6 +5,7 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * @author jfernandes
@@ -46,7 +47,7 @@ public abstract class Shape extends ModelElement {
 	
 	def static validate(String value) {
 		try 
-			if (Integer.parseInt(value) >= 0)  null else "Value must be >=  0"
+			if (Integer.parseInt(value) >= 0)  null else "Value must be >= 0"
 		catch (NumberFormatException exc)
 			"Not a number"
 	}
@@ -142,4 +143,9 @@ public abstract class Shape extends ModelElement {
 	def getBounds() {
 		new Rectangle(location, size)
 	}
+	
+	def boolean shouldShowConnectorTo(WClass model) {
+		true
+	}
+	
 }

@@ -20,6 +20,7 @@ import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import org.eclipse.ui.PlatformUI
 
 /**
  * Launches the process to execute the interpreter.
@@ -39,7 +40,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	private static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		if (configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) != null) {
+		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) != null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
 		var config = configuration.configureLaunchSettings(mode)
@@ -120,7 +121,16 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 					return
 				}
 			}
+			else if (event.isStarted) {
+				openDebugPerspective
+			}
 		}
+	}
+	
+	def openDebugPerspective() {
+		PlatformUI.workbench => [
+			showPerspective("org.eclipse.debug.ui.DebugPerspective", activeWorkbenchWindow)
+		]
 	}
 	
 }

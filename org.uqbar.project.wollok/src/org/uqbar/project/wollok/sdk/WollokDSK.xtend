@@ -31,16 +31,19 @@ class WollokDSK {
 	public static val DOUBLE = "wollok.lang.Double"
 	public static val NUMBER = "wollok.lang.Number"
 	public static val BOOLEAN = "wollok.lang.Boolean"
+	public static val DATE = "wollok.lang.Date"
 
 	public static val COLLECTION = "wollok.lang.Collection"
 	public static val LIST = "wollok.lang.List"
 	public static val SET = "wollok.lang.Set"
+	public static val DICTIONARY = "wollok.lang.Dictionary"
 	
 	public static val CLOSURE = "wollok.lang.Closure"
 	
 	public static val EXCEPTION = "wollok.lang.Exception"
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
+	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
@@ -48,7 +51,9 @@ class WollokDSK {
 	
 	def static isBasicType(WollokObject it) {
 		val fqn = behavior.fqn
-		fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
+		val bt = fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
+//		println("[VM] \t\tis " + fqn + " basic type " + bt)
+		bt
 	}
 	
 }

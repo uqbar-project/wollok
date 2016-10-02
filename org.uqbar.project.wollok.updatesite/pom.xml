@@ -7,7 +7,7 @@
 		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
 		<groupId>org.uqbar-project</groupId>
 		<artifactId>wollok-parent</artifactId>
-		<version>1.4.3</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.uqbar.project.wollok.updatesite</artifactId>
@@ -33,6 +33,39 @@
 				<version>1.0-beta-6</version>
 			</extension>
 		</extensions>
+		<plugins>
+			<!-- creates the product -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-director-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>materialize-products</id>
+						<goals>
+							<goal>materialize-products</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>archive-products</id>
+						<goals>
+							<goal>archive-products</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<products>
+						<product>
+							<id>wollok-ide</id>
+							<archiveFileName>wollok</archiveFileName>
+							<rootFolders>
+              					<macosx>Wollok.app</macosx>
+              				</rootFolders>
+						</product>
+					</products>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 	<profiles>
@@ -48,38 +81,6 @@
 
 			<build>
 				<plugins>
-					<!-- creates the update site -->
-					<plugin>
-						<groupId>org.eclipse.tycho</groupId>
-						<artifactId>tycho-p2-director-plugin</artifactId>
-						<version>${tycho-version}</version>
-						<executions>
-							<execution>
-								<id>materialize-products</id>
-								<goals>
-									<goal>materialize-products</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>archive-products</id>
-								<goals>
-									<goal>archive-products</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<products>
-								<product>
-									<id>wollok-ide</id>
-									<archiveFileName>wollok</archiveFileName>
-									<rootFolders>
-                      								<macosx>Wollok.app</macosx>
-                      							</rootFolders>
-								</product>
-							</products>
-						</configuration>
-					</plugin>
-
 					<!-- extract git info -->
 					<plugin>
 						<groupId>com.github.koraktor</groupId>

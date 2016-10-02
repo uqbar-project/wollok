@@ -12,12 +12,14 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  */
 class CommandHandlerFactory {
 	
-	def static createCommandHandler(XDebugger debugger, int port) {
+	def static Server createCommandHandler(XDebugger debugger, int port, ()=>void onReady) {
+		val server = new Server
 		new CallHandler => [
-			val server = new Server
-			registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server))
+			registerGlobal(DebugCommandHandler, new DebugCommandHandlerImpl(debugger, server, onReady))
+//			server.bind(port, it, new DebuggingProtocolFilter) // use this to debug RMI
 			server.bind(port, it)
 		]
+		server
 	}
 	
 	def static remoteObjectName() { DebugCommandHandler.simpleName }

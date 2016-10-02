@@ -1,0 +1,24 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {
+	const x = "sarasa"
+	
+	constructor() {
+		// XPECT errors --> "Cannot modify constants" at "x"
+		x = 23
+	}
+	
+	method s() {
+		const aBlock = {a =>
+			// XPECT errors --> "Cannot modify constants" at "a"
+			a = 23
+		}
+		// XPECT errors --> "Cannot modify constants" at "aBlock"
+		aBlock = null
+	}
+	
+	method xxx(aParam) {
+		// XPECT errors --> "Cannot modify constants" at "aParam"
+		aParam = 23
+	}
+}
