@@ -20,7 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
-class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
+abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
 	WollokDslQuickfixProvider issueResolutionProvider
 

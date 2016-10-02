@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="47">
+<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="52">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.1.0.201508191347"/>
@@ -36,12 +36,6 @@
 <unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/neon/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.pde.feature.group" version="3.12.0.v20160606-1100"/>
-<unit id="org.eclipse.platform.ide" version="4.6.0.I20160606-1100"/>
-<unit id="org.eclipse.jdt.feature.group" version="3.12.0.v20160606-1100"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.6/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="6.0.1.I20160627-1700"/>
