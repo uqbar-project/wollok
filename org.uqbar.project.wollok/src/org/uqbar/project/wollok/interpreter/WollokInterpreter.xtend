@@ -125,7 +125,17 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
 	}
 
+	// non-thread-safe
+	boolean instantiatingStackOverFlow = false
+
 	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
+		if (!instantiatingStackOverFlow && stack.size > MAX_STACK_SIZE) {
+			instantiatingStackOverFlow = true
+			val e = (evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
+			instantiatingStackOverFlow = false
+			throw new WollokProgramExceptionWrapper(e)
+		}
+		
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try
 			return something.apply

@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.ui.quickfix
 
 import com.google.inject.Inject
-import org.eclipse.emf.common.util.EList
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
@@ -34,9 +35,7 @@ import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
-
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 
 /**
  * Custom quickfixes.
@@ -137,7 +136,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		return it.node.offset + it.node.text.indexOf("{") + 1
 	}
 	
-	def <T> T lastOf(EList<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
+	def <T> T lastOf(List<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {

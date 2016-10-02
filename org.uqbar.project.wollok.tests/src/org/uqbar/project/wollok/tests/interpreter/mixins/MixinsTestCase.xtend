@@ -283,6 +283,35 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void mixinsCallingSuperMixedInAClassWithoutImplementingItMakesItAbstract() {
+		'''
+			mixin Organic {
+				
+				method dehydratate() = super() + " an organic"
+				
+			}
+			
+			class Tomato mixed with Organic {}
+			
+			program tomatoEater {
+				const t = new Tomato()
+				try {
+					t.dehydratate()
+				}
+				catch e:MessageNotUnderstoodException {
+					assert.equals("a Tomato[] (WollokObject) does not understand dehydratate()", e.getMessage())
+					assert.equals("wollok.lang.MessageNotUnderstoodException: a Tomato[] (WollokObject) does not understand dehydratate()
+				at __synthetic0.Organic.dehydratate() [__synthetic0.wpgm]
+				at  [__synthetic0.wpgm]
+			", e.getStackTraceAsString())
+				}
+			}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+	
+	
+	
+	@Test
 	def void mixinOnAWKO() {
 		'''
 		mixin Flies {
@@ -388,6 +417,72 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 			pepita.fly()
 			assert.equals(0, pepita.times())
 		} 
+		'''.interpretPropagatingErrors
+	}
+	
+	// mixing at instantiation
+	
+	@Test
+	def void singleMixinAtInstantiationTime() {
+		'''
+		mixin Energy {
+			var energy = 100
+			method energy() = energy
+		}
+		class Warrior {
+			
+		}
+		program t {
+			const w = new Warrior() with Energy
+			assert.equals(100, w.energy())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
+	
+	@Test
+	def void multipleMixinAtInstantiationTime() {
+		'''
+		mixin Energy {
+			var energy = 100
+			method energy() = energy
+			method energy(e) { energy = e }
+		}
+		mixin GetsHurt {
+			method receiveDamage(amount) {
+				self.energy(self.energy() - amount)
+			}
+			method energy()
+			method energy(newEnergy)
+		}
+		
+		mixin Attacks {
+			var power = 10
+			method attack(other) {
+				other.receiveDamage(power)
+				self.energy(self.energy() - 1)
+			}
+			method power() = power
+			method power(p) { power = p }
+			
+			method energy()
+			method energy(newEnergy)
+		}
+		class Warrior {
+			
+		}
+		program t {
+			const warrior1 = new Warrior() with Attacks with Energy with GetsHurt
+			assert.equals(100, warrior1.energy())
+			
+			const warrior2 = new Warrior() with Attacks with Energy with GetsHurt
+			assert.equals(100, warrior2.energy())
+			
+			warrior1.attack(warrior2)
+			
+			assert.equals(90, warrior2.energy())
+			assert.equals(99, warrior1.energy())
+		}
 		'''.interpretPropagatingErrors
 	}
 	

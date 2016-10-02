@@ -1,14 +1,14 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok Lib
 Bundle-SymbolicName: org.uqbar.project.wollok.lib;singleton:=true
-Bundle-Version: 1.5.2
+Bundle-Version: 1.6.0.qualifier
 Bundle-Activator: org.uqbar.project.wollok.lib.WollokLibActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.uqbar.project.wollok.game,
  org.uqbar.project.xinterpreter,
  org.uqbar.project.wollok,
- org.eclipse.xtend.lib;bundle-version="2.9.0"
+ org.eclipse.xtend.lib;bundle-version="2.10.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: .,
  org.uqbar.project.wollok.lib,

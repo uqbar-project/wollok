@@ -59,6 +59,17 @@ class Exception {
 }
 
 /**
+ * Thrown when a stack overflow occurs because an application
+ * recurses too deeply.
+ *
+ * @author jfernandes
+ * @since 1.5.1
+ */
+class StackOverflowException inherits Exception {
+	constructor() = super()
+}
+
+/**
  * An exception that is thrown when a specified element cannot be found
  */
 class ElementNotFoundException inherits Exception {

@@ -60,6 +60,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS;
 	public static String WollokDslValidator_BINARYOP_ONLY_ON_VARS;
 	public static String WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS;
+	public static String WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED;
 	
 	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
 	
