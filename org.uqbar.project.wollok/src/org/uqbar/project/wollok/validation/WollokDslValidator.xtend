@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
@@ -26,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
@@ -54,6 +57,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Custom validation rules.
@@ -73,7 +77,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
 	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
-	public static val CANNOT_INSTANTIATE_ABSTRACT_CLASS = "CANNOT_INSTANTIATE_ABSTRACT_CLASS"
+
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val PARAMETER_NAME_MUST_START_LOWERCASE = "PARAMETER_NAME_MUST_START_LOWERCASE"
@@ -156,6 +160,26 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!abstractMethods.empty) {
 			val methodDescriptions = abstractMethods.map[methodName].join(", ")
 			report('''«WollokDslValidator_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''', it, WCONSTRUCTOR_CALL__CLASS_REF)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noSuperMethodRequiredByMixin(WMethodContainer it) { checkUnboundedSuperCallingMethodsOnMixins(it, WNAMED__NAME) }
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def noSuperMethodRequiredByMixinAtInstantiationTime(WConstructorCall it) { 
+		if (!mixins.empty)
+			checkUnboundedSuperCallingMethodsOnMixins(new MixedMethodContainer(classRef, mixins), it, WCONSTRUCTOR_CALL__CLASS_REF)
+	}
+	
+	def checkUnboundedSuperCallingMethodsOnMixins(WMethodContainer it, EObject target, EStructuralFeature attribute) {
+		if (it instanceof WMixin) return // no checks for mixin. Since a mixin by itself has no hierarchy
+		val methods = it.unboundedSuperCallingMethodsOnMixins
+		if (!methods.empty) {
+			val methodDescriptions = methods.map[methodName].join(", ")
+			report('''«WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED»: «methodDescriptions»''', target, attribute)
 		}
 	}
 
@@ -296,7 +320,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if(!a.feature.ref.isModifiableFrom(a)) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE, cannotModifyErrorId(a.feature))
 	}
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
-	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_VAL }
+	def dispatch String cannotModifyErrorId(WVariable it) { CANNOT_ASSIGN_TO_VAL } 
+	def dispatch String cannotModifyErrorId(WVariableDeclaration it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 	def dispatch String cannotModifyErrorId(WVariableReference it) { cannotModifyErrorId(ref) }
 
 	@Check
@@ -535,7 +560,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def boolean isSameOrSuperClassOf(WClass one, WClass other) {
-		one == other || one.isSuperTypeOf(other)
+		other != null && (one.fqn == other.fqn || one.isSuperTypeOf(other))
 	}
 
 	@Check
@@ -591,6 +616,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def testInTestFile(WTest t) {
 		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION)
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def dontDuplicateTestDescription(WTest wtest){
+		val file = wtest.eContainer as WFile
+		if(file.tests.exists[ it !== wtest && name == wtest.name])
+			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
 	}
 
 	@Check

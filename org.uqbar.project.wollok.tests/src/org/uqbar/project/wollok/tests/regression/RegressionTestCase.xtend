@@ -209,4 +209,21 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    }
 		}'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void bug_868() {
+		'''
+		object juan {
+		    var mascota = firulais
+		}
+		
+		object firulais {
+		    var duenio = juan
+		}
+		program a {
+			console.println(juan)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

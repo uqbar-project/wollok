@@ -25,6 +25,10 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_selectContainer;
 	public static String NewWollokObjectsWizardPage_description;
 	public static String NewWollokObjectsWizardPage_title;
+	public static String NewWollokObjectsWizardPage_elementName;
+	public static String NewWollokObjectsWizardPage_classLabel;
+	public static String NewWollokObjectsWizardPage_objectLabel;
+	
 	public static String NewWollokProgramWizardPage_description;
 	public static String NewWollokProgramWizardPage_title;
 	public static String NewWollokTestWizardPage_description;
@@ -32,6 +36,8 @@ public class Messages extends NLS {
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;
+	public static String WollokDslNewWizard_invalidChar;
+	public static String WollokDslNewWizard_shouldBeAlphabetic;
 	public static String WollokTemplateProposalProvider_WProgram_name;
 	public static String WollokTemplateProposalProvider_WProgram_description;
 	
@@ -89,6 +95,9 @@ public class Messages extends NLS {
 	public static String ExtractMethodUserInputPage_extractMethodTitle;
 
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
+	
+	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_debugAgain;
 	
 	static {
 		// initialize resource bundle

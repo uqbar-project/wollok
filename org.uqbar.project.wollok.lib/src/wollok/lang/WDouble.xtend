@@ -45,7 +45,7 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 
 	@NativeMessage("**")
 	def raise(WollokObject other) { operate(other) [ doRaise(it) ] }
-		def dispatch Number doRaise(Integer w) { wrapped ** w }
+		def dispatch Number doRaise(Integer w) { integerOrElse(Math.pow(wrapped.doubleValue, w)) }
 		def dispatch Number doRaise(BigDecimal w) { Math.pow( wrapped.doubleValue , w.doubleValue) }
 		def dispatch Number doRaise(Object w) { throw new WollokRuntimeException("Cannot raise " + w) }
 	
@@ -72,6 +72,19 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 		((Math.random * (maximum - minimum)) + minimum).doubleValue()
 	}
 	
+	def scale(int decimals, int operation) {
+		if (decimals < 0) throw new WollokRuntimeException("Cannot set new scale with " + decimals + " decimals")
+		wrapped.setScale(decimals, operation)
+	}
+	
+	def roundUp(int decimals) {
+		scale(decimals, BigDecimal.ROUND_UP)
+	}
+
+	def truncate(int decimals) {
+		scale(decimals, BigDecimal.ROUND_DOWN)
+	}
+
 	override compareTo(WDouble o) { wrapped.compareTo(o.wrapped) }
 	
 }

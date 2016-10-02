@@ -170,4 +170,12 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void printString() {
+		'''
+		assert.equals("hola".printString(), "\"hola\"")
+		assert.equals("3".printString(), "\"3\"")
+		'''.test
+	}
+
 }

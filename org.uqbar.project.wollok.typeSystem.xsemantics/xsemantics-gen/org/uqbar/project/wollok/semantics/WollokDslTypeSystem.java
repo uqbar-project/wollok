@@ -1308,7 +1308,18 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   }
   
   protected Result<Boolean> applyRuleRefineVariableRef(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WVariableReference ref, final WollokType newType) throws RuleFailedException {
-    if (((!G.getEnvironment().containsKey(ref)) || Objects.equal(this.<WollokType>env(G, ref, WollokType.class), WollokType.WAny))) {
+    boolean _or = false;
+    Map<Object, Object> _environment = G.getEnvironment();
+    boolean _containsKey = _environment.containsKey(ref);
+    boolean _not = (!_containsKey);
+    if (_not) {
+      _or = true;
+    } else {
+      WollokType _env = this.<WollokType>env(G, ref, WollokType.class);
+      boolean _equals = Objects.equal(_env, WollokType.WAny);
+      _or = _equals;
+    }
+    if (_or) {
       WReferenciable _ref = ref.getRef();
       /* G.add(ref.ref, newType) */
       if (!G.add(_ref, newType)) {
@@ -1390,7 +1401,16 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         typeOfMessage = (MessageType) result_1.getFirst();
         
         WMethodDeclaration method = ((ClassBasedWollokType)thisType).lookupMethod(typeOfMessage);
-        if (((!Objects.equal(method, null)) && Objects.equal(((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage), WollokType.WAny))) {
+        boolean _and = false;
+        boolean _notEquals = (!Objects.equal(method, null));
+        if (!_notEquals) {
+          _and = false;
+        } else {
+          WollokType _resolveReturnType = ((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage);
+          boolean _equals = Objects.equal(_resolveReturnType, WollokType.WAny);
+          _and = _equals;
+        }
+        if (_and) {
           boolean _add = G.add(method, newType);
           /* G.add(method, newType) */
           if (!_add) {

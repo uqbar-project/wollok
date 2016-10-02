@@ -35,8 +35,8 @@
 	<properties>
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.9.0</xtext.version>
-		<xsemantics-version>1.9.0.rc2</xsemantics-version>
+		<xtext.version>2.10.0</xtext.version>
+		<xsemantics-version>1.10</xsemantics-version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
@@ -115,58 +115,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.5</version>
-					<executions>
-						<execution>
-							<id>gen-clean</id>
-							<goals>
-								<goal>clean</goal>
-							</goals>
-							<configuration>
-								<filesets>
-									<fileset>
-										<directory>${basedir}/xtend-gen</directory>
-										<includes>
-											<include>**</include>
-										</includes>
-										<excludes>
-											<exclude>.gitignore</exclude>
-										</excludes>
-									</fileset>
-									<fileset>
-										<directory>${basedir}/src-gen</directory>
-										<includes>
-											<include>**</include>
-										</includes>
-										<excludes>
-											<exclude>.gitignore</exclude>
-										</excludes>
-									</fileset>
-									<fileset>
-										<directory>${basedir}/emf-gen</directory>
-										<includes>
-											<include>**</include>
-										</includes>
-										<excludes>
-											<exclude>.gitignore</exclude>
-										</excludes>
-									</fileset>
-									<fileset>
-										<directory>${basedir}/test-gen</directory>
-										<includes>
-											<include>**</include>
-										</includes>
-										<excludes>
-											<exclude>.gitignore</exclude>
-										</excludes>
-									</fileset>
-									<!-- <fileset> <directory>${basedir}/xsemantics-gen</directory> 
-										<includes> <include>**</include> </includes> <excludes> <exclude>.gitignore</exclude> 
-										</excludes> </fileset> -->
-								</filesets>
-							</configuration>
-						</execution>
-					</executions>
+					<version>3.0.0</version>
 				</plugin>
 
 				<!-- site -->
@@ -269,7 +218,34 @@
 		</pluginManagement>
 
 		<plugins>
-
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/xtend-gen</directory>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/emf-gen</directory>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/test-gen</directory>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 			<!-- JAVA 8 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -401,60 +377,62 @@
 				</configuration>
 			</plugin>
 			<!-- code coverage -->
-			
+
 			<!-- CHANGELOG generation -->
 			<plugin>
-			    <groupId>com.github.danielflower.mavenplugins</groupId>
-			    <artifactId>gitlog-maven-plugin</artifactId>
-			    <version>1.13.2</version>
-			    <executions>
-			       <execution>
-			         <goals>
-			          <goal>generate</goal>
-			         </goals>
-			       </execution>
-			    </executions>
-			    <configuration>
-			    	<generateMarkdownChangeLog>true</generateMarkdownChangeLog>
-			    	<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
-			    	
-			    	<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
-			    	<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename>
-			    	
-			    	<generateJSONChangeLog>false</generateJSONChangeLog>
-			    	
-			    	<excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern>
-			    	<outputDirectory>${project.basedir}</outputDirectory>
-			    </configuration>
+				<groupId>com.github.danielflower.mavenplugins</groupId>
+				<artifactId>gitlog-maven-plugin</artifactId>
+				<version>1.13.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<generateMarkdownChangeLog>true</generateMarkdownChangeLog>
+					<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
+
+					<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
+					<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename>
+
+					<generateJSONChangeLog>false</generateJSONChangeLog>
+
+					<excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern>
+					<outputDirectory>${project.basedir}</outputDirectory>
+				</configuration>
 			</plugin>
-			<!-- commit changelog  -->
+			<!-- commit changelog -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-plugin</artifactId>
-		        <executions>
-		            <execution>
-		                <id>add-changelog-to-git</id>
-		                <goals>
-		                    <goal>add</goal>
-		                    <goal>checkin</goal>
-		                </goals>
-		                <configuration>
-		                    <basedir>./</basedir>
-		                    <includes>CHANGELOG.md,	changelog.txt</includes>
-		                    <message>Adding changelog</message>
-		                </configuration>
-		            </execution>
-		        </executions>
-		    </plugin>
-		    <!-- invoke commit on release prepare -->
-		    <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-release-plugin</artifactId>
-		        <version>2.5.3</version>
-		        <configuration>
-		          <preparationGoals>clean verify gitlog:generate org.apache.maven.plugins:maven-scm-plugin:add org.apache.maven.plugins:maven-scm-plugin:checking</preparationGoals>
-		        </configuration>
-		      </plugin>
+				<executions>
+					<execution>
+						<id>add-changelog-to-git</id>
+						<goals>
+							<goal>add</goal>
+							<goal>checkin</goal>
+						</goals>
+						<configuration>
+							<basedir>./</basedir>
+							<includes>CHANGELOG.md, changelog.txt</includes>
+							<message>Adding changelog</message>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- invoke commit on release prepare -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<preparationGoals>clean verify gitlog:generate
+						org.apache.maven.plugins:maven-scm-plugin:add
+						org.apache.maven.plugins:maven-scm-plugin:checking</preparationGoals>
+				</configuration>
+			</plugin>
 			<!-- /CHANGELOG generation -->
 		</plugins>
 

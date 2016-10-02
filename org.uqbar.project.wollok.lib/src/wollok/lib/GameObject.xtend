@@ -67,6 +67,15 @@ class GameObject {
 		.toList.javaToWollok
 	}
 	
+	def colliders(WollokObject visual) {
+		val visualObject = board.findVisual(visual)
+		board.getComponentsInPosition(visualObject.position)
+		.map[ it as WVisual ]
+		.filter [ !it.equals(visualObject)]
+		.map [ it.wObject ]
+		.toList.javaToWollok
+	}
+		
 	def say(WollokObject visual, WollokObject message) {
 		board.findVisual(visual).say(message.asString)
 	}
@@ -92,22 +101,22 @@ class GameObject {
 	
 	
 //	 ACCESSORS
-	def getTitle() { board.title.javaToWollok }
-	def setTitle(WollokObject title) {
+	def title() { board.title.javaToWollok }
+	def title(WollokObject title) {
 		board.title = title.asString
 	}
 	
-	def getWidth() { board.width.javaToWollok }
-	def setWidth(WollokObject cant) {
+	def width() { board.width.javaToWollok }
+	def width(WollokObject cant) {
 		board.width =  cant.asInteger
 	}
 	
-	def getHeight() { board.height.javaToWollok }
-	def setHeight(WollokObject cant) {
+	def height() { board.height.javaToWollok }
+	def height(WollokObject cant) {
 		board.height = cant.asInteger
 	}
 	
-	def setGround(WollokObject image) {
+	def ground(WollokObject image) {
 		board.createCells(image.asString)
 	}
 }

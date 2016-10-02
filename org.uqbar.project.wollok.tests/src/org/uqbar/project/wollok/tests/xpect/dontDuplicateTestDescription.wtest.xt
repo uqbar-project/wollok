@@ -1,0 +1,20 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+object pepita {
+	method volar(){}
+}
+
+// XPECT errors --> "Don't duplicate the description of the test. The tests should have different descriptions." at ""testing something""
+test "testing something" {
+	assert.that(2 == 2)
+}
+
+// A different test, everything cool!
+
+test "testing other thing" {
+	assert.that(2 < 3)
+}
+
+// XPECT errors --> "Don't duplicate the description of the test. The tests should have different descriptions." at ""testing something""
+test "testing something" {
+	assert.that(2 < 3)
+}

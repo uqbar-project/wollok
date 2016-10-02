@@ -28,6 +28,6 @@ interface DebugCommandHandler {
 	def void setBreakpoint(URI fileURI, int lineNumber)
 	def void clearBreakpoint(URI fileURI, int lineNumber)
 	
-	def List<XDebugStackFrame> getStackFrames()
+	def List<XDebugStackFrame> getStackFrames() throws WollokDebuggerException
 	
 }

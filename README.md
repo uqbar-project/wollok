@@ -34,7 +34,7 @@ This is useful for example if you are going to develop with Sublime or any other
 
 ## Documentation ##
 
-Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](https://github.com/uqbar-project/wollok/wiki/LanguageReference) and Environment.
+Refer to the [wiki](https://github.com/uqbar-project/wollok/wiki/Home) for documentation like [Language Reference](http://www.wollok.org/en/lang-ref/) and Environment.
 
 ## What's the language like ? ##
 
@@ -77,7 +77,7 @@ Check out our [Language Reference](https://github.com/uqbar-project/wollok/wiki/
 
 You can either use its IDE:
 * Completely **integrated with Eclipse**.
-* With: many *static code analysis**, **Quick-Fixes**, **Refactors**
+* With: many **static code analysis**, **Quick-Fixes**, **Refactors**
 * An **interactive Console** (**REPL**)
 * **Visual representations**: Outline, Static diagram, Objects Diagrams
 * A **debugger**.
@@ -94,7 +94,7 @@ See [https://github.com/uqbar-project/wollok/wiki/Development](https://github.co
 
 ## License ##
 
-Copyright © 2014, [Uqbar Project Foundation](http://www.uqbar-project.org/), All Rights Reserved.
+Copyright © 2016, [Uqbar Project Foundation](http://www.uqbar-project.org/), All Rights Reserved.
 
 Distributed under the terms of LGPLv3
 [https://www.gnu.org/licenses/lgpl-3.0.txt](https://www.gnu.org/licenses/lgpl-3.0.txt)

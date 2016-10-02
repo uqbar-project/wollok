@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * xdebugger implementation that actually
@@ -18,7 +19,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 class XDebuggerImpl implements XDebugger {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
 	XInterpreter<?> interpreter
-	var XTextInterpreterEventPublisher eventSender
+	@Accessors var XTextInterpreterEventPublisher eventSender
 	val breakpoints = <XBreakpoint>newArrayList 
 	val Object suspendedLock = new Object
 	EObject currentStepObject

@@ -6,6 +6,7 @@ before_install:
   -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 script:
+# Creates the correct profile to run
 - cd org.uqbar.project.wollok.releng/
 - export PROFILES=normalProfile
 - if [ $TRAVIS_PULL_REQUEST == "false" -a $TRAVIS_BRANCH == "dev" ] ; then export
@@ -13,7 +14,9 @@ script:
 - if [ $TRAVIS_PULL_REQUEST == "false" ] && [[ "$TRAVIS_TAG" =~ ^v[0-9.]* ]] ; then
   export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
-- mvn -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
+
+# Maven build
+- mvn -e -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
 notifications:
   webhooks:
@@ -21,7 +24,7 @@ notifications:
     - env.GITTER_URL
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: never
 cache:
   directories:
   - $HOME/.m2
@@ -50,7 +53,7 @@ deploy:
     branch:
     - dev
     - master
-    - dev-*.*
+    - dev-1.5
 
 - provider: s3
   access_key_id: AKIAJLCGMGO45ZQFSLJA
@@ -64,4 +67,4 @@ deploy:
   region: us-west-2
   on:
     repo: uqbar-project/wollok
-    condition: "$TRAVIS_TAG =~ ^v[0-9.]*"
+    tags: true

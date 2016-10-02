@@ -45,7 +45,7 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
-		@Test
+	@Test
 	def void testTwoDoubleLiterals() {
 		'''
 		program p {
@@ -53,4 +53,15 @@ class NumberIdentityTest extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testNonIdenticalTwoDoubleLiterals() {
+		'''
+		program p {
+			const thirtyThree = 33
+			const anotherThirtyThree = 33
+			assert.notThat(33.0 !== 33)
+			assert.notThat(anotherThirtyThree !== thirtyThree)
+			assert.that(34 !== anotherThirtyThree)
+		}'''.interpretPropagatingErrors
+	}
 }

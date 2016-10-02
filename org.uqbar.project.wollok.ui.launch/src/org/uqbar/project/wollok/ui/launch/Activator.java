@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.launch;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -35,13 +36,8 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public ImageDescriptor getImageDescriptor(String name) {
-		try {
-			URL u = new URL(getDescriptor().getInstallURL(), name);
-			return ImageDescriptor.createFromURL(u);
-		} catch (MalformedURLException e) {
-			throw new WollokLauncherException("Error while loading image ["
-					+ name + "]", e);
-		}
+		URL u = find(this.getDefault().getStateLocation().append(name));
+		return ImageDescriptor.createFromURL(u);
 	}
 
 	public static Activator getDefault() {

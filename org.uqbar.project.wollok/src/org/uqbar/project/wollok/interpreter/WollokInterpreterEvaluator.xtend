@@ -257,8 +257,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WConstructorCall call) {
-		// hook the implicit relation "* extends Object*
-		newInstance(call.classRef, call.arguments.evalEach)
+		if (call.mixins.empty)
+			newInstance(call.classRef, call.arguments.evalEach)
+		else {
+			val container = new MixedMethodContainer(call.classRef, call.mixins)
+			new WollokObject(interpreter, container) => [ wo |
+				// mixins first
+				call.mixins.forEach[addMembersTo(wo)]
+				call.classRef.addInheritsMembers(wo)
+			
+				wo.invokeConstructor(call.arguments.evalEach.toArray(newArrayOfSize(call.arguments.size)))
+			]
+		}
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
@@ -288,17 +298,24 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def createNamedObject(WNamedObject namedObject, String qualifiedName) {
 		new WollokObject(interpreter, namedObject) => [ wo |
-			namedObject.addObjectMembers(wo)
-			namedObject.parent.addInheritsMembers(wo)
-			namedObject.addMixinsMembers(wo)
-
-			if (namedObject.native)
-				wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
-
-			if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
-				wo.invokeConstructor(namedObject.parentParameters.evalEach)
-
+			// first add it to solve cross-refs !
 			interpreter.currentContext.addGlobalReference(qualifiedName, wo)
+			try {
+				namedObject.addObjectMembers(wo)
+				namedObject.parent.addInheritsMembers(wo)
+				namedObject.addMixinsMembers(wo)
+	
+				if (namedObject.native)
+					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo,interpreter))
+	
+				if (namedObject.parentParameters != null && !namedObject.parentParameters.empty)
+					wo.invokeConstructor(namedObject.parentParameters.evalEach)
+			}
+			catch (RuntimeException e) {
+				// if init failed remove it !
+				interpreter.currentContext.removeGlobalReference(qualifiedName)
+				throw e
+			}
 		]
 	}
 

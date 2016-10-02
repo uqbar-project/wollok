@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.debugger.client.source
 
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector
+import org.uqbar.project.wollok.ui.launch.Activator
 
 /**
  * Directs the configuration of source lookup objects.
@@ -12,7 +13,13 @@ import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector
 class WollokSourceLookupDirector extends AbstractSourceLookupDirector {
 	
 	override initializeParticipants() {
-		addParticipants(#[new WollokSourceLookupParticipant])
+		addParticipants(#[createParticipant])
+	}
+	
+	def createParticipant() {
+		new WollokSourceLookupParticipant => [
+			Activator.^default.injector.injectMembers(it)
+		]
 	}
 	
 }

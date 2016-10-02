@@ -44,6 +44,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		value
 	}
 	
+	override removeGlobalReference(String name) {
+		globalVariables.remove(name)
+	}
+
 	@Inject
 	XInterpreterEvaluator<WollokObject> evaluator
 
@@ -121,6 +125,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
 	}
 
+	// non-thread-safe
 	boolean instantiatingStackOverFlow = false
 
 	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
@@ -130,6 +135,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			instantiatingStackOverFlow = false
 			throw new WollokProgramExceptionWrapper(e)
 		}
+		
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try
 			return something.apply

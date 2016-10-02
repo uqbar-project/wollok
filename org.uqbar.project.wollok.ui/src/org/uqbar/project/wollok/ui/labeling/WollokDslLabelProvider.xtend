@@ -25,6 +25,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 /**
  * Provides labels for EObjects.
@@ -33,6 +34,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	WollokTypeSystemLabelExtension labelExtension = null
+	@Inject
+	WollokDslGrammarAccess grammar
 	var labelExtensionResolved = false
 
 	@Inject
@@ -74,7 +77,12 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	def text(WVariableDeclaration it) { 
-		(if(writeable) "var " else "val ") + variable.name + concatResolvedType(": ", variable)
+		(if (writeable)
+			// var 
+			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
+			else
+			// const 
+			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name + concatResolvedType(": ", variable)
 	}
 	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
 
@@ -88,12 +96,13 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		name + concatResolvedType(": ", it)
 	}
 	
-	def text(WMethodDeclaration m) { 
+	def text(WMethodDeclaration m) {
 		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
-			+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else "" 
+				+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else ""
 	}
 	def text(WConstructor m) {
-		'new(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
+		
+		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
 	}
 	
 	def image(WMethodDeclaration ele) { 'wollok-icon-method_16.png' }

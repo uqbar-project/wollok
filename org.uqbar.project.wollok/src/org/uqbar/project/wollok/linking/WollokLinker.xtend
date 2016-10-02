@@ -14,6 +14,12 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.eclipse.emf.ecore.EReference
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
+/**
+ * Customizes the xtext linker in order to set
+ * the implicit relation between each class and Object superclass
+ * 
+ * @author npasserini
+ */
 class WollokLinker extends LazyLinker {
 	@Inject
 	var SyntheticLinkingSupport syntheticLinkingSupport

@@ -22,23 +22,32 @@ class AsyncXTextInterpreterEventPublisher implements XTextInterpreterEventPublis
 	}
 	
 	override started() {
-		service.execute([ wrapped.started ])
+		async [ wrapped.started ]
 	}
 	
 	override terminated() {
-		service.execute([ wrapped.terminated ])
+		async [ wrapped.terminated ]
 	}
 	
 	override suspendStep() {
-		service.execute([ wrapped.suspendStep ])
+		async [ wrapped.suspendStep ]
 	}
 	
 	override resumeStep() {
-		service.execute([ wrapped.resumeStep ])
+		async [ wrapped.resumeStep ]
 	}
 	
 	override breakpointHit(String fileName, int lineNumber) {
-		service.execute([ wrapped.breakpointHit(fileName, lineNumber) ])
+		async [ wrapped.breakpointHit(fileName, lineNumber) ]
+	}
+	
+	protected def async(Runnable r) {
+		if (!service.isShutdown)
+			service.execute(r)
+	}
+	
+	def close() {
+		service.shutdown()
 	}
 	
 }

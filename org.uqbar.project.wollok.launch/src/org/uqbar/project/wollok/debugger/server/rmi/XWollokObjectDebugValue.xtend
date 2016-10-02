@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
-import java.util.ArrayList
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -20,7 +20,7 @@ import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 class XWollokObjectDebugValue extends XDebugValue {
 	String typeName
 	String varName
-	@Accessors ArrayList<XDebugStackFrameVariable> variables = newArrayList
+	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
 
 	new(String varName, WollokObject obj) {
 		super(obj.description)
