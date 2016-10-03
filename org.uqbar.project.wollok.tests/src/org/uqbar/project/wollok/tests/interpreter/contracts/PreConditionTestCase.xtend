@@ -147,4 +147,30 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void inheritedPreCondition() {
+		'''
+			class Bird {
+				var energy = 10
+				
+				method fly(kms) {
+					energy -= kms
+				}
+				requires kms <= 100
+					
+			}
+			class Sparrow inherits Bird {
+				
+			}
+			test "Inherited Pre Condition must also be checked on subclasses" {
+				const b = new Sparrow()
+				try 
+					b.fly(200)
+				catch e {
+					assert.equals('Method requirements not met: Not satisfied (kms <= 100)', e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }
