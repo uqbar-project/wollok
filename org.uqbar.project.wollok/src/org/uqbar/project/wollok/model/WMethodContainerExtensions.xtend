@@ -393,6 +393,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<Invariant> invariants(WNamedObject it) { invariants }
 	def static dispatch List<Invariant>invariants(WObjectLiteral it) { invariants }
 	def static dispatch List<Invariant> invariants(WClass it) { invariants }
+	def static dispatch List<Invariant> invariants(MixedMethodContainer it) { #[] }
 	
 	def static Iterable<Invariant> allInvariants(WMethodContainer it) {
 		linearizateHierarhcy.map[invariants].flatten

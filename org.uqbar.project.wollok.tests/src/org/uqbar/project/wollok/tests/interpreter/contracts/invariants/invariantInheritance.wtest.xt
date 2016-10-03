@@ -14,14 +14,14 @@ class Bird {
 }
 
 test "invariant fails when trying to modify the instance variable" {
-	val b = new Bird()
+	const b = new Bird()
 	assert.throwsException { =>
 		b.fly(200)
 	}
 }
 
 test "Generated exception message for default invariant message" {
-	val b = new Bird()
+	const b = new Bird()
 	try
 		b.fly(200)
 	catch e

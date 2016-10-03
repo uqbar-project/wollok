@@ -42,7 +42,7 @@ test "Mike asusta una piyamada" {
 	mike.mejora(new EjercitarEnSimulador(2))
 	const energiaMike = mike.entrarAPuerta(puertaConPiyamada)
 	
-	assert.equals(75, energiaMike)   // 70/2 + 70/3 + 70/4 = 75
+	assert.equals(75, energiaMike.truncate(0))   // 70/2 + 70/3 + 70/4 = 75
 }
 
 test "Asustar a un adolescente disminuye la motivacion" {

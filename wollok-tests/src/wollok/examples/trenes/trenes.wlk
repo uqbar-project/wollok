@@ -14,7 +14,7 @@ class Tren {
 	method getCantidadVagonesLivianos() = vagones.count{v=> v.esLiviano()}
 	method getVelocidadMaxima() = locomotoras.min{l=> l.getVelocidadMaxima() }.getVelocidadMaxima()
 	method agregarLocomotora(loco) { locomotoras.add(loco)	}
-	method esEficiente() = locomotoras.forAll{l=> l.esEficiente()}
+	method esEficiente() = locomotoras.all{l=> l.esEficiente()}
 	method puedeMoverse() = self.arrastreUtilTotalLocomotoras() >= self.pesoMaximoTotalDeVagones()
 	method arrastreUtilTotalLocomotoras() = locomotoras.sum{l=> l.arrastreUtil()}
 	method pesoMaximoTotalDeVagones() = vagones.sum{v=> v.getPesoMaximo()}

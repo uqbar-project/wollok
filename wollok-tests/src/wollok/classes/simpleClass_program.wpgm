@@ -4,15 +4,15 @@ program simpleClass {
 	
 	const pepita = new Golondrina()
 
-	var r = pepita.getEnergia() == 50
-	assert.that(r)
+	assert.equals(100, pepita.getEnergia())
 	
 	//// una segunda
 	//
 	const pepona = new Golondrina()
 	pepona.volar(2)
+	
 	assert.equals(98, pepona.getEnergia())
-	assert.equals(50, pepita.getEnergia())  // pepita no se altero
+	assert.equals(100, pepita.getEnergia())  // pepita no se altero
 	//
 	//
 

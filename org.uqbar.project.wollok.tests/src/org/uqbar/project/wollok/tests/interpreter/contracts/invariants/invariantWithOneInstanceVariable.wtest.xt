@@ -24,21 +24,21 @@ class BigBird inherits Bird {
 }
 
 test "invariant gets checked for subclasses when calling inherited method" {
-	val b = new AnotherBird()
+	const b = new AnotherBird()
 	assert.throwsException { =>
 		b.fly(200)
 	}
 }
 
 test "invariant gets checked for subclasses when calling a subclass method" {
-	val b = new AnotherBird()
+	const b = new AnotherBird()
 	assert.throwsException { =>
 		b.doSomething()
 	}
 }
 
 test "Executes a new invariant from subclass" {
-	val b = new BigBird()
+	const b = new BigBird()
 	try {
 		b.fly(95)
 		assert.fail('Should have failed')

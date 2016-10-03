@@ -20,9 +20,9 @@ assert.equals(3, numbers.size())
 assert.that(numbers.contains(23))
 assert.notThat(numbers.contains(1))
 
-// forAll
-assert.that([20, 22, 34].forAll({n => n > 18}))
-assert.notThat([20, 22, 34].forAll({n => n > 30}))
+// all
+assert.that([20, 22, 34].all({n => n > 18}))
+assert.notThat([20, 22, 34].all({n => n > 30}))
 
 // forEach
 const vaca1 = object {
@@ -43,11 +43,11 @@ const vaca2 = object {
 const vacas = [vaca1, vaca2]
 
 vacas.forEach{v => v.engordar(2)}
-assert.that(vacas.forAll{v => v.peso() == 1002})
+assert.that(vacas.all{v => v.peso() == 1002})
 
 // map
 const mapped = vacas.map{v => v.peso()}
-assert.that(mapped.forAll{p => p == 1002})
+assert.that(mapped.all{p => p == 1002})
 
 
 // filter

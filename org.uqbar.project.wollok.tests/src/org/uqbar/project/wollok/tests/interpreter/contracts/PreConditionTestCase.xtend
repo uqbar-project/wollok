@@ -22,7 +22,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 				requires kms > 0
 			}
 			test "simplePreConditionForSingleParameterInClass" {
-				val b = new Bird()
+				const b = new Bird()
 				assert.throwsException{ => b.fly(0) }
 			}
 		'''.interpretPropagatingErrors
@@ -40,7 +40,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 				requires kms > 0 and energy >= kms
 			}
 			test "simplePreConditionForSingleParameterInClass" {
-				val b = new Bird()
+				const b = new Bird()
 				assert.throwsException{ => 
 					b.fly(20)  // tried to fly more than allowed by current energy
 				}
@@ -66,7 +66,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 					energy >= kms : 'Cannot fly more than its energy'
 			}
 			test "simplePreConditionForSingleParameterInClass" {
-				val b = new Bird()
+				const b = new Bird()
 				try 
 					b.fly(0)
 				catch e {
@@ -90,7 +90,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 					energy >= kms : 'Cannot fly more than its energy'
 			}
 			test "simplePreConditionForSingleParameterInClass" {
-				val b = new Bird()
+				const b = new Bird()
 				try 
 					b.fly(200)
 				catch e {
@@ -113,7 +113,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 					kms <= 100
 			}
 			test "simplePreConditionForSingleParameterInClass" {
-				val b = new Bird()
+				const b = new Bird()
 				try 
 					b.fly(200)
 				catch e {
