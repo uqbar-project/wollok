@@ -88,12 +88,13 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		do {
 			Thread.sleep(100)
 			
-			lastStackElement = realDebugger.stack.lastElement
-			steps += lastStackElement.clone
-			
-			val code = lastStackElement.code(programContent)
-			println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
-
+			if (!realDebugger.stack.isEmpty) {
+				lastStackElement = realDebugger.stack.lastElement
+				steps += lastStackElement.clone
+				
+				val code = lastStackElement.code(programContent)
+//				println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
+			}
 			realDebugger.stepInto()	
 		} while (!clientSide.isTerminated);
 		

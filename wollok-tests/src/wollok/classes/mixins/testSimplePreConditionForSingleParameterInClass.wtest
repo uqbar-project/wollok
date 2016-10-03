@@ -4,17 +4,26 @@ class Bird {
 
 	method fly(kms) {
 		energy -= kms
-	}
+	} 
 	requires 
 		kms > 0 : 'Cannot fly negative distances'
 		energy >= kms : 'Cannot fly more than its energy $energy'
 	
 }
 test "simplePreConditionForSingleParameterInClass" {
-	val b = new Bird()
+	const b = new Bird()
 	try
 		b.fly(0)
 	catch e	{
-		assert.equals('Method requirements not met:  kms > 0 and energy >= kms', e.getMessage())
+		assert.equals('Method requirements not met: Cannot fly negative distances (kms > 0)', e.getMessage())
+	}
+}
+
+test "secondPreConditionForSingleParameterInClass" {
+	const b = new Bird()
+	try
+		b.fly(2000)
+	catch e	{
+		assert.equals('Method requirements not met: Cannot fly more than its energy $energy (energy >= kms)', e.getMessage())
 	}
 }
