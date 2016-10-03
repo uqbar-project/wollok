@@ -102,6 +102,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WollokObject... objects) {
 		behavior.resolveConstructor(objects)?.evaluateConstructor(objects)
+		checkInvariants
 	}
 	
 	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
@@ -123,7 +124,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val context = then(constructorEvalContext, this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
-		checkInvariants
 	}
 	
 	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {

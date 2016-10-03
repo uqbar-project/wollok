@@ -60,6 +60,12 @@ class C {
 	method setB(_b) { b = _b }
 }
 
+class D {
+	var energy = 20
+	
+	invariant energy > 50
+}
+
 test "invariant are executed as part of method execution, after it and before returning from the method" {
 	try {
 		const bird = new Bird()
@@ -104,6 +110,17 @@ test "a class can have multiple invariants" {
 		c.setB(0)
 	})
 }
+
+test "invariant not satisfied at construction time must fail" {
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy > 50)", { =>
+		const d = new D()   
+		console.println(d)
+	})
+}
+
+//
+// Inheritance
+//
 
 test "invariant gets checked for subclasses when calling inherited method" {
 	const b = new AnotherBird()
