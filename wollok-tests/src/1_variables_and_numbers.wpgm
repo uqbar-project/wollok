@@ -28,9 +28,7 @@ program variablesAndNumbers {
 	assert.that(2 * 2.0 == 2.0 * 2)
 	assert.that(2 + 2.0 == 2.0 + 2)
 	
-	assert.that("Hola" * 3 == "HolaHolaHola")
-	assert.that(3 * "Hola" == "HolaHolaHola")
-	
+
 	assert.equals(0 - 1, -1)
 	assert.equals(0 - 4, -4)
 	

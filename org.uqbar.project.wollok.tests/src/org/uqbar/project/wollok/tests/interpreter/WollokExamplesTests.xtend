@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileReader
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters

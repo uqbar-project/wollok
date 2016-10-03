@@ -88,12 +88,9 @@ test "Class with simple mixin inherits a method" {
 test "Class with mixin modifying its own state from the mixin" {
 	const b = new WalkingBird()
 	b.walk(10)
-//	console.println(b.walkedDistance())
+
 	const walked = b.walkedDistance()
-	console.println("sarasa = " + walked)
 	assert.that(10 == walked)
-	
-	console.println("Y ahora ?")
 }
 
 test "asd" {
