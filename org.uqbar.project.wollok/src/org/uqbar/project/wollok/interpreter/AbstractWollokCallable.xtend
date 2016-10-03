@@ -68,13 +68,21 @@ abstract class AbstractWollokCallable implements WCallable {
 	}
 	
 	def protected void checkRequirements(WMethodDeclaration method) {
-		if (method.requirements == null || method.requirements.empty)
-			return;
-		// evaluate
-		val evaluations = method.requirements.map[r| r -> r.condition.eval]
+		// TODO: this needs work to implement real inheritance
+		// and precondition refinement
 		
+		if (method.requirements == null || method.requirements.empty) {
+			if (method.overrides) {
+				method.overridenMethod.checkRequirements()
+			}
+			return;
+		}
+		// evaluate
+		
+		val failing = method.requirements
+						.map[r| r -> r.condition.eval]
+						.filter[ !value.isTrue ]
 		// check and fail
-		val failing = evaluations.filter[ !value.isTrue ]
 		if (!failing.empty)
 			throw newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, 
 				"Method requirements not met: " + 

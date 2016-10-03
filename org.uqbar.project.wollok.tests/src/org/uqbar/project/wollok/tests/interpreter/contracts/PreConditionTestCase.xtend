@@ -160,7 +160,6 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 					
 			}
 			class Sparrow inherits Bird {
-				
 			}
 			test "Inherited Pre Condition must also be checked on subclasses" {
 				assert.throwsExceptionWithMessage('Method requirements not met: Not satisfied (kms <= 100)', {=> 
@@ -189,6 +188,36 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 				assert.throwsExceptionWithMessage('Method requirements not met: Not satisfied (kms > 0)', { => 
 					const b = new Bird()
 					b.walk(-1)
+				})
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void inheritedPreConditionOverridingMethod() {
+		'''
+			class Bird {
+				var energy = 10
+				
+				method fly(kms) {
+					energy -= kms
+				}
+				requires kms <= 100
+				
+				method energy() = energy	
+			}
+			class Sparrow inherits Bird {
+				var flied = 0
+				override method fly(kms) {
+					// without calling super !
+					flied += kms
+				}
+				method flied() = flied
+			}
+			test "Inherited Pre Condition must also be checked on subclasses even if the method is overriden" {
+				const b = new Sparrow()
+				assert.throwsExceptionWithMessage('Method requirements not met: Not satisfied (kms <= 100)', {=> 
+					b.fly(200)
 				})
 			}
 		'''.interpretPropagatingErrors
