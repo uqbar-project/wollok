@@ -2,7 +2,7 @@ class Deposito {
 	const formaciones = []
 	
 	method agregarFormacion(unTren) { formaciones.add(unTren) }
-	method vagonesMasPesados() = formaciones.map({ t => t.vagonMasPesado()}).flatten()
+	method vagonesMasPesados() = formaciones.map({ t => t.vagonMasPesado()})
 }
 
 class Tren {

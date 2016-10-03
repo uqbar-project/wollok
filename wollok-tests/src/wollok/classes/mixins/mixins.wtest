@@ -103,7 +103,7 @@ test "asd" {
 
 test "Mixin method calls a method on the class" {
 	const b = new BirdWithFlyingShortCuts()
-	b.fly100meters()
+	b.fly100Meters()
 	assert.equals(100, b.energy())
 }
 
