@@ -18,3 +18,16 @@ test "Flying more than its energy fails" {
 		pepita.fly(105)
 	})
 }
+
+test "Invariants also work for anonymous objects" {
+	const arturo = object {
+		var energy = 100
+		invariant energy >= 0
+		method fly(meters) {
+			energy -= meters
+		}
+	}
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
+		arturo.fly(105)
+	})
+}

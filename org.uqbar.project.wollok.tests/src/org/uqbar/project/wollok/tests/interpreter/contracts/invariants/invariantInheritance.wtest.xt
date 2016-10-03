@@ -39,7 +39,7 @@ test "invariant gets checked for subclasses when calling a subclass method" {
 	}
 }
 
-test "Executes a new invariant from subclass" {
+test "all invariants are checked from the hierarchy" {
 	const b = new BigBird()
 	try {
 		b.fly(95)
