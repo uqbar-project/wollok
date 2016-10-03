@@ -34,6 +34,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
 import org.uqbar.project.wollok.ui.utils.XTendUtilExtensions
+import org.uqbar.project.wollok.wollokDsl.Invariant
 
 /**
  * A wollok user defined (dynamic) object.
@@ -66,11 +67,13 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override getThisObject() { this }
 	
 	override call(String message, WollokObject... parameters) {
-//		println("calling " + message + " " + parameters.map[toString].join(','))
+//		println("calling " + message + "(" + parameters.map[toString].join(',') + ") => CHECKING INVARS ? " + checkingInvariants)
 		val method = behavior.lookupMethod(message, parameters, false)
 		if (method == null)
 			throwMessageNotUnderstood(message, parameters)
-		method.call(parameters)
+		val returnValue = method.call(parameters)
+		checkInvariants
+		returnValue
 	}
 	
 	def throwMessageNotUnderstood(String name, Object... parameters) {
@@ -120,6 +123,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val context = then(constructorEvalContext, this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
+		checkInvariants
 	}
 	
 	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {
@@ -148,21 +152,34 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (!instanceVariables.containsKey(name)) throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
 		
 		val oldValue = instanceVariables.put(name, value)
-		checkInvariants
 		listeners.forEach[ fieldChanged(name, oldValue, value) ]
 	}
 	
-	def checkInvariants() {
+	// an invariant could produce new messages to self
+	//  so we should just check invariants, if we are not checking already.
+	private boolean checkingInvariants = false
+	
+	def void checkInvariants() {
+		if (checkingInvariants) {
+			return;
+		}
 		val invariants = behavior.allInvariants
-		// evaluate
-		val evaluations = invariants.map[i| i -> i.condition.eval]
-		
-		// check and fail
-		val failing = evaluations.filter[ !value.isTrue ]
-		if (!failing.empty)
-			throw newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, 
-				"Violated invariant: " +
-				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', '))
+		checkingInvariants = true	
+		var Iterable<Pair<Invariant, WollokObject>> failing = null
+		try {
+			failing = invariants.map[i| 
+				i -> interpreter.performOnStack(i, this) [| i.condition.eval ]
+			]
+			.filter[ !value.isTrue ]
+					
+			if (!failing.empty)
+				throw newException(INVARIANT_VIOLATED_EXCEPTION, 
+					"Violated invariant: " +
+					failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', '))
+		}
+		finally {
+			checkingInvariants = false	
+		}		
 	}
 	
 	// query (kind of reflection api)

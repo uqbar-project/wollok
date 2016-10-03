@@ -359,6 +359,7 @@ WClass:
 WMixin:
 	'mixin' name=ID '{'
 		(members+=WVariableDeclaration ';'?)*
+		(invariants+=Invariant ';'?)*
 		(members+=WMethodDeclaration ';'?)*
 	'}'
 ;

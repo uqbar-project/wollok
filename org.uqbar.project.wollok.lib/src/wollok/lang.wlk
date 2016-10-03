@@ -95,6 +95,16 @@ class MessageNotUnderstoodException inherits Exception {
 }
 
 /**
+ * Exception thrown by the Wollok interpreter in case an object constraint
+ * is violated as part of a method / constructor execution.
+ *
+ * @author jfernandes
+ */
+class InvariantViolationException inherits Exception {
+    constructor(_message) = super(_message)
+}
+
+/**
  * An element in a stack trace, represented by a context and a location of a method where a message was sent
  */
 class StackTraceElement {

@@ -1,0 +1,20 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+object pepita {
+	var energy = 100
+	
+	invariant energy >= 0
+	
+	method fly(meters) {
+		energy -= meters
+	}
+}
+
+test "Flying more than its energy fails" {
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
+		pepita.fly(105)
+	})
+}

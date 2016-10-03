@@ -23,6 +23,88 @@ class BigBird inherits Bird {
 	invariant energy >= 10 : 'A big bird needs to always have at least 10 points of energy'
 }
 
+class Pet {
+	var age
+	
+	invariant age != null : "Pets should have an age"
+	
+	constructor(_age) {
+		age = _age
+	}
+	
+}
+
+class Triangle {
+	var angle1 = 180
+	var angle2 = 0
+	var angle3 = 0
+	
+	invariant self.sumOfAngles() == 180 : "Sum of all angles must be 180 degrees"
+	
+	method sumOfAngles() = angle1 + angle2 + angle3
+	
+	method setAngle1(a) { angle1 = a }
+	method setAngle2(a) { angle2 = a }
+	method setAngle3(a) { angle3 = a }
+}
+
+class C {
+	var a = 10
+	var b = 10
+	
+	invariant a > 0
+	invariant b > 0
+	invariant b >= a
+	
+	method setA(_a) { a = _a }
+	method setB(_b) { b = _b }
+}
+
+test "invariant are executed as part of method execution, after it and before returning from the method" {
+	try {
+		const bird = new Bird()
+		bird.fly(120)
+		assert.fail('Should have failed')
+	}
+	catch e {
+		assert.equals('wollok.lang.InvariantViolationException', e.className())
+		assert.equals('Violated invariant: Not satisfied (energy >= 0)', e.getMessage())
+	}
+}
+
+test "invariant can call a method on self" {
+	try {
+		const triangle = new Triangle()
+		triangle.setAngle1(120)
+		assert.fail('Should have failed')
+	}
+	catch e {
+		assert.equals('Violated invariant: Sum of all angles must be 180 degrees (self.sumOfAngles() == 180)', e.getMessage())
+	}
+}
+
+test "invariant gets called as part as object initialization" {
+	try {
+		const pet = new Pet(null)
+		console.println(pet)
+		assert.fail('Should have failed')
+	}
+	catch e {
+		assert.equals('Violated invariant: Pets should have an age (age != null)', e.getMessage())
+	}
+}
+
+test "a class can have multiple invariants" {
+	var c = new C()
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (a > 0)", { =>
+		c.setA(0)
+	})
+	c = new C()
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (b > 0), Not satisfied (b >= a)", { =>
+		c.setB(0)
+	})
+}
+
 test "invariant gets checked for subclasses when calling inherited method" {
 	const b = new AnotherBird()
 	assert.throwsException { =>
@@ -43,6 +125,7 @@ test "Executes a new invariant from subclass" {
 		b.fly(95)
 		assert.fail('Should have failed')
 	}
-	catch e
-		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy')	
+	catch e : InvariantViolationException {
+		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy (energy >= 10)', e.getMessage())
+	}
 }

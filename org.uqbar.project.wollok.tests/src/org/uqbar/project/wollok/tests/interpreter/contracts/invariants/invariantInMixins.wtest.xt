@@ -1,0 +1,29 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+mixin Energy {
+	var energy = 100
+	
+	invariant energy >= 0
+	
+	method consumeEnergy(e) {
+		energy -= e
+	}
+}
+
+class Plant {
+	var water = 0
+	
+	method addWater(_water) { 
+		water += _water
+	}
+}
+
+test "Flying more than its energy fails" {
+	const plant = new Plant() with Energy
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
+		plant.consumeEnergy(101)
+	})
+}

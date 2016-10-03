@@ -44,6 +44,7 @@ class WollokDSK {
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
+	public static val INVARIANT_VIOLATED_EXCEPTION = "wollok.lang.InvariantViolationException"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

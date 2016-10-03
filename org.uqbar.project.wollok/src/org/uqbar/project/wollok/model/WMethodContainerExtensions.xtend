@@ -389,7 +389,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 	
 	// invariants
-	def static dispatch List<Invariant> invariants(WMixin it) { #[] }
+	def static dispatch List<Invariant> invariants(WMixin it) { invariants }
 	def static dispatch List<Invariant> invariants(WNamedObject it) { invariants }
 	def static dispatch List<Invariant>invariants(WObjectLiteral it) { invariants }
 	def static dispatch List<Invariant> invariants(WClass it) { invariants }
