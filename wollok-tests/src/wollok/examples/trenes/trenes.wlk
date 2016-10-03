@@ -2,7 +2,7 @@ class Deposito {
 	const formaciones = []
 	
 	method agregarFormacion(unTren) { formaciones.add(unTren) }
-	method vagonesMasPesados() { formaciones.map({t=> t.vagonMasPesado()}).flatten() }
+	method vagonesMasPesados() = formaciones.map {t => t.vagonMasPesado()}).flatten() }
 }
 
 class Tren {
@@ -23,7 +23,7 @@ class Tren {
 			0
 		else
 			self.pesoMaximoTotalDeVagones() - self.arrastreUtilTotalLocomotoras()
-	method vagonMasPesado() = vagones.max({v=> v.getPesoMaximo() })
+	method vagonMasPesado() = vagones.max {v => v.getPesoMaximo() }
 }
 
 class Locomotora {
