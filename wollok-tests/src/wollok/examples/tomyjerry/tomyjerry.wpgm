@@ -4,14 +4,16 @@ program tomYJerry {
 		var energia = 100
 		var posicion = 0
 		method getVelocidad() {
-			return 5 + energia / 10
+			return (5 + energia / 10).truncate(0)
 		}
 		method puedeAtraparA(raton) {
 			return self.getVelocidad() > raton.getVelocidad()
 		}
 		method correA(raton) {
 			var distancia = raton.getPosicion() - posicion
-			energia -= 0.5 * self.getVelocidad() * distancia
+			console.println(self.getVelocidad())
+			console.println(distancia)
+			energia -= (0.5 * self.getVelocidad() * distancia).truncate(0)
 			posicion = raton.getPosicion()
 		}
 		method comeA(raton) { 

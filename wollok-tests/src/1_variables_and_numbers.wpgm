@@ -32,8 +32,6 @@ program variablesAndNumbers {
 	assert.equals(0 - 1, -1)
 	assert.equals(0 - 4, -4)
 	
-	assert.that("Hola Mundo" - 6 == "Hola")
-	assert.that("Juan Jose Juan Pepe" - "Juan" == " Jose  Pepe")
 	
 	var d = 1
 	d++
