@@ -23,7 +23,7 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			test "simplePreConditionForSingleParameterInClass" {
 				const b = new Bird()
-				assert.throwsException{ => b.fly(0) }
+				assert.throwsExceptionWithMessage("Method requirements not met: Not satisfied (kms > 0)", { => b.fly(0) })
 			}
 		'''.interpretPropagatingErrors
 	}
@@ -118,6 +118,30 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 					b.fly(200)
 				catch e {
 					assert.equals('Method requirements not met: Not satisfied (kms <= 100)', e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void preConditionCallingASelfMethod() {
+		'''
+			class Bird {
+				var energy = 10
+				
+				method fly(kms) {
+					energy -= kms
+				}
+				requires kms <= self.upperKmsBound()
+					
+				method upperKmsBound() = 100
+			}
+			test "preConditionCallingASelfMethod" {
+				const b = new Bird()
+				try 
+					b.fly(200)
+				catch e {
+					assert.equals('Method requirements not met: Not satisfied (kms <= self.upperKmsBound())', e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
