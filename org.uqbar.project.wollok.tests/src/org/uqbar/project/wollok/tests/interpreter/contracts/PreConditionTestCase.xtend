@@ -163,12 +163,33 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 				
 			}
 			test "Inherited Pre Condition must also be checked on subclasses" {
-				const b = new Sparrow()
-				try 
+				assert.throwsExceptionWithMessage('Method requirements not met: Not satisfied (kms <= 100)', {=> 
+					const b = new Sparrow()
 					b.fly(200)
-				catch e {
-					assert.equals('Method requirements not met: Not satisfied (kms <= 100)', e.getMessage())
+				})
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void preConditionFromMixinMethod() {
+		'''
+		    mixin Walker {
+		    	var walkedDistance = 0
+		    	method walk(kms) {
+					walkedDistance += kms
 				}
+				requires kms > 0
+		    }
+			class Bird mixed with Walker {
+					
+			}
+
+			test "Inherited Pre Condition must also be checked on subclasses" {
+				assert.throwsExceptionWithMessage('Method requirements not met: Not satisfied (kms > 0)', { => 
+					const b = new Bird()
+					b.walk(-1)
+				})
 			}
 		'''.interpretPropagatingErrors
 	}
