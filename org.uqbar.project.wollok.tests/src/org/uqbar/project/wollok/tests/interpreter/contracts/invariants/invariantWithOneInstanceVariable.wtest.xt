@@ -13,16 +13,6 @@ class Bird {
 	}
 }
 
-class AnotherBird inherits Bird {
-	method doSomething() {
-		energy = -10
-	}
-}
-
-class BigBird inherits Bird {
-	invariant energy >= 10 : 'A big bird needs to always have at least 10 points of energy'
-}
-
 class Pet {
 	var age
 	
@@ -118,31 +108,3 @@ test "invariant not satisfied at construction time must fail" {
 	})
 }
 
-//
-// Inheritance
-//
-
-test "invariant gets checked for subclasses when calling inherited method" {
-	const b = new AnotherBird()
-	assert.throwsException { =>
-		b.fly(200)
-	}
-}
-
-test "invariant gets checked for subclasses when calling a subclass method" {
-	const b = new AnotherBird()
-	assert.throwsException { =>
-		b.doSomething()
-	}
-}
-
-test "Executes a new invariant from subclass" {
-	const b = new BigBird()
-	try {
-		b.fly(95)
-		assert.fail('Should have failed')
-	}
-	catch e : InvariantViolationException {
-		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy (energy >= 10)', e.getMessage())
-	}
-}

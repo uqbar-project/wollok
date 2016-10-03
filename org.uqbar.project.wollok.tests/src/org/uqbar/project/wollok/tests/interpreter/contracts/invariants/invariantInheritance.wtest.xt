@@ -13,17 +13,39 @@ class Bird {
 	}
 }
 
-test "invariant fails when trying to modify the instance variable" {
-	const b = new Bird()
-	assert.throwsException { =>
-		b.fly(200)
+class AnotherBird inherits Bird {
+	method doSomething() {
+		energy = -10
 	}
 }
 
-test "Generated exception message for default invariant message" {
-	const b = new Bird()
-	try
+class BigBird inherits Bird {
+	invariant energy >= 10 : 'A big bird needs to always have at least 10 points of energy'
+}
+
+
+
+test "invariant gets checked for subclasses when calling inherited method" {
+	const b = new AnotherBird()
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
 		b.fly(200)
-	catch e
-		assert.equals('Violated invariant: Not satisfied (energy >= 0)', e.getMessage())	
+	})
+}
+
+test "invariant gets checked for subclasses when calling a subclass method" {
+	const b = new AnotherBird()
+	assert.throwsException { =>
+		b.doSomething()
+	}
+}
+
+test "Executes a new invariant from subclass" {
+	const b = new BigBird()
+	try {
+		b.fly(95)
+		assert.fail('Should have failed')
+	}
+	catch e : InvariantViolationException {
+		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy (energy >= 10)', e.getMessage())
+	}
 }
