@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.ArrayList
+import java.util.LinkedList
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
@@ -33,6 +34,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	var Client client
 	var callHandler = new CallHandler
 	var WollokRemoteUITestNotifier remoteTestNotifier
+	val testsResult = new LinkedList<WollokResultTestDTO>
 
 	@Inject
 	def init() {
@@ -41,11 +43,13 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
-		remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
+		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionError, lineNumber, resource?.toString))
+		//remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
 	}
 
 	override reportTestOk(WTest test) {
-		remoteTestNotifier.testOk(test.name)
+		testsResult.add(WollokResultTestDTO.ok(test.name))
+		//remoteTestNotifier.testOk(test.name)
 	}
 
 	override testsToRun(WFile file, List<WTest> tests) {
@@ -53,11 +57,12 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override testStart(WTest test) {
-		remoteTestNotifier.testStart(test.name)
+		//remoteTestNotifier.testStart(test.name)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
+		testsResult.add(WollokResultTestDTO.error(test.name, exception.convertToString, lineNumber, resource?.toString))
+		//remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
 	}
 	
 	def dispatch String convertToString(Exception exception) {
@@ -89,6 +94,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 	
 	override finished() {
+		remoteTestNotifier.testsResult(testsResult)
 	}
 	
 }
