@@ -1,16 +1,14 @@
-package org.uqbar.project.wollok.ui.contentassist
+package org.uqbar.project.wollok
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.AbstractRule
-import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
-import org.uqbar.project.wollok.ui.preferences.FeaturesConfigurationBlock
 import org.uqbar.project.wollok.utils.WEclipseUtils
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import com.google.inject.Singleton
-import org.eclipse.xtext.RuleCall
 
 /**
  * Just a utility to check for elements enabled / disabled
@@ -38,8 +36,12 @@ class LanguageFeaturesHelper {
 	def dispatch boolean isDisabled(AbstractRule element, EObject context) {
 		val prefs = context.preferences
 		
-		val key = FeaturesConfigurationBlock.enabledPreferenceName(element)
+		val key = enabledPreferenceName(element)
 		prefs != null && prefs.contains(key) && !prefs.getBoolean(key)
+	}
+	
+	def static enabledPreferenceName(AbstractRule rule) {
+		"feature_rule_" + rule.name + "_enabled"
 	}
 	
 	def preferences(EObject obj) {

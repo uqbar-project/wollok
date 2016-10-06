@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.contentassist
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
@@ -7,6 +8,7 @@ import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.uqbar.project.wollok.LanguageFeaturesHelper
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -30,7 +32,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import com.google.inject.Inject
 
 /**
  *

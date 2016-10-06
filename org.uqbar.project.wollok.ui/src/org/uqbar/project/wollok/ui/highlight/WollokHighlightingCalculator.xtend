@@ -8,7 +8,7 @@ import org.eclipse.xtext.ide.editor.syntaxcoloring.IHighlightedPositionAcceptor
 import org.eclipse.xtext.nodemodel.ICompositeNode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.util.CancelIndicator
-import org.uqbar.project.wollok.ui.contentassist.LanguageFeaturesHelper
+import org.uqbar.project.wollok.LanguageFeaturesHelper
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -16,7 +16,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
-import org.uqbar.project.wollok.wollokDsl.Invariant
 
 /**
  * Customizes highlighting

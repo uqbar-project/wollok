@@ -12,6 +12,7 @@ import org.eclipse.xtext.AbstractRule
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.eclipse.xtext.ui.validation.AbstractValidatorConfigurationBlock
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.LanguageFeaturesHelper
 
 /**
  * Preference section for Wollok Language features enabling/disabling
@@ -38,7 +39,7 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 			
 			val section = createSection("Features", composite, nColumns)
 			grammar.grammar.rules.forEach [ rule |
-				var name = rule.enabledPreferenceName
+				var name = LanguageFeaturesHelper.enabledPreferenceName(rule)
 				store.setDefault(name, true) // all enabled by default
 				addCheckBox(section, rule.humanReadableName, name, #["true","false"], 0)	
 			]
@@ -51,10 +52,6 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 			rule.name.substring(1)
 		else
 			rule.name
-	}
-	
-	def static enabledPreferenceName(AbstractRule rule) {
-		"feature_rule_" + rule.name + "_enabled"
 	}
 	
 	override protected getBuildJob(IProject project) {

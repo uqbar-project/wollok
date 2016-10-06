@@ -4,9 +4,11 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.uqbar.project.wollok.LanguageFeaturesHelper
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -57,7 +59,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 
 /**
  * Custom validation rules.
@@ -747,6 +749,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 //			 if(declaringContext instanceof WClass)
 //				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
 //				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
+		}
+	}
+	
+	// *******************************
+	// ** ENABLE/DISABLED FEATURES
+	// *******************************
+	
+	@Inject LanguageFeaturesHelper langFeatures
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def languageFeatureEnabled(EObject it) {
+		val element = NodeModelUtils.findActualNodeFor(it).grammarElement
+		if (langFeatures.isDisabled(element, it)) {
+			report(WollokDslValidator_USING_DISABLED_LANGUAGE_FEATURE, it)
 		}
 	}
 

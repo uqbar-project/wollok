@@ -73,6 +73,8 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
+	public static String WollokDslValidator_USING_DISABLED_LANGUAGE_FEATURE;
+	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
 	
 	public static String WollokDslValidator_WRONG_IMPORT;
