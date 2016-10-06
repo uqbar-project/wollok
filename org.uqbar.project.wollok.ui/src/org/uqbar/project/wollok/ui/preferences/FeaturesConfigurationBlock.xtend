@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
+import org.eclipse.xtext.AbstractRule
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.eclipse.xtext.ui.validation.AbstractValidatorConfigurationBlock
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
@@ -37,12 +38,23 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 			
 			val section = createSection("Features", composite, nColumns)
 			grammar.grammar.rules.forEach [ rule |
-				var name = "feature_rule_" + rule.name
+				var name = rule.enabledPreferenceName
 				store.setDefault(name, true) // all enabled by default
-				addCheckBox(section, rule.name, name, #["true","false"], 0)	
+				addCheckBox(section, rule.humanReadableName, name, #["true","false"], 0)	
 			]
 			
 		]
+	}
+	
+	def String getHumanReadableName(AbstractRule rule) {
+		if (rule.name.startsWith("W") && Character.isUpperCase(rule.name.charAt(1)))
+			rule.name.substring(1)
+		else
+			rule.name
+	}
+	
+	def static enabledPreferenceName(AbstractRule rule) {
+		"feature_rule_" + rule.name + "_enabled"
 	}
 	
 	override protected getBuildJob(IProject project) {
