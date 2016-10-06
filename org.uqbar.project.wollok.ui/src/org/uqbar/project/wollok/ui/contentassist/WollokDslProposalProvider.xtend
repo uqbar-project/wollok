@@ -1,11 +1,16 @@
 package org.uqbar.project.wollok.ui.contentassist
 
+import com.google.inject.Inject
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.graphics.Image
+import org.eclipse.xtext.AbstractElement
 import org.eclipse.xtext.Assignment
-import org.eclipse.xtext.RuleCall
+import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
@@ -21,15 +26,15 @@ import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
-import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamed
-import org.uqbar.project.wollok.WollokConstants
+import org.eclipse.xtext.GrammarUtil
+import org.uqbar.project.wollok.wollokDsl.Invariant
 
 /**
  *
@@ -140,8 +145,8 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 				acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
 		]
 	}
-
-		//@Inject
+	
+	//@Inject
   	//protected WollokDslTypeSystem system
 
 //	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -167,5 +172,39 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		system.queryTypeFor(env, r).first
 	}
 */
+
+	// ENABLING / DISABLING FEATURES
+
+	@Inject
+	WollokDslGrammarAccess grammar
+	
+	var List<EObject> disabledRules
+	
+	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
+		if (disabledGrammarRules.contains(keyword)) {
+			println('''HIDDING KEYWORD «keyword.value» FROM PROPOSALS''')
+		}
+		else {
+			super.completeKeyword(keyword, contentAssistContext, acceptor)	
+		}
+	}
+	
+	def getDisabledGrammarRules() {
+		if (disabledRules == null) {
+			disabledRules = #[
+				Invariant
+			]
+			.fold(newArrayList) [acc, type | 
+				val ruleName = grammar.grammar.name + "." + type.simpleName
+				val rule = GrammarUtil.findRuleForName(grammar.grammar, ruleName)
+				
+				acc.add(rule)
+				rule.eAllContents.forEach[child | acc.add(child)]
+				acc
+			]
+		}
+		disabledRules
+	}
+
 
 }

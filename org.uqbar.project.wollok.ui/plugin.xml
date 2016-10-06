@@ -146,6 +146,33 @@
 	        </page>
 	    </extension>
 	    <!-- VALIDATOR -->
+	    
+	   	<!-- FEATURES -->
+	    <extension
+	            point="org.eclipse.ui.preferencePages">
+	        <page
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.FeaturesPreferencePage"
+	            id="org.uqbar.project.wollok.WollokDsl.featuresPreferencePage"
+	            name="%features">
+	            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+	        </page>
+	    </extension>
+	    <extension
+	            point="org.eclipse.ui.propertyPages">
+	        <page
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.preferences.FeaturesPreferencePage"
+	            id="org.uqbar.project.wollok.WollokDsl.featuresPropertyPage"
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            name="%validator">
+	            <keywordReference id="org.uqbar.project.wollok.ui.keyword_WollokDsl"/>
+	            <enabledWhen>
+		            <adapt type="org.eclipse.core.resources.IProject"/>
+				</enabledWhen>
+		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+	        </page>
+	    </extension>
+	    <!-- /FEATURES -->
     
     <!-- /PREFERENCES -->
     

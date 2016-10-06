@@ -107,7 +107,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 
 	/** overrides to add the enabled/disabled behavior */
 	override protected createMethodWrapper(AbstractDeclarativeValidator instanceToUse, Method method) {
-		new MethodWrapperDecorator(super.createMethodWrapper(instanceToUse, method), instanceToUse as WollokDslValidator)
+		new MethodWrapperDecorator(super.createMethodWrapper(instanceToUse, method), instanceToUse as AbstractConfigurableDslValidator)
 	}
 	
 	public static val String PREF_KEY_ENABLED_SUFFIX = ".enabled"
@@ -115,7 +115,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 	static class MethodWrapperDecorator extends MethodWrapper {
 		val MethodWrapper decoratee
 	
-		protected new(MethodWrapper decoratee, WollokDslValidator validator) {
+		protected new(MethodWrapper decoratee, AbstractConfigurableDslValidator validator) {
 			super(validator, decoratee.method)
 			this.decoratee = decoratee
 		}
@@ -133,7 +133,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator {
 		}
 		
 		override invoke(State state) {
-			val prefs = (instance as WollokDslValidator).preferences(state.currentObject)
+			val prefs = (instance as AbstractConfigurableDslValidator).preferences(state.currentObject)
 			val key = method.name + PREF_KEY_ENABLED_SUFFIX
 			// default is "enabled" if not present
 			if (method.isAnnotationPresent(NotConfigurable) || prefs == null || !prefs.contains(key) || prefs.getBoolean(key)) {
