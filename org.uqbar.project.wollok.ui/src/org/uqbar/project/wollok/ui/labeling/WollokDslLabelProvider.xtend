@@ -56,14 +56,14 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 	
 	def concatResolvedType(String separator, EObject obj) {
-		if (!labelExtensionResolved) {
-			labelExtension = resolveLabelExtension
-			labelExtensionResolved = true
-		}
-		
-		if (labelExtension != null)
-			separator + labelExtension.resolvedType(obj)
-		else 
+//		if (!labelExtensionResolved) {
+//			labelExtension = resolveLabelExtension
+//			labelExtensionResolved = true
+//		}
+//		
+//		if (labelExtension != null)
+//			separator + labelExtension.resolvedType(obj)
+//		else 
 			""
 	}
 	

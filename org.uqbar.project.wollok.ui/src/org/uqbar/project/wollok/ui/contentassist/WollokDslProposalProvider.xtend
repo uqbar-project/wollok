@@ -1,20 +1,14 @@
 package org.uqbar.project.wollok.ui.contentassist
 
-import com.google.inject.Inject
-import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.swt.graphics.Image
 import org.eclipse.xtext.Assignment
-import org.eclipse.xtext.GrammarUtil
 import org.eclipse.xtext.Keyword
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.ui.WollokActivator
-import org.uqbar.project.wollok.utils.WEclipseUtils
-import org.uqbar.project.wollok.wollokDsl.Invariant
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -36,10 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.AbstractRule
-import org.eclipse.xtext.AbstractElement
-import org.uqbar.project.wollok.ui.preferences.FeaturesConfigurationBlock
-import org.eclipse.xtext.RuleCall
+import com.google.inject.Inject
 
 /**
  *
@@ -47,6 +38,7 @@ import org.eclipse.xtext.RuleCall
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
+	@Inject LanguageFeaturesHelper langFeatures
 
 	// This whole implementation is just an heuristic until we have a type system
 
@@ -182,49 +174,22 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// ** ENABLING / DISABLING FEATURES
 	// ********************************
 	
-	// TODO: this needs to be optimized:
-	//    - it should load preferences just one time and then listen for changes
-	//	  - also for each disabled rule, it should register all its children so we don't need
-	//	    to visit up all parents and we can do "disabled.contains(element)"
-	@Inject IPreferenceStoreAccess preferenceStoreAccess
-	
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
-		if (!isDisabled(keyword, contentAssistContext)) {
+		if (!langFeatures.isDisabled(keyword, contentAssistContext.currentModel)) {
 			super.completeKeyword(keyword, contentAssistContext, acceptor)
 		}
 	}
 	
 	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext,  ICompletionProposalAcceptor acceptor) {
-		if (!isDisabled(ruleCall.rule, contentAssistContext) && !isDisabled(ruleCall, contentAssistContext)) {
+		if (!langFeatures.isDisabled(ruleCall.rule, contentAssistContext.currentModel) && !langFeatures.isDisabled(ruleCall, contentAssistContext.currentModel)) {
 			super.completeRuleCall(ruleCall, contentAssistContext, acceptor)
 		}
 	}
 	
 	override completeAssignment(Assignment assignment, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
-		if (!isDisabled(assignment, contentAssistContext) /** && feature enabled ? */ ) {
+		if (!langFeatures.isDisabled(assignment, contentAssistContext.currentModel) /** && feature enabled ? */ ) {
 			super.completeAssignment(assignment, contentAssistContext, acceptor)
 		}
-	}
-	
-	def dispatch boolean isDisabled(AbstractElement element, ContentAssistContext contentAssistContext) {
-		element.eContainer != null && element.eContainer.isDisabled(contentAssistContext) 
-	}
-	
-	def dispatch boolean isDisabled(AbstractRule element, ContentAssistContext contentAssistContext) {
-		val prefs = contentAssistContext.currentModel.preferences
-		
-		val key = FeaturesConfigurationBlock.enabledPreferenceName(element)
-		prefs != null && prefs.contains(key) && !prefs.getBoolean(key)
-	}
-	
-	def preferences(EObject obj) {
-		if (WEclipseUtils.isWorkspaceOpen) {
-			val ifile = obj.IFile
-			if (ifile != null) {
-				return preferenceStoreAccess.getContextPreferenceStore(ifile.project)
-			}
-		}
-		null
 	}
 
 }
