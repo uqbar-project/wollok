@@ -866,6 +866,13 @@ class List inherits Collection {
 	
 	/** A list is == another list if all elements are equal (defined by == message) */
 	override method ==(other) native
+
+	/**
+	 * Answers the list without duplicate elements
+	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 */
+	method withoutDuplicates() = self.asSet().asList()
+
 }
 
 /**
