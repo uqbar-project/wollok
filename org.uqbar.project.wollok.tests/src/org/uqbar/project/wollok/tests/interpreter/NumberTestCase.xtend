@@ -19,8 +19,21 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void sum() {
-		'''3 + 1
+		'''
 		assert.equals(4, 3 + 1)
+		assert.equals(4.0, 3.0 + 1)
+		assert.equals(4.0, 3.0 + 1.0)
+		assert.equals(4.0, 3 + 1.0)
+		'''.test
+	}
+
+	@Test
+	def void multiply() {
+		'''
+		assert.equals(8, 4 * 2)
+		assert.equals(8.0, 4 * 2.0)
+		assert.equals(8.0, 4.0 * 2.0)
+		assert.equals(8.0, 4.0 * 2)
 		'''.test
 	}
 
@@ -35,12 +48,24 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void divideZero() {
+		'''
+		assert.equals(0, 0 / 10)
+		assert.equals(0, 0 / 10.0)
+		assert.equals(0, 0.0 / 10.0)
+		assert.equals(0, 0 / 10.0)
+		'''.test
+	}
+
+	@Test
 	def void dividePeriodicDecimals() {
 		'''
-		assert.equals(0.7272727272727272727272727272727273, 40 / 55)
-		assert.equals(0.7272727272727272727272727272727273, 40 / 55.0)
-		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55.0)
-		assert.equals(0.7272727272727272727272727272727273, 40.0 / 55)
+		assert.equals(0.72727, 40 / 55)
+		assert.equals(0.72727, 40 / 55.0)
+		assert.equals(0.72727, 40.0 / 55.0)
+		assert.equals(0.72727, 40.0 / 55)
+		assert.equals(0.33333, 1 / 3)
+		assert.equals(0.66667, 2 / 3)
 		'''.test
 	}
 
