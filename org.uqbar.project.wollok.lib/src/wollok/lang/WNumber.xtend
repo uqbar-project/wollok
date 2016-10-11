@@ -1,6 +1,7 @@
 package wollok.lang
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -35,6 +36,15 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	def div(WollokObject other) {
 		val n = other.nativeNumber
 		Math.floor(this.doubleValue / n.doubleValue).intValue
+	}
+	
+	def div(BigDecimal divisor, BigDecimal dividend) {
+		val result = divisor.setScale(5).divide(dividend, RoundingMode.HALF_UP)
+		val resultIntValue = result.intValue
+		if (result == resultIntValue) {
+			return resultIntValue
+		}
+		return result
 	}
 
 	// ********************************************************************************************

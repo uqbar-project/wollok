@@ -39,8 +39,12 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 
 	@NativeMessage("/")
 	def divide(WollokObject other) { operate(other) [ doDivide(it) ] }
-		def dispatch Number doDivide(Integer w) { wrapped / new BigDecimal(w) }
-		def dispatch Number doDivide(BigDecimal w) { wrapped / w }
+		def dispatch Number doDivide(Integer w) { 
+			this.div(wrapped, new BigDecimal(w))
+		}
+		def dispatch Number doDivide(BigDecimal w) { 
+			this.div(wrapped, w)
+		}
 		def dispatch Number doDivide(Object w) { throw new WollokRuntimeException("Cannot divide " + w) }
 
 	@NativeMessage("**")
