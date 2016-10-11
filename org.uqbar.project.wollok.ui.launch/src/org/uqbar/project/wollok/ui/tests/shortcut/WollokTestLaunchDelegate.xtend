@@ -28,4 +28,5 @@ class WollokTestLaunchDelegate extends WollokLaunchDelegate {
 			testPort = Activator.getDefault.wollokTestViewListeningPort
 		]
 	}
+	
 }

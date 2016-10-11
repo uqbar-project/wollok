@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.RGB
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.ToolItem
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
+import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
@@ -36,7 +38,6 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.ui.Messages
 
 /**
  * 
@@ -48,17 +49,19 @@ class WollokTestResultView extends ViewPart implements Observer {
 	var TreeViewer testTree
 	var Text textOutput
 	var Text totalTextBox
-	var Text runTextBox
+	var Text failedTextBox
 	var Text errorTextBox
 	// bar
 	var Label bar
 	Color noResultColor
 	Color successColor
 	Color failedColor
+	Color erroredColor
 	var ResourceManager resManager
 	public val static BAR_COLOR_NO_RESULT = new RGB(200, 200, 200)
 	public val static BAR_COLOR_SUCCESS = new RGB(99, 184, 139)
-	public val static BAR_COLOR_FAILED = new RGB(237, 17, 18)
+	public val static BAR_COLOR_FAILED = new RGB(255, 197, 3)
+	public val static BAR_COLOR_ERRORED = new RGB(237, 17, 18)
 	
 	@Inject
 	var WollokTestResults results
@@ -91,10 +94,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	override createPartControl(Composite parent) {
-		resManager = new LocalResourceManager(JFaceResources.getResources(), parent);	
+		parent.background = new Color(Display.current, new RGB(220, 220, 220))
+		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)	
 		new GridLayout() => [
-			marginWidth = 0
-			marginHeight = 0
+			marginWidth = 5
+			marginHeight = 5
 			numColumns = 1
 			verticalSpacing = 2
 			parent.setLayout(it)
@@ -127,21 +131,22 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 	
 	def createBar(Composite parent) {
-		bar = new Label(parent, SWT.BORDER)
+		bar = new Label(parent, SWT.SHADOW_IN.bitwiseOr(SWT.BORDER))
 		// creates and cache colors
-		noResultColor =  resManager.createColor(BAR_COLOR_NO_RESULT);
+		noResultColor =  resManager.createColor(BAR_COLOR_NO_RESULT)
 		successColor = resManager.createColor(BAR_COLOR_SUCCESS)
 		failedColor = resManager.createColor(BAR_COLOR_FAILED)
-				
-		bar.background = noResultColor 
+		erroredColor = resManager.createColor(BAR_COLOR_ERRORED)
+		
+		bar.background = noResultColor
 		new GridData => [
-			heightHint = 28
-			verticalIndent = 2
-			horizontalIndent = 4  
+			heightHint = 18
+			verticalIndent = 4
+			horizontalIndent = 2
 			grabExcessHorizontalSpace = true
 //			grabExcessVerticalSpace = true
 			horizontalAlignment = GridData.FILL
-			verticalAlignment = GridData.CENTER
+			verticalAlignment = GridData.FILL
 //			verticalAlignment = GridData.FILL
 			bar.layoutData = it
 		]
@@ -209,8 +214,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_TOTAL_TESTS)
 		totalTextBox = createResultNumberTextBox(panel)
 
-		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_RUN_TESTS)
-		runTextBox = createResultNumberTextBox(panel)
+		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_FAILED_TESTS)
+		failedTextBox = createResultNumberTextBox(panel)
 
 		createResultNumberLabel(panel, WollokLaunchUIMessages.WollokTestResultView_ERROR_TESTS)
 		errorTextBox = createResultNumberTextBox(panel)
@@ -226,7 +231,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		new Text(panel, SWT.BORDER) => [
 			it.layoutData = new GridData => [
 				horizontalSpan = 2 
-				widthHint = 30	
+				widthHint = 40
 			]
 			editable = false			
 		]
@@ -243,19 +248,24 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.expandAll
 		
 		if (results.container != null) {
-			totalTextBox.text = total.toString
-			runTextBox.text = (total - count[state == WollokTestState.PENDING]).toString
-			val errorCount = count[ state == WollokTestState.ASSERT || state == WollokTestState.ERROR]
+			val runned = (total - count[state == WollokTestState.PENDING])
+			totalTextBox.text = runned.toString + "/" + total.toString
+			
+			val errorCount = count[ state == WollokTestState.ERROR]
 			errorTextBox.text = errorCount.toString
 			
-			bar.background = if (errorCount > 0) failedColor else successColor
+			val failedCount = count[ state == WollokTestState.ASSERT]
+			failedTextBox.text = failedCount.toString
+			
+			val noErrors = errorCount == 0 && failedCount == 0
+			bar.background = if (noErrors) successColor else if (errorCount > 0) erroredColor else failedColor
 			
 			runAgain.enabled = true
 			debugAgain.enabled = true
 		}
 		else {
 			totalTextBox.text = ""
-			runTextBox.text = ""
+			failedTextBox.text = ""
 			errorTextBox.text = ""
 			runAgain.enabled = false
 			debugAgain.enabled = false

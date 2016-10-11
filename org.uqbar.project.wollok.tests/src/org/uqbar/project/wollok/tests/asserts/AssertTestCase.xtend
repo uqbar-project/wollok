@@ -12,4 +12,10 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void assertNotTrueFails() {
+		'''
+		assert.throwsExceptionLike(new Exception("Value was not true"),{ => assert.that(false) } )
+		'''.test
+	}
 }
