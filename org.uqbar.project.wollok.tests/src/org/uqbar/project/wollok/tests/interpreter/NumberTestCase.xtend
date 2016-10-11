@@ -58,6 +58,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void divisionByZero() {
+		'''
+		assert.throwsExceptionWithMessage("/ by zero", { 1 / 0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1.0 / 0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1.0 / 0.0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1 / 0.0 })
+		'''.test
+	}
+
+	@Test
 	def void dividePeriodicDecimals() {
 		'''
 		assert.equals(0.72727, 40 / 55)
