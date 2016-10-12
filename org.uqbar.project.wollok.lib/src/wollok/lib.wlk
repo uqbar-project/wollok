@@ -30,6 +30,14 @@ class OtherValueExpectedException inherits wollok.lang.Exception {
 	constructor(_message,_cause) = super(_message,_cause)
 }
 
+class AssertionException inherits Exception {
+
+	constructor(message) = super(message)
+	
+	constructor(message, cause) = super(message, cause)
+	
+}
+
 /**
  * Assert object simplifies testing conditions
  */

@@ -52,16 +52,21 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			if (e.cause instanceof AssertionException) {
 				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.objectURI)
 				null
-			}
-			else {
+			} else {
 				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.objectURI)
 				null
 			}
 		}
 		catch (WollokProgramExceptionWrapper e) {
-			// an uncaught wollok-level exception wrapped into java
-			wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
-			null
+			val className = e.wollokException.call("className").toString
+			if (className.equalsIgnoreCase("wollok.lib.AssertionException")) {
+				wollokTestsReporter.reportTestAssertError(test, AssertionException.fail(e.wollokMessage) as AssertionException, e.lineNumber, e.URI)
+				null
+			} else {
+				// an uncaught wollok-level exception wrapped into java
+				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
+				null
+			}
 		}
 	}
 }

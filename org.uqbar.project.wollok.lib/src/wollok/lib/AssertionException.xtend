@@ -1,7 +1,6 @@
 package wollok.lib
 
 import java.text.MessageFormat
-import org.eclipse.core.runtime.AssertionFailedException
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
@@ -27,7 +26,7 @@ abstract class AssertionException extends Exception {
 	}
 
 	static def fail(String message) {
-		return new AssertionFailedException(message) {}
+		return new AssertionFailException(message) {}
 	}
 
 	static def valueWasNotTrue() {
@@ -88,5 +87,11 @@ class ValueWasNotFalseException extends AssertionException {
 class BlockDidNotFailException extends AssertionException {
 	new() {
 		super("Block should have failed")
+	}
+}
+
+class AssertionFailException extends AssertionException {
+	new(String msg) {
+		super(msg)
 	}
 }

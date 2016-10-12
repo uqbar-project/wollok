@@ -173,8 +173,13 @@ class XTendUtilExtensions {
 	def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
 		if (e.cause instanceof WollokProgramExceptionWrapper)
 			e.cause
-		else 
-			new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+		else {
+			if (#["wollok.lib.ValueWasNotTrueException"].contains(e.cause.class.name)) {
+				new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokAssertionException(e.cause.message))
+			} else {
+				new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+			}
+		} 
 	}
 	
 	def static accesibleVersion(Method m) {
