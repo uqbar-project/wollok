@@ -131,17 +131,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass c) {
-		val methods = newArrayList
-		// TODO: should we replace this with the "linearization()" method call ?
-		c.superClassesIncludingYourselfTopDownDo[cl |
-			// remove overriden
-			cl.overrideMethods.forEach[methods.remove(it.overridenMethod)]
-			// add all
-			methods.addAll(cl.methods)
-		]
-		methods
-	}
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass it) { inheritedMethods }
 
 	def static getInheritedMethods(WMethodContainer it) {
 		linearizateHierarhcy.fold(newArrayList) [methods, type |
