@@ -78,7 +78,7 @@ class LanguageFeaturesHelper {
 		val key = enabledPreferenceName(element)
 		val r = prefs != null && prefs.contains(key) && !prefs.getBoolean(key)
 		
-		println("///// CHECKED " + element + " and was disabled == " + r )
+//		println("///// CHECKED " + element + " and was disabled == " + r )
 		r
 	}
 	
