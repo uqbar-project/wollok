@@ -12,7 +12,8 @@ import org.eclipse.xtext.AbstractRule
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.eclipse.xtext.ui.validation.AbstractValidatorConfigurationBlock
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
-import org.uqbar.project.wollok.LanguageFeaturesHelper
+
+import static org.uqbar.project.wollok.LanguageFeaturesHelper.*
 
 /**
  * Preference section for Wollok Language features enabling/disabling
@@ -38,8 +39,8 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 			]
 			
 			val section = createSection("Features", composite, nColumns)
-			grammar.grammar.rules.forEach [ rule |
-				var name = LanguageFeaturesHelper.enabledPreferenceName(rule)
+			grammar.grammar.rules.sortBy[ r | r.humanReadableName ].forEach [ rule |
+				var name = enabledPreferenceName(rule)
 				store.setDefault(name, true) // all enabled by default
 				addCheckBox(section, rule.humanReadableName, name, #["true","false"], 0)	
 			]
@@ -48,10 +49,25 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 	}
 	
 	def String getHumanReadableName(AbstractRule rule) {
-		if (rule.name.startsWith("W") && Character.isUpperCase(rule.name.charAt(1)))
-			rule.name.substring(1)
+		rule.name.removeWPreffix.splitCamelCase
+	}
+	
+	def removeWPreffix(String name) {
+		if (name.startsWith("W") && Character.isUpperCase(name.charAt(1)))
+			name.substring(1)
 		else
-			rule.name
+			name
+	}
+	
+	def static splitCamelCase(String s) {
+	   return s.replaceAll(
+	      String.format("%s|%s|%s",
+	         "(?<=[A-Z])(?=[A-Z][a-z])",
+	         "(?<=[^A-Z])(?=[A-Z])",
+	         "(?<=[A-Za-z])(?=[^A-Za-z])"
+	      ),
+	      " "
+	   );
 	}
 	
 	override protected getBuildJob(IProject project) {
@@ -62,7 +78,7 @@ class FeaturesConfigurationBlock extends AbstractValidatorConfigurationBlock {
 	}
 	
 	override protected getFullBuildDialogStrings(boolean workspaceSettings) {
-		#["Language Settings", if (workspaceSettings)	"Apply changed workspace-wide ? All wollok projects will be rebuilt" else "Apply changes for this project ? It will be rebuilt" ]
+		#["Language Settings", if (workspaceSettings) "Apply changed workspace-wide ? All wollok projects will be rebuilt" else "Apply changes for this project ? It will be rebuilt" ]
 	}
 	
 	override protected validateSettings(String changedKey, String oldValue, String newValue) {

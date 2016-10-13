@@ -60,6 +60,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.AbstractElement
 
 /**
  * Custom validation rules.

@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
+import org.eclipse.xtext.AbstractElement
 
 /**
  * Customizes highlighting

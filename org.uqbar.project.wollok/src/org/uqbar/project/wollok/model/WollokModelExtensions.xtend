@@ -347,6 +347,7 @@ class WollokModelExtensions {
 	def static dispatch isBooleanOrUnknownType(WClosure it) { false }
 	def static dispatch isBooleanOrUnknownType(WUnaryOperation it) { isNotOperation }
 	def static dispatch isBooleanOrUnknownType(WVariableReference it) { !(ref instanceof WNamedObject) }
+	def static dispatch isBooleanOrUnknownType(Void it) { true }
 	
 	def static isBooleanExpression(WBinaryOperation it) { feature.isBooleanOperand }
 	def static isBooleanOperand(String it) { WollokConstants.OP_BOOLEAN.contains(it) }

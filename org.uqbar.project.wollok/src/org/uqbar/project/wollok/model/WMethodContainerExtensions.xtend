@@ -333,9 +333,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static dispatch isTrueLiteral(WBooleanLiteral it) { isIsTrue }
 	def static dispatch isTrueLiteral(WExpression it) { false }
+	def static dispatch isTrueLiteral(Void it) { false }
 	
 	def static dispatch isFalseLiteral(WBooleanLiteral it) { !isIsTrue }
 	def static dispatch isFalseLiteral(WExpression it) { false }
+	def static dispatch isFalseLiteral(Void it) { false }
 
 	def static dispatch boolean evaluatesToBoolean(WExpression it) { false }
 	def static dispatch boolean evaluatesToBoolean(WBlockExpression it) { expressions.size == 1 && expressions.get(0).evaluatesToBoolean }

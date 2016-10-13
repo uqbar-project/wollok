@@ -182,7 +182,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext,  ICompletionProposalAcceptor acceptor) {
-		if (!langFeatures.isDisabled(ruleCall.rule, contentAssistContext.currentModel) && !langFeatures.isDisabled(ruleCall, contentAssistContext.currentModel)) {
+		if (!langFeatures.isDisabled(ruleCall, contentAssistContext.currentModel)) {
 			super.completeRuleCall(ruleCall, contentAssistContext, acceptor)
 		}
 	}

@@ -3,12 +3,17 @@ package org.uqbar.project.wollok
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.AbstractElement
+import org.eclipse.xtext.AbstractNegatedToken
 import org.eclipse.xtext.AbstractRule
+import org.eclipse.xtext.CompoundElement
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.utils.WEclipseUtils
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.CrossReference
+import org.eclipse.xtext.Grammar
 
 /**
  * Just a utility to check for elements enabled / disabled
@@ -24,20 +29,57 @@ class LanguageFeaturesHelper {
 	//	    to visit up all parents and we can do "disabled.contains(element)"
 	@Inject IPreferenceStoreAccess preferenceStoreAccess
 	
-	def dispatch boolean isDisabled(EObject grammarElement, EObject context) {
-		grammarElement.eContainer != null && grammarElement.eContainer.isDisabled(context) 
-	}
-
-	/** a call is disabled if the rule that is calling is disabled */	
-	def dispatch boolean isDisabled(RuleCall ruleCall, EObject context) {
-		isDisabled(ruleCall.rule, context)
+	def dispatch boolean isDisabled(AbstractElement abstractElement, EObject context) {
+		abstractElement.isDisabledGrammarElement(context)
 	}
 	
-	def dispatch boolean isDisabled(AbstractRule element, EObject context) {
+	def dispatch boolean isDisabled(AbstractRule rule, EObject context) {
+		rule.isDisabledRule(context) || (rule.eContainer != null && rule.eContainer.isDisabled(context)) 
+	}
+	
+	def dispatch boolean isDisabled(Grammar rule, EObject context) {
+		false
+	}
+	
+	
+	def boolean isDisabledGrammarElement(AbstractElement grammarElement, EObject context) {
+		innerIsDisabledGrammarElement(grammarElement, context) || grammarElement.eContainer != null && grammarElement.eContainer.isDisabled(context) 
+	}
+	
+	/** a call is disabled if the rule that is calling is disabled */
+	def dispatch boolean innerIsDisabledGrammarElement(RuleCall call, EObject context) {
+		isDisabledRule(call.rule, context)
+	}
+
+	def dispatch boolean innerIsDisabledGrammarElement(AbstractNegatedToken e, EObject context) {
+		e.terminal != null && e.terminal.innerIsDisabledGrammarElement(context)
+	}
+	
+	def dispatch boolean innerIsDisabledGrammarElement(CompoundElement e, EObject context) {
+		e.elements.exists[ innerIsDisabledGrammarElement(context) ]
+	}
+	
+	def dispatch boolean innerIsDisabledGrammarElement(CrossReference e, EObject context) {
+		e.terminal != null && e.terminal.innerIsDisabledGrammarElement(context)
+	}
+	
+	def dispatch boolean innerIsDisabledGrammarElement(AbstractElement e, EObject context) {
+		// TODO: analyze other elements
+		false
+	}
+	
+	// 
+	// Checking preferences
+	//
+
+	protected def boolean isDisabledRule(AbstractRule element, EObject context) {
 		val prefs = context.preferences
 		
 		val key = enabledPreferenceName(element)
-		prefs != null && prefs.contains(key) && !prefs.getBoolean(key)
+		val r = prefs != null && prefs.contains(key) && !prefs.getBoolean(key)
+		
+		println("///// CHECKED " + element + " and was disabled == " + r )
+		r
 	}
 	
 	def static enabledPreferenceName(AbstractRule rule) {
