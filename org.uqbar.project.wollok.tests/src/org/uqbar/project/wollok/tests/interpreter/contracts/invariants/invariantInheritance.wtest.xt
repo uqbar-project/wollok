@@ -23,8 +23,6 @@ class BigBird inherits Bird {
 	invariant energy >= 10 : 'A big bird needs to always have at least 10 points of energy'
 }
 
-
-
 test "invariant gets checked for subclasses when calling inherited method" {
 	const b = new AnotherBird()
 	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
@@ -34,18 +32,14 @@ test "invariant gets checked for subclasses when calling inherited method" {
 
 test "invariant gets checked for subclasses when calling a subclass method" {
 	const b = new AnotherBird()
-	assert.throwsException { =>
+	assert.throwsExceptionWithMessage("Violated invariant: Not satisfied (energy >= 0)", { =>
 		b.doSomething()
-	}
+	})
 }
 
 test "all invariants are checked from the hierarchy" {
 	const b = new BigBird()
-	try {
-		b.fly(95)
-		assert.fail('Should have failed')
-	}
-	catch e : InvariantViolationException {
-		assert.equals('Violated invariant: A big bird needs to always have at least 10 points of energy (energy >= 10)', e.getMessage())
-	}
+	assert.throwsExceptionWithMessage('Violated invariant: A big bird needs to always have at least 10 points of energy (energy >= 10)', { =>
+		b.fly(95)		
+	})
 }
