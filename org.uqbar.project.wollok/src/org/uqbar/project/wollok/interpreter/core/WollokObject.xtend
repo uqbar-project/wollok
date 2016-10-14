@@ -67,7 +67,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override getThisObject() { this }
 	
 	override call(String message, WollokObject... parameters) {
-//		println("calling " + message + "(" + parameters.map[toString].join(',') + ") => CHECKING INVARS ? " + checkingInvariants)
 		val method = behavior.lookupMethod(message, parameters, false)
 		if (method == null)
 			throwMessageNotUnderstood(message, parameters)
@@ -268,7 +267,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (method == null)
 			// should be an specific error: no super method to call or something
 			throw throwMessageNotUnderstood(this, message, parameters)
-		method.call(parameters)
+		method.call(false, parameters)
 	}
 	
 }

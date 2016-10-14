@@ -48,11 +48,15 @@ abstract class AbstractWollokCallable implements WCallable {
 	def WollokObject theVoid() { WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def WollokObject call(WMethodDeclaration method, WollokObject... parameters) {
+		call(method, true, parameters)
+	}
+	
+	def WollokObject call(WMethodDeclaration method, Boolean checkRequirements, WollokObject... parameters) {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
 
-			method.checkRequirements
+			if (checkRequirements) method.checkRequirements
 			
 			if (method.native) {
 				callNative(method, parameters)
@@ -68,25 +72,48 @@ abstract class AbstractWollokCallable implements WCallable {
 	}
 	
 	def protected void checkRequirements(WMethodDeclaration method) {
-		// TODO: this needs work to implement real inheritance
-		// and precondition refinement
-		
+		val failing = internalCheckRequirements(method)
+		// do fail
+		if (!failing.empty)
+			throw newException(METHOD_REQUIREMENT_VIOLATED_EXCEPTION, 
+				"Method requirements not met: " + 
+				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', '))
+	}
+	
+	// this probably can be improved :S
+	def protected Iterable<Pair<MethodRequirement, WollokObject>> internalCheckRequirements(WMethodDeclaration method) {
 		if (method.requirements == null || method.requirements.empty) {
 			if (method.overrides) {
-				method.overridenMethod.checkRequirements()
+				// no own reqs, check super
+				return method.overridenMethod.internalCheckRequirements()
 			}
-			return;
 		}
-		// evaluate
-		
-		val failing = method.requirements
-						.map[r| r -> r.condition.eval]
-						.filter[ !value.isTrue ]
-		// check and fail
-		if (!failing.empty)
-			throw newException(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, 
-				"Method requirements not met: " + 
-				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', ')) 
+		else {
+			if (method.overrides) {
+				// overrides requirement
+				// TODO: ownReqs || super
+				val failing = method.checkOwnRequirements
+				if (!failing.empty) {
+					val failingOnSuper = method.overridenMethod.internalCheckRequirements()
+					if (!failingOnSuper.empty) {
+						// own & super failed, lets fail !
+						return failing + failingOnSuper	
+					}
+				}
+			}
+			else {
+				// own requirements (no super)
+				return method.checkOwnRequirements
+
+			}
+		}
+		return #[]
+	}
+	
+	protected def checkOwnRequirements(WMethodDeclaration method) {
+		method.requirements
+				.map[r| r -> r.condition.eval]
+				.filter[ !value.isTrue ]
 	}
 	
 	def getMessageOrDefault(MethodRequirement it) {

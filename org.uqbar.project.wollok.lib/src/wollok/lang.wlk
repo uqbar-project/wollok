@@ -95,13 +95,34 @@ class MessageNotUnderstoodException inherits Exception {
 }
 
 /**
- * Exception thrown by the Wollok interpreter in case an object constraint
+ * Base Exception thrown in case an object constraint/contract
  * is violated as part of a method / constructor execution.
  *
  * @author jfernandes
+ * @since 1.6
+ */
+class ContractViolationException inherits Exception {
+	constructor(_message) = super(_message)
+}
+
+/**
+ * Runtime exception thrown whenever an object invariant is not fulfilled. 
+ *
+ * @author jfernandes
+ * @since 1.6
  */
 class InvariantViolationException inherits Exception {
     constructor(_message) = super(_message)
+}
+
+/**
+ * Runtime exception thrown when a method precondition is not fulfilled.
+ *
+ * @author jfernandes
+ * @since 1.6
+ */
+class MethodRequirementViolationException inherits Exception {
+	constructor(_message) = super(_message)
 }
 
 /**

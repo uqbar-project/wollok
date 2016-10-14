@@ -223,4 +223,103 @@ class PreConditionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	// ***************************
+	// ** PreCondition Override
+	// ***************************
+		
+	@Test
+	def void anOverridenMethodCanMakeThePreConditionWeaker() {
+		'''
+			class Bird {
+				var energy = 1000
+				
+				method fly(kms) {
+					energy -= kms
+				}
+				requires 
+					kms > 0 : 'Cannot fly negative distances'
+			}
+			
+			class TiredBird inherits Bird {
+				
+				override method fly(kms) {
+					super(kms)
+				}
+				requires kms > -1 : "I can fly 0 but not negative distances. C'mon" 
+				
+			}
+			
+			test "simplePreConditionForSingleParameterInClass" {
+				const b = new TiredBird()
+				b.fly(10)
+				b.fly(0)
+				assert.throwsExceptionWithMessage("Method requirements not met: I can fly 0 but not negative distances. C'mon (kms > -1), Cannot fly negative distances (kms > 0)", {=>
+					b.fly(-1)
+				})
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void overridingWithAWeakerConditionOverridingAConditionTwoLevelsUpInTheHierarchy() {
+		'''
+			class Bird {
+				var energy = 1000
+				
+				method fly(kms) {
+					energy -= kms
+				}
+				requires 
+					kms > 0 : 'Cannot fly negative distances'
+			}
+			
+			class SpecialBird inherits Bird {}
+			
+			class TiredBird inherits SpecialBird {
+				
+				override method fly(kms) {
+					super(kms)
+				}
+				requires kms > -1 : "I can fly 0 but not negative distances. C'mon" 
+				
+			}
+			
+			test "simplePreConditionForSingleParameterInClass" {
+				const b = new TiredBird()
+				b.fly(10)
+				b.fly(0)
+				assert.throwsExceptionWithMessage("Method requirements not met: I can fly 0 but not negative distances. C'mon (kms > -1), Cannot fly negative distances (kms > 0)", {=>
+					b.fly(-1)
+				})
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void overridingMethodAddsPreConditionWhichWasNotInSuperAlwaysRunsTheMethodEvenIfTheConditionIsNotMet() {
+		'''
+			class Bird {
+				var energy = 1000
+				
+				method fly(kms) {
+					energy -= kms
+				}
+			}
+			
+			class TiredBird inherits Bird {
+				
+				override method fly(kms) {
+					super(kms)
+				}
+				requires kms > 0 : 'Cannot fly negative distances' 
+				
+			}
+			
+			test "simplePreConditionForSingleParameterInClass" {
+				const b = new TiredBird()
+				b.fly(0)
+			}
+		'''.interpretPropagatingErrors
+	}
+	
 }
