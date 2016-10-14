@@ -10,6 +10,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 /**
  * Subclasses the wollok evaluator to support tests
  * 
@@ -59,8 +61,8 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			val className = e.wollokException.call("className").toString
-			if (className.equalsIgnoreCase("wollok.lib.AssertionException")) {
-				wollokTestsReporter.reportTestAssertError(test, AssertionException.fail(e.wollokMessage) as AssertionException, e.lineNumber, e.URI)
+			if (className.equalsIgnoreCase(ASSERTION_EXCEPTION)) {
+				wollokTestsReporter.reportTestAssertError(test, new AssertionException(e.wollokMessage), e.lineNumber, e.URI)
 				null
 			} else {
 				// an uncaught wollok-level exception wrapped into java
