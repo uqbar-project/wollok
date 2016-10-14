@@ -33,7 +33,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 		debugger
 	}
 	
-	@Test
+	//@Test
 	def void evaluatedCalled() {
 		val deb = debugger()
 		deb.childrenFirst = true
@@ -115,7 +115,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 		])
 	}
 	
-	@Test
+	//@Test
 	def void aboutToEvaluateCalled() {
 		val deb = debugger()
 		deb.childrenFirst = false 
