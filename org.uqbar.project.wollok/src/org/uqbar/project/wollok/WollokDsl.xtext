@@ -73,9 +73,14 @@ WMethodDeclaration:
 		(native?='native')? 
 		(expression=WBlockExpression | (expressionReturns?='=' expression=WOrExpression))?
 		('requires' requirements+=MethodRequirement*)?
+		('ensures' ensures+=MethodEnsure*)?
 ;
 
 MethodRequirement:
+	condition=WOrExpression (':' message=STRING)?
+;
+
+MethodEnsure:
 	condition=WOrExpression (':' message=STRING)?
 ;
 

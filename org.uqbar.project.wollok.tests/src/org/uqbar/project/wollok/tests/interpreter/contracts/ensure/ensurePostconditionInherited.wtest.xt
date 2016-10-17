@@ -1,0 +1,42 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+object on {}
+object off {}
+
+class AirConditioner {
+	var state
+	
+	method on() {
+		state = on
+	}
+	ensures self.isOn()
+	
+	method off() {
+		state = off
+	}
+	ensures self.isOff()
+	
+	method isOn() = state == on
+	method isOff() = state == off
+}
+
+class BrokenAirConditioner inherits AirConditioner {
+	
+	override method on() {
+	}
+}
+
+test "No violation" {
+	const b = new AirConditioner()
+	b.on()
+}
+
+test "Inherited postconditions gets executed" {
+	const b = new BrokenAirConditioner()
+	
+	assert.throwsExceptionWithMessage("Method post conditions not met: Not satisfied (self.isOn())", { => b.on() })
+}
+

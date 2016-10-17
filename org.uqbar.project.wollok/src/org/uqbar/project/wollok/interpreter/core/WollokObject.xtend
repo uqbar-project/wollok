@@ -267,6 +267,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (method == null)
 			// should be an specific error: no super method to call or something
 			throw throwMessageNotUnderstood(this, message, parameters)
+		
 		method.call(false, parameters)
 	}
 	

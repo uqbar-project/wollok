@@ -1,0 +1,23 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+class Bird {
+	var currentCity
+	
+	method flyTo(city) {
+		currentCity = city
+	}
+	ensures city != null
+}
+
+test "Calling a method with an invalid input renders it post condition failure" {
+	const b = new Bird()
+	assert.throwsExceptionWithMessage("Method post conditions not met: Not satisfied (city != null)", { => b.flyTo(null) })
+}
+
+test "Ok, no error post condition failure" {
+	const b = new Bird()
+	b.flyTo("Albania")
+}

@@ -1,0 +1,49 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+object on {}
+object off {}
+
+class AirConditioner {
+	var state
+	
+	method on() {
+		state = on
+	}
+	ensures self.isOn()
+	
+	method off() {
+		state = off
+	}
+	ensures self.isOff()
+	
+	method isOn() = state == on
+	method isOff() = state == off
+}
+
+class AuditableAirConditioner inherits AirConditioner {
+	const events = []
+	
+	override method on() {
+		super()
+		events.add("Turned On")
+	}
+	ensures self.hasEvents()
+	
+	method hasEvents() = events.size() > 0
+}
+
+class FailingAuditableAirConditioner inherits AuditableAirConditioner {
+	override method hasEvents() = false
+}
+
+test "No violation" {
+	const b = new FailingAuditableAirConditioner()
+	
+	assert.throwsExceptionWithMessage("Method post conditions not met: Not satisfied (self.hasEvents())", { => b.on() })
+}
+
+
+

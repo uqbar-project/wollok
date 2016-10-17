@@ -1,0 +1,26 @@
+/* 
+   XPECT_SETUP org.uqbar.project.wollok.tests.interpreter.WollokXPectInterpreterTestCase END_SETUP
+   XPECT interpret 
+*/
+
+class A {
+	method m() {
+	}
+	ensures 1 > 3
+}
+
+class B inherits A {
+	override method m() {
+		super()
+	}
+	ensures 4 < 0
+}
+
+test "All failing postconditions from inheritance chaing are reported" {
+	const b = new B()
+	
+	assert.throwsExceptionWithMessage("Method post conditions not met: Not satisfied (4 < 0), Not satisfied (1 > 3)", { => b.m() })
+}
+
+
+

@@ -25,6 +25,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.MethodEnsure
 
 /**
  * Methods to be shared between WollokObject and CallableSuper
@@ -51,24 +52,32 @@ abstract class AbstractWollokCallable implements WCallable {
 		call(method, true, parameters)
 	}
 	
-	def WollokObject call(WMethodDeclaration method, Boolean checkRequirements, WollokObject... parameters) {
+	def WollokObject call(WMethodDeclaration method, Boolean checkContract, WollokObject... parameters) {
 		val c = method.createEvaluationContext(parameters).then(receiver)
 		
 		interpreter.performOnStack(method, c) [|
 
-			if (checkRequirements) method.checkRequirements
+			if (checkContract) method.checkRequirements
 			
-			if (method.native) {
-				callNative(method, parameters)
-			}
-			else {
-				val result = method.expression.eval
-				return if (method.supposedToReturnValue)
-						result
-					else
-						theVoid
-			}
+			val returnValue = method.execute(parameters)
+			
+			if (checkContract) method.checkPostConditions
+			
+			returnValue
 		]
+	}
+	
+	def protected WollokObject execute(WMethodDeclaration method, WollokObject... parameters) {
+		if (method.native) {
+			callNative(method, parameters)
+		}
+		else {
+			val result = method.expression.eval
+			return if (method.supposedToReturnValue)
+					result
+				else
+					theVoid
+			}
 	}
 	
 	def protected void checkRequirements(WMethodDeclaration method) {
@@ -109,17 +118,33 @@ abstract class AbstractWollokCallable implements WCallable {
 		return #[]
 	}
 	
-	protected def checkOwnRequirements(WMethodDeclaration method) {
-		method.requirements
-				.map[r| r -> r.condition.eval]
-				.filter[ !value.isTrue ]
+	protected def checkOwnRequirements(WMethodDeclaration it) {
+		requirements
+			.map[ r| r -> r.condition.eval ]
+			.filter[ !value.isTrue ]
 	}
 	
-	def getMessageOrDefault(MethodRequirement it) {
-		if (message != null) message else "Not satisfied"
+	def getMessageOrDefault(MethodRequirement it) { if (message != null) message else "Not satisfied" }
+	def getMessageOrDefault(Invariant it) { if (message != null) message else "Not satisfied" }
+	def getMessageOrDefault(MethodEnsure it) { if (message != null) message else "Not satisfied" }
+	
+	def void checkPostConditions(WMethodDeclaration it) {
+		 val failing = checkOwnPostConditions
+		 if (!failing.empty)
+		 	throw newException(METHOD_POSTCONDITION_VIOLATED_EXCEPTION, 
+				"Method post conditions not met: " + 
+				failing.map['''«key.messageOrDefault» («key.condition.sourceCode.trim»)'''].join(', '))
 	}
-	def getMessageOrDefault(Invariant it) {
-		if (message != null) message else "Not satisfied"
+	
+	def Iterable<Pair<MethodEnsure, WollokObject>> checkOwnPostConditions(WMethodDeclaration it) {
+		val owns = ensures
+			.map[r| r -> r.condition.eval]
+			.filter[ !value.isTrue ]
+			
+		if (overrides)
+			owns + overridenMethod.checkOwnPostConditions
+		else 
+			owns
 	}
 	
 	def protected WollokObject callNative(WMethodDeclaration method, WollokObject... parameters) {

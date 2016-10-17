@@ -126,6 +126,16 @@ class MethodRequirementViolationException inherits Exception {
 }
 
 /**
+ * Runtime exception thrown when a method postcondition is not fulfilled.
+ *
+ * @author jfernandes
+ * @since 1.6
+ */
+class MethodPostConditionViolationException inherits Exception {
+	constructor(_message) = super(_message)
+}
+
+/**
  * An element in a stack trace, represented by a context and a location of a method where a message was sent
  */
 class StackTraceElement {
