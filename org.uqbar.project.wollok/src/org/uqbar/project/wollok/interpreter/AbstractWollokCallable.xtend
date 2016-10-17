@@ -90,8 +90,7 @@ abstract class AbstractWollokCallable implements WCallable {
 		}
 		else {
 			if (method.overrides) {
-				// overrides requirement
-				// TODO: ownReqs || super
+				// overrides requirement => ownReqs || super
 				val failing = method.checkOwnRequirements
 				if (!failing.empty) {
 					val failingOnSuper = method.overridenMethod.internalCheckRequirements()
