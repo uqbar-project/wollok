@@ -11,8 +11,6 @@ program tomYJerry {
 		}
 		method correA(raton) {
 			var distancia = raton.getPosicion() - posicion
-			console.println(self.getVelocidad())
-			console.println(distancia)
 			energia -= (0.5 * self.getVelocidad() * distancia).truncate(0)
 			posicion = raton.getPosicion()
 		}
