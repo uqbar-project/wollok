@@ -3,16 +3,22 @@ package org.uqbar.project.wollok.scoping
 import com.google.common.base.Predicate
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.jdt.core.JavaCore
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.ClassloaderClasspathUriResolver
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
+import org.eclipse.xtext.ui.util.JdtClasspathUriResolver
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
@@ -114,12 +120,43 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 */
 	def loadResource(URI uri, ResourceSet resourceSet) {
 		try {
-			val resource = resourceSet.getResource(uri, true)
-			resource.load(#{})
-			resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+			var Iterable<IEObjectDescription> exportedObjects
+			//checkResourceSet(resourceSet as XtextResourceSet)
+			exportedObjects = WollokResourceCache.getResource(uri)
+			if (exportedObjects == null) {
+				val resource = resourceSet.getResource(uri, true)
+				resource.load(#{})
+				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+				WollokResourceCache.addResource(uri, exportedObjects)
+			}
+			exportedObjects
 		}
 		catch (RuntimeException e) {
 			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
 		} 
 	}
+	
+	/*
+	 
+	def checkResourceSet(XtextResourceSet resourceSet) {
+		if (resourceSet.classpathUriResolver instanceof ClassloaderClasspathUriResolver) {
+			resourceSet.classpathUriResolver = new JdtClasspathUriResolver
+			resourceSet.classpathURIContext = currentJavaProject
+		}
+	}
+	
+	def getCurrentJavaProject() {
+		val workspaceRoot = ResourcesPlugin.workspace.root
+		val openProjects = workspaceRoot.projects.filter[ project | project.open && project.hasNature(JavaCore.NATURE_ID)]
+		var IProject project
+		if (openProjects.isEmpty) {
+			// TODO, Vemos de donde lo sacamos
+			// o generamos uno
+		} else {
+			project = openProjects.head
+		}
+		JavaCore.create(project)
+	}
+	* 
+	*/
 }
