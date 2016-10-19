@@ -668,7 +668,7 @@ class Set inherits Collection {
 	method join() native
 	
 	/**
-	 * @see Object#equals
+	 * Two sets are equals if they have the same elements
 	 */
 	override method equals(other) native
 	
