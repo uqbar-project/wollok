@@ -41,31 +41,42 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	}
 
 	def add(BigDecimal sumand1, BigDecimal sumand2) {
-		checkResult(sumand1.setScale(DECIMAL_PRECISION).add(sumand2))
+		adapt(sumand1).add(sumand2).checkResult
 	}
 	
 	def subtract(BigDecimal minuend, BigDecimal sustraend) {
-		checkResult(minuend.setScale(DECIMAL_PRECISION).subtract(sustraend))
+		adapt(minuend).subtract(sustraend).checkResult
 	}
 	
 	def mul(BigDecimal mul1, BigDecimal mul2) {
-		checkResult(mul1.setScale(DECIMAL_PRECISION).multiply(mul2))
+		adapt(mul1).multiply(mul2).checkResult
 	}
 
-	def div(BigDecimal divisor, BigDecimal dividend) {
-		checkResult(divisor.setScale(DECIMAL_PRECISION).divide(dividend, RoundingMode.HALF_UP))
+	def div(BigDecimal dividend, BigDecimal divisor) {
+		adapt(dividend).divide(divisor, RoundingMode.HALF_UP).checkResult
 	}
 
-	def remainder(BigDecimal divisor, BigDecimal dividend) {
-		checkResult(divisor.setScale(DECIMAL_PRECISION).remainder(dividend))
+	def remainder(BigDecimal dividend, BigDecimal divisor) {
+		adapt(dividend).remainder(divisor).checkResult
 	}
-	
-	def checkResult(BigDecimal result) {
+
+	/** *******************************************************************
+	 * 
+	 * INTERNAL METHODS
+	 * 
+	 * *******************************************************************
+	 */
+	private def adapt(BigDecimal operand) {
+		operand.setScale(DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+	}
+
+	private def checkResult(BigDecimal result) {
+		val resultRounded = adapt(result)
 		val resultIntValue = result.intValue
 		if (result == resultIntValue) {
 			return resultIntValue
 		}
-		return result
+		return resultRounded
 	}
 
 	// ********************************************************************************************

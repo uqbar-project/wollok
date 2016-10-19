@@ -18,7 +18,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void sum() {
+	def void add() {
 		'''
 		assert.equals(4, 3 + 1)
 		assert.equals(4.0, 3.0 + 1)
@@ -32,6 +32,26 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void addSeveralDecimals() {
+		'''
+		assert.equals(4.00001, 3.000004 + 1.000006)
+		assert.equals(4.00001, 3.000002 + 1.000006)
+		assert.equals(4, 3.000002 + 1.000002)
+		'''.test
+	}
+
+	@Test
+	def void subtractSeveralDecimals() {
+		'''
+		assert.equals(-0.00001, 4.000004 - 4.000006)
+		assert.equals(0, 4.000007 - 4.000006)
+		assert.equals(2, 3.000002 - 1.000001)
+		assert.equals(1.99999, 3.000002 - 1.000006)
+		assert.equals(1.99978, 3.000002 - 1.000222)
+		'''.test
+	}
+
+	@Test
 	def void multiply() {
 		'''
 		assert.equals(8, 4 * 2)
@@ -41,6 +61,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void multiplySeveralDecimals() {
+		'''
+		assert.equals(8, 4.00000000001 * 2.000000000003)
+		assert.equals(0, 4.00222222222222000000001 * 0)
+		assert.equals(4.00270, 4.00222222222222000000001 * 1.00012)
+		assert.equals(4.00415, 4.00222522222222000000001 * 1.00048)
+		'''.test
+	}
+
 	@Test
 	def void multiplyByZero() {
 		'''
@@ -69,6 +99,15 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(0, 0 / 10.0)
 		assert.equals(0, 0.0 / 10.0)
 		assert.equals(0, 0 / 10.0)
+		'''.test
+	}
+
+	@Test
+	def void divideSeveralDecimals() {
+		'''
+		assert.equals(0.51235, 5.123456 / 10.00000011)
+		assert.equals(0.51235, 5.123456 / 10)
+		assert.equals(0.51235, 5123456 / 10000000)		
 		'''.test
 	}
 
@@ -182,6 +221,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		const remainder2 = 12.rem(6)
 		assert.equals(3, remainder)
 		assert.equals(0, remainder2)
+		assert.equals(0.11521, 1.1152112.rem(1.0000002))
 		'''.test
 	}
 	

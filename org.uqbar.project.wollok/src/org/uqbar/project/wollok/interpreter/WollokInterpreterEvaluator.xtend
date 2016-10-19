@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
