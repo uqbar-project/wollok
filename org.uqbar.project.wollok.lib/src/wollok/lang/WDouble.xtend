@@ -20,21 +20,33 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 
 	@NativeMessage("+")
 	def plus(WollokObject other) { operate(other) [ doPlus(it) ] }
-		def dispatch Number doPlus(Integer w) { wrapped + new BigDecimal(w) }
-		def dispatch Number doPlus(BigDecimal w) { wrapped + w }
+		def dispatch Number doPlus(Integer w) { 
+			this.add(wrapped, new BigDecimal(w))
+		}
+		def dispatch Number doPlus(BigDecimal w) {
+			this.add(wrapped, w) 
+		}
 		//TODO: here it should throw a 100% wollok exception class
 		def dispatch Number doPlus(Object w) { throw new WollokRuntimeException("Cannot add " + w) }
 
 	@NativeMessage("-")
 	def minus(WollokObject other) { operate(other) [ doMinus(it) ] }
-		def dispatch Number doMinus(Integer w) { wrapped - new BigDecimal(w) }
-		def dispatch Number doMinus(BigDecimal w) { wrapped - w }
+		def dispatch Number doMinus(Integer w) { 
+			this.subtract(wrapped, new BigDecimal(w))
+		}
+		def dispatch Number doMinus(BigDecimal w) {
+			this.subtract(wrapped, w) 
+		}
 		def dispatch Number doMinus(Object w) { throw new WollokRuntimeException("Cannot substract " + w) }
 
 	@NativeMessage("*")
 	def multiply(WollokObject other) { operate(other) [ doMultiply(it) ] }
-		def dispatch Number doMultiply(Integer w) { wrapped * new BigDecimal(w) }
-		def dispatch Number doMultiply(BigDecimal w) { wrapped * w }
+		def dispatch Number doMultiply(Integer w) {
+			this.mul(wrapped, new BigDecimal(w)) 
+		}
+		def dispatch Number doMultiply(BigDecimal w) {
+			this.mul(wrapped, w) 
+		}
 		def dispatch Number doMultiply(Object w) { throw new WollokRuntimeException("Cannot multiply " + w) }
 
 	@NativeMessage("/")
@@ -55,8 +67,12 @@ class WDouble extends WNumber<BigDecimal> implements Comparable<WDouble> {
 	
 	@NativeMessage("%")
 	def module(WollokObject other) { operate(other) [ doModule(it) ] }
-		def dispatch Number doModule(Integer w) { wrapped.remainder(new BigDecimal(w)) }
-		def dispatch Number doModule(BigDecimal w) { wrapped.remainder(w) }
+		def dispatch Number doModule(Integer w) {
+			this.remainder(wrapped, new BigDecimal(w)) 
+		}
+		def dispatch Number doModule(BigDecimal w) {
+			this.remainder(wrapped, w) 
+		}
 		def dispatch Number doModule(Object w) { throw new WollokRuntimeException("Cannot module " + w) }
 
 	@NativeMessage(">")

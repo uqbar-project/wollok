@@ -24,6 +24,10 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(4.0, 3.0 + 1)
 		assert.equals(4.0, 3.0 + 1.0)
 		assert.equals(4.0, 3 + 1.0)
+		assert.equals(4, 4 + 0.0)
+		assert.equals(4, 4.0 + 0.0)
+		assert.equals(4, 4.0 + 0)
+		assert.equals(4, 4 + 0)
 		'''.test
 	}
 
@@ -34,6 +38,17 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(8.0, 4 * 2.0)
 		assert.equals(8.0, 4.0 * 2.0)
 		assert.equals(8.0, 4.0 * 2)
+		'''.test
+	}
+	
+	@Test
+	def void multiplyByZero() {
+		'''
+		assert.equals(6.2500000 * 0.5 * 0, 0)
+		assert.equals(6.2500000 * 0, 0)
+		assert.equals(0.0 * 0, 0)
+		assert.equals(0.0 * 0.0, 0)
+		assert.equals(0 * 0.0, 0)
 		'''.test
 	}
 
@@ -123,6 +138,11 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void absoluteValueOfAPositiveInteger() {
 		'''
 		assert.equals(3, 3.abs())
+		assert.equals(0, 0.abs())
+		assert.equals(0, 0.0.abs())
+		assert.equals(60, (-60.0).abs())
+		assert.equals(60.664, (-60.664).abs())
+		assert.equals(60.664, (60.664).abs())
 		'''.test
 	}
 
@@ -295,6 +315,10 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(0.2, 5 ** (-1.0))
 		assert.equals(0.2, 5.0 ** (-1.0))
 		assert.equals(0.2, 5.0 ** (-1))
+		assert.equals(1, 5.0 ** 0)
+		assert.equals(1, 5.0 ** 0.0)
+		assert.equals(1, 5 ** 0)
+		assert.equals(1, 5 ** 0.0)
 		'''.test
 	}
 	
@@ -333,6 +357,29 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void doubleTruncate() {
 		'''
 		assert.equals(1.2, (5/4).truncate(1))
+		'''.test
+	}
+
+	@Test
+	def void modulus() {
+		'''
+		assert.equals(1, 5 % 4)
+		assert.equals(1.5, 5.5 % 4)
+		assert.equals(0, 4 % 4)
+		assert.equals(0, 4.0 % 4)
+		assert.equals(0, 4.0 % 1)
+		'''.test
+	}
+
+	@Test
+	def void numberComparison() {
+		'''
+		assert.that((1.1 / 1) > (1.000002))
+		assert.that(1 < 1.0001)
+		assert.notThat(1 < 1)
+		assert.notThat(1 > 1)
+		assert.that(1 <= 1)
+		assert.that(1 >= 1)
 		'''.test
 	}
 

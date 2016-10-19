@@ -17,6 +17,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
  */
 abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
+	public static int DECIMAL_PRECISION = 5
+	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
 	}	
@@ -37,9 +39,28 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 		val n = other.nativeNumber
 		Math.floor(this.doubleValue / n.doubleValue).intValue
 	}
+
+	def add(BigDecimal sumand1, BigDecimal sumand2) {
+		checkResult(sumand1.setScale(DECIMAL_PRECISION).add(sumand2))
+	}
 	
+	def subtract(BigDecimal minuend, BigDecimal sustraend) {
+		checkResult(minuend.setScale(DECIMAL_PRECISION).subtract(sustraend))
+	}
+	
+	def mul(BigDecimal mul1, BigDecimal mul2) {
+		checkResult(mul1.setScale(DECIMAL_PRECISION).multiply(mul2))
+	}
+
 	def div(BigDecimal divisor, BigDecimal dividend) {
-		val result = divisor.setScale(5).divide(dividend, RoundingMode.HALF_UP)
+		checkResult(divisor.setScale(DECIMAL_PRECISION).divide(dividend, RoundingMode.HALF_UP))
+	}
+
+	def remainder(BigDecimal divisor, BigDecimal dividend) {
+		checkResult(divisor.setScale(DECIMAL_PRECISION).remainder(dividend))
+	}
+	
+	def checkResult(BigDecimal result) {
 		val resultIntValue = result.intValue
 		if (result == resultIntValue) {
 			return resultIntValue
