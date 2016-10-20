@@ -99,6 +99,8 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(0, 0 / 10.0)
 		assert.equals(0, 0.0 / 10.0)
 		assert.equals(0, 0 / 10.0)
+		assert.equals(0, 0 / 100.0)
+		assert.equals(0, 1 / 100000000000.0)
 		'''.test
 	}
 
