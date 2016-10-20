@@ -425,4 +425,28 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void veryBigIntegerAdd() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000000000000001, a + 1)
+		'''.test
+	}
+
+	@Test
+	def void veryBigIntegerMultiply() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000000000000000, a * 1)
+		'''.test
+	}
+
+	@Test
+	def void veryBigIntegerDivide() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000, a / 1000000000000)
+		'''.test
+	}
+
 }
