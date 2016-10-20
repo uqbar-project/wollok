@@ -97,6 +97,9 @@ class SetTestCase extends CollectionTestCase {
 		assert.notThat(#{2, 3, 4}.equals(#{3, 4}))
 		assert.notThat(#{3, 4}.equals(#{3.01, 4}))
 		assert.that(#{3, 4}.equals(#{2.00 + 1, 4}))
+		assert.notThat(#{}.equals(#{3}))
+		assert.notThat(#{5}.equals(#{3}))
+		assert.notThat(#{5}.equals(#{}))
 		'''.test		
 	}		
 	@Test
