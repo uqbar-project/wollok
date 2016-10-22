@@ -219,33 +219,26 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-
-					//val resource = resourceFactory.createResource(URI.createURI("file:/" + event.text))
-					//val resource = resourceFactory.createResource(URI.createURI("classpath:/" + projectName + "/" + testPath))
-					//val resource = WollokResourceCache.getResource(
-					//	URI.createURI("classpath:/" + projectName + "/" + testPath))
-					//val resourceURI = resource.URI
-					//val file = resource.contents.head as WFile
-					// val IDocument documentAux = editorPart.documentProvider.getDocument(editorPart.editorInput)
-					// val lineInfoAux = documentAux.getLineInformation(lineNumber - 1)
-					// documentAux.selectAndReveal(lineInfoAux.getOffset(), lineInfoAux.getLength())
-					/* 
-					 * 	val File fileToOpen = new File(
-					 * 	//	"/home/fernando/workspace/wollok-dev/runtime-EclipseApplication/test01/src/test.wtest")
-					 * 		"classpath:/wollok/lang.wlk")
-					 */
+					if (event.text.startsWith("classpath:")) return
 					// falta
-					// 01 - Que no sea file, tomarlo del classpath - ver como viene del stack trace
+					// 01 - Por ahora no tomamos classpath , a futuro hay que ver como obtenerlo del JDTClasspathResolver
 					// 02 - Ubicarse en la linea
 					// 03 - Ver si agarra wlk
 					// 04 - capturar el archivo, parsearlo
 					// if (fileToOpen.exists && fileToOpen.isFile) {
-					//println("resource " + resource)
-					//val file = resource.contents.head as WFile
-					//println("resource " + file)
-					//println("Full path> " + file.file.fullPath)
-					
-					val File fileToOpen = new File(event.text)
+					// println("resource " + resource)
+					// val file = resource.contents.head as WFile
+					// println("resource " + file)
+					// println("Full path> " + file.file.fullPath)
+					val data = event.text.split(":")
+					val fileName = data.get(0)
+					val File fileToOpen = new File(fileName)
+					var Integer lineNumber = 0
+					try {
+						lineNumber = new Integer(data.get(1))
+					} catch (NumberFormatException e) {
+					}
+
 					val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
 					val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 
@@ -256,7 +249,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 							var IRegion lineInfo = null
 							try {
 								// line count internaly starts with 0, and not with 1 like in GUI
-								val lineNumber = 10
 								lineInfo = document.getLineInformation(lineNumber - 1)
 							} catch (BadLocationException e) {
 								// ignored because line number may not really exist in document,

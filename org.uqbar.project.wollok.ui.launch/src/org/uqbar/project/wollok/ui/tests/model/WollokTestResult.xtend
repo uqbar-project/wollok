@@ -52,7 +52,6 @@ class WollokTestResult {
 	}
 	
 	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		println("Ended error " + stackTrace) 
 		innerEnded(null, lineNumber, resource, WollokTestState.ERROR)
 		//this.exceptionAsString = exceptionAsString
 		this.exceptionAsString = stackTrace.fold("", [ acum, ste | acum + "\tat " + ste.contextDescription + " - <a>" + ste.fileName + ":" + ste.lineNumber + "</a>\n"  ])
