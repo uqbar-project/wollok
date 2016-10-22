@@ -552,10 +552,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val classes = p.elements.filter(WClass)
 		val repeated = classes.filter[c| classes.exists[it != c && name == c.name] ]
 		repeated.forEach[
-			report(WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + p.name, it, WNAMED__NAME)
+			report(WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + " " + p.name, it, WNAMED__NAME)
 		]
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def classNameCannotBeDuplicatedInFileWitoutPackage(WClass c) {
+		val p = c.getPackage
+		if (p == null) {
+			val file = c.eContainer as WFile
+			val classes = file.elements.filter(WClass)
+			val repeated = classes.filter[_c| classes.exists[it != _c && name == _c.name] ]
+			repeated.forEach[
+				report(WollokDslValidator_DUPLICATED_CLASS_IN_FILE + " " + file.name, it, WNAMED__NAME)
+			]
+		}
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def duplicatedPackageName(WPackage p) {
