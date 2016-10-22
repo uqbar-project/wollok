@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.tests
 
+import java.io.File
 import java.util.Observable
 import java.util.Observer
 import javax.inject.Inject
@@ -42,7 +43,6 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
-import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -51,7 +51,6 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -179,8 +178,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.labelProvider = new WTestTreeLabelProvider
 
 		testTree.addSelectionChangedListener [
-			textOutput.text = if(selection.empty) "" else "<a>lang.wlk</a> " +
-				getOutputText((selection as ITreeSelection).firstElement)
+			textOutput.text = if(selection.empty) "" else getOutputText((selection as ITreeSelection).firstElement)
 		]
 
 		testTree.addDoubleClickListener [ e |
@@ -222,15 +220,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
 
-					// val projectName = configuration.getAttribute(ATTR_PROJECT_NAME, "X")
-					val projectName = "wollok"
-					val testPath = "lang.wlk"
-					// val resource = resourceFactory.createResource(URI.createURI("platform:/resource/" + projectName + "/" + testPath))
-					// val resource = resourceFactory.createResource(URI.createURI("classpath:/" + projectName + "/" + testPath))
-					val resource = WollokResourceCache.getResource(
-						URI.createURI("classpath:/" + projectName + "/" + testPath))
-					val resourceURI = resource.URI
-					// val file = resource.contents.head as WFile
+					//val resource = resourceFactory.createResource(URI.createURI("file:/" + event.text))
+					//val resource = resourceFactory.createResource(URI.createURI("classpath:/" + projectName + "/" + testPath))
+					//val resource = WollokResourceCache.getResource(
+					//	URI.createURI("classpath:/" + projectName + "/" + testPath))
+					//val resourceURI = resource.URI
+					//val file = resource.contents.head as WFile
 					// val IDocument documentAux = editorPart.documentProvider.getDocument(editorPart.editorInput)
 					// val lineInfoAux = documentAux.getLineInformation(lineNumber - 1)
 					// documentAux.selectAndReveal(lineInfoAux.getOffset(), lineInfoAux.getLength())
@@ -245,11 +240,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 					// 03 - Ver si agarra wlk
 					// 04 - capturar el archivo, parsearlo
 					// if (fileToOpen.exists && fileToOpen.isFile) {
-					println("resource " + resource)
-					val file = resource.contents.head as WFile
-					println("resource " + file)
-					println("Full path> " + file.file.fullPath)
-					val IFileStore fileStore = EFS.getLocalFileSystem().getStore(file.file.fullPath)
+					//println("resource " + resource)
+					//val file = resource.contents.head as WFile
+					//println("resource " + file)
+					//println("Full path> " + file.file.fullPath)
+					
+					val File fileToOpen = new File(event.text)
+					val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
 					val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 
 					try {
@@ -315,6 +312,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			it.layoutData = new GridData => [
 				horizontalSpan = 2
 				widthHint = 40
+				heightHint = 15
 			]
 			editable = false
 		]

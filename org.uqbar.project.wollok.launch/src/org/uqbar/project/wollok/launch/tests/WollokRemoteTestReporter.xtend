@@ -10,6 +10,7 @@ import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -44,12 +45,12 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionError, lineNumber, resource?.toString))
-		//remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
+	// remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
 	}
 
 	override reportTestOk(WTest test) {
 		testsResult.add(WollokResultTestDTO.ok(test.name))
-		//remoteTestNotifier.testOk(test.name)
+	// remoteTestNotifier.testOk(test.name)
 	}
 
 	override testsToRun(WFile file, List<WTest> tests) {
@@ -57,20 +58,48 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override testStart(WTest test) {
-		//remoteTestNotifier.testStart(test.name)
+		// remoteTestNotifier.testStart(test.name)
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		testsResult.add(WollokResultTestDTO.error(test.name, exception.convertToString, lineNumber, resource?.toString))
-		//remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
+		testsResult.add(
+			WollokResultTestDTO.error(test.name, exception.convertToString, exception.convertStackTrace, lineNumber,
+				resource?.toString))
+	// remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
 	}
-	
+
 	def dispatch String convertToString(Exception exception) {
 		val sw = new StringWriter
-        exception.printStackTrace(new PrintWriter(sw))
-        sw.toString  
+		exception.printStackTrace(new PrintWriter(sw))
+		sw.toString
 	}
-	
+
+	def dispatch List<StackTraceElementDTO> convertStackTrace(Exception exception) {
+		newArrayList
+	}
+
+	def dispatch List<StackTraceElementDTO> convertStackTrace(WollokProgramExceptionWrapper exception) {
+		val stackTrace = exception.wollokException.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
+		stackTrace.map [ wo |
+			val contextDescription = wo.call("contextDescription").wollokToJava(String) as String
+			val location = wo.call("location").wollokToJava(String) as String
+			val data = location.split(",")
+			val fileName = data.get(0)
+			var Integer lineNumber = 0
+			try {
+				lineNumber = new Integer(data.get(1))
+			} catch (NumberFormatException e) {
+			}
+			new StackTraceElementDTO(contextDescription, fileName, lineNumber)
+		]
+	}
+
+	def dispatch List<StackTraceElementDTO> convertStackTrace(AssertionException exception) {
+		exception.stackTrace.map [ ste |
+			new StackTraceElementDTO(ste.methodName, ste.fileName, ste.lineNumber) 
+		]
+	}
+
 	def dispatch String convertToString(WollokProgramExceptionWrapper exception) {
 		exception.wollokException.call("getStackTraceAsString").wollokToJava(String) as String
 	}
@@ -79,22 +108,22 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		if (e.cause != null)
 			e.cause.prepareExceptionForTrip
 	}
-	
+
 	def dispatch void prepareExceptionForTrip(WollokInterpreterException e) {
 		e.sourceElement = null
 
 		if (e.cause != null)
 			e.cause.prepareExceptionForTrip
 	}
-	
+
 	def dispatch void prepareExceptionForTrip(WollokProgramExceptionWrapper e) {
 		e.URI = null
 		if (e.cause != null)
-			e.cause.prepareExceptionForTrip		
+			e.cause.prepareExceptionForTrip
 	}
-	
+
 	override finished() {
 		remoteTestNotifier.testsResult(testsResult)
 	}
-	
+
 }

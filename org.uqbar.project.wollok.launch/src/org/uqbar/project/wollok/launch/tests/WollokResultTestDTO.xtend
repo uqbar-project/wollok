@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.launch.tests
 
 import java.io.Serializable
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import wollok.lib.AssertionException
 
@@ -12,6 +13,7 @@ class WollokResultTestDTO implements Serializable {
 	int errorLineNumber
 	String resource
 	AssertionException assertionException
+	StackTraceElementDTO[] stackTrace
 	
 	def boolean ok() {
 		assertionException == null && errorLineNumber == 0	
@@ -40,13 +42,15 @@ class WollokResultTestDTO implements Serializable {
 		]
 	}
 	
-	static def WollokResultTestDTO error(String _testName, String _exceptionAsString, int _lineNumber, String _resource) {
+	static def WollokResultTestDTO error(String _testName, String _exceptionAsString, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
 		return new WollokResultTestDTO => [
 			testName = _testName
 			exceptionAsString = _exceptionAsString
+			stackTrace = _stackTrace
 			errorLineNumber = _lineNumber
 			resource = _resource
 		]
 	}
 	
 }
+

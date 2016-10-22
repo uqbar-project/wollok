@@ -5,11 +5,12 @@ import java.util.List
 import java.util.Observable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
+import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import org.uqbar.project.wollok.ui.console.RunInUI
 import wollok.lib.AssertionException
-import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 
 /**
  * This class represents the model of the results of an execution.
@@ -55,8 +56,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.tests.findFirst[name == testName]
 	}
 	
-	override error(String testName, String exceptionAsString, int lineNumber, String resource) {
-		testByName(testName).endedError(exceptionAsString, lineNumber, resource)
+	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+		testByName(testName).endedError(exceptionAsString, stackTrace, lineNumber, resource)
 		
 		this.setChanged
 		this.notifyObservers		
@@ -76,7 +77,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedAssertError(it.assertionException, it.errorLineNumber, it.resource)
 			}
 			if (it.error()) {
-				test.endedError(it.exceptionAsString, it.errorLineNumber, it.resource)
+				test.endedError(it.exceptionAsString, it.stackTrace, it.errorLineNumber, it.resource)
 			}
 		]
 

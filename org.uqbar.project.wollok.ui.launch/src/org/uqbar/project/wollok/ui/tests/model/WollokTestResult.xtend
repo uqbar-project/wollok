@@ -4,6 +4,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import wollok.lib.AssertionException
 
@@ -50,9 +51,11 @@ class WollokTestResult {
 		innerEnded(exception, lineNumber, resource, WollokTestState.ASSERT)
 	}
 	
-	def endedError(String exceptionAsString, int lineNumber, String resource) {
+	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+		println("Ended error " + stackTrace) 
 		innerEnded(null, lineNumber, resource, WollokTestState.ERROR)
-		this.exceptionAsString = exceptionAsString
+		//this.exceptionAsString = exceptionAsString
+		this.exceptionAsString = stackTrace.fold("", [ acum, ste | acum + "\tat " + ste.contextDescription + " - <a>" + ste.fileName + ":" + ste.lineNumber + "</a>\n"  ])
 	}
 	
 	def innerEnded(Exception e, int lineNumber, String resource, WollokTestState state) {
