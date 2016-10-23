@@ -1,5 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
+class A {} 
+
 // XPECT errors --> "Duplicated class name in file" at "Pepe"
 class Pepe {
 	method kaboom() = "Nombre"
