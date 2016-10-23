@@ -563,9 +563,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (p == null) {
 			val file = c.eContainer as WFile
 			val classes = file.elements.filter(WClass)
-			val repeated = classes.filter[_c| classes.exists[it != _c && name == _c.name] ]
+			val repeated = classes.filter[_c| classes.exists[ _c != c && name == _c.name] ]
 			repeated.forEach[
-				report(WollokDslValidator_DUPLICATED_CLASS_IN_FILE + " " + file.name, it, WNAMED__NAME)
+				report(WollokDslValidator_DUPLICATED_CLASS_IN_FILE, it, WNAMED__NAME)
 			]
 		}
 	}
