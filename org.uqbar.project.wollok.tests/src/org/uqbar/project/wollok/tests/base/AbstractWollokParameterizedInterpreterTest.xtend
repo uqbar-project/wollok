@@ -39,7 +39,7 @@ abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollok
 	}
 	
 	def static dispatch Iterable<File> listWollokPrograms(File it) {
-		println("Checking " + absolutePath)
+		//println("Checking " + absolutePath)
 		if (file) {
 			if(name.isWollokExtension && !ignore(it))
 				#[it]
