@@ -548,27 +548,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def classNameCannotBeDuplicatedWithinPackage(WPackage p) {
-		val classes = p.elements.filter(WClass)
-		val repeated = classes.filter[c| classes.exists[it != c && name == c.name] ]
+	def classNameCannotBeDuplicatedInFileOrPackage(WClass c) {
+		val container = c.eContainer
+		val classes = container.eContents.filter(WClass)
+		val repeated = classes.filter[_c| c != _c && c.name == _c.name ]
+		var errorMessage = ""
+		if (container instanceof WPackage)
+			errorMessage = WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + " " + container.name
+		else
+			errorMessage = WollokDslValidator_DUPLICATED_CLASS_IN_FILE 
+		val message = errorMessage
 		repeated.forEach[
-			report(WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE + " " + p.name, it, WNAMED__NAME)
+			report(message, it, WNAMED__NAME)
 		]
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
-	def classNameCannotBeDuplicatedInFileWitoutPackage(WClass c) {
-		val p = c.getPackage
-		if (p == null) {
-			val file = c.eContainer as WFile
-			val classes = file.elements.filter(WClass)
-			val repeated = classes.filter[_c| c != _c && c.name == _c.name ]
-			println("repetidos " + repeated.size())
-			repeated.forEach[
-				report(WollokDslValidator_DUPLICATED_CLASS_IN_FILE, it, WNAMED__NAME)
-			]
-		}
 	}
 	
 	@Check
