@@ -114,12 +114,43 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 */
 	def loadResource(URI uri, ResourceSet resourceSet) {
 		try {
-			val resource = resourceSet.getResource(uri, true)
-			resource.load(#{})
-			resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+			var Iterable<IEObjectDescription> exportedObjects
+			//checkResourceSet(resourceSet as XtextResourceSet)
+			exportedObjects = WollokResourceCache.getResource(uri)
+			if (exportedObjects == null) {
+				val resource = resourceSet.getResource(uri, true)
+				resource.load(#{})
+				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+				WollokResourceCache.addResource(uri, exportedObjects)
+			}
+			exportedObjects
 		}
 		catch (RuntimeException e) {
 			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
 		} 
 	}
+	
+	/*
+	 
+	def checkResourceSet(XtextResourceSet resourceSet) {
+		if (resourceSet.classpathUriResolver instanceof ClassloaderClasspathUriResolver) {
+			resourceSet.classpathUriResolver = new JdtClasspathUriResolver
+			resourceSet.classpathURIContext = currentJavaProject
+		}
+	}
+	
+	def getCurrentJavaProject() {
+		val workspaceRoot = ResourcesPlugin.workspace.root
+		val openProjects = workspaceRoot.projects.filter[ project | project.open && project.hasNature(JavaCore.NATURE_ID)]
+		var IProject project
+		if (openProjects.isEmpty) {
+			// TODO, Vemos de donde lo sacamos
+			// o generamos uno
+		} else {
+			project = openProjects.head
+		}
+		JavaCore.create(project)
+	}
+	* 
+	*/
 }

@@ -7,7 +7,6 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Platform
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
-import org.eclipse.debug.internal.ui.DebugUIMessages
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.debug.ui.RefreshTab
@@ -34,10 +33,9 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	}
 
 	def configureConfiguration(ILaunchConfigurationWorkingCopy it) {
-		val root =  ResourcesPlugin.getWorkspace().getRoot()
-		val openProjects = root.projects.filter[ project | project.isOpen() && project.hasNature(JavaCore.NATURE_ID)]
-		
-		if(openProjects.empty){
+		val workspaceRoot = ResourcesPlugin.workspace.root
+		val openProjects = workspaceRoot.projects.filter[ project | project.open && project.hasNature(JavaCore.NATURE_ID)]
+		if (openProjects.empty){
 			val x = new RuntimeException(Messages.LaunchReplWithoutFileHandler_notHavingWollokProject)
 			DebugUIPlugin.errorDialog(DebugUIPlugin.shell, Messages.LaunchReplWithoutFileHandler_notHavingWollokProject, Messages.LaunchReplWithoutFileHandler_notHavingWollokProject, x) //
 			throw x
