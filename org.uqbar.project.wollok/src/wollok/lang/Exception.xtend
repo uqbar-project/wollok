@@ -2,12 +2,6 @@ package wollok.lang
 
 import java.io.File
 import java.util.List
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.runtime.IAdaptable
-import org.eclipse.emf.common.util.URI
-import org.eclipse.jface.viewers.IStructuredSelection
-import org.eclipse.ui.IWorkbenchWindow
-import org.eclipse.ui.PlatformUI
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation

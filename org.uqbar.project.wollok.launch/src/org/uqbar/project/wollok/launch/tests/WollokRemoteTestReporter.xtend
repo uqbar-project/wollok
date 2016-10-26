@@ -101,7 +101,11 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	def dispatch String convertToString(WollokProgramExceptionWrapper exception) {
-		exception.wollokException.call("getStackTraceAsString").wollokToJava(String) as String
+		val wollokException = exception.wollokException
+		val className = wollokException.call("className").wollokToJava(String) as String
+		val message = exception.wollokMessage
+		val concatMessage = if (message != null) ": " + message else "" 
+		return className + concatMessage
 	}
 
 	def dispatch void prepareExceptionForTrip(Throwable e) {

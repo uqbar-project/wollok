@@ -6,6 +6,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
+import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 /**
@@ -18,8 +19,8 @@ import wollok.lib.AssertionException
 class WollokTestResult {
 	val WollokTestInfo testInfo
 	var WollokTestState state
-	var long startTime = 0;
-	var long endTime = 0;
+	var long startTime = 0
+	var long endTime = 0
 	var URI testResource
 	var URI errorResource
 	int lineNumber
@@ -53,10 +54,10 @@ class WollokTestResult {
 	
 	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
 		innerEnded(null, lineNumber, resource, WollokTestState.ERROR)
-		//this.exceptionAsString = exceptionAsString
-		this.exceptionAsString = stackTrace.fold("", [ acum, ste | acum + "\tat " + ste.contextDescription + " - <a>" + ste.fileName + ":" + ste.lineNumber + "</a>\n"  ])
+		this.exceptionAsString = exceptionAsString + "\n" + 
+			stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink(testResource)  ])
 	}
-	
+
 	def innerEnded(Exception e, int lineNumber, String resource, WollokTestState state) {
 		ended(state)
 		this.exception = e

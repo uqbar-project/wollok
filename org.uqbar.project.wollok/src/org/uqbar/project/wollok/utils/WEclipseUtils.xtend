@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.Status
 import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jface.text.source.IVerticalRuler
 import org.eclipse.jface.text.source.IVerticalRulerInfo
 import org.eclipse.swt.widgets.Display
@@ -28,7 +30,6 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
-import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * Utilities on top of eclipse platform.
@@ -113,6 +114,15 @@ class WEclipseUtils {
 	}
 	
 	def static allProjects() { ResourcesPlugin.workspace.root.projects }
+	
+	def static openProjects() { 
+		val root =  ResourcesPlugin.getWorkspace().getRoot()
+		root.projects.filter[ project | project.isOpen() && project.hasNature(JavaCore.NATURE_ID)].toList 
+	}
+	
+	def static getProject(String projectName) {
+		openProjects.findFirst [ it.name.equalsIgnoreCase(projectName)]	
+	}
 	
 	def static fullBuild(IProject p, IProgressMonitor monitor) {
 		p.build(IncrementalProjectBuilder.FULL_BUILD, monitor)

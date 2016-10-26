@@ -43,6 +43,7 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
+import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -59,6 +60,8 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author tesonep
  */
 class WollokTestResultView extends ViewPart implements Observer {
+
+	public static String CLASSPATH = "classpath:/"
 
 	@Inject
 	private IResourceFactory resourceFactory
@@ -109,9 +112,13 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		testLaunchShortcut.launch(results.container.mainResource.toIFile, mode)
+		testLaunchShortcut.launch(testFile, mode)
 	}
 
+	def testFile() {
+		results.container.mainResource.toIFile
+	}
+	
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -178,7 +185,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.labelProvider = new WTestTreeLabelProvider
 
 		testTree.addSelectionChangedListener [
-			textOutput.text = if(selection.empty) "" else getOutputText((selection as ITreeSelection).firstElement)
+			textOutput.text = if(selection.empty) "" else getOutputText((selection as ITreeSelection).firstElement) 
 		]
 
 		testTree.addDoubleClickListener [ e |
@@ -205,6 +212,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		)
 		textOutput.background = new Color(Display.current, 255, 255, 255)
 		textOutput.foreground = new Color(Display.current, 50, 50, 50)
+		
 		// textOutput.editable = false
 		new GridData => [
 			minimumHeight = 80
@@ -219,31 +227,41 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					if (event.text.startsWith("classpath:")) return
-					// falta
-					// 01 - Por ahora no tomamos classpath , a futuro hay que ver como obtenerlo del JDTClasspathResolver
-					// 02 - Ubicarse en la linea
-					// 03 - Ver si agarra wlk
-					// 04 - capturar el archivo, parsearlo
-					// if (fileToOpen.exists && fileToOpen.isFile) {
-					// println("resource " + resource)
-					// val file = resource.contents.head as WFile
-					// println("resource " + file)
-					// println("Full path> " + file.file.fullPath)
-					val data = event.text.split(":")
-					val fileName = data.get(0)
-					val File fileToOpen = new File(fileName)
+					var File fileToOpen
 					var Integer lineNumber = 0
-					try {
-						lineNumber = new Integer(data.get(1))
-					} catch (NumberFormatException e) {
+						
+					var ITextEditor textEditor
+					// TODO: Armar un método aparte para cada uno (strategies)
+					if (event.text.startsWith(CLASSPATH)) {
+						val data = event.text.split(":")
+						// Si falla ... se lo mora
+						println(data)
+						val fileName = data.get(0) + ":" + data.get(1)
+						println(fileName)
+						try {
+							lineNumber = new Integer(data.get(2))
+						} catch (NumberFormatException e) {
+						}
+						println(lineNumber)
+						val projectName = testFile.project.name
+						val context = projectName.project
+						val URI realURI = new WorkspaceClasspathUriResolver().resolve(context, URI.createURI(fileName))
+						textEditor = realURI.openElement as ITextEditor
+					} else {
+						val data = event.text.split(":")
+						val fileName = data.get(0)
+						fileToOpen = new File(fileName)
+						try {
+							lineNumber = new Integer(data.get(1))
+						} catch (NumberFormatException e) {
+						}
+						val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
+						val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+						textEditor = IDE.openEditorOnFileStore(page, fileStore) as ITextEditor
 					}
 
-					val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
-					val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 
 					try {
-						val ITextEditor textEditor = IDE.openEditorOnFileStore(page, fileStore) as ITextEditor
 						val IDocument document = textEditor.documentProvider.getDocument(textEditor.editorInput)
 						if (document != null) {
 							var IRegion lineInfo = null
