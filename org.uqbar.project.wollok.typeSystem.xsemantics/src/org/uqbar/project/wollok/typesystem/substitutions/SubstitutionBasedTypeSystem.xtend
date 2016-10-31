@@ -63,14 +63,17 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	override def name() { "Substitutions-based" }
 	
 	override validate(WFile file, WollokDslValidator validator) {
-		this.analyzed = new WeakInterningHashSet
+		analyzed = new WeakInterningHashSet
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
-		this.analyse(file)
-		this.inferTypes()
+		analyse(file)
+		inferTypes
+		
 		// TODO: report errors !
-		(file.eAllContents.forEach[ issues.forEach[issue|
-			validator.report(issue.message, issue.model)
-		] ])
+		file.eAllContents.forEach [ 
+			issues.forEach [
+				validator.report(message, model)
+			]
+		]
 	}
 
 	override analyse(EObject p) { p.eContents.forEach[analyze] }
@@ -84,9 +87,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	def analyze(Iterable<? extends EObject> objects) { objects.forEach[analyze] }
 
-	// ***************************
-	// ** analysis rules
-	// ***************************
+	// ******************************************************
+	// ** Analysis rules
+	// ******************************************************
 
 	def dispatch void doAnalyse(WProgram it) { elements.analyze }
 	def dispatch void doAnalyse(WTest it) { elements.analyze }
@@ -281,7 +284,9 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		if (!rules.contains(rule)) rules += rule
 	}
 
-	// shortcuts
+	// ************************************************************************
+	// ** Shortcuts
+	// ************************************************************************
 
 	def addFact(EObject source, EObject model, WollokType knownType) {
 		model.analyze

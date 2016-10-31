@@ -37,6 +37,7 @@ interface TypeSystem {
 	 * Then you can perform queries for types.
 	 */
 	def WollokType type(EObject obj)
+	
 	def Iterable<TypeExpectationFailedException> issues(EObject obj)
 
 	// this was brought up from xsemantics impl/

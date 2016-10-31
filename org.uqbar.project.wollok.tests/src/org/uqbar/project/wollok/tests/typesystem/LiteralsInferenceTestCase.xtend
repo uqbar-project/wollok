@@ -28,25 +28,24 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void testNumberLiteral() { 	''' program {
-		46
-		}'''.parseAndInfer.asserting [
+	def void testNumberLiteral() { 	
+		''' program { 46 } '''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "46")
 		]
 	}
 
 	@Test
-	def void testStringLiteral() { 	''' program {
-		"Hello"
-		}'''.parseAndInfer.asserting [
+	def void testStringLiteral() {
+		''' program { "Hello" } '''
+		.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(STRING), '''"Hello"''')
 		]
 	}
 
 	@Test
-	def void testBooleanLiteral() { 	''' program p {
-		true
-		}'''.parseAndInfer.asserting [
+	def void testBooleanLiteral() {
+		'''program p { true }'''
+		.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(BOOLEAN), "true")
 		]
 	}
