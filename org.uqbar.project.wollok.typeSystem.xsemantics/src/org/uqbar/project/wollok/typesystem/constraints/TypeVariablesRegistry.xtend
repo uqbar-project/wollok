@@ -31,7 +31,7 @@ class TypeVariablesRegistry {
 	def newSealed(EObject it, WollokType type) {
 		newTypeVariable => [
 			addMinimalType(type)
-			sealed = true
+			beSealed
 		]
 	}
 	

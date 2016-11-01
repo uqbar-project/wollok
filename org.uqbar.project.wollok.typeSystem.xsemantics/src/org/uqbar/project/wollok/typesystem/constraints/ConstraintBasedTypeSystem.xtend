@@ -110,9 +110,23 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ************************************************************************
 	
 	override inferTypes() {
-		new PropagateMinimalTypes(registry).run()
+		println("Starting inference")
+		SealVariables.runStrategy
+		
+		var Boolean globalChanged
+		do {
+			val results = newArrayList 
+			#[PropagateMinimalTypes, PropagateMaximalTypes].forEach[results.add(runStrategy)]
+			globalChanged = results.exists[it]
+		} while (globalChanged)
+		
+		registry.fullReport
 	}
-
+	
+	def runStrategy(Class<? extends AbstractInferenceStrategy> it) {
+		(newInstance => [it.registry = this.registry]).run()			
+	}
+	
 	override type(EObject obj) {
 		obj.tvar.type
 	}

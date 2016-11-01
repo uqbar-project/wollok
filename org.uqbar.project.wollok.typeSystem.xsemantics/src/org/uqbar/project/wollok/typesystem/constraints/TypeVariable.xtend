@@ -3,9 +3,14 @@ package org.uqbar.project.wollok.typesystem.constraints
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.AccessorType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.TypeVariable.ConcreteTypeState
+
+import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
+import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class TypeVariable {
 	enum ConcreteTypeState {
@@ -13,14 +18,15 @@ class TypeVariable {
 		Ready
 	}
 
-	EObject owner
+	@Accessors
+	val EObject owner
 
 	@Accessors
 	val Map<WollokType, ConcreteTypeState> minimalConcreteTypes = newHashMap()
 
 	// <Dictionary(CBConcreteType -> CBTypeAssociation)>
-	// maxConcreteTypes:	<Collection<Class>>
-	// name:		<String>
+	@Accessors(AccessorType.PUBLIC_GETTER)
+	var MaximalConcreteTypes maximalConcreteTypes = null
 	
 	@Accessors
 	val Set<TypeVariable> subtypes = newHashSet
@@ -29,7 +35,8 @@ class TypeVariable {
 	val Set<TypeVariable> supertypes = newHashSet
 
 	// messages:		<Dictionary(Symbol -> CBMessageSend)>	
-	@Accessors
+
+	@Accessors(AccessorType.PUBLIC_GETTER)
 	var Boolean sealed = false
 	
 	new(EObject owner) {
@@ -51,8 +58,10 @@ class TypeVariable {
 	def fullDescription() '''
 		«class.simpleName» {
 			owner: «owner»,
-			minTypes: «minimalConcreteTypes»
-			subtypes: «subtypes.map[owner]»
+			sealed: «sealed»,
+			minTypes: «minimalConcreteTypes»,
+			maxTypes: «maximalConcreteTypes?:"unknown"»,
+			subtypes: «subtypes.map[owner]»,
 			supertypes: «supertypes.map[owner]»
 		}
 	'''
@@ -71,6 +80,11 @@ class TypeVariable {
 		supertype.subtypes.add(this)
 	}
 
+	def beSealed() {
+		maximalConcreteTypes = new MaximalConcreteTypes(minimalConcreteTypes.keySet)
+		sealed = true
+	}
+
 	// ************************************************************************
 	// ** Internal information management
 	// ************************************************************************
@@ -79,9 +93,30 @@ class TypeVariable {
 		minimalConcreteTypes.put(type, ConcreteTypeState.Pending)
 	}
 	
+	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
+		maximalConcreteTypes = new MaximalConcreteTypes(maxTypes.maximalConcreteTypes)
+		if (sealed) {
+			maximalConcreteTypes.maximalConcreteTypes.forEach[addMinimalType]
+		}
+	}
+	
 	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************
 	
 	override def toString() '''t(«owner»)'''
+}
+
+class MaximalConcreteTypes {
+	@Accessors
+	val Set<WollokType> maximalConcreteTypes
+	
+	@Accessors
+	var ConcreteTypeState state = ConcreteTypeState.Pending	
+	
+	new(Set<WollokType> types) {
+		maximalConcreteTypes = types
+	}
+	
+	override toString() '''max(«maximalConcreteTypes») [«state»]'''
 }
