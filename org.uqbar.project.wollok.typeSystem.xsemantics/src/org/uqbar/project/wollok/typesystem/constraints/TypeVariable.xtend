@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariable.ConcreteTypeState
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
-import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class TypeVariable {
 	enum ConcreteTypeState {
