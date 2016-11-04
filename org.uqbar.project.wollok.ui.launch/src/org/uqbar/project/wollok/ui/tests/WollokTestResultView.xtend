@@ -1,11 +1,8 @@
 package org.uqbar.project.wollok.ui.tests
 
-import java.io.File
 import java.util.Observable
 import java.util.Observer
 import javax.inject.Inject
-import org.eclipse.core.filesystem.EFS
-import org.eclipse.core.filesystem.IFileStore
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.jface.layout.GridDataFactory
@@ -21,12 +18,16 @@ import org.eclipse.jface.viewers.LabelProvider
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
+import org.eclipse.swt.custom.SashForm
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.graphics.RGB
+import org.eclipse.swt.layout.FillLayout
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.layout.RowData
+import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
@@ -34,16 +35,12 @@ import org.eclipse.swt.widgets.Link
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
 import org.eclipse.swt.widgets.ToolItem
-import org.eclipse.ui.IWorkbenchPage
 import org.eclipse.ui.PartInitException
-import org.eclipse.ui.PlatformUI
-import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
-import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -60,8 +57,6 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author tesonep
  */
 class WollokTestResultView extends ViewPart implements Observer {
-
-	public static String CLASSPATH = "classpath:/"
 
 	@Inject
 	private IResourceFactory resourceFactory
@@ -118,7 +113,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def testFile() {
 		results.container.mainResource.toIFile
 	}
-	
+
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -132,8 +127,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 		createToolbar(parent)
 		createResults(parent)
 		createBar(parent)
-		createTree(parent)
-		createTextOutput(parent)
+		val sash = new Composite(parent, SWT.NONE)
+		sash.layout = new FillLayout
+		sash.layoutData = new GridData(GridData.FILL_BOTH)
+		val sashForm = new SashForm(sash, SWT.VERTICAL)
+		createTree(sashForm)
+		createTextOutput(sashForm)
 	}
 
 	def createToolbar(Composite parent) {
@@ -185,7 +184,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.labelProvider = new WTestTreeLabelProvider
 
 		testTree.addSelectionChangedListener [
-			textOutput.text = if(selection.empty) "" else getOutputText((selection as ITreeSelection).firstElement) 
+			textOutput.text = if(selection.empty) "" else getOutputText((selection as ITreeSelection).firstElement)
 		]
 
 		testTree.addDoubleClickListener [ e |
@@ -206,13 +205,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTextOutput(Composite parent) {
+		val textParent = new Composite(parent, SWT.BORDER)
+		val parentGridLayout = new GridLayout
+		parentGridLayout.marginWidth = 0
+		parentGridLayout.marginHeight = 0
+		textParent.layout = parentGridLayout
+		textParent.layoutData = new GridData
 		textOutput = new Link(
-			parent,
-			SWT.MULTI.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.BORDER).bitwiseOr(SWT.V_SCROLL)
-		)
+			textParent,
+			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL)
+		) => [
+			
+		]
 		textOutput.background = new Color(Display.current, 255, 255, 255)
 		textOutput.foreground = new Color(Display.current, 50, 50, 50)
-		
+
 		// textOutput.editable = false
 		new GridData => [
 			minimumHeight = 80
@@ -227,63 +234,27 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					var File fileToOpen
-					var Integer lineNumber = 0
-						
-					var ITextEditor textEditor
-					// TODO: Armar un método aparte para cada uno (strategies)
-					if (event.text.startsWith(CLASSPATH)) {
-						val data = event.text.split(":")
-						// Si falla ... se lo mora
-						println(data)
-						val fileName = data.get(0) + ":" + data.get(1)
-						println(fileName)
-						try {
-							lineNumber = new Integer(data.get(2))
-						} catch (NumberFormatException e) {
-						}
-						println(lineNumber)
-						val projectName = testFile.project.name
-						val context = projectName.project
-						val URI realURI = new WorkspaceClasspathUriResolver().resolve(context, URI.createURI(fileName))
-						textEditor = realURI.openElement as ITextEditor
-					} else {
-						val data = event.text.split(":")
-						val fileName = data.get(0)
-						fileToOpen = new File(fileName)
-						try {
-							lineNumber = new Integer(data.get(1))
-						} catch (NumberFormatException e) {
-						}
-						val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
-						val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						textEditor = IDE.openEditorOnFileStore(page, fileStore) as ITextEditor
-					}
-
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, testFile)
+					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
+					val String fileName = fileOpenerStrategy.fileName
+					val Integer lineNumber = fileOpenerStrategy.lineNumber
 
 					try {
 						val IDocument document = textEditor.documentProvider.getDocument(textEditor.editorInput)
-						if (document != null) {
-							var IRegion lineInfo = null
-							try {
-								// line count internaly starts with 0, and not with 1 like in GUI
-								lineInfo = document.getLineInformation(lineNumber - 1)
-							} catch (BadLocationException e) {
-								// ignored because line number may not really exist in document,
-								// we guess this...
-							}
-							if (lineInfo != null) {
-								textEditor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength())
-							}
+						if(document == null) throw new RuntimeException("Could not open file " + fileName +
+							" in editor")
+						var IRegion lineInfo = null
+						// line count internaly starts with 0, and not with 1 like in GUI
+						lineInfo = document.getLineInformation(lineNumber - 1)
+						if (lineInfo != null) {
+							textEditor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength())
 						}
+					} catch (BadLocationException e) {
+						// ignored because line number may not really exist in document,
+						// we guess this...
 					} catch (PartInitException e) {
-						// Put your exception handler here if you wish to
 						e.printStackTrace
 					}
-//					} else {
-				// Do something if the file does not exist
-//					}
-//				}
 				}
 			}
 		)

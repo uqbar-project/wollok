@@ -1,6 +1,5 @@
 package wollok.lang
 
-import java.io.File
 import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -15,6 +14,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  */
 class Exception {
 	static String FILE = "file:"
+	static String PATH_SEPARATOR = "/"  //  that is because URI uses only /
 	
 	WollokObject exceptionObject
 	List<SourceCodeLocation> stackTrace
@@ -37,8 +37,8 @@ class Exception {
 	}
 	
 	def location(SourceCodeLocation l) {
-		if (l.fileURI.contains(File.separator))
-		 '''«l.fileURI.substring(l.fileURI.lastIndexOf(File.separator))»:«l.startLine»'''
+		if (l.fileURI.contains(PATH_SEPARATOR))
+		 '''«l.fileURI.substring(l.fileURI.lastIndexOf(PATH_SEPARATOR))»:«l.startLine»'''
 		else
 			l.fileURI
 	}
