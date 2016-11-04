@@ -7,7 +7,8 @@ import wollok.lib.AssertionException
  */
 class AssertErrorFormatter {
 
-	def dispatch format(AssertionException e) {
+	def format(AssertionException e) {
 		return e.message
 	}
+	
 }
