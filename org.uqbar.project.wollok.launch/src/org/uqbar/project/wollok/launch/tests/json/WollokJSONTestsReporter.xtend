@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonWriter
 import java.io.PrintWriter
 import java.util.List
 import org.eclipse.emf.common.util.URI
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
@@ -70,7 +71,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		closure.apply(writer.beginObject).endObject
 	}
 
-	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
+	override reportTestAssertError(WTest test, AssertionException assertionError, WollokObject wollokException, int lineNumber, URI resource) {
 		writer => [
 			beginObject
 				name("name").value(test.name)

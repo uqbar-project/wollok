@@ -9,7 +9,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 class AssertionException extends Exception {
 
-	@Accessors private String message
+	private String message
 	
 	new(String message) {
 		this.message = message

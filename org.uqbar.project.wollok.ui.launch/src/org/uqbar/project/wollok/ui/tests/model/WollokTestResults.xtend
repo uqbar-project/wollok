@@ -21,8 +21,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	@Accessors
 	var WollokTestContainer container
 	
-	override assertError(String testName, AssertionException assertionException, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(assertionException, lineNumber, resource)
+	override assertError(String testName, AssertionException assertionException, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+		testByName(testName).endedAssertError(assertionException, stackTrace, lineNumber, resource)
 		
 		this.setChanged
 		this.notifyObservers
@@ -74,7 +74,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedOk()
 			}
 			if (it.failure()) {
-				test.endedAssertError(it.assertionException, it.errorLineNumber, it.resource)
+				test.endedAssertError(it.assertionException, it.stackTrace, it.errorLineNumber, it.resource)
 			}
 			if (it.error()) {
 				test.endedError(it.exceptionAsString, it.stackTrace, it.errorLineNumber, it.resource)

@@ -38,4 +38,8 @@ class StackTraceElementDTO implements Serializable {
 			fileName
 	}
 	
+	override toString() {
+		contextDescription + " [" + fileName + ":" + lineNumber + "]"
+	}
+	
 }

@@ -52,7 +52,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		}
 		catch (WollokInterpreterException e) {
 			if (e.cause instanceof AssertionException) {
-				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.objectURI)
+				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, null, e.lineNumber, e.objectURI)
 				null
 			} else {
 				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.objectURI)
@@ -62,7 +62,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		catch (WollokProgramExceptionWrapper e) {
 			val className = e.wollokException.call("className").toString
 			if (className.equalsIgnoreCase(ASSERTION_EXCEPTION)) {
-				wollokTestsReporter.reportTestAssertError(test, new AssertionException(e.wollokMessage), e.lineNumber, e.URI)
+				wollokTestsReporter.reportTestAssertError(test, new AssertionException(e.wollokMessage), e.wollokException, e.lineNumber, e.URI)
 				null
 			} else {
 				// an uncaught wollok-level exception wrapped into java

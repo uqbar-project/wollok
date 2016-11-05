@@ -125,6 +125,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			parent.setLayout(it)
 		]
 		createToolbar(parent)
+		createSeparator(parent)
 		createResults(parent)
 		createBar(parent)
 		val sash = new Composite(parent, SWT.NONE)
@@ -133,6 +134,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 		val sashForm = new SashForm(sash, SWT.VERTICAL)
 		createTree(sashForm)
 		createTextOutput(sashForm)
+	}
+
+	def createSeparator(Composite parent) {
+		val separator = new Label(parent, SWT.HORIZONTAL.bitwiseOr(SWT.SEPARATOR))
+    	separator.layoutData = new GridData(GridData.FILL_HORIZONTAL)
 	}
 
 	def createToolbar(Composite parent) {
@@ -289,7 +295,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createResultNumberTextBox(Composite panel) {
-		new Text(panel, SWT.BORDER) => [
+		new Text(panel, SWT.BORDER.bitwiseOr(SWT.CENTER)) => [
 			it.layoutData = new GridData => [
 				horizontalSpan = 2
 				widthHint = 40

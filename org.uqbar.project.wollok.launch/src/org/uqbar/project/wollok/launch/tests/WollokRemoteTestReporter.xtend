@@ -43,8 +43,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		remoteTestNotifier = client.getGlobal(WollokRemoteUITestNotifier) as WollokRemoteUITestNotifier
 	}
 
-	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
-		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionError, lineNumber, resource?.toString))
+	override reportTestAssertError(WTest test, AssertionException assertionError, WollokObject wollokException, int lineNumber, URI resource) {
+		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionError, wollokException?.convertStackTrace, lineNumber, resource?.toString))
 	// remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
 	}
 
@@ -79,7 +79,15 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	def dispatch List<StackTraceElementDTO> convertStackTrace(WollokProgramExceptionWrapper exception) {
-		val stackTrace = exception.wollokException.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
+		exception.wollokException.internalStackTraceToDTO
+	}
+	
+	def dispatch List<StackTraceElementDTO> convertStackTrace(WollokObject wollokException) {
+		wollokException.internalStackTraceToDTO
+	}
+
+	private def internalStackTraceToDTO(WollokObject fullStackTrace) {
+		val stackTrace = fullStackTrace.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
 		stackTrace.map [ wo |
 			val contextDescription = wo.call("contextDescription").wollokToJava(String) as String
 			val location = wo.call("location").wollokToJava(String) as String
@@ -91,12 +99,6 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 			} catch (NumberFormatException e) {
 			}
 			new StackTraceElementDTO(contextDescription, fileName, lineNumber)
-		]
-	}
-
-	def dispatch List<StackTraceElementDTO> convertStackTrace(AssertionException exception) {
-		exception.stackTrace.map [ ste |
-			new StackTraceElementDTO(ste.methodName, ste.fileName, ste.lineNumber) 
 		]
 	}
 

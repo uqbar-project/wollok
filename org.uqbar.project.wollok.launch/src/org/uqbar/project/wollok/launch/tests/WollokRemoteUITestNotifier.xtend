@@ -8,7 +8,7 @@ import wollok.lib.AssertionException
  */
 interface WollokRemoteUITestNotifier {
 	
-	def void assertError(String testName, AssertionException assertionException, int lineNumber, String resource)
+	def void assertError(String testName, AssertionException assertionException, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
 	
 	def void testOk(String testName)
 	

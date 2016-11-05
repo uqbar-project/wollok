@@ -33,10 +33,11 @@ class WollokResultTestDTO implements Serializable {
 		]
 	}
 	
-	static def WollokResultTestDTO assertionError(String _testName, AssertionException _assertionException, int _lineNumber, String _resource) {
+	static def WollokResultTestDTO assertionError(String _testName, AssertionException _assertionException, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
 		return new WollokResultTestDTO => [
 			testName = _testName
 			assertionException = _assertionException
+			stackTrace = _stackTrace
 			errorLineNumber = _lineNumber
 			resource = _resource
 		]
