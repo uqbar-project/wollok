@@ -30,10 +30,12 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	def debugger() {
 		val debugger = new PostEvaluationTestDebugger(interpreter)
 		interpreter.debugger = debugger
+		//Tip: if tests fail you should use activate it
+		//debugger.logSession = true
 		debugger
 	}
 	
-	//@Test
+	@Test
 	def void evaluatedCalled() {
 		val deb = debugger()
 		deb.childrenFirst = true
@@ -101,6 +103,10 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 					"sum",
 					// call
 					// method equals(expected, actual) native 
+						"expected",
+						"actual",
+						"self",
+						"other",
 						"other",
 						"null",
 						"other != null",
@@ -110,12 +116,17 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"other != null && self === other",
 						"return other != null && self === other",
 						"{ return other != null && self === other }",
+						"(self == other)",
+						"! (self == other)",
+						"expected != actual",
+						"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
+						"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
 				"assert.equals(6, sum)",
 			"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }"
 		])
 	}
 	
-	//@Test
+	@Test
 	def void aboutToEvaluateCalled() {
 		val deb = debugger()
 		deb.childrenFirst = false 
@@ -184,6 +195,15 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 							assertCode(),
 							"6",
 							"sum",
+							"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
+							"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
+							"expected != actual",
+							"expected",
+							"actual",
+							"! (self == other)",
+							"(self == other)",
+							"self",
+							"other",
 							// body
 							"{ return other != null && self === other }",
 								"return other != null && self === other",
@@ -237,7 +257,7 @@ object assert {
 	
 	/** Tests whether two values are equal, based on wollok ==, != methods */
 	method notEquals(expected, actual) {
-		if (expected == actual) throw new AssertionException("Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] found")
+		if (expected == actual) throw new AssertionException("Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] match")
 	}
 	
 	/** 
