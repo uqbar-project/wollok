@@ -123,7 +123,11 @@ class ListTestCase extends CollectionTestCase {
 		assert.notThat([4, 5, 9].equals([5, 4]))
 		assert.notThat([4, 5, 9].equals([5, 4, 9]))
 		assert.notEquals([4, 5, 9], #{4, 5, 9})
-		'''.test		
+		assert.notThat([5, 4].equals([4, 5, 9]))
+		assert.notThat([5, 4].equals([5, 4, 9]))
+		assert.notThat([5, 4].equals([]))
+		assert.notThat([].equals([5, 4]))
+		'''.test
 	}	
 
 	@Test
