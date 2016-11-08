@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
 import org.uqbar.project.wollok.ui.console.RunInUI
-import wollok.lib.AssertionException
 
 /**
  * This class represents the model of the results of an execution.
@@ -21,8 +20,8 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	@Accessors
 	var WollokTestContainer container
 	
-	override assertError(String testName, AssertionException assertionException, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
-		testByName(testName).endedAssertError(assertionException, stackTrace, lineNumber, resource)
+	override assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
 		
 		this.setChanged
 		this.notifyObservers
@@ -74,10 +73,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedOk()
 			}
 			if (it.failure()) {
-				test.endedAssertError(it.assertionException, it.stackTrace, it.errorLineNumber, it.resource)
+				test.endedAssertError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
 			}
 			if (it.error()) {
-				test.endedError(it.exceptionAsString, it.stackTrace, it.errorLineNumber, it.resource)
+				test.endedError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
 			}
 		]
 

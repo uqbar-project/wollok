@@ -5,7 +5,6 @@ import com.google.gson.stream.JsonWriter
 import java.io.PrintWriter
 import java.util.List
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
@@ -14,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 
 /**
  * A test reporter that prints to console in JSON format.
@@ -71,7 +71,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		closure.apply(writer.beginObject).endObject
 	}
 
-	override reportTestAssertError(WTest test, AssertionException assertionError, WollokObject wollokException, int lineNumber, URI resource) {
+	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		writer => [
 			beginObject
 				name("name").value(test.name)
@@ -80,7 +80,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 					name("message").value(assertionError.message)
 					name("file").value(resource.trimFragment.toString)
 					name("lineNumber").value(lineNumber)
-					name("stackTrace").value(assertionError.stackTraceAsString)
+					name("stackTrace").value(assertionError.wollokException?.convertToString) // TODO: Test it and adjust it
 				endObject
 			endObject
 		]

@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
@@ -16,7 +15,7 @@ import wollok.lib.AssertionException
  * @author tesonep
  */
 interface WollokTestsReporter {
-	def void reportTestAssertError(WTest test, AssertionException assertionError, WollokObject wollokException, int lineNumber, URI resource)
+	def void reportTestAssertError(WTest test, AssertionException wollokException, int lineNumber, URI resource)
 	def void reportTestError(WTest test, Exception exception, int lineNumber, URI resource)
 	def void reportTestOk(WTest test)
 	def void testsToRun(WFile file, List<WTest> tests)

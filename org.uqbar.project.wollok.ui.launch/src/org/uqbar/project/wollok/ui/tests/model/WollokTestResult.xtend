@@ -4,7 +4,6 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
-import wollok.lib.AssertionException
 
 /**
  * Test result model for the UI.
@@ -43,9 +42,9 @@ class WollokTestResult {
 		startTime = System.currentTimeMillis
 	}
 	
-	def endedAssertError(AssertionException exception, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
+	def endedAssertError(String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
 		innerEnded(lineNumber, resource, WollokTestState.ASSERT)
-		this.exceptionAsString = exception.message + System.lineSeparator + stackTrace.printStackTrace
+		this.exceptionAsString = message + System.lineSeparator + stackTrace.printStackTrace
 	}
 	
 	def endedError(String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {

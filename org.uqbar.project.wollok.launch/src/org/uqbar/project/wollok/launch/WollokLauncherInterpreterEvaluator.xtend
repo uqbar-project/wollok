@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 
 /**
  * Subclasses the wollok evaluator to support tests
@@ -50,22 +51,11 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			wollokTestsReporter.reportTestOk(test)
 			x
 		}
-		catch (WollokInterpreterException e) {
-			if (e.cause instanceof AssertionException) {
-				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, null, e.lineNumber, e.objectURI)
+		catch (Exception e) {
+			if (e.isAssertionException) {
+				wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
 				null
 			} else {
-				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.objectURI)
-				null
-			}
-		}
-		catch (WollokProgramExceptionWrapper e) {
-			val className = e.wollokException.call("className").toString
-			if (className.equalsIgnoreCase(ASSERTION_EXCEPTION)) {
-				wollokTestsReporter.reportTestAssertError(test, new AssertionException(e.wollokMessage), e.wollokException, e.lineNumber, e.URI)
-				null
-			} else {
-				// an uncaught wollok-level exception wrapped into java
 				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
 				null
 			}

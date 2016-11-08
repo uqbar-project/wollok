@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
@@ -14,7 +13,7 @@ import wollok.lib.AssertionException
  */
 class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
-	override reportTestAssertError(WTest test, AssertionException assertionError, WollokObject wollokException, int lineNumber, URI resource) {
+	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		throw assertionError
 	}
 	

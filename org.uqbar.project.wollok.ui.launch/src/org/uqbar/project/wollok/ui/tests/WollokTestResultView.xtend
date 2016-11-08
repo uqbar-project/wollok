@@ -9,9 +9,6 @@ import org.eclipse.jface.layout.GridDataFactory
 import org.eclipse.jface.resource.JFaceResources
 import org.eclipse.jface.resource.LocalResourceManager
 import org.eclipse.jface.resource.ResourceManager
-import org.eclipse.jface.text.BadLocationException
-import org.eclipse.jface.text.IDocument
-import org.eclipse.jface.text.IRegion
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.ITreeSelection
 import org.eclipse.jface.viewers.LabelProvider
@@ -26,8 +23,6 @@ import org.eclipse.swt.graphics.RGB
 import org.eclipse.swt.layout.FillLayout
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
-import org.eclipse.swt.layout.RowData
-import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Label
@@ -35,11 +30,9 @@ import org.eclipse.swt.widgets.Link
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
 import org.eclipse.swt.widgets.ToolItem
-import org.eclipse.ui.PartInitException
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
@@ -57,9 +50,6 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author tesonep
  */
 class WollokTestResultView extends ViewPart implements Observer {
-
-	@Inject
-	private IResourceFactory resourceFactory
 
 	public val static NAME = "org.uqbar.project.wollok.ui.launch.resultView"
 
@@ -244,28 +234,12 @@ class WollokTestResultView extends ViewPart implements Observer {
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
-
-					try {
-						val IDocument document = textEditor.documentProvider.getDocument(textEditor.editorInput)
-						if(document == null) throw new RuntimeException("Could not open file " + fileName +
-							" in editor")
-						var IRegion lineInfo = null
-						// line count internaly starts with 0, and not with 1 like in GUI
-						lineInfo = document.getLineInformation(lineNumber - 1)
-						if (lineInfo != null) {
-							textEditor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength())
-						}
-					} catch (BadLocationException e) {
-						// ignored because line number may not really exist in document,
-						// we guess this...
-					} catch (PartInitException e) {
-						e.printStackTrace
-					}
+					textEditor.openEditor(fileName, lineNumber)
 				}
 			}
 		)
 	}
-
+	
 	def createResults(Composite parent) {
 		val panel = new Composite(parent, SWT.NONE)
 
