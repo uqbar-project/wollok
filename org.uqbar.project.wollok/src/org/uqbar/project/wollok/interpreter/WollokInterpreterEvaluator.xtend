@@ -374,6 +374,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	 * to a reference, and then updates the value in the context (think of +=, or ++, they have common behaviors)
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>WollokObject rightPart) {
+		validateNullOperand(reference.eval, operator)
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
 		newValue
