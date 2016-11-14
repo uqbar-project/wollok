@@ -42,6 +42,9 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 			]
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
+			// TODO: i18n
+			MessageDialog.openError(Display.current.activeShell, "Launcher error",
+					"There was a problem while opening test launcher. See error log for more details.")
 			// something went wrong
 		}
 	}
