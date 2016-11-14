@@ -31,8 +31,8 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	override launch(IFile currFile, String mode) {
 		try {
 			// verifying there are no errors
-			val problems = currFile.project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)
-			if (!problems.isNullOrEmpty) {
+			val severity = currFile.project.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)
+			if (severity == IMarker.SEVERITY_ERROR) {
 				MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_CompilationErrorTitle,
 					Messages.TestLauncher_SeeProblemTab)
 				return
