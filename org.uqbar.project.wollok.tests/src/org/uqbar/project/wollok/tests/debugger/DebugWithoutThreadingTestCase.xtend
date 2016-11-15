@@ -36,7 +36,9 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void evaluatedCalled() {
 		val deb = debugger()
-		deb.childrenFirst = true
+		//Tip: if tests fail you should use activate it
+ 		deb.logSession = true
+ 		deb.childrenFirst = true
 		
 		'''
 		program a {
@@ -68,6 +70,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"e",
 						// closure 1st time
 						"sum",
+						"sum",
 						"s",
 						"sum += s",
 						"sum += s",
@@ -77,6 +80,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"e",
 						// closure 2st time
 						"sum",
+						"sum",
 						"s",
 						"sum += s",
 						"sum += s",
@@ -85,6 +89,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"closure",
 						"e",
 						// closure 3rd time
+						"sum",
 						"sum",
 						"s",
 						"sum += s",
@@ -118,6 +123,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void aboutToEvaluateCalled() {
 		val deb = debugger()
+		deb.logSession = true
 		deb.childrenFirst = false 
 		'''
 		program a {
@@ -157,6 +163,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 											"sum += s",
 											"sum += s",
 												"sum",
+												"sum",
 												"s",
 									// fold (2nd)
 									"closure.apply(e)",
@@ -167,6 +174,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 											"sum += s",   // why is it duplicated ?
 											"sum += s",
 												"sum",
+												"sum",
 												"s",
 									// fold (3rd)
 									"closure.apply(e)",
@@ -176,6 +184,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 											// closure apply
 											"sum += s",
 											"sum += s",
+												"sum",
 												"sum",
 												"s",
 						"assert.equals(6, sum)",
