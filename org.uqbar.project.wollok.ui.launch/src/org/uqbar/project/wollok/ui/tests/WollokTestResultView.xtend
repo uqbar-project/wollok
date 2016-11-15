@@ -111,8 +111,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 			marginWidth = 5
 			marginHeight = 5
 			numColumns = 1
-			verticalSpacing = 2
+			verticalSpacing = 1
 			parent.setLayout(it)
+			parent.setLayoutData(new GridData => [
+				horizontalAlignment = GridData.FILL
+                verticalAlignment = GridData.FILL
+                grabExcessHorizontalSpace = true
+                grabExcessVerticalSpace = true
+                horizontalSpan = 2
+			])
 		]
 		createToolbar(parent)
 		createSeparator(parent)
@@ -134,7 +141,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def createToolbar(Composite parent) {
 		toolbar = new ToolBar(parent, SWT.RIGHT)
 
-		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).grab(true, false).applyTo(toolbar)
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.BEGINNING).grab(true, false).applyTo(toolbar)
 
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain

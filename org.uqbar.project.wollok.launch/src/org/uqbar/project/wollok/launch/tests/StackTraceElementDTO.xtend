@@ -1,9 +1,10 @@
 package org.uqbar.project.wollok.launch.tests
 
-import java.io.File
 import java.io.Serializable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+
+import static org.uqbar.project.wollok.WollokConstants.*
 
 @Accessors
 class StackTraceElementDTO implements Serializable {
@@ -26,14 +27,14 @@ class StackTraceElementDTO implements Serializable {
 			result.append(" ")
 		}
 		if (fileName != null && !fileName.isEmpty) {
-			result.append("[<a href=\"" + fileName + ":" + lineNumber + "\">" + fileName.location(lineNumber) + "</a>]\n")
+			result.append("[<a href=\"" + fileName + STACKELEMENT_SEPARATOR + lineNumber + "\">" + fileName.location(lineNumber) + "</a>]\n")
 		}
 		result.toString
 	}
 
 	def location(String fileName, int line) {
-		if (fileName.contains(File.separator))
-		 '''«fileName.substring(fileName.lastIndexOf(File.separator))»:«line»'''
+		if (fileName.contains(PATH_SEPARATOR))
+		 '''«fileName.substring(fileName.lastIndexOf(PATH_SEPARATOR))»:«line»'''
 		else
 			fileName
 	}

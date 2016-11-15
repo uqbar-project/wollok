@@ -4,6 +4,7 @@ import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
+import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
@@ -13,8 +14,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * @author jfernandes
  */
 class Exception {
-	static String FILE = "file:"
-	static String PATH_SEPARATOR = "/"  //  that is because URI uses only /
+	public static String FILE = "file:"
 	
 	WollokObject exceptionObject
 	List<SourceCodeLocation> stackTrace
@@ -46,7 +46,7 @@ class Exception {
 	def fullLocation(SourceCodeLocation l) {
 		var fileURI = l.fileURI
 		if (fileURI.startsWith(FILE)) {
-			fileURI = fileURI.substring(5)
+			fileURI = fileURI.substring(6)
 		}
 		'''«fileURI»,«l.startLine»'''
 	}

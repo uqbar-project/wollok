@@ -20,6 +20,9 @@ class WollokConstants {
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	
+	public static String PATH_SEPARATOR = "/"  //  that is because URI uses only /
+	public static String STACKELEMENT_SEPARATOR = "&"
+	
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	

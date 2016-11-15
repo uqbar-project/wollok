@@ -11,6 +11,7 @@ import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
+import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -21,7 +22,7 @@ abstract class AbstractWollokFileOpenerStrategy {
 
 	protected int lineNumber = 0
 	protected String fileName = ""
-
+	
 	def static AbstractWollokFileOpenerStrategy buildOpenerStrategy(String data, IFile testFile) {
 		if (data.startsWith(CLASSPATH)) {
 			new WollokClasspathFileOpenerStrategy(data, testFile)
@@ -31,17 +32,16 @@ abstract class AbstractWollokFileOpenerStrategy {
 	}
 
 	def void initialize(String _data) {
-		val data = _data.split(":")
+		val data = _data.split(STACKELEMENT_SEPARATOR)
 		try {
-			doInitialize(data)
+			fileName = data.get(0)
+			lineNumber = new Integer(data.get(1))
 		} catch (NumberFormatException e) {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while opening file " + data, e)
 		}
 	}
 
-	def void doInitialize(String[] data)
-	
 	def ITextEditor getTextEditor(WollokTestResultView view)
 
 }
@@ -53,11 +53,6 @@ class WollokClasspathFileOpenerStrategy extends AbstractWollokFileOpenerStrategy
 	new(String data, IFile testFile) {
 		this.testFile = testFile
 		initialize(data)
-	}
-
-	override doInitialize(String[] data) {
-		fileName = data.get(0) + ":" + data.get(1)
-		lineNumber = new Integer(data.get(2))
 	}
 
 	override ITextEditor getTextEditor(WollokTestResultView view) {
@@ -74,11 +69,6 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 		initialize(data)
 	}
 
-	override doInitialize(String[] data) {
-		fileName = data.get(0)
-		lineNumber = new Integer(data.get(1))
-	}
-	
 	override getTextEditor(WollokTestResultView view) {
 		val File fileToOpen = new File(fileName)
 		val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
