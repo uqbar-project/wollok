@@ -1,9 +1,11 @@
 package wollok.lang
 
+import java.io.File
 import java.util.List
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
+
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
@@ -46,7 +48,12 @@ class Exception {
 	def fullLocation(SourceCodeLocation l) {
 		var fileURI = l.fileURI
 		if (fileURI.startsWith(FILE)) {
-			fileURI = fileURI.substring(6)
+			var spaces = WINDOWS_FILE_PREFIX_SIZE
+			if (File.separator.equalsIgnoreCase(PATH_SEPARATOR)) {
+				// Hack to handle absolute paths for Linux / Mac
+				spaces = DEFAULT_FILE_PREFIX_SIZE
+			}
+			fileURI = fileURI.substring(spaces) 
 		}
 		'''«fileURI»,«l.startLine»'''
 	}
