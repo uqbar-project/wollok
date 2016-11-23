@@ -1,0 +1,21 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class A {} 
+
+// XPECT errors --> "Duplicated class name in file" at "Pepe"
+class Pepe {
+	method kaboom() = "Nombre"
+}
+// XPECT errors --> "Duplicated class name in file" at "Pepe"
+class Pepe {
+	method kaboom() = "Nombre"
+}
+
+package myPackage {
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
+	class A {}
+	// XPECT errors --> "Duplicated class name in package myPackage" at "A"
+	class A {}
+}
+
+

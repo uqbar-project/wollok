@@ -51,6 +51,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_UNREACHABLE_CATCH;
 	public static String WollokDslValidator_POSTFIX_ONLY_FOR_VAR;
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
+	public static String WollokDslValidator_DUPLICATED_CLASS_IN_FILE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
