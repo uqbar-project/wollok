@@ -23,8 +23,9 @@ class WSet extends WCollection<Set<WollokObject>> {
 	}
 	
 	override protected def verifyWollokElementsContained(Collection set, Collection set2) {
-		set.forall [ elem |
-			wrapped.exists[ it.wollokEquals(elem) ]
+		set2.forall [ elem |
+			set.exists[ it.wollokEquals(elem) ]
 		]
 	}
+
 }
