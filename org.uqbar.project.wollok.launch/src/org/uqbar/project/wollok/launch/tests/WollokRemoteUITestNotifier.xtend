@@ -1,14 +1,13 @@
 package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
-import wollok.lib.AssertionException
 
 /**
  * @author tesonep
  */
 interface WollokRemoteUITestNotifier {
 	
-	def void assertError(String testName, AssertionException assertionException, int lineNumber, String resource)
+	def void assertError(String testName, String messaage, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
 	
 	def void testOk(String testName)
 	
@@ -16,6 +15,8 @@ interface WollokRemoteUITestNotifier {
 	
 	def void testStart(String testName)
 	
-	def void error(String testName, String exceptionAsString, int lineNumber, String resource)
+	def void error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
+	
+	def void testsResult(List<WollokResultTestDTO> resultTests)
 
 }

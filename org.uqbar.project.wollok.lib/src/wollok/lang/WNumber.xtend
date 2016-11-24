@@ -1,6 +1,7 @@
 package wollok.lang
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -16,6 +17,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
  */
 abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 
+	public static int DECIMAL_PRECISION = 5
+	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
 	}	
@@ -35,6 +38,45 @@ abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
 	def div(WollokObject other) {
 		val n = other.nativeNumber
 		Math.floor(this.doubleValue / n.doubleValue).intValue
+	}
+
+	def add(BigDecimal sumand1, BigDecimal sumand2) {
+		adapt(sumand1).add(sumand2).checkResult
+	}
+	
+	def subtract(BigDecimal minuend, BigDecimal sustraend) {
+		adapt(minuend).subtract(sustraend).checkResult
+	}
+	
+	def mul(BigDecimal mul1, BigDecimal mul2) {
+		adapt(mul1).multiply(mul2).checkResult
+	}
+
+	def div(BigDecimal dividend, BigDecimal divisor) {
+		adapt(dividend).divide(divisor, RoundingMode.HALF_UP).checkResult
+	}
+
+	def remainder(BigDecimal dividend, BigDecimal divisor) {
+		adapt(dividend).remainder(divisor).checkResult
+	}
+
+	/** *******************************************************************
+	 * 
+	 * INTERNAL METHODS
+	 * 
+	 * *******************************************************************
+	 */
+	private def adapt(BigDecimal operand) {
+		operand.setScale(DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+	}
+
+	private def checkResult(BigDecimal result) {
+		val resultRounded = adapt(result)
+		val resultIntValue = result.intValue
+		if (result == resultIntValue) {
+			return resultIntValue
+		}
+		return resultRounded
 	}
 
 	// ********************************************************************************************

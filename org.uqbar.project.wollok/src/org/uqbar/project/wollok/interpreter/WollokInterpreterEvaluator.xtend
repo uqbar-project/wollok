@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
@@ -217,7 +218,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (value.contains('.'))
 			doInstantiateNumber(DOUBLE, new BigDecimal(value))
 		else {
-			doInstantiateNumber(INTEGER, Integer.valueOf(value))
+			try {
+				doInstantiateNumber(INTEGER, Integer.valueOf(value))
+			} catch (NumberFormatException e) {
+				// If value is too long, use a decimal
+				doInstantiateNumber(DOUBLE, new BigDecimal(value))
+			}
 		}
 	}
 
@@ -384,6 +390,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	 * to a reference, and then updates the value in the context (think of +=, or ++, they have common behaviors)
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>WollokObject rightPart) {
+		validateNullOperand(reference.eval, operator)
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
 		newValue

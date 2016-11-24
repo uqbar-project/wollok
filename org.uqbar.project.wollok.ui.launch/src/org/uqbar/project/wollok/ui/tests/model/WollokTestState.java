@@ -119,7 +119,8 @@ public enum WollokTestState {
 
 		@Override
 		public String getOutputText(WollokTestResult result) {
-			return new AssertErrorFormatter().format(result.getAssertException());
+			//return new AssertErrorFormatter().format(result.getAssertException());
+			return result.getErrorOutput();
 		}
 
 	};

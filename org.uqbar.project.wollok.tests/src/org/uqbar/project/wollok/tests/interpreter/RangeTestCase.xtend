@@ -128,6 +128,22 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void anyOneProbability() {
+		'''
+		const range = 0 .. 10
+		range.step(2)
+		const counter = new Dictionary()
+		range.forEach({n => counter.put(n,0)})
+		5000.times({
+			var n = range.anyOne()
+			var c = counter.get(n) + 1
+			counter.put(n,c)
+		})
+		range.forEach({n => assert.that(counter.get(n) > 500)})
+		'''.test	
+	}
+
+	@Test
 	def void min() {
 		'''
 		const range = -2 .. 10

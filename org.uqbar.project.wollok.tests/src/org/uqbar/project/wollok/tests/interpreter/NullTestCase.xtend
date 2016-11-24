@@ -113,5 +113,44 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("Cannot use null in 'if' expression", mensajeError)
 		'''.test
 	}
-	
+
+	@Test
+	def void nullInAOpMultiAndPostFix() {
+		
+		'''
+		«definePepitaAndAlpiste»
+		program a {
+			assert.throwsException({ pepita.comer(alpiste)})
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void nullInAOpMultiAndPostFix2() {
+		
+		'''
+		«definePepitaAndAlpiste»
+		program a {
+			assert.throwsException({ pepita.volar(10)})
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	private def String definePepitaAndAlpiste() {
+		'''
+		object pepita {
+		    var energia
+		    method energia() { return energia }
+		
+		    method volar(metros) { energia -= metros * 10 }
+		    method comer(comida) { 
+		        energia += comida.energia()
+		    }
+		}
+
+		object alpiste {
+			method energia() = 2	
+		}
+		'''
+	}	
 }

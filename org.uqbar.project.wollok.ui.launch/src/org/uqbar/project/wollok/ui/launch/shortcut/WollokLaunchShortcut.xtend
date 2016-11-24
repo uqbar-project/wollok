@@ -3,8 +3,10 @@ package org.uqbar.project.wollok.ui.launch.shortcut
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
+import org.eclipse.core.runtime.Platform
 import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.DebugPlugin
+import org.eclipse.debug.core.ILaunch
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
 import org.eclipse.debug.core.ILaunchManager
@@ -19,15 +21,12 @@ import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
 import static org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants.*
+import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.eclipse.debug.core.ILaunch
-
-import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
-import org.eclipse.core.runtime.Platform
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)

@@ -44,6 +44,9 @@ class Exception {
 	
 	/** @private */
 	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+
+	/** Provides programmatic access to the stack trace information printed by printStackTrace() with full path files for linking */
+	method getFullStackTrace() native
 	
 	/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
 	method getStackTrace() native
@@ -679,7 +682,7 @@ class Set inherits Collection {
 	method join() native
 	
 	/**
-	 * @see Object#equals
+	 * Two sets are equals if they have the same elements
 	 */
 	override method equals(other) native
 	
@@ -877,6 +880,13 @@ class List inherits Collection {
 	
 	/** A list is == another list if all elements are equal (defined by == message) */
 	override method ==(other) native
+
+	/**
+	 * Answers the list without duplicate elements
+	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 */
+	method withoutDuplicates() = self.asSet().asList()
+
 }
 
 /**
