@@ -20,6 +20,11 @@ class WollokConstants {
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	
+	public static val PATH_SEPARATOR = "/"
+	public static val STACKELEMENT_SEPARATOR = "&"
+	public static val WINDOWS_FILE_PREFIX_SIZE = 6
+	public static val DEFAULT_FILE_PREFIX_SIZE = 5 
+	
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	

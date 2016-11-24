@@ -25,7 +25,7 @@ class XTextExtensions {
 	// Esto deberia estar en las extensiones de debugging creo.
 	public static val String LINE_NUMBER_SEPARATOR = "|"
 	
-	def static toSourceCodeLocation(EObject o) { 
+	def static toSourceCodeLocation(EObject o) {
 		o.astNode.textRegionWithLineInformation.toSourceCodeLocation(o.fileURI) => [ contextDescription = o.contextDescription ]
 	}
 	

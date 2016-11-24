@@ -30,6 +30,8 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	def debugger() {
 		val debugger = new PostEvaluationTestDebugger(interpreter)
 		interpreter.debugger = debugger
+		//Tip: if tests fail you should use activate it
+		//debugger.logSession = true
 		debugger
 	}
 	
@@ -106,6 +108,10 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 					"sum",
 					// call
 					// method equals(expected, actual) native 
+						"expected",
+						"actual",
+						"self",
+						"other",
 						"other",
 						"null",
 						"other != null",
@@ -115,6 +121,11 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"other != null && self === other",
 						"return other != null && self === other",
 						"{ return other != null && self === other }",
+						"(self == other)",
+						"! (self == other)",
+						"expected != actual",
+						"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
+						"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
 				"assert.equals(6, sum)",
 			"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }"
 		])
@@ -193,6 +204,15 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 							assertCode(),
 							"6",
 							"sum",
+							"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
+							"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
+							"expected != actual",
+							"expected",
+							"actual",
+							"! (self == other)",
+							"(self == other)",
+							"self",
+							"other",
 							// body
 							"{ return other != null && self === other }",
 								"return other != null && self === other",
@@ -221,25 +241,33 @@ object assert {
 	 * 		var anotherNumber = 8
 	 *		assert.that(anotherNumber.even())   ==> no effect, ok		
 	 */
-	method that(value) native
+	method that(value) {
+		if (!value) throw new AssertionException("Value was not true")
+	}
 	
 	/** Tests whether value is false. Otherwise throws an exception. 
 	 * @see assert#that(value) 
 	 */
-	method notThat(value) native
+	method notThat(value) {
+		if (value) throw new AssertionException("Value was not false")
+	}
 	
 	/** 
-	 * Tests whether two values are equal, based on wollok == method
+	 * Tests whether two values are equal, based on wollok ==, != methods
 	 * 
 	 * Example:
 	 *		 assert.equals(10, 100.div(10)) ==> no effect, ok
 	 *		 assert.equals(10.0, 100.div(10)) ==> no effect, ok
 	 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
 	 */
-	method equals(expected, actual) native
+	method equals(expected, actual) {
+		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]") 
+	}
 	
-	/** Tests whether two values are equal, based on wollok != method */
-	method notEquals(expected, actual) native
+	/** Tests whether two values are equal, based on wollok ==, != methods */
+	method notEquals(expected, actual) {
+		if (expected == actual) throw new AssertionException("Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] match")
+	}
 	
 	/** 
 	 * Tests whether a block throws an exception. Otherwise an exception is thrown.
@@ -248,7 +276,15 @@ object assert {
 	 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
 	 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
 	 */
-	method throwsException(block) native
+	method throwsException(block) {
+		var failed = false
+		try {
+			block.apply()
+		} catch e {
+			failed = true
+		}
+		if (!failed) throw new AssertionException("Block should have failed")
+	}
 	
 	/** 
 	 * Tests whether a block throws an exception and this is the same expected. Otherwise an exception is thrown.
@@ -336,10 +372,13 @@ object assert {
 			}
 		if (continue) throw new Exception("Should have thrown an exception")	
 	}
+	
 	/**
 	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
 	 */
-	method fail(message) native
+	method fail(message) {
+		throw new AssertionException(message)
+	}
 	
 }
 '''.toString.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim()		

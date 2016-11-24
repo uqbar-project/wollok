@@ -42,6 +42,8 @@ class WollokDSK {
 	
 	public static val EXCEPTION = "wollok.lang.Exception"
 	
+	public static val ASSERTION_EXCEPTION = "wollok.lib.AssertionException"
+	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {

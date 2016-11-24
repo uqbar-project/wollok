@@ -12,9 +12,8 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 /**
  * Abstract base class for all native objects that implements

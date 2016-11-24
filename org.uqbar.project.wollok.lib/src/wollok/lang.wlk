@@ -44,6 +44,9 @@ class Exception {
 	
 	/** @private */
 	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+
+	/** Provides programmatic access to the stack trace information printed by printStackTrace() with full path files for linking */
+	method getFullStackTrace() native
 	
 	/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
 	method getStackTrace() native

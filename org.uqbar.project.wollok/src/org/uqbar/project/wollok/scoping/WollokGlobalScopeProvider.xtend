@@ -114,12 +114,20 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 */
 	def loadResource(URI uri, ResourceSet resourceSet) {
 		try {
-			val resource = resourceSet.getResource(uri, true)
-			resource.load(#{})
-			resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+			var Iterable<IEObjectDescription> exportedObjects
+			//checkResourceSet(resourceSet as XtextResourceSet)
+			exportedObjects = WollokResourceCache.getResource(uri)
+			if (exportedObjects == null) {
+				val resource = resourceSet.getResource(uri, true)
+				resource.load(#{})
+				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
+				WollokResourceCache.addResource(uri, exportedObjects)
+			}
+			exportedObjects
 		}
 		catch (RuntimeException e) {
 			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
 		} 
 	}
+	
 }
