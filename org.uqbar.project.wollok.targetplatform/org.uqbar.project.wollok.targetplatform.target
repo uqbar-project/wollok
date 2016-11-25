@@ -38,8 +38,8 @@
 <repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="6.0.1.I20160627-1700"/>
-<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="6.0.1.I20160627-1700"/>
+<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="0.0.0"/>
+<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
 <repository location="http://community.polarion.com/projects/subversive/download/eclipse/6.0/update-site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
