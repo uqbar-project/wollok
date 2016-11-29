@@ -1651,7 +1651,7 @@ class Date {
 	override method toString() native 
 	
 	/** Two dates are equals if they represent the same date */
-	override method equals(_aDate) native
+	override method ==(_aDate) native
 	
 	/** Answers a copy of this Date with the specified number of days added. */
 	method plusDays(_days) native
