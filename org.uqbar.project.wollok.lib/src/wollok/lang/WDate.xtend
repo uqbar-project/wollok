@@ -51,7 +51,7 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	
 	def year() { wrapped.year }
 
-	@NativeMessage("equals")
+	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped?.equals(this.wrapped))
 	}

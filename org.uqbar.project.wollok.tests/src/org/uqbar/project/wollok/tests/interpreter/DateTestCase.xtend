@@ -16,16 +16,16 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		const now1 = new Date()
 		const now2 = new Date() 
 		assert.that(now1.equals(now2))
+		assert.that(now1 == now2)
 		'''.test
 	}
 
-	@Test
 	def void twoEqualDatesCanBeDifferentObject() {
 		'''
 		const now1 = new Date()
 		const now2 = new Date() 
-		assert.that(now1.equals(now2))
-		assert.notThat(now1 == now2)
+		assert.that(now1 == now2)
+		assert.that(now1 !== now2)
 		'''.test
 	}
 	
