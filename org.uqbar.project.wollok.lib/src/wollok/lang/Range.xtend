@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * 
@@ -46,7 +47,6 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	
 	def anyOne() {
 		val wrapped = initWrapped()
-		((Math.random * (wrapped.end - wrapped.start)) + wrapped.start).intValue()
+		wrapped.toList.random
 	}
-	
 }

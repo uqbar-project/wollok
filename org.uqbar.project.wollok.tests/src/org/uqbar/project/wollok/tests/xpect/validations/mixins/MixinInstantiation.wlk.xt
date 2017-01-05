@@ -117,8 +117,8 @@ mixin Named {
 class Person mixed with Named and Doctor {}
 
 // NOT OK ! order matters !
-// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "Person"
-class Person mixed with Doctor and Named {}
+// XPECT errors --> "Inconsistent hierarchy. Methods on mixins without super implementation on hierarchy: Doctor.name()" at "PersonBad"
+class PersonBad mixed with Doctor and Named {}
 
 // OK: super method comes from super class
 

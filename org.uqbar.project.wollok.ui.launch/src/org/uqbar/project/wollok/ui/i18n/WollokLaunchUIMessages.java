@@ -17,6 +17,7 @@ public class WollokLaunchUIMessages extends NLS {
 
 	public static String WollokTestResultView_TOTAL_TESTS;
 	public static String WollokTestResultView_RUN_TESTS;
+	public static String WollokTestResultView_FAILED_TESTS;
 	public static String WollokTestResultView_ERROR_TESTS;
 
 	public static String WollokTestState_ASSERT_WAS_NOT_TRUE;

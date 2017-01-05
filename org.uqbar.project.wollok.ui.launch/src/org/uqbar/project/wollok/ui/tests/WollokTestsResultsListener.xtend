@@ -17,7 +17,7 @@ class WollokTestsResultsListener{
 	@Accessors
 	val int listeningPort
 	
-	val WollokTestResults testResults;
+	val WollokTestResults testResults
 
 	@Inject
 	new(WollokTestResults testResults) {

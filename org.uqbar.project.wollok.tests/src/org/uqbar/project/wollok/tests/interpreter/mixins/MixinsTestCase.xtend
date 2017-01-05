@@ -378,6 +378,33 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void classMixedCallsInheritedMethodFromMixinWithSelf() {
+		'''
+		mixin Flies {
+			var times = 0
+			method fly() {
+				times += 1
+			}
+			method times() = times
+		}
+		
+		class Bird mixed with Flies {
+			method doubleFly() {
+				self.fly()
+				self.fly()
+			}
+		}
+		
+		program t {
+			const pepita = new Bird()
+			pepita.doubleFly()
+			assert.equals(2, pepita.times())
+		} 
+		'''.interpretPropagatingErrors
+	}
+	
+	
 	// OBJECT LITERALS
 	
 	@Test

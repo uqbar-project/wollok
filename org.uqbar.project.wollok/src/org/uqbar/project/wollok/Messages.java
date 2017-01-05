@@ -51,6 +51,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_UNREACHABLE_CATCH;
 	public static String WollokDslValidator_POSTFIX_ONLY_FOR_VAR;
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_PACKAGE;
+	public static String WollokDslValidator_DUPLICATED_CLASS_IN_FILE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
@@ -74,6 +75,9 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
+	
+	public static String TestLauncher_CompilationErrorTitle;
+	public static String TestLauncher_SeeProblemTab;
 	
 	public static String WollokDslValidator_WRONG_IMPORT;
 	
