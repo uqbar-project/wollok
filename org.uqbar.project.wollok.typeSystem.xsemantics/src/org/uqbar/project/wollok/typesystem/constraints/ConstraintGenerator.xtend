@@ -15,7 +15,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
-	extension TypeVariablesRegistry registry	
+	extension TypeVariablesRegistry registry
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
@@ -57,9 +57,9 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WVariableReference it) {
-		// Nothing to do
+		beSupertypeOf(ref)
 	}
-
+	
 	def dispatch void generateVariables(WIfExpression it) {
 		condition.newSealed(classType(BOOLEAN))
 		condition.generateVariables
@@ -70,7 +70,7 @@ class ConstraintGenerator {
 			getElse.generateVariables
 
 			// If there is a else branch, if can be an expression 
-			// and has to be supertypeof both (else, then) branches
+			// and has to be a supertype of both (else, then) branches
 			it.newWithSubtype(then, getElse)
 		} else {
 			// If there is no else branch, if is NOT an expression, 
@@ -80,12 +80,21 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WVariableDeclaration it) {
-		val tvar = variable.newTypeVariable()
+		variable.newTypeVariable()
 
 		if (right != null) {
 			right.generateVariables
-			right.tvar.beSubtypeOf(tvar)
+			variable.beSupertypeOf(right)
 		}
 	}
 
+	// ************************************************************************
+	// ** Extension methods
+	// ************************************************************************
+	
+	def beSupertypeOf(EObject supertype, EObject subtype) {
+		supertype.tvar.beSupertypeOf(subtype.tvar)
+	}
+	
+	
 }

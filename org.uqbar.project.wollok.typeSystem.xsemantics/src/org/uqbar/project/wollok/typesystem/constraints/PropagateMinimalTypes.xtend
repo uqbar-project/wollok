@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.constraints.TypeVariable.ConcreteTypeState
 
 abstract class AbstractInferenceStrategy {
 	@Accessors
@@ -15,7 +16,7 @@ abstract class AbstractInferenceStrategy {
 
 		do {
 			changed = false
-			allVariables.forEach[analiseVariable]
+			allVariables.forEach[if (!it.hasErrors) it.analiseVariable]
 			globalChanged = globalChanged || changed
 		} 
 		while (changed)
@@ -30,8 +31,12 @@ class PropagateMinimalTypes extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
 		tvar.minimalConcreteTypes.entrySet.forEach [
 			if (value == TypeVariable.ConcreteTypeState.Pending) {
-				tvar.supertypes.forEach [ superType |
-					superType.addMinimalType(key)
+				tvar.supertypes.forEach [ supertype |
+					supertype.addMinimalType(key) => [ result |
+						if (result != ConcreteTypeState.Ready) {
+							println('''	Propagating min(«key») from: «tvar» to «supertype» => «result»''')
+						}
+					]
 				]
 				value = TypeVariable.ConcreteTypeState.Ready
 				changed = true
@@ -44,6 +49,7 @@ class PropagateMaximalTypes extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
 		if(tvar.maximalConcreteTypes != null && tvar.maximalConcreteTypes.state == TypeVariable.ConcreteTypeState.Pending) {
 			tvar.subtypes.forEach [ subtype |
+				println('''	Propagating «tvar.maximalConcreteTypes» from: «tvar» to «subtype»''')
 				subtype.maximalConcreteTypes = tvar.maximalConcreteTypes
 			]
 			

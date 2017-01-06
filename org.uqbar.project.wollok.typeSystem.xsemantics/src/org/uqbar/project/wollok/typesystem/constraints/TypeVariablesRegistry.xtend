@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
@@ -47,16 +46,12 @@ class TypeVariablesRegistry {
 		typeVariables.values
 	}
 	
-	def dispatch TypeVariable tvar(EObject obj) {
+	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj) => [ typeVar | 
 			if (typeVar == null) throw new RuntimeException("I don't have type information for " + obj)
 		]
 	}
 	
-	def dispatch TypeVariable tvar(WVariableReference it) {
-		ref.tvar
-	}
-
 	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************

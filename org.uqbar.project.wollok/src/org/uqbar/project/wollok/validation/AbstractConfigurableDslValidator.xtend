@@ -6,14 +6,13 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator
+import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.utils.WEclipseUtils
 import org.uqbar.project.wollok.wollokDsl.WNamed
 
-import static org.uqbar.project.wollok.validation.AbstractConfigurableDslValidator.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.validation.Check
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic

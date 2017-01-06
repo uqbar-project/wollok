@@ -56,8 +56,10 @@ import org.uqbar.project.wollok.utils.StringUtils
  */
 class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
+	
 	// esto me gustaria evitarlo :S
 	Set<EObject> analyzed = new WeakInterningHashSet
+	
 	@Inject WollokClassFinder finder
 	
 	override def name() { "Substitutions-based" }

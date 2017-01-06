@@ -33,7 +33,7 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ************************************************************************
 	
 	override analyse(EObject p) {
-		new ConstraintGenerator(this).generateVariables(p)
+		new ConstraintGenerator(this).generateVariables(p)			
 	}
 	
 
@@ -43,11 +43,13 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	
 	override inferTypes() {
 		println("Starting inference")
-		SealVariables.runStrategy
+		// SealVariables.runStrategy
+		// To soon to seal variables, at least with current implementation of sealing, we have to allow for propagation first. 
 		
 		var Boolean globalChanged
 		do {
 			val results = newArrayList 
+			
 			#[PropagateMinimalTypes, PropagateMaximalTypes].forEach[results.add(runStrategy)]
 			globalChanged = results.exists[it]
 		} while (globalChanged)
