@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
@@ -18,7 +18,7 @@ interface TypeSystem {
 	
 	// This method is kind of a hack to use the type systems from the validator
 	//  it is supposed to analyze (#analyse, #inferTypes) the program and report any error to the validator
-	def void validate(WFile file, WollokDslValidator validator)
+	def void validate(WFile file, ConfigurableDslValidator validator)
 	
 	/**
 	 * # 1: First step
@@ -31,10 +31,16 @@ interface TypeSystem {
 	 * Second step. Goes through all the bindings and tries to infer types.
 	 */
 	def void inferTypes()
+
+	/**
+	 * # 3a: 
+	 * Now we can report errors
+	 */
+	def void reportErrors(ConfigurableDslValidator validator)
 	
 	/**
-	 * # 3:
-	 * Then you can perform queries for types.
+	 * # 3b:
+	 * Or you can perform queries for types.
 	 */
 	def WollokType type(EObject obj)
 	

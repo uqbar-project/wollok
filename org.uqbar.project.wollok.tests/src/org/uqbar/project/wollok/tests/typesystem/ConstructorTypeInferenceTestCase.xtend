@@ -14,10 +14,10 @@ class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	@Parameters(name = "{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			new SubstitutionBasedTypeSystem
-//			,new XSemanticsTypeSystem				// TO DO 
-//			new ConstraintBasedTypeSystem			TO BE FIXED
-//			new BoundsBasedTypeSystem,    TO BE FIXED
+			SubstitutionBasedTypeSystem
+//			,XSemanticsTypeSystem				// TO DO 
+//			ConstraintBasedTypeSystem			TO BE FIXED
+//			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
 	
@@ -34,7 +34,7 @@ class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertConstructorType("Direccion", "(String, Int)")
+			assertConstructorType("Direccion", "(String, Integer)")
 		]
 	}
 	

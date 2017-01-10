@@ -8,9 +8,11 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariable.ConcreteTypeState
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokTypeSystemPrettyPrinter.*
 
 class TypeVariable {
 	enum ConcreteTypeState {
@@ -50,7 +52,6 @@ class TypeVariable {
 	// ************************************************************************
 	// ** For the TypeSystem implementation
 	// ************************************************************************
-
 	def type() {
 		if (minimalConcreteTypes.size == 1) {
 			minimalConcreteTypes.keySet.iterator.next
@@ -58,15 +59,22 @@ class TypeVariable {
 			throw new TypeSystemException("Cannot determine a single type for " + fullDescription)
 		}
 	}
-	
+
+	// ************************************************************************
+	// ** Errors
+	// ************************************************************************
 	def hasErrors() {
 		minimalConcreteTypes.values.contains(ConcreteTypeState.Error)
+	}
+
+	def reportErrors(ConfigurableDslValidator validator) {
+		if (hasErrors)
+			validator.report('''expected <<«expectedType»>> but found <<«foundType»>>''', owner)
 	}
 
 	// ************************************************************************
 	// ** Adding constraints
 	// ************************************************************************
-
 	def beSupertypeOf(TypeVariable subtype) {
 		this.subtypes.add(subtype)
 		subtype.supertypes.add(this)
@@ -85,34 +93,31 @@ class TypeVariable {
 	// ************************************************************************
 	// ** Internal information management
 	// ************************************************************************
-	
 	def addMinimalType(WollokType type) {
-		if (minimalConcreteTypes.containsKey(type)) 
+		if (minimalConcreteTypes.containsKey(type))
 			ConcreteTypeState.Ready
 		else {
-			(if (sealed) ConcreteTypeState.Error else ConcreteTypeState.Pending) => [
+			(if(sealed) ConcreteTypeState.Error else ConcreteTypeState.Pending) => [
 				minimalConcreteTypes.put(type, it)
 			]
 		}
 	}
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
-		minimalConcreteTypes.entrySet.forEach[it|
-			if(!maxTypes.contains(key)) value = ConcreteTypeState.Error 
+		minimalConcreteTypes.entrySet.forEach [ it |
+			if(!maxTypes.contains(key)) value = ConcreteTypeState.Error
 		]
 
 		if (maximalConcreteTypes == null) {
 			maximalConcreteTypes = maxTypes.copy
-		}
-		else {
-			maximalConcreteTypes.restrictTo(maxTypes)			
+		} else {
+			maximalConcreteTypes.restrictTo(maxTypes)
 		}
 	}
 
 	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************
-
 	override def toString() '''t(«owner.debugInfo»)'''
 
 	def fullDescription() '''
@@ -135,7 +140,6 @@ class MaximalConcreteTypes {
 	@Accessors
 	var ConcreteTypeState state = ConcreteTypeState.Pending
 
-
 	new(Set<WollokType> types) {
 		maximalConcreteTypes = newHashSet(types)
 	}
@@ -147,10 +151,10 @@ class MaximalConcreteTypes {
 	def copy() {
 		new MaximalConcreteTypes(maximalConcreteTypes)
 	}
-	
+
 	def restrictTo(MaximalConcreteTypes supertype) {
 		maximalConcreteTypes.removeIf[!supertype.contains(it)]
 	}
-	
+
 	override toString() '''max(«maximalConcreteTypes») [«state»]'''
 }

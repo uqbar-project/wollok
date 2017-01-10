@@ -26,7 +26,7 @@ interface TypeCheck {
  */
 class SameTypeCheck implements TypeCheck {
 	override check(WollokType a, WollokType b) {
-		if (a != b) throw new TypeExpectationFailedException('''ERROR: expected <<«a»>> but found <<«b»>>''')
+		if (a != b) throw new TypeExpectationFailedException('''expected <<«a»>> but found <<«b»>>''')
 	}
 	
 	override getOperandString() { "==" }

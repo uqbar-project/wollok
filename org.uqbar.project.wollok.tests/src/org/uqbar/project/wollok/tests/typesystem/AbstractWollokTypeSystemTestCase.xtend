@@ -1,8 +1,14 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import com.google.inject.Inject
+import com.google.inject.Injector
+import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
+import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.validation.AbstractValidationDiagnostic
+import org.eclipse.xtext.validation.ValidationMessageAcceptor
 import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -10,6 +16,8 @@ import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterprete
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -26,10 +34,25 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
  */
 abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter
-	public extension TypeSystem tsystem
+	public Class<? extends TypeSystem> tsystemClass
+	
+	extension TypeSystem tsystem
+	
+
+	@Inject
+	WollokClassFinder finder
+	
+	@Inject
+	WollokDslValidator _validator
+
+	@Inject
+	Injector injector
+
+	ValidatorTester<WollokDslValidator> tester
 
 	@Before
 	def void setupTypeSystem() {
+		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)
 	}
 
@@ -43,17 +66,34 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			forEach[validate]
 			forEach[analyse]
 			inferTypes
+			reportErrors(validator)
 		]).last
 	}
 
 	def asserting(WFile f, (WFile)=>void assertions) {
 		assertions.apply(f)
 	}
+	
+	def getValidator() {
+		tester = new ValidatorTester(_validator, injector)
+		
+		// Ensure to call validator, otherwise calls to diagnose will fail.
+		val _validator = tester.validator
+		
+		new ConfigurableDslValidator() {
+			override report(String description, EObject invalidObject) {
+				_validator.acceptError(description, invalidObject, null, ValidationMessageAcceptor.INSIGNIFICANT_INDEX, null)
+			}
+		}
+	}
+	
+	def getDiagnose() {
+		tester.diagnose
+	}
 
 	// ********************
 	// ** assertions
 	// ********************
-	@Inject WollokClassFinder finder
 
 	def classTypeFor(EObject context, String className) {
 		new ClassBasedWollokType(finder.getCachedClass(context, className), tsystem)
@@ -82,26 +122,33 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	def noIssues(EObject program) {
-		val issues = program.eAllContents.map[issues].toList.flatten
-		val errorMessage = issues.map [
-			'''[«model?.class?.simpleName» - «NodeModelUtils.getNode(model)?.text»]: «message»'''
+		// Do not call diagnose twice!
+		diagnose => [
+			try assertOK 
+			catch (AssertionError e) {
+				fail('''
+					«e.message»
+					«it»
+				''')
+				
+			} 
 		]
-		assertTrue("Expecting no errors but found: " + errorMessage, issues == null || issues.isEmpty)
 	}
 
 	def assertIssues(EObject program, String programToken, String... expectedIssues) {
 		val element = program.findByText(programToken)
-		val issues = element.issues.toList
-
-		val nonCompliant = expectedIssues.filter[expected|!issues.exists[message == expected]]
-		if (!nonCompliant.empty)
-			fail(
-				"Expecting the following issues on '" + programToken + "' but they were not present: " + nonCompliant +
-					System.lineSeparator + "Although there were the following errors: " + issues)
-
-		val unexpecteds = issues.filter[i|!expectedIssues.contains(i.message)]
-		if (!unexpecteds.empty)
-			fail("Unexpected issues: " + issues)
+		assertIssuesInElement(element, expectedIssues)
+	}
+	
+	def assertIssuesInElement(EObject element, String... expectedIssues) {
+		val expectedDiagnostics = expectedIssues.map[message|
+			new AssertableDiagnostics.Pred(null, null, null, message) {
+				override apply(Diagnostic d) {
+					super.apply(d) && (d as AbstractValidationDiagnostic).sourceEObject == element
+				}
+			}
+		]
+		diagnose.assertAll(expectedDiagnostics)
 	}
 
 	// FINDS
@@ -112,6 +159,25 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		]
 		assertNotNull("Could NOT find program token '" + token + "'", found)
 		found.semanticElement
+	}
+
+	def static findByText(EObject model, String token, Class<? extends EObject> semanticElementType) {
+		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
+		.findFirst [ n |
+			escapeNodeTextToCompare(n.text.trim) == token 
+				&& n.hasDirectSemanticElement
+				&& semanticElementType.isAssignableFrom(n.semanticElement.class)
+		]
+		assertNotNull("Could NOT find program token '" + token + "'", found)
+		found.semanticElement
+	}
+
+	def static findAllByText(EObject model, String token) {
+		NodeModelUtils
+			.findActualNodeFor(model)
+			.asTreeIterable
+			.filter [ n | escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement ]
+			.map[semanticElement]
 	}
 
 	def static String escapeNodeTextToCompare(String nodeText) {

@@ -2,9 +2,8 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
-
-import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -16,9 +15,9 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Parameters(name = "{index}: {0}")
-	static def Object[] typeSystems() {
+	static def Class<? extends TypeSystem>[] typeSystems() {
 		#[
-			new SubstitutionBasedTypeSystem
+			SubstitutionBasedTypeSystem
 			// TODO: fix !
 //			new XSemanticsTypeSystem,		 
 //			new ConstraintBasedTypeSystem,

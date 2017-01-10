@@ -6,7 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
@@ -15,56 +15,59 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
  */
 class ConstraintBasedTypeSystem implements TypeSystem {
 	@Inject WollokClassFinder finder
-	
+
 	@Accessors
 	val extension TypeVariablesRegistry registry = new TypeVariablesRegistry(this)
-	
+
 	override def name() { "Constraints-based" }
-	
-	override validate(WFile file, WollokDslValidator validator) {
+
+	override validate(WFile file, ConfigurableDslValidator validator) {
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
 		this.inferTypes
-		// TODO: report errors !
+
+		reportErrors(validator)
 	}
 
 	// ************************************************************************
 	// ** Analysis
 	// ************************************************************************
-	
 	override analyse(EObject p) {
-		new ConstraintGenerator(this).generateVariables(p)			
+		new ConstraintGenerator(this).generateVariables(p)
 	}
-	
 
 	// ************************************************************************
 	// ** Inference
 	// ************************************************************************
-	
 	override inferTypes() {
 		println("Starting inference")
 		// SealVariables.runStrategy
 		// To soon to seal variables, at least with current implementation of sealing, we have to allow for propagation first. 
-		
 		var Boolean globalChanged
 		do {
-			val results = newArrayList 
-			
+			val results = newArrayList
+
 			#[PropagateMinimalTypes, PropagateMaximalTypes].forEach[results.add(runStrategy)]
 			globalChanged = results.exists[it]
 		} while (globalChanged)
-		
+
 		registry.fullReport
 	}
-	
+
 	def runStrategy(Class<? extends AbstractInferenceStrategy> it) {
-		(newInstance => [it.registry = this.registry]).run()			
+		(newInstance => [it.registry = this.registry]).run()
 	}
-	
+
+	// ************************************************************************
+	// ** Error reporting
+	// ************************************************************************
+	override reportErrors(ConfigurableDslValidator validator) {
+		allVariables.forEach[it.reportErrors(validator)]
+	}
+
 	// ************************************************************************
 	// ** Other (TBD)
 	// ************************************************************************
-	
 	override type(EObject obj) {
 		obj.tvar.type
 	}
@@ -72,11 +75,11 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	override issues(EObject obj) {
 		#[]
 	}
-	
+
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
+
 	protected def ClassBasedWollokType classType(EObject model, String className) {
 		val clazz = finder.getCachedClass(model, className)
 		// REVIEWME: should we have a cache ?

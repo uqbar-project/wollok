@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -49,12 +49,17 @@ class BoundsBasedTypeSystem implements TypeSystem {
 
 	override def name() { "Bounds Based" }
 	
-	override validate(WFile file, WollokDslValidator validator) {
+	override validate(WFile file, ConfigurableDslValidator validator) {
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
 		this.inferTypes
+		this.reportErrors(validator)
+	}
+
+	override def reportErrors(ConfigurableDslValidator validator) {
 		// TODO: report errors !
 	}
+
 
 	// node factory methods
 

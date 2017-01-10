@@ -11,7 +11,8 @@ import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeExpectationFailedException
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.WollokDslValidator
+import org.uqbar.project.wollok.utils.StringUtils
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -46,7 +47,6 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.utils.StringUtils
 
 /**
  * Implementation that builds up rules
@@ -64,17 +64,19 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	
 	override def name() { "Substitutions-based" }
 	
-	override validate(WFile file, WollokDslValidator validator) {
+	override validate(WFile file, ConfigurableDslValidator validator) {
 		analyzed = new WeakInterningHashSet
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		analyse(file)
 		inferTypes
-		
-		// TODO: report errors !
-		file.eAllContents.forEach [ 
-			issues.forEach [
+		reportErrors(validator)
+	}
+	
+	override def reportErrors(ConfigurableDslValidator validator) {
+		rules.forEach[rule|
+			try rule.check 
+			catch (TypeExpectationFailedException it) 
 				validator.report(message, model)
-			]
 		]
 	}
 

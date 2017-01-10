@@ -14,10 +14,10 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name = "{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			new SubstitutionBasedTypeSystem
-//			,new XSemanticsTypeSystem
-//			,new ConstraintBasedTypeSystem
-//			,new BoundsBasedTypeSystem    
+			SubstitutionBasedTypeSystem
+//			,XSemanticsTypeSystem
+//			,ConstraintBasedTypeSystem
+//			,BoundsBasedTypeSystem    
 		]
 	}
 	
