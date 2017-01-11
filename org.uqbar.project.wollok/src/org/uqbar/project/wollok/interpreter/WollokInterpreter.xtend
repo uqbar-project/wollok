@@ -33,7 +33,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  */
 // Rename to XInterpreter and move up to "xinterpreter" project
 class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
-	static val int MAX_STACK_SIZE = 500
 	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 
@@ -129,18 +128,17 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	boolean instantiatingStackOverFlow = false
 
 	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
-		if (!instantiatingStackOverFlow && stack.size > MAX_STACK_SIZE) {
-			instantiatingStackOverFlow = true
-			val e = (evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
-			instantiatingStackOverFlow = false
-			throw new WollokProgramExceptionWrapper(e)
-		}
-		
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try
 			return something.apply
 		catch (ReturnValueException e)
 			return e.value
+		catch (StackOverflowError e){
+			instantiatingStackOverFlow = true
+			val exp = (evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
+			instantiatingStackOverFlow = false
+			throw new WollokProgramExceptionWrapper(exp)
+		}
 		finally
 			stack.pop
 	}
