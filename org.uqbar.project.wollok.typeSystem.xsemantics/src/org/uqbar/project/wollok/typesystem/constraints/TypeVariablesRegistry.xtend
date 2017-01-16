@@ -27,6 +27,10 @@ class TypeVariablesRegistry {
 		newTypeVariable => [ subtypes.forEach [ subtype | it.beSupertypeOf(subtype.tvar) ]]
 	}
 
+	def newWithSupertype(EObject it, EObject... supertypes) {
+		newTypeVariable => [ supertypes.forEach [ supertype | it.beSubtypeOf(supertype.tvar) ]]
+	}
+
 	def newSealed(EObject it, WollokType type) {
 		newTypeVariable => [
 			addMinimalType(type)
@@ -48,7 +52,8 @@ class TypeVariablesRegistry {
 	
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj) => [ typeVar | 
-			if (typeVar == null) throw new RuntimeException("I don't have type information for " + obj)
+			if (typeVar == null) 
+				throw new RuntimeException("I don't have type information for " + obj)
 		]
 	}
 	

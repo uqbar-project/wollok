@@ -6,9 +6,15 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
+import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
+import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
 
 /**
  * @author npasserini
@@ -40,20 +46,46 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ** Inference
 	// ************************************************************************
 	override inferTypes() {
-		println("Starting inference")
-		// SealVariables.runStrategy
-		// To soon to seal variables, at least with current implementation of sealing, we have to allow for propagation first. 
-		var Boolean globalChanged
-		do {
-			val results = newArrayList
+		var currentStage = 0
 
-			#[PropagateMinimalTypes, PropagateMaximalTypes].forEach[results.add(runStrategy)]
-			globalChanged = results.exists[it]
-		} while (globalChanged)
+		println("Starting inference")
+
+		do {
+			println("Running stage " + currentStage)
+			
+			if (runStage(stages.get(currentStage)))
+				// Stage produced new inforamtion, start again from stage 0. 
+				currentStage = 0
+			else
+				// No new information, go to next stage. 
+				currentStage++
+
+		} while (currentStage < stages.length)
 
 		registry.fullReport
 	}
 
+	/**
+	 * Definition of the strategies to run in each stage
+	 */
+	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
+		#[PropagateMinimalTypes, PropagateMaximalTypes],
+		#[UnifyVariables, SealVariables],
+		#[GuessMinTypeFromMaxType]
+	]
+
+	/**
+	 * Runs the strategies in a stage, returns whether any strategy produced some new information.
+	 */
+	def runStage(Iterable<Class<? extends AbstractInferenceStrategy>> strategies) {
+		// Note that current implementation stops the stage 
+		// on the first strategy that produces any new information.
+		strategies.exists[runStrategy]
+	}
+
+	/**
+	 * Runs a strategy, returning if it produced new information
+	 */
 	def runStrategy(Class<? extends AbstractInferenceStrategy> it) {
 		(newInstance => [it.registry = this.registry]).run()
 	}

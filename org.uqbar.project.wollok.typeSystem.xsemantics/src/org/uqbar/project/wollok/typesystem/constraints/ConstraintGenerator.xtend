@@ -57,7 +57,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WVariableReference it) {
-		beSupertypeOf(ref)
+		it.newWithSubtype(ref)
 	}
 	
 	def dispatch void generateVariables(WIfExpression it) {
