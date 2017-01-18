@@ -61,8 +61,8 @@ class ConstraintGenerator {
 	}
 	
 	def dispatch void generateVariables(WIfExpression it) {
-		condition.newSealed(classType(BOOLEAN))
 		condition.generateVariables
+		condition.beSealed(classType(BOOLEAN))
 
 		then.generateVariables
 
@@ -75,7 +75,7 @@ class ConstraintGenerator {
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
-			beVoid
+			newVoid
 		}
 	}
 

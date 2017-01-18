@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
+import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
@@ -12,11 +13,9 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import static org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeState.*
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeStateExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokTypeSystemPrettyPrinter.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeStateExtensions.*
-
-import java.util.List
 
 class TypeVariable {
 	@Accessors
@@ -96,9 +95,12 @@ class TypeVariable {
 	// ************************************************************************
 	// ** Unification information
 	// ************************************************************************
-
 	def unifiedWith(TypeVariable other) {
 		this.typeInfo == other.typeInfo
+	}
+
+	def isCanonical() {
+		typeInfo.canonicalElement == this
 	}
 
 	// ************************************************************************
@@ -120,6 +122,27 @@ class TypeVariable {
 			«ENDIF»
 		}
 	'''
+
+	def allSupertypes() {
+		newHashSet => [ result |
+			typeInfo.users.forEach [ unified |
+				unified.supertypes.forEach [ supertype |
+					if (!this.unifiedWith(supertype)) result.add(supertype)
+				]
+			]
+		]
+	}
+
+	def allSubtypes() {
+		newHashSet => [ result |
+			typeInfo.users.forEach [ unified |
+				unified.subtypes.forEach [ subtype |
+					if (!this.unifiedWith(subtype)) result.add(subtype)
+				]
+			]
+		]
+	}
+
 }
 
 class MaximalConcreteTypes {
@@ -136,7 +159,6 @@ class MaximalConcreteTypes {
 	// ************************************************************************
 	// ** Querying
 	// ************************************************************************
-
 	def contains(WollokType type) {
 		maximalConcreteTypes.contains(type)
 	}
@@ -148,7 +170,6 @@ class MaximalConcreteTypes {
 	// ************************************************************************
 	// ** Restricting
 	// ************************************************************************
-
 	def restrictTo(MaximalConcreteTypes supertype) {
 		val originalSize = maximalConcreteTypes.size
 
@@ -161,13 +182,12 @@ class MaximalConcreteTypes {
 	// ************************************************************************
 	// ** Utilities
 	// ************************************************************************
-	
 	def forEach((WollokType)=>void action) {
 		maximalConcreteTypes.forEach(action)
 	}
 
 	override toString() '''max(«maximalConcreteTypes») [«state»]'''
-	
+
 }
 
 class TypeInfo {
@@ -239,5 +259,9 @@ class TypeInfo {
 				minimalConcreteTypes.put(type, it)
 			]
 		}
+	}
+
+	def getCanonicalElement() {
+		users.get(0)
 	}
 }

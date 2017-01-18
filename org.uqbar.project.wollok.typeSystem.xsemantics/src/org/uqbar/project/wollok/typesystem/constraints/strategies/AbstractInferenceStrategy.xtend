@@ -21,6 +21,7 @@ abstract class AbstractInferenceStrategy {
 			globalChanged = globalChanged || changed
 		} while (changed)
 
+		println('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
 		globalChanged
 	}
 

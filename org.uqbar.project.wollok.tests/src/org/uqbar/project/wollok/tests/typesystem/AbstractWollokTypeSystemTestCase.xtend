@@ -38,7 +38,6 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	
 	extension TypeSystem tsystem
 	
-
 	@Inject
 	WollokClassFinder finder
 	
@@ -58,6 +57,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	// Utility
 	def parseAndInfer(CharSequence file) {
+		println('''Parsing «file»''')
 		parseAndInfer(#[file])
 	}
 
