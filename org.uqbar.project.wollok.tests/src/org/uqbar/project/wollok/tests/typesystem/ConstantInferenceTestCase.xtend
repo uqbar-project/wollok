@@ -1,10 +1,11 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
-import wollok.lang.WBoolean
-import wollok.lang.WString
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * The most basic inference tests
@@ -13,15 +14,55 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
  */
 class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
-	@Test
-	def void testNumberLiteral() { 	'''program p {
-			const a = 46
-			const b = "Hello"
-			const c = true
-		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, "const a = 46")
-			assertTypeOf(WString, 'const b = "Hello"')
-			assertTypeOf(WBoolean, "const c = true")
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			SubstitutionBasedTypeSystem,
+			XSemanticsTypeSystem
+//			ConstraintBasedTypeSystem			TO BE FIXED
+//			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
+
+	@Test
+	def void numberLiteral() { 	'''program p {
+			const a = 46
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "a")
+		]
+	}
+	
+	@Test
+	def void stringLiteral() { 	'''program p {
+			const b = "Hello"
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(STRING), "b")
+		]
+	}
+	
+	@Test
+	def void booleanLiteral() { 	'''program p {
+			const c = true
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(BOOLEAN), "c")
+		]
+	}
+	
+	@Test
+	def void listLiteral() { 	'''program p {
+			const c = [1,2,3]
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(LIST), "c")
+		]
+	}
+	
+	@Test
+	def void setLiteral() { 	'''program p {
+			const c = #{1,2,3}
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(SET), "c")
+		]
+	}
+
+			
 }

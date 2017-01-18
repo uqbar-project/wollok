@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.substitutions
 
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
@@ -13,9 +13,10 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class FactTypeRule extends TypeRule {
-	@Property EObject model
-	@Property WollokType type
+	EObject model
+	WollokType type
 	
 	new(EObject source, EObject obj, WollokType type) {
 		super(source)
@@ -27,8 +28,11 @@ class FactTypeRule extends TypeRule {
 	
 	override typeOf(EObject object) { if (object == model) type else null }
 	
+	override def ruleStateLeftPart() { '''t(«model.formattedSourceCode») = «type»''' }
+	override def ruleStateRightPart() { '''«source.lineNumber»: «source.formattedSourceCode»)''' }
+	
 	// object
-	override toString() { '''t(«model.sourceCode.trim.replaceAll(System.lineSeparator, ' ')») = «type»''' + "\t\t\t\t(" + source.lineNumber + ": " + source.sourceCode.trim.replaceAll(System.lineSeparator, ' ') + ")" }
+
 	override equals(Object obj) {
 		obj instanceof FactTypeRule && model == (obj as FactTypeRule).model && type == (obj as FactTypeRule).type 
 	}

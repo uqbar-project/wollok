@@ -17,7 +17,7 @@ class ExactTypeExpectation implements TypeExpectation {
 	
 	override check(WollokType actualType) {
 		if (expectedType != actualType)		
-			throw new TypeExpectationFailedException('''ERROR: expected <<«expectedType»>> but found <<«actualType»>>''')
+			throw new TypeExpectationFailedException('''expected <<«expectedType»>> but found <<«actualType»>>''')
 	}
 	
 }

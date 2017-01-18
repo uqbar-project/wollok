@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem.substitutions
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+
 /**
  * Abstract base class for a type system's rule.
  * 
@@ -36,5 +38,16 @@ abstract class TypeRule {
 	 * @throws TypeExpectationFailedException in case the check fails.
 	 */
 	def void check() {}
+	
+	def static formattedSourceCode(EObject o) {
+		o.sourceCode.trim
+			.replaceAll("[\\t\\n\\r]"," ")
+			.replaceAll(System.lineSeparator, '')
+			.replaceAll('\t', ' ')
+			.replaceAll('  ', ' ')
+	}
+	
+	def String ruleStateLeftPart()
+	def String ruleStateRightPart()
 	
 }

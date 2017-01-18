@@ -20,4 +20,8 @@ class StringUtils {
 		Character.toUpperCase(s.charAt(0)) + s.substring(1)
 	}
 	
+	
+	def static String padRight(String s, int n) {
+     return String.format("%1$-" + n + "s", s);  
+	}
 }

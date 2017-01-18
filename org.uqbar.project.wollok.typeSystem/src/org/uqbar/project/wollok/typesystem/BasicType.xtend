@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
-import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Base class for all types
@@ -8,7 +8,7 @@ import org.eclipse.xtend.lib.Property
  * @author jfernandes
  */
 abstract class BasicType implements WollokType {
-	@Property String name
+	@Accessors String name
 	
 	new(String name) { 	
 		this.name = name

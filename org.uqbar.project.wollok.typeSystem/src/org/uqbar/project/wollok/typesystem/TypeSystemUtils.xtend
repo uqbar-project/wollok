@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem
 
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * @author jfernandes
@@ -17,11 +17,11 @@ class TypeSystemUtils {
 	// TODO: hardcoded !
 	def static typeOfOperation(String op) {
 		if (#["&&", "||"].contains(op))
-			#[WAny,WAny] -> WBoolean
+			#[OBJECT,OBJECT] -> BOOLEAN
 		else if (#["==", "!=", "===", "<", "<=", ">", ">="].contains(op))
-			#[WAny,WAny] -> WBoolean
+			#[OBJECT,OBJECT] -> BOOLEAN
 		else
-			#[WInt,WInt] -> WInt
+			#[INTEGER,INTEGER] -> INTEGER
 	}
 	
 }

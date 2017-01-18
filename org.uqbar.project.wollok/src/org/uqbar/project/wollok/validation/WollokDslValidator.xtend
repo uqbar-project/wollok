@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
@@ -57,7 +58,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.emf.ecore.EObject
 
 /**
  * Custom validation rules.

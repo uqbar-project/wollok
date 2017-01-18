@@ -3,17 +3,14 @@ package org.uqbar.project.wollok.launch.setup
 import com.google.inject.Binder
 import com.google.inject.Guice
 import com.google.inject.name.Names
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.parser.antlr.Lexer
 import org.eclipse.xtext.ui.LexerUIBindings
 import org.uqbar.project.wollok.WollokDslStandaloneSetup
-import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokREPLInterpreter
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.parser.antlr.internal.InternalWollokDslLexer
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
-import org.uqbar.project.wollok.interpreter.WollokREPLInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokREPLInterpreter
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * @author tesonep

@@ -2,28 +2,41 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * 
  * @author jfernandes
  */
- @Ignore
 class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			SubstitutionBasedTypeSystem
+//			,XSemanticsTypeSystem			// TODO 
+//			ConstraintBasedTypeSystem			TO BE FIXED
+//			BoundsBasedTypeSystem,    TO BE FIXED
+		]
+	}
+	
 	@Test
+	@Ignore // FIX IT!
 	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() { #['''
 			class Animal {}
-			class Golondrina extends Animal {}
-			class Perro extends Animal {}
+			class Golondrina inherits Animal {}
+			class Perro inherits Animal {}
 		''', ''' program p {
 			var animal
 			animal = new Golondrina()
 			animal = new Perro()
 		}'''].parseAndInfer.asserting [
-			noIssues
-			assertTypeOf(classType('Animal'), 'var animal')
+//			noIssues
+			assertTypeOf(classTypeFor('Animal'), 'animal')
 		]
 	}
 	
@@ -35,15 +48,15 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 				var energia = 100
 				method getEnergia() { energia }
 			}
-			class Golondrina extends Animal {
+			class Golondrina inherits Animal {
 				override method getEnergia() {
 					null
 				}
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", 'Golondrina.getEnergia')
-			assertTypeOf(WInt, "null")
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertTypeOf(classTypeFor(INTEGER), "null")
 		]
 	}
 	
@@ -53,20 +66,21 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 				var energia = 100
 				method getEnergia() { energia }
 			}
-			class Golondrina extends Animal {
-				val energiaGolondrina
+			class Golondrina inherits Animal {
+				const energiaGolondrina
 				override method getEnergia() {
 					energiaGolondrina
 				}
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", 'Golondrina.getEnergia')
-			assertInstanceVarType(WInt, 'Golondrina.energiaGolondrina')
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertInstanceVarType(classTypeFor(INTEGER), 'Golondrina.energiaGolondrina')
 		]
 	}
 	
 	@Test
+	@Ignore // FIX IT!
 	def void testAbstractMethodReturnTypeInferredGeneralizingOverridingMethodsInSubclasses() { '''
 			class AnimalFactory {
 				method createAnimal()
@@ -88,6 +102,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	}
 	
 	@Test
+	@Ignore // FIX IT!
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() { '''
 			class NumberOperation {
 				method perform(aNumber)
@@ -100,9 +115,9 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			} 
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Int", 'NumberOperation.perform')
-			assertMethodSignature("(Int) => Int", 'DoubleOperation.perform')
-			assertMethodSignature("(Int) => Int", 'TripleOperation.perform')
+			assertMethodSignature("(Integer) => Integer", 'NumberOperation.perform')
+			assertMethodSignature("(Integer) => Integer", 'DoubleOperation.perform')
+			assertMethodSignature("(Integer) => Integer", 'TripleOperation.perform')
 		]
 	}
 	
@@ -114,6 +129,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	 * <<<<< ESTE ES MAS HEAVY QUE EL DIABLO !!! >>>>>
 	 */
 	@Test
+	@Ignore // FIX IT!
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() { '''
 			class Animal {}
 			class Perro extends Animal { method ladrar() { 'Guau!' } }
