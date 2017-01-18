@@ -42,6 +42,14 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 		wollokException.call("className").wollokToJava(String) != WollokDSK.MESSAGE_NOT_UNDERSTOOD_EXCEPTION
 	}
 	
+	def boolean isAssertion(){
+		wollokException.call("className").wollokToJava(String) == WollokDSK.ASSERTION_EXCEPTION		
+	}
+	
+	def exceptionClassName() {
+		wollokException.call("className").wollokToJava(String) as String
+	}	
+	
 	def getWollokStackTrace() {
 		wollokException.call("getStackTraceAsString").wollokToJava(String) as String
 	}

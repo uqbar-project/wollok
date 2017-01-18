@@ -124,8 +124,8 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"(self == other)",
 						"! (self == other)",
 						"expected != actual",
-						"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
-						"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
+						"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\", expected.printString(), actual.printString())",
+						"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\", expected.printString(), actual.printString()) }",
 				"assert.equals(6, sum)",
 			"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }"
 		])
@@ -204,8 +204,8 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 							assertCode(),
 							"6",
 							"sum",
-							"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\") }",
-							"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\")",
+							"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\", expected.printString(), actual.printString()) }",
+							"if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\", expected.printString(), actual.printString())",
 							"expected != actual",
 							"expected",
 							"actual",
@@ -261,7 +261,7 @@ object assert {
 	 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
 	 */
 	method equals(expected, actual) {
-		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]") 
+		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]", expected.printString(), actual.printString()) 
 	}
 	
 	/** Tests whether two values are equal, based on wollok ==, != methods */

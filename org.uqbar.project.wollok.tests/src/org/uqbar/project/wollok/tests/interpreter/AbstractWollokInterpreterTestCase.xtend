@@ -99,12 +99,13 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			if (!ignoreStaticErrors)
 				forEach[assertNoErrors]
 			forEach[
-				try
+				try {
 					it.interpret(propagatingErrors)
-				catch (WollokProgramExceptionWrapper e) {
-					println("MESSAGE = " + e.wollokException.resolve("message"))
-					fail(e.wollokException.resolve("message") + System.lineSeparator + e.wollokStackTrace)
-					println("after fail")
+				}catch (WollokProgramExceptionWrapper e) {
+					if(e.isAssertion)
+						throw new WollokComparisonFailure(e)
+					else 
+						throw e
 				}
 			]
 		]).last

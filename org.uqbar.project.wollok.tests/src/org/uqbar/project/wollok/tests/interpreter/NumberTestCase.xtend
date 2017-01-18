@@ -1,7 +1,11 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+
 import org.junit.Test
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.wollokToJava
 
 /**
  * 
@@ -264,8 +268,8 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			'''.interpretPropagatingErrors 
 			fail("decimals should not understand gcd message")
-		} catch (AssertionError e) {
-			assertTrue(e.message.startsWith("5.5 does not understand gcd(p0)"))
+		} catch (WollokProgramExceptionWrapper e) {
+			assertTrue(e.wollokMessage.startsWith("5.5 does not understand gcd(p0)"))
 		}
 	}
 
@@ -278,8 +282,8 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			}
 			'''.interpretPropagatingErrors
 			fail("gcd works also for decimal argument!!")
-		} catch (AssertionError e) {
-			assertTrue(e.message.startsWith("gcd expects an integer as first argument"))
+		} catch (WollokProgramExceptionWrapper e) {
+			assertTrue(e.wollokMessage.startsWith("gcd expects an integer as first argument"))
 		}
 	}
 
