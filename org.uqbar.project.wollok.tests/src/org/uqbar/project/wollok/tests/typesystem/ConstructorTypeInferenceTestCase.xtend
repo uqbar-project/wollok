@@ -4,6 +4,7 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * 
@@ -16,7 +17,7 @@ class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 		#[
 			SubstitutionBasedTypeSystem
 //			,XSemanticsTypeSystem				// TO DO 
-//			ConstraintBasedTypeSystem			TO BE FIXED
+//			,ConstraintBasedTypeSystem
 //			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}

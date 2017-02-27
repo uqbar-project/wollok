@@ -21,7 +21,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 		#[
 			SubstitutionBasedTypeSystem
 //			,XSemanticsTypeSystem			// TODO 
-			,ConstraintBasedTypeSystem
+//			,ConstraintBasedTypeSystem
 //			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
@@ -38,7 +38,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			animal = new Perro()
 		}'''].parseAndInfer.asserting [
 //			noIssues
-			assertTypeOf(classTypeFor('Animal'), 'animal')
+			assertTypeOf(classType('Animal'), 'animal')
 		]
 	}
 	

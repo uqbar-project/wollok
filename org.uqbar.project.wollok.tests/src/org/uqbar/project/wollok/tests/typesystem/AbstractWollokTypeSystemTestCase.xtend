@@ -94,8 +94,12 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	// ************************************************************
 	// ** Assertions
 	// ************************************************************
-	def classTypeFor(EObject context, String className) {
-		new ClassBasedWollokType(finder.getCachedClass(context, className), tsystem)
+	def classTypeFor(EObject context, String classFQN) {
+		new ClassBasedWollokType(finder.getCachedClass(context, classFQN), tsystem)
+	}
+	
+	def classType(String className) {
+		new ClassBasedWollokType(findClass(className), null)
 	}
 
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
@@ -217,9 +221,5 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			throw new RuntimeException(
 			'''Could NOT find class [«className»] in: «resourceSet.allContents.filter(WClass).map[name].toList»''')
 		c
-	}
-
-	def classType(String className) {
-		new ClassBasedWollokType(findClass(className), null)
 	}
 }
