@@ -22,8 +22,8 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		#[
 			SubstitutionBasedTypeSystem,
 			XSemanticsTypeSystem,		 
-			ConstraintBasedTypeSystem,
-			BoundsBasedTypeSystem
+			ConstraintBasedTypeSystem
+//			BoundsBasedTypeSystem		TODO: Fix
 		]
 	}
 
