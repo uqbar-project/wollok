@@ -12,6 +12,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -49,6 +52,14 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WBooleanLiteral it) {
 		newSealed(classType(BOOLEAN))
+	}
+	
+	def dispatch void generateVariables(WListLiteral it) {
+		newSealed(classType(LIST))
+	}
+	
+	def dispatch void generateVariables(WSetLiteral it) {
+		newSealed(classType(SET))
 	}
 
 	def dispatch void generateVariables(WAssignment it) {
