@@ -65,7 +65,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void testCheckIfConditionMustBeBoolean() {
+	def void ifConditionMustBeBoolean() {
 		'''
 		program p {
 			const n = 23
@@ -76,4 +76,30 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
+
+	@Test
+	def void ifConditionMustBeBooleanWithIntermediateAssignment() {
+		'''
+		program p {
+			const n = 23
+			const p = n
+			const number = if (p) 2 else 6
+		}
+		'''.parseAndInfer.asserting [
+			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+		]
+	}
+
+	@Test
+	def void ifConditionMustBeBooleanWithUnimportantNoise() {
+		'''
+		program p {
+			const n = 23
+			const p = n
+			const number = if (n) 2 else 6
+		}
+		'''.parseAndInfer.asserting [
+			findAllByText("n", WVariableReference).get(1).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+		]
+	}
 }

@@ -19,7 +19,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def unifyWith(TypeVariable v1, TypeVariable v2) {
-		if (!v1.unifiedWith(v2)) {
+		if (!v2.hasErrors && !v1.unifiedWith(v2)) {
 			println('''	Unifying «v1» with «v2»''')
 
 			v1.typeInfo.minimalConcreteTypes = minTypesUnion(v1, v2)

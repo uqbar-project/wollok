@@ -20,14 +20,15 @@ class PropagateMinimalTypes extends AbstractInferenceStrategy {
 	}
 
 	protected def boolean propagateMinType(TypeVariable tvar, WollokType key, Iterable<TypeVariable> supertypes) {
-		supertypes.exists [ supertype |
+		supertypes.evaluate[ supertype |
 			val newState = supertype.addMinimalType(key)
-			val localChanged = newState != Ready
-
-			if (localChanged)
-				println('''	Propagating min(«key») from: «tvar» to «supertype» => «newState»''')
-
-			localChanged
+			(newState != Ready)
+				=> [ if (it) println('''	Propagating min(«key») from: «tvar» to «supertype» => «newState»''')]
 		]
 	}
+	
+	def boolean evaluate(Iterable<TypeVariable> variables, (TypeVariable)=>boolean action) {
+		variables.fold(false)[hasChanges, variable | action.apply(variable) || hasChanges ]
+	}
+	
 }

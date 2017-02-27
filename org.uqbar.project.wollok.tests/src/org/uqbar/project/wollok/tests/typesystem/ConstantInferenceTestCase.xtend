@@ -64,5 +64,14 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
-			
+	def void setConstant() {
+		'''
+			program p {
+				const a = 46
+				const b = a
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "b")
+		]
+	}			
 }
