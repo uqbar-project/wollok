@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * @author npasserini
@@ -115,6 +116,10 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	protected def ClassBasedWollokType classType(EObject model, String className) {
 		val clazz = finder.getCachedClass(model, className)
 		// REVIEWME: should we have a cache ?
+		classType(clazz)
+	}
+
+	protected def ClassBasedWollokType classType(WClass clazz) {
 		new ClassBasedWollokType(clazz, this)
 	}
 

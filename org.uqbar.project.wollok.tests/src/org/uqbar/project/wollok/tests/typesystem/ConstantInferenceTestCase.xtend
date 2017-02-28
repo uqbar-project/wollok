@@ -65,6 +65,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
+	@Test
 	def void setConstant() {
 		'''
 			program p {
@@ -75,4 +76,15 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOf(classTypeFor(INTEGER), "b")
 		]
 	}			
+	
+	@Test
+	def void classInstance() { 	'''
+		class Golondrina { }
+		
+		program p {
+			const c = new Golondrina()
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classType("Golondrina"), "c")
+		]
+	}		
 }

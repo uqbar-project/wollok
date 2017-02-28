@@ -15,6 +15,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -60,6 +61,10 @@ class ConstraintGenerator {
 	
 	def dispatch void generateVariables(WSetLiteral it) {
 		newSealed(classType(SET))
+	}
+	
+	def dispatch void generateVariables(WConstructorCall it) {
+		newSealed(classType(classRef))
 	}
 
 	def dispatch void generateVariables(WAssignment it) {
