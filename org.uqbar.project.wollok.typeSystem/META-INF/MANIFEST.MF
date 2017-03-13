@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok's TypeSystem API
-Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem
+Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem;singleton:=true
 Bundle-Version: 1.6.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.uqbar.project.wollok,
  org.eclipse.xtend.lib;bundle-version="2.10.0",
  org.eclipse.xtext.ui;bundle-version="2.10.0"
-Export-Package: org.uqbar.project.wollok.typesystem
+Export-Package: org.uqbar.project.wollok.typesystem,
+ org.uqbar.project.wollok.typesystem.preferences
+Bundle-Activator: org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
+Bundle-ActivationPolicy: lazy

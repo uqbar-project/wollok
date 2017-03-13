@@ -1,72 +1,89 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
-import java.util.Map
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.wollokDsl.WStringLiteral
-
-import static org.uqbar.project.wollok.typesystem.constraints.TypeVariablesFactory.*
-import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 /**
  * @author npasserini
  */
 class ConstraintBasedTypeSystem implements TypeSystem {
-	val Map<EObject, TypeVariable> typeVariables = newHashMap
+	@Inject WollokClassFinder finder
+
+	@Accessors
+	val extension TypeVariablesRegistry registry = new TypeVariablesRegistry(this)
+
+	override def name() { "Constraints-based" }
+
+	override validate(WFile file, ConfigurableDslValidator validator) {
+		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		this.analyse(file)
+		this.inferTypes
+
+		reportErrors(validator)
+	}
 
 	// ************************************************************************
 	// ** Analysis
 	// ************************************************************************
 	override analyse(EObject p) {
-		p.eContents.forEach[generateVariables]
-	}
-	
-	def dispatch void generateVariables(WProgram p) {
-		p.elements.forEach[generateVariables]
-	}
-	
-//	def dispatch void generateVariables(WLibrary p) {
-//		p.elements.forEach[generateVariables]
-//	}
-
-	def dispatch void generateVariables(EObject node) {
-		println(node)
+		new ConstraintGenerator(this).generateVariables(p)
 	}
 
-	def dispatch void generateVariables(WNumberLiteral num) {
-		typeVariables.put(num, sealed(WInt))
+	// ************************************************************************
+	// ** Inference
+	// ************************************************************************
+	override inferTypes() {
+		println("Starting inference")
+		// SealVariables.runStrategy
+		// To soon to seal variables, at least with current implementation of sealing, we have to allow for propagation first. 
+		var Boolean globalChanged
+		do {
+			val results = newArrayList
+
+			#[PropagateMinimalTypes, PropagateMaximalTypes].forEach[results.add(runStrategy)]
+			globalChanged = results.exists[it]
+		} while (globalChanged)
+
+		registry.fullReport
 	}
 
-	def dispatch void generateVariables(WStringLiteral string) {
-		typeVariables.put(string, sealed(WString))
+	def runStrategy(Class<? extends AbstractInferenceStrategy> it) {
+		(newInstance => [it.registry = this.registry]).run()
 	}
 
-	def dispatch void generateVariables(WBooleanLiteral bool) {
-		typeVariables.put(bool, sealed(WBoolean))
+	// ************************************************************************
+	// ** Error reporting
+	// ************************************************************************
+	override reportErrors(ConfigurableDslValidator validator) {
+		allVariables.forEach[it.reportErrors(validator)]
 	}
 
 	// ************************************************************************
 	// ** Other (TBD)
 	// ************************************************************************
-	override inferTypes() {
-	}
-
 	override type(EObject obj) {
-		val typeVar = typeVariables.get(obj)
-		if(typeVar == null) throw new RuntimeException("I don't have type information for " + obj)
-		typeVar.type
+		obj.tvar.type
 	}
 
 	override issues(EObject obj) {
 		#[]
 	}
-	
+
 	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	protected def ClassBasedWollokType classType(EObject model, String className) {
+		val clazz = finder.getCachedClass(model, className)
+		// REVIEWME: should we have a cache ?
+		new ClassBasedWollokType(clazz, this)
 	}
 
 }

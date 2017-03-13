@@ -12,9 +12,6 @@ interface WollokType {
 	// ************************************************************************
 	// ** Basic types
 	// ************************************************************************
-	public static val WInt = new IntType
-	public static val WString = new StringType
-	public static val WBoolean = new BooleanType
 	public static val WVoid = new VoidType
 	public static val WAny = new AnyType
 	

@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 /**
  * Groups together all test cases for method type inference.
@@ -10,6 +12,17 @@ import org.junit.Test
  */
 class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			SubstitutionBasedTypeSystem
+			// TODO: fix !
+//			XSemanticsTypeSystem,		 
+//			ConstraintBasedTypeSystem,
+//			BoundsBasedTypeSystem
+		]
+	}
+	
 	@Test
 	def void testMethodReturnTypeInferredFromInstVarRef() {	 '''
 			class Golondrina {
@@ -18,7 +31,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", "Golondrina.getEnergia")
+			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
 		]
 	}
 	
@@ -30,7 +43,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", "Golondrina.setEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.setEnergia")			
 		]
 	}
 	
@@ -44,7 +57,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", "Golondrina.multiplicarEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.multiplicarEnergia")			
 		]
 	}
 	
@@ -59,8 +72,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Int", 'Golondrina.getEnergia')
-			assertMethodSignature("() => Int", 'Golondrina.getEnergiaDelegando')
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertMethodSignature("() => Integer", 'Golondrina.getEnergiaDelegando')
 		]
 	}	
 	
@@ -79,7 +92,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			noIssues
 			assertMethodSignature("() => Void", 'Golondrina.volar')
-			assertMethodSignature("() => Int", 'Golondrina.gastoPorVolar')
+			assertMethodSignature("() => Integer", 'Golondrina.gastoPorVolar')
 		]
 	}
 	
@@ -96,9 +109,39 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Int) => Void", 'Golondrina.comer')
-			assertMethodSignature("(Int) => Void", 'GolondrinaIneficiente.comer')
+			assertMethodSignature("(Integer) => Void", 'Golondrina.comer')
+			assertMethodSignature("(Integer) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
+	
+	// Method Calls
+	
+	@Test
+	def void variableAssignedToReturnValueOfSelfMethod() { 	'''
+		object example {
+			method aList() = [1,2,3]
+			method useTheList() {
+				const pepe = self.aList()
+			}
+		}'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List", "pepe")
+		]
+	}
+	
+//	@Test
+//	def void variableAssignedToReturnValueOfAnotherObjectsMethod() { 	'''
+//		object stringGenerator {
+//			method generateString() = "ABC"
+//		}
+//		object stringConsumer {
+//			method consume() {
+//				const pepe = stringGenerator.generateString()
+//			}
+//		}
+//		
+//		'''.parseAndInfer.asserting [
+//			assertTypeOfAsString("List", "pepe")
+//		]
+//	}
 	
 }

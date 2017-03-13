@@ -23,7 +23,7 @@ abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollok
 	}
 
 	/**
-	 * Converts a Iterable of Iterables into an Iterable<Object[]> as required by the Parameterized runner
+	 * Converts an Iterable of Iterables into an Iterable<Object[]> as required by the Parameterized runner
 	 */
 	static def asParameters(Iterable<?> parameters) {
 		parameters.map[#[it] as Object[]]

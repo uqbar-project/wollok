@@ -7,10 +7,11 @@ import org.eclipse.xtext.common.types.TypesFactory;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
-import org.eclipse.xtext.service.OperationCanceledManager;
 import org.eclipse.xtext.serializer.sequencer.ISyntacticSequencer;
+import org.eclipse.xtext.service.OperationCanceledManager;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
@@ -22,6 +23,7 @@ import org.uqbar.project.wollok.linking.WollokLinker;
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider;
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder;
 import org.uqbar.project.wollok.manifest.WollokManifestFinder;
+import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider;
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider;
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider;
@@ -107,4 +109,9 @@ public class WollokDslRuntimeModule extends
 	public Class<? extends ISyntacticSequencer> bindISyntacticSequencer() {
 		return WollokDslSyntacticSequencerWithSyntheticLinking.class;
 	}
+
+	public Class<? extends SyntaxErrorMessageProvider> bindSyntaxErrorMessageProvider() {
+		return WollokSyntaxErrorMessageProvider.class;
+	}
+
 }

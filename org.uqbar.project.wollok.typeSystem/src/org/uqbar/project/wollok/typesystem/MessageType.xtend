@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
+import org.eclipse.xtend.lib.Property
+import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -8,9 +10,10 @@ import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
  * 
  * @author jfernandes
  */
+@Accessors
 class MessageType {
-	@Property String name
-	@Property List<WollokType> parameterTypes
+	String name
+	List<WollokType> parameterTypes
 	WollokType returnType
 	
 	new(String name, List<WollokType> parameterTypes, WollokType returnType) {

@@ -4,6 +4,17 @@ validatorExtends AbstractWollokDslValidator
 
 import it.xsemantics.runtime.RuleFailedException
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.typesystem.BasicType
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClosureType
+import org.uqbar.project.wollok.typesystem.MessageType
+import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
+import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.VoidType
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.AbstractWollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -14,32 +25,32 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
-import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.MessageType
 
 import static org.uqbar.project.wollok.typesystem.TypeInferrer.*
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WProgram
-import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
-import org.uqbar.project.wollok.typesystem.TypeSystemException
-import org.uqbar.project.wollok.typesystem.BasicType
-import org.uqbar.project.wollok.typesystem.ObjectLiteralWollokType
-import org.uqbar.project.wollok.typesystem.VoidType
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
+import org.uqbar.project.wollok.wollokDsl.WThrow
+
+inject WollokClassFinder finder
 
 // JUDGMENTS
 
@@ -59,6 +70,8 @@ judgments {
 	// query env (consultas a lo ya inferido)
 	queryTypeFor ||- EObject r >> output WollokType
 	queryMessageTypeForMethod ||- WMethodDeclaration m :> output MessageType
+	
+	getType |- EObject context ~~ String name :> output WollokType
 
 }
 
@@ -88,16 +101,14 @@ from {
 
 		for (p : c.variableDeclarations) { G |- p : var WollokType pType }
 
-		if (c.constructors != null) 	{
-			c.constructors.forEach[cons|
-				G |- cons
-			]
-		}
+		if (c.constructors != null)
+			c.constructors.forEach[ G |- it ]
+
 		c.methods => [
 			// first setup WAny for all methods
-			forEach[m| G.add(m, WAny)]
+			forEach[ G.add(it, WAny)]
 			// then infer their types
-			forEach[m| G |- m ]
+			forEach[G |- it ]
 		]
 	}
 }
@@ -105,8 +116,10 @@ from {
 rule InferConstructor
 	G |- WConstructor c
 from {
-	c.parameters.forEach[p| G.add(p, WAny)]
-	G |- c.expression : var WollokType returnType
+	c.parameters.forEach[ G.add(it, WAny) ]
+	G |- c.expression
+//	G |- c.expression : var WollokType returnType
+	println("Inferred constructor: " + c.eContainer + c.parameters.map[name + ":" + G.env(it, WollokType)])
 }
 
 rule InferWMethod
@@ -127,7 +140,7 @@ from {
 	m.parameters.forEach[p| G.add(p, WAny)]
 
 	// Expression == null => método abstracto
-	if(m.expression != null) {
+	if (m.expression != null) {
 		val currentReturnType = G.env(m, WollokType)
 		if (currentReturnType != WAny) {
 			// si ya teniamos un return type inferido, refinar el tipo del body
@@ -164,6 +177,8 @@ from {
 // ** QUERY ENV
 // ****************************************************************************
 
+axiom getTypeFromSDK G |- EObject context ~~ String name :> new ClassBasedWollokType(finder.getCachedClass(context, name), G.env(TypeSystem, TypeSystem))
+
 axiom QueryTypeFor G ||- EObject e >> G.env(e, WollokType)
 
 // Esta, si no existe lo crea
@@ -196,9 +211,36 @@ from {
 // ** Expression Types
 // ****************************************************************************
 
-axiom NumberLiteralType G |- WNumberLiteral num : WInt
-axiom StringLiteralType G |- WStringLiteral str : WString
-axiom BooleanLiteralType G |- WBooleanLiteral num : WBoolean
+rule NumberLiteralType G |- WNumberLiteral lit : WollokType tipe from {
+	if (lit.value.contains('.')) {
+		G |- lit ~~ WollokDSK.DOUBLE :> tipe
+		G.add(lit, tipe)
+	}
+	else {
+		G |- lit ~~ WollokDSK.INTEGER :> tipe
+		G.add(lit, tipe)
+	}
+}
+
+rule StringLiteralType G |- WStringLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.STRING :> tipe
+	G.add(lit, tipe)
+}
+
+rule BooleanLiteralType G |- WBooleanLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.BOOLEAN :> tipe
+	G.add(lit, tipe)
+}
+
+rule ListLiteralType G |- WListLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.LIST :> tipe
+	G.add(lit, tipe)
+}
+rule SetLiteralType G |- WSetLiteral lit : WollokType tipe from {
+	G |- lit ~~ WollokDSK.SET :> tipe
+	G.add(lit, tipe)
+}
+
 axiom VariableRefType G |- WVariableReference variable :
 	try env(G, variable.ref, WollokType) catch (RuleFailedException e) WAny
 
@@ -245,33 +287,36 @@ rule WBlockExpressionType
 	G |- WBlockExpression exps : WollokType t
 from {
 	t = if (exps.expressions.isEmpty)
-		WVoid
-	else {
-		var WollokType lastType = null
-		for (e : exps.expressions) {
-			G |- e : var WollokType expType
-			lastType = expType
+			WVoid
+		else {
+			var WollokType lastType = null
+			for (e : exps.expressions) {
+				G |- e : var WollokType expType
+				lastType = expType
+			}
+			lastType
 		}
-		lastType
-	}
 }
 
 rule AdditionType
 	G |- WBinaryOperation op : WollokType returnType
 from {
+	G |- op ~~ WollokDSK.BOOLEAN :> var WollokType booleanType
+	G |- op ~~ WollokDSK.INTEGER :> var WollokType integerType
+	
 	var WollokType t = null
 	if (#["&&", "||"].contains(op.^feature)) {
-		returnType = WBoolean
-		t = WBoolean
+		returnType = booleanType
+		t = booleanType
 	}
 	//TODO: esto es una puerta abierta
 	else if (#["==", "!=", "===", "<", "<=", ">", ">="].contains(op.^feature)) {
-		returnType = WBoolean
+		returnType = booleanType
 		t = WAny
 	}
 	else {
-		returnType = WInt
-		t = WInt
+		returnType = integerType
+		t = integerType
 	}
 
 	// left
@@ -434,10 +479,45 @@ from {
 	}
 }
 
+rule WReturnExpressionType
+	G |- WReturnExpression theReturn : WollokType typeOfBody
+from {
+	G |- theReturn.expression : typeOfBody
+}
+
 rule Ignore
 	G |- WExpression e : WollokType.WVoid
 from {
 	 System.out.println("Ignoring type check for " + e.stringRep + " of class " + e.class.simpleName)
+}
+
+axiom WThrowType
+	G |- WThrow t : WollokType.WVoid
+
+// REVIEW: this is only valid for "not" and "!" but not for
+rule UnaryOperationType
+	G |- WUnaryOperation op : WollokType tipe
+from {
+	if (op.^feature == "!" || op.^feature == "not") {
+		G |- op ~~ WollokDSK.BOOLEAN :> tipe
+	}
+	else {
+		G |- op ~~ WollokDSK.INTEGER :> tipe
+	}
+	G.add(op, tipe)
+} 
+
+axiom WNullLiteralType 
+	G |- WNullLiteral n : WollokType.WAny
+
+rule WClosureType 
+	G |- WClosure c : WollokType tipe
+from {
+	G |- c
+	val paramTypes = c.parameters.map[p| G.env(p, WollokType) ]
+	val returnType = G.env(c.expression, WollokType) 
+	tipe = new ClosureType(paramTypes, returnType)
+	G.add(c, tipe)
 }
 
 // ****************************************************************************
