@@ -23,7 +23,7 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
-		store.setDefault(WollokTypeSystemActivator.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
+		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.TRUE)
 	}
 	
 	override getPropertyPrefix() {  PROPERTY_PREFIX }
@@ -34,10 +34,10 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 				marginHeight = 20
 				marginWidth = 8
 			]
-			addCheckBox(it, "Enable Type System Checks", WollokTypeSystemActivator.PREF_TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
+			addCheckBox(it, "Enable Type System Checks", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
 			
 			val typeSystems = WollokTypeSystemActivator.^default.typeSystems
-			addComboBox(it, "Type System Implementation", WollokTypeSystemActivator.PREF_TYPE_SYSTEM_IMPL, 0, 
+			addComboBox(it, "Type System Implementation", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, 0, 
 				typeSystems.map[t| t.name], typeSystems.map[t| t.name]
 			)
 		]

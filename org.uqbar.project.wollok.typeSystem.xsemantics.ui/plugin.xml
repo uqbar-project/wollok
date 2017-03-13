@@ -71,5 +71,11 @@
              class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.semantics.XSemanticsTypeSystem">
        </typeSystemImplementation>
     </extension>
+    <extension
+          point="org.uqbar.project.wollok.typesystem.preferences">
+       <wollokTypeSystemPreference
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.WollokTypeSystemUIPreferences">
+       </wollokTypeSystemPreference>
+    </extension>
     <!-- Type System preferences -->
 </plugin>

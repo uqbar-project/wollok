@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  * @author jfernandes
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
+
 	
 	override check(WFile file, WollokDslValidator validator) {
 		//TODO: lee las preferencias cada vez!
