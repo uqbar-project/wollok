@@ -1,0 +1,9 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+class Golondrina {
+	// XPECT errors --> "Couldn't resolve reference to Referenciable 'energia'." at "energia"
+	method energia() = energia
+	
+	// XPECT errors --> "You should declare variables before constructors and methods." at "var"
+	var energia = 0
+}
+
