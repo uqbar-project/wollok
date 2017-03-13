@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.asserts
 
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.junit.ComparisonFailure
 
 class AssertTestCase extends AbstractWollokInterpreterTestCase {
 	
@@ -59,6 +60,13 @@ class AssertTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.throwsExceptionLike(new AssertionException("Kaboom"),{ => assert.fail("Kaboom") } )
 		'''.test
-	}	
+	}
+	
+	@Test(expected = ComparisonFailure)
+	def void assertIsTranslatedToComparisonFailure(){
+		'''
+		assert.equals(1,"hola")
+		'''.test
+	}
 		
 }

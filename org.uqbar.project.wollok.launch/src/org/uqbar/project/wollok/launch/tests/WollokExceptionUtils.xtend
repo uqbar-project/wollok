@@ -116,7 +116,7 @@ class WollokExceptionUtils {
 	}
 	
 	def static dispatch generateAssertionError(WollokProgramExceptionWrapper e) {
-		new AssertionException(e.wollokMessage, e.wollokException)
+		new AssertionException(e.wollokMessage, e)
 	}
 
 	def static dispatch generateAssertionError(Exception e) {

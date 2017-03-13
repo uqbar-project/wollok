@@ -2,6 +2,8 @@ package wollok.lib
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.eclipse.emf.common.util.URI
 
 /**
  * This exceptions are thrown when an assert is not ok.
@@ -12,13 +14,13 @@ class AssertionException extends Exception {
 
 	private String message
 	private WollokObject wollokException
+	private URI URI
+	private int lineNumber
 	
-	new(String message) {
+	new(String message, WollokProgramExceptionWrapper exceptionWrapper) {
 		this.message = message
-	}
-	
-	new(String message, WollokObject wollokException) {
-		this.message = message
-		this.wollokException = wollokException
+		this.wollokException = exceptionWrapper.wollokException
+		this.URI = exceptionWrapper.URI
+		this.lineNumber = exceptionWrapper.lineNumber
 	}
 }
