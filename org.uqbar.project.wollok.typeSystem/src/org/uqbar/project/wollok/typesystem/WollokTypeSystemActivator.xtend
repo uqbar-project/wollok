@@ -33,7 +33,7 @@ class WollokTypeSystemActivator extends Plugin {
 
 	def synchronized WollokTypeSystemPreference getTypeSystemPreferences() {
 		if (typeSystemPreferences == null) {
-			val configs = Platform.extensionRegistry.getConfigurationElementsFor(TYPE_SYSTEM_IMPL_EXTENSION_POINT)
+			val configs = Platform.extensionRegistry.getConfigurationElementsFor(TYPE_SYSTEM_PREFERENCES_EXTENSION_POINTS)
 
 			if (configs.size > 0) {
 				typeSystemPreferences = configs.get(0).createExecutableExtension("class") as WollokTypeSystemPreference
@@ -72,7 +72,7 @@ class WollokTypeSystemActivator extends Plugin {
 	}
 
 	def isTypeSystemEnabled(EObject file) {
-		typeSystemPreferences.isTypeSystemEnabled(file)
+		getTypeSystemPreferences().isTypeSystemEnabled(file)
 	}
 
 }
