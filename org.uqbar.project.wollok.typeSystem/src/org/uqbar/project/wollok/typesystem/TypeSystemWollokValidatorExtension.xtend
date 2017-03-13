@@ -12,11 +12,12 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  * @author jfernandes
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
+
 	
 	override check(WFile file, WollokDslValidator validator) {
 		//TODO: lee las preferencias cada vez!
 		try
-			if (WollokTypeSystemActivator.^default.isTypeSystemEnabled(file))
+			if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(file))
 				return
 		catch (IllegalStateException e) {
 			// headless launcher doesn't open workspace, so this fails.
