@@ -1,21 +1,17 @@
 package org.uqbar.project.wollok.launch.tests
 
 import com.google.inject.Inject
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.util.ArrayList
+import java.util.LinkedList
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
-
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 
 /**
  * WollokTestReporter implementation that sends the event to a remote
@@ -33,6 +29,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	var Client client
 	var callHandler = new CallHandler
 	var WollokRemoteUITestNotifier remoteTestNotifier
+	val testsResult = new LinkedList<WollokResultTestDTO>
 
 	@Inject
 	def init() {
@@ -40,12 +37,12 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		remoteTestNotifier = client.getGlobal(WollokRemoteUITestNotifier) as WollokRemoteUITestNotifier
 	}
 
-	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
-		remoteTestNotifier.assertError(test.name, assertionError, lineNumber, resource.toString)
+	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
+		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionException.message, assertionException.wollokException?.convertStackTrace, lineNumber, resource?.toString))
 	}
 
 	override reportTestOk(WTest test) {
-		remoteTestNotifier.testOk(test.name)
+		testsResult.add(WollokResultTestDTO.ok(test.name))
 	}
 
 	override testsToRun(WFile file, List<WTest> tests) {
@@ -53,42 +50,17 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override testStart(WTest test) {
-		remoteTestNotifier.testStart(test.name)
+		// for better performance we avoid a RMI call
 	}
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
-		remoteTestNotifier.error(test.name, exception.convertToString, lineNumber, resource?.toString)
-	}
-	
-	def dispatch String convertToString(Exception exception) {
-		val sw = new StringWriter
-        exception.printStackTrace(new PrintWriter(sw))
-        sw.toString  
-	}
-	
-	def dispatch String convertToString(WollokProgramExceptionWrapper exception) {
-		exception.wollokException.call("getStackTraceAsString").wollokToJava(String) as String
+		testsResult.add(
+			WollokResultTestDTO.error(test.name, exception.convertToString, exception.convertStackTrace, lineNumber,
+				resource?.toString))
 	}
 
-	def dispatch void prepareExceptionForTrip(Throwable e) {
-		if (e.cause != null)
-			e.cause.prepareExceptionForTrip
-	}
-	
-	def dispatch void prepareExceptionForTrip(WollokInterpreterException e) {
-		e.sourceElement = null
-
-		if (e.cause != null)
-			e.cause.prepareExceptionForTrip
-	}
-	
-	def dispatch void prepareExceptionForTrip(WollokProgramExceptionWrapper e) {
-		e.URI = null
-		if (e.cause != null)
-			e.cause.prepareExceptionForTrip		
-	}
-	
 	override finished() {
+		remoteTestNotifier.testsResult(testsResult)
 	}
-	
+
 }

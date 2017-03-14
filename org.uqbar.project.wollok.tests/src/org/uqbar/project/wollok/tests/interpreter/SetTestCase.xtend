@@ -84,13 +84,30 @@ class SetTestCase extends CollectionTestCase {
 		assert.equals(#{}, #{})
 		'''.test		
 	}
-			
+	
+	@Test
+	def void equalitySpecialCases() {
+		'''
+		assert.notEquals(#{3, 4}, #{3})
+		assert.notThat(#{3, 4}.equals(#{3}))
+		assert.notThat(#{3, 4}.equals(#{3, 8}))
+		assert.notThat(#{3, 4}.equals(#{3}))
+		assert.notThat(#{3}.equals(#{3, 4}))
+		assert.notThat(#{2, 3}.equals(#{3, 4}))
+		assert.notThat(#{2, 3, 4}.equals(#{3, 4}))
+		assert.notThat(#{3, 4}.equals(#{3.01, 4}))
+		assert.that(#{3, 4}.equals(#{2.00 + 1, 4}))
+		assert.notThat(#{}.equals(#{3}))
+		assert.notThat(#{5}.equals(#{3}))
+		assert.notThat(#{5}.equals(#{}))
+		'''.test		
+	}		
 	@Test
 	def void equalityCaseFalse() {
 		'''
-			assert.notEquals(#{'Hello'}, #{'Hellou'})
-			assert.notEquals(#{5, 4, 9}, #{4, 5, 3})
-			assert.notEquals(#{4, 5, 9}, [4, 5, 9])
+		assert.notEquals(#{'Hello'}, #{'Hellou'})
+		assert.notEquals(#{5, 4, 9}, #{4, 5, 3})
+		assert.notEquals(#{4, 5, 9}, [4, 5, 9])
 		'''.test		
 	}
 	
@@ -138,6 +155,16 @@ class SetTestCase extends CollectionTestCase {
 			var juancete = new Alumno("juan")
 			assert.equals(2, #{juancete, manuel, juancete, manuel, manuel}.size())
 		}'''.interpretPropagatingErrors
+	} 	
+	
+	@Test
+	def void anyOneOnSetThrowsExceptionWhenEmpty() {
+		'''
+		assert.equals(1, #{1}.anyOne())
+		assert.throwsExceptionWithMessage(
+			"Illegal operation 'anyOne' on empty collection", 
+			{ #{}.anyOne() })
+		'''.test
 	} 	
 	
 }

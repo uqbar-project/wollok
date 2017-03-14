@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.Property
 import org.uqbar.project.wollok.typesystem.WollokType
 
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.substitutions.TypeRule.*
 
 /**
  * Model wrapper.
@@ -54,7 +54,7 @@ class UnknownNode extends EqualityNode {
 	
 	override isNonTerminalFor(Object obj) { model == obj }
 	
-	override toString() { '''t(«model.sourceCode.trim»)''' }
+	override toString() { '''t(«model.formattedSourceCode»)''' }
 	
 	override equals(Object obj) { obj instanceof UnknownNode && model == (obj as UnknownNode).model }
 

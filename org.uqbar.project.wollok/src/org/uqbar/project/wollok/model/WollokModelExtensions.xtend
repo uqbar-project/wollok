@@ -97,7 +97,7 @@ class WollokModelExtensions {
 	def static WPackage getPackage(WMethodContainer it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
-		a == b || (b.parent != null && a.isSuperTypeOf(b.parent))
+		a.fqn == b.fqn || (b.parent != null && a.isSuperTypeOf(b.parent))
 	}
 
 	// *******************

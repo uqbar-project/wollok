@@ -44,6 +44,9 @@ class Exception {
 	
 	/** @private */
 	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
+
+	/** Provides programmatic access to the stack trace information printed by printStackTrace() with full path files for linking */
+	method getFullStackTrace() native
 	
 	/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
 	method getStackTrace() native
@@ -56,6 +59,17 @@ class Exception {
 	
 	/** Overrides the behavior to compare exceptions */
 	override method equals(other) = other.className().equals(self.className()) && other.getMessage() == self.getMessage()
+}
+
+/**
+ * Thrown when a stack overflow occurs because an application
+ * recurses too deeply.
+ *
+ * @author jfernandes
+ * @since 1.5.1
+ */
+class StackOverflowException inherits Exception {
+	constructor() = super()
 }
 
 /**
@@ -668,7 +682,7 @@ class Set inherits Collection {
 	method join() native
 	
 	/**
-	 * @see Object#equals
+	 * Two sets are equals if they have the same elements
 	 */
 	override method equals(other) native
 	
@@ -866,6 +880,13 @@ class List inherits Collection {
 	
 	/** A list is == another list if all elements are equal (defined by == message) */
 	override method ==(other) native
+
+	/**
+	 * Answers the list without duplicate elements
+	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 */
+	method withoutDuplicates() = self.asSet().asList()
+
 }
 
 /**
@@ -1020,7 +1041,26 @@ class Number {
 	method rem(other) { return self % other }
 	
 	method stringValue() = throw new Exception("Should be implemented in the subclass")
-	
+
+	/**
+	 * Rounds up self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.roundUp(3) ==> 1.224
+	 * -1.223445.roundUp(3) ==> -1.224
+	 * 14.6165.roundUp(3) ==> 14.617
+	 * 5.roundUp(3) ==> 5
+	 */
+	 method roundUp(_decimals)
+
+	/**
+	 * Truncates self up to a certain amount of decimals.
+	 * Amount of decimals must be positive
+	 * 1.223445.truncate(3) ==> 1.223
+	 * 14.6165.truncate(3) ==> 14.616
+	 * -14.6165.truncate(3) ==> -14.616
+	 * 5.truncate(3) ==> 5
+	 */
+	method truncate(_decimals)
 }
 
 /**
@@ -1147,7 +1187,12 @@ class Integer inherits Number {
 	 * 			3
 	 * 			4
 	 */
-	method times(action) = (1..self).forEach(action)
+	method times(action) { 
+		(1..self).forEach(action) 
+	}
+	
+	override method roundUp(_decimals) = self
+	override method truncate(_decimals) = self
 }
 
 /**
@@ -1222,23 +1267,8 @@ class Double inherits Number {
 	 */
 	method roundUp() = self.roundUp(0)
 	
-	/**
-	 * Rounds up self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.roundUp(3) ==> 1.224
-	 * -1.223445.roundUp(3) ==> -1.224
-	 * 14.6165.roundUp(3) ==> 14.617
-	 */
-	method roundUp(_decimals) native
-	
-	/**
-	 * Truncates self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
-	 * 1.223445.truncate(3) ==> 1.223
-	 * 14.6165.truncate(3) ==> 14.616
-	 * -14.6165.truncate(3) ==> -14.616
-	 */
-	method truncate(_decimals) native
+	override method roundUp(_decimals) native
+	override method truncate(_decimals) native
 }
 
 /**
@@ -1618,8 +1648,10 @@ class Date {
 	constructor()
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
+	override method toString() native 
+	
 	/** Two dates are equals if they represent the same date */
-	override method equals(_aDate) native
+	override method ==(_aDate) native
 	
 	/** Answers a copy of this Date with the specified number of days added. */
 	method plusDays(_days) native

@@ -19,11 +19,11 @@
          </property>
          <property
                name="aboutText"
-               value="Wollok Programming Language and IDE&#x0A;Version 1.5.1&#x0A;&#x0A;http://uqbar-project.org&#x0A;http://wollok.uqbar-project.org&#x0A;&#x0A;© Copyright 2016, Uqbar Project Foundation, All right reserved">
+               value="Wollok Programming Language and IDE&#x0A;Version 1.6.0&#x0A;&#x0A;http://uqbar-project.org&#x0A;http://wollok.uqbar-project.org&#x0A;&#x0A;© Copyright 2014, Uqbar Project Foundation, All right reserved">
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_16x16.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_32x32.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_48x48.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_64x64.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_128x128.png">
+               value="platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_16x16.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_32x32.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_48x48.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_64x64.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_128x128.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_256x256.png">
          </property>
          <property
                name="startupForegroundColor"

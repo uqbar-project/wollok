@@ -5,11 +5,9 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
 import org.eclipse.xtext.util.IAcceptor
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WPackage
-import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -27,15 +25,7 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 			super.createEObjectDescriptions(eObject, acceptor)
 		else if (eObject instanceof WPackage)
 			super.createEObjectDescriptions(eObject, acceptor)
-		else if (eObject instanceof WClass) {
-			super.createEObjectDescriptions(eObject, acceptor)
-			false
-		}
-		else if (eObject instanceof WMixin) {
-			super.createEObjectDescriptions(eObject, acceptor)
-			false
-		}
-		else if (eObject instanceof WNamedObject) {
+		else if (eObject instanceof WMethodContainer) {
 			super.createEObjectDescriptions(eObject, acceptor)
 			false
 		}

@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException

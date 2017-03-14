@@ -1,12 +1,23 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import com.google.inject.Inject
+import com.google.inject.Injector
+import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
+import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.eclipse.xtext.validation.AbstractValidationDiagnostic
+import org.eclipse.xtext.validation.ValidationMessageAcceptor
+import org.junit.Before
+import org.junit.runners.Parameterized.Parameter
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
@@ -21,89 +32,154 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
  * 
  * @author jfernandes
  */
-abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterpreterTestCase {
-	public extension TypeSystem ts
+abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameterizedInterpreterTest {
+	@Parameter
+	public Class<? extends TypeSystem> tsystemClass
 	
-	new() { ts = createTypeSystem }
-	new(TypeSystem system) { ts = system }
+	extension TypeSystem tsystem
 	
-	def TypeSystem createTypeSystem() {
-//		new BoundsBasedTypeSystem
-		new SubstitutionBasedTypeSystem
-//		new ConstraintBasedTypeSystem
+
+	@Inject
+	WollokClassFinder finder
+	
+	@Inject
+	WollokDslValidator _validator
+
+	@Inject
+	Injector injector
+
+	ValidatorTester<WollokDslValidator> tester
+
+	@Before
+	def void setupTypeSystem() {
+		tsystem = tsystemClass.newInstance
+		injector.injectMembers(tsystem)
 	}
-	
+
 	// Utility
-	
 	def parseAndInfer(CharSequence file) {
 		parseAndInfer(#[file])
 	}
-	
+
 	def parseAndInfer(CharSequence... files) {
 		(files.map[parse(resourceSet)].clone => [
 			forEach[validate]
 			forEach[analyse]
 			inferTypes
+			reportErrors(validator)
 		]).last
 	}
-	
+
 	def asserting(WFile f, (WFile)=>void assertions) {
 		assertions.apply(f)
 	}
 	
+	def getValidator() {
+		tester = new ValidatorTester(_validator, injector)
+		
+		// Ensure to call validator, otherwise calls to diagnose will fail.
+		val _validator = tester.validator
+		
+		new ConfigurableDslValidator() {
+			override report(String description, EObject invalidObject) {
+				_validator.acceptError(description, invalidObject, null, ValidationMessageAcceptor.INSIGNIFICANT_INDEX, null)
+			}
+		}
+	}
+	
+	def getDiagnose() {
+		tester.diagnose
+	}
+
 	// ********************
 	// ** assertions
 	// ********************
-	
-	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
-		assertEquals(expectedType, program.findByText(programToken).type)
+
+	def classTypeFor(EObject context, String className) {
+		new ClassBasedWollokType(finder.getCachedClass(context, className), tsystem)
 	}
-	
+
+	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
+		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
+	}
+
+	def assertTypeOfAsString(EObject program, String expectedType, String token) {
+		assertEquals("Unmatched type for '" + token + "'", expectedType, program.findByText(token).type.name)
+	}
+
 	def assertConstructorType(EObject program, String className, String paramsSignature) {
 		val nrOfParams = paramsSignature.split(',').length;
-		assertEquals(paramsSignature, "(" + findConstructor(className, nrOfParams).parameters.map[type?.name].join(", ") + ")")
+		assertEquals(paramsSignature,
+			"(" + findConstructor(className, nrOfParams).parameters.map[type?.name].join(", ") + ")")
 	}
-	
+
 	def assertMethodSignature(EObject program, String expectedSignature, String methodFQN) {
-		assertEquals(expectedSignature, findMethod(methodFQN).functionType(ts))
+		assertEquals(expectedSignature, findMethod(methodFQN).functionType(tsystem))
 	}
-	
+
 	def assertInstanceVarType(EObject program, WollokType expectedType, String instVarFQN) {
 		assertEquals(expectedType, findInstanceVar(instVarFQN).type)
 	}
-	
+
 	def noIssues(EObject program) {
-		val issues = program.eAllContents.map[issues].toList.flatten
-		assertTrue("Expecting no errors but found: " +  
-			issues.map['''[«model.class.simpleName» - «NodeModelUtils.getNode(model).text»]: «message»'''],
-			issues.isEmpty
-		)
+		// Do not call diagnose twice!
+		diagnose => [
+			try assertOK 
+			catch (AssertionError e) {
+				fail('''
+					«e.message»
+					«it»
+				''')
+				
+			} 
+		]
 	}
-	
+
 	def assertIssues(EObject program, String programToken, String... expectedIssues) {
 		val element = program.findByText(programToken)
-		val issues = element.issues.toList
-		
-		val nonCompliant = expectedIssues.filter[expected| !issues.exists[message == expected]]
-		if (!nonCompliant.empty)
-			fail("Expecting the following issues on '" +  programToken + "' but they were not present: " + nonCompliant + System.lineSeparator + "Although there were the following errors: " + issues)
-		
-		val unexpecteds = issues.filter[i| !expectedIssues.contains(i.message)]
-		if (!unexpecteds.empty)
-			fail("Unexpected issues: " + issues)
+		assertIssuesInElement(element, expectedIssues)
 	}
 	
+	def assertIssuesInElement(EObject element, String... expectedIssues) {
+		val expectedDiagnostics = expectedIssues.map[message|
+			new AssertableDiagnostics.Pred(null, null, null, message) {
+				override apply(Diagnostic d) {
+					super.apply(d) && (d as AbstractValidationDiagnostic).sourceEObject == element
+				}
+			}
+		]
+		diagnose.assertAll(expectedDiagnostics)
+	}
+
 	// FINDS
-	
 	def static findByText(EObject model, String token) {
 		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
-			.findFirst[n| 
-				escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement 
-			]
+		.findFirst [ n |
+			escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement
+		]
 		assertNotNull("Could NOT find program token '" + token + "'", found)
 		found.semanticElement
 	}
-	
+
+	def static findByText(EObject model, String token, Class<? extends EObject> semanticElementType) {
+		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
+		.findFirst [ n |
+			escapeNodeTextToCompare(n.text.trim) == token 
+				&& n.hasDirectSemanticElement
+				&& semanticElementType.isAssignableFrom(n.semanticElement.class)
+		]
+		assertNotNull("Could NOT find program token '" + token + "'", found)
+		found.semanticElement
+	}
+
+	def static findAllByText(EObject model, String token) {
+		NodeModelUtils
+			.findActualNodeFor(model)
+			.asTreeIterable
+			.filter [ n | escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement ]
+			.map[semanticElement]
+	}
+
 	def static String escapeNodeTextToCompare(String nodeText) {
 		if (nodeText.startsWith(System.lineSeparator))
 			nodeText.substring(1).escapeNodeTextToCompare
@@ -112,27 +188,33 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokInterprete
 		else
 			nodeText
 	}
-	
+
 	def findConstructor(String className, int nrOfParams) {
-		findClass(className).constructors.findFirst[ matches(nrOfParams) ]
+		findClass(className).constructors.findFirst[matches(nrOfParams)]
 	}
-	
+
 	def findMethod(String methodFQN) {
-		val fqn = methodFQN.split('\\.') 
-		findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
+		val fqn = methodFQN.split('\\.')
+		val m = findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
+		if (m == null)
+			throw new RuntimeException("Could NOT find method " + methodFQN)
+		m
 	}
-	
+
 	def findInstanceVar(String instVarFQN) {
-		val fqn = instVarFQN.split('\\.') 
+		val fqn = instVarFQN.split('\\.')
 		findClass(fqn.get(0)).variableDeclarations.findFirst[variable.name == fqn.get(1)]
 	}
-	
+
 	def findClass(String className) {
-		resourceSet.allContents.filter(WClass).findFirst[name == className]
+		val c = resourceSet.allContents.filter(WClass).findFirst[name == className]
+		if (c == null)
+			throw new RuntimeException(
+			'''Could NOT find class [«className»] in: «resourceSet.allContents.filter(WClass).map[name].toList»''')
+		c
 	}
-	
+
 	def classType(String className) {
 		new ClassBasedWollokType(findClass(className), null)
 	}
-	
 }

@@ -1,8 +1,11 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.typesystem.WollokType.*
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 /**
  * Tests type system inference and checks
@@ -11,12 +14,23 @@ import static org.uqbar.project.wollok.typesystem.WollokType.*
  */
 class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 
+	@Parameters(name = "{index}: {0}")
+	static def Class<? extends TypeSystem>[] typeSystems() {
+		#[
+			SubstitutionBasedTypeSystem
+			// TODO: fix !
+//			new XSemanticsTypeSystem,		 
+//			new ConstraintBasedTypeSystem,
+//			new BoundsBasedTypeSystem
+		]
+	}
+
 	@Test
 	def void testInferSimpleVariableAssignment() {
 		''' program p {
 			const number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'const number = 23')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -26,7 +40,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const number
 			number = 23
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'const number')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -38,7 +52,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const b = 3
 			number = a + b
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(WInt, 'const number')
+			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
@@ -49,7 +63,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			const b = "aString"
 			a = b
 		}'''.parseAndInfer.asserting [
-			assertIssues("a = b", "Expecting super type of <<Int>> but found <<String>> which is not")
+			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
 		]
 	}
 	
@@ -58,12 +72,15 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		'''
 			class Pato {
 				method cuack() { 'cuack!' }
-		 	program p {
+			}
+
+			program p {
 				const pato = new Pato()
 				pato.cuack()
-			}'''.parseAndInfer.asserting [
+			}
+		'''.parseAndInfer.asserting [
 			noIssues
-			assertTypeOf(classType("Pato"), 'const pato = new Pato()')
+			assertTypeOf(classType("Pato"), 'pato')
 		]
 	}
 

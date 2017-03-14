@@ -99,12 +99,13 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			if (!ignoreStaticErrors)
 				forEach[assertNoErrors]
 			forEach[
-				try
+				try {
 					it.interpret(propagatingErrors)
-				catch (WollokProgramExceptionWrapper e) {
-					println("MESSAGE = " + e.wollokException.resolve("message"))
-					fail(e.wollokException.resolve("message") + System.lineSeparator + e.wollokStackTrace)
-					println("after fail")
+				}catch (WollokProgramExceptionWrapper e) {
+					if(e.isAssertion)
+						throw new WollokComparisonFailure(e)
+					else 
+						throw e
 				}
 			]
 		]).last
@@ -137,18 +138,16 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		
 	}
 	
-	def getMessageOf(Throwable exception, Class<? extends Throwable> clazz) {
+	def String getMessageOf(Throwable exception, Class<? extends Throwable> clazz) {
 		if (clazz.isInstance(exception)) {
 			exception.message
 		}
 		else{
 			if (exception.cause == null)
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
-			else{
-				getMessageOf(exception.cause, clazz)
-			}
+
+			getMessageOf(exception.cause, clazz)
 		}
 		
 	}
-	
 }

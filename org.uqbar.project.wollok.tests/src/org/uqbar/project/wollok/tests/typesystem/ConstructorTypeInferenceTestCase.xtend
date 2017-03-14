@@ -1,15 +1,25 @@
 package org.uqbar.project.wollok.tests.typesystem
 
-import org.junit.Ignore
 import org.junit.Test
+import org.junit.runners.Parameterized.Parameters
+import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 /**
  * 
  * @author jfernandes
  */
- // TODO
- @Ignore
 class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
+	
+	@Parameters(name = "{index}: {0}")
+	static def Object[] typeSystems() {
+		#[
+			SubstitutionBasedTypeSystem
+//			,XSemanticsTypeSystem				// TO DO 
+//			ConstraintBasedTypeSystem			TO BE FIXED
+//			BoundsBasedTypeSystem,    TO BE FIXED
+		]
+	}
 	
 	@Test
 	def void testConstructorParameterTypeInferredFromInstVarAssignment() {	 '''
@@ -17,14 +27,14 @@ class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 				var calle = ""
 				var numero = 0
 				
-				new(c, n) {
+				constructor(c, n) {
 					calle = c
 					numero = n
 				}
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertConstructorType("Direccion", "(String, Int)")
+			assertConstructorType("Direccion", "(String, Integer)")
 		]
 	}
 	

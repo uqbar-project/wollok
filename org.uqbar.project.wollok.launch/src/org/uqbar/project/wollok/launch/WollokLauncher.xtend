@@ -6,15 +6,17 @@ import java.rmi.ConnectException
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
+import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.rmi.CommandHandlerFactory
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
+import org.uqbar.project.wollok.launch.repl.AnsiColoredReplOutputFormatter
+import org.uqbar.project.wollok.launch.repl.RegularReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
 
 /**
  * Main program launcher for the interpreter.
@@ -39,7 +41,8 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(parsed)
 	
 			if (parameters.hasRepl) {
-				new WollokRepl(this, injector, interpreter, mainFile, parsed).startRepl
+				val formatter = if (parameters.noAnsiFormat) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter 
+				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
 		}

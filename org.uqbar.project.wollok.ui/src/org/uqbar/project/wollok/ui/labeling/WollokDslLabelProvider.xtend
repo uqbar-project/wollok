@@ -45,8 +45,8 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		
 	def image(WPackage it) { 'package.png' }
 	def image(WProgram it) { 'wollok-icon-program_16.png' }
-	def image(WClass it) {	'wollok-icon-class_16.png' }
-	def image(WMixin it) {	'wollok-icon-mixin_16.png' }
+	def image(WClass it) { 'wollok-icon-class_16.png' }
+	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 	def image(WTest it) { 'wollok-icon-test_16.png' }
 	
 	def text(WObjectLiteral it) { 'object' }
@@ -55,14 +55,16 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def text(WNamedObject it) { name }
 	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 	
-	def concatResolvedType(String separator, EObject obj) {
+	def synchronized concatResolvedType(String separator, EObject obj) {
 		if (!labelExtensionResolved) {
 			labelExtension = resolveLabelExtension
 			labelExtensionResolved = true
 		}
 		
-		if (labelExtension != null)
-			separator + labelExtension.resolvedType(obj)
+		if (labelExtension != null) {
+			val type = labelExtension.resolvedType(obj)
+			if (type != null) (separator + type) else "" 
+		}
 		else 
 			""
 	}
@@ -97,12 +99,11 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 	
 	def text(WMethodDeclaration m) {
-		m.name + '(' + m.parameters.map[name + concatResolvedType(" ",it) ].join(',') + ')' 
+		m.name + '(' + m.parameters.map[name + concatResolvedType(":",it) ].join(',') + ')' 
 				+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else ""
 	}
 	def text(WConstructor m) {
-		
-		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(" ",it)].join(',') + ')'
+		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(":",it)].join(',') + ')'
 	}
 	
 	def image(WMethodDeclaration ele) { 'wollok-icon-method_16.png' }

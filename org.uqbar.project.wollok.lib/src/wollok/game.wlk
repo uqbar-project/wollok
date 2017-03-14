@@ -5,12 +5,11 @@ class Key {
 		keyCodes = _keyCodes
 	}
 
+	/**
+	 * Adds a block that will be executed always self is pressed.
+	 */	
 	method onPressDo(action) {
-		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) }
-	}
-	
-	method onPressCharacterSay(function) {
-		keyCodes.forEach{ key => game.whenKeyPressedSay(key, function) }
+		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) } //TODO: Implement native
 	}
 }
 

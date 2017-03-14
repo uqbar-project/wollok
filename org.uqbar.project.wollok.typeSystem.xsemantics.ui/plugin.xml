@@ -44,8 +44,38 @@
     <extension
           point="org.uqbar.project.wollok.wollokValidationExtension">
        <wollokValidationExtension
-             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.validations.XSemanticsWollokValidationExtension">
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.TypeSystemWollokValidatorExtension">
        </wollokValidationExtension>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.typeSystem.implementation">
+       <typeSystemImplementation
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.bindings.BoundsBasedTypeSystem">
+       </typeSystemImplementation>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.typeSystem.implementation">
+       <typeSystemImplementation
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem">
+       </typeSystemImplementation>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.typeSystem.implementation">
+       <typeSystemImplementation
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem">
+       </typeSystemImplementation>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.typeSystem.implementation">
+       <typeSystemImplementation
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.semantics.XSemanticsTypeSystem">
+       </typeSystemImplementation>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.typesystem.preferences">
+       <wollokTypeSystemPreference
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.xsemantics.ui.preferences.WollokTypeSystemUIPreferences">
+       </wollokTypeSystemPreference>
     </extension>
     <!-- Type System preferences -->
 </plugin>

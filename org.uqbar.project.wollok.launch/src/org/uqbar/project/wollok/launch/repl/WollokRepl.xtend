@@ -16,8 +16,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-import static org.fusesource.jansi.Ansi.*
-import static org.fusesource.jansi.Ansi.Color.*
+
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -31,10 +30,6 @@ import static org.uqbar.project.wollok.launch.repl.Messages.*
  */
 // I18N
 class WollokRepl {
-	static val COLOR_RETURN_VALUE = BLUE
-	static val COLOR_ERROR = RED
-	static val COLOR_REPL_MESSAGE = CYAN 
-	
 	val Injector injector
 	val WollokLauncher launcher
 	val WollokInterpreter interpreter
@@ -43,14 +38,16 @@ class WollokRepl {
 	val static prompt = ">>> "
 	var static whiteSpaces = ""
 	val WFile parsedMainFile
+	val extension ReplOutputFormatter formatter
 
-	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile) {
+	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile, ReplOutputFormatter formatter) {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
 		this.interpreter.interactive = true
 		this.mainFile = mainFile
 		this.parsedMainFile = parsedMainFile
+		this.formatter = formatter
 	}
 
 	def void startRepl() {
@@ -208,15 +205,9 @@ class WollokRepl {
 			handleException(e.cause)
 		}
 	}
-	def static getPrompt(){
+	def getPrompt(){
 		prompt.messageStyle.toString
 	}
-	// ********** STYLING
 	
-	// applies styles for errors
-	def static errorStyle(CharSequence msg) { ansi.fg(COLOR_ERROR).a(msg).reset }
-	def static importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset }
-	def static messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset }
-	def static returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset }
 	
 }

@@ -2,16 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok's XSemantics TypeSystem
 Bundle-SymbolicName: org.uqbar.project.wollok.typeSystem.xsemantics
-Bundle-Version: 1.5.1.qualifier
+Bundle-Version: 1.6.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.uqbar.project.wollok,
- it.xsemantics.runtime;bundle-version="1.9.0";visibility:=reexport,
- org.eclipse.xtend.lib;bundle-version="2.9.0",
- org.eclipse.xtext.ui;bundle-version="2.9.0",
+ it.xsemantics.runtime;bundle-version="1.10.0";visibility:=reexport,
+ org.eclipse.xtend.lib;bundle-version="2.10.0",
+ org.eclipse.xtext.ui;bundle-version="2.10.0",
  org.uqbar.project.wollok.typeSystem
 Export-Package: org.uqbar.project.wollok.semantics,
  org.uqbar.project.wollok.semantics.validation,
  org.uqbar.project.wollok.typesystem.bindings,
  org.uqbar.project.wollok.typesystem.constraints,
- org.uqbar.project.wollok.typesystem.substitutions,
- org.uqbar.project.wollok.typesystem.validations
+ org.uqbar.project.wollok.typesystem.substitutions

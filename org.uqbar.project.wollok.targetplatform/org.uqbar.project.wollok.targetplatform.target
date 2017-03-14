@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="40">
+<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="52">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.9.0/"/>
+<unit id="org.xpect.sdk.feature.group" version="0.1.0.201508191347"/>
+<repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="it.xsemantics.runtime.feature.feature.group" version="1.10.0.v20160527-0805"/>
+<unit id="it.xsemantics.sdk.feature.group" version="1.10.0.v20160527-0805"/>
+<unit id="it.xsemantics.feature.feature.group" version="1.10.0.v20160527-0805"/>
+<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.10/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
@@ -11,32 +21,11 @@
 <repository location="http://download.itemis.com/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="it.xsemantics.examples.feature.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.runtime.feature.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.feature.source.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.sdk.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.sdk.source.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.implemented.examples.feature.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.doc.feature.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.runtime.feature.source.feature.group" version="1.9.0.v20151204-1531"/>
-<unit id="it.xsemantics.feature.feature.group" version="1.9.0.v20151204-1531"/>
-<repository location="http://sourceforge.net/projects/xsemantics/files/updates/releases/1.9"/>
+<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160813060001"/>
+<repository location="http://download.eclipse.org/technology/babel/update-site/R0.14.0/neon"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.xpect.sdk.feature.group" version="0.1.0.201508191347"/>
-<repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.zest.feature.group" version="1.6.1.201508170204"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
-<repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.1.v201508030411"/>
-<repository location="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.8.1/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.0.v20150602-1417"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
@@ -45,16 +34,13 @@
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
 <unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/releases/mars/201506241002/"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
 <unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="0.0.0"/>
-<repository location="http://community.polarion.com/projects/subversive/download/eclipse/5.0/mars-site/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.5.0.v20151128060001"/>
-<repository location="http://download.eclipse.org/technology/babel/update-site/R0.13.1/mars"/>
+<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
+<repository location="http://community.polarion.com/projects/subversive/download/eclipse/6.0/update-site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>

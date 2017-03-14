@@ -1,7 +1,11 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+
 import org.junit.Test
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.wollokToJava
 
 /**
  * 
@@ -18,9 +22,130 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void sum() {
+	def void add() {
 		'''
 		assert.equals(4, 3 + 1)
+		assert.equals(4.0, 3.0 + 1)
+		assert.equals(4.0, 3.0 + 1.0)
+		assert.equals(4.0, 3 + 1.0)
+		assert.equals(4, 4 + 0.0)
+		assert.equals(4, 4.0 + 0.0)
+		assert.equals(4, 4.0 + 0)
+		assert.equals(4, 4 + 0)
+		'''.test
+	}
+
+	@Test
+	def void addSeveralDecimals() {
+		'''
+		assert.equals(4.00001, 3.000004 + 1.000006)
+		assert.equals(4.00001, 3.000002 + 1.000006)
+		assert.equals(4, 3.000002 + 1.000002)
+		'''.test
+	}
+
+	@Test
+	def void subtractSeveralDecimals() {
+		'''
+		assert.equals(-0.00001, 4.000004 - 4.000006)
+		assert.equals(0, 4.000007 - 4.000006)
+		assert.equals(2, 3.000002 - 1.000001)
+		assert.equals(1.99999, 3.000002 - 1.000006)
+		assert.equals(1.99978, 3.000002 - 1.000222)
+		'''.test
+	}
+
+	@Test
+	def void multiply() {
+		'''
+		assert.equals(8, 4 * 2)
+		assert.equals(8.0, 4 * 2.0)
+		assert.equals(8.0, 4.0 * 2.0)
+		assert.equals(8.0, 4.0 * 2)
+		'''.test
+	}
+	
+	@Test
+	def void multiplySeveralDecimals() {
+		'''
+		assert.equals(8, 4.00000000001 * 2.000000000003)
+		assert.equals(0, 4.00222222222222000000001 * 0)
+		assert.equals(4.00270, 4.00222222222222000000001 * 1.00012)
+		assert.equals(4.00415, 4.00222522222222000000001 * 1.00048)
+		'''.test
+	}
+
+	@Test
+	def void multiplyByZero() {
+		'''
+		assert.equals(6.2500000 * 0.5 * 0, 0)
+		assert.equals(6.2500000 * 0, 0)
+		assert.equals(0.0 * 0, 0)
+		assert.equals(0.0 * 0.0, 0)
+		assert.equals(0 * 0.0, 0)
+		'''.test
+	}
+
+	@Test
+	def void divide() {
+		'''
+		assert.equals(0.3, 3 / 10)
+		assert.equals(2.5, 5 / 2)
+		assert.equals(2, 4 / 2)
+		assert.equals(2, 4 / 2.0)
+		'''.test
+	}
+
+	@Test
+	def void divideZero() {
+		'''
+		assert.equals(0, 0 / 10)
+		assert.equals(0, 0 / 10.0)
+		assert.equals(0, 0.0 / 10.0)
+		assert.equals(0, 0 / 10.0)
+		assert.equals(0, 0 / 100.0)
+		assert.equals(0, 1 / 100000000000.0)
+		'''.test
+	}
+
+	@Test
+	def void divideSeveralDecimals() {
+		'''
+		assert.equals(0.51235, 5.123456 / 10.00000011)
+		assert.equals(0.51235, 5.123456 / 10)
+		assert.equals(0.51235, 5123456 / 10000000)		
+		'''.test
+	}
+
+	@Test
+	def void divisionByZero() {
+		'''
+		assert.throwsExceptionWithMessage("/ by zero", { 1 / 0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1.0 / 0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1.0 / 0.0 })
+		assert.throwsExceptionWithMessage("/ by zero", { 1 / 0.0 })
+		'''.test
+	}
+
+	@Test
+	def void dividePeriodicDecimals() {
+		'''
+		assert.equals(0.72727, 40 / 55)
+		assert.equals(0.72727, 40 / 55.0)
+		assert.equals(0.72727, 40.0 / 55.0)
+		assert.equals(0.72727, 40.0 / 55)
+		assert.equals(0.33333, 1 / 3)
+		assert.equals(0.66667, 2 / 3)
+		'''.test
+	}
+
+	@Test
+	def void divideDecimals() {
+		'''
+		assert.equals(0.3, 3 / 10.0)
+		assert.equals(0.3, 3.0 / 10.0)
+		assert.equals(2.5, 5 / 2.0)
+		assert.equals(2, 4.0 / 2.0)
 		'''.test
 	}
 	
@@ -58,6 +183,11 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	def void absoluteValueOfAPositiveInteger() {
 		'''
 		assert.equals(3, 3.abs())
+		assert.equals(0, 0.abs())
+		assert.equals(0, 0.0.abs())
+		assert.equals(60, (-60.0).abs())
+		assert.equals(60.664, (-60.664).abs())
+		assert.equals(60.664, (60.664).abs())
 		'''.test
 	}
 
@@ -97,6 +227,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		const remainder2 = 12.rem(6)
 		assert.equals(3, remainder)
 		assert.equals(0, remainder2)
+		assert.equals(0.11521, 1.1152112.rem(1.0000002))
 		'''.test
 	}
 	
@@ -131,28 +262,28 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void gcdForDecimalsIsInvalid() {
 		try {
-		'''
-		program a {
-			(5.5).gcd(12)
-		}
-		'''.interpretPropagatingErrors 
+			'''
+			program a {
+				(5.5).gcd(12)
+			}
+			'''.interpretPropagatingErrors 
 			fail("decimals should not understand gcd message")
-		} catch (AssertionError e) {
-			assertTrue(e.message.startsWith("5.5 does not understand gcd(p0)"))
+		} catch (WollokProgramExceptionWrapper e) {
+			assertTrue(e.wollokMessage.startsWith("5.5 does not understand gcd(p0)"))
 		}
 	}
 
 	@Test
 	def void gcdForDecimalsIsInvalid2() {
 		try {
-		'''
-		program a {
-			console.println((5).gcd(12.3))
-		}
-		'''.interpretPropagatingErrors
+			'''
+			program a {
+				console.println((5).gcd(12.3))
+			}
+			'''.interpretPropagatingErrors
 			fail("gcd works also for decimal argument!!")
-		} catch (AssertionError e) {
-		assertTrue(e.message.startsWith("gcd expects an integer as first argument"))
+		} catch (WollokProgramExceptionWrapper e) {
+			assertTrue(e.wollokMessage.startsWith("gcd expects an integer as first argument"))
 		}
 	}
 
@@ -222,5 +353,104 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals("4.1", (4.1).printString())
 		'''.test
 	}	
+
+	@Test
+	def void negativeExponentiation() {
+		'''
+		assert.equals(0.2, 5 ** (-1))
+		assert.equals(0.2, 5 ** (-1.0))
+		assert.equals(0.2, 5.0 ** (-1.0))
+		assert.equals(0.2, 5.0 ** (-1))
+		assert.equals(1, 5.0 ** 0)
+		assert.equals(1, 5.0 ** 0.0)
+		assert.equals(1, 5 ** 0)
+		assert.equals(1, 5 ** 0.0)
+		'''.test
+	}
+	
+	@Test
+	def void integerExponentiation() {
+		'''
+		assert.equals(25, 5 ** 2)
+		assert.equals(25, 5 ** 2.0)
+		assert.equals(25.0, 5.0 ** 2)
+		assert.equals(25.0, 5.0 ** 2.0)
+		'''.test
+	}
+	
+	@Test
+	def void integerRoundUp() {
+		'''
+		assert.equals(5, (10/2).roundUp(2))
+		'''.test
+	}
+
+	@Test
+	def void integerTruncate() {
+		'''
+		assert.equals(5, (10/2).truncate(2))
+		'''.test
+	}
+	
+	@Test
+	def void doubleRoundUp() {
+		'''
+		assert.equals(1.3, (5/4).roundUp(1))
+		'''.test
+	}
+
+	@Test
+	def void doubleTruncate() {
+		'''
+		assert.equals(1.2, (5/4).truncate(1))
+		'''.test
+	}
+
+	@Test
+	def void modulus() {
+		'''
+		assert.equals(1, 5 % 4)
+		assert.equals(1.5, 5.5 % 4)
+		assert.equals(0, 4 % 4)
+		assert.equals(0, 4.0 % 4)
+		assert.equals(0, 4.0 % 1)
+		'''.test
+	}
+
+	@Test
+	def void numberComparison() {
+		'''
+		assert.that((1.1 / 1) > (1.000002))
+		assert.that(1 < 1.0001)
+		assert.notThat(1 < 1)
+		assert.notThat(1 > 1)
+		assert.that(1 <= 1)
+		assert.that(1 >= 1)
+		'''.test
+	}
+
+	@Test
+	def void veryBigIntegerAdd() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000000000000001, a + 1)
+		'''.test
+	}
+
+	@Test
+	def void veryBigIntegerMultiply() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000000000000000, a * 1)
+		'''.test
+	}
+
+	@Test
+	def void veryBigIntegerDivide() {
+		'''
+		var a = 100000000000000000
+		assert.equals(100000, a / 1000000000000)
+		'''.test
+	}
 
 }

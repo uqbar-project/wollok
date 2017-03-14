@@ -8,6 +8,7 @@ import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
+import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
@@ -125,19 +126,26 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		resource.load(new ByteArrayInputStream(content.bytes), #{})
 		resource as XtextResource
 	}
-	
-	def checkerError(LineStyleEvent event, Integer offset, Integer length) { errorStyle(event, offset, length, "CHECK_ERROR") } 
-	def parserError(LineStyleEvent event, Integer offset, Integer length) { errorStyle(event, offset, length, "PARSER_ERROR") }
+
+	def checkerError(LineStyleEvent event, Integer offset, Integer length) {
+		errorStyle(event, offset, length, "CHECK_ERROR")
+	}
+
+	def parserError(LineStyleEvent event, Integer offset, Integer length) {
+		errorStyle(event, offset, length, "PARSER_ERROR")
+	}
+
 	def errorStyle(LineStyleEvent event, Integer offset, Integer length, String type) {
-		val theOffset = if (offset != null) offset else programHeader.length
-		val theLength = if (length != null) length else event.lineText.length
-		new StyleRange(event.lineOffset + (theOffset - programHeader.length), theLength, PARSER_ERROR_COLOR, null, SWT.ITALIC) => [
+		val theOffset = if(offset != null) offset else programHeader.length
+		val theLength = if(length != null) length else event.lineText.length
+		new StyleRange(event.lineOffset + (theOffset - programHeader.length), theLength, PARSER_ERROR_COLOR, null,
+			SWT.ITALIC) => [
 			data = type
 		]
 	}
-	
+
 	def static escape(String text) { text.escapeAnsi.replaceAll(PROMPT, PROMPT_REPLACEMENT) }
-	
+
 	def isCodeInputLine(LineStyleEvent it) { lineText.startsWith(PROMPT) || lineText.startsWith(PROMPT_ANSI) }
 
 	protected def safelyPrintStyles(LineStyleEvent event, String originalText) {

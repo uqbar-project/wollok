@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
 
 /**
  * A test reporter that prints to console in JSON format.
@@ -79,7 +80,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 					name("message").value(assertionError.message)
 					name("file").value(resource.trimFragment.toString)
 					name("lineNumber").value(lineNumber)
-					name("stackTrace").value(assertionError.stackTraceAsString)
+					name("stackTrace").value(assertionError.wollokException?.convertToString) // TODO: Test it and adjust it
 				endObject
 			endObject
 		]

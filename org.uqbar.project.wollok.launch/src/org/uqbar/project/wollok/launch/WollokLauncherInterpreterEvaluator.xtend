@@ -10,6 +10,9 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
+
 /**
  * Subclasses the wollok evaluator to support tests
  * 
@@ -21,7 +24,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	WollokTestsReporter wollokTestsReporter
 	
 	// EVALUATIONS (as multimethods)
-	override dispatch evaluate(WFile it) { 
+	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
 			wollokTestsReporter.testsToRun(it, tests)
@@ -31,8 +34,9 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					e.eval
 				]
 			}
-			finally
+			finally {
 				wollokTestsReporter.finished
+			}
 		}
 	}
 
@@ -42,25 +46,19 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	
 	override dispatch evaluate(WTest test) {
 		try {
-			wollokTestsReporter.testStart(test)
+			//wollokTestsReporter.testStart(test)
 			val x = test.elements.evalAll
 			wollokTestsReporter.reportTestOk(test)
 			x
 		}
-		catch (WollokInterpreterException e) {
-			if (e.cause instanceof AssertionException) {
-				wollokTestsReporter.reportTestAssertError(test, e.cause as AssertionException, e.lineNumber, e.objectURI)
+		catch (Exception e) {
+			if (e.isAssertionException) {
+				wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
+				null
+			} else {
+				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
 				null
 			}
-			else {
-				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.objectURI)
-				null
-			}
-		}
-		catch (WollokProgramExceptionWrapper e) {
-			// an uncaught wollok-level exception wrapped into java
-			wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
-			null
 		}
 	}
 }

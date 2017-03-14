@@ -1,6 +1,8 @@
 package wollok.lang
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -49,7 +51,7 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	
 	def year() { wrapped.year }
 
-	@NativeMessage("equals")
+	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		other.hasNativeType(this.class.name) && (other.getNativeObject(this.class).wrapped?.equals(this.wrapped))
 	}
@@ -84,7 +86,11 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	 
 	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
 	
-	override toString() { wrapped.toString() }
+	override toString() {
+		//val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") 
+		//"Date[" + wrapped.format(formatter) + "]"
+		"Date[" + wrapped.toString + "]"
+	}
 
 	override hashCode() { wrapped.hashCode }
 	
