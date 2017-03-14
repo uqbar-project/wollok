@@ -34,7 +34,6 @@ class WollokLinker extends LazyLinker {
 		super.installProxies(obj, producer, settingsToLink)
 
 		if (obj.shouldSetParent) {
-			println("Setting object to " + obj)
 			syntheticLinkingSupport.createAndSetProxy(obj, obj.parentRef, 'Object')
 		}
 	}
