@@ -444,6 +444,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE, WARNING_UNUSED_VARIABLE)
 	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def comparingEqualityOfWellKnownObject(WBinaryOperation op){
+		val comparisonOperands = #['==' , '!=' , '===' , '!==']
+		
+		if(comparisonOperands.contains(op.feature)){
+			if(op.leftOperand.isWellKnownObject)
+				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__LEFT_OPERAND)
+			if(op.rightOperand.isWellKnownObject)
+				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__RIGHT_OPERAND)
+		}
+	}
 	
 	@Check
 	@DefaultSeverity(ERROR)
