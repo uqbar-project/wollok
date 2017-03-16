@@ -114,6 +114,14 @@ public class Messages extends NLS {
 	
 	public static String OBJECT_DESCRIPTION_ARTICLE;
 	public static String OBJECT_DESCRIPTION_AN_OBJECT;
+
+	// ****************************
+	// ** Element name validation
+	// ****************************
+	
+	public static String ElementNameValidation_NameShouldBeAlphabetic;
+	public static String ElementNameValidation_InvalidCharacterInName;
+	
 	
 	static {
 		// initialize resource bundle
