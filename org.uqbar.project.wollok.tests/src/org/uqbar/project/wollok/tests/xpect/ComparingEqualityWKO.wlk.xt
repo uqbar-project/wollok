@@ -1,0 +1,21 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+	
+object alpiste{}
+object manzana{}
+
+object pepita {
+  var energia = 100
+  
+  method comer(que) { 
+  	// XPECT errors --> "Do not compare for equality an Object. Send a Message" at "alpiste"
+  	if (que==alpiste) 
+  		energia += 5 
+  	// XPECT errors --> "Do not compare for equality an Object. Send a Message" at "manzana"	
+  	else if (que==manzana) energia +=80 
+  	
+  	if(que==5)
+  		energia += 5
+  	else if(energia == que)energia +=80
+  	
+  }
+}

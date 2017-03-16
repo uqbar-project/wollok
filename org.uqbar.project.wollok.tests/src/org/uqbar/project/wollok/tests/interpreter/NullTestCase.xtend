@@ -64,13 +64,17 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		
 		program a {
 			var valorNulo
+			//Just to check if the null can be tested against a WKO
+			//Cannot be performed directly because you should not use comparison over WKO
+			var x = assert
+			
 			assert.notThat(null == 8)
 			assert.notThat(null == "pepe")
 			assert.notThat(null == 3.0)
 			assert.notThat(null == 1..2)
 			assert.notThat(null == [1,2,3])
 			assert.notThat(null == #{1,2,3})
-			assert.notThat(null == assert)
+			assert.notThat(null == x)
 			assert.notThat(null == new Golondrina())
 			assert.notThat(valorNulo == 8)
 			assert.that(valorNulo == null)

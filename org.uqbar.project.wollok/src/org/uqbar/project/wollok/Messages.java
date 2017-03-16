@@ -64,6 +64,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED;
 	
 	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
+	public static String WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO;
 	
 	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_CANNOT_RETURN_ASSIGNMENT;
