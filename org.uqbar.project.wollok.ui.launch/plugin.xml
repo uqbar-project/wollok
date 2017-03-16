@@ -199,7 +199,7 @@
       </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
-            defaultHandler="org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
+            defaultHandler="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
             description="%wollok.launch.replWithoutFile.desc"
             id="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
             name="%wollok.launch.replWithoutFile">
