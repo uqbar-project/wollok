@@ -78,6 +78,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CANNOT_ASSIGN_TO_ITSELF = "CANNOT_ASSIGN_TO_ITSELF"
 	public static val CANNOT_ASSIGN_TO_NON_MODIFIABLE = "CANNOT_ASSIGN_TO_NON_MODIFIABLE"
 
+	public static val INVALID_NAME_FOR_FILE = "INVALID_NAME_FOR_FILE"
+
 	public static val CLASS_NAME_MUST_START_UPPERCASE = "CLASS_NAME_MUST_START_UPPERCASE"
 	public static val REFERENCIABLE_NAME_MUST_START_LOWERCASE = "REFERENCIABLE_NAME_MUST_START_LOWERCASE"
 	public static val PARAMETER_NAME_MUST_START_LOWERCASE = "PARAMETER_NAME_MUST_START_LOWERCASE"
@@ -623,6 +625,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def testInTestFile(WTest t) {
 		if(t.eResource.URI.nonXPectFileExtension != WollokConstants.TEST_EXTENSION)
 			report(WollokDslValidator_CLASSES_IN_FILE + ''' «WollokConstants.TEST_EXTENSION»''', t, WTEST__NAME)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def validFileNameAsPackage(WFile f) {
+		val validation = ElementNameValidation.validateName(f.eResource.URI.lastSegment)
+		if (!validation.ok) {
+			report(validation.message, f, WFILE__ELEMENTS, INVALID_NAME_FOR_FILE)
+		}
 	}
 
 	@Check

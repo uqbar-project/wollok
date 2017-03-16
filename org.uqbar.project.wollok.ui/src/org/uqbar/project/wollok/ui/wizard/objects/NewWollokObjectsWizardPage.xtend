@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.wizard.objects
 
 import java.util.List
 import org.eclipse.jface.viewers.IStructuredSelection
-import org.eclipse.osgi.util.NLS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.widgets.Button
@@ -57,7 +56,7 @@ class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 		elementIndex = btnObject.indexOf(type)	
 		
 		if (elementName.contains('.')) {
-			updateStatus(NLS.bind(Messages.WollokDslNewWizard_invalidChar, '.'))
+			updateStatus('.'.asInvalidCharacterMessage)
 			return false
 		}
 

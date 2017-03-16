@@ -21,7 +21,7 @@ class WollokParseHelper extends ParseHelper<WFile>{
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse) throws Exception {
 		parse(file, resourceSetToUse, false)
 	}
-	
+
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse, boolean createFilesOnDisk) throws Exception {
 		this.fileExtension = if (file.value.toString.contains("program "))
 									WollokConstants.PROGRAM_EXTENSION
