@@ -453,4 +453,12 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void plusOne(){
+		'''
+			program xx{
+				assert.equals(1, +1)
+			}
+		'''.interpretPropagatingErrors
+	}
 }

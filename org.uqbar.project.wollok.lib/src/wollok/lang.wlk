@@ -1061,6 +1061,8 @@ class Number {
 	 * 5.truncate(3) ==> 5
 	 */
 	method truncate(_decimals)
+
+	method plus() = self
 }
 
 /**
@@ -1193,6 +1195,7 @@ class Integer inherits Number {
 	
 	override method roundUp(_decimals) = self
 	override method truncate(_decimals) = self
+	
 }
 
 /**
