@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
@@ -48,6 +47,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -102,13 +102,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// EVALUATIONS (as multimethods)
 	def dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
-		if (main != null) main.eval else tests.evalAll
+		if (main != null) main.eval 
+		else {
+			if (suite != null) suite.eval 
+			else tests.evalAll
+		}
 	}
 
 	def dispatch evaluate(WClass it) {}
 	def dispatch evaluate(WPackage it) {}
 	def dispatch evaluate(WProgram it) { elements.evalAll }
 	def dispatch evaluate(WTest it) { elements.evalAll }
+	def dispatch evaluate(WSuite it) { tests.evalAll }
 
 
 	def dispatch evaluate(WVariableDeclaration it) {

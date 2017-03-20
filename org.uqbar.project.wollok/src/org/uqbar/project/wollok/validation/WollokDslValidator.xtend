@@ -39,6 +39,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -653,8 +654,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def dontDuplicateTestDescription(WTest wtest){
-		val file = wtest.eContainer as WFile
-		if(file.tests.exists[ it !== wtest && name == wtest.name])
+		val tests = wtest.siblings
+		if(tests.exists[ it !== wtest && name == wtest.name])
 			report(WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION, wtest, WTEST__NAME)
 	}
 

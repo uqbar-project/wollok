@@ -28,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -121,6 +122,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
+	def static variables(WSuite p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
