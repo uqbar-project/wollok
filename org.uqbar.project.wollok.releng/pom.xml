@@ -25,7 +25,6 @@
 		<module>../org.uqbar.project.wollok.tests</module>
 		<module>../org.uqbar.project.wollok.sdk</module>
 		<module>../org.uqbar.project.wollok.game</module>
-		<module>../org.uqbar.project.wollok.game.ui</module>
 		<module>../org.uqbar.project.wollok.updatesite</module>
 		<module>../org.uqbar.project.wollok.product</module>
 		<module>../org.uqbar.project.wollok.product.ui</module>
