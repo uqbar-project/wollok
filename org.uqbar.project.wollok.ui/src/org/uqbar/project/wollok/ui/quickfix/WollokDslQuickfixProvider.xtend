@@ -42,6 +42,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
  * 
  * @author jfernandes
+ * @author tesonep
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
@@ -49,6 +50,21 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			
 	@Inject
 	WollokClassFinder classFinder
+
+	@Fix(WollokDslValidator.GETTER_METHOD_SHOULD_RETURN_VALUE)
+	def addReturnVariable(Issue issue, IssueResolutionAcceptor acceptor){
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_variable_name, Messages.WollokDslQuickfixProvider_return_variable_description, null) [ e, context |
+			val method = e as WMethodDeclaration
+			if(!method.expressionReturns){
+				val body = method.expression as WBlockExpression
+				if(body.expressions.empty) {
+					context.xtextDocument.replaceWith(body, 
+						"{" + System.lineSeparator +"\t\t" + RETURN + " " + method.name.substring(3).toLowerCase + System.lineSeparator + "\t}")
+				}else 
+					context.insertAfter(body.expressions.last, RETURN + " " + method.name.substring(3).toLowerCase)
+			}
+		]
+	}
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -293,11 +309,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(RETURN_FORGOTTEN)
 	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Prepend "return"', 'Adds a "return" keyword', null) [ e, it |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name, Messages.WollokDslQuickfixProvider_return_last_expression_description, null) [ e, it |
 			val method = e as WMethodDeclaration
 			val body = (method.expression as WBlockExpression)
-			insertBefore(body.expressions.last, RETURN + " ")
+			if(!body.expressions.empty)
+				insertBefore(body.expressions.last, RETURN + " ")
 		]
+	}
+
+	@Fix(GETTER_METHOD_SHOULD_RETURN_VALUE)
+	def prependReturnForGetter(Issue issue, IssueResolutionAcceptor acceptor) {
+		prependReturn(issue, acceptor)
 	}
 
 	// ************************************************
