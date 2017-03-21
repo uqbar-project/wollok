@@ -122,7 +122,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
-	def static variables(WSuite p) { p.elements.filter(WVariableDeclaration).variables }
+	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {

@@ -243,5 +243,80 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''
 		].interpretPropagatingErrors		
-	}	
+	}
+	
+	// Test suite tests
+	@Test
+	def void suiteCanGroupASetOfIsolatedTestsWithoutState() {
+		'''
+			suite "pruebas generales" {
+				test "Max between 5 and 8" {
+					assert.equals(8, 5.max(8))
+				}
+				test "Min between 5 and 8" {
+					assert.equals(5, 5.min(8))
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	@Test
+	def void suiteCanGroupASetOfIsolatedTestsWithLocalVariables() {
+		'''
+			suite "pruebas generales" {
+				test "Max between 5 and 8" {
+					const a = 8
+					const b = 5
+					const result = 5.max(8)
+					assert.equals(8, result)
+				}
+				test "Min between 5 and 8" {
+					const a = 8
+					const b = 5
+					const result = 5.max(8)
+					assert.equals(5, result)
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	@Test
+	def void suiteCanGroupASetOfIsolatedTestsWithInstanceVariables() {
+		'''
+			suite "pruebas generales" {
+				const a = 8
+				const b = 5
+				
+				test "Max between 5 and 8" {
+					const result = 5.max(8)
+					assert.equals(8, result)
+				}
+				test "Min between 5 and 8" {
+					const result = 5.max(8)
+					assert.equals(5, result)
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	
+	/**
+	@Test
+	def void testShouldNotUseSameVariableDefinedInSuite() {
+		'''
+			suite "pruebas generales" {
+				const a = 8
+				const b = 5
+				
+				test "Max between 5 and 8" {
+					const a = 3
+					const result = 5.max(8)
+					assert.equals(8, result)
+				}
+				test "Min between 5 and 8" {
+					const result = 5.max(8)
+					assert.equals(5, result)
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+	**/
 }

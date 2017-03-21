@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.visitors
 
 import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -11,10 +12,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
  * 
  * @author tesonep
  */
+@Accessors
 class VariableUsesVisitor extends AbstractVisitor {
-	@Property
 	List<EObject> uses = newArrayList
-	@Property
 	WVariable lookedFor
 
 	override dispatch visit(WAssignment asg) {

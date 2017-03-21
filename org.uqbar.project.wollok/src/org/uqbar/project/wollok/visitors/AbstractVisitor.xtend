@@ -26,10 +26,11 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
-import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
@@ -101,6 +102,7 @@ class AbstractVisitor {
 	def dispatch void visit(WMethodContainer it) { eContents.visitAll }
 
 	def dispatch void visit(WMixin it) { eContents.visitAll }
+	def dispatch void visit(WSuite it) { eContents.visitAll }
 	def dispatch void visit(WClass it) { eContents.visitAll }
 	def dispatch void visit(WObjectLiteral it) { eContents.visitAll }
 	def dispatch void visit(WNamedObject it) { eContents.visitAll }

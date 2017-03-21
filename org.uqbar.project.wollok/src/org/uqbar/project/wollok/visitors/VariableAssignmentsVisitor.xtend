@@ -27,8 +27,10 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	// generic visitor methods
 	
 	override doVisit(EObject e) {
-		if (e != null)
+		if (e != null) {
 			visit(e)
+			println("visiting " + e)
+		}
 	}	
 
 	def static assignmentOf(WVariable lookedFor, EObject container) {
@@ -40,11 +42,22 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	
 	// potatoe: specific methods to detect assignments
 
-	override dispatch visit(WVariableDeclaration it) { addIf[ variable == lookedFor && right != null ] }
-	override dispatch visit(WAssignment it) { addIf[feature.ref == lookedFor] }
-	override dispatch visit(WPostfixOperation it) { addIf[ operand.isReferenceTo(lookedFor) ] }
-	override dispatch visit(WBinaryOperation it) { addIf[ isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor) ]}
-	
+	override dispatch visit(WVariableDeclaration it) {
+		println("VD") 
+		addIf[ variable == lookedFor && right != null ]
+	}
+	override dispatch visit(WAssignment it) {
+		println("WA") 
+		addIf[feature.ref == lookedFor]
+	}
+	override dispatch visit(WPostfixOperation it) {
+		println("PFO") 
+		addIf[ operand.isReferenceTo(lookedFor) ]
+	}
+	override dispatch visit(WBinaryOperation it) {
+		println("BO") 
+		addIf[ isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor) ]
+	}
 	// helpers
 	
 	protected def <T extends EObject> addIf(T it, (T)=>Boolean condition) {
@@ -58,9 +71,10 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	
 	// I'm not sure if this is a hack
 	//  why visiting the content of the reference ?
-	//  in a WKO referecing itself was introducing a stackoverflow
-	override dispatch void visit(WVariableReference it) { 
+	//  in a WKO referencing itself was introducing a stackoverflow
+	override dispatch void visit(WVariableReference it) {
+		println("VR") 
 		// does nothing ! 
 	}
-
+	
 }

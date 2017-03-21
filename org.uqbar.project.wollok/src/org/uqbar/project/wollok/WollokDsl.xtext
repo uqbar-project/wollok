@@ -32,8 +32,10 @@ WTest:
 ;
 
 WSuite:
-	'suite' name=STRING "{"	
-		(elements+=WExpressionOrVarDeclaration ';'? | tests+=WTest+)+		
+	'suite' name=STRING 
+	'{'
+		(members+=WVariableDeclaration ';'?)*
+		(tests+=WTest)+	
 	'}'
 ;
 
@@ -47,7 +49,7 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WLibraryElement: (WPackage | WClass | WNamedObject | WMixin );
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;

@@ -113,8 +113,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch evaluate(WPackage it) {}
 	def dispatch evaluate(WProgram it) { elements.evalAll }
 	def dispatch evaluate(WTest it) { elements.evalAll }
-	def dispatch evaluate(WSuite it) { tests.evalAll }
-
+	def dispatch evaluate(WSuite it) {
+		tests.fold(null) [a, test | 
+			variables.forEach [ variable | evaluate(variable) ]
+			test.eval
+		]
+	}
 
 	def dispatch evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
