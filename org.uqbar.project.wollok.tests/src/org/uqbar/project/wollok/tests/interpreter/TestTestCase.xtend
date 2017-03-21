@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter
 
 import org.junit.Test
+import wollok.lib.AssertionException
+import org.junit.Assert
 
 /**
  * @author tesonep
@@ -298,25 +300,23 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
-	/**
-	@Test
+	@Test(expected=AssertionError)
 	def void testShouldNotUseSameVariableDefinedInSuite() {
 		'''
-			suite "pruebas generales" {
-				const a = 8
-				const b = 5
-				
-				test "Max between 5 and 8" {
-					const a = 3
-					const result = 5.max(8)
-					assert.equals(8, result)
-				}
-				test "Min between 5 and 8" {
-					const result = 5.max(8)
-					assert.equals(5, result)
-				}
+		suite "pruebas generales" {
+			const a = 8
+			const b = 5
+			
+			test "Max between 5 and 8" {
+				const a = 3
+				const result = 5.max(8)
+				assert.equals(8, result)
 			}
+			test "Min between 5 and 8" {
+				const result = 5.max(8)
+				assert.equals(5, result)
+			}
+		}
 		'''.interpretPropagatingErrors
 	}
-	**/
 }
