@@ -34,8 +34,9 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers
 	}
 	
-	override testsToRun(String containerResource, List<WollokTestInfo> tests) {
+	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests) {
 		this.container = new WollokTestContainer
+		this.container.suiteName = suiteName
 		this.container.mainResource = URI.createURI(containerResource)
 		this.container.tests = newArrayList(tests.map[new WollokTestResult(it)])
 		this.container.tests.forEach [ test | testStart(test.name) ]

@@ -14,23 +14,26 @@ import wollok.lib.AssertionException
  * @author tesonep
  */
 class WollokConsoleTestsReporter implements WollokTestsReporter {
-	
+
 	override reportTestAssertError(WTest test, AssertionException assertionError, int lineNumber, URI resource) {
 		println('''Test: «test.name» : «assertionError.message» («resource.trimFragment»:«lineNumber»)''')
 	}
-	
+
 	override reportTestOk(WTest test) {
 		println('''Test: «test.name» : Ok''')
 	}
-	
-	override testsToRun(WFile file, List<WTest> tests) {}
+
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+		println('''Suite: «suiteName»''')
+	}
+
 	override testStart(WTest test) {}
-	
+
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		println('''Test: «test.name» : «exception.message» («resource.trimFragment»:«lineNumber»)''')
 	}
-	
+
 	override finished() {
 	}
-	
+
 }

@@ -6,7 +6,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 
 class WollokServerTestsReporter extends WollokJSONTestsReporter {
-	override testsToRun(WFile file, List<WTest> tests) {
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+		writer.name("suite").value(suiteName)
 		writer.name("tests").beginArray
 	}	
 	

@@ -27,10 +27,14 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
-			wollokTestsReporter.testsToRun(it, tests)
+			val isASuite = tests.empty
+			val testsToRun = if (isASuite) suite.tests else tests
+			val suiteName = if (isASuite) suite.name else null
+			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			try {
-				tests.fold(null) [a, e|
+				testsToRun.fold(null) [a, e|
 					resetGlobalState
+					if (isASuite) suite.members.evalAll
 					e.eval
 				]
 			}

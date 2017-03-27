@@ -145,7 +145,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
+			val pathImage = Activator.getDefault.getImageDescriptor("icons/runlast_co.gif")
+			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
 		]
@@ -364,6 +365,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getText(WollokTestContainer element) {
+		if (element.hasSuiteName) return element.suiteName
 		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
 		element.mainResource.deresolve(base).toFileString
 	}

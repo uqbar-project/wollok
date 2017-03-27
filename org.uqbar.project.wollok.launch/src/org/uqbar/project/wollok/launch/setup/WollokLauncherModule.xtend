@@ -23,42 +23,41 @@ import org.uqbar.project.wollok.interpreter.WollokREPLInterpreterEvaluator
  */
 class WollokLauncherModule extends WollokDslRuntimeModule {
 	val WollokLauncherParameters params
-	
+
 	new(WollokLauncherParameters params) {
 		this.params = params
 	}
-	
+
 	override bindIGlobalScopeProvider() {
-		if(params.hasRepl)
+		if (params.hasRepl)
 			return WollokReplGlobalScopeProvider
-		else 
+		else
 			return WollokGlobalScopeProvider
 	}
-	
+
 	override bindXInterpreterEvaluator() {
-		if(params.hasRepl)
+		if (params.hasRepl)
 			return WollokREPLInterpreterEvaluator
 		else
 			return WollokLauncherInterpreterEvaluator
 	}
-	
+
 	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
 		if (params.tests) {
 			if (params.testPort != null && params.testPort != 0)
 				return WollokRemoteTestReporter
-			else if(params.jsonOutput)
+			else if (params.jsonOutput)
 				return WollokJSONTestsReporter
 			else
 				return WollokConsoleTestsReporter
-		}
-		else
+		} else
 			return DefaultWollokTestsReporter
 	}
-	
+
 	def Class<? extends WollokLauncherIssueHandler> bindWollokLauncherIssueHandler() {
 		if (params.tests && params.jsonOutput)
 			WollokLauncherIssueHandlerJSON
 		else
 			DefaultWollokLauncherIssueHandler
-	}	
+	}
 }
