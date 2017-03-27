@@ -35,6 +35,7 @@ WSuite:
 	'suite' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
+//		(members+=WMethodDeclaration ';'?)*
 		(tests+=WTest)+	
 	'}'
 ;
@@ -51,7 +52,7 @@ WPackage:
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
 WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
-WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:

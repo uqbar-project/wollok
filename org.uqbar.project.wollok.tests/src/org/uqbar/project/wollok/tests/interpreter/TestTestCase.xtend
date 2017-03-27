@@ -224,7 +224,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors		
 	}
 	@Test
-	def void trowsExceptionExpectsADessireExceptionClassButGotOther (){
+	def void trowsExceptionExpectsADesiredExceptionClassButGotOther (){
 		#['exepciones' -> '''
 			class BusinessException inherits wollok.lang.Exception {
 				constructor(_message) {message = _message}
@@ -274,7 +274,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				test "Min between 5 and 8" {
 					const a = 8
 					const b = 5
-					const result = 5.max(8)
+					const result = 5.min(8)
 					assert.equals(5, result)
 				}
 			}
@@ -293,7 +293,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					assert.equals(8, result)
 				}
 				test "Min between 5 and 8" {
-					const result = 5.max(8)
+					const result = 5.min(8)
 					assert.equals(5, result)
 				}
 			}
@@ -313,7 +313,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 				assert.equals(8, result)
 			}
 			test "Min between 5 and 8" {
-				const result = 5.max(8)
+				const result = 5.min(8)
 				assert.equals(5, result)
 			}
 		}

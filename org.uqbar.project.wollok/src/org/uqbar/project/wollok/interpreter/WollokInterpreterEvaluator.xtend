@@ -36,6 +36,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -115,7 +116,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch evaluate(WTest it) { elements.evalAll }
 	def dispatch evaluate(WSuite it) {
 		tests.fold(null) [a, test | 
-			variables.forEach [ variable | evaluate(variable) ]
+			it.members.forEach [ m | evaluate(m) ]
 			test.eval
 		]
 	}
@@ -130,8 +131,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
-
-
 
 	def dispatch evaluate(WIfExpression it) {
 		val cond = condition.eval

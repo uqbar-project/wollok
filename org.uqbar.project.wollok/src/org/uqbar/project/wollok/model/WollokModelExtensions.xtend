@@ -80,10 +80,12 @@ class WollokModelExtensions {
 
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
+	def static dispatch name(WSuite it) { name }
 
 	def static dispatch fqn(WClass it) { nameWithPackage }
 	def static dispatch fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch fqn(WMixin it) { nameWithPackage }
+	def static dispatch fqn(WSuite it) { nameWithPackage }
 
 	def static getNameWithPackage(WMethodContainer it) {
 		implicitPackage + "." + if (package != null) package.name + "." + name else name

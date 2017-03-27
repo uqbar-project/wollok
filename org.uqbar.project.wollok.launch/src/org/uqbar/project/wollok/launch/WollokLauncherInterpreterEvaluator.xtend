@@ -12,6 +12,7 @@ import wollok.lib.AssertionException
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Subclasses the wollok evaluator to support tests
@@ -27,14 +28,16 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
 		if (main != null) main.eval else {
-			val isASuite = tests.empty
+			val isASuite = tests.empty && suite != null
 			val testsToRun = if (isASuite) suite.tests else tests
 			val suiteName = if (isASuite) suite.name else null
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			try {
 				testsToRun.fold(null) [a, e|
 					resetGlobalState
-					if (isASuite) suite.members.evalAll
+					if (isASuite) {
+						suite.members.evalAll
+					}
 					e.eval
 				]
 			}
