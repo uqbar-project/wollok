@@ -93,7 +93,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
 	protected def eval(EObject e) { interpreter.eval(e) }
 
-	protected def evalAll(Iterable<? extends EObject> all) { all.fold(null)[a, e|e.eval] }
+	protected def evalAll(Iterable<? extends EObject> all) { all.fold(null)[a, e|
+		e.eval
+	] }
 
 	protected def WollokObject[] evalEach(EList<WExpression> e) { e.map[eval] }
 

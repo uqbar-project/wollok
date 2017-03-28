@@ -293,8 +293,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 					assert.equals(8, result)
 				}
 				test "Min between 5 and 8" {
-					const result = 5.min(8)
-					assert.equals(5, result)
+					assert.equals(5, 5.min(8))
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -340,13 +339,16 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 			var one = 1
 			
 			method sumarOne() {
-				one += 1
+				one = one + 1
 			}
 			
+			method uno() = 1
+			
 			test "Dos es one + 1" {
-				self.sumar()
+				self.sumarOne()
 				assert.equals(one, self.uno() + 1)
 			}
+			
 			test "Uno es one" {
 				assert.equals(one, self.uno())
 			}

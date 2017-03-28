@@ -118,6 +118,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
+	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
