@@ -333,5 +333,24 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
-	
+	@Test
+	def void testVariableDoesntHaveSideEffectsBetweenTests() {
+		'''
+		suite "pruebas generales" {
+			var one = 1
+			
+			method sumarOne() {
+				one += 1
+			}
+			
+			test "Dos es one + 1" {
+				self.sumar()
+				assert.equals(one, self.uno() + 1)
+			}
+			test "Uno es one" {
+				assert.equals(one, self.uno())
+			}
+		}
+		'''.interpretPropagatingErrors
+	}	
 }
