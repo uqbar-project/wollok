@@ -319,4 +319,19 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+	@Test
+	def void testWithMethodInvocation() {
+		'''
+		suite "pruebas generales" {
+			const one = 1
+			
+			method uno() = 1
+			
+			test "Uno es one" {
+				assert.equals(one, self.uno())
+			}
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 }

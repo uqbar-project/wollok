@@ -3,16 +3,12 @@ package org.uqbar.project.wollok.launch
 import com.google.inject.Inject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.launch.tests.WollokTestsReporter
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
-import wollok.lib.AssertionException
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Subclasses the wollok evaluator to support tests

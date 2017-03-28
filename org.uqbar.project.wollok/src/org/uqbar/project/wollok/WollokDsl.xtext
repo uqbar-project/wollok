@@ -35,7 +35,7 @@ WSuite:
 	'suite' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
-//		(members+=WMethodDeclaration ';'?)*
+		(members+=WMethodDeclaration ';'?)*
 		(tests+=WTest)+	
 	'}'
 ;

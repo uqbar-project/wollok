@@ -120,6 +120,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			test.eval
 		]
 	}
+	def dispatch evaluate(WMethodDeclaration it) {}
 
 	def dispatch evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
