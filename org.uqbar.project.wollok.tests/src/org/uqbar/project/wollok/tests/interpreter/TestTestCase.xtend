@@ -247,11 +247,11 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		].interpretPropagatingErrors		
 	}
 	
-	// Test suite tests
+	// Test describe tests
 	@Test
-	def void suiteCanGroupASetOfIsolatedTestsWithoutState() {
+	def void describeCanGroupASetOfIsolatedTestsWithoutState() {
 		'''
-			suite "pruebas generales" {
+			describe "pruebas generales" {
 				test "Max between 5 and 8" {
 					assert.equals(8, 5.max(8))
 				}
@@ -262,9 +262,9 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	@Test
-	def void suiteCanGroupASetOfIsolatedTestsWithLocalVariables() {
+	def void describeCanGroupASetOfIsolatedTestsWithLocalVariables() {
 		'''
-			suite "pruebas generales" {
+			describe "pruebas generales" {
 				test "Max between 5 and 8" {
 					const a = 8
 					const b = 5
@@ -282,9 +282,9 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void suiteCanGroupASetOfIsolatedTestsWithInstanceVariables() {
+	def void describeCanGroupASetOfIsolatedTestsWithInstanceVariables() {
 		'''
-			suite "pruebas generales" {
+			describe "pruebas generales" {
 				const a = 8
 				const b = 5
 				
@@ -300,9 +300,9 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test(expected=AssertionError)
-	def void testShouldNotUseSameVariableDefinedInSuite() {
+	def void testShouldNotUseSameVariableDefinedInDescribe() {
 		'''
-		suite "pruebas generales" {
+		describe "pruebas generales" {
 			const a = 8
 			const b = 5
 			
@@ -321,7 +321,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testWithMethodInvocation() {
 		'''
-		suite "pruebas generales" {
+		describe "pruebas generales" {
 			const one = 1
 			
 			method uno() = 1
@@ -335,7 +335,7 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testVariableDoesntHaveSideEffectsBetweenTests() {
 		'''
-		suite "pruebas generales" {
+		describe "pruebas generales" {
 			var one = 1
 			
 			method sumarOne() {

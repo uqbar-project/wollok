@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -19,13 +20,13 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 /**
  * Provides labels for EObjects.
@@ -48,6 +49,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WClass it) { 'wollok-icon-class_16.png' }
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 	def image(WTest it) { 'wollok-icon-test_16.png' }
+	def image(WSuite it) { 'suite.png' }
 	
 	def text(WObjectLiteral it) { 'object' }
 	def image(WObjectLiteral it) {	'wollok-icon-object_16.png' }

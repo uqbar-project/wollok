@@ -32,7 +32,7 @@ WTest:
 ;
 
 WSuite:
-	'suite' name=STRING 
+	'describe' name=STRING 
 	'{'
 		(members+=WVariableDeclaration ';'?)*
 		(members+=WMethodDeclaration ';'?)*
