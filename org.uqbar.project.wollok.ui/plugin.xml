@@ -12,8 +12,20 @@
             class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
-            extensions="wpgm,wlk,wtest"
+            extensions="wpgm,wlk"
             icon="icons/w.png"
+            id="org.uqbar.project.wollok.WollokDsl"
+            name="%wollokEditor">
+        </editor>
+    </extension>
+    <extension
+            point="org.eclipse.ui.editors">
+        <editor
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.editor.WollokTextEditor"
+            contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+            default="true"
+            extensions="wtest"
+            icon="icons/wollok-icon-test_16.png"
             id="org.uqbar.project.wollok.WollokDsl"
             name="%wollokEditor">
         </editor>
