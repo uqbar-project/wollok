@@ -153,7 +153,7 @@ class WollokModelExtensions {
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
-	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"

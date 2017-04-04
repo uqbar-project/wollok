@@ -532,7 +532,7 @@
       <wizard
             category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
-            descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
+            descriptionImage="icons/wollok-logo.iconset/test_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
             icon="icons/wollok-icon-message_16.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
