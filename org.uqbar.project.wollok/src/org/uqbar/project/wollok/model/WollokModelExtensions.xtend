@@ -27,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -115,9 +116,13 @@ class WollokModelExtensions {
 	}
 
 	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer != null && (e.eContainer instanceof WConstructor || e.eContainer.isWithinConstructor)
+		e.eContainer != null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
 	}
 
+	def static dispatch boolean isAConstructor(EObject it) { false }
+	def static dispatch boolean isAConstructor(WConstructor it) { true }
+	def static dispatch boolean isAConstructor(WFixture it) { true	}
+	 
 	/*
 	 * Uses of a Variable
 	 */
