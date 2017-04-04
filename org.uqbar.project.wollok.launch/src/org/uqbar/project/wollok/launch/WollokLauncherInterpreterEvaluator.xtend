@@ -19,14 +19,16 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * @author tesonep
  */
 class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
-	
+
 	@Inject @Accessors
 	WollokTestsReporter wollokTestsReporter
-	
+
 	// EVALUATIONS (as multimethods)
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
-		if (main != null) main.eval else {
+		if (main != null)
+			main.eval
+		else {
 			val isASuite = tests.empty && suite != null
 			var testsToRun = tests
 			var String suiteName = null
@@ -36,80 +38,90 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			}
 			wollokTestsReporter.testsToRun(suiteName, it, testsToRun)
 			try {
-				testsToRun.fold(null) [a, _test|
+				testsToRun.fold(null) [ a, _test |
 					resetGlobalState
 					if (isASuite) {
-						// If in a suite, we should create a suite wko so this will be our current context to eval the tests
-						val suiteObject = new SuiteBuilder(suite, interpreter).forTest(_test).build
-						if (suite.fixture != null) {
-							suite.fixture.elements.forEach [ element |
-								interpreter.performOnStack(_test, suiteObject, [ | element.eval ])
-							]
-						}
-						interpreter.performOnStack(_test, suiteObject, [ | _test.eval ])
+						_test.evalInSuite(suite)
 					} else {
 						_test.eval
 					}
 				]
-			}
-			finally {
+			} finally {
 				wollokTestsReporter.finished
 			}
 		}
 	}
 
+	def WollokObject evalInSuite(WTest test, WSuite suite) {
+		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
+		try {
+			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
+			if (suite.fixture != null) {
+				suite.fixture.elements.forEach [ element |
+					interpreter.performOnStack(test, suiteObject, [|element.eval])
+				]
+			}
+			interpreter.performOnStack(test, suiteObject, [ | test.eval])
+		} catch (Exception e) {
+			handleExceptionInTest(e, test)
+		} 
+	}
+
 	def resetGlobalState() {
 		interpreter.globalVariables.clear
 	}
-	
+
 	override dispatch evaluate(WTest test) {
 		try {
-			//wollokTestsReporter.testStart(test)
+			// wollokTestsReporter.testStart(test)
 			val testResult = test.elements.evalAll
 			wollokTestsReporter.reportTestOk(test)
 			testResult
-		}
-		catch (Exception e) {
-			if (e.isAssertionException) {
-				wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
-				null
-			} else {
-				wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
-				null
-			}
+		} catch (Exception e) {
+			handleExceptionInTest(e, test)
 		}
 	}
 	
+	protected def WollokObject handleExceptionInTest(Exception e, WTest test) {
+		if (e.isAssertionException) {
+			wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
+			null
+		} else {
+			wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
+			null
+		}
+	}
+
 }
 
 class SuiteBuilder {
 	WSuite suite
 	WTest test
 	WollokInterpreter interpreter
-	
+
 	new(WSuite suite, WollokInterpreter interpreter) {
 		this.suite = suite
 		this.interpreter = interpreter
 	}
-	
+
 	def forTest(WTest test) {
 		this.test = test
-		this	
+		this
 	}
-	
+
 	def build() {
 		// Suite -> suite wko  
 		val suiteObject = new WollokObject(interpreter, suite)
 		// Declaring suite variables as suite wko instance variables
-		suite.members.forEach [ member | 
-			suiteObject.addMember(member) 
+		suite.members.forEach [ member |
+			suiteObject.addMember(member)
 		]
 		if (test != null) {
-			//suite.members.evalAll
+			// suite.members.evalAll
 			// Now, declaring test local variables as suite wko instance variables
-			test.variableDeclarations.forEach [ variable | suiteObject.addMember(variable) ]
+			test.variableDeclarations.forEach[variable|suiteObject.addMember(variable)]
 		}
 		suiteObject
 	}
-							
+
 }

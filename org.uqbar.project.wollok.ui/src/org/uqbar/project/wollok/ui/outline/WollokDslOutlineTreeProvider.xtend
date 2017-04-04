@@ -40,11 +40,13 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 //	}
 
 	def _createChildren(IOutlineNode parentNode, WMethodContainer it) {
-	    #[fixture, variableDeclarations, methods].children(parentNode)
+	    #[variableDeclarations, methods].children(parentNode)
 	}
 
 	def _createChildren(IOutlineNode parentNode, WSuite it) {
-	    #[members, tests].children(parentNode)
+	    #[members].children(parentNode)
+		parentNode.createEObjectNode(fixture)
+		#[tests].children(parentNode)
 	}
 	
 	def void children(List<? extends Iterable<? extends EObject>> iterables, IOutlineNode parent) {

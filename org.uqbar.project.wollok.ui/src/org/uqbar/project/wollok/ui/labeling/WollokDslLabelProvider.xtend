@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
@@ -50,12 +51,13 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 	def image(WTest it) { 'wollok-icon-test_16.png' }
 	def image(WSuite it) { 'suite.png' }
-	
-	def text(WObjectLiteral it) { 'object' }
+	def image(WFixture it) { 'fixture.png' }
+	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 	def image(WObjectLiteral it) {	'wollok-icon-object_16.png' }
 	
+	def text(WObjectLiteral it) { 'object' }
+	def text(WFixture it) { 'fixture' }
 	def text(WNamedObject it) { name }
-	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
 	
 	def synchronized concatResolvedType(String separator, EObject obj) {
 		if (!labelExtensionResolved) {
