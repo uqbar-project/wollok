@@ -355,4 +355,45 @@ class TestTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}	
+	@Test
+	def void simpleTest() {
+		'''
+		test "1 + 1 es 2" {
+				assert.equals(2, 1 + 1)
+		}
+		'''.interpretPropagatingErrors
+	}
+	@Test
+	def void testFixture() {
+		'''
+		class Golondrina { 
+			var energia = 100
+			method energia() = energia
+			method volar(metros) { energia -= metros * 4 }
+			method comer(comida) { energia += comida.energia() }
+		}
+		
+		object alpiste { 
+			method energia() = 5
+		}
+		
+		describe "pepita cuando está gorda" {
+			const pepita = new Golondrina()
+		
+			fixture {
+				(1..100).forEach({ n => pepita.comer(alpiste) })
+			}
+			
+			test "pepita quedo gorda, vuela un poco para bajar de peso" {
+				assert.equals(600, pepita.energia())
+				pepita.volar(25)
+				assert.equals(500, pepita.energia())
+			}
+			
+			test "pepita sigue gorda en el proximo test" {
+				assert.equals(600, pepita.energia())
+			}
+		}
+		'''.interpretPropagatingErrors
+	}
 }

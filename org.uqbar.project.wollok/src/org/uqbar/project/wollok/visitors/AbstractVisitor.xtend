@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -106,6 +107,7 @@ class AbstractVisitor {
 	def dispatch void visit(WClass it) { eContents.visitAll }
 	def dispatch void visit(WObjectLiteral it) { eContents.visitAll }
 	def dispatch void visit(WNamedObject it) { eContents.visitAll }
+	def dispatch void visit(WFixture it) { eContents.visitAll }
 
 	def dispatch void visit(WPackage it) { elements.visitAll }
 	def dispatch void visit(WUnaryOperation it) { operand.doVisit }

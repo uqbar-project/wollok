@@ -41,6 +41,11 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 					if (isASuite) {
 						// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 						val suiteObject = new SuiteBuilder(suite, interpreter).forTest(_test).build
+						if (suite.fixture != null) {
+							suite.fixture.elements.forEach [ element |
+								interpreter.performOnStack(_test, suiteObject, [ | element.eval ])
+							]
+						}
 						interpreter.performOnStack(_test, suiteObject, [ | _test.eval ])
 					} else {
 						_test.eval
@@ -78,7 +83,6 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 }
 
 class SuiteBuilder {
-
 	WSuite suite
 	WTest test
 	WollokInterpreter interpreter

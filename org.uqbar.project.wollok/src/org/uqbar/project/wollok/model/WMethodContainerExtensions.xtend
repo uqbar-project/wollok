@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -120,6 +121,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
+	def static fixture(WMethodContainer c) { c.members.filter(WFixture) }
+	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
