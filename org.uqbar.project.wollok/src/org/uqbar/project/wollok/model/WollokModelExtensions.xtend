@@ -145,9 +145,16 @@ class WollokModelExtensions {
 	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
 
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
-
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 
+	def static dispatch WExpression firstExpressionInContext(EObject e) {
+		if (e.eContainer == null) return null 
+		e.eContainer.firstExpressionInContext
+	}
+	def static dispatch WExpression firstExpressionInContext(WMethodDeclaration m) {  }
+	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
+	
+	
 	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
