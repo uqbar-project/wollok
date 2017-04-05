@@ -35,6 +35,7 @@ import org.junit.Ignore
  */
 @SuppressWarnings("restriction")
 @RunWith(XpectRunner)
+@Ignore
 class WollokContentAssistTest extends AbstractContentAssistProcessorTest {
 	@Inject
 	protected Provider<XtextResourceSet> resourceSetProvider
