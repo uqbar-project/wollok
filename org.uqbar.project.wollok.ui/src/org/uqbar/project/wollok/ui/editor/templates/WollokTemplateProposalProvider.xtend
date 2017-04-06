@@ -23,6 +23,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -101,16 +102,21 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 << WClosure >>
 '''[ ${params} => ${content} ]'''
 
+<< WSuite >>
+'''describe "${name}" {
+	${content}
+}'''
+
 << WTest >>
 '''test "${name}" {
 	${content}
 }'''
 
 << WTry >>
-'''try {
+'''
+try {
 	${content}
-}
-catch e : Exception {
+} catch e : Exception {
 	// TODO
 	${handler}
 }'''
