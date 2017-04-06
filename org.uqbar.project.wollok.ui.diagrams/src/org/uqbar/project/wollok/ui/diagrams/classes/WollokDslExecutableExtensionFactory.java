@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes;
 
 import org.eclipse.xtext.ui.guice.AbstractGuiceAwareExecutableExtensionFactory;
 import org.osgi.framework.Bundle;
-import org.uqbar.project.wollok.ui.internal.WollokDslActivator;
+import org.uqbar.project.wollok.ui.internal.WollokActivator;
 
 import com.google.inject.Injector;
 
@@ -19,7 +19,7 @@ public class WollokDslExecutableExtensionFactory extends AbstractGuiceAwareExecu
 	
 	@Override
 	protected Injector getInjector() {
-		return WollokDslActivator.getInstance().getInjector(WollokDslActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL);
+		return WollokActivator.getInstance().getInjector(WollokActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL);
 	}
 	
 }

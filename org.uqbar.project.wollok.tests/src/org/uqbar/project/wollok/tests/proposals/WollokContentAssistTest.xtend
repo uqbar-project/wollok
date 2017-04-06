@@ -16,8 +16,9 @@ import org.eclipse.xtext.junit4.util.ResourceLoadHelper
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
+import org.junit.Ignore
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.WollokDslUiInjectorProvider
+import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
 import org.xpect.expectation.CommaSeparatedValuesExpectation
 import org.xpect.expectation.ICommaSeparatedValuesExpectation
 import org.xpect.parameter.ParameterParser
@@ -26,7 +27,6 @@ import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.setup.ThisModel
 import org.xpect.xtext.lib.setup.ThisOffset
 import org.xpect.xtext.lib.setup.ThisResource
-import org.junit.Ignore
 
 /**
  * Test class for extending XPECT to have tests on static proposals (content assist)
@@ -94,7 +94,7 @@ class WollokContentAssistTest extends AbstractContentAssistProcessorTest {
 	override protected doGetSetup() {
 		return new ISetup() {
 			override createInjectorAndDoEMFRegistration() {
-				new WollokDslUiInjectorProvider().injector
+				new WollokDslInjectorProvider().injector
 			}
 
 			def register(Injector injector) {

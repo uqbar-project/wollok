@@ -1,24 +1,22 @@
 module org.uqbar.project.wollok.GenerateWollokDsl
 
 import org.eclipse.emf.mwe.utils.*
+import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.generator.*
-import org.eclipse.xtext.ui.generator.*
+import org.eclipse.xtext.xtext.generator.ui.*
+import org.eclipse.xtext.xtext.generator.model.project.*
 
 var fileExtensions = "wpgm,wlk,wtest"
 var projectName = "org.uqbar.project.wollok"
 var grammarURI = "platform:/resource/${projectName}/src/org/uqbar/project/wollok/WollokDsl.xtext"
 var runtimeProject = "../${projectName}"
-var generateXtendStub = true
 var encoding = "UTF-8"
 
 Workflow {
     bean = StandaloneSetup {
     	scanClassPath = true
     	platformUri = "${runtimeProject}/.."
-    	// The following two lines can be removed, if Xbase is not used.
-//JAV    	registerGeneratedEPackage = "org.eclipse.xtext.xbase.XbasePackage"
-//JAV    	registerGenModelFile = "platform:/resource/org.eclipse.xtext.xbase/model/Xbase.genmodel"
-
+    	
 		resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
 		
 		// add mappings from platform:/resource to classpath:/
@@ -43,84 +41,110 @@ Workflow {
     
     component = DirectoryCleaner { directory = "${runtimeProject}.tests/src-gen" }
     
-    component = Generator {
-    	pathRtProject = runtimeProject
-    	pathUiProject = "${runtimeProject}.ui"
-    	pathTestProject = "${runtimeProject}.tests"
-    	projectNameRt = projectName
-    	projectNameUi = "${projectName}.ui"
-    	encoding = encoding
-    	language = auto-inject {
+    component = XtextGenerator {
+    	id = "WollokDSL"
+    	
+    	configuration =  {
+    		project = StandardProjectConfig {
+    			baseName = "${projectName}"
+				rootPath = ".."
+    			
+    			eclipsePlugin = { 
+    				enabled = true
+    			}
+    			
+    			runtime = {
+    				enabled = true
+    			}
+    			
+    			runtimeTest = {
+    				enabled = true
+    			}
+    			
+    			genericIde = {
+    				enabled = true
+    				name = "${projectName}.ui"
+    				root = "../${projectName}.ui"
+    			}
+    		}		
+	    	code = {
+	    		encoding = encoding
+	    	}
+    	}
+    	
+    	language = StandardLanguage {
     		
-    		forcedResourceSet = theResourceSet
-   		
-    		uri = grammarURI
-    
+    		grammarUri = grammarURI
+    		
+    		fileExtensions = fileExtensions
+    		
     		// Java API to access grammar elements (required by several other fragments)
-    		fragment = grammarAccess.GrammarAccessFragment auto-inject {}
+   // 		fragment = grammarAccess.GrammarAccessFragment2 auto-inject {}
     
     		// generates Java API for the generated EPackages
-    		fragment = ecore.EMFGeneratorFragment auto-inject {
-    			javaModelDirectory = "/${projectName}/src-gen"
-    		}
+ //   		fragment = ecore.EMFGeneratorFragment2 auto-inject {
+  //  			javaModelDirectory = "/${projectName}/src-gen"
+  //  		}
+  
+  			emfGenerator = {
+  				javaModelDirectory = "/${projectName}/src-gen"
+  				
+  			}
     
     		// the old serialization component
     		// fragment = parseTreeConstructor.ParseTreeConstructorFragment auto-inject {}    
     
     		// serializer 2.0
-    		fragment = serializer.SerializerFragment auto-inject {
+//    		fragment = serializer.SerializerFragment2 auto-inject {
+//    			generateStub = false
+//    		}
+    		
+    		serializer = {
     			generateStub = false
     		}
     
     		// a custom ResourceFactory for use with EMF
-    		fragment = resourceFactory.ResourceFactoryFragment auto-inject {}
+//    		fragment = resourceFactory.ResourceFactoryFragment2 auto-inject {}
     
     		// The antlr parser generator fragment.
-    		fragment = parser.antlr.XtextAntlrGeneratorFragment auto-inject {
-//    		  options = {
-//    		      backtrack = true
-//    		  }
-    		}
-    
+//    		fragment = parser.antlr.XtextAntlrGeneratorFragment2 auto-inject {}
+
     		// Xtend-based API for validation
-    		fragment = validation.ValidatorFragment auto-inject {
-//    		    composedCheck = "org.eclipse.xtext.validation.ImportUriValidator"
-//    		    composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
-    		}
+//    		fragment = validation.ValidatorFragment2 auto-inject {}
     
     		// old scoping and exporting API
-    		 fragment = scoping.ImportURIScopingFragment auto-inject {}
-    		 fragment = exporting.SimpleNamesFragment auto-inject {}
+//    		 fragment = scoping.ImportURIScopingFragment auto-inject {}
+//    		 fragment = exporting.SimpleNamesFragment2 auto-inject {}
+
+
     
     		// scoping and exporting API
-//    		fragment = scoping.ImportNamespacesScopingFragment auto-inject {}
-//    		fragment = exporting.QualifiedNamesFragment auto-inject {}
-    		fragment = builder.BuilderIntegrationFragment auto-inject {}
+//    		fragment = builder.BuilderIntegrationFragment2 auto-inject {}
     
     		// formatter API
-    		fragment = formatting.FormatterFragment auto-inject {}
+//    		fragment = formatting.Formatter2Fragment2 auto-inject {}
     
     		// labeling API
-    		fragment = labeling.LabelProviderFragment auto-inject {}
+ //   		fragment = labeling.LabelProviderFragment2 auto-inject {}
     
     		// outline API
-    		fragment = outline.OutlineTreeProviderFragment auto-inject {}
-    		fragment = outline.QuickOutlineFragment auto-inject {}
+ //   		fragment = outline.OutlineTreeProviderFragment2 auto-inject {}
+ //   		fragment = outline.QuickOutlineFragment2 auto-inject {}
     
     		// quickfix API
-    		fragment = quickfix.QuickfixProviderFragment auto-inject {}
+ //   		fragment = quickfix.QuickfixProviderFragment2 auto-inject {}
     
     		// content assist API
-    		fragment = contentAssist.ContentAssistFragment auto-inject {}
+ //   		fragment = contentAssist.ContentAssistFragment2 auto-inject {}
     
     		// generates a more lightweight Antlr parser and lexer tailored for content assist
-    		fragment = parser.antlr.XtextAntlrUiGeneratorFragment auto-inject {}
+ //   		fragment = parser.antlr.XtextAntlrGeneratorFragment2 auto-inject {}
     
     		// generates junit test support classes into Generator#pathTestProject
-    		fragment = junit.Junit4Fragment auto-inject {}
+ //   		fragment = junit.Junit4Fragment2 auto-inject {}
     
     		// rename refactoring
-    		fragment = refactoring.RefactorElementNameFragment auto-inject {}
+ //   		fragment = refactoring.RefactorElementNameFragment2 auto-inject {}
     
     		// provides the necessary bindings for java types integration
 //JAV    		fragment = types.TypesGeneratorFragment auto-inject {}
@@ -130,10 +154,10 @@ Workflow {
 //JAV    		fragment = xbase.XtypeGeneratorFragment auto-inject {}
     
     		// provides a preference page for template proposals
-    		fragment = templates.CodetemplatesGeneratorFragment auto-inject {}
+ //   		fragment = templates.CodetemplatesGeneratorFragment2 auto-inject {}
     
     		// provides a compare view
-    		fragment = compare.CompareFragment auto-inject {}
+ //   		fragment = compare.CompareFragment2 auto-inject {}
     	}
     }
 }

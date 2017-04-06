@@ -5,6 +5,7 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
@@ -25,8 +26,6 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 
 /**
  * This class contains custom formatting description.
@@ -148,8 +147,8 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 //		setLinewrap(1, 1, 2).after(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
 	}
 
-	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
-	}
+//	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
+//	}
 	
 	def dispatch formatting(FormattingConfig it, extension WPackageElements e) {
 		setLinewrap(1, 2, 2).after(leftCurlyBracketKeyword_2)

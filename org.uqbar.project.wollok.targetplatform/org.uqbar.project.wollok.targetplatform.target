@@ -2,18 +2,18 @@
 <?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="52">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.xpect.sdk.feature.group" version="0.1.0.201508191347"/>
+<unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
 <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.11.0.v20170201-0242"/>
 <repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="it.xsemantics.runtime.feature.feature.group" version="1.10.0.v20160527-0805"/>
-<unit id="it.xsemantics.sdk.feature.group" version="1.10.0.v20160527-0805"/>
-<unit id="it.xsemantics.feature.feature.group" version="1.10.0.v20160527-0805"/>
-<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.10/"/>
+<unit id="it.xsemantics.runtime.feature.feature.group" version="1.11.1.v20170211-1001"/>
+<unit id="it.xsemantics.sdk.feature.group" version="1.11.1.v20170211-1001"/>
+<unit id="it.xsemantics.feature.feature.group" version="1.11.1.v20170211-1001"/>
+<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.11/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
