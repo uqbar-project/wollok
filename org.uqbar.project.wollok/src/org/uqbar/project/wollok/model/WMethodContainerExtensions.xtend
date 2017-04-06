@@ -48,6 +48,8 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
+	
+	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
@@ -58,6 +60,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 
+	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
 
