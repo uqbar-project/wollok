@@ -6,12 +6,13 @@ import org.junit.runner.RunWith
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.xpect.runner.XpectRunner
+import org.xpect.xtext.lib.tests.XtextTests
 
 /**
  * @author jfernandes
  */
 @RunWith(XpectRunner)
 @InjectWith(WollokTestInjector)
-class WollokXPectTest {
+class WollokXPectTest extends XtextTests{
 	@Inject WollokClassFinder classFinder
 }

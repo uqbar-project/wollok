@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="52">
+<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="53">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
@@ -43,8 +43,9 @@
 <repository location="http://community.polarion.com/projects/subversive/download/eclipse/6.0/update-site"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="com.google.guava" version="15.0.0.v201403281430"/>
 <unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
 </location>
 </locations>
