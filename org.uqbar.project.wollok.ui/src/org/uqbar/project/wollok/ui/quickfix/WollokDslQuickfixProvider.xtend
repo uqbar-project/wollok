@@ -305,6 +305,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	// ************************************************
 	
 	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument, EObject target) {
+		// issue #452 - contextual menu based on different targets
 		val targetContext = target.getSelfContext
 		val hasMethodContainer = targetContext != null
 		val hasParameters = target.declaringMethod != null && target.declaringMethod.parameters != null
