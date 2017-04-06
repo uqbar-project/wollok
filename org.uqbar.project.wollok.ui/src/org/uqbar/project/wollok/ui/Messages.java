@@ -18,6 +18,7 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_fileContainerDoesNotExists;
 	public static String AbstractNewWollokFileWizardPage_fileContainerRequired;
 	public static String AbstractNewWollokFileWizardPage_fileExtensionMustBe;
+	public static String AbstractNewWollokFileWizardPage_fileNameAlreadyExists;
 	public static String AbstractNewWollokFileWizardPage_fileName;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeSpecified;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeValid;
@@ -33,6 +34,8 @@ public class Messages extends NLS {
 	public static String NewWollokProgramWizardPage_title;
 	public static String NewWollokTestWizardPage_description;
 	public static String NewWollokTestWizardPage_title;
+	public static String NewWollokDescribeWizardPage_description;
+	public static String NewWollokDescribeWizardPage_title;
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;

@@ -7,6 +7,7 @@ import org.eclipse.ui.console.IConsoleConstants
 import org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard
 import org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard
 import org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard
+import org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard
 import org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard
 
 /**
@@ -84,6 +85,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			"org.eclipse.ui.wizards.new.file",
 			NewWollokObjectsWizard.ID,
 			NewWollokTestWizard.ID,
+			NewWollokDescribeWizard.ID,
 			NewWollokProgramWizard.ID
 		]
 		.forEach[ a| addNewWizardShortcut(a) ]

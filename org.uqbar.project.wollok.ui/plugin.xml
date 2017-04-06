@@ -540,6 +540,15 @@
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
+            class="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
+            descriptionImage="icons/suite32x32.png"
+            finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"
+            icon="icons/suite.png"
+            id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
+            name="%wollokDescribe">
+      </wizard>
+      <wizard
+            category="org.uqbar.project.wollok.ui.category"
             class="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             descriptionImage="icons/wollok-logo.iconset/icon_32x32.png"
             finalPerspective="org.uqbar.project.wollok.ui.perspectives.WollokCodingPerspective"

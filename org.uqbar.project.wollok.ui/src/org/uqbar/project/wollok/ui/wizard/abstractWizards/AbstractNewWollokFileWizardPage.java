@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.ui.wizard.abstractWizards;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
@@ -205,6 +207,14 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			}
 		}
 		
+		
+		String fullPathFile = container.getRawLocationURI().getPath() + "/" + fileName;
+		java.nio.file.Path path = Paths.get(fullPathFile);
+		if (Files.exists(path)) {
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameAlreadyExists);
+			return;
+		}
+			
 		boolean ok = doDialogChanged();
 		if (ok) updateStatus(null);
 	}
