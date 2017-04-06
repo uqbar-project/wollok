@@ -42,7 +42,7 @@ WSuite:
 ;
 
 WFixture:
-	'fixture {'
+	'fixture' '{'
 		(elements+=WExpression ';'?)+
 	'}'	
 ;

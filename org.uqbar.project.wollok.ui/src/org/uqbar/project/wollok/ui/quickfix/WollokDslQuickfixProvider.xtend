@@ -313,7 +313,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// create local var
 		issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
 			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstExpressionInContext = e.firstExpressionInContext // TODO: Fixear para métodos de una clase/wko en local var rompe
+			val firstExpressionInContext = e.firstExpressionInContext
 			context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
 		]
 
