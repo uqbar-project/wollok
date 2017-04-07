@@ -151,6 +151,7 @@ class WollokModelExtensions {
 		if (e.eContainer == null) return null 
 		e.eContainer.firstExpressionInContext
 	}
+	def static dispatch WExpression firstExpressionInContext(WProgram p) { p.elements.head }
 	def static dispatch WExpression firstExpressionInContext(WBlockExpression b) { b.expressions.head } 
 	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
 	

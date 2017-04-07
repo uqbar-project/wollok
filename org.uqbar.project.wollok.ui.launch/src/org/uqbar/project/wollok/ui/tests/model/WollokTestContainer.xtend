@@ -9,6 +9,8 @@ class WollokTestContainer {
 	var String suiteName
 	var URI mainResource
 	var List<WollokTestResult> tests = newArrayList
+	var List<WollokTestResult> allTests = newArrayList
+	
 	
 	override toString(){
 		mainResource.toString
@@ -16,6 +18,20 @@ class WollokTestContainer {
 	
 	def hasSuiteName() {
 		suiteName != null && !suiteName.isEmpty
+	}
+	
+	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {
+		this.tests = newArrayList(allTests.filter [ result | result.failed || !shouldShowOnlyFailuresAndErrors ])
+	}
+	
+	def void initTests(List<WollokTestResult> tests, boolean shouldShowOnlyFailuresAndErrors) {
+		this.allTests = tests
+		filterTestByState(shouldShowOnlyFailuresAndErrors)
+		this.tests.forEach [ test | test.started ]
+	} 
+	
+	def testByName(String testName) {
+		allTests.findFirst[name == testName]
 	}
 	
 }

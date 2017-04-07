@@ -36,6 +36,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.impl.WFixtureImpl
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
@@ -362,6 +363,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		for (var e = ele; e != null; e = e.eContainer)
 			if (e.isSelfContext) return e
 		null
+	}
+	
+	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
+	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
+	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
+	def dispatch static boolean canCreateLocalVariable(EObject ele) {
+		if (ele.eContainer == null) return false
+		ele.eContainer.canCreateLocalVariable
 	}
 	
 	def static dispatch isSelfContext(WClass it) { true }

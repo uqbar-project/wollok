@@ -309,13 +309,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val targetContext = target.getSelfContext
 		val hasMethodContainer = targetContext != null
 		val hasParameters = target.declaringMethod != null && target.declaringMethod.parameters != null
+		val canCreateLocalVariable = target.canCreateLocalVariable
 		
 		// create local var
-		issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstExpressionInContext = e.firstExpressionInContext
-			context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
-		]
+		if (canCreateLocalVariable) {
+			issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val firstExpressionInContext = e.firstExpressionInContext
+				context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
+			]
+		}
 
 		// create instance var
 		if (hasMethodContainer) {

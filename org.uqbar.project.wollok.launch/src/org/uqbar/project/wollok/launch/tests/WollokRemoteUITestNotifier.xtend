@@ -19,4 +19,6 @@ interface WollokRemoteUITestNotifier {
 	
 	def void testsResult(List<WollokResultTestDTO> resultTests)
 
+	def void showFailuresAndErrorsOnly(boolean showFailuresAndErrors)
+
 }

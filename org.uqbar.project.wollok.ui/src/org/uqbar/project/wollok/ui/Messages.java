@@ -98,6 +98,7 @@ public class Messages extends NLS {
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
 	
 	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
 	static {

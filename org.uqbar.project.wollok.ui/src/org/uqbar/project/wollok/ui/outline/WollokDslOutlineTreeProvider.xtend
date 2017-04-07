@@ -45,7 +45,9 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	def _createChildren(IOutlineNode parentNode, WSuite it) {
 	    #[members].children(parentNode)
-		parentNode.createEObjectNode(fixture)
+	    if (fixture != null) {
+			parentNode.createEObjectNode(fixture)
+	    }
 		#[tests].children(parentNode)
 	}
 	

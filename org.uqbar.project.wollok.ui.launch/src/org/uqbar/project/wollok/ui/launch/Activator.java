@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.launch.WollokLauncherException;
@@ -37,6 +38,11 @@ public class Activator extends AbstractUIPlugin {
 
 	public ImageDescriptor getImageDescriptor(String name) {
 		try {
+			// First of all, we try to find image from shared images of Workbench (defined in target platform project)
+			ImageDescriptor id = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(name);
+			if (id != null) {
+				return id;
+			}
 			URL u = new URL(this.getDefault().getStateLocation().toFile().toURL(), name);
 			return ImageDescriptor.createFromURL(u);
 		} catch (MalformedURLException e) {
@@ -44,6 +50,7 @@ public class Activator extends AbstractUIPlugin {
 					+ name + "]", e);
 		}
 	}
+	
 //	public ImageDescriptor getImageDescriptor(String name) {
 //		URL u = find(this.getDefault().getStateLocation().append(name));
 //		System.out.println(u);
