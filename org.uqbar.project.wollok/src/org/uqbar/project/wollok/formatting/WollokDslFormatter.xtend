@@ -323,20 +323,19 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WTryElements i) {
-		setLinewrap(1, 1, 2).before(group)
 		setLinewrap(1, 1, 1).after(tryKeyword_0)
 		setLinewrap(1, 1, 1).after(catchBlocksAssignment_2)
-		
 		setIndentation(tryKeyword_0, catchBlocksAssignment_2)
-//		setIndentation(catchBlocksAssignment_2, catchBlocksWCatchParserRuleCall_2_0)
-//		setIndentation(catchBlocksWCatchParserRuleCall_2_0, catchBlocksWCatchParserRuleCall_2_0)
+		setLinewrap(1, 1, 1).before(alwaysExpressionWBlockOrExpressionParserRuleCall_3_1_0)
+		//setIndentationIncrement.after(thenAlwaysKeyword_3_0)
+		//setIndentationDecrement.after(alwaysExpressionWBlockOrExpressionParserRuleCall_3_1_0)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WCatchElements i) {
-		setSpace(' ').after(catchKeyword_0)
+		//setSpace(' ').after(catchKeyword_0)
 		setLinewrap(1,1,1).before(catchKeyword_0)
 		setLinewrap(1,1,1).around(expressionAssignment_3)
-		setIndentationIncrement.before(expressionAssignment_3)
+		//setIndentationIncrement.around(expressionWBlockOrExpressionParserRuleCall_3_0)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WSuperInvocationElements i) {

@@ -39,6 +39,8 @@ public class Activator extends AbstractUIPlugin {
 	public ImageDescriptor getImageDescriptor(String name) {
 		try {
 			// First of all, we try to find image from shared images of Workbench (defined in target platform project)
+			// http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html
+			// http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.pde.doc.user%2Fguide%2Ftools%2Fviews%2Fimage_browser_view.htm 
 			ImageDescriptor id = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(name);
 			if (id != null) {
 				return id;
