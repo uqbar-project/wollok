@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.interpreter
 import com.google.inject.Inject
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
@@ -37,6 +36,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -48,6 +48,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -92,7 +93,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
 	protected def eval(EObject e) { interpreter.eval(e) }
 
-	protected def evalAll(Iterable<? extends EObject> all) { all.fold(null)[a, e|e.eval] }
+	protected def evalAll(Iterable<? extends EObject> all) { all.fold(null)[a, e|
+		e.eval
+	] }
 
 	protected def WollokObject[] evalEach(EList<WExpression> e) { e.map[eval] }
 
@@ -102,14 +105,24 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// EVALUATIONS (as multimethods)
 	def dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
-		if (main != null) main.eval else tests.evalAll
+		if (main != null) main.eval 
+		else {
+			if (suite != null) suite.eval 
+			else tests.evalAll
+		}
 	}
 
 	def dispatch evaluate(WClass it) {}
 	def dispatch evaluate(WPackage it) {}
 	def dispatch evaluate(WProgram it) { elements.evalAll }
 	def dispatch evaluate(WTest it) { elements.evalAll }
-
+	def dispatch evaluate(WSuite it) {
+		tests.fold(null) [a, test | 
+			it.members.forEach [ m | evaluate(m) ]
+			test.eval
+		]
+	}
+	def dispatch evaluate(WMethodDeclaration it) {}
 
 	def dispatch evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
@@ -121,8 +134,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
-
-
 
 	def dispatch evaluate(WIfExpression it) {
 		val cond = condition.eval

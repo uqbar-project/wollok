@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.launch;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.ui.WollokActivator;
@@ -32,10 +33,29 @@ public class Activator extends AbstractUIPlugin {
 		wollokTestsResultListener.close();
 	}
 
+
 	public ImageDescriptor getImageDescriptor(String name) {
-		URL u = find(this.getDefault().getStateLocation().append(name));
-		return ImageDescriptor.createFromURL(u);
+		try {
+			// First of all, we try to find image from shared images of Workbench (defined in target platform project)
+			// http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html
+			// http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.pde.doc.user%2Fguide%2Ftools%2Fviews%2Fimage_browser_view.htm 
+			ImageDescriptor id = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(name);
+			if (id != null) {
+				return id;
+			}
+			URL u = new URL(this.getDefault().getStateLocation().toFile().toURL(), name);
+			return ImageDescriptor.createFromURL(u);
+		} catch (MalformedURLException e) {
+			throw new WollokLauncherException("Error while loading image ["
+					+ name + "]", e);
+		}
 	}
+	
+//	public ImageDescriptor getImageDescriptor(String name) {
+//		URL u = find(this.getDefault().getStateLocation().append(name));
+//		System.out.println(u);
+//		return ImageDescriptor.createFromURL(u);
+//	}
 
 	public static Activator getDefault() {
 		return plugin;

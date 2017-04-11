@@ -42,6 +42,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
  * 
  * @author jfernandes
+ * @author tesonep
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
@@ -49,6 +50,21 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			
 	@Inject
 	WollokClassFinder classFinder
+
+	@Fix(WollokDslValidator.GETTER_METHOD_SHOULD_RETURN_VALUE)
+	def addReturnVariable(Issue issue, IssueResolutionAcceptor acceptor){
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_variable_name, Messages.WollokDslQuickfixProvider_return_variable_description, null) [ e, context |
+			val method = e as WMethodDeclaration
+			if(!method.expressionReturns){
+				val body = method.expression as WBlockExpression
+				if(body.expressions.empty) {
+					context.xtextDocument.replaceWith(body, 
+						"{" + System.lineSeparator +"\t\t" + RETURN + " " + method.name.substring(3).toLowerCase + System.lineSeparator + "\t}")
+				}else 
+					context.insertAfter(body.expressions.last, RETURN + " " + method.name.substring(3).toLowerCase)
+			}
+		]
+	}
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -293,38 +309,57 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(RETURN_FORGOTTEN)
 	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Prepend "return"', 'Adds a "return" keyword', null) [ e, it |
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name, Messages.WollokDslQuickfixProvider_return_last_expression_description, null) [ e, it |
 			val method = e as WMethodDeclaration
 			val body = (method.expression as WBlockExpression)
-			insertBefore(body.expressions.last, RETURN + " ")
+			if(!body.expressions.empty)
+				insertBefore(body.expressions.last, RETURN + " ")
 		]
+	}
+
+	@Fix(GETTER_METHOD_SHOULD_RETURN_VALUE)
+	def prependReturnForGetter(Issue issue, IssueResolutionAcceptor acceptor) {
+		prependReturn(issue, acceptor)
 	}
 
 	// ************************************************
 	// ** unresolved ref to "elements" quick fixes
 	// ************************************************
 	
-	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
+	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument, EObject target) {
+		// issue #452 - contextual menu based on different targets
+		val targetContext = target.getSelfContext
+		val hasMethodContainer = targetContext != null
+		val hasParameters = target.declaringMethod != null && target.declaringMethod.parameters != null
+		val canCreateLocalVariable = target.canCreateLocalVariable
+		
 		// create local var
-		issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstExpressionInContext = e.block.expressions.head
-			context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
-		]
+		if (canCreateLocalVariable) {
+			issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val firstExpressionInContext = e.firstExpressionInContext
+				context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
+			]
+		}
 
 		// create instance var
-		issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstClassChild = (e as WExpression).method.declaringContext.eContents.head
-			context.insertBefore(firstClassChild, VAR + " " + newVarName)
-		]
+		if (hasMethodContainer) {
+			issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val declaringContext = e.declaringContext
+				val firstClassChild = declaringContext.eContents.head
+				context.insertBefore(firstClassChild, VAR + " " + newVarName)
+			]
+		}
 		
 		// create parameter
-		issueResolutionAcceptor.accept(issue, 'Add parameter to method', 'Add a new parameter.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val method = (e as WExpression).method
-			method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [ name = newVarName ])		
-		]
+		if (hasParameters) {
+			issueResolutionAcceptor.accept(issue, 'Add parameter to method', 'Add a new parameter.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val method = (e as WExpression).method
+				method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [ name = newVarName ])		
+			]
+		}
 	}
 	
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
@@ -365,7 +400,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	protected def quickFixUnresolvedRef(EObject target, EReference reference,
 		IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
 		if (target instanceof WVariableReference && reference.EType == WollokDslPackage.Literals.WREFERENCIABLE && reference.name == "ref") {
-			quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument)
+			quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument, target)
 		}
 		else if (reference.EType == WollokDslPackage.Literals.WCLASS) {
 			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)

@@ -18,6 +18,7 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_fileContainerDoesNotExists;
 	public static String AbstractNewWollokFileWizardPage_fileContainerRequired;
 	public static String AbstractNewWollokFileWizardPage_fileExtensionMustBe;
+	public static String AbstractNewWollokFileWizardPage_fileNameAlreadyExists;
 	public static String AbstractNewWollokFileWizardPage_fileName;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeSpecified;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeValid;
@@ -33,6 +34,8 @@ public class Messages extends NLS {
 	public static String NewWollokProgramWizardPage_title;
 	public static String NewWollokTestWizardPage_description;
 	public static String NewWollokTestWizardPage_title;
+	public static String NewWollokDescribeWizardPage_description;
+	public static String NewWollokDescribeWizardPage_title;
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;
@@ -82,7 +85,11 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_changeToVar_description;
 	public static String WollokDslQuickfixProvider_createMethod_name;
 	public static String WollokDslQuickfixProvider_createMethod_description;
-	public static String WollokDslQuickfixProvider_createMethod_stub;
+	public static String WollokDslQuickfixProvider_createMethod_stub;	
+	public static String WollokDslQuickfixProvider_return_variable_name;
+	public static String WollokDslQuickfixProvider_return_variable_description;
+	public static String WollokDslQuickfixProvider_return_last_expression_name;
+	public static String WollokDslQuickfixProvider_return_last_expression_description;
 	
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
@@ -95,6 +102,7 @@ public class Messages extends NLS {
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
 	
 	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
 	static {

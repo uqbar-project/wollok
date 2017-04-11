@@ -30,6 +30,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	var callHandler = new CallHandler
 	var WollokRemoteUITestNotifier remoteTestNotifier
 	val testsResult = new LinkedList<WollokResultTestDTO>
+	var String suiteName = null
 
 	@Inject
 	def init() {
@@ -45,8 +46,8 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		testsResult.add(WollokResultTestDTO.ok(test.name))
 	}
 
-	override testsToRun(WFile file, List<WTest> tests) {
-		remoteTestNotifier.testsToRun(file.eResource.URI.toString, new ArrayList(tests.map[new WollokTestInfo(it)]))
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
+		remoteTestNotifier.testsToRun(suiteName, file.eResource.URI.toString, new ArrayList(tests.map[new WollokTestInfo(it)]))
 	}
 
 	override testStart(WTest test) {
@@ -62,5 +63,5 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	override finished() {
 		remoteTestNotifier.testsResult(testsResult)
 	}
-
+	
 }
