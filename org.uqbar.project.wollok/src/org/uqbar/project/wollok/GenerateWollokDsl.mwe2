@@ -13,152 +13,82 @@ var runtimeProject = "../${projectName}"
 var encoding = "UTF-8"
 
 Workflow {
-    bean = StandaloneSetup {
-    	scanClassPath = true
-    	platformUri = "${runtimeProject}/.."
-    	
-		resourceSet = org.eclipse.xtext.resource.XtextResourceSet:theResourceSet {}
-		
+	bean = StandaloneSetup {
+		scanClassPath = true
+		platformUri = "${runtimeProject}/.."
+		resourceSet = org.eclipse.xtext.resource.XtextResourceSet : theResourceSet {}
+
 		// add mappings from platform:/resource to classpath:/
-    	uriMap = {
-    		from = "platform:/resource/org.eclipse.xtext.xbase/"
-    		to = "classpath:/"
-    	}
-    	uriMap = {
-    		from = "platform:/resource/org.eclipse.xtext.common.types/"
-    		to = "classpath:/"
-    	}
-		
-    }
-    
-    component = DirectoryCleaner { directory = "${runtimeProject}/src-gen" }
-    
-    component = DirectoryCleaner {
-    	directory = "${runtimeProject}/model/generated"
-    }
-    
-    component = DirectoryCleaner { directory = "${runtimeProject}.ui/src-gen" }
-    
-    component = DirectoryCleaner { directory = "${runtimeProject}.tests/src-gen" }
-    
-    component = XtextGenerator {
-    	id = "WollokDSL"
-    	
-    	configuration =  {
-    		project = StandardProjectConfig {
-    			baseName = "${projectName}"
+		uriMap = {
+			from = "platform:/resource/org.eclipse.xtext.xbase/"
+			to = "classpath:/"
+		}
+		uriMap = {
+			from = "platform:/resource/org.eclipse.xtext.common.types/"
+			to = "classpath:/"
+		}
+
+	}
+
+	component = DirectoryCleaner {
+		directory = "${runtimeProject}/src-gen"
+	}
+
+	component = DirectoryCleaner {
+		directory = "${runtimeProject}/model/generated"
+	}
+
+	component = DirectoryCleaner {
+		directory = "${runtimeProject}.ui/src-gen"
+	}
+
+	component = DirectoryCleaner {
+		directory = "${runtimeProject}.tests/src-gen"
+	}
+
+	component = XtextGenerator {
+		id = "WollokDSL"
+		configuration = {
+			project = StandardProjectConfig {
+				baseName = "${projectName}"
 				rootPath = ".."
-    			
-    			eclipsePlugin = { 
-    				enabled = true
-    			}
-    			
-    			runtime = {
-    				enabled = true
-    			}
-    			
-    			runtimeTest = {
-    				enabled = true
-    			}
-    			
-    			genericIde = {
-    				enabled = true
-    				name = "${projectName}.ui"
-    				root = "../${projectName}.ui"
-    			}
-    		}		
-	    	code = {
-	    		encoding = encoding
-	    	}
-    	}
-    	
-    	language = StandardLanguage {
-    		
-    		grammarUri = grammarURI
-    		
-    		fileExtensions = fileExtensions
-    		
-    		// Java API to access grammar elements (required by several other fragments)
-   // 		fragment = grammarAccess.GrammarAccessFragment2 auto-inject {}
-    
-    		// generates Java API for the generated EPackages
- //   		fragment = ecore.EMFGeneratorFragment2 auto-inject {
-  //  			javaModelDirectory = "/${projectName}/src-gen"
-  //  		}
-  
-  			emfGenerator = {
-  				javaModelDirectory = "/${projectName}/src-gen"
-  				
-  			}
-    
-    		// the old serialization component
-    		// fragment = parseTreeConstructor.ParseTreeConstructorFragment auto-inject {}    
-    
-    		// serializer 2.0
-//    		fragment = serializer.SerializerFragment2 auto-inject {
-//    			generateStub = false
-//    		}
-    		
-    		serializer = {
-    			generateStub = false
-    		}
-    
-    		// a custom ResourceFactory for use with EMF
-//    		fragment = resourceFactory.ResourceFactoryFragment2 auto-inject {}
-    
-    		// The antlr parser generator fragment.
-//    		fragment = parser.antlr.XtextAntlrGeneratorFragment2 auto-inject {}
+				eclipsePlugin = {
+					enabled = true
+				}
 
-    		// Xtend-based API for validation
-//    		fragment = validation.ValidatorFragment2 auto-inject {}
-    
-    		// old scoping and exporting API
-//    		 fragment = scoping.ImportURIScopingFragment auto-inject {}
-//    		 fragment = exporting.SimpleNamesFragment2 auto-inject {}
+				runtime = {
+					enabled = true
+				}
 
+				runtimeTest = {
+					enabled = true
+				}
 
-    
-    		// scoping and exporting API
-//    		fragment = builder.BuilderIntegrationFragment2 auto-inject {}
-    
-    		// formatter API
-//    		fragment = formatting.Formatter2Fragment2 auto-inject {}
-    
-    		// labeling API
- //   		fragment = labeling.LabelProviderFragment2 auto-inject {}
-    
-    		// outline API
- //   		fragment = outline.OutlineTreeProviderFragment2 auto-inject {}
- //   		fragment = outline.QuickOutlineFragment2 auto-inject {}
-    
-    		// quickfix API
- //   		fragment = quickfix.QuickfixProviderFragment2 auto-inject {}
-    
-    		// content assist API
- //   		fragment = contentAssist.ContentAssistFragment2 auto-inject {}
-    
-    		// generates a more lightweight Antlr parser and lexer tailored for content assist
- //   		fragment = parser.antlr.XtextAntlrGeneratorFragment2 auto-inject {}
-    
-    		// generates junit test support classes into Generator#pathTestProject
- //   		fragment = junit.Junit4Fragment2 auto-inject {}
-    
-    		// rename refactoring
- //   		fragment = refactoring.RefactorElementNameFragment2 auto-inject {}
-    
-    		// provides the necessary bindings for java types integration
-//JAV    		fragment = types.TypesGeneratorFragment auto-inject {}
-    		// generates the required bindings only if the grammar inherits from Xbase
-//JAV    		fragment = xbase.XbaseGeneratorFragment auto-inject {}
-    		// generates the required bindings only if the grammar inherits from Xtype
-//JAV    		fragment = xbase.XtypeGeneratorFragment auto-inject {}
-    
-    		// provides a preference page for template proposals
- //   		fragment = templates.CodetemplatesGeneratorFragment2 auto-inject {}
-    
-    		// provides a compare view
- //   		fragment = compare.CompareFragment2 auto-inject {}
-    	}
-    }
+				genericIde = {
+					enabled = true
+					name = "${projectName}.ui"
+					root = "../${projectName}.ui"
+				}
+			}
+			code = {
+				encoding = encoding
+			}
+		}
+
+		language = StandardLanguage {
+
+			grammarUri = grammarURI
+			fileExtensions = fileExtensions
+	
+			emfGenerator = {
+				javaModelDirectory = "/${projectName}/src-gen"
+			}
+
+			serializer = {
+				generateStub = false
+			}
+
+		}
+	}
 }
 
