@@ -1,21 +1,25 @@
 package org.uqbar.project.wollok.parser
 
 import com.google.inject.Inject
+import org.antlr.runtime.MismatchedTokenException
+import org.antlr.runtime.RecognitionException
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
+import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.WollokConstants
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
-import org.antlr.runtime.RecognitionException
-import org.antlr.runtime.MismatchedTokenException
-import org.uqbar.project.wollok.WollokConstants
 
 class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	@Inject
 	private ITokenDefProvider tokenDefProvider;
 	
 	override getSyntaxErrorMessage(IParserErrorContext context) {
-		this.getSyntaxErrorMessage(context, context.recognitionException)
+		if (context.recognitionException != null) {
+			this.getSyntaxErrorMessage(context, context.recognitionException)
+		}
+		super.getSyntaxErrorMessage(context)
 	}
 	
 	def dispatch getSyntaxErrorMessage(IParserErrorContext context, RecognitionException exception) {
@@ -23,11 +27,15 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	}
 	
 	def dispatch getSyntaxErrorMessage(IParserErrorContext context, MismatchedTokenException exception) {
-		if (exception.mismatchedKeywordIs(WollokConstants.VAR)) {
-			new SyntaxErrorMessage("You should declare variables before constructors and methods.", SYNTAX_DIAGNOSTIC);
+		if (exception.mismatchedKeywordIs(WollokConstants.VAR) || exception.mismatchedKeywordIs(WollokConstants.CONST)) {
+			new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS, SYNTAX_DIAGNOSTIC);
 		}
 		else {
-			super.getSyntaxErrorMessage(context)
+			if (exception.mismatchedKeywordIs(WollokConstants.CONSTRUCTOR)) {
+				new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS, SYNTAX_DIAGNOSTIC);
+			} else {
+				super.getSyntaxErrorMessage(context)
+			}
 		} 
 	}
 	

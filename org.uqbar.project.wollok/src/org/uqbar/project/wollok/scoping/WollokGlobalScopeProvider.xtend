@@ -40,9 +40,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
-
 		val explicitImportedObjects = context.importedObjects
-
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(defaultScope, explicitImportedObjects)
 	}
