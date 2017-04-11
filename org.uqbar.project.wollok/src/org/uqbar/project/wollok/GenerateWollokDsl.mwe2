@@ -63,6 +63,12 @@ Workflow {
 				runtimeTest = {
 					enabled = true
 				}
+				
+				eclipsePluginTest = {
+					enabled = true
+					name = "${projectName}.tests"
+					root = "../${projectName}.tests"					
+				}
 
 				genericIde = {
 					enabled = true
@@ -76,7 +82,7 @@ Workflow {
 		}
 
 		language = StandardLanguage {
-
+			resourceSet = theResourceSet
 			grammarUri = grammarURI
 			fileExtensions = fileExtensions
 	

@@ -18,7 +18,7 @@ import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.junit.Ignore
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
+import org.uqbar.project.wollok.ui.tests.WollokDslUiInjectorProvider
 import org.xpect.expectation.CommaSeparatedValuesExpectation
 import org.xpect.expectation.ICommaSeparatedValuesExpectation
 import org.xpect.parameter.ParameterParser
@@ -94,7 +94,7 @@ class WollokContentAssistTest extends AbstractContentAssistProcessorTest {
 	override protected doGetSetup() {
 		return new ISetup() {
 			override createInjectorAndDoEMFRegistration() {
-				new WollokDslInjectorProvider().injector
+				new WollokDslUiInjectorProvider().injector
 			}
 
 			def register(Injector injector) {

@@ -80,10 +80,12 @@
 
 	<pluginRepositories>
 		<!-- XSemantics -->
+		<!-- THERE IS NO REPOSITORY ANYMORE FOR VERSION 1.11 
 		<pluginRepository>
 			<id>xsemantics-maven-repo</id>
 			<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
 		</pluginRepository>
+		-->
 		<!-- /XSemantics -->
 	</pluginRepositories>
 

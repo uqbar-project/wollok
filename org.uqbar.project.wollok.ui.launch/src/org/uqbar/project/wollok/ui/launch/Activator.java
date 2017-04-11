@@ -1,11 +1,13 @@
 package org.uqbar.project.wollok.ui.launch;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.uqbar.project.wollok.launch.WollokLauncherException;
 import org.uqbar.project.wollok.ui.WollokActivator;
 import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
 
