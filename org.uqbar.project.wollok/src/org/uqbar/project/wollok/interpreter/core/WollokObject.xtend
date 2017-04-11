@@ -197,7 +197,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	// UFFF no estoy seguro de esto ya 
 	override addReference(String variable, WollokObject value) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+//		throw new UnsupportedOperationException("ERROR while adding reference [" + variable + "] to value [" + value + "]")
+		setReference(variable, value)
+//		addGlobalReference(variable, value)
+		value
 	}
 	
 	override addGlobalReference(String name, WollokObject value) {

@@ -80,10 +80,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	ToolBar toolbar
 
+	ToolItem showFailuresAndErrors
 	ToolItem runAgain
-
 	ToolItem debugAgain
-
+	
 	def canRelaunch() {
 		results != null && results.container != null && results.container.mainResource != null
 	}
@@ -104,6 +104,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 		results.container.mainResource.toIFile
 	}
 
+	def toggleShowFailuresAndErrors() {
+		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)	
+	}
+	
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -143,9 +147,18 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.BEGINNING).grab(true, false).applyTo(toolbar)
 
+		showFailuresAndErrors = new ToolItem(toolbar, SWT.CHECK) => [
+			toolTipText = Messages.WollokTestResultView_showOnlyFailuresAndErrors
+			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.gif")
+			image = resManager.createImage(pathImage)
+			addListener(SWT.Selection)[ this.toggleShowFailuresAndErrors ]
+			enabled = true
+		]
+
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
+			val pathImage = Activator.getDefault.getImageDescriptor("icons/runlast_co.gif")
+			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
 		]
@@ -321,11 +334,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.container.tests.filter(predicate).size
+		results.container.allTests.filter(predicate).size
 	}
 
 	def total() {
-		results.container.tests.size
+		results.container.allTests.size
 	}
 
 	override setFocus() {
@@ -364,6 +377,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getText(WollokTestContainer element) {
+		if (element.hasSuiteName) return element.suiteName
 		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
 		element.mainResource.deresolve(base).toFileString
 	}

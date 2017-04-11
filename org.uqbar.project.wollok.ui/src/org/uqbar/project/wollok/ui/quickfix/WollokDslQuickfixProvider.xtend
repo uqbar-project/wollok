@@ -304,27 +304,40 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	// ** unresolved ref to "elements" quick fixes
 	// ************************************************
 	
-	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
+	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument, EObject target) {
+		// issue #452 - contextual menu based on different targets
+		val targetContext = target.getSelfContext
+		val hasMethodContainer = targetContext != null
+		val hasParameters = target.declaringMethod != null && target.declaringMethod.parameters != null
+		val canCreateLocalVariable = target.canCreateLocalVariable
+		
 		// create local var
-		issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstExpressionInContext = e.block.expressions.head
-			context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
-		]
+		if (canCreateLocalVariable) {
+			issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val firstExpressionInContext = e.firstExpressionInContext
+				context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
+			]
+		}
 
 		// create instance var
-		issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val firstClassChild = (e as WExpression).method.declaringContext.eContents.head
-			context.insertBefore(firstClassChild, VAR + " " + newVarName)
-		]
+		if (hasMethodContainer) {
+			issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val declaringContext = e.declaringContext
+				val firstClassChild = declaringContext.eContents.head
+				context.insertBefore(firstClassChild, VAR + " " + newVarName)
+			]
+		}
 		
 		// create parameter
-		issueResolutionAcceptor.accept(issue, 'Add parameter to method', 'Add a new parameter.', "variable.gif") [ e, context |
-			val newVarName = xtextDocument.get(issue.offset, issue.length)
-			val method = (e as WExpression).method
-			method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [ name = newVarName ])		
-		]
+		if (hasParameters) {
+			issueResolutionAcceptor.accept(issue, 'Add parameter to method', 'Add a new parameter.', "variable.gif") [ e, context |
+				val newVarName = xtextDocument.get(issue.offset, issue.length)
+				val method = (e as WExpression).method
+				method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [ name = newVarName ])		
+			]
+		}
 	}
 	
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
@@ -365,7 +378,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	protected def quickFixUnresolvedRef(EObject target, EReference reference,
 		IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
 		if (target instanceof WVariableReference && reference.EType == WollokDslPackage.Literals.WREFERENCIABLE && reference.name == "ref") {
-			quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument)
+			quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument, target)
 		}
 		else if (reference.EType == WollokDslPackage.Literals.WCLASS) {
 			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)

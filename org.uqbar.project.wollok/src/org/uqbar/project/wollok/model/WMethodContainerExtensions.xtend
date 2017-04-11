@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -28,12 +29,14 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.impl.WFixtureImpl
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
@@ -46,6 +49,8 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
 class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
+	
+	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
@@ -56,6 +61,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
 
+	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
 
@@ -117,11 +123,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
+	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
+	def static fixture(WMethodContainer c) { c.members.filter(WFixture) }
+	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(WTest p) { p.elements.filter(WVariableDeclaration).variables }
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
+	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
 		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
@@ -132,6 +142,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allMethods(WSuite it) { methods }
 
 	def static getInheritedMethods(WMethodContainer it) {
 		linearizateHierarhcy.fold(newArrayList) [methods, type |
@@ -162,6 +173,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WClass parent(MixedMethodContainer it) { clazz }
 	// not supported yet !
 	def static dispatch WClass parent(WMixin it) { null }
+	def static dispatch WClass parent(WSuite it) { null }
 
 	def static dispatch List<WMixin> mixins(WMethodContainer it) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch List<WMixin> mixins(WClass it) { mixins }
@@ -169,6 +181,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch List<WMixin> mixins(WNamedObject it) { mixins }
 	def static dispatch List<WMixin> mixins(MixedMethodContainer it) { mixins }
 	def static dispatch List<WMixin> mixins(WMixin it) { Collections.EMPTY_LIST }
+	def static dispatch List<WMixin> mixins(WSuite it) { Collections.EMPTY_LIST }
 
 	def static dispatch members(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch members(WClass c) { c.members }
@@ -176,6 +189,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch members(WNamedObject c) { c.members }
 	def static dispatch members(MixedMethodContainer c) { #[] }
 	def static dispatch members(WMixin c) { c.members }
+	def static dispatch members(WSuite c) { c.members }
 
 	def static dispatch contextName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch contextName(WClass c) { c.fqn }
@@ -183,6 +197,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WNamedObject c) { c.fqn }
 	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
+	def static dispatch contextName(WSuite s) { s.name }
 
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
 		(mixins != null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
@@ -350,10 +365,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		null
 	}
 	
+	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
+	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
+	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
+	def dispatch static boolean canCreateLocalVariable(EObject ele) {
+		if (ele.eContainer == null) return false
+		ele.eContainer.canCreateLocalVariable
+	}
+	
 	def static dispatch isSelfContext(WClass it) { true }
 	def static dispatch isSelfContext(WNamedObject it) { true }
 	def static dispatch isSelfContext(WObjectLiteral it) { true }
 	def static dispatch isSelfContext(WMixin it) { true }
+	def static dispatch isSelfContext(WSuite it) { true }
 	def static dispatch isSelfContext(EObject it) { false }
 	
 	

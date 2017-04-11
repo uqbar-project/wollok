@@ -76,4 +76,8 @@ class WollokTestResult {
 		stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink(testResource)  ])
 	}
 	
+	def failed() {
+		#[WollokTestState.ASSERT, WollokTestState.ERROR].contains(state)		
+	}
+	
 }

@@ -135,7 +135,7 @@ class BooleanTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void orShortcirtuitMustNOTEvaluateSecondPart() {
+	def void orShortcircuitMustNOTEvaluateSecondPart() {
 		'''
 			object p {
 				var modified = false

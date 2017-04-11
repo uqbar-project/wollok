@@ -27,6 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -44,6 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -79,10 +81,12 @@ class WollokModelExtensions {
 
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
+	def static dispatch name(WSuite it) { name }
 
 	def static dispatch fqn(WClass it) { nameWithPackage }
 	def static dispatch fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch fqn(WMixin it) { nameWithPackage }
+	def static dispatch fqn(WSuite it) { nameWithPackage }
 
 	def static getNameWithPackage(WMethodContainer it) {
 		implicitPackage + "." + if (package != null) package.name + "." + name else name
@@ -112,9 +116,13 @@ class WollokModelExtensions {
 	}
 
 	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer != null && (e.eContainer instanceof WConstructor || e.eContainer.isWithinConstructor)
+		e.eContainer != null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
 	}
 
+	def static dispatch boolean isAConstructor(EObject it) { false }
+	def static dispatch boolean isAConstructor(WConstructor it) { true }
+	def static dispatch boolean isAConstructor(WFixture it) { true	}
+	 
 	/*
 	 * Uses of a Variable
 	 */
@@ -124,7 +132,9 @@ class WollokModelExtensions {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 
-	def static declaration(WVariable variable) { variable.eContainer as WVariableDeclaration }
+	def static declaration(WVariable variable) {
+		variable.eContainer as WVariableDeclaration
+	}
 
 	def static declarationContext(WVariable variable) { variable.declaration.eContainer }
 
@@ -135,15 +145,23 @@ class WollokModelExtensions {
 	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
 
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
-
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 
+	def static dispatch WExpression firstExpressionInContext(EObject e) {
+		if (e.eContainer == null) return null 
+		e.eContainer.firstExpressionInContext
+	}
+	def static dispatch WExpression firstExpressionInContext(WProgram p) { p.elements.head }
+	def static dispatch WExpression firstExpressionInContext(WBlockExpression b) { b.expressions.head } 
+	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
+	
+	
 	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
-	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
@@ -287,6 +305,9 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
+	def static dispatch boolean isDuplicated(WSuite p, WReferenciable v) {
+		p.tests.exists [ (it.variables + p.variables).existsMoreThanOne(v) ]
+	}
 
 	// classes, objects and mixins
 	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }

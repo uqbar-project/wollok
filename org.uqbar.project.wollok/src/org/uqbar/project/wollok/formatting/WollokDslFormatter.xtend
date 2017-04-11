@@ -5,11 +5,14 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFileElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFixtureElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WIfExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WListLiteralElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WMemberFeatureCallElements
@@ -19,14 +22,13 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WObjectLiteralEl
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WPackageElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WProgramElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSetLiteralElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuiteElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WSuperInvocationElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTestElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 
 /**
  * This class contains custom formatting description.
@@ -231,6 +233,48 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setIndentation(leftCurlyBracketKeyword_4, rightCurlyBracketKeyword_7)
 	}
 	
+	def dispatch formatting(FormattingConfig it, extension WFixtureElements e) {
+		// wrap line after }
+		setLinewrap.after(leftCurlyBracketKeyword_1)
+		
+		// wrap before and after close bracket
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_3)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_3)
+		
+		// Indent expressions in fixture
+		setIndentation(leftCurlyBracketKeyword_1, rightCurlyBracketKeyword_3)
+	}
+	
+	def dispatch formatting(FormattingConfig it, extension WSuiteElements e) {
+		// wrap line just before 'class'
+		setLinewrap(1, 2, 2).before(describeKeyword_0)
+		
+		setNoLinewrap.before(leftCurlyBracketKeyword_2)
+		
+		// wrap line after }
+		setLinewrap.after(leftCurlyBracketKeyword_2)
+		
+		// wrap before and after close bracket
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_7)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_7)
+		
+		// indentation
+		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_7)
+		
+		// after all variables
+		setLinewrap(1, 2, 2).after(group_3)
+		
+		// fixture
+		setLinewrap(2, 2, 2).around(fixtureAssignment_4)
+		setLinewrap(2, 2, 2).around(fixtureWFixtureParserRuleCall_4_0)
+		
+		// members (after var, after method)
+		setLinewrap(1, 1, 2).after(membersAssignment_5_0)
+		setLinewrap(1, 1, 2).after(membersWMethodDeclarationParserRuleCall_5_0_0)
+		setLinewrap(1, 2, 2).after(testsAssignment_6)
+		setLinewrap(1, 2, 2).after(testsWTestParserRuleCall_6_0)
+	}
+	
 	def dispatch formatting(FormattingConfig it, extension WNamedObjectElements o) {
 		// wrap before
 		setLinewrap(1, 2, 2).before(objectKeyword_0)
@@ -279,17 +323,19 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WTryElements i) {
-		setLinewrap(1, 1, 2).before(group)
 		setLinewrap(1, 1, 1).after(tryKeyword_0)
 		setLinewrap(1, 1, 1).after(catchBlocksAssignment_2)
-		
-		setIndentationIncrement.around(expressionAssignment_1)
+		setIndentation(tryKeyword_0, catchBlocksAssignment_2)
+		setLinewrap(1, 1, 1).before(alwaysExpressionWBlockOrExpressionParserRuleCall_3_1_0)
+		//setIndentationIncrement.after(thenAlwaysKeyword_3_0)
+		//setIndentationDecrement.after(alwaysExpressionWBlockOrExpressionParserRuleCall_3_1_0)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WCatchElements i) {
-		setSpace(' ').after(catchKeyword_0)
+		//setSpace(' ').after(catchKeyword_0)
 		setLinewrap(1,1,1).before(catchKeyword_0)
 		setLinewrap(1,1,1).around(expressionAssignment_3)
+		//setIndentationIncrement.around(expressionWBlockOrExpressionParserRuleCall_3_0)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WSuperInvocationElements i) {
