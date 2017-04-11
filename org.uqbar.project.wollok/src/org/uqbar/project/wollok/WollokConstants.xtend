@@ -46,6 +46,7 @@ class WollokConstants {
 	public static val OVERRIDE = "override"
 	public static val RETURN = "return"
 	public static val CLASS = "class"
+	public static val FIXTURE = "fixture" 
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 

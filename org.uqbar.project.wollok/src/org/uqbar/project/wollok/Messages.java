@@ -128,6 +128,7 @@ public class Messages extends NLS {
 	// ****************************
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS;
+	public static String SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS;
 	
 	static {
 		// initialize resource bundle
