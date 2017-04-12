@@ -8,6 +8,8 @@ import com.google.inject.name.Names
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
 import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider
+import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
+import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.service.OperationCanceledManager
@@ -15,17 +17,20 @@ import org.uqbar.project.wollok.formatting.WollokDslFormatter
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.linking.WollokLinker
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder
+import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
 import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy
 import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
+import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
 
@@ -45,7 +50,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
 	}
 
-	def bindIDefaultResourceDescriptionStrategy() {
+	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
 		WollokResourceDescriptionStrategy
 	}
 
@@ -53,11 +58,11 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokGlobalScopeProvider
 	}
 
-	def bindWollokGlobalScopeCache() {
+	def Class<? extends WollokGlobalScopeCache> bindWollokGlobalScopeCache() {
 		MapBasedWollokGlobalScopeCache
 	}
 
-	def bindWollokManifestFinder() {
+	def Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
 		BasicWollokManifestFinder
 	}
 
@@ -70,7 +75,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokQualifiedNameProvider
 	}
 
-	def Class<? extends WollokInterpreterEvaluator> bindXInterpreterEvaluator() {
+	def Class<? extends XInterpreterEvaluator<?>> bindXInterpreterEvaluator() {
 		WollokInterpreterEvaluator
 	}
 
@@ -86,7 +91,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokDslSyntacticSequencerWithSyntheticLinking;
 	}
 
-	def bindSyntaxErrorMessageProvider() {
+	def Class<? extends SyntaxErrorMessageProvider> bindSyntaxErrorMessageProvider() {
 		WollokSyntaxErrorMessageProvider
 	}
 

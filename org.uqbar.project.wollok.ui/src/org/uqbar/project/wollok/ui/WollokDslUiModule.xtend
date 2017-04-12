@@ -5,6 +5,7 @@ package org.uqbar.project.wollok.ui
 
 import com.google.inject.Binder
 import com.google.inject.name.Names
+import org.eclipse.jface.text.source.SourceViewerConfiguration
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
@@ -12,9 +13,13 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 import org.eclipse.xtext.ui.editor.actions.IActionContributor
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
+import org.eclipse.xtext.ui.editor.model.DocumentTokenSource
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.shared.Access
+import org.eclipse.xtext.ui.util.PluginProjectFactory
+import org.eclipse.xtext.ui.wizard.IProjectCreator
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper
 import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration
@@ -31,6 +36,7 @@ import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
 import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
+import org.eclipse.xtext.ui.editor.model.TerminalsTokenTypeToPartitionMapper
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -51,7 +57,7 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		WollokTemplateProposalProvider;
 	}
 	
-	def bindIHighlightingConfiguration () {
+	def Class<? extends IHighlightingConfiguration> bindIHighlightingConfiguration () {
 		WollokHighlightingConfiguration;
 	}
 	
@@ -68,7 +74,7 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
 	}
 	
-	def bindIProjectCreator() {
+	def Class<? extends IProjectCreator> bindIProjectCreator() {
 		WollokProjectCreator;
 	}
 	
@@ -76,23 +82,23 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		Access.getWorkspaceProjectsState();
 	}
 
-	def bindPluginProjectFactory(){
+	def Class<? extends PluginProjectFactory>bindPluginProjectFactory(){
 		WollokProjectFactory
 	}
 
-	def bindXtextDocumentProvider(){
+	def Class<? extends XtextDocumentProvider>bindXtextDocumentProvider(){
 		WollokDocumentProvider
 	}
 	
-	def bindSourceViewerConfiguration(){
+	def Class<? extends SourceViewerConfiguration> bindSourceViewerConfiguration(){
 		WollokSourceViewerConfiguration
 	}
 	
-	def bindDocumentTokenSource(){
+	def Class<? extends DocumentTokenSource>bindDocumentTokenSource(){
 		WollokDocumentTokenSource
 	}
 	
-	def bindTerminalsTokenTypeToPartitionMapper() {
+	def Class<? extends TerminalsTokenTypeToPartitionMapper> bindTerminalsTokenTypeToPartitionMapper() {
 		TokenTypeToPartitionMapper
 	}	
 }
