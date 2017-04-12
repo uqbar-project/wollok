@@ -3,11 +3,96 @@
  */
 package org.uqbar.project.wollok.ui
 
-import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import com.google.inject.Binder
+import com.google.inject.name.Names
+import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtext.common.types.TypesFactory
+import org.eclipse.xtext.common.types.access.IJvmTypeProvider
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper
+import org.eclipse.xtext.ui.editor.IXtextEditorCallback
+import org.eclipse.xtext.ui.editor.actions.IActionContributor
+import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
+import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.eclipse.xtext.ui.shared.Access
+import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
+import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper
+import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration
+import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener
+import org.uqbar.project.wollok.ui.editor.annotations.WOverrideRulerAction
+import org.uqbar.project.wollok.ui.editor.hyperlinking.WollokEObjectAtOffsetHelper
+import org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider
+import org.uqbar.project.wollok.ui.editor.model.WollokDocumentTokenSource
+import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider
+import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator
+import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration
+import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider
+import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
+import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
+import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
+import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
  */
-//@FinalFieldsConstructor
-//class WollokDslUiModule extends AbstractWollokDslUiModule {
-//}
+class WollokDslUiModule extends AbstractWollokDslUiModule {
+	new(AbstractUIPlugin plugin) {
+		super(plugin)
+	}
+	
+	override configure(Binder binder) {
+		super.configure(binder);
+
+		binder.bind(EObjectAtOffsetHelper).to(WollokEObjectAtOffsetHelper);
+		binder.bind(IEObjectHoverProvider).to(WollokEObjectHoverProvider);
+	}
+		
+	override bindITemplateProposalProvider() {
+		WollokTemplateProposalProvider;
+	}
+	
+	def bindIHighlightingConfiguration () {
+		WollokHighlightingConfiguration;
+	}
+	
+	def configureOverrideIndicatorSupport(Binder binder) {
+		binder.bind(IXtextEditorCallback).annotatedWith(Names.named("OverrideIndicatorModelListener")).to(WOverrideIndicatorModelListener);
+		binder.bind(IActionContributor).annotatedWith(Names.named("OverrideIndicatorRulerAction")).to(WOverrideRulerAction);
+		
+		binder.bind(IHighlightingConfiguration).to(WollokHighlightingConfiguration);
+		binder.bind(ISemanticHighlightingCalculator).to(WollokHighlightingCalculator);
+		
+		// Hacks to be able to reuse the logic to extract method from refactoring
+		binder.bind(IJvmModelAssociations).to(DummyJvmModelAssociations); 
+		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory);
+		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
+	}
+	
+	def bindIProjectCreator() {
+		WollokProjectCreator;
+	}
+	
+	override provideIAllContainersState() {
+		Access.getWorkspaceProjectsState();
+	}
+
+	def bindPluginProjectFactory(){
+		WollokProjectFactory
+	}
+
+	def bindXtextDocumentProvider(){
+		WollokDocumentProvider
+	}
+	
+	def bindSourceViewerConfiguration(){
+		WollokSourceViewerConfiguration
+	}
+	
+	def bindDocumentTokenSource(){
+		WollokDocumentTokenSource
+	}
+	
+	def bindTerminalsTokenTypeToPartitionMapper() {
+		TokenTypeToPartitionMapper
+	}	
+}

@@ -3,9 +3,94 @@
  */
 package org.uqbar.project.wollok
 
+import com.google.inject.Binder
+import com.google.inject.name.Names
+import org.eclipse.xtext.common.types.TypesFactory
+import org.eclipse.xtext.common.types.access.IJvmTypeProvider
+import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider
+import org.eclipse.xtext.scoping.IScopeProvider
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
+import org.eclipse.xtext.service.OperationCanceledManager
+import org.uqbar.project.wollok.formatting.WollokDslFormatter
+import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
+import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
+import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
+import org.uqbar.project.wollok.linking.WollokLinker
+import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider
+import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder
+import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider
+import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
+import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
+import org.uqbar.project.wollok.scoping.WollokResourceDescriptionStrategy
+import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
+import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
+import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
-//class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
-//}
+@SuppressWarnings("restriction")
+class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
+	override configure(Binder binder) {
+		super.configure(binder);
+
+		binder.bind(NativeObjectFactory).to(DefaultNativeObjectFactory);
+		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory);
+		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
+
+		binder.bind(ILinkingDiagnosticMessageProvider.Extended).to(WollokLinkingDiagnosticMessageProvider);
+		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
+	}
+
+	def bindIDefaultResourceDescriptionStrategy() {
+		WollokResourceDescriptionStrategy
+	}
+
+	override bindIGlobalScopeProvider() {
+		WollokGlobalScopeProvider
+	}
+
+	def bindWollokGlobalScopeCache() {
+		MapBasedWollokGlobalScopeCache
+	}
+
+	def bindWollokManifestFinder() {
+		BasicWollokManifestFinder
+	}
+
+	override configureIScopeProviderDelegate(Binder binder) {
+		binder.bind(IScopeProvider).annotatedWith(Names.named(AbstractDeclarativeScopeProvider.NAMED_DELEGATE)).to(
+			WollokImportedNamespaceAwareLocalScopeProvider);
+	}
+
+	override bindIQualifiedNameProvider() {
+		WollokQualifiedNameProvider
+	}
+
+	def Class<? extends WollokInterpreterEvaluator> bindXInterpreterEvaluator() {
+		WollokInterpreterEvaluator
+	}
+
+	def Class<? extends WollokInterpreterConsole> bindWollokInterpreterConsole() {
+		SysoutWollokInterpreterConsole
+	}
+
+	override bindILinker() {
+		WollokLinker
+	}
+
+	override bindISyntacticSequencer() {
+		WollokDslSyntacticSequencerWithSyntheticLinking;
+	}
+
+	def bindSyntaxErrorMessageProvider() {
+		WollokSyntaxErrorMessageProvider
+	}
+
+	override bindIFormatter() {
+		WollokDslFormatter
+	}
+}
