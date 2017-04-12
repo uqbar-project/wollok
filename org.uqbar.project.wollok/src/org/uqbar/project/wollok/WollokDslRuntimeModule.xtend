@@ -33,6 +33,7 @@ import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -75,7 +76,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokQualifiedNameProvider
 	}
 
-	def Class<? extends XInterpreterEvaluator<?>> bindXInterpreterEvaluator() {
+	def Class<? extends XInterpreterEvaluator<WollokObject>> bindXInterpreterEvaluator() {
 		WollokInterpreterEvaluator
 	}
 
