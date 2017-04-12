@@ -34,8 +34,8 @@
 	<properties>
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.10.0</xtext.version>
-		<xsemantics-version>1.10</xsemantics-version>
+		<xtext.version>2.11.0</xtext.version>
+		<xsemantics-version>1.11</xsemantics-version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
@@ -80,10 +80,12 @@
 
 	<pluginRepositories>
 		<!-- XSemantics -->
+		<!-- THERE IS NO REPOSITORY ANYMORE FOR VERSION 1.11 
 		<pluginRepository>
 			<id>xsemantics-maven-repo</id>
 			<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
 		</pluginRepository>
+		-->
 		<!-- /XSemantics -->
 	</pluginRepositories>
 

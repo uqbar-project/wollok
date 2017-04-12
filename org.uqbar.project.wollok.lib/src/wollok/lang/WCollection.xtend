@@ -68,7 +68,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	}
 	
 	protected def getNativeCollection(WollokObject it) {
-		getNativeObject(this.class).wrapped
+		getNativeObject(this.class).getWrapped()
 	}
 	
 	protected def verifySizes(Collection col, Collection col2) {

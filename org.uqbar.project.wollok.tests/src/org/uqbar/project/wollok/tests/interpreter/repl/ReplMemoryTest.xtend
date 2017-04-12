@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter.repl
 
-import org.eclipse.xtext.junit4.InjectWith
+import org.eclipse.xtext.testing.InjectWith
 import org.junit.Test
 import org.uqbar.project.wollok.tests.injectors.WollokReplInjector
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase

@@ -150,8 +150,8 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 //		setLinewrap(1, 1, 2).after(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
 	}
 
-	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
-	}
+//	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
+//	}
 	
 	def dispatch formatting(FormattingConfig it, extension WPackageElements e) {
 		setLinewrap(1, 2, 2).after(leftCurlyBracketKeyword_2)

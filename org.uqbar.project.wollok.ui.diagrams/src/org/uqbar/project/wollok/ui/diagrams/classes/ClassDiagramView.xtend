@@ -57,6 +57,7 @@ import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
@@ -68,7 +69,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
-import org.uqbar.project.wollok.ui.internal.WollokDslActivator
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -424,7 +424,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	override partBroughtToTop(IWorkbenchPart part) {
 		if (part instanceof XtextEditor) {
-			if (part.languageName == WollokDslActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL)
+			if (part.languageName == WollokActivator.ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL)
 				updateDocument(part.document)
 		}
 	}

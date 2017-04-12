@@ -1,25 +1,24 @@
 package org.uqbar.project.wollok.ui
 
 import java.net.URL
+import org.eclipse.core.runtime.Platform
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.viewers.ILabelProvider
 import org.eclipse.swt.widgets.Display
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.osgi.framework.BundleContext
-import org.uqbar.project.wollok.ui.internal.WollokDslActivator
-import org.eclipse.core.runtime.Platform
 
 /**
  * Customized activator.
  * 
  * @author jfernandes
  */
-class WollokActivator extends WollokDslActivator {
+class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivator {
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok.ui.messages" 
 	public static val POINT_STARTUP_ID = "org.uqbar.project.wollok.ui.startup" 
 
 	def static WollokActivator getInstance() {
-		return WollokDslActivator.getInstance as WollokActivator
+		return WollokActivator.getInstance as WollokActivator
 	}
 	
 	override start(BundleContext context) throws Exception {

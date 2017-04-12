@@ -65,6 +65,7 @@
 				<configuration>
 					<includeProjectDependencies>false</includeProjectDependencies>
 					<includePluginDependencies>true</includePluginDependencies>
+					<cleanupDaemonThreads>false</cleanupDaemonThreads>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
 						<argument>file://${project.basedir}/src/org/uqbar/project/wollok/GenerateWollokDsl.mwe2</argument>
@@ -77,23 +78,32 @@
 					</arguments>
 				</configuration>
 				<dependencies>
-					<dependency>
-						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.xtext</artifactId>
-						<version>${xtext.version}</version>
-					</dependency>
-					<!-- es necesario esto ? -->
-					<dependency>
-						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.xbase</artifactId>
-						<version>${xtext.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.eclipse.equinox</groupId>
-						<artifactId>common</artifactId>
-						<version>3.6.200-v20130402-1505</version>
-					</dependency>
-				</dependencies>
+				    <dependency>
+				      <groupId>org.eclipse.emf</groupId>
+				      <artifactId>org.eclipse.emf.mwe2.launch</artifactId>
+				      <version>2.9.0.201605261059</version>
+				    </dependency>
+				    <dependency>
+				      <groupId>org.eclipse.xtext</groupId>
+				      <artifactId>org.eclipse.xtext.common.types</artifactId>
+				      <version>${xtext.version}</version>
+				    </dependency>
+				    <dependency>
+				      <groupId>org.eclipse.xtext</groupId>
+				      <artifactId>org.eclipse.xtext.xtext.generator</artifactId>
+				      <version>${xtext.version}</version>
+				    </dependency>
+				    <dependency>
+				      <groupId>org.eclipse.xtext</groupId>
+				      <artifactId>org.eclipse.xtext.xbase</artifactId>
+				      <version>${xtext.version}</version>
+				    </dependency>
+				    <dependency>
+				      <groupId>org.eclipse.xtext</groupId>
+				      <artifactId>xtext-antlr-generator</artifactId>
+				      <version>[2.1.1, 3)</version>
+				    </dependency>
+				  </dependencies>				
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
