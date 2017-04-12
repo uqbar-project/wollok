@@ -8,7 +8,7 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 
 /**
@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
  * @author tesonep
  */
 @RunWith(XtextRunner)
-@InjectWith(WollokDslInjectorProvider)
+@InjectWith(WollokTestInjector)
 class WollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer
@@ -82,7 +82,7 @@ class WollokFormatterTestCase {
 			const kmRecorridos = 0
 		
 			method comer(gr) {
-			energia = energia + gr
+				energia = energia + gr
 			}
 		}''')
 	}
@@ -129,12 +129,16 @@ class WollokFormatterTestCase {
     		const a = null
     		
     		a . doSomething  ( a, a,    a , a ,  a   )
+    		a ?. doSomething  ( a, a,    a , a ,  a   )
+    		a ?. doSomething  ({=> a .doSomething()})
     	}''', '''
 		
 		program p {
 			const a = null
 		
 			a.doSomething(a, a, a, a, a)
+			a?.doSomething(a, a, a, a, a)
+			a?.doSomething({ => a.doSomething() })
 		}''')
 	}
 
@@ -167,7 +171,7 @@ class WollokFormatterTestCase {
 			var numero
 		
 			constructor(c, n) {
-			calle = c numero = n
+				calle = c numero = n
 			}
 		}''')
 	}

@@ -5,6 +5,7 @@ package org.uqbar.project.wollok;
 
 import org.eclipse.xtext.common.types.TypesFactory;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
+import org.eclipse.xtext.formatting.IFormatter;
 import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider;
@@ -12,6 +13,7 @@ import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy;
 import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.serializer.sequencer.ISyntacticSequencer;
 import org.eclipse.xtext.service.OperationCanceledManager;
+import org.uqbar.project.wollok.formatting.WollokDslFormatter;
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole;
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator;
@@ -114,4 +116,7 @@ public class WollokDslRuntimeModule extends
 		return WollokSyntaxErrorMessageProvider.class;
 	}
 
+	public Class<? extends IFormatter> bindIFormatter(){
+		return WollokDslFormatter.class;
+	}
 }
