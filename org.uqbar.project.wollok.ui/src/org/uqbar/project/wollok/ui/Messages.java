@@ -85,7 +85,11 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_changeToVar_description;
 	public static String WollokDslQuickfixProvider_createMethod_name;
 	public static String WollokDslQuickfixProvider_createMethod_description;
-	public static String WollokDslQuickfixProvider_createMethod_stub;
+	public static String WollokDslQuickfixProvider_createMethod_stub;	
+	public static String WollokDslQuickfixProvider_return_variable_name;
+	public static String WollokDslQuickfixProvider_return_variable_description;
+	public static String WollokDslQuickfixProvider_return_last_expression_name;
+	public static String WollokDslQuickfixProvider_return_last_expression_description;
 	
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;

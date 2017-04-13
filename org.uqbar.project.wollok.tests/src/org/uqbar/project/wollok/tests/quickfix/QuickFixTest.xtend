@@ -27,6 +27,31 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 	}
 	
 	@Test
+	def testMethodWithExpressionNotReturning(){
+		val initial = #['''
+			class MyClass{
+				var y = 0
+				method getX(){
+					y + 1
+				}
+			}
+		''']
+
+		val result = #['''
+			class MyClass{
+				var y = 0
+				method getX(){
+					return 
+					y + 1
+				}
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_return_last_expression_name)
+	}
+	
+	
+	
+	@Test
 	def addOverrideToMethod(){
 		val initial = #['''
 			class MyClass{
