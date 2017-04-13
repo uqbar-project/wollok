@@ -3,7 +3,7 @@ class Golondrina {
 	// XPECT errors --> "Couldn't resolve reference to Referenciable 'energia'." at "energia"
 	method energia() = energia
 	
-	// XPECT errors --> "You should declare variables before constructors, methods and tests." at "var"
+	// XPECT errors --> "You should declare references before constructors, methods and tests." at "var"
 	var energia = 0
 }
 
