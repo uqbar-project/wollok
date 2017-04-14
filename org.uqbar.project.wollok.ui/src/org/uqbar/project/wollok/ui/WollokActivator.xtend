@@ -18,7 +18,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	public static val POINT_STARTUP_ID = "org.uqbar.project.wollok.ui.startup" 
 
 	def static WollokActivator getInstance() {
-		return WollokActivator.getInstance as WollokActivator
+		return org.uqbar.project.wollok.ui.internal.WollokActivator.getInstance as WollokActivator
 	}
 	
 	override start(BundleContext context) throws Exception {
