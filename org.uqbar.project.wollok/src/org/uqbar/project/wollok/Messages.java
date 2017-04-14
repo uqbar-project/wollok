@@ -123,6 +123,12 @@ public class Messages extends NLS {
 	public static String ElementNameValidation_NameShouldBeAlphabetic;
 	public static String ElementNameValidation_InvalidCharacterInName;
 	
+	// ****************************
+	// ** Syntax message provider
+	// ****************************
+	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
+	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS;
+	public static String SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS;
 	
 	static {
 		// initialize resource bundle
@@ -131,7 +137,6 @@ public class Messages extends NLS {
 	
 	public static Properties loadProperties() { return WNLS.load(BUNDLE_NAME, Messages.class); }
 
-	private Messages() {
-	}
+	private Messages() { }
 
 }

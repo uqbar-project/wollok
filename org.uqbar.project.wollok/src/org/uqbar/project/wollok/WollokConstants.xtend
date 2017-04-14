@@ -40,10 +40,13 @@ class WollokConstants {
 	public static val SELF = "self"
 	public static val NULL = "null"
 	public static val METHOD = "method"
+	public static val CONSTRUCTOR = "constructor"
 	public static val VAR = "var"
+	public static val CONST = "const"
 	public static val OVERRIDE = "override"
 	public static val RETURN = "return"
 	public static val CLASS = "class"
+	public static val FIXTURE = "fixture" 
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 
