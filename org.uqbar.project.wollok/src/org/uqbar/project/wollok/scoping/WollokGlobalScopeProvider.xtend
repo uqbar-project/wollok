@@ -105,7 +105,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def handleManifest(WollokManifest manifest, ResourceSet resourceSet) {
 		manifest.allURIs.map[loadResource(resourceSet)].flatten
 	}
-
+ 
 	/**
 	 * This message resolves the loading of a resource, is used by the resources listed in manifests. For the ones not in manifests (in relative locations)
 	 * see WollokGlobalScopeProvider#toResource(Import imp, Resource resource)
