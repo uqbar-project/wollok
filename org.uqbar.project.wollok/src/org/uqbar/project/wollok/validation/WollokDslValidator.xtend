@@ -354,7 +354,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cyclicHierarchy(WMethodContainer it) {
 		if (declaringContext.hasCyclicHierarchy) {
-			println("Lanzo error con " + it)
 			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENT)
 		}
 	}
