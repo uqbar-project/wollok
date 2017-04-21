@@ -1,0 +1,7 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "class A inherits B { }"
+class A inherits B { }
+
+// XPECT errors --> "Infinite Cycle hierarchy" at "class B inherits A { }"
+class B inherits A { }

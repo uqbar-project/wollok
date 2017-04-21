@@ -103,6 +103,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
+	public static val CYCLIC_HIERARCHY = "CYCLIC_HIERARCHY"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
@@ -347,6 +348,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val rightSide = a.right as WVariableReference
 		if(a.variable == rightSide.ref)
 			report(WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF, a, WVARIABLE_DECLARATION__VARIABLE, CANNOT_ASSIGN_TO_ITSELF)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cyclicHierarchy(WMethodContainer it) {
+		if (declaringContext.hasCyclicHierarchy) {
+			println("Lanzo error con " + it)
+			report(WollokDslValidator_CYCLIC_HIERARCHY, it, WCLASS__PARENT)
+		}
 	}
 
 	@Check

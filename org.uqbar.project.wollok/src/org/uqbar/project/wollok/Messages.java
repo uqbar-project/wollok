@@ -34,6 +34,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
+	public static String WollokDslValidator_CYCLIC_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_NAME;
