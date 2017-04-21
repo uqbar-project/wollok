@@ -67,7 +67,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
-		val hierarchy = c.linearizateHierarhcy
+		val hierarchy = c.linearizeHierarchy
 
 		val concreteMethods = <WMethodDeclaration>newArrayList
 
@@ -104,7 +104,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.overridenMethod(m.name, m.parameters) }
 	def protected static overridenMethod(WMethodContainer it, String name, List parameters) {
-		lookUpMethod(linearizateHierarhcy.tail, name, parameters, true)
+		lookUpMethod(linearizeHierarchy.tail, name, parameters, true)
 	}
 
 	def static superMethod(WSuperInvocation it) { method.overridenMethod }
@@ -145,7 +145,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WSuite it) { methods }
 
 	def static getInheritedMethods(WMethodContainer it) {
-		linearizateHierarhcy.fold(newArrayList) [methods, type |
+		linearizeHierarchy.fold(newArrayList) [methods, type |
 			val currents = type.methods
 			val newMethods = currents.filter[m | ! methods.exists[m2 | m.matches(m2.name, m2.parameters)]]
 			methods.addAll(newMethods)
@@ -158,12 +158,32 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
+	
 	def static List<WClass> _parents(WClass c, List<WClass> l) {
 		if (c == null) {
 			return l
 		}
+		if (l.contains(c)) {
+			return l
+			//throw new WollokRuntimeException('''Class «c.name» is in a cyclic hiearchy''');
+		}
+		//
 		l.add(c)
 		return _parents(c.parent, l)
+	}
+
+	def dispatch static hasCyclicHierarchy(WClass c) { _hasCyclicHierarchy(c, newArrayList) }
+	def dispatch static hasCyclicHierarchy(EObject e) { false }
+	
+	def static boolean _hasCyclicHierarchy(WClass c, List<WClass> l) {
+		if (c === null) {
+			return false
+		}
+		if (l.contains(c)) {
+			return true
+		}
+		l.add(c)
+		return _hasCyclicHierarchy(c.parent, l)
 	}
 
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
@@ -209,7 +229,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params, boolean acceptsAbstract) {
-		lookUpMethod(behavior.linearizateHierarhcy, message, params, acceptsAbstract)
+		lookUpMethod(behavior.linearizeHierarchy, message, params, acceptsAbstract)
 	}
 
 	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List params, boolean acceptsAbstract) {
@@ -224,14 +244,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	/**
 	 * The full hierarchy chain top->down
 	 */
-	def static List<WMethodContainer> linearizateHierarhcy(WMethodContainer it) {
+	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer it) {
 		var chain = newLinkedList
 		chain.add(it)
 		if (mixins != null) {
 			chain.addAll(mixins.clone.reverse)
 		}
-		if (parent != null)
-			chain.addAll(parent.linearizateHierarhcy)
+		if (parent != null && !parent.hasCyclicHierarchy)
+			chain.addAll(parent.linearizeHierarchy)
 		chain
 	}
 
@@ -382,7 +402,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	
 	def static unboundedSuperCallingMethodsOnMixins(WMethodContainer it) {
-		return linearizateHierarhcy.fold(newArrayList)[scm, e |
+		return linearizeHierarchy.fold(newArrayList)[scm, e |
 			// order matters ! otherwise superCallingM will cancel themselves
 			// remove methods fullfilled by this element
 			scm.removeIf [required | e.hasMethodWithSignature(required) ]
