@@ -224,10 +224,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	def callSuper(WMethodContainer superFrom, String message, WollokObject[] parameters) {
-		val hierarchy = behavior.linearizateHierarhcy
-		val subhierarhcy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
+		val hierarchy = behavior.linearizeHierarchy
+		val subhierarchy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
 		
-		val method = subhierarhcy.fold(null) [method, t |
+		val method = subhierarchy.fold(null) [method, t |
 			if (method != null)
 				method
 			else 
