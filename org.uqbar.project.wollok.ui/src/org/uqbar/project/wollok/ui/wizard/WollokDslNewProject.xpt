@@ -6,6 +6,7 @@
 
 «DEFINE model FOR WollokDslProjectInfo»
 «FILE "src/example.wlk"-»
+
 /* First Wollok example */
 object wollok {
 	method howAreYou() {
