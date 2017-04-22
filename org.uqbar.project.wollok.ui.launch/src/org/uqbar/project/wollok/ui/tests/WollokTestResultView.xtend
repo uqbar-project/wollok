@@ -157,7 +157,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			val pathImage = Activator.getDefault.getImageDescriptor("icons/runlast_co.gif")
+			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.gif")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
@@ -165,7 +165,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_debugAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/debuglast_co.gif"))
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
 			addListener(SWT.Selection)[this.relaunchDebug]
 			enabled = false
 		]
