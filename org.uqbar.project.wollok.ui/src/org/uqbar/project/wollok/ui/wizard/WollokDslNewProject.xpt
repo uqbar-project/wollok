@@ -6,12 +6,11 @@
 
 «DEFINE model FOR WollokDslProjectInfo»
 «FILE "src/example.wlk"-»
-/**
- * This is an example wollok hello world
- */
-object ex {
-	method sayHi(){
-		console.println('Hello Wollok!')
+
+/* First Wollok example */
+object wollok {
+	method howAreYou() {
+		return 'I am Wolloktastic!'
 	}
 }
 «ENDFILE»
