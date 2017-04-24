@@ -416,4 +416,33 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(emptyCollection, numbers)
 		'''.test
 	}
+
+	@Test
+	def void removeOnIteration() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		
+		numbers.forEach({n => numbers.remove(n)})
+		assert.that(numbers.isEmpty())
+		
+		'''.test
+	}
+		@Test
+	
+	def void addOnIteration() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		
+		numbers.forEach({n => numbers.add(n * 2)})
+		assert.that(numbers.contains(2))
+		assert.that(numbers.contains(22))
+		assert.that(numbers.contains(10))
+		assert.that(numbers.contains(44))
+		assert.that(numbers.contains(4))		
+		assert.that(numbers.contains(20))
+		'''.test
+	}
+	
+	
+	
 }
