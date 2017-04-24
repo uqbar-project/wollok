@@ -14,7 +14,9 @@ import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 import org.eclipse.xtext.ui.editor.actions.IActionContributor
 import org.eclipse.xtext.ui.editor.hover.IEObjectHoverProvider
 import org.eclipse.xtext.ui.editor.model.DocumentTokenSource
+import org.eclipse.xtext.ui.editor.model.ITokenTypeToPartitionTypeMapper
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.shared.Access
@@ -28,6 +30,7 @@ import org.uqbar.project.wollok.ui.editor.annotations.WOverrideRulerAction
 import org.uqbar.project.wollok.ui.editor.hyperlinking.WollokEObjectAtOffsetHelper
 import org.uqbar.project.wollok.ui.editor.model.WollokDocumentProvider
 import org.uqbar.project.wollok.ui.editor.model.WollokDocumentTokenSource
+import org.uqbar.project.wollok.ui.editor.syntaxcoloring.WollokAntlrTokenToAttributeIdMapper
 import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvider
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration
@@ -36,7 +39,6 @@ import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
 import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
-import org.eclipse.xtext.ui.editor.model.TerminalsTokenTypeToPartitionMapper
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -98,7 +100,11 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		WollokDocumentTokenSource
 	}
 	
-	def Class<? extends TerminalsTokenTypeToPartitionMapper> bindTerminalsTokenTypeToPartitionMapper() {
+	def Class<? extends ITokenTypeToPartitionTypeMapper> bindTerminalsTokenTypeToPartitionMapper() {
 		TokenTypeToPartitionMapper
 	}	
+	
+	def Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper(){
+		WollokAntlrTokenToAttributeIdMapper
+	}
 }

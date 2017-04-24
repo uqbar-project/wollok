@@ -15,6 +15,7 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 	public static val INSTANCE_VAR_STYLE_ID = "INSTANCE_VAR_STYLE_ID"
 	public static val LOCAL_VAR_STYLE_ID = "LOCAL_VAR_STYLE_ID"
 	public static val PARAMETER_STYLE_ID = "PARAMETER_STYLE_ID"
+	public static val WOLLOK_DOC_STYLE_ID = "WOLLOK_DOC_STYLE_ID"
 	
 	override configure(IHighlightingConfigurationAcceptor it) {
 		super.configure(it)
@@ -22,11 +23,18 @@ class WollokHighlightingConfiguration extends DefaultHighlightingConfiguration {
 		acceptDefaultHighlighting(INSTANCE_VAR_STYLE_ID, "Instance Variable", instanceVarTextStyle)
 		acceptDefaultHighlighting(LOCAL_VAR_STYLE_ID, "Local Variable", localVarTextStyle)
 		acceptDefaultHighlighting(PARAMETER_STYLE_ID, "Parameter", parameterTextStyle)
+		acceptDefaultHighlighting(WOLLOK_DOC_STYLE_ID, "Wollok DOC", wollokDocTextStyle)
 	}
 	
 	def instanceVarTextStyle() {
 		defaultTextStyle().copy() => [
 			color = new RGB(0, 0, 192)
+		]
+	}
+
+	def wollokDocTextStyle() {
+		commentTextStyle.copy() => [
+			color = new RGB(127, 127, 159)
 		]
 	}
 	
