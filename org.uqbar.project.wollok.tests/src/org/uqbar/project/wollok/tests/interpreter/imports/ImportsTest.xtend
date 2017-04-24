@@ -40,6 +40,34 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void testImportObjectMultiLevel() {
+		interpret(true, false, false, #['model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'model/entrenador' -> '''
+			import aves.pepita
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'pgm/programa' -> '''
+			import model.entrenador.mostaza
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		])
+	}
+	
+	@Test
 	def void testMultipleObjectsImports() {
 		#['aves' -> '''
 			object pepita {
