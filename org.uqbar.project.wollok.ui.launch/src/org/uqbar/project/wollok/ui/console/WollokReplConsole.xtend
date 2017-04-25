@@ -65,6 +65,7 @@ class WollokReplConsole extends TextConsole {
 			clearConsole
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false)
 			DebugUIPlugin.getDefault.preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false)
+			
 		]
 
 		streamsProxy.outputStreamMonitor.addListener [ text, monitor |
@@ -93,12 +94,29 @@ class WollokReplConsole extends TextConsole {
 	override createPage(IConsoleView view) {
 		this.page = new WollokReplConsolePage(this, view) => [
 			setFocus
+			name = consoleDescription
 		]
+	}
+	
+	def consoleDescription() {
+		consoleName + if (hasMainFile)  project() + "/" + fileName() else  ""
+	}
+	
+	def hasMainFile() {
+		return fileName() !== null && fileName.endsWith(".wlk")
+	}
+
+	def fileName() {
+		WollokLaunchShortcut.getWollokFile(process.launch)
+	}
+	
+	def project() {
+		WollokLaunchShortcut.getWollokProject(process.launch)
 	}
 
 	def exportSession() {
-		val fileName = WollokLaunchShortcut.getWollokFile(process.launch)
-		val project = WollokLaunchShortcut.getWollokProject(process.launch)
+		val fileName = fileName()
+		val project = project()
 		val file = (ResourcesPlugin.getWorkspace.root.findMember(project) as IContainer).findMember(fileName)
 		val newFile = file.parent.getFile(new Path(file.nameWithoutExtension + ".wtest"))
 
