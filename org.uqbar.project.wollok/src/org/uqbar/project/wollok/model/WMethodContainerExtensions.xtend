@@ -8,6 +8,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -36,7 +37,6 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.impl.WFixtureImpl
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
@@ -186,6 +186,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _hasCyclicHierarchy(c.parent, l)
 	}
 
+	def static dispatch boolean inheritsFromObject(EObject e) { false }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
+	
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
