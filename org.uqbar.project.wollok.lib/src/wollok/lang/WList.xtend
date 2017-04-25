@@ -37,7 +37,7 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 			} 
 		}
 		wrapped = wrapped.sortWith(comparator)
-		return wollokInstance
+		//return wollokInstance
 	}
 	
 	override protected def verifyWollokElementsContained(Collection list, Collection list2) {

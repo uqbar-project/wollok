@@ -549,9 +549,14 @@ class Collection {
 	 * resulting collection.
 	 * @returns a new List
 	 * Example:
-	 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() }) 
+	 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() })
 	 */
-	method sortedBy(closure) = self.copy().asList().sortBy(closure)
+	method sortedBy(closure) {
+		var copy = self.copy().asList()
+		copy.sortBy(closure)
+		return copy
+	}
+	
 	
 	/**
 	 * Answers a new, empty collection of the same type as self.
