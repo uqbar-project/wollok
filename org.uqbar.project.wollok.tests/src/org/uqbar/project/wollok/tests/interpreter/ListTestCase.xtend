@@ -136,6 +136,17 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates(), [1, 2, 3, 5])
 		assert.equals([1, 3, 5, 2].withoutDuplicates(), [1, 2, 3, 5])
 		'''.test
+	}	
+	
+	@Test
+	def void sortBy() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		numbers.sortBy({a,b=>a>b})
+		assert.equals([22,10,2], numbers)
+		numbers.sortBy({a,b=>a<b})
+		assert.equals([2,10,22], numbers)
+		'''.test
 	}		
 		
 }
