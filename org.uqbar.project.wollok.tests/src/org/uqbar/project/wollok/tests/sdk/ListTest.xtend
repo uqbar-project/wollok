@@ -90,9 +90,11 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testSortBy() {
 		''' 
-		const list = [1,2,3]		
-		assert.equals([3,2,1], list.sortBy({x,y => x > y}))
-		assert.that(list === list.sortBy({x,y => x < y}))
+		var list = [1,2,3]
+		list.sortBy({x,y => x > y})		
+		assert.equals([3,2,1], list)
+		list.sortBy({x,y => x < y})		
+		assert.equals([1,2,3], list)
 		'''.test
 	}
 	
