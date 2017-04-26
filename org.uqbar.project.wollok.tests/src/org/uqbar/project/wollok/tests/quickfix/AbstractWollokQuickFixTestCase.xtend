@@ -34,7 +34,6 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	 * @see MethodOnWKODoesntExistQuickFixTest for an example
 	 */
 	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
-
 		val sources = <QuickFixTestSource>newArrayList()
 		val issues = <Issue>newArrayList()
 
@@ -55,8 +54,6 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		assertEquals("The number of issues should be exactly 1: " + issues, issues.size, 1)
 		val testedIssue = issues.get(0)
 
-		issueResolutionProvider = new WollokDslQuickfixProvider
-
 		val Answer<XtextDocument> answerXtextDocument = [ call |
 			val uri = if(call.arguments.size == 0) testedIssue.uriToProblem else (call.arguments.get(0) as URI)
 			val value = uri.trimFragment.toString
@@ -67,12 +64,25 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(getXtextDocument()).then(answerXtextDocument)
 			when(getXtextDocument(any(URI))).then(answerXtextDocument)
 		]
+
+		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
+			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
+		] 
+
+		issueResolutionProvider = new WollokDslQuickfixProvider
 		
 		issueResolutionProvider.issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
+		
+		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
 
-		assertTrue("There is not solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
-
+//		issueResolutionProvider => [
+//			when(getContextFactory).thenReturn(issueFactory)
+//		]
+		
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
+	
+		println(resolutions)
+				
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)

@@ -36,6 +36,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.emf.common.util.URI
 
 /**
  * Custom quickfixes.
@@ -150,7 +151,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			context.getXtextDocument(selfContainer.fileURI).replace(
 				placeToAdd,
 				0,
-				System.lineSeparator + "\t" + METHOD + " " + call.feature +
+				System.lineSeparator + System.lineSeparator + "\t" + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
 					System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
 					System.lineSeparator + "\t}"
@@ -195,7 +196,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			}
 		)
 	}
-
+	
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
@@ -231,22 +232,37 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	protected def addMethod(IModificationContext it, WClass parent, String code) {
-		// TODO try to generalize and use findPlaceToAddMethod
+		val newContext = getContainerContext(it, parent)
+		
 		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
-		if (lastConstructor != null)
-			insertAfter(lastConstructor, code)
+		if (lastConstructor !== null)
+			newContext.insertAfter(lastConstructor, code)
 		else {
 			val lastVar = parent.members.findLast[it instanceof WVariableDeclaration]
-			if (lastVar != null)
-				insertAfter(lastVar, code)
+			if (lastVar !== null)
+				newContext.insertAfter(lastVar, code)
 			else {
 				val firstMethod = parent.members.findFirst[it instanceof WMethodDeclaration]
-				if (firstMethod != null)
-					insertBefore(firstMethod, code)
+				if (firstMethod !== null)
+					newContext.insertBefore(firstMethod, code)
 				else {
-					it.getXtextDocument(parent.fileURI).replace(parent.after - 1, 0, code)
+					newContext.xtextDocument.replace(parent.after - 1, 0, code)
 				}
 			}
+		}
+	}
+	
+	def getContainerContext(IModificationContext it, WClass parent) {
+		new IModificationContext() {
+			
+			override getXtextDocument() {
+				it.getXtextDocument(parent.fileURI)
+			}
+			
+			override getXtextDocument(URI uri) {
+				it.getXtextDocument(uri)
+			}
+			
 		}
 	}
 
@@ -436,18 +452,19 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	def doAddMethodToSuperclass(Issue issue, IssueResolutionAcceptor acceptor, WMethodDeclaration method) {
-		if (!method.eContainer.inheritsFromObject) {
+		val container = method.eContainer as WMethodContainer
+		if (!container.inheritsFromObject) {
 			acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
-				addMethod(method.wollokClass.parent, defaultStubMethod(method))
+				addMethod(container.parent, defaultStubMethod(method))
 			]
 		} 
 	}
 
 	def defaultStubMethod(WMethodDeclaration method) {
-		"\t" + 
 		'''
 		method «method.name»(«method.parameters.map[name].join(",")») {
-				//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-			}''' + System.lineSeparator + System.lineSeparator
+			//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+		}''' + System.lineSeparator
 	}
+	
 }

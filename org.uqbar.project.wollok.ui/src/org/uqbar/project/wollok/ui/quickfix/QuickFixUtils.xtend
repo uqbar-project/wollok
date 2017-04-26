@@ -2,11 +2,11 @@ package org.uqbar.project.wollok.ui.quickfix
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.text.IRegion
+import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.eclipse.xtext.RuleCall
 
 /**
  * Provides utilities for quickfixes.

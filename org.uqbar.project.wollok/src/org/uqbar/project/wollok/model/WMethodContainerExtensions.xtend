@@ -188,6 +188,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
 	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) } // PROBAR
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
 	
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
