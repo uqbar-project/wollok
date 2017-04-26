@@ -114,9 +114,10 @@
 					<excludes>
 						<exclude>**/Abstract*</exclude>
 						<exclude>**/WollokXPectTest.java</exclude>
+						<exclude>**/WollokContentAssistTest.java</exclude>
+
 						<!-- TODO: I WAS NOT ABLE TO MAKE THEM WORK FROM MAVEN :(  -->
 						<exclude>**/ExtractMethodRefactoringTest.java</exclude>
-						<exclude>**/WollokContentAssistTest.java</exclude>
 						<exclude>**/AnsiUtilsTest.java</exclude>
 					</excludes>
 				</configuration>
@@ -135,6 +136,7 @@
 						<configuration>
 							<includes>
 								<include>**/WollokXPectTest.java</include>
+								<include>**/WollokContentAssistTest.java</include>
 								<!-- TODO: I WAS NOT ABLE TO MAKE THEM WORK FROM MAVEN :(
 								<include>**/ExtractMethodRefactoringTest.java</include>
 								<include>**/WollokContentAssistTest.java</include>
