@@ -99,7 +99,7 @@ class WollokReplConsole extends TextConsole {
 	}
 	
 	def consoleDescription() {
-		consoleName + if (hasMainFile)  project() + "/" + fileName() else  ""
+		consoleName + if (hasMainFile)  ": " + project() + "/" + fileName() else  ""
 	}
 	
 	def hasMainFile() {
