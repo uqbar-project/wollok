@@ -2,11 +2,13 @@ package org.uqbar.project.wollok.ui.quickfix
 
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
+import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
@@ -36,7 +38,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.emf.common.util.URI
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
 
 /**
  * Custom quickfixes.
@@ -184,8 +186,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def addMethodToSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		val modificationContext = modificationContextFactory.createModificationContext(issue)
-		val xtextDocument = modificationContext.xtextDocument
+		val xtextDocument = resolveXtextDocumentFor(issue)
 		if (xtextDocument === null) return;
 		xtextDocument.readOnly(
 			new IUnitOfWork.Void<XtextResource>() {
@@ -243,9 +244,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				newContext.insertAfter(lastVar, code)
 			else {
 				val firstMethod = parent.members.findFirst[it instanceof WMethodDeclaration]
-				if (firstMethod !== null)
+				if (firstMethod !== null) {
 					newContext.insertBefore(firstMethod, code)
-				else {
+				} else {
 					newContext.xtextDocument.replace(parent.after - 1, 0, code)
 				}
 			}
@@ -455,16 +456,31 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val container = method.eContainer as WMethodContainer
 		if (!container.inheritsFromObject) {
 			acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
-				addMethod(container.parent, defaultStubMethod(method))
+				addMethod(container.parent, defaultStubMethod(container.parent, method))
 			]
 		} 
 	}
 
-	def defaultStubMethod(WMethodDeclaration method) {
+	def defaultStubMethod(WClass clazz, WMethodDeclaration method) {
+		val margin = adjustMargin(clazz)
 		'''
-		method «method.name»(«method.parameters.map[name].join(",")») {
-			//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-		}''' + System.lineSeparator
+		«margin»method «method.name»(«method.parameters.map[name].join(",")») {
+		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+		«margin»}''' + System.lineSeparator
+	}
+	
+	def adjustMargin(WClass clazz) {
+		if (clazz.methods.empty) tabChar else "" 
+	}
+
+	def resolveXtextDocumentFor(Issue issue) {
+		modificationContextFactory.createModificationContext(issue).xtextDocument
+	}
+	
+	// For testing without guice
+	// FED - it is a hack, no proud of it
+	def void setModificationContextFactory(IssueModificationContext.Factory contextFactory) {
+		this.assign("modificationContextFactory", contextFactory)
 	}
 	
 }

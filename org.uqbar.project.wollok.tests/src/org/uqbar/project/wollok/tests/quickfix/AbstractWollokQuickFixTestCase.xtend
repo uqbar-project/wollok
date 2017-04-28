@@ -69,9 +69,10 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
 		] 
 
-		issueResolutionProvider = new WollokDslQuickfixProvider
-		
-		issueResolutionProvider.issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
+		issueResolutionProvider = new WollokDslQuickfixProvider => [
+			issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
+			modificationContextFactory = issueFactory
+		]
 		
 		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
 
@@ -89,6 +90,12 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 
 		resolution.apply
 		
+		println("Expected code")
+		println("*************")
+		println(sources.map [ expectedCode.toString ])
+		println("vs.")
+		println(sources.map [ xtextDocument.get.toString ])
+		println("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }
