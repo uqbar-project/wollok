@@ -65,10 +65,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				val body = method.expression as WBlockExpression
 				if (body.expressions.empty) {
 					context.xtextDocument.replaceWith(body,
-						"{" + System.lineSeparator + "\t\t" + RETURN + " " + method.name.substring(3).toLowerCase +
+						"{" + System.lineSeparator + "\t\t" + RETURN + " " + method.name +
 							System.lineSeparator + "\t}")
 				} else
-					context.insertAfter(body.expressions.last, RETURN + " " + method.name.substring(3).toLowerCase)
+					context.insertAfter(body.expressions.last, RETURN + " " + method.name)
 			}
 		]
 	}

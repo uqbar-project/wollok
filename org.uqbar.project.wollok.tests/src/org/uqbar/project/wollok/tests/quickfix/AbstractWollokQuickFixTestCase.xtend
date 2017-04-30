@@ -65,37 +65,32 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(getXtextDocument(any(URI))).then(answerXtextDocument)
 		]
 
-		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
-			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
-		] 
+//		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
+//			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
+//		] 
 
 		issueResolutionProvider = new WollokDslQuickfixProvider => [
 			issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
-			modificationContextFactory = issueFactory
+//			For now this is not necessary and running maven tests fails to find wollok.ui.WollokDslQuickfixProvider
+//			modificationContextFactory = issueFactory
 		]
 		
 		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
 
-//		issueResolutionProvider => [
-//			when(getContextFactory).thenReturn(issueFactory)
-//		]
-		
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
 	
-		println("Resolution: " + resolutions.map [ label ])
-				
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
 		
-		println("Expected code")
-		println("*************")
-		println(sources.map [ expectedCode.toString ])
-		println("vs.")
-		println(sources.map [ xtextDocument.get.toString ])
-		println("====================")
+//		println("Expected code")
+//		println("*************")
+//		println(sources.map [ expectedCode.toString ])
+//		println("vs.")
+//		println(sources.map [ xtextDocument.get.toString ])
+//		println("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }

@@ -39,7 +39,7 @@ class WollokASTAnalyzer extends WollokChecker {
 	def getterToPropertyName(String it) { substring(3).firstToLower }
 	def firstToLower(String it) { Character.toLowerCase(charAt(0)) + substring(1) }
 	
-	def isSimplePropertyGetter(Method it) { name.startsWith("get") && parameterTypes.length == 0 && returnType.isBasicType }
+	def isSimplePropertyGetter(Method it) { it.declaringClass.fields.map [ name ].toList.contains(name) && parameterTypes.length == 0 && returnType.isBasicType }
 	def isBasicType(Class it) { it == String || it == Boolean || it == Double || it == Integer || it.primitive }	
 	
 	def features(EObject it) { eContents.groupBy[eContainingFeature].entrySet.map[key?.name -> elements(value, key)] }
