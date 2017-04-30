@@ -101,6 +101,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
 	public static val BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION = "BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION"
 	public static val CONSTRUCTOR_IN_SUPER_DOESNT_EXIST = "CONSTRUCTOR_IN_SUPER_DOESNT_EXIST"
+	public static val CANT_OVERRIDE_FROM_BASE_CLASS = "CANT_OVERRIDE_FROM_BASE_CLASS"
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	public static val CYCLIC_HIERARCHY = "CYCLIC_HIERARCHY"
@@ -285,7 +286,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodActuallyOverrides(WMethodDeclaration m) {
 		val overrides = m.actuallyOverrides
-		if (m.overrides && !overrides) m.report(WollokDslValidator_METHOD_NOT_OVERRIDING, METHOD_DOESNT_OVERRIDE_ANYTHING)
+		val container = m.eContainer as WMethodContainer
+		if (m.overrides && !overrides) {
+			if (container.inheritsFromLibClass) {
+				m.report(WollokDslValidator_METHOD_OVERRIDING_BASE_CLASS, CANT_OVERRIDE_FROM_BASE_CLASS)
+			} else {
+				m.report(WollokDslValidator_METHOD_NOT_OVERRIDING, METHOD_DOESNT_OVERRIDE_ANYTHING)
+			}
+		}
 		if (overrides && !m.overrides)
 			m.report(WollokDslValidator_METHOD_MUST_HAVE_OVERRIDE_KEYWORD, METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	}

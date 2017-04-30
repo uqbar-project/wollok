@@ -82,7 +82,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
 	
-		println(resolutions)
+		println("Resolution: " + resolutions.map [ label ])
 				
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		

@@ -34,11 +34,11 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Custom quickfixes.
@@ -50,6 +50,7 @@ import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
+	val blankSpace = " "
 	val returnChar = System.lineSeparator
 
 	@Inject
@@ -184,24 +185,24 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(CANT_OVERRIDE_FROM_BASE_CLASS)
+	def removeOverrideKeywordFromBaseClass(Issue issue, IssueResolutionAcceptor acceptor) {
+		removeOverrideKeyword(issue, acceptor)
+	}
+	
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def addMethodToSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		val xtextDocument = resolveXtextDocumentFor(issue)
-		if (xtextDocument === null) return;
-		xtextDocument.readOnly(
-			new IUnitOfWork.Void<XtextResource>() {
-				override process(XtextResource state) throws Exception {
-					val target = state.getEObject(issue.uriToProblem.fragment) as WMethodDeclaration
-					doAddMethodToSuperclass(issue, acceptor, target)	
-				}
-			}
-		)
+		acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
+			val method = e as WMethodDeclaration
+			val container = method.eContainer as WMethodContainer
+			addMethod(container.parent, defaultStubMethod(container.parent, method))
+		]
 	}
 	
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
-			xtextDocument.deleteToken(e, OVERRIDE)
+			xtextDocument.deleteToken(e, OVERRIDE + blankSpace)
 		]
 	}
 
@@ -372,8 +373,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		IXtextDocument xtextDocument, EObject target) {
 		// issue #452 - contextual menu based on different targets
 		val targetContext = target.getSelfContext
-		val hasMethodContainer = targetContext != null
-		val hasParameters = target.declaringMethod != null && target.declaringMethod.parameters != null
+		val hasMethodContainer = targetContext !== null
+		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters != null
 		val canCreateLocalVariable = target.canCreateLocalVariable
 
 		// create local var
@@ -450,15 +451,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		} else if (reference.EType == WollokDslPackage.Literals.WCLASS) {
 			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)
 		}
-	}
-
-	def doAddMethodToSuperclass(Issue issue, IssueResolutionAcceptor acceptor, WMethodDeclaration method) {
-		val container = method.eContainer as WMethodContainer
-		if (!container.inheritsFromObject) {
-			acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
-				addMethod(container.parent, defaultStubMethod(container.parent, method))
-			]
-		} 
 	}
 
 	def defaultStubMethod(WClass clazz, WMethodDeclaration method) {

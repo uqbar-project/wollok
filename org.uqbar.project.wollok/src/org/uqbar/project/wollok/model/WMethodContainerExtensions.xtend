@@ -8,6 +8,7 @@ import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -186,9 +187,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _hasCyclicHierarchy(c.parent, l)
 	}
 
+	def static dispatch boolean inheritsFromLibClass(EObject e) { false }
+	def static dispatch boolean inheritsFromLibClass(WClass c) { WollokResourceCache.hasResource(c.parent.file.URI)	}
+	def static dispatch boolean inheritsFromLibClass(WNamedObject o) { WollokResourceCache.hasResource(o.parent.file.URI) }
+	def static dispatch boolean inheritsFromLibClass(WObjectLiteral o) { true }
+
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
 	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
-	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) } // PROBAR
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
 	
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
