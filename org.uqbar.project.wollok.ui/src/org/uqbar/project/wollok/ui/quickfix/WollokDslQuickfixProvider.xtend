@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
-import org.eclipse.xtext.ui.editor.model.edit.IssueModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
@@ -34,11 +33,10 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Custom quickfixes.
@@ -467,12 +465,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	def resolveXtextDocumentFor(Issue issue) {
 		modificationContextFactory.createModificationContext(issue).xtextDocument
-	}
-	
-	// For testing without guice
-	// FED - it is a hack, no proud of it
-	def void setModificationContextFactory(IssueModificationContext.Factory contextFactory) {
-		this.assign("modificationContextFactory", contextFactory)
 	}
 	
 }

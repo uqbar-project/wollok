@@ -42,8 +42,8 @@ after_failure:
 - cd ..
 - cd org.uqbar.project.wollok.tests/target
 - zip -r -9 surefire-reports.zip surefire-reports/
-- curl -T surefire-reports.zip -u$BINTRAY_ID:$BINTRAY_API_KEY https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/surefire-reports.zip?publish=1
-- if [ -f work/data/.metadata/.log ] ; then curl -T work/data/.metadata/.log -u$BINTRAY_ID:$BINTRAY_API_KEY https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/log.txt?publish=1 ; fi
+- curl -T surefire-reports.zip -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/surefire-reports.zip?publish=1&override=1"
+- if [ -f work/data/.metadata/.log ] ; then curl -T work/data/.metadata/.log -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/log.txt?publish=1&override=1" ; fi
 
 deploy:
 - provider: s3

@@ -20,6 +20,8 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
 	WollokDslQuickfixProvider issueResolutionProvider
@@ -65,14 +67,14 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(getXtextDocument(any(URI))).then(answerXtextDocument)
 		]
 
-//		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
-//			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
-//		] 
+		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
+			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
+		] 
 
 		issueResolutionProvider = new WollokDslQuickfixProvider => [
 			issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
 //			For now this is not necessary and running maven tests fails to find wollok.ui.WollokDslQuickfixProvider
-//			modificationContextFactory = issueFactory
+			it.assign("modificationContextFactory", issueFactory)
 		]
 		
 		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))

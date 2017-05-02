@@ -5,7 +5,7 @@ import java.lang.reflect.Field
 class ReflectionExtensions {
 	
 	static def assign(Object receiver, String variableName, Object object) {
-		var Class<?> receiverClass = Class.forName(receiver.class.name)
+		var Class<?> receiverClass = receiver.class
 		var mustCheck = true
 		while (mustCheck) {
 			try {
@@ -19,5 +19,4 @@ class ReflectionExtensions {
 			}	
 		}
 	}
-	
 }
