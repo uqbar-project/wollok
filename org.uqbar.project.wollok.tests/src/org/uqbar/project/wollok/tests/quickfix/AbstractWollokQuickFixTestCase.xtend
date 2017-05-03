@@ -81,6 +81,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
+		println("Resolutions: " + resolutions.map [ label ])
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply

@@ -42,7 +42,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 
 /**
  * Custom quickfixes.
- * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
+ * see https://eclipse.org/Xtext/documentation/310_eclipse_support.html#quick-fixes
  * 
  * @author jfernandes
  * @author tesonep
@@ -58,8 +58,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.GETTER_METHOD_SHOULD_RETURN_VALUE)
 	def addReturnVariable(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_variable_name,
-			Messages.WollokDslQuickfixProvider_return_variable_description, null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_return_variable_name,
+			Messages.WollokDslQuickfixProvider_return_variable_description, 
+			null) [ e, context |
 			val method = e as WMethodDeclaration
 			if (!method.expressionReturns) {
 				val body = method.expression as WBlockExpression
@@ -75,8 +77,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.CLASS_NAME_MUST_START_UPPERCASE)
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_capitalize_name,
-			Messages.WollokDslQuickfixProvider_capitalize_description, null) [
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_capitalize_name,
+			Messages.WollokDslQuickfixProvider_capitalize_description, 
+			null) [
 			xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toUpperCase)
@@ -96,8 +100,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.REFERENCIABLE_NAME_MUST_START_LOWERCASE)
 	def toLowerCaseReferenciableName(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name,
-			Messages.WollokDslQuickfixProvider_lowercase_description, null) [
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_lowercase_name,
+			Messages.WollokDslQuickfixProvider_lowercase_description, 
+			null) [
 			xtextDocument => [
 				val firstLetter = get(issue.offset, 1)
 				replace(issue.offset, 1, firstLetter.toLowerCase)
@@ -107,8 +113,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.CANNOT_ASSIGN_TO_VAL)
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name,
-			Messages.WollokDslQuickfixProvider_changeToVar_description, null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_changeToVar_name,
+			Messages.WollokDslQuickfixProvider_changeToVar_description, 
+			null) [ e, context |
 			val f = (e as WAssignment).feature.ref.eContainer
 			if (f instanceof WVariableDeclaration) {
 				val feature = f as WVariableDeclaration
@@ -120,8 +128,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
 	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
-			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_createMethod_name,
+			Messages.WollokDslQuickfixProvider_createMethod_description, 
+			null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
 
@@ -142,8 +152,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
 	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
-			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_createMethod_name,
+			Messages.WollokDslQuickfixProvider_createMethod_description, 
+			null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val callText = call.node.text
 
@@ -180,7 +192,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add "override" keyword', 'Add "override" keyword to method.', null) [ e, it |
+		acceptor.accept(issue,
+			Messages.WollokDslQuickfixProvider_add_override_name,
+			Messages.WollokDslQuickfixProvider_add_override_description, 
+		 	null) [ e, it |
 			xtextDocument.prepend(e, OVERRIDE + ' ')
 		]
 	}
@@ -192,7 +207,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def addMethodToSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Create method in superclass', 'Add new method in superclass.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_create_method_superclass_name,
+			Messages.WollokDslQuickfixProvider_create_method_superclass_description,
+			null) [ e, it |
 			val method = e as WMethodDeclaration
 			val container = method.eContainer as WMethodContainer
 			addMethod(container.parent, defaultStubMethod(container.parent, method))
@@ -201,14 +219,22 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	
 	@Fix(METHOD_DOESNT_OVERRIDE_ANYTHING)
 	def removeOverrideKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_remove_override_keyword_name, 
+			Messages.WollokDslQuickFixProvider_remove_override_keyword_description, 
+			null) [ e, it |
 			xtextDocument.deleteToken(e, OVERRIDE + blankSpace)
 		]
 	}
 
+	//TODO, No tenemos que hacerlo
+	
 	@Fix(WollokDslValidator.REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add constructors from superclass', 'Add same constructors as superclass.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_add_constructors_superclass_name, 
+			Messages.WollokDslQuickFixProvider_add_constructors_superclass_description, 
+			null) [ e, it |
 			val clazz = e as WClass
 			val constructors = clazz.parent.constructors.map [
 				'''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''
@@ -219,7 +245,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 	def createConstructorInSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Create constructor in superclass', 'Add new constructor in superclass.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_create_constructor_superclass_name, 
+			Messages.WollokDslQuickFixProvider_create_constructor_superclass_description, 
+			null) [ e, it |
 			val delegatingConstructor = (e as WConstructor).delegatingConstructorCall
 			val parent = e.wollokClass.parent
 
@@ -270,42 +299,60 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
 	def removeUnusedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove variable', 'Remove unused variable.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_remove_unused_variable_name, 
+			Messages.WollokDslQuickFixProvider_remove_unused_variable_description, 
+			null) [ e, it |
 			xtextDocument.delete(e)
 		]
 	}
 
 	@Fix(DUPLICATED_CONSTRUCTOR)
 	def deleteDuplicatedConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove constructor', 'Remove duplicated constructor.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_remove_constructor_name, 
+			Messages.WollokDslQuickFixProvider_remove_constructor_description, 
+			null) [ e, it |
 			xtextDocument.delete(e)
 		]
 	}
 
 	@Fix(NATIVE_METHOD_CANNOT_OVERRIDES)
 	def removeOverrideFromNativeMethod(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove override keyword', 'Remove override keyword.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_remove_override_keyword_name, 
+			Messages.WollokDslQuickFixProvider_remove_override_keyword_description, 
+			null) [ e, it |
 			xtextDocument.deleteToken(e, OVERRIDE)
 		]
 	}
 
 	@Fix(DUPLICATED_METHOD)
 	def removeDuplicatedMethod(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Remove method', 'Remove duplicated method.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_remove_method_name, 
+			Messages.WollokDslQuickFixProvider_remove_method_description, 
+			null) [ e, it |
 			xtextDocument.delete(e)
 		]
 	}
 
 	@Fix(VARIABLE_NEVER_ASSIGNED)
 	def initializeNonAssignedVariable(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Initialize value', 'Initialize.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_initialize_value_name, 
+			Messages.WollokDslQuickFixProvider_initialize_value_description, 
+			null) [ e, it |
 			xtextDocument.append(e, " = value")
 		]
 	}
 
 	@Fix(MUST_CALL_SUPER)
 	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add call to super', 'Add call to super.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_add_call_super_name, 
+			Messages.WollokDslQuickFixProvider_add_call_super_description, 
+			null) [ e, it |
 			val const = e as WConstructor
 			val call = " = super()" // this could be more involved here and useful for the user :P
 			val paramCloseOffset = const.node.text.indexOf(")")
@@ -315,7 +362,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(WollokDslValidator.ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	def addCatchOrAlwaysToTry(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Add a "catch" statement', 'Add a "catch" statement".', null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_add_catch_name,
+			Messages.WollokDslQuickFixProvider_add_catch_description, 
+			null) [ e, context |
 			context.insertAfter(
 				e,
 				'''
@@ -326,7 +376,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			)
 		]
 
-		acceptor.accept(issue, 'Add an "always" statement', 'Add an "always" statement".', null) [ e, context |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_add_always_name, 
+			Messages.WollokDslQuickFixProvider_add_always_name,
+			null) [ e, context |
 			context.insertAfter(
 				e,
 				'''
@@ -339,7 +392,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
 	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, 'Replace if with the condition', 'Removes the if and just leaves the condition.', null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_replace_if_condition_name, 
+			Messages.WollokDslQuickFixProvider_replace_if_condition_description, 
+			null) [ e, it |
 			val ifE = e as WIfExpression
 			var inlineResult = if(ifE.then.isReturnTrue) ifE.condition.sourceCode else ("!(" +
 					ifE.condition.sourceCode + ")")
@@ -352,8 +408,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	@Fix(RETURN_FORGOTTEN)
 	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name,
-			Messages.WollokDslQuickfixProvider_return_last_expression_description, null) [ e, it |
+		acceptor.accept(issue, 
+			Messages.WollokDslQuickfixProvider_return_last_expression_name,
+			Messages.WollokDslQuickfixProvider_return_last_expression_description, 
+			null) [ e, it |
 			val method = e as WMethodDeclaration
 			val body = (method.expression as WBlockExpression)
 			if (!body.expressions.empty)
@@ -374,12 +432,15 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// issue #452 - contextual menu based on different targets
 		val targetContext = target.getSelfContext
 		val hasMethodContainer = targetContext !== null
-		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters != null
+		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
 
 		// create local var
 		if (canCreateLocalVariable) {
-			issueResolutionAcceptor.accept(issue, 'Create local variable', 'Create new local variable.', "variable.gif") [ e, context |
+			issueResolutionAcceptor.accept(issue, 
+				Messages.WollokDslQuickFixProvider_create_local_variable_name, 
+				Messages.WollokDslQuickFixProvider_create_local_variable_description, 
+				"variable.gif") [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				val firstExpressionInContext = e.firstExpressionInContext
 				context.insertBefore(firstExpressionInContext, VAR + " " + newVarName)
@@ -388,7 +449,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 		// create instance var
 		if (hasMethodContainer) {
-			issueResolutionAcceptor.accept(issue, 'Create instance variable', 'Create new instance variable.',
+			issueResolutionAcceptor.accept(issue, 
+				Messages.WollokDslQuickFixProvider_create_instance_variable_name, 
+				Messages.WollokDslQuickFixProvider_create_instance_variable_description, 
 				"variable.gif") [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				val declaringContext = e.declaringContext
@@ -399,7 +462,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 		// create parameter
 		if (hasParameters) {
-			issueResolutionAcceptor.accept(issue, 'Add parameter to method', 'Add a new parameter.', "variable.gif") [ e, context |
+			issueResolutionAcceptor.accept(issue, 
+				Messages.WollokDslQuickFixProvider_add_parameter_method_name, 
+				Messages.WollokDslQuickFixProvider_add_parameter_method_description, 
+				"variable.gif") [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
 				val method = (e as WExpression).method
 				method.parameters += (WollokDslFactory.eINSTANCE.createWParameter => [name = newVarName])
@@ -410,7 +476,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument) {
 		// create local var
-		issueResolutionAcceptor.accept(issue, 'Create new class', 'Create a new class definition.', "class.png") [ e, context |
+		issueResolutionAcceptor.accept(issue, 
+			Messages.WollokDslQuickFixProvider_create_new_class_name, 
+			Messages.WollokDslQuickFixProvider_create_new_class_description, 
+			"class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = (e as WExpression).method.declaringContext
 			context.xtextDocument.replace(container.after, 0,
@@ -430,13 +499,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		// adding "create for unresolved references"		
 		val modificationContext = modificationContextFactory.createModificationContext(issue);
 		val xtextDocument = modificationContext.xtextDocument
-		if (xtextDocument == null)
+		if (xtextDocument === null)
 			return;
 		xtextDocument.readOnly(new IUnitOfWork.Void<XtextResource>() {
 			override process(XtextResource state) throws Exception {
 				val target = state.getEObject(issue.uriToProblem.fragment)
 				val reference = getUnresolvedEReference(issue, target)
-				if (reference == null)
+				if (reference === null)
 					return;
 				quickFixUnresolvedRef(target, reference, issueResolutionAcceptor, issue, xtextDocument)
 			}
