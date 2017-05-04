@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import java.util.ArrayList
 
 /**
  * @author jfernandes
@@ -19,7 +20,8 @@ class WCollection<T extends Collection<WollokObject>> {
 	
 	def Object fold(WollokObject acc, WollokObject proc) {
 		val c = proc.asClosure
-		wrapped.fold(acc) [i, e|
+		val Collection<WollokObject> iterable = new ArrayList(wrapped.toArray())
+		iterable.fold(acc) [i, e|
 			c.doApply(i, e)
 		]
 	}

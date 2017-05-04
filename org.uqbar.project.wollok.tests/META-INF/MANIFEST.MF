@@ -48,4 +48,6 @@ Import-Package: org.apache.log4j,
  org.uqbar.project.wollok.game.listeners,
  org.hamcrest.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.uqbar.project.wollok.tests
+Export-Package: 
+ org.uqbar.project.wollok.tests,
+ org.uqbar.project.wollok.tests.interpreter.repl
