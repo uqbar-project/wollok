@@ -327,11 +327,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
 
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
-		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty))
+		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty)) {
 			// default constructor
 			clazz.findConstructorInSuper(arguments)
-		else {
-			val c = clazz.constructors.findFirst[ matches(arguments.size) ]
+		} else {
+			// FED - previously it was clazz.constructors, now if you don't define constructors class inherits from its superclass
+			val c = clazz.allConstructors.findFirst[ matches(arguments.size) ]
 			if (c == null)
 				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
 			c

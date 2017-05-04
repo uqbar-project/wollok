@@ -5,6 +5,7 @@ import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
@@ -232,9 +233,16 @@ class WollokModelExtensions {
 	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
 
 	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[matches(nrOfArgs)]
+		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static EList<WConstructor> allConstructors(WClass c) {
+		if (c.hasConstructorDefinitions || c.parent === null) 
+			c.constructors
+		else
+			c.parent.allConstructors
+	}
+	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
 			nrOfArgs >= parameters.filter[!isVarArg].size
