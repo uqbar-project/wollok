@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.nodemodel.INode
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -80,6 +81,7 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
+	def static dispatch name(EObject it) { null }
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
 	def static dispatch name(WSuite it) { name }
@@ -409,4 +411,21 @@ class WollokModelExtensions {
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
 	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
+	
+	// *******************************
+	// ** refactoring
+	// *******************************
+	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { newArrayList }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) { #["WVariable", "WVariableReference", "WVariableDeclaration"] }
+
+	def static dispatch boolean doApplyRenameTo(EObject e, EObject e2) { true }
+	def static dispatch boolean doApplyRenameTo(WVariable v, WVariableReference reference) {
+		reference.ref.equals(v)	
+	}
+	
+	def static boolean applyRenameTo(EObject e, INode node) {
+		val semanticsElements = e.semanticElementsAllowedToRefactor
+		val rootNodeName = e.name.trim
+		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
+	}
 }

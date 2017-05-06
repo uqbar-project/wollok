@@ -21,6 +21,7 @@ import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
@@ -30,12 +31,16 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	@Inject ITextEditComposer composer
 	@Inject OutdatedStateManager outdatedStateManager;
 
+	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
+		assertQuickfix(initial, result, quickFixDescription, 1)
+	}
+	
 	/**
 	 * Used to test the quickfix, receives two lists of files.
 	 * To allow easy includes the "virtual" files are named fileX.wlk, where X is the order (of course starting in 0)
 	 * @see MethodOnWKODoesntExistQuickFixTest for an example
 	 */
-	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
+	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues) {
 		val sources = <QuickFixTestSource>newArrayList()
 		val issues = <Issue>newArrayList()
 
@@ -53,7 +58,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			])
 		]
 
-		assertEquals("The number of issues should be exactly 1: " + issues, issues.size, 1)
+		assertEquals("The number of issues should be exactly " + numberOfIssues + ": " + issues, issues.size, numberOfIssues)
 		val testedIssue = issues.get(0)
 
 		val Answer<XtextDocument> answerXtextDocument = [ call |
@@ -83,17 +88,17 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
-		println("Resolutions: " + resolutions.map [ label ])
+		// println("Resolutions: " + resolutions.map [ label ])
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
 		
-//		println("Expected code")
-//		println("*************")
-//		println(sources.map [ expectedCode.toString ])
-//		println("vs.")
-//		println(sources.map [ xtextDocument.get.toString ])
-//		println("====================")
+		println("Expected code")
+		println("*************")
+		println(sources.map [ expectedCode.toString ])
+		println("vs.")
+		println(sources.map [ xtextDocument.get.toString ])
+		println("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }
