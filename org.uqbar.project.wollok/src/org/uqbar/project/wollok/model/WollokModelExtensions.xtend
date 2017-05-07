@@ -415,7 +415,9 @@ class WollokModelExtensions {
 	// *******************************
 	// ** refactoring
 	// *******************************
-	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { newArrayList }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { #[e.class.name] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WNamedObject e) { #["WNamedObject", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference"] }
 	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) { #["WVariable", "WVariableReference", "WVariableDeclaration"] }
 
 	def static dispatch boolean doApplyRenameTo(EObject e, EObject e2) { true }

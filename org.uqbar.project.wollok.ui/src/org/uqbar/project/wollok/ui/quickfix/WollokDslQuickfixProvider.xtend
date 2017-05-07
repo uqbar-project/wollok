@@ -74,24 +74,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def capitalizeName(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_capitalize_name,
 			Messages.WollokDslQuickfixProvider_capitalize_description, null) [ e, it |
-			
 			val firstLetter = xtextDocument.get(issue.offset, 1)
-			val newText = firstLetter.toUpperCase
-			xtextDocument.replace(issue.offset, 1, newText)
-			for (INode node : e.node.rootNode.leafNodes) {
-				if (e.applyRenameTo(node)) {
-					println("        AJA :::: " + node.semanticElement)
-					xtextDocument => [
-						replace(node.offset, 1, newText)
-					]
-				}
-			}
-				
-//			val rename = renameSupportFactory.create(xtextDocument.renameElementContext(e), e.name.upperCaseName)
-//			rename.startDirectRefactoring
+			applyRefactor(e, it.xtextDocument, issue, firstLetter.toUpperCase)
 		]
 	}
-
+	
 	@Fix(WollokDslValidator.PARAMETER_NAME_MUST_START_LOWERCASE)
 	def toLowerCaseParameterName(Issue issue, IssueResolutionAcceptor acceptor) {
 		toLowerCaseReferenciableName(issue, acceptor)
@@ -111,23 +98,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def toLowerCaseReferenciableName(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name,
 			Messages.WollokDslQuickfixProvider_lowercase_description, null) [ e, it |
-
-			//https://www.eclipse.org/forums/index.php/t/485483/
 			val firstLetter = xtextDocument.get(issue.offset, 1)
 			val newText = firstLetter.toLowerCase
-			xtextDocument.replace(issue.offset, 1, newText)
-			for (INode node : e.node.rootNode.leafNodes) {
-				if (e.applyRenameTo(node)) {
-					println("        AJA :::: " + node.semanticElement)
-					xtextDocument => [
-						replace(node.offset, 1, newText)
-					]
-				}
-			}
-
-
-//			val rename = renameSupportFactory.create(xtextDocument.renameElementContext(e), e.name.lowerCaseName)
-//			rename.startDirectRefactoring
+			applyRefactor(e, it.xtextDocument, issue, firstLetter.toLowerCase)
 		]
 	}
 
@@ -566,5 +539,35 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			}
 		})
 	}
+
+	/**
+	 * author dodain
+	 * 
+	 * Originally, only changed eObject name, but not its references
+	 * 
+	 * Then, I found we could fire a refactor rename like in UI mode
+	 * val rename = renameSupportFactory.create(xtextDocument.renameElementContext(e), e.name.lowerCaseName)
+	 * rename.startDirectRefactoring
+	 * but I could not test it.
+	 * 
+	 * So, finally I implemented my own refactor thing, knowing that name is correct and I don't have
+	 * to reconcile xtext document. So I search the main document for nodes named like eObject, 
+	 * filtering only certain definitions (eg: if you rename a variable Energia from energia,
+	 * method declarations and calls remain the same.
+	 * 
+	 * @See https://www.eclipse.org/forums/index.php/t/485483/ 	 
+	 */
+	protected def void applyRefactor(EObject eObject, IXtextDocument xtextDocument, Issue issue, String newText) {
+		val rootNode = eObject.node.rootNode
+		xtextDocument.replace(issue.offset.intValue, 1, newText)
+		for (INode node : rootNode.leafNodes) {
+			if (eObject.applyRenameTo(node)) {
+				xtextDocument => [
+					replace(node.offset, 1, newText)
+				]
+			}
+		}
+	}
+
 
 }

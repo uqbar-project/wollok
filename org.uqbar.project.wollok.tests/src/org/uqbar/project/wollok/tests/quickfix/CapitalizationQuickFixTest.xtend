@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.quickfix
 
-import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.ui.Messages
 
@@ -25,7 +24,49 @@ class CapitalizationQuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_capitalize_name)
 	}
-	
+
+	@Test
+	def testCapitalizeClassNameAndReferences(){
+		val initial = #['''
+			class myClass{
+				method someMethod(){ return "yes" }
+			}
+			class AnotherClass inherits myClass { }
+		''']
+
+		val result = #['''
+			class MyClass{
+				method someMethod(){ return "yes" }
+			}
+			class AnotherClass inherits MyClass { }
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_capitalize_name)
+	}
+
+	@Test
+	def testCapitalizeClassNameAndReferencesButNotMethodsWithTheSameName(){
+		val initial = #['''
+			class myClass{
+				method someMethod(){ return "yes" }
+			}
+			class AnotherClass inherits myClass { }
+			class StrangeClass {
+				method myClass() = 2
+			}
+		''']
+
+		val result = #['''
+			class MyClass{
+				method someMethod(){ return "yes" }
+			}
+			class AnotherClass inherits MyClass { }
+			class StrangeClass {
+				method myClass() = 2
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_capitalize_name)
+	}
+		
 	@Test
 	def testLowercaseObjectNameSimple(){
 		val initial = #['''
@@ -43,7 +84,6 @@ class CapitalizationQuickFixTest extends AbstractWollokQuickFixTestCase {
 	}
 
 	@Test
-	@Ignore
 	def testLowercaseObjectNameReferencedByAnotherObject(){
 		val initial = #['''
 			object Pepita {
@@ -60,6 +100,22 @@ class CapitalizationQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			object juan {
 				method jugar() { return pepita.someMethod() }
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_lowercase_name)
+	}
+
+	@Test
+	def testLowercaseObjectNameButNotTerminalWithSameName(){
+		val initial = #['''
+			object Pepita {
+				method someMethod() { return "Pepita" }
+			}
+		''']
+
+		val result = #['''
+			object pepita {
+				method someMethod() { return "Pepita" }
 			}
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_lowercase_name)
