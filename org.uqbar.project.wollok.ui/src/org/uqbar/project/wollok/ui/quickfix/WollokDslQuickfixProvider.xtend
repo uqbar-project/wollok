@@ -12,10 +12,6 @@ import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
 import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
-import org.eclipse.xtext.ui.editor.utils.EditorUtils
-import org.eclipse.xtext.ui.refactoring.ui.IRenameContextFactory
-import org.eclipse.xtext.ui.refactoring.ui.IRenameElementContext
-import org.eclipse.xtext.ui.refactoring.ui.IRenameSupport
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -59,12 +55,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	@Inject
 	WollokClassFinder classFinder
 
-	@Inject(optional=true)
-	IRenameSupport.Factory renameSupportFactory
-
-	@Inject(optional=true)
-	IRenameContextFactory renameContextFactory
-
 	/** 
 	 * ***********************************************************************
 	 * 					     Capitalization & Lowercase
@@ -99,7 +89,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_lowercase_name,
 			Messages.WollokDslQuickfixProvider_lowercase_description, null) [ e, it |
 			val firstLetter = xtextDocument.get(issue.offset, 1)
-			val newText = firstLetter.toLowerCase
 			applyRefactor(e, it.xtextDocument, issue, firstLetter.toLowerCase)
 		]
 	}
@@ -532,14 +521,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		name.substring(0, 1).toUpperCase + name.substring(1, name.length)
 	}
 
-	def renameElementContext(IXtextDocument xtextDocument, EObject e) {
-		xtextDocument.modify(new IUnitOfWork<IRenameElementContext, XtextResource>() {
-			override def IRenameElementContext exec(XtextResource state) {
-				renameContextFactory.createRenameElementContext(e, EditorUtils.activeXtextEditor, null, state)
-			}
-		})
-	}
-
 	/**
 	 * author dodain
 	 * 
@@ -548,6 +529,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * Then, I found we could fire a refactor rename like in UI mode
 	 * val rename = renameSupportFactory.create(xtextDocument.renameElementContext(e), e.name.lowerCaseName)
 	 * rename.startDirectRefactoring
+	 * 	def renameElementContext(IXtextDocument xtextDocument, EObject e) {
+	 * 		xtextDocument.modify(new IUnitOfWork<IRenameElementContext, XtextResource>() {
+	 * 			override def IRenameElementContext exec(XtextResource state) {
+	 * 				renameContextFactory.createRenameElementContext(e, EditorUtils.activeXtextEditor, null, state)
+	 * 			}
+	 * 		})
+	 * 	}
+	 * 
 	 * but I could not test it.
 	 * 
 	 * So, finally I implemented my own refactor thing, knowing that name is correct and I don't have
