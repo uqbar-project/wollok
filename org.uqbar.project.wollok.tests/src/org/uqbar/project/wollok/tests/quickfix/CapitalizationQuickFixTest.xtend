@@ -175,7 +175,7 @@ class CapitalizationQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #['''
 			object pepita {
 				var energia = 100
-				method volar(tiempo) { energia -= Tiempo * 2 }
+				method volar(tiempo) { energia -= tiempo * 2 }
 			}
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_lowercase_name)
