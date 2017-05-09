@@ -21,7 +21,6 @@ import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
 import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
-import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
@@ -77,7 +76,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		] 
 
 		issueResolutionProvider = new WollokDslQuickfixProvider => [
-			issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
+			issueResolutionAcceptorProvider = [ new IssueResolutionAcceptor[issueModificationContext] ]
 //			For now this is not necessary and running maven tests fails to find wollok.ui.WollokDslQuickfixProvider
 			it.assign("modificationContextFactory", issueFactory)
 		]

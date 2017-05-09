@@ -47,5 +47,63 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_return_last_expression_name)
 	}
+
+	@Test
+	def ifInsteadOfConditionalExpression(){
+		val initial = #['''
+			class MyClass{
+				var a = 1
+				method aIsEven() = if (a.even()) true else false
+			}
+		''']
+
+		val result = #['''
+			class MyClass{
+				var a = 1
+				method aIsEven() = a.even()
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_replace_if_condition_name)
+	}
+
+	@Test
+	def ifInsteadOfConditionalExpression2(){
+		val initial = #['''
+			class MyClass{
+				var a = 1
+				method aIsEven() {
+					if (a.even()) return true else return false
+				}
+			}
+		''']
+
+		val result = #['''
+			class MyClass{
+				var a = 1
+				method aIsEven() {
+					return a.even()
+				}
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_replace_if_condition_name)
+	}
+
+	@Test
+	def ifInsteadOfConditionalExpressionNot(){
+		val initial = #['''
+			class MyClass{
+				var a = 1
+				method aIsOdd() = if (a.even()) false else true
+			}
+		''']
+
+		val result = #['''
+			class MyClass{
+				var a = 1
+				method aIsOdd() = !(a.even())
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_replace_if_condition_name)
+	}
 	
 }

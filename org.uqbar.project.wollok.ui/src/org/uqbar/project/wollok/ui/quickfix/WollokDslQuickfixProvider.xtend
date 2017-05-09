@@ -167,6 +167,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(GETTER_METHOD_SHOULD_RETURN_VALUE)
+	def prependReturnForGetter(Issue issue, IssueResolutionAcceptor acceptor) {
+		prependReturn(issue, acceptor)
+	}
+
 	@Fix(RETURN_FORGOTTEN)
 	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name,
@@ -219,6 +224,22 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				context.xtextDocument.replace(feature.before, feature.node.length,
 					VAR + " " + feature.variable.name + " =" + feature.right.node.text)
 			}
+		]
+	}
+
+	@Fix(BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
+	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_replace_if_condition_name,
+			Messages.WollokDslQuickFixProvider_replace_if_condition_description, null) [ e, it |
+			val ifE = e as WIfExpression
+			var inlineResult = if (ifE.then.isReturnTrue)
+					ifE.condition.sourceCode
+				else
+					("!(" + ifE.condition.sourceCode + ")")
+			if (ifE.then.hasReturnWithValue) {
+				inlineResult = RETURN + " " + inlineResult
+			}
+			xtextDocument.replaceWith(e, inlineResult)
 		]
 	}
 
@@ -296,6 +317,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	/** 
+	 * ***********************************************************************
+	 * 							Try / catch block
+	 * ***********************************************************************
+	 */
 	@Fix(WollokDslValidator.ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	def addCatchOrAlwaysToTry(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_catch_name,
@@ -320,27 +346,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				}'''
 			)
 		]
-	}
-
-	@Fix(BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION)
-	def wrongUsageOfIfForBooleanExpressions(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_replace_if_condition_name,
-			Messages.WollokDslQuickFixProvider_replace_if_condition_description, null) [ e, it |
-			val ifE = e as WIfExpression
-			var inlineResult = if (ifE.then.isReturnTrue)
-					ifE.condition.sourceCode
-				else
-					("!(" + ifE.condition.sourceCode + ")")
-			if (ifE.then.hasReturnWithValue) {
-				inlineResult = RETURN + " " + inlineResult
-			}
-			xtextDocument.replaceWith(e, inlineResult)
-		]
-	}
-
-	@Fix(GETTER_METHOD_SHOULD_RETURN_VALUE)
-	def prependReturnForGetter(Issue issue, IssueResolutionAcceptor acceptor) {
-		prependReturn(issue, acceptor)
 	}
 
 	// ************************************************
@@ -388,7 +393,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument) {
-		// create local var
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
 			Messages.WollokDslQuickFixProvider_create_new_class_description, "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
@@ -588,6 +592,5 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val line = document.getLineOfOffset(placeToAdd)
 		placeToAdd - document.getLineOffset(line) - 1
 	}
-	
-	
+
 }
