@@ -86,8 +86,7 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 			class MyClass{
 				var y = 0
 				method x(){
-					return 
-					y + 1
+					return y + 1
 				}
 				
 				method y(obj){
@@ -117,8 +116,7 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 			class MyClass{
 				method x(){
 					self.doSomething()
-					return 
-					self.doSomething()
+					return self.doSomething()
 				}
 				
 				method doSomething(){

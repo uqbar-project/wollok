@@ -436,6 +436,4 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
-	
-
 }

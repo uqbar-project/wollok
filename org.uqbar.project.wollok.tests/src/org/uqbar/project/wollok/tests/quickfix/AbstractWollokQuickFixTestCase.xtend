@@ -29,7 +29,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 
 	@Inject DocumentTokenSource tokenSource
 	@Inject ITextEditComposer composer
-	@Inject OutdatedStateManager outdatedStateManager;
+	@Inject OutdatedStateManager outdatedStateManager
 
 	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
 		assertQuickfix(initial, result, quickFixDescription, 1)

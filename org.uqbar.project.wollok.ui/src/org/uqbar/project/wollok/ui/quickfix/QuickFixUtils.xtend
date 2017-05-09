@@ -25,9 +25,19 @@ class QuickFixUtils {
 		val newBlock = (System.lineSeparator + textToInsert).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.after, 0, newBlock)
 	}
+
+	def static insertJustBefore(IModificationContext context, EObject e, String textToInsert) {
+		insertBefore(context, e, textToInsert, false)
+	}
 	
 	def static insertBefore(IModificationContext context, EObject e, String textToInsert) {
-		val newBlock = (textToInsert + System.lineSeparator).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
+		insertBefore(context, e, textToInsert, true)
+	}
+	
+	def static insertBefore(IModificationContext context, EObject e, String textToInsert, boolean withLineSeparator) {
+		var separator = ""
+		if (withLineSeparator) separator = System.lineSeparator 
+		val newBlock = (textToInsert + separator).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.before, 0, newBlock)
 	}
 	

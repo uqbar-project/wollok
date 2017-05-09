@@ -167,6 +167,48 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(RETURN_FORGOTTEN)
+	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name,
+			Messages.WollokDslQuickfixProvider_return_last_expression_description, null) [ e, it |
+			val method = e as WMethodDeclaration
+			val body = (method.expression as WBlockExpression)
+			if (!body.expressions.empty)
+				insertJustBefore(body.expressions.last, RETURN + " ")
+		]
+	}
+
+	/** 
+	 * ***********************************************************************
+	 * 							Unexistent methods
+	 * ***********************************************************************
+	 */
+	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
+	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
+			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.resolveWKO(classFinder)
+			createMethodInContainer(context, call, container)
+		]
+	}
+	
+	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
+	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
+			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.method.eContainer as WMethodContainer
+			createMethodInContainer(context, call, container)
+		]
+	}
+	
+	/** 
+	 * ***********************************************************************
+	 * 						  	Common Quick Fix tests
+	 * ***********************************************************************
+	 */
+
 	@Fix(WollokDslValidator.CANNOT_ASSIGN_TO_VAL)
 	def changeDeclarationToVar(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_changeToVar_name,
@@ -180,49 +222,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
-	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
-			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
-			val call = e as WMemberFeatureCall
-			val callText = call.node.text
-
-			val wko = call.resolveWKO(classFinder)
-
-			val placeToAdd = wko.findPlaceToAddMethod
-
-			context.getXtextDocument(wko.fileURI).replace(
-				placeToAdd,
-				0,
-				System.lineSeparator + "\t" + METHOD + " " + call.feature +
-					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
-					System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
-					System.lineSeparator + "\t}"
-			)
-		]
-	}
-
-	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
-	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
-			Messages.WollokDslQuickfixProvider_createMethod_description, null) [ e, context |
-			val call = e as WMemberFeatureCall
-			val callText = call.node.text
-
-			val selfContainer = call.method.eContainer as WMethodContainer
-
-			val placeToAdd = selfContainer.findPlaceToAddMethod
-
-			context.getXtextDocument(selfContainer.fileURI).replace(
-				placeToAdd,
-				0,
-				System.lineSeparator + System.lineSeparator + "\t" + METHOD + " " + call.feature +
-					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
-					System.lineSeparator + "\t\t//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
-					System.lineSeparator + "\t}"
-			)
-		]
-	}
+	/** 
+	 * ***********************************************************************
+	 * 						  	Overriding methods
+	 * ***********************************************************************
+	 */
 
 	@Fix(WollokDslValidator.METHOD_MUST_HAVE_OVERRIDE_KEYWORD)
 	def changeDefToOverride(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -255,10 +259,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	// TODO, No tenemos que hacerlo
+	@Fix(NATIVE_METHOD_CANNOT_OVERRIDES)
+	def removeOverrideFromNativeMethod(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_override_keyword_name,
+			Messages.WollokDslQuickFixProvider_remove_override_keyword_description, null) [ e, it |
+			xtextDocument.deleteToken(e, OVERRIDE)
+		]
+	}
+
 	/** 
 	 * ***********************************************************************
-	 * 							Unused abstractions
+	 * 							Unused or duplicated abstractions
 	 * ***********************************************************************
 	 */
 	@Fix(WollokDslValidator.WARNING_UNUSED_VARIABLE)
@@ -266,14 +277,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_unused_variable_name,
 			Messages.WollokDslQuickFixProvider_remove_unused_variable_description, null) [ e, it |
 			xtextDocument.delete(e)
-		]
-	}
-
-	@Fix(NATIVE_METHOD_CANNOT_OVERRIDES)
-	def removeOverrideFromNativeMethod(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_override_keyword_name,
-			Messages.WollokDslQuickFixProvider_remove_override_keyword_description, null) [ e, it |
-			xtextDocument.deleteToken(e, OVERRIDE)
 		]
 	}
 
@@ -332,17 +335,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				inlineResult = RETURN + " " + inlineResult
 			}
 			xtextDocument.replaceWith(e, inlineResult)
-		]
-	}
-
-	@Fix(RETURN_FORGOTTEN)
-	def prependReturn(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_return_last_expression_name,
-			Messages.WollokDslQuickfixProvider_return_last_expression_description, null) [ e, it |
-			val method = e as WMethodDeclaration
-			val body = (method.expression as WBlockExpression)
-			if (!body.expressions.empty)
-				insertBefore(body.expressions.last, RETURN + " ")
 		]
 	}
 
@@ -442,14 +434,23 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	/**
-	 * *****************************************************************
-	 *                         Internal methods
-	 * *****************************************************************
+	 * **************************************************************************************
+	 *                         Internal common methods
+	 * **************************************************************************************
 	 */
+	def defaultStubMethod(WMemberFeatureCall call, int numberOfTabsMargin) {
+		val callText = call.node.text
+		val margin = (1..numberOfTabsMargin).map [ tabChar ].reduce [ acum, tab | acum + tab ] 
+		System.lineSeparator + margin + METHOD + " " + call.feature +
+					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
+					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
+					System.lineSeparator + margin + "}"
+	}
+	
 	def defaultStubMethod(WClass clazz, WMethodDeclaration method) {
 		val margin = adjustMargin(clazz)
 		'''
-		«margin»method «method.name»(«method.parameters.map[name].join(",")») {
+		«margin»«METHOD» «method.name»(«method.parameters.map[name].join(",")») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}''' + System.lineSeparator
 	}
@@ -556,7 +557,37 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				]
 			}
 		}
+		
+		/** Extending to related files of project
+		 * @See https://kthoms.wordpress.com/2011/07/12/xtend-generating-from-multiple-input-models/
+		 */
 	}
 
+	/**
+	 * Common method for wko, objects, mixins and classes to create a non-existent method based on a call
+	 */
+	def createMethodInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
+		val placeToAdd = container.findPlaceToAddMethod
+		val xtextDocument = context.getXtextDocument(container.fileURI)
+		xtextDocument.replace(
+			placeToAdd,
+			0,
+			defaultStubMethod(call, xtextDocument.computeMarginFor(placeToAdd, container))
+		)
+	}
 
+	/**
+	 * Common method - compute margin that should by applied to a new method
+	 * If method container has no methods nor variable declarations, placeToAdd should not be considered
+	 * Otherwise we use default margin based on line we are calling
+	 */
+	def int computeMarginFor(IXtextDocument document, int placeToAdd, WMethodContainer container) {
+		if (container.methods.empty) {
+			return 1
+		}
+		val line = document.getLineOfOffset(placeToAdd)
+		placeToAdd - document.getLineOffset(line) - 1
+	}
+	
+	
 }
