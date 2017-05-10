@@ -74,9 +74,19 @@ class Persona {
   method quiereSubirA(unMicro) {
     return false
   }
+  method subirNivelSkill(value){
+  	//do nothing
+  }
+  method bloqueaCazador(otroCazador){
+    self.subirNivelSkill(3)
+    otroCazador.bajarNivelSkill(3)
+  }
 }
 class Indeciso inherits Persona {
   override method quiereSubirA(unMicro) {
+    throw new Exception()
+  }
+  override method bloqueaCazador(otroCazador){
     throw new Exception()
   }
 }
