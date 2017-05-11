@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
@@ -53,7 +54,7 @@ class WollokProposal {
 
 	def getDisplayMessage() {
 		if (member.wollokClass.name.toLowerCase != "object")
-			(new StyledString(methodName)).append(" - from " + member.wollokClass.name + " Class",
+			(new StyledString(methodName)).append(" - " + Messages.WollokProposal_form + " " + member.wollokClass.name + " " + Messages.WollokProposal_class,
 				createBoldStyler)
 		else
 			new StyledString(methodName)
