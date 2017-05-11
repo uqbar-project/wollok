@@ -30,7 +30,7 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	def void imageCanBeAccessedByGetterMethod() {
 		'''
 		object aVisual {
-			method get«convention.toFirstUpper»() = «image»
+			method «convention»() = «image»
 		}
 		
 		object otherVisual {
