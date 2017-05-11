@@ -308,5 +308,22 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			'''.interpretPropagatingErrors
 	}
-	
+
+	@Test
+	def void constructorInheritedFromSubclass() {
+		'''
+		class A {
+			var x
+			constructor() { }
+			constructor(_x) { x = _x }
+		}
+		class B inherits A {
+			
+		}
+		program t {
+			const b = new B(2)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

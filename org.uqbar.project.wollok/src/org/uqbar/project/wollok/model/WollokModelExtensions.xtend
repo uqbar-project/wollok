@@ -5,9 +5,11 @@ import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.nodemodel.INode
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -79,6 +81,7 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
 
+	def static dispatch name(EObject it) { null }
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
 	def static dispatch name(WSuite it) { name }
@@ -232,9 +235,16 @@ class WollokModelExtensions {
 	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
 
 	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[matches(nrOfArgs)]
+		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static EList<WConstructor> allConstructors(WClass c) {
+		if (c.hasConstructorDefinitions || c.parent === null) 
+			c.constructors
+		else
+			c.parent.allConstructors
+	}
+	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
 			nrOfArgs >= parameters.filter[!isVarArg].size
@@ -401,4 +411,24 @@ class WollokModelExtensions {
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
 	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
+	
+	// *******************************
+	// ** refactoring
+	// *******************************
+	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { #[e.class.name] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WNamedObject e) { #["WNamedObject", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) { #["WVariable", "WVariableReference", "WVariableDeclaration"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WParameter p) { #["WParameter", "WVariableReference"] }
+
+	def static dispatch boolean doApplyRenameTo(EObject e, EObject e2) { true }
+	def static dispatch boolean doApplyRenameTo(WVariable v, WVariableReference reference) {
+		reference.ref.equals(v)	
+	}
+	
+	def static boolean applyRenameTo(EObject e, INode node) {
+		val semanticsElements = e.semanticElementsAllowedToRefactor
+		val rootNodeName = e.name.trim
+		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
+	}
 }
