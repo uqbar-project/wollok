@@ -8,8 +8,8 @@ import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
+import org.apache.commons.cli.OptionBuilder
 
 /**
  * @author jfernandes
@@ -33,6 +33,9 @@ class WollokLauncherParameters {
 	@Accessors
 	boolean noAnsiFormat = false
 	
+	@Accessors
+	List<String> libraries = new ArrayList()
+	
 	def build() {
 		val sb = new StringBuilder
 		if (hasRepl)sb.append("-r").append(" ")
@@ -42,9 +45,16 @@ class WollokLauncherParameters {
 		if (tests) sb.append("-t ")
 		if (jsonOutput) sb.append("-jsonOutput ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
-		
-		wollokFiles.forEach [ sb.append(it).append(" ") ]
+		buildListOption(sb, libraries, "lib", ',')
+		buildListOption(sb, wollokFiles, "wf", ' ')
 		sb.toString
+	}
+	
+	def buildListOption(StringBuilder sb, List<String> options, String option, char separator) {
+		if(!options.empty) {
+			sb.append("-").append(option).append(" ")
+			options.forEach[sb.append(it).append(separator)]
+		}	
 	}
 
 	def parse(String[] args) {
@@ -61,12 +71,14 @@ class WollokLauncherParameters {
 
 		requestsPort = parseParameter(cmdLine, "requestsPort")
 		eventsPort = parseParameter(cmdLine, "eventsPort")
-
+		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
 		}
 		
-		wollokFiles = cmdLine.argList
+		parseLibraries(cmdLine)		
+		parseWollokFiles(cmdLine)
+		
 		
 		if (!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
 			throw new RuntimeException("Repl can only be used with .wlk files.")
@@ -92,6 +104,25 @@ class WollokLauncherParameters {
 		
 		this
 	}
+	
+	//apache cli has a bug proccesing multiples arguments for differents options.
+	// in a line like: -lib a.jar,b.jar example.wlk example2.wlk it interprets that wlk file is part of lib option.
+	//  In order to avoid this problem, wf option was created: -lib a.jar,b.jar -wf example.wlk example2.wlk
+	// For backwards compatibility, the old style is supported if you don't need pass libraries, or another
+	//option is between libs and files:
+	//      -lib a.jar,b.jar -r example.wlk example2.wlk   
+	//    other example:
+	//      example.wlk example2.wlk   
+	def parseWollokFiles(CommandLine cmdLine) {
+		wollokFiles = if(!cmdLine.hasOption("wf")) cmdLine.argList	else new ArrayList(cmdLine.getOptionValues("wf"))
+	}
+	
+	def parseLibraries(CommandLine cmdLine) {
+		val libs = cmdLine.getOptionValues("lib")
+		if(libs !== null) {
+			libraries = new ArrayList(libs)
+		}
+	}
 
 	def parseParameter(CommandLine cmdLine, String paramName) {
 		if (cmdLine.hasOption(paramName)) {
@@ -112,6 +143,7 @@ class WollokLauncherParameters {
 		new Options => [
 			addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
 			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
+
 			
 			addOption(new Option("jsonOutput", "JSON test report output"))
 			
@@ -119,8 +151,20 @@ class WollokLauncherParameters {
 			
 			add("testPort", "Server port for tests", "port", 1)
 			add("requestsPort", "Request ports", "port", 1)
-			add("eventsPort", "Events ports", "port", 1)			
+			add("eventsPort", "Events ports", "port", 1)	
+			addList("lib", "libraries jars ", "libs", ',')	
+			addList("wf", "wollokFiles ", "files", ' ')	
+
 		]
+	}
+
+	def addList(Options options, String opt, String description, String argName, char separator) {
+		OptionBuilder.withValueSeparator(separator)  
+		OptionBuilder.hasArgs()
+		OptionBuilder.withDescription(description)
+		OptionBuilder.withArgName(argName)
+		
+		options.addOption(OptionBuilder.create(opt))
 	}
 	
 	def add(Options options, String opt, String description, String argName, int args) {
