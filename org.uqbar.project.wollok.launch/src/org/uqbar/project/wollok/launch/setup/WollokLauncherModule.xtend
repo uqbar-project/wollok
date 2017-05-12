@@ -41,6 +41,11 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		else
 			return WollokLauncherInterpreterEvaluator
 	}
+	
+	override libs() {
+		params.libraries
+	}
+	
 
 	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
 		if (params.tests) {

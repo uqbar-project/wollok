@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.launch.setup
 import com.google.inject.Binder
 import com.google.inject.Guice
 import com.google.inject.name.Names
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.parser.antlr.Lexer
 import org.eclipse.xtext.ui.LexerUIBindings
@@ -11,6 +12,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokREPLInterpreter
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.parser.antlr.internal.InternalWollokDslLexer
+import com.google.inject.TypeLiteral
 
 /**
  * @author tesonep
@@ -44,3 +46,5 @@ class WollokLauncherSetup extends WollokDslStandaloneSetup {
 	}
 	
 }
+
+
