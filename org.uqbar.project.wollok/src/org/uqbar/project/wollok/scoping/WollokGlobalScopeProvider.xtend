@@ -23,6 +23,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
+import java.io.File
 
 /**
  * 
@@ -105,7 +106,17 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		for(var i = 0; i < parts.size -1 ; i++){
 			uri = uri.appendSegment(parts.get(i))
 		}
-		
+				
+		var newUri = uri
+
+		while (newUri.segmentCount >= 1) {
+			if (new File(newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toFileString).exists) {
+				return newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
+			}
+			
+			newUri = newUri.trimSegments(1)
+		}
+
 		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
