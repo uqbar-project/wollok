@@ -94,6 +94,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 			val code = lastStackElement.code(programContent)
 			println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
 
+			clientSide.suspended = false;
 			realDebugger.stepInto()	
 		} while (!clientSide.isTerminated);
 		
@@ -134,10 +135,8 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher, DebuggerEventAssertion {
 	var boolean started = false
 	var boolean terminated = false
+	var boolean suspended = false
 
-	//I use this object as a latch to check when the debugger has suspended
-	val latch = new Object
-	
 	List<DebuggerEventListener> listeners = newArrayList
 	// an object to manipulate the VM: pause, resume, etc.
 	DebugCommandHandler vm
@@ -147,24 +146,22 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	override started() { 
 		println("STARTED")
 		started = true
+		suspended = false 
 		notify [ started(vm) ]
 	}
 	
 	override terminated() {
 		println("TERMINATED")
 		terminated = true
+		suspended = false
+		
 		notify [ terminated(vm) ]
-		synchronized(latch){
-			latch.notifyAll
-		}		
 	}
 	
 	override suspendStep() {
 		println("SUSPENDED")
+		suspended = true 
 		notify [ suspended(vm) ]
-		synchronized(latch){
-			latch.notifyAll
-		}		
 	}
 	override resumeStep() {
 		println("RESUME")
@@ -173,19 +170,11 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	override breakpointHit(String fileName, int lineNumber) {
 		println("BREAKPOINT HIT")
 		notify [ breakpointHit(fileName, lineNumber, vm) ]
-		synchronized(latch){
-			latch.notifyAll
-		}		
 	}
 	
 	def waitUntilStarted() { waitUntil [isStarted] }
 	def waitUntilTerminated() { waitUntil [isTerminated] }
-	
-	def waitUntilSuspended() { 		
-		synchronized(latch){
-			latch.wait
-		}
-	}
+	def waitUntilSuspended() { waitUntil[isSuspended || isTerminated]}
 	
 	// utils
 	
@@ -201,7 +190,8 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	
 	protected def waitUntil(()=>Boolean condition) {
 		// REVIEW: this is an active wait. Not good, but well.. just for testing.
-		while (!condition.apply && assertionFailed != null) Thread.sleep(100)
+		while (!condition.apply && assertionFailed == null) 
+			Thread.sleep(100)
 	}
 	
 	def expect((DebuggerEventAssertion)=>Object director) {
