@@ -86,7 +86,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		var List<XStackFrame> steps = newArrayList
 		var XStackFrame lastStackElement = null
 		do {
-			Thread.sleep(100)
+			clientSide.waitUntilSuspended
 			
 			lastStackElement = realDebugger.stack.lastElement
 			steps += lastStackElement.clone
@@ -134,6 +134,10 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher, DebuggerEventAssertion {
 	var boolean started = false
 	var boolean terminated = false
+
+	//I use this object as a latch to check when the debugger has suspended
+	val latch = new Object
+	
 	List<DebuggerEventListener> listeners = newArrayList
 	// an object to manipulate the VM: pause, resume, etc.
 	DebugCommandHandler vm
@@ -147,14 +151,20 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	}
 	
 	override terminated() {
-		println("TERMINATED") 
+		println("TERMINATED")
 		terminated = true
 		notify [ terminated(vm) ]
+		synchronized(latch){
+			latch.notifyAll
+		}		
 	}
 	
 	override suspendStep() {
 		println("SUSPENDED")
 		notify [ suspended(vm) ]
+		synchronized(latch){
+			latch.notifyAll
+		}		
 	}
 	override resumeStep() {
 		println("RESUME")
@@ -163,10 +173,19 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	override breakpointHit(String fileName, int lineNumber) {
 		println("BREAKPOINT HIT")
 		notify [ breakpointHit(fileName, lineNumber, vm) ]
+		synchronized(latch){
+			latch.notifyAll
+		}		
 	}
 	
 	def waitUntilStarted() { waitUntil [isStarted] }
 	def waitUntilTerminated() { waitUntil [isTerminated] }
+	
+	def waitUntilSuspended() { 		
+		synchronized(latch){
+			latch.wait
+		}
+	}
 	
 	// utils
 	
