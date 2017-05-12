@@ -41,14 +41,14 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void testImportObjectMultiLevel() {
-		interpret(true, false, false, #['model/aves' -> '''
+		interpret(true, false, true, #['model/aves' -> '''
 			object pepita {
 				method getNombre() = "pepita"
 			}
 			
 		''',
 		'model/entrenador' -> '''
-			import aves.pepita
+			import model.aves.pepita
 			
 			object mostaza {
 				method entrenar() {

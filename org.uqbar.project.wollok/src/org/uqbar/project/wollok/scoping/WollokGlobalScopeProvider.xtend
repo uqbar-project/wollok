@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
+import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 
 /**
  * 
@@ -96,7 +97,16 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Converts the importedName to a Resource relative to a context
 	 */
 	def static generateUri(Resource context, String importedName) {
-		context.URI.trimSegments(1).appendSegment(importedName.split("\\.").get(0)).appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
+		val levels = WollokRootLocator.levelsToRoot(context)
+		val parts = importedName.split("\\.")
+		var uri = context.URI.trimSegments(levels)
+		
+		//I skip the last part because is the name of the imported object
+		for(var i = 0; i < parts.size -1 ; i++){
+			uri = uri.appendSegment(parts.get(i))
+		}
+		
+		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 
 	/**

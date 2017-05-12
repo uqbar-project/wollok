@@ -35,11 +35,15 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Before
 	def void setUp() {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
+
+		new File("target/test-files").mkdirs
+		new File("target/test-files/wollok.root").createNewFile
 	}
 
 	@After
 	def void tearDown() {
 		interpreter = null
+		new File("target/test-files")
 	}
 
 	def interpret(String... programAsString) {

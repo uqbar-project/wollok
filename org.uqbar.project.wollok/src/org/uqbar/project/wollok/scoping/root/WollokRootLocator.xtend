@@ -10,18 +10,22 @@ class WollokRootLocator {
 
 	var cache = new LRUMap(20)
 
+	def static levelsToRoot(Resource resource) {
+		INSTANCE.calculateLevelsToRoot(resource)
+	}
+
 	def static String fullPackageName(Resource resource) {
 		INSTANCE.doFullPackageName(resource)
 	}
 
 	def doFullPackageName(Resource resource) {
-		val numberOfLevels = resource.levelsToRoot
+		val numberOfLevels = resource.calculateLevelsToRoot
 
 		val segments = resource.URI.trimFileExtension.segments
 		segments.drop(segments.size - numberOfLevels).join(".")
 	}
 
-	def levelsToRoot(Resource resource) {
+	def calculateLevelsToRoot(Resource resource) {
 		if(resource.URI.toFileString == null)
 			return 1
 		
