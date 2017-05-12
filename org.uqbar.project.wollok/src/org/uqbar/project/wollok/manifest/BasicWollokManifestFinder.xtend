@@ -55,7 +55,7 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 	
 	def openLibManifestStream(String lib) {
 		val rs = class.classLoader.getResourceAsStream( lib.last() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
-		if(rs === null) { throw new RuntimeException("manifest is not loaded NUEVO")}
+		if(rs === null) { throw new RuntimeException("manifest is not loaded")}
 		rs
 	}
 
@@ -65,12 +65,10 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 	}
 
 	def loadLib(String lib) {
-		val cl = findUrlClassLoader(class.getClassLoader())
-		cl.addURL(new File(lib + ".jar").toURI().toURL())
+		class.getClassLoader.findUrlClassLoader.addURL(new File(lib + ".jar").toURI().toURL())
 	}
 	
 	def addURL(URLClassLoader cl, URL u) {
-        val clclass = cl.class;
         try {
             val method = URLClassLoader.getDeclaredMethod("addURL", URL);
             method.setAccessible(true);
@@ -84,7 +82,7 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 	
 	def URLClassLoader findUrlClassLoader(ClassLoader cl) {
 		if(cl === null) {throw new RuntimeException("URLClassLoader is not present")}	
-		if(cl instanceof URLClassLoader) cl else findUrlClassLoader(cl.parent)	
+		if(cl instanceof URLClassLoader) cl else cl.parent.findUrlClassLoader	
 	}
 	 
 }
