@@ -54,18 +54,20 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 	}
 	
 	def openLibManifestStream(String lib) {
-		val rs = class.classLoader.getResourceAsStream( lib.last() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
+		val rs = class.classLoader.getResourceAsStream( lib.name() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
 		if(rs === null) { throw new RuntimeException("manifest is not loaded")}
 		rs
 	}
-
-	def last(String st) {
+	/** remove path and extension foo/bar.jar => bar */
+	def name(String st) {
 		val s = st.split("/")
-		return s.get(s.size - 1)
+		val r = s.get(s.size - 1)
+		r.substring(0,r.length()-4)
 	}
 
+	//the implemantation of this is a hack!!
 	def loadLib(String lib) {
-		class.getClassLoader.findUrlClassLoader.addURL(new File(lib + ".jar").toURI().toURL())
+		class.getClassLoader.findUrlClassLoader.addURL(new File(lib).toURI().toURL())
 	}
 	
 	def addURL(URLClassLoader cl, URL u) {

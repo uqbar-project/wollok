@@ -156,6 +156,20 @@
 				</enabledWhen>
 		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
 	        </page>
+	      
+	        <page
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.properties.WollokProjectPropertyPage"
+	            id="org.uqbar.project.wollok.ui.properties.wollokProjectPropertyPage"
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            name="Librerias">
+	            <enabledWhen>
+		            <adapt type="org.eclipse.core.resources.IProject"/>
+				</enabledWhen>
+		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+	        </page>
+	      
+	      
+	        
 	    </extension>
 	    <!-- VALIDATOR -->
     

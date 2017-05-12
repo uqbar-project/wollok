@@ -5,15 +5,10 @@ import org.junit.Test
 import org.eclipse.xtext.testing.InjectWith
 import java.io.File
 
+//This injector creates lib parameter 
 @InjectWith(LoadLibraryWollokTestInjector)
 class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 	
-
-	@Test
-	def void testFindJar() {
-		assertNotNull(new File("wollokLib/pepeLib.jar").toURI().toURL())
-	}
-
 
 	@Test
 	def void testPepeObjectExist() {

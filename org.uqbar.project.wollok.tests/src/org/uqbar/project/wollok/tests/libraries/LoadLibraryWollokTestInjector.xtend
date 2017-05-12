@@ -8,7 +8,7 @@ class LoadLibraryWollokTestInjector extends WollokDslInjectorProvider {
 
 	override protected internalCreateInjector() {
 		val params = new WollokLauncherParameters()
-		params.libraries.add("wollokLib/pepelib")
+		params.libraries.add("wollokLib/pepelib.jar")
 		new WollokLauncherSetup(params).createInjectorAndDoEMFRegistration
 	}
 }
