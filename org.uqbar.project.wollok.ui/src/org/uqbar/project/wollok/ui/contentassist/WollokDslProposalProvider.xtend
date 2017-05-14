@@ -74,15 +74,14 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// *****************************
 
 	def messageSentAsProposals(WReferenciable ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMessageSent.filter[feature !== null].forEach[ context.addProposal(it, acceptor) ]
+		ref.allMessageSent.filter[feature !== null].forEach[ context.addProposal(ref.nameWithPackage, it, acceptor) ]
 	}
 	def methodsAsProposals(WMethodContainer ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		println(ref.allMethods)
-		ref.allMethods.forEach[ context.addProposal(it, acceptor) ]
+		ref.allMethods.forEach[ context.addProposal(ref.nameWithPackage, it, acceptor) ]
 	}
 
-	def addProposal(ContentAssistContext context, WMember m, ICompletionProposalAcceptor acceptor) {
-		acceptor.addProposal(new WollokProposal(m, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage,context))
+	def addProposal(ContentAssistContext context, String referencePackage, WMember m, ICompletionProposalAcceptor acceptor) {
+		acceptor.addProposal(new WollokProposal(referencePackage, m, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage,context))
 	}
 
 

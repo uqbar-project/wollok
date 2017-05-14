@@ -77,7 +77,7 @@ class WollokModelExtensions {
 	
 	def static file(EObject it) { eResource }
 
-	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
+	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
 
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
@@ -88,8 +88,11 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 	def static dispatch fqn(WSuite it) { nameWithPackage }
 
+	def static getNameWithPackage(EObject it){
+		method.declaringContext.nameWithPackage
+	}
 	def static getNameWithPackage(WMethodContainer it) {
-		implicitPackage + "." + if (package != null) package.name + "." + name else name
+		implicitPackage + "." + if (package !== null) package.name + "." + name else name
 	}
 
 	def static dispatch fqn(WObjectLiteral it) {
@@ -101,7 +104,7 @@ class WollokModelExtensions {
 	def static WPackage getPackage(WMethodContainer it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
-		a.fqn == b.fqn || (b.parent != null && a.isSuperTypeOf(b.parent))
+		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
 	// *******************
@@ -116,7 +119,7 @@ class WollokModelExtensions {
 	}
 
 	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer != null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
+		e.eContainer !== null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
 	}
 
 	def static dispatch boolean isAConstructor(EObject it) { false }
@@ -148,7 +151,7 @@ class WollokModelExtensions {
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 
 	def static dispatch WExpression firstExpressionInContext(EObject e) {
-		if (e.eContainer == null) return null 
+		if (e.eContainer === null) return null 
 		e.eContainer.firstExpressionInContext
 	}
 	def static dispatch WExpression firstExpressionInContext(WProgram p) { p.elements.head }
@@ -227,9 +230,9 @@ class WollokModelExtensions {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
 
-	def static numberOfParameters(WConstructorCall c) { if(c.arguments == null) 0 else c.arguments.size }
+	def static numberOfParameters(WConstructorCall c) { if(c.arguments === null) 0 else c.arguments.size }
 
-	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
+	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
 	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
 		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[matches(nrOfArgs)]
@@ -245,8 +248,8 @@ class WollokModelExtensions {
 	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
 	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
 
-	def static superClassRequiresNonEmptyConstructor(WClass it) { parent != null && !parent.hasEmptyConstructor }
-	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent != null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
 
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
@@ -283,7 +286,7 @@ class WollokModelExtensions {
 
 	def static IFile getIFile(EObject obj) {
 		val platformString = obj.eResource.URI.toPlatformString(true)
-		if (platformString == null) {
+		if (platformString === null) {
 			// could be a synthetic file
 			return null;
 		}
@@ -327,12 +330,12 @@ class WollokModelExtensions {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
 
-	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer != null && obj.eContainer.inConstructor }
+	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer !== null && obj.eContainer.inConstructor }
 	def static dispatch boolean isInConstructor(WConstructor obj) { true }
 	def static dispatch boolean isInConstructor(WClass obj){ false }
 	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
 
-	def static dispatch boolean isInConstructorBody(EObject obj) { obj.eContainer != null && obj.eContainer.isInConstructorBody }
+	def static dispatch boolean isInConstructorBody(EObject obj) { obj.eContainer !== null && obj.eContainer.isInConstructorBody }
 	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
 
 	// *****************************
@@ -380,7 +383,7 @@ class WollokModelExtensions {
 	// ** variables
 	// *******************************
 	
-	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) != null }
+	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null }
 
 	def static onlyUsedInReturn(WVariableDeclaration it) {
 		val visitor = new VariableUsesVisitor
@@ -390,7 +393,7 @@ class WollokModelExtensions {
 	}
 	
 	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
-	def static boolean isInReturn(EObject e) { e.eContainer != null && e.eContainer.isReturnOrInReturn }
+	def static boolean isInReturn(EObject e) { e.eContainer !== null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports

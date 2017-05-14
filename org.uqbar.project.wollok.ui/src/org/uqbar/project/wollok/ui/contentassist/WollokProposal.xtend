@@ -28,11 +28,13 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 @Accessors
 class WollokProposal {
+	String referencePackage
 	WMember member
 	Image image
 	ContentAssistContext context
 
-	new(WMember m, Image image, ContentAssistContext context) {
+	new(String reference, WMember m, Image image, ContentAssistContext context) {
+		this.referencePackage = reference
 		this.member = m
 		this.image = image
 		this.context = context
@@ -42,7 +44,7 @@ class WollokProposal {
 		member.asProposal
 	}
 
-	def createBoldStyler() {
+	def createProposalStyler() {
 		val display = Display.getCurrent();
 		new Styler() {
 
@@ -53,11 +55,19 @@ class WollokProposal {
 	}
 
 	def getDisplayMessage() {
-		if (member.wollokClass.name.toLowerCase != "object")
-			(new StyledString(methodName)).append(" - " + Messages.WollokProposal_form + " " + member.wollokClass.name + " " + Messages.WollokProposal_class,
-				createBoldStyler)
+		var String fromMessage 
+		if (member.eContainer.name.toLowerCase == "object")
+			fromMessage = ""
+		else if (member.isInMixin)
+			fromMessage = " - " + Messages.WollokProposal_form_mixin + " " + member.getNameWithPackage
+		else if (member.getNameWithPackage != referencePackage) {
+			fromMessage = " - " + Messages.WollokProposal_form_class + " " + member.getNameWithPackage
+		} else if (member.wollokClass !== null)
+			fromMessage = " - " + Messages.WollokProposal_form_class + " " + member.eContainer.name
 		else
-			new StyledString(methodName)
+			fromMessage = " - " + Messages.WollokProposal_form_object + " " + member.eContainer.name.toString()
+		
+		(new StyledString(methodName)).append(fromMessage, createProposalStyler)
 	}
 
 	def dispatch asProposal(WMemberFeatureCall call) {
