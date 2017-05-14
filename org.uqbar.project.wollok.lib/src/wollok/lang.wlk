@@ -1661,10 +1661,11 @@ class Date {
 	method day() native
 	
 	/** Answers the day of week of the Date, where
-	 * 0 = SUNDAY
 	 * 1 = MONDAY
 	 * 2 = TUESDAY
-	 * 3 = WEDNESDAY ...
+	 * 3 = WEDNESDAY
+	 * ...
+	 * 7 = SUNDAY
 	 */
 	method dayOfWeek() native
 	
