@@ -49,7 +49,8 @@ class WollokConventionExtensions {
 	}
 
 	def static isGetter(String it, List<String> conventions) {
-		conventions.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
+		//conventions.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
+		conventions.contains(it)
 	}
 	
 	def static isConvention(String it) {

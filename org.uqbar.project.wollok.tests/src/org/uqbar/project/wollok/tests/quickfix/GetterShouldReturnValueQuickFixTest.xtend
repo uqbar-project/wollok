@@ -9,10 +9,10 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 		val initial = #['''
 			class MyClass{
 				var x = 23
-				method getX(){
+				method x(){
 				}
 				
-				method setX(obj){
+				method x(obj){
 					x = obj
 				}
 			}
@@ -21,11 +21,11 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 		val result = #['''
 			class MyClass{
 				var x = 23
-				method getX(){
+				method x(){
 					return x
 				}
 				
-				method setX(obj){
+				method x(obj){
 					x = obj
 				}
 			}
@@ -40,11 +40,11 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 			class MyClass{
 				var x = 23
 				var y = 0
-				method getX(){
+				method x(){
 					y = y + 1
 				}
 				
-				method setX(obj){
+				method x(obj){
 					x = obj
 				}
 			}
@@ -54,12 +54,12 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 			class MyClass{
 				var x = 23
 				var y = 0
-				method getX(){
+				method x(){
 					y = y + 1
 					return x
 				}
 				
-				method setX(obj){
+				method x(obj){
 					x = obj
 				}
 			}
@@ -72,11 +72,11 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 		val initial = #['''
 			class MyClass{
 				var y = 0
-				method getX(){
+				method x(){
 					y + 1
 				}
 				
-				method setY(obj){
+				method y(obj){
 					y = obj
 				}
 			}
@@ -85,12 +85,11 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 		val result = #['''
 			class MyClass{
 				var y = 0
-				method getX(){
-					return 
-					y + 1
+				method x(){
+					return y + 1
 				}
 				
-				method setY(obj){
+				method y(obj){
 					y = obj
 				}
 			}
@@ -102,7 +101,7 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 	def testGetterMissingReturnWithCall(){
 		val initial = #['''
 			class MyClass{
-				method getX(){
+				method x(){
 					self.doSomething()
 					self.doSomething()
 				}
@@ -115,10 +114,9 @@ class GetterShouldReturnValueQuickFixTest extends AbstractWollokQuickFixTestCase
 
 		val result = #['''
 			class MyClass{
-				method getX(){
+				method x(){
 					self.doSomething()
-					return 
-					self.doSomething()
+					return self.doSomething()
 				}
 				
 				method doSomething(){

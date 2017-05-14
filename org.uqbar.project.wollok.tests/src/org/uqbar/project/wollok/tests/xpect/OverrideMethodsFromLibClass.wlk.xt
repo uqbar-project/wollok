@@ -1,30 +1,22 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
-class Foo {
+class SpecialList inherits List {
 	// Allowed
-    override method == (other) {
-        return true
+    override method remove (other) {
+        
     }
-}
+    
+    // XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "add"
+    method add(other) {
 
-object foo {
-	// Allowed
-    override method == (other) {
-        return true
-    }
-}
-
-class Bar {
-	// XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "=="
-    method == (other) {
-        return true
     }
 
 	// XPECT errors --> "You can't use override here: method doesn't exist in superclass and you can't change superclass definition" at "fafafa"
 	override method fafafa() {}
+    
 }
 
-object bar {
+object bar inherits List {
 	// XPECT errors --> "Method must be marked as override, since it overrides a superclass method" at "=="
     method == (other) {
         return true

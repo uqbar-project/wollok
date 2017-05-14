@@ -8,6 +8,8 @@ import org.eclipse.xtext.EcoreUtil2
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.scoping.WollokResourceCache
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -36,7 +38,6 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.impl.WFixtureImpl
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 
@@ -112,7 +113,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
 	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { matches(other.name, other.parameters) }
 
-	def static isGetter(WMethodDeclaration it) { name.length > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
+	//def static isGetter(WMethodDeclaration it) { name.length > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
+	// FED - new convention
+	def static isGetter(WMethodDeclaration it) { (it.eContainer as WMethodContainer).variableNames.contains(name) && parameters.empty }
+	
+	def static variableNames(WMethodContainer it) {	variables.map [ v | v.name ].toList }
 
 	def dispatch static isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
@@ -186,6 +191,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _hasCyclicHierarchy(c.parent, l)
 	}
 
+	def static dispatch boolean inheritsFromLibClass(EObject e) { false }
+	def static dispatch boolean inheritsFromLibClass(WClass c) { WollokResourceCache.hasResource(c.parent.file.URI)	}
+	def static dispatch boolean inheritsFromLibClass(WNamedObject o) { WollokResourceCache.hasResource(o.parent.file.URI) }
+	def static dispatch boolean inheritsFromLibClass(WObjectLiteral o) { true }
+
+	def static dispatch boolean inheritsFromObject(EObject e) { false }
+	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
+	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
+	
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
@@ -312,11 +327,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
 
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
-		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty))
+		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty)) {
 			// default constructor
 			clazz.findConstructorInSuper(arguments)
-		else {
-			val c = clazz.constructors.findFirst[ matches(arguments.size) ]
+		} else {
+			// FED - previously it was clazz.constructors, now if you don't define constructors class inherits from its superclass
+			val c = clazz.allConstructors.findFirst[ matches(arguments.size) ]
 			if (c == null)
 				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
 			c
@@ -420,6 +436,4 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
-	
-
 }
