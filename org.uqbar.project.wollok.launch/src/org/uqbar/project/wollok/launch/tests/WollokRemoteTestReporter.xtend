@@ -11,7 +11,11 @@ import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
+
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
+import org.uqbar.project.wollok.launch.Messages
+import org.eclipse.osgi.util.NLS
 
 /**
  * WollokTestReporter implementation that sends the event to a remote
@@ -30,12 +34,16 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	var callHandler = new CallHandler
 	var WollokRemoteUITestNotifier remoteTestNotifier
 	val testsResult = new LinkedList<WollokResultTestDTO>
-	var String suiteName = null
+	var boolean processingManyFiles
+	
+	String suiteName
+	List<WTest> allTests
 
 	@Inject
 	def init() {
 		client = new Client("localhost", parameters.testPort, callHandler)
 		remoteTestNotifier = client.getGlobal(WollokRemoteUITestNotifier) as WollokRemoteUITestNotifier
+		allTests = newArrayList
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
@@ -46,8 +54,15 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		testsResult.add(WollokResultTestDTO.ok(test.name))
 	}
 
-	override testsToRun(String suiteName, WFile file, List<WTest> tests) {
-		remoteTestNotifier.testsToRun(suiteName, file.eResource.URI.toString, new ArrayList(tests.map[new WollokTestInfo(it)]))
+	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
+		this.suiteName = _suiteName
+		if (processingManyFiles) {
+			this.suiteName = NLS.bind(Messages.ALL_TEST_IN_PROJECT, file.project.name)
+			this.allTests.addAll(tests)
+		} else {
+			this.allTests = tests
+			remoteTestNotifier.testsToRun(suiteName, file.eResource.URI.toString, new ArrayList(tests.map[new WollokTestInfo(it)]))
+		}
 	}
 
 	override testStart(WTest test) {
@@ -61,7 +76,23 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override finished() {
+		if (!processingManyFiles) {
+			remoteTestNotifier.testsResult(testsResult)
+		}
+	}
+
+	override initProcessManyFiles() {
+		processingManyFiles = true
+	}
+	
+	override endProcessManyFiles() {
+		processingManyFiles = false
+		remoteTestNotifier.testsToRun(suiteName, "", runnedTestsInfo)
 		remoteTestNotifier.testsResult(testsResult)
+	}
+	
+	protected def List<WollokTestInfo> getRunnedTestsInfo() {
+		new ArrayList(allTests.map[new WollokTestInfo(it)])
 	}
 	
 }

@@ -11,13 +11,16 @@ class WollokTestContainer {
 	var List<WollokTestResult> tests = newArrayList
 	var List<WollokTestResult> allTests = newArrayList
 	
+	new() {
+		super()
+	}	
 	
 	override toString(){
 		mainResource.toString
 	}
 	
 	def hasSuiteName() {
-		suiteName != null && !suiteName.isEmpty
+		suiteName !== null && !suiteName.isEmpty
 	}
 	
 	def filterTestByState(boolean shouldShowOnlyFailuresAndErrors) {

@@ -1,36 +1,27 @@
 package org.uqbar.project.wollok.launch
 
-import java.util.ArrayList
+import java.io.File
+import java.io.FileWriter
 import java.util.List
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
 
 /**
  * @author jfernandes
  * @author tesonep
  */
+@Accessors
 class WollokLauncherParameters {
-	@Accessors
 	Integer requestsPort = null
-	@Accessors
 	Integer eventsPort = null
-	@Accessors
-	List<String> wollokFiles = new ArrayList();
-	@Accessors
+	List<String> wollokFiles = newArrayList
 	boolean hasRepl = false
-	@Accessors
 	Integer testPort = null
-	@Accessors
 	boolean jsonOutput = false
-	@Accessors
 	boolean tests = false
-	@Accessors
 	boolean noAnsiFormat = false
 	
 	def build() {
@@ -77,7 +68,7 @@ class WollokLauncherParameters {
 		}
 		
 		//If the parameters are empty and we are in the REPL, I generate an empty file to be able of loading the REPL
-		if (wollokFiles.empty){
+		if (wollokFiles.empty && hasRepl){
 			val temp = new File("wollokREPL.wlk")
 			temp.deleteOnExit
 		
