@@ -24,7 +24,6 @@
    </extension>
    
    <!-- LAUNCH CONFIG FOR TESTS -->
-
 	<extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -161,7 +160,7 @@
       </shortcut>
             <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
-            description="Launch Wollok Tests"
+            description="Launch All Wollok Tests"
             icon="icons/wollok-icon-test_16.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.allTests"
@@ -388,5 +387,4 @@
       </menuContribution>
    </extension>
   <!-- /REPL -->
-
 </plugin>
