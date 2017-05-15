@@ -126,7 +126,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	override interpret(EObject rootObject, Boolean propagatingErrors) {
 		try {
 			log.debug("Starting interpreter")
-			rootObject.initStack
+			rootObject.generateStack
 			evaluator.evaluate(rootObject)
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
@@ -141,7 +141,11 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			debugger.terminated
 	}
 
-	def void initStack(EObject rootObject) {
+	def void initStack() {
+		executionStack = new ObservableStack<XStackFrame>
+	}
+	
+	def void generateStack(EObject rootObject) {
 		val stackFrame = rootObject.createInitialStackElement
 		executionStack.push(stackFrame)
 		debugger.started

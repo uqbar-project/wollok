@@ -60,7 +60,8 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	override evaluateAll(List<EObject> eObjects) {
 		wollokTestsReporter.initProcessManyFiles
 		val result = eObjects.fold(null, [ o, eObject |
-			interpreter.initStack(eObject)		 
+			interpreter.initStack
+			interpreter.generateStack(eObject)		 
 			evaluate(eObject as WFile)
 		])
 		wollokTestsReporter.endProcessManyFiles

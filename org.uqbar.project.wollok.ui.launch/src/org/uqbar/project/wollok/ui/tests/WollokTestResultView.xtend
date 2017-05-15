@@ -258,7 +258,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, testFile)
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, results.container.project)
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
@@ -409,7 +409,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
-		if (element.container == null)
+		if (element.container === null)
 			newArrayOfSize(0)
 		else
 			#[element.container]
@@ -424,7 +424,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 
 	def dispatch getElements(WollokTestResults inputElement) {
-		if (inputElement.container == null)
+		if (inputElement.container === null)
 			return newArrayOfSize(0)
 		else
 			return #[inputElement.container]

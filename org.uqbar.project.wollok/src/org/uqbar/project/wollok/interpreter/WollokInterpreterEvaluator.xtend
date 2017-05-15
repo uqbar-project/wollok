@@ -104,7 +104,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
-	override evaluateAll(List<EObject> wfiles) {
+	override evaluateAll(List<EObject> eObjects) {
 		// By default it does nothing
 	}
 
