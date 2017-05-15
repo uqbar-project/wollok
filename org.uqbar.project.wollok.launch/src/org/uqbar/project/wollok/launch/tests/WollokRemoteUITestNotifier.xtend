@@ -12,7 +12,7 @@ interface WollokRemoteUITestNotifier {
 	
 	def void testOk(String testName)
 	
-	def void testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests)
+	def void testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles)
 	
 	def void testStart(String testName)
 	

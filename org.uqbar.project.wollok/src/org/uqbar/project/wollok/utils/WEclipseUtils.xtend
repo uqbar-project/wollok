@@ -38,7 +38,6 @@ import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * Utilities on top of eclipse platform.

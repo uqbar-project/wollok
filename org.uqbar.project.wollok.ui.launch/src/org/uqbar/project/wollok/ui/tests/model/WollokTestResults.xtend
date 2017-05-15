@@ -36,9 +36,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers
 	}
 	
-	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests) {
+	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
 		this.container = new WollokTestContainer
 		this.container.suiteName = suiteName
+		this.container.processingManyFiles = processingManyFiles
 		this.container.mainResource = URI.createURI(containerResource)
 		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
@@ -93,5 +94,5 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.setChanged
 		this.notifyObservers
 	}
-	
+
 }

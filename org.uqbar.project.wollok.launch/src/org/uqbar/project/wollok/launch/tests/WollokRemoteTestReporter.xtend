@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * WollokTestReporter implementation that sends the event to a remote
@@ -45,11 +46,11 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	}
 
 	override reportTestAssertError(WTest test, AssertionException assertionException, int lineNumber, URI resource) {
-		testsResult.add(WollokResultTestDTO.assertionError(test.name, assertionException.message, assertionException.wollokException?.convertStackTrace, lineNumber, resource?.toString))
+		testsResult.add(WollokResultTestDTO.assertionError(test.getFullName(processingManyFiles), assertionException.message, assertionException.wollokException?.convertStackTrace, lineNumber, resource?.toString))
 	}
 
 	override reportTestOk(WTest test) {
-		testsResult.add(WollokResultTestDTO.ok(test.name))
+		testsResult.add(WollokResultTestDTO.ok(test.getFullName(processingManyFiles)))
 	}
 
 	override testsToRun(String _suiteName, WFile file, List<WTest> tests) {
@@ -59,7 +60,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 			this.suiteName = Messages.ALL_TEST_IN_PROJECT
 			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI))
 		} else {
-			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI))
+			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), false)
 		}
 	}
 
@@ -69,7 +70,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 
 	override reportTestError(WTest test, Exception exception, int lineNumber, URI resource) {
 		testsResult.add(
-			WollokResultTestDTO.error(test.name, exception.convertToString, exception.convertStackTrace, lineNumber,
+			WollokResultTestDTO.error(test.getFullName(processingManyFiles), exception.convertToString, exception.convertStackTrace, lineNumber,
 				resource?.toString))
 	}
 
@@ -85,14 +86,14 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	
 	override endProcessManyFiles() {
 		remoteTestNotifier => [
-			testsToRun(suiteName, "", this.testFiles)
+			testsToRun(suiteName, "", this.testFiles, true)
 			testsResult(testsResult)
 		]
 		processingManyFiles = false
 	}
 	
 	protected def List<WollokTestInfo> getRunnedTestsInfo(List<WTest> tests, String fileURI) {
-		new ArrayList(tests.map[new WollokTestInfo(it, fileURI)])
+		new ArrayList(tests.map[new WollokTestInfo(it, fileURI, processingManyFiles)])
 	}
 	
 }
