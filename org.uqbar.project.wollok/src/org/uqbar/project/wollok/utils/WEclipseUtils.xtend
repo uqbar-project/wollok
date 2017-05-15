@@ -87,8 +87,12 @@ class WEclipseUtils {
 		ResourcesPlugin.workspace.root.getFileForLocation(path)
 	}
 	
+	def static toIFile(EObject o) {
+		o.eResource.URI.toIFile
+	}
+	
 	def static getProject(EObject o) {
-		o.eResource.URI.toIFile.project
+		o.toIFile.project
 	}
 	
 	def static toIFile(java.net.URI uri) {

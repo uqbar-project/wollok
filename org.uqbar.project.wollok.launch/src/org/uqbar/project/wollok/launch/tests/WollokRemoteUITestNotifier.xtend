@@ -1,13 +1,14 @@
 package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
+import java.util.Map
 
 /**
  * @author tesonep
  */
 interface WollokRemoteUITestNotifier {
 	
-	def void assertError(String testName, String messaage, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
+	def void assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
 	
 	def void testOk(String testName)
 	

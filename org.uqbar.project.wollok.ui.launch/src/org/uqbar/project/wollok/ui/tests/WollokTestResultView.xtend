@@ -345,7 +345,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def dispatch openElement(WollokTestContainer container) {
-		opener.open(container.mainResource, true)
+		// @dodain - in case we are running all tests
+		if (container.mainResource !== null) {
+			opener.open(container.mainResource, true)
+		}
 	}
 
 	def dispatch openElement(WollokTestResult result) {

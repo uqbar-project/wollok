@@ -40,7 +40,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container = new WollokTestContainer
 		this.container.suiteName = suiteName
 		this.container.mainResource = URI.createURI(containerResource)
-		this.container.initTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
+		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
 		this.setChanged
 		this.notifyObservers		
@@ -77,7 +77,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 	
 	override testsResult(List<WollokResultTestDTO> tests) {
-		tests.forEach [ 
+		tests.forEach [
 			val test = testByName(it.testName)
 			if (it.ok()) {
 				test.endedOk()
@@ -90,7 +90,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 			}
 		]
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
-
 		this.setChanged
 		this.notifyObservers
 	}

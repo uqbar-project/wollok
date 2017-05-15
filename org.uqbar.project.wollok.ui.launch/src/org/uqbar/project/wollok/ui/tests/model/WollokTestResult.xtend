@@ -22,11 +22,13 @@ class WollokTestResult {
 	int lineNumber
 	// for other exceptions we just get the string. This is a hack, but I need to cut the refactor (exceptions to wollok)
 	String exceptionAsString
+	String mainResource
 
 	new(WollokTestInfo testInfo) {
 		this.testInfo = testInfo
 		state = WollokTestState.PENDING
 		testResource = URI.createURI(testInfo.resource)
+		mainResource = testInfo.fileURI
 	}
 
 	def getName() {
