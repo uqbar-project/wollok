@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.handlers
 
+import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
 import com.google.inject.Inject
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
@@ -71,6 +72,8 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 		setAttribute(ATTR_WOLLOK_IS_REPL, true)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
+		setAttribute(ATTR_WOLLOK_LIBS, projectToUse.loadLibs)
+		
 	}
 
 	def getOrCreateEmptyProject() {

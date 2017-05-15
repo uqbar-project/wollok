@@ -57,8 +57,10 @@ class JarWollokLib implements WollokLib {
 	
 	
 	def URLClassLoader findUrlClassLoader(ClassLoader cl) {
+		println("CLASSLOADER " + cl.class)
 		if(cl === null) {throw new RuntimeException("URLClassLoader is not present")}	
 		if(cl instanceof URLClassLoader) cl else cl.parent.findUrlClassLoader	
+		
 	}
 		
 }

@@ -17,7 +17,8 @@ class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def validateLib(){
-		val allManifests = manifestFinder.allManifests(resourceSet)
+		//TODO esto antes usaba un resourcet vacio
+		val allManifests = manifestFinder.allManifests(null)
 		val sb = new StringBuilder
 
 		allManifests.forEach[ manifest |

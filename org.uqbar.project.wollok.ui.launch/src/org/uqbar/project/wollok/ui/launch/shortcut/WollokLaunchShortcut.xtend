@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
+import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
@@ -100,10 +101,16 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
+		setAttribute(ATTR_WOLLOK_LIBS, info.findLibs)
 	}
 	
 	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
 	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
+
+	def findLibs(LaunchConfigurationInfo info) {
+		getProject(info.project).loadLibs
+	}
+
 }
 
 class LaunchConfigurationInfo {
@@ -122,5 +129,5 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
-	}
+	}	
 }

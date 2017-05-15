@@ -1,21 +1,16 @@
 package org.uqbar.project.wollok.manifest
 
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.uqbar.project.wollok.WollokActivator
-import com.google.inject.Singleton
-import java.util.List
 import com.google.inject.Inject
-import com.google.inject.name.Named
-import java.net.URLClassLoader
-import java.io.File
-import java.io.InputStream
-import java.net.URL
+import com.google.inject.Singleton
+import org.eclipse.emf.ecore.resource.Resource
+import org.uqbar.project.wollok.WollokActivator
+import java.util.List
 
 @Singleton
 class BasicWollokManifestFinder implements WollokManifestFinder {
 	
-	@Inject @Named("libraries")
-	var List<String> libs = #[]
+	@Inject
+	var WollokLibraries libs;
 	
 	val manifestNames = #["org.uqbar.project.wollok.lib"->"wollok"]
 	
@@ -29,16 +24,14 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 			new WollokManifest(class.getResourceAsStream("/" + fullName))
 	}
 	
-	override allManifests(ResourceSet resourceSet) {
+	override allManifests(Resource resource) {
 		val o = manifestNames.map[newManifest(it.key,it.value)] 
-		if (libs.isEmpty()) o else o + libraryManifests()
+		val allLibs = libs.getWollokLibs(resource);
+		if (allLibs.isEmpty()) o else o + allLibs.libraryManifests()
 	}
 	
-	def libraryManifests() {
-		libs.map[libManifest(it)]				
+	def libraryManifests(List<WollokLib> allLibs) {
+		allLibs.map[it.manifest]				
 	}
-	
-	def libManifest(String lib) {
-		new JarWollokLib(lib).getManifest()	
-	}	 
+
 }

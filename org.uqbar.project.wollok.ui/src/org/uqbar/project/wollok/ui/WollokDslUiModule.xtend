@@ -5,7 +5,12 @@ package org.uqbar.project.wollok.ui
 
 import com.google.inject.Binder
 import com.google.inject.name.Names
+import org.eclipse.core.resources.IResource
+import org.eclipse.core.runtime.IAdaptable
 import org.eclipse.jface.text.source.SourceViewerConfiguration
+import org.eclipse.jface.viewers.ISelection
+import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.ui.ISelectionService
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
@@ -39,6 +44,10 @@ import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
 import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
+import com.google.inject.TypeLiteral
+import java.util.List
+import org.uqbar.project.wollok.ui.properties.WollokUILibraries
+import org.uqbar.project.wollok.manifest.WollokLibraries
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -53,7 +62,10 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 
 		binder.bind(EObjectAtOffsetHelper).to(WollokEObjectAtOffsetHelper);
 		binder.bind(IEObjectHoverProvider).to(WollokEObjectHoverProvider);
+		binder.bind(WollokLibraries).to(WollokUILibraries)
 	}
+	
+	
 		
 	override bindITemplateProposalProvider() {
 		WollokTemplateProposalProvider;
@@ -74,7 +86,9 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		binder.bind(IJvmModelAssociations).to(DummyJvmModelAssociations); 
 		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory);
 		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
+		
 	}
+	
 	
 	def Class<? extends IProjectCreator> bindIProjectCreator() {
 		WollokProjectCreator;
@@ -107,4 +121,7 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 	def Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper(){
 		WollokAntlrTokenToAttributeIdMapper
 	}
+	
+	
+	
 }

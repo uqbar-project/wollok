@@ -5,6 +5,7 @@ package org.uqbar.project.wollok
 
 import com.google.inject.Binder
 import com.google.inject.name.Names
+import java.util.List
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
 import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider
@@ -18,11 +19,14 @@ import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.linking.WollokLinker
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider
 import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder
+import org.uqbar.project.wollok.manifest.JarWollokLibraries
+import org.uqbar.project.wollok.manifest.WollokLibraries
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
@@ -33,9 +37,6 @@ import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
-import org.uqbar.project.wollok.interpreter.core.WollokObject
-import com.google.inject.TypeLiteral
-import java.util.List
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -52,7 +53,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended).to(WollokLinkingDiagnosticMessageProvider);
 		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
 		
-		binder.bind(new TypeLiteral<List<String>>() {}).annotatedWith(Names.named("libraries")).toInstance(libs)
+		binder.bind(WollokLibraries).toInstance(new JarWollokLibraries(libs))
 	}
 	
 	//this method is overriden by WollokLauncherModule

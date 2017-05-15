@@ -1,18 +1,15 @@
 package org.uqbar.project.wollok.ui.properties;
 
+import static org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.saveLibs;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -26,17 +23,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.uqbar.project.wollok.WollokActivator;
-import org.uqbar.project.wollok.utils.StringUtils;
+
 
 @SuppressWarnings("all")
 public class WollokProjectPropertyPage extends PropertyPage implements IWorkbenchPropertyPage {
-	private final String LIB = "libraries";
 
 	private TableViewer viewer;
 	//this list is initialized on loadLibraries method
@@ -44,9 +37,7 @@ public class WollokProjectPropertyPage extends PropertyPage implements IWorkbenc
 
 	@Override
 	public IPreferenceStore doGetPreferenceStore() {
-		IProject _project = this.getProject();
-		ProjectScope _projectScope = new ProjectScope(_project);
-		return new ScopedPreferenceStore(_projectScope, WollokActivator.BUNDLE_NAME);
+		return WollokLibrariesStore.getProjectPreference(this.getProject());
 	}
 
 	public IProject getProject() {
@@ -188,17 +179,13 @@ public class WollokProjectPropertyPage extends PropertyPage implements IWorkbenc
 	}
 
 	public boolean performOk() {
-		saveLibs();
+		saveLibs(getPreferenceStore(), libraries);
 		return super.performOk();
 	}
 
-	protected void saveLibs() {
-		getPreferenceStore().setValue(LIB, String.join(";", getLibs()));
-	}
 	
 	protected void loadLibs() {
-		String libs = getPreferenceStore().getString(LIB);
-		libraries = (libs != null && !libs.trim().isEmpty())? new ArrayList(Arrays.asList(libs.split(";"))) : new ArrayList<>();
+		libraries = new ArrayList<String>(WollokLibrariesStore.loadLibs(getPreferenceStore()));
 	}
 
 	public List<String> getLibs() {

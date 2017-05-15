@@ -20,7 +20,17 @@ import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+
+import org.uqbar.project.wollok.WollokActivator
+
 import org.eclipse.ui.PlatformUI
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.internal.resources.Project
+import org.eclipse.core.resources.ProjectScope
+import org.eclipse.ui.preferences.ScopedPreferenceStore
+import java.util.ArrayList
+import java.util.Arrays
+import org.eclipse.core.resources.ResourcesPlugin
 
 /**
  * Launches the process to execute the interpreter.
@@ -92,9 +102,10 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.requestsPort = requestPort
 		parameters.wollokFiles += config.wollokFile
 		parameters.hasRepl = config.hasRepl
+		parameters.libraries = config.libraries
 		parameters
 	}
-	
+		
 	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){
 		config.programArguments = configureLaunchParameters(config, requestPort, eventPort).build
 	}

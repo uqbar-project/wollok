@@ -38,11 +38,12 @@ Import-Package: org.apache.log4j,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.uqbar.project.wollok.refactoring,
  org.uqbar.project.wollok.ui,
- org.uqbar.project.wollok.ui.internal,
  org.uqbar.project.wollok.ui.contentassist,
  org.uqbar.project.wollok.ui.editor,
+ org.uqbar.project.wollok.ui.internal,
  org.uqbar.project.wollok.ui.labeling,
  org.uqbar.project.wollok.ui.preferences,
+ org.uqbar.project.wollok.ui.properties,
  org.uqbar.project.wollok.ui.quickfix,
  org.uqbar.project.wollok.ui.wizard
 Bundle-Activator: org.uqbar.project.wollok.ui.WollokActivator
