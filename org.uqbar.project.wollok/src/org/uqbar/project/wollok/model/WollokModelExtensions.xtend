@@ -88,11 +88,12 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 	def static dispatch fqn(WSuite it) { nameWithPackage }
 
-	def static getNameWithPackage(EObject it){
-		method.declaringContext.nameWithPackage
+	def static getMethodContainer(EObject it){
+		method.declaringContext
 	}
+	def static getPackageName(WMethodContainer it) { implicitPackage + if (package !== null) "." + package.name  else ""}
 	def static getNameWithPackage(WMethodContainer it) {
-		implicitPackage + "." + if (package !== null) package.name + "." + name else name
+		getPackageName + "." + name
 	}
 
 	def static dispatch fqn(WObjectLiteral it) {

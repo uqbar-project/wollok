@@ -44,6 +44,18 @@ class WollokProposal {
 		member.asProposal
 	}
 
+	def getContainerName() {
+		member.getMethodContainer.name
+	}
+
+	def getContainerPackage() {
+		member.getMethodContainer.packageName
+	}
+
+	def getContainerFqn() {
+		member.getMethodContainer.getNameWithPackage
+	}
+
 	def createProposalStyler() {
 		val display = Display.getCurrent();
 		new Styler() {
@@ -55,18 +67,17 @@ class WollokProposal {
 	}
 
 	def getDisplayMessage() {
-		var String fromMessage 
+		var String fromMessage
 		if (member.eContainer.name.toLowerCase == "object")
 			fromMessage = ""
 		else if (member.isInMixin)
-			fromMessage = " - " + Messages.WollokProposal_form_mixin + " " + member.getNameWithPackage
-		else if (member.getNameWithPackage != referencePackage) {
-			fromMessage = " - " + Messages.WollokProposal_form_class + " " + member.getNameWithPackage
-		} else if (member.wollokClass !== null)
-			fromMessage = " - " + Messages.WollokProposal_form_class + " " + member.eContainer.name
-		else
-			fromMessage = " - " + Messages.WollokProposal_form_object + " " + member.eContainer.name.toString()
-		
+			fromMessage = " - " + Messages.WollokProposal_form_mixin + " " + containerName + " (" + containerPackage + ")"
+		else if (member.wollokClass !== null) {
+			fromMessage = " - " + Messages.WollokProposal_form_class + " " + containerName
+			if (containerFqn != referencePackage)
+				fromMessage += " (" + containerPackage + ")"
+		} else
+			fromMessage = " - " + Messages.WollokProposal_form_object + " " + this.getContainerName() // member.eContainer.name.toString()
 		(new StyledString(methodName)).append(fromMessage, createProposalStyler)
 	}
 
