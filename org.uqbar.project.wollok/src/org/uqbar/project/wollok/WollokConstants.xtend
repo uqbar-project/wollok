@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
  * but then used by the interpreter or any other processing (like quickfixes).
  * 
  * Avoids hardcoding strings all over the places.
- * So that if we decide to change the grammar sintax we can just change here.
+ * So that if we decide to change the grammar syntax we can just change here.
  * 
  * There's probably a way to get this via xtext but I'm not sure how
  * 
@@ -47,6 +47,8 @@ class WollokConstants {
 	public static val RETURN = "return"
 	public static val CLASS = "class"
 	public static val FIXTURE = "fixture" 
+	
+	public static val ROOT_CLASS = "Object"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 

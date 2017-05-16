@@ -297,7 +297,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.parent != null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
+		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
 
@@ -436,4 +437,5 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
+	
 }

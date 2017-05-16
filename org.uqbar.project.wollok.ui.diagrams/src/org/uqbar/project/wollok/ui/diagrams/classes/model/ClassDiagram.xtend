@@ -3,13 +3,12 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -32,6 +31,8 @@ class ClassDiagram extends ModelElement {
 	}
 	
 	def addClass(WClass c, int level) {
+		if (c == null || c.name == null) return;
+		if (c.name.equals(WollokConstants.ROOT_CLASS)) return;
 		addClass(new ClassModel(c) => [
 			locate(level)
 		])
@@ -60,10 +61,11 @@ class ClassDiagram extends ModelElement {
 	
 	def createRelation(Shape it, WMethodContainer c) {
 		val parent = c.parent
-		if (parent != null && it.shouldShowConnectorTo(parent)) {
+		if (parent !== null && it.shouldShowConnectorTo(parent)) {
 			val parentModel = classes.findFirst[clazz == parent]
-			if (parentModel == null) {
-				throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
+			if (parentModel === null) {
+				//FED - just ignoring it, user may be editing it or it is object class
+				//throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
 			}
 			else {
 				new Connection(null, it, parentModel)

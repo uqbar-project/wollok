@@ -3,6 +3,9 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 import com.google.inject.Inject
 import java.util.ArrayList
 import java.util.Comparator
+import java.util.HashMap
+import java.util.List
+import java.util.Set
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
@@ -72,6 +75,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
@@ -125,11 +130,13 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		NamedObjectModel.init()
 		MixinModel.init()
 		new ClassDiagram => [
-			// classes
+			// class
 			val classes = xtextDocument.readOnly[ classes ].toSet
+			classes.addAll(xtextDocument.readOnly [ getImportedClasses ].toSet)
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
-			ClassModel.init(classes.clone)
-
+			val allClasses = classes.removeDuplicated as List<WClass>
+			ClassModel.init(allClasses.clone)
+			
 			// objects (first so that we collect parents in the "classes" set
 			val objects = xtextDocument.readOnly[ namedObjects ]
 			
@@ -141,7 +148,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 			// classes
 			// first, superclasses
-			var classesCopy = classes.clone.filter [ it.parent == null ].toList
+			var classesCopy = allClasses.clone.filter [ it.parent === null ].toList
 			var int level = 0
 			while (!classesCopy.isEmpty) {
 				level++
@@ -149,9 +156,11 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				classesCopy.forEach [ c | addClass(c, levelCopy) ]
 				val parentClasses = classesCopy
 				// then subclasses of parent classes and recursively...
-				classesCopy = classes
+				classesCopy = allClasses
 					.clone
-					.filter [ parentClasses.contains(it.parent) ]
+					.filter [
+						parentClasses.contains(it.parent)
+					]
 					.sortWith([ WClass a, WClass b | 
 						val parentA = a.parent?.name ?: ""
 						val parentB = b.parent?.name ?: ""
@@ -162,8 +171,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			}
 
 			// mixins (for classes and objects)
-			(classes + objects).map [ o | o.mixins ].flatten.toSet.forEach [ m | addMixin(m) ]
-			//TODO: add mixins from document
+			val mixins = xtextDocument.readOnly[ mixins ].toSet
+			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
+			val allMixins = mixins.removeDuplicated as List<WMixin>
+			allMixins.forEach [ m | addMixin(m) ]
 
 			// relations
 			connectRelations
@@ -177,6 +188,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		wclass.parent.name
 	}
 	
+	def getMixins(XtextResource it) { getAllOfType(WMixin) }
 	def getClasses(XtextResource it) { getAllOfType(WClass) }
 	def getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
 	
@@ -193,6 +205,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		imports.fold(newArrayList)[l, i |
 			try {
 				l.add(finder.getCachedClass(i, i.importedNamespace))
+			}
+			catch(ClassCastException e) {
+				// Temporarily user is writing another import
 			}
 			catch(WollokRuntimeException e) { }
 			l
@@ -485,6 +500,12 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		}
 	}
 	
-	
+	def List<? extends WNamed> removeDuplicated(Set<? extends WNamed> wnames) {
+		val namedMap = new HashMap<String, WNamed>()
+		wnames.forEach [ wname |
+			namedMap.put(wname.name, wname)
+		]
+		namedMap.values.toList
+	}
 	
 }
