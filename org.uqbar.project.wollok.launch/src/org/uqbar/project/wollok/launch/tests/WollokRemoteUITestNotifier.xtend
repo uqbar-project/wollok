@@ -1,17 +1,18 @@
 package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
+import java.util.Map
 
 /**
  * @author tesonep
  */
 interface WollokRemoteUITestNotifier {
 	
-	def void assertError(String testName, String messaage, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
+	def void assertError(String testName, String message, StackTraceElementDTO[] stackTrace, int lineNumber, String resource)
 	
 	def void testOk(String testName)
 	
-	def void testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests)
+	def void testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles)
 	
 	def void testStart(String testName)
 	
@@ -20,5 +21,5 @@ interface WollokRemoteUITestNotifier {
 	def void testsResult(List<WollokResultTestDTO> resultTests)
 
 	def void showFailuresAndErrorsOnly(boolean showFailuresAndErrors)
-
+	
 }

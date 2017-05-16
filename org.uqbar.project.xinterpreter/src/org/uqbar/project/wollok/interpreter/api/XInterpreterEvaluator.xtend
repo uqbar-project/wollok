@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter.api
 
 import java.io.Serializable
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 
 /**
@@ -20,8 +21,9 @@ import org.eclipse.emf.ecore.EObject
 interface XInterpreterEvaluator<O> extends Serializable {
 	
 	def O evaluate(EObject o)
-
+	def O evaluateAll(List<EObject> eObjects)
+	
 	// this will be deleted eventually
 	def (O,()=>O)=>O resolveBinaryOperation(String operator)
-
+	
 }

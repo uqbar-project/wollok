@@ -41,6 +41,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -77,6 +78,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	@Inject
 	WollokTestLaunchShortcut testLaunchShortcut
+	
+	@Inject
+	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
 	ToolBar toolbar
 
@@ -85,7 +89,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ToolItem debugAgain
 	
 	def canRelaunch() {
-		results != null && results.container != null && results.container.mainResource != null
+		results !== null && results.container !== null && results.container.mainResource !== null
 	}
 
 	def relaunch() {
@@ -97,7 +101,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		testLaunchShortcut.launch(testFile, mode)
+		if (results.container.processingManyFiles) {
+			allTestsLaunchShortcut.launch(results.container.project, mode)
+		} else {
+			testLaunchShortcut.launch(testFile, mode)
+		}
 	}
 
 	def testFile() {
@@ -250,7 +258,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, testFile)
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, results.container.project)
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
@@ -309,7 +317,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.refresh(true)
 		testTree.expandAll
 
-		if (results.container != null) {
+		if (results.container !== null) {
 			val runned = (total - count[state == WollokTestState.PENDING])
 			totalTextBox.text = runned.toString + "/" + total.toString
 
@@ -345,7 +353,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def dispatch openElement(WollokTestContainer container) {
-		opener.open(container.mainResource, true)
+		// @dodain - in case we are running all tests
+		if (container.mainResource !== null) {
+			opener.open(container.mainResource, true)
+		}
 	}
 
 	def dispatch openElement(WollokTestResult result) {
@@ -398,7 +409,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
-		if (element.container == null)
+		if (element.container === null)
 			newArrayOfSize(0)
 		else
 			#[element.container]
@@ -413,7 +424,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 
 	def dispatch getElements(WollokTestResults inputElement) {
-		if (inputElement.container == null)
+		if (inputElement.container === null)
 			return newArrayOfSize(0)
 		else
 			return #[inputElement.container]
