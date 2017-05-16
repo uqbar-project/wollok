@@ -5,7 +5,7 @@ import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WMethodFigure
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.isAbstract
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * 

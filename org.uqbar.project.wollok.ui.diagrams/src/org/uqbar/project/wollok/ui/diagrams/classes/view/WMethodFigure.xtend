@@ -19,5 +19,5 @@ class WMethodFigure extends AbstractClassMemberFigure<WMethodDeclaration> {
 				JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT)
 		repaint
 	}
-
+	
 }

@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.WollokConstants
  */
 @Accessors
 class ClassModel extends Shape {
+	var int objectsAndMixins = 0
 	static List<WClass> classes = newArrayList
 	static Map<Integer, Integer> levelHeight
 	static Map<Integer, Integer> levelWidth
@@ -29,7 +30,7 @@ class ClassModel extends Shape {
 	val static WIDTH_SEPARATION_BETWEEN_CLASSES = 30
 	val static HEIGHT_SEPARATION_BETWEEN_CLASSES = 20
 	val static INITIAL_MARGIN = 5
-	
+			
 	WClass clazz
 	boolean imported = false
 	
@@ -44,6 +45,7 @@ class ClassModel extends Shape {
 	new(WClass wClass) {
 		clazz = wClass
 		defineSize
+		objectsAndMixins = NamedObjectModel.objectsCount + MixinModel.mixinsCount
 	}
 	
 	def void defineSize() {
@@ -121,9 +123,6 @@ class ClassModel extends Shape {
 		subclassesCount * width	
 	}
 		
-	/**
-	 * TODO: Define a strategy based on size of control  
-	 */
 	def width() {
 		120
 	}
@@ -133,7 +132,6 @@ class ClassModel extends Shape {
 	}
 	
 	def adjustedHeight() {
-		val objectsAndMixins = NamedObjectModel.objectsCount + MixinModel.mixinsCount
 		if (objectsAndMixins > 0) 150 else 0
 	}
 	
