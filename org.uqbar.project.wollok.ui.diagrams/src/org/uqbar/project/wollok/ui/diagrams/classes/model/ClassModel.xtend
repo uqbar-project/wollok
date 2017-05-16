@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model;
 
-import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.draw2d.geometry.Dimension
@@ -10,6 +9,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static extension java.lang.Integer.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * A rectangular shape.
@@ -19,8 +19,9 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 @Accessors
 class ClassModel extends Shape {
 	static List<WClass> classes = newArrayList
-	static Map<String, Integer> heights
-	static Map<Integer, Integer> levelWidth = newHashMap
+	static Map<Integer, Integer> levelHeight
+	static Map<Integer, Integer> levelWidth
+	static Map<String, Integer> initialWidthForClass
 	val static LETTER_WIDTH = 9
 	val static FILE_HEIGHT = 18
 	val static CLASS_WIDTH = 45
@@ -34,10 +35,10 @@ class ClassModel extends Shape {
 	
 	
 	static def void init(List<WClass> _classes) {
+		levelHeight = newHashMap
 		levelWidth = newHashMap
+		initialWidthForClass = newHashMap
 		classes = _classes
-		heights = new HashMap<String, Integer>
-		classes.forEach [ heights.put(it.name, 0) ]
 	}
 	
 	new(WClass wClass) {
@@ -74,29 +75,33 @@ class ClassModel extends Shape {
 	def locate(int level) {
 		val subclasses = classes.clone.filter [ it.parent !== null && it.parent == this.clazz ].toList
 		val calculatedWidthOfSubclasses = subclasses.calculatedWidth
-		var initialWidth = levelWidth.get(level) ?: INITIAL_MARGIN
+		var initialWidth = Math.max(levelWidth.get(level) ?: INITIAL_MARGIN, this.clazz.initialWidth)
 		val addedWidthOfShape = this.clazz.shapeWidth + WIDTH_SEPARATION_BETWEEN_CLASSES
 		val xPosition = initialWidth + (calculatedWidthOfSubclasses / 2).intValue
-		location = new Point(xPosition, getCalculatedHeight(level, subclasses))
-		subclasses.adjustHeightForSubclasses()
+		initialWidthForClass.put(this.clazz.name, initialWidth)
+		location = new Point(xPosition, level.calculatedHeight)
+		level.adjustHeight
 		levelWidth.put(level, initialWidth + addedWidthOfShape + calculatedWidthOfSubclasses)
 	}
 	
-	def getCalculatedHeight(int level, List<WClass> subclasses) {
-		val currentHeight = heights.get(this.clazz.name) ?: 0
-		adjustedHeight + (level * HEIGHT_SEPARATION_BETWEEN_CLASSES) + currentHeight
+	def int getInitialWidth(WClass wClass) {
+		if (wClass.parent === null || wClass.parent.name.equals(WollokConstants.ROOT_CLASS)) return 0;
+		initialWidthForClass.get(wClass.parent.name) ?: 0
 	}
 	
-	def void adjustHeightForSubclasses(List<WClass> subclasses) {
-		var currentHeightForSubclasses = 0
-		if (!subclasses.empty) {
-			currentHeightForSubclasses = heights.get(subclasses.head.name) ?: 0
-		}
-		val currentClassHeight = this.clazz.shapeHeight + heights.get(this.clazz.name)
-		val newHeightForSubclasses = Math.max(currentClassHeight, currentHeightForSubclasses)
-		subclasses.forEach [ 
-			heights.put(it.name, newHeightForSubclasses)
-		]
+	def getCalculatedHeight(int level) {
+		val Integer result = (1..level).toList.fold(0, [acum, currentLevel |
+			val Integer currentHeight = levelHeight.get(currentLevel) ?: 0
+			acum + currentHeight + HEIGHT_SEPARATION_BETWEEN_CLASSES + adjustedHeight
+		])
+		result
+	}
+	
+	def void adjustHeight(int level) {
+		val currentHeight = levelHeight.get(level + 1) ?: 0
+		val currentClassHeight = clazz.shapeHeight
+		val newLevelHeight = Math.max(currentClassHeight, currentHeight)
+		levelHeight.put(level + 1, newLevelHeight)
 	}
 	
 	def getCalculatedWidth(List<WClass> subclasses) {
@@ -128,11 +133,8 @@ class ClassModel extends Shape {
 	}
 	
 	def adjustedHeight() {
-		if (NamedObjectModel.objectsCount + MixinModel.mixinsCount > 0) {
-			0
-		} else {
-			150
-		}
+		val objectsAndMixins = NamedObjectModel.objectsCount + MixinModel.mixinsCount
+		if (objectsAndMixins > 0) 150 else 0
 	}
 	
 	def getName() {
