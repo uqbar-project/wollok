@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
@@ -22,6 +23,7 @@ class ClassDiagram extends ModelElement {
 	public static val CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved"
 	public static val CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded"
 	List<ClassModel> classes = new ArrayList
+	List<? extends WNamed> importedObjects = new ArrayList
 	List<MixinModel> mixins = new ArrayList
 	List<NamedObjectModel> objects = new ArrayList
 
@@ -35,6 +37,9 @@ class ClassDiagram extends ModelElement {
 		if (c.name.equals(WollokConstants.ROOT_CLASS)) return;
 		addClass(new ClassModel(c) => [
 			locate(level)
+			if (importedObjects.contains(c)) {
+				imported = true
+			}
 		])
 	}
 	

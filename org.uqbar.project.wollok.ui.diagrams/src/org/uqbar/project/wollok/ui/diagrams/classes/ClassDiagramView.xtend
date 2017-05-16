@@ -132,7 +132,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		new ClassDiagram => [
 			// class
 			val classes = xtextDocument.readOnly[ classes ].toSet
-			classes.addAll(xtextDocument.readOnly [ getImportedClasses ].toSet)
+			val importedClasses = xtextDocument.readOnly [ getImportedClasses ].toSet
+			importedObjects = importedClasses.toList
+			classes.addAll(importedClasses)
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
 			val allClasses = classes.removeDuplicated as List<WClass>
 			ClassModel.init(allClasses.clone)
@@ -151,7 +153,6 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			var classesCopy = allClasses.clone.filter [ it.parent === null ].toList
 			var int level = 0
 			while (!classesCopy.isEmpty) {
-				level++
 				val levelCopy = level
 				classesCopy.forEach [ c | addClass(c, levelCopy) ]
 				val parentClasses = classesCopy
@@ -168,6 +169,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 					] as Comparator<WClass>)
 					.toList
 					
+				level++
 			}
 
 			// mixins (for classes and objects)
