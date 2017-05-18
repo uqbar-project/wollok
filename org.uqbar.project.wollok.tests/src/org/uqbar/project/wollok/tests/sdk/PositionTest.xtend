@@ -84,7 +84,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	def void positionCanBeAccessedByGetterMethod() {
 		'''
 		object aVisual {
-			method get«convention.toFirstUpper»() = «position»
+			method «convention»() = «position»
 			«imageMethod»
 		}
 		

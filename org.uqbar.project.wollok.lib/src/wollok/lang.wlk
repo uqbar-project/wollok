@@ -549,9 +549,14 @@ class Collection {
 	 * resulting collection.
 	 * @returns a new List
 	 * Example:
-	 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() }) 
+	 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() })
 	 */
-	method sortedBy(closure) = self.copy().asList().sortBy(closure)
+	method sortedBy(closure) {
+		var copy = self.copy().asList()
+		copy.sortBy(closure)
+		return copy
+	}
+	
 	
 	/**
 	 * Answers a new, empty collection of the same type as self.
@@ -1061,6 +1066,8 @@ class Number {
 	 * 5.truncate(3) ==> 5
 	 */
 	method truncate(_decimals)
+
+	method plus() = self
 }
 
 /**
@@ -1193,6 +1200,7 @@ class Integer inherits Number {
 	
 	override method roundUp(_decimals) = self
 	override method truncate(_decimals) = self
+	
 }
 
 /**
@@ -1672,10 +1680,11 @@ class Date {
 	method day() native
 	
 	/** Answers the day of week of the Date, where
-	 * 0 = SUNDAY
 	 * 1 = MONDAY
 	 * 2 = TUESDAY
-	 * 3 = WEDNESDAY ...
+	 * 3 = WEDNESDAY
+	 * ...
+	 * 7 = SUNDAY
 	 */
 	method dayOfWeek() native
 	

@@ -19,7 +19,7 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override reportTestOk(WTest test) {}
 	
-	override testsToRun(WFile file, List<WTest> tests) {}
+	override testsToRun(String suiteName, WFile file, List<WTest> tests) {}
 	
 	override testStart(WTest test) {}
 	
@@ -29,6 +29,12 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	override finished() {
 	
+	}
+	
+	override initProcessManyFiles() {
+	}
+	
+	override endProcessManyFiles() {
 	}
 	
 }

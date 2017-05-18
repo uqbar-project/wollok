@@ -3,7 +3,7 @@
 class Golondrina {
 	var energia = 100
 
-	method energia() {
+	method asignarEnergia() {
 		// XPECT errors --> "Cannot assign a variable to itself. It does not have any effect" at "energia"
 		energia = energia 
 	}

@@ -7,14 +7,17 @@ import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.ITextRegionWithLineInformation
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WTest
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
  * Extension methods and utilities for xtext
@@ -57,6 +60,15 @@ class XTextExtensions {
 	def static objectURI(EObject o) { (o.eResource as XtextResource).getURIFragment(o) }
 	
 	def static getSiblings(EObject o) { o.eContainer.eContents.filter[it != o] }
+	
+	def static getSiblings(WTest t) {
+		try {
+			(t.eContainer as WFile).tests	
+		} catch (ClassCastException e) {
+			(t.eContainer as WSuite).tests
+		}
+		
+	}
 	
 	def static allSiblingsBefore(EObject o) {
 		val beforeNodes = newArrayList

@@ -24,7 +24,6 @@
    </extension>
    
    <!-- LAUNCH CONFIG FOR TESTS -->
-
 	<extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -38,7 +37,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/wtest-icon.png"
+            icon="icons/wollok-icon-test_16.png"
             configTypeID="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
             id="org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationTypeImage">
       </launchConfigurationTypeImage>
@@ -137,10 +136,11 @@
          </contextualLaunch>
       </shortcut>
       <!-- /REPL -->
+      <!-- TESTS -->
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
-            description="Launch Wollok with Repl"
-            icon="icons/w.png"
+            description="Launch Wollok Tests"
+            icon="icons/wollok-icon-test_16.png"
             id="org.uqbar.project.wollok.ui.tests.shortcut"
             label="%wollok.launch.tests"
             modes="run, debug">
@@ -151,13 +151,35 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <adapt type="org.eclipse.core.resources.IFile"/>
-	              <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  	<adapt type="org.eclipse.core.resources.IFile"/>
+                  	<test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
                </iterate>
              </with>
            </enablement>
          </contextualLaunch>
       </shortcut>
+            <shortcut
+            class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
+            description="Launch All Wollok Tests"
+            icon="icons/wollok-icon-test_16.png"
+            id="org.uqbar.project.wollok.ui.tests.shortcut"
+            label="%wollok.launch.allTests"
+            modes="run, debug">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  	<adapt type="org.eclipse.core.resources.IResource"/>
+                  	<test property="org.eclipse.jdt.launching.isContainer"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <!-- /TESTS -->
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -199,7 +221,7 @@
       </command>
       <command
             categoryId="org.eclipse.debug.ui.category.run"
-            defaultHandler="org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
+            defaultHandler="org.uqbar.project.wollok.ui.launch.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.launch.handlers.LaunchReplWithoutFileHandler"
             description="%wollok.launch.replWithoutFile.desc"
             id="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
             name="%wollok.launch.replWithoutFile">
@@ -365,5 +387,4 @@
       </menuContribution>
    </extension>
   <!-- /REPL -->
-
 </plugin>

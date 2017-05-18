@@ -30,10 +30,12 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY;
-	
+	public static String WollokDslValidator_METHOD_OVERRIDING_BASE_CLASS;
+
 	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
+	public static String WollokDslValidator_CYCLIC_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_NAME;
@@ -64,6 +66,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_INCONSISTENT_HIERARCHY_MIXIN_CALLING_SUPER_NOT_FULLFILLED;
 	
 	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
+	public static String WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO;
 	
 	public static String WollokDslValidator_NO_RETURN_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_CANNOT_RETURN_ASSIGNMENT;
@@ -114,6 +117,20 @@ public class Messages extends NLS {
 	
 	public static String OBJECT_DESCRIPTION_ARTICLE;
 	public static String OBJECT_DESCRIPTION_AN_OBJECT;
+
+	// ****************************
+	// ** Element name validation
+	// ****************************
+	
+	public static String ElementNameValidation_NameShouldBeAlphabetic;
+	public static String ElementNameValidation_InvalidCharacterInName;
+	
+	// ****************************
+	// ** Syntax message provider
+	// ****************************
+	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
+	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS;
+	public static String SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS;
 	
 	static {
 		// initialize resource bundle
@@ -122,7 +139,6 @@ public class Messages extends NLS {
 	
 	public static Properties loadProperties() { return WNLS.load(BUNDLE_NAME, Messages.class); }
 
-	private Messages() {
-	}
+	private Messages() { }
 
 }

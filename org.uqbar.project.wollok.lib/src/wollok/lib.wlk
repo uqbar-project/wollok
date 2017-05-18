@@ -32,10 +32,23 @@ class OtherValueExpectedException inherits wollok.lang.Exception {
 
 class AssertionException inherits Exception {
 
+	var expected = null
+	var actual = null
+
 	constructor(message) = super(message)
 	
 	constructor(message, cause) = super(message, cause)
 	
+	constructor(message, _expected, _actual) = self(message) {
+		expected = _expected
+		actual = _actual
+	}
+	
+	/** Answers the expected value, if present */
+	method getExpected() = expected
+	
+	/** Answers the actual value, if present */
+	method getActual() = actual
 }
 
 
@@ -72,7 +85,7 @@ object assert {
 	 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
 	 */
 	method equals(expected, actual) {
-		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]") 
+		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]", expected.printString(), actual.printString()) 
 	}
 	
 	/** Tests whether two values are equal, based on wollok ==, != methods */

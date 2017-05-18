@@ -41,6 +41,7 @@ import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResult
 import org.uqbar.project.wollok.ui.tests.model.WollokTestResults
 import org.uqbar.project.wollok.ui.tests.model.WollokTestState
+import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
@@ -77,15 +78,18 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	@Inject
 	WollokTestLaunchShortcut testLaunchShortcut
+	
+	@Inject
+	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
 	ToolBar toolbar
 
+	ToolItem showFailuresAndErrors
 	ToolItem runAgain
-
 	ToolItem debugAgain
-
+	
 	def canRelaunch() {
-		results != null && results.container != null && results.container.mainResource != null
+		results !== null && results.container !== null && results.container.mainResource !== null
 	}
 
 	def relaunch() {
@@ -97,13 +101,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def relaunch(String mode) {
-		testLaunchShortcut.launch(testFile, mode)
+		if (results.container.processingManyFiles) {
+			allTestsLaunchShortcut.launch(results.container.project, mode)
+		} else {
+			testLaunchShortcut.launch(testFile, mode)
+		}
 	}
 
 	def testFile() {
 		results.container.mainResource.toIFile
 	}
 
+	def toggleShowFailuresAndErrors() {
+		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)	
+	}
+	
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -143,16 +155,25 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.BEGINNING).grab(true, false).applyTo(toolbar)
 
+		showFailuresAndErrors = new ToolItem(toolbar, SWT.CHECK) => [
+			toolTipText = Messages.WollokTestResultView_showOnlyFailuresAndErrors
+			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.gif")
+			image = resManager.createImage(pathImage)
+			addListener(SWT.Selection)[ this.toggleShowFailuresAndErrors ]
+			enabled = true
+		]
+
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/runlast_co.gif"))
+			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.gif")
+			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
 		]
 
 		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_debugAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("icons/debuglast_co.gif"))
+			image = resManager.createImage(Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
 			addListener(SWT.Selection)[this.relaunchDebug]
 			enabled = false
 		]
@@ -237,7 +258,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, testFile)
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, results.container.project)
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
@@ -296,7 +317,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		testTree.refresh(true)
 		testTree.expandAll
 
-		if (results.container != null) {
+		if (results.container !== null) {
 			val runned = (total - count[state == WollokTestState.PENDING])
 			totalTextBox.text = runned.toString + "/" + total.toString
 
@@ -321,18 +342,21 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
-		results.container.tests.filter(predicate).size
+		results.container.allTests.filter(predicate).size
 	}
 
 	def total() {
-		results.container.tests.size
+		results.container.allTests.size
 	}
 
 	override setFocus() {
 	}
 
 	def dispatch openElement(WollokTestContainer container) {
-		opener.open(container.mainResource, true)
+		// @dodain - in case we are running all tests
+		if (container.mainResource !== null) {
+			opener.open(container.mainResource, true)
+		}
 	}
 
 	def dispatch openElement(WollokTestResult result) {
@@ -364,6 +388,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getText(WollokTestContainer element) {
+		if (element.hasSuiteName) return element.suiteName
 		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
 		element.mainResource.deresolve(base).toFileString
 	}
@@ -384,7 +409,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	var WollokTestResults results
 
 	def dispatch getChildren(WollokTestResults element) {
-		if (element.container == null)
+		if (element.container === null)
 			newArrayOfSize(0)
 		else
 			#[element.container]
@@ -399,7 +424,7 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	}
 
 	def dispatch getElements(WollokTestResults inputElement) {
-		if (inputElement.container == null)
+		if (inputElement.container === null)
 			return newArrayOfSize(0)
 		else
 			return #[inputElement.container]

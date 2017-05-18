@@ -7,7 +7,7 @@ import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 WFile:
     (imports+=Import)*
 	elements+=WLibraryElement* 
-	(main=WProgram | tests+=WTest+)?
+	(main=WProgram | tests+=WTest+ | suite=WSuite)?
 ;
 
 // IMPORTS
@@ -31,6 +31,22 @@ WTest:
 	'}'
 ;
 
+WSuite:
+	'describe' name=STRING 
+	'{'
+		(members+=WVariableDeclaration ';'?)*
+		(fixture=WFixture)?
+		(members+=WMethodDeclaration ';'?)*
+		(tests+=WTest)+	
+	'}'
+;
+
+WFixture:
+	'fixture' '{'
+		(elements+=WExpression ';'?)+
+	'}'	
+;
+
 WPackage:
 	'package' name=QualifiedName '{'
 		elements+=(WClass | WNamedObject)*
@@ -41,9 +57,9 @@ WPackage:
 // porque a veces xtext no genera bien.
 // eventualmente sería bueno construir estas clases a mano con EMF, y poder
 // agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
-WLibraryElement: (WPackage | WClass | WNamedObject | WMixin );
+WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
-WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin;
+WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
 WReferenciable: WParameter | {WVariable} | WNamedObject ;
 
 WObjectLiteral returns WExpression:

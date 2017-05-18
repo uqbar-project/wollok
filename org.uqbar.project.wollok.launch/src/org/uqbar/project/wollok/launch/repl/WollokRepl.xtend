@@ -16,12 +16,10 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-
-
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.launch.repl.Messages.*
+import static org.uqbar.project.wollok.launch.Messages.*
 
 /**
  * 
@@ -40,7 +38,8 @@ class WollokRepl {
 	val WFile parsedMainFile
 	val extension ReplOutputFormatter formatter
 
-	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile, ReplOutputFormatter formatter) {
+	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile,
+		ReplOutputFormatter formatter) {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
@@ -50,54 +49,59 @@ class WollokRepl {
 		this.formatter = formatter
 	}
 
+	def void printWelcomeStructure() {
+		println(REPL_WELCOME.importantMessageStyle)
+		printPrompt
+	}
+
 	def void startRepl() {
 		var String input
 
-		println(REPL_WELCOME.importantMessageStyle)
-		printPrompt
-		
+		printWelcomeStructure
+
 		while ((input = readInput) != "quit") {
-			executeInput(input)
-			printPrompt
+			if (input == "/^*^?/") { // Code that indicates console cleaning
+				printWelcomeStructure
+			} else {
+				executeInput(input)
+				printPrompt
+			}
 		}
 	}
-	
+
 	def printPrompt() {
 		print(prompt.messageStyle)
 	}
-	
+
 	def String readInput() {
 		val input = reader.readLine.trim
 		if (input == "") {
 			printPrompt
 			readInput
-		}
+		} else if (input.endsWith(";"))
+			input + " " + readInput
 		else
-			if (input.endsWith(";")) 
-				input + " " + readInput
-			else input
+			input
 	}
-	
+
 	def executeInput(String input) {
-			try {
-				val returnValue = interpreter.interpret(
-					'''
-						«FOR a : parsedMainFile.imports.map[importedNamespace]»
-						import «a»
-						«ENDFOR»
-						import «parsedMainFile.implicitPackage».*
-						program repl {
-						«input»
-						}
-					'''.parseRepl(mainFile),true)
-				printReturnValue(returnValue)
-			}
-			catch (Exception e) {
-				resetIndent
-				handleException(e)
-			}
+		try {
+			val returnValue = interpreter.interpret('''
+				«FOR a : parsedMainFile.imports.map[importedNamespace]»
+					import «a»
+				«ENDFOR»
+				import «parsedMainFile.implicitPackage».*
+				program repl {
+				«input»
+				}
+			'''.parseRepl(mainFile), true)
+			printReturnValue(returnValue)
+		} catch (Exception e) {
+			resetIndent
+			handleException(e)
+		}
 	}
-	
+
 	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
 		if (obj == null)
@@ -105,7 +109,7 @@ class WollokRepl {
 		else if (obj instanceof WollokObject && !(obj as WollokObject).isVoid)
 			doPrintReturnValue(obj)
 	}
-	
+
 	def dispatch doPrintReturnValue(Object obj) {
 		println(obj?.toString.returnStyle)
 	}
@@ -136,7 +140,8 @@ class WollokRepl {
 	def uriToUse(ResourceSet resourceSet) {
 		var name = "__synthetic";
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
-			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
+			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).
+				appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
 			if (resourceSet.getResource(syntheticUri, false) == null) {
 				return syntheticUri
 			}
@@ -148,11 +153,11 @@ class WollokRepl {
 		print(whiteSpaces)
 		println(obj)
 	}
-	
+
 	def indent() {
 		whiteSpaces = whiteSpaces + "     "
 	}
-	
+
 	def resetIndent() {
 		whiteSpaces = ""
 	}
@@ -162,18 +167,18 @@ class WollokRepl {
 			printlnIdent(errorStyle('''«severity.name»: «message» («LINE»: «lineNumber - numberOfLinesBefore»)'''))
 		]
 	}
-	
+
 	def dispatch void handleException(Throwable e) {
 		println(e.stackTraceAsString.errorStyle)
 	}
-	
+
 	def stackTraceAsString(Throwable e) {
 		val s = new ByteArrayOutputStream
 		e.printStackTrace(new PrintStream(s))
 		new String(s.toByteArray)
 	}
 
-	def getNumberOfLinesBefore(){
+	def getNumberOfLinesBefore() {
 		2 + parsedMainFile.imports.size
 	}
 
@@ -181,16 +186,16 @@ class WollokRepl {
 		// Wollok-level user exception
 		printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
 	}
-	
+
 	def CharSequence filterREPLLines(String originalStackTrace) {
-		val result = originalStackTrace
-			.split(System.lineSeparator)
-			.filter [ stack | !stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl") ]
-			.fold(new StringBuffer, [ acum, stackTrace | acum.append(stackTrace)
-														 acum.append(System.lineSeparator)
-														 acum 
-			])
-		val endCharacters = System.lineSeparator.length			
+		val result = originalStackTrace.split(System.lineSeparator).filter [ stack |
+			!stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl")
+		].fold(new StringBuffer, [ acum, stackTrace |
+			acum.append(stackTrace)
+			acum.append(System.lineSeparator)
+			acum
+		])
+		val endCharacters = System.lineSeparator.length
 		result.deleteCharAt(result.length - endCharacters)
 		result.toString
 	}
@@ -199,15 +204,15 @@ class WollokRepl {
 		if (e.lineNumber > numberOfLinesBefore) {
 			printlnIdent('''«WVM_ERROR» («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
-		
+
 		if (e.cause != null) {
 			indent
 			handleException(e.cause)
 		}
 	}
-	def getPrompt(){
+
+	def getPrompt() {
 		prompt.messageStyle.toString
 	}
-	
-	
+
 }

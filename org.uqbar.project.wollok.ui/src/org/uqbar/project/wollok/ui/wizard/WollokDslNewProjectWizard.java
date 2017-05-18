@@ -38,6 +38,7 @@ public class WollokDslNewProjectWizard extends org.eclipse.xtext.ui.wizard.Xtext
 	protected IProjectInfo getProjectInfo() {
 		org.uqbar.project.wollok.ui.wizard.WollokDslProjectInfo projectInfo = new org.uqbar.project.wollok.ui.wizard.WollokDslProjectInfo();
 		projectInfo.setProjectName(mainPage.getProjectName());
+		if(!mainPage.useDefaults()) projectInfo.setLocationPath(mainPage.getLocationPath());
 		return projectInfo;
 	}
 

@@ -80,3 +80,48 @@ class ConstructorCallTest {
 	
 }
 
+class A {
+	var x
+	constructor() { }
+	constructor(_x) { x = _x }
+	method x() = x
+}
+
+class B inherits A {
+	constructor()
+	method doWhatBDoesWell() {} 
+}
+
+class C inherits A {
+	var y = 0
+	constructor(_x, _y) = super(_x) {
+		y = _y
+	}
+	method doWhatCDoesWell() {} 
+}
+
+class D inherits A {
+	
+}
+
+class TestLastConstructorDefinition {
+	method doSomething() {
+		/* XPECT issues --- 
+		   "Wrong number of arguments. Should be new B()" at "2"
+		   "Unused variable" at "b"
+		   ---
+		*/
+		const b = new B(2)
+		const anotherB = new B()
+		anotherB.doWhatBDoesWell()
+		var c = new C(1, 5)
+		// XPECT errors --> "Wrong number of arguments. Should be new C(_x, _y)" at "new C()"
+		c = new C()
+		// XPECT errors --> "Wrong number of arguments. Should be new C(_x, _y)" at "1"
+		c = new C(1)
+		c.doWhatCDoesWell()
+		var d = new D()
+		d = new D(4)
+		d.x()
+	}
+}

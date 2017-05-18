@@ -37,6 +37,14 @@ before_deploy:
 - cp org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
 - cp org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
 
+# If there is an error I will try to upload the logs
+after_failure:
+- cd ..
+- cd org.uqbar.project.wollok.tests/target
+- zip -r -9 surefire-reports.zip surefire-reports/
+- curl -T surefire-reports.zip -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/surefire-reports.zip?publish=1&override=1"
+- if [ -f work/data/.metadata/.log ] ; then curl -T work/data/.metadata/.log -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/log.txt?publish=1&override=1" ; fi
+
 deploy:
 - provider: s3
   access_key_id: AKIAJLCGMGO45ZQFSLJA

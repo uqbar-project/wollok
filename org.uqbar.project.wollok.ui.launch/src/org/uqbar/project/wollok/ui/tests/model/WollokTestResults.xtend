@@ -16,6 +16,8 @@ import org.uqbar.project.wollok.ui.console.RunInUI
  */
  @Singleton
 class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
+
+	boolean shouldShowOnlyFailuresAndErrors = false
 	
 	@Accessors
 	var WollokTestContainer container
@@ -34,12 +36,21 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers
 	}
 	
-	override testsToRun(String containerResource, List<WollokTestInfo> tests) {
+	override testsToRun(String suiteName, String containerResource, List<WollokTestInfo> tests, boolean processingManyFiles) {
 		this.container = new WollokTestContainer
+		this.container.suiteName = suiteName
+		this.container.processingManyFiles = processingManyFiles
 		this.container.mainResource = URI.createURI(containerResource)
-		this.container.tests = newArrayList(tests.map[new WollokTestResult(it)])
-		this.container.tests.forEach [ test | testStart(test.name) ]
+		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
+		this.setChanged
+		this.notifyObservers		
+	}
+	
+	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
+		this.shouldShowOnlyFailuresAndErrors = showFailuresAndErrors
+		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
+
 		this.setChanged
 		this.notifyObservers		
 	}
@@ -52,7 +63,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 
 	def testByName(String testName){
-		this.container.tests.findFirst[name == testName]
+		this.container.testByName(testName)
 	}
 	
 	override error(String testName, String exceptionAsString, StackTraceElementDTO[] stackTrace, int lineNumber, String resource) {
@@ -67,7 +78,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	}
 	
 	override testsResult(List<WollokResultTestDTO> tests) {
-		tests.forEach [ 
+		tests.forEach [
 			val test = testByName(it.testName)
 			if (it.ok()) {
 				test.endedOk()
@@ -79,9 +90,9 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
 			}
 		]
-
+		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)
 		this.setChanged
 		this.notifyObservers
 	}
-	
+
 }

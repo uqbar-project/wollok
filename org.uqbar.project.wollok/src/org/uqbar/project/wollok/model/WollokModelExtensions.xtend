@@ -5,9 +5,11 @@ import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.nodemodel.INode
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -27,6 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -44,6 +47,7 @@ import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -75,17 +79,20 @@ class WollokModelExtensions {
 	
 	def static file(EObject it) { eResource }
 
-	def static boolean isException(WClass it) { fqn == Exception.name || (parent != null && parent.exception) }
+	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
 
+	def static dispatch name(EObject it) { null }
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
+	def static dispatch name(WSuite it) { name }
 
 	def static dispatch fqn(WClass it) { nameWithPackage }
 	def static dispatch fqn(WNamedObject it) { nameWithPackage }
 	def static dispatch fqn(WMixin it) { nameWithPackage }
+	def static dispatch fqn(WSuite it) { nameWithPackage }
 
 	def static getNameWithPackage(WMethodContainer it) {
-		implicitPackage + "." + if (package != null) package.name + "." + name else name
+		implicitPackage + "." + if (package !== null) package.name + "." + name else name
 	}
 
 	def static dispatch fqn(WObjectLiteral it) {
@@ -97,7 +104,7 @@ class WollokModelExtensions {
 	def static WPackage getPackage(WMethodContainer it) { if(eContainer instanceof WPackage) eContainer as WPackage else null }
 
 	def static boolean isSuperTypeOf(WClass a, WClass b) {
-		a.fqn == b.fqn || (b.parent != null && a.isSuperTypeOf(b.parent))
+		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
 	// *******************
@@ -108,13 +115,17 @@ class WollokModelExtensions {
 	def static dispatch isModifiableFrom(WReferenciable v, WAssignment from) { true }
 
 	def static boolean initializesInstanceValueFromConstructor(WAssignment a, WVariable v) {
-		v.declaration.right == null && a.isWithinConstructor
+		v.declaration.right === null && a.isWithinConstructor
 	}
 
 	def static boolean isWithinConstructor(EObject e) {
-		e.eContainer != null && (e.eContainer instanceof WConstructor || e.eContainer.isWithinConstructor)
+		e.eContainer !== null && (e.eContainer.isAConstructor || e.eContainer.isWithinConstructor)
 	}
 
+	def static dispatch boolean isAConstructor(EObject it) { false }
+	def static dispatch boolean isAConstructor(WConstructor it) { true }
+	def static dispatch boolean isAConstructor(WFixture it) { true	}
+	 
 	/*
 	 * Uses of a Variable
 	 */
@@ -124,7 +135,9 @@ class WollokModelExtensions {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 
-	def static declaration(WVariable variable) { variable.eContainer as WVariableDeclaration }
+	def static declaration(WVariable variable) {
+		variable.eContainer as WVariableDeclaration
+	}
 
 	def static declarationContext(WVariable variable) { variable.declaration.eContainer }
 
@@ -135,15 +148,23 @@ class WollokModelExtensions {
 	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
 
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
-
 	def static dispatch WBlockExpression block(EObject b) { b.eContainer.block }
 
+	def static dispatch WExpression firstExpressionInContext(EObject e) {
+		if (e.eContainer === null) return null 
+		e.eContainer.firstExpressionInContext
+	}
+	def static dispatch WExpression firstExpressionInContext(WProgram p) { p.elements.head }
+	def static dispatch WExpression firstExpressionInContext(WBlockExpression b) { b.expressions.head } 
+	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
+	
+	
 	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
-	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
@@ -209,14 +230,21 @@ class WollokModelExtensions {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
 
-	def static numberOfParameters(WConstructorCall c) { if(c.arguments == null) 0 else c.arguments.size }
+	def static numberOfParameters(WConstructorCall c) { if(c.arguments === null) 0 else c.arguments.size }
 
-	def static hasConstructorDefinitions(WClass c) { c.constructors != null && c.constructors.size > 0 }
+	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
 	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.constructors.exists[matches(nrOfArgs)]
+		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static EList<WConstructor> allConstructors(WClass c) {
+		if (c.hasConstructorDefinitions || c.parent === null) 
+			c.constructors
+		else
+			c.parent.allConstructors
+	}
+	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
 			nrOfArgs >= parameters.filter[!isVarArg].size
@@ -227,8 +255,8 @@ class WollokModelExtensions {
 	def static dispatch hasVarArgs(WConstructor it) { parameters.exists[isVarArg] }
 	def static dispatch hasVarArgs(WMethodDeclaration it) { parameters.exists[isVarArg] }
 
-	def static superClassRequiresNonEmptyConstructor(WClass it) { parent != null && !parent.hasEmptyConstructor }
-	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent != null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
 
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
@@ -265,7 +293,7 @@ class WollokModelExtensions {
 
 	def static IFile getIFile(EObject obj) {
 		val platformString = obj.eResource.URI.toPlatformString(true)
-		if (platformString == null) {
+		if (platformString === null) {
 			// could be a synthetic file
 			return null;
 		}
@@ -287,6 +315,9 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) {  p.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
+	def static dispatch boolean isDuplicated(WSuite p, WReferenciable v) {
+		p.tests.exists [ (it.variables + p.variables).existsMoreThanOne(v) ]
+	}
 
 	// classes, objects and mixins
 	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
@@ -306,27 +337,28 @@ class WollokModelExtensions {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
 
-	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer != null && obj.eContainer.inConstructor }
+	def static dispatch boolean isInConstructor(EObject obj) { obj.eContainer !== null && obj.eContainer.inConstructor }
 	def static dispatch boolean isInConstructor(WConstructor obj) { true }
 	def static dispatch boolean isInConstructor(WClass obj){ false }
 	def static dispatch boolean isInConstructor(WMethodDeclaration obj) { false }
 
-	def static dispatch boolean isInConstructorBody(EObject obj) { obj.eContainer != null && obj.eContainer.isInConstructorBody }
+	def static dispatch boolean isInConstructorBody(EObject obj) { obj.eContainer !== null && obj.eContainer.isInConstructorBody }
 	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
 
 	// *****************************
 	// ** valid return
 	// *****************************
 
-	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it) { expressionReturns || expression.returnsOnAllPossibleFlows }
-	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it) { true }
-	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it) { true }
-	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it) { expressions.last.returnsOnAllPossibleFlows }
-	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it) { then.returnsOnAllPossibleFlows && ^else != null && ^else.returnsOnAllPossibleFlows }
-	def static dispatch boolean returnsOnAllPossibleFlows(WTry it) { expression.returnsOnAllPossibleFlows && catchBlocks.forall[c | c.returnsOnAllPossibleFlows ] }
-	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it) { expression.returnsOnAllPossibleFlows }
-	def static dispatch boolean returnsOnAllPossibleFlows(Void it) { false } // ?
-	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it) { false }
+
+	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it, boolean returnsOnSuperExpression) { expressionReturns || expression.returnsOnAllPossibleFlows(returnsOnSuperExpression) }
+	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it, boolean returnsOnSuperExpression) { true }
+	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it, boolean returnsOnSuperExpression) { returnsOnSuperExpression }
+	def static dispatch boolean returnsOnAllPossibleFlows(WBlockExpression it, boolean returnsOnSuperExpression) { expressions.last.returnsOnAllPossibleFlows(returnsOnSuperExpression) }
+	def static dispatch boolean returnsOnAllPossibleFlows(WIfExpression it, boolean returnsOnSuperExpression) { then.returnsOnAllPossibleFlows(returnsOnSuperExpression) && ^else !== null && ^else.returnsOnAllPossibleFlows(returnsOnSuperExpression) }
+	def static dispatch boolean returnsOnAllPossibleFlows(WTry it, boolean returnsOnSuperExpression) { expression.returnsOnAllPossibleFlows(returnsOnSuperExpression) && catchBlocks.forall[c | c.returnsOnAllPossibleFlows(returnsOnSuperExpression) ] }
+	def static dispatch boolean returnsOnAllPossibleFlows(WCatch it, boolean returnsOnSuperExpression) { expression.returnsOnAllPossibleFlows(returnsOnSuperExpression) }
+	def static dispatch boolean returnsOnAllPossibleFlows(Void it, boolean returnsOnSuperExpression) { false } // ?
+	def static dispatch boolean returnsOnAllPossibleFlows(WExpression it, boolean returnsOnSuperExpression) { false }
 
 
 	def static tri(WCatch it) { eContainer as WTry }
@@ -359,7 +391,7 @@ class WollokModelExtensions {
 	// ** variables
 	// *******************************
 	
-	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) != null }
+	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null }
 
 	def static onlyUsedInReturn(WVariableDeclaration it) {
 		val visitor = new VariableUsesVisitor
@@ -369,7 +401,7 @@ class WollokModelExtensions {
 	}
 	
 	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
-	def static boolean isInReturn(EObject e) { e.eContainer != null && e.eContainer.isReturnOrInReturn }
+	def static boolean isInReturn(EObject e) { e.eContainer !== null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports
@@ -380,4 +412,24 @@ class WollokModelExtensions {
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
 	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
+	
+	// *******************************
+	// ** refactoring
+	// *******************************
+	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { #[e.class.name] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WNamedObject e) { #["WNamedObject", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WClass e) { #["WClass", "WVariableReference"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WVariable v) { #["WVariable", "WVariableReference", "WVariableDeclaration"] }
+	def static dispatch List<String> semanticElementsAllowedToRefactor(WParameter p) { #["WParameter", "WVariableReference"] }
+
+	def static dispatch boolean doApplyRenameTo(EObject e, EObject e2) { true }
+	def static dispatch boolean doApplyRenameTo(WVariable v, WVariableReference reference) {
+		reference.ref.equals(v)	
+	}
+	
+	def static boolean applyRenameTo(EObject e, INode node) {
+		val semanticsElements = e.semanticElementsAllowedToRefactor
+		val rootNodeName = e.name.trim
+		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
+	}
 }

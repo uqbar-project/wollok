@@ -1,13 +1,11 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.eclipse.xtext.junit4.util.ParseHelper
-import org.uqbar.project.wollok.wollokDsl.WFile
-import org.uqbar.project.wollok.WollokConstants
-import org.eclipse.emf.common.util.URI
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import java.io.File
-import org.eclipse.core.runtime.NullProgressMonitor
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.ResourceSet
+import org.eclipse.xtext.testing.util.ParseHelper
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * 
@@ -21,7 +19,7 @@ class WollokParseHelper extends ParseHelper<WFile>{
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse) throws Exception {
 		parse(file, resourceSetToUse, false)
 	}
-	
+
 	def WFile parse(Pair<String,String> file, ResourceSet resourceSetToUse, boolean createFilesOnDisk) throws Exception {
 		this.fileExtension = if (file.value.toString.contains("program "))
 									WollokConstants.PROGRAM_EXTENSION

@@ -94,8 +94,13 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			decreaseHistoryPosition
 			console.loadHistory(historyPosition)
 			setCursorToEnd
+		}
+
+		if (e.character == 0x0C) { // code of <Ctrl + L> 
+			console.cleanViewOfConsole
 			return
 		}
+
 		if (e.keyCode == SWT.HOME) {
 			viewer.textWidget.selection = getHomePosition()
 			return
@@ -106,14 +111,14 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			return
 		}
 		// return key pressed
-		if (e.keyCode == KEY_RETURN && !e.controlPressed) {
+		if ((e.keyCode == KEY_RETURN || e.keyCode == SWT.KEYPAD_CR) && !e.controlPressed) {
 			console.updateIfDirty
 			console.sendInputBuffer
 			historyPosition = -1
 		} else {
-			console.updateInputBuffer	
+			console.updateInputBuffer
 		}
-		
+
 		return
 	}
 

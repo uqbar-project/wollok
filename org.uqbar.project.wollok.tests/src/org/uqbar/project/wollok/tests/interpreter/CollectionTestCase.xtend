@@ -123,7 +123,7 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	def void clear() {
 		'''
 		«instantiateCollectionAsNumbersVariable»
-		numbers.clear()		
+		numbers.clear()
 		assert.that(0 == numbers.size())
 		'''.test
 	}
@@ -416,4 +416,51 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(emptyCollection, numbers)
 		'''.test
 	}
+
+	@Test
+	def void removeOnIteration() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		
+		numbers.forEach({n => numbers.remove(n)})
+		assert.that(numbers.isEmpty())
+		
+		'''.test
+	}
+		@Test
+	
+	def void addOnIteration() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		
+		numbers.forEach({n => numbers.add(n * 2)})
+		assert.that(numbers.contains(2))
+		assert.that(numbers.contains(22))
+		assert.that(numbers.contains(10))
+		assert.that(numbers.contains(44))
+		assert.that(numbers.contains(4))		
+		assert.that(numbers.contains(20))
+		'''.test
+	}
+	
+	@Test
+	def void sortedBy() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		var numbersSet = numbers.asSet()
+		assert.equals([22,10,2], numbers.sortedBy({a,b=>a>b}))
+		assert.equals([22,10,2], numbersSet.sortedBy({a,b=>a>b}))
+		assert.equals([2,10,22], numbers.sortedBy({a,b=>a<b}))
+		assert.equals([2,10,22], numbersSet.sortedBy({a,b=>a<b}))
+		assert.equals([5], [5].sortedBy({a,b=>a>b}))
+		assert.equals([5], #{5}.sortedBy({a,b=>a>b}))
+		assert.equals([], [].sortedBy({a,b=>a>b}))
+		
+		'''.test
+	}	
+
+	
+	
+	
+	
 }

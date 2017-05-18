@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.console.highlight
 
 import java.util.ArrayList
 import java.util.List
-import java.util.regex.Pattern
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
@@ -22,7 +21,6 @@ import static org.uqbar.project.wollok.ui.console.highlight.AnsiCommands.*
 class WollokAnsiColorLineStyleListener implements LineStyleListener {
 	var lastAttributes = new WollokConsoleAttributes
     var currentAttributes = new WollokConsoleAttributes
-    public static val Pattern pattern = Pattern.compile("\u001b\\[[\\d;]*[A-HJKSTfimnsu]")
     public static val Character ESCAPE_SGR = 'm'
 
     int lastRangeEnd = 0;
@@ -47,7 +45,7 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
         lastRangeEnd = 0
         val ranges = new ArrayList<StyleRange>
         var currentText = event.lineText
-        val matcher = pattern.matcher(currentText)
+        val matcher = AnsiUtils.pattern.matcher(currentText)
         while (matcher.find) {
             val start = matcher.start
             val end = matcher.end

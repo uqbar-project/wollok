@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.tests.base
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.uqbar.project.wollok.WollokDslInjectorProvider
+import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**

@@ -1,19 +1,19 @@
 package org.uqbar.project.wollok.ui.outline
 
+import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import java.util.List
-import org.uqbar.project.wollok.wollokDsl.WMember
-import org.eclipse.emf.ecore.EObject
 
 /**
  * Customization of the default outline structure.
@@ -29,7 +29,7 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 //	def _createChildren(DocumentRootNode parentNode, WFile file) {
 //		createNode(parentNode, file.body)
 //	}
-	
+//	
 //	def _createChildren(DocumentRootNode parentNode, WLibrary library) {
 //		library.elements.forEach[createNode(parentNode, it)]
 //	}
@@ -41,6 +41,14 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	def _createChildren(IOutlineNode parentNode, WMethodContainer it) {
 	    #[variableDeclarations, methods].children(parentNode)
+	}
+
+	def _createChildren(IOutlineNode parentNode, WSuite it) {
+	    #[members].children(parentNode)
+	    if (fixture != null) {
+			parentNode.createEObjectNode(fixture)
+	    }
+		#[tests].children(parentNode)
 	}
 	
 	def void children(List<? extends Iterable<? extends EObject>> iterables, IOutlineNode parent) {

@@ -18,6 +18,7 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_fileContainerDoesNotExists;
 	public static String AbstractNewWollokFileWizardPage_fileContainerRequired;
 	public static String AbstractNewWollokFileWizardPage_fileExtensionMustBe;
+	public static String AbstractNewWollokFileWizardPage_fileNameAlreadyExists;
 	public static String AbstractNewWollokFileWizardPage_fileName;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeSpecified;
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeValid;
@@ -33,11 +34,11 @@ public class Messages extends NLS {
 	public static String NewWollokProgramWizardPage_title;
 	public static String NewWollokTestWizardPage_description;
 	public static String NewWollokTestWizardPage_title;
+	public static String NewWollokDescribeWizardPage_description;
+	public static String NewWollokDescribeWizardPage_title;
 	public static String WollokDslNewProjectWizard_pageDescription;
 	public static String WollokDslNewProjectWizard_pageTitle;
 	public static String WollokDslNewProjectWizard_windowTitle;
-	public static String WollokDslNewWizard_invalidChar;
-	public static String WollokDslNewWizard_shouldBeAlphabetic;
 	public static String WollokTemplateProposalProvider_WProgram_name;
 	public static String WollokTemplateProposalProvider_WProgram_description;
 	
@@ -64,8 +65,8 @@ public class Messages extends NLS {
 	public static String WollokTemplateProposalProvider_WIfExpression_name;
 	public static String WollokTemplateProposalProvider_WIfExpression_description;
 	
-	public static String WollokTemplateProposalProvider_WCollectionLiteral_name;
-	public static String WollokTemplateProposalProvider_WCollectionLiteral_description;
+	public static String WollokTemplateProposalProvider_WListLiteral_name;
+	public static String WollokTemplateProposalProvider_WListLiteral_description;
 	
 	public static String WollokTemplateProposalProvider_WSetLiteral_name;
 	public static String WollokTemplateProposalProvider_WSetLiteral_description;
@@ -84,8 +85,47 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_changeToVar_description;
 	public static String WollokDslQuickfixProvider_createMethod_name;
 	public static String WollokDslQuickfixProvider_createMethod_description;
-	public static String WollokDslQuickfixProvider_createMethod_stub;
-	
+	public static String WollokDslQuickfixProvider_createMethod_stub;	
+	public static String WollokDslQuickfixProvider_return_variable_name;
+	public static String WollokDslQuickfixProvider_return_variable_description;
+	public static String WollokDslQuickfixProvider_return_last_expression_name;
+	public static String WollokDslQuickfixProvider_return_last_expression_description;
+	public static String WollokDslQuickfixProvider_add_override_name;
+	public static String WollokDslQuickfixProvider_add_override_description;
+	public static String WollokDslQuickfixProvider_create_method_superclass_name;
+	public static String WollokDslQuickfixProvider_create_method_superclass_description;
+	public static String WollokDslQuickFixProvider_remove_override_keyword_name;
+	public static String WollokDslQuickFixProvider_remove_override_keyword_description;
+	public static String WollokDslQuickFixProvider_create_constructor_superclass_name; 
+	public static String WollokDslQuickFixProvider_create_constructor_superclass_description; 
+	public static String WollokDslQuickFixProvider_remove_unused_variable_name;
+	public static String WollokDslQuickFixProvider_remove_unused_variable_description;
+	public static String WollokDslQuickFixProvider_add_constructors_superclass_name; 
+	public static String WollokDslQuickFixProvider_add_constructors_superclass_description;
+	public static String WollokDslQuickFixProvider_remove_constructor_name;
+	public static String WollokDslQuickFixProvider_remove_constructor_description; 
+	public static String WollokDslQuickFixProvider_remove_method_name; 
+	public static String WollokDslQuickFixProvider_remove_method_description; 
+	public static String WollokDslQuickFixProvider_initialize_value_name; 
+	public static String WollokDslQuickFixProvider_initialize_value_description; 
+	public static String WollokDslQuickFixProvider_add_call_super_name; 
+	public static String WollokDslQuickFixProvider_add_call_super_description;
+	public static String WollokDslQuickFixProvider_add_catch_name; 
+	public static String WollokDslQuickFixProvider_add_catch_description; 
+	public static String WollokDslQuickFixProvider_add_always_name; 
+	public static String WollokDslQuickFixProvider_add_always_description;
+	public static String WollokDslQuickFixProvider_replace_if_condition_name;
+	public static String WollokDslQuickFixProvider_replace_if_condition_description;
+	public static String WollokDslQuickFixProvider_create_local_variable_name; 
+	public static String WollokDslQuickFixProvider_create_local_variable_description; 
+	public static String WollokDslQuickFixProvider_create_instance_variable_name; 
+	public static String WollokDslQuickFixProvider_create_instance_variable_description;
+	public static String WollokDslQuickFixProvider_add_parameter_method_name;
+	public static String WollokDslQuickFixProvider_add_parameter_method_description;
+	public static String WollokDslQuickFixProvider_create_new_class_name; 
+	public static String WollokDslQuickFixProvider_create_new_class_description; 
+
+
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
 	
@@ -97,6 +137,7 @@ public class Messages extends NLS {
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
 	
 	public static String WollokTestResultView_runAgain;
+	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
 	static {

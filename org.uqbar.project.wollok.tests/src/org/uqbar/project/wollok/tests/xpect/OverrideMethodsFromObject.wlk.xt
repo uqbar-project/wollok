@@ -20,7 +20,7 @@ class Bar {
         return true
     }
 
-	// XPECT errors --> "Method does not override anything" at "fafafa"
+	// XPECT errors --> "You can't use override here: method doesn't exist in superclass and you can't change superclass definition" at "fafafa"
 	override method fafafa() {}
 }
 
@@ -30,6 +30,6 @@ object bar {
         return true
     }
 
-	// XPECT errors --> "Method does not override anything" at "fafafa"
+	// XPECT errors --> "You can't use override here: method doesn't exist in superclass and you can't change superclass definition" at "fafafa"
 	override method fafafa() {}
 }

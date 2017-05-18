@@ -43,4 +43,7 @@ class StackTraceElementDTO implements Serializable {
 		contextDescription + " [" + fileName + ":" + lineNumber + "]"
 	}
 	
+	def asStackTraceElement(){
+		new StackTraceElement(if(contextDescription == null) "" else contextDescription ,"", fileName, lineNumber)
+	}
 }
