@@ -80,8 +80,14 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
-		if (Shape.SIZE_PROP == prop || Shape.LOCATION_PROP == prop)
+		if (Shape.SIZE_PROP == prop || Shape.LOCATION_PROP == prop) {
 			refreshVisuals
+			if (Shape.SIZE_PROP == prop) {
+				castedModel.configuration.saveSize(castedModel)
+			} else {
+				castedModel.configuration.saveLocation(castedModel)
+			}
+		}
 		else if (Shape.SOURCE_CONNECTIONS_PROP == prop)
 			refreshSourceConnections
 		else if (Shape.TARGET_CONNECTIONS_PROP == prop)

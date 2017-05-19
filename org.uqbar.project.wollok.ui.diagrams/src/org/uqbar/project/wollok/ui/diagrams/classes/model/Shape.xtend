@@ -1,30 +1,40 @@
-package org.uqbar.project.wollok.ui.diagrams.classes.model;
+package org.uqbar.project.wollok.ui.diagrams.classes.model
 
 import java.util.List
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * @author jfernandes
  */
 public abstract class Shape extends ModelElement {
-	public static val LOCATION_PROP = "Shape.Location";
-	public static val SIZE_PROP = "Shape.Size";
-	public static val SOURCE_CONNECTIONS_PROP = "Shape.SourceConn";
-	public static val TARGET_CONNECTIONS_PROP = "Shape.TargetConn";
-	static val HEIGHT_PROP = "Shape.Height";
-	static val WIDTH_PROP = "Shape.Width";
-	static val XPOS_PROP = "Shape.xPos";
-	static val YPOS_PROP = "Shape.yPos";
-	static List<TextPropertyDescriptor> descriptors;
+	public static val LOCATION_PROP = "Shape.Location"
+	public static val SIZE_PROP = "Shape.Size"
+	public static val SOURCE_CONNECTIONS_PROP = "Shape.SourceConn"
+	public static val TARGET_CONNECTIONS_PROP = "Shape.TargetConn"
+	static val HEIGHT_PROP = "Shape.Height"
+	static val WIDTH_PROP = "Shape.Width"
+	static val XPOS_PROP = "Shape.xPos"
+	static val YPOS_PROP = "Shape.yPos"
+	static List<TextPropertyDescriptor> descriptors
+	private static StaticDiagramConfiguration configuration
 	
 	Point location = new Point(0, 0)
 	Dimension size = new Dimension(100, 100)
 	List<Connection> sourceConnections = newArrayList
 	List<Connection> targetConnections = newArrayList
+	
+	def static useConfiguration(StaticDiagramConfiguration _configuration) {
+		configuration = _configuration		
+	}
+
+	def configuration() {
+		configuration
+	}
 
 	def static getDescriptors() {
 		if (descriptors != null)

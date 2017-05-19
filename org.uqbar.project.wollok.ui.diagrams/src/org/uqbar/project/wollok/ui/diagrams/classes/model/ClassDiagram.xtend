@@ -37,7 +37,7 @@ class ClassDiagram extends ModelElement {
 		if (c.name.equals(WollokConstants.ROOT_CLASS)) return;
 		addClass(new ClassModel(c) => [
 			locate(level)
-			if (importedObjects.contains(c)) {
+			if (importedObjects.map [ name ].contains(c.name)) {
 				imported = true
 			}
 		])

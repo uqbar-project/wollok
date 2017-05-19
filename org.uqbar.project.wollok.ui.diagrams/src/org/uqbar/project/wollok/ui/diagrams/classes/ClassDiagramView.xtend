@@ -61,7 +61,9 @@ import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
@@ -81,6 +83,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
  * 
@@ -105,10 +108,14 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	PaletteViewerProvider provider
 
 	ExportAction exportAction
-	
+
+	StaticDiagramConfiguration configuration
+		
 	new() {
 		editDomain = new DefaultEditDomain(null)
 		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
+		configuration = new StaticDiagramConfiguration
+		Shape.useConfiguration(configuration)
 	}
 	
 	override init(IViewSite site) throws PartInitException {
@@ -118,11 +125,13 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		site.workbenchWindow.activePage.addPartListener(this)
 		
 		exportAction = new ExportAction => [
-				imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
-				toolTipText = "Export this diagram to an image" // TODO i18n!
-			] 
+			imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
+			toolTipText = Messages.StaticDiagram_Export_Description
+		]
+		
 		site.actionBars.toolBarManager => [
 			add(exportAction)
+			add(new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration, this))
 		]
 	}
 	
@@ -217,7 +226,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	override createPartControl(Composite parent) {
-		splitter = new FlyoutPaletteComposite(parent, SWT.NONE, site.page, paletteViewerProvider, palettePreferences);
+		splitter = new FlyoutPaletteComposite(parent, SWT.NONE, site.page, paletteViewerProvider, palettePreferences)
 		createViewer(splitter)
 		
 		splitter.graphicalControl = graphicalViewer.control
@@ -509,5 +518,5 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		]
 		namedMap.values.toList
 	}
-	
+
 }

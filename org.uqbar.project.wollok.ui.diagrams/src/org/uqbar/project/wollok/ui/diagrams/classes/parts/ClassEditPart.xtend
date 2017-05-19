@@ -39,7 +39,7 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	override ClassModel getCastedModel() { model as ClassModel }
 	
 	override doGetModelChildren() {
-		castedModel.clazz.members
+		if (castedModel.configuration.showVariables) castedModel.clazz.members else castedModel.clazz.methods.toList
 	}
 
 }
