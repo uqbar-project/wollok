@@ -5,6 +5,7 @@ import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -437,5 +438,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
-	
+
+	def static dispatch boolean hasRealParent(EObject it) { false }
+	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.name.equals(WollokConstants.ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WClass c) { c.parent !== null && c.parent.name !== null && !c.parent.name.equals(WollokConstants.ROOT_CLASS) }
+		
 }
+

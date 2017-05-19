@@ -32,7 +32,7 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
-	def addClass(WClass c, int level) {
+	def addComponent(WMethodContainer c, int level) {
 		if (c == null || c.name == null) return;
 		if (c.name.equals(WollokConstants.ROOT_CLASS)) return;
 		addClass(new ClassModel(c) => [
@@ -60,14 +60,14 @@ class ClassDiagram extends ModelElement {
 	}
 	
 	def connectRelations() {
-		classes.clone.forEach[createRelation(clazz)]
+		classes.clone.forEach[createRelation(getComponent)]
 		objects.forEach[createRelation(obj)]
 	}
 	
 	def createRelation(Shape it, WMethodContainer c) {
 		val parent = c.parent
 		if (parent !== null && it.shouldShowConnectorTo(parent)) {
-			val parentModel = classes.findFirst[clazz == parent]
+			val parentModel = classes.findFirst[getComponent == parent]
 			if (parentModel === null) {
 				//FED - just ignoring it, user may be editing it or it is object class
 				//throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)

@@ -1,10 +1,11 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model
 
 import org.eclipse.draw2d.geometry.Point
+
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
-
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 /**
  * @author jfernandes
  */
@@ -27,7 +28,7 @@ class NamedObjectModel extends Shape {
 	}
 	
 	override shouldShowConnectorTo(WClass clazz) {
-		!clazz.name.equalsIgnoreCase("Object")
+		obj.hasRealParent // By now it is ok, but we should consider also associations
 	}
 	
 	def locate() {

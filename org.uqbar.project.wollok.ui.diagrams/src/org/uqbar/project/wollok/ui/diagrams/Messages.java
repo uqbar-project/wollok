@@ -8,9 +8,10 @@ import org.uqbar.project.wollok.utils.WNLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.ui.diagrams.messages"; //$NON-NLS-1$
 
-	public static String StaticDiagram_Export_Title;
 	public static String StaticDiagram_Export_Description;
 	public static String StaticDiagram_Show_Variables;
+	public static String StaticDiagram_RememberShapePositions_Description;
+	public static String StaticDiagram_CleanShapePositions_Description;
 	
 	static {
 		// initialize resource bundle

@@ -31,6 +31,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
+import org.eclipse.jface.action.Separator
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
@@ -63,11 +64,13 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
@@ -83,7 +86,8 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
 
 /**
  * 
@@ -131,7 +135,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		site.actionBars.toolBarManager => [
 			add(exportAction)
+			add(new Separator)
 			add(new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration, this))
+			add(new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration))
+			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
 		]
 	}
 	
@@ -139,19 +146,27 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		NamedObjectModel.init()
 		MixinModel.init()
 		new ClassDiagram => [
+			// all objects
+			val objects = xtextDocument.readOnly[ namedObjects ]
+			
 			// class
 			val classes = xtextDocument.readOnly[ classes ].toSet
 			val importedClasses = xtextDocument.readOnly [ getImportedClasses ].toSet
 			importedObjects = importedClasses.toList
 			classes.addAll(importedClasses)
 			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
-			val allClasses = classes.removeDuplicated as List<WClass>
-			ClassModel.init(allClasses.clone)
+			val List<WMethodContainer> allClasses = classes.removeDuplicated as List<WMethodContainer>
+			val List<WMethodContainer> inheritingObjects = objects.filter [ hasRealParent ].toList.clone
+			var List<WMethodContainer> allClassModelAbstractions = newArrayList => [
+				addAll(allClasses.clone)
+				addAll(inheritingObjects)
+			]
+			ClassModel.init(allClassModelAbstractions)
 			
 			// objects (first so that we collect parents in the "classes" set
-			val objects = xtextDocument.readOnly[ namedObjects ]
+			val singleObjects = objects.filter [ !hasRealParent ]
 			
-			objects.forEach[ o | 
+			singleObjects.forEach[ o | 
 				addNamedObject(new NamedObjectModel(o) => [ 
 					locate
 				])
@@ -159,23 +174,23 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 			// classes
 			// first, superclasses
-			var classesCopy = allClasses.clone.filter [ it.parent === null ].toList
+			var classesCopy = allClassModelAbstractions.clone.filter [ it.parent === null ].toList
 			var int level = 0
 			while (!classesCopy.isEmpty) {
 				val levelCopy = level
-				classesCopy.forEach [ c | addClass(c, levelCopy) ]
+				classesCopy.forEach [ c | addComponent(c, levelCopy) ]
 				val parentClasses = classesCopy
 				// then subclasses of parent classes and recursively...
-				classesCopy = allClasses
+				classesCopy = allClassModelAbstractions
 					.clone
 					.filter [
 						parentClasses.contains(it.parent)
 					]
-					.sortWith([ WClass a, WClass b | 
+					.sortWith([ WMethodContainer a, WMethodContainer b | 
 						val parentA = a.parent?.name ?: ""
 						val parentB = b.parent?.name ?: ""
 						parentA.compareTo(parentB)
-					] as Comparator<WClass>)
+					] as Comparator<WMethodContainer>)
 					.toList
 					
 				level++
@@ -469,7 +484,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				val cm = getClassEditParts.findFirst[ep |
 					// mm.. i don't like comparing by name :( but our diagram seems to load 
 					// the xtext document (and model objects) again, so instances are different
-					ep.castedModel.clazz.name == c.text.toString 
+					ep.castedModel.getComponent.name == c.text.toString 
 				]
 				if (cm != null)
 					list += cm
@@ -500,7 +515,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (s.size == 1) {
 				val model = (s.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					val wclazz = model.clazz
+					val wclazz = model.getComponent
 					this.selection = new StructuredSelection(wclazz)
 					val e = new SelectionChangedEvent(this, this.selection)
 					listeners.forEach[l| 

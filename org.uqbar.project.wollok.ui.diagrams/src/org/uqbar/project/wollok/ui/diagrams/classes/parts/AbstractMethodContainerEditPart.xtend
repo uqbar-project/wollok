@@ -84,7 +84,8 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 			refreshVisuals
 			if (Shape.SIZE_PROP == prop) {
 				castedModel.configuration.saveSize(castedModel)
-			} else {
+			}
+			if (Shape.LOCATION_PROP == prop) {
 				castedModel.configuration.saveLocation(castedModel)
 			}
 		}
@@ -125,6 +126,5 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 	def dispatch Boolean isVariable(WVariableDeclaration member) {
 		true
 	}
-	
 	
 }

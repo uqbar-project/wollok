@@ -6,10 +6,10 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static extension java.lang.Integer.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 /**
  * A rectangular shape.
@@ -19,7 +19,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 @Accessors
 class ClassModel extends Shape {
 	var int objectsAndMixins = 0
-	static List<WClass> classes = newArrayList
+	static List<WMethodContainer> allComponents = newArrayList
 	static Map<Integer, Integer> levelHeight
 	static Map<Integer, Integer> levelWidth
 	static Map<String, Integer> initialWidthForClass
@@ -31,67 +31,67 @@ class ClassModel extends Shape {
 	val static HEIGHT_SEPARATION_BETWEEN_CLASSES = 20
 	val static INITIAL_MARGIN = 5
 			
-	WClass clazz
+	WMethodContainer component
 	boolean imported = false
 	
-	static def void init(List<WClass> _classes) {
+	static def void init(List<WMethodContainer> _classes) {
 		levelHeight = newHashMap
 		levelWidth = newHashMap
 		initialWidthForClass = newHashMap
-		classes = _classes
+		allComponents = _classes
 	}
 	
-	new(WClass wClass) {
-		clazz = wClass
+	new(WMethodContainer mc) {
+		component = mc
 		defineSize
 		objectsAndMixins = NamedObjectModel.objectsCount + MixinModel.mixinsCount
 	}
 	
 	def void defineSize() {
-		size = configuration.getSize(this) ?: new Dimension(clazz.shapeWidth, clazz.shapeHeight)
+		size = configuration.getSize(this) ?: new Dimension(component.shapeWidth, component.shapeHeight)
 	}
 	
-	def int shapeWidth(WClass wClass) {
-		CLASS_WIDTH + (wClass.allWidths.reduce [ a, b | a.max(b) ] * LETTER_WIDTH)
+	def int shapeWidth(WMethodContainer mc) {
+		CLASS_WIDTH + (mc.allWidths.reduce [ a, b | a.max(b) ] * LETTER_WIDTH)
 	}
 	
-	def allWidths(WClass wClass) {
+	def allWidths(WMethodContainer mc) {
 		val result = newArrayList
 		if (configuration.showVariables) {
-			result.addAll(wClass.variables.map [ it.name?.length ])
+			result.addAll(mc.variables.map [ it.name?.length ])
 		}
-		result.addAll(wClass.methods.map [ it.name?.length ])
-		result.add(wClass.name.length)
+		result.addAll(mc.methods.map [ it.name?.length ])
+		result.add(mc.name.length)
 		result
 	}
 	
-	def int shapeHeight(WClass wClass) {
-		(wClass.variablesSize + wClass.methods.size) * FILE_HEIGHT + CLASS_HEIGHT
+	def int shapeHeight(WMethodContainer mc) {
+		(mc.variablesSize + mc.methods.size) * FILE_HEIGHT + CLASS_HEIGHT
 	}
 	
-	def int getVariablesSize(WClass wClass) {
-		if (configuration.showVariables) wClass.variables.size else 0
+	def int getVariablesSize(WMethodContainer mc) {
+		if (configuration.showVariables) mc.variables.size else 0
 	}
 
 	override toString() {
-		"ClassModel<" + clazz.name + ">"		
+		"ClassModel<" + component.name + ">"		
 	}
 	
 	def locate(int level) {
-		val subclasses = classes.clone.filter [ it.parent !== null && it.parent == this.clazz ].toList
+		val subclasses = org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel.allComponents.clone.filter [ it.parent !== null && it.parent == this.component ].toList
 		val calculatedWidthOfSubclasses = subclasses.calculatedWidth
-		var initialWidth = Math.max(levelWidth.get(level) ?: INITIAL_MARGIN, this.clazz.initialWidth)
-		val addedWidthOfShape = this.clazz.shapeWidth + WIDTH_SEPARATION_BETWEEN_CLASSES
+		var initialWidth = Math.max(levelWidth.get(level) ?: INITIAL_MARGIN, this.component.initialWidth)
+		val addedWidthOfShape = this.component.shapeWidth + WIDTH_SEPARATION_BETWEEN_CLASSES
 		val xPosition = initialWidth + (calculatedWidthOfSubclasses / 2).intValue
-		initialWidthForClass.put(this.clazz.name, initialWidth)
+		initialWidthForClass.put(this.component.name, initialWidth)
 		location = configuration.getLocation(this) ?: new Point(xPosition, level.calculatedHeight)
 		level.adjustHeight
 		levelWidth.put(level, initialWidth + addedWidthOfShape + calculatedWidthOfSubclasses)
 	}
 	
-	def int getInitialWidth(WClass wClass) {
-		if (wClass.parent === null) return 0
-		val parentClassName = wClass.parent.name ?: ""
+	def int getInitialWidth(WMethodContainer mc) {
+		if (mc.parent === null) return 0
+		val parentClassName = mc.parent.name ?: ""
 		if (parentClassName.equals(WollokConstants.ROOT_CLASS)) return 0
 		initialWidthForClass.get(parentClassName) ?: 0
 	}
@@ -106,13 +106,13 @@ class ClassModel extends Shape {
 	
 	def void adjustHeight(int level) {
 		val currentHeight = levelHeight.get(level + 1) ?: 0
-		val currentClassHeight = clazz.shapeHeight
+		val currentClassHeight = component.shapeHeight
 		val newLevelHeight = Math.max(currentClassHeight, currentHeight)
 		levelHeight.put(level + 1, newLevelHeight)
 	}
 	
-	def getCalculatedWidth(List<WClass> subclasses) {
-		subclasses.indexOf(this.clazz)
+	def getCalculatedWidth(List<WMethodContainer> subclasses) {
+		subclasses.indexOf(this.component)
 		var allSubclassesWidth = 0 // I have to do this because a strange NPE
 		if (!subclasses.empty) {
 			allSubclassesWidth = subclasses.map [ shapeWidth ].reduce [ a, b | a + b ]
@@ -141,7 +141,7 @@ class ClassModel extends Shape {
 	}
 	
 	def getName() {
-		clazz.name ?: ""
+		component.name ?: ""
 	}
 
 }
