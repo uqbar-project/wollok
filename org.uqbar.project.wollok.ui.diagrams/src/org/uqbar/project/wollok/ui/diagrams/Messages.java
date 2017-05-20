@@ -12,6 +12,9 @@ public class Messages extends NLS {
 	public static String StaticDiagram_Show_Variables;
 	public static String StaticDiagram_RememberShapePositions_Description;
 	public static String StaticDiagram_CleanShapePositions_Description;
+	public static String StaticDiagram_SaveConfiguration_Description;
+	public static String StaticDiagram_LoadConfiguration_Description;
+	public static String StaticDiagramOpenFile;
 	
 	static {
 		// initialize resource bundle
@@ -24,3 +27,4 @@ public class Messages extends NLS {
 	}
 
 }
+

@@ -6,9 +6,10 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import java.util.Observable
 
 @Accessors
-class StaticDiagramConfiguration implements Serializable {
+class StaticDiagramConfiguration extends Observable implements Serializable {
 	
 	boolean showVariables = false
 	boolean rememberLocationAndSizeShapes = true
@@ -48,5 +49,13 @@ class StaticDiagramConfiguration implements Serializable {
 		sizes = newHashMap		
 	}
 	
+	def copyFrom(StaticDiagramConfiguration configuration) {
+		this.showVariables = configuration.showVariables
+		this.rememberLocationAndSizeShapes = configuration.rememberLocationAndSizeShapes
+		this.locations = configuration.locations
+		this.sizes = configuration.sizes
+		this.setChanged
+		this.notifyObservers
+	}
+	
 }
-
