@@ -8,6 +8,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+
 /**
  * Edit part for named objects nodes.
  * 
@@ -16,7 +18,9 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 class NamedObjectEditPart extends AbstractMethodContainerEditPart implements PropertyChangeListener, NodeEditPart {
 
 	override NamedObjectModel getCastedModel() { model as NamedObjectModel }
-	override doGetModelChildren() { castedModel.obj.members }
+	override doGetModelChildren() {
+		if (castedModel.configuration.showVariables) castedModel.obj.members else castedModel.obj.methods.toList 
+	}
 	override WNamedObject getLanguageElement() { castedModel.obj }
 	
 	override createFigure() {

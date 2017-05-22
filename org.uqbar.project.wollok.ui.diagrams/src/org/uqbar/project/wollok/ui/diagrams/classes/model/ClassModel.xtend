@@ -9,7 +9,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
- * Rectangular Figure modeling a class 
+ * Rectangular figure that models a class 
  * 
  * @author jfernandes
  * @author dodain
@@ -31,9 +31,6 @@ class ClassModel extends AbstractModel {
 	def locate(int level) {
 		val subclasses = ClassModel.allComponents.clone.filter [ it.parent !== null && it.parent == this.component ].toList
 		var initialXPosition = Math.max(levelWidth.get(level) ?: INITIAL_MARGIN, this.component.initialWidth)
-		println("******************************************")
-		println("Component " + component.name)
-		println("Initial width " + component.initialWidth)
 		val calculatedWidthOfSubclasses = subclasses.calculatedWidth
 		val shapeWidth = this.component.shapeWidth
 		val addedWidthOfShape = shapeWidth + WIDTH_SEPARATION_BETWEEN_ELEMENTS
@@ -41,11 +38,6 @@ class ClassModel extends AbstractModel {
 		if (calculatedWidthOfSubclasses > 0) 
 			addedMargin = ((calculatedWidthOfSubclasses - shapeWidth) / 2).intValue		
 		val xPosition = initialXPosition + addedMargin
-		println("Shape width " + shapeWidth)
-		println("Added margin " + addedMargin) 
-		println("calculatedWidthOfSubclasses " + calculatedWidthOfSubclasses)
-		println("initialXPosition " + initialXPosition)
-		println("xPosition " + xPosition)
 		initialWidthForElement.put(this.component.name, initialXPosition)
 		location = configuration.getLocation(this) ?: new Point(xPosition, level.calculatedHeight)
 		level.adjustHeight

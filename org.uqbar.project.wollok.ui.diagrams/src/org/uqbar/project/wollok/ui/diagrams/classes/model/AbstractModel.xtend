@@ -91,10 +91,4 @@ abstract class AbstractModel extends Shape {
 		size = configuration.getSize(this) ?: new Dimension(component.shapeWidth, component.shapeHeight)
 	}
 
-	/**
-	 * ******************************************************************************* 
-	 *    LOCATION OF EACH ELEMENT
-	 * ******************************************************************************* 
-	 */
-
 }
