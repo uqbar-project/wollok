@@ -177,7 +177,11 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 
 			// classes
 			// first, superclasses
-			var classesCopy = allClassModelAbstractions.clone.filter [ it.parent === null ].toList
+			var classesCopy = allClassModelAbstractions
+				.clone
+				.filter [ it.parent === null ]
+				.toList
+				
 			var int level = 0
 			while (!classesCopy.isEmpty) {
 				val levelCopy = level
@@ -189,10 +193,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 					.filter [
 						parentClasses.contains(it.parent)
 					]
-					.sortWith([ WMethodContainer a, WMethodContainer b | 
-						val parentA = a.parent?.name ?: ""
-						val parentB = b.parent?.name ?: ""
-						parentA.compareTo(parentB)
+					.sortWith([ WMethodContainer a, WMethodContainer b |
+						val orderForA = (a.parent?.name ?: "") + a.name
+						val orderForB = (b.parent?.name ?: "") + b.name
+						orderForA.compareTo(orderForB)
 					] as Comparator<WMethodContainer>)
 					.toList
 					
@@ -223,7 +227,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	def <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
 		if (contents.empty) #[]
-		else  (contents.get(0) as WFile).eAllContents.filter(type).toList
+		else (contents.get(0) as WFile).eAllContents.filter(type).toList
 	}
 	
 	

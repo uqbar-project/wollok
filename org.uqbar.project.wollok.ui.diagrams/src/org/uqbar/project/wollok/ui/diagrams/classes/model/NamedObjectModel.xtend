@@ -1,26 +1,35 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model
 
+import java.util.List
 import org.eclipse.draw2d.geometry.Point
-
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+
 /**
+ * 
+ * Rectangular Figure modeling a wko
+ * 
  * @author jfernandes
+ * @author dodain
  */
-class NamedObjectModel extends Shape {
+class NamedObjectModel extends AbstractModel {
 	@Accessors WNamedObject obj
-	public static int objectsCount = 0
+	public static List<NamedObjectModel> objects
+
 	public static int VERTICAL_POSITION = 10
+	public static int OBJECT_LEVEL_HEIGHT = 150
 	
 	static def void init() {
-		objectsCount = 0
+		objects = newArrayList
 	}
 	
 	new(WNamedObject obj) {
 		this.obj = obj
-		objectsCount++
+		obj.defineSize
+		objects.add(this)
 	}
 
 	override toString() {
@@ -32,14 +41,25 @@ class NamedObjectModel extends Shape {
 	}
 	
 	def locate() {
-		location = new Point(objectsCount * width, VERTICAL_POSITION)
+		location = configuration.getLocation(this) ?: new Point(XPosition, VERTICAL_POSITION)
+	}
+
+	def int getXPosition() {
+		val allWidths = objects
+			.clone
+			.filter [ !it.equals(this) ]
+			.fold(0, [acum, object |
+				acum + object.size.width
+			]) 
+		INITIAL_MARGIN + (objects.size * WIDTH_SEPARATION_BETWEEN_ELEMENTS) + allWidths
 	}
 	
-	/**
-	 * TODO: Define a strategy based on custom size (with/without methods)  
-	 */
-	def width() {
-		110
+	def widthForPosition() {
+		130
+	}
+	
+	def static int maxHeight() {
+		objects.fold(OBJECT_LEVEL_HEIGHT, [ max, object | Math.max(max, object.size.height) ])
 	}
 
 }
