@@ -73,7 +73,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
@@ -90,6 +89,7 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.StaticDiagramPaletterFactory
 
 /**
  * 
@@ -119,7 +119,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 	new() {
 		editDomain = new DefaultEditDomain(null)
-		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
+		editDomain.paletteRoot = StaticDiagramPaletterFactory.create
 		configuration = new StaticDiagramConfiguration
 		Shape.useConfiguration(configuration)
 	}

@@ -28,7 +28,7 @@ class MixinModel extends Shape {
 	}
 	
 	def void locate() {
-		location = new Point(PADDING_LEFT + ((mixinsCount + NamedObjectModel.objectsCount) * width), VERTICAL_TOP)
+		location = new Point(PADDING_LEFT + ((mixinsCount + NamedObjectModel.objects.size) * width), VERTICAL_TOP)
 	}
 	
 	def width() {
