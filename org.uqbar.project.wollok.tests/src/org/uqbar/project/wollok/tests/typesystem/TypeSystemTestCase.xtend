@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.TypeSystem
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*

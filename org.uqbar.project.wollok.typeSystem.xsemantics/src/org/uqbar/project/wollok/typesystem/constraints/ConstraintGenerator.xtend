@@ -2,20 +2,23 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WListLiteral
-import org.uqbar.project.wollok.wollokDsl.WSetLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -42,6 +45,28 @@ class ConstraintGenerator {
 //	def dispatch void generateVariables(WLibrary p) {
 //		p.elements.forEach[generateVariables]
 //	}
+
+	def dispatch void generateVariables(WClass it) {
+		// TODO Process supertype information: parent and mixins
+
+		members.forEach[generateVariables]
+		constructors.forEach[generateVariables]
+	}
+	
+	def dispatch void generateVariables(WConstructor it) {
+		// TODO Process superconstructor information.
+		parameters.forEach[generateVariables]
+		expression.generateVariables
+	}
+
+	def dispatch void generateVariables(WParameter it) {
+		newTypeVariable
+	}
+
+	def dispatch void generateVariables(WBlockExpression it) {
+		expressions.forEach[generateVariables]
+		
+	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
 		newSealed(classType(INTEGER))

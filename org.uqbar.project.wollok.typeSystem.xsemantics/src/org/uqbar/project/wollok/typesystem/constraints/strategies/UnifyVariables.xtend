@@ -19,6 +19,8 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def unifyWith(TypeVariable v1, TypeVariable v2) {
+		// We can only unify in absense of errors, this aims for avoiding error propagation 
+		// and further analysis of the (maybe) correct parts of the program.
 		if (!v2.hasErrors && !v1.unifiedWith(v2)) {
 			println('''	Unifying «v1» with «v2»''')
 
