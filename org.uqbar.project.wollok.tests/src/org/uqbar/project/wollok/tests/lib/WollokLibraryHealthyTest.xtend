@@ -1,11 +1,10 @@
 package org.uqbar.project.wollok.tests.lib
 
-import javax.inject.Inject
 import org.eclipse.emf.common.util.URI
-import org.junit.Test
-import org.uqbar.project.wollok.manifest.WollokManifestFinder
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 import org.eclipse.xtext.diagnostics.Severity
+import org.junit.Test
+import org.uqbar.project.wollok.manifest.StandardWollokLib
+import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
  * This test validates that the library is statically correct
@@ -13,17 +12,13 @@ import org.eclipse.xtext.diagnostics.Severity
  */
 class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 
-	@Inject WollokManifestFinder manifestFinder
 
 	@Test
 	def validateLib(){
-		//TODO esto antes usaba un resourcet vacio
-		val allManifests = manifestFinder.allManifests(null)
 		val sb = new StringBuilder
 
-		allManifests.forEach[ manifest |
-			manifest.allURIs.forEach[ it.validateSyntax(sb) ]
-		]
+		//TODO injectar el StandardLib()?
+		new StandardWollokLib().getManifest().allURIs.forEach[ it.validateSyntax(sb) ]
 
 		if (sb.length > 0) {
 			val errorText = sb.toString

@@ -4,6 +4,8 @@ import java.io.File
 import java.io.InputStream
 import java.net.URL
 import java.net.URLClassLoader
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.resource.IResourceDescription.Manager
 
 class JarWollokLib implements WollokLib {
 	
@@ -13,7 +15,7 @@ class JarWollokLib implements WollokLib {
 		this.path = path;
 	}
 		
-	override getManifest() {
+	def getManifest() {
 		new WollokManifest(loadAndOpenManifestStream(path))
 	}
 	
@@ -22,7 +24,7 @@ class JarWollokLib implements WollokLib {
 			return openLibManifestStream(lib)
 		}
 		catch(RuntimeException e) {
-			loadLib(lib)
+			loadJar(lib)
 			return openLibManifestStream(lib)
 		}
 	}
@@ -39,8 +41,8 @@ class JarWollokLib implements WollokLib {
 		r.substring(0,r.length()-4)
 	}
 
-	//the implemantation of this is a hack!!
-	def loadLib(String lib) {
+	//the implementation of this is a hack!!
+	def loadJar(String lib) {
 		class.getClassLoader.findUrlClassLoader.addURL(new File(lib).toURI().toURL())
 	}
 	
@@ -57,10 +59,14 @@ class JarWollokLib implements WollokLib {
 	
 	
 	def URLClassLoader findUrlClassLoader(ClassLoader cl) {
-		println("CLASSLOADER " + cl.class)
 		if(cl === null) {throw new RuntimeException("URLClassLoader is not present")}	
 		if(cl instanceof URLClassLoader) cl else cl.parent.findUrlClassLoader	
 		
+	}
+	
+	override load(Resource resource, Manager manager) {
+		println("Jar lib loading " + resource)
+		manifest.load(resource.resourceSet, manager)
 	}
 		
 }

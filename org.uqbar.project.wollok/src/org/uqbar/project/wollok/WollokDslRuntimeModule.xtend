@@ -24,10 +24,8 @@ import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.linking.WollokLinker
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider
-import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder
 import org.uqbar.project.wollok.manifest.JarWollokLibraries
 import org.uqbar.project.wollok.manifest.WollokLibraries
-import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
@@ -37,6 +35,8 @@ import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
+import org.uqbar.project.wollok.manifest.WollokLibraryLoader
+import org.uqbar.project.wollok.manifest.BasicWollokLibraryLoader
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -73,8 +73,8 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		MapBasedWollokGlobalScopeCache
 	}
 
-	def Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
-		BasicWollokManifestFinder
+	def Class<? extends WollokLibraryLoader> bindWollokManifestFinder() {
+		BasicWollokLibraryLoader
 	}
 
 	override configureIScopeProviderDelegate(Binder binder) {
