@@ -59,7 +59,7 @@ class SquareConnectionRouter extends AbstractRouter {
 	
 	override protected getStartPoint(Connection conn) {
 		// Fix: anchor when source is below
-		if (conn.sourceAnchor.below(conn.targetAnchor)) {
+		if (conn.sourceAnchor?.below(conn.targetAnchor)) {
 			return new DefaultWollokAnchor(conn.sourceAnchor.owner).referencePoint	
 		}
 		conn.sourceAnchor.referencePoint

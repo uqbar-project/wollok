@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.gef.ConnectionEditPart
 
 /**
  * Edit part for named objects nodes.
@@ -24,10 +25,10 @@ class NamedObjectEditPart extends AbstractMethodContainerEditPart implements Pro
 	override WNamedObject getLanguageElement() { castedModel.obj }
 	
 	override createFigure() {
-		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND)
+		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND, castedModel.configuration.showVariables)
 	}
 
-	override createConnectionAnchor() {
+	override mappedConnectionAnchor(ConnectionEditPart connection) {
 		new NamedObjectWollokAnchor(figure)
 	}
 	

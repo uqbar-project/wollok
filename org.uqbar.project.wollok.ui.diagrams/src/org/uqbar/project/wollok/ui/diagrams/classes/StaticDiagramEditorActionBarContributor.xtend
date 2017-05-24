@@ -11,7 +11,7 @@ import org.eclipse.ui.actions.ActionFactory
  * 
  * @author jfernandes
  */
-class ClassDiagramEditorActionBarContributor extends ActionBarContributor {
+class StaticDiagramEditorActionBarContributor extends ActionBarContributor {
 
 	override buildActions() {
 		#[
@@ -27,7 +27,8 @@ class ClassDiagramEditorActionBarContributor extends ActionBarContributor {
 	override contributeToToolBar(IToolBarManager toolBarManager) {
 		#[
 			ActionFactory.UNDO, 
-			ActionFactory.REDO
+			ActionFactory.REDO,
+			ActionFactory.DELETE
 		].forEach[
 			toolBarManager.add(getAction(id))
 		]

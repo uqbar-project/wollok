@@ -6,7 +6,7 @@
            point="org.eclipse.ui.views">
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
-              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.classes.ClassDiagramView"
+              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramView"
               icon="icons/class_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.class"
               name="%staticDiagramView"

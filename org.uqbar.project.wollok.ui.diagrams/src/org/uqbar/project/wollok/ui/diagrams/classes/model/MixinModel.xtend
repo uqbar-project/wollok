@@ -1,14 +1,14 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model
 
-import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * @author jfernandes
  */
 @Accessors
-class MixinModel extends Shape {
+class MixinModel extends AbstractModel {
 	WMixin mixin
 	public static int mixinsCount = 0
 	public static int PADDING_LEFT = 10
@@ -37,6 +37,10 @@ class MixinModel extends Shape {
 	
 	def height() {
 		120
+	}
+	
+	override getLabel() {
+		mixin.name
 	}
 	
 }

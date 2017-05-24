@@ -9,14 +9,19 @@ import java.util.Observable
 import java.util.Observer
 import org.eclipse.gef.GraphicalViewer
 import org.eclipse.jface.action.Action
+import org.eclipse.jface.action.ControlContribution
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.swt.SWT
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.FileDialog
+import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
-import org.uqbar.project.wollok.ui.diagrams.classes.ClassDiagramView
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramView
 
 import static extension org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ImageSaveUtil.*
 
@@ -79,9 +84,9 @@ class SaveStaticDiagramConfigurationAction extends Action {
 
 class LoadStaticDiagramConfigurationAction extends Action {
 	@Accessors StaticDiagramConfiguration configuration
-	ClassDiagramView view
+	StaticDiagramView view
 	
-	new(String title, StaticDiagramConfiguration configuration, ClassDiagramView view) {
+	new(String title, StaticDiagramConfiguration configuration, StaticDiagramView view) {
 		super(title)
 		this.configuration = configuration
 		this.view = view
@@ -107,9 +112,9 @@ class LoadStaticDiagramConfigurationAction extends Action {
 
 class ShowVariablesToggleButton extends Action implements Observer {
 	StaticDiagramConfiguration configuration
-	ClassDiagramView view
+	StaticDiagramView view
 
-	new(String title, StaticDiagramConfiguration configuration, ClassDiagramView view) {
+	new(String title, StaticDiagramConfiguration configuration, StaticDiagramView view) {
 		super(title, AS_CHECK_BOX)
 		this.configuration = configuration
 		this.configuration.addObserver(this)
@@ -124,8 +129,10 @@ class ShowVariablesToggleButton extends Action implements Observer {
 	}
 	
 	override update(Observable o, Object arg) {
-		this.checked = configuration.showVariables
-		view.refresh
+		if (arg === null) {
+			this.checked = configuration.showVariables
+			view.refresh
+		}
 	}
 
 }
@@ -148,7 +155,9 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 	}
 	
 	override update(Observable o, Object arg) {
-		this.checked = configuration.rememberLocationAndSizeShapes
+		if (arg === null) {
+			this.checked = configuration.rememberLocationAndSizeShapes
+		}
 	}
 	
 }
@@ -164,6 +173,34 @@ class CleanShapePositionsAction extends Action {
 
 	override run() {
 		configuration.initLocationsAndSizes
+	}
+	
+}
+
+class ShowFileAction extends ControlContribution implements Observer {
+	StaticDiagramConfiguration configuration
+	Label label
+
+	new(String id, StaticDiagramConfiguration configuration) {
+		super(id)
+		this.configuration = configuration
+		this.configuration.addObserver(this)
+	}
+
+	override update(Observable o, Object arg) {
+		if (arg === null) {
+			label.text = "  " + configuration.fileName + "  "
+			label.parent.requestLayout
+		}
+	}
+	
+	override protected createControl(Composite parent) {
+		label = new Label(parent, SWT.LEFT) => [
+			text = "  " + configuration.fileName + "  "
+			background = new Color(Display.current, 240, 241, 240)
+			
+		]
+		label
 	}
 	
 }

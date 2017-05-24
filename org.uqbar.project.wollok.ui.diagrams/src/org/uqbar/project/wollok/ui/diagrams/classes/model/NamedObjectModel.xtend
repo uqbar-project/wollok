@@ -62,4 +62,8 @@ class NamedObjectModel extends AbstractModel {
 		objects.fold(OBJECT_LEVEL_HEIGHT, [ max, object | Math.max(max, object.size.height) ])
 	}
 
+	override getLabel() {
+		obj.name
+	}
+	
 }

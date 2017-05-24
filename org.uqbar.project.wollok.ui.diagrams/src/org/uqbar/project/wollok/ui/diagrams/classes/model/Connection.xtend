@@ -24,11 +24,13 @@ class Connection extends ModelElement {
 	Shape source
 	Shape target
 	@Accessors String name
+	@Accessors RelationType relationType
 
-	new(String name, Shape source, Shape target) {
+	new(String name, Shape source, Shape target, RelationType relationType) {
 		this.name = name
 		reconnect(source, target)
 		this.lineStyle = calculateLineStyle()
+		this.relationType = relationType
 	}
 	
 	def calculateLineStyle() {
@@ -102,4 +104,8 @@ class Connection extends ModelElement {
 			super.setPropertyValue(id, value)
 	}
 
+}
+
+enum RelationType {
+	INHERITANCE, ASSOCIATION, DEPENDENCY	
 }

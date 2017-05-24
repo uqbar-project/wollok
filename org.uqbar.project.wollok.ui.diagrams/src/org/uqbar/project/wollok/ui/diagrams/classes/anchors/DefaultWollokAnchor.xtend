@@ -21,6 +21,13 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		newPoint	
 	}
 	
+	def translateToRelative(Rectangle rectangle) {
+		val newRectangle = rectangle
+		owner.translateToRelative(newRectangle)
+		newRectangle
+	}
+
+	
 	override getReferencePoint() {
 		owner.bounds.middleTop.translateToAbsolute
 	}
@@ -29,10 +36,17 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		owner.bounds.middleBottom.translateToAbsolute
 	}
 	
+	def static getRightCenter(Rectangle it) { new Point(x + width, y + height / 2) }
 	def static getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
+	def static getLeftCenter(Rectangle it) { new Point(x, y + height / 2) }
 	def static getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
+	def static getMiddleBottomLeft(Rectangle it) { new Point(x + (width / 2) - 20, y + height) }
 	
 	def static getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
 	def static getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }
+
+	def isOnTheRightOf(Point point, Point anotherPoint) {
+		point.x > anotherPoint.x
+	}
 	
 }

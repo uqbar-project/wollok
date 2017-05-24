@@ -9,7 +9,6 @@ import org.eclipse.draw2d.ToolbarLayout
 import org.eclipse.swt.graphics.Color
 
 import static org.uqbar.project.wollok.ui.utils.GefUtils.*
-import org.eclipse.draw2d.RoundedRectangle
 
 /**
  * 
@@ -20,25 +19,27 @@ class WClassFigure extends Figure {
 	Figure attributesFigure
 	Figure methodsFigure
 
-	new(String name, Color fgColor, Color bgColor) {
+	new(String name, Color fgColor, Color bgColor, boolean showVariables) {
 		super()
 
 		layoutManager = new ToolbarLayout => [
-			matchWidth =  true
+			stretchMinorAxis =  true
 			spacing = 5
 		]
-		
+
 		backgroundColor = bgColor
 		foregroundColor = fgColor
 		
 		nameLabel = new Label(name) => [
-			border = margin(2, 2, 5, 2)
+			setBorder(margin(2, 2, 5, 2))
 		]
 		add(nameLabel)
 		abstract = false
 		
-		attributesFigure = createCompartment 
-		add(attributesFigure)
+		if (showVariables) {
+			attributesFigure = createCompartment 
+			add(attributesFigure)
+		}
 		
 		methodsFigure = createCompartment
 		add(methodsFigure)
@@ -62,7 +63,7 @@ class WClassFigure extends Figure {
 	}
 
 	def setName(String newName) {
-		if (nameLabel == null) {
+		if (nameLabel === null) {
 			nameLabel = new Label(newName)
 			add(nameLabel)
 		} else
@@ -95,9 +96,9 @@ class WClassFigure extends Figure {
 	}
 	
 	def setFigureProblem(boolean problem) {
-		border = new LineBorder => [ 
+		setBorder(new LineBorder => [ 
 			color = if (problem) ColorConstants.red else ColorConstants.black
-		]
+		])
 	}
 	
 }

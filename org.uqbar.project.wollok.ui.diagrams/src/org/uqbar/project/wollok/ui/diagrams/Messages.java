@@ -15,6 +15,10 @@ public class Messages extends NLS {
 	public static String StaticDiagram_SaveConfiguration_Description;
 	public static String StaticDiagram_LoadConfiguration_Description;
 	public static String StaticDiagramOpenFile;
+	public static String StaticDiagram_CreateAssociation_Title;
+	public static String StaticDiagram_CreateAssociation_Description;
+	public static String StaticDiagram_HideClassFromDiagram_Title;
+	public static String StaticDiagram_HideClassFromDiagram_Description;
 	
 	static {
 		// initialize resource bundle

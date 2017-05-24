@@ -4,12 +4,13 @@ import java.util.ArrayList
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -19,14 +20,19 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * 
  */
 @Accessors
-class ClassDiagram extends ModelElement {
+class StaticDiagram extends ModelElement {
 	public static val CHILD_REMOVED_PROP = "ShapesDiagram.ChildRemoved"
 	public static val CHILD_ADDED_PROP = "ShapesDiagram.ChildAdded"
 	List<ClassModel> classes = new ArrayList
 	List<? extends WNamed> importedObjects = new ArrayList
 	List<MixinModel> mixins = new ArrayList
 	List<NamedObjectModel> objects = new ArrayList
+	StaticDiagramConfiguration configuration
 
+	new(StaticDiagramConfiguration configuration) {
+		this.configuration = configuration	
+	}
+	
 	def addClass(ClassModel s) {
 		if (s != null && classes.add(s))
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
@@ -59,9 +65,24 @@ class ClassDiagram extends ModelElement {
 			firePropertyChange(CHILD_ADDED_PROP, null, s)
 	}
 	
-	def connectRelations() {
+	def connectInheritanceRelations() {
 		classes.clone.forEach[createRelation(getComponent)]
 		objects.forEach[createRelation(obj)]
+	}
+	
+	def connectAssociationRelations() {
+		configuration.associations.forEach [ association |
+			val objects = children
+			val sourceModel = objects.find(association.source)
+			val targetModel = objects.find(association.target)
+			if (sourceModel !== null && targetModel !== null) {
+				new Connection(null, sourceModel, targetModel, RelationType.ASSOCIATION)
+			} 
+		]
+	}
+	
+	def AbstractModel find(List<AbstractModel> models, String name) {
+		children.findFirst [ label.equalsIgnoreCase(name) ]
 	}
 	
 	def createRelation(Shape it, WMethodContainer c) {
@@ -73,13 +94,13 @@ class ClassDiagram extends ModelElement {
 				//throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
 			}
 			else {
-				new Connection(null, it, parentModel)
+				new Connection(null, it, parentModel, RelationType.INHERITANCE)
 			}
 		}
 		// mixins
 		c.mixins.forEach[m |
 			val mixinEditPart = mixins.findFirst[ mixin == m ]
-			new Connection(null, it, mixinEditPart)
+			new Connection(null, it, mixinEditPart, RelationType.INHERITANCE)
 		]
 	}
 	

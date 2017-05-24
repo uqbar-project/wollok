@@ -6,6 +6,7 @@ import java.util.Comparator
 import java.util.HashMap
 import java.util.List
 import java.util.Set
+import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
@@ -52,7 +53,6 @@ import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.resource.XtextResource
-import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
@@ -68,16 +68,19 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.LoadStaticDiagramC
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.SaveStaticDiagramConfigurationAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
-import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.StaticDiagramPaletterFactory
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.AssociationConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.StaticDiagramEditPartFactory
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -89,13 +92,16 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.palette.StaticDiagramPaletterFactory
+import org.eclipse.core.resources.IProject
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
+import java.util.Observer
+import java.util.Observable
 
 /**
  * 
  * @author jfernandes
  */
-class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener {
+class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener, Observer {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -103,10 +109,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	
 	IXtextDocument xtextDocument
 	
-	@Inject
-	XtextResourceSet resourceSet
+	//@Inject
+	//XtextResourceSet resourceSet
 	
-	ClassDiagram diagram
+	StaticDiagram diagram
 	
 	// splitter and palette
 	FlyoutPaletteComposite splitter
@@ -121,6 +127,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		editDomain = new DefaultEditDomain(null)
 		editDomain.paletteRoot = StaticDiagramPaletterFactory.create
 		configuration = new StaticDiagramConfiguration
+		configuration.addObserver(this)
 		Shape.useConfiguration(configuration)
 	}
 	
@@ -135,6 +142,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val rememberShapePositionsToggleButton = new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration)
 		
 		site.actionBars.toolBarManager => [
+			add(new ShowFileAction("labelFile", configuration))
+			add(new Separator)
 			add(exportAction)
 			add(new Separator)
 			add(showVariablesToggleButton)
@@ -148,7 +157,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def createDiagramModel() {
 		NamedObjectModel.init()
 		MixinModel.init()
-		new ClassDiagram => [
+		new StaticDiagram(configuration) => [
 			// all objects
 			val objects = xtextDocument.readOnly[ namedObjects ]
 			
@@ -210,7 +219,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			allMixins.forEach [ m | addMixin(m) ]
 
 			// relations
-			connectRelations
+			connectInheritanceRelations
+			connectAssociationRelations
 		]
 	}
 	
@@ -282,12 +292,12 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def configureGraphicalViewer() {
 		graphicalViewer.control.background = ColorConstants.listBackground
 
-		graphicalViewer.editPartFactory = new ClassDiagramEditPartFactory
+		graphicalViewer.editPartFactory = new StaticDiagramEditPartFactory
 		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 
 		// configure the context menu provider
-		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
+		val cmProvider = new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 		graphicalViewer.contextMenu = cmProvider
 		site.registerContextMenu(cmProvider, graphicalViewer)
 	}
@@ -312,7 +322,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
 		val nodes = parts.map[e | e.createNode ]
 		
-		graph.edges.addAll(connectionsEditParts.map[c| 
+		graph.edges.addAll(inheritanceConnectionsEditParts.map[c| 
 			new Edge(nodes.findFirst[n| n.data == c.source.model], nodes.findFirst[n| n.data == c.target.model])
 		])
 		
@@ -344,7 +354,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def getClassEditParts() { getEditPartsOfType(ClassEditPart) }
 	def getObjectsEditParts() { getEditPartsOfType(NamedObjectEditPart) }
 	def getMixinsEditParts() { getEditPartsOfType(MixinEditPart) }
-	def getConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+	def getInheritanceConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+	def getAssociationConnectionsEditParts() { getEditPartsOfType(AssociationConnectionEditPart) }
 	
 	def <T> Iterable<T> getEditPartsOfType(Class<T> t) {
 		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
@@ -427,6 +438,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (xtextDocument != null) xtextDocument.removeDocumentListener(this)
 			xtextDocument = doc
 			xtextDocument.addDocumentListener(this)
+			val IResource resource = xtextDocument.getAdapter(typeof(IResource))
+			configuration.resource = resource 
 			refresh()
 		}
 	}
@@ -507,6 +520,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	val listeners = new ArrayList<ISelectionChangedListener>
 	var ISelection selection = null
 	
+	
 	override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
 	override getSelection() { selection }
 	override setSelection(ISelection selection) {}
@@ -539,6 +553,13 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			namedMap.put(wname.name, wname)
 		]
 		namedMap.values.toList
+	}
+	
+	/* Notificaciones del Static Diagram Configuration */
+	override update(Observable o, Object arg) {
+		if (arg !== null) {
+			this.refresh
+		}
 	}
 
 }

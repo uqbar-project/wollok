@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class ClassEditPart extends AbstractMethodContainerEditPart {
 	
 	override createFigure() {
-		new WClassFigure(castedModel.name, castedModel.foregroundColor, castedModel.backgroundColor) => [ f |
+		new WClassFigure(castedModel.name, castedModel.foregroundColor, castedModel.backgroundColor, castedModel.configuration.showVariables) => [ f |
 			f.abstract = castedModel.getComponent.abstract
 		]
 	}

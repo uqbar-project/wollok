@@ -77,4 +77,8 @@ class ClassModel extends AbstractModel {
 		component.name ?: ""
 	}
 	
+	override getLabel() {
+		this.name
+	}
+	
 }

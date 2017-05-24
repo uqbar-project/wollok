@@ -16,7 +16,7 @@ class MixinEditPart extends AbstractMethodContainerEditPart {
 	override WMixin getLanguageElement() { castedModel.mixin }
 	
 	override protected createFigure() {
-		new WClassFigure(castedModel.mixin.name, ClassDiagramColors.MIXIN_FOREGROUND, ClassDiagramColors.MIXIN_BACKGROUND) => [ f |
+		new WClassFigure(castedModel.mixin.name, ClassDiagramColors.MIXIN_FOREGROUND, ClassDiagramColors.MIXIN_BACKGROUND, false) => [ f |
 //			f.abstract = castedModel.mixin.abstract
 		]
 	}
