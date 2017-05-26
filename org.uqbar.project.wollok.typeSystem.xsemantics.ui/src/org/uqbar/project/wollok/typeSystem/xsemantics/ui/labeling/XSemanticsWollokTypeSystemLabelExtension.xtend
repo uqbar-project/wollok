@@ -26,6 +26,7 @@ class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelE
 		try {
 			val typeSystem = WollokTypeSystemActivator.^default.getTypeSystem(o)
 			typeSystem.analyse(o.eResource.contents.get(0)) // analyses all the file
+			typeSystem.inferTypes
 			typeSystem.type(o)
 		}
 		catch (Exception e) {
