@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.editPolicies
 
+import org.eclipse.draw2d.BendpointConnectionRouter
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
 import org.eclipse.gef.requests.CreateConnectionRequest
 import org.eclipse.gef.requests.ReconnectRequest
@@ -28,5 +29,9 @@ class CreateAssociationEditPolicy extends GraphicalNodeEditPolicy {
 	override protected getReconnectTargetCommand(ReconnectRequest request) {
 		null
 	}
-	
+
+	override protected getDummyConnectionRouter(CreateConnectionRequest request) {
+		new BendpointConnectionRouter
+	}
+
 }

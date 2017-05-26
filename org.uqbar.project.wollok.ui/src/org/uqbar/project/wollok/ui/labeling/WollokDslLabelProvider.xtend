@@ -44,83 +44,102 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	new(AdapterFactoryLabelProvider delegate) {
 		super(delegate)
 	}
-		
+
 	def image(WPackage it) { 'package.png' }
+
 	def image(WProgram it) { 'wollok-icon-program_16.png' }
+
 	def image(WClass it) { 'wollok-icon-class_16.png' }
+
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
+
 	def image(WTest it) { 'wollok-icon-test_16.png' }
+
 	def image(WSuite it) { 'suite.png' }
+
 	def image(WFixture it) { 'fixture.png' }
+
 	def image(WNamedObject it) { 'wollok-icon-object_16.png' }
-	def image(WObjectLiteral it) {	'wollok-icon-object_16.png' }
-	
+
+	def image(WObjectLiteral it) { 'wollok-icon-object_16.png' }
+
 	def text(WObjectLiteral it) { 'object' }
+
 	def text(WFixture it) { 'fixture' }
-	def text(WNamedObject it) { name }
-	
+
+	def text(WNamedObject it) { name ?: "<...>" }
+
 	def synchronized concatResolvedType(String separator, EObject obj) {
 		if (!labelExtensionResolved) {
 			labelExtension = resolveLabelExtension
 			labelExtensionResolved = true
 		}
-		
+
 		if (labelExtension != null) {
 			val type = labelExtension.resolvedType(obj)
-			if (type != null) (separator + type) else "" 
-		}
-		else 
+			if(type != null) (separator + type) else ""
+		} else
 			""
 	}
-	
+
 	def resolveLabelExtension() {
-		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
+		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor(
+			"org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
 
 		if (configPoints.empty)
 			null
 		else
 			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
 	}
-	
-	def text(WVariableDeclaration it) { 
+
+	def text(WVariableDeclaration it) {
 		(if (writeable)
 			// var 
 			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
-			else
+		else
 			// const 
-			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name + concatResolvedType(": ", variable)
+			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name +
+			concatResolvedType(": ", variable)
 	}
+
 	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
 
 	def text(WVariable it) { name + concatResolvedType(": ", it) }
-	def image(WVariable ele) 	{ 'variable.gif' }
-	
+
+	def image(WVariable ele) { 'variable.gif' }
+
 	def text(WParameter it) { textForParam }
+
 	def image(WParameter ele) { 'variable.gif' }
-	
+
 	def textForParam(WReferenciable it) { // solo para wparam y wclosureparam
 		name + concatResolvedType(": ", it)
 	}
-	
+
 	def text(WMethodDeclaration m) {
-		m.name + '(' + m.parameters.map[name + concatResolvedType(":",it) ].join(',') + ')' 
-				+ if (m.supposedToReturnValue) (" → " + concatResolvedType("",m)) else ""
+		(m.name ?: "<...>") + '(' + m.parameters.map[(name) + concatResolvedType(":", it)].join(',') + ')' +
+			if(m.supposedToReturnValue) (" → " + concatResolvedType("", m)) else ""
 	}
+
 	def text(WConstructor m) {
-		grammar.WConstructorAccess.constructorKeyword_1 + '(' + m.parameters.map[name + concatResolvedType(":",it)].join(',') + ')'
+		grammar.WConstructorAccess.constructorKeyword_1 + '(' +
+			m.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
 	}
-	
+
 	def image(WMethodDeclaration method) {
-		if (method.actuallyOverrides) 'annotation_override.gif' else 'wollok-icon-method_16.png' 
+		if(method.actuallyOverrides) 'annotation_override.gif' else 'wollok-icon-method_16.png'
 	}
-	
+
 	def text(WMemberFeatureCall ele) { ele.feature + '(' + ele.memberCallArguments.map[doGetText(it)].join(',') + ')' }
+
 	def image(WMemberFeatureCall ele) { 'wollok-icon-message_16.png' }
-	
+
 	def image(WVariableReference ele) { 'pointer.jpg' }
+
 	def image(WAssignment a) { 'assignment.jpg' }
-	
+
 	def image(WNumberLiteral l) { 'number.png' }
+
 	def image(WStringLiteral l) { 'string.png' }
-	
+
 }

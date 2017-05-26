@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.wollokDsl.WMixin
  */
 @Accessors
 class MixinModel extends AbstractModel {
-	WMixin mixin
 	public static int mixinsCount = 0
 	public static int PADDING_LEFT = 10
 	public static int VERTICAL_TOP = 10
@@ -19,12 +18,12 @@ class MixinModel extends AbstractModel {
 	}
 	
 	new(WMixin mixin) {
-		this.mixin = mixin
+		super(mixin)
 		mixinsCount++
 	}
 
 	override toString() {
-		"Mixin<" + mixin.name + ">"		
+		"Mixin<" + this.name + ">"		
 	}
 	
 	def void locate() {
@@ -37,10 +36,6 @@ class MixinModel extends AbstractModel {
 	
 	def height() {
 		120
-	}
-	
-	override getLabel() {
-		mixin.name
 	}
 	
 }

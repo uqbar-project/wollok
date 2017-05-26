@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model
 
 import java.util.List
 import org.eclipse.draw2d.geometry.Point
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
@@ -16,7 +15,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * @author dodain
  */
 class NamedObjectModel extends AbstractModel {
-	@Accessors WNamedObject obj
 	public static List<NamedObjectModel> objects
 
 	public static int VERTICAL_POSITION = 10
@@ -27,17 +25,16 @@ class NamedObjectModel extends AbstractModel {
 	}
 	
 	new(WNamedObject obj) {
-		this.obj = obj
-		obj.defineSize
+		super(obj)
 		objects.add(this)
 	}
 
 	override toString() {
-		"ObjectModel<" + obj.name + ">"		
+		"ObjectModel<" + this.name + ">"		
 	}
 	
 	override shouldShowConnectorTo(WClass clazz) {
-		obj.hasRealParent // By now it is ok, but we should consider also associations
+		component.hasRealParent // By now it is ok, but we should consider also associations
 	}
 	
 	def locate() {
@@ -62,8 +59,4 @@ class NamedObjectModel extends AbstractModel {
 		objects.fold(OBJECT_LEVEL_HEIGHT, [ max, object | Math.max(max, object.size.height) ])
 	}
 
-	override getLabel() {
-		obj.name
-	}
-	
 }

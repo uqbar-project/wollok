@@ -16,16 +16,14 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 @Accessors
 class ClassModel extends AbstractModel {
-	WMethodContainer component
 	boolean imported = false
 	
 	new(WMethodContainer mc) {
-		component = mc
-		component.defineSize
+		super(mc)
 	}
 	
 	override toString() {
-		"ClassModel<" + component.name + ">"		
+		"ClassModel<" + this.name + ">"		
 	}
 	
 	def locate(int level) {
@@ -72,13 +70,5 @@ class ClassModel extends AbstractModel {
 		}
 		subclassesCount * defaultWidth	
 	}
-		
-	def getName() {
-		component.name ?: ""
-	}
-	
-	override getLabel() {
-		this.name
-	}
-	
+
 }

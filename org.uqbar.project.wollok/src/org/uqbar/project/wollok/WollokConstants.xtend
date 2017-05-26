@@ -19,6 +19,8 @@ class WollokConstants {
 	public static val CLASS_OBJECTS_EXTENSION = "wlk"
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
+	public static val STATIC_DIAGRAM_EXTENSION = "wsdi"
+	public static val DIAGRAMS_FOLDER = ".diagrams"
 	
 	public static val PATH_SEPARATOR = "/"
 	public static val STACKELEMENT_SEPARATOR = "&"
@@ -54,4 +56,5 @@ class WollokConstants {
 
 	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
 	public static def isMultiOpAssignment(String operator) { operator.matches(MULTIOPS_REGEXP) }
+	
 }

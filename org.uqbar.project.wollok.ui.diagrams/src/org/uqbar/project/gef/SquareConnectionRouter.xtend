@@ -41,20 +41,22 @@ class SquareConnectionRouter extends AbstractRouter {
 	override route(Connection conn) {
 		if (conn.sourceAnchor == null || conn.targetAnchor == null)
 			return;
-		
+
 		startPoint = getStartPoint(conn)
 		conn.translateToRelative(startPoint)
 		endPoint = getEndPoint(conn)
 		conn.translateToRelative(endPoint)
 		
-		conn.points = new PointList => [
-			addPoint(startPoint)
-			// go up
-			addPoint(new Point(startPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
-			// go right
-			addPoint(new Point(endPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
-			addPoint(endPoint)
-		]
+		if (!startPoint.equals(endPoint)) {
+			conn.points = new PointList => [
+				addPoint(startPoint)
+				// go up
+				addPoint(new Point(startPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
+				// go right
+				addPoint(new Point(endPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
+				addPoint(endPoint)
+			]
+		}
 	}
 	
 	override protected getStartPoint(Connection conn) {

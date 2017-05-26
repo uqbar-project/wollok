@@ -1,11 +1,11 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts;
 
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class ClassEditPart extends AbstractMethodContainerEditPart {
 	
 	override createFigure() {
-		new WClassFigure(castedModel.name, castedModel.foregroundColor, castedModel.backgroundColor, castedModel.configuration.showVariables) => [ f |
+		new WClassFigure(castedModel.name, castedModel.foregroundColor, castedModel.backgroundColor, castedModel) => [ f |
 			f.abstract = castedModel.getComponent.abstract
 		]
 	}

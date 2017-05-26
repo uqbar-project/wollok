@@ -1,5 +1,9 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
+import org.eclipse.draw2d.Connection
+import org.eclipse.draw2d.ConnectionAnchor
+import org.eclipse.draw2d.ConnectionRouter
+import org.eclipse.draw2d.FanRouter
 import org.eclipse.draw2d.PolylineDecoration
 
 /**
@@ -19,5 +23,5 @@ class AssociationPolygonDecoration extends PolylineDecoration {
 		fill = true
 		opaque = true
 	}
-
+	
 }

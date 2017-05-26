@@ -7,6 +7,7 @@ import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.LineBorder
 import org.eclipse.draw2d.ToolbarLayout
 import org.eclipse.swt.graphics.Color
+import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 
 import static org.uqbar.project.wollok.ui.utils.GefUtils.*
 
@@ -18,25 +19,28 @@ class WClassFigure extends Figure {
 	Label nameLabel
 	Figure attributesFigure
 	Figure methodsFigure
+	AbstractModel castedModel
 
-	new(String name, Color fgColor, Color bgColor, boolean showVariables) {
+	new(String name, Color fgColor, Color bgColor, AbstractModel castedModel) {
 		super()
 
+		this.castedModel = castedModel
+		
 		layoutManager = new ToolbarLayout => [
 			stretchMinorAxis =  true
-			spacing = 5
+			spacing = 3
 		]
 
 		backgroundColor = bgColor
 		foregroundColor = fgColor
 		
 		nameLabel = new Label(name) => [
-			setBorder(margin(2, 2, 5, 2))
+			setBorder(margin(2, 2, 3, 2))
 		]
 		add(nameLabel)
 		abstract = false
 		
-		if (showVariables) {
+		if (castedModel.variablesSize > 0) {
 			attributesFigure = createCompartment 
 			add(attributesFigure)
 		}
@@ -52,7 +56,7 @@ class WClassFigure extends Figure {
 			layoutManager = new ToolbarLayout => [
 				minorAlignment = ToolbarLayout.ALIGN_TOPLEFT				
 			]
-			border = new WSeparatorBorder
+			setBorder(new WSeparatorBorder)
 			backgroundColor = this.backgroundColor.darker
 			opaque = true
 		]
@@ -69,9 +73,9 @@ class WClassFigure extends Figure {
 		} else
 			nameLabel.text = newName
 	}
-
+	
 	def getName() {
-		nameLabel.text
+		nameLabel.text ?: "<...>"
 	}
 
 	override add(IFigure figure, Object constraint, int index) { addChild(figure, constraint, index) }

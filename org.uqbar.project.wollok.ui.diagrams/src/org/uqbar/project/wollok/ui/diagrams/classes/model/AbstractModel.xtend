@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model
 import java.util.List
 import java.util.Map
 import org.eclipse.draw2d.geometry.Dimension
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
@@ -28,6 +29,13 @@ abstract class AbstractModel extends Shape {
 	protected val static WIDTH_SEPARATION_BETWEEN_ELEMENTS = 20
 	protected val static INITIAL_MARGIN = 5
 
+	@Accessors protected WMethodContainer component
+
+	new(WMethodContainer mc) {
+		component = mc
+		component.defineSize
+	}
+	
 	static def void init(List<WMethodContainer> _classes) {
 		levelHeight = newHashMap
 		levelWidth = newHashMap
@@ -73,7 +81,7 @@ abstract class AbstractModel extends Shape {
 	def int adjustedHeight() {
 		NamedObjectModel.maxHeight()
 	}
-	
+
 	def int shapeHeight(WMethodContainer mc) {
 		Math.min((mc.variablesSize + mc.methods.size) * FILE_HEIGHT + ELEMENT_HEIGHT, MAX_ELEMENT_HEIGHT)
 	}
@@ -91,6 +99,21 @@ abstract class AbstractModel extends Shape {
 		size = configuration.getSize(this) ?: new Dimension(component.shapeWidth, component.shapeHeight)
 	}
 
-	def String getLabel()
-	
+	def String getLabel() {
+		this.name
+	}
+
+	/**
+	 * ******************************************************************************* 
+	 *    DOMAIN METHODS
+	 * ******************************************************************************* 
+	 */
+	def getVariablesSize() {
+		this.component.variablesSize
+	}
+
+	def getName() {
+		component.name ?: "<...>"
+	}
+		
 }

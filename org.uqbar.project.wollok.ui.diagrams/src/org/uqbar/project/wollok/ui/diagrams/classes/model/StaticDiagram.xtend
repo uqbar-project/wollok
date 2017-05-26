@@ -66,8 +66,8 @@ class StaticDiagram extends ModelElement {
 	}
 	
 	def connectInheritanceRelations() {
-		classes.clone.forEach[createRelation(getComponent)]
-		objects.forEach[createRelation(obj)]
+		classes.clone.forEach[createRelation(it.component)]
+		objects.forEach[createRelation(it.component)]
 	}
 	
 	def connectAssociationRelations() {
@@ -99,7 +99,7 @@ class StaticDiagram extends ModelElement {
 		}
 		// mixins
 		c.mixins.forEach[m |
-			val mixinEditPart = mixins.findFirst[ mixin == m ]
+			val mixinEditPart = mixins.findFirst[ it.component == m ]
 			new Connection(null, it, mixinEditPart, RelationType.INHERITANCE)
 		]
 	}

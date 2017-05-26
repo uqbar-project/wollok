@@ -5,6 +5,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.wollokDsl.WMixin
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 /**
  * 
  * @author jfernandes
@@ -13,10 +15,10 @@ class MixinEditPart extends AbstractMethodContainerEditPart {
 	
 	override MixinModel getCastedModel() { model as MixinModel }
 	override doGetModelChildren() { languageElement.members }
-	override WMixin getLanguageElement() { castedModel.mixin }
+	override WMixin getLanguageElement() { castedModel.component as WMixin }
 	
 	override protected createFigure() {
-		new WClassFigure(castedModel.mixin.name, ClassDiagramColors.MIXIN_FOREGROUND, ClassDiagramColors.MIXIN_BACKGROUND, false) => [ f |
+		new WClassFigure(castedModel.component.name, ClassDiagramColors.MIXIN_FOREGROUND, ClassDiagramColors.MIXIN_BACKGROUND, castedModel) => [ f |
 //			f.abstract = castedModel.mixin.abstract
 		]
 	}

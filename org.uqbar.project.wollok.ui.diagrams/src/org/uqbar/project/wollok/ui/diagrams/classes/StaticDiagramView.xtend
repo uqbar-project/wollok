@@ -138,7 +138,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		site.workbenchWindow.activePage.addPartListener(this)
 		
 		exportAction = new ExportAction
-		val showVariablesToggleButton = new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration, this)
+		val showVariablesToggleButton = new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration)
 		val rememberShapePositionsToggleButton = new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration)
 		
 		site.actionBars.toolBarManager => [
@@ -149,8 +149,9 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			add(showVariablesToggleButton)
 			add(rememberShapePositionsToggleButton)
 			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
-			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
-			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
+//			In a future could remain as options: "Open External wsdi" & "Save As..." 			
+//			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
+//			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
 		]
 	}
 	
@@ -556,8 +557,8 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	/* Notificaciones del Static Diagram Configuration */
-	override update(Observable o, Object arg) {
-		if (arg !== null) {
+	override update(Observable o, Object event) {
+		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.refresh
 		}
 	}

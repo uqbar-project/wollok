@@ -19,13 +19,14 @@ import org.eclipse.gef.ConnectionEditPart
 class NamedObjectEditPart extends AbstractMethodContainerEditPart implements PropertyChangeListener, NodeEditPart {
 
 	override NamedObjectModel getCastedModel() { model as NamedObjectModel }
+
 	override doGetModelChildren() {
-		if (castedModel.configuration.showVariables) castedModel.obj.members else castedModel.obj.methods.toList 
+		if (castedModel.configuration.showVariables) castedModel.component.members else castedModel.component.methods.toList 
 	}
-	override WNamedObject getLanguageElement() { castedModel.obj }
+	override WNamedObject getLanguageElement() { castedModel.component as WNamedObject }
 	
 	override createFigure() {
-		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND, castedModel.configuration.showVariables)
+		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND, castedModel)
 	}
 
 	override mappedConnectionAnchor(ConnectionEditPart connection) {

@@ -84,12 +84,10 @@ class SaveStaticDiagramConfigurationAction extends Action {
 
 class LoadStaticDiagramConfigurationAction extends Action {
 	@Accessors StaticDiagramConfiguration configuration
-	StaticDiagramView view
 	
-	new(String title, StaticDiagramConfiguration configuration, StaticDiagramView view) {
+	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		this.view = view
 		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.ui/icons/full/etool16/opentype.png"))
 	}
 	
@@ -105,7 +103,6 @@ class LoadStaticDiagramConfigurationAction extends Action {
 			val ois = new ObjectInputStream(file)
 			val newConfiguration = ois.readObject as StaticDiagramConfiguration
 			configuration.copyFrom(newConfiguration)
-			view.refresh
 		}
 	}
 }
@@ -114,24 +111,21 @@ class ShowVariablesToggleButton extends Action implements Observer {
 	StaticDiagramConfiguration configuration
 	StaticDiagramView view
 
-	new(String title, StaticDiagramConfiguration configuration, StaticDiagramView view) {
+	new(String title, StaticDiagramConfiguration configuration) {
 		super(title, AS_CHECK_BOX)
 		this.configuration = configuration
 		this.configuration.addObserver(this)
-		this.view = view
 		this.checked = configuration.showVariables
 		imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/wollok-icon-variable_16.png")
 	}
 
 	override run() {
 		configuration.showVariables = !configuration.showVariables
-		this.update(null, null)
 	}
 	
-	override update(Observable o, Object arg) {
-		if (arg === null) {
+	override update(Observable o, Object event) {
+		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.checked = configuration.showVariables
-			view.refresh
 		}
 	}
 
@@ -151,11 +145,11 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 	override run() {
 		configuration.rememberLocationAndSizeShapes = !configuration.rememberLocationAndSizeShapes
 		configuration.initLocationsAndSizes  // just in case we don't want to remember anymore, cleaning up
-		this.update(null, null)
+		this.update(null, StaticDiagramConfiguration.CONFIGURATION_CHANGED)
 	}
 	
-	override update(Observable o, Object arg) {
-		if (arg === null) {
+	override update(Observable o, Object event) {
+		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.checked = configuration.rememberLocationAndSizeShapes
 		}
 	}
@@ -187,16 +181,16 @@ class ShowFileAction extends ControlContribution implements Observer {
 		this.configuration.addObserver(this)
 	}
 
-	override update(Observable o, Object arg) {
-		if (arg === null) {
-			label.text = "  " + configuration.fileName + "  "
+	override update(Observable o, Object event) {
+		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+			label.text = "  " + configuration.originalFileName + "  "
 			label.parent.requestLayout
 		}
 	}
 	
 	override protected createControl(Composite parent) {
 		label = new Label(parent, SWT.LEFT) => [
-			text = "  " + configuration.fileName + "  "
+			text = "  " + configuration.originalFileName + "  "
 			background = new Color(Display.current, 240, 241, 240)
 			
 		]

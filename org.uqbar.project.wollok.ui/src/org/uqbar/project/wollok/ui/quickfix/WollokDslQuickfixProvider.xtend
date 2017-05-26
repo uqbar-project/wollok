@@ -398,7 +398,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = (e as WExpression).method.declaringContext
 			context.xtextDocument.replace(container.after, 0,
-				System.lineSeparator + CLASS + newClassName + " {" + System.lineSeparator + "}" + System.lineSeparator)
+				System.lineSeparator + CLASS + blankSpace + newClassName + " {" + System.lineSeparator + "}" + System.lineSeparator)
 		]
 
 	}
