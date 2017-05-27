@@ -20,12 +20,12 @@ import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.WollokAssociationAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.ClassContainerEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.CreateAssociationEditPolicy
-import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.DeleteClassEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.HideComponentEditPolicy
 
 /**
  * Abstract base class for edit parts for (named) objects and classes
@@ -72,7 +72,7 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 			override protected createMoveChildCommand(EditPart arg0, EditPart arg1) {}
 			override protected getCreateCommand(CreateRequest arg0) {}
 		})
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new DeleteClassEditPolicy)
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new HideComponentEditPolicy)
 		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateAssociationEditPolicy)
 	}
 	

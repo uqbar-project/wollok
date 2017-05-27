@@ -66,7 +66,9 @@ import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteAssociationAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.HideComponentAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
@@ -94,7 +96,6 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteAssociationAction
 
 /**
  * 
@@ -177,7 +178,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			ClassModel.init(allClassModelAbstractions)
 			
 			// objects (first so that we collect parents in the "classes" set
-			val singleObjects = objects.filter [ !hasRealParent ]
+			val singleObjects = objects.filter [ !hasRealParent && !configuration.isHiddenComponent(name) ]
 			
 			singleObjects.forEach[ o | 
 				addNamedObject(new NamedObjectModel(o) => [ 
@@ -216,7 +217,8 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			// mixins (for classes and objects)
 			val mixins = xtextDocument.readOnly[ mixins ].toSet
 			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
-			val allMixins = mixins.removeDuplicated as List<WMixin>
+			var allMixins = mixins.removeDuplicated as List<WMixin>
+			allMixins = allMixins.filter [!configuration.isHiddenComponent(name)].toList
 			allMixins.forEach [ m | addMixin(m) ]
 
 			// relations
@@ -375,8 +377,10 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getActionRegistry() {
-		if (actionRegistry == null) actionRegistry = new ActionRegistry
-		actionRegistry.registerAction(new DeleteAssociationAction(this, graphicalViewer, configuration))
+		if (actionRegistry == null) actionRegistry = new ActionRegistry => [
+			registerAction(new DeleteAssociationAction(this, graphicalViewer, configuration))
+			registerAction(new HideComponentAction(this, graphicalViewer, configuration))
+		]
 		actionRegistry
 	}
 	
@@ -560,7 +564,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		namedMap.values.toList
 	}
 	
-	/* Notificaciones del Static Diagram Configuration */
+	/* Static Diagram Configuration Notifications */
 	override update(Observable o, Object event) {
 		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.refresh

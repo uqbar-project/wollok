@@ -41,6 +41,7 @@ class StaticDiagram extends ModelElement {
 	def addComponent(WMethodContainer c, int level) {
 		if (c == null || c.name == null) return;
 		if (c.name.equals(WollokConstants.ROOT_CLASS)) return;
+		if (this.configuration.isHiddenComponent(c.name)) return;
 		addClass(new ClassModel(c) => [
 			locate(level)
 			if (importedObjects.map [ name ].contains(c.name)) {
@@ -49,13 +50,13 @@ class StaticDiagram extends ModelElement {
 		])
 	}
 	
-	def addMixin(MixinModel s) {
-		if (s != null && mixins.add(s))
-			firePropertyChange(CHILD_ADDED_PROP, null, s)
+	def addMixin(MixinModel m) {
+		if (m != null && mixins.add(m))
+			firePropertyChange(CHILD_ADDED_PROP, null, m)
 	}
 	
-	def addMixin(WMixin c) {
-		addMixin(new MixinModel(c) => [
+	def addMixin(WMixin m) {
+		addMixin(new MixinModel(m) => [
 			locate
 		])
 	}

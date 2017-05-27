@@ -9,6 +9,7 @@ import org.eclipse.ui.actions.ActionFactory
 
 import static org.eclipse.gef.ui.actions.GEFActionConstants.*
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteAssociationAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.AbstractDeleteElementAction
 
 /**
  * 
@@ -27,15 +28,19 @@ class StaticDiagramEditorContextMenuProvider extends ContextMenuProvider {
 
 //		appendToGroup(GROUP_UNDO, getAction(ActionFactory.UNDO.id))
 //		appendToGroup(GROUP_UNDO, getAction(ActionFactory.REDO.id))
-		
-		val IAction actionDelete = getAction(ActionFactory.DELETE.id)
-		if (actionDelete !== null) {
-			appendToGroup(GROUP_EDIT, actionDelete)
-		}
+		addToGroup(GROUP_EDIT, AbstractDeleteElementAction.DELETE_ASSOCIATION)		
+		addToGroup(GROUP_EDIT, AbstractDeleteElementAction.HIDE_CLASS)
 	}
 
 	def getAction(String actionId) {
 		actionRegistry.getAction(actionId)
+	}
+	
+	def void addToGroup(String group, String actionId) {
+		val IAction action = getAction(actionId)
+		if (action !== null) {
+			appendToGroup(group, action)
+		}
 	}
 
 }

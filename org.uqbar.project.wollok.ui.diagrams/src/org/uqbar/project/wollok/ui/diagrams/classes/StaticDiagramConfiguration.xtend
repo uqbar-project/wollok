@@ -28,6 +28,8 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 @Accessors
 class StaticDiagramConfiguration extends Observable implements Serializable {
 
+	public static Long serialVersionUID = 4810248L
+	
 	/** Notification Events  */
 	public static String CONFIGURATION_CHANGED = "configuration"
 	
@@ -113,7 +115,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.setChanged
 	}
 	
-	def deleteClass(AbstractModel model) {
+	def hideComponent(AbstractModel model) {
 		hiddenComponents.add(model.label)
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
@@ -203,6 +205,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.hiddenComponents = configuration.hiddenComponents
 		this.associations = configuration.associations
 		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	def isHiddenComponent(String componentName) {
+		this.hiddenComponents.contains(componentName)
 	}
 
 	/** 
@@ -295,5 +301,5 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			directory.mkdir			
 		}
 	}
-
+	
 }

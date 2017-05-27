@@ -24,7 +24,7 @@ class StaticDiagramPaletterFactory {
 				add(tool)
 				add(new MarqueeToolEntry)
 				add(new CreateAssociationToolEntry)
-				add(new HideClassToolEntry)
+				// TODO: CreateDependencyToolEntry
 			])
 			defaultEntry = tool
 		]
