@@ -4,7 +4,7 @@ import java.io.Serializable
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
-class Association implements Cloneable, Serializable {
+class Relation implements Cloneable, Serializable {
 	String source
 	String target
 	

@@ -37,7 +37,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	Map<String, Point> locations
 	Map<String, Dimension> sizes
 	List<String> hiddenComponents = newArrayList
-	List<Association> associations = newArrayList
+	List<Relation> associations = newArrayList
+	List<Relation> dependencies = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
 	
@@ -51,25 +52,45 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *******************************************************
 	 */	
 	def void init() {
-		initLocationsAndSizes
-		initHiddenComponents
-		initAssociations
+		internalInitLocationsAndSizes
+		internalInitHiddenComponents
+		internalInitRelationships
 	}
 	
 	def void initLocationsAndSizes() {
+		this.internalInitLocationsAndSizes
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def void internalInitLocationsAndSizes() {
 		locations = newHashMap
-		sizes = newHashMap		
+		sizes = newHashMap
 	}
 
 	def void initHiddenComponents() {
+		this.internalInitHiddenComponents
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def void internalInitHiddenComponents() {
 		hiddenComponents = newArrayList
 	}
 
-	def void initAssociations() {
-		associations = newArrayList
+	def void initRelationships() {
+		this.internalInitRelationships
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
 	}	
 	
+	def void internalInitRelationships() {
+		associations = newArrayList
+		dependencies = newArrayList
+	}
+	
 	/** 
+	 * 
 	 ******************************************************
 	 *  CONFIGURATION CHANGES 
 	 *******************************************************
@@ -99,11 +120,38 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def addAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
-		associations.add(new Association(modelSource.label, modelTarget.label))
+		associations.add(new Relation(modelSource.label, modelTarget.label))
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
+		val element = associations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label)]
+		if (element === null) {
+			throw new RuntimeException("Association between " + modelSource.name + " and " + modelTarget.name + " not found")
+		}
+		associations.remove(element)
+		this.setChanged
+	}
+
+	def addDependency(AbstractModel modelSource, AbstractModel modelTarget) {
+		dependencies.add(new Relation(modelSource.label, modelTarget.label))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
+	def void setShowVariables(boolean show) {
+		this.showVariables = show
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	def void setRememberLocationAndSizeShapes(boolean remember) {
+		this.rememberLocationAndSizeShapes = remember
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
 	/** 
 	 * Fired each time you click on a xtext document
 	 * If resource changed, configuration should clean up its state
@@ -125,18 +173,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			this.init
 			this.loadConfiguration
 		}
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
-	def void setShowVariables(boolean show) {
-		this.showVariables = show
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-
-	def void setRememberLocationAndSizeShapes(boolean remember) {
-		this.rememberLocationAndSizeShapes = remember
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}

@@ -19,6 +19,8 @@ public class Messages extends NLS {
 	public static String StaticDiagram_CreateAssociation_Description;
 	public static String StaticDiagram_HideClassFromDiagram_Title;
 	public static String StaticDiagram_HideClassFromDiagram_Description;
+	public static String StaticDiagram_CleanAllRelationships_Description;
+	public static String StaticDiagram_DeleteAssociation;
 	
 	static {
 		// initialize resource bundle

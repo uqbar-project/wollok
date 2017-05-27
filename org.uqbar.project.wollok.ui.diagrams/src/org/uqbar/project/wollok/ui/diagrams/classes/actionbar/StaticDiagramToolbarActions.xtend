@@ -21,7 +21,6 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
-import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramView
 
 import static extension org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ImageSaveUtil.*
 
@@ -83,7 +82,7 @@ class SaveStaticDiagramConfigurationAction extends Action {
 }
 
 class LoadStaticDiagramConfigurationAction extends Action {
-	@Accessors StaticDiagramConfiguration configuration
+	StaticDiagramConfiguration configuration
 	
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
@@ -109,7 +108,6 @@ class LoadStaticDiagramConfigurationAction extends Action {
 
 class ShowVariablesToggleButton extends Action implements Observer {
 	StaticDiagramConfiguration configuration
-	StaticDiagramView view
 
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title, AS_CHECK_BOX)
@@ -198,3 +196,19 @@ class ShowFileAction extends ControlContribution implements Observer {
 	}
 	
 }
+
+class CleanAllRelashionshipsAction extends Action {
+	StaticDiagramConfiguration configuration
+
+	new(String title, StaticDiagramConfiguration configuration) {
+		super(title)
+		this.configuration = configuration
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/disconnect_co.gif"))
+	}
+
+	override run() {
+		configuration.initRelationships
+	}
+	
+}
+

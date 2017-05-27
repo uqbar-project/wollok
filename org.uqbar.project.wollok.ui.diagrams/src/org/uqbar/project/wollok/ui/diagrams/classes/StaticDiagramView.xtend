@@ -5,6 +5,8 @@ import java.util.ArrayList
 import java.util.Comparator
 import java.util.HashMap
 import java.util.List
+import java.util.Observable
+import java.util.Observer
 import java.util.Set
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IProgressMonitor
@@ -62,11 +64,11 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.LoadStaticDiagramConfigurationAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.SaveStaticDiagramConfigurationAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
@@ -92,10 +94,7 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.core.resources.IProject
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
-import java.util.Observer
-import java.util.Observable
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteAssociationAction
 
 /**
  * 
@@ -149,6 +148,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			add(showVariablesToggleButton)
 			add(rememberShapePositionsToggleButton)
 			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
+			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
 //			In a future could remain as options: "Open External wsdi" & "Save As..." 			
 //			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
 //			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
@@ -365,7 +365,9 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	def setGraphicalViewer(GraphicalViewer viewer) {
 		editDomain.addViewer(viewer)
 		graphicalViewer = viewer
-		graphicalViewer.addSelectionChangedListener(this)
+		graphicalViewer => [
+			addSelectionChangedListener(this)
+		]
 	}
 	
 	override setFocus() {
@@ -374,8 +376,10 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	def getActionRegistry() {
 		if (actionRegistry == null) actionRegistry = new ActionRegistry
+		actionRegistry.registerAction(new DeleteAssociationAction(this, graphicalViewer, configuration))
 		actionRegistry
 	}
+	
 	def CommandStack getCommandStack() {
 		editDomain.commandStack
 	}
