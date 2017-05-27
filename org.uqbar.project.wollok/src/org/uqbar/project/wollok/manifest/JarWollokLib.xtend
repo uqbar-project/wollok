@@ -30,20 +30,30 @@ class JarWollokLib implements WollokLib {
 	}
 	
 	def openLibManifestStream(String lib) {
-		val rs = class.classLoader.getResourceAsStream( lib.name() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
+		val rs = class.classLoader.findUrlClassLoader().getResourceAsStream( lib.name() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
 		if(rs === null) { throw new RuntimeException("manifest is not loaded")}
 		rs
 	}
 	/** remove path and extension foo/bar.jar => bar */
 	def name(String st) {
+		try {
 		val s = st.split("/")
 		val r = s.get(s.size - 1)
 		r.substring(0,r.length()-4)
+		
+		}catch (RuntimeException e) {
+			System.err.println("Error nombre sobre " + st)
+			throw e
+		}
 	}
 
 	//the implementation of this is a hack!!
 	def loadJar(String lib) {
+		System.out.println("loading jar start: " + lib)
+		System.err.println("loading jar start: " + lib)
 		class.getClassLoader.findUrlClassLoader.addURL(new File(lib).toURI().toURL())
+		System.out.println("loading jar end: " + lib)
+		System.err.println("loading jar end: " + lib)
 	}
 	
 	def addURL(URLClassLoader cl, URL u) {
@@ -65,7 +75,6 @@ class JarWollokLib implements WollokLib {
 	}
 	
 	override load(Resource resource, Manager manager) {
-		println("Jar lib loading " + resource)
 		manifest.load(resource.resourceSet, manager)
 	}
 		

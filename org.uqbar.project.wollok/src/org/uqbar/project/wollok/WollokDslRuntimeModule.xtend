@@ -52,8 +52,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended).to(WollokLinkingDiagnosticMessageProvider);
 		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
-		
-		binder.bind(WollokLibraries).toInstance(new JarWollokLibraries(libs))
+		binder.bind(WollokLibraries).toInstance(new JarWollokLibraries(libs))	
 	}
 	
 	//this method is overriden by WollokLauncherModule

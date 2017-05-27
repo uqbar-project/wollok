@@ -9,7 +9,6 @@ class JarWollokLibraries implements WollokLibraries {
 	var List<String> paths
 	
 	new (){
-		
 	}	
 	
 	new (List<String> paths){
@@ -25,6 +24,8 @@ class JarWollokLibraries implements WollokLibraries {
 	) {
 		return getPaths(resource).map[new JarWollokLib(it) as WollokLib]
 	}
+	
+	
 	
 	
 }

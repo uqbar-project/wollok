@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.manifest.JarWollokLibraries
 
 import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
+import org.uqbar.project.wollok.manifest.WollokLib
 
 @Singleton
 class WollokUILibraries extends JarWollokLibraries {
@@ -27,5 +28,10 @@ class WollokUILibraries extends JarWollokLibraries {
 			return null
 		}
 	} 
+	
+	override getWollokLibs(Resource resource) {
+		return resource.paths.map[new JarUIWollokLib(resource.project, it) as WollokLib]
+	}
+	
 
 }

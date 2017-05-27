@@ -53,7 +53,9 @@ class WollokLauncherParameters {
 	def buildListOption(StringBuilder sb, List<String> options, String option, char separator) {
 		if(!options.empty) {
 			sb.append("-").append(option).append(" ")
-			options.forEach[sb.append(it).append(separator)]
+			for(var i = 0 ; i < options.length; i++) {
+				sb.append(options.get(i)).append( if (i < options.size() - 1) separator else " ")
+			}
 		}	
 	}
 

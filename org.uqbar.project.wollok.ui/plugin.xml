@@ -168,6 +168,18 @@
 		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
 	        </page>
 	      
+	        <page
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.jdt.internal.ui.preferences.BuildPathsPropertyPage"
+	            id="org.uqbar.project.wollok.ui.properties.wollokProjectPropertyPage2"
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            name="Librerias Classpath">
+	            <enabledWhen>
+		            <adapt type="org.eclipse.core.resources.IProject"/>
+				</enabledWhen>
+		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+	        </page>
+	      
+	      
 	      
 	        
 	    </extension>

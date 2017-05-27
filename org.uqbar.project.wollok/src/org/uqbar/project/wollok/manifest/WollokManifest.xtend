@@ -6,8 +6,8 @@ import java.io.InputStreamReader
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.IEObjectDescription
-import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.eclipse.xtext.resource.IResourceDescription
+import org.uqbar.project.wollok.scoping.WollokResourceCache
 
 class WollokManifest {
 	val uris = <URI>newArrayList
@@ -50,17 +50,18 @@ class WollokManifest {
 	def loadResource(URI uri, ResourceSet resourceSet, IResourceDescription.Manager resourceDescriptionManager) {
 		try {
 			var Iterable<IEObjectDescription> exportedObjects
-			// checkResourceSet(resourceSet as XtextResourceSet)
 			exportedObjects = WollokResourceCache.getResource(uri)
 			if (exportedObjects === null) {
-				val resource = resourceSet.getResource(uri, true)
+				var resource = resourceSet.getResource(uri, true)
 				resource.load(#{})
 				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
 				WollokResourceCache.addResource(uri, exportedObjects)
 			}
+			//System.err.println("anduvo resource [" + uri + "] in context [ " + resourceSet + "]")
 			exportedObjects
 		} catch (RuntimeException e) {
-			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
+			//System.err.println("NO anduvo resource [" + uri + "] in context [ " + resourceSet + "]")
+			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resourceSet + "]"   , e)
 		}
 	}
 	

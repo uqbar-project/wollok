@@ -34,7 +34,6 @@ class StandardWollokLib implements WollokLib {
 	}
 	
 	override load(Resource resource, Manager manager) {
-		println("Standard lib loading " + resource)
 		manifest.load(resource.resourceSet, manager)
 	}
 	
