@@ -1,10 +1,14 @@
-package org.uqbar.project.wollok.manifest
+package org.uqbar.project.wollok.libraries
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import com.google.inject.name.Named
 import org.eclipse.emf.ecore.resource.Resource
 
+/**
+ * This class maintains all third parts libraries and the standard wollok library
+ * @author leo
+ */
 @Singleton
 class BasicWollokLibraryLoader implements WollokLibraryLoader {
 

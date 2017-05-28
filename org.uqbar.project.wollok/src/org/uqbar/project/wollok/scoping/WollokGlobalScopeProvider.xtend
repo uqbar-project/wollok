@@ -12,7 +12,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.manifest.WollokLibraryLoader
+import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.wollokDsl.Import
 

@@ -1,10 +1,15 @@
-package org.uqbar.project.wollok.manifest
+package org.uqbar.project.wollok.libraries
 
 import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.WollokActivator
 
 /**
- * This is the wollok standard lib
+ * This represents the wollok standard lib
+ * It finds wollok.wollokmf in the classPath or
+ * in the bundle if it is necesary
+ * 
+ * @author tesonep
+ * @author leo         
  */
 class StandardWollokLib extends AbstractWollokLib {
 	

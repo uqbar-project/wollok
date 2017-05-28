@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.manifest
+package org.uqbar.project.wollok.libraries
 
 import java.io.BufferedReader
 import java.io.InputStream

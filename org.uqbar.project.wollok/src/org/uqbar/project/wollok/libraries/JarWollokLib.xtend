@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.manifest
+package org.uqbar.project.wollok.libraries
 
 import java.io.File
 import java.io.InputStream
@@ -6,8 +6,22 @@ import java.net.URL
 import java.net.URLClassLoader
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
-import static extension org.uqbar.project.wollok.manifest.WollokLibrariesExtension.libName
 
+/**
+ * A Jar Wollok Lib is a library packaged in a jar file.
+ * If the jar file is not loaded, it is loaded dynamically.
+ * In order to dynamic load to be succesful, a URLClassLoader 
+ * must be in the classloader hierarchy.
+ * 
+ * The wollok manifest file must be called like jar file name
+ * for example: if the jar is named pepelib.jar, the manifest name
+ * must be called pepelib.wollokmf and must be located in the root
+ * of classpath
+ * 
+ * This class is used by wollok launcher. You must use -lib options
+ * in WollokLauncherParamenters to configure the path attribute
+ * 
+ */
 class JarWollokLib extends AbstractWollokLib {
 	
 	val String path;

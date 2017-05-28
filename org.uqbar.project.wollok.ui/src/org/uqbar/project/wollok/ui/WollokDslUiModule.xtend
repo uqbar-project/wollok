@@ -47,7 +47,7 @@ import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
 import com.google.inject.TypeLiteral
 import java.util.List
 import org.uqbar.project.wollok.ui.libraries.WollokUILibraries
-import org.uqbar.project.wollok.manifest.WollokLibraries
+import org.uqbar.project.wollok.libraries.WollokLibraries
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.

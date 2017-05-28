@@ -1,48 +1,51 @@
 package org.uqbar.project.wollok.ui.libraries
 
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.util.ArrayList
-import org.eclipse.core.resources.IProject
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jdt.core.IJarEntryResource
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IPackageFragmentRoot
-import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.internal.core.JarEntryResource
-import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription.Manager
-import org.uqbar.project.wollok.manifest.WollokLib
-import org.uqbar.project.wollok.manifest.WollokManifest
-import org.uqbar.project.wollok.scoping.WollokResourceCache
+import org.uqbar.project.wollok.libraries.AbstractWollokLib
+import org.uqbar.project.wollok.libraries.WollokManifest
 
-import static extension org.uqbar.project.wollok.manifest.WollokLibrariesExtension.libName
 
 /**
- * Search the wollok manifest file using a jdt JavaProject.
+ * It Searchs the wollok manifest and all resources referenced by that file using a jdt JavaProject.
+ * @author lgassman
  */
-class ClasspathEntryWollokLib implements WollokLib {
+class ClasspathEntryWollokLib extends AbstractWollokLib {
 	
 	var String uri
 	var IJavaProject project
-	var Manager manager
 	
 	new(IJavaProject project, String uri, Manager manager) {
+		super(manager)
 		this.uri = uri
 		this.project = project
-		this.manager = manager
 	}
 	
 	def libName() {
 		return uri.libName()
 	}
-	
-	
-	override load(Resource resource) {
-		project.allPackageFragmentRoots.findFirst[isThisWollokLib()].loadFromManifest(resource)
+
+
+	override getManifest(Resource resource) {
+		getPackageFragmentRoot().createManifest(resource)
 	}
+	
+	protected def IPackageFragmentRoot getPackageFragmentRoot() {
+		project.allPackageFragmentRoots.findFirst[isThisWollokLib()]
+	}
+	
+	def createManifest(IPackageFragmentRoot fragmentRoot, Resource resource) {
+	
+		new WollokManifest(fragmentRoot.wmanifestEntry().contents, [ line| 
+				URI.createURI(fragmentRoot.path + "!" + line.findEntry(fragmentRoot).fullPath)
+		])
+		
+	} 
 	
 	def isThisWollokLib(IPackageFragmentRoot fragmentRoot) {
 		return fragmentRoot.getElementName().libName ==  this.libName
@@ -55,33 +58,21 @@ class ClasspathEntryWollokLib implements WollokLib {
 				] as JarEntryResource
 	}
 	
-	
-	def loadFromManifest(IPackageFragmentRoot fragmentRoot, Resource resource) {
-	
-		fragmentRoot.wmanifestEntry().contents.files.map[load(fragmentRoot, resource)].flatten
-	
-	} 
-	
-	def load(String fileName, IPackageFragmentRoot fragmentRoot, Resource resource) {
-			val entry = fileName.findEntry(fragmentRoot)
-			
-			var uri = URI.createURI(fragmentRoot.path + "!" + entry.fullPath)
-			
-			var Iterable<IEObjectDescription> exportedObjects
-			exportedObjects = WollokResourceCache.getResource(uri)
-			if (exportedObjects === null) {
-				var newResource = resource.resourceSet.getResource(uri, false)
-				if (newResource === null) {
-					newResource = resource.resourceSet.createResource(uri)
-				} 
-				newResource.load(entry.contents, #{})
-				exportedObjects = manager.getResourceDescription(newResource).exportedObjects
-				WollokResourceCache.addResource(uri, exportedObjects)
-			}
-			
-			return exportedObjects
+	override internalLoad(URI uri, Resource resource) {
+		val entry = uri.toEntry()
+		var newResource = resource.resourceSet.getResource(uri, false)
+		if (newResource === null) {
+				newResource = resource.resourceSet.createResource(uri)
+		} 
+		newResource.load(entry.contents, #{})
+		return manager.getResourceDescription(newResource).exportedObjects
 	}
 	
+	def toEntry(URI uri) {
+		val fileName = uri.toString.split("!/").get(1)
+		fileName.findEntry(getPackageFragmentRoot)	
+	}
+		
 	def IJarEntryResource findEntry(String fileName, IPackageFragmentRoot fragment) {
 		
 		return fragment.nonJavaResources.findFragment(fileName)
@@ -104,28 +95,5 @@ class ClasspathEntryWollokLib implements WollokLib {
 		return r as IJarEntryResource 
 	}
 		
-	def files(InputStream is) {
-		try {
-			val out = new ArrayList<String>
-			val reader = new BufferedReader(new InputStreamReader(is))
-			var String file = null
-			while((file = reader.readLine) !== null){
-				out += file
-			}
-			return out
-		}
-		finally {
-			try {
-				is.close
-			}
-			catch (Exception e) {
-				println("Error while closing input stream on finally")
-				e.printStackTrace
-			}
-		}	
-	}
-	
- 
-
 		
 }

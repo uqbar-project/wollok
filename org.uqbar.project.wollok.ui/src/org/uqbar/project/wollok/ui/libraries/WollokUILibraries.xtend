@@ -7,11 +7,20 @@ import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.xtext.resource.IResourceDescription.Manager
-import org.uqbar.project.wollok.manifest.WollokLib
-import org.uqbar.project.wollok.manifest.WollokLibraries
+import org.uqbar.project.wollok.libraries.WollokLib
+import org.uqbar.project.wollok.libraries.WollokLibraries
 
 import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
 
+/**
+ * It is a WollokLibraries used by the wollok IDE
+ * It Uses ClasspathEntryWollokLib instead JarWollokLib
+ * because URLContextClass Loader is not presents.
+ * It uses a jdt JavaModel to load the libraries
+ * 
+ * @author leo
+ * 
+ */
 @Singleton
 class WollokUILibraries implements WollokLibraries  {
 

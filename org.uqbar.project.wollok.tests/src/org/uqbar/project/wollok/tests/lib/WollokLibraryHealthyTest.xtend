@@ -5,8 +5,8 @@ import javax.inject.Inject
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.diagnostics.Severity
 import org.junit.Test
-import org.uqbar.project.wollok.manifest.AbstractWollokLib
-import org.uqbar.project.wollok.manifest.WollokLib
+import org.uqbar.project.wollok.libraries.AbstractWollokLib
+import org.uqbar.project.wollok.libraries.WollokLib
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
