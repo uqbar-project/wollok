@@ -1,23 +1,26 @@
 package org.uqbar.project.wollok.ui.libraries
 
+import com.google.inject.Inject
 import javax.inject.Singleton
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.jdt.core.JavaCore
+import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.manifest.JarWollokLibraries
 import org.uqbar.project.wollok.manifest.WollokLib
 
 import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
-import org.eclipse.xtext.resource.IResourceDescription.Manager
-import com.google.inject.Inject
-import org.eclipse.jdt.core.JavaCore
-import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IWorkspaceRoot
 
 @Singleton
 class WollokUILibraries extends JarWollokLibraries {
 
 	@Inject
 	var Manager manager
+	
+	@Inject
+	var IWorkspaceRoot workspaceRoot
 
 
 	override getPaths(Resource resource) {
@@ -27,7 +30,7 @@ class WollokUILibraries extends JarWollokLibraries {
 
 	def getProject(Resource rs) {
 		try {
-			val r = ResourcesPlugin.workspace.root.getFile(new Path(rs.URI.toPlatformString(false)))
+			val r = workspaceRoot.getFile(new Path(rs.URI.toPlatformString(false)))
 			return r.project	
 		
 	 	}catch(RuntimeException e) {
@@ -41,6 +44,7 @@ class WollokUILibraries extends JarWollokLibraries {
 		val p = resource.project
 		if(p !== null) JavaCore.create(p) else null
 	}
+	
 	override getWollokLibs(Resource resource) {
 		val javaProject = resource.javaProject
 		return resource.paths.map[new ClasspathEntryWollokLib(javaProject, it, manager) as WollokLib]

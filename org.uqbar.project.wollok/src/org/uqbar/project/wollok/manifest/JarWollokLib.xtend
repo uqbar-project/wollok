@@ -6,6 +6,7 @@ import java.net.URL
 import java.net.URLClassLoader
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
+import static extension org.uqbar.project.wollok.manifest.WollokLibrariesExtension.libName
 
 class JarWollokLib implements WollokLib {
 	
@@ -32,21 +33,9 @@ class JarWollokLib implements WollokLib {
 	}
 	
 	def openLibManifestStream(String lib) {
-		val rs = class.classLoader.findUrlClassLoader().getResourceAsStream( lib.name() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
+		val rs = class.classLoader.findUrlClassLoader().getResourceAsStream( lib.libName() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
 		if(rs === null) { throw new RuntimeException("manifest is not loaded")}
 		rs
-	}
-	/** remove path and extension foo/bar.jar => bar */
-	def name(String st) {
-		try {
-		val s = st.split("/")
-		val r = s.get(s.size - 1)
-		r.substring(0,r.length()-4)
-		
-		}catch (RuntimeException e) {
-			System.err.println("Error nombre sobre " + st)
-			throw e
-		}
 	}
 
 	//the implementation of this is a hack, but it is a popular hack
