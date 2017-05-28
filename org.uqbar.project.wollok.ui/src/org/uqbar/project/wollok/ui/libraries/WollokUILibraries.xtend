@@ -1,13 +1,13 @@
-package org.uqbar.project.wollok.ui.properties
+package org.uqbar.project.wollok.ui.libraries
 
 import javax.inject.Singleton
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.manifest.JarWollokLibraries
+import org.uqbar.project.wollok.manifest.WollokLib
 
 import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
-import org.uqbar.project.wollok.manifest.WollokLib
 
 @Singleton
 class WollokUILibraries extends JarWollokLibraries {
@@ -30,7 +30,7 @@ class WollokUILibraries extends JarWollokLibraries {
 	} 
 	
 	override getWollokLibs(Resource resource) {
-		return resource.paths.map[new JarUIWollokLib(resource.project, it) as WollokLib]
+		return resource.paths.map[new ClasspathEntryWollokLib(resource.project, it) as WollokLib]
 	}
 	
 

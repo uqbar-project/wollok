@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.properties
+package org.uqbar.project.wollok.ui.libraries
 
 import java.io.BufferedReader
 import java.io.InputStream
@@ -11,34 +11,46 @@ import org.eclipse.jdt.core.IJarEntryResource
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.core.JavaCore
-import org.eclipse.jdt.internal.core.JarEntryFile
+import org.eclipse.jdt.internal.core.JarEntryResource
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.manifest.WollokLib
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.scoping.WollokResourceCache
 
-class JarUIWollokLib implements WollokLib {
+import static extension org.uqbar.project.wollok.manifest.WollokLibrariesExtension.libName
+
+/**
+ * Search the wollok manifest file using a jdt JavaProject.
+ */
+class ClasspathEntryWollokLib implements WollokLib {
 	
 	var String uri
-	var IProject project
+	var IJavaProject project
 	
 	new(IProject project, String uri) {
 		this.uri = uri
-		this.project = project
+		this.project = JavaCore.create(project)
+	}
+	
+	def libName() {
+		return uri.libName()
 	}
 	
 	
 	override load(Resource resource, Manager manager) {
-		val IJavaProject p = JavaCore.create(project)
-		p.allPackageFragmentRoots.filter[isWollokLib()].map[loadFromManifest(resource, manager)].flatten
+		project.allPackageFragmentRoots.findFirst[isThisWollokLib()].loadFromManifest(resource, manager)
 	}
 	
-	def isWollokLib(IPackageFragmentRoot fragmentRoot) {
-		fragmentRoot.wmanifestEntry() !== null
+	def isThisWollokLib(IPackageFragmentRoot fragmentRoot) {
+		return fragmentRoot.getElementName().libName ==  this.libName
 	}
+	
 	def wmanifestEntry(IPackageFragmentRoot fragmentRoot) {
-		fragmentRoot.nonJavaResources.findFirst[ (it instanceof JarEntryFile) && (it as JarEntryFile).name.endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)] as JarEntryFile
+		fragmentRoot.nonJavaResources.findFirst[ 
+				(it instanceof JarEntryResource) && 
+				(it as JarEntryResource).name.endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)
+				] as JarEntryResource
 	}
 	
 	
@@ -89,20 +101,7 @@ class JarUIWollokLib implements WollokLib {
 		}
 		return r as IJarEntryResource 
 	}
-	
-/* 	
-	def toPackageName(String[] fileParts) {
-		var o = new StringBuilder
-		for(var i = 0; i < fileParts.size - 1; i++) {
-			o.append(fileParts.get(i))
-			if(i == fileParts.size - 2) {
-				o.append(".")
-			} 
-		}
-		System.err.println("packageName: " + o)
-		return o.toString
-	}
-*/	
+		
 	def files(InputStream is) {
 		try {
 			val out = new ArrayList<String>
@@ -124,13 +123,7 @@ class JarUIWollokLib implements WollokLib {
 		}	
 	}
 	
+ 
 
-	/** remove path and extension foo/bar.jar => bar  - Duplicated from JarWollokLib*/
-	def name(String st) {
-		val s = st.split("/")
-		val r = s.get(s.size - 1)
-		r.substring(0,r.length()-4)
-	}
-	
 		
 }
