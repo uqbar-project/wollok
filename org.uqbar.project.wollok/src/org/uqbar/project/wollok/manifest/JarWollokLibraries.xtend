@@ -15,13 +15,6 @@ class JarWollokLibraries implements WollokLibraries {
 	@Named("libraries")
 	var List<String> paths
 	
-	new (){
-	}	
-	
-	new (List<String> paths){
-		this.paths = paths
-	}
-	
 
 	def getPaths(Resource resource) {
 		paths

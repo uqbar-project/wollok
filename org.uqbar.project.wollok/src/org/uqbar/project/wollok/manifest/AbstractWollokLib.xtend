@@ -13,6 +13,17 @@ abstract class AbstractWollokLib implements WollokLib {
 	@Inject
 	var Manager resourceDescriptionManager	
 	
+	new() {
+		
+	}
+	
+	new (Manager manager) {
+		this.resourceDescriptionManager = manager
+	}
+	def getManager() {
+		return resourceDescriptionManager
+	}
+	
 	override load(Resource resource) {
 		return getManifest(resource).allURIs.map[it.load(resource)].flatten
 	}
@@ -26,7 +37,7 @@ abstract class AbstractWollokLib implements WollokLib {
 			if (exportedObjects === null) {
 				var newResource = resource.resourceSet.getResource(uri, true)
 				resource.load(#{})
-				exportedObjects = resourceDescriptionManager.getResourceDescription(newResource).exportedObjects
+				exportedObjects = getManager().getResourceDescription(newResource).exportedObjects
 				WollokResourceCache.addResource(uri, exportedObjects)
 			}
 			exportedObjects

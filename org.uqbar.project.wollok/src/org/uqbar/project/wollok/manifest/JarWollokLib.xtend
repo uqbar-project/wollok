@@ -8,17 +8,16 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import static extension org.uqbar.project.wollok.manifest.WollokLibrariesExtension.libName
 
-class JarWollokLib implements WollokLib {
+class JarWollokLib extends AbstractWollokLib {
 	
 	val String path;
-	val Manager manager;
 
-	new (String path, Manager manager){
+	new (String path, Manager manager) {
+		super(manager);
 		this.path = path;
-		this.manager = manager;
 	}
 		
-	def getManifest() {
+	override getManifest(Resource resource) {
 		new WollokManifest(loadAndOpenManifestStream(path))
 	}
 	
@@ -59,10 +58,6 @@ class JarWollokLib implements WollokLib {
 		if(cl === null) {throw new RuntimeException("URLClassLoader is not present")}	
 		if(cl instanceof URLClassLoader) cl else cl.parent.findUrlClassLoader	
 		
-	}
-	
-	override load(Resource resource) {
-		manifest.load(resource.resourceSet, manager)
 	}
 		
 }

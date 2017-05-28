@@ -40,34 +40,5 @@ class WollokManifest {
 	def getAllURIs() {
 		uris
 	}
-	
-		/**
-	 * Load all resources in the manifests found.
-	 */
-	def load(ResourceSet resourceSet, IResourceDescription.Manager resourceDescriptionManager) {
-		this.allURIs.map[loadResource(resourceSet, resourceDescriptionManager)].flatten
-	}
-
-	/**
-	 * This message resolves the loading of a resource, is used by the resources listed in manifests. For the ones not in manifests (in relative locations)
-	 * see WollokGlobalScopeProvider#toResource(Import imp, Resource resource)
-	 */
-	def loadResource(URI uri, ResourceSet resourceSet, IResourceDescription.Manager resourceDescriptionManager) {
-		try {
-			var Iterable<IEObjectDescription> exportedObjects
-			exportedObjects = WollokResourceCache.getResource(uri)
-			if (exportedObjects === null) {
-				var resource = resourceSet.getResource(uri, true)
-				resource.load(#{})
-				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
-				WollokResourceCache.addResource(uri, exportedObjects)
-			}
-			//System.err.println("anduvo resource [" + uri + "] in context [ " + resourceSet + "]")
-			exportedObjects
-		} catch (RuntimeException e) {
-			//System.err.println("NO anduvo resource [" + uri + "] in context [ " + resourceSet + "]")
-			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resourceSet + "]"   , e)
-		}
-	}
-	
+		
 }

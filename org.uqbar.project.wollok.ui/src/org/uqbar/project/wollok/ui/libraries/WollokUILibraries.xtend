@@ -2,19 +2,18 @@ package org.uqbar.project.wollok.ui.libraries
 
 import com.google.inject.Inject
 import javax.inject.Singleton
-import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.resources.IWorkspaceRoot
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.xtext.resource.IResourceDescription.Manager
-import org.uqbar.project.wollok.manifest.JarWollokLibraries
 import org.uqbar.project.wollok.manifest.WollokLib
+import org.uqbar.project.wollok.manifest.WollokLibraries
 
 import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
-import org.eclipse.core.resources.IWorkspaceRoot
 
 @Singleton
-class WollokUILibraries extends JarWollokLibraries {
+class WollokUILibraries implements WollokLibraries  {
 
 	@Inject
 	var Manager manager
@@ -23,7 +22,7 @@ class WollokUILibraries extends JarWollokLibraries {
 	var IWorkspaceRoot workspaceRoot
 
 
-	override getPaths(Resource resource) {
+	def getPaths(Resource resource) {
 		val project = getProject(resource) 
 		if(project !== null) project.loadLibs() else #[]
 	}
