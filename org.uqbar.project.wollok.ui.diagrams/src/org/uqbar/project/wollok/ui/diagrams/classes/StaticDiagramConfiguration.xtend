@@ -13,8 +13,11 @@ import java.util.Observable
 import org.eclipse.core.resources.IResource
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.ui.refactoring.impl.ProjectUtil
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
@@ -28,8 +31,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 @Accessors
 class StaticDiagramConfiguration extends Observable implements Serializable {
 
-	public static Long serialVersionUID = 4810248L
-	
 	/** Notification Events  */
 	public static String CONFIGURATION_CHANGED = "configuration"
 	
@@ -70,7 +71,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		sizes = newHashMap
 	}
 
-	def void initHiddenComponents() {
+	def void showAllComponents() {
 		this.internalInitHiddenComponents
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
@@ -130,7 +131,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = associations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label)]
 		if (element === null) {
-			throw new RuntimeException("Association between " + modelSource.name + " and " + modelTarget.name + " not found")
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.name, modelTarget.name))
 		}
 		associations.remove(element)
 		this.setChanged
@@ -160,17 +161,22 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 */
 	def setResource(IResource resource) {
 		val previousFileName = this.originalFileName
-		this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
-			//resource.rawLocation.removeLastSegments(1).toPortableString
-		this.createDiagramsFolderIfNotExists(this.fullPath)
+		if (resource.project.locationURI !== null) {
+			this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
+			this.originalFileName = resource.location.lastSegment
+		} else {
+			// it is a platform file
+			this.fullPath = WollokConstants.DIAGRAMS_FOLDER
+			this.originalFileName = resource.name
+		}
 		// Starting from project/source folder,
 		// and discarding file name (like objects.wlk) 
 		//     we try to recreate same folder structure
+		this.createDiagramsFolderIfNotExists(this.fullPath)
 		resource.fullPath.removeFirstSegments(2).removeLastSegments(1).segments.toList.forEach [ segment |
 			this.fullPath += File.separator + segment
 			this.createDiagramsFolderIfNotExists(this.fullPath)	
 		] 
-		this.originalFileName = resource.location.lastSegment
 		if (!this.originalFileName.equals(previousFileName)) {
 			this.init
 			this.loadConfiguration

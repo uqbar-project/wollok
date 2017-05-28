@@ -93,7 +93,7 @@ class LoadStaticDiagramConfigurationAction extends Action {
 	override run() {
 		val shell = PlatformUI.workbench.activeWorkbenchWindow.shell
 		val FileDialog fileSelecter = new FileDialog(shell, SWT.OPEN) => [
-			text = Messages.StaticDiagramOpenFile
+			text = Messages.StaticDiagram_OpenFile
 			filterExtensions = #["*.wsdi"]
 		]
 		val fileName = fileSelecter.open
@@ -212,3 +212,18 @@ class CleanAllRelashionshipsAction extends Action {
 	
 }
 
+class ShowHiddenComponents extends Action {
+
+	StaticDiagramConfiguration configuration
+
+	new(String title, StaticDiagramConfiguration configuration) {
+		super(title)
+		this.configuration = configuration
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.ui/icons/full/obj16/innerclass_default_obj.png"))
+	}
+
+	override run() {
+		configuration.showAllComponents
+	}
+	
+}

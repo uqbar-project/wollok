@@ -16,9 +16,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class NamedObjectModel extends AbstractModel {
 	public static List<NamedObjectModel> objects
-
 	public static int VERTICAL_POSITION = 10
-	public static int OBJECT_LEVEL_HEIGHT = 150
 	
 	static def void init() {
 		objects = newArrayList
@@ -51,12 +49,8 @@ class NamedObjectModel extends AbstractModel {
 		INITIAL_MARGIN + (objects.size * WIDTH_SEPARATION_BETWEEN_ELEMENTS) + allWidths
 	}
 	
-	def widthForPosition() {
-		130
-	}
-	
 	def static int maxHeight() {
-		objects.fold(OBJECT_LEVEL_HEIGHT, [ max, object | Math.max(max, object.size.height) ])
+		objects.fold(VERTICAL_POSITION, [ max, object | Math.max(max, object.size.height) ])
 	}
 
 }

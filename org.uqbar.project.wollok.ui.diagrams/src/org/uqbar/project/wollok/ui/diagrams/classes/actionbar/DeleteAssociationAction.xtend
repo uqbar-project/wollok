@@ -80,7 +80,7 @@ class DeleteAssociationAction extends AbstractDeleteElementAction {
 	}
 	
 	override getTextAction() {
-		Messages.StaticDiagram_DeleteAssociation
+		Messages.StaticDiagram_DeleteAssociation_Description
 	}
 	
 	override createId() {
