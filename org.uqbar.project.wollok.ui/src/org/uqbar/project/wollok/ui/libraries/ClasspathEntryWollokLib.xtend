@@ -27,10 +27,12 @@ class ClasspathEntryWollokLib implements WollokLib {
 	
 	var String uri
 	var IJavaProject project
+	var Manager manager
 	
-	new(IProject project, String uri) {
+	new(IJavaProject project, String uri, Manager manager) {
 		this.uri = uri
-		this.project = JavaCore.create(project)
+		this.project = project
+		this.manager = manager
 	}
 	
 	def libName() {
@@ -38,8 +40,8 @@ class ClasspathEntryWollokLib implements WollokLib {
 	}
 	
 	
-	override load(Resource resource, Manager manager) {
-		project.allPackageFragmentRoots.findFirst[isThisWollokLib()].loadFromManifest(resource, manager)
+	override load(Resource resource) {
+		project.allPackageFragmentRoots.findFirst[isThisWollokLib()].loadFromManifest(resource)
 	}
 	
 	def isThisWollokLib(IPackageFragmentRoot fragmentRoot) {
@@ -54,13 +56,13 @@ class ClasspathEntryWollokLib implements WollokLib {
 	}
 	
 	
-	def loadFromManifest(IPackageFragmentRoot fragmentRoot, Resource resource, Manager manager) {
+	def loadFromManifest(IPackageFragmentRoot fragmentRoot, Resource resource) {
 	
-		fragmentRoot.wmanifestEntry().contents.files.map[load(fragmentRoot, resource, manager)].flatten
+		fragmentRoot.wmanifestEntry().contents.files.map[load(fragmentRoot, resource)].flatten
 	
 	} 
 	
-	def load(String fileName, IPackageFragmentRoot fragmentRoot, Resource resource, Manager manager) {
+	def load(String fileName, IPackageFragmentRoot fragmentRoot, Resource resource) {
 			val entry = fileName.findEntry(fragmentRoot)
 			
 			var uri = URI.createURI(fragmentRoot.path + "!" + entry.fullPath)
@@ -85,7 +87,6 @@ class ClasspathEntryWollokLib implements WollokLib {
 		return fragment.nonJavaResources.findFragment(fileName)
 	}
 	
-	
 	//the javadoc says that all entries are instance of IJarResourceEntry
 	def IJarEntryResource findFragment(Object[] entries, String fileName) {
 		val filePart = fileName.split("/");
@@ -96,6 +97,7 @@ class ClasspathEntryWollokLib implements WollokLib {
 			r = entries.findFirst[
 				(it as IJarEntryResource).name == part
 			]	
+			//i think that this if is not necesary
 			if(r === null) {return null}	
 			searching = (r as IJarEntryResource).children
 		}

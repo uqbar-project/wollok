@@ -10,9 +10,11 @@ import org.eclipse.xtext.resource.IResourceDescription.Manager
 class JarWollokLib implements WollokLib {
 	
 	val String path;
+	val Manager manager;
 
-	new (String path){
+	new (String path, Manager manager){
 		this.path = path;
+		this.manager = manager;
 	}
 		
 	def getManifest() {
@@ -47,13 +49,9 @@ class JarWollokLib implements WollokLib {
 		}
 	}
 
-	//the implementation of this is a hack!!
+	//the implementation of this is a hack, but it is a popular hack
 	def loadJar(String lib) {
-		System.out.println("loading jar start: " + lib)
-		System.err.println("loading jar start: " + lib)
 		class.getClassLoader.findUrlClassLoader.addURL(new File(lib).toURI().toURL())
-		System.out.println("loading jar end: " + lib)
-		System.err.println("loading jar end: " + lib)
 	}
 	
 	def addURL(URLClassLoader cl, URL u) {
@@ -74,7 +72,7 @@ class JarWollokLib implements WollokLib {
 		
 	}
 	
-	override load(Resource resource, Manager manager) {
+	override load(Resource resource) {
 		manifest.load(resource.resourceSet, manager)
 	}
 		

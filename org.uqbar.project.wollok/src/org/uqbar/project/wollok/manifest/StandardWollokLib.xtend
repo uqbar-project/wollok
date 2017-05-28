@@ -4,11 +4,15 @@ import org.uqbar.project.wollok.manifest.WollokLib
 import org.uqbar.project.wollok.WollokActivator
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
+import com.google.inject.Inject
 
 /**
  * This is the wollok standard lib
  */
 class StandardWollokLib implements WollokLib {
+	
+	@Inject
+	Manager manager
 		
 	def newManifest(String bundle, String manifestName){
 		val fullName = manifestName + WollokManifest.WOLLOK_MANIFEST_EXTENSION
@@ -33,7 +37,7 @@ class StandardWollokLib implements WollokLib {
 		return class.hashCode
 	}
 	
-	override load(Resource resource, Manager manager) {
+	override load(Resource resource) {
 		manifest.load(resource.resourceSet, manager)
 	}
 	

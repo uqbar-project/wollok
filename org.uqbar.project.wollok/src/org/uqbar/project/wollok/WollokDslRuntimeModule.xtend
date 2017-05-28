@@ -37,6 +37,9 @@ import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSynthe
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
 import org.uqbar.project.wollok.manifest.WollokLibraryLoader
 import org.uqbar.project.wollok.manifest.BasicWollokLibraryLoader
+import com.google.inject.TypeLiteral
+import org.uqbar.project.wollok.manifest.WollokLib
+import org.uqbar.project.wollok.manifest.StandardWollokLib
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -52,7 +55,11 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended).to(WollokLinkingDiagnosticMessageProvider);
 		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
-		binder.bind(WollokLibraries).toInstance(new JarWollokLibraries(libs))	
+		
+		binder.bind(WollokLib).annotatedWith(Names.named("standardWollokLib")).to(StandardWollokLib)
+		binder.bind(new TypeLiteral<List<String>>(){}).annotatedWith(Names.named("libraries")).toInstance(libs())
+		binder.bind(WollokLibraries).to(JarWollokLibraries)	
+	
 	}
 	
 	//this method is overriden by WollokLauncherModule
