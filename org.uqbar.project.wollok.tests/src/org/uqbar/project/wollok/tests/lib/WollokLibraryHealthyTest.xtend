@@ -1,9 +1,12 @@
 package org.uqbar.project.wollok.tests.lib
 
+import com.google.inject.name.Named
+import javax.inject.Inject
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.diagnostics.Severity
 import org.junit.Test
-import org.uqbar.project.wollok.manifest.StandardWollokLib
+import org.uqbar.project.wollok.manifest.AbstractWollokLib
+import org.uqbar.project.wollok.manifest.WollokLib
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
@@ -12,13 +15,15 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  */
 class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 
+	@Inject
+	@Named("standardWollokLib")
+	var WollokLib standardWollokLib
 
 	@Test
 	def validateLib(){
-		val sb = new StringBuilder
+		val sb = new StringBuilder()
 
-		//TODO injectar el StandardLib()?
-		new StandardWollokLib().getManifest().allURIs.forEach[ it.validateSyntax(sb) ]
+		(standardWollokLib as AbstractWollokLib).getManifest(null).allURIs.forEach[ it.validateSyntax(sb) ]
 
 		if (sb.length > 0) {
 			val errorText = sb.toString
