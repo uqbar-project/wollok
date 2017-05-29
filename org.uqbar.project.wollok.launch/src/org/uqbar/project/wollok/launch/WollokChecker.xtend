@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.eclipse.emf.ecore.EObject
 
 /**
  * Wollok checker program.
@@ -29,47 +30,62 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 class WollokChecker {
 	protected static Logger log = Logger.getLogger(WollokLauncher)
 	var Injector injector
-	
+
 	def static void main(String[] args) {
 		new WollokChecker().doMain(args)
 	}
-	
+
 	def doMain(String[] args) {
 		try {
 			log.debug("========================")
 			log.debug("    Wollok Launcher")
 			log.debug("========================")
 			log.debug(" args: " + args.toList)
-			
+
 			if (args.contains("--version")) {
-				println("Wollok v" + Wollok.VERSION) 
+				println("Wollok v" + Wollok.VERSION)
 				System.exit(0)
 			}
-			
+
 			val parameters = new WollokLauncherParameters().parse(args)
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
-			val fileName = parameters.wollokFiles.get(0)
-			val mainFile = new File(fileName)
-			log.debug("Parsing program...")
-			val parsed = mainFile.parse
-								
-			doSomething(parsed, injector, mainFile, parameters)
-			
+			if (parameters.tests && parameters.wollokFiles.size > 1) {
+				// Tests may run several files
+				launch(parameters.wollokFiles, parameters)
+			} else {
+				// Rest of executables just launch one file
+				val fileName = parameters.wollokFiles.head
+				launch(fileName, parameters)
+			}
+
 			log.debug("Program finished")
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			log.error(t.message)
 			t.printStackTrace
 			System.exit(1)
 		}
 	}
+
+	def void launch(List<String> fileNames, WollokLauncherParameters parameters) {
+		doSomething(fileNames, injector, parameters)	
+	}
+	
+	def launch(String fileName, WollokLauncherParameters parameters) {
+		val mainFile = new File(fileName)
+		log.debug("Parsing program...")
+		doSomething(mainFile.parse, injector, mainFile, parameters)
+	}
+	
+	def void doSomething(List<String> fileNames, Injector injector, WollokLauncherParameters parameters) {
+		// by default the checker does nothing
+	}
 	
 	def void doSomething(WFile file, Injector injector, File mainFile, WollokLauncherParameters parameters) {
 		// by default the checker does nothing
 	}
-	
+
 	def parse(File mainFile) {
 		val resourceSet = injector.getInstance(XtextResourceSet)
 		this.createClassPath(mainFile, resourceSet)
@@ -81,32 +97,38 @@ class WollokChecker {
 
 		resource.contents.get(0) as WFile
 	}
-	
+
+	def parse(List<File> mainFiles) {
+		mainFiles.map [ mainFile | mainFile.parse as EObject ]
+	}
+
 	def createClassPath(File file, ResourceSet resourceSet) {
 		newArrayList => [
 			resourceSet.createResource(URI.createURI(file.toURI.toString))
 		]
 	}
-	
+
 	def void collectWollokFiles(File folder, List<File> classpath) {
 		classpath.addAll(
-			folder.listFiles[dir, name|
-				name.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION) ||
-					name.endsWith("." + WollokConstants.PROGRAM_EXTENSION) ||
-					name.endsWith("." + WollokConstants.TEST_EXTENSION)])
-		folder.listFiles[ directory ].forEach[ collectWollokFiles(it, classpath) ]
+			folder.listFiles [ dir, name |
+			name.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION) ||
+				name.endsWith("." + WollokConstants.PROGRAM_EXTENSION) ||
+				name.endsWith("." + WollokConstants.TEST_EXTENSION)
+		])
+		folder.listFiles[directory].forEach[collectWollokFiles(it, classpath)]
 	}
-	
+
 	def validate(Injector injector, Resource resource) {
 		val handler = injector.getInstance(WollokLauncherIssueHandler)
-		this.validate(injector,resource,[handler.handleIssue(it)],[ handler.finished ; System.exit(-1) ])
+		this.validate(injector, resource, [handler.handleIssue(it)], [handler.finished; System.exit(-1)])
 	}
-	
-	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler, Procedure1<Iterable<Issue>> after) {
+
+	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler,
+		Procedure1<Iterable<Issue>> after) {
 		val validator = injector.getInstance(IResourceValidator)
 		val issues = validator.validate(resource, CheckMode.ALL, null)
 		// WARNINGS
-		issues.filter[ severity == Severity.WARNING ].forEach(issueHandler)
+		issues.filter[severity == Severity.WARNING].forEach(issueHandler)
 		// ERRORS 
 		val errors = issues.filter[severity == Severity.ERROR && code != WollokDslValidator.TYPE_SYSTEM_ERROR]
 		if (!errors.isEmpty) {
@@ -114,12 +136,12 @@ class WollokChecker {
 			after.apply(errors)
 		}
 	}
-	
+
 	def File findProjectRoot(File folder) {
 		// goes up all the way (I wanted to search for something like ".project" file but
 		// the launcher is executing this interpreter with a relative path to the file, like "src/blah/myfile.wlk"
 		// so I cannot make it up to the project folder :(
-		if (folder.parentFile == null) folder else findProjectRoot(folder.parentFile)
+		if(folder.parentFile == null) folder else findProjectRoot(folder.parentFile)
 	}
-	
+
 }

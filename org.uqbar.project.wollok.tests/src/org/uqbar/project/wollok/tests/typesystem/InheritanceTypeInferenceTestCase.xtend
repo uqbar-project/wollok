@@ -1,12 +1,14 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
+
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * 
@@ -19,7 +21,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 		#[
 			SubstitutionBasedTypeSystem
 //			,XSemanticsTypeSystem			// TODO 
-//			ConstraintBasedTypeSystem			TO BE FIXED
+//			,ConstraintBasedTypeSystem
 //			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
@@ -36,7 +38,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			animal = new Perro()
 		}'''].parseAndInfer.asserting [
 //			noIssues
-			assertTypeOf(classTypeFor('Animal'), 'animal')
+			assertTypeOf(classType('Animal'), 'animal')
 		]
 	}
 	
