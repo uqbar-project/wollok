@@ -28,7 +28,7 @@ class Connection extends ModelElement {
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
 		this.name = name
-		reconnect(source, target)
+		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()
 		this.relationType = relationType
 	}
@@ -80,16 +80,17 @@ class Connection extends ModelElement {
 		}
 	}
 
-	def reconnect(Shape newSource, Shape newTarget) {
-		if (newTarget == null || newSource == newTarget) {
+	def reconnect(Shape newSource, Shape newTarget, RelationType relationType) {
+		if (newTarget == null) {
 			throw new IllegalArgumentException("New target for connection cannot be null")
 		}
+		relationType.validateRelationBetween(newSource, newTarget)
 		disconnect
 		this.source = newSource
 		this.target = newTarget
 		reconnect
 	}
-
+	
 	def setLineStyle(int lineStyle) {
 		if (lineStyle != Graphics.LINE_DASH && lineStyle != Graphics.LINE_SOLID)
 			throw new IllegalArgumentException
@@ -106,6 +107,3 @@ class Connection extends ModelElement {
 
 }
 
-enum RelationType {
-	INHERITANCE, ASSOCIATION, DEPENDENCY	
-}

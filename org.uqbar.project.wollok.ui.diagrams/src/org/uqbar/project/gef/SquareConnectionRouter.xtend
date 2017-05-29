@@ -6,6 +6,7 @@ import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PointList
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.SelfReferenceAnchor
 
 /**
  * Routes the connection in a tree-like form unifying connections
@@ -60,7 +61,9 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getStartPoint(Connection conn) {
-		// Fix: anchor when source is below
+		if (conn.sourceAnchor === conn.targetAnchor) {
+			return new SelfReferenceAnchor(conn.sourceAnchor.owner).referencePoint
+		}
 		if (conn.sourceAnchor?.below(conn.targetAnchor)) {
 			return new DefaultWollokAnchor(conn.sourceAnchor.owner).referencePoint	
 		}
@@ -68,6 +71,9 @@ class SquareConnectionRouter extends AbstractRouter {
 	}
 	
 	override protected getEndPoint(Connection conn) {
+		if (conn.sourceAnchor === conn.targetAnchor) {
+			return new SelfReferenceAnchor(conn.sourceAnchor.owner).getLocation(endPoint)
+		}
 		conn.targetAnchor?.getLocation(endPoint)
 	}
 

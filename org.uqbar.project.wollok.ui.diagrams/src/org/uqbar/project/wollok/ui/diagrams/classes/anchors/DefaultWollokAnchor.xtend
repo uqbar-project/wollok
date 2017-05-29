@@ -5,6 +5,14 @@ import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 
+/**
+ * 
+ * Default implementation for connections between shapes, assuming 
+ * inheritance was the first automatic relationship we could infer from classes.
+ * 
+ * @author dodain
+ * 
+ */
 class DefaultWollokAnchor extends ChopboxAnchor {
 	
 	new() {

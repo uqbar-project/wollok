@@ -22,6 +22,8 @@ public class Messages extends NLS {
 	// Tool entries
 	public static String StaticDiagram_CreateAssociation_Title;
 	public static String StaticDiagram_CreateAssociation_Description;
+	public static String StaticDiagram_CreateDependency_Title;
+	public static String StaticDiagram_CreateDependency_Description;
 
 	// Contextual menu options
 	public static String StaticDiagram_DeleteAssociation_Description;
@@ -30,6 +32,7 @@ public class Messages extends NLS {
 	
 	// Error messages
 	public static String StaticDiagram_Association_Not_Found;
+	public static String StaticDiagram_InheritanceCannotBeSelfRelated;
 	
 	static {
 		// initialize resource bundle

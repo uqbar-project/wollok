@@ -11,6 +11,15 @@ import static extension java.lang.Integer.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+/**
+ * Common class for modeling
+ * - classes
+ * - named objects (wko)
+ * - mixins
+ * as a models of a static diagram
+ * 
+ * Main responsibilities includes: size & location of shapes and naming convention
+ */
 abstract class AbstractModel extends Shape {
 
 	protected static List<WMethodContainer> allComponents = newArrayList
@@ -24,7 +33,7 @@ abstract class AbstractModel extends Shape {
 	
 	protected val static ELEMENT_WIDTH = 50
 	protected val static MAX_ELEMENT_WIDTH = 230
-	protected val static MAX_ELEMENT_HEIGHT = 320
+	protected val static MAX_ELEMENT_HEIGHT = 280
 	protected val static ELEMENT_HEIGHT = 55
 	protected val static WIDTH_SEPARATION_BETWEEN_ELEMENTS = 20
 	protected val static INITIAL_MARGIN = 5

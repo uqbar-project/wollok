@@ -5,6 +5,14 @@ import org.eclipse.draw2d.geometry.Point
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
+/**
+ * 
+ * Special anchor for associations. Connector goes from left to right
+ * or from right to left depending on source/target positions.
+ * 
+ * @author dodain
+ * 
+ */
 class WollokAssociationAnchor extends DefaultWollokAnchor {
 
 	Shape source

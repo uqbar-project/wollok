@@ -100,7 +100,15 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
+ * Main view for static diagrams. Here we show
+ * - classes
+ * - named objects
+ * - mixins
+ * and its relationships, that includes inheritance, association and dependency.
+ * 
  * @author jfernandes
+ * @author dodain
+ * 
  */
 class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener, Observer {
 	DefaultEditDomain editDomain
