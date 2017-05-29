@@ -2,11 +2,18 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -39,6 +46,28 @@ class ConstraintGenerator {
 //		p.elements.forEach[generateVariables]
 //	}
 
+	def dispatch void generateVariables(WClass it) {
+		// TODO Process supertype information: parent and mixins
+
+		members.forEach[generateVariables]
+		constructors.forEach[generateVariables]
+	}
+	
+	def dispatch void generateVariables(WConstructor it) {
+		// TODO Process superconstructor information.
+		parameters.forEach[generateVariables]
+		expression.generateVariables
+	}
+
+	def dispatch void generateVariables(WParameter it) {
+		newTypeVariable
+	}
+
+	def dispatch void generateVariables(WBlockExpression it) {
+		expressions.forEach[generateVariables]
+		
+	}
+
 	def dispatch void generateVariables(WNumberLiteral it) {
 		newSealed(classType(INTEGER))
 	}
@@ -50,6 +79,18 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WBooleanLiteral it) {
 		newSealed(classType(BOOLEAN))
 	}
+	
+	def dispatch void generateVariables(WListLiteral it) {
+		newSealed(classType(LIST))
+	}
+	
+	def dispatch void generateVariables(WSetLiteral it) {
+		newSealed(classType(SET))
+	}
+	
+	def dispatch void generateVariables(WConstructorCall it) {
+		newSealed(classType(classRef))
+	}
 
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
@@ -57,12 +98,12 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WVariableReference it) {
-		beSupertypeOf(ref)
+		it.newWithSubtype(ref)
 	}
 	
 	def dispatch void generateVariables(WIfExpression it) {
-		condition.newSealed(classType(BOOLEAN))
 		condition.generateVariables
+		condition.beSealed(classType(BOOLEAN))
 
 		then.generateVariables
 
@@ -75,7 +116,7 @@ class ConstraintGenerator {
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
-			beVoid
+			newVoid
 		}
 	}
 
