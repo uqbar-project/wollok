@@ -72,7 +72,7 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 		setAttribute(ATTR_WOLLOK_IS_REPL, true)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
-		setAttribute(ATTR_WOLLOK_LIBS, projectToUse.loadLibs)
+		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(projectToUse.loadLibs))
 		
 	}
 

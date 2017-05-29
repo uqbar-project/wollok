@@ -3,13 +3,15 @@ package org.uqbar.project.wollok.ui.libraries
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jdt.core.IJarEntryResource
+import org.eclipse.jdt.core.IJavaElement
 import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
-import org.eclipse.jdt.internal.core.JarEntryResource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.libraries.AbstractWollokLib
 import org.uqbar.project.wollok.libraries.WollokManifest
 
+import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
 
 /**
  * It Searchs the wollok manifest and all resources referenced by that file using a jdt JavaProject.
@@ -51,12 +53,6 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 		return fragmentRoot.getElementName().libName ==  this.libName
 	}
 	
-	def wmanifestEntry(IPackageFragmentRoot fragmentRoot) {
-		fragmentRoot.nonJavaResources.findFirst[ 
-				(it instanceof JarEntryResource) && 
-				(it as JarEntryResource).name.endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)
-				] as JarEntryResource
-	}
 	
 	override internalLoad(URI uri, Resource resource) {
 		val entry = uri.toEntry()
@@ -73,22 +69,48 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 		fileName.findEntry(getPackageFragmentRoot)	
 	}
 		
-	def IJarEntryResource findEntry(String fileName, IPackageFragmentRoot fragment) {
+	def IJarEntryResource findEntry(String fileName, IPackageFragmentRoot root) {
 		
-		return fragment.nonJavaResources.findFragment(fileName)
+		//todo mejorar esto para no tener que mapear casi todo a null
+		root.children.map[it.findFragment(fileName, root)].findFirst[it !== null]
+			
 	}
 	
-	//the javadoc says that all entries are instance of IJarResourceEntry
+	
+	def reallyNonJavaResource(IPackageFragment element, IPackageFragmentRoot root) {
+		return if (element.isDefaultPackage) {root.nonJavaResources} else {element.nonJavaResources}
+	}
+	
+	def IJarEntryResource findFragment(IJavaElement javaElement, String fileName, IPackageFragmentRoot root) {
+		if(javaElement instanceof IPackageFragment) {
+			val packageFolder = javaElement.elementName.replaceAll("\\.", "/")
+			if(fileName.startsWith(packageFolder)) {
+				var newFileName = fileName.substring(packageFolder.length())
+				newFileName = if(newFileName.startsWith("/")) newFileName.substring(1) else newFileName
+				javaElement.reallyNonJavaResource(root).findFragment(newFileName)
+			}
+			else {
+				null
+			}		
+		}
+		else {
+			null
+		}
+	}
+	
+	//the javadoc says that all entries are instance of IJarResourceEntry if is not a java resource
+	//but, if the folder is not a java package, can be a JarPackageFragment.
+	//apparently, no common superclass exist
 	def IJarEntryResource findFragment(Object[] entries, String fileName) {
 		val filePart = fileName.split("/");
 		
 		var searching = entries
 		var Object r
 		for(String part : filePart) {
-			r = entries.findFirst[
-				(it as IJarEntryResource).name == part
+			r = searching.findFirst[
+				(it instanceof IJarEntryResource) && (it as IJarEntryResource).name == part
 			]	
-			//i think that this if is not necesary
+			//the file is not present in this entry
 			if(r === null) {return null}	
 			searching = (r as IJarEntryResource).children
 		}

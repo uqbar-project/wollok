@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.libraries;
 
-import java.util.List;
-
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
@@ -10,5 +8,5 @@ import org.eclipse.emf.ecore.resource.Resource;
  * @author leo
  */
 public interface WollokLibraries {
-	public List<WollokLib> getWollokLibs(Resource resource);
+	public Iterable<WollokLib> getWollokLibs(Resource resource);
 }

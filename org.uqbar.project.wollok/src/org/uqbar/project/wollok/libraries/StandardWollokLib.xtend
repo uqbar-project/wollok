@@ -12,20 +12,21 @@ import org.uqbar.project.wollok.WollokActivator
  * @author leo         
  */
 class StandardWollokLib extends AbstractWollokLib {
+
+	public static val standardLibManifestName = "wollok" + WollokManifest.WOLLOK_MANIFEST_EXTENSION
 	
 	def newManifest(String bundle, String manifestName){
-		val fullName = manifestName + WollokManifest.WOLLOK_MANIFEST_EXTENSION
 		
 		if (WollokActivator.getDefault !== null) {
-			new WollokManifest(WollokActivator.getDefault.findResource(bundle, fullName))
+			new WollokManifest(WollokActivator.getDefault.findResource(bundle, manifestName))
 		}
 		else
-			new WollokManifest(class.getResourceAsStream("/" + fullName))
+			new WollokManifest(class.getResourceAsStream("/" + manifestName))
 	}
 	
 	override getManifest(Resource resource) {
-		return newManifest("org.uqbar.project.wollok.lib", "wollok" )
+		return newManifest("org.uqbar.project.wollok.lib", standardLibManifestName )
 	}
-	
-	
+
+		
 }

@@ -1,12 +1,13 @@
 package org.uqbar.project.wollok.ui.properties
 
-import java.util.Arrays
-import java.util.List
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.ProjectScope
-import org.eclipse.jface.preference.IPreferenceStore
-import org.eclipse.ui.preferences.ScopedPreferenceStore
-import org.uqbar.project.wollok.ui.WollokActivator
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.JavaCore
+import org.eclipse.jdt.core.JavaModelException
+import org.eclipse.jdt.core.IPackageFragmentRoot
+import org.uqbar.project.wollok.libraries.StandardWollokLib
+import org.eclipse.jdt.core.IJarEntryResource
+import org.uqbar.project.wollok.libraries.WollokManifest
 
 /**
  * Extension methods to manage libraries options for a wollok project
@@ -15,27 +16,41 @@ import org.uqbar.project.wollok.ui.WollokActivator
  */
 class WollokLibrariesStore {
 	
-	public static val LIBS = "libraries"
-	
-	def static saveLibs(IProject project, List<String> libraries) {
-		project.projectPreference.saveLibs(libraries);
-	}
-	
-	def static ScopedPreferenceStore getProjectPreference(IProject project) {
-		new ScopedPreferenceStore(new ProjectScope(project), WollokActivator.BUNDLE_NAME)
-	}
-		
-	def static saveLibs(IPreferenceStore preferenceStore, List<String> libraries ) {
-		preferenceStore.setValue(LIBS, String.join(";",libraries));
-	}
-	
 	def static loadLibs(IProject project) { 
-		project.projectPreference.loadLibs
+		try {
+			var IJavaProject javaProject =	JavaCore.create(project);
+			return javaProject.getWollokLibrariesClasspathEntries().map[it.path.toString]
+		}
+		catch(JavaModelException e) {
+			//the project is not a java project,
+			System.err.println("Lanzo error el javaModel para el proyecto " + project + ". Error: " + e.message)
+			return #[]
+		}
 	}
 	
-	def static loadLibs(IPreferenceStore preferenceStore) {
+	def static Iterable<IPackageFragmentRoot> getWollokLibrariesClasspathEntries(IJavaProject project) {
+		project.allPackageFragmentRoots.filter[it.isWollokLib]
+	}
+
+	def static isWollokLib(IPackageFragmentRoot root) {
+		val entry = root.wmanifestEntry 
+		//hack: standard lib must be skiped
+		entry !== null && entry.name != StandardWollokLib.standardLibManifestName
+	}
+
+	def static wmanifestEntry(IPackageFragmentRoot fragmentRoot) {
+		fragmentRoot.nonJavaResources.findFirst[ 
+				(it instanceof IJarEntryResource) && 
+				(it as IJarEntryResource).name.endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)
+				] as IJarEntryResource
+	}
+
+	
+/* 	def static loadLibs(IPreferenceStore preferenceStore) {
 		val libs = preferenceStore.getString(LIBS);
 		if (libs !== null && !libs.trim().isEmpty()) Arrays.asList(libs.split(";")) else #[];
 	}
-	
+*/	
+
+
 }
