@@ -11,16 +11,26 @@ class LoadLibraryTest extends AbstractWollokInterpreterTestCase {
 	
 
 	@Test
-	def void testPepeObjectExist() {
+	def void testRootLocationObjectExist() {
 		'''
-		import pepefile.pepe
-		test "pepe saluda" {
-			assert.equals('hola', pepe.hola())
+		import pepitopackage.pepito
+		test "pepito saluda" {
+			assert.equals('hola Don Jose', pepito.hola())
 		}
 		'''.interpretPropagatingErrors
 	
 	}
 
+	@Test
+	def void testInnerLocationObjectExist() {
+		'''
+		import org.uqbar.josepackage.jose
+		test "pepito saluda" {
+			assert.equals('hola Don Pepito', jose.hola())
+		}
+		'''.interpretPropagatingErrors
+	
+	}
 	
 	
 }
