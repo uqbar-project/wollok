@@ -50,7 +50,7 @@ class NamedObjectModel extends AbstractModel {
 	}
 	
 	def static int maxHeight() {
-		objects.fold(VERTICAL_POSITION, [ max, object | Math.max(max, object.size.height) ])
+		objects.fold(0, [ max, object | Math.max(max, object.size.height + VERTICAL_POSITION) ]) 
 	}
 
 }

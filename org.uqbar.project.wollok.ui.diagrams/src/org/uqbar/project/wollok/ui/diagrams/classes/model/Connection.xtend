@@ -28,13 +28,13 @@ class Connection extends ModelElement {
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
 		this.name = name
+		this.relationType = relationType
 		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()
-		this.relationType = relationType
 	}
 	
 	def calculateLineStyle() {
-		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else Graphics.LINE_SOLID
+		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else relationType.lineStyle
 	}
 
 	def disconnect() {

@@ -6,7 +6,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -33,15 +32,6 @@ class StaticDiagramEditPartFactory implements EditPartFactory {
 	def dispatch getPartForElement(NamedObjectModel it) { new NamedObjectEditPart }
 	def dispatch getPartForElement(WVariableDeclaration it) { new InstanceVariableEditPart }
 	def dispatch getPartForElement(WMethodDeclaration it) { new MethodEditPart }
-	
-	def dispatch getPartForElement(Connection it) {
-		if (it.relationType.equals(RelationType.INHERITANCE))
-			return new InheritanceConnectionEditPart;
-			
-		if (it.relationType.equals(RelationType.ASSOCIATION))
-			return new AssociationConnectionEditPart;
-			
-		throw new IllegalArgumentException("This connection has not been developed yet")
-	}
+	def dispatch getPartForElement(Connection it) {	relationType.connectionEditPart	}
 
 }

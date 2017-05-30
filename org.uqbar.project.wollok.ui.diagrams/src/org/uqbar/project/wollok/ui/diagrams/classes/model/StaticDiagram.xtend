@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.Relation
 
 /**
  * 
@@ -71,19 +72,19 @@ class StaticDiagram extends ModelElement {
 		objects.forEach[createRelation(it.component)]
 	}
 	
-	def connectAssociationRelations() {
-		configuration.associations.forEach [ association |
+	def void connectRelations() {
+		configuration.relations.forEach [ relation |
 			val objects = children
-			val sourceModel = objects.find(association.source)
-			val targetModel = objects.find(association.target)
+			val sourceModel = objects.find(relation.source)
+			val targetModel = objects.find(relation.target)
 			if (sourceModel !== null && targetModel !== null) {
-				new Connection(null, sourceModel, targetModel, RelationType.ASSOCIATION)
+				new Connection(null, sourceModel, targetModel, relation.relationType)
 			} 
 		]
 	}
 	
 	def AbstractModel find(List<AbstractModel> models, String name) {
-		children.findFirst [ label.equalsIgnoreCase(name) ]
+		children.findFirst [ label.equals(name) ]
 	}
 	
 	def createRelation(Shape it, WMethodContainer c) {

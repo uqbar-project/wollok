@@ -15,10 +15,10 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.ui.refactoring.impl.ProjectUtil
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
@@ -40,8 +40,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	Map<String, Point> locations
 	Map<String, Dimension> sizes
 	List<String> hiddenComponents = newArrayList
-	List<Relation> associations = newArrayList
-	List<Relation> dependencies = newArrayList
+	List<Relation> relations = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
 	
@@ -88,8 +87,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}	
 	
 	def void internalInitRelationships() {
-		associations = newArrayList
-		dependencies = newArrayList
+		relations = newArrayList
 	}
 	
 	/** 
@@ -123,22 +121,32 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def addAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
-		associations.add(new Relation(modelSource.label, modelTarget.label))
+		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.ASSOCIATION))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
 	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
-		val element = associations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label)]
+		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.ASSOCIATION ]
 		if (element === null) {
 			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.name, modelTarget.name))
 		}
-		associations.remove(element)
+		relations.remove(element)
 		this.setChanged
 	}
 
+	def removeDependency(AbstractModel modelSource, AbstractModel modelTarget) {
+		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.DEPENDENCY ]
+		if (element === null) {
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Dependency_Not_Found, modelSource.name, modelTarget.name))
+		}
+		relations.remove(element)
+		this.setChanged
+
+	}
+
 	def addDependency(AbstractModel modelSource, AbstractModel modelTarget) {
-		dependencies.add(new Relation(modelSource.label, modelTarget.label))
+		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.DEPENDENCY))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
@@ -209,7 +217,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.locations = configuration.locations
 		this.sizes = configuration.sizes
 		this.hiddenComponents = configuration.hiddenComponents
-		this.associations = configuration.associations
+		this.relations = configuration.relations
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
@@ -266,8 +274,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		val result = new StringBuffer() => [
 			append("Static Diagram {")
 			append("\n")
-			append("    associations = ")
-			append(this.associations)
+			append("    relations = ")
+			append(this.relations)
 			append("\n")
 			append("    hidden components = ")
 			append(this.hiddenComponents)

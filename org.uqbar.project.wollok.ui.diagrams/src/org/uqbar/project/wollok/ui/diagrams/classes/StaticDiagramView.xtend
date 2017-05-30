@@ -66,9 +66,8 @@ import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteAssociationAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteElementAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.HideComponentAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenComponents
@@ -233,7 +232,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 
 			// relations
 			connectInheritanceRelations
-			connectAssociationRelations
+			connectRelations
 		]
 	}
 	
@@ -388,8 +387,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	def getActionRegistry() {
 		if (actionRegistry == null) actionRegistry = new ActionRegistry => [
-			registerAction(new DeleteAssociationAction(this, graphicalViewer, configuration))
-			registerAction(new HideComponentAction(this, graphicalViewer, configuration))
+			registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
 		]
 		actionRegistry
 	}

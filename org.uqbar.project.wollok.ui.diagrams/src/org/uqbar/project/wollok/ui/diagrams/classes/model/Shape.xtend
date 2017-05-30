@@ -65,11 +65,12 @@ public abstract class Shape extends ModelElement {
 	def void addConnection(Connection conn) {
 		if (conn == null)
 			throw new IllegalArgumentException
-		if (conn.source == this) {
+		if (conn.source == this && !sourceConnections.contains(conn)) {
 			sourceConnections.add(conn)
 			firePropertyChange(SOURCE_CONNECTIONS_PROP, null, conn)
 		} 
-		if (conn.target == this) {  // source && target could be the same for associations
+		// if outside because source && target could be the same for associations
+		if (conn.target == this && !targetConnections.contains(conn)) {  
 			targetConnections.add(conn)
 			firePropertyChange(TARGET_CONNECTIONS_PROP, null, conn)
 		}

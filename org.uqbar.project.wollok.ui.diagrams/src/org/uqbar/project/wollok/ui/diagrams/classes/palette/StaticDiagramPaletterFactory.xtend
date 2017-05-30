@@ -6,10 +6,11 @@ import org.eclipse.gef.palette.MarqueeToolEntry
 import org.eclipse.gef.palette.PaletteGroup
 import org.eclipse.gef.palette.PaletteRoot
 import org.eclipse.gef.palette.PanningSelectionToolEntry
-import org.eclipse.gef.palette.ToolEntry
-import org.eclipse.gef.requests.SimpleFactory
+import org.eclipse.gef.requests.CreationFactory
 import org.eclipse.jface.resource.ImageDescriptor
 import org.uqbar.project.wollok.ui.diagrams.Messages
+import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateAssociationCommand
+import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateDependencyCommand
 
 /**
  * @author jfernandes
@@ -24,7 +25,7 @@ class StaticDiagramPaletterFactory {
 				add(tool)
 				add(new MarqueeToolEntry)
 				add(new CreateAssociationToolEntry)
-				// TODO: CreateDependencyToolEntry
+				add(new CreateDependencyToolEntry)
 			])
 			defaultEntry = tool
 		]
@@ -35,12 +36,22 @@ class StaticDiagramPaletterFactory {
 /** http://www.vainolo.com/2011/07/06/creating-a-gef-editor-part-6-model-refactoring-and-editing-diagram-entities/ */
 class CreateAssociationToolEntry extends ConnectionCreationToolEntry {
 	new() {
-		super(Messages.StaticDiagram_CreateAssociation_Title, Messages.StaticDiagram_CreateAssociation_Description, new SimpleFactory(null), icon, icon)
+		super(Messages.StaticDiagram_CreateAssociation_Title, Messages.StaticDiagram_CreateAssociation_Description, new CreationFactory {
+			
+			override getNewObject() {
+				new CreateAssociationCommand
+			}
+			
+			override getObjectType() {
+				typeof(CreateAssociationCommand)
+			}
+			
+			}, icon, icon)
 	}
 
 	def static getIcon() {
 		try {
-			ImageDescriptor.createFromFile(typeof(StaticDiagramPaletterFactory), "/icons/dependency_create.png")
+			ImageDescriptor.createFromFile(typeof(StaticDiagramPaletterFactory), "/icons/association_create.png")
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e)
 		}
@@ -50,12 +61,22 @@ class CreateAssociationToolEntry extends ConnectionCreationToolEntry {
 
 class CreateDependencyToolEntry extends ConnectionCreationToolEntry {
 	new() {
-		super(Messages.StaticDiagram_CreateDependency_Title, Messages.StaticDiagram_CreateDependency_Description, new SimpleFactory(null), icon, icon)
+		super(Messages.StaticDiagram_CreateDependency_Title, Messages.StaticDiagram_CreateDependency_Description, new CreationFactory {
+			
+			override getNewObject() {
+				new CreateDependencyCommand
+			}
+			
+			override getObjectType() {
+				typeof(CreateDependencyCommand)
+			}
+			
+			}, icon, icon)
 	}
 
 	def static getIcon() {
 		try {
-			ImageDescriptor.createFromFile(typeof(StaticDiagramPaletterFactory), "/icons/association.png")
+			ImageDescriptor.createFromFile(typeof(StaticDiagramPaletterFactory), "/icons/dependency_create.png")
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e)
 		}

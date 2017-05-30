@@ -203,7 +203,8 @@ class CleanAllRelashionshipsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/disconnect_co.gif"))
+		//imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/disconnect_co.gif"))
+		imageDescriptor = ImageDescriptor.createFromFile(this.class, "/icons/association_delete_all.png")
 	}
 
 	override run() {

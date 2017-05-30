@@ -16,7 +16,7 @@ class CreateAssociationEditPolicy extends GraphicalNodeEditPolicy {
 	}
 	
 	override protected getConnectionCreateCommand(CreateConnectionRequest request) {
-		new CreateAssociationCommand => [
+		request.newObject as CreateAssociationCommand => [
 			defineSource(host as AbstractMethodContainerEditPart)
 			request.startCommand = it
 		]

@@ -26,13 +26,13 @@ public class Messages extends NLS {
 	public static String StaticDiagram_CreateDependency_Description;
 
 	// Contextual menu options
-	public static String StaticDiagram_DeleteAssociation_Description;
-	public static String StaticDiagram_HideClassFromDiagram_Title;
-	public static String StaticDiagram_HideClassFromDiagram_Description;
+	public static String StaticDiagram_DeleteFromDiagram_Description;
 	
 	// Error messages
 	public static String StaticDiagram_Association_Not_Found;
+	public static String StaticDiagram_Dependency_Not_Found;
 	public static String StaticDiagram_InheritanceCannotBeSelfRelated;
+	public static String StaticDiagram_Invalid_Relation_Type;
 	
 	static {
 		// initialize resource bundle
