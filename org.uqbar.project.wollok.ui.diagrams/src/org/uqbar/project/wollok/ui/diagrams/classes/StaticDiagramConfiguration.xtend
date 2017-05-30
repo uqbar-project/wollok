@@ -127,12 +127,16 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
-		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.ASSOCIATION ]
+		val element = this.findAssociationBetween(modelSource, modelTarget)
 		if (element === null) {
 			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.name, modelTarget.name))
 		}
 		relations.remove(element)
 		this.setChanged
+	}
+	
+	def findAssociationBetween(AbstractModel modelSource, AbstractModel modelTarget) {
+		relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.ASSOCIATION ]
 	}
 
 	def removeDependency(AbstractModel modelSource, AbstractModel modelTarget) {
@@ -149,6 +153,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.DEPENDENCY))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	def canAddDependency(AbstractModel modelSource, AbstractModel modelTarget) {
+		modelSource !== modelTarget && this.findAssociationBetween(modelSource, modelTarget) === null
 	}
 
 	def void setShowVariables(boolean show) {

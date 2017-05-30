@@ -7,6 +7,7 @@ import org.eclipse.gef.palette.PaletteGroup
 import org.eclipse.gef.palette.PaletteRoot
 import org.eclipse.gef.palette.PanningSelectionToolEntry
 import org.eclipse.gef.requests.CreationFactory
+import org.eclipse.gef.requests.SimpleFactory
 import org.eclipse.jface.resource.ImageDescriptor
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateAssociationCommand
@@ -36,17 +37,7 @@ class StaticDiagramPaletterFactory {
 /** http://www.vainolo.com/2011/07/06/creating-a-gef-editor-part-6-model-refactoring-and-editing-diagram-entities/ */
 class CreateAssociationToolEntry extends ConnectionCreationToolEntry {
 	new() {
-		super(Messages.StaticDiagram_CreateAssociation_Title, Messages.StaticDiagram_CreateAssociation_Description, new CreationFactory {
-			
-			override getNewObject() {
-				new CreateAssociationCommand
-			}
-			
-			override getObjectType() {
-				typeof(CreateAssociationCommand)
-			}
-			
-			}, icon, icon)
+		super(Messages.StaticDiagram_CreateAssociation_Title, Messages.StaticDiagram_CreateAssociation_Description, new SimpleFactory(typeof(CreateAssociationCommand)), icon, icon)
 	}
 
 	def static getIcon() {
@@ -61,17 +52,7 @@ class CreateAssociationToolEntry extends ConnectionCreationToolEntry {
 
 class CreateDependencyToolEntry extends ConnectionCreationToolEntry {
 	new() {
-		super(Messages.StaticDiagram_CreateDependency_Title, Messages.StaticDiagram_CreateDependency_Description, new CreationFactory {
-			
-			override getNewObject() {
-				new CreateDependencyCommand
-			}
-			
-			override getObjectType() {
-				typeof(CreateDependencyCommand)
-			}
-			
-			}, icon, icon)
+		super(Messages.StaticDiagram_CreateDependency_Title, Messages.StaticDiagram_CreateDependency_Description, new SimpleFactory(typeof(CreateDependencyCommand)), icon, icon)
 	}
 
 	def static getIcon() {

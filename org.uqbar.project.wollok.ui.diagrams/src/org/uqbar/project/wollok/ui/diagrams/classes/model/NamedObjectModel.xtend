@@ -16,7 +16,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  */
 class NamedObjectModel extends AbstractModel {
 	public static List<NamedObjectModel> objects
-	public static int VERTICAL_POSITION = 10
+	public static int VERTICAL_POSITION = 15
 	
 	static def void init() {
 		objects = newArrayList
@@ -36,7 +36,7 @@ class NamedObjectModel extends AbstractModel {
 	}
 	
 	def locate() {
-		location = configuration.getLocation(this) ?: new Point(XPosition, VERTICAL_POSITION)
+		location = configuration.getLocation(this) ?: new Point(XPosition, INITIAL_MARGIN)
 	}
 
 	def int getXPosition() {

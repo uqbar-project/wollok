@@ -43,7 +43,7 @@ class ClassModel extends AbstractModel {
 	}
 	
 	def getInitialHorizontalMargin() {
-		adjustedHeight + INITIAL_MARGIN
+		INITIAL_MARGIN
 	}
 
 	def getCalculatedWidth(List<WMethodContainer> subclasses) {

@@ -28,10 +28,15 @@ public class Messages extends NLS {
 	// Contextual menu options
 	public static String StaticDiagram_DeleteFromDiagram_Description;
 	
+	// Relation types
+	public static String RelationType_InheritanceDescription;
+	public static String RelationType_AssociationDescription;
+	public static String RelationType_DependencyDescription;
+	
 	// Error messages
 	public static String StaticDiagram_Association_Not_Found;
 	public static String StaticDiagram_Dependency_Not_Found;
-	public static String StaticDiagram_InheritanceCannotBeSelfRelated;
+	public static String StaticDiagram_RelationCannotBeSelfRelated;
 	public static String StaticDiagram_Invalid_Relation_Type;
 	
 	static {

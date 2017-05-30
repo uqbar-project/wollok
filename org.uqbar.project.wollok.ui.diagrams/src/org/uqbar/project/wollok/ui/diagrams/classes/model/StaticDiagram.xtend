@@ -91,11 +91,8 @@ class StaticDiagram extends ModelElement {
 		val parent = c.parent
 		if (parent !== null && it.shouldShowConnectorTo(parent)) {
 			val parentModel = classes.findFirst[getComponent == parent]
-			if (parentModel === null) {
-				//FED - just ignoring it, user may be editing it or it is object class
-				//throw new WollokRuntimeException("Could NOT find diagram node for parent class " + parent.fqn)
-			}
-			else {
+			//FED - just ignoring if parent is null, user may be editing it or it is object class
+			if (parentModel !== null) {
 				new Connection(null, it, parentModel, RelationType.INHERITANCE)
 			}
 		}
