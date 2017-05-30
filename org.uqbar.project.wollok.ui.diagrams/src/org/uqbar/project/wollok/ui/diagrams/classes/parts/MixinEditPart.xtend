@@ -14,7 +14,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class MixinEditPart extends AbstractMethodContainerEditPart {
 	
 	override MixinModel getCastedModel() { model as MixinModel }
-	override doGetModelChildren() { languageElement.members }
 	override WMixin getLanguageElement() { castedModel.component as WMixin }
 	
 	override protected createFigure() {

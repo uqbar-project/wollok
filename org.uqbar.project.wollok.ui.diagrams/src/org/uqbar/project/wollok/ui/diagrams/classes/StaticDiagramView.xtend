@@ -71,6 +71,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenComponents
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenParts
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
@@ -159,6 +160,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
 			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
 			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
+			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
 //			In a future could remain as options: "Open External wsdi" & "Save As..." 			
 //			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
 //			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))

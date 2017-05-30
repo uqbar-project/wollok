@@ -41,8 +41,4 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	
 	override ClassModel getCastedModel() { model as ClassModel }
 	
-	override doGetModelChildren() {
-		if (castedModel.configuration.showVariables) castedModel.getComponent.members else castedModel.getComponent.methods.toList
-	}
-
 }

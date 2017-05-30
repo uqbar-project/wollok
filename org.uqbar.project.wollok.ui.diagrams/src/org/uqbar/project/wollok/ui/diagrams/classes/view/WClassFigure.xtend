@@ -39,14 +39,16 @@ class WClassFigure extends Figure {
 		]
 		add(nameLabel)
 		abstract = false
-		
+
 		if (castedModel.variablesSize > 0) {
 			attributesFigure = createCompartment 
 			add(attributesFigure)
 		}
 		
-		methodsFigure = createCompartment
-		add(methodsFigure)
+		if (castedModel.methodsSize > 0) {
+			methodsFigure = createCompartment
+			add(methodsFigure)
+		}
 		
 		opaque = true
 	}

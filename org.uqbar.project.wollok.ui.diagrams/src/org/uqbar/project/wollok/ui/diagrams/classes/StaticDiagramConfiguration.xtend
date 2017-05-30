@@ -15,11 +15,14 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtend.lib.annotations.Data
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * @author dodain
@@ -40,6 +43,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	Map<String, Point> locations
 	Map<String, Dimension> sizes
 	List<String> hiddenComponents = newArrayList
+	Map<String, List<HiddenPart>> hiddenParts = newHashMap
 	List<Relation> relations = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
@@ -56,6 +60,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def void init() {
 		internalInitLocationsAndSizes
 		internalInitHiddenComponents
+		internalInitHiddenParts
 		internalInitRelationships
 	}
 	
@@ -76,8 +81,18 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
+	def showAllParts() {
+		this.internalInitHiddenParts
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
 	def void internalInitHiddenComponents() {
 		hiddenComponents = newArrayList
+	}
+
+	def void internalInitHiddenParts() {
+		hiddenParts = newHashMap
 	}
 
 	def void initRelationships() {
@@ -120,6 +135,14 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
+	def hidePart(AbstractModel model, String partName, boolean isVariable) {
+		val _hiddenParts = hiddenParts.get(model.name) ?: newArrayList
+		_hiddenParts.add(new HiddenPart(isVariable, partName))
+		hiddenParts.put(model.name, _hiddenParts)
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
 	def addAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
 		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.ASSOCIATION))
 		this.setChanged
@@ -135,10 +158,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.setChanged
 	}
 	
-	def findAssociationBetween(AbstractModel modelSource, AbstractModel modelTarget) {
-		relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.ASSOCIATION ]
-	}
-
 	def removeDependency(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.DEPENDENCY ]
 		if (element === null) {
@@ -146,17 +165,12 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		}
 		relations.remove(element)
 		this.setChanged
-
 	}
 
 	def addDependency(AbstractModel modelSource, AbstractModel modelTarget) {
 		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.DEPENDENCY))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-
-	def canAddDependency(AbstractModel modelSource, AbstractModel modelTarget) {
-		modelSource !== modelTarget && this.findAssociationBetween(modelSource, modelTarget) === null
 	}
 
 	def void setShowVariables(boolean show) {
@@ -211,6 +225,14 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *  PUBLIC STATE & COPY METHODS 
 	 *******************************************************
 	 */	
+	def findAssociationBetween(AbstractModel modelSource, AbstractModel modelTarget) {
+		relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.ASSOCIATION ]
+	}
+
+	def canAddDependency(AbstractModel modelSource, AbstractModel modelTarget) {
+		modelSource !== modelTarget && this.findAssociationBetween(modelSource, modelTarget) === null
+	}
+
 	def Point getLocation(Shape shape) {
 		locations.get(shape.toString)
 	}
@@ -226,6 +248,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.sizes = configuration.sizes
 		this.hiddenComponents = configuration.hiddenComponents
 		this.relations = configuration.relations
+		this.hiddenParts = configuration.hiddenParts
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
@@ -233,6 +256,34 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.hiddenComponents.contains(componentName)
 	}
 
+	def getHiddenParts(String componentName) {
+		this.hiddenParts.get(componentName) ?: newArrayList
+	}
+
+	def hiddenVariables(String componentName) {
+		componentName.hiddenParts.filter [ isVariable ].toList
+	}
+	
+	def hiddenMethods(String componentName) {
+		componentName.hiddenParts.filter [ !isVariable ].toList
+	}
+
+	def getVariablesFor(WMethodContainer container) {
+		if (!showVariables) return #[]
+		val hiddenVariables = container.name.hiddenVariables.map [ name ]
+		container.variableDeclarations.filter [ variableDecl |
+			variableDecl !== null && variableDecl.variable !== null && !hiddenVariables.contains(variableDecl.variable.name)
+		].toList
+	}
+
+	def getMethodsFor(WMethodContainer container) {
+		val hiddenMethods = container.name.hiddenMethods.map [ name ]
+		container.methods.filter [ method |
+			!hiddenMethods.contains(method.name)
+		].toList
+	}
+	
+	
 	/** 
 	 ******************************************************
 	 *  CONFIGURATION LOAD & SAVE TO EXTERNAL FILE 
@@ -288,6 +339,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			append("    hidden components = ")
 			append(this.hiddenComponents)
 			append("\n")
+			append("    hidden parts = ")
+			append(this.hiddenParts)
+			append("\n")
 			append("    full path = ")
 			append(this.fullPath)
 			append("\n")
@@ -324,4 +378,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		}
 	}
 	
+}
+
+@Data
+class HiddenPart implements Serializable {
+	boolean isVariable
+	String name
 }

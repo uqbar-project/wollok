@@ -9,6 +9,10 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.AbstractMethodContainerEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.AssociationConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.DependencyConnectionEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.InstanceVariableEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.MethodEditPart
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * 
@@ -39,7 +43,9 @@ class DeleteElementAction extends DeleteAction {
 		!selectedObjects.empty && selectedObjects.forall [ selectedObject |
 			selectedObject instanceof AssociationConnectionEditPart ||
 			selectedObject instanceof AbstractMethodContainerEditPart ||
-			selectedObject instanceof DependencyConnectionEditPart
+			selectedObject instanceof DependencyConnectionEditPart ||
+			selectedObject instanceof MethodEditPart ||
+			selectedObject instanceof InstanceVariableEditPart
 		]
 	}
 
@@ -65,5 +71,12 @@ class DeleteElementAction extends DeleteAction {
 		configuration.hideComponent(component.castedModel as AbstractModel)
 	}
 
+	def dispatch run(MethodEditPart method) {
+		configuration.hidePart((method.parent as AbstractMethodContainerEditPart).castedModel as AbstractModel, (method.castedModel as WMethodDeclaration).name, false)
+	}
+
+	def dispatch run(InstanceVariableEditPart instanceVariable) {
+		configuration.hidePart((instanceVariable.parent as AbstractMethodContainerEditPart).castedModel as AbstractModel, (instanceVariable.castedModel as WVariableDeclaration).variable.name, true)
+	}
+
 }
-		

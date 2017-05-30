@@ -228,3 +228,19 @@ class ShowHiddenComponents extends Action {
 	}
 	
 }
+
+class ShowHiddenParts extends Action {
+
+	StaticDiagramConfiguration configuration
+
+	new(String title, StaticDiagramConfiguration configuration) {
+		super(title)
+		this.configuration = configuration
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.doc.user/images/org.eclipse.debug.ui/elcl16/changevariablevalue_co.png"))
+	}
+
+	override run() {
+		configuration.showAllParts
+	}
+	
+}

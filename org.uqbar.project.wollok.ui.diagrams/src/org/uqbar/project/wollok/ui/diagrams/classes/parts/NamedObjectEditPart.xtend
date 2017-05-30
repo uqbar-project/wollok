@@ -20,9 +20,6 @@ class NamedObjectEditPart extends AbstractMethodContainerEditPart implements Pro
 
 	override NamedObjectModel getCastedModel() { model as NamedObjectModel }
 
-	override doGetModelChildren() {
-		if (castedModel.configuration.showVariables) castedModel.component.members else castedModel.component.methods.toList 
-	}
 	override WNamedObject getLanguageElement() { castedModel.component as WNamedObject }
 	
 	override createFigure() {

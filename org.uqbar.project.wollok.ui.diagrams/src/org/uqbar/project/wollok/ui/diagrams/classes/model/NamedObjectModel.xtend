@@ -32,7 +32,7 @@ class NamedObjectModel extends AbstractModel {
 	}
 	
 	override shouldShowConnectorTo(WClass clazz) {
-		component.hasRealParent // By now it is ok, but we should consider also associations
+		component.hasRealParent
 	}
 	
 	def locate() {

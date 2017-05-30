@@ -18,6 +18,7 @@ public class Messages extends NLS {
 	public static String StaticDiagram_OpenFile;
 	public static String StaticDiagram_CleanAllRelationships_Description;
 	public static String StaticDiagram_ShowHiddenComponents_Description;
+	public static String StaticDiagram_ShowHiddenParts_Description;
 
 	// Tool entries
 	public static String StaticDiagram_CreateAssociation_Title;

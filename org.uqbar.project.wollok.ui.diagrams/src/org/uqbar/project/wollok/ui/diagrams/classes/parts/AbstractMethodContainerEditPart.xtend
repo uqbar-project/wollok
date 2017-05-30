@@ -21,12 +21,14 @@ import org.uqbar.project.wollok.ui.diagrams.classes.anchors.WollokAssociationAnc
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.ClassContainerEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.CreateAssociationEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.HideComponentEditPolicy
+import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
-import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Abstract base class for edit parts for (named) objects and classes
@@ -147,22 +149,16 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		doGetModelChildren.filter [ member | member.isNotAccessor(variables) ].toList
 	}
 	
-	def List doGetModelChildren()
+	def doGetModelChildren() {
+		(castedModel as AbstractModel).members
+	}
 
-	def dispatch boolean isNotAccessor(WMember member, List<String> variables) {
+	def dispatch boolean isNotAccessor(WMember named, List<String> variables) {
 		true
 	}
 	
 	def dispatch boolean isNotAccessor(WMethodDeclaration method, List<String> variables) {
 		!variables.contains(method.name)  		
-	}
-
-	def dispatch Boolean isVariable(WMember member) {
-		false
-	}
-
-	def dispatch Boolean isVariable(WVariableDeclaration member) {
-		true
 	}
 
 }

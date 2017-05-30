@@ -5,7 +5,10 @@ import java.util.Map
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension java.lang.Integer.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -31,6 +34,7 @@ abstract class AbstractModel extends Shape {
 	protected val static FILE_HEIGHT = 18
 	protected val static HEIGHT_SEPARATION_BETWEEN_ELEMENTS = 20
 	
+	protected val static DEFAULT_WIDTH = 120
 	protected val static ELEMENT_WIDTH = 50
 	protected val static MAX_ELEMENT_WIDTH = 230
 	protected val static MAX_ELEMENT_HEIGHT = 280
@@ -39,10 +43,14 @@ abstract class AbstractModel extends Shape {
 	protected val static INITIAL_MARGIN = 5
 
 	@Accessors protected WMethodContainer component
+	List<WVariableDeclaration> variables
+	List<WMethodDeclaration> methods
 
 	new(WMethodContainer mc) {
 		component = mc
-		component.defineSize
+		variables = configuration.getVariablesFor(mc)
+		methods = configuration.getMethodsFor(mc)
+		this.defineSize
 	}
 	
 	static def void init(List<WMethodContainer> _classes) {
@@ -57,26 +65,24 @@ abstract class AbstractModel extends Shape {
 	 *    WIDTH CALCULATIONS
 	 * ******************************************************************************* 
 	 */
-	def defaultWidth() { 120 }
+	def defaultWidth() { DEFAULT_WIDTH }
 	
-	def int getInitialWidth(WMethodContainer mc) {
-		if (mc.parent === null) return 0
-		val parentClassName = mc.parent.name ?: ""
+	def int getInitialWidth() {
+		if (component.parent === null) return 0
+		val parentClassName = component.parent.name ?: ""
 		if (parentClassName.equals(WollokConstants.ROOT_CLASS)) return 0
 		initialWidthForElement.get(parentClassName) ?: 0
 	}
 	
-	def int shapeWidth(WMethodContainer mc) {
-		Math.min(ELEMENT_WIDTH + (mc.allWidths.reduce [ a, b | a.max(b) ] * LETTER_WIDTH), MAX_ELEMENT_WIDTH)
+	def int shapeWidth() {
+		Math.min(ELEMENT_WIDTH + (allWidths.reduce [ a, b | a.max(b) ] * LETTER_WIDTH), MAX_ELEMENT_WIDTH)
 	}
 	
-	def allWidths(WMethodContainer mc) {
+	def allWidths() {
 		val result = newArrayList
-		if (configuration.showVariables) {
-			result.addAll(mc.variables.map [ it.name?.length ])
-		}
-		result.addAll(mc.methods.map [ it.name?.length ])
-		result.add(mc.name.length)
+		result.addAll(variables.map [ it.name?.length ])
+		result.addAll(methods.map [ it.name?.length ])
+		result.add(component.name.length)
 		result
 	}
 
@@ -91,25 +97,17 @@ abstract class AbstractModel extends Shape {
 		NamedObjectModel.maxHeight()
 	}
 
-	def int shapeHeight(WMethodContainer mc) {
-		Math.min((mc.variablesSize + mc.methods.size) * FILE_HEIGHT + ELEMENT_HEIGHT, MAX_ELEMENT_HEIGHT)
+	def int shapeHeight() {
+		Math.min((variablesSize + methodsSize) * FILE_HEIGHT + ELEMENT_HEIGHT, MAX_ELEMENT_HEIGHT)
 	}
 	
-	def int getVariablesSize(WMethodContainer mc) {
-		if (configuration.showVariables) mc.variables.size else 0
-	}
-
 	/**
 	 * ******************************************************************************* 
 	 *    SIZE INITIALIZATION
 	 * ******************************************************************************* 
 	 */
-	def void defineSize(WMethodContainer component) {
-		size = configuration.getSize(this) ?: new Dimension(component.shapeWidth, component.shapeHeight)
-	}
-
-	def String getLabel() {
-		this.name
+	def void defineSize() {
+		size = configuration.getSize(this) ?: new Dimension(shapeWidth, shapeHeight)
 	}
 
 	/**
@@ -117,12 +115,31 @@ abstract class AbstractModel extends Shape {
 	 *    DOMAIN METHODS
 	 * ******************************************************************************* 
 	 */
+	def getMembers() {
+		(variables + methods).toList
+	}
+
+	def getVariables() {
+		variables
+	}
+	
+	def getMethods() {
+		methods	
+	}
+	
 	def getVariablesSize() {
-		this.component.variablesSize
+		variables.size
+	}
+
+	def getMethodsSize() {
+		methods.size
 	}
 
 	def getName() {
 		component.name ?: "<...>"
 	}
 		
+	def String getLabel() {
+		this.name
+	}
 }
