@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.scoping.WollokResourceCache
+import static org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 
 /**
  * This is a base class to WollokLib based on  manifest file.
@@ -19,7 +20,7 @@ import org.uqbar.project.wollok.scoping.WollokResourceCache
  * @author leo
  * 
  */
-abstract class AbstractWollokLib extends WollokLibLoader implements WollokLib {
+abstract class AbstractWollokLib implements WollokLib {
 
 	@Inject
 	var Manager resourceDescriptionManager	
@@ -38,20 +39,17 @@ abstract class AbstractWollokLib extends WollokLibLoader implements WollokLib {
 	override load(Resource resource) {
 		return getManifest(resource).allURIs.map[it.load(resource)].flatten
 	}
-	
+
 	def WollokManifest getManifest(Resource resource)
 	
-	/**
-	 * load the contents
-	 */
-	def  internalLoad(URI uri, Resource resource) {
-		load(uri, resource, manager)
+	def internalLoad(URI uri, Resource resource) {
+		load(uri, resource, this.manager)
 	}
 	
 	/**
 	 * find contents in WollokResourceCache, if not found then call internalLoad 
 	 */
-	def Iterable<IEObjectDescription> load(URI uri, Resource resource) {
+	 def Iterable<IEObjectDescription> load(URI uri, Resource resource) {
 			try {
 			var Iterable<IEObjectDescription> exportedObjects
 			exportedObjects = WollokResourceCache.getResource(uri)

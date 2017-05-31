@@ -6,7 +6,7 @@ import java.net.URL
 import java.net.URLClassLoader
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
-
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.libName
 /**
  * A Jar Wollok Lib is a library packaged in a jar file.
  * If the jar file is not loaded, it is loaded dynamically.

@@ -2,15 +2,13 @@ package org.uqbar.project.wollok.ui.libraries
 
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.jdt.core.IJarEntryResource
-import org.eclipse.jdt.core.IJavaElement
 import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.libraries.AbstractWollokLib
 
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.*
 
 /**
  * It Searchs the wollok manifest and all resources referenced by that file using a jdt JavaProject.
@@ -47,7 +45,7 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 		
 		
 	override internalLoad(URI uri, Resource resource) {
-		wmanifestEntry.load(uri, resource, manager)
+		wmanifestEntry.load(uri, resource, this.manager)
 	}
 		
 

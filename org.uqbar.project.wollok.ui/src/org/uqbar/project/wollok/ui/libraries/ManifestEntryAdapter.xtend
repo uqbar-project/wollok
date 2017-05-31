@@ -7,19 +7,22 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.jdt.core.IJarEntryResource
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.uqbar.project.wollok.libraries.StandardWollokLib
-import org.uqbar.project.wollok.libraries.WollokLibLoader
 import org.uqbar.project.wollok.libraries.WollokManifest
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IJavaElement
+import org.uqbar.project.wollok.libraries.WollokLibExtensions
+import static extension org.uqbar.project.wollok.libraries.WollokLibExtensions.libName
+
 
 /**
  * If the library is a jar file then the manifest is in a 
  * JarResourceEntry, but if the library is in another java project
- * then the manifest is in a IFile
+ * then the manifest is in a IFile.
+ * This class presents a polimorphic interface to manage both situations
  */
-abstract class ManifestEntryAdapter extends WollokLibLoader{
+abstract class ManifestEntryAdapter{
 	
 	
 	def static boolean isManifestEntry(String name) {
@@ -29,7 +32,7 @@ abstract class ManifestEntryAdapter extends WollokLibLoader{
 	
 	// 	the nice way is to create an adapter and to resolve 
 	// polymorphicly, but it has a huge instantiation overhead.
-	// So, only it creates an object if is necesary
+	// So, only it creates an object if it is necessary
 	static def boolean isManifestEntry(Object decorated, IResource project) {
 		switch decorated {
 			IFile : isManifestEntry(IFileAdapter.toName(decorated)) && project != decorated.project //skip manifest from same project, because is not a library!
@@ -56,6 +59,10 @@ abstract class ManifestEntryAdapter extends WollokLibLoader{
 	
 	
 	def abstract boolean isForUri(String uri)
+	
+	def load(URI uri, Resource resource, Manager manager) {
+		WollokLibExtensions.load(uri, resource, manager)
+	}
 	
 	
 }
