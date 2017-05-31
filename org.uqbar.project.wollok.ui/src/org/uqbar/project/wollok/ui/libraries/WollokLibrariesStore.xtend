@@ -49,7 +49,7 @@ class WollokLibrariesStore {
 		 val fragment = fragmentRoot.nonJavaResources.findFirst[ 
 		 	ManifestEntryAdapter.isManifestEntry(it, project)
 				] 
-		return ManifestEntryAdapter.create(fragment) 
+		return ManifestEntryAdapter.create(fragmentRoot, fragment) 
 	}
 	
 	

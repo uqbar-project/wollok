@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.scoping.WollokResourceCache
  * @author leo
  * 
  */
-abstract class AbstractWollokLib implements WollokLib {
+abstract class AbstractWollokLib extends WollokLibLoader implements WollokLib {
 
 	@Inject
 	var Manager resourceDescriptionManager	
@@ -45,9 +45,7 @@ abstract class AbstractWollokLib implements WollokLib {
 	 * load the contents
 	 */
 	def  internalLoad(URI uri, Resource resource) {
-		var newResource = resource.resourceSet.getResource(uri, true)
-		resource.load(#{})
-		getManager().getResourceDescription(newResource).exportedObjects
+		load(uri, resource, manager)
 	}
 	
 	/**
@@ -67,13 +65,5 @@ abstract class AbstractWollokLib implements WollokLib {
 		}
 	}
 	
-	/** remove path and extension foo/bar.jar => bar 
-	 * if path is not a jar file return path
-	 */
-	static def libName(String path) {
-		val s = path.split("/")
-		val r = s.get(s.size - 1)
-		return if (r.contains(".")) r.substring(0, r.indexOf(".")) else r
-	}
-	
+
 }
