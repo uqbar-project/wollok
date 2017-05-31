@@ -9,9 +9,8 @@ import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.libraries.AbstractWollokLib
-import org.uqbar.project.wollok.libraries.WollokManifest
 
-import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 
 /**
  * It Searchs the wollok manifest and all resources referenced by that file using a jdt JavaProject.
@@ -38,30 +37,29 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 	}
 	
 	protected def IPackageFragmentRoot getPackageFragmentRoot() {
-		project.allPackageFragmentRoots.findFirst[isThisWollokLib()]
+		
+		project.allPackageFragmentRoots.findFirst[isWollokLib(uri, project.project)]
+	
 	}
 	
 	def createManifest(IPackageFragmentRoot fragmentRoot, Resource resource) {
-	
-		new WollokManifest(fragmentRoot.wmanifestEntry().contents, [ line| 
-				URI.createURI(fragmentRoot.path + "!" + line.findEntry(fragmentRoot).fullPath)
-		])
-		
-	} 
-	
-	def isThisWollokLib(IPackageFragmentRoot fragmentRoot) {
-		return fragmentRoot.getElementName().libName ==  this.libName
-	}
-	
+		fragmentRoot.wmanifestEntry(project.project).manifest(fragmentRoot);
+	} 	
 	
 	override internalLoad(URI uri, Resource resource) {
-		val entry = uri.toEntry()
-		var newResource = resource.resourceSet.getResource(uri, false)
-		if (newResource === null) {
-				newResource = resource.resourceSet.createResource(uri)
-		} 
-		newResource.load(entry.contents, #{})
-		return manager.getResourceDescription(newResource).exportedObjects
+		if(uri.toString.contains("!") ) {//si esta dentro de un jar (TODO! deberia pasar por el ManifestEntryAdapter, que modela eso?
+			val entry = uri.toEntry()
+			var newResource = resource.resourceSet.getResource(uri, false)
+			if (newResource === null) {
+					newResource = resource.resourceSet.createResource(uri)
+			} 
+			
+			newResource.load(entry.contents, #{})
+			manager.getResourceDescription(newResource).exportedObjects
+		}
+		else {
+			super.internalLoad(uri, resource)
+		}
 	}
 	
 	def toEntry(URI uri) {
@@ -70,8 +68,9 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 	}
 		
 	def IJarEntryResource findEntry(String fileName, IPackageFragmentRoot root) {
+		println("buscando " + fileName + " en " + root)
 		
-		//todo mejorar esto para no tener que mapear casi todo a null
+		//TODO mejorar esto para no tener que mapear casi todo a null
 		root.children.map[it.findFragment(fileName, root)].findFirst[it !== null]
 			
 	}
@@ -90,10 +89,12 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 				javaElement.reallyNonJavaResource(root).findFragment(newFileName)
 			}
 			else {
+				println("return null porque " + fileName + " no empieza con " + packageFolder)
 				null
 			}		
 		}
 		else {
+			println("return null porque no es un packageFragment")
 			null
 		}
 	}

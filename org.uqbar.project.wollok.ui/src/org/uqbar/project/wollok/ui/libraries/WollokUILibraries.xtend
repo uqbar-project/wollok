@@ -10,7 +10,7 @@ import org.eclipse.xtext.resource.IResourceDescription.Manager
 import org.uqbar.project.wollok.libraries.WollokLib
 import org.uqbar.project.wollok.libraries.WollokLibraries
 
-import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 
 /**
  * It is a WollokLibraries used by the wollok IDE

@@ -5,12 +5,7 @@ package org.uqbar.project.wollok.ui
 
 import com.google.inject.Binder
 import com.google.inject.name.Names
-import org.eclipse.core.resources.IResource
-import org.eclipse.core.runtime.IAdaptable
 import org.eclipse.jface.text.source.SourceViewerConfiguration
-import org.eclipse.jface.viewers.ISelection
-import org.eclipse.jface.viewers.IStructuredSelection
-import org.eclipse.ui.ISelectionService
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
@@ -28,6 +23,7 @@ import org.eclipse.xtext.ui.shared.Access
 import org.eclipse.xtext.ui.util.PluginProjectFactory
 import org.eclipse.xtext.ui.wizard.IProjectCreator
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
+import org.uqbar.project.wollok.libraries.WollokLibraries
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper
 import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener
@@ -40,14 +36,11 @@ import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvid
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration
 import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider
+import org.uqbar.project.wollok.ui.libraries.WollokUILibraries
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
 import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
-import com.google.inject.TypeLiteral
-import java.util.List
-import org.uqbar.project.wollok.ui.libraries.WollokUILibraries
-import org.uqbar.project.wollok.libraries.WollokLibraries
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.

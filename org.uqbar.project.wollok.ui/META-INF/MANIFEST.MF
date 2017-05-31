@@ -43,7 +43,7 @@ Export-Package: org.uqbar.project.wollok.refactoring,
  org.uqbar.project.wollok.ui.internal,
  org.uqbar.project.wollok.ui.labeling,
  org.uqbar.project.wollok.ui.preferences,
- org.uqbar.project.wollok.ui.properties,
+ org.uqbar.project.wollok.ui.libraries,
  org.uqbar.project.wollok.ui.quickfix,
  org.uqbar.project.wollok.ui.wizard
 Bundle-Activator: org.uqbar.project.wollok.ui.WollokActivator

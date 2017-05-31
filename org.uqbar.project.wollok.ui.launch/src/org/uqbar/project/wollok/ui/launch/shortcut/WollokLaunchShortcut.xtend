@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
-import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException

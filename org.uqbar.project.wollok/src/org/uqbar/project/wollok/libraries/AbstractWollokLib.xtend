@@ -67,12 +67,13 @@ abstract class AbstractWollokLib implements WollokLib {
 		}
 	}
 	
-		/** remove path and extension foo/bar.jar => bar 
-	 * if path is not a jar file return path*/
+	/** remove path and extension foo/bar.jar => bar 
+	 * if path is not a jar file return path
+	 */
 	static def libName(String path) {
 		val s = path.split("/")
 		val r = s.get(s.size - 1)
-		return if (r.endsWith(".jar")) r.substring(0,r.length()-4) else path
+		return if (r.contains(".")) r.substring(0, r.indexOf(".")) else r
 	}
 	
 }

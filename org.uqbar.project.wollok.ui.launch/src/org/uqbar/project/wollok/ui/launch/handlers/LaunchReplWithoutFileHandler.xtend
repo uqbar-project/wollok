@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.handlers
 
-import static extension org.uqbar.project.wollok.ui.properties.WollokLibrariesStore.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import com.google.inject.Inject
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
