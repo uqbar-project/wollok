@@ -25,6 +25,7 @@ class JarWollokLibraries implements WollokLibraries {
 	}
 	
 	override getWollokLibs(Resource resource) {
+		
 		return getPaths(resource).map[new JarWollokLib(it, manager) as WollokLib]
 	}
 	

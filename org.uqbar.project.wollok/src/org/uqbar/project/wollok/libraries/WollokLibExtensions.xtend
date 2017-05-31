@@ -21,13 +21,29 @@ class WollokLibExtensions {
 	}
 	
 	
-	/** remove path and extension foo/bar.jar => bar 
+	/** 
+	 * remove path and extension foo/bar.jar => bar 
 	 * if path is not a jar file return path
+	 * 
+	 * foo/bar.wollokmf => bar
+	 * 
+	 * But, if the library is not a jar or manifest file, then is other project, 
+	 * the path must be projectName/sourceFolder. In this case the
+	 * the lib name is  projectName
+	 * 
 	 */
+	 //TODO maybe differents methods are necessary for manifest and jar/project
 	static def libName(String path) {
-		val s = path.split("/")
-		val r = s.get(s.size - 1)
-		return if (r.contains(".")) r.substring(0, r.indexOf(".")) else r
+		var newPath = if( path.startsWith("/") ) path.substring(1) else path
+		
+		return if(newPath.endsWith(".jar") || newPath.endsWith(WollokManifest.WOLLOK_MANIFEST_EXTENSION)) {
+			val s = newPath.split("/")
+			newPath = s.get(s.size - 1)
+			newPath.substring(0, newPath.indexOf("."))
+		} else {
+			return newPath.substring(0, newPath.indexOf("/"))
+		}	
+	
 	}
 	
 	

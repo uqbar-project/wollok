@@ -47,7 +47,7 @@ class JarWollokLib extends AbstractWollokLib {
 	
 	def openLibManifestStream(String lib) {
 		val rs = class.classLoader.findUrlClassLoader().getResourceAsStream( lib.libName() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)	
-		if(rs === null) { throw new RuntimeException("manifest is not loaded")}
+		if(rs === null) { throw new RuntimeException("manifest is not loaded for lib " + lib + " url: " + lib.libName() + WollokManifest.WOLLOK_MANIFEST_EXTENSION)}
 		rs
 	}
 

@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
-import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
@@ -26,9 +25,9 @@ import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import java.util.ArrayList
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -118,11 +117,13 @@ class LaunchConfigurationInfo {
 	@Accessors String name;
 	@Accessors String project;
 	@Accessors String file;
+	@Accessors Iterable<String> libs;
 
 	new(IFile file) {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
+		libs =  getProject(project).loadLibs
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
@@ -130,5 +131,7 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
+			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]) == libs
+
 	}	
 }

@@ -16,6 +16,7 @@ class WollokLibrariesStore {
 	def static loadLibs(IProject project) { 
 		try {
 			var IJavaProject javaProject =	JavaCore.create(project);
+			
 			return javaProject.getWollokLibrariesClasspathEntries().map[it.path.toString]
 		}
 		catch(JavaModelException e) {
