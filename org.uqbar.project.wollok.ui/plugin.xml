@@ -163,7 +163,7 @@
 	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.jdt.internal.ui.preferences.BuildPathsPropertyPage"
 	            id="org.uqbar.project.wollok.ui.properties.wollokProjectPropertyPage"
 	            category="org.uqbar.project.wollok.WollokDsl"
-	            name="Librerias">
+	            name="%libraries">
 	            <enabledWhen>
 		            <adapt type="org.eclipse.core.resources.IProject"/>
 				</enabledWhen>
