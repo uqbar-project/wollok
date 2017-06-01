@@ -139,6 +139,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 
 	StaticDiagramConfiguration configuration
 
+	@Inject WollokClassFinder finder
 		
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -244,9 +245,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		if (contents.empty) #[]
 		else (contents.get(0) as WFile).eAllContents.filter(type).toList
 	}
-	
-	
-	@Inject WollokClassFinder finder
 	
 	def getImportedClasses(XtextResource it) {
 		val imports = getAllOfType(Import)

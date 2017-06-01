@@ -277,9 +277,12 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 
 	def getMethodsFor(WMethodContainer container) {
+		val variableNames = container.variableNames
+			// filtering null just in case it is not defined yet, user is writing
 		val hiddenMethods = container.name.hiddenMethods.map [ name ]
 		container.methods.filter [ method |
-			!hiddenMethods.contains(method.name)
+			!hiddenMethods.contains(method.name) && 
+			!variableNames.contains(method.name)  // filtering accessors
 		].toList
 	}
 	
