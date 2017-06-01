@@ -26,6 +26,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 abstract class AbstractModel extends Shape {
 
 	protected static List<WMethodContainer> allComponents = newArrayList
+	protected static List<NamedObjectModel> objects
+	protected static List<MixinModel> mixins
+	
 	protected static Map<Integer, Integer> levelHeight
 	protected static Map<Integer, Integer> levelWidth
 	protected static Map<String, Integer> initialWidthForElement
@@ -34,6 +37,7 @@ abstract class AbstractModel extends Shape {
 	protected val static FILE_HEIGHT = 18
 	protected val static HEIGHT_SEPARATION_BETWEEN_ELEMENTS = 20
 	
+	protected val static TOP_POSITION = 10
 	protected val static DEFAULT_WIDTH = 120
 	protected val static ELEMENT_WIDTH = 50
 	protected val static MAX_ELEMENT_WIDTH = 230
@@ -58,6 +62,8 @@ abstract class AbstractModel extends Shape {
 		levelWidth = newHashMap
 		initialWidthForElement = newHashMap
 		allComponents = _classes
+		mixins = newArrayList
+		objects = newArrayList
 	}
 	
 	/**
@@ -92,10 +98,6 @@ abstract class AbstractModel extends Shape {
 	 * ******************************************************************************* 
 	 */
 	def defaultHeight() { 130 }
-
-	def int adjustedHeight() {
-		NamedObjectModel.maxHeight()
-	}
 
 	def int shapeHeight() {
 		Math.min((variablesSize + methodsSize) * FILE_HEIGHT + ELEMENT_HEIGHT, MAX_ELEMENT_HEIGHT)
@@ -142,4 +144,18 @@ abstract class AbstractModel extends Shape {
 	def String getLabel() {
 		this.name
 	}
+	
+	/**
+	 * ******************************************************************************* 
+	 *    EXTENSION METHODS - HEIGHT
+	 * ******************************************************************************* 
+	 */
+	def static int maxHeight() {
+		elements.fold(0, [ max, object | Math.max(max, object.size.height + TOP_POSITION) ])
+	}
+
+	def static getElements() {
+		objects + mixins
+	}
+	
 }

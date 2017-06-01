@@ -99,7 +99,9 @@ class StaticDiagram extends ModelElement {
 		// mixins
 		c.mixins.forEach[m |
 			val mixinEditPart = mixins.findFirst[ it.component == m ]
-			new Connection(null, it, mixinEditPart, RelationType.INHERITANCE)
+			if (!configuration.hiddenComponents.contains(m.name)) {
+				new Connection(null, it, mixinEditPart, RelationType.INHERITANCE)
+			}
 		]
 	}
 	

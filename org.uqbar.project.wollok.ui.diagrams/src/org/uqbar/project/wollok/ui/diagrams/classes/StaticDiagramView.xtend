@@ -26,7 +26,12 @@ import org.eclipse.gef.GraphicalViewer
 import org.eclipse.gef.commands.CommandStack
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
+import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
+import org.eclipse.gef.ui.actions.GEFActionConstants
+import org.eclipse.gef.ui.actions.ZoomComboContributionItem
+import org.eclipse.gef.ui.actions.ZoomInAction
+import org.eclipse.gef.ui.actions.ZoomOutAction
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
 import org.eclipse.gef.ui.palette.PaletteViewerProvider
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler
@@ -34,6 +39,7 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
+import org.eclipse.jface.action.IAction
 import org.eclipse.jface.action.Separator
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
@@ -74,7 +80,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenComponen
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenParts
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
@@ -105,7 +110,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * - named objects
  * - mixins
  * and its relationships, that includes inheritance, association and dependency.
- * 
+ *
+ * GEF tutorials: http://www.redbooks.ibm.com/redbooks/pdfs/sg246302.pdf
+ *  
  * @author jfernandes
  * @author dodain
  * 
@@ -114,23 +121,24 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
-	ActionRegistry actionRegistry
-	
 	IXtextDocument xtextDocument
-	
-	//@Inject
-	//XtextResourceSet resourceSet
-	
 	StaticDiagram diagram
-	
+	IViewSite site
+		
 	// splitter and palette
 	FlyoutPaletteComposite splitter
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
+	ActionRegistry actionRegistry
+	
+	// Toolbar - actions
 	ExportAction exportAction
+   	IAction zoomIn
+    IAction zoomOut
 
 	StaticDiagramConfiguration configuration
+
 		
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -142,38 +150,21 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	override init(IViewSite site) throws PartInitException {
 		super.init(site)
+		this.site = site
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
-		
-		exportAction = new ExportAction
-		val showVariablesToggleButton = new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration)
-		val rememberShapePositionsToggleButton = new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration)
-		
-		site.actionBars.toolBarManager => [
-			add(new ShowFileAction("labelFile", configuration))
-			add(new Separator)
-			add(exportAction)
-			add(new Separator)
-			add(showVariablesToggleButton)
-			add(rememberShapePositionsToggleButton)
-			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
-			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
-			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
-			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
-//			In a future could remain as options: "Open External wsdi" & "Save As..." 			
-//			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
-//			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
-		]
+	}
+	
+	def getAction(String actionId) {
+		actionRegistry.getAction(actionId)
 	}
 	
 	def createDiagramModel() {
-		NamedObjectModel.init()
-		MixinModel.init()
 		new StaticDiagram(configuration) => [
 			// all objects
 			val objects = xtextDocument.readOnly[ namedObjects ]
-			
+
 			// class
 			val classes = xtextDocument.readOnly[ classes ].toSet
 			val importedClasses = xtextDocument.readOnly [ getImportedClasses ].toSet
@@ -197,7 +188,14 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 				])
 			]
 
-			// classes
+			// then, all mixins
+			val mixins = xtextDocument.readOnly[ mixins ].toSet
+			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
+			var allMixins = mixins.removeDuplicated as List<WMixin>
+			allMixins = allMixins.filter [!configuration.isHiddenComponent(name)].toList
+			allMixins.forEach [ m | addMixin(m) ]
+
+			// then, classes
 			// first, superclasses
 			var classesCopy = allClassModelAbstractions
 				.clone
@@ -224,13 +222,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 					
 				level++
 			}
-
-			// mixins (for classes and objects)
-			val mixins = xtextDocument.readOnly[ mixins ].toSet
-			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
-			var allMixins = mixins.removeDuplicated as List<WMixin>
-			allMixins = allMixins.filter [!configuration.isHiddenComponent(name)].toList
-			allMixins.forEach [ m | addMixin(m) ]
 
 			// relations
 			connectInheritanceRelations
@@ -280,7 +271,10 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			splitter.externalViewer = page.getPaletteViewer
 			page = null
 		}
-		
+
+		// Create toolbar		
+		configureToolbar
+
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
 		
@@ -300,7 +294,35 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		
 		// provides selection
 		site.selectionProvider = graphicalViewer
-		exportAction.viewer = graphicalViewer
+	}
+	
+	def configureToolbar() {
+		exportAction = new ExportAction => [
+			viewer = graphicalViewer
+		]
+		val showVariablesToggleButton = new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration)
+		val rememberShapePositionsToggleButton = new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration)
+		
+		site.actionBars.toolBarManager => [
+			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
+					ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH
+				} as String[]))
+			add(zoomIn)
+			add(zoomOut)
+			add(new ShowFileAction("labelFile", configuration))
+			add(new Separator)
+			add(exportAction)
+			add(new Separator)
+			add(showVariablesToggleButton)
+			add(rememberShapePositionsToggleButton)
+			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
+			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
+			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
+			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
+//			In a future could remain as options: "Open External wsdi" & "Save As..." 			
+//			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
+//			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
+		]
 	}
 	
 	def configureGraphicalViewer() {
@@ -343,19 +365,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		// layout
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
-		
-		// map back positions to model inverting the Y coordinates
-		// because the directed graph only supports layout directo to SOUTH, meaning
-		// super classes will be at the bottom. So we invert them
-		/*
-		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
-
-		graph.nodes.forEach[ val n = it as Node
-			var deltaY = 10
-			if (n != bottomNode) deltaY += bottomNode.height;
-			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
-		]
-		*/
 	}
 	
 	def createNode(AbstractGraphicalEditPart e) {
@@ -390,6 +399,20 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	def getActionRegistry() {
 		if (actionRegistry == null) actionRegistry = new ActionRegistry => [
 			registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
+			// Adding zoom capabilities
+			val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
+			zoomManager.setZoomLevelContributions(#[
+				ZoomManager.FIT_ALL,
+				ZoomManager.FIT_WIDTH,
+				ZoomManager.FIT_HEIGHT
+			])
+	    	zoomIn = new ZoomInAction(zoomManager)
+	    	zoomOut = new ZoomOutAction(zoomManager)
+	    	registerAction(zoomIn)
+	    	registerAction(zoomOut)
+		
+			site.keyBindingService.registerAction(zoomIn)
+			site.keyBindingService.registerAction(zoomOut)
 		]
 		actionRegistry
 	}
@@ -421,6 +444,8 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			return graphicalViewer.rootEditPart
 		if (type == IFigure && graphicalViewer != null)
 			return (graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		if (type == ZoomManager)
+			return (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
 		super.getAdapter(type)
 	}
 	

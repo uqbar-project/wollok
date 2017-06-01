@@ -54,7 +54,7 @@ class ClassModel extends AbstractModel {
 			val Integer currentHeight = levelHeight.get(currentLevel) ?: 0
 			acum + currentHeight + HEIGHT_SEPARATION_BETWEEN_ELEMENTS
 		])
-		result + adjustedHeight
+		result + maxHeight
 	}
 	
 	def void adjustHeight(int level) {

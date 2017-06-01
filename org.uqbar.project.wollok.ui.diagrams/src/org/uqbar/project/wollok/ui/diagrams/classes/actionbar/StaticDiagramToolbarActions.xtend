@@ -180,7 +180,7 @@ class ShowFileAction extends ControlContribution implements Observer {
 	}
 
 	override update(Observable o, Object event) {
-		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+		if ((event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) && (label !== null)) {
 			label.text = "  " + configuration.originalFileName + "  "
 			label.parent.requestLayout
 		}
