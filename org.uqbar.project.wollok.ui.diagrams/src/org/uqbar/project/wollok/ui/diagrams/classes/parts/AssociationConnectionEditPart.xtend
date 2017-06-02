@@ -5,6 +5,13 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.DeleteConnectionEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 
+/**
+ * 
+ * Edit part for association relationships
+ * 
+ * @author dodain
+ * 
+ */
 public class AssociationConnectionEditPart extends ConnectionEditPart {
 
 	new() {

@@ -24,5 +24,4 @@ class WAttributteFigure extends AbstractClassMemberFigure<WVariableDeclaration> 
 		labelProvider.getText(member.variable)
 	}
 	
-	
 }

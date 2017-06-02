@@ -21,6 +21,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
 
 /**
+ * 
+ * Main edit part for static diagrams
+ * 
  * @author jfernandes
  */
 class StaticDiagramEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {

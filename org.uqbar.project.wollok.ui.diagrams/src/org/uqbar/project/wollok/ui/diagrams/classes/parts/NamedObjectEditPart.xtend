@@ -1,15 +1,13 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
 import java.beans.PropertyChangeListener
+import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.NodeEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.NamedObjectWollokAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
 import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
-
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.gef.ConnectionEditPart
 
 /**
  * Edit part for named objects nodes.

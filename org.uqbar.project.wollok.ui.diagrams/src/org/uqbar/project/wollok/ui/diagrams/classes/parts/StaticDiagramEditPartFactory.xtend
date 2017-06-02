@@ -12,6 +12,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * 
+ * Creates a static diagram edit part
+ * 
  * @author jfernandes
  */
 class StaticDiagramEditPartFactory implements EditPartFactory {

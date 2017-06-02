@@ -6,6 +6,7 @@ import org.eclipse.draw2d.PolylineDecoration
  * 
  * Decoration for associations, so you can see
  * O-->O
+ * Also used for dependency associatons.
  * 
  * @author dodain
  * 

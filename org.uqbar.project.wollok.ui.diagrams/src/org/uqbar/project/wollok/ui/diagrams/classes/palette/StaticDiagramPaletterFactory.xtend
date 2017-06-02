@@ -14,7 +14,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateDepende
 
 /**
  * 
- * Creates a palette
+ * Creates a palette for static diagram tools
  * 
  * @author jfernandes
  */

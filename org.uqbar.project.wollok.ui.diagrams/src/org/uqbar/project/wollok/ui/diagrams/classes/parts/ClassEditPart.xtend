@@ -9,6 +9,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
+ * Edit part for classes
+ * 
  * @author jfernandes
  */
 class ClassEditPart extends AbstractMethodContainerEditPart {

@@ -9,6 +9,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 
 /**
  * 
+ * Edit part for methods
+ * 
  * @author jfernandes
  */
 class MethodEditPart extends AbstractLanguageElementEditPart {
