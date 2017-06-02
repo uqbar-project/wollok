@@ -24,6 +24,17 @@ import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 
 import static extension org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ImageSaveUtil.*
 
+/**
+ * 
+ * Toolbar Actions for Static Diagram
+ * 
+ * @author dodain
+ *   
+ */
+ 
+/**
+ * Exports diagram to an image file
+ */ 
 class ExportAction extends Action {
 	
 	@Accessors GraphicalViewer viewer
@@ -57,6 +68,9 @@ class ExportAction extends Action {
 }
 
 
+/**
+ * Exports diagram to .wsdi file
+ */ 
 class SaveStaticDiagramConfigurationAction extends Action {
 	@Accessors StaticDiagramConfiguration configuration
 	
@@ -81,6 +95,9 @@ class SaveStaticDiagramConfigurationAction extends Action {
 	}
 }
 
+/**
+ * Loads a .wsdi file into this diagram
+ */ 
 class LoadStaticDiagramConfigurationAction extends Action {
 	StaticDiagramConfiguration configuration
 	
@@ -106,6 +123,9 @@ class LoadStaticDiagramConfigurationAction extends Action {
 	}
 }
 
+/**
+ * Sets configuration to show variable of every component (wko, class, mixin)
+ */ 
 class ShowVariablesToggleButton extends Action implements Observer {
 	StaticDiagramConfiguration configuration
 
@@ -129,6 +149,9 @@ class ShowVariablesToggleButton extends Action implements Observer {
 
 }
 
+/**
+ * Sets configuration to remember every time you move or change size of a component
+ */
 class RememberShapePositionsToggleButton extends Action implements Observer {
 	StaticDiagramConfiguration configuration
 
@@ -154,6 +177,9 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 	
 }
 
+/**
+ * Exports diagram to .wsdi file
+ */
 class CleanShapePositionsAction extends Action {
 	StaticDiagramConfiguration configuration
 
@@ -169,6 +195,9 @@ class CleanShapePositionsAction extends Action {
 	
 }
 
+/**
+ * Shows current file in toolbar as a read-only label
+ */
 class ShowFileAction extends ControlContribution implements Observer {
 	StaticDiagramConfiguration configuration
 	Label label
@@ -197,6 +226,9 @@ class ShowFileAction extends ControlContribution implements Observer {
 	
 }
 
+/**
+ * Clears all relationships in the configuration state
+ */
 class CleanAllRelashionshipsAction extends Action {
 	StaticDiagramConfiguration configuration
 
@@ -213,6 +245,9 @@ class CleanAllRelashionshipsAction extends Action {
 	
 }
 
+/**
+ * Clears all hidden componentes from the configuration state
+ */
 class ShowHiddenComponents extends Action {
 
 	StaticDiagramConfiguration configuration
@@ -229,6 +264,9 @@ class ShowHiddenComponents extends Action {
 	
 }
 
+/**
+ * Clears all hidden parts (variables and methods) of all components in the configuration state
+ */
 class ShowHiddenParts extends Action {
 
 	StaticDiagramConfiguration configuration

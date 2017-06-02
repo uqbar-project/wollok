@@ -8,6 +8,13 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.DependencyConnectionEd
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart;
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart;
 
+/**
+ * 
+ * RelationType encapsulates all kind of relationships.
+ * 
+ * @author dodain
+ *
+ */
 public enum RelationType {
 
 	INHERITANCE, ASSOCIATION, DEPENDENCY;

@@ -8,10 +8,10 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 
 /**
  * 
- * Rectangular Figure modeling a wko
+ * Model of a wko figure.
  * 
  * @author jfernandes
- * @author dodain
+ * @author dodain - refactored
  */
 class NamedObjectModel extends AbstractNonClassModel {
 

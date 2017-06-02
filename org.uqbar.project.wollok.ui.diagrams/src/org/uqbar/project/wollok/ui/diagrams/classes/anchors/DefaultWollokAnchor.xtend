@@ -10,6 +10,19 @@ import org.eclipse.draw2d.geometry.Rectangle
  * Default implementation for connections between shapes, assuming 
  * inheritance was the first automatic relationship we could infer from classes.
  * 
+ * Connection goes from subclass in the middle-top to superclass in the middle-bottom,
+ * like this
+ *         _____________
+ *        |             |
+ *         -------------
+ *               ^
+ *               |
+ *         _____________
+ *        |             |
+ *         -------------
+ * 
+ * It also offers several extension method for subclasses
+ * 
  * @author dodain
  * 
  */

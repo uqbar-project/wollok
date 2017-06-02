@@ -9,7 +9,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
- * Rectangular figure that models a class 
+ * 
+ * Model of a class figure.
  * 
  * @author jfernandes
  * @author dodain
@@ -44,6 +45,7 @@ class ClassModel extends AbstractModel {
 	
 	def getCalculatedWidth(List<WMethodContainer> subclasses) {
 		if (subclasses.empty) return 0
+		// TODO: Put in a buffered map new ClassModel(it).shapeWidthe?
 		val allSubclassesWidth = subclasses.map [ new ClassModel(it).shapeWidth ].reduce [ a, b | a + b ]
 		val margin = (subclasses.size + 1) * WIDTH_SEPARATION_BETWEEN_ELEMENTS
 		allSubclassesWidth + margin

@@ -7,6 +7,11 @@ import org.eclipse.gef.requests.ReconnectRequest
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateAssociationCommand
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.AbstractMethodContainerEditPart
 
+/**
+ * 
+ * Visual feedback effect that allows creation of an association relationship 
+ * 
+ */
 class CreateAssociationEditPolicy extends GraphicalNodeEditPolicy {
 	
 	override protected getConnectionCompleteCommand(CreateConnectionRequest request) {

@@ -4,7 +4,14 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.AssociationConnectionEditPart
 
-class DeleteAssociationCommand extends Command {
+/**
+ *
+ * Delete Association Command allows to delete a connection
+ * 
+ * @author dodain
+ *  
+ */
+class DeleteConnectionCommand extends Command {
 	
 	@Accessors AssociationConnectionEditPart connection
 	

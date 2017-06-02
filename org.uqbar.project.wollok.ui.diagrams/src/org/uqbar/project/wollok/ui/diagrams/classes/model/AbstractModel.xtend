@@ -5,7 +5,6 @@ import java.util.Map
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -19,7 +18,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * - classes
  * - named objects (wko)
  * - mixins
- * as a models of a static diagram
+ * as models of a static diagram
  * 
  * Main responsibilities includes: size & location of shapes and naming convention
  */

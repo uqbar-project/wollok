@@ -6,7 +6,6 @@ import org.eclipse.gef.palette.MarqueeToolEntry
 import org.eclipse.gef.palette.PaletteGroup
 import org.eclipse.gef.palette.PaletteRoot
 import org.eclipse.gef.palette.PanningSelectionToolEntry
-import org.eclipse.gef.requests.CreationFactory
 import org.eclipse.gef.requests.SimpleFactory
 import org.eclipse.jface.resource.ImageDescriptor
 import org.uqbar.project.wollok.ui.diagrams.Messages
@@ -14,6 +13,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateAssocia
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.CreateDependencyCommand
 
 /**
+ * 
+ * Creates a palette
+ * 
  * @author jfernandes
  */
 class StaticDiagramPaletterFactory {

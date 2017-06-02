@@ -39,6 +39,10 @@ public class Messages extends NLS {
 	public static String StaticDiagram_Dependency_Not_Found;
 	public static String StaticDiagram_RelationCannotBeSelfRelated;
 	public static String StaticDiagram_Invalid_Relation_Type;
+	public static String StaticDiagram_TargetConnectionCannotBeNull;
+	
+	// Info messages
+	public static String StaticDiagram_UpdateDiagramView;
 	
 	static {
 		// initialize resource bundle

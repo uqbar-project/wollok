@@ -11,10 +11,11 @@ import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.Relation
 
 /**
- * 
+ *
+ * Model of a Static Diagram View
+ *  
  * @author jfernandes
  * 
  * http://www.programcreek.com/2013/03/eclipse-gef-tutorial/

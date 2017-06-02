@@ -11,7 +11,11 @@ import static org.eclipse.gef.ui.actions.GEFActionConstants.*
 
 /**
  * 
+ * Contextual menu (right-click) for every element in the diagram
+ * 
  * @author jfernandes
+ * @author dodain      Added "Delete" action for nodes, relationships, variables & methods
+ * 
  */
 class StaticDiagramEditorContextMenuProvider extends ContextMenuProvider {
 	ActionRegistry actionRegistry

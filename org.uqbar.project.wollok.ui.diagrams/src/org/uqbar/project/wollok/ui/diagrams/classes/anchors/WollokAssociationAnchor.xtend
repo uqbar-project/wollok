@@ -10,6 +10,18 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
  * Special anchor for associations. Connector goes from left to right
  * or from right to left depending on source/target positions.
  * 
+ * Example when A knows B (left to right)
+ * 
+ *         _____________              ____________
+ *        |      A      |----------> |      B     |
+ *         -------------              ------------
+ *
+ * Example when B knows A (right to left)
+ * 
+ *         _____________             ____________
+ *        |      A      |<----------|      B     |
+ *         -------------             ------------
+ * 
  * @author dodain
  * 
  */

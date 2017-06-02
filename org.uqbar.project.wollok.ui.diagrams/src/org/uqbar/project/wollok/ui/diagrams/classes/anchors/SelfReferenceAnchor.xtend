@@ -5,9 +5,17 @@ import org.eclipse.draw2d.geometry.Point
 
 /**
  * 
- * Anchor for self references like associations (and nothing less).
+ * Anchor for self references (just association relationships).
  * Current implementation uses bottom right corner to avoid collisions with other
- * inheritance and association connectors. 
+ * inheritance and association connectors, like this
+ * 
+ *         _____________   
+ *        |      x      |      x is where inheritance location goes  
+ *         -------------   
+ *                 |   ^
+ *                 |   |
+ *                 -----
+ * 
  * 
  * @author dodain
  * 

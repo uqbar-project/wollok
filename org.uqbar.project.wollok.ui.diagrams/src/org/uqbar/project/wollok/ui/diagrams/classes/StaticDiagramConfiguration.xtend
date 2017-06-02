@@ -300,7 +300,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 				val newConfiguration = ois.readObject as StaticDiagramConfiguration
 				this.copyFrom(newConfiguration)
 			} catch (FileNotFoundException e) {
-				println("Initializing file " + staticDiagramFullName)
 				// nothing to worry, it will be saved afterwards
 			}
 		}

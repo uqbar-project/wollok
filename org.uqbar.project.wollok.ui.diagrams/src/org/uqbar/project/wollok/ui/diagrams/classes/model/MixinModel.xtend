@@ -5,8 +5,9 @@ import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * 
- * Model representing a Mixin
- * All height and width is inherited by AbstractNonClassModel & AbstractModel
+ * Model of a Mixin figure.
+ * 
+ * Height and width are inherited by AbstractNonClassModel & AbstractModel
  * 
  * @author jfernandes
  * @author dodain - refactored

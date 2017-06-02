@@ -9,6 +9,10 @@ import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
+ * 
+ * Base class for all shapes / nodes of static diagram.
+ * Main responsibilities are define descriptors, and managing source & target connections
+ * 
  * @author jfernandes
  */
 public abstract class Shape extends ModelElement {

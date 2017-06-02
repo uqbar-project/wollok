@@ -4,6 +4,17 @@ import java.io.Serializable
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 
+/**
+ * 
+ * Relation models a relationship between two nodes (wko, class or mixin)
+ * Relation type can one of the followings
+ * - association
+ * - dependency
+ * - inheritance
+ * 
+ * @author dodain
+ * 
+ */
 @Accessors
 class Relation implements Cloneable, Serializable {
 	String source

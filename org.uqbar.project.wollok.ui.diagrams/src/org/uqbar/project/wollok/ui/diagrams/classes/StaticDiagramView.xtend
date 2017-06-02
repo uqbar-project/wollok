@@ -28,7 +28,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
-import org.eclipse.gef.ui.actions.GEFActionConstants
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem
 import org.eclipse.gef.ui.actions.ZoomInAction
 import org.eclipse.gef.ui.actions.ZoomOutAction
@@ -137,6 +136,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
    	IAction zoomIn
     IAction zoomOut
 
+	// Static diagram state and configuration
 	StaticDiagramConfiguration configuration
 
 	@Inject WollokClassFinder finder
@@ -228,13 +228,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			connectInheritanceRelations
 			connectRelations
 		]
-	}
-	
-	def getParentClass(WClass wclass) {
-		if (wclass.parent == null) {
-			return ""
-		}
-		wclass.parent.name
 	}
 	
 	def getMixins(XtextResource it) { getAllOfType(WMixin) }
@@ -485,7 +478,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			refresh()
 		}
 	}
-	val refreshJob = new UIJob("Updating diagram view") {
+	val refreshJob = new UIJob(Messages.StaticDiagram_UpdateDiagramView) {
 			override def runInUIThread(IProgressMonitor monitor) {
 				diagram = createDiagramModel
 				initializeGraphicalViewer

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
 
 /**
@@ -81,8 +82,8 @@ class Connection extends ModelElement {
 	}
 
 	def reconnect(Shape newSource, Shape newTarget, RelationType relationType) {
-		if (newTarget == null) {
-			throw new IllegalArgumentException("New target for connection cannot be null")
+		if (newTarget === null) {
+			throw new IllegalArgumentException(Messages.StaticDiagram_TargetConnectionCannotBeNull)
 		}
 		relationType.validateRelationBetween(newSource, newTarget)
 		disconnect

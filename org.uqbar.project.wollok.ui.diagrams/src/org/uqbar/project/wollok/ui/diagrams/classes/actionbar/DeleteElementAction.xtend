@@ -19,7 +19,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
  * Contextual menu action for 
  * - deleting an association
  * - deleting a dependency 
- * - or hiding a component 
+ * - hiding a component (wko, class, mixin)
+ * - hiding a variable
+ * - hiding a method 
  * from the diagram
  * 
  * @author: dodain
