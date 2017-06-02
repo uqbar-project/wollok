@@ -5,6 +5,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.wollokDsl.WTest
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * @author tesonep
@@ -15,9 +16,10 @@ class WollokTestInfo implements Serializable{
 	val String resource
 	val int lineNumber
 	
-	new(WTest test) {
+	new(WTest test, String fileURI, boolean processingManyFiles) {
 		lineNumber = NodeModelUtils.findActualNodeFor(test).textRegionWithLineInformation.lineNumber
 		resource =  EcoreUtil2.getURI(test).toString
-		name = test.name
+		name = test.getFullName(processingManyFiles)
 	}
+	
 }

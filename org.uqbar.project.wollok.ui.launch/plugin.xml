@@ -24,7 +24,6 @@
    </extension>
    
    <!-- LAUNCH CONFIG FOR TESTS -->
-
 	<extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -137,6 +136,7 @@
          </contextualLaunch>
       </shortcut>
       <!-- /REPL -->
+      <!-- TESTS -->
       <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut"
             description="Launch Wollok Tests"
@@ -151,13 +151,35 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <adapt type="org.eclipse.core.resources.IFile"/>
-	              <test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
+                  	<adapt type="org.eclipse.core.resources.IFile"/>
+                  	<test property="org.eclipse.debug.ui.matchesPattern" value="*.wtest"/>
                </iterate>
              </with>
            </enablement>
          </contextualLaunch>
       </shortcut>
+            <shortcut
+            class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
+            description="Launch All Wollok Tests"
+            icon="icons/wollok-icon-test_16.png"
+            id="org.uqbar.project.wollok.ui.tests.shortcut"
+            label="%wollok.launch.allTests"
+            modes="run, debug">
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate
+                     ifEmpty="false"
+                     operator="and">
+                  	<adapt type="org.eclipse.core.resources.IResource"/>
+                  	<test property="org.eclipse.jdt.launching.isContainer"/>
+               </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      <!-- /TESTS -->
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -365,5 +387,4 @@
       </menuContribution>
    </extension>
   <!-- /REPL -->
-
 </plugin>

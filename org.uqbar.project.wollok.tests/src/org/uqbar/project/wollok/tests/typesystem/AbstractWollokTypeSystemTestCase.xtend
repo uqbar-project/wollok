@@ -8,7 +8,6 @@ import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
 import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.validation.AbstractValidationDiagnostic
-import org.eclipse.xtext.validation.ValidationMessageAcceptor
 import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -24,6 +23,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
 
 /**
  * Abstract base class for all type system test cases.
@@ -35,13 +35,12 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter
 	public Class<? extends TypeSystem> tsystemClass
-	
+
 	extension TypeSystem tsystem
-	
 
 	@Inject
 	WollokClassFinder finder
-	
+
 	@Inject
 	WollokDslValidator _validator
 
@@ -58,6 +57,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	// Utility
 	def parseAndInfer(CharSequence file) {
+		println('''Parsing «file»''')
 		parseAndInfer(#[file])
 	}
 
@@ -73,30 +73,33 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def asserting(WFile f, (WFile)=>void assertions) {
 		assertions.apply(f)
 	}
-	
+
 	def getValidator() {
 		tester = new ValidatorTester(_validator, injector)
-		
+
 		// Ensure to call validator, otherwise calls to diagnose will fail.
 		val _validator = tester.validator
-		
+
 		new ConfigurableDslValidator() {
 			override report(String description, EObject invalidObject) {
-				_validator.acceptError(description, invalidObject, null, ValidationMessageAcceptor.INSIGNIFICANT_INDEX, null)
+				_validator.acceptError(description, invalidObject, null, INSIGNIFICANT_INDEX, null)
 			}
 		}
 	}
-	
+
 	def getDiagnose() {
 		tester.diagnose
 	}
 
-	// ********************
-	// ** assertions
-	// ********************
-
-	def classTypeFor(EObject context, String className) {
-		new ClassBasedWollokType(finder.getCachedClass(context, className), tsystem)
+	// ************************************************************
+	// ** Assertions
+	// ************************************************************
+	def classTypeFor(EObject context, String classFQN) {
+		new ClassBasedWollokType(finder.getCachedClass(context, classFQN), tsystem)
+	}
+	
+	def classType(String className) {
+		new ClassBasedWollokType(findClass(className), null)
 	}
 
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
@@ -124,14 +127,15 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def noIssues(EObject program) {
 		// Do not call diagnose twice!
 		diagnose => [
-			try assertOK 
+			try
+				assertOK
 			catch (AssertionError e) {
 				fail('''
 					«e.message»
 					«it»
 				''')
-				
-			} 
+
+			}
 		]
 	}
 
@@ -139,9 +143,9 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		val element = program.findByText(programToken)
 		assertIssuesInElement(element, expectedIssues)
 	}
-	
+
 	def assertIssuesInElement(EObject element, String... expectedIssues) {
-		val expectedDiagnostics = expectedIssues.map[message|
+		val expectedDiagnostics = expectedIssues.map [ message |
 			new AssertableDiagnostics.Pred(null, null, null, message) {
 				override apply(Diagnostic d) {
 					super.apply(d) && (d as AbstractValidationDiagnostic).sourceEObject == element
@@ -161,23 +165,28 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		found.semanticElement
 	}
 
+	def static findAllByText(EObject model, String token, Class<? extends EObject> semanticElementType) {
+		NodeModelUtils.findActualNodeFor(model).asTreeIterable //
+		.filter [ n |
+			escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement &&
+				semanticElementType.isAssignableFrom(n.semanticElement.class)
+		] //
+		.map[semanticElement] //
+		.toList
+	}
+
 	def static findByText(EObject model, String token, Class<? extends EObject> semanticElementType) {
-		val found = NodeModelUtils.findActualNodeFor(model).asTreeIterable //
-		.findFirst [ n |
-			escapeNodeTextToCompare(n.text.trim) == token 
-				&& n.hasDirectSemanticElement
-				&& semanticElementType.isAssignableFrom(n.semanticElement.class)
-		]
-		assertNotNull("Could NOT find program token '" + token + "'", found)
-		found.semanticElement
+		val found = findAllByText(model, token, semanticElementType)
+		if (found.empty) fail("Could NOT find program token '" + token + "'")
+		return found.get(0)
 	}
 
 	def static findAllByText(EObject model, String token) {
-		NodeModelUtils
-			.findActualNodeFor(model)
-			.asTreeIterable
-			.filter [ n | escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement ]
-			.map[semanticElement]
+		NodeModelUtils.findActualNodeFor(model).asTreeIterable //
+		.filter [ n |
+			escapeNodeTextToCompare(n.text.trim) == token && n.hasDirectSemanticElement
+		] //
+		.map[semanticElement]
 	}
 
 	def static String escapeNodeTextToCompare(String nodeText) {
@@ -212,9 +221,5 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			throw new RuntimeException(
 			'''Could NOT find class [«className»] in: «resourceSet.allContents.filter(WClass).map[name].toList»''')
 		c
-	}
-
-	def classType(String className) {
-		new ClassBasedWollokType(findClass(className), null)
 	}
 }

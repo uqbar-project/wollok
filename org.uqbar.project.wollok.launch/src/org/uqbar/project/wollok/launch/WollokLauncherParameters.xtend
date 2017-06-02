@@ -1,47 +1,39 @@
 package org.uqbar.project.wollok.launch
 
+import java.io.File
+import java.io.FileWriter
 import java.util.ArrayList
 import java.util.List
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.Option
+import org.apache.commons.cli.OptionBuilder
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.io.File
-import java.io.FileWriter
-import org.apache.commons.cli.OptionBuilder
 
 /**
  * @author jfernandes
  * @author tesonep
  */
 class WollokLauncherParameters {
-	@Accessors
-	Integer requestsPort = null
-	@Accessors
-	Integer eventsPort = null
-	@Accessors
-	List<String> wollokFiles = new ArrayList();
-	@Accessors
-	boolean hasRepl = false
-	@Accessors
-	Integer testPort = null
-	@Accessors
-	boolean jsonOutput = false
-	@Accessors
-	boolean tests = false
-	@Accessors
-	boolean noAnsiFormat = false
-	
+	@Accessors Integer requestsPort = null
+	@Accessors Integer eventsPort = null
+	@Accessors List<String> wollokFiles = newArrayList
+	@Accessors boolean hasRepl = false
+	@Accessors Integer testPort = null
+	@Accessors boolean jsonOutput = false
+	@Accessors boolean tests = false
+	@Accessors boolean noAnsiFormat = false
+
 	@Accessors
 	List<String> libraries = new ArrayList()
 	
 	def build() {
 		val sb = new StringBuilder
 		if (hasRepl)sb.append("-r").append(" ")
-		if (requestsPort != null) sb.append("-requestsPort " + requestsPort.toString).append(" ")
-		if (eventsPort != null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
-		if (testPort != null) sb.append("-testPort " + testPort.toString).append(" ")
+		if (requestsPort !== null) sb.append("-requestsPort " + requestsPort.toString).append(" ")
+		if (eventsPort !== null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
+		if (testPort !== null) sb.append("-testPort " + testPort.toString).append(" ")
 		if (tests) sb.append("-t ")
 		if (jsonOutput) sb.append("-jsonOutput ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
@@ -145,12 +137,9 @@ class WollokLauncherParameters {
 		new Options => [
 			addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
 			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
-
-			
 			addOption(new Option("jsonOutput", "JSON test report output"))
-			
 			addOption(new Option("noAnsiFormat", "Disables ANSI colors for the console"))
-			
+
 			add("testPort", "Server port for tests", "port", 1)
 			add("requestsPort", "Request ports", "port", 1)
 			add("eventsPort", "Events ports", "port", 1)	

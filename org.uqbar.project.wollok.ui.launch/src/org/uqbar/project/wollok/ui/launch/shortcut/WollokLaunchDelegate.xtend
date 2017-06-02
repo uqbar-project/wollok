@@ -98,7 +98,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	
 	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort){
 		val parameters = new WollokLauncherParameters
-		parameters.eventsPort = eventPort;
+		parameters.eventsPort = eventPort
 		parameters.requestsPort = requestPort
 		parameters.wollokFiles += config.wollokFile
 		parameters.hasRepl = config.hasRepl
