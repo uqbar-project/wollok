@@ -8,7 +8,6 @@ class LoadLibraryWollokTestInjector extends WollokDslInjectorProvider {
 
 	override protected internalCreateInjector() {
 		val params = new WollokLauncherParameters()
-		println("agregando el jar para test")
 		params.libraries.add("wollokLib/libfortest.jar")
 		new WollokLauncherSetup(params).createInjectorAndDoEMFRegistration
 	}
