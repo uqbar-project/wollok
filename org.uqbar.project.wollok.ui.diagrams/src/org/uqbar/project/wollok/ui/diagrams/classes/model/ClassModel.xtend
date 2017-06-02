@@ -27,14 +27,14 @@ class ClassModel extends AbstractModel {
 	}
 	
 	def locate(int level) {
-		val subclasses = ClassModel.allComponents.clone.filter [ it.parent !== null && it.parent == this.component ].toList
+		val subclasses = ClassModel.allComponents.filter [ it.parent !== null && it.parent.equals(this.component) ].toList
 		var initialXPosition = Math.max(levelWidth.get(level) ?: INITIAL_MARGIN, this.initialWidth)
 		val calculatedWidthOfSubclasses = subclasses.calculatedWidth
 		val shapeWidth = this.shapeWidth
 		val addedWidthOfShape = shapeWidth + WIDTH_SEPARATION_BETWEEN_ELEMENTS
 		var int addedMargin = 0
 		if (calculatedWidthOfSubclasses > 0) 
-			addedMargin = ((calculatedWidthOfSubclasses - shapeWidth) / 2).intValue		
+			addedMargin = ((calculatedWidthOfSubclasses - shapeWidth) / 2).intValue
 		val xPosition = initialXPosition + addedMargin
 		initialWidthForElement.put(this.component.name, initialXPosition)
 		location = configuration.getLocation(this) ?: new Point(xPosition, level.calculatedHeight)
@@ -44,7 +44,7 @@ class ClassModel extends AbstractModel {
 	
 	def getCalculatedWidth(List<WMethodContainer> subclasses) {
 		if (subclasses.empty) return 0
-		val allSubclassesWidth = subclasses.map [ shapeWidth ].reduce [ a, b | a + b ]
+		val allSubclassesWidth = subclasses.map [ new ClassModel(it).shapeWidth ].reduce [ a, b | a + b ]
 		val margin = (subclasses.size + 1) * WIDTH_SEPARATION_BETWEEN_ELEMENTS
 		allSubclassesWidth + margin
 	}
