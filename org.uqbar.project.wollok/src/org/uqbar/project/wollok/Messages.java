@@ -57,6 +57,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
+	public static String WollokDslValidator_TESTS_IN_FILE;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;
