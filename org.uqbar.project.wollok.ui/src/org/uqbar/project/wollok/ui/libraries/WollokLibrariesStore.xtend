@@ -13,7 +13,7 @@ import org.eclipse.jdt.core.JavaModelException
  */
 class WollokLibrariesStore {
 	
-	def static loadLibs(IProject project) { 
+	def static getLibPaths(IProject project) { 
 		try {
 			var IJavaProject javaProject =	JavaCore.create(project);
 			

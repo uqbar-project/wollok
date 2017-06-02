@@ -15,17 +15,17 @@ import org.eclipse.xtend.lib.annotations.Accessors
  * @author jfernandes
  * @author tesonep
  */
+@Accessors
 class WollokLauncherParameters {
-	@Accessors Integer requestsPort = null
-	@Accessors Integer eventsPort = null
-	@Accessors List<String> wollokFiles = newArrayList
-	@Accessors boolean hasRepl = false
-	@Accessors Integer testPort = null
-	@Accessors boolean jsonOutput = false
-	@Accessors boolean tests = false
-	@Accessors boolean noAnsiFormat = false
-
-	@Accessors
+	
+	Integer requestsPort = null
+	Integer eventsPort = null
+	List<String> wollokFiles = newArrayList
+	boolean hasRepl = false
+	Integer testPort = null
+	boolean jsonOutput = false
+	boolean tests = false
+	boolean noAnsiFormat = false
 	List<String> libraries = new ArrayList()
 	
 	def build() {
@@ -99,14 +99,11 @@ class WollokLauncherParameters {
 		this
 	}
 	
-	//apache cli has a bug proccesing multiples arguments for differents options.
-	// in a line like: -lib a.jar,b.jar example.wlk example2.wlk it interprets that wlk file is part of lib option.
+	//apache cli has a bug proccesing multiples arguments for different options.
+	// for a line such: -lib a.jar,b.jar example.wlk example2.wlk it interprets that wlk file is part of lib option.
 	//  In order to avoid this problem, wf option was created: -lib a.jar,b.jar -wf example.wlk example2.wlk
-	// For backwards compatibility, the old style is supported if you don't need pass libraries, or another
-	//option is between libs and files:
+	// For backwards compatibility, the old style is supported if you don't need use libraries or if you use another option between libs and files:
 	//      -lib a.jar,b.jar -r example.wlk example2.wlk   
-	//    other example:
-	//      example.wlk example2.wlk   
 	def parseWollokFiles(CommandLine cmdLine) {
 		wollokFiles = if(!cmdLine.hasOption("wf")) cmdLine.argList	else new ArrayList(cmdLine.getOptionValues("wf"))
 	}

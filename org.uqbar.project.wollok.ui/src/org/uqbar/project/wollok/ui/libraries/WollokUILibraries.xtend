@@ -33,7 +33,7 @@ class WollokUILibraries implements WollokLibraries  {
 
 	def getPaths(Resource resource) {
 		val project = getProject(resource) 
-		if(project !== null) project.loadLibs() else #[]
+		if(project !== null) project.getLibPaths() else #[]
 	}
 
 	def getProject(Resource rs) {

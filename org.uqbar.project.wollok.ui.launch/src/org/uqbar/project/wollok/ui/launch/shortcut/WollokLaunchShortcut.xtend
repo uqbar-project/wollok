@@ -108,7 +108,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
 
 	def findLibs(LaunchConfigurationInfo info) {
-		getProject(info.project).loadLibs
+		getProject(info.project).libPaths
 	}
 
 }
@@ -123,7 +123,7 @@ class LaunchConfigurationInfo {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
-		libs =  getProject(project).loadLibs
+		libs =  getProject(project).libPaths
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
