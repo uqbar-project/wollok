@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -16,16 +17,16 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
-import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.typesystem.WollokType
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.getSelfContext
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -87,7 +88,6 @@ class ConstraintGenerator {
 		
 		it.newTypeVariable
 		
-		// TODO Consider return
 		if (!expressions.empty) it.beSupertypeOf(expressions.last)
 	}
 
@@ -127,7 +127,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WSelf it) {
-		it.newSealed(selfContext.asWollokType)
+		it.newSealed(getSelfContext.asWollokType)
 	}
 	
 	def dispatch void generateVariables(WIfExpression it) {
@@ -165,6 +165,12 @@ class ConstraintGenerator {
 		memberCallArguments.forEach[generateVariables]
 		
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
+	}
+	
+	def dispatch void generateVariables(WReturnExpression it) {
+		expression.generateVariables
+		declaringMethod.beSupertypeOf(expression)
+		newVoid
 	}
 	
 	// ************************************************************************

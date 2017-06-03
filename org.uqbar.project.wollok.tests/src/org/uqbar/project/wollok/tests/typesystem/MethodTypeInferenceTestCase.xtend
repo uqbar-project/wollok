@@ -42,7 +42,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testMethodReturnTypeInferredFromInstVarRefWithReturn() {	 '''
 			class Golondrina {
 				var energia = 100
-				method getEnergia() = { return energia }
+				method getEnergia() { return energia }
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
