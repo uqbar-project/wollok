@@ -88,7 +88,7 @@ WMethodDeclaration:
 
 WMethodName:
 	// TODO: 2 esto deberia tener un @check el método con +, o - necesita tener un solo argumento
-	ID | OpAdd | OpMulti | OpEquality | OpOther | OpCompare | OpAnd | OpOr
+	ID | OpAdd | OpMulti | OpEquality | OpOther | OpCompare | OpAnd | OpOr | OpPower
 ;
 
 WParameter:
@@ -189,12 +189,19 @@ WAdditiveExpression returns WExpression:
 
 OpAdd:
 	'+' | '-';
-
+ 
 WMultiplicativeExpression returns WExpression:
-	WUnaryOperation (=>({WBinaryOperation.leftOperand=current} feature=OpMulti) rightOperand=WUnaryOperation)*;
+	WExponentiativeExpression (=>({WBinaryOperation.leftOperand=current} feature=OpMulti) rightOperand=WExponentiativeExpression)*; 
 
+	
 OpMulti:
-	'*' | '**' | '/' | '%';
+	'*' | '/' | '%';
+
+WExponentiativeExpression returns WExpression:
+	WUnaryOperation (=>({WBinaryOperation.leftOperand=current} feature=OpPower) rightOperand=WExponentiativeExpression)?;
+
+OpPower:
+	'**';
 
 WUnaryOperation returns WExpression:
 	{WUnaryOperation} feature=OpUnary operand=WUnaryOperation
