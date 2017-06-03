@@ -10,6 +10,8 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WProgram
@@ -42,9 +44,9 @@ class ConstraintGenerator {
 		elements.forEach[generateVariables]
 	}
 
-//	def dispatch void generateVariables(WLibrary p) {
-//		p.elements.forEach[generateVariables]
-//	}
+	def dispatch void generateVariables(WNamedObject it) {
+		members.forEach[generateVariables]		
+	}
 
 	def dispatch void generateVariables(WClass it) {
 		// TODO Process supertype information: parent and mixins
@@ -59,6 +61,15 @@ class ConstraintGenerator {
 		expression.generateVariables
 	}
 
+	def dispatch void generateVariables(WMethodDeclaration it) {
+		parameters.forEach[generateVariables]
+		expression.generateVariables
+		println(expression)
+		
+		// Return type
+		it.newWithSubtype(expression)
+	}
+
 	def dispatch void generateVariables(WParameter it) {
 		newTypeVariable
 	}
@@ -66,6 +77,10 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WBlockExpression it) {
 		expressions.forEach[generateVariables]
 		
+		it.newTypeVariable
+		
+		// TODO Consider return
+		if (!expressions.empty) it.beSupertypeOf(expressions.last)
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
