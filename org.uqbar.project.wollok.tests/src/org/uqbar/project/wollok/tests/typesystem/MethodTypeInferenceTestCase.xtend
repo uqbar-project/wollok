@@ -80,9 +80,9 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testMethodReturnTypeInferredFromInnerCallToOtherMethod() { 	'''
 			class Golondrina {
 				var energia = 100
-				method getEnergia() { energia }
+				method getEnergia() { return energia }
 				method getEnergiaDelegando() {
-					self.getEnergia()
+					return self.getEnergia()
 				}
 			}
 		'''.parseAndInfer.asserting [

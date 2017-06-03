@@ -34,15 +34,20 @@ class TypeVariablesRegistry {
 		beSealed(type)
 	}
 
+	def newVoid(EObject it) {
+		newTypeVariable
+		beVoid
+	}
+
+	def beVoid(EObject it) {
+		beSealed(WollokType.WVoid)
+	}
+
 	def beSealed(EObject it, WollokType type) {
 		tvar => [
 			addMinimalType(type)
 			beSealed
 		]
-	}
-
-	def newVoid(EObject it) {
-		newSealed(WollokType.WVoid)
 	}
 
 	// ************************************************************************

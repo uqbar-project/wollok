@@ -75,7 +75,10 @@ class ConstraintGenerator {
 		expression.generateVariables
 
 		// Return type for compact methods (others are handled by return expressions)
-		if (expressionReturns) beSupertypeOf(expression)
+		if (expressionReturns) 
+			beSupertypeOf(expression)
+		else if (tvar.allSubtypes.empty)
+			beVoid
 		
 	}
 
