@@ -68,11 +68,14 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WMethodDeclaration it) {
+		it.newTypeVariable
+		
 		parameters.forEach[generateVariables]
 		expression.generateVariables
+
+		// Return type for compact methods (others are handled by return expressions)
+		if (expressionReturns) beSupertypeOf(expression)
 		
-		// Return type
-		it.newWithSubtype(expression)
 	}
 
 	def dispatch void generateVariables(WParameter it) {
@@ -153,6 +156,8 @@ class ConstraintGenerator {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
+		
+		it.newVoid
 	}
 	
 	def dispatch void generateVariables(WMemberFeatureCall it) {

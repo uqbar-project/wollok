@@ -18,8 +18,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name = "{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			ConstraintBasedTypeSystem,
-			SubstitutionBasedTypeSystem
+			ConstraintBasedTypeSystem
+//			SubstitutionBasedTypeSystem
 			// TODO: fix !
 //			XSemanticsTypeSystem,		 
 //			BoundsBasedTypeSystem
@@ -30,7 +30,19 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void testMethodReturnTypeInferredFromInstVarRef() {	 '''
 			class Golondrina {
 				var energia = 100
-				method getEnergia() { energia }
+				method getEnergia() = energia
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
+		]
+	}
+
+	@Test
+	def void testMethodReturnTypeInferredFromInstVarRefWithReturn() {	 '''
+			class Golondrina {
+				var energia = 100
+				method getEnergia() = { return energia }
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
@@ -125,7 +137,6 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			method aList() = [1,2,3]
 			method useTheList() {
 				const pepe = self.aList()
-				3
 			}
 		}'''.parseAndInfer.asserting [
 			assertTypeOfAsString("List", "pepe")
