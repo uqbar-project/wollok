@@ -515,6 +515,7 @@
             id="org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             name="%wollokProject"
             project="true">
+            <description>%wollokProjectDescription</description>
       </wizard>
       <category
             id="org.uqbar.project.wollok.ui.category"
@@ -528,6 +529,7 @@
             icon="icons/wollok-icon-object_16.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
             name="%wollokObjectsAndClasses">
+            <description>%wollokObjectsAndClassesDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -537,6 +539,7 @@
             icon="icons/wollok-icon-message_16.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
             name="%wollokTest">
+            <description>%wollokTestDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -546,6 +549,7 @@
             icon="icons/suite.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
             name="%wollokDescribe">
+            <description>%wollokDescribeDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -555,6 +559,7 @@
             icon="icons/wollok-icon-program_16.png"
             id="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             name="%wollokProgram">
+            <description>%wollokProgramDescription</description>
       </wizard>
    </extension>
    <extension
