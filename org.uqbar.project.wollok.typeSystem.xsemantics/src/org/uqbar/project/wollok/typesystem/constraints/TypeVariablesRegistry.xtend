@@ -4,8 +4,6 @@ import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
-
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
 
@@ -43,7 +41,7 @@ class TypeVariablesRegistry {
 	}
 
 	def newVoid(EObject it) {
-		newSealed(typeSystem.classType(it, VOID))
+		newSealed(WollokType.WVoid)
 	}
 
 	// ************************************************************************

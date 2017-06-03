@@ -5,17 +5,19 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
+import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
-import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * @author npasserini
@@ -113,7 +115,11 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	protected def ClassBasedWollokType classType(EObject model, String className) {
+	protected def objectType(WNamedObject model) {
+		new NamedObjectWollokType(model, this)
+	}
+
+	protected def classType(EObject model, String className) {
 		val clazz = finder.getCachedClass(model, className)
 		// REVIEWME: should we have a cache ?
 		classType(clazz)

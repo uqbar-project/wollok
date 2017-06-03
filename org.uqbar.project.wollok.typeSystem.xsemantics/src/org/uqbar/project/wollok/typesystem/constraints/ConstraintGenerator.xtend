@@ -110,6 +110,8 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
+		
+		newVoid
 	}
 
 	def dispatch void generateVariables(WVariableReference it) {
@@ -143,7 +145,7 @@ class ConstraintGenerator {
 			variable.beSupertypeOf(right)
 		}
 	}
-
+	
 	// ************************************************************************
 	// ** Extension methods
 	// ************************************************************************
