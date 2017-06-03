@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -45,7 +46,8 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
-		members.forEach[generateVariables]		
+		members.forEach[generateVariables]
+		it.newSealed(it.objectType)
 	}
 
 	def dispatch void generateVariables(WClass it) {
@@ -64,7 +66,6 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WMethodDeclaration it) {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
-		println(expression)
 		
 		// Return type
 		it.newWithSubtype(expression)
@@ -144,6 +145,13 @@ class ConstraintGenerator {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
+	}
+	
+	def dispatch void generateVariables(WMemberFeatureCall it) {
+		memberCallTarget.generateVariables
+		memberCallArguments.forEach[generateVariables]
+		
+		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 	
 	// ************************************************************************

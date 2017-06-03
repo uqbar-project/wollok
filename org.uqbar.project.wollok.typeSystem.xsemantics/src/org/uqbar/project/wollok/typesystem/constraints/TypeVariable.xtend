@@ -87,6 +87,10 @@ class TypeVariable {
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
 		typeInfo.maximalConcreteTypes = maxTypes
 	}
+	
+	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
+		typeInfo.messages.add(new MessageSend(selector, arguments, returnType))
+	}
 
 	def isSealed() { typeInfo.sealed }
 
@@ -142,7 +146,6 @@ class TypeVariable {
 			]
 		]
 	}
-
 }
 
 class MaximalConcreteTypes {
@@ -194,7 +197,9 @@ class TypeInfo {
 	@Accessors
 	val List<TypeVariable> users = newArrayList
 
-	// messages:		<Dictionary(Symbol -> CBMessageSend)>	
+	@Accessors
+	val List<MessageSend> messages = newArrayList
+	
 	@Accessors
 	var Map<WollokType, ConcreteTypeState> minimalConcreteTypes = newHashMap()
 

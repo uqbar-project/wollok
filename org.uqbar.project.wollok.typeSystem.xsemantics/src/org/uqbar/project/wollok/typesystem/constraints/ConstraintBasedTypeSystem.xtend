@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
+import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
@@ -73,6 +74,7 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
 		#[PropagateMinimalTypes, PropagateMaximalTypes],
+		#[OpenMethod],
 		#[UnifyVariables, SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]

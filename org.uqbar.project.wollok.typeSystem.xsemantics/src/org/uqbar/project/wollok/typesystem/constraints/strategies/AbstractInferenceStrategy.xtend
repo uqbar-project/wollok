@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
@@ -23,7 +24,12 @@ abstract class AbstractInferenceStrategy {
 
 		println('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
 		globalChanged
+		
 	}
 
 	abstract def void analiseVariable(TypeVariable tvar)
+	
+	def tvar(EObject eObject) {
+		registry.tvar(eObject)
+	}
 }

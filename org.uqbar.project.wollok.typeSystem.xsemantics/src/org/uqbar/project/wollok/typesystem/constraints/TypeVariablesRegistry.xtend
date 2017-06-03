@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
@@ -54,7 +55,7 @@ class TypeVariablesRegistry {
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj) => [ typeVar |
 			if (typeVar == null)
-				throw new RuntimeException("I don't have type information for " + obj)
+				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
 		]
 	}
 

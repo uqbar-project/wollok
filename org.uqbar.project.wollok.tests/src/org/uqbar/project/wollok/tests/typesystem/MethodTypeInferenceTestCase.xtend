@@ -5,6 +5,8 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 /**
  * Groups together all test cases for method type inference.
  * Just a way to start splitting tests into several classes
@@ -126,6 +128,20 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		}'''.parseAndInfer.asserting [
 			assertTypeOfAsString("List", "pepe")
+		]
+	}
+
+	@Test
+	def void messageTo() { 	'''
+		object example {
+			method number() = 10
+		}
+		
+		program {
+			var x = example.number()
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "x")
 		]
 	}
 	
