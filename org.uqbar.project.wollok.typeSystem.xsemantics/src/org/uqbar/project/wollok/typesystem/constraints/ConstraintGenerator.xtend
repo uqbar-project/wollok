@@ -20,8 +20,12 @@ import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.typesystem.WollokType
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.getSelfContext
+
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -118,6 +122,10 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WVariableReference it) {
 		it.newWithSubtype(ref)
 	}
+
+	def dispatch void generateVariables(WSelf it) {
+		it.newSealed(selfContext.asWollokType)
+	}
 	
 	def dispatch void generateVariables(WIfExpression it) {
 		condition.generateVariables
@@ -162,5 +170,11 @@ class ConstraintGenerator {
 		supertype.tvar.beSupertypeOf(subtype.tvar)
 	}
 	
-	
+	def dispatch WollokType asWollokType(WNamedObject object) {
+		objectType(object)
+	}
+
+	def dispatch WollokType asWollokType(WClass wClass) {
+		classType(wClass)
+	}
 }

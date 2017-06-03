@@ -125,6 +125,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			method aList() = [1,2,3]
 			method useTheList() {
 				const pepe = self.aList()
+				3
 			}
 		}'''.parseAndInfer.asserting [
 			assertTypeOfAsString("List", "pepe")

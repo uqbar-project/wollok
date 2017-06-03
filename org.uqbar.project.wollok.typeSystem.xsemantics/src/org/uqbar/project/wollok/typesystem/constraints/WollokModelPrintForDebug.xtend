@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 
@@ -22,4 +23,8 @@ class WollokModelPrintForDebug {
 		'''ref «ref.debugInfo»'''
 	}
 
+	static def dispatch String debugInfo(WVariableDeclaration it) {
+		
+		'''«if (writeable) "var" else "const"» «variable.debugInfo»'''
+	}
 }
