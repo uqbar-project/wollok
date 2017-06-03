@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
-import java.util.function.BiFunction
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.MessageSend
@@ -20,7 +19,7 @@ class OpenMethod extends AbstractInferenceStrategy {
 	def openMethod(MessageSend it, WollokType type) {
 		val method = (type as ConcreteType).lookupMethod(selector, arguments)
 		
-		returnType.beSubtypeOf(method.tvar)
+		returnType.beSupertypeOf(method.tvar)
 		arguments.biForEach(method.parameters.map[tvar])[arg, param|arg.beSubtypeOf(param)]
 	}
 	

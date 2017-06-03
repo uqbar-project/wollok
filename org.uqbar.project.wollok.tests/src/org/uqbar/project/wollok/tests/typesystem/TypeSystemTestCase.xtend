@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * Tests type system inference and checks
@@ -20,7 +21,7 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 			SubstitutionBasedTypeSystem
 			// TODO: fix !
 //			new XSemanticsTypeSystem,
-//			ConstraintBasedTypeSystem
+			, ConstraintBasedTypeSystem
 //			new BoundsBasedTypeSystem
 		]
 	}
