@@ -12,7 +12,7 @@ abstract class AbstractInferenceStrategy {
 	@Accessors
 	var extension TypeVariablesRegistry registry
 
-	def run() {
+	def Boolean run() {
 		println('''Running strategy: «class.simpleName»''')
 		var globalChanged = false
 
@@ -24,7 +24,6 @@ abstract class AbstractInferenceStrategy {
 
 		println('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
 		globalChanged
-		
 	}
 
 	abstract def void analiseVariable(TypeVariable tvar)
