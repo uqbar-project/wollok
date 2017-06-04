@@ -101,7 +101,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 					energia = energia - self.gastoPorVolar() 
 				}
 				method gastoPorVolar() {
-					gasto
+					return gasto
 				}
 			}
 		'''.parseAndInfer.asserting [

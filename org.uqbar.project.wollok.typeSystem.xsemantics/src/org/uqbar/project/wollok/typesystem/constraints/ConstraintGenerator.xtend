@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -174,6 +175,13 @@ class ConstraintGenerator {
 		expression.generateVariables
 		declaringMethod.beSupertypeOf(expression)
 		newVoid
+	}
+	
+	def dispatch void generateVariables(WBinaryOperation it) {
+		leftOperand.generateVariables
+		rightOperand.generateVariables
+		
+		leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
 	}
 	
 	// ************************************************************************

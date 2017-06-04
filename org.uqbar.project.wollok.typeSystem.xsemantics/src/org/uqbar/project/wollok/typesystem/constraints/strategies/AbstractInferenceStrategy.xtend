@@ -28,8 +28,4 @@ abstract class AbstractInferenceStrategy {
 	}
 
 	abstract def void analiseVariable(TypeVariable tvar)
-	
-	def tvar(EObject eObject) {
-		registry.tvar(eObject)
-	}
 }
