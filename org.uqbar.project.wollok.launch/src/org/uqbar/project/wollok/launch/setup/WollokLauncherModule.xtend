@@ -14,8 +14,6 @@ import org.uqbar.project.wollok.launch.tests.json.WollokJSONTestsReporter
 import org.uqbar.project.wollok.launch.tests.json.WollokLauncherIssueHandlerJSON
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokReplGlobalScopeProvider
-import java.net.URLClassLoader
-import java.net.URL
 
 /**
  * Runtime module for the launcher.
@@ -53,7 +51,7 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 
 	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
 		if (params.tests) {
-			if (params.testPort != null && params.testPort != 0)
+			if (params.testPort !== null && params.testPort != 0)
 				return WollokRemoteTestReporter
 			else if (params.jsonOutput)
 				return WollokJSONTestsReporter
@@ -70,7 +68,4 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 			DefaultWollokLauncherIssueHandler
 	}
 
-	override ClassLoader bindClassLoaderToInstance() {
-		return new URLClassLoader(#[], getClass().getClassLoader()) 
-	}
 }
