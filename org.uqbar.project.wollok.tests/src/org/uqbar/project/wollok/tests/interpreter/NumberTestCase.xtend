@@ -379,6 +379,15 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void exponentiationPrecedence() {
+		'''
+		assert.equals(24, 3 * 2 ** 3)
+		assert.equals(36, 4.0 * 3 ** 2)
+		assert.equals(5, 1 + 2 ** 2)
+		'''.test
+	}
+	
+	@Test
 	def void integerRoundUp() {
 		'''
 		assert.equals(5, (10/2).roundUp(2))
