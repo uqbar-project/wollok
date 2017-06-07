@@ -16,14 +16,17 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.requests.CreateRequest
 import org.uqbar.project.gef.SquareConnectionRouter
-import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
 
 /**
+ * 
+ * Main edit part for static diagrams
+ * 
  * @author jfernandes
  */
-class ClassDiagramEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+class StaticDiagramEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
 	override activate() {
 		if (!active) {
@@ -34,7 +37,7 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new RootComponentEditPolicy)
-		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ClassDiagramEditPart.ShapesXYLayoutEditPolicy)
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, new StaticDiagramEditPart.ShapesXYLayoutEditPolicy)
 	}
 
 	override createFigure() {
@@ -60,12 +63,12 @@ class ClassDiagramEditPart extends AbstractGraphicalEditPart implements Property
 		}
 	}
 	
-	def getModelElement() { model as ClassDiagram }
+	def getModelElement() { model as StaticDiagram }
 	override getModelChildren() { modelElement.getChildren }
 
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
-		if (ClassDiagram.CHILD_ADDED_PROP == prop || ClassDiagram.CHILD_REMOVED_PROP == prop)
+		if (StaticDiagram.CHILD_ADDED_PROP == prop || StaticDiagram.CHILD_REMOVED_PROP == prop)
 			refreshChildren
 	}
 

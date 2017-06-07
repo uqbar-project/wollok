@@ -9,9 +9,9 @@ import org.eclipse.draw2d.geometry.Insets
  * @author jfernandes
  */
 class WSeparatorBorder extends MarginBorder {
-	static int TOP_PADDING = 10
+	static int TOP_PADDING = 5
 	static int LEFT_PADDING = 3
-	static int BOTTOM_PADDING = 10
+	static int BOTTOM_PADDING = 5
 	static int RIGHT_PADDING = 1
 	
 	new() {

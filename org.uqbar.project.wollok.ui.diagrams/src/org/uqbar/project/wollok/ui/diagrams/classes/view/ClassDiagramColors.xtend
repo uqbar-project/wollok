@@ -14,6 +14,8 @@ class ClassDiagramColors {
 	
 	public static val CLASS_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)
+	public static val IMPORTED_CLASS_FOREGROUND = new Color(null, 31, 46, 46)
+	public static val IMPORTED_CLASS_BACKGROUND = new Color(null, 255, 153, 153)
 	public static val CLASS_INNER_BORDER = new Color(null, 255, 245, 240)
 	
 	public static val NAMED_OBJECTS_FOREGROUND = new Color(null, 255, 255, 255)

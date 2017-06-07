@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Control
 import org.eclipse.swt.widgets.FileDialog
 import org.eclipse.ui.PlatformUI
 
+/**
+ * Helper class to save static diagram into an image file
+ */
 class ImageSaveUtil {
 	
 	def static boolean save(GraphicalViewer viewer, String saveFilePath, int format) {			

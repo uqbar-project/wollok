@@ -1,44 +1,27 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model
 
-import org.eclipse.draw2d.geometry.Point
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+
 /**
+ * 
+ * Model of a wko figure.
+ * 
  * @author jfernandes
+ * @author dodain - refactored
  */
-class NamedObjectModel extends Shape {
-	@Accessors WNamedObject obj
-	public static int objectsCount = 0
-	public static int VERTICAL_POSITION = 10
-	
-	static def void init() {
-		objectsCount = 0
-	}
-	
+class NamedObjectModel extends AbstractNonClassModel {
+
 	new(WNamedObject obj) {
-		this.obj = obj
-		objectsCount++
+		super(obj as WMethodContainer)
+		objects.add(this)
 	}
 
-	override toString() {
-		"ObjectModel<" + obj.name + ">"		
-	}
-	
 	override shouldShowConnectorTo(WClass clazz) {
-		!clazz.name.equalsIgnoreCase("Object")
+		component.hasRealParent
 	}
 	
-	def locate() {
-		location = new Point(objectsCount * width, VERTICAL_POSITION)
-	}
-	
-	/**
-	 * TODO: Define a strategy based on custom size (with/without methods)  
-	 */
-	def width() {
-		110
-	}
-
 }

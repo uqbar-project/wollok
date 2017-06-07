@@ -3,6 +3,12 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 import com.google.inject.Inject
 import java.util.ArrayList
 import java.util.Comparator
+import java.util.HashMap
+import java.util.List
+import java.util.Observable
+import java.util.Observer
+import java.util.Set
+import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
 import org.eclipse.draw2d.ColorConstants
@@ -20,7 +26,11 @@ import org.eclipse.gef.GraphicalViewer
 import org.eclipse.gef.commands.CommandStack
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
+import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
+import org.eclipse.gef.ui.actions.ZoomComboContributionItem
+import org.eclipse.gef.ui.actions.ZoomInAction
+import org.eclipse.gef.ui.actions.ZoomOutAction
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
 import org.eclipse.gef.ui.palette.PaletteViewerProvider
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler
@@ -28,7 +38,8 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
 import org.eclipse.gef.ui.views.palette.PalettePage
-import org.eclipse.jface.resource.ImageDescriptor
+import org.eclipse.jface.action.IAction
+import org.eclipse.jface.action.Separator
 import org.eclipse.jface.text.DocumentEvent
 import org.eclipse.jface.text.IDocumentListener
 import org.eclipse.jface.text.source.ISourceViewer
@@ -49,7 +60,6 @@ import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.resource.XtextResource
-import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
@@ -58,135 +68,176 @@ import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.diagrams.Messages
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteElementAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
-import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePositionsToggleButton
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenComponents
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenParts
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
-import org.uqbar.project.wollok.ui.diagrams.classes.model.MixinModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
-import org.uqbar.project.wollok.ui.diagrams.classes.palette.ClassDiagramPaletterFactory
-import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.StaticDiagramPaletterFactory
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.AssociationConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.ClassEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
+import org.uqbar.project.wollok.ui.diagrams.classes.parts.StaticDiagramEditPartFactory
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
+ * Main view for static diagrams. Here we show
+ * - classes
+ * - named objects
+ * - mixins
+ * and its relationships, that includes inheritance, association and dependency.
+ *
+ * GEF tutorials: http://www.redbooks.ibm.com/redbooks/pdfs/sg246302.pdf
+ *  
  * @author jfernandes
+ * @author dodain
+ * 
  */
-class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener {
+class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IDocumentListener, Observer {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
-	ActionRegistry actionRegistry
-	
 	IXtextDocument xtextDocument
-	
-	@Inject
-	XtextResourceSet resourceSet
-	
-	ClassDiagram diagram
-	
+	StaticDiagram diagram
+	IViewSite site
+		
 	// splitter and palette
 	FlyoutPaletteComposite splitter
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
-	ExportAction exportAction
+	ActionRegistry actionRegistry
 	
+	// Toolbar - actions
+	ExportAction exportAction
+   	IAction zoomIn
+    IAction zoomOut
+
+	// Static diagram state and configuration
+	StaticDiagramConfiguration configuration
+
+	@Inject WollokClassFinder finder
+		
 	new() {
 		editDomain = new DefaultEditDomain(null)
-		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
+		editDomain.paletteRoot = StaticDiagramPaletterFactory.create
+		configuration = new StaticDiagramConfiguration
+		configuration.addObserver(this)
+		Shape.useConfiguration(configuration)
 	}
 	
 	override init(IViewSite site) throws PartInitException {
 		super.init(site)
+		this.site = site
 		// listen for selection
 		site.workbenchWindow.selectionService.addSelectionListener(this)
 		site.workbenchWindow.activePage.addPartListener(this)
-		
-		exportAction = new ExportAction => [
-				imageDescriptor = ImageDescriptor.createFromFile(class, "/icons/export.png")
-				toolTipText = "Export this diagram to an image" // TODO i18n!
-			] 
-		site.actionBars.toolBarManager => [
-			add(exportAction)
-		]
+	}
+	
+	def getAction(String actionId) {
+		actionRegistry.getAction(actionId)
 	}
 	
 	def createDiagramModel() {
-		NamedObjectModel.init()
-		MixinModel.init()
-		new ClassDiagram => [
-			// classes
-			val classes = xtextDocument.readOnly[ classes ].toSet
-			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
-			ClassModel.init(classes.clone)
-
-			// objects (first so that we collect parents in the "classes" set
+		new StaticDiagram(configuration) => [
+			// all objects
 			val objects = xtextDocument.readOnly[ namedObjects ]
+
+			// class
+			val classes = xtextDocument.readOnly[ classes ].toSet
+			val importedClasses = xtextDocument.readOnly [ getImportedClasses ].toSet
+			importedObjects = importedClasses.toList
+			classes.addAll(importedClasses)
+			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
+			val List<WMethodContainer> allClasses = classes.removeDuplicated as List<WMethodContainer>
+			val List<WMethodContainer> inheritingObjects = objects.filter [ hasRealParent ].toList.clone
+			var List<WMethodContainer> allClassModelAbstractions = newArrayList => [
+				addAll(allClasses.clone)
+				addAll(inheritingObjects)
+			]
+			ClassModel.init(allClassModelAbstractions)
 			
-			objects.forEach[ o | 
+			// objects (first so that we collect parents in the "classes" set
+			val singleObjects = objects.filter [ !hasRealParent && !configuration.isHiddenComponent(name) ]
+			
+			singleObjects.forEach[ o | 
 				addNamedObject(new NamedObjectModel(o) => [ 
 					locate
 				])
 			]
 
-			// classes
+			// then, all mixins
+			val mixins = xtextDocument.readOnly[ mixins ].toSet
+			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
+			var allMixins = mixins.removeDuplicated as List<WMixin>
+			allMixins = allMixins.filter [!configuration.isHiddenComponent(name)].toList
+			allMixins.forEach [ m | addMixin(m) ]
+
+			// then, classes
 			// first, superclasses
-			var classesCopy = classes.clone.filter [ it.parent == null ].toList
+			var classesCopy = allClassModelAbstractions
+				.clone
+				.filter [ it.parent === null ]
+				.toList
+				
 			var int level = 0
 			while (!classesCopy.isEmpty) {
-				level++
 				val levelCopy = level
-				classesCopy.forEach [ c | addClass(c, levelCopy) ]
+				classesCopy.forEach [ c | addComponent(c, levelCopy) ]
 				val parentClasses = classesCopy
 				// then subclasses of parent classes and recursively...
-				classesCopy = classes
+				classesCopy = allClassModelAbstractions
 					.clone
-					.filter [ parentClasses.contains(it.parent) ]
-					.sortWith([ WClass a, WClass b | 
-						val parentA = a.parent?.name ?: ""
-						val parentB = b.parent?.name ?: ""
-						parentA.compareTo(parentB)
-					] as Comparator<WClass>)
+					.filter [
+						parentClasses.contains(it.parent)
+					]
+					.sortWith([ WMethodContainer a, WMethodContainer b |
+						val orderForA = (a.parent?.name ?: "") + a.name
+						val orderForB = (b.parent?.name ?: "") + b.name
+						orderForA.compareTo(orderForB)
+					] as Comparator<WMethodContainer>)
 					.toList
 					
+				level++
 			}
 
-			// mixins (for classes and objects)
-			(classes + objects).map [ o | o.mixins ].flatten.toSet.forEach [ m | addMixin(m) ]
-			//TODO: add mixins from document
-
 			// relations
+			connectInheritanceRelations
 			connectRelations
 		]
 	}
 	
-	def getParentClass(WClass wclass) {
-		if (wclass.parent == null) {
-			return ""
-		}
-		wclass.parent.name
-	}
-	
+	def getMixins(XtextResource it) { getAllOfType(WMixin) }
 	def getClasses(XtextResource it) { getAllOfType(WClass) }
 	def getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
 	
 	def <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
 		if (contents.empty) #[]
-		else  (contents.get(0) as WFile).eAllContents.filter(type).toList
+		else (contents.get(0) as WFile).eAllContents.filter(type).toList
 	}
-	
-	
-	@Inject WollokClassFinder finder
 	
 	def getImportedClasses(XtextResource it) {
 		val imports = getAllOfType(Import)
@@ -194,13 +245,16 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			try {
 				l.add(finder.getCachedClass(i, i.importedNamespace))
 			}
+			catch(ClassCastException e) {
+				// Temporarily user is writing another import
+			}
 			catch(WollokRuntimeException e) { }
 			l
 		]
 	}
 	
 	override createPartControl(Composite parent) {
-		splitter = new FlyoutPaletteComposite(parent, SWT.NONE, site.page, paletteViewerProvider, palettePreferences);
+		splitter = new FlyoutPaletteComposite(parent, SWT.NONE, site.page, paletteViewerProvider, palettePreferences)
 		createViewer(splitter)
 		
 		splitter.graphicalControl = graphicalViewer.control
@@ -208,7 +262,10 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			splitter.externalViewer = page.getPaletteViewer
 			page = null
 		}
-		
+
+		// Create toolbar		
+		configureToolbar
+
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
 		
@@ -228,18 +285,46 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		
 		// provides selection
 		site.selectionProvider = graphicalViewer
-		exportAction.viewer = graphicalViewer
+	}
+	
+	def configureToolbar() {
+		exportAction = new ExportAction => [
+			viewer = graphicalViewer
+		]
+		val showVariablesToggleButton = new ShowVariablesToggleButton(Messages.StaticDiagram_Show_Variables, configuration)
+		val rememberShapePositionsToggleButton = new RememberShapePositionsToggleButton(Messages.StaticDiagram_RememberShapePositions_Description, configuration)
+		
+		site.actionBars.toolBarManager => [
+			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
+					ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH
+				} as String[]))
+			add(zoomIn)
+			add(zoomOut)
+			add(new ShowFileAction("labelFile", configuration))
+			add(new Separator)
+			add(exportAction)
+			add(new Separator)
+			add(showVariablesToggleButton)
+			add(rememberShapePositionsToggleButton)
+			add(new CleanShapePositionsAction(Messages.StaticDiagram_CleanShapePositions_Description, configuration))
+			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
+			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
+			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
+//			In a future could remain as options: "Open External wsdi" & "Save As..." 			
+//			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
+//			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))
+		]
 	}
 	
 	def configureGraphicalViewer() {
 		graphicalViewer.control.background = ColorConstants.listBackground
 
-		graphicalViewer.editPartFactory = new ClassDiagramEditPartFactory
+		graphicalViewer.editPartFactory = new StaticDiagramEditPartFactory
 		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 
 		// configure the context menu provider
-		val cmProvider = new ClassDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
+		val cmProvider = new StaticDiagramEditorContextMenuProvider(graphicalViewer, getActionRegistry)
 		graphicalViewer.contextMenu = cmProvider
 		site.registerContextMenu(cmProvider, graphicalViewer)
 	}
@@ -264,26 +349,13 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		val parts = (classEditParts + objectsEditParts + mixinsEditParts)
 		val nodes = parts.map[e | e.createNode ]
 		
-		graph.edges.addAll(connectionsEditParts.map[c| 
+		graph.edges.addAll(inheritanceConnectionsEditParts.map[c| 
 			new Edge(nodes.findFirst[n| n.data == c.source.model], nodes.findFirst[n| n.data == c.target.model])
 		])
 		
 		// layout
 		val directedGraphLayout = new DirectedGraphLayout
 		directedGraphLayout.visit(graph)
-		
-		// map back positions to model inverting the Y coordinates
-		// because the directed graph only supports layout directo to SOUTH, meaning
-		// super classes will be at the bottom. So we invert them
-		/*
-		val bottomNode = if (graph.nodes.empty) null else graph.nodes.maxBy[ (it as Node).y ] as Node
-
-		graph.nodes.forEach[ val n = it as Node
-			var deltaY = 10
-			if (n != bottomNode) deltaY += bottomNode.height;
-			(n.data as Shape).location = new Point(n.x, bottomNode.y - n.y + deltaY)
-		]
-		*/
 	}
 	
 	def createNode(AbstractGraphicalEditPart e) {
@@ -296,7 +368,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def getClassEditParts() { getEditPartsOfType(ClassEditPart) }
 	def getObjectsEditParts() { getEditPartsOfType(NamedObjectEditPart) }
 	def getMixinsEditParts() { getEditPartsOfType(MixinEditPart) }
-	def getConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+	def getInheritanceConnectionsEditParts() { getEditPartsOfType(InheritanceConnectionEditPart) }
+	def getAssociationConnectionsEditParts() { getEditPartsOfType(AssociationConnectionEditPart) }
 	
 	def <T> Iterable<T> getEditPartsOfType(Class<T> t) {
 		(graphicalViewer.rootEditPart.children.get(0) as EditPart).children.filter(t)
@@ -305,7 +378,9 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	def setGraphicalViewer(GraphicalViewer viewer) {
 		editDomain.addViewer(viewer)
 		graphicalViewer = viewer
-		graphicalViewer.addSelectionChangedListener(this)
+		graphicalViewer => [
+			addSelectionChangedListener(this)
+		]
 	}
 	
 	override setFocus() {
@@ -313,9 +388,26 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	}
 	
 	def getActionRegistry() {
-		if (actionRegistry == null) actionRegistry = new ActionRegistry
+		if (actionRegistry == null) actionRegistry = new ActionRegistry => [
+			registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
+			// Adding zoom capabilities
+			val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
+			zoomManager.setZoomLevelContributions(#[
+				ZoomManager.FIT_ALL,
+				ZoomManager.FIT_WIDTH,
+				ZoomManager.FIT_HEIGHT
+			])
+	    	zoomIn = new ZoomInAction(zoomManager)
+	    	zoomOut = new ZoomOutAction(zoomManager)
+	    	registerAction(zoomIn)
+	    	registerAction(zoomOut)
+		
+			site.keyBindingService.registerAction(zoomIn)
+			site.keyBindingService.registerAction(zoomOut)
+		]
 		actionRegistry
 	}
+	
 	def CommandStack getCommandStack() {
 		editDomain.commandStack
 	}
@@ -343,6 +435,8 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			return graphicalViewer.rootEditPart
 		if (type == IFigure && graphicalViewer != null)
 			return (graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		if (type == ZoomManager)
+			return (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
 		super.getAdapter(type)
 	}
 	
@@ -379,10 +473,12 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (xtextDocument != null) xtextDocument.removeDocumentListener(this)
 			xtextDocument = doc
 			xtextDocument.addDocumentListener(this)
+			val IResource resource = xtextDocument.getAdapter(typeof(IResource))
+			configuration.resource = resource 
 			refresh()
 		}
 	}
-	val refreshJob = new UIJob("Updating diagram view") {
+	val refreshJob = new UIJob(Messages.StaticDiagram_UpdateDiagramView) {
 			override def runInUIThread(IProgressMonitor monitor) {
 				diagram = createDiagramModel
 				initializeGraphicalViewer
@@ -443,7 +539,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 				val cm = getClassEditParts.findFirst[ep |
 					// mm.. i don't like comparing by name :( but our diagram seems to load 
 					// the xtext document (and model objects) again, so instances are different
-					ep.castedModel.clazz.name == c.text.toString 
+					ep.castedModel.getComponent.name == c.text.toString 
 				]
 				if (cm != null)
 					list += cm
@@ -458,6 +554,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 	// SELECTION PROVIDER
 	val listeners = new ArrayList<ISelectionChangedListener>
 	var ISelection selection = null
+	
 	
 	override addSelectionChangedListener(ISelectionChangedListener listener) { listeners += listener }
 	override getSelection() { selection }
@@ -474,7 +571,7 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 			if (s.size == 1) {
 				val model = (s.firstElement as EditPart).model
 				if (model instanceof ClassModel) {
-					val wclazz = model.clazz
+					val wclazz = model.getComponent
 					this.selection = new StructuredSelection(wclazz)
 					val e = new SelectionChangedEvent(this, this.selection)
 					listeners.forEach[l| 
@@ -485,6 +582,19 @@ class ClassDiagramView extends ViewPart implements ISelectionListener, ISourceVi
 		}
 	}
 	
+	def List<? extends WNamed> removeDuplicated(Set<? extends WNamed> wnames) {
+		val namedMap = new HashMap<String, WNamed>()
+		wnames.forEach [ wname |
+			namedMap.put(wname.name, wname)
+		]
+		namedMap.values.toList
+	}
 	
-	
+	/* Static Diagram Configuration Notifications */
+	override update(Observable o, Object event) {
+		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+			this.refresh
+		}
+	}
+
 }
