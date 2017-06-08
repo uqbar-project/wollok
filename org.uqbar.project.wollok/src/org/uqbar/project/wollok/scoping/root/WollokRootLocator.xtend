@@ -17,6 +17,15 @@ class WollokRootLocator {
 	def static String fullPackageName(Resource resource) {
 		INSTANCE.doFullPackageName(resource)
 	}
+	
+	def static String rootDirectory(Resource resource){
+		INSTANCE.doRootDirectory(resource)
+	}
+	
+	def doRootDirectory(Resource resource){
+		val uri = resource.URI
+		uri.trimSegments(calculateLevelsToRoot(resource)).toFileString
+	}
 
 	def doFullPackageName(Resource resource) {
 		val numberOfLevels = resource.calculateLevelsToRoot

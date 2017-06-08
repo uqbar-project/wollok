@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.validation
 
 import com.google.inject.Inject
+import java.io.File
 import java.util.List
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
@@ -13,6 +14,7 @@ import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -31,7 +33,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -757,12 +758,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def wrongImport(Import it) {
+	def void wrongImport(Import it) {
 		val importedString = importedNamespaceWithoutWildcard
 		val scope = it.getScope(scopeProvider)
 		val found = scope.getElements(importedString.toFQN)
-		if (found.empty)
-				report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
+		if (!found.empty){
+			return 
+		}
+		
+		//Check now if it is a directory, if it is a directory would not be in the returned collection (a directorio is not a ECore element)
+		val file = new File(WollokRootLocator.rootDirectory(it.eResource) + '/' + importedString.replace('.', '/'))
+		if(!file.exists)		
+			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
 	}
 
 	@Check
