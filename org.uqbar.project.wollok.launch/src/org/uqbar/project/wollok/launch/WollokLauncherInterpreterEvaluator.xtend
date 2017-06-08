@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.launch
 
 import com.google.inject.Inject
+import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
@@ -14,9 +16,12 @@ import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUti
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
+ * 
  * Subclasses the wollok evaluator to support tests
  * 
  * @author tesonep
+ * @author dodain -- describe development
+ * 
  */
 class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 
@@ -26,10 +31,10 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	// EVALUATIONS (as multimethods)
 	override dispatch evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
-		if (main != null)
+		if (main !== null)
 			main.eval
 		else {
-			val isASuite = tests.empty && suite != null
+			val isASuite = tests.empty && suite !== null
 			var testsToRun = tests
 			var String suiteName = null
 			if (isASuite) {
@@ -52,11 +57,22 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		}
 	}
 
+	override evaluateAll(List<EObject> eObjects) {
+		wollokTestsReporter.initProcessManyFiles
+		val result = eObjects.fold(null, [ o, eObject |
+			interpreter.initStack
+			interpreter.generateStack(eObject)		 
+			evaluate(eObject as WFile)
+		])
+		wollokTestsReporter.endProcessManyFiles
+		result
+	}
+	
 	def WollokObject evalInSuite(WTest test, WSuite suite) {
 		// If in a suite, we should create a suite wko so this will be our current context to eval the tests
 		try {
 			val suiteObject = new SuiteBuilder(suite, interpreter).forTest(test).build
-			if (suite.fixture != null) {
+			if (suite.fixture !== null) {
 				suite.fixture.elements.forEach [ element |
 					interpreter.performOnStack(test, suiteObject, [|element.eval])
 				]
@@ -116,8 +132,7 @@ class SuiteBuilder {
 		suite.members.forEach [ member |
 			suiteObject.addMember(member)
 		]
-		if (test != null) {
-			// suite.members.evalAll
+		if (test !== null) {
 			// Now, declaring test local variables as suite wko instance variables
 			test.variableDeclarations.forEach[variable|suiteObject.addMember(variable)]
 		}

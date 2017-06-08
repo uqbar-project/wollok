@@ -36,4 +36,10 @@ class WollokConsoleTestsReporter implements WollokTestsReporter {
 	override finished() {
 	}
 
+	override initProcessManyFiles() {
+	}
+	
+	override endProcessManyFiles() {
+	}
+
 }

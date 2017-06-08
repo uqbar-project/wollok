@@ -1,29 +1,35 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 class A {
+	var age = 2
+	
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"
 	
-	// XPECT warnings --> "Getter should return a value" at "getAge"
-	method getAge() { console.println("blah") }
+	// XPECT warnings --> "Getter should return a value" at "age"
+	method age() { console.println("blah") }
 
 	// self are not getters	
 	method geton() { console.println("blah") }
 	method get() { console.println("blah") }
 	method ungetBlah() { console.println("blah") }
+	method showAge() { console.println(age) }
 }
 
 // same goes for objects
 
 object anObject {
+	var age = 23
+	
 	method getFirstName() { return "John" }
 	method getLastName() = "Doe"
 	
-	// XPECT warnings --> "Getter should return a value" at "getAge"
-	method getAge() { console.println("blah") }
+	// XPECT warnings --> "Getter should return a value" at "age"
+	method age() { console.println("blah") }
 
 	// self are not getters	
 	method geton() { console.println("blah") }
 	method get() { console.println("blah") }
 	method ungetBlah() { console.println("blah") }
+	method showAge() { console.println(age) }
 }

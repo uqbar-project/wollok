@@ -30,7 +30,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE;
 	public static String WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY;
-	
+	public static String WollokDslValidator_METHOD_OVERRIDING_BASE_CLASS;
+
 	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
@@ -56,6 +57,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
+	public static String WollokDslValidator_TESTS_IN_FILE;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;

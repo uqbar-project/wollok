@@ -5,6 +5,27 @@ import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 
+/**
+ * 
+ * Default implementation for connections between shapes, assuming 
+ * inheritance was the first automatic relationship we could infer from classes.
+ * 
+ * Connection goes from subclass in the middle-top to superclass in the middle-bottom,
+ * like this
+ *         _____________
+ *        |             |
+ *         -------------
+ *               ^
+ *               |
+ *         _____________
+ *        |             |
+ *         -------------
+ * 
+ * It also offers several extension method for subclasses
+ * 
+ * @author dodain
+ * 
+ */
 class DefaultWollokAnchor extends ChopboxAnchor {
 	
 	new() {
@@ -21,6 +42,13 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		newPoint	
 	}
 	
+	def translateToRelative(Rectangle rectangle) {
+		val newRectangle = rectangle
+		owner.translateToRelative(newRectangle)
+		newRectangle
+	}
+
+	
 	override getReferencePoint() {
 		owner.bounds.middleTop.translateToAbsolute
 	}
@@ -29,10 +57,17 @@ class DefaultWollokAnchor extends ChopboxAnchor {
 		owner.bounds.middleBottom.translateToAbsolute
 	}
 	
+	def static getRightCenter(Rectangle it) { new Point(x + width, y + height / 2) }
 	def static getMiddleTop(Rectangle it) { new Point(x + width / 2, y) }
+	def static getLeftCenter(Rectangle it) { new Point(x, y + height / 2) }
 	def static getMiddleBottom(Rectangle it) { new Point(x + width / 2, y + height) }
+	def static getMiddleBottomLeft(Rectangle it) { new Point(x + (width / 2) - 20, y + height) }
 	
 	def static getMiddleRight(Rectangle it) { new Point(x + width, y + height / 2) }
 	def static getMiddleLeft(Rectangle it) { new Point(x, y + height / 2) }
+
+	def isOnTheRightOf(Point point, Point anotherPoint) {
+		point.x > anotherPoint.x
+	}
 	
 }

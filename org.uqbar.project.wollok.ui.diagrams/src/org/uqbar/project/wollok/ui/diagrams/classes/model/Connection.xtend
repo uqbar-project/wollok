@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model;
 import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
 
 /**
@@ -24,15 +25,17 @@ class Connection extends ModelElement {
 	Shape source
 	Shape target
 	@Accessors String name
+	@Accessors RelationType relationType
 
-	new(String name, Shape source, Shape target) {
+	new(String name, Shape source, Shape target, RelationType relationType) {
 		this.name = name
-		reconnect(source, target)
+		this.relationType = relationType
+		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()
 	}
 	
 	def calculateLineStyle() {
-		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else Graphics.LINE_SOLID
+		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else relationType.lineStyle
 	}
 
 	def disconnect() {
@@ -78,16 +81,17 @@ class Connection extends ModelElement {
 		}
 	}
 
-	def reconnect(Shape newSource, Shape newTarget) {
-		if (newTarget == null || newSource == newTarget) {
-			throw new IllegalArgumentException("New target for connection cannot be null")
+	def reconnect(Shape newSource, Shape newTarget, RelationType relationType) {
+		if (newTarget === null) {
+			throw new IllegalArgumentException(Messages.StaticDiagram_TargetConnectionCannotBeNull)
 		}
+		relationType.validateRelationBetween(newSource, newTarget)
 		disconnect
 		this.source = newSource
 		this.target = newTarget
 		reconnect
 	}
-
+	
 	def setLineStyle(int lineStyle) {
 		if (lineStyle != Graphics.LINE_DASH && lineStyle != Graphics.LINE_SOLID)
 			throw new IllegalArgumentException
@@ -103,3 +107,4 @@ class Connection extends ModelElement {
 	}
 
 }
+

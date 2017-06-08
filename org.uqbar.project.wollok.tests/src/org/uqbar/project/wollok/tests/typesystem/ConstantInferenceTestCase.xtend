@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * The most basic inference tests
@@ -18,8 +19,8 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	static def Object[] typeSystems() {
 		#[
 			SubstitutionBasedTypeSystem,
-			XSemanticsTypeSystem
-//			ConstraintBasedTypeSystem			TO BE FIXED
+			XSemanticsTypeSystem,
+			ConstraintBasedTypeSystem
 //			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
@@ -64,5 +65,26 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
-			
+	@Test
+	def void setConstant() {
+		'''
+			program p {
+				const a = 46
+				const b = a
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "b")
+		]
+	}			
+	
+	@Test
+	def void classInstance() { 	'''
+		class Golondrina { }
+		
+		program p {
+			const c = new Golondrina()
+		}'''.parseAndInfer.asserting [
+			assertTypeOf(classType("Golondrina"), "c")
+		]
+	}		
 }

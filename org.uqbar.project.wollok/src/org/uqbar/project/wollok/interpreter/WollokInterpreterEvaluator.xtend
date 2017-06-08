@@ -74,6 +74,8 @@ import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
  * for each element.
  *
  * @author jfernandes
+ * @author dodain - Added evaluating multiple files
+ * 
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> {
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
@@ -92,7 +94,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	/* HELPER METHODS */
 	/** helper method to evaluate an expression going all through the interpreter and back here. */
 	protected def eval(EObject e) { interpreter.eval(e) }
-
+	
 	protected def evalAll(Iterable<? extends EObject> all) { all.fold(null)[a, e|
 		e.eval
 	] }
@@ -101,6 +103,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
+
+	override evaluateAll(List<EObject> eObjects) {
+		// By default it does nothing
+	}
 
 	// EVALUATIONS (as multimethods)
 	def dispatch evaluate(WFile it) {
@@ -440,5 +446,5 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			createNamedObject(classFinder.getCachedObject(context, qualifiedName), qualifiedName)
 		}
 	}
-
+	
 }

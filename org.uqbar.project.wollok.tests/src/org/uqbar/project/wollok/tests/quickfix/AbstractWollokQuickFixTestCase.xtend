@@ -20,21 +20,26 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static org.mockito.Matchers.*
 import static org.mockito.Mockito.*
 
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
+
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
 	WollokDslQuickfixProvider issueResolutionProvider
 
 	@Inject DocumentTokenSource tokenSource
 	@Inject ITextEditComposer composer
-	@Inject OutdatedStateManager outdatedStateManager;
+	@Inject OutdatedStateManager outdatedStateManager
 
+	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
+		assertQuickfix(initial, result, quickFixDescription, 1)
+	}
+	
 	/**
 	 * Used to test the quickfix, receives two lists of files.
 	 * To allow easy includes the "virtual" files are named fileX.wlk, where X is the order (of course starting in 0)
 	 * @see MethodOnWKODoesntExistQuickFixTest for an example
 	 */
-	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription) {
-
+	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues) {
 		val sources = <QuickFixTestSource>newArrayList()
 		val issues = <Issue>newArrayList()
 
@@ -52,10 +57,8 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			])
 		]
 
-		assertEquals("The number of issues should be exactly 1: " + issues, issues.size, 1)
+		assertEquals("The number of issues should be exactly " + numberOfIssues + ": " + issues, issues.size, numberOfIssues)
 		val testedIssue = issues.get(0)
-
-		issueResolutionProvider = new WollokDslQuickfixProvider
 
 		val Answer<XtextDocument> answerXtextDocument = [ call |
 			val uri = if(call.arguments.size == 0) testedIssue.uriToProblem else (call.arguments.get(0) as URI)
@@ -67,18 +70,34 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 			when(getXtextDocument()).then(answerXtextDocument)
 			when(getXtextDocument(any(URI))).then(answerXtextDocument)
 		]
-		
-		issueResolutionProvider.issueResolutionAcceptorProvider = [new IssueResolutionAcceptor[issueModificationContext]]
 
-		assertTrue("There is not solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
+		val IssueModificationContext.Factory issueFactory = mock(IssueModificationContext.Factory) => [ 
+			when(createModificationContext(any(Issue))).thenReturn(issueModificationContext)
+		] 
+
+		issueResolutionProvider = new WollokDslQuickfixProvider => [
+			issueResolutionAcceptorProvider = [ new IssueResolutionAcceptor[issueModificationContext] ]
+//			For now this is not necessary and running maven tests fails to find wollok.ui.WollokDslQuickfixProvider
+			it.assign("modificationContextFactory", issueFactory)
+		]
+		
+		assertTrue("There is no solution for the issue: " + testedIssue, issueResolutionProvider.hasResolutionFor(testedIssue.code))
 
 		val resolutions = issueResolutionProvider.getResolutions(testedIssue)
+	
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
+		// println("Resolutions: " + resolutions.map [ label ])
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
 		
+		println("Expected code")
+		println("*************")
+		println(sources.map [ expectedCode.toString ])
+		println("vs.")
+		println(sources.map [ xtextDocument.get.toString ])
+		println("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }
