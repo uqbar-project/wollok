@@ -32,6 +32,7 @@ class WollokProposal {
 	WMember member
 	Image image
 	ContentAssistContext context
+	boolean isCalledFromSelf
 
 	new(String reference, WMember m, Image image, ContentAssistContext context) {
 		this.referencePackage = reference
@@ -68,7 +69,7 @@ class WollokProposal {
 
 	def getDisplayMessage() {
 		var String fromMessage
-		if (member.eContainer.name.toLowerCase == "object")
+		if (member.eContainer.name.toLowerCase == "object" || !isCalledFromSelf)
 			fromMessage = ""
 		else if (member.isInMixin)
 			fromMessage = " - " + Messages.WollokProposal_form_mixin + " " + containerName + " (" + containerPackage + ")"

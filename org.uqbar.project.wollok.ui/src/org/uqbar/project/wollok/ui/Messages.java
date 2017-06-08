@@ -108,6 +108,7 @@ public class Messages extends NLS {
 	public static String WollokProposal_form_class;
 	public static String WollokProposal_form_object;
 	public static String WollokProposal_form_mixin;
+	public static String WollokProposal_cannot_instantiate;
 	
 	static {
 		// initialize resource bundle

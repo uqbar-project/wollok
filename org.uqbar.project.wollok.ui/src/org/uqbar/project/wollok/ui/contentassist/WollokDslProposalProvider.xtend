@@ -25,63 +25,70 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
+	WollokProposalBuilder builder
 
 	// This whole implementation is just an heuristic until we have a type system
 
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
-		memberProposalsForTarget(call.memberCallTarget, assignment, context, acceptor)
+		builder = new WollokProposalBuilder
+		builder.context = context
+		memberProposalsForTarget(call.memberCallTarget, assignment, acceptor)
 
 		// still call super for global objects and other stuff
 		super.completeWMemberFeatureCall_Feature(model, assignment, context, acceptor)
 	}
 
 	// default
-	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 	}
 
 	// to a variable
-	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		memberProposalsForTarget(ref.ref, assignment, context, acceptor)
+	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		memberProposalsForTarget(ref.ref, assignment, acceptor)
 	}
 
 	// any referenciable shows all messages that you already sent to it
-	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.messageSentAsProposals(context, acceptor)
+	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		ref.messageSentAsProposals(acceptor)
 	}
 
 	// for variables tries to resolve the type based on the initial value (for literal objects like strings, lists, etc)
-	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		val WMethodContainer type = ref.resolveType
 		if (type !== null)
-			type.methodsAsProposals(context, acceptor)
+			type.methodsAsProposals( acceptor)
 		else
-			ref.messageSentAsProposals(context, acceptor)
+			ref.messageSentAsProposals( acceptor)
 	}
 
 	// message to WKO's (shows the object's methods)
-	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.methodsAsProposals(context, acceptor)
+	def dispatch void memberProposalsForTarget(WNamedObject ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		ref.methodsAsProposals(acceptor)
 	}
 
 	// messages to this
-	def dispatch void memberProposalsForTarget(WSelf dis, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		dis.declaringContext.methodsAsProposals(context, acceptor)
+	def dispatch void memberProposalsForTarget(WSelf mySelf, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		builder.displayFullFqn = true
+		mySelf.declaringContext.methodsAsProposals(acceptor)
 	}
 
 	// *****************************
 	// ** proposing methods and how they are completed
 	// *****************************
 
-	def messageSentAsProposals(WReferenciable ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMessageSent.filter[feature !== null].forEach[ context.addProposal(ref.nameWithPackage, it, acceptor) ]
+	def messageSentAsProposals(WReferenciable ref, ICompletionProposalAcceptor acceptor) {
+		builder.reference = ref.methodContainer.nameWithPackage
+		ref.allMessageSent.filter[feature !== null].forEach[ addProposal( it, acceptor) ]
 	}
-	def methodsAsProposals(WMethodContainer ref, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		ref.allMethods.forEach[ context.addProposal(ref.nameWithPackage, it, acceptor) ]
+	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
+		builder.reference = ref.nameWithPackage
+		ref.allMethods.forEach[ addProposal( it, acceptor) ]
 	}
 
-	def addProposal(ContentAssistContext context, String referencePackage, WMember m, ICompletionProposalAcceptor acceptor) {
-		acceptor.addProposal(new WollokProposal(referencePackage, m, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage,context))
+	def addProposal(WMember m, ICompletionProposalAcceptor acceptor) {
+		builder.member = m
+		acceptor.addProposal(builder.proposal)
 	}
 
 
