@@ -25,6 +25,7 @@ import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -100,21 +101,29 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_WOLLOK_IS_REPL, this.hasRepl)
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
+		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
 	}
 	
 	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
 	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
+
+	def findLibs(LaunchConfigurationInfo info) {
+		getProject(info.project).libPaths
+	}
+
 }
 
 class LaunchConfigurationInfo {
 	@Accessors String name;
 	@Accessors String project;
 	@Accessors String file;
+	@Accessors Iterable<String> libs;
 
 	new(IFile file) {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
+		libs =  getProject(project).libPaths
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
@@ -122,5 +131,7 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
-	}
+			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]) == libs
+
+	}	
 }
