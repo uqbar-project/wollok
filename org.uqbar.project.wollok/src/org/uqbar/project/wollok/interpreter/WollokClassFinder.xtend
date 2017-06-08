@@ -35,11 +35,11 @@ class WollokClassFinder {
 	def WClass getDoubleClass(EObject context) { context.getCachedClass(DOUBLE) }
 	def WClass getBooleanClass(EObject context) { context.getCachedClass(BOOLEAN) }
 	
-	def WClass getCachedClass(EObject context, String className) {
-		if (!sdkClassesCache.containsKey(className)) { 
-			sdkClassesCache.put(className, searchClass(className, context))
+	def WClass getCachedClass(EObject context, String classFQN) {
+		if (!sdkClassesCache.containsKey(classFQN)) { 
+			sdkClassesCache.put(classFQN, searchClass(classFQN, context))
 		}
-		sdkClassesCache.get(className)
+		sdkClassesCache.get(classFQN)
 	}
 	
 	def searchClass(String classFQN, EObject context) {

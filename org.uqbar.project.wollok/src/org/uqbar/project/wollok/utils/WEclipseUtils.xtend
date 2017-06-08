@@ -5,6 +5,9 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.Map
+import java.util.Set
+import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
@@ -34,6 +37,7 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Utilities on top of eclipse platform.
@@ -80,6 +84,14 @@ class WEclipseUtils {
 	def static toIFile(URI uri) {
 		var path = new Path(uri.toFileString)
 		ResourcesPlugin.workspace.root.getFileForLocation(path)
+	}
+	
+	def static toIFile(EObject o) {
+		o.eResource.URI.toIFile
+	}
+	
+	def static getProject(EObject o) {
+		o.toIFile.project
 	}
 	
 	def static toIFile(java.net.URI uri) {
@@ -156,6 +168,21 @@ class WEclipseUtils {
 		} catch (PartInitException e) {
 			e.printStackTrace
 		}
-	} 
+	}
+	 
+	def static dispatch Set<IResource> getAllMembers(IContainer container) {
+		val Map<String,IResource> result = newHashMap
+		container
+			.members
+			.filter [ fullPath.toPortableString.contains(WollokConstants.SOURCE_FOLDER) ]
+			.forEach [
+				allMembers.forEach [ result.put(it.fullPath.toPortableString, it)]
+			]
+		result.values.toSet
+	}
+
+	def static dispatch Set<IResource> getAllMembers(IFile file) {
+		#{file}
+	}
 	
 }

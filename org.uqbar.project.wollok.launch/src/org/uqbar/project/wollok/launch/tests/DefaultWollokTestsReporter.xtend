@@ -31,4 +31,10 @@ class DefaultWollokTestsReporter implements WollokTestsReporter {
 	
 	}
 	
+	override initProcessManyFiles() {
+	}
+	
+	override endProcessManyFiles() {
+	}
+	
 }

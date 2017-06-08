@@ -5,6 +5,7 @@ import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -19,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
+import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -297,7 +299,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.parent != null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
+		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
 
@@ -436,4 +439,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
+
+	def static dispatch boolean hasRealParent(EObject it) { false }
+	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.name.equals(WollokConstants.ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WClass c) { c.parent !== null && c.parent.name !== null && !c.parent.name.equals(WollokConstants.ROOT_CLASS) }
+		
+	/* Including file name for multiple tests */
+	def static getFullName(WTest test, boolean processingManyFiles) {
+		(if (processingManyFiles) (test.file.URI.lastSegment ?: "") + " - " else "") + test.name
+	}
+
+	def static dispatch Boolean isVariable(EObject o) { false }
+	def static dispatch Boolean isVariable(WVariableDeclaration member) { true }
 }
+

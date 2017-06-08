@@ -5,9 +5,11 @@
 «ENDDEFINE»
 
 «DEFINE model FOR WollokDslProjectInfo»
+«FILE ".gitignore"-»
+bin
+«ENDFILE»
 «FILE "src/example.wlk"-»
-
-/* First Wollok example */
+/** First Wollok example */
 object wollok {
 	method howAreYou() {
 		return 'I am Wolloktastic!'

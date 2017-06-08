@@ -19,8 +19,8 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		#[
 			SubstitutionBasedTypeSystem
 			// TODO: fix !
-//			new XSemanticsTypeSystem,		 
-//			new ConstraintBasedTypeSystem,
+//			new XSemanticsTypeSystem,
+//			ConstraintBasedTypeSystem
 //			new BoundsBasedTypeSystem
 		]
 	}

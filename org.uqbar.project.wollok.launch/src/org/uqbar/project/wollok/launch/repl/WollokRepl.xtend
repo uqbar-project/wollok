@@ -19,7 +19,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.launch.repl.Messages.*
+import static org.uqbar.project.wollok.launch.Messages.*
 
 /**
  * 

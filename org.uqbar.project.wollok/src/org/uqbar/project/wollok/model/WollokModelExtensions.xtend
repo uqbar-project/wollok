@@ -1,4 +1,3 @@
-
 package org.uqbar.project.wollok.model
 
 import java.util.List

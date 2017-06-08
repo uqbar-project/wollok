@@ -142,5 +142,11 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	def setWriter(JsonWriter writer) {
 		_writer = writer
 	}
+
+	override initProcessManyFiles() {
+	}
+	
+	override endProcessManyFiles() {
+	}
 	
 }
