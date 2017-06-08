@@ -140,6 +140,11 @@ public class Messages extends NLS {
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
+	public static String WollokProposal_form_class;
+	public static String WollokProposal_form_object;
+	public static String WollokProposal_form_mixin;
+	public static String WollokProposal_cannot_instantiate;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
