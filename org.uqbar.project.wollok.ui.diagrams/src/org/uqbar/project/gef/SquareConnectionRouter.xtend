@@ -6,6 +6,7 @@ import org.eclipse.draw2d.ConnectionAnchor
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PointList
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.SelfReferenceAnchor
 
 /**
  * Routes the connection in a tree-like form unifying connections
@@ -41,31 +42,38 @@ class SquareConnectionRouter extends AbstractRouter {
 	override route(Connection conn) {
 		if (conn.sourceAnchor == null || conn.targetAnchor == null)
 			return;
-		
+
 		startPoint = getStartPoint(conn)
 		conn.translateToRelative(startPoint)
 		endPoint = getEndPoint(conn)
 		conn.translateToRelative(endPoint)
 		
-		conn.points = new PointList => [
-			addPoint(startPoint)
-			// go up
-			addPoint(new Point(startPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
-			// go right
-			addPoint(new Point(endPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
-			addPoint(endPoint)
-		]
+		if (!startPoint.equals(endPoint)) {
+			conn.points = new PointList => [
+				addPoint(startPoint)
+				// go up
+				addPoint(new Point(startPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
+				// go right
+				addPoint(new Point(endPoint.x, endPoint.y + DISTANCE_FROM_TARGET))
+				addPoint(endPoint)
+			]
+		}
 	}
 	
 	override protected getStartPoint(Connection conn) {
-		// Fix: anchor when source is below
-		if (conn.sourceAnchor.below(conn.targetAnchor)) {
+		if (conn.sourceAnchor?.equals(conn.targetAnchor)) {
+			return new SelfReferenceAnchor(conn.sourceAnchor.owner).referencePoint
+		}
+		if (conn.sourceAnchor?.below(conn.targetAnchor)) {
 			return new DefaultWollokAnchor(conn.sourceAnchor.owner).referencePoint	
 		}
 		conn.sourceAnchor.referencePoint
 	}
 	
 	override protected getEndPoint(Connection conn) {
+		if (conn.sourceAnchor?.equals(conn.targetAnchor)) {
+			return new SelfReferenceAnchor(conn.sourceAnchor.owner).getLocation(endPoint)
+		}
 		conn.targetAnchor?.getLocation(endPoint)
 	}
 

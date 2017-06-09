@@ -7,6 +7,7 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 
 /**
@@ -34,7 +35,7 @@ class VariableModel extends Shape {
 	}
 	
 	def createConnections(Map<IVariable, VariableModel> context) {
-		variable.value?.variables.forEach[v| new Connection(v.name, this, get(context, v)) ]
+		variable.value?.variables.forEach[v| new Connection(v.name, this, get(context, v), RelationType.INHERITANCE) ]
 	}
 	
 	def get(Map<IVariable, VariableModel> map, IVariable variable) {

@@ -3,7 +3,9 @@ package org.uqbar.project.wollok.ui.diagrams.classes.parts
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import java.util.List
+import java.util.Map
 import org.eclipse.draw2d.ConnectionAnchor
+import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.EditPart
@@ -15,10 +17,18 @@ import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.eclipse.gef.editpolicies.FlowLayoutEditPolicy
 import org.eclipse.gef.requests.CreateRequest
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.DefaultWollokAnchor
+import org.uqbar.project.wollok.ui.diagrams.classes.anchors.WollokAssociationAnchor
+import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.ClassContainerEditPolicy
+import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.CreateAssociationEditPolicy
+import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.HideComponentEditPolicy
+import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
+import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Abstract base class for edit parts for (named) objects and classes
@@ -27,7 +37,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
  * @author jfernandes
  */
 abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEditPart implements PropertyChangeListener, NodeEditPart {
-	protected ConnectionAnchor anchor
+	protected Map<ConnectionEditPart, ConnectionAnchor> connectionAnchors = newHashMap
+	protected Map<Request, ConnectionAnchor> requestAnchors = newHashMap
 
 	def Shape getCastedModel()
 
@@ -50,38 +61,74 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		}
 	}
 	
-	def getConnectionAnchor() {
-		if (anchor == null)
-			anchor = createConnectionAnchor
-		anchor
-	}
-	
-	def ConnectionAnchor createConnectionAnchor() {
+	def ConnectionAnchor createConnectionAnchorFor(ConnectionEditPart connection) {
 		new DefaultWollokAnchor(figure)
 	}
 	
+	/** http://help.eclipse.org/kepler/index.jsp?topic=%2Forg.eclipse.gef.doc.isv%2Fguide%2Fguide.html */
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy {})
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ClassContainerEditPolicy)
 		// to be able to select child parts
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new FlowLayoutEditPolicy {
-			override protected createAddCommand(EditPart arg0, EditPart arg1) {}
+			override protected createAddCommand(EditPart arg0, EditPart arg1) {	}
 			override protected createMoveChildCommand(EditPart arg0, EditPart arg1) {}
 			override protected getCreateCommand(CreateRequest arg0) {}
 		})
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new HideComponentEditPolicy)
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateAssociationEditPolicy)
 	}
 	
 	override getModelSourceConnections() { castedModel.sourceConnections }
 	override getModelTargetConnections() { castedModel.targetConnections }
-	override getSourceConnectionAnchor(ConnectionEditPart connection) { connectionAnchor }
-	override getSourceConnectionAnchor(Request request) { connectionAnchor }
-	override getTargetConnectionAnchor(ConnectionEditPart connection) { connectionAnchor }
-	override getTargetConnectionAnchor(Request request) { connectionAnchor }
+	
+	override getSourceConnectionAnchor(ConnectionEditPart connection) {
+		connection.mappedConnectionAnchor
+	}
 
+	override getTargetConnectionAnchor(ConnectionEditPart connection) { 
+		connection.mappedConnectionAnchor
+	}
+	
+	def ConnectionAnchor mappedConnectionAnchor(ConnectionEditPart connection) {
+		val anchor = connectionAnchors.get(connection)
+		if (anchor !== null) return anchor
+		val newAnchor = connection.connectionAnchor
+		connectionAnchors.put(connection, newAnchor)
+		newAnchor
+	}
+	
+	def dispatch ConnectionAnchor connectionAnchor(ConnectionEditPart connection) { 
+		new DefaultWollokAnchor(figure)
+	}
+	
+	def dispatch ConnectionAnchor connectionAnchor(AssociationConnectionEditPart part) {
+		figure.defaultAssociationAnchorFor(part.castedModel)
+	}
+	
+	override getSourceConnectionAnchor(Request request) {
+		new DefaultWollokAnchor(figure)
+	}
+
+	override getTargetConnectionAnchor(Request request) {
+		new DefaultWollokAnchor(figure)
+	}
+
+	def ConnectionAnchor defaultAssociationAnchorFor(IFigure figure, Connection connection) {
+		new WollokAssociationAnchor(figure, connection)
+	}
+	
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
-		if (Shape.SIZE_PROP == prop || Shape.LOCATION_PROP == prop)
+		if (Shape.SIZE_PROP == prop || Shape.LOCATION_PROP == prop) {
 			refreshVisuals
+			if (Shape.SIZE_PROP == prop) {
+				castedModel.configuration.saveSize(castedModel)
+			}
+			if (Shape.LOCATION_PROP == prop) {
+				castedModel.configuration.saveLocation(castedModel)
+			}
+		}
 		else if (Shape.SOURCE_CONNECTIONS_PROP == prop)
 			refreshSourceConnections
 		else if (Shape.TARGET_CONNECTIONS_PROP == prop)
@@ -102,9 +149,11 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		doGetModelChildren.filter [ member | member.isNotAccessor(variables) ].toList
 	}
 	
-	def List doGetModelChildren()
+	def doGetModelChildren() {
+		(castedModel as AbstractModel).members
+	}
 
-	def dispatch boolean isNotAccessor(WMember member, List<String> variables) {
+	def dispatch boolean isNotAccessor(WMember named, List<String> variables) {
 		true
 	}
 	
@@ -112,13 +161,4 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 		!variables.contains(method.name)  		
 	}
 
-	def dispatch Boolean isVariable(WMember member) {
-		false
-	}
-
-	def dispatch Boolean isVariable(WVariableDeclaration member) {
-		true
-	}
-	
-	
 }

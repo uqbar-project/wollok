@@ -25,6 +25,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy)
+		
 	}
 	
 	override createFigure() {
@@ -33,7 +34,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			
 			lineStyle = castedModel.lineStyle
 			
-			if (castedModel.name != null)
+			if (castedModel.name !== null)
 				add(new Label(castedModel.name) => [ opaque = true ], new MidpointLocator(it, 0))
 		]
 	}
@@ -58,5 +59,5 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 				lineStyle = castedModel.lineStyle
 			]
 	}
-
+	
 }

@@ -5,6 +5,9 @@ import org.eclipse.draw2d.PolygonDecoration
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 
 /**
+ * 
+ * Inheritance connection edit part with a white triangle on superclass edge
+ * 
  * @author jfernandes
  */
 class InheritanceConnectionEditPart extends ConnectionEditPart {

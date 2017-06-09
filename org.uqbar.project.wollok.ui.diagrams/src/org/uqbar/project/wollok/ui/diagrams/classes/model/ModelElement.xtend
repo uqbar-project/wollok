@@ -10,6 +10,9 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
+ * 
+ * Abstract class for a model element in the static diagram.
+ * 
  * @author jfernandes
  */
 abstract class ModelElement implements IPropertySource, Serializable {

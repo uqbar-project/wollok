@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
 import java.beans.PropertyChangeListener
+import org.eclipse.gef.ConnectionEditPart
 import org.eclipse.gef.NodeEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.anchors.NamedObjectWollokAnchor
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
@@ -16,14 +17,14 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 class NamedObjectEditPart extends AbstractMethodContainerEditPart implements PropertyChangeListener, NodeEditPart {
 
 	override NamedObjectModel getCastedModel() { model as NamedObjectModel }
-	override doGetModelChildren() { castedModel.obj.members }
-	override WNamedObject getLanguageElement() { castedModel.obj }
+
+	override WNamedObject getLanguageElement() { castedModel.component as WNamedObject }
 	
 	override createFigure() {
-		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND)
+		new WClassFigure(languageElement.name, ClassDiagramColors.NAMED_OBJECTS_FOREGROUND, ClassDiagramColors.NAMED_OBJECTS__BACKGROUND, castedModel)
 	}
 
-	override createConnectionAnchor() {
+	override mappedConnectionAnchor(ConnectionEditPart connection) {
 		new NamedObjectWollokAnchor(figure)
 	}
 	
