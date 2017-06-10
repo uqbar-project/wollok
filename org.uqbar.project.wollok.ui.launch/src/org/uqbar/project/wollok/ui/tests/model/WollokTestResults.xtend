@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
 
 	boolean shouldShowOnlyFailuresAndErrors = false
-	
+		
 	@Accessors
 	var WollokTestContainer container
 	
@@ -26,10 +26,11 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
 		
 		this.setChanged
-		this.notifyObservers
+		this.notifyObservers()
 	}
 
 	override testOk(String testName) {
+		
 		testByName(testName).endedOk()
 
 		this.setChanged
@@ -44,7 +45,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
 		this.setChanged
-		this.notifyObservers		
+		this.notifyObservers(Boolean.TRUE) //new execution		
 	}
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
@@ -71,6 +72,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		
 		this.setChanged
 		this.notifyObservers		
+	}
+	
+	override notifyObservers() {
+		this.notifyObservers(Boolean.FALSE)
 	}
 	
 	override notifyObservers(Object arg) {

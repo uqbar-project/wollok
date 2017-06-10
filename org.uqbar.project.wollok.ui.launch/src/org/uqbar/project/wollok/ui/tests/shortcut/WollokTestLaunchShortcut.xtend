@@ -45,9 +45,7 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	}
 	
 	def activateWollokTestResultView() {
-		RunInUI.runInUI [
-				PlatformUI.workbench.activeWorkbenchWindow.activePage.showView(WollokTestResultView.NAME)
-			]
+		WollokTestResultView.activate()
 	}
 
 	def checkEclipseProject(IProject project) {

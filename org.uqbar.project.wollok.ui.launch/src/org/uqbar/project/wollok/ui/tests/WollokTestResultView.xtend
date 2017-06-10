@@ -45,6 +45,8 @@ import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.console.RunInUI
+import org.eclipse.ui.PlatformUI
 
 /**
  * 
@@ -78,7 +80,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	@Inject
 	WollokTestLaunchShortcut testLaunchShortcut
-	
+
 	@Inject
 	WollokAllTestsLaunchShortcut allTestsLaunchShortcut
 
@@ -87,7 +89,15 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
 	ToolItem debugAgain
-	
+
+	def static activate() {
+		RunInUI.runInUI [
+			    val view = PlatformUI.workbench.activeWorkbenchWindow.activePage.showView(WollokTestResultView.NAME)
+			(view as WollokTestResultView).cleanView
+			]
+	}
+
+
 	def canRelaunch() {
 		results !== null && results.container !== null && results.container.mainResource !== null
 	}
@@ -108,14 +118,34 @@ class WollokTestResultView extends ViewPart implements Observer {
 		}
 	}
 
+	/** this method is invoked between test executions */
+	def cleanView() {
+		bar.background = noResultColor
+		totalTextBox.text = ""
+		failedTextBox.text = ""
+		errorTextBox.text = ""
+		runAgain.enabled = false
+		debugAgain.enabled = false
+		(testTree.contentProvider as WTestTreeContentProvider).results.container = new WollokTestContainer() {
+			override toString() {
+				return ""
+			}
+
+			override asText() {
+				return ""
+			}
+		}
+		testTree.refresh(true)
+	}
+
 	def testFile() {
 		results.container.mainResource.toIFile
 	}
 
 	def toggleShowFailuresAndErrors() {
-		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)	
+		results.showFailuresAndErrorsOnly(showFailuresAndErrors.selection)
 	}
-	
+
 	override createPartControl(Composite parent) {
 		parent.background = new Color(Display.current, new RGB(220, 220, 220))
 		resManager = new LocalResourceManager(JFaceResources.getResources(), parent)
@@ -127,10 +157,10 @@ class WollokTestResultView extends ViewPart implements Observer {
 			parent.setLayout(it)
 			parent.setLayoutData(new GridData => [
 				horizontalAlignment = GridData.FILL
-                verticalAlignment = GridData.FILL
-                grabExcessHorizontalSpace = true
-                grabExcessVerticalSpace = true
-                horizontalSpan = 2
+				verticalAlignment = GridData.FILL
+				grabExcessHorizontalSpace = true
+				grabExcessVerticalSpace = true
+				horizontalSpan = 2
 			])
 		]
 		createToolbar(parent)
@@ -147,7 +177,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 	def createSeparator(Composite parent) {
 		val separator = new Label(parent, SWT.HORIZONTAL.bitwiseOr(SWT.SEPARATOR))
-    	separator.layoutData = new GridData(GridData.FILL_HORIZONTAL)
+		separator.layoutData = new GridData(GridData.FILL_HORIZONTAL)
 	}
 
 	def createToolbar(Composite parent) {
@@ -157,15 +187,17 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		showFailuresAndErrors = new ToolItem(toolbar, SWT.CHECK) => [
 			toolTipText = Messages.WollokTestResultView_showOnlyFailuresAndErrors
-			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.gif")
+			val pathImage = Activator.getDefault.getImageDescriptor(
+				"platform:/plugin/org.eclipse.jdt.junit/icons/full/obj16/failures.gif")
 			image = resManager.createImage(pathImage)
-			addListener(SWT.Selection)[ this.toggleShowFailuresAndErrors ]
+			addListener(SWT.Selection)[this.toggleShowFailuresAndErrors]
 			enabled = true
 		]
 
 		runAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_runAgain
-			val pathImage = Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.gif")
+			val pathImage = Activator.getDefault.getImageDescriptor(
+				"platform:/plugin/org.eclipse.jdt.junit/icons/full/elcl16/relaunch.gif")
 			image = resManager.createImage(pathImage)
 			addListener(SWT.Selection)[this.relaunch]
 			enabled = false
@@ -173,7 +205,9 @@ class WollokTestResultView extends ViewPart implements Observer {
 
 		debugAgain = new ToolItem(toolbar, SWT.PUSH) => [
 			toolTipText = Messages.WollokTestResultView_debugAgain
-			image = resManager.createImage(Activator.getDefault.getImageDescriptor("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
+			image = resManager.createImage(
+				Activator.getDefault.getImageDescriptor(
+					"platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/debuglast_co.png"))
 			addListener(SWT.Selection)[this.relaunchDebug]
 			enabled = false
 		]
@@ -200,6 +234,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTree(Composite parent) {
+		println("CREANDO ARBOL")
 		testTree = new TreeViewer(parent, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.SINGLE))
 		testTree.contentProvider = new WTestTreeContentProvider => [
 			it.results = results
@@ -238,9 +273,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput = new Link(
 			textParent,
 			SWT.BORDER.bitwiseOr(SWT.WRAP).bitwiseOr(SWT.MULTI).bitwiseOr(SWT.V_SCROLL)
-		) => [
-			
-		]
+		) => []
 		textOutput.background = new Color(Display.current, 255, 255, 255)
 		textOutput.foreground = new Color(Display.current, 50, 50, 50)
 
@@ -258,7 +291,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 		textOutput.addSelectionListener(
 			new SelectionAdapter() {
 				override widgetSelected(SelectionEvent event) {
-					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text, results.container.project)
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text,
+						results.container.project)
 					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
@@ -267,7 +301,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 			}
 		)
 	}
-	
+
 	def createResults(Composite parent) {
 		val panel = new Composite(parent, SWT.NONE)
 
@@ -314,6 +348,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	override update(Observable o, Object arg) {
+
 		testTree.refresh(true)
 		testTree.expandAll
 
@@ -372,6 +407,8 @@ class WollokTestResultView extends ViewPart implements Observer {
 	def dispatch getOutputText(WollokTestResult result) {
 		result.state.getOutputText(result)
 	}
+	
+	
 }
 
 class WTestTreeLabelProvider extends LabelProvider {
@@ -388,9 +425,7 @@ class WTestTreeLabelProvider extends LabelProvider {
 	}
 
 	def dispatch getText(WollokTestContainer element) {
-		if (element.hasSuiteName) return element.suiteName
-		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
-		element.mainResource.deresolve(base).toFileString
+		return element.asText()
 	}
 
 	def dispatch getText(WollokTestResult element) {
