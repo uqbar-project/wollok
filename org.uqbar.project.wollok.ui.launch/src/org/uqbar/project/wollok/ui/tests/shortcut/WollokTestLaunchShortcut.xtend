@@ -2,13 +2,12 @@ package org.uqbar.project.wollok.ui.tests.shortcut
 
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IMarker
+import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.widgets.Display
-import org.eclipse.ui.PlatformUI
 import org.uqbar.project.wollok.Messages
-import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.launch.shortcut.LaunchConfigurationInfo
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.WollokTestResultView
@@ -16,7 +15,6 @@ import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
-import org.eclipse.core.resources.IProject
 
 /**
  * @author tesonep

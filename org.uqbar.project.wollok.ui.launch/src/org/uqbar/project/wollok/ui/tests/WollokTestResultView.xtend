@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.ui.tests
 import java.util.Observable
 import java.util.Observer
 import javax.inject.Inject
-import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.jface.layout.GridDataFactory
 import org.eclipse.jface.resource.JFaceResources
@@ -30,11 +29,13 @@ import org.eclipse.swt.widgets.Link
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
 import org.eclipse.swt.widgets.ToolItem
+import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.uqbar.project.wollok.ui.Messages
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.tests.model.WollokTestContainer
@@ -45,8 +46,6 @@ import org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.shortcut.WollokTestLaunchShortcut
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.uqbar.project.wollok.ui.console.RunInUI
-import org.eclipse.ui.PlatformUI
 
 /**
  * 
@@ -234,7 +233,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	def createTree(Composite parent) {
-		println("CREANDO ARBOL")
 		testTree = new TreeViewer(parent, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.SINGLE))
 		testTree.contentProvider = new WTestTreeContentProvider => [
 			it.results = results

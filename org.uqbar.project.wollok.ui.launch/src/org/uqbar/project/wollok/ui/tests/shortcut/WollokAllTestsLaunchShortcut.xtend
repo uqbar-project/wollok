@@ -7,6 +7,7 @@ import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.widgets.Display
 
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
+
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**

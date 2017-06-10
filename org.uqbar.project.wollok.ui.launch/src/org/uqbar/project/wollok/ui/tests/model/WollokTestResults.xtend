@@ -45,7 +45,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.container.defineTests(newArrayList(tests.map[new WollokTestResult(it)]), this.shouldShowOnlyFailuresAndErrors)
 		
 		this.setChanged
-		this.notifyObservers(Boolean.TRUE) //new execution		
+		this.notifyObservers		
 	}
 	
 	override showFailuresAndErrorsOnly(boolean showFailuresAndErrors) {
@@ -74,9 +74,6 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.notifyObservers		
 	}
 	
-	override notifyObservers() {
-		this.notifyObservers(Boolean.FALSE)
-	}
 	
 	override notifyObservers(Object arg) {
 		RunInUI.runInUI[super.notifyObservers(arg)]
