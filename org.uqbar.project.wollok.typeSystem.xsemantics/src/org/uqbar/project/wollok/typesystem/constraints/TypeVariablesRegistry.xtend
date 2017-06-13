@@ -50,17 +50,16 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	
 	// ************************************************************************
 	// ** Synthetic type variables
 	// ************************************************************************
-	def newSyntheticVar(String className, EObject owner) {
-		new TypeVariable(owner) => [
-			addMinimalType(typeSystem.classType(owner, className))
+	def newSyntheticVar(String className) {
+		new TypeVariable(null) => [
+			addMinimalType(typeSystem.classType(null, className))
 			beSealed
 		]
 	}
-	
+
 	// ************************************************************************
 	// ** Retrieve type variables
 	// ************************************************************************

@@ -11,31 +11,35 @@ import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.eclipse.emf.ecore.EObject
 
 class OpenMethod extends AbstractInferenceStrategy {
 	val methodTypeInfo = newHashMap(
 		"Integer" -> newHashMap(
-			 "+" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER)
-			,"-" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER)
-			,"*" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER)
+			"+" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER),
+			"-" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER),
+			"*" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER)
 		)
 	)
 
+//	def operator_doubleArrow(String a, String b) {
+//		return new AnnotatedMethodTypeInfo(a, b)
+//	}
 	override analiseVariable(TypeVariable it) {
 		it.typeInfo.messages.forEach [ message |
 			minimalConcreteTypes.keySet.forEach [ minType |
-				message.openMethod(minType, owner)
+				message.openMethod(minType)
 			]
 		]
 	}
 
-	def openMethod(MessageSend it, WollokType type, EObject owner) {
-		val methodTypeInfo = type.methodTypeInfo(selector, arguments)
-
-		returnType.beSupertypeOf(methodTypeInfo.tvar(registry, owner))
-		arguments.biForEach(methodTypeInfo.parametersTvar(registry, owner))[arg, param|arg.beSubtypeOf(param)]
-		arguments.forEach[println(it.fullDescription)]
+	def openMethod(MessageSend it, WollokType type) {
+		if (addOpenType(type)) {
+			val methodTypeInfo = type.methodTypeInfo(selector, arguments)
+			println('''	Feeding message send «it» with method type info from type «type»''')
+			changed = true
+			returnType.beSupertypeOf(methodTypeInfo.returnType(registry))
+			arguments.biForEach(methodTypeInfo.parameters(registry))[arg, param|arg.beSubtypeOf(param)]
+		}
 	}
 
 	def <T, U> biForEach(Iterable<T> it1, Iterable<U> it2, BiConsumer<T, U> function) {
@@ -57,19 +61,14 @@ class OpenMethod extends AbstractInferenceStrategy {
 	}
 
 	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
-		var methodtypeInfo = methodTypeInfo.get(type.name)?.get(selector)
-		if(methodtypeInfo != null) return methodtypeInfo
-
-		val method = type.lookupMethod(selector, arguments)
-		new MethodTypeInfoImpl(method)
+		methodTypeInfo.get(type.name)?.get(selector) ?: new MethodTypeInfoImpl(type.lookupMethod(selector, arguments))
 	}
 }
 
 interface MethodTypeInfo {
-	def TypeVariable tvar(TypeVariablesRegistry registry, EObject owner)
+	def TypeVariable returnType(TypeVariablesRegistry registry)
 
-	def List<TypeVariable> parametersTvar(TypeVariablesRegistry registry, EObject owner)
-
+	def List<TypeVariable> parameters(TypeVariablesRegistry registry)
 }
 
 class AnnotatedMethodTypeInfo implements MethodTypeInfo {
@@ -81,14 +80,13 @@ class AnnotatedMethodTypeInfo implements MethodTypeInfo {
 		this.parameterTypes = parameterTypes
 	}
 
-	override tvar(TypeVariablesRegistry registry, EObject owner) {
-		registry.newSyntheticVar(returnType, owner)
+	override returnType(TypeVariablesRegistry registry) {
+		registry.newSyntheticVar(returnType)
 	}
 
-	override parametersTvar(TypeVariablesRegistry registry, EObject owner) {
-		parameterTypes.map[registry.newSyntheticVar(it, owner)] // TODO: Este owner es una mentira
+	override parameters(TypeVariablesRegistry registry) {
+		parameterTypes.map[registry.newSyntheticVar(it)]
 	}
-
 }
 
 class MethodTypeInfoImpl implements MethodTypeInfo {
@@ -98,11 +96,11 @@ class MethodTypeInfoImpl implements MethodTypeInfo {
 		this.method = method
 	}
 
-	override tvar(TypeVariablesRegistry registry, EObject owner) {
+	override returnType(TypeVariablesRegistry registry) {
 		registry.tvar(method)
 	}
 
-	override parametersTvar(TypeVariablesRegistry registry, EObject owner) {
+	override parameters(TypeVariablesRegistry registry) {
 		method.parameters.map[registry.tvar(it)]
 	}
 }

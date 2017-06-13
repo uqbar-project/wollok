@@ -171,17 +171,17 @@ class ConstraintGenerator {
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 	
-	def dispatch void generateVariables(WReturnExpression it) {
-		expression.generateVariables
-		declaringMethod.beSupertypeOf(expression)
-		newVoid
-	}
-	
 	def dispatch void generateVariables(WBinaryOperation it) {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 		
 		leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+	}
+	
+	def dispatch void generateVariables(WReturnExpression it) {
+		expression.generateVariables
+		declaringMethod.beSupertypeOf(expression)
+		newVoid
 	}
 	
 	// ************************************************************************
