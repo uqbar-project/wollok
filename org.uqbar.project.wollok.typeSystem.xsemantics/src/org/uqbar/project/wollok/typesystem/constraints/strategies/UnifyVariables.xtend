@@ -14,7 +14,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
 		if (tvar.subtypes.size == 1)
 			tvar.unifyWith(tvar.subtypes.uniqueElement)
-		else if (tvar.supertypes.size == 1)
+		if (tvar.supertypes.size == 1)
 			tvar.unifyWith(tvar.supertypes.uniqueElement)
 	}
 
