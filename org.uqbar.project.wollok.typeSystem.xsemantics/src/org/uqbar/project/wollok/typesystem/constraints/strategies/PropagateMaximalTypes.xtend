@@ -8,6 +8,7 @@ class PropagateMaximalTypes extends AbstractInferenceStrategy {
 		if (tvar.maximalConcreteTypes != null && tvar.maximalConcreteTypes.state == Pending) {
 			tvar.propagateMaxTypes(tvar.allSubtypes)
 			tvar.maximalConcreteTypes.state = Ready
+			changed = true
 		}
 	}
 
