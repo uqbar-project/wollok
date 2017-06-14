@@ -129,7 +129,7 @@ try {
 	}
 	
 	def getGetProperties() {
-		if (properties == null)
+		if (properties === null)
 			properties = loadProperties 
 		properties
 	}

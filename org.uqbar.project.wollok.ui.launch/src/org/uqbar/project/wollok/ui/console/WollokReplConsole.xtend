@@ -183,10 +183,9 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def sendInputBuffer() {
-		val x = inputBuffer  + System.lineSeparator
 		addCommandToHistory
 		sessionCommands += inputBuffer
-		streamsProxy.write(x) 
+		streamsProxy.write(inputBuffer) 
 		outputTextEnd = page.viewer.textWidget.charCount
 		updateInputBuffer
 		page.viewer.textWidget.selection = outputTextEnd
