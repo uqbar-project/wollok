@@ -33,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -796,14 +797,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
-			 if (expression !== null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-//			I remove this because I'm not sure if it is needed (Pablo 2016/07/25)
-//			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
-			 if (declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it, WMETHOD_DECLARATION__NATIVE)
-			 // this is currently a limitation on native objects
-//			 if(declaringContext instanceof WClass)
-//				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-//				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
+			if(expression !== null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
+			if(declaringContext instanceof WObjectLiteral) 
+				report("Native methods can only be defined in classes", it,WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 
