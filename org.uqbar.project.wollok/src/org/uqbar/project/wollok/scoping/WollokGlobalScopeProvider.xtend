@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.common.base.Predicate
 import com.google.inject.Inject
+import java.io.File
 import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
@@ -17,13 +18,13 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.manifest.WollokManifest
 import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
+import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import org.uqbar.project.wollok.scoping.root.WollokRootLocator
-import java.io.File
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -40,6 +41,9 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	@Inject
 	WollokManifestFinder manifestFinder
 
+	@Inject 
+	WollokImportedNamespaceAwareLocalScopeProvider localScopeProvider
+
 	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
 		val explicitImportedObjects = context.importedObjects
@@ -55,12 +59,14 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
 	}
 	
-	def doImportedObjects(Resource context, List<Import> imports){
+	def doImportedObjects(Resource context, List<Import> importsEntry){
 		val resourceSet = context.resourceSet
 		val objectsFromManifests = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
 		
+		val imports = (importsEntry.map[ #[importedNamespace] + localScopeProvider.allRelativeImports(importedNamespace, context.implicitPackage) ].flatten).toSet
+		
 		imports.filter[
-			importedNamespace != null && !objectsFromManifests.exists[o| o.matchesImport(importedNamespace)]
+			it != null && !objectsFromManifests.exists[o| o.matchesImport(it)]
 		]
 		.map[ 
 			toResource(context)
@@ -84,13 +90,15 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Resolves the import to a ECore resource. Here is where the magic of resolving the libraries is performed for the
 	 * things that are not in the wollok classpath (found by the WollokManifestFinder).
 	 */	
-	def static toResource(Import imp, Resource resource) {
+	def static toResource(String importedNamespace, Resource resource) {
 		try {
-			var uri = generateUri(resource, imp.importedNamespace)
+			var uri = generateUri(resource, importedNamespace)
+			if(uri == null) return null
+			
 			EcoreUtil2.getResource(resource, uri)
 		}
 		catch (RuntimeException e) {
-			throw new WollokRuntimeException("Error while resolving import '" + imp.importedNamespace + "'", e)
+			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
 		}
 	}
 	
@@ -110,7 +118,9 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		var newUri = uri
 
 		while (newUri.segmentCount >= 1) {
-			if (new File(newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toFileString).exists) {
+			val fileString = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toFileString
+			
+			if (fileString !== null && new File(fileString).exists) {
 				return newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 			}
 			

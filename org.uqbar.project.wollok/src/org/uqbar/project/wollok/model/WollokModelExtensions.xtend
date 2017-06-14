@@ -56,9 +56,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
+import org.eclipse.emf.ecore.resource.Resource
+
+import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -70,10 +72,14 @@ import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.
 class WollokModelExtensions {
 
 	def static implicitPackage(EObject it) {
-		if(file.URI.toString.startsWith("classpath:/"))
-			file.URI.trimFileExtension.segments.join(".")
+		file.implicitPackage
+	}
+	
+	def static implicitPackage(Resource it){
+		if(URI.toString.startsWith("classpath:/"))
+			URI.trimFileExtension.segments.join(".")
 		else
-			file.fullPackageName
+			fullPackageName(it)
 	}
 	
 	def static file(EObject it) { eResource }
@@ -415,6 +421,14 @@ class WollokModelExtensions {
 	// hack uses another grammar ereference to any
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
 	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
+	
+	/**
+	 * Returns all the imports in the context.
+	 **/
+	def static Iterable<Import> allImports(EObject e){ 
+		val locals = e.eContents.filter(Import)
+		if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+	}
 	
 	// *******************************
 	// ** refactoring

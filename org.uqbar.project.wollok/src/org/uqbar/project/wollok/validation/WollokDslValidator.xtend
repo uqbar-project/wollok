@@ -8,12 +8,14 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -74,6 +76,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	WollokClassFinder classFinder
 	@Inject
 	WollokGlobalScopeProvider scopeProvider
+
+	@Inject
+	IQualifiedNameConverter qualifiedNameConverter
+	
+	@Inject
+	WollokImportedNamespaceAwareLocalScopeProvider localScopeProvider
 
 	// ERROR KEYS
 	public static val CANNOT_ASSIGN_TO_VAL = "CANNOT_ASSIGN_TO_VAL"
@@ -574,7 +582,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def tryMustHaveEitherCatchOrAlways(WTry tri) {
-		if ((tri.catchBlocks == null || tri.catchBlocks.empty) && tri.alwaysExpression == null)
+		if ((tri.catchBlocks === null || tri.catchBlocks.empty) && tri.alwaysExpression === null)
 			report(WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS, tri, WTRY__EXPRESSION, ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	}
 
@@ -762,15 +770,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def void wrongImport(Import it) {
 		val importedString = importedNamespaceWithoutWildcard
 		val scope = it.getScope(scopeProvider)
-		val found = scope.getElements(importedString.toFQN)
-		if (!found.empty){
-			return 
-		}
+		
+		val allImports = #[importedString] + localScopeProvider.allRelativeImports(importedString, it)
+
+		if(allImports.exists [ anImport | 
+			val found = scope.getElements(qualifiedNameConverter.toQualifiedName(anImport))
+			!found.empty
+		])
+			return
 		
 		//Check now if it is a directory, if it is a directory would not be in the returned collection (a directorio is not a ECore element)
-		val file = new File(WollokRootLocator.rootDirectory(it.eResource) + '/' + importedString.replace('.', '/'))
-		if(!file.exists)		
-			report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
+		val rootDirectory = WollokRootLocator.rootDirectory(it.eResource)
+		if(allImports.exists [ anImport | 
+			val file = new File(rootDirectory + '/' + anImport.replace('.', '/'))
+			file.exists
+		])
+			return;
+		
+		report(WollokDslValidator_WRONG_IMPORT + " " + importedNamespace, it, IMPORT__IMPORTED_NAMESPACE)
 	}
 
 	@Check

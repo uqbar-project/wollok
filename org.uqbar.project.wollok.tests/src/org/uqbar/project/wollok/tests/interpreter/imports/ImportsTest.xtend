@@ -8,6 +8,8 @@ import org.junit.Ignore
  * Test the different combinations and functionality of imports.
  * 
  * @author jfernandes
+ * @author tesonep
+ * 
  */
 class ImportsTest extends AbstractWollokInterpreterTestCase {
 	
@@ -66,6 +68,64 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'''
 		].interpretAsFilesPropagatingErrors
 	}
+
+	@Test
+	def void testImportObjectMultiLevelRelative() {
+		#['model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'model/entrenador' -> '''
+			import aves.*
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'pgm/programa' -> '''
+			import model.entrenador.*
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+
+
+	@Test
+	def void testImportObjectInSrc() {
+		#['src/model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'src/model/entrenador' -> '''
+			import aves.*
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'src/pgm/programa' -> '''
+			import model.entrenador.*
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+
 	
 	@Test
 	def void testMultipleObjectsImports() {
@@ -167,6 +227,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 			test "thor pelea duro" {
 				const thor = new armas.Guerrero()
+				const thor2 = new Guerrero()
 				assert.that(true)	
 			}
 		'''
