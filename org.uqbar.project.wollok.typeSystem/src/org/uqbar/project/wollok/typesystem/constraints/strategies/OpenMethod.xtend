@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import java.util.List
+import java.util.Map
 import java.util.function.BiConsumer
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
@@ -8,22 +9,25 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
+import org.uqbar.project.wollok.typesystem.declarations.TypeDeclarationTarget
+import org.uqbar.project.wollok.typesystem.declarations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.typesystem.declarations.TypeDeclarations.addTypeDeclarations
 
-class OpenMethod extends AbstractInferenceStrategy {
-	val methodTypeInfo = newHashMap(
-		"Integer" -> newHashMap(
-			"+" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER),
-			"-" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER),
-			"*" -> new AnnotatedMethodTypeInfo(INTEGER, INTEGER)
-		)
-	)
+class OpenMethod extends AbstractInferenceStrategy implements TypeDeclarationTarget {
+	Map<String, Map<String, AnnotatedMethodTypeInfo>> methodTypeInfo = newHashMap
+	
+	new() {
+		addTypeDeclarations(WollokCoreTypeDeclarations)
+	}
 
-//	def operator_doubleArrow(String a, String b) {
-//		return new AnnotatedMethodTypeInfo(a, b)
-//	}
+	override addTypeDeclaration(String typeName, String selector, List<String> paramTypeNames, String returnTypeName) {
+		var info = methodTypeInfo.get(typeName)
+		if (info == null) methodTypeInfo.put(typeName, info = newHashMap)
+		info.put(selector, new AnnotatedMethodTypeInfo(paramTypeNames, returnTypeName))
+	}
+
 	override analiseVariable(TypeVariable it) {
 		it.typeInfo.messages.forEach [ message |
 			minimalConcreteTypes.keySet.forEach [ minType |
@@ -75,9 +79,9 @@ class AnnotatedMethodTypeInfo implements MethodTypeInfo {
 	String returnType
 	String[] parameterTypes
 
-	new(String returnType, String... parameterTypes) {
-		this.returnType = returnType
+	new(List<String> parameterTypes, String returnType) {
 		this.parameterTypes = parameterTypes
+		this.returnType = returnType
 	}
 
 	override returnType(TypeVariablesRegistry registry) {
