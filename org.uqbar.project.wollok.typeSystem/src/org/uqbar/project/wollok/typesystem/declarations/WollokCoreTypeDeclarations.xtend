@@ -9,7 +9,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		"Integer" * INTEGER => INTEGER
 
 		// Otra sintaxis posible
-		//"Integer" >> "selector" === #[INTEGER] => INTEGER
+		// "Integer" >> "-" === #[INTEGER] => INTEGER
 	}
 }
-
