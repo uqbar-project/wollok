@@ -12,5 +12,4 @@ Require-Bundle: org.uqbar.project.wollok,
 Export-Package: org.uqbar.project.wollok.semantics,
  org.uqbar.project.wollok.semantics.validation,
  org.uqbar.project.wollok.typesystem.bindings,
- org.uqbar.project.wollok.typesystem.constraints,
  org.uqbar.project.wollok.typesystem.substitutions
