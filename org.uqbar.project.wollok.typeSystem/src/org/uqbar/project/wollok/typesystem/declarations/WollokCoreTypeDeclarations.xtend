@@ -12,3 +12,4 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// "Integer" >> "-" === #[INTEGER] => INTEGER
 	}
 }
+

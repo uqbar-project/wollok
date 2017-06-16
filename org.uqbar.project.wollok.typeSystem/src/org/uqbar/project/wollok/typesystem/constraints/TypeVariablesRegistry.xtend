@@ -1,17 +1,24 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
+import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfoImpl
+
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
 
 	ConstraintBasedTypeSystem typeSystem
+	AnnotatedTypeRegistry annotatedTypes
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
+		this.annotatedTypes = new AnnotatedTypeRegistry(this)
 	}
 
 	// ************************************************************************
@@ -73,6 +80,21 @@ class TypeVariablesRegistry {
 				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
 		]
 	}
+
+	// ************************************************************************
+	// ** Method types
+	// ************************************************************************
+
+	def dispatch methodTypeInfo(WollokType type, String selector, List<TypeVariable> arguments) {
+		// TODO Can we get rid of this method?
+		throw new UnsupportedOperationException("TODO: generate MethodTypeInfo for non concrete types")
+	}
+
+	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
+		annotatedTypes.get(type, selector) 
+			?: new MethodTypeInfoImpl(this, type.lookupMethod(selector, arguments))
+	}
+
 
 	// ************************************************************************
 	// ** Debugging
