@@ -3,8 +3,8 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WAssignment
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -32,10 +32,13 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
-
+	
+	OverridingConstraintsGenerator overridingConstraintsGenerator
+	
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
+		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
 	}
 
 	def dispatch void generateVariables(EObject node) {
@@ -76,11 +79,10 @@ class ConstraintGenerator {
 		expression.generateVariables
 
 		// Return type for compact methods (others are handled by return expressions)
-		if (expressionReturns) 
-			beSupertypeOf(expression)
-		else if (tvar.allSubtypes.empty)
-			beVoid
-		
+		if (expressionReturns) beSupertypeOf(expression)
+		else if (tvar.allSubtypes.empty) beVoid
+			
+		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
 	def dispatch void generateVariables(WParameter it) {
@@ -182,6 +184,14 @@ class ConstraintGenerator {
 		expression.generateVariables
 		declaringMethod.beSupertypeOf(expression)
 		newVoid
+	}
+	
+	// ************************************************************************
+	// ** Method overriding
+	// ************************************************************************
+	
+	def addInheritanceConstraints() {
+		overridingConstraintsGenerator.run()
 	}
 	
 	// ************************************************************************

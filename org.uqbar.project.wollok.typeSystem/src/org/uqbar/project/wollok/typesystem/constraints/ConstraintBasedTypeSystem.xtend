@@ -29,6 +29,8 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	@Accessors
 	val extension TypeVariablesRegistry registry = new TypeVariablesRegistry(this)
 
+	val constraintGenerator = new ConstraintGenerator(this)
+
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
@@ -43,13 +45,16 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ** Analysis
 	// ************************************************************************
 	override analyse(EObject p) {
-		new ConstraintGenerator(this).generateVariables(p)
+		constraintGenerator.generateVariables(p)
 	}
 
 	// ************************************************************************
 	// ** Inference
 	// ************************************************************************
 	override inferTypes() {
+		// These constraints have to be created after all files have been `analise`d
+		constraintGenerator.addInheritanceConstraints
+		
 		var currentStage = 0
 
 		println("Starting inference")

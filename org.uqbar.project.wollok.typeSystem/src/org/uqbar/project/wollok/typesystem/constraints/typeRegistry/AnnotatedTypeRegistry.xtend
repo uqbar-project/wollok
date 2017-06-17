@@ -2,12 +2,13 @@ package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
 import java.util.Map
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
 import org.uqbar.project.wollok.typesystem.declarations.TypeDeclarationTarget
 import org.uqbar.project.wollok.typesystem.declarations.WollokCoreTypeDeclarations
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static extension org.uqbar.project.wollok.typesystem.declarations.TypeDeclarations.*
-import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
@@ -26,6 +27,10 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	
 	def get(ConcreteType type, String selector) {
 		methodTypeInfo.get(type.name)?.get(selector)
+	}
+
+	def get(WClass container, String selector) {
+		methodTypeInfo.get(container.name)?.get(selector)
 	}
 	
 }

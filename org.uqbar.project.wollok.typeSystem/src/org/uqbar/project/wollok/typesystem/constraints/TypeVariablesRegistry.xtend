@@ -7,7 +7,10 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfoImpl
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 class TypeVariablesRegistry {
@@ -84,17 +87,16 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Method types
 	// ************************************************************************
-
-	def dispatch methodTypeInfo(WollokType type, String selector, List<TypeVariable> arguments) {
-		// TODO Can we get rid of this method?
-		throw new UnsupportedOperationException("TODO: generate MethodTypeInfo for non concrete types")
+	def methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
+		annotatedTypes.get(type, selector) ?: new MethodTypeInfoImpl(this, type.lookupMethod(selector, arguments))
 	}
 
-	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
-		annotatedTypes.get(type, selector) 
-			?: new MethodTypeInfoImpl(this, type.lookupMethod(selector, arguments))
+	def methodTypeInfo(WClass container, String selector, List<WParameter> arguments) {
+		annotatedTypes.get(container, selector) // Last parameter implies that we accept overriding abstract methods. 
+		// If this where not true, it will be reported as an error elsewhere.
+		// TODO Also, this will probably not work in the context of mixins.  
+		?: new MethodTypeInfoImpl(this, container.lookupMethod(selector, arguments, true))
 	}
-
 
 	// ************************************************************************
 	// ** Debugging

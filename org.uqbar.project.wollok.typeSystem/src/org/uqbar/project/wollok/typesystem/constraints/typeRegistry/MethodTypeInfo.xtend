@@ -32,7 +32,7 @@ class AnnotatedMethodTypeInfo implements MethodTypeInfo {
 
 class MethodTypeInfoImpl implements MethodTypeInfo {
 	WMethodDeclaration method
-	TypeVariablesRegistry registry
+	extension TypeVariablesRegistry registry
 
 	new(TypeVariablesRegistry registry, WMethodDeclaration method) {
 		this.registry = registry
@@ -40,10 +40,10 @@ class MethodTypeInfoImpl implements MethodTypeInfo {
 	}
 
 	override returnType() {
-		registry.tvar(method)
+		method.tvar
 	}
 
 	override parameters() {
-		method.parameters.map[registry.tvar(it)]
+		method.parameters.map[tvar]
 	}
 }
