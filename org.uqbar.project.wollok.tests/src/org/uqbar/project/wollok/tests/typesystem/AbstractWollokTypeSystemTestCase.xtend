@@ -212,7 +212,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	def findInstanceVar(String instVarFQN) {
 		val fqn = instVarFQN.split('\\.')
-		findClass(fqn.get(0)).variableDeclarations.findFirst[variable.name == fqn.get(1)]
+		findClass(fqn.get(0)).variableDeclarations.map[variable].findFirst[name == fqn.get(1)]
 	}
 
 	def findClass(String className) {
