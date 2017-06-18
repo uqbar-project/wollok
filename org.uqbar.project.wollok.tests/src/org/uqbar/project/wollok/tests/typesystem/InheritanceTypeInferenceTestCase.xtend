@@ -112,7 +112,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 				override method perform(aNumber) { return aNumber + aNumber }
 			}
 			class TripleOperation inherits NumberOperation {
-				override method perform(aNumber) { return aNumber * 3 }
+				override method perform(aNumber) { return 3 * aNumber }
 			} 
 		'''.parseAndInfer.asserting [
 			noIssues
@@ -145,7 +145,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 			class EntrenadorDeGatos inherits Entrenador {
 				override method entrenar(unAnimal) {
-					return unaAnimal.mauyar()
+					return unAnimal.mauyar()
 				}
 			}
 		'''.parseAndInfer.asserting [

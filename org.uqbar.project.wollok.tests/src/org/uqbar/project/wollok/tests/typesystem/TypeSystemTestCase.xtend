@@ -91,4 +91,33 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
+	@Test
+	def void testInferRightOperandFromBinaryExpression() {
+		'''
+			class Golondrina {
+				var energia
+				method come(grms) {
+					energia = 10 + grms
+				}
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+		]
+	}
+
+	@Test
+	def void testInferLeftOperandFromBinaryExpression() {
+		'''
+			class Golondrina {
+				var energia
+				method come(grms) {
+					energia = grms + 10
+				}
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+		]
+	}
 }
