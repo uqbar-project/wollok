@@ -48,11 +48,11 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 		'''
 			class Animal {
 				var energia = 100
-				method getEnergia() { energia }
+				method getEnergia() { return energia }
 			}
 			class Golondrina inherits Animal {
 				override method getEnergia() {
-					null
+					return null
 				}
 			}
 		'''.parseAndInfer.asserting [
@@ -67,12 +67,12 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 		'''
 			class Animal {
 				var energia = 100
-				method getEnergia() { energia }
+				method getEnergia() { return energia }
 			}
 			class Golondrina inherits Animal {
 				const energiaGolondrina
 				override method getEnergia() {
-					energiaGolondrina
+					return energiaGolondrina
 				}
 			}
 		'''.parseAndInfer.asserting [
@@ -94,10 +94,10 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			class Gato extends Animal {}
 			
 			class PerroFactory extends AnimalFactory {
-				override method createAnimal() { new Perro() }
+				override method createAnimal() { return new Perro() }
 			}
 			class GatoFactory extends AnimalFactory {
-				override method createAnimal() { new Gato() }
+				override method createAnimal() { return new Gato() }
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
@@ -113,10 +113,10 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 				method perform(aNumber)
 			}
 			class DoubleOperation extends NumberOperation {
-				override method perform(aNumber) { aNumber + aNumber }
+				override method perform(aNumber) { return aNumber + aNumber }
 			}
 			class TripleOperation extends NumberOperation {
-				override method perform(aNumber) { aNumber * 3 }
+				override method perform(aNumber) { return aNumber * 3 }
 			} 
 		'''.parseAndInfer.asserting [
 			noIssues
@@ -137,20 +137,20 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() {
 		'''
 			class Animal {}
-			class Perro extends Animal { method ladrar() { 'Guau!' } }
-			class Gato extends Animal { method mauyar() { 'Miau!' } }
+			class Perro extends Animal { method ladrar() { return 'Guau!' } }
+			class Gato extends Animal { method mauyar() { return 'Miau!' } }
 			
 			class Entrenador {
 				method entrenar(unAnimal)
 			}
 			class EntrenadorDePerros extends Entrenador {
 				override method entrenar(unAnimal) { 
-					unAnimal.ladrar()
+					return unAnimal.ladrar()
 				}
 			}
 			class EntrenadorDeGatos extends Entrenador {
 				override method entrenar(unAnimal) {
-					unaAnimal.mauyar()
+					return unaAnimal.mauyar()
 				}
 			}
 		'''.parseAndInfer.asserting [
