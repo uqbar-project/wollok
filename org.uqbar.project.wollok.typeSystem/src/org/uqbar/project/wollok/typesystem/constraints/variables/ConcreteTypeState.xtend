@@ -1,6 +1,6 @@
-package org.uqbar.project.wollok.typesystem.constraints
+package org.uqbar.project.wollok.typesystem.constraints.variables
 
-import static org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeState.*
+import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 enum ConcreteTypeState {
 	Pending,

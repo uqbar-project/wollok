@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaxim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -96,7 +97,7 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	/**
 	 * Runs a strategy, returning if it produced new information
 	 */
-	def runStrategy(Class<? extends AbstractInferenceStrategy> it) {
+	def boolean runStrategy(Class<? extends AbstractInferenceStrategy> it) {
 		(newInstance => [it.registry = this.registry]).run()
 	}
 
@@ -126,7 +127,7 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 		new NamedObjectWollokType(model, this)
 	}
 
-	protected def classType(EObject model, String className) {
+	def classType(EObject model, String className) {
 		val clazz = finder.getCachedClass(model, className)
 		// REVIEWME: should we have a cache ?
 		classType(clazz)

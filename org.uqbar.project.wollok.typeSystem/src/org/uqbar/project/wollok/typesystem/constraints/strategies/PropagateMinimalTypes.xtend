@@ -1,9 +1,8 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
-
-import static org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeState.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 class PropagateMinimalTypes extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {

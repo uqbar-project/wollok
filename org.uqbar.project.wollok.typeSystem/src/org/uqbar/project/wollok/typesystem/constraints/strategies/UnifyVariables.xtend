@@ -2,9 +2,9 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import java.util.Set
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
-import static org.uqbar.project.wollok.typesystem.constraints.ConcreteTypeState.*
+import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 

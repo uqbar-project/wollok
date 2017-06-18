@@ -2,8 +2,8 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.MessageSend
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 

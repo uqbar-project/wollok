@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 interface MethodTypeInfo {

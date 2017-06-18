@@ -2,11 +2,13 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -85,6 +87,13 @@ class ConstraintGenerator {
 		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
+	def dispatch void generateVariables(WClosure it) {
+		parameters.forEach[generateVariables]
+		expression.generateVariables
+
+		newClosure(parameters.map[tvar], expression.tvar)		
+	}
+	
 	def dispatch void generateVariables(WParameter it) {
 		newTypeVariable
 	}

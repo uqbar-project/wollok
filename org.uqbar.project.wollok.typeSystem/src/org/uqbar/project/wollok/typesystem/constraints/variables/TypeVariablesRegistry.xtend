@@ -1,10 +1,11 @@
-package org.uqbar.project.wollok.typesystem.constraints
+package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfoImpl
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -24,11 +25,20 @@ class TypeVariablesRegistry {
 		this.annotatedTypes = new AnnotatedTypeRegistry(this)
 	}
 
+	def register(TypeVariable it) {
+		typeVariables.put(owner, it)
+		return it
+	}
+	
 	// ************************************************************************
 	// ** Creating type variables.
 	// ************************************************************************
-	def newTypeVariable(EObject obj) {
-		new TypeVariable(obj) => [typeVariables.put(obj, it)]
+	def newTypeVariable(EObject owner) {
+		TypeVariable.simple(owner).register
+	}
+
+	def newClosure(EObject owner, List<TypeVariable> parameters, TypeVariable expression) {
+		TypeVariable.closure(owner, parameters, expression).register
 	}
 
 	def newWithSubtype(EObject it, EObject... subtypes) {
@@ -64,7 +74,7 @@ class TypeVariablesRegistry {
 	// ** Synthetic type variables
 	// ************************************************************************
 	def newSyntheticVar(String className) {
-		new TypeVariable(null) => [
+		TypeVariable.synthetic => [
 			addMinimalType(typeSystem.classType(null, className))
 			beSealed
 		]

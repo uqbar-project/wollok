@@ -1,38 +1,38 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import org.junit.Ignore
-
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * 
  * @author jfernandes
  */
 class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
-	
-	@Parameters(name = "{index}: {0}")
+
+	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			SubstitutionBasedTypeSystem
-//			,XSemanticsTypeSystem			// TODO 
-//			,ConstraintBasedTypeSystem
-//			BoundsBasedTypeSystem,    TO BE FIXED
+			SubstitutionBasedTypeSystem,
+			ConstraintBasedTypeSystem
+		// ,XSemanticsTypeSystem			// TODO 
+		// BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
-	
+
 	@Test
 	@Ignore // FIX IT!
-	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() { #['''
+	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() {
+		#['''
 			class Animal {}
 			class Golondrina inherits Animal {}
 			class Perro inherits Animal {}
-		''', ''' program p {
+		''', '''
+		 program p {
 			var animal
 			animal = new Golondrina()
 			animal = new Perro()
@@ -41,11 +41,11 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertTypeOf(classType('Animal'), 'animal')
 		]
 	}
-	
+
 	// method inheritance
-		
 	@Test
-	def void testMethodReturnTypeInferredFromSuperMethod() { '''
+	def void testMethodReturnTypeInferredFromSuperMethod() {
+		'''
 			class Animal {
 				var energia = 100
 				method getEnergia() { energia }
@@ -61,9 +61,10 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertTypeOf(classTypeFor(INTEGER), "null")
 		]
 	}
-	
+
 	@Test
-	def void testInstVarInferredTransitivelyFromInheritedReturnType() { '''
+	def void testInstVarInferredTransitivelyFromInheritedReturnType() {
+		'''
 			class Animal {
 				var energia = 100
 				method getEnergia() { energia }
@@ -80,10 +81,11 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertInstanceVarType(classTypeFor(INTEGER), 'Golondrina.energiaGolondrina')
 		]
 	}
-	
+
 	@Test
 	@Ignore // FIX IT!
-	def void testAbstractMethodReturnTypeInferredGeneralizingOverridingMethodsInSubclasses() { '''
+	def void testAbstractMethodReturnTypeInferredGeneralizingOverridingMethodsInSubclasses() {
+		'''
 			class AnimalFactory {
 				method createAnimal()
 			}
@@ -102,10 +104,11 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertMethodSignature("() => Animal", 'AnimalFactory.createAnimal')
 		]
 	}
-	
+
 	@Test
 	@Ignore // FIX IT!
-	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() { '''
+	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() {
+		'''
 			class NumberOperation {
 				method perform(aNumber)
 			}
@@ -122,17 +125,17 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertMethodSignature("(Integer) => Integer", 'TripleOperation.perform')
 		]
 	}
-	
+
 	// ***********************************************
 	// ** structural to nominal inference
 	// ***********************************************
-	
 	/**
 	 * <<<<< ESTE ES MAS HEAVY QUE EL DIABLO !!! >>>>>
 	 */
 	@Test
 	@Ignore // FIX IT!
-	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() { '''
+	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesThroughStructuralTypes() {
+		'''
 			class Animal {}
 			class Perro extends Animal { method ladrar() { 'Guau!' } }
 			class Gato extends Animal { method mauyar() { 'Miau!' } }
@@ -157,5 +160,5 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			assertMethodSignature("(Animal) => String", 'EntrenadorDePerros.entrenar')
 		]
 	}
-	
+
 }

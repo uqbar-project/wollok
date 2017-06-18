@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.typesystem.constraints
+package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import java.util.Set

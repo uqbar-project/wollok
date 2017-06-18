@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 class SealVariables extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {

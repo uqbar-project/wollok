@@ -15,13 +15,13 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
  */
 class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 
-	@Parameters(name = "{index}: {0}")
+	@Parameters(name="{index}: {0}")
 	static def Class<? extends TypeSystem>[] typeSystems() {
 		#[
-			SubstitutionBasedTypeSystem
-			// TODO: fix !
+			SubstitutionBasedTypeSystem // TODO: fix !
 //			new XSemanticsTypeSystem,
-			, ConstraintBasedTypeSystem
+			,
+			ConstraintBasedTypeSystem
 //			new BoundsBasedTypeSystem
 		]
 	}
@@ -37,44 +37,50 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 
 	@Test
 	def void testInferIndirectVar() {
-		''' program p {
-			const number
-			number = 23
-		}'''.parseAndInfer.asserting [
+		'''
+			program p {
+				const number
+				number = 23
+			}
+		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
 	@Test
 	def void testInferIndirectAssignedToBinaryExpression() {
-		''' program p {
-			const number
-			const a = 2
-			const b = 3
-			number = a + b
-		}'''.parseAndInfer.asserting [
+		'''
+			program p {
+				const number
+				const a = 2
+				const b = 3
+				number = a + b
+			}
+		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), 'number')
 		]
 	}
 
 	@Test
 	def void testIncompatibleTypesInAssignment() {
-		''' program p {
-			var a = 2
-			const b = "aString"
-			a = b
-		}'''.parseAndInfer.asserting [
+		''' 
+			program p {
+				var a = 2
+				const b = "aString"
+				a = b
+			}
+		'''.parseAndInfer.asserting [
 			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
 		]
 	}
-	
+
 	@Test
 	def void testClassType() {
 		'''
 			class Pato {
 				method cuack() { 'cuack!' }
 			}
-
+			
 			program p {
 				const pato = new Pato()
 				pato.cuack()

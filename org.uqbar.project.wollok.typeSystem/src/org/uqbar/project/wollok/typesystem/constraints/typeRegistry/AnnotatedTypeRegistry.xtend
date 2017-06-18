@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 import java.util.List
 import java.util.Map
 import org.uqbar.project.wollok.typesystem.ConcreteType
-import org.uqbar.project.wollok.typesystem.constraints.TypeVariablesRegistry
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.typesystem.declarations.TypeDeclarationTarget
 import org.uqbar.project.wollok.typesystem.declarations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.wollokDsl.WClass
