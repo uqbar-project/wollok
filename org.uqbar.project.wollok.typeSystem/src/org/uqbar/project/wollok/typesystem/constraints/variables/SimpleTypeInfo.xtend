@@ -78,7 +78,9 @@ class SimpleTypeInfo extends TypeInfo {
 		if (minimalConcreteTypes.size == 1) {
 			minimalConcreteTypes.keySet.iterator.next
 		} else {
-			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
+			val minimalTypes = minimalConcreteTypes.keySet
+			if (minimalTypes.size > 1) minimalTypes.reduce[t1, t2| t1.refine(t2)]
+			else throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
 		}
 	}
 	
