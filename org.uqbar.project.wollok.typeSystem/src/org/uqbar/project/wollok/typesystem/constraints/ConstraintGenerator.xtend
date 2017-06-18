@@ -76,13 +76,14 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WMethodDeclaration it) {
 		it.newTypeVariable
-		
 		parameters.forEach[generateVariables]
-		expression.generateVariables
-
-		// Return type for compact methods (others are handled by return expressions)
-		if (expressionReturns) beSupertypeOf(expression)
-		else if (tvar.allSubtypes.empty) beVoid
+		
+		if (!abstract) {
+			expression?.generateVariables
+			// Return type for compact methods (others are handled by return expressions)
+			if (expressionReturns) beSupertypeOf(expression)
+			else if (tvar.allSubtypes.empty) beVoid
+		}
 			
 		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
