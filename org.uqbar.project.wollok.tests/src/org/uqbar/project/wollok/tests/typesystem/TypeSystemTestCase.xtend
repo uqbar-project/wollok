@@ -18,10 +18,10 @@ class TypeSystemTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name="{index}: {0}")
 	static def Class<? extends TypeSystem>[] typeSystems() {
 		#[
-			SubstitutionBasedTypeSystem // TODO: fix !
+			SubstitutionBasedTypeSystem
 //			new XSemanticsTypeSystem,
 			,
-			ConstraintBasedTypeSystem
+			ConstraintBasedTypeSystem // TODO: fix !
 //			new BoundsBasedTypeSystem
 		]
 	}

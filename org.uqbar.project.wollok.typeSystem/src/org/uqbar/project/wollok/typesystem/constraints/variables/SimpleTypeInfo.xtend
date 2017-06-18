@@ -32,7 +32,7 @@ class SimpleTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
 		minimalConcreteTypes.entrySet.forEach [ it |
-			if (!maxTypes.contains(key)) value = Error
+			if(!maxTypes.contains(key)) value = Error
 		]
 
 		if (maximalConcreteTypes == null) {
@@ -68,22 +68,27 @@ class SimpleTypeInfo extends TypeInfo {
 		if (minimalConcreteTypes.containsKey(type))
 			Ready
 		else {
-			(if (sealed) Error else Pending) => [
+			(if(!acceptMinimalType(type)) Error else Pending) => [
 				minimalConcreteTypes.put(type, it)
 			]
 		}
 	}
 
-	override getType(TypeVariable tvar) {
-		if (minimalConcreteTypes.size == 1) {
-			minimalConcreteTypes.keySet.iterator.next
-		} else {
-			val minimalTypes = minimalConcreteTypes.keySet
-			if (minimalTypes.size > 1) minimalTypes.reduce[t1, t2| t1.refine(t2)]
-			else throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
-		}
+	def acceptMinimalType(WollokType type) {
+		!sealed && minimalConcreteTypes.keySet.fold(type, [t1, t2|t1.refine(t2)]).name != "Object" // TODO: Hardcode
 	}
-	
+
+	override getType(TypeVariable tvar) {
+		val type = getType()
+		if (type == null)
+			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
+		type
+	}
+
+	def getType() {
+		minimalConcreteTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
+	}
+
 	override hasErrors() {
 		minimalConcreteTypes.values.contains(Error)
 	}
