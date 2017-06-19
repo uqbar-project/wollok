@@ -1,13 +1,15 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-class PropagateMinimalTypes extends AbstractInferenceStrategy {
-	override analiseVariable(TypeVariable tvar) {
+class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
+	override analiseSimpleType(TypeVariable tvar, SimpleTypeInfo type) {
 		val supertypes = tvar.allSupertypes
-		tvar.minimalConcreteTypes.entrySet.forEach [
+		type.minimalConcreteTypes.entrySet.forEach [
 			if (value == Pending) {
 				val localChanged = tvar.propagateMinType(key, supertypes)
 				if (!localChanged)

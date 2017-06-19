@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import java.util.Set
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
@@ -24,18 +26,28 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		if (!v2.hasErrors && !v1.unifiedWith(v2)) {
 			println('''	Unifying «v1» with «v2»''')
 
-			v1.typeInfo.minimalConcreteTypes = minTypesUnion(v1, v2)
-			v1.typeInfo.joinMaxTypes(v2.maximalConcreteTypes)
-
-			v2.typeInfo.users.forEach[typeInfo = v1.typeInfo]
-
-			changed = true
+			v1.typeInfo.doUnifyWith(v2.typeInfo)
 		}
 	}
+	
+	def dispatch doUnifyWith(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+		t1.minimalConcreteTypes = minTypesUnion(t1, t2)
+		t1.joinMaxTypes(t2.maximalConcreteTypes)
 
-	protected def minTypesUnion(TypeVariable v1, TypeVariable v2) {
-		(v1.minimalConcreteTypes.keySet + v2.minimalConcreteTypes.keySet).toSet.toInvertedMap [
-			if (isReadyIn(v1) && isReadyIn(v2))
+		t2.users.forEach[typeInfo = t1]
+
+		changed = true
+	}
+
+	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
+		throw new UnsupportedOperationException()
+	}
+
+
+
+	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+		(t1.minimalConcreteTypes.keySet + t2.minimalConcreteTypes.keySet).toSet.toInvertedMap [
+			if (isReadyIn(t1) && isReadyIn(t2))
 				// It was already present and ready in both originating typeInfo's
 				Ready
 			else
@@ -48,8 +60,8 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * Verify if the received type is already present as a mintype in the variable
 	 * and if its Ready (i.e. type information has already been propagated.
 	 */
-	def boolean isReadyIn(WollokType type, TypeVariable variable) {
-		variable.minimalConcreteTypes.get(type) == Ready
+	def boolean isReadyIn(WollokType wollokType, SimpleTypeInfo type) {
+		type.minimalConcreteTypes.get(wollokType) == Ready
 	}
 
 	def <T> T uniqueElement(Set<T> it) { iterator.next }

@@ -20,7 +20,7 @@ abstract class TypeInfo {
 	var Boolean sealed = false
 
 	// ************************************************************************
-	// ** Users
+	// ** Type info users
 	// ************************************************************************
 	def getCanonicalUser() {
 		users.get(0)
@@ -31,21 +31,27 @@ abstract class TypeInfo {
 	}
 
 	// ************************************************************************
-	// ** TBC
+	// ** Queries
 	// ************************************************************************
-
-	def void beSealed()
-
 	def WollokType getType(TypeVariable tvar)
 
 	def boolean hasErrors()
 
-	def ConcreteTypeState addMinimalType(WollokType type)
+	// ************************************************************************
+	// ** Adding type information
+	// ************************************************************************
+	
+	def void beSealed()
 
 	def Map<WollokType, ConcreteTypeState> getMinimalConcreteTypes()
+
 	def void setMinimalConcreteTypes(Map<WollokType, ConcreteTypeState> minTypes)
 
+	def ConcreteTypeState addMinimalType(WollokType type)
+
 	def MaximalConcreteTypes getMaximalConcreteTypes()
+
 	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
+
 	def void joinMaxTypes(MaximalConcreteTypes types)
 }
