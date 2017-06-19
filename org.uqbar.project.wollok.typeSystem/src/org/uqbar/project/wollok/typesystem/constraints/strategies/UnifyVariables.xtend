@@ -26,10 +26,20 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		if (!v2.hasErrors && !v1.unifiedWith(v2)) {
 			println('''	Unifying «v1» with «v2»''')
 
-			v1.typeInfo.doUnifyWith(v2.typeInfo)
+			// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
+			// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
+			if (v1.typeInfo == null && v2.typeInfo != null) {
+				v1.typeInfo = v2.typeInfo
+				changed = true
+			} else if (v2.typeInfo == null && v1.typeInfo != null) {
+				v2.typeInfo = v1.typeInfo
+				changed = true
+			} else {
+				v1.typeInfo.doUnifyWith(v2.typeInfo)
+			}
 		}
 	}
-	
+
 	def dispatch doUnifyWith(SimpleTypeInfo t1, SimpleTypeInfo t2) {
 		t1.minimalConcreteTypes = minTypesUnion(t1, t2)
 		t1.joinMaxTypes(t2.maximalConcreteTypes)
@@ -42,8 +52,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
 		throw new UnsupportedOperationException()
 	}
-
-
 
 	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {
 		(t1.minimalConcreteTypes.keySet + t2.minimalConcreteTypes.keySet).toSet.toInvertedMap [

@@ -1,9 +1,10 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
-class GuessMinTypeFromMaxType extends AbstractInferenceStrategy {
-	override analiseVariable(TypeVariable it) {
+class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
+	override analiseSimpleType(TypeVariable tvar, SimpleTypeInfo it) {
 		if (minimalConcreteTypes.isEmpty && maximalConcreteTypes != null) {
 			maximalConcreteTypes.forEach [ type |
 				addMinimalType(type)
@@ -11,4 +12,5 @@ class GuessMinTypeFromMaxType extends AbstractInferenceStrategy {
 			changed = true
 		}
 	}
+	
 }

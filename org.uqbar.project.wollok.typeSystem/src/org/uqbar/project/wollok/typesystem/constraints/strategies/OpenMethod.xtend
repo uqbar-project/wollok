@@ -6,11 +6,15 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
-class OpenMethod extends AbstractInferenceStrategy {
-	
-	override analiseVariable(TypeVariable it) {
-		it.typeInfo.messages.forEach [ message |
+/**
+ * This strategy takes a message send for which receiver we know a possible concrete type (i.e. a Wollok Class) 
+ * Then look up for the concrete method in that class and use the type information of that method.
+ */
+class OpenMethod extends SimpleTypeInferenceStrategy {
+	override analiseSimpleType(TypeVariable it, SimpleTypeInfo type) {
+		type.messages.forEach [ message |
 			minimalConcreteTypes.keySet.forEach [ minType |
 				message.openMethod(minType)
 			]
