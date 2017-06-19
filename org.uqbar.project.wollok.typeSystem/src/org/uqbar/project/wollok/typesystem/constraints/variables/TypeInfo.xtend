@@ -33,7 +33,7 @@ abstract class TypeInfo {
 	// ************************************************************************
 	// ** Queries
 	// ************************************************************************
-	def WollokType getType(TypeVariable tvar)
+	def WollokType getType(TypeVariable user)
 
 	def boolean hasErrors()
 
@@ -54,4 +54,11 @@ abstract class TypeInfo {
 	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
 
 	def void joinMaxTypes(MaximalConcreteTypes types)
+
+	// ************************************************************************
+	// ** Misc
+	// ************************************************************************
+
+	def String fullDescription()
+	
 }

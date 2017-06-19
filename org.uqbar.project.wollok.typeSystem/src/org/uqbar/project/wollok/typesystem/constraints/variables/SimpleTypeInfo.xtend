@@ -25,6 +25,30 @@ class SimpleTypeInfo extends TypeInfo {
 	@Accessors(AccessorType.PUBLIC_GETTER)
 	var Boolean sealed = false
 
+	// ************************************************************************
+	// ** Queries
+	// ************************************************************************
+
+	override getType(TypeVariable tvar) {
+		val type = basicGetType()
+		if (type == null)
+			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
+		type
+	}
+	
+
+	def basicGetType() {
+		minimalConcreteTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
+	}
+	
+	override hasErrors() {
+		minimalConcreteTypes.values.contains(Error)
+	}	
+
+	// ************************************************************************
+	// ** Adding type information
+	// ************************************************************************
+
 	override beSealed() {
 		maximalConcreteTypes = new MaximalConcreteTypes(minimalConcreteTypes.keySet)
 		sealed = true
@@ -78,18 +102,13 @@ class SimpleTypeInfo extends TypeInfo {
 		!sealed && minimalConcreteTypes.keySet.fold(type, [t1, t2|t1.refine(t2)]).name != "Object" // TODO: Hardcode
 	}
 
-	override getType(TypeVariable tvar) {
-		val type = getType()
-		if (type == null)
-			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
-		type
-	}
+	// ************************************************************************
+	// ** Misc
+	// ************************************************************************
 
-	def getType() {
-		minimalConcreteTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
-	}
-
-	override hasErrors() {
-		minimalConcreteTypes.values.contains(Error)
-	}
+	override fullDescription() '''
+		sealed: «sealed»,
+		minTypes: «minimalConcreteTypes»,
+		maxTypes: «maximalConcreteTypes?:"unknown"»
+	'''
 }

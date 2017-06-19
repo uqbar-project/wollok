@@ -147,9 +147,7 @@ class TypeVariable {
 			«IF typeInfo == null»
 				no type information
 			«ELSEIF canonical»
-				sealed: «sealed»,
-				minTypes: «minimalConcreteTypes»,
-				maxTypes: «maximalConcreteTypes?:"unknown"»
+				«typeInfo.fullDescription»
 			«ELSE»
 				... unified with «typeInfo.canonicalUser»
 			«ENDIF»

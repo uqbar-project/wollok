@@ -7,13 +7,13 @@ class WollokTypeSystemPrettyPrinter {
 	// ** Expected type
 	// ************************************************************************
 
-	static def expectedType(TypeVariable it) { typeInfo.expected }
+	static def expectedType(TypeVariable it) { typeInfo.expected(it) }
 	
-	static def dispatch expected(SimpleTypeInfo it) {
-		maximalConcreteTypes?.prettyPrint ?: getType().toString
+	static def dispatch expected(SimpleTypeInfo it, TypeVariable user) {
+		maximalConcreteTypes?.prettyPrint ?: getType(user).toString
 	}
 	
-	static def dispatch expected(ClosureTypeInfo it) {
+	static def dispatch expected(ClosureTypeInfo it, TypeVariable user) {
 		throw new UnsupportedOperationException 
 	}
 
