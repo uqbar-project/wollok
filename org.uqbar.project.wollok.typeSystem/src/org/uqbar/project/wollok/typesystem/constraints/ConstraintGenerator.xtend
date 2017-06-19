@@ -105,6 +105,7 @@ class ConstraintGenerator {
 		it.newTypeVariable
 		
 		if (!expressions.empty) it.beSupertypeOf(expressions.last)
+		else it.beVoid
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
