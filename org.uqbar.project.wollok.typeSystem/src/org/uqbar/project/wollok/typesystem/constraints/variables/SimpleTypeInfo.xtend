@@ -71,7 +71,7 @@ class SimpleTypeInfo extends TypeInfo {
 	 * and new state has to be pending if there is any information that is new to any of the original tvar's (so unless
 	 * both original sets were equal, state has to be Pending).  
 	 */
-	override joinMaxTypes(MaximalConcreteTypes other) {
+	def joinMaxTypes(MaximalConcreteTypes other) {
 		if (maximalConcreteTypes != null) {
 			if (other != null) {
 				if (maximalConcreteTypes != other.maximalConcreteTypes) {

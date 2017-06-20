@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
-import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
 
@@ -43,15 +42,9 @@ abstract class TypeInfo {
 	
 	def void beSealed()
 
-	def void setMinimalConcreteTypes(Map<WollokType, ConcreteTypeState> minTypes)
-
 	def ConcreteTypeState addMinimalType(WollokType type)
 
-	def MaximalConcreteTypes getMaximalConcreteTypes()
-
 	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
-
-	def void joinMaxTypes(MaximalConcreteTypes types)
 
 	// ************************************************************************
 	// ** Misc
