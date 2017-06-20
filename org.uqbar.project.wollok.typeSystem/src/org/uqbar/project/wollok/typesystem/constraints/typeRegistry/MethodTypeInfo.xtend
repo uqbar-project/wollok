@@ -4,29 +4,60 @@ import java.util.List
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.eclipse.xtend.lib.annotations.Accessors
 
 interface MethodTypeInfo {
 	def TypeVariable returnType()
+
 	def List<TypeVariable> parameters()
 }
 
 class AnnotatedMethodTypeInfo implements MethodTypeInfo {
-	TypeVariablesRegistry registry
-	String returnType
-	String[] parameterTypes
+	TypeAnnotation returnType
+	TypeAnnotation[] parameterTypes
 
-	new(TypeVariablesRegistry registry, List<String> parameterTypes, String returnType) {
-		this.registry = registry
+	new(TypeAnnotation[] parameterTypes, TypeAnnotation returnType) {
 		this.parameterTypes = parameterTypes
 		this.returnType = returnType
 	}
 
 	override returnType() {
-		registry.newSyntheticVar(returnType)
+		returnType.asTypeVariable
 	}
 
 	override parameters() {
-		parameterTypes.map[registry.newSyntheticVar(it)]
+		parameterTypes.map[asTypeVariable]
+	}
+}
+
+abstract class TypeAnnotation {
+	@Accessors
+	TypeVariablesRegistry registry
+
+	def TypeVariable asTypeVariable()
+}
+
+class SimpleTypeAnnotation extends TypeAnnotation {
+	String className
+
+	new(String className) {
+		this.className = className
+	}
+
+	override TypeVariable asTypeVariable() {
+		registry.newSyntheticVar(className)
+	}
+}
+
+class ClassParameterTypeAnnotation extends TypeAnnotation {
+	String paramName
+
+	new(String paramName) {
+		this.paramName = paramName
+	}
+
+	override asTypeVariable() {
+		registry.newClassParameterVar(paramName)
 	}
 }
 

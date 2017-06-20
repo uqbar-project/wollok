@@ -30,13 +30,14 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
-	
+
 	OverridingConstraintsGenerator overridingConstraintsGenerator
-	
+
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
@@ -49,9 +50,9 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WFile it) {
-		 eContents.forEach[generateVariables]		
+		eContents.forEach[generateVariables]
 	}
-	
+
 	def dispatch void generateVariables(WProgram it) {
 		elements.forEach[generateVariables]
 	}
@@ -63,11 +64,10 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WClass it) {
 		// TODO Process supertype information: parent and mixins
-
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
 	}
-	
+
 	def dispatch void generateVariables(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
@@ -77,14 +77,13 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WMethodDeclaration it) {
 		it.newTypeVariable
 		parameters.forEach[generateVariables]
-		
+
 		if (!abstract) {
 			expression?.generateVariables
 			// Return type for compact methods (others are handled by return expressions)
-			if (expressionReturns) beSupertypeOf(expression)
-			else if (tvar.subtypes.empty) beVoid
+			if (expressionReturns) beSupertypeOf(expression) else if (tvar.subtypes.empty) beVoid
 		}
-			
+
 		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
@@ -92,20 +91,19 @@ class ConstraintGenerator {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
 
-		newClosure(parameters.map[tvar], expression.tvar)		
+		newClosure(parameters.map[tvar], expression.tvar)
 	}
-	
+
 	def dispatch void generateVariables(WParameter it) {
 		newTypeVariable
 	}
 
 	def dispatch void generateVariables(WBlockExpression it) {
 		expressions.forEach[generateVariables]
-		
+
 		it.newTypeVariable
-		
-		if (!expressions.empty) it.beSupertypeOf(expressions.last)
-		else it.beVoid
+
+		if (!expressions.empty) it.beSupertypeOf(expressions.last) else it.beVoid
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
@@ -119,15 +117,20 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WBooleanLiteral it) {
 		newSealed(classType(BOOLEAN))
 	}
-	
+
 	def dispatch void generateVariables(WListLiteral it) {
-		newSealed(classType(LIST))
+		val listType = newCollection(classType(LIST))
+		
+		elements.forEach[
+			generateVariables
+			tvar.beSubtypeOf(listType.element)
+		]
 	}
-	
+
 	def dispatch void generateVariables(WSetLiteral it) {
 		newSealed(classType(SET))
 	}
-	
+
 	def dispatch void generateVariables(WConstructorCall it) {
 		newSealed(classType(classRef))
 	}
@@ -135,7 +138,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-		
+
 		newVoid
 	}
 
@@ -146,7 +149,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WSelf it) {
 		it.newSealed(getSelfContext.asWollokType)
 	}
-	
+
 	def dispatch void generateVariables(WIfExpression it) {
 		condition.generateVariables
 		condition.beSealed(classType(BOOLEAN))
@@ -173,46 +176,44 @@ class ConstraintGenerator {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
-		
+
 		it.newVoid
 	}
-	
+
 	def dispatch void generateVariables(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
-		
+
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
-	
+
 	def dispatch void generateVariables(WBinaryOperation it) {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
-		
+
 		leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
 	}
-	
+
 	def dispatch void generateVariables(WReturnExpression it) {
 		expression.generateVariables
 		declaringMethod.beSupertypeOf(expression)
 		newVoid
 	}
-	
+
 	// ************************************************************************
 	// ** Method overriding
 	// ************************************************************************
-	
 	def addInheritanceConstraints() {
 		overridingConstraintsGenerator.run()
 	}
-	
+
 	// ************************************************************************
 	// ** Extension methods
 	// ************************************************************************
-	
 	def beSupertypeOf(EObject supertype, EObject subtype) {
 		supertype.tvar.beSupertypeOf(subtype.tvar)
 	}
-	
+
 	def dispatch WollokType asWollokType(WNamedObject object) {
 		objectType(object)
 	}

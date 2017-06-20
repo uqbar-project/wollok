@@ -39,6 +39,14 @@ class TypeVariable {
 		new TypeVariable(object) => [ setTypeInfo(new ClosureTypeInfo(parameters, returnType)) ]
 	}
 
+	def static generic(EObject object, List<String> typeParameterNames) {
+		new TypeVariable(object) => [ setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic])) ]
+	}
+
+	def static classParameter(String paramName) {
+		new ClassParameterTypeVariable(paramName)
+	}
+	
 	def static synthetic() {
 		simple(null)
 	}
@@ -169,5 +177,4 @@ class TypeVariable {
 			]
 		]
 	}
-	
 }

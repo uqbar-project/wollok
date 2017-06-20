@@ -26,8 +26,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			val methodTypeInfo = registry.methodTypeInfo(type as ConcreteType, selector, arguments)
 			println('''	Feeding message send «it» with method type info from type «type»''')
 			changed = true
-			returnType.beSupertypeOf(methodTypeInfo.returnType)
-			arguments.biForEach(methodTypeInfo.parameters)[arg, param|arg.beSubtypeOf(param)]
+			methodTypeInfo.returnType.beSubtypeOf(returnType)
+			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]
 		}
 	}
 }

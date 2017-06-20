@@ -14,6 +14,8 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
+
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
 
@@ -39,6 +41,17 @@ class TypeVariablesRegistry {
 
 	def newClosure(EObject owner, List<TypeVariable> parameters, TypeVariable expression) {
 		TypeVariable.closure(owner, parameters, expression).register
+	}
+
+	/**
+	 * This should be a special case of a generic type variable, for now collections are the only generic types.
+	 */
+	def newCollection(EObject owner, ConcreteType collectionType) {
+		TypeVariable.generic(owner, #[ELEMENT]) => [
+			addMinimalType(collectionType)
+			beSealed
+			register
+		]
 	}
 
 	def newWithSubtype(EObject it, EObject... subtypes) {
@@ -80,6 +93,10 @@ class TypeVariablesRegistry {
 		]
 	}
 
+	def newClassParameterVar(String paramName) {
+		TypeVariable.classParameter(paramName)
+	}
+
 	// ************************************************************************
 	// ** Retrieve type variables
 	// ************************************************************************
@@ -114,4 +131,5 @@ class TypeVariablesRegistry {
 	def fullReport() {
 		typeVariables.values.forEach[println(fullDescription)]
 	}
+	
 }
