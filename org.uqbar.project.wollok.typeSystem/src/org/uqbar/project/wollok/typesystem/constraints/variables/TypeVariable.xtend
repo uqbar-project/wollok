@@ -89,8 +89,6 @@ class TypeVariable {
 		this.typeInfo = newTypeInfo
 	}
 
-	def getMinimalConcreteTypes() { typeInfo.minimalConcreteTypes }
-
 	/**
 	 * Adds a minType to this variable. This is only possible for simple types. 
 	 * Therefore, if type info has not yet been assigned, it will be forced to a simple type. 
@@ -100,8 +98,6 @@ class TypeVariable {
 		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo()) 
 		typeInfo.addMinimalType(type)
 	}
-
-	def getMaximalConcreteTypes() { typeInfo.maximalConcreteTypes }
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
 		typeInfo.maximalConcreteTypes = maxTypes

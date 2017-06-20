@@ -38,10 +38,6 @@ class ClosureTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override getMinimalConcreteTypes() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-
 	override setMinimalConcreteTypes(Map<WollokType, ConcreteTypeState> minTypes) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}

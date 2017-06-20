@@ -43,8 +43,6 @@ abstract class TypeInfo {
 	
 	def void beSealed()
 
-	def Map<WollokType, ConcreteTypeState> getMinimalConcreteTypes()
-
 	def void setMinimalConcreteTypes(Map<WollokType, ConcreteTypeState> minTypes)
 
 	def ConcreteTypeState addMinimalType(WollokType type)

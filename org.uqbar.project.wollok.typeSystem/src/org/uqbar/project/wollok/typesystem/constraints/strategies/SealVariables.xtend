@@ -6,7 +6,7 @@ class SealVariables extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
 		if (!tvar.sealed && !tvar.subtypes.empty && tvar.subtypes.forall[sealed]) {
 			tvar.beSealed
-			println('''	Sealing «tvar» with type «tvar.minimalConcreteTypes»''')
+			println('''	Sealing «tvar» with type «tvar.type»''')
 			changed = true
 		}
 	}

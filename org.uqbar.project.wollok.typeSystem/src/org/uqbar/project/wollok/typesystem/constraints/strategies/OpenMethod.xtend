@@ -13,8 +13,8 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
  * Then look up for the concrete method in that class and use the type information of that method.
  */
 class OpenMethod extends SimpleTypeInferenceStrategy {
-	override analiseSimpleType(TypeVariable it, SimpleTypeInfo type) {
-		type.messages.forEach [ message |
+	override analiseSimpleType(TypeVariable user, SimpleTypeInfo it) {
+		messages.forEach [ message |
 			minimalConcreteTypes.keySet.forEach [ minType |
 				message.openMethod(minType)
 			]

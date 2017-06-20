@@ -6,18 +6,18 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
 class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
-	override analiseSimpleType(TypeVariable tvar, SimpleTypeInfo type) {
-		if (type.maximalConcreteTypes != null && tvar.maximalConcreteTypes.state == Pending) {
-			type.propagateMaxTypes(tvar)
-			type.maximalConcreteTypes.state = Ready
+	override analiseSimpleType(TypeVariable user, SimpleTypeInfo it) {
+		if (maximalConcreteTypes != null && maximalConcreteTypes.state == Pending) {
+			propagateMaxTypes(user)
+			maximalConcreteTypes.state = Ready
 			changed = true
 		}
 	}
 
-	def void propagateMaxTypes(SimpleTypeInfo type, TypeVariable tvar) {
-		tvar.allSubtypes.forEach [ subtype |
-			subtype.maximalConcreteTypes = type.maximalConcreteTypes
-			println('''	Propagating «type.maximalConcreteTypes» from: «tvar» to «subtype»''')
+	def void propagateMaxTypes(SimpleTypeInfo it, TypeVariable user) {
+		user.allSubtypes.forEach [ subtype |
+			subtype.maximalConcreteTypes = maximalConcreteTypes
+			println('''	Propagating «maximalConcreteTypes» from: «user» to «subtype»''')
 		]
 	}
 }
