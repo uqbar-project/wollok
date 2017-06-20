@@ -94,7 +94,7 @@ class TypeVariablesRegistry {
 	}
 
 	def newClassParameterVar(String paramName) {
-		TypeVariable.classParameter(paramName)
+		TypeVariable.classParameter(paramName) => [registry = this]
 	}
 
 	// ************************************************************************

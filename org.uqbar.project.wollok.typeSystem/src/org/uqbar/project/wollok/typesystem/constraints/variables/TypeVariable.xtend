@@ -10,7 +10,15 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
 
-class TypeVariable {
+interface ITypeVariable {
+	
+	def void beSubtypeOf(TypeVariable variable)
+	
+	def void beSupertypeOf(TypeVariable variable)
+	
+}
+
+class TypeVariable implements ITypeVariable {
 	@Accessors
 	val EObject owner
 
@@ -79,12 +87,12 @@ class TypeVariable {
 	// ************************************************************************
 	// ** Adding constraints
 	// ************************************************************************
-	def beSupertypeOf(TypeVariable subtype) {
+	override beSupertypeOf(TypeVariable subtype) {
 		this.subtypes.add(subtype)
 		subtype.supertypes.add(this)
 	}
 
-	def beSubtypeOf(TypeVariable supertype) {
+	override beSubtypeOf(TypeVariable supertype) {
 		this.supertypes.add(supertype)
 		supertype.subtypes.add(this)
 	}

@@ -1,15 +1,15 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.eclipse.xtend.lib.annotations.Accessors
 
 interface MethodTypeInfo {
-	def TypeVariable returnType()
+	def ITypeVariable returnType()
 
-	def List<TypeVariable> parameters()
+	def List<ITypeVariable> parameters()
 }
 
 class AnnotatedMethodTypeInfo implements MethodTypeInfo {
@@ -34,7 +34,7 @@ abstract class TypeAnnotation {
 	@Accessors
 	TypeVariablesRegistry registry
 
-	def TypeVariable asTypeVariable()
+	def ITypeVariable asTypeVariable()
 }
 
 class SimpleTypeAnnotation extends TypeAnnotation {
@@ -44,7 +44,7 @@ class SimpleTypeAnnotation extends TypeAnnotation {
 		this.className = className
 	}
 
-	override TypeVariable asTypeVariable() {
+	override asTypeVariable() {
 		registry.newSyntheticVar(className)
 	}
 }

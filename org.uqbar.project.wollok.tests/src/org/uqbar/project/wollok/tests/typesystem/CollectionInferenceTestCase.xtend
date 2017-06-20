@@ -30,10 +30,12 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void listLiteralElement() {
 		'''
 		program p {
-			const first = [1].first()
+			const firstOfNumbers = [1].first()
+			const firstOfStrings = ["hola"].first()
 		}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "l")
+			assertTypeOf(classTypeFor(INTEGER), "firstOfNumbers")
+			assertTypeOf(classTypeFor(STRING), "firstOfStrings")
 		]
 	}
 }

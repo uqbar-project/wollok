@@ -25,9 +25,9 @@ class OverridingConstraintsGenerator {
 		overridingMethods.forEach[
 			val superClass = declaringContext.parent
 			val superMethod = registry.methodTypeInfo(superClass, name, parameters)
-			tvar.beSubtypeOf(superMethod.returnType)
-			parameters.biForEach(superMethod.parameters)[myParam, superParam|
-				myParam.tvar.beSupertypeOf(superParam)
+			superMethod.returnType.beSupertypeOf(tvar)
+			superMethod.parameters.biForEach(parameters)[superParam, myParam|
+				superParam.beSubtypeOf(myParam.tvar)
 			]
 		]
 	}

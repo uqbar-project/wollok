@@ -9,6 +9,10 @@ class GenericTypeInfo extends SimpleTypeInfo {
 		this.params = params
 	}
 
+	def param(String paramName) {
+		params.get(paramName)
+	}
+
 	// ************************************************************************
 	// ** Utilities
 	// ************************************************************************
@@ -19,7 +23,7 @@ class GenericTypeInfo extends SimpleTypeInfo {
 	public static val ELEMENT = "element"
 
 	static def TypeVariable element(TypeVariable user) {
-		(user.typeInfo as GenericTypeInfo).params.get(ELEMENT)
+		(user.typeInfo as GenericTypeInfo).param(ELEMENT)
 	}
 
 }
