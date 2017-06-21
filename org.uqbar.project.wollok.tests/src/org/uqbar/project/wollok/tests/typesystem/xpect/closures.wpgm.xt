@@ -1,0 +1,6 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {
+	// XPECT type at c --> () => String 
+	const c = { "Hello" }
+}
