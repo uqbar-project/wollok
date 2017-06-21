@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.Injector
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
 import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
@@ -20,10 +21,11 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
-import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
 
 /**
  * Abstract base class for all type system test cases.
@@ -36,6 +38,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	@Parameter
 	public Class<? extends TypeSystem> tsystemClass
 
+	@Accessors
 	extension TypeSystem tsystem
 
 	@Inject
