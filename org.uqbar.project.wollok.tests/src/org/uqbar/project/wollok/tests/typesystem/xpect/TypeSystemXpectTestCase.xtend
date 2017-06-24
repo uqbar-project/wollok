@@ -20,7 +20,7 @@ import org.xpect.xtext.lib.tests.ValidationTest
 import org.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
 
 /**
- * Test class for extending XPECT to have tests on static proposals (content assist)
+ * Test class for extending xpect to have tests on static proposals (content assist)
  * 
  * @author npasserini
  */
