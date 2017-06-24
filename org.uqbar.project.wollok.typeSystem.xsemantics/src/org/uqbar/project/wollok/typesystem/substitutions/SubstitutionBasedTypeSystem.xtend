@@ -47,6 +47,7 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * Implementation that builds up rules
@@ -95,6 +96,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	// ** Analysis rules
 	// ******************************************************
 
+	def dispatch void doAnalyse(Import it) { }
 	def dispatch void doAnalyse(WProgram it) { elements.analyze }
 	def dispatch void doAnalyse(WTest it) { elements.analyze }
 

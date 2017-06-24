@@ -1,0 +1,12 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {
+	
+	// XPECT warnings --> "Este mensaje no retorna ningún valor" at "nada"
+	const nada = [].add(1) 
+
+	// XPECT type at [].add(1)  --> Void 
+	[].add(1)
+	 
+}
+

@@ -1,0 +1,14 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {
+	// XPECT type at unString -->  String 
+	const unString = "Hola" 
+
+	// XPECT type at largo -->  Integer
+	const largo = "Hola".size() 
+
+	// XPECT type at coleccion -->  List
+	const coleccion = [] 
+	 
+}
+

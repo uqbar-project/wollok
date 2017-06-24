@@ -12,6 +12,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// Otra sintaxis posible
 		// "Integer" >> "-" === #[INTEGER] => INTEGER
 		"List" >> "first" === #[] => ELEMENT
-	}
+		"String" >> "size" === #[] => INTEGER
+		"Collection" >> "add" === #[ELEMENT] => VOID
+					}
 }
 
