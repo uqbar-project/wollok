@@ -3,10 +3,12 @@
 class Golondrina { 
 	var energia = 100
 	
-	method vola() { energia -= 10 }
+	method vola() { energia = energia - 10 }
 }
 
 class Entrenador {
-	// XPECT type at ave --> Golondrina 
-	method entrena(ave) { ave.vola() }
+	method entrena(ave) { 
+		// XPECT type at ave --> Golondrina 
+		ave.vola()
+	}
 }

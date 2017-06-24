@@ -5,7 +5,7 @@ import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.typesystem.AbstractWollokTypeSystemTestCase
-import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.xpect.expectation.IStringExpectation
 import org.xpect.expectation.StringExpectation
@@ -37,7 +37,7 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource, //
 		@ThisModel EObject file
 	) {
-		tsystemClass = SubstitutionBasedTypeSystem
+		tsystemClass = ConstraintBasedTypeSystem
 		setupTypeSystem
 		tsystem.validate(file as WFile, validator)
 		expectation.assertEquals(tsystem.type(node))
