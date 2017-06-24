@@ -13,20 +13,65 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
-	
-	@Parameters(name = "{index}: {0}")
+
+	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
 			ConstraintBasedTypeSystem
 //			SubstitutionBasedTypeSystem
-			// TODO: fix !
+		// TODO: fix !
 //			XSemanticsTypeSystem,		 
 //			BoundsBasedTypeSystem
 		]
 	}
-	
+
 	@Test
-	def void testMethodReturnTypeInferredFromInstVarRef() {	 '''
+	def void testInferIndirectAssignedToBinaryExpression() {
+		'''
+			program p {
+				const number
+				const a = 2
+				const b = 3
+				number = a + b
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), 'number')
+		]
+	}
+
+	@Test
+	def void testInferRightOperandFromBinaryExpression() {
+		'''
+			class Golondrina {
+				var energia
+				method come(grms) {
+					energia = 10 + grms
+				}
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+		]
+	}
+
+	@Test
+	def void testInferLeftOperandFromBinaryExpression() {
+		'''
+			class Golondrina {
+				var energia
+				method come(grms) {
+					energia = grms + 10
+				}
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+		]
+	}
+
+	@Test
+	def void testMethodReturnTypeInferredFromInstVarRef() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method getEnergia() = energia
@@ -38,7 +83,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void testMethodReturnTypeInferredFromInstVarRefWithReturn() {	 '''
+	def void testMethodReturnTypeInferredFromInstVarRefWithReturn() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method getEnergia() { return energia }
@@ -48,21 +94,23 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
 		]
 	}
-	
+
 	@Test
-	def void testMethodParamTypeInferredFromInstVarRef() {	'''
+	def void testMethodParamTypeInferredFromInstVarRef() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method setEnergia(e) { energia = e }
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.setEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.setEnergia")
 		]
 	}
-	
+
 	@Test
-	def void testMethodParamInferredFromInstVarRef() { 	'''
+	def void testMethodParamInferredFromInstVarRef() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method multiplicarEnergia(factor) { 
@@ -71,12 +119,13 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.multiplicarEnergia")			
+			assertMethodSignature("(Integer) => Void", "Golondrina.multiplicarEnergia")
 		]
 	}
-	
+
 	@Test
-	def void testMethodReturnTypeInferredFromInnerCallToOtherMethod() { 	'''
+	def void testMethodReturnTypeInferredFromInnerCallToOtherMethod() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method getEnergia() { return energia }
@@ -89,10 +138,11 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
 			assertMethodSignature("() => Integer", 'Golondrina.getEnergiaDelegando')
 		]
-	}	
-	
+	}
+
 	@Test
-	def void testMethodReturnTypeInferredBecauseItIsUsedInOtherMethod() { '''
+	def void testMethodReturnTypeInferredBecauseItIsUsedInOtherMethod() {
+		'''
 			class Golondrina {
 				var energia = 100
 				var gasto
@@ -109,9 +159,10 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("() => Integer", 'Golondrina.gastoPorVolar')
 		]
 	}
-	
+
 	@Test
-	def void testMethodParameterInferredFromSuperMethod() { '''
+	def void testMethodParameterInferredFromSuperMethod() {
+		'''
 			class Golondrina {
 				var energia = 100
 				method comer(gramos) {
@@ -127,11 +178,11 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("(Integer) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
-	
+
 	// Method Calls
-	
 	@Test
-	def void variableAssignedToReturnValueOfSelfMethod() { 	'''
+	def void variableAssignedToReturnValueOfSelfMethod() {
+		'''
 		object example {
 			method aList() = [1,2,3]
 			method useTheList() {
@@ -143,19 +194,20 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void messageTo() { 	'''
-		object example {
-			method number() = 10
-		}
-		
-		program {
-			var x = example.number()
-		}
+	def void messageTo() {
+		'''
+			object example {
+				method number() = 10
+			}
+			
+			program {
+				var x = example.number()
+			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "x")
 		]
 	}
-	
+
 //	@Test
 //	def void variableAssignedToReturnValueOfAnotherObjectsMethod() { 	'''
 //		object stringGenerator {
@@ -171,5 +223,4 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 //			assertTypeOfAsString("List", "pepe")
 //		]
 //	}
-	
 }

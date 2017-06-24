@@ -1,0 +1,12 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Golondrina { 
+	var energia = 100
+	
+	method vola() { energia -= 10 }
+}
+
+class Entrenador {
+	// XPECT type at ave --> Golondrina 
+	method entrena(ave) { ave.vola() }
+}
