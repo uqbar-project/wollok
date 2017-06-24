@@ -62,7 +62,6 @@ class WollokLauncher extends WollokChecker {
 			System.exit(0)
 		}
 		catch (Exception e) {
-			println(e.message)
 			System.exit(-1)
 		}
 	}
