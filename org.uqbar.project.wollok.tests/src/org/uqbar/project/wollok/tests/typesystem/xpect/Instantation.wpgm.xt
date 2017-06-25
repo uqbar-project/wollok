@@ -1,0 +1,19 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Persona {
+	method comoEstas() {
+		return "bien"
+	}
+}
+
+program p {
+
+ 
+	// XPECT type at alguien -->  String
+	const alguien = new Persona().comoEstas()
+	
+	// XPECT type at alguien -->  Persona
+	const alguien = new Persona()
+
+}
+
