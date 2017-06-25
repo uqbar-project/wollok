@@ -59,7 +59,7 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WNamedObject it) {
 		members.forEach[generateVariables]
-		it.newSealed(it.objectType)
+		newNamedObject
 	}
 
 	def dispatch void generateVariables(WClass it) {
@@ -145,7 +145,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WVariableReference it) {
 		it.newWithSubtype(ref)
 	}
-
+	
 	def dispatch void generateVariables(WSelf it) {
 		it.newSealed(getSelfContext.asWollokType)
 	}
@@ -205,6 +205,10 @@ class ConstraintGenerator {
 	// ************************************************************************
 	def addInheritanceConstraints() {
 		overridingConstraintsGenerator.run()
+	}
+
+	def newNamedObject(WNamedObject it) {
+		it.newSealed(it.objectType)
 	}
 
 	// ************************************************************************

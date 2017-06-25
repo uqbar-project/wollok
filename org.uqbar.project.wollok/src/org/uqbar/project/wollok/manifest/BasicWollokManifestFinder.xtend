@@ -1,8 +1,7 @@
 package org.uqbar.project.wollok.manifest
 
-import org.eclipse.emf.ecore.resource.ResourceSet
-import org.uqbar.project.wollok.WollokActivator
 import com.google.inject.Singleton
+import org.uqbar.project.wollok.WollokActivator
 
 @Singleton
 class BasicWollokManifestFinder implements WollokManifestFinder {
@@ -19,7 +18,7 @@ class BasicWollokManifestFinder implements WollokManifestFinder {
 			new WollokManifest(class.getResourceAsStream("/" + fullName))
 	}
 	
-	override allManifests(ResourceSet resourceSet) {
-		manifestNames.map[newManifest(it.key,it.value)]
+	override allManifests() {
+		manifestNames.map[newManifest(it.key, it.value)]
 	}
 }

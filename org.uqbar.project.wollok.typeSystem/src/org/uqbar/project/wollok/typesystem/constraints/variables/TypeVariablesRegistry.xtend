@@ -11,10 +11,10 @@ import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeIn
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
+import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
-
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap

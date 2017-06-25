@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
 import org.uqbar.project.wollok.linking.WollokLinker
@@ -33,7 +34,6 @@ import org.uqbar.project.wollok.scoping.cache.MapBasedWollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.serializer.WollokDslSyntacticSequencerWithSyntheticLinking
 import org.uqbar.project.wollok.utils.DummyJvmTypeProviderFactory
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.

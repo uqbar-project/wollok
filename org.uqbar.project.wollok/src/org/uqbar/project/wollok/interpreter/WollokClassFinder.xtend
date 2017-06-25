@@ -9,6 +9,9 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.resource.IEObjectDescription
+import com.google.common.base.Predicate
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -16,7 +19,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * @author jfernandes
  */
 class WollokClassFinder {
-	// class cache
 	private Map<String, WClass> sdkClassesCache = newHashMap
 	private Map<String, WNamedObject> sdkObjectsCache = newHashMap
 	@Inject IGlobalScopeProvider scopeProvider
@@ -34,6 +36,10 @@ class WollokClassFinder {
 	def WClass getIntegerClass(EObject context) { context.getCachedClass(INTEGER) }
 	def WClass getDoubleClass(EObject context) { context.getCachedClass(DOUBLE) }
 	def WClass getBooleanClass(EObject context) { context.getCachedClass(BOOLEAN) }
+
+	// ************************************************************************
+	// ** Main API: cache access
+	// ************************************************************************
 	
 	def WClass getCachedClass(EObject context, String classFQN) {
 		if (!sdkClassesCache.containsKey(classFQN)) { 
@@ -42,6 +48,17 @@ class WollokClassFinder {
 		sdkClassesCache.get(classFQN)
 	}
 	
+	def WNamedObject getCachedObject(EObject context, String objectName) {
+		if (!sdkObjectsCache.containsKey(objectName)) { 
+			sdkObjectsCache.put(objectName, searchObject(objectName, context))
+		}
+		sdkObjectsCache.get(objectName)
+	}
+	
+	// ************************************************************************
+	// ** Search object/class in the global scope
+	// ************************************************************************
+
 	def searchClass(String classFQN, EObject context) {
 		val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
 			o.name.toString == classFQN
@@ -52,21 +69,37 @@ class WollokClassFinder {
 		a.EObjectOrProxy as WClass
 	}
 	
-	def WNamedObject getCachedObject(EObject context, String objectName) {
-		if (!sdkObjectsCache.containsKey(objectName)) { 
-			sdkObjectsCache.put(objectName, searchObject(objectName, context))
-		}
-		sdkObjectsCache.get(objectName)
-	}
-	
 	def searchObject(String objectFQN, EObject context) {
-		val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WVARIABLE_REFERENCE__REF) [o|
-			o.name.toString == objectFQN
-		]
+		val scope = getObjectScope(context.eResource)[o| o.name.toString == objectFQN]
 		val a = scope.allElements.findFirst[o| o.name.toString == objectFQN]
 		if (a == null)
 			throw new WollokRuntimeException("Could NOT find " + objectFQN + " in scope: " + scope.allElements)
 		a.EObjectOrProxy as WNamedObject
 	}
+
+	// ************************************************************************
+	// ** Get all elements in the scope (used by the type system)
+	// ************************************************************************
 	
+	def allSdkObjects(Resource resource) {
+		getObjectScope(resource)[EObjectOrProxy instanceof WNamedObject]
+		.allElements
+		.filter[EObjectOrProxy instanceof WNamedObject]
+		.map[description|
+			val key = description.name.toString
+			description.EObjectOrProxy as WNamedObject => [namedObject|
+				if (!sdkObjectsCache.containsKey(key)) { 
+					sdkObjectsCache.put(key, namedObject)
+				}
+			]
+		]
+	}	
+	
+	// ************************************************************************
+	// ** Utilities
+	// ************************************************************************
+	
+	protected def getObjectScope(Resource resource, Predicate<IEObjectDescription> predicate) {
+		scopeProvider.getScope(resource, WollokDslPackage.Literals.WVARIABLE_REFERENCE__REF, predicate)
+	}
 }

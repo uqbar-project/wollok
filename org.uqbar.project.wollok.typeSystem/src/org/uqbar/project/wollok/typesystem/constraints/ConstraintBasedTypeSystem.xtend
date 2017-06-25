@@ -28,9 +28,8 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	@Inject WollokClassFinder finder
 
 	@Accessors
-	val extension TypeVariablesRegistry registry = new TypeVariablesRegistry(this)
-
-	val constraintGenerator = new ConstraintGenerator(this)
+	extension TypeVariablesRegistry registry
+	ConstraintGenerator constraintGenerator
 
 	override def name() { "Constraints-based" }
 
@@ -45,7 +44,14 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ************************************************************************
 	// ** Analysis
 	// ************************************************************************
+	
 	override analyse(EObject p) {
+		if (registry == null) {
+			registry = new TypeVariablesRegistry(this)
+			constraintGenerator = new ConstraintGenerator(this)
+			finder.allSdkObjects(p.eResource).forEach[constraintGenerator.newNamedObject(it)]
+		}
+
 		constraintGenerator.generateVariables(p)
 	}
 
@@ -55,14 +61,14 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	override inferTypes() {
 		// These constraints have to be created after all files have been `analise`d
 		constraintGenerator.addInheritanceConstraints
-		
+
 		var currentStage = 0
 
 		println("Starting inference")
 
 		do {
 			println("Running stage " + currentStage)
-			
+
 			if (runStage(stages.get(currentStage)))
 				// Stage produced new inforamtion, start again from stage 0. 
 				currentStage = 0
@@ -136,5 +142,4 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	protected def ClassBasedWollokType classType(WClass clazz) {
 		new ClassBasedWollokType(clazz, this)
 	}
-
 }

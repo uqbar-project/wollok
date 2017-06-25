@@ -17,7 +17,7 @@ class WollokLibraryHealthyTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
 	def validateLib(){
-		val allManifests = manifestFinder.allManifests(resourceSet)
+		val allManifests = manifestFinder.allManifests()
 		val sb = new StringBuilder
 
 		allManifests.forEach[ manifest |

@@ -44,6 +44,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(defaultScope, explicitImportedObjects)
 	}
+
 	/**
 	 * Loads all imported elements from a context
 	 */
@@ -54,8 +55,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	}
 	
 	def doImportedObjects(Resource context, List<Import> imports){
-		val resourceSet = context.resourceSet
-		val objectsFromManifests = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
+		val objectsFromManifests = getObjectsFromManifests(context.resourceSet) 
 		
 		imports.filter[
 			importedNamespace != null && !objectsFromManifests.exists[o| o.matchesImport(importedNamespace)]
@@ -67,6 +67,10 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		.map[r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
+	}
+
+	def getObjectsFromManifests(ResourceSet resourceSet) {
+		manifestFinder.allManifests().map[handleManifest(resourceSet)].flatten
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace){
