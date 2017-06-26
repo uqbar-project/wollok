@@ -1,0 +1,8 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {
+	// XPECT type at console --> console 
+	// XPECT type at println --> (String) => Void 
+ 	console.println("hola")
+}
+

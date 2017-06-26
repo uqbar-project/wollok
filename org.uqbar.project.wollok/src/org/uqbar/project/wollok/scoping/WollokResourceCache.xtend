@@ -24,4 +24,7 @@ class WollokResourceCache {
 		}
 	}
 	
+	static def clearCache() {
+		resourceCache.clear
+	}
 }
