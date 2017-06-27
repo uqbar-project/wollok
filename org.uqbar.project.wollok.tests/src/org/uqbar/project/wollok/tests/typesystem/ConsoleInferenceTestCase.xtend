@@ -39,7 +39,7 @@ class ConsoleInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				console.println("hola")
 			}
 		'''.parseAndInfer.asserting [
-			assertMethodSignature("(String) => Void", 'console.println')
+			assertMethodSignature("(Any) => Void", 'console.println')
 		]
 	}
 }

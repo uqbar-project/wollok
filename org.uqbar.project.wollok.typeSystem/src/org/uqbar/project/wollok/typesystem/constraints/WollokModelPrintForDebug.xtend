@@ -3,9 +3,11 @@ package org.uqbar.project.wollok.typesystem.constraints
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
@@ -38,5 +40,9 @@ class WollokModelPrintForDebug {
 
 	static def dispatch String debugInfo(WBinaryOperation it) {
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
+	}
+
+	static def dispatch String debugInfo(WMethodDeclaration it) {
+		'''«eContainer.name».«name»(«parameters.join(', ')[name]»)'''
 	}
 }

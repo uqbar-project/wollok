@@ -55,7 +55,7 @@ class WollokDSK {
 	// ** SDK Objects
 	// ************************************************************************
 
-	public static val CONSOLE = "wollok.lang.console"
+	public static val CONSOLE = "wollok.lib.console"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

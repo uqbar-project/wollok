@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
@@ -34,18 +35,25 @@ abstract class TypeAnnotation {
 	@Accessors
 	TypeVariablesRegistry registry
 
+	@Accessors
+	EObject context
+
 	def ITypeVariable asTypeVariable()
+
+	protected def findType(String typeName) {
+		registry.typeSystem.findType(context, typeName)
+	}
 }
 
 class SimpleTypeAnnotation extends TypeAnnotation {
-	String className
+	String typeName
 
-	new(String className) {
-		this.className = className
+	new(String typeName) {
+		this.typeName = typeName
 	}
 
 	override asTypeVariable() {
-		registry.newSyntheticVar(className)
+		registry.newSyntheticVar(findType(typeName))
 	}
 }
 

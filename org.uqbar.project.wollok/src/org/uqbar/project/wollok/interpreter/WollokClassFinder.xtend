@@ -17,6 +17,7 @@ import com.google.common.base.Predicate
  * Kind of a hack to be able to resolve a wollok class from anywhere
  * 
  * @author jfernandes
+ * @author npasserini
  */
 class WollokClassFinder {
 	private Map<String, WClass> sdkClassesCache = newHashMap
@@ -60,10 +61,8 @@ class WollokClassFinder {
 	// ************************************************************************
 
 	def searchClass(String classFQN, EObject context) {
-		val scope = scopeProvider.getScope(context.eResource, WollokDslPackage.Literals.WCLASS__PARENT) [o|
-			o.name.toString == classFQN
-		]
-		val a = scope.allElements.findFirst[o| o.name.toString == classFQN]
+		val scope = getClassScope(context.eResource)[o| o.name.toString == classFQN]
+		val a = scope.allElements.findFirst[o| o.EObjectOrProxy instanceof WClass && o.name.toString == classFQN]
 		if (a == null)
 			throw new WollokRuntimeException("Could NOT find " + classFQN + " in scope: " + scope.allElements)
 		a.EObjectOrProxy as WClass
@@ -71,7 +70,7 @@ class WollokClassFinder {
 	
 	def searchObject(String objectFQN, EObject context) {
 		val scope = getObjectScope(context.eResource)[o| o.name.toString == objectFQN]
-		val a = scope.allElements.findFirst[o| o.name.toString == objectFQN]
+		val a = scope.allElements.findFirst[o| o.EObjectOrProxy instanceof WNamedObject && o.name.toString == objectFQN]
 		if (a == null)
 			throw new WollokRuntimeException("Could NOT find " + objectFQN + " in scope: " + scope.allElements)
 		a.EObjectOrProxy as WNamedObject
@@ -81,7 +80,7 @@ class WollokClassFinder {
 	// ** Get all elements in the scope (used by the type system)
 	// ************************************************************************
 	
-	def allSdkObjects(Resource resource) {
+	def allGlobalObjects(Resource resource) {
 		getObjectScope(resource)[EObjectOrProxy instanceof WNamedObject]
 		.allElements
 		.filter[EObjectOrProxy instanceof WNamedObject]
@@ -94,11 +93,29 @@ class WollokClassFinder {
 			]
 		]
 	}	
-	
+
+	def allClasses(Resource resource) {
+		getClassScope(resource)[EObjectOrProxy instanceof WClass]
+		.allElements
+		.filter[EObjectOrProxy instanceof WClass]
+		.map[description|
+			val key = description.name.toString
+			description.EObjectOrProxy as WClass => [class |
+				if (!sdkClassesCache.containsKey(key)) { 
+					sdkClassesCache.put(key, class)
+				}
+			]
+		]
+	}	
+
 	// ************************************************************************
 	// ** Utilities
 	// ************************************************************************
 	
+	protected def getClassScope(Resource resource, Predicate<IEObjectDescription> predicate) {
+		scopeProvider.getScope(resource, WollokDslPackage.Literals.WCLASS__PARENT, predicate)
+	}
+
 	protected def getObjectScope(Resource resource, Predicate<IEObjectDescription> predicate) {
 		scopeProvider.getScope(resource, WollokDslPackage.Literals.WVARIABLE_REFERENCE__REF, predicate)
 	}

@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -14,17 +15,23 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaxim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
+import org.uqbar.project.wollok.typesystem.declarations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
+import static extension org.uqbar.project.wollok.typesystem.declarations.TypeDeclarations.*
+import org.uqbar.project.wollok.typesystem.TypeProvider
+
 /**
  * @author npasserini
  */
-class ConstraintBasedTypeSystem implements TypeSystem {
+class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
+	@Accessors
 	@Inject WollokClassFinder finder
 
 	@Accessors
@@ -44,16 +51,25 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 	// ************************************************************************
 	// ** Analysis
 	// ************************************************************************
-	
-	override analyse(EObject p) {
+	def initialize(EObject program) {
+		registry = new TypeVariablesRegistry(this)
+		constraintGenerator = new ConstraintGenerator(this)
+		
+		// This shouldn't be necessary if all global objects had type annotations
+		finder.allGlobalObjects(program.eResource).forEach[constraintGenerator.newNamedObject(it)]
+
+		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
+		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
+	}
+
+	override analyse(EObject program) {
 		if (registry == null) {
-			registry = new TypeVariablesRegistry(this)
-			constraintGenerator = new ConstraintGenerator(this)
-			finder.allSdkObjects(p.eResource).forEach[constraintGenerator.newNamedObject(it)]
+			initialize(program)
 		}
 
-		constraintGenerator.generateVariables(p)
+		constraintGenerator.generateVariables(program)
 	}
+
 
 	// ************************************************************************
 	// ** Inference
@@ -133,13 +149,24 @@ class ConstraintBasedTypeSystem implements TypeSystem {
 		new NamedObjectWollokType(model, this)
 	}
 
-	def classType(EObject model, String className) {
-		val clazz = finder.getCachedClass(model, className)
-		// REVIEWME: should we have a cache ?
-		classType(clazz)
+	protected def classType(WClass clazz) {
+		new ClassBasedWollokType(clazz, this)
 	}
 
-	protected def ClassBasedWollokType classType(WClass clazz) {
-		new ClassBasedWollokType(clazz, this)
+	override objectType(EObject context, String objectFQN) {
+		finder.getCachedObject(context, objectFQN).objectType
+	}
+
+	override classType(EObject context, String classFQN) {
+		finder.getCachedClass(context, classFQN).classType
+	}
+
+	def findType(EObject context, String typeName) {
+		// TODO Este método debería volar cuando terminemos las nuevas type annotations.
+		try {
+			new ClassBasedWollokType(finder.getCachedClass(context, typeName), this)
+		} catch (WollokRuntimeException e) {
+			new NamedObjectWollokType(finder.getCachedObject(context, typeName), this)
+		}
 	}
 }

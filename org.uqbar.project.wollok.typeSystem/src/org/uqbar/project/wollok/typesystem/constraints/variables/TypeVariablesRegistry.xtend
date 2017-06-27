@@ -15,16 +15,19 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericT
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import org.eclipse.xtend.lib.annotations.Accessors
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
 
+	@Accessors(PUBLIC_GETTER)
 	ConstraintBasedTypeSystem typeSystem
+
+	@Accessors
 	AnnotatedTypeRegistry annotatedTypes
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
-		this.annotatedTypes = new AnnotatedTypeRegistry(this)
 	}
 
 	def register(TypeVariable it) {
@@ -86,9 +89,10 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Synthetic type variables
 	// ************************************************************************
-	def newSyntheticVar(String className) {
+	def newSyntheticVar(WollokType type) {
+		// TODO This should disappear when we finish the new type annotations.
 		TypeVariable.synthetic => [
-			addMinimalType(typeSystem.classType(null, className))
+			addMinimalType(type)
 			beSealed
 		]
 	}
