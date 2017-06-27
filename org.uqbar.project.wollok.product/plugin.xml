@@ -15,7 +15,7 @@
          </property>
          <property
                name="aboutImage"
-               value="platform:/plugin/org.uqbar.project.wollok.product/icons/wollok-logo-about.fw.png">
+               value="icons/wollok-logo-about.fw.png">
          </property>
          <property
                name="aboutText"
@@ -23,7 +23,7 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_16x16.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_32x32.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_48x48.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_64x64.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_128x128.png,platform:/plugin/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_256x256.png">
+               value="icons/wollok-logo.iconset/icon_16x16.png,icons/wollok-logo.iconset/icon_32x32.png,icons/wollok-logo.iconset/icon_48x48.png,icons/wollok-logo.iconset/icon_64x64.png,icons/wollok-logo.iconset/icon_128x128.png,icons/wollok-logo.iconset/icon_256x256.png">
          </property>
          <property
                name="startupForegroundColor"
@@ -46,7 +46,7 @@
      	 <!-- INTRO -->
      	 <property  
                name="introBrandingImage"  
-               value="product:/icons/icon_64x64.png">  
+               value="product:icons/icon_64x64.png">  
          </property>  
          <property  
                name="introTitle"  
