@@ -1,21 +1,18 @@
 package org.uqbar.project.wollok.typesystem.declarations
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
-
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		Integer + INTEGER => INTEGER
-		Integer - INTEGER => INTEGER
-		Integer * INTEGER => INTEGER
+		Integer + Integer => Integer
+		Integer - Integer => Integer
+		Integer * Integer => Integer
 
 		// Otra sintaxis posible
 		// "Integer" >> "-" === #[INTEGER] => INTEGER
-		List >> "first" === #[] => ELEMENT
-		String >> "size" === #[] => INTEGER
-		Collection >> "add" === #[ELEMENT] => VOID
+		List >> "first" === #[] => Integer
+		String >> "size" === #[] => Integer
+		Collection >> "add" === #[ELEMENT] => Void
 
 		// console
-		console >> "println" === #[OBJECT] => VOID
+		console >> "println" === #[Any] => Void
 	}
 }

@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -35,25 +35,19 @@ abstract class TypeAnnotation {
 	@Accessors
 	TypeVariablesRegistry registry
 
-	@Accessors
-	EObject context
-
 	def ITypeVariable asTypeVariable()
-
-	protected def findType(String typeName) {
-		registry.typeSystem.findType(context, typeName)
-	}
 }
 
-class SimpleTypeAnnotation extends TypeAnnotation {
-	String typeName
+class SimpleTypeAnnotation<T extends WollokType> extends TypeAnnotation {
+	@Accessors(PUBLIC_GETTER)
+	T type
 
-	new(String typeName) {
-		this.typeName = typeName
+	new(T type) {
+		this.type = type
 	}
 
 	override asTypeVariable() {
-		registry.newSyntheticVar(findType(typeName))
+		registry.newSyntheticVar(type)
 	}
 }
 

@@ -7,8 +7,6 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 import org.uqbar.project.wollok.typesystem.declarations.TypeDeclarationTarget
 import org.uqbar.project.wollok.wollokDsl.WClass
 
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
-
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
 	EObject context
@@ -19,22 +17,14 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		this.context = context
 	}
 
-	override addTypeDeclaration(ConcreteType receiver, String selector, String[] paramTypeNames, String returnTypeName) {
+	override addTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {
 		var info = methodTypeInfo.get(receiver.name)
 		if (info == null) methodTypeInfo.put(receiver.name, info = newHashMap)
-		info.put(selector,
-			new AnnotatedMethodTypeInfo(paramTypeNames.map[asTypeAnnotation], returnTypeName.asTypeAnnotation))
-	}
-
-	def asTypeAnnotation(String typeName) {
-		val annotation = if (typeName == ELEMENT)
-				new ClassParameterTypeAnnotation(typeName)
-			else
-				new SimpleTypeAnnotation(typeName)
-
-		annotation.registry = registry
-		annotation.context = context
-		annotation
+		
+		paramTypes.forEach[it.registry = registry]
+		returnType.registry = registry
+		
+		info.put(selector, new AnnotatedMethodTypeInfo(paramTypes, returnType))
 	}
 
 	def get(ConcreteType type, String selector) {

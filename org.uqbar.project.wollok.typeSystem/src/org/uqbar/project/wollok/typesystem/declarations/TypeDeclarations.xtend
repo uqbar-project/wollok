@@ -7,6 +7,11 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.ClassParameterTypeAnnotation
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.TypeAnnotation
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.SimpleTypeAnnotation
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -28,39 +33,48 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** General syntax
 	// ****************************************************************************
-	def operator_doubleGreaterThan(ConcreteType receiver, String selector) {
-		new MethodIdentifier(target, receiver, selector)
+	def operator_doubleGreaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, String selector) {
+		new MethodIdentifier(target, receiver.type, selector)
 	}
 
-	def operator_doubleArrow(List<String> parameterTypeNames, String returnTypeName) {
-		new MethodTypeDeclaration(parameterTypeNames, returnTypeName)
+	def operator_doubleArrow(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
+		new MethodTypeDeclaration(parameterTypes, returnType)
 	}
+
 
 	// ****************************************************************************
 	// ** Synthetic operator syntax
 	// ****************************************************************************
-	def operator_plus(ConcreteType receiver, String parameterType) {
-		new ExpectReturnType(target, receiver, "+", #[parameterType])
+	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
 	}
 
-	def operator_minus(ConcreteType receiver, String parameterType) {
-		new ExpectReturnType(target, receiver, "-", #[parameterType])
+	def operator_minus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "-", #[parameterType])
 	}
 
-	def operator_multiply(ConcreteType receiver, String parameterType) {
-		new ExpectReturnType(target, receiver, "*", #[parameterType])
+	def operator_multiply(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "*", #[parameterType])
 	}
 
 	// ****************************************************************************
-	// ** Core classes and object
+	// ** Core class and object types
 	// ****************************************************************************
-	def Integer() { types.classType(context, INTEGER) }
-	def String() { types.classType(context, STRING )}
-	def List() { types.classType(context, LIST) }
-	def Set() { types.classType(context, COLLECTION) }
-	def Collection() { types.classType(context, SET) }
+	def Void() { new SimpleTypeAnnotation(WollokType.WVoid) }
+	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
+
+	def Integer() { classTypeAnnotation(INTEGER) }
+	def String() { classTypeAnnotation(STRING )}
+	def List() { classTypeAnnotation(LIST) }
+	def Set() { classTypeAnnotation(COLLECTION) }
+	def Collection() { classTypeAnnotation(SET) }
 	
-	def console() { types.objectType(context, CONSOLE)}
+	def console() { objectTypeAnnotation(CONSOLE) }
+	
+	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
+	
+	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
+	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
 }
 
 // ****************************************************************************
@@ -74,9 +88,9 @@ class ExpectReturnType {
 
 	String selector
 
-	List<String> parameterTypes
+	List<TypeAnnotation> parameterTypes
 
-	new(TypeDeclarationTarget target, ConcreteType receiver, String selector, List<String> parameterTypes) {
+	new(TypeDeclarationTarget target, ConcreteType receiver, String selector, List<TypeAnnotation> parameterTypes) {
 		this.target = target
 		this.receiver = receiver
 		this.selector = selector
@@ -84,7 +98,7 @@ class ExpectReturnType {
 
 	}
 
-	def operator_doubleArrow(String returnType) {
+	def operator_doubleArrow(TypeAnnotation returnType) {
 		target.addTypeDeclaration(receiver, selector, parameterTypes, returnType)
 	}
 }
@@ -101,20 +115,20 @@ class MethodIdentifier {
 	}
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
-		target.addTypeDeclaration(receiver, selector, methodType.parameterTypeNames, methodType.returnTypeName)
+		target.addTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
 }
 
 class MethodTypeDeclaration {
 	@Accessors
-	List<String> parameterTypeNames
+	List<? extends TypeAnnotation> parameterTypes
 
 	@Accessors
-	String returnTypeName
+	TypeAnnotation returnType
 
-	new(List<String> parameterTypeNames, String returnTypeName) {
-		this.parameterTypeNames = parameterTypeNames
-		this.returnTypeName = returnTypeName
+	new(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
+		this.parameterTypes = parameterTypes
+		this.returnType = returnType
 	}
 
 }
