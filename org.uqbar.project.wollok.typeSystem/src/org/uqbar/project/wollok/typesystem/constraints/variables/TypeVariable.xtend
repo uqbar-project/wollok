@@ -11,17 +11,17 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
 
 interface ITypeVariable {
+	def EObject getOwner()
 	
 	def void beSubtypeOf(TypeVariable variable)
 	
 	def void beSupertypeOf(TypeVariable variable)
-	
 }
 
 class TypeVariable implements ITypeVariable {
 	@Accessors
 	val EObject owner
-
+	
 	/**
 	 * Type info starts in null and will be coerced to one of the type info kinds (simple or closure) when we have information related to it.
 	 * Therefore, a variable with a null type info is a variable for which we have no information yet.
@@ -51,8 +51,8 @@ class TypeVariable implements ITypeVariable {
 		new TypeVariable(object) => [ setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic])) ]
 	}
 
-	def static classParameter(String paramName) {
-		new ClassParameterTypeVariable(paramName)
+	def static classParameter(EObject object, String paramName) {
+		new ClassParameterTypeVariable(object, paramName)
 	}
 	
 	def static synthetic() {
@@ -149,7 +149,7 @@ class TypeVariable implements ITypeVariable {
 	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************
-	override def toString() '''t(«owner.debugInfo»)'''
+	override toString() '''t(«owner.debugInfo»)'''
 
 	def fullDescription() '''
 		«class.simpleName» {

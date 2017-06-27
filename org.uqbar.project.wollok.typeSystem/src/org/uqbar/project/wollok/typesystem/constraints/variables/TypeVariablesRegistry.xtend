@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
-import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfoImpl
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
@@ -19,6 +19,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
+	val Map<EObject, ClassParameterTypeVariable> typeParameters = newHashMap
 
 	@Accessors(PUBLIC_GETTER)
 	ConstraintBasedTypeSystem typeSystem
@@ -32,6 +33,11 @@ class TypeVariablesRegistry {
 
 	def register(TypeVariable it) {
 		typeVariables.put(owner, it)
+		return it
+	}
+
+	def register(ClassParameterTypeVariable it) {
+		typeParameters.put(owner, it)
 		return it
 	}
 	
@@ -97,8 +103,11 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	def newClassParameterVar(String paramName) {
-		TypeVariable.classParameter(paramName) => [registry = this]
+	def newClassParameterVar(EObject owner, String paramName) {
+		TypeVariable.classParameter(owner, paramName) => [
+			registry = this 
+			register
+		]
 	}
 
 	// ************************************************************************
@@ -108,25 +117,30 @@ class TypeVariablesRegistry {
 		typeVariables.values
 	}
 
+	/**
+	 * This method returns types that are not type parameters. 
+	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
+	 */
 	def TypeVariable tvar(EObject obj) {
-		typeVariables.get(obj) => [ typeVar |
-			if (typeVar == null)
-				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
-		]
+		typeVariables.get(obj) => 
+			[ if (it==null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
+	}
+	
+	def ITypeVariable tvarOrParam(EObject obj) {
+		typeVariables.get(obj) ?: 
+			typeParameters.get(obj) =>
+				[ if (it==null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
 	}
 
 	// ************************************************************************
 	// ** Method types
 	// ************************************************************************
 	def methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
-		annotatedTypes.get(type, selector) ?: new MethodTypeInfoImpl(this, type.lookupMethod(selector, arguments))
+		new MethodTypeInfo(this, type.lookupMethod(selector, arguments))
 	}
 
 	def methodTypeInfo(WClass container, String selector, List<WParameter> arguments) {
-		annotatedTypes.get(container, selector) // Last parameter implies that we accept overriding abstract methods. 
-		// If this where not true, it will be reported as an error elsewhere.
-		// TODO Also, this will probably not work in the context of mixins.  
-		?: new MethodTypeInfoImpl(this, container.lookupMethod(selector, arguments, true))
+		new MethodTypeInfo(this, container.lookupMethod(selector, arguments, true))
 	}
 
 	// ************************************************************************

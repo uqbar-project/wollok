@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.List
+
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 

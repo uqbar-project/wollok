@@ -1,69 +1,32 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
-import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-interface MethodTypeInfo {
-	def ITypeVariable returnType()
-
-	def List<ITypeVariable> parameters()
+interface TypeAnnotation {
 }
 
-class AnnotatedMethodTypeInfo implements MethodTypeInfo {
-	TypeAnnotation returnType
-	TypeAnnotation[] parameterTypes
-
-	new(TypeAnnotation[] parameterTypes, TypeAnnotation returnType) {
-		this.parameterTypes = parameterTypes
-		this.returnType = returnType
-	}
-
-	override returnType() {
-		returnType.asTypeVariable
-	}
-
-	override parameters() {
-		parameterTypes.map[asTypeVariable]
-	}
-}
-
-abstract class TypeAnnotation {
-	@Accessors
-	TypeVariablesRegistry registry
-
-	def ITypeVariable asTypeVariable()
-}
-
-class SimpleTypeAnnotation<T extends WollokType> extends TypeAnnotation {
+class SimpleTypeAnnotation<T extends WollokType> implements TypeAnnotation {
 	@Accessors(PUBLIC_GETTER)
 	T type
 
 	new(T type) {
 		this.type = type
 	}
-
-	override asTypeVariable() {
-		registry.newSyntheticVar(type)
-	}
 }
 
-class ClassParameterTypeAnnotation extends TypeAnnotation {
+class ClassParameterTypeAnnotation implements TypeAnnotation {
+	@Accessors
 	String paramName
 
 	new(String paramName) {
 		this.paramName = paramName
 	}
-
-	override asTypeVariable() {
-		registry.newClassParameterVar(paramName)
-	}
 }
 
-class MethodTypeInfoImpl implements MethodTypeInfo {
+class MethodTypeInfo {
 	WMethodDeclaration method
 	extension TypeVariablesRegistry registry
 
@@ -72,11 +35,11 @@ class MethodTypeInfoImpl implements MethodTypeInfo {
 		this.method = method
 	}
 
-	override returnType() {
-		method.tvar
+	def returnType() {
+		method.tvarOrParam
 	}
 
-	override parameters() {
-		method.parameters.map[tvar]
-	}
+	def parameters() {
+		method.parameters.map[tvarOrParam]
+	}	
 }

@@ -6,11 +6,15 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 class ClassParameterTypeVariable implements ITypeVariable {
 	@Accessors
+	EObject owner
+	
+	@Accessors
 	extension TypeVariablesRegistry registry
 
 	String paramName
 
-	new(String paramName) {
+	new(EObject owner, String paramName) {
+		this.owner = owner
 		this.paramName = paramName
 	}
 
