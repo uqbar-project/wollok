@@ -8,7 +8,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 
 		// Otra sintaxis posible
 		// "Integer" >> "-" === #[INTEGER] => INTEGER
-		List >> "first" === #[] => Integer
+		List >> "first" === #[] => ELEMENT
 		String >> "size" === #[] => Integer
 		Collection >> "add" === #[ELEMENT] => Void
 

@@ -28,27 +28,24 @@ class SimpleTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Queries
 	// ************************************************************************
-
 	override getType(TypeVariable tvar) {
 		val type = basicGetType()
 		if (type == null)
 			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
 		type
 	}
-	
 
 	def basicGetType() {
 		minimalConcreteTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
 	}
-	
+
 	override hasErrors() {
 		minimalConcreteTypes.values.contains(Error)
-	}	
+	}
 
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
-
 	override beSealed() {
 		maximalConcreteTypes = new MaximalConcreteTypes(minimalConcreteTypes.keySet)
 		sealed = true
@@ -56,7 +53,7 @@ class SimpleTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
 		minimalConcreteTypes.entrySet.forEach [ it |
-			if(!maxTypes.contains(key)) value = Error
+			if (!maxTypes.contains(key)) value = Error
 		]
 
 		if (maximalConcreteTypes == null) {
@@ -92,7 +89,7 @@ class SimpleTypeInfo extends TypeInfo {
 		if (minimalConcreteTypes.containsKey(type))
 			Ready
 		else {
-			(if(!acceptMinimalType(type)) Error else Pending) => [
+			(if (!acceptMinimalType(type)) Error else Pending) => [
 				minimalConcreteTypes.put(type, it)
 			]
 		}
@@ -103,9 +100,30 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	// ************************************************************************
+	// ** Notifications
+	// ************************************************************************
+	
+	/**
+	 * This collaborates with the maxType propagation, 
+	 * resetting maxTypes state to force them to be propagated to the new subtypes.
+	 */
+	override subtypeAdded() {
+		maximalConcreteTypes => [
+			if (it != null) state = state.join(Pending)
+		]
+	}
+
+	/**
+	 * This collaborates with the maxType propagation, 
+	 * resetting maxTypes state to force them to be propagated to the new subtypes.
+	 */
+	override supertypeAdded() {
+		minimalConcreteTypes.entrySet.forEach[value = value.join(Pending)]
+	}
+
+	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-
 	override fullDescription() '''
 		sealed: «sealed»,
 		minTypes: «minimalConcreteTypes»,

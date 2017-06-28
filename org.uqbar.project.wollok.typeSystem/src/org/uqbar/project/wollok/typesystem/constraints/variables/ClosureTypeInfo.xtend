@@ -42,6 +42,18 @@ class ClosureTypeInfo extends TypeInfo {
 	}
 
 	// ************************************************************************
+	// ** Notifications
+	// ************************************************************************
+
+	override subtypeAdded() {
+		// TODO
+	}
+	
+	override supertypeAdded() {
+		// TODO
+	}
+	
+	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
 
@@ -49,4 +61,5 @@ class ClosureTypeInfo extends TypeInfo {
 		parameters: «parameters»
 		returnType: «returnType»
 	'''
+	
 }

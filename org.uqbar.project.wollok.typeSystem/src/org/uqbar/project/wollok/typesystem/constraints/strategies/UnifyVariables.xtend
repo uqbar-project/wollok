@@ -5,6 +5,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
@@ -14,29 +15,47 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
  */
 class UnifyVariables extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
+		println('''Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
 		if (tvar.subtypes.size == 1)
-			tvar.unifyWith(tvar.subtypes.uniqueElement)
+			tvar.subtypes.uniqueElement.unifyWith(tvar)
 		if (tvar.supertypes.size == 1)
 			tvar.unifyWith(tvar.supertypes.uniqueElement)
 	}
 
-	def unifyWith(TypeVariable v1, TypeVariable v2) {
+	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
+		println('''About to unify «subtype» with «supertype»''')
+		if (subtype.unifiedWith(supertype)) {
+			println('''Already unified, nothing to do''')
+			return;
+		}
+		
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
-		if (!v2.hasErrors && !v1.unifiedWith(v2)) {
-			println('''	Unifying «v1» with «v2»''')
+		if (supertype.hasErrors) {
+			println('''Errors found, aborting unification''')
+			return;
+		}
+		
+		// If supertype var is a parameter, the subtype is an argument sent to this parameter
+		// and should not be unified.
+		if (supertype.owner instanceof WParameter) {
+			println('''Not unifying «subtype» with parameter «supertype»''')
+			return;
+		}
 
-			// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
-			// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
-			if (v1.typeInfo == null && v2.typeInfo != null) {
-				v1.typeInfo = v2.typeInfo
-				changed = true
-			} else if (v2.typeInfo == null && v1.typeInfo != null) {
-				v2.typeInfo = v1.typeInfo
-				changed = true
-			} else {
-				v1.typeInfo.doUnifyWith(v2.typeInfo)
-			}
+		// Now we can unify
+		println('''	Unifying «subtype» with «supertype»''')
+		
+		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
+		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
+		if (subtype.typeInfo == null && supertype.typeInfo != null) {
+			subtype.typeInfo = supertype.typeInfo
+			changed = true
+		} else if (supertype.typeInfo == null && subtype.typeInfo != null) {
+			supertype.typeInfo = subtype.typeInfo
+			changed = true
+		} else {
+			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		}
 	}
 

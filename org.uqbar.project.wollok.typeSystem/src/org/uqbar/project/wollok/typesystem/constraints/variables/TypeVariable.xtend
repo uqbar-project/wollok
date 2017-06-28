@@ -88,13 +88,29 @@ class TypeVariable implements ITypeVariable {
 	// ** Adding constraints
 	// ************************************************************************
 	override beSupertypeOf(TypeVariable subtype) {
-		this.subtypes.add(subtype)
-		subtype.supertypes.add(this)
+		this.addSubtype(subtype)
+		subtype.addSupertype(this)
 	}
 
 	override beSubtypeOf(TypeVariable supertype) {
+		this.addSupertype(supertype)
+		supertype.addSubtype(this)
+	}
+	
+	/**
+	 * Internal method, do not call directly, use {@link #beSupertypeOf(TypeVariable)} instead.
+	 */
+	protected def addSubtype(TypeVariable subtype) {
+		this.subtypes.add(subtype)
+		if (typeInfo != null) typeInfo.subtypeAdded()
+	}
+
+	/**
+	 * Internal method, do not call directly, use {@link #beSupertypeOf(TypeVariable)} instead.
+	 */
+	protected def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
-		supertype.subtypes.add(this)
+		if (typeInfo != null) typeInfo.supertypeAdded()
 	}
 
 	// ************************************************************************
@@ -116,6 +132,7 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
+		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo()) 
 		typeInfo.maximalConcreteTypes = maxTypes
 	}
 	

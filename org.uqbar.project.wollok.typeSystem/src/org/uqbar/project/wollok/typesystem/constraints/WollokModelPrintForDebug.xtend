@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
@@ -44,5 +45,9 @@ class WollokModelPrintForDebug {
 
 	static def dispatch String debugInfo(WMethodDeclaration it) {
 		'''«eContainer.name».«name»(«parameters.join(', ')[name]»)'''
+	}
+
+	static def dispatch String debugInfo(WParameter it) {
+		'''«it.eContainer.debugInfo».param[«name»]'''
 	}
 }

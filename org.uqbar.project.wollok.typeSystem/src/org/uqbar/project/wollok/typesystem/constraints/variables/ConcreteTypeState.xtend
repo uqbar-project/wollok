@@ -12,4 +12,8 @@ class ConcreteTypeStateExtensions {
 	static def join(ConcreteTypeState s1, ConcreteTypeState s2) {
 		if (s1 == Ready) s2 else s1
 	}
+	
+	static def operator_or(ConcreteTypeState s1, ConcreteTypeState s2) {
+		if (s1 == Ready) s2 else s1
+	}
 }
