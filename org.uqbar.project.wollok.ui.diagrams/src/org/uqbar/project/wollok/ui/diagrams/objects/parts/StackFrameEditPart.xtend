@@ -18,9 +18,10 @@ import org.eclipse.gef.editpolicies.RootComponentEditPolicy
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.requests.CreateRequest
-import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
+import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeCommand
 
 /**
@@ -65,7 +66,7 @@ class StackFrameEditPart extends AbstractGraphicalEditPart implements PropertyCh
 			val vm = new VariableModel(v, 0)
 			m.put(v, vm)
 			// root arrow
-			new Connection(v.name, null, vm) 
+			new Connection(v.name, null, vm, RelationType.ASSOCIATION) 
 			m
 		])
 		map.values.<VariableModel>clone.forEach[model| model.createConnections(map)]
@@ -75,7 +76,7 @@ class StackFrameEditPart extends AbstractGraphicalEditPart implements PropertyCh
 
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
-		if (ClassDiagram.CHILD_ADDED_PROP == prop || ClassDiagram.CHILD_REMOVED_PROP == prop)
+		if (StaticDiagram.CHILD_ADDED_PROP == prop || StaticDiagram.CHILD_REMOVED_PROP == prop)
 			refreshChildren
 	}
 

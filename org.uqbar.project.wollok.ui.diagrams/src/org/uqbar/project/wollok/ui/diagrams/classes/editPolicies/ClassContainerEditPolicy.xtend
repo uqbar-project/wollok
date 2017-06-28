@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.classes.parts
+package org.uqbar.project.wollok.ui.diagrams.classes.editPolicies
 
 import org.eclipse.gef.editpolicies.ContainerEditPolicy
 import org.eclipse.gef.requests.CreateRequest

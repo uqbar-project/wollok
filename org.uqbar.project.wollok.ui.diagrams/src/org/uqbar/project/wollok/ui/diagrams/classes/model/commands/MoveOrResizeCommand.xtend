@@ -8,13 +8,16 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import static org.eclipse.gef.RequestConstants.*
 
 /**
+ * 
+ * Command that allows to resize or move a node in the static diagram
+ * 
  * @author jfernandes
  */
 class MoveOrResizeCommand extends Command {
-	private final Rectangle newBounds;
-	private Rectangle oldBounds;
-	private final ChangeBoundsRequest request;
-	private final Shape shape;
+	private final Rectangle newBounds
+	private Rectangle oldBounds
+	private final ChangeBoundsRequest request
+	private final Shape shape
 
 	new(Shape shape, ChangeBoundsRequest req, Rectangle newBounds) {
 		if (shape == null || req == null || newBounds == null)

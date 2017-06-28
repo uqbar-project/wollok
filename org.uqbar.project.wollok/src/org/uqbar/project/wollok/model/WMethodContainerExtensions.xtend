@@ -5,6 +5,7 @@ import java.util.Collections
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -19,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
+import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -60,7 +62,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
 
-	def static boolean isAbstract(WMethodDeclaration it) { expression == null && !native }
+	def static boolean isAbstract(WMethodDeclaration it) { expression === null && !native }
 
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
@@ -122,7 +124,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
-	def dispatch static isReturnWithValue(WReturnExpression it) { expression != null && allContainers.forall[!(it instanceof WClosure)] }
+	def dispatch static isReturnWithValue(WReturnExpression it) { expression !== null && allContainers.forall[!(it instanceof WClosure)] }
 
 	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
@@ -159,13 +161,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static actuallyOverrides(WMethodDeclaration m) {
-		m.declaringContext != null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
+		m.declaringContext !== null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
 	}
 
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
 	
 	def static List<WClass> _parents(WClass c, List<WClass> l) {
-		if (c == null) {
+		if (c === null) {
 			return l
 		}
 		if (l.contains(c)) {
@@ -235,12 +237,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WSuite s) { s.name }
 
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
-		(mixins != null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
-		|| (parent != null && parent.hasOrInheritMethod(name, argSize))
+		(mixins !== null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
+		|| (parent !== null && parent.hasOrInheritMethod(name, argSize))
 	}
 
 	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) {
-		c != null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
+		c !== null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params, boolean acceptsAbstract) {
@@ -250,7 +252,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List params, boolean acceptsAbstract) {
 		for (chunk : hierarchy) {
 			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
-			if (method != null)
+			if (method !== null)
 				return method;
 		}
 		null
@@ -262,10 +264,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static List<WMethodContainer> linearizeHierarchy(WMethodContainer it) {
 		var chain = newLinkedList
 		chain.add(it)
-		if (mixins != null) {
+		if (mixins !== null) {
 			chain.addAll(mixins.clone.reverse)
 		}
-		if (parent != null && !parent.hasCyclicHierarchy)
+		if (parent !== null && !parent.hasCyclicHierarchy)
 			chain.addAll(parent.linearizeHierarchy)
 		chain
 	}
@@ -282,7 +284,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
-	def static dispatch boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
+	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
 		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
 	}
 
@@ -297,13 +299,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static void superClassesIncludingYourselfTopDownDo(WClass cl, (WClass)=>void action) {
-		if (cl.parent != null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
+		if (cl.equals(cl.parent)) return; // avoid stack overflow
+		if (cl.parent !== null) cl.parent.superClassesIncludingYourselfTopDownDo(action)
 		action.apply(cl)
 	}
 
 	def static <R> R foldUp(WClass cl, R initialValue, (R, WClass)=>R action) {
 		val nextValue = action.apply(initialValue, cl)
-		if (cl.parent != null)
+		if (cl.parent !== null)
 			cl.parent.foldUp(nextValue, action)
 		else
 			nextValue
@@ -392,11 +395,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	//
 	
 	def static isInASelfContext(EObject ele) {
-		ele.getSelfContext != null
+		ele.getSelfContext !== null
 	}
 	
 	def static getSelfContext(EObject ele) {
-		for (var e = ele; e != null; e = e.eContainer)
+		for (var e = ele; e !== null; e = e.eContainer)
 			if (e.isSelfContext) return e
 		null
 	}
@@ -405,7 +408,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
 	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
 	def dispatch static boolean canCreateLocalVariable(EObject ele) {
-		if (ele.eContainer == null) return false
+		if (ele.eContainer === null) return false
 		ele.eContainer.canCreateLocalVariable
 	}
 	
@@ -433,12 +436,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static superCallingMethods(WMixin it) { methods.filter[m | m.callsSuper ] }
-	def static boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
+	def static dispatch boolean callsSuper(WMethodDeclaration it) { !abstract && !native && expression.callsSuper }
 	def static dispatch boolean callsSuper(WSuperInvocation it) { true }
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
-	
+
+	def static dispatch boolean hasRealParent(EObject it) { false }
+	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.name.equals(WollokConstants.ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WClass c) { c.parent !== null && c.parent.name !== null && !c.parent.name.equals(WollokConstants.ROOT_CLASS) }
+		
 	/* Including file name for multiple tests */
 	def static getFullName(WTest test, boolean processingManyFiles) {
 		(if (processingManyFiles) (test.file.URI.lastSegment ?: "") + " - " else "") + test.name
 	}
+
+	def static dispatch Boolean isVariable(EObject o) { false }
+	def static dispatch Boolean isVariable(WVariableDeclaration member) { true }
 }
+

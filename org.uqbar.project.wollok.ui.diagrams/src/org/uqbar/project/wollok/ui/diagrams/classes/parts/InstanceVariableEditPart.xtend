@@ -7,6 +7,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * 
+ * Edit part for instance variables
+ * 
  * @author jfernandes
  */
 class InstanceVariableEditPart extends AbstractLanguageElementEditPart {

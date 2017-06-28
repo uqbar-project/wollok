@@ -43,10 +43,10 @@ import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
-import org.uqbar.project.wollok.ui.diagrams.classes.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
-import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
+import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
@@ -63,7 +63,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	SelectionSynchronizer synchronizer
 	ActionRegistry actionRegistry
 	
-	ClassDiagram diagram
+	StaticDiagram diagram
 	
 	DebugContextListener debugListener
 	

@@ -9,6 +9,7 @@ import java.util.Map
 import java.util.Set
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IMarker
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IncrementalProjectBuilder
@@ -183,6 +184,11 @@ class WEclipseUtils {
 
 	def static dispatch Set<IResource> getAllMembers(IFile file) {
 		#{file}
+	}
+
+	def static hasErrors(IProject project) {
+		val severity = project.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)
+		severity == IMarker.SEVERITY_ERROR
 	}
 	
 }

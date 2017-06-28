@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
  * but then used by the interpreter or any other processing (like quickfixes).
  * 
  * Avoids hardcoding strings all over the places.
- * So that if we decide to change the grammar sintax we can just change here.
+ * So that if we decide to change the grammar syntax we can just change here.
  * 
  * There's probably a way to get this via xtext but I'm not sure how
  * 
@@ -21,6 +21,8 @@ class WollokConstants {
 	public static val CLASS_OBJECTS_EXTENSION = "wlk"
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
+	public static val STATIC_DIAGRAM_EXTENSION = "wsdi"
+	public static val DIAGRAMS_FOLDER = ".diagrams"
 	
 	public static val PATH_SEPARATOR = "/"
 	public static val STACKELEMENT_SEPARATOR = "&"
@@ -50,8 +52,11 @@ class WollokConstants {
 	public static val CLASS = "class"
 	public static val FIXTURE = "fixture" 
 	
+	public static val ROOT_CLASS = "Object"
+	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 
 	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
 	public static def isMultiOpAssignment(String operator) { operator.matches(MULTIOPS_REGEXP) }
+	
 }

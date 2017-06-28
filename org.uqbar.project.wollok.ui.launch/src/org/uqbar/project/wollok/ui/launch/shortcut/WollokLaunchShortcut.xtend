@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IMarker
+import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Platform
@@ -15,7 +17,9 @@ import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.core.JavaModelException
 import org.eclipse.jface.dialogs.MessageDialog
+import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
@@ -39,22 +43,30 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
-	
+
 	override launch(IFile currFile, String mode) {
+		if (currFile.project.hasErrors) {
+			val confirm = MessageDialog.openQuestion(Display.current.activeShell,
+				Messages.TestLauncher_CompilationErrorTitle, Messages.TestLauncher_SeeProblemTab)
+			if(!confirm) return;
+		}
+		doLaunch(currFile, mode)
+	}
+
+	def doLaunch(IFile currFile, String mode) {
 		try {
 			locateRunner(currFile)
 			getOrCreateConfig(currFile).launch(mode)
 			currFile.refreshProject
-		}
-		catch (CoreException e)
+		} catch (CoreException e)
 			MessageDialog.openError(null, PROBLEM_LAUNCHING_WOLLOK, e.message)
 	}
-	
+
 	def getOrCreateConfig(IFile currFile) {
 		val info = new LaunchConfigurationInfo(currFile)
 		val config = launchManager.launchConfigurations.findFirstIfNone([
 			info.configEquals(it)
-		], [| 
+		], [|
 			createConfiguration(info)
 		])
 		val wc = config.getWorkingCopy
@@ -62,11 +74,12 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		// It returns the modified launch config
 		wc.doSave
 	}
-	
+
 	def locateRunner(IResource resource) throws CoreException {
 		val project = JavaCore.create(resource.project)
 		if (!isOnClasspath(WollokLauncher.name, project))
-			throw new DebugException(Activator.PLUGIN_ID.errorStatus(ADD_LAUNCH_PLUGIN_DEPENDENCY + Activator.LAUNCHER_PLUGIN_ID))
+			throw new DebugException(
+				Activator.PLUGIN_ID.errorStatus(ADD_LAUNCH_PLUGIN_DEPENDENCY + Activator.LAUNCHER_PLUGIN_ID))
 	}
 
 	def isOnClasspath(String fullyQualifiedName, IJavaProject project) {
@@ -89,7 +102,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		configureConfiguration(x, info)
 		x.doSave
 	}
-	
+
 	def configureConfiguration(ILaunchConfigurationWorkingCopy it, LaunchConfigurationInfo info) {
 		setAttribute(ATTR_PROJECT_NAME, info.project)
 		setAttribute(ATTR_MAIN_TYPE_NAME, WollokLauncher.name)
