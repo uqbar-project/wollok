@@ -5,8 +5,10 @@ import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.typesystem.AbstractWollokTypeSystemTestCase
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.xpect.expectation.IStringExpectation
 import org.xpect.expectation.StringExpectation
 import org.xpect.parameter.ParameterParser
@@ -27,7 +29,7 @@ import org.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
 @XpectSuiteClasses(#[ValidationTest])
 @RunWith(XpectRunner)
 class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
-
+	
 	@Xpect(liveExecution=LiveExecutionType.FAST)
 	@ParameterParser(syntax="'at' node=OFFSET")
 	@ConsumedIssues(#[Severity.INFO, Severity.ERROR, Severity.WARNING])
@@ -40,6 +42,15 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		tsystemClass = ConstraintBasedTypeSystem
 		setupTypeSystem
 		tsystem.validate(file as WFile, validator)
-		expectation.assertEquals(tsystem.type(node))
+
+		expectation.assertEquals(node.computedType)
+	}
+	
+	def dispatch computedType(EObject node) {
+		tsystem.type(node)
+	}
+	
+	def dispatch WollokType computedType(WVariableDeclaration decl) {
+		decl.variable.computedType
 	}
 }
