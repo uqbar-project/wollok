@@ -7,13 +7,13 @@ class Persona {
 }
 
 program p {
-
- 
-	// XPECT type at alguien -->  String
-	const alguien = new Persona().comoEstas()
-	
 	// XPECT type at alguien -->  Persona
 	const alguien = new Persona()
 
+	// XPECT type at saludo -->  String
+	const saludo = new Persona().comoEstas()
+
+	// XPECT type at saludo2 --> String	
+	const saludo2 = alguien.comoEstas()
 }
 

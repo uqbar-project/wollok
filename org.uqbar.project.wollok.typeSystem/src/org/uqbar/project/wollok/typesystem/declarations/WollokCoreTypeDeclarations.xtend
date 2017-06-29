@@ -6,11 +6,13 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Integer - Integer => Integer
 		Integer * Integer => Integer
 
-		// Otra sintaxis posible
-		// "Integer" >> "-" === #[INTEGER] => INTEGER
-		List >> "first" === #[] => ELEMENT
 		String >> "size" === #[] => Integer
+
 		Collection >> "add" === #[ELEMENT] => Void
+
+		List >> "first" === #[] => ELEMENT
+		List >> "add" === #[ELEMENT] => Void
+		
 
 		// console
 		console >> "println" === #[Any] => Void

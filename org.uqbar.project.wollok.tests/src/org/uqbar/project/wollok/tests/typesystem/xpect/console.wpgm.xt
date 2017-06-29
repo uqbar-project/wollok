@@ -2,7 +2,9 @@
 
 program p {
 	// XPECT type at console --> console 
-	// XPECT type at println --> (String) => Void 
+ 	console
+
+	// XPECT methodType at println --> (Any) => Void 
  	console.println("hola")
 }
 
