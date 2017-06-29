@@ -39,7 +39,7 @@
          </property>
          <!-- THEME -->
          <property
-           name="cssTheme"
+           name="cssinTheme"
            value="org.eclipse.e4.ui.css.theme.e4_default">
      	 </property>
      	 
@@ -82,7 +82,7 @@
    		name="intro"
         point="org.eclipse.ui.intro.config">
       <config
-            content="./content/introContent.xml"
+            content="%introContent"
             id="org.uqbar.project.wollok.product.introConfigId"
             introId="org.uqbar.project.wollok.product.intro">
          <presentation
