@@ -59,7 +59,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		constraintGenerator = new ConstraintGenerator(this)
 		
 		// This shouldn't be necessary if all global objects had type annotations
-		finder.allGlobalObjects(program.eResource).forEach[constraintGenerator.newNamedObject(it)]
+		finder.allGlobalObjects(program).forEach[constraintGenerator.newNamedObject(it)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
@@ -174,6 +174,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 	
 	def allTypes(EObject context) {
-		finder.allClasses(context).map[new ClassBasedWollokType(it, this)]
+		finder.allClasses(context).map[new ClassBasedWollokType(it, this)] 
+		+ 
+		finder.allGlobalObjects(context).map[new NamedObjectWollokType(it, this)]
 	}
 }
