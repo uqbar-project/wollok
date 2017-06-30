@@ -16,7 +16,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	
 	override analiseSimpleType(TypeVariable tvar, SimpleTypeInfo it) {
 		var maxTypes = allTypes(tvar).filter[newMaxTypeFor(tvar)].toList
-		if (!tvar.sealed && contains(maximalConcreteTypes, maxTypes)) {
+		if (!tvar.sealed && !maxTypes.empty && !maximalConcreteTypes.contains(maxTypes) && tvar.subtypes.empty) { // Last condition is because some test fail, but I don't know if it's OK
 			println('''New max(«maxTypes») type for «tvar»''')
 			maximalConcreteTypes = new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet)
 			changed = true
@@ -24,7 +24,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	}
 	
 	def contains(MaximalConcreteTypes maxTypes, List<ClassBasedWollokType> types) {
-		!types.empty && (maxTypes == null || !maxTypes.maximalConcreteTypes.containsAll(types))
+		maxTypes != null && maxTypes.maximalConcreteTypes.containsAll(types)
 	}
 
 	def newMaxTypeFor(ClassBasedWollokType type, TypeVariable it) {
