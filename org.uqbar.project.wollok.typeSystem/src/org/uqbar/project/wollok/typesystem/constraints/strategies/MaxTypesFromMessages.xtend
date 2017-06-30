@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.MaximalConcrete
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
@@ -32,8 +33,12 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	}
 
 	def acceptMessage(MessageSend message, AbstractContainerWollokType it) {
-		// TODO: query by name only, maybe we need match by parameters too.
-		it.container.allMethods.map[name].toList.contains(message.selector)
+		container.allMethods.exists[match(message)]
+	}
+	
+	def match(WMethodDeclaration declaration, MessageSend message) {
+		// TODO: check parameters and return types too
+		declaration.name == message.selector && declaration.parameters.size == message.arguments.size 
 	}
 
 	def allTypes(TypeVariable tvar) {
