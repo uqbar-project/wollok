@@ -5,7 +5,7 @@ program p {
 	// XPECT! warnings --> "Este mensaje no retorna ningún valor" at "nada"
 	const nada = [].add(1) 
 
-	// XPECT! type at [].add(1)  --> Void 
+	// XPECT type at [].add(1)  --> Void 
 	[].add(1)
 	 
 }
