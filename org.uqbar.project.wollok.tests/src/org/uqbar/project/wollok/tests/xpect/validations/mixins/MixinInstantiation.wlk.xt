@@ -41,19 +41,19 @@ class I mixed with M2 {
 
 object p {
 	method run() {
-		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "C"
+		// XPECT errors --> "Class C cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "C"
 		const c = new C()
 		console.println(c)
 		
-		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "D"
+		// XPECT errors --> "Class D cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "D"
 		const d = new D()
 		console.println(d)
 		
-		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "E"
+		// XPECT errors --> "Class E cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "E"
 		const e = new E()
 		console.println(e)
 		
-		// XPECT errors --> "Must implement inherited abstract methods: M1.doIt(), M3.sarasa()" at "F"
+		// XPECT errors --> "Class F cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1), sarasa() (required by M3)" at "F"
 		const f = new F()
 		console.println(f)
 		
@@ -74,11 +74,11 @@ mixin M3 {
 	}
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "a"
+// XPECT errors --> "Wrong definition of object a. Must implement inherited abstract methods: M1.doIt()" at "a"
 object a mixed with M1 {
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: M1.doIt()" at "b"
+// XPECT errors --> "Wrong definition of object b. Must implement inherited abstract methods: M1.doIt()" at "b"
 object b mixed with M1, M2 {
 }
 

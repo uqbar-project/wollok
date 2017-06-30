@@ -170,9 +170,13 @@ class WollokModelExtensions {
 	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
 	def static methodName(WMethodDeclaration d) {
-		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
+		d.declaringContext.name + "." + d.messageName
 	}
 
+	def static messageName(WMethodDeclaration d) {
+		d.name + "(" + d.parameters.map[name].join(", ") + ")"
+	}
+	
 	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)

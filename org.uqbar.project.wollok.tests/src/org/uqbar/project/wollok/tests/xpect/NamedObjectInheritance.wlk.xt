@@ -3,7 +3,7 @@
 // test case
 
 class WithDefaultConstructor {}
-object innheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
+object inheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
 
 
 // test case
@@ -57,7 +57,7 @@ class A {
 	method blah()
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: A.blah()" at "anA"
+// XPECT errors --> "Wrong definition of object anA. Must implement inherited abstract methods: A.blah()" at "anA"
 object anA inherits A {
 }
 
@@ -65,5 +65,10 @@ class B inherits A {
 	method otherAbstract(one, two)
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
+// XPECT errors --> "Wrong definition of object badWko. You must implement all methods: badWko.abstractMethod()" at "badWko"
+object badWko {
+	method abstractMethod()
+}
+
+// XPECT errors --> "Wrong definition of object aB. Must implement inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
 object aB inherits B {}
