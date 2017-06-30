@@ -1,0 +1,11 @@
+# Splash image
+If you can't see Splash Screen on Windows, or it appears a strange red color,
+you have to read this
+  https://bugs.eclipse.org/bugs/show_bug.cgi?id=439172
+  https://wiki.eclipse.org/Platform-releng/Updating_Branding
+
+  
+# For About Wollok menu item, please see
+http://www.eclipse.org/eclipse/platform-ua/proposals/shared-intro/shared-intro.htm
+
+use relative project path and not "../" nor "product:/" path 
