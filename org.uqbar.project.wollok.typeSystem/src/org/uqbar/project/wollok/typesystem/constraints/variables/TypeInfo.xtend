@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 
 abstract class TypeInfo {
 	@Accessors(PUBLIC_GETTER)
@@ -35,6 +37,10 @@ abstract class TypeInfo {
 	def WollokType getType(TypeVariable user)
 
 	def boolean hasErrors()
+	
+	// REVIEW Is necessary to pass 'user'?
+	def void reportErrors(TypeVariable user, ConfigurableDslValidator validator)
+	
 
 	// ************************************************************************
 	// ** Adding type information
@@ -42,6 +48,10 @@ abstract class TypeInfo {
 	
 	def void beSealed()
 
+	def void beVoid() {
+		throw new TypeSystemException("You are trying to turn a type variable from non-void to void.")
+	}
+	
 	def ConcreteTypeState addMinimalType(WollokType type)
 
 	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
@@ -50,8 +60,8 @@ abstract class TypeInfo {
 	// ** Notifications
 	// ************************************************************************
 
-	def void subtypeAdded()
-	def void supertypeAdded()
+	def void subtypeAdded() {}
+	def void supertypeAdded() {}
 	
 	// ************************************************************************
 	// ** Misc

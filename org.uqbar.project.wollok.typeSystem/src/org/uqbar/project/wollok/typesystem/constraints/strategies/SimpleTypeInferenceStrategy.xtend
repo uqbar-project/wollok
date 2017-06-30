@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
@@ -16,8 +16,8 @@ abstract class SimpleTypeInferenceStrategy extends AbstractInferenceStrategy {
 		if (tvar.typeInfo != null) analiseVariable(tvar, tvar.typeInfo)
 	}
 
-	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo typeInfo) {
-		// This strategy does not work in closures
+	def dispatch analiseVariable(TypeVariable tvar, TypeInfo typeInfo) {
+		// This strategy is intended only for variables with a SimpleTypeInfo, the rest are ignored.
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo type) {

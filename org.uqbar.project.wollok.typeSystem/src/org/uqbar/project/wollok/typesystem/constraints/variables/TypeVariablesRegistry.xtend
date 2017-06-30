@@ -63,6 +63,11 @@ class TypeVariablesRegistry {
 		]
 	}
 
+	def newVoid(EObject owner) {
+		TypeVariable.newVoid(owner).register
+	}
+
+
 	def newWithSubtype(EObject it, EObject... subtypes) {
 		newTypeVariable => [subtypes.forEach[subtype|it.beSupertypeOf(subtype.tvar)]]
 	}
@@ -76,13 +81,8 @@ class TypeVariablesRegistry {
 		beSealed(type)
 	}
 
-	def newVoid(EObject it) {
-		newTypeVariable
-		beVoid
-	}
-
 	def beVoid(EObject it) {
-		beSealed(WollokType.WVoid)
+		it.tvar.beVoid
 	}
 
 	def beSealed(EObject it, WollokType type) {

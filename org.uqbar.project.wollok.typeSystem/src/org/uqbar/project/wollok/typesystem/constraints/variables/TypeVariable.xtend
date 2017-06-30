@@ -8,7 +8,6 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
 
 interface ITypeVariable {
 	def EObject getOwner()
@@ -39,20 +38,24 @@ class TypeVariable implements ITypeVariable {
 		this.owner = owner
 	}
 
-	def static simple(EObject object) {
-		new TypeVariable(object)
+	def static simple(EObject owner) {
+		new TypeVariable(owner)
+	}
+	
+	def static newVoid(EObject owner) {
+		new TypeVariable(owner) => [ setTypeInfo(new VoidTypeInfo()) ]
 	}
 
-	def static closure(EObject object, List<TypeVariable> parameters, TypeVariable returnType) {
-		new TypeVariable(object) => [ setTypeInfo(new ClosureTypeInfo(parameters, returnType)) ]
+	def static closure(EObject owner, List<TypeVariable> parameters, TypeVariable returnType) {
+		new TypeVariable(owner) => [ setTypeInfo(new ClosureTypeInfo(parameters, returnType)) ]
 	}
 
-	def static generic(EObject object, List<String> typeParameterNames) {
-		new TypeVariable(object) => [ setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic])) ]
+	def static generic(EObject owner, List<String> typeParameterNames) {
+		new TypeVariable(owner) => [ setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic])) ]
 	}
 
-	def static classParameter(EObject object, String paramName) {
-		new ClassParameterTypeVariable(object, paramName)
+	def static classParameter(EObject owner, String paramName) {
+		new ClassParameterTypeVariable(owner, paramName)
 	}
 	
 	def static synthetic() {
@@ -80,8 +83,7 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	def reportErrors(ConfigurableDslValidator validator) {
-		if (hasErrors)
-			validator.report('''expected <<«expectedType»>> but found <<«foundType»>>''', owner)
+		typeInfo?.reportErrors(this, validator)
 	}
 
 	// ************************************************************************
@@ -111,6 +113,11 @@ class TypeVariable implements ITypeVariable {
 	protected def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
 		if (typeInfo != null) typeInfo.supertypeAdded()
+	}
+	
+	def beVoid() {
+		if (typeInfo == null) setTypeInfo(new VoidTypeInfo())
+		else typeInfo.beVoid
 	}
 
 	// ************************************************************************

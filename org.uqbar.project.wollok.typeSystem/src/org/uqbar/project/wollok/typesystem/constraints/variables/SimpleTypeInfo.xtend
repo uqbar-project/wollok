@@ -10,6 +10,8 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
+import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
@@ -41,6 +43,11 @@ class SimpleTypeInfo extends TypeInfo {
 
 	override hasErrors() {
 		minimalConcreteTypes.values.contains(Error)
+	}
+	
+	override reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
+		if (hasErrors)
+			validator.report('''expected <<«user.expectedType»>> but found <<«user.foundType»>>''', user.owner)
 	}
 
 	// ************************************************************************
