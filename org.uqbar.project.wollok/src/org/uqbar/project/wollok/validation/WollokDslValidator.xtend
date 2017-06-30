@@ -111,6 +111,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
+	public static val WARNING_UNUSED_PARAMETER = "WARNING_UNUSED_PARAMETER"
 
 	def validatorExtensions() {
 		if (wollokValidatorExtensions !== null)
@@ -506,6 +507,27 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unusedParameters(WMethodDeclaration it) {
+		checkUnusedParameters(it.parameters)
+	}
+
+	@Check
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def unusedParameters(WConstructor it) {
+		checkUnusedParameters(it.parameters)
+	}
+	
+	def void checkUnusedParameters(List<WParameter> parameters) {
+		parameters.forEach [ parameter |
+			if (!parameter.isUsed) {
+				warning(WollokDslValidator_PARAMETER_NEVER_USED, parameter, WPARAMETER__VAR_ARG,
+					WARNING_UNUSED_PARAMETER)
+			}
+		]
+	}
+
+	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def comparingEqualityOfWellKnownObject(WBinaryOperation op) {
@@ -614,7 +636,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def tryMustHaveEitherCatchOrAlways(WTry tri) {
-		if ((tri.catchBlocks == null || tri.catchBlocks.empty) && tri.alwaysExpression == null)
+		if ((tri.catchBlocks === null || tri.catchBlocks.empty) && tri.alwaysExpression === null)
 			report(WollokDslValidator_ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS, tri, WTRY__EXPRESSION,
 				ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS)
 	}

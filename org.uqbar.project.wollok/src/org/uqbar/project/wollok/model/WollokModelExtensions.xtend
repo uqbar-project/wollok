@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
@@ -133,6 +134,8 @@ class WollokModelExtensions {
 	 * Uses of a Variable
 	 */
 	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
+	
+	def static isUsed(WParameter parameter) { !ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty }
 
 	def static assignments(WVariable variable) {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
@@ -142,7 +145,8 @@ class WollokModelExtensions {
 		variable.eContainer as WVariableDeclaration
 	}
 
-	def static declarationContext(WVariable variable) { variable.declaration.eContainer }
+	def static dispatch declarationContext(WVariable variable) { variable.declaration.eContainer }
+	def static dispatch declarationContext(WParameter parameter) { parameter.eContainer }
 
 	// **********************
 	// ** access containers
@@ -160,7 +164,6 @@ class WollokModelExtensions {
 	def static dispatch WExpression firstExpressionInContext(WProgram p) { p.elements.head }
 	def static dispatch WExpression firstExpressionInContext(WBlockExpression b) { b.expressions.head } 
 	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
-	
 	
 	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 

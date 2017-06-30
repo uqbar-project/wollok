@@ -45,6 +45,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
+	public static String WollokDslValidator_PARAMETER_NEVER_USED;
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
 	public static String WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD;
 	public static String WollokDslValidator_SUPER_INCORRECT_ARGS;

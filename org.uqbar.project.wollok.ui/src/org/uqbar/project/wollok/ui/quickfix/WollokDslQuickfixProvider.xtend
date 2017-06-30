@@ -301,6 +301,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(WollokDslValidator.WARNING_UNUSED_PARAMETER)
+	def removeUnusedParameter(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_unused_parameter_name,
+			Messages.WollokDslQuickFixProvider_remove_unused_parameter_description, null) [ e, it |
+			xtextDocument.delete(e)
+		]
+	}
+	
 	@Fix(DUPLICATED_METHOD)
 	def removeDuplicatedMethod(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_method_name,
