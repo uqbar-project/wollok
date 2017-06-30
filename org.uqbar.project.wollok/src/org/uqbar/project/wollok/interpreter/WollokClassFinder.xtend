@@ -94,8 +94,8 @@ class WollokClassFinder {
 		]
 	}	
 
-	def allClasses(Resource resource) {
-		getClassScope(resource)[EObjectOrProxy instanceof WClass]
+	def allClasses(EObject context) {
+		getClassScope(context.eResource)[EObjectOrProxy instanceof WClass]
 		.allElements
 		.filter[EObjectOrProxy instanceof WClass]
 		.map[description|

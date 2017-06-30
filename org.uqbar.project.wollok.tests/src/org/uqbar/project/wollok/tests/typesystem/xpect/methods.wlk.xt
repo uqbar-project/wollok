@@ -8,7 +8,8 @@ class Golondrina {
 
 class Entrenador {
 	method entrena(ave) { 
-		// XPECT! type at ave --> Golondrina
 		ave.vola()
+		// XPECT type at ave --> Golondrina
+		ave
 	}
 }
