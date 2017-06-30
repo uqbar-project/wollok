@@ -506,11 +506,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				WARNING_UNUSED_VARIABLE)
 	}
 
-	@Check
-	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def unusedParameters(WMethodDeclaration it) {
-		checkUnusedParameters(it.parameters)
-	}
+//  Confirm with @npasserini
+//  @dodain - I think we should not consider this
+//	@Check
+//	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+//	def unusedParameters(WMethodDeclaration it) {
+//		checkUnusedParameters(it.parameters)
+//	}
 
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)

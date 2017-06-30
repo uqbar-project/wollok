@@ -135,7 +135,9 @@ class WollokModelExtensions {
 	 */
 	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
 	
-	def static isUsed(WParameter parameter) { !ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty }
+	def static isUsed(WParameter parameter) {
+		!ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty
+	}
 
 	def static assignments(WVariable variable) {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)

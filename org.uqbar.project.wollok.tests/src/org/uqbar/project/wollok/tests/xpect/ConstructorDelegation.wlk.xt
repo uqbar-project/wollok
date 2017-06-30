@@ -54,20 +54,39 @@ class Z inherits X {
 }
 
 
-class InvalidInstanceAccessOnConstructorDelegation inherits X {
-	var x = 2
+class Superclase {
+	var a
+	constructor() {}
+	constructor(_a) {
+		a = _a
+	}
+	method getA() { return a }
+}
+
+class InvalidInstanceAccessOnConstructorDelegation inherits Superclase {
+	var x = 1
 	
 	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
 	constructor() = super(self.getX()) 
 	
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
-	constructor(a) = super(self)
-	
-	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
-	constructor(a, b) = super(x)
-	
-	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
-	constructor(a, b, c) = super(super("blah"))
-	
 	method getX() { return x }	
+}
+
+class InvalidInstanceAccessOnConstructorDelegation2 inherits Superclase {
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	constructor() = super(self)
+}
+
+class InvalidInstanceAccessOnConstructorDelegation3 inherits Superclase {
+	var x = 2
+
+	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
+	constructor() = super(x)
+	
+	method x() = x
+}
+	
+class InvalidInstanceAccessOnConstructorDelegation4 inherits Superclase {	
+	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
+	constructor() = super(super("blah"))
 }

@@ -44,55 +44,6 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 	}
 
 	@Test
-	def addManyConstructorsFromSuperclass(){
-		val initial = #['''
-			class MyClass{
-				const y 
-				constructor(x){
-					y = x
-				}
-				
-				constructor(x,z){
-					y = 1
-				}
-				
-				method someMethod(){
-					return null
-				}
-			}
-			
-			class MySubclass inherits MyClass {
-				
-			}
-		''']
-
-		val result = #['''
-			class MyClass{
-				const y 
-				constructor(x){
-					y = x
-				}
-				
-				constructor(x,z){
-					y = 1
-				}
-				
-				method someMethod(){
-					return null
-				}
-			}
-			
-			class MySubclass inherits MyClass {
-	
-				constructor(x) = super(x)
-
-				constructor(x,z) = super(x,z)
-			}
-		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_constructors_superclass_name)
-	}
-
-	@Test
 	def createConstructorInSuperclass(){
 		val initial = #['''
 			class MyClass{
