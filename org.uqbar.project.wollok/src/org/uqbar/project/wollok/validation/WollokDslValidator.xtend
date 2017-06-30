@@ -463,15 +463,17 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def objectMustImplementAbstractMethods(WNamedObject it) {
 		val abstractMethods = unimplementedAbstractMethods
-		val methodDescriptions = abstractMethods.map[methodName].join(", ")
 		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== it ]
 		if (!abstractMethods.empty) {
 			if (inheritingAbstractMethods) {
-				report('''«NLS.bind(WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS, it.name)»: «methodDescriptions»''',
+				val methodDescriptions = abstractMethods.map[methodName].join(", ")
+				report('''«WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''',
 					it, WNAMED__NAME)
 			} else {
-				report('''«NLS.bind(WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS, it.name)»: «methodDescriptions»''',
-					it, WNAMED__NAME)
+				abstractMethods.forEach [ abstractMethod |
+					report('''«WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS»''',
+						abstractMethod, WNAMED__NAME)
+				]
 			}
 		}
 	}
@@ -488,8 +490,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-	@Check
 	// TODO: a single method performs many checks ! cannot configure that
+	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedVariables(WVariableDeclaration it) {
 		val assignments = variable.assignments

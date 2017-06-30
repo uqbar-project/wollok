@@ -57,7 +57,7 @@ class A {
 	method blah()
 }
 
-// XPECT errors --> "Wrong definition of object anA. Must implement inherited abstract methods: A.blah()" at "anA"
+// XPECT errors --> "You must implement all abstract methods inherited: A.blah()" at "anA"
 object anA inherits A {
 }
 
@@ -65,10 +65,10 @@ class B inherits A {
 	method otherAbstract(one, two)
 }
 
-// XPECT errors --> "Wrong definition of object badWko. You must implement all methods: badWko.abstractMethod()" at "badWko"
 object badWko {
+	// XPECT errors --> "Abstract method not allowed inside object definition, you must provide an implementation" at "abstractMethod"
 	method abstractMethod()
 }
 
-// XPECT errors --> "Wrong definition of object aB. Must implement inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
+// XPECT errors --> "You must implement all abstract methods inherited: A.blah(), B.otherAbstract(one, two)" at "aB"
 object aB inherits B {}
