@@ -450,4 +450,5 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WUnaryOperation op) { true }
 	def static dispatch expectsExpression(WReturnExpression r) { true }
 	def static dispatch expectsExpression(WVariableDeclaration v) { true }
+	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 }
