@@ -757,6 +757,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	@CheckGroup(WollokCheckGroup.CODE_STYLE)
+	def usingIfInAnExpressionWithoutElse(WIfExpression t) {
+		if (t.then === null || t.^else === null && t.eContainer.expectsExpression) {
+			report(WollokDslValidator_IF_USED_IN_AN_EXPRESSION_SHOULD_HAVE_AN_ELSE_STATEMENT, t, WIF_EXPRESSION__CONDITION)
+		} 
+	}
+
 	/**
 	 * Returns the "wollok" file extension o a file, ignoring a possible final ".xt"
 	 * 

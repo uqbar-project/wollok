@@ -98,6 +98,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_NO_EXPRESSION_AFTER_THROW;
 	public static String WollokDslValidator_UNREACHABLE_CODE;
 	public static String WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION;
+	public static String WollokDslValidator_IF_USED_IN_AN_EXPRESSION_SHOULD_HAVE_AN_ELSE_STATEMENT;
 	
 	// SELF
 	public static String WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM;

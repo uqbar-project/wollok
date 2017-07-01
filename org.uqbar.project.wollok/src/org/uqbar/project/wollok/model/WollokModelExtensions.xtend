@@ -444,4 +444,10 @@ class WollokModelExtensions {
 		val rootNodeName = e.name.trim
 		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
 	}
+	
+	def static dispatch expectsExpression(EObject e) { false }
+	def static dispatch expectsExpression(WBinaryOperation op) { true }
+	def static dispatch expectsExpression(WUnaryOperation op) { true }
+	def static dispatch expectsExpression(WReturnExpression r) { true }
+	def static dispatch expectsExpression(WVariableDeclaration v) { true }
 }
