@@ -192,6 +192,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
+	def definingAMethodThatOnlyCallsToSuper(WMethodDeclaration it) {
+		if (it.redefinesSendingOnlySuper) {
+			report(WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT, it,
+			WNAMED__NAME, DUPLICATED_METHOD)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
 	def noSuperMethodRequiredByMixinAtInstantiationTime(WConstructorCall it) {
 		if (!mixins.empty)
 			checkUnboundedSuperCallingMethodsOnMixins(new MixedMethodContainer(classRef, mixins), it,

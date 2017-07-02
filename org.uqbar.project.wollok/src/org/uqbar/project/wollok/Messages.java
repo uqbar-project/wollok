@@ -85,6 +85,8 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
 	
+	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
+	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
 	public static String TestLauncher_LauncherError_Title;

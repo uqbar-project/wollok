@@ -13,12 +13,37 @@ class Golondrina {
 		energia = energia + 2
 	}
 
+	method jugar(tiempo) {
+		energia += tiempo / 2
+	}
 }
 
 class GolondrinaSarasa inherits Golondrina {
+	var comio = false
+	
 	override method comer(a, p) {
 		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
 		super()
+		comio = true
+	}
+	
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "jugar"
+	override method jugar(tiempo) {
+		super(tiempo)
+	}
+}
+
+class GolondrinaLoca inherits Golondrina {
+	// ok to override this
+	override method jugar(tiempo) {
+		super(tiempo * 2)
+	}
+}
+
+class GolondrinaRenga inherits Golondrina {
+	// ok to override this
+	override method jugar(tiempo) {
+		super(1)
 	}
 }
 

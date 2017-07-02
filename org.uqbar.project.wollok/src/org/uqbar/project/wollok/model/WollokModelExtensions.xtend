@@ -48,6 +48,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -451,4 +452,22 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WReturnExpression r) { true }
 	def static dispatch expectsExpression(WVariableDeclaration v) { true }
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
+	
+	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		val methodBody = m.expression.eContents
+	 	m.overridenMethod !== null && methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
+	}
+	
+	def static dispatch callsToSuperWith(EObject e, WMethodDeclaration m) { false }
+	def static dispatch callsToSuperWith(WSuperInvocation s, WMethodDeclaration m) {
+		val methodParametersSize = m.parameters.size
+		if (methodParametersSize != s.memberCallArguments.size) return false;
+		(0..methodParametersSize - 1).forall [ i |
+			m.parameters.get(i).matchesParam(s.memberCallArguments.get(i))
+		]
+	}
+	
+	def static dispatch matchesParam(WParameter p, EObject e) { false }
+	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
+	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 }
