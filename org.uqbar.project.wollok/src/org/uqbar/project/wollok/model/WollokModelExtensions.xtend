@@ -455,19 +455,25 @@ class WollokModelExtensions {
 	
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
 		val methodBody = m.expression.eContents
-	 	m.overridenMethod !== null && methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
+	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
 	}
 	
-	def static dispatch callsToSuperWith(EObject e, WMethodDeclaration m) { false }
-	def static dispatch callsToSuperWith(WSuperInvocation s, WMethodDeclaration m) {
+	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }
+	def static dispatch boolean callsToSuperWith(WSuperInvocation s, WMethodDeclaration m) {
 		val methodParametersSize = m.parameters.size
 		if (methodParametersSize != s.memberCallArguments.size) return false;
+		if (methodParametersSize == 0 && s.memberCallArguments.size == 0) return true;
 		(0..methodParametersSize - 1).forall [ i |
 			m.parameters.get(i).matchesParam(s.memberCallArguments.get(i))
 		]
+	}
+	
+	def static dispatch boolean callsToSuperWith(WReturnExpression ret, WMethodDeclaration m) {
+		ret.expression.callsToSuperWith(m)
 	}
 	
 	def static dispatch matchesParam(WParameter p, EObject e) { false }
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 }
+

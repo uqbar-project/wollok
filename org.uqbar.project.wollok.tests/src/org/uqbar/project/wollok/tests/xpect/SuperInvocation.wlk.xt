@@ -13,9 +13,17 @@ class Golondrina {
 		energia = energia + 2
 	}
 
+	method saltar() {
+		energia -= 2
+	}
+	
 	method jugar(tiempo) {
 		energia += tiempo / 2
 	}
+	
+	method estasCurada() = energia > 10
+	
+	method alegria(tiempo) = energia * tiempo 
 }
 
 class GolondrinaSarasa inherits Golondrina {
@@ -31,6 +39,22 @@ class GolondrinaSarasa inherits Golondrina {
 	override method jugar(tiempo) {
 		super(tiempo)
 	}
+	
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "alegria"
+	override method alegria(tiempo) {
+		return super(tiempo)	
+	}	
+
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "saltar"
+	override method saltar() {
+		super()
+	}
+	
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "estasCurada"
+	override method estasCurada() {
+        return super()
+    }
+    	
 }
 
 class GolondrinaLoca inherits Golondrina {
@@ -38,6 +62,10 @@ class GolondrinaLoca inherits Golondrina {
 	override method jugar(tiempo) {
 		super(tiempo * 2)
 	}
+    
+	// ok to override this
+	override method alegria(tiempo) = return super(tiempo * 2)	
+    
 }
 
 class GolondrinaRenga inherits Golondrina {
@@ -45,6 +73,13 @@ class GolondrinaRenga inherits Golondrina {
 	override method jugar(tiempo) {
 		super(1)
 	}
+	
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "alegria"
+	override method alegria(tiempo) = super(tiempo)
+
+	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "estasCurada"
+	override method estasCurada() = super()
+		
 }
 
 class SuperInvocationTest {
