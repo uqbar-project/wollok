@@ -5,22 +5,24 @@ import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
 
 interface ITypeVariable {
 	def EObject getOwner()
-	
+
 	def void beSubtypeOf(TypeVariable variable)
-	
+
 	def void beSupertypeOf(TypeVariable variable)
 }
 
 class TypeVariable implements ITypeVariable {
 	@Accessors
 	val EObject owner
-	
+
 	/**
 	 * Type info starts in null and will be coerced to one of the type info kinds (simple or closure) when we have information related to it.
 	 * Therefore, a variable with a null type info is a variable for which we have no information yet.
@@ -41,38 +43,37 @@ class TypeVariable implements ITypeVariable {
 	def static simple(EObject owner) {
 		new TypeVariable(owner)
 	}
-	
+
 	def static newVoid(EObject owner) {
-		new TypeVariable(owner) => [ setTypeInfo(new VoidTypeInfo()) ]
+		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
 	def static closure(EObject owner, List<TypeVariable> parameters, TypeVariable returnType) {
-		new TypeVariable(owner) => [ setTypeInfo(new ClosureTypeInfo(parameters, returnType)) ]
+		new TypeVariable(owner) => [setTypeInfo(new ClosureTypeInfo(parameters, returnType))]
 	}
 
 	def static generic(EObject owner, List<String> typeParameterNames) {
-		new TypeVariable(owner) => [ setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic])) ]
+		new TypeVariable(owner) => [setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic]))]
 	}
 
 	def static classParameter(EObject owner, String paramName) {
 		new ClassParameterTypeVariable(owner, paramName)
 	}
-	
+
 	def static synthetic() {
 		simple(null)
 	}
-	
-	// ************************************************************************
-	// ** For the TypeSystem implementation
-	// ************************************************************************
+
+// ************************************************************************
+// ** For the TypeSystem implementation
+// ************************************************************************
 	def getType() {
-		typeInfo.getType(this)
+		if (typeInfo != null) typeInfo.getType(this) else WollokType.WAny 
 	}
 
-	// ************************************************************************
-	// ** Errors
-	// ************************************************************************
-	
+// ************************************************************************
+// ** Errors
+// ************************************************************************
 	/**
 	 * Informs if an error has been detected for this variable.
 	 * In the case that this variable has no type info, this means it has not yet been used, 
@@ -86,9 +87,9 @@ class TypeVariable implements ITypeVariable {
 		typeInfo?.reportErrors(this, validator)
 	}
 
-	// ************************************************************************
-	// ** Adding constraints
-	// ************************************************************************
+// ************************************************************************
+// ** Adding constraints
+// ************************************************************************
 	override beSupertypeOf(TypeVariable subtype) {
 		this.addSubtype(subtype)
 		subtype.addSupertype(this)
@@ -98,7 +99,7 @@ class TypeVariable implements ITypeVariable {
 		this.addSupertype(supertype)
 		supertype.addSubtype(this)
 	}
-	
+
 	/**
 	 * Internal method, do not call directly, use {@link #beSupertypeOf(TypeVariable)} instead.
 	 */
@@ -114,16 +115,29 @@ class TypeVariable implements ITypeVariable {
 		this.supertypes.add(supertype)
 		if (typeInfo != null) typeInfo.supertypeAdded()
 	}
-	
+
 	def beVoid() {
-		if (typeInfo == null) setTypeInfo(new VoidTypeInfo())
-		else typeInfo.beVoid
+		setTypeInfo(new VoidTypeInfo())
 	}
 
 	// ************************************************************************
 	// ** Adding / accessing type info
 	// ************************************************************************
-	def setTypeInfo(TypeInfo newTypeInfo) {
+	def dispatch void setTypeInfo(TypeInfo newTypeInfo) {
+		doSetTypeInfo(newTypeInfo)	
+	}
+	
+	def dispatch void setTypeInfo(VoidTypeInfo newTypeInfo) {
+		if (typeInfo.isVoid) {
+			return
+		} else if (typeInfo == null && owner.canBeVoid) {
+			doSetTypeInfo(newTypeInfo)
+		} else {
+			throw new CannotBeVoidException(owner)
+		}
+	}
+	
+	def doSetTypeInfo(TypeInfo newTypeInfo) {
 		newTypeInfo.addUser(this)
 		this.typeInfo = newTypeInfo
 	}
@@ -134,21 +148,21 @@ class TypeVariable implements ITypeVariable {
 	 * If the variable points to a closure type this will produce a type error.
 	 */
 	def addMinimalType(WollokType type) {
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo()) 
+		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.addMinimalType(type)
 	}
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo()) 
+		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.maximalConcreteTypes = maxTypes
 	}
-	
+
 	/** 
 	 * Register that a message has been sent to this type variable.
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		// TODO Currently only simple types are supporting message sending, but closures also should.
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo()) 
+		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.messages.add(new MessageSend(selector, arguments, returnType))
 	}
 

@@ -1,14 +1,16 @@
 package org.uqbar.project.wollok.tests.typesystem.xpect
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.typesystem.AbstractWollokTypeSystemTestCase
+import org.uqbar.project.wollok.tests.typesystem.WollokTypeSysteTestModule
 import org.uqbar.project.wollok.typesystem.ConcreteType
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
-import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.xpect.XpectImport
 import org.xpect.expectation.IStringExpectation
 import org.xpect.expectation.StringExpectation
 import org.xpect.parameter.ParameterParser
@@ -29,9 +31,11 @@ import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
  * 
  * @author npasserini
  */
-@XpectSuiteClasses(#[ValidationTest])
 @RunWith(XpectRunner)
+@XpectSuiteClasses(#[ValidationTest])
+@XpectImport(WollokTypeSysteTestModule)
 class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
+	@Inject TypeSystem typeSystem
 
 	@Xpect(liveExecution=LiveExecutionType.FAST)
 	@ParameterParser(syntax="'at' arg1=OFFSET")
@@ -42,11 +46,7 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-		tsystemClass = ConstraintBasedTypeSystem
-		setupTypeSystem
-		tsystem.validate(file as WFile, validator)
-
-		expectation.assertEquals(tsystem.type(target))
+		expectation.assertEquals(typeSystem.type(target))
 	}
 
 	@Xpect(liveExecution=LiveExecutionType.FAST)
@@ -58,10 +58,6 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-		tsystemClass = ConstraintBasedTypeSystem
-		setupTypeSystem
-		tsystem.validate(file as WFile, validator)
-
 		val messageSend = target.EObject as WMemberFeatureCall
 		val receiverType = tsystem.type(messageSend.memberCallTarget) as ConcreteType
 		val method = receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)

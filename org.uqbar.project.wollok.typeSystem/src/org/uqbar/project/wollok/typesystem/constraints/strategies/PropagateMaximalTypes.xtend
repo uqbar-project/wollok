@@ -6,7 +6,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
 class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
-	override analiseSimpleType(TypeVariable user, SimpleTypeInfo it) {
+	def dispatch analiseVariable(TypeVariable user, SimpleTypeInfo it) {
 		println('''Analising maxTypes of «user»''')
 		if (maximalConcreteTypes == null) {
 			println('''	No maxType info''')

@@ -9,13 +9,14 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
 		// TODO A variable without an owner is a synthetic var.
 		// Syntetetic variables should have their own way of specifying something that allows us to identify where came this variable from.
 		// Also this might not be the best place for this kind of logic, specific to synthetic variables.
-		"synthetic" 
+		"synthetic"
 	}
 
 	static def dispatch String debugInfo(EObject obj) {
@@ -30,24 +31,21 @@ class WollokModelPrintForDebug {
 			base
 	}
 
-	static def dispatch String debugInfo(WVariableReference it) {
+	static def dispatch String debugInfo(WVariableReference it)
 		'''ref «ref.debugInfo»'''
-	}
 
-	static def dispatch String debugInfo(WVariableDeclaration it) {
-		
+	static def dispatch String debugInfo(WVariableDeclaration it) 
 		'''«if (writeable) "var" else "const"» «variable.debugInfo»'''
-	}
 
-	static def dispatch String debugInfo(WBinaryOperation it) {
+	static def dispatch String debugInfo(WBinaryOperation it) 
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
-	}
 
-	static def dispatch String debugInfo(WMethodDeclaration it) {
+	static def dispatch String debugInfo(WMethodDeclaration it) 
 		'''«eContainer.name».«name»(«parameters.join(', ')[name]»)'''
-	}
 
-	static def dispatch String debugInfo(WParameter it) {
+	static def dispatch String debugInfo(WParameter it)
 		'''«it.eContainer.debugInfo».param[«name»]'''
-	}
+
+	static def dispatch String debugInfo(WMemberFeatureCall it)
+		'''«memberCallTarget.debugInfo».«feature».(«memberCallArguments.join(', ')[debugInfo]»)'''
 }

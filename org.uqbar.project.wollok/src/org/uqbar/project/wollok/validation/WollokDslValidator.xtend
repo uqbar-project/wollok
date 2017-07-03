@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.validation
 
 import com.google.inject.Inject
 import java.util.List
-import org.eclipse.core.runtime.Platform
+import org.eclipse.core.runtime.RegistryFactory
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -115,7 +115,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (wollokValidatorExtensions !== null)
 			return wollokValidatorExtensions
 
-		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
+		val configs = RegistryFactory.registry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
 

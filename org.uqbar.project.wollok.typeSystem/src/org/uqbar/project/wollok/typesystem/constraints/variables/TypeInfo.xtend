@@ -2,9 +2,9 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 
 abstract class TypeInfo {
 	@Accessors(PUBLIC_GETTER)
@@ -19,6 +19,8 @@ abstract class TypeInfo {
 	 */
 	@Accessors(PUBLIC_GETTER)
 	var Boolean sealed = false
+
+	List<TypeSystemException> errors = newArrayList
 
 	// ************************************************************************
 	// ** Type info users
@@ -36,22 +38,33 @@ abstract class TypeInfo {
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
 
-	def boolean hasErrors()
-	
+	def addError(TypeSystemException exception) {
+		errors.add(exception)
+	}
+
+	def hasErrors() {
+		return !errors.empty
+	}
+
 	// REVIEW Is necessary to pass 'user'?
-	def void reportErrors(TypeVariable user, ConfigurableDslValidator validator)
-	
+	def reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
+		errors.forEach [
+			println(message)
+			println(user.owner)
+			try {
+				validator.report(message, user.owner)
+				// validator.report('''This statement does not produce a value''', user.owner)
+			} catch (IllegalArgumentException e) {
+				// TODO
+			}
+		]
+	}
 
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
-	
 	def void beSealed()
 
-	def void beVoid() {
-		throw new TypeSystemException("You are trying to turn a type variable from non-void to void.")
-	}
-	
 	def ConcreteTypeState addMinimalType(WollokType type)
 
 	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
@@ -59,14 +72,13 @@ abstract class TypeInfo {
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
-
 	def void subtypeAdded() {}
+
 	def void supertypeAdded() {}
-	
+
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-
 	def String fullDescription()
-	
+
 }

@@ -1,41 +1,40 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
+import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 class VoidTypeInfo extends TypeInfo {
-	var hasErrors = false
+
+	// ************************************************************************
+	// ** Extension methods
+	// ************************************************************************
+	
+	static def dispatch canBeVoid(EObject object) { false }
+	static def dispatch canBeVoid(WBlockExpression object) { true }
+	static def dispatch canBeVoid(WMethodDeclaration object) { true }
+	static def dispatch canBeVoid(WMemberFeatureCall object) { true }
+	static def dispatch canBeVoid(WVariableDeclaration object) { true }
+	static def dispatch canBeVoid(WReturnExpression object) { true }
+	
+	static def dispatch isVoid(Void typeInfo) { false }
+	static def dispatch isVoid(TypeInfo typeInfo) { false }
+	static def dispatch isVoid(VoidTypeInfo typeInfo) { true }
 	
 	// ************************************************************************
 	// ** Queries
 	// ************************************************************************
-
 	override getType(TypeVariable user) {
 		return WollokType.WVoid
 	}
 
-	override hasErrors() {
-		return hasErrors
-	}
-
-	override reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
-		if (hasErrors)
-			validator.report('''This statement does not produce a value''', user.owner)
-	}
-
-	// ************************************************************************
-	// ** Adding type information
-	// ************************************************************************
-	
-	override beVoid() {
-		// Do nothing, I am void
-	}	
-
-	
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	
 	override fullDescription() '''
 		void
 	'''
@@ -43,16 +42,16 @@ class VoidTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Not yet implemented
 	// ************************************************************************
-	
 	override beSealed() {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
+
 	override addMinimalType(WollokType type) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
+
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
+
 }

@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
-	override analiseSimpleType(TypeVariable tvar, SimpleTypeInfo type) {
+	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo type) {
 		val supertypes = tvar.allSupertypes
 		type.minimalConcreteTypes.entrySet.forEach [
 			if (value == Pending) {

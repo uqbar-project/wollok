@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.annotations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
 import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
@@ -19,14 +20,13 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
-import org.uqbar.project.wollok.typesystem.declarations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
-import static extension org.uqbar.project.wollok.typesystem.declarations.TypeDeclarations.*
+import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 
 /**
  * @author npasserini

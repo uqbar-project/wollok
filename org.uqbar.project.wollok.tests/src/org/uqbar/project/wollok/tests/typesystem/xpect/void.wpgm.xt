@@ -6,5 +6,6 @@ program p {
 
 	// XPECT warnings --> "This statement does not produce a value" at "[].add(1)"
 	const nada = [].add(1)
+	nada
 }
 

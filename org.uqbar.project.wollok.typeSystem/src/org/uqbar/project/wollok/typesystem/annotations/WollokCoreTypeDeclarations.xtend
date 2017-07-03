@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.typesystem.declarations
+package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {

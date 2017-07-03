@@ -1,17 +1,14 @@
-package org.uqbar.project.wollok.typesystem.declarations
+package org.uqbar.project.wollok.typesystem.annotations
 
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
-
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.ClassParameterTypeAnnotation
-import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.TypeAnnotation
-import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.SimpleTypeAnnotation
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -41,7 +38,6 @@ abstract class TypeDeclarations {
 		new MethodTypeDeclaration(parameterTypes, returnType)
 	}
 
-
 	// ****************************************************************************
 	// ** Synthetic operator syntax
 	// ****************************************************************************
@@ -60,20 +56,26 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** Core class and object types
 	// ****************************************************************************
-	def Void() { new SimpleTypeAnnotation(WollokType.WVoid) }
+	def Void() { new VoidTypeAnnotation() }
+
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
 
 	def Integer() { classTypeAnnotation(INTEGER) }
-	def String() { classTypeAnnotation(STRING )}
+
+	def String() { classTypeAnnotation(STRING) }
+
 	def List() { classTypeAnnotation(LIST) }
+
 	def Set() { classTypeAnnotation(COLLECTION) }
+
 	def Collection() { classTypeAnnotation(SET) }
-	
+
 	def console() { objectTypeAnnotation(CONSOLE) }
-	
+
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
-	
+
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
+
 	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
 }
 

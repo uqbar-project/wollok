@@ -1,11 +1,11 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import java.util.Set
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
@@ -16,7 +16,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
  */
 class UnifyVariables extends AbstractInferenceStrategy {
 	override analiseVariable(TypeVariable tvar) {
-		println('''Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
+		println('''	Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
 		if (tvar.subtypes.size == 1)
 			tvar.subtypes.uniqueElement.unifyWith(tvar)
 		if (tvar.supertypes.size == 1)
@@ -24,37 +24,45 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
-		println('''About to unify «subtype» with «supertype»''')
+		println('''		About to unify «subtype» with «supertype»''')
 		if (subtype.unifiedWith(supertype)) {
-			println('''Already unified, nothing to do''')
+			println('''		Already unified, nothing to do''')
 			return;
 		}
-		
+
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if (supertype.hasErrors) {
-			println('''Errors found, aborting unification''')
+			println('''		Errors found, aborting unification''')
 			return;
 		}
-		
+
 		// If supertype var is a parameter, the subtype is an argument sent to this parameter
 		// and should not be unified.
 		if (supertype.owner instanceof WParameter) {
-			println('''Not unifying «subtype» with parameter «supertype»''')
+			println('''		Not unifying «subtype» with parameter «supertype»''')
 			return;
 		}
 
 		// Now we can unify
 		println('''	Unifying «subtype» with «supertype»''')
-		
+
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
 		if (subtype.typeInfo == null && supertype.typeInfo != null) {
-			subtype.typeInfo = supertype.typeInfo
-			changed = true
+			try {
+				subtype.typeInfo = supertype.typeInfo
+				changed = true
+			} catch (TypeSystemException typeError) {
+				supertype.typeInfo.addError(typeError)
+			}
 		} else if (supertype.typeInfo == null && subtype.typeInfo != null) {
-			supertype.typeInfo = subtype.typeInfo
-			changed = true
+			try {
+				supertype.typeInfo = subtype.typeInfo
+				changed = true
+			} catch (TypeSystemException typeError) {
+				subtype.typeInfo.addError(typeError)
+			}
 		} else {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		}
@@ -71,10 +79,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
 		throw new UnsupportedOperationException()
-	}
-
-	def dispatch doUnifyWith(VoidTypeInfo t1, VoidTypeInfo t2) {
-		// Nothing to do
 	}
 
 	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {
