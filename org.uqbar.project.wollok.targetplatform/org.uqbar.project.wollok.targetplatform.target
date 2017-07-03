@@ -33,14 +33,12 @@
 <unit id="org.eclipse.xpand" version="0.0.0"/>
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
-<unit id="org.eclipse.team.svn.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.polarion.eclipse.team.svn.connector.feature.group" version="0.0.0"/>
-<unit id="org.polarion.eclipse.team.svn.connector.svnkit18.feature.group" version="0.0.0"/>
-<repository location="http://community.polarion.com/projects/subversive/download/eclipse/6.0/update-site"/>
+<unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/egit/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
