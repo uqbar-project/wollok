@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -20,6 +21,7 @@ class VoidTypeInfo extends TypeInfo {
 	static def dispatch canBeVoid(WMemberFeatureCall object) { true }
 	static def dispatch canBeVoid(WVariableDeclaration object) { true }
 	static def dispatch canBeVoid(WReturnExpression object) { true }
+	static def dispatch canBeVoid(WAssignment object) { true }
 	
 	static def dispatch isVoid(Void typeInfo) { false }
 	static def dispatch isVoid(TypeInfo typeInfo) { false }

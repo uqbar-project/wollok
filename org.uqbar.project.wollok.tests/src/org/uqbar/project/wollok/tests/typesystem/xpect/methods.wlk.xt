@@ -6,9 +6,20 @@ class Golondrina {
 	method vola() { energia = energia - 10 }
 }
 
+object pepita {
+	method nombreAve() = "Pepita"
+}
+
 class Entrenador {
 	method entrena(ave) { 
-		// XPECT! type at ave --> Golondrina
 		ave.vola()
+		// XPECT type at ave --> Golondrina
+		ave
+	}
+	
+	method alimentar(ave) {
+		ave.nombreAve()
+		// XPECT type at ave --> pepita
+		ave
 	}
 }

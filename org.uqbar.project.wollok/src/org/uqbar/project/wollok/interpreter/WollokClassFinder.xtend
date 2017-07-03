@@ -80,8 +80,8 @@ class WollokClassFinder {
 	// ** Get all elements in the scope (used by the type system)
 	// ************************************************************************
 	
-	def allGlobalObjects(Resource resource) {
-		getObjectScope(resource)[EObjectOrProxy instanceof WNamedObject]
+	def allGlobalObjects(EObject context) {
+		getObjectScope(context.eResource)[EObjectOrProxy instanceof WNamedObject]
 		.allElements
 		.filter[EObjectOrProxy instanceof WNamedObject]
 		.map[description|
@@ -94,8 +94,8 @@ class WollokClassFinder {
 		]
 	}	
 
-	def allClasses(Resource resource) {
-		getClassScope(resource)[EObjectOrProxy instanceof WClass]
+	def allClasses(EObject context) {
+		getClassScope(context.eResource)[EObjectOrProxy instanceof WClass]
 		.allElements
 		.filter[EObjectOrProxy instanceof WClass]
 		.map[description|

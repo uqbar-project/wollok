@@ -115,7 +115,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (wollokValidatorExtensions !== null)
 			return wollokValidatorExtensions
 
-		val configs = RegistryFactory.registry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
+			val configs = RegistryFactory.registry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
 

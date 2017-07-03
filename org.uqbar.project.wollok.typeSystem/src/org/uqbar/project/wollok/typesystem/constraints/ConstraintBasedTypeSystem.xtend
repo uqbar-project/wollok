@@ -6,12 +6,14 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.annotations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
+import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMessages
 import org.uqbar.project.wollok.typesystem.constraints.strategies.OpenMethod
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMaximalTypes
 import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinimalTypes
@@ -57,7 +59,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		constraintGenerator = new ConstraintGenerator(this)
 		
 		// This shouldn't be necessary if all global objects had type annotations
-		finder.allGlobalObjects(program.eResource).forEach[constraintGenerator.newNamedObject(it)]
+		finder.allGlobalObjects(program).forEach[constraintGenerator.newNamedObject(it)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
@@ -102,7 +104,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagateMinimalTypes, PropagateMaximalTypes],
+		#[PropagateMinimalTypes, PropagateMaximalTypes, MaxTypesFromMessages],
 		#[OpenMethod],
 		#[UnifyVariables, SealVariables],
 		#[GuessMinTypeFromMaxType]
@@ -142,8 +144,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		#[]
 	}
 
-	override queryMessageTypeForMethod(WMethodDeclaration declaration) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	override queryMessageTypeForMethod(WMethodDeclaration it) {
+		new MessageType(it.name, parameters.map[type], type)
 	}
 
 	protected def objectType(WNamedObject model) {
@@ -169,5 +171,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		} catch (WollokRuntimeException e) {
 			new NamedObjectWollokType(finder.getCachedObject(context, typeName), this)
 		}
+	}
+	
+	def allTypes(EObject context) {
+		finder.allClasses(context).map[new ClassBasedWollokType(it, this)] 
+		+ 
+		finder.allGlobalObjects(context).map[new NamedObjectWollokType(it, this)]
 	}
 }
