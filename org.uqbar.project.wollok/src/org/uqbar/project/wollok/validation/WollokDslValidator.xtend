@@ -455,7 +455,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
 		if (parent !== null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
-			report('''No default constructor in super type «parent.name». You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''',
+			report(NLS.bind(WollokDslValidator_NO_DEFAULT_CONSTRUCTOR_IN_SUPER_TYPE, parent.name, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 		}
 	}
@@ -464,7 +464,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def objectSuperClassConstructorMustExists(WNamedObject it) {
 		if (parent !== null && !parentParameters.empty && !parent.hasConstructorForArgs(parentParameters.size)) {
-			report('''No superclass constructor or wrong number of arguments. You must explicitly call a constructor: «parent.constructors.map["(" + parameters.map[name].join(",") + ")"].join(", ")»''',
+			report(NLS.bind(WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT)
 		}
 	}

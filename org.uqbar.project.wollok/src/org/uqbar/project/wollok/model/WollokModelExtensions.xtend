@@ -192,6 +192,10 @@ class WollokModelExtensions {
 		(constructorCall ?: "constructor") + "(" + c.parameters.map [ name ].join(",") + ")"
 	}
 	
+	def static constructorParameters(WClass c) {
+		c.constructors.map[ constructorName("") ].join(", ")
+	}
+	
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.messageName
 	}
