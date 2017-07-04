@@ -59,14 +59,21 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-		var WMethodDeclaration method
-		if (target.EObject instanceof WMemberFeatureCall) {
-			val messageSend = target.EObject as WMemberFeatureCall
-			val receiverType = typeSystem.type(messageSend.memberCallTarget) as ConcreteType
-			method = receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)
-		} else {
-			method = target.EObject as WMethodDeclaration
-		}
+		
+		var method = target.EObject.method
 		expectation.assertEquals(method.functionType(typeSystem))
+	}
+	
+	def dispatch method(EObject object) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def dispatch method(WMemberFeatureCall messageSend) {
+		val receiverType = typeSystem.type(messageSend.memberCallTarget) as ConcreteType
+		receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)
+	}
+	
+	def dispatch method(WMethodDeclaration method) {
+		method
 	}
 }
