@@ -74,11 +74,11 @@ mixin M3 {
 	}
 }
 
-// XPECT errors --> "You must implement all abstract methods inherited: M1.doIt()" at "a"
+// XPECT errors --> "You must implement all inherited abstract methods: M1.doIt()" at "a"
 object a mixed with M1 {
 }
 
-// XPECT errors --> "You must implement all abstract methods inherited: M1.doIt()" at "b"
+// XPECT errors --> "You must implement all inherited abstract methods: M1.doIt()" at "b"
 object b mixed with M1, M2 {
 }
 
