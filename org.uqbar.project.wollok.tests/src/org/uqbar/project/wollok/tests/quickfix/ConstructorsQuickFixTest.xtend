@@ -8,7 +8,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def addOneConstructorsFromSuperclass(){
 		val initial = #['''
 			class MyClass{
-				const y 
+				const y
 				constructor(x){
 					y = x
 				}
@@ -25,7 +25,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			class MyClass{
-				const y 
+				const y
 				constructor(x){
 					y = x
 				}
@@ -36,7 +36,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class MySubclass inherits MyClass {
-			
+				
 				constructor(x) = super(x)
 			}
 		''']

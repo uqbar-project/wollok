@@ -46,8 +46,10 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -175,6 +177,21 @@ class WollokModelExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
+	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
+	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
+	
+	def static dispatch constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
+		constructorName(c, "self")
+	}
+	
+	def static dispatch constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
+		constructorName(c, "super")
+	}
+	
+	def static constructorName(WConstructor c, String constructorCall) {
+		(constructorCall ?: "constructor") + "(" + c.parameters.map [ name ].join(",") + ")"
+	}
+	
 	def static methodName(WMethodDeclaration d) {
 		d.declaringContext.name + "." + d.messageName
 	}

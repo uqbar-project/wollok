@@ -234,7 +234,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def requiredSuperClassConstructorCall(WClass it) {
 		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor)
-			report('''No default constructor in super type «parent.name». «name» must define an explicit constructor.''',
+			report(NLS.bind(WollokDslValidator_NO_DEFAULT_CONSTRUCTOR, parent.name, name),
 				it, WNAMED__NAME, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 	}
 
@@ -243,7 +243,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c|constructors.exists[c2|c2 != c && c.matches(c2.parameters.size)]]
 		repeated.forEach [ r |
-			report("Duplicated constructor with same number of parameters", r, WCONSTRUCTOR__PARAMETERS,
+			report(WollokDslValidator_DUPLICATED_CONSTRUCTOR, r, WCONSTRUCTOR__PARAMETERS,
 				DUPLICATED_CONSTRUCTOR)
 		]
 	}
@@ -252,7 +252,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def construtorMustExpliclityCallSuper(WConstructor it) {
 		if (delegatingConstructorCall === null && wollokClass.superClassRequiresNonEmptyConstructor) {
-			report("Must call a super class constructor explicitly", it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
+			report(WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR, it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
 	}
 
@@ -261,7 +261,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cannotUseSelfInConstructorDelegation(WSelf it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) !== null)
-			report("Cannot access instance methods within constructor delegation.", it)
+			report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_METHOD_WITHIN_CONSTRUCTOR_DELEGATION, it)
 	}
 
 	@Check
@@ -282,7 +282,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cannotUseSuperInConstructorDelegation(WSuperInvocation it) {
 		if (EcoreUtil2.getContainerOfType(it, WDelegatingConstructorCall) !== null)
-			report("Cannot access super methods within constructor delegation.", it)
+			report(WollokDslValidator_CANNOT_ACCESS_SUPER_METHODS_WITHIN_CONSTRUCTOR_DELEGATION, it)
 	}
 
 	@Check
@@ -290,7 +290,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
 		eAllContents.filter(WVariableReference).forEach [ ref |
 			if (ref.ref instanceof WVariable) {
-				report("Cannot access instance variables within constructor delegation.", ref, WVARIABLE_REFERENCE__REF)
+				report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION, ref, WVARIABLE_REFERENCE__REF)
 			}
 		]
 	}
@@ -298,16 +298,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def delegatedConstructorExists(WDelegatingConstructorCall it) {
+		val validConstructors = it.constructorsFor(it.wollokClass).map [ constr | constr.constructorName(it) ].join(",")
 		try {
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved === null) {
-				// we could actually show the available options
-				report("Invalid constructor call. Does Not exist", it.eContainer,
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors), it.eContainer,
 					WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
 		} catch (WollokRuntimeException e) {
 			// mmm... terrible
-			report("Invalid constructor call. Does Not exist", it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
 				CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 		}
 	}
