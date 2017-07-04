@@ -11,7 +11,11 @@ class TypeSystemUtils {
 	
 	// helper
 	def static functionType(WMethodDeclaration m, extension TypeSystem ts) {
-		"(" + m.parameters.map[it.type?.name].join(", ") + ') => ' + m.type?.name
+		"(" + m.parametersType(ts).map[it?.name].join(", ") + ') => ' + m.type?.name
+	}
+	
+	def static parametersType(WMethodDeclaration m, extension TypeSystem ts) {
+		m.parameters.map[it.type]
 	}
 	
 	// TODO: hardcoded !

@@ -61,14 +61,16 @@ abstract class TypeDeclarations {
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
 
 	def Integer() { classTypeAnnotation(INTEGER) }
+	
+	def Double() { classTypeAnnotation(DOUBLE) }
 
 	def String() { classTypeAnnotation(STRING) }
 
 	def List() { classTypeAnnotation(LIST) }
 
-	def Set() { classTypeAnnotation(COLLECTION) }
+	def Set() { classTypeAnnotation(SET) }
 
-	def Collection() { classTypeAnnotation(SET) }
+	def Collection() { classTypeAnnotation(COLLECTION) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
 
