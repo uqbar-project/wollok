@@ -186,7 +186,7 @@ class CleanShapePositionsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.team.svn.ui/icons/wizards/find-clear.gif"))
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/saveas_edit.png"))
 	}
 
 	override run() {
