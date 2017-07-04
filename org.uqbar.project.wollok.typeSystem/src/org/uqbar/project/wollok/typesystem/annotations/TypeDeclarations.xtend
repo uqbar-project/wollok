@@ -60,6 +60,8 @@ abstract class TypeDeclarations {
 
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
 
+	def Boolean() { classTypeAnnotation(BOOLEAN) }
+	
 	def Integer() { classTypeAnnotation(INTEGER) }
 	
 	def Double() { classTypeAnnotation(DOUBLE) }

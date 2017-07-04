@@ -1,0 +1,237 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+//
+// ******************
+// ** personalidades
+// ******************
+
+object cazafortunas {
+	// XPECT methodType at acepta --> (Any, Seductor) => Boolean
+	method acepta(seducible, seductor) = seductor.esMillonario()
+}
+
+object militante {
+	// XPEC methodType at acepta --> (Seducible, Seductor) => Boolean
+//	method acepta(seducible, seductor) = 
+//		seductor.getNivelIntelectual() >= seducible.getNivelIntelectualMinimoBuscado() 
+//		&& (seductor.esMillonario() || seductor.getAspectoPersonal() > seductor.getNivelIntelectual() / 2)
+}
+
+object envidioso {
+//	// (Seducible, Seductor) => Boolean
+//	method acepta(seducible, seductor) = seducible.getRival().aceptaCitaDe(seductor)
+}
+
+object libre {
+	// XPECT methodType at acepta --> (Any, Any) => Boolean
+	method acepta(seducible, seductor) = true
+}
+
+class Seducible {
+	// XPECT type at pareja -->  Any
+	var pareja
+	
+	// XPECT type at generosPreferidos -->  List
+	const generosPreferidos = [] // "List[any]"
+	
+	// XPECT type at nivelIntelectualMinimoBuscado -->  Integer
+	var nivelIntelectualMinimoBuscado = 0 
+
+	// XPECT type at personalidad -->  libre	 
+	var personalidad = libre // cazafortunas | militante | envidioso | libre" at "personalidad"
+	
+	// XPECT type at rival -->  Any
+	var rival // Seducible
+	
+//	// Seductor => Boolean
+//	method aceptaCitaDe(seductor) = (pareja == null && self.esCompatible(seductor) || pareja == seductor)
+	
+//	// Seductor => Boolean
+//	method esCompatible(seductor) = (generosPreferidos.size() === 0 || generosPreferidos.contains(seductor.getGenero())) 
+//		&& personalidad.acepta(self, seductor)
+	
+	// XPECT methodType at setPareja --> (Any) => Void 
+	method setPareja(p) { pareja = p }
+	
+	// XPECT methodType at getPareja --> () => Any
+	method getPareja() = pareja
+	
+//	// any => void 
+//	method agregarGeneroPreferido(g) { generosPreferidos.add(g) }
+	
+	// XPECT methodType at getNivelIntelectualMinimoBuscado --> () => Integer 
+	method getNivelIntelectualMinimoBuscado() = nivelIntelectualMinimoBuscado
+	
+	// XPECT methodType at setNivelIntelectualMinimoBuscado --> (Integer) => Void
+	method setNivelIntelectualMinimoBuscado(n) { nivelIntelectualMinimoBuscado = n }
+	
+	// XPECT methodType at getPersonalidad --> () => libre
+	method getPersonalidad() = personalidad 	// () => cazafortunas | militante | envidioso | libre
+	
+	// XPECT methodType at setPersonalidad --> (libre) => Void 
+	method setPersonalidad(p) { personalidad = p } 	// cazafortunas | militante | envidioso | libre => void
+	
+	// XPECT methodType at getRival --> () => Any
+	method getRival() = rival 	// () => Seducible
+	
+	// XPECT methodType at setRival --> (Any) => Void
+	method setRival(r) { rival = r } 	// Seducible => void
+}
+
+object millonarios {
+	// XPECT type at nivelMinimo -->  Integer
+	var nivelMinimo = 1000
+	
+	// XPECT methodType at getNivelMinimo --> () => Integer
+	method getNivelMinimo() = nivelMinimo
+	
+	// XPECT methodType at setNivelMinimo --> (Integer) => Void
+	method setNivelMinimo(m) { nivelMinimo = m }
+}
+
+class Seductor {
+	// XPECT type at genero	-->  Any
+	var genero	// any ? generoMasculino | generoFemenino
+	
+	// XPECT type at nivelEconomicoBase	-->  Integer
+	var nivelEconomicoBase = 0
+	
+	// XPECT type at nivelIntelectualBase -->  Integer
+	var nivelIntelectualBase = 0
+
+	// XPECT type at aspectoPersonalBase -->  Integer
+	var aspectoPersonalBase = 0
+	
+//	// List[
+//	//	Artilugio    << PREFERIBLE (?)
+//	//  | { 
+//	//       modificarNivelIntelectual(Seductor, Number),
+//	//       modificarNivelEconomico(Seductor, Number),
+//	//       modificarAspectoPersonal(Seductor, Number)
+//	//    }
+//	// ]
+	// XPECT type at artilugios -->  List
+	var artilugios = []
+
+//	constructor() = self(0, 0, 0)
+	// (Number, Number, Number)
+	constructor(nEconomicoBase, nIntelectualBase, nPersonalBase) {
+		nivelEconomicoBase = nEconomicoBase
+		nivelIntelectualBase = nIntelectualBase
+		aspectoPersonalBase = nPersonalBase
+	}
+	
+	// XPECT methodType at esMillonario --> () => Boolean
+	method esMillonario() = self.getNivelEconomico() > millonarios.getNivelMinimo()
+	
+	
+	// XPECT methodType at getGenero --> () => Any
+	method getGenero() = genero 	// () => any ? generoMasculino | generoFemenino
+	
+	// XPECT methodType at setGenero --> (Any) => Void 
+	method setGenero(g) { genero = g }		// (any ? generoMasculino | generoFemenino) => void
+	
+	// XPECT methodType at getNivelIntelectual --> () => Integer
+	method getNivelIntelectual() = nivelIntelectualBase + artilugios.sum { artilugio => 
+		artilugio.modificarNivelIntelectual(self, nivelIntelectualBase)
+	}
+	
+	// XPECT methodType at getNivelEconomico --> () => Integer
+	method getNivelEconomico() = nivelEconomicoBase + artilugios.sum { 
+		artilugio => artilugio.modificarNivelEconomico(self, nivelEconomicoBase)
+	}
+	
+	// XPECT methodType at getAspectoPersonal --> () => Integer
+	method getAspectoPersonal() = aspectoPersonalBase + artilugios.sum { artilugio => 
+		artilugio.modificarAspectoPersonal(self, aspectoPersonalBase)
+	}
+
+//	// Artilugio => void
+//	method artilugio(a) { artilugios.add(a) }
+}
+
+// ******************
+// ** generos
+// ******************
+
+object generoMasculino {}
+object generoFemenino {}
+
+
+// ******************
+// ** artilugios
+// ******************
+
+class Artilugio {
+	// XPECT methodType at modificarNivelIntelectual --> (Any, Any) => Integer
+	method modificarNivelIntelectual(seductor, nivel) = 0
+	
+	// XPECT methodType at modificarNivelEconomico --> (Any, Any) => Integer
+	method modificarNivelEconomico(seductor, nivel) = 0
+
+	// XPECT methodType at modificarAspectoPersonal --> (Any, Any) => Integer
+	method modificarAspectoPersonal(seductor, nivel) = 0
+}
+
+class Billetera inherits Artilugio {
+	// XPECT type at cantidad -->  Integer
+	var cantidad;
+	
+	constructor(cantidadInicial) { cantidad = cantidadInicial }
+	
+	// XPECT methodType at modificarNivelEconomico --> (Any, Any) => Integer
+	override method modificarNivelEconomico(seductor, nivel) = cantidad
+	
+	// (any, Number) => Number
+	// XPEC methodType at modificarAspectoPersonal --> (Any, Integer) => Integer
+	override method modificarAspectoPersonal(seductor, nivel) = nivel * 0.10
+	
+	// (Seductor, Number) => Number
+//	override method modificarNivelIntelectual(seductor, nivel) = if (seductor.esMillonario()) nivel * -0.2 else 0  
+}
+
+class Auto inherits Artilugio {
+	// XPECT type at precio -->  Integer
+	var precio
+	
+	constructor(_precio) { precio = _precio }
+	
+//	override method modificarNivelEconomico(seductor, nivel) = -precio * 0.10
+
+//	 XPECT methodType at modificarNivelEconomico --> (Any, Any) => Integer
+	override method modificarAspectoPersonal(seductor, nivel) = 2 * precio
+}
+
+class Reputacion inherits Artilugio {
+	// XPECT type at intelectual -->  Integer
+	const intelectual
+	
+	// XPECT type at economica -->  Integer
+	const economica
+	
+	// XPECT type at personal -->  Integer
+	const personal
+	
+	constructor(i, e, p) {
+		intelectual = i
+		economica = e
+		personal = p
+	}
+	
+	// XPECT methodType at modificarNivelEconomico --> (Any, Any) => Integer
+	override method modificarNivelEconomico(seductor, nivel) = economica
+	
+	// XPECT methodType at modificarNivelIntelectual --> (Any, Any) => Integer
+	override method modificarNivelIntelectual(seductor, nivel) = intelectual
+	
+	// XPECT methodType at modificarAspectoPersonal --> (Any, Any) => Integer
+	override method modificarAspectoPersonal(seductor, nivel) = personal
+}
+
+object titulo inherits Artilugio {
+	// XPEC methodType at modificarNivelEconomico --> (Any, Integer) => Integer
+	override method modificarNivelEconomico(seductor, nivel) = nivel * 0.8
+
+	// XPEC methodType at modificarNivelEconomico --> (Any, Integer) => Integer	
+	override method modificarNivelIntelectual(seductor, nivel) = nivel * 1.00
+}
