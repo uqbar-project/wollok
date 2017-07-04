@@ -38,4 +38,17 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOf(classTypeFor(STRING), "firstOfStrings")
 		]
 	}
+
+	@Test
+	def void add() {
+		'''
+		program p {
+			const l = []
+			l.add(1)
+			const firstOfNumbers = l.first()
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "firstOfNumbers")
+		]
+	}
 }
