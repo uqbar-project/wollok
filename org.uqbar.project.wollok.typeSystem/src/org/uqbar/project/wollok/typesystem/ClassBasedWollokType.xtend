@@ -33,23 +33,14 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	// ** the var is later assigned to this type.
 	// ***************************************************************************
 	
-	override refine(WollokType previouslyInferred) {
-		doRefine(previouslyInferred)
-	}
-	
-	// by default uses super
-	def dispatch doRefine(WollokType previous) {
-		super.refine(previous)
-	}
-	
-	def dispatch doRefine(ClassBasedWollokType previous) {
+	def dispatch refine(ClassBasedWollokType previous) {
 		val commonType = commonSuperclass(clazz, previous.clazz)
 		if (commonType == null)
 			throw new TypeSystemException("Incompatible types. Expected " + previous.name + " <=> " + name)
 		new ClassBasedWollokType(commonType, typeSystem)
 	}
 	
-	def dispatch doRefine(ObjectLiteralWollokType previous) {
+	def dispatch refine(ObjectLiteralWollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}

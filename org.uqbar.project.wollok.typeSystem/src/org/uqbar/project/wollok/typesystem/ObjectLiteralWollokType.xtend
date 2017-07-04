@@ -68,12 +68,11 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	
 	override getAllMessages() { object.methods.map[messageType] }
 	
-	override refine(WollokType previous) {
+	override dispatch refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}
 	
 	def messageType(WMethodDeclaration m) { typeSystem.queryMessageTypeForMethod(m) }
 	def type(WParameter p) { typeSystem.type(p) }
-	
 }
