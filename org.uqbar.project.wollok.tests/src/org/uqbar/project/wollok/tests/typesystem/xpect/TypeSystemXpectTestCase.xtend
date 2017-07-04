@@ -59,8 +59,8 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisModel EObject file
 	) {
 		val messageSend = target.EObject as WMemberFeatureCall
-		val receiverType = tsystem.type(messageSend.memberCallTarget) as ConcreteType
+		val receiverType = typeSystem.type(messageSend.memberCallTarget) as ConcreteType
 		val method = receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)
-		expectation.assertEquals(method.functionType(tsystem))
+		expectation.assertEquals(method.functionType(typeSystem))
 	}
 }

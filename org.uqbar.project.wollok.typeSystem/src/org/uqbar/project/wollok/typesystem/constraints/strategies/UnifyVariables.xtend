@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
@@ -79,6 +80,10 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
 		throw new UnsupportedOperationException()
+	}
+
+	def dispatch doUnifyWith(VoidTypeInfo t1, VoidTypeInfo t2) {
+		// Nothing to do
 	}
 
 	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {

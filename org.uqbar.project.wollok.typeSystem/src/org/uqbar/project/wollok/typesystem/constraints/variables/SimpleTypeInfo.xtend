@@ -46,8 +46,18 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 	
 	override reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
-		if (hasErrors)
+		if (hasErrors) {
+			try {
 			validator.report('''expected <<«user.expectedType»>> but found <<«user.foundType»>>''', user.owner)
+				
+			} catch (IllegalArgumentException ex) {
+				print('''
+					Error, can not have type errors in core type variable.
+					«user.fullDescription»
+				''')
+			}
+			
+		}
 	}
 
 	// ************************************************************************
