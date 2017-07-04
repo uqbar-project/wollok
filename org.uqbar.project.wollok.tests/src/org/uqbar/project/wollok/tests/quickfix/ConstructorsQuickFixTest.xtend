@@ -36,7 +36,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 			
 			class MySubclass inherits MyClass {
-	
+			
 				constructor(x) = super(x)
 			}
 		''']

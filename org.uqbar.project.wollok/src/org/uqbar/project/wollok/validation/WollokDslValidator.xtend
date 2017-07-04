@@ -96,6 +96,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS = "ERROR_TRY_WITHOUT_CATCH_OR_ALWAYS"
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
+	public static val UNNECESARY_OVERRIDE = "UNNECESARY_OVERRIDE"
 	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
@@ -195,7 +196,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def definingAMethodThatOnlyCallsToSuper(WMethodDeclaration it) {
 		if (it.redefinesSendingOnlySuper) {
 			report(WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT, it,
-			WNAMED__NAME, DUPLICATED_METHOD)
+			WNAMED__NAME, UNNECESARY_OVERRIDE)
 		}
 	}
 

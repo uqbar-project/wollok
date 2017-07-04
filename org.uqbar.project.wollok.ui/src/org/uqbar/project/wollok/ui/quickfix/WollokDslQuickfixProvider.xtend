@@ -135,6 +135,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(UNNECESARY_OVERRIDE)
+	def deleteUnnecesaryOverride(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_method_name,
+			Messages.WollokDslQuickFixProvider_remove_method_description, null) [ e, it |
+			xtextDocument.delete(e)
+		]
+	}
+
 	@Fix(MUST_CALL_SUPER)
 	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_call_super_name,

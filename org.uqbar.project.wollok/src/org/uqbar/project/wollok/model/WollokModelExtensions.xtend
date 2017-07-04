@@ -460,10 +460,10 @@ class WollokModelExtensions {
 	
 	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }
 	def static dispatch boolean callsToSuperWith(WSuperInvocation s, WMethodDeclaration m) {
-		val methodParametersSize = m.parameters.size
-		if (methodParametersSize != s.memberCallArguments.size) return false;
-		if (methodParametersSize == 0 && s.memberCallArguments.size == 0) return true;
-		(0..methodParametersSize - 1).forall [ i |
+		val methodParamsSize = m.parameters.size
+		if (methodParamsSize != s.memberCallArguments.size) return false;
+		if (methodParamsSize == 0 && s.memberCallArguments.size == 0) return true;
+		(0..methodParamsSize - 1).forall [ i |
 			m.parameters.get(i).matchesParam(s.memberCallArguments.get(i))
 		]
 	}
