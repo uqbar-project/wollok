@@ -1,19 +1,18 @@
 package org.uqbar.project.wollok.scoping
 
 import com.google.inject.Inject
+import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.naming.IQualifiedNameConverter
+import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
-import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
+
+import static java.util.Collections.singletonList
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import java.util.List
-import org.eclipse.xtext.naming.QualifiedName
-import org.eclipse.xtext.resource.ISelectable
-import org.eclipse.xtext.scoping.IScope
-import org.eclipse.emf.ecore.EReference
-import static java.util.Collections.singletonList
+import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
 
 /**
  * @author tesonep
@@ -45,11 +44,8 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 			
 		val namespaces = context.allImports.map [ #[importedNamespace] + this.allRelativeImports(importedNamespace, context)].flatten.toSet
 
-		val xxx = scope.getElements(qualifiedNameConverter.toQualifiedName("libForImports.simpsons"))
-		println(xxx.empty)
-		
 		namespaces.filter [ ns | 
-			!scope.getElements(qualifiedNameConverter.toQualifiedName(ns)).empty
+			scope.containsImport(ns)
 		].forEach [
 			val normalizer = createImportedNamespaceResolver(it, ignoreCase)
 			if (normalizer !== null) {

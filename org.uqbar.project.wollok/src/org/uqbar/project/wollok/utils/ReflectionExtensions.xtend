@@ -19,4 +19,19 @@ class ReflectionExtensions {
 			}	
 		}
 	}
+	
+	static def Object invoke(Object receiver, String methodName, Object ... parameters){
+		val clazz = receiver.class
+		val method = clazz.getDeclaredMethod(methodName, parameters.map[it.class])
+		method.accessible = true
+		method.invoke(receiver, parameters)
+	}
+	
+	static def Object get(Object receiver, String instanceVariableName){
+		val clazz = receiver.class
+		val instVar = clazz.getDeclaredField(instanceVariableName)
+		instVar.accessible = true
+		instVar.get(receiver)
+	}
+	
 }
