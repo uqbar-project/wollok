@@ -17,7 +17,7 @@ class Entrenador {
 		ave
 	}
 	
-	method alimentar(ave) {
+	method llamar(ave) {
 		ave.nombreAve()
 		// XPECT type at ave --> pepita
 		ave
