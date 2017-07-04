@@ -25,6 +25,7 @@ import org.xpect.xtext.lib.tests.ValidationTestModuleSetup.ConsumedIssues
 import org.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
 
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 /**
  * Test class for extending xpect to have tests on static proposals (content assist)
@@ -58,9 +59,14 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-		val messageSend = target.EObject as WMemberFeatureCall
-		val receiverType = typeSystem.type(messageSend.memberCallTarget) as ConcreteType
-		val method = receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)
+		var WMethodDeclaration method
+		if (target.EObject instanceof WMemberFeatureCall) {
+			val messageSend = target.EObject as WMemberFeatureCall
+			val receiverType = typeSystem.type(messageSend.memberCallTarget) as ConcreteType
+			method = receiverType.lookupMethod(messageSend.feature, messageSend.memberCallArguments)
+		} else {
+			method = target.EObject as WMethodDeclaration
+		}
 		expectation.assertEquals(method.functionType(typeSystem))
 	}
 }

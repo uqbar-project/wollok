@@ -9,6 +9,8 @@ program p {
 
 	// XPECT type at coleccion -->  List
 	const coleccion = [] 
-	 
+
+	// XPECT type at algo -->  Any	
+	var algo
 }
 

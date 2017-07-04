@@ -4,6 +4,9 @@ class Golondrina {
 	var energia = 100
 	
 	method vola() { energia = energia - 10 }
+	
+	// XPECT methodType at come --> (Integer) => Void
+	method come(grms) { energia = grms * 0.10 }
 }
 
 object pepita {
@@ -11,15 +14,9 @@ object pepita {
 }
 
 class Entrenador {
-	method entrena(ave) { 
-		ave.vola()
-		// XPECT type at ave --> Golondrina
-		ave
-	}
+	// XPECT methodType at entrena --> (Golondrina) => Void
+	method entrena(ave) { ave.vola() }
 	
-	method llamar(ave) {
-		ave.nombreAve()
-		// XPECT type at ave --> pepita
-		ave
-	}
+	// XPECT methodType at llama --> (pepita) => String
+	method llama(ave) = ave.nombreAve()
 }
