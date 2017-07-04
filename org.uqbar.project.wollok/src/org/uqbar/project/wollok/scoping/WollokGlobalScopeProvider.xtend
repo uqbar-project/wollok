@@ -4,10 +4,8 @@ import com.google.common.base.Predicate
 import com.google.inject.Inject
 import java.io.File
 import java.util.List
-import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription
@@ -15,8 +13,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.manifest.WollokManifest
-import org.uqbar.project.wollok.manifest.WollokManifestFinder
+import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
@@ -37,9 +34,10 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	WollokGlobalScopeCache cache
 
 	@Inject
-	IResourceDescription.Manager resourceDescriptionManager
+	WollokLibraryLoader libraryLoader
+	
 	@Inject
-	WollokManifestFinder manifestFinder
+	IResourceDescription.Manager resourceDescriptionManager
 
 	@Inject 
 	WollokImportedNamespaceAwareLocalScopeProvider localScopeProvider
@@ -50,6 +48,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
 		new SimpleScope(defaultScope, explicitImportedObjects)
 	}
+
 	/**
 	 * Loads all imported elements from a context
 	 */
@@ -58,32 +57,33 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val imports = rootObject.getAllContentsOfType(Import)
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
 	}
+
+	def doImportedObjects(Resource context, List<Import> imports) {
+		val objectsFromManifests = libraryLoader.load(context)
+
+		objectsFromLocalImport(context, imports, objectsFromManifests)
+	}
 	
-	def doImportedObjects(Resource context, List<Import> importsEntry){
-		val resourceSet = context.resourceSet
-		val objectsFromManifests = manifestFinder.allManifests(resourceSet).map[handleManifest(resourceSet)].flatten
-		
+	def objectsFromLocalImport(Resource context, List<Import> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
 		val imports = (importsEntry.map[ #[importedNamespace]  + localScopeProvider.allRelativeImports(importedNamespace, context.implicitPackage) ].flatten).toSet
 		
 		val importedObjects = imports.filter[
-			it != null && !objectsFromManifests.exists[o| o.matchesImport(it)]
+			it !== null && !objectsFromManifests.exists[o| o.matchesImport(it)]
 		]
 		.map[ 
 			toResource(context)
-		]
-		.filter[it != null]
-		.map[r |
+		].filter[it !== null].map [ r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
 		importedObjects
 	}
 
-	def matchesImport(IEObjectDescription o, String importedNamespace){
+	def matchesImport(IEObjectDescription o, String importedNamespace) {
 		if (importedNamespace.endsWith(".*")) {
 			val pattern = importedNamespace.substring(0, importedNamespace.length - 2)
 			o.qualifiedName.toString.startsWith(pattern)
-		}else{
-			o.qualifiedName.toString == importedNamespace 
+		} else {
+			o.qualifiedName.toString == importedNamespace
 		}
 	}
 
@@ -94,7 +94,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def static toResource(String importedNamespace, Resource resource) {
 		try {
 			var uri = generateUri(resource, importedNamespace)
-			if(uri == null) return null
+			if(uri === null) return null
 			
 			EcoreUtil2.getResource(resource, uri)
 		}
@@ -102,7 +102,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
 		}
 	}
-	
+
 	/**
 	 * Converts the importedName to a Resource relative to a context
 	 */
@@ -129,35 +129,6 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		}
 
 		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
-	}
-
-	/**
-	 * Load all resources in the manifests found.
-	 */
-	def handleManifest(WollokManifest manifest, ResourceSet resourceSet) {
-		manifest.allURIs.map[loadResource(resourceSet)].flatten
-	}
- 
-	/**
-	 * This message resolves the loading of a resource, is used by the resources listed in manifests. For the ones not in manifests (in relative locations)
-	 * see WollokGlobalScopeProvider#toResource(Import imp, Resource resource)
-	 */
-	def loadResource(URI uri, ResourceSet resourceSet) {
-		try {
-			var Iterable<IEObjectDescription> exportedObjects
-			//checkResourceSet(resourceSet as XtextResourceSet)
-			exportedObjects = WollokResourceCache.getResource(uri)
-			if (exportedObjects == null) {
-				val resource = resourceSet.getResource(uri, true)
-				resource.load(#{})
-				exportedObjects = resourceDescriptionManager.getResourceDescription(resource).exportedObjects
-				WollokResourceCache.addResource(uri, exportedObjects)
-			}
-			exportedObjects
-		}
-		catch (RuntimeException e) {
-			throw new RuntimeException("Error while loading resource [" + uri + "]", e)
-		} 
 	}
 	
 }

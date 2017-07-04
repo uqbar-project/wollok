@@ -46,6 +46,10 @@ class WDebugExtensions {
 		configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, false)	
 	}
 	
+	def static libraries(ILaunchConfiguration configuration) {
+		configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_LIBS, #[])			
+	}
+	
 	def static setProgramArguments(ILaunchConfiguration configuration, String newValue) {
 		val wc = configuration.getWorkingCopy
 		wc.setAttribute(ATTR_PROGRAM_ARGUMENTS, newValue)

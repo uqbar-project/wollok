@@ -82,6 +82,10 @@ public class Messages extends NLS {
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
+	public static String TestLauncher_LauncherError_Title;
+	public static String TestLauncher_LauncherError_Message;
+	public static String TestLauncher_NoTestToRun_Title;
+	public static String TestLauncher_NoTestToRun_Message;
 	
 	public static String WollokDslValidator_WRONG_IMPORT;
 	

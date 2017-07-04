@@ -32,14 +32,16 @@ http://wollok.uqbar-project.org
 
    <splash
       location="org.uqbar.project.wollok.ui"
-      startupProgressRect="5,275,445,15"
+      startupProgressRect="5,275,445,15" 
       startupMessageRect="7,252,445,20"
-      startupForegroundColor="FFF9D9" />
+      startupForegroundColor="FFF9D9"      
+       />
    <launcher name="wollok">
-      <macosx icon="../../org.uqbar.project.wollok.ui/icons/wollok-logo.icns"/>
+      <linux icon="icons/icon_64x64.xpm"/>
+      <macosx icon="icons/wollok-logo.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="../../org.uqbar.project.wollok.ui/icons/wollok-logo.ico"/>
+         <ico path="icons/wollok-logo.ico"/>
          <bmp/>
       </win>
    </launcher>
