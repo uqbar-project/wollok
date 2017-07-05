@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.scoping.root
 
-import java.io.File
 import org.apache.commons.collections.map.LRUMap
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.emf.ecore.resource.URIConverter
 
 class WollokRootLocator {
 
@@ -35,37 +36,42 @@ class WollokRootLocator {
 	}
 
 	def calculateLevelsToRoot(Resource resource) {
-		if(resource.URI.toFileString == null)
+		val uri = resource.URI
+		
+		if(uri.toString.contains("classpath:"))
 			return 1
 		
-		var file = new File(resource.URI.toFileString).absoluteFile.parentFile
+		val parent = uri.trimSegments(1)
 		
-		var value = cache.get(file) as Integer
+		var value = cache.get(parent) as Integer
+		value = null
 		
 		if(value == null){
-			value = doLevelsToRoot(file)
-			cache.put(file, value)	
+			value = doLevelsToRoot(parent, resource.resourceSet.URIConverter)
+			cache.put(parent, value)	
 		}
 		
 		value
 	}
 
-	def doLevelsToRoot(File orig) {
+	def doLevelsToRoot(URI orig, URIConverter converter) {
 		var file = orig
 		var levels = 1
 		
 		while (file != null) {
 
-			if (!file.canRead)
+			if (!converter.exists(file, null))
 				return 1
 
-			if (!file.listFiles[name == "wollok.root"].empty) {
+			if (converter.exists(file.appendSegment("WOLLOK").appendFileExtension("ROOT"), null)) {
 				return levels
 			}
 
-			file = file.parentFile;
+			if(file.segmentCount == 1) return 1
+			if(file == file.trimSegments(1)) return 1
+
+			file = file.trimSegments(1);
 			levels++
 		}
-		1
 	}
 }

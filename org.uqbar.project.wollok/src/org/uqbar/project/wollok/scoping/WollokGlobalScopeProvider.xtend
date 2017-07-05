@@ -2,11 +2,12 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.common.base.Predicate
 import com.google.inject.Inject
-import java.io.File
 import java.util.List
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.ClasspathUriResolutionException
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.IResourceDescription
 import org.eclipse.xtext.scoping.IScope
@@ -60,6 +61,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		val rootObject = context.contents.get(0)
 		val imports = rootObject.getAllContentsOfType(Import)
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
+		// doImportedObjects(context,imports)
 	}
 
 	def doImportedObjects(Resource context, List<Import> imports) {
@@ -123,10 +125,10 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		var newUri = uri
 
 		while (newUri.segmentCount >= 1) {
-			val fileString = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toFileString
+			val fileURI = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION)
 			
-			if (fileString !== null && new File(fileString).exists) {
-				return newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
+			if (fileURI.exists(context)) {
+				return fileURI.toString
 			}
 			
 			newUri = newUri.trimSegments(1)
@@ -135,4 +137,11 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 	
+	def static Boolean exists(URI fileURI, Resource context){
+		try{
+			context.resourceSet.URIConverter.exists(fileURI,null)
+		}catch(ClasspathUriResolutionException e){
+			false
+		}
+	}
 }
