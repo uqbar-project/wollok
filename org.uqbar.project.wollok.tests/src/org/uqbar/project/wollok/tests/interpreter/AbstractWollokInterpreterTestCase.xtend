@@ -37,7 +37,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		interpreter.classLoader = AbstractWollokInterpreterTestCase.classLoader
 
 		new File("target/test-files").mkdirs
-		new File("target/test-files/wollok.root").createNewFile
+		new File("target/test-files/WOLLOK.ROOT").createNewFile
 	}
 
 	@After
