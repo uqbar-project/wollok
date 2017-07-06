@@ -148,7 +148,7 @@ class WollokExceptionExtensions {
 	}
 	
 	def static String printStackTrace(StackTraceElementDTO[] stackTrace) {
-		stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink ])
+		stackTrace.filter [ !shouldBeFiltered ].toList.reverse.fold("", [ acum, ste | acum + ste.toLink ])
 	}
 	
 }

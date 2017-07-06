@@ -37,10 +37,7 @@ abstract class AbstractWollokFileOpenerStrategy {
 		try {
 			val separatorIndex = data.lastIndexOf(STACKELEMENT_SEPARATOR)
 			fileName = data.substring(0, separatorIndex)
-			println("Data " + data)
-			println(data.substring(separatorIndex + 1))
 			lineNumber = Integer.parseInt(data.substring(separatorIndex + 1))
-			println("Line number " + lineNumber)
 		} catch (NumberFormatException e) {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while opening file " + data, e)
