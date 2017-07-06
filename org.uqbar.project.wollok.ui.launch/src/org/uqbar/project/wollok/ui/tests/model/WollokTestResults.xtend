@@ -5,7 +5,7 @@ import java.util.List
 import java.util.Observable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo

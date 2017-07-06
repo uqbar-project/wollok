@@ -386,5 +386,14 @@
          </toolbar>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.uqbar.project.wollok.ui.console.WollokLinkListenerDelegate"
+            id="WollokLink.ConsolePatternMatchListener"
+            regex="([\S]+.:\d+)+">
+         <enablement></enablement>
+      </consolePatternMatchListener>
+   </extension>
   <!-- /REPL -->
 </plugin>

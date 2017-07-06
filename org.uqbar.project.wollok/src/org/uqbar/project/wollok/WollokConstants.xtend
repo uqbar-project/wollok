@@ -25,7 +25,7 @@ class WollokConstants {
 	public static val DIAGRAMS_FOLDER = ".diagrams"
 	
 	public static val PATH_SEPARATOR = "/"
-	public static val STACKELEMENT_SEPARATOR = "&"
+	public static val STACKELEMENT_SEPARATOR = ":"
 	public static val WINDOWS_FILE_PREFIX_SIZE = 6
 	public static val DEFAULT_FILE_PREFIX_SIZE = 5 
 	

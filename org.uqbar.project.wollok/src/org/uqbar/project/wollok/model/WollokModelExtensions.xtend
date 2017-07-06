@@ -435,4 +435,6 @@ class WollokModelExtensions {
 		val rootNodeName = e.name.trim
 		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
 	}
+	
+	
 }

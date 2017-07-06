@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.launch.tests
+package org.uqbar.project.wollok.errorHandling
 
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -7,13 +7,17 @@ import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import wollok.lib.AssertionException
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
-class WollokExceptionUtils {
+/**
+ * Extension methods for handling Wollok errors.
+ *
+ * @author dodain
+ */
+class WollokExceptionExtensions {
 
 
 	/**
@@ -54,7 +58,7 @@ class WollokExceptionUtils {
 		val wollokException = exception.wollokException
 		val className = wollokException.call("className").wollokToJava(String) as String
 		val message = exception.wollokMessage
-		val concatMessage = if (message != null) ": " + message else "" 
+		val concatMessage = if (message !== null) ": " + message else "" 
 		return className + concatMessage
 	}
 
@@ -72,58 +76,47 @@ class WollokExceptionUtils {
 	 * Prepares an exception for a RMI call
 	 */
 	def static dispatch void prepareExceptionForTrip(Throwable e) {
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
 	def static dispatch void prepareExceptionForTrip(WollokInterpreterException e) {
 		e.sourceElement = null
 
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
 	def static dispatch void prepareExceptionForTrip(WollokProgramExceptionWrapper e) {
 		e.URI = null
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
 	/**
 	 * Determines whether an exception is an AssertionException 
 	 */
-	def static dispatch isAssertionException(Exception e) {
-		false
+	def static dispatch boolean isAssertionException(Exception e) {
+		isAssertionException(e.class.name)
 	}
 	
-	def static dispatch isAssertionException(AssertionException e) {
-		true
+	def static dispatch boolean isAssertionException(WollokProgramExceptionWrapper e) {
+		e.wollokException.call("className").toString.isAssertionException
 	}
 	
-	def static dispatch isAssertionException(WollokProgramExceptionWrapper e) {
-		val className = e.wollokException.call("className").toString
+	def static dispatch boolean isAssertionException(String className) {
 		className.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN)
 	}
 	
-	def static dispatch isAssertionException(WollokInterpreterException e) {
-		e.cause instanceof AssertionException
-	}
-	
 	/**
-	 * Generates an assertion error when necessary
+	 * @dodain - I had to remove previous definition
+	 * e.cause instanceof AssertionException
+	 * because of project dependencies, so I can reuse this class
 	 */
-	def static dispatch generateAssertionError(WollokInterpreterException e) {
-		e.cause as AssertionException
+	def static dispatch boolean isAssertionException(WollokInterpreterException e) {
+		e.cause.class.name.isAssertionException
 	}
 	
-	def static dispatch generateAssertionError(WollokProgramExceptionWrapper e) {
-		new AssertionException(e.wollokMessage, e)
-	}
-
-	def static dispatch generateAssertionError(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
-	}
-
 	/**
 	 * Gets current URI
 	 */
@@ -132,7 +125,7 @@ class WollokExceptionUtils {
 	}
 	
 	def static dispatch getURI(WollokProgramExceptionWrapper e) {
-		e.URI
+		e.getURI
 	}
 	
 	def static dispatch getURI(Exception e) {
@@ -153,4 +146,9 @@ class WollokExceptionUtils {
 	def static dispatch getLineNumber(Exception e) {
 		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
 	}
+	
+	def static String printStackTrace(StackTraceElementDTO[] stackTrace) {
+		stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink ])
+	}
+	
 }

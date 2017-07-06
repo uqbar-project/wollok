@@ -291,7 +291,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 				override widgetSelected(SelectionEvent event) {
 					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(event.text,
 						results.container.project)
-					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(WollokTestResultView.this)
+					val ITextEditor textEditor = fileOpenerStrategy.getTextEditor(opener)
 					val String fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
 					textEditor.openEditor(fileName, lineNumber)

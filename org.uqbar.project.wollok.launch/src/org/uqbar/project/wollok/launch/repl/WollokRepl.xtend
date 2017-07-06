@@ -20,6 +20,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static org.uqbar.project.wollok.launch.Messages.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+
 
 /**
  * 
@@ -184,20 +186,17 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokProgramExceptionWrapper e) {
 		// Wollok-level user exception
-		printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
-	}
-
-	def CharSequence filterREPLLines(String originalStackTrace) {
-		val result = originalStackTrace.split(System.lineSeparator).filter [ stack |
-			!stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl")
-		].fold(new StringBuffer, [ acum, stackTrace |
-			acum.append(stackTrace)
-			acum.append(System.lineSeparator)
-			acum
-		])
-		val endCharacters = System.lineSeparator.length
-		result.deleteCharAt(result.length - endCharacters)
-		result.toString
+		//printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
+		println((e.exceptionClassName + ": " + e.wollokMessage).errorStyle)
+		val errorLine = e.wollokException
+			.convertStackTrace
+			.filter [ !it.shouldBeFiltered ]
+			.toList
+			.reverse
+			.map [ stackDTO | stackDTO.toLinkForConsole ]
+			.join("")
+		
+		printlnIdent(errorLine.errorStyle)
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {

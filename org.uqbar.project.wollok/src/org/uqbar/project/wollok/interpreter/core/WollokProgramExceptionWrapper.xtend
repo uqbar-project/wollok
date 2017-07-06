@@ -43,7 +43,7 @@ class WollokProgramExceptionWrapper extends RuntimeException {
 	}
 	
 	def boolean isAssertion(){
-		wollokException.call("className").wollokToJava(String) == WollokDSK.ASSERTION_EXCEPTION		
+		wollokException.call("className").wollokToJava(String) == WollokDSK.ASSERTION_EXCEPTION_FQN		
 	}
 	
 	def exceptionClassName() {
