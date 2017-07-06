@@ -49,6 +49,10 @@ class BoundsBasedTypeSystem implements TypeSystem {
 
 	override def name() { "Bounds Based" }
 	
+	override initialize(EObject program) {
+		// No initialization required
+	}
+
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
@@ -265,5 +269,4 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		// REVIEWME: should we have a cache ?
 		new ClassBasedWollokType(clazz, this)
 	}
-
 }

@@ -54,7 +54,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Analysis
 	// ************************************************************************
-	def initialize(EObject program) {
+	override initialize(EObject program) {
 		registry = new TypeVariablesRegistry(this)
 		constraintGenerator = new ConstraintGenerator(this)
 		

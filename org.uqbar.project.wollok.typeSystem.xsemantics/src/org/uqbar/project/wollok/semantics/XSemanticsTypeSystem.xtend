@@ -24,6 +24,10 @@ class XSemanticsTypeSystem implements TypeSystem {
 
 	override def name() { NAME }
 
+	override initialize(EObject program) {
+		// Nothing to do
+	}
+
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 //		xsemanticsSystem.validate(file, validator)

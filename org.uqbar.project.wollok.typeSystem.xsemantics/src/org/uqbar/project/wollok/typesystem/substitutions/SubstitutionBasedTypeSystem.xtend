@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.utils.StringUtils
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -47,7 +48,6 @@ import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * Implementation that builds up rules
@@ -64,6 +64,11 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	@Inject WollokClassFinder finder
 	
 	override def name() { "Substitutions-based" }
+	
+	override initialize(EObject program) {
+		// Nothing to do
+	}
+
 	
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		analyzed = new WeakInterningHashSet

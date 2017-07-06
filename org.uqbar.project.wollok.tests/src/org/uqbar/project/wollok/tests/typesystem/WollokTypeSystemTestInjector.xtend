@@ -66,6 +66,7 @@ class TypeSystemTestValidatorExtension implements WollokValidatorExtension {
 	}
 
 	override check(WFile file, WollokDslValidator validator) {
+		typeSystem.initialize(file)
 		typeSystem.validate(file, validator)
 	}
 }
