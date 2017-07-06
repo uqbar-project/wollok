@@ -7,14 +7,15 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
-	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo type) {
+	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo typeInfo) {
 		val supertypes = tvar.allSupertypes
-		type.minimalConcreteTypes.entrySet.forEach [
-			if (value == Pending) {
-				val localChanged = tvar.propagateMinType(key, supertypes)
+		typeInfo.minTypesDo(tvar)[
+			if (state == Pending) {
+				val localChanged = tvar.propagateMinType(type, supertypes)
 				if (!localChanged)
-					println('''	Propagating min(«key») from: «tvar» to nowhere => «Ready»''')
-				value = Ready
+					println('''	Propagating min(«type») from: «tvar» to nowhere => «Ready»''')
+
+				ready
 				changed = true
 			}
 		]

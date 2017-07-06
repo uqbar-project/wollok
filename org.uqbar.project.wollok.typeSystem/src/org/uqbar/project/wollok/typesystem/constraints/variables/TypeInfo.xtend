@@ -2,9 +2,8 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.ConfigurableDslValidator
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 abstract class TypeInfo {
 	@Accessors(PUBLIC_GETTER)
@@ -19,8 +18,6 @@ abstract class TypeInfo {
 	 */
 	@Accessors(PUBLIC_GETTER)
 	var Boolean sealed = false
-
-	List<TypeSystemException> errors = newArrayList
 
 	// ************************************************************************
 	// ** Type info users
@@ -38,36 +35,22 @@ abstract class TypeInfo {
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
 
-	def addError(TypeSystemException exception) {
-		errors.add(exception)
-	}
-
-	def hasErrors() {
-		return !errors.empty
-	}
-
-	// REVIEW Is necessary to pass 'user'?
-	def reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
-		errors.forEach [
-			println(message)
-			println(user.owner)
-			try {
-				validator.report(message, user.owner)
-				// validator.report('''This statement does not produce a value''', user.owner)
-			} catch (IllegalArgumentException e) {
-				// TODO
-			}
-		]
-	}
-
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
 	def void beSealed()
 
-	def ConcreteTypeState addMinimalType(WollokType type)
+	/**
+	 * @param type A new type to be added
+	 * @param origin The variable which provided the information for this added type and should be target of potential error reports
+	 */
+	def ConcreteTypeState addMinType(WollokType type, TypeVariable origin)
 
-	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes)
+	/**
+	 * @param maxType A new set of maxTypes that will be merged with current maxTypes (or assigned if no current maxTypes).
+	 * @origin The type variable from where we obtained this information, and will be target of error reports if any.
+	 */
+	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin)
 
 	// ************************************************************************
 	// ** Notifications

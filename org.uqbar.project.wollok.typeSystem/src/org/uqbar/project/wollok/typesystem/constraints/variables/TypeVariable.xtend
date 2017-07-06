@@ -4,6 +4,7 @@ import java.util.List
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
@@ -35,6 +36,8 @@ class TypeVariable implements ITypeVariable {
 
 	@Accessors
 	val Set<TypeVariable> supertypes = newHashSet
+
+	List<TypeSystemException> errors = newArrayList
 
 	new(EObject owner) {
 		this.owner = owner
@@ -68,7 +71,7 @@ class TypeVariable implements ITypeVariable {
 // ** For the TypeSystem implementation
 // ************************************************************************
 	def getType() {
-		if (typeInfo != null) typeInfo.getType(this) else WollokType.WAny 
+		if (typeInfo != null) typeInfo.getType(this) else WollokType.WAny
 	}
 
 // ************************************************************************
@@ -80,16 +83,24 @@ class TypeVariable implements ITypeVariable {
 	 * so we assume to have no errors.
 	 */
 	def hasErrors() {
-		typeInfo != null && typeInfo.hasErrors
+		return !errors.empty
 	}
 
+	def addError(TypeSystemException exception) {
+		errors.add(exception)
+	}
+
+	// REVIEW Is necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
-		typeInfo?.reportErrors(this, validator)
+		errors.forEach [
+			println('''Reporting error in «owner.debugInfo»: «message»''')
+			validator.report(message, owner)
+		]
 	}
 
-// ************************************************************************
-// ** Adding constraints
-// ************************************************************************
+	// ************************************************************************
+	// ** Adding constraints
+	// ************************************************************************
 	override beSupertypeOf(TypeVariable subtype) {
 		this.addSubtype(subtype)
 		subtype.addSupertype(this)
@@ -124,9 +135,9 @@ class TypeVariable implements ITypeVariable {
 	// ** Adding / accessing type info
 	// ************************************************************************
 	def dispatch void setTypeInfo(TypeInfo newTypeInfo) {
-		doSetTypeInfo(newTypeInfo)	
+		doSetTypeInfo(newTypeInfo)
 	}
-	
+
 	def dispatch void setTypeInfo(VoidTypeInfo newTypeInfo) {
 		if (typeInfo.isVoid) {
 			return
@@ -136,7 +147,7 @@ class TypeVariable implements ITypeVariable {
 			throw new CannotBeVoidException(owner)
 		}
 	}
-	
+
 	def doSetTypeInfo(TypeInfo newTypeInfo) {
 		newTypeInfo.addUser(this)
 		this.typeInfo = newTypeInfo
@@ -149,12 +160,12 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def addMinimalType(WollokType type) {
 		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
-		typeInfo.addMinimalType(type)
+		typeInfo.addMinType(type, this)
 	}
 
-	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
+	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
-		typeInfo.maximalConcreteTypes = maxTypes
+		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
 	/** 
@@ -177,7 +188,7 @@ class TypeVariable implements ITypeVariable {
 	// ** Unification information
 	// ************************************************************************
 	def unifiedWith(TypeVariable other) {
-		this.typeInfo == other.typeInfo
+		typeInfo != null && typeInfo == other.typeInfo
 	}
 
 	def isCanonical() {
@@ -189,20 +200,23 @@ class TypeVariable implements ITypeVariable {
 	// ************************************************************************
 	override toString() '''t(«owner.debugInfo»)'''
 
-	def fullDescription() '''
+	def description(boolean full) '''
 		«class.simpleName» {
 			owner: «owner.debugInfo»,
 			subtypes: «subtypes.map[owner.debugInfo]»,
 			supertypes: «supertypes.map[owner.debugInfo]»,
 			«IF typeInfo == null»
 				no type information
-			«ELSEIF canonical»
+			«ELSEIF canonical || full»
 				«typeInfo.fullDescription»
 			«ELSE»
 				... unified with «typeInfo.canonicalUser»
 			«ENDIF»
 		}
 	'''
+
+	def descriptionForReport() { description(false) }
+	def fullDescription() { description(true) }
 
 	def allSupertypes() {
 		newHashSet => [ result |

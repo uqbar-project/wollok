@@ -12,3 +12,4 @@ Export-Package: org.uqbar.project.wollok.typesystem,
  org.uqbar.project.wollok.typesystem.preferences
 Bundle-Activator: org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.log4j;version="1.2.15"

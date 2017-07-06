@@ -5,9 +5,9 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
-		if (minimalConcreteTypes.isEmpty && maximalConcreteTypes != null) {
+		if (minTypes.isEmpty && maximalConcreteTypes != null) {
 			maximalConcreteTypes.forEach [ type |
-				addMinimalType(type)
+				addMinType(type, tvar)
 			]
 			changed = true
 		}

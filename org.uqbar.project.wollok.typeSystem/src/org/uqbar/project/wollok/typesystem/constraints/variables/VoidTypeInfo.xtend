@@ -48,11 +48,11 @@ class VoidTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override addMinimalType(WollokType type) {
+	override addMinType(WollokType type, TypeVariable origin) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 

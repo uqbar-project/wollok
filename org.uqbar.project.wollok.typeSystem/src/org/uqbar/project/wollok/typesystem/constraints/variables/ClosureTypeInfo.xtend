@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.List
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 class ClosureTypeInfo extends TypeInfo {
 
@@ -23,15 +22,6 @@ class ClosureTypeInfo extends TypeInfo {
 		return new ClosureType(parameters.map[type], returnType.type)
 	}
 
-	override hasErrors() {
-		parameters.exists[hasErrors] || returnType.hasErrors
-	}
-
-	override reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
-		if (hasErrors)
-			throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
@@ -39,12 +29,16 @@ class ClosureTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override addMinimalType(WollokType type) {
+	override addMinType(WollokType type, TypeVariable origin) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
+		throw new UnsupportedOperationException('''
+			Tring to assign a maxType to a clousure
+				maxTypes: «maxTypes»
+				origin: «origin»
+		''')
 	}
 
 	// ************************************************************************

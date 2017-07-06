@@ -24,7 +24,7 @@ class WollokTypeSystemPrettyPrinter {
 	static def foundType(TypeVariable it) { typeInfo.found }
 
 	static def dispatch found(SimpleTypeInfo it) {
-		minimalConcreteTypes.entrySet.findFirst[value == Error]?.key?.toString
+		minTypes.entrySet.findFirst[value == Error]?.key?.toString
 	}
 
 	static def dispatch found(ClosureTypeInfo it) {

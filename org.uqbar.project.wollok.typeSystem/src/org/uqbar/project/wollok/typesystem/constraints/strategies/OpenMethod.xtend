@@ -15,7 +15,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 class OpenMethod extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		messages.forEach [ message |
-			minimalConcreteTypes.keySet.forEach [ minType |
+			minTypes.keySet.forEach [ minType |
 				message.openMethod(minType)
 			]
 		]

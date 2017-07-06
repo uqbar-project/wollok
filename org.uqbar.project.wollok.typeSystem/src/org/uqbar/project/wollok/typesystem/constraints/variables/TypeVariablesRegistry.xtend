@@ -147,7 +147,7 @@ class TypeVariablesRegistry {
 	// ** Debugging
 	// ************************************************************************
 	def fullReport() {
-		typeVariables.values.forEach[println(fullDescription)]
+		typeVariables.values.forEach[println(descriptionForReport)]
 	}
 	
 }

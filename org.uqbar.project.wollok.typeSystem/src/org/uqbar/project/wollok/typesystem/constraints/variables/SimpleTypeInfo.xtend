@@ -1,21 +1,21 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.Map
+import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.AccessorType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
-import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
-	var Map<WollokType, ConcreteTypeState> minimalConcreteTypes = newHashMap()
+	var Map<WollokType, ConcreteTypeState> minTypes = newHashMap()
 
 	@Accessors
 	var MaximalConcreteTypes maximalConcreteTypes = null
@@ -38,39 +38,42 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	def basicGetType() {
-		minimalConcreteTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
-	}
-
-	override hasErrors() {
-		minimalConcreteTypes.values.contains(Error)
-	}
-	
-	override reportErrors(TypeVariable user, ConfigurableDslValidator validator) {
-		if (hasErrors) {
-			try {
-			validator.report('''expected <<«user.expectedType»>> but found <<«user.foundType»>>''', user.owner)
-				
-			} catch (IllegalArgumentException ex) {
-				print('''
-					Error, can not have type errors in core type variable.
-					«user.fullDescription»
-				''')
-			}
-			
-		}
+		minTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
 	}
 
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
 	override beSealed() {
-		maximalConcreteTypes = new MaximalConcreteTypes(minimalConcreteTypes.keySet)
+		maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
 		sealed = true
 	}
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes) {
-		minimalConcreteTypes.entrySet.forEach [ it |
-			if (!maxTypes.contains(key)) value = Error
+	/**
+	 * Execute an action for each known minType, updating its state according to action result 
+	 * and reporting errors to the origin type variable.
+	 */
+	def minTypesDo(TypeVariable origin, Consumer<MinTypeAnalysisResultReporter> action) {
+		val reporter = new MinTypeAnalysisResultReporter(origin)
+		minTypes.entrySet.forEach [
+			reporter.currentEntry = it
+			action.accept(reporter)
+		]
+	}
+
+//			try {
+//				validator.report(''', user.owner)
+//
+//			} catch (IllegalArgumentException ex) {
+//				print('''
+//					Error, can not have type errors in core type variable.
+//					«user.fullDescription»
+//				''')
+//			}
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
+		minTypesDo(origin) [
+			if (!maxTypes.contains(type))
+				error(new RejectedMinTypeException(origin, type))
 		]
 
 		if (maximalConcreteTypes == null) {
@@ -102,24 +105,26 @@ class SimpleTypeInfo extends TypeInfo {
 		}
 	}
 
-	override addMinimalType(WollokType type) {
-		if (minimalConcreteTypes.containsKey(type))
+	override addMinType(WollokType type, TypeVariable origin) {
+		if (minTypes.containsKey(type))
 			Ready
 		else {
-			(if (!acceptMinimalType(type)) Error else Pending) => [
-				minimalConcreteTypes.put(type, it)
-			]
+			(if (!acceptMinimalType(type)) {
+				origin.addError(new RejectedMinTypeException(origin, type))
+				Error
+			} else {
+				Pending
+			}) => [minTypes.put(type, it)]
 		}
 	}
 
 	def acceptMinimalType(WollokType type) {
-		!sealed && minimalConcreteTypes.keySet.fold(type, [t1, t2|t1.refine(t2)]).name != "Object" // TODO: Hardcode
+		!sealed && minTypes.keySet.fold(type, [t1, t2|t1.refine(t2)]).name != "Object" // TODO: Hardcode
 	}
 
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
-	
 	/**
 	 * This collaborates with the maxType propagation, 
 	 * resetting maxTypes state to force them to be propagated to the new subtypes.
@@ -135,7 +140,7 @@ class SimpleTypeInfo extends TypeInfo {
 	 * resetting maxTypes state to force them to be propagated to the new subtypes.
 	 */
 	override supertypeAdded() {
-		minimalConcreteTypes.entrySet.forEach[value = value.join(Pending)]
+		minTypes.entrySet.forEach[value = value.join(Pending)]
 	}
 
 	// ************************************************************************
@@ -143,7 +148,7 @@ class SimpleTypeInfo extends TypeInfo {
 	// ************************************************************************
 	override fullDescription() '''
 		sealed: «sealed»,
-		minTypes: «minimalConcreteTypes»,
+		minTypes: «minTypes»,
 		maxTypes: «maximalConcreteTypes?:"unknown"»
 	'''
 }
