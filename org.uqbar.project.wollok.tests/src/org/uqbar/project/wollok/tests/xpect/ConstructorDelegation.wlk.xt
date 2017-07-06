@@ -45,7 +45,7 @@ class X {
 	method getA() { return a }
 }
 
-// XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
+
 class Y inherits X {
 }
 

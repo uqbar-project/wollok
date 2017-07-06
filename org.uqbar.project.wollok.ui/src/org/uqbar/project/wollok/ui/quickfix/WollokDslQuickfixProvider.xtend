@@ -38,6 +38,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Custom quickfixes.
@@ -50,7 +51,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	val tabChar = "\t"
 	val blankSpace = " "
-	val returnChar = System.lineSeparator
 
 	@Inject
 	WollokClassFinder classFinder
@@ -102,11 +102,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def addConstructorsFromSuperclass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_constructors_superclass_name,
 			Messages.WollokDslQuickFixProvider_add_constructors_superclass_description, null) [ e, it |
-			val clazz = e as WClass
-			val constructors = clazz.parent.constructors.map [
-				'''«tabChar»constructor(«parameters.map[name].join(',')») = super(«parameters.map[name].join(',')»)«returnChar»'''
-			].join(System.lineSeparator)
-			addMethod(clazz, constructors)
+			val _object = e as WNamedObject
+			val firstConstructor = _object.parent.constructors.map['''(«parameters.map[name].join(',')») '''].head
+			xtextDocument.replace(issue.offset + issue.length, 0, firstConstructor)
 		]
 	}
 

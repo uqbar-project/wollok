@@ -73,7 +73,6 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_COMPARE_AGAINST_TRUE_OR_FALSE;
 	public static String WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO;
 	
-	public static String WollokDslValidator_NO_DEFAULT_CONSTRUCTOR;
 	public static String WollokDslValidator_DUPLICATED_CONSTRUCTOR;
 	public static String WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR;
 	public static String WollokDslValidator_CANNOT_ACCESS_INSTANCE_METHOD_WITHIN_CONSTRUCTOR_DELEGATION;

@@ -18,8 +18,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 				}
 			}
 			
-			class MySubclass inherits MyClass {
-				
+			object aWKO inherits MyClass {
 			}
 		''']
 
@@ -35,9 +34,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 				}
 			}
 			
-			class MySubclass inherits MyClass {
-				
-				constructor(x) = super(x)
+			object aWKO inherits MyClass(x)  {
 			}
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_constructors_superclass_name)

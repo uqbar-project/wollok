@@ -233,14 +233,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def requiredSuperClassConstructorCall(WClass it) {
-		if (!hasConstructorDefinitions && superClassRequiresNonEmptyConstructor)
-			report(NLS.bind(WollokDslValidator_NO_DEFAULT_CONSTRUCTOR, parent.name, name),
-				it, WNAMED__NAME, REQUIRED_SUPERCLASS_CONSTRUCTOR)
-	}
-
-	@Check
-	@DefaultSeverity(ERROR)
 	def cannotHaveTwoConstructorsWithSameArity(WClass it) {
 		val repeated = constructors.filter[c|constructors.exists[c2|c2 != c && c.matches(c2.parameters.size)]]
 		repeated.forEach [ r |
