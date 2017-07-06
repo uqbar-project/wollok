@@ -59,6 +59,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 
 /**
  * Custom validation rules.
@@ -302,16 +303,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		try {
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved === null) {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors), it.eContainer,
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix), it.eContainer,
 					WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
 		} catch (WollokRuntimeException e) {
 			// mmm... terrible
-			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
 				CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 		}
 	}
 
+	def static dispatch constructorPrefix(WSuperDelegatingConstructorCall c) { "super " }
+	def static dispatch constructorPrefix(WDelegatingConstructorCall c) { "" }
+		 
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodActuallyOverrides(WMethodDeclaration m) {
@@ -455,7 +459,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
 		if (parent !== null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
-			report(NLS.bind(WollokDslValidator_NO_DEFAULT_CONSTRUCTOR_IN_SUPER_TYPE, parent.name, parent.constructorParameters),
+			report(NLS.bind(WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR, parent.name, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 		}
 	}
@@ -773,7 +777,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def usingIfInAnExpressionWithoutElse(WIfExpression t) {
 		if (t.then === null || t.^else === null && t.eContainer.expectsExpression) {
 			report(WollokDslValidator_IF_USED_IN_AN_EXPRESSION_SHOULD_HAVE_AN_ELSE_STATEMENT, t, WIF_EXPRESSION__CONDITION)
-		} 
+		}
 	}
 
 	/**

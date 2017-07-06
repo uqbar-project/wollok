@@ -19,7 +19,7 @@ class Lager inherits Levadura {
 	override method fermentar(mosto, tiempo) {}
 	
 	method create() {
-		// XPECT errors --> "Class Lager cannot be instanciated. Must implement inherited abstract methods: fermentar(mosto) (required by Levadura)" at "Lager"
+		// XPECT errors --> "Class Lager cannot be instantiated because it has abstract methods: fermentar(mosto) (required by Levadura)" at "Lager"
 		return new Lager()
 	}
 	
@@ -27,7 +27,7 @@ class Lager inherits Levadura {
 
 class QuilmesBuilder {
 	method build() { 
-		// XPECT errors --> "Class Quilmes cannot be instanciated. You must implement all methods: fermentar()" at "Quilmes"
+		// XPECT errors --> "Class Quilmes cannot be instantiated. You must implement all methods: fermentar()" at "Quilmes"
 		return new Quilmes()
 	}
 }

@@ -41,19 +41,19 @@ class I mixed with M2 {
 
 object p {
 	method run() {
-		// XPECT errors --> "Class C cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "C"
+		// XPECT errors --> "Class C cannot be instantiated because it has abstract methods: doIt() (required by M1)" at "C"
 		const c = new C()
 		console.println(c)
 		
-		// XPECT errors --> "Class D cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "D"
+		// XPECT errors --> "Class D cannot be instantiated because it has abstract methods: doIt() (required by M1)" at "D"
 		const d = new D()
 		console.println(d)
 		
-		// XPECT errors --> "Class E cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1)" at "E"
+		// XPECT errors --> "Class E cannot be instantiated because it has abstract methods: doIt() (required by M1)" at "E"
 		const e = new E()
 		console.println(e)
 		
-		// XPECT errors --> "Class F cannot be instanciated. Must implement inherited abstract methods: doIt() (required by M1), sarasa() (required by M3)" at "F"
+		// XPECT errors --> "Class F cannot be instantiated because it has abstract methods: doIt() (required by M1), sarasa() (required by M3)" at "F"
 		const f = new F()
 		console.println(f)
 		

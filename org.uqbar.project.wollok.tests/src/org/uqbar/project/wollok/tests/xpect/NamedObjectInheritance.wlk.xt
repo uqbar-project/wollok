@@ -12,7 +12,7 @@ class WithSingleOneArgConstructor {
 	constructor(param) { }	
 }
 
-// XPECT errors --> "No default constructor in super type WithSingleOneArgConstructor. You must explicitly call a constructor: (param)" at "WithSingleOneArgConstructor"
+// XPECT errors --> "Object must explicitly call a superclass constructor: (param)" at "WithSingleOneArgConstructor"
 object one inherits WithSingleOneArgConstructor { }
 
 
@@ -23,7 +23,7 @@ class TwoConstructors {
 	constructor(p1, p2) { }
 }
 
-// XPECT errors --> "No default constructor in super type TwoConstructors. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
+// XPECT errors --> "Object must explicitly call a superclass constructor: (param), (p1,p2)" at "TwoConstructors"
 object two inherits TwoConstructors { }
 
 object o1 inherits TwoConstructors("hola") { }

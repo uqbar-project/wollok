@@ -19,7 +19,7 @@ class B {
 }
 
 class C inherits B {
-	// XPECT errors --> "Invalid constructor call. It does not exist. Valid constructors are: super(_x)" at "super()"
+	// XPECT errors --> "Invalid super constructor call. It does not exist. Valid constructors are: super(_x)" at "super()"
 	constructor() = super() {}
 }
 
@@ -29,7 +29,7 @@ class D inherits B {
 		
 	}
 	
-	// XPECT errors --> "Invalid constructor call. It does not exist. Valid constructors are: super(_x)" at "super(1, a)"
+	// XPECT errors --> "Invalid super constructor call. It does not exist. Valid constructors are: super(_x)" at "super(1, a)"
 	constructor(a) = super(1, a) {}
 }
 
