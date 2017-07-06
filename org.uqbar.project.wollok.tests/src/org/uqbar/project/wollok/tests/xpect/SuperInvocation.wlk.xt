@@ -35,22 +35,22 @@ class GolondrinaSarasa inherits Golondrina {
 		comio = true
 	}
 	
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "jugar"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "jugar"
 	override method jugar(tiempo) {
 		super(tiempo)
 	}
 	
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "alegria"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
 	override method alegria(tiempo) {
 		return super(tiempo)	
 	}	
 
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "saltar"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "saltar"
 	override method saltar() {
 		super()
 	}
 	
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "estasCurada"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
 	override method estasCurada() {
         return super()
     }
@@ -74,10 +74,10 @@ class GolondrinaRenga inherits Golondrina {
 		super(1)
 	}
 	
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "alegria"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
 	override method alegria(tiempo) = super(tiempo)
 
-	// XPECT errors --> "It's a conceptual mistake to redefine a method that's like the superclass' method" at "estasCurada"
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
 	override method estasCurada() = super()
 		
 }
