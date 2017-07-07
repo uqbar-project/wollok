@@ -13,4 +13,21 @@ class AnsiUtilsTest {
 		Assert.assertEquals(">>> 4.2", result)
 	}
 	
+	@Test
+	def void replaceSpecialCharactersAtBeginningAndSpace() {
+		val result = " [m4.2".deleteAnsiCharacters
+		Assert.assertEquals(" 4.2", result)
+	}
+
+	@Test
+	def void replaceSpecialCharactersAtBeginning() {
+		val result = "[m4.2".deleteAnsiCharacters
+		Assert.assertEquals("4.2", result)
+	}
+	
+	@Test
+	def void replaceSpecialCharactersAtBeginningAndSeveralTimes() {
+		val result = "[m4.[m2[m".deleteAnsiCharacters
+		Assert.assertEquals("4.2", result)
+	}
 }

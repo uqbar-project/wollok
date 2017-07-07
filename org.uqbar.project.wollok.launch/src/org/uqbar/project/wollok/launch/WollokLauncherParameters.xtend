@@ -10,6 +10,7 @@ import org.apache.commons.cli.OptionBuilder
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.parser.OptionalGnuParser
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * @author jfernandes
@@ -83,7 +84,7 @@ class WollokLauncherParameters {
 		
 		//If the parameters are empty and we are in the REPL, I generate an empty file to be able of loading the REPL
 		if (wollokFiles.empty){
-			val temp = new File("wollokREPL.wlk")
+			val temp = new File(WollokConstants.REPL_FILE)
 			temp.deleteOnExit
 		
 			val fos = new FileWriter(temp)

@@ -24,6 +24,9 @@ class WollokConstants {
 	public static val STATIC_DIAGRAM_EXTENSION = "wsdi"
 	public static val DIAGRAMS_FOLDER = ".diagrams"
 	
+	public static val REPL_FILE = "wollokREPL.wlk" 
+	public static val SYNTHETIC_FILE = "__synthetic"
+	
 	public static val PATH_SEPARATOR = "/"
 	public static val STACKELEMENT_SEPARATOR = ":"
 	public static val WINDOWS_FILE_PREFIX_SIZE = 6

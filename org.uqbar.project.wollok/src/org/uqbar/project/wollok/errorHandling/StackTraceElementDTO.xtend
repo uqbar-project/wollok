@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.errorHandling
 import java.io.Serializable
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.WollokConstants
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
@@ -12,7 +13,7 @@ class StackTraceElementDTO implements Serializable {
 	Integer lineNumber
 	String fileName
 
-	public static List<String> REPL_STACK_WORDS = #["synthetic", "repl"]
+	public static List<String> REPL_STACK_WORDS = #[WollokConstants.SYNTHETIC_FILE, WollokConstants.REPL_FILE]
 		
 	new(String contextDescription, String fileName, int lineNumber) {
 		this.contextDescription = contextDescription
@@ -34,20 +35,6 @@ class StackTraceElementDTO implements Serializable {
 		result.toString
 	}
 
-	def toLinkForConsole() {
-		val result = new StringBuffer
-		result.append("   ")
-		result.append("at ") 
-		if (contextDescription != null) {
-			result.append(contextDescription)
-			result.append(" ")
-		}
-		if (fileName != null && !fileName.isEmpty) {
-			result.append("(" + fileName + ":" + lineNumber + ")\n")
-		}
-		result.toString
-	}
-
 	def location(String fileName, int line) {
 		if (fileName.contains(PATH_SEPARATOR))
 		 '''«fileName.substring(fileName.lastIndexOf(PATH_SEPARATOR))»:«line»'''
@@ -60,15 +47,17 @@ class StackTraceElementDTO implements Serializable {
 	}
 	
 	def asStackTraceElement(){
-		new StackTraceElement(if(contextDescription == null) "" else contextDescription ,"", fileName, lineNumber)
+		new StackTraceElement(contextDescription ?: "","", fileName, lineNumber)
 	}
 	
 	def shouldBeFiltered() {
-		if (fileName === null || fileName.trim.equals("")) return false;
-		if (contextDescription === null || contextDescription.trim.equals("")) return true;
-		REPL_STACK_WORDS.exists [ word |
+		if (fileName === null || fileName.trim.equals("")) return true;
+		REPL_STACK_WORDS.map [ toLowerCase ].exists [ word |
 			fileName?.toLowerCase.contains(word)
 		]
 	}
+	
+	
+	def hasFileName() { fileName != null && !fileName.isEmpty }
 	
 }

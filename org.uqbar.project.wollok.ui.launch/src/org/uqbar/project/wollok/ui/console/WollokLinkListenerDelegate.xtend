@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.tests.AbstractWollokFileOpenerStrategy
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.*
 
 /**
  * Intended as an observer of REPL console: searches for a "(fileName:lineNumber)"
@@ -34,7 +35,6 @@ class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 	
 	override matchFound(PatternMatchEvent event) {
 		try	{
-			// Deletes first character, opening parentheses
 			val fileReferenceText = console.document.get(event.offset + 1, event.length - 1)
 			val hyperlink = makeHyperlink(fileReferenceText, opener) // a link to any file
 			console.addHyperlink(hyperlink, event.offset, event.length)
@@ -53,7 +53,9 @@ class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 			override linkActivated() {
 				try {
 					val project = openProjects.head
-					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(fileReferenceText, project)
+					// Deletes special ANSI characters of REPL console and opening parentheses
+					val referenceData = fileReferenceText.deleteAnsiCharacters.substring(1)
+					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(referenceData, project)
 					val textEditor = fileOpenerStrategy.getTextEditor(opener)
 					val fileName = fileOpenerStrategy.fileName
 					val Integer lineNumber = fileOpenerStrategy.lineNumber
