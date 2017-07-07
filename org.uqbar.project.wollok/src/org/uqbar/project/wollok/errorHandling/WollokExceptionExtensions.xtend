@@ -37,7 +37,8 @@ class WollokExceptionExtensions {
 
 	private static def internalStackTraceToDTO(WollokObject fullStackTrace) {
 		val stackTrace = fullStackTrace.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
-		stackTrace.map [ wo |
+		val result = newArrayList 
+		stackTrace.forEach [ wo |
 			val contextDescription = wo.call("contextDescription").wollokToJava(String) as String
 			val location = wo.call("location").wollokToJava(String) as String
 			val data = location.split(",")
@@ -47,8 +48,13 @@ class WollokExceptionExtensions {
 				lineNumber = new Integer(data.get(1))
 			} catch (NumberFormatException e) {
 			}
-			new StackTraceElementDTO(contextDescription, fileName, lineNumber)
+			val newStack = new StackTraceElementDTO(contextDescription, fileName, lineNumber)
+			// Unfortunately there are duplicate lines in the stack (because of stack design)
+			if (!result.contains(newStack)) {
+				result.add(newStack)
+			}
 		]
+		result
 	}
 
 	/**

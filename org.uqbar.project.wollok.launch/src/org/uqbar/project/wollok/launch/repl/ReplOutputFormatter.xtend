@@ -40,6 +40,6 @@ class AnsiColoredReplOutputFormatter implements ReplOutputFormatter {
 	override def importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset.toString() }
 	override def messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset.toString() }
 	override def returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset.toString() }
-	override def linkStyle(CharSequence msg) { ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.toString() }
+	override def linkStyle(CharSequence msg) { ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a("").toString() }
 	override def normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
 }

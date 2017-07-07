@@ -60,4 +60,22 @@ class StackTraceElementDTO implements Serializable {
 	
 	def hasFileName() { fileName != null && !fileName.isEmpty }
 	
+	def safeCompare(String string, String string2) {
+		(string == null && string2 == null) || (string !== null && string.equals(string2))
+	}
+	
+	override equals(Object obj) {
+		if (obj === null) return false;
+		try {
+			val st = obj as StackTraceElementDTO
+			return safeCompare(fileName, st.fileName) && safeCompare(contextDescription, st.contextDescription) && lineNumber.intValue == st.lineNumber.intValue
+		} catch (ClassCastException e) {
+			return false
+		}
+	}
+
+	override hashCode() {
+		((fileName ?: "") + (contextDescription ?: "") + lineNumber.toString).hashCode
+ 	}
+	
 }
