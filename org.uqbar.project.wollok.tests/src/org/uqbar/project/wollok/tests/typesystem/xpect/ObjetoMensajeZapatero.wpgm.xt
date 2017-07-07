@@ -1,0 +1,49 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+/**
+ * Introduccion a Objetos
+ *
+ * Mensajes entre objetos. 
+ */
+
+object fiona {
+	
+	// XPECT type at felicidad -->  Boolean
+	var felicidad = false
+	
+	method compraZapatos() {
+		felicidad = true	
+	}
+	
+	method estaFeliz() {
+		return felicidad
+	}
+}
+ 
+object pepe {
+	method cuantosGolesMetiste(){
+		return 5
+	}
+	
+   // XPECT methodType at labura() -->  () => Void
+	method labura(){
+		fiona.compraZapatos()
+	}
+	
+	// XPECT methodType at hicisteBienTuTrabajo() -->  () => Boolean
+	method hicisteBienTuTrabajo() {
+		return fiona.estaFeliz()
+	}
+}
+
+
+program p {
+	 
+	// XPECT type at alguien -->  fiona
+	const alguien = fiona
+
+	// XPECT type at goles -->  Integer
+	const goles = pepe.cuantosGolesMetiste()
+	
+}
+
