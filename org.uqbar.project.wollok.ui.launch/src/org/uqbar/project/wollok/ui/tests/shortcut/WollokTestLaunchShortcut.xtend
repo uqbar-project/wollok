@@ -29,9 +29,6 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 
 	override launch(IFile currFile, String mode) {
 		try {
-			// verifying there are no errors
-			if (!checkEclipseProject(currFile.project))
-				return;
 			activateWollokTestResultView
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
@@ -46,13 +43,4 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 		WollokTestResultView.activate()
 	}
 
-	def checkEclipseProject(IProject project) {
-		val severity = project.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)
-		if (severity == IMarker.SEVERITY_ERROR) {
-			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_CompilationErrorTitle,
-				Messages.TestLauncher_SeeProblemTab)
-			return false
-		}
-		return true
-	}
 }

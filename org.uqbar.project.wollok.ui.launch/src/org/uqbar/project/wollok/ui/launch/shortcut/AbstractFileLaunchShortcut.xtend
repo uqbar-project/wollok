@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.IAdaptable
 import org.eclipse.debug.ui.ILaunchShortcut
+import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
@@ -39,12 +40,20 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 		throw new RuntimeException("Launcher not found for " + currProject)
 	}
 	
+	def void launch(IJavaProject currProject, String mode) {
+		throw new RuntimeException("Launcher not found for " + currProject)
+	}
+	
 	def dispatch void doLaunch(IProject currProject, String mode) {
 		launch(currProject, mode)
 	}
 	
 	def dispatch void doLaunch(IPackageFragmentRoot packageRoot, String mode) {
 		launch(packageRoot.javaProject.project, mode)
+	}
+	
+	def dispatch void doLaunch(IJavaProject project, String mode) {
+		launch(project, mode)	
 	}
 	
 	def dispatch void doLaunch(IAdaptable adaptable, String mode) {

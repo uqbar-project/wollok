@@ -10,10 +10,17 @@ import org.uqbar.project.wollok.ui.tests.AbstractWollokFileOpenerStrategy
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
+/**
+ * Intended as an observer of REPL console: searches for a "(fileName:lineNumber)"
+ * pattern and creates a hyperlink to that file, opening Wollok editor.
+ * Reuses same behavior as test stack trace.
+ * 
+ * @author dodain
+ * based on 
+ */
 class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 
-	var IURIEditorOpener opener
-	
+	IURIEditorOpener opener
 	TextConsole console
 	
 	override connect(TextConsole console) {

@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
 import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IMarker
-import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.Platform
@@ -48,7 +46,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		if (currFile.project.hasErrors) {
 			val confirm = MessageDialog.openQuestion(Display.current.activeShell,
 				Messages.TestLauncher_CompilationErrorTitle, Messages.TestLauncher_SeeProblemTab)
-			if(!confirm) return;
+			if(!confirm) return
 		}
 		doLaunch(currFile, mode)
 	}
@@ -127,10 +125,10 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 }
 
 class LaunchConfigurationInfo {
-	@Accessors String name;
-	@Accessors String project;
-	@Accessors String file;
-	@Accessors Iterable<String> libs;
+	@Accessors String name
+	@Accessors String project
+	@Accessors String file
+	@Accessors Iterable<String> libs
 
 	new(IFile file) {
 		name = file.name

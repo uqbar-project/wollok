@@ -162,7 +162,7 @@
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
             description="Launch All Wollok Tests"
             icon="icons/wollok-icon-test_16.png"
-            id="org.uqbar.project.wollok.ui.tests.shortcut"
+            id="org.uqbar.project.wollok.ui.allTests.shortcut"
             label="%wollok.launch.allTests"
             modes="run, debug">
           <contextualLaunch>

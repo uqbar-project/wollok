@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.tests.shortcut
 import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.widgets.Display
 import org.uqbar.project.wollok.Messages
@@ -42,9 +43,13 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_NoTestToRun_Title,
 				Messages.TestLauncher_NoTestToRun_Message)
 			return;
-		} 
+		}
 		val currFile = testFiles.head
 		this.doLaunch(currFile, mode)
+	}
+
+	override launch(IJavaProject currProject, String mode) {
+		launch(currProject.elementName.project, mode)
 	}
 	
 	def List<IFile> getTestFiles(IProject project) {
