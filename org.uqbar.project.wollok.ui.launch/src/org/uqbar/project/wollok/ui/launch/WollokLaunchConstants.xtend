@@ -10,8 +10,9 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants
  */
 class WollokLaunchConstants {
 	
+	public static val WFILE_EXTENSIONS = "wlk"
 	public static val WTEST_EXTENSIONS = "wtest"
-	public static val EXTENSIONS = #["wlk", "wpgm", WTEST_EXTENSIONS]
+	public static val EXTENSIONS = #[WFILE_EXTENSIONS, "wpgm", WTEST_EXTENSIONS]
 	
 	public static val LAUNCH_CONFIGURATION_TYPE = "org.uqbar.project.wollok.ui.launch.WollokLaunchConfigurationType"
 	public static val LAUNCH_TEST_CONFIGURATION_TYPE = "org.uqbar.project.wollok.ui.launch.WollokTestLaunchConfigurationType"
@@ -26,6 +27,8 @@ class WollokLaunchConstants {
 	public static val ATTR_WOLLOK_DEBUG_PARAM = "WOLLOK_DEBUG_PARAM"
 	public static val ATTR_WOLLOK_DEBUG_COMMAND_PORT = "WOLLOK_DEBUG_COMMAND_PORT"
 	public static val ATTR_WOLLOK_DEBUG_EVENT_PORT = "WOLLOK_DEBUG_EVENT_PORT"
+	public static var ATTR_WOLLOK_LIBS = "ATTR_WOLLOK_LIBS"
+	
 	
 	static def getCommandPort(ILaunchConfiguration config) {
 		config.getAttribute(ATTR_WOLLOK_DEBUG_COMMAND_PORT, -1) // -1 ?

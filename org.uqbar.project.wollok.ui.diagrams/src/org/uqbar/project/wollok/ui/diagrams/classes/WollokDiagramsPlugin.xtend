@@ -6,7 +6,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin
  * 
  */
 class WollokDiagramsPlugin extends AbstractUIPlugin {
-	static WollokDiagramsPlugin singleton;
+	static WollokDiagramsPlugin singleton
 
 	def static WollokDiagramsPlugin getDefault() {
 		singleton

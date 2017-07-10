@@ -40,7 +40,10 @@ before_deploy:
 # If there is an error I will try to upload the logs
 after_failure:
 - cd ..
-- cd org.uqbar.project.wollok.tests/target
+- cd org.uqbar.project.wollok.tests
+- zip -r -9 target.zip target/
+- curl -T target.zip -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/target-$TRAVIS_JOB_ID.zip?publish=1&override=1"
+- cd target
 - zip -r -9 surefire-reports.zip surefire-reports/
 - curl -T surefire-reports.zip -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/surefire-reports.zip?publish=1&override=1"
 - if [ -f work/data/.metadata/.log ] ; then curl -T work/data/.metadata/.log -u$BINTRAY_ID:$BINTRAY_API_KEY "https://api.bintray.com/content/wollok/TravisTestLog/WollokTestLogs/$TRAVIS_JOB_ID/log.txt?publish=1&override=1" ; fi

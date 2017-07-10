@@ -23,6 +23,7 @@ import org.eclipse.xtext.ui.shared.Access
 import org.eclipse.xtext.ui.util.PluginProjectFactory
 import org.eclipse.xtext.ui.wizard.IProjectCreator
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
+import org.uqbar.project.wollok.libraries.WollokLibraries
 import org.uqbar.project.wollok.ui.autoedit.TokenTypeToPartitionMapper
 import org.uqbar.project.wollok.ui.editor.WollokSourceViewerConfiguration
 import org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener
@@ -35,6 +36,7 @@ import org.uqbar.project.wollok.ui.editor.templates.WollokTemplateProposalProvid
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingCalculator
 import org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration
 import org.uqbar.project.wollok.ui.hover.WollokEObjectHoverProvider
+import org.uqbar.project.wollok.ui.libraries.WollokUILibraries
 import org.uqbar.project.wollok.ui.wizard.WollokProjectCreator
 import org.uqbar.project.wollok.ui.wizard.WollokProjectFactory
 import org.uqbar.project.wollok.utils.DummyJvmModelAssociations
@@ -53,7 +55,10 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 
 		binder.bind(EObjectAtOffsetHelper).to(WollokEObjectAtOffsetHelper);
 		binder.bind(IEObjectHoverProvider).to(WollokEObjectHoverProvider);
+		binder.bind(WollokLibraries).to(WollokUILibraries)
 	}
+	
+	
 		
 	override bindITemplateProposalProvider() {
 		WollokTemplateProposalProvider;
@@ -74,7 +79,9 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 		binder.bind(IJvmModelAssociations).to(DummyJvmModelAssociations); 
 		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory);
 		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
+		
 	}
+	
 	
 	def Class<? extends IProjectCreator> bindIProjectCreator() {
 		WollokProjectCreator;
@@ -107,4 +114,7 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 	def Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper(){
 		WollokAntlrTokenToAttributeIdMapper
 	}
+	
+	
+	
 }

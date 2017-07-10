@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.regression
 
+import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
@@ -191,6 +192,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	@Ignore
 	def void bug_896_stackOverFlow() {
 		'''object juan {
 		    method blah() {
