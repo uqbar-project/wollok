@@ -13,13 +13,73 @@ class Golondrina {
 		energia = energia + 2
 	}
 
+	method saltar() {
+		energia -= 2
+	}
+	
+	method jugar(tiempo) {
+		energia += tiempo / 2
+	}
+	
+	method estasCurada() = energia > 10
+	
+	method alegria(tiempo) = energia * tiempo 
 }
 
 class GolondrinaSarasa inherits Golondrina {
+	var comio = false
+	
 	override method comer(a, p) {
 		// XPECT errors --> "Incorrect number of arguments for super. Expecting 2: alimento, postre" at "super()"
 		super()
+		comio = true
 	}
+	
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "jugar"
+	override method jugar(tiempo) {
+		super(tiempo)
+	}
+	
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
+	override method alegria(tiempo) {
+		return super(tiempo)	
+	}	
+
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "saltar"
+	override method saltar() {
+		super()
+	}
+	
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
+	override method estasCurada() {
+        return super()
+    }
+    	
+}
+
+class GolondrinaLoca inherits Golondrina {
+	// ok to override this
+	override method jugar(tiempo) {
+		super(tiempo * 2)
+	}
+    
+	// ok to override this
+	override method alegria(tiempo) = return super(tiempo * 2)	
+    
+}
+
+class GolondrinaRenga inherits Golondrina {
+	// ok to override this
+	override method jugar(tiempo) {
+		super(1)
+	}
+	
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "alegria"
+	override method alegria(tiempo) = super(tiempo)
+
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasCurada"
+	override method estasCurada() = super()
+		
 }
 
 class SuperInvocationTest {

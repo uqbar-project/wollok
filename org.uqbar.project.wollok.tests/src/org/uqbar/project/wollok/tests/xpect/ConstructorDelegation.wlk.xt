@@ -3,7 +3,7 @@
 class A {
 	var x
 	var y
-	// XPECT errors --> "Invalid constructor call. Does Not exist" at "self(22)"
+	// XPECT errors --> "Invalid constructor call. It does not exist. Valid constructors are: self()" at "self(22)"
 	constructor() = self(22) {
 		x = 2
 		y = 2
@@ -19,7 +19,7 @@ class B {
 }
 
 class C inherits B {
-	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super()"
+	// XPECT errors --> "Invalid super constructor call. It does not exist. Valid constructors are: super(_x)" at "super()"
 	constructor() = super() {}
 }
 
@@ -29,7 +29,7 @@ class D inherits B {
 		
 	}
 	
-	// XPECT errors --> "Invalid constructor call. Does Not exist" at "super(1, a)"
+	// XPECT errors --> "Invalid super constructor call. It does not exist. Valid constructors are: super(_x)" at "super(1, a)"
 	constructor(a) = super(1, a) {}
 }
 
@@ -45,7 +45,7 @@ class X {
 	method getA() { return a }
 }
 
-// XPECT errors --> "No default constructor in super type X. Y must define an explicit constructor." at "Y"
+
 class Y inherits X {
 }
 
@@ -54,20 +54,39 @@ class Z inherits X {
 }
 
 
-class InvalidInstanceAccessOnConstructorDelegation inherits X {
-	var x = 2
+class Superclase {
+	var a
+	constructor() {}
+	constructor(_a) {
+		a = _a
+	}
+	method getA() { return a }
+}
+
+class InvalidInstanceAccessOnConstructorDelegation inherits Superclase {
+	var x = 1
 	
 	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
 	constructor() = super(self.getX()) 
 	
-	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
-	constructor(a) = super(self)
-	
-	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
-	constructor(a, b) = super(x)
-	
-	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
-	constructor(a, b, c) = super(super("blah"))
-	
 	method getX() { return x }	
+}
+
+class InvalidInstanceAccessOnConstructorDelegation2 inherits Superclase {
+	// XPECT errors --> "Cannot access instance methods within constructor delegation." at "self"
+	constructor() = super(self)
+}
+
+class InvalidInstanceAccessOnConstructorDelegation3 inherits Superclase {
+	var x = 2
+
+	// XPECT errors --> "Cannot access instance variables within constructor delegation." at "x"
+	constructor() = super(x)
+	
+	method x() = x
+}
+	
+class InvalidInstanceAccessOnConstructorDelegation4 inherits Superclase {	
+	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
+	constructor() = super(super("blah"))
 }
