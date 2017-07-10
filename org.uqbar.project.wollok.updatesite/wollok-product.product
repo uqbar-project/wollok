@@ -40,7 +40,7 @@ http://wollok.org
       <macosx icon="icons/wollok-logo.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/org.uqbar.project.wollok.updatesite/icons/wollok-logo.ico"/>
+         <ico path="icons/wollok-logo.ico"/>
          <bmp/>
       </win>
    </launcher>
