@@ -4,6 +4,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		Boolean >> "||" === #[Boolean] => Boolean
 		Boolean >> "&&" === #[Boolean] => Boolean
+		Boolean >> "and" === #[Boolean] => Boolean
+		Boolean >> "or" === #[Boolean] => Boolean
 		
 		Integer + Integer => Integer
 		Integer - Integer => Integer
