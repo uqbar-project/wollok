@@ -59,7 +59,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	}
 	
 	override lineGetStyle(LineStyleEvent event) {
-		if (event == null || event.lineText == null || event.lineText.length == 0 || !event.isCodeInputLine)
+		if (event === null || event.lineText === null || event.lineText.length == 0 || !event.isCodeInputLine)
             return;
             
         val originalText = (event.widget as StyledText).text
@@ -78,6 +78,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 			val style = stylesProvider.getAttribute(styleId)
 			
 			val s = new StyleRange(event.lineOffset + offset - headerLength, length, style.foreground, style.background)
+			// TODO: Ver underline s.underline = style.underline
 			s.data = styleId
 			
 			if (s.start <= originalText.length && s.end <= originalText.length) {

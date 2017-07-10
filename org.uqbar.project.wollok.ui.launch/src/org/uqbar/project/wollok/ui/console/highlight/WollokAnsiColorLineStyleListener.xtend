@@ -23,10 +23,10 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
     var currentAttributes = new WollokConsoleAttributes
     public static val Character ESCAPE_SGR = 'm'
 
-    int lastRangeEnd = 0;
+    int lastRangeEnd = 0
 	
 	override lineGetStyle(LineStyleEvent event) {
-		if (event == null || event.lineText == null || event.lineText.length() == 0)
+		if (event === null || event.lineText === null || event.lineText.length() == 0)
             return
 
         val currentPalette = WollokConsolePreferenceUtils.getString(WollokConsolePreferenceConstants.PREF_COLOR_PALETTE)
@@ -67,13 +67,13 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
             }
 
             if (lastRangeEnd != start)
-                addRange(ranges, event.lineOffset + lastRangeEnd, start - lastRangeEnd, defStyle.foreground, false)
+                addRange(ranges, event.lineOffset + lastRangeEnd, start - lastRangeEnd, defStyle, false)
             lastAttributes = currentAttributes.clone
 
-            addRange(ranges, event.lineOffset + start, end - start, defStyle.foreground, true)
+            addRange(ranges, event.lineOffset + start, end - start, defStyle, true)
         }
         if (lastRangeEnd != currentText.length)
-            addRange(ranges, event.lineOffset + lastRangeEnd, currentText.length - lastRangeEnd, defStyle.foreground, false)
+            addRange(ranges, event.lineOffset + lastRangeEnd, currentText.length - lastRangeEnd, defStyle, false)
         
         lastAttributes = currentAttributes.clone
 
@@ -81,8 +81,9 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
             event.styles = ranges
 	}
 	
-	def void addRange(List<StyleRange> ranges, int start, int length, Color foreground, boolean isCode) {
-        val range = new StyleRange(start, length, foreground, null)
+	def void addRange(List<StyleRange> ranges, int start, int length, StyleRange defStyle, boolean isCode) {
+        val range = new StyleRange(start, length, defStyle.foreground, null)
+        range.underline = defStyle.underline
         WollokConsoleAttributes.updateRangeStyle(range, lastAttributes)
         if (isCode) {
             val showEscapeCodes = WollokConsolePreferenceUtils.getBoolean(WollokConsolePreferenceConstants.PREF_SHOW_ESCAPES)

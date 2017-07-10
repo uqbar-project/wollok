@@ -1,12 +1,16 @@
 package org.uqbar.project.wollok.launch.repl
 
+import org.fusesource.jansi.Ansi
+import org.fusesource.jansi.AnsiConsole
+
 import static org.fusesource.jansi.Ansi.*
 import static org.fusesource.jansi.Ansi.Color.*
-import org.fusesource.jansi.Ansi
 
 /**
  * An strategy to allow ANSI colors output
  * or regular output without special characters
+ * 
+ * https://github.com/fusesource/jansi
  * 
  * @author jfernandes
  */
@@ -40,6 +44,9 @@ class AnsiColoredReplOutputFormatter implements ReplOutputFormatter {
 	override def importantMessageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).bold.a(msg).reset.toString() }
 	override def messageStyle(CharSequence msg) { ansi.fg(COLOR_REPL_MESSAGE).a(msg).reset.toString() }
 	override def returnStyle(CharSequence msg) { ansi().fg(COLOR_RETURN_VALUE).a(msg).reset.toString() }
-	override def linkStyle(CharSequence msg) { ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a("").toString() }
+	override def linkStyle(CharSequence msg) { 
+		// https://mihai-nita.net/2013/06/03/eclipse-plugin-ansi-in-console/
+		ansi.fg(COLOR_LINK_FILE).a(Ansi.Attribute.UNDERLINE).boldOff.a(msg).reset.a(Ansi.Attribute.UNDERLINE_OFF).bold.a(Ansi.Attribute.RESET).toString
+	}
 	override def normalStyle(CharSequence msg) { ansi.fg(COLOR_DEFAULT).a(msg).reset.toString() }
 }

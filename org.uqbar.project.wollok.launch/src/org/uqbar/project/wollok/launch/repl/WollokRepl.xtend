@@ -106,7 +106,7 @@ class WollokRepl {
 
 	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
-		if (obj == null)
+		if (obj === null)
 			println("null".returnStyle)
 		else if (obj instanceof WollokObject && !(obj as WollokObject).isVoid)
 			doPrintReturnValue(obj)
@@ -194,7 +194,7 @@ class WollokRepl {
 			.toList
 			.reverse
 			.map [ stackDTO | stackDTO.toLinkForConsole ]
-			.join("")
+			.join(System.lineSeparator)
 		
 		printlnIdent(errorLine.errorStyle)
 	}
@@ -204,7 +204,7 @@ class WollokRepl {
 			append("   ")
 			append("at")
 			append(" ")
-			if (st.contextDescription != null) {
+			if (st.contextDescription !== null) {
 				append(st.contextDescription)
 				append(" ")
 			}
@@ -212,7 +212,7 @@ class WollokRepl {
 		
 		var link = new StringBuffer
 		if (st.hasFileName) {
-			link.append("(" + st.fileName + ":" + st.lineNumber + ")\n")
+			link.append("(" + st.fileName + ":" + st.lineNumber + ")")
 		}
 		
 		result.toString.errorStyle + link.toString.linkStyle
