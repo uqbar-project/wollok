@@ -7,15 +7,8 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
 class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable user, SimpleTypeInfo it) {
-		println('''Analising maxTypes of «user»''')
-		if (maximalConcreteTypes == null) {
-			println('''	No maxType info''')
-			return
-		}
-		if (maximalConcreteTypes.state != Pending) {
-			println(''' No pending maxTypes to propagete, state=«maximalConcreteTypes.state»''')
-			return	
-		}
+		if (maximalConcreteTypes == null) return;
+		if (maximalConcreteTypes.state != Pending) return;
 
 		// Do propagate		
 		propagateMaxTypes(user)
@@ -24,9 +17,10 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 	}
 
 	def void propagateMaxTypes(SimpleTypeInfo it, TypeVariable user) {
+		println('''	Analising maxTypes of «user»''')
 		user.allSubtypes.forEach [ subtype |
 			subtype.setMaximalConcreteTypes(maximalConcreteTypes, user)
-			println('''	Propagating «maximalConcreteTypes» from: «user» to «subtype»''')
+			println('''		Propagating «maximalConcreteTypes» from: «user» to «subtype»''')
 		]
 	}
 }

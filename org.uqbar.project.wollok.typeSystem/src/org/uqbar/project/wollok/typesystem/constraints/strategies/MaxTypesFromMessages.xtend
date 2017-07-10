@@ -9,8 +9,9 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.VariableSubtypingRules.*
 
 class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 
@@ -19,7 +20,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	def dispatch void analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		var maxTypes = allTypes(tvar).filter[newMaxTypeFor(tvar)].toList
 		if (!tvar.sealed && !maxTypes.empty && !maximalConcreteTypes.contains(maxTypes) && tvar.subtypes.empty) { // Last condition is because some test fail, but I don't know if it's OK
-			println('''New max(«maxTypes») type for «tvar»''')
+			println('''	New max(«maxTypes») type for «tvar»''')
 			maximalConcreteTypes = new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet)
 			changed = true
 		}
@@ -34,7 +35,9 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	}
 
 	def acceptMessage(MessageSend message, AbstractContainerWollokType it) {
-		container.allMethods.exists[match(message)]
+		container.allMethods.exists[
+			match(message)
+		]
 	}
 
 	def private match(WMethodDeclaration declaration, MessageSend message) {
@@ -42,13 +45,18 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 			matchParameters(declaration, message)
 	}
 
-	def private matchParameters(WMethodDeclaration declaration, MessageSend message) {
-		try {
-			declaration.parametersType(registry.typeSystem) == (message.arguments.map[it.type])
-		} catch (Exception e) { //TODO: Check the exception
-			true
-		}
+	def private matchParameters(WMethodDeclaration method, MessageSend message) {
+		return method.parameters.biForAll(message.arguments)[parameter, argument|
+			try {
+				registry.tvar(parameter).typeInfo.isSupertypeOf(argument.typeInfo)
+			}
+			catch(RuntimeException exception) {
+				// This is most probably because lack of a type annotation, ignore it for now.
+				true
+			} 
+		]
 	}
+
 
 	def allTypes(TypeVariable tvar) {
 		var types = registry.typeSystem.allTypes(tvar.owner)

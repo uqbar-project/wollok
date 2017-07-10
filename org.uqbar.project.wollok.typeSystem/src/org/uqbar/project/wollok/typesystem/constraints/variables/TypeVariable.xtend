@@ -51,7 +51,7 @@ class TypeVariable implements ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static closure(EObject owner, List<TypeVariable> parameters, TypeVariable returnType) {
+	def static closure(EObject owner, List<ITypeVariable> parameters, ITypeVariable returnType) {
 		new TypeVariable(owner) => [setTypeInfo(new ClosureTypeInfo(parameters, returnType))]
 	}
 
@@ -94,7 +94,13 @@ class TypeVariable implements ITypeVariable {
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
 			println('''Reporting error in «owner.debugInfo»: «message»''')
-			validator.report(message, owner)
+			try {
+				validator.report(message, owner)
+			}
+			catch (IllegalArgumentException exception) {
+				// We probably reorted a type error to a core object, which is not possible
+				exception.printStackTrace
+			}
 		]
 	}
 

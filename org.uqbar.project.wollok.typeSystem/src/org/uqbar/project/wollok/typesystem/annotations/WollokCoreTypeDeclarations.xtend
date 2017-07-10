@@ -6,7 +6,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "&&" === #[Boolean] => Boolean
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
-		
+
 		Integer + Integer => Integer
 		Integer - Integer => Integer
 		Integer * Integer => Integer
@@ -15,13 +15,15 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Integer >> "<" === #[Integer] => Boolean
 		Integer >> ">=" === #[Integer] => Boolean
 		Integer >> "<=" === #[Integer] => Boolean
-		
+
 		Double + Double => Integer
 		Double * Double => Integer
-		Double >> "/" === #[Integer] => Integer
+		Double >> "/" === #[Integer] => Integer;
+		(Double > Double) => Boolean
 
 		String >> "size" === #[] => Integer
-		String + String => String
+		String + String => String;
+		(String > String) => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection
@@ -31,9 +33,14 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
 		List >> "size" === #[] => Integer
-		List >> "sum" === #[Any] => Integer //TODO: Closure type annotation
+
+		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		
-		Set + Set => Set
+		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
+		 
+		Set + Set => Set;
+		
+		(Date > Date) => Boolean
 
 		// console
 		console >> "println" === #[Any] => Void

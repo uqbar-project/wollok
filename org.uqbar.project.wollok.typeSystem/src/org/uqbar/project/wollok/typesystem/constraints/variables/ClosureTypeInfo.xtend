@@ -3,14 +3,16 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.List
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.eclipse.xtend.lib.annotations.Accessors
 
 class ClosureTypeInfo extends TypeInfo {
+	@Accessors(PUBLIC_GETTER)
+	List<ITypeVariable> parameters
 
-	List<TypeVariable> parameters
+	@Accessors(PUBLIC_GETTER)
+	ITypeVariable returnType
 
-	TypeVariable returnType
-
-	new(List<TypeVariable> parameters, TypeVariable returnType) {
+	new(List<ITypeVariable> parameters, ITypeVariable returnType) {
 		this.parameters = parameters
 		this.returnType = returnType
 	}
@@ -19,7 +21,10 @@ class ClosureTypeInfo extends TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	override getType(TypeVariable user) {
-		return new ClosureType(parameters.map[type], returnType.type)
+		return new ClosureType(
+			parameters.map[(it as TypeVariable).type], 
+			(returnType as TypeVariable).type
+		)
 	}
 
 	// ************************************************************************

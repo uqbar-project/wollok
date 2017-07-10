@@ -53,6 +53,11 @@ abstract class TypeDeclarations {
 		new ExpectReturnType(target, receiver.type, "*", #[parameterType])
 	}
 
+	def operator_greaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, ">", #[parameterType])
+	}
+
+
 	// ****************************************************************************
 	// ** Core class and object types
 	// ****************************************************************************
@@ -68,11 +73,15 @@ abstract class TypeDeclarations {
 
 	def String() { classTypeAnnotation(STRING) }
 
+	def Date() { classTypeAnnotation(DATE) }
+
 	def List() { classTypeAnnotation(LIST) }
 
 	def Set() { classTypeAnnotation(SET) }
 
 	def Collection() { classTypeAnnotation(COLLECTION) }
+
+	def Range() { classTypeAnnotation(RANGE) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
 
@@ -81,6 +90,10 @@ abstract class TypeDeclarations {
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
 
 	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
+	
+	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
+		new ClosureTypeAnnotation(parameters, returnType)
+	}
 }
 
 // ****************************************************************************

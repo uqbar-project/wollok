@@ -5,6 +5,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 
 class MaximalConcreteTypes {
 	@Accessors
@@ -21,7 +22,7 @@ class MaximalConcreteTypes {
 	// ** Querying
 	// ************************************************************************
 	def contains(WollokType type) {
-		maximalConcreteTypes.contains(type)
+		maximalConcreteTypes.exists[isSuperTypeOf(type)]
 	}
 
 	def copy() {

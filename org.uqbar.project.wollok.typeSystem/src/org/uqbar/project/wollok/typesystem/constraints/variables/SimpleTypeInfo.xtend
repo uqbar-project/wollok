@@ -34,10 +34,8 @@ class SimpleTypeInfo extends TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	override getType(TypeVariable tvar) {
-		val type = basicGetType()
-		if (type == null)
-			throw new TypeSystemException("Cannot determine a single type for " + tvar.fullDescription)
-		type
+		// Imposibility to find a unique type now are reported as WAny, this has to be improved
+		basicGetType() ?: WollokType.WAny
 	}
 
 	def basicGetType() {
@@ -64,15 +62,6 @@ class SimpleTypeInfo extends TypeInfo {
 		]
 	}
 
-//			try {
-//				validator.report(''', user.owner)
-//
-//			} catch (IllegalArgumentException ex) {
-//				print('''
-//					Error, can not have type errors in core type variable.
-//					«user.fullDescription»
-//				''')
-//			}
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		minTypesDo(origin) [
 			if (!maxTypes.contains(type))

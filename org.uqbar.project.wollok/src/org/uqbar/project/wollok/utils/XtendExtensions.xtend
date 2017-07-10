@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.utils
 import java.util.List
 import java.util.Random
 import java.util.function.BiConsumer
+import java.util.function.BiFunction
 
 /**
  * Our extensions to basic Java/XTend classes
@@ -34,5 +35,21 @@ class XtendExtensions {
 				"beForeach received two iterables with different amount of elements.")
 		}
 	}
-	
+
+	static def <T, U> boolean biForAll(Iterable<T> it1, Iterable<U> it2, BiFunction<T, U, Boolean> function) {
+		val iter1 = it1.iterator()
+		val iter2 = it2.iterator()
+		var result = true
+
+		while (result && iter1.hasNext() && iter2.hasNext()) {
+			result = function.apply(iter1.next(), iter2.next())
+		}
+
+		if (iter1.hasNext() != iter2.hasNext()) {
+			throw new IllegalArgumentException(
+				"beForeach received two iterables with different amount of elements.")
+		}
+		
+		result
+	}	
 }

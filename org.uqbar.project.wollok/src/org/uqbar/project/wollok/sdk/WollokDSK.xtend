@@ -41,6 +41,7 @@ class WollokDSK {
 	public static val LIST = "wollok.lang.List"
 	public static val SET = "wollok.lang.Set"
 	public static val DICTIONARY = "wollok.lang.Dictionary"
+	public static val RANGE= "wollok.lang.Range"
 	
 	public static val CLOSURE = "wollok.lang.Closure"
 	

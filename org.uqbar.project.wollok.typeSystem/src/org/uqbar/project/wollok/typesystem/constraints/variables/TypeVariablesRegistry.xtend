@@ -32,12 +32,16 @@ class TypeVariablesRegistry {
 	}
 
 	def register(TypeVariable it) {
-		typeVariables.put(owner, it)
+		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
+		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
+		if (owner != null) typeVariables.put(owner, it)
 		return it
 	}
 
 	def register(ClassParameterTypeVariable it) {
-		typeParameters.put(owner, it)
+		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
+		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
+		if (owner != null) typeParameters.put(owner, it)
 		return it
 	}
 	
@@ -48,7 +52,7 @@ class TypeVariablesRegistry {
 		TypeVariable.simple(owner).register
 	}
 
-	def newClosure(EObject owner, List<TypeVariable> parameters, TypeVariable expression) {
+	def newClosure(EObject owner, List<ITypeVariable> parameters, ITypeVariable expression) {
 		TypeVariable.closure(owner, parameters, expression).register
 	}
 
@@ -77,8 +81,7 @@ class TypeVariablesRegistry {
 	}
 
 	def newSealed(EObject it, WollokType type) {
-		newTypeVariable
-		beSealed(type)
+		newTypeVariable => [beSealed(type)]
 	}
 
 	def beVoid(EObject it) {
@@ -86,10 +89,12 @@ class TypeVariablesRegistry {
 	}
 
 	def beSealed(EObject it, WollokType type) {
-		tvar => [
-			addMinimalType(type)
-			beSealed
-		]
+		tvar => [beSealed(type)]
+	}
+
+	def beSealed(TypeVariable it, WollokType type) {
+		addMinimalType(type)
+		beSealed
 	}
 
 	// ************************************************************************
