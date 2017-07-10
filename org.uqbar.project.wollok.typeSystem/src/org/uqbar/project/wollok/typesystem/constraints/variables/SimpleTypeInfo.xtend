@@ -13,6 +13,9 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
+
+
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
 	var Map<WollokType, ConcreteTypeState> minTypes = newHashMap()
@@ -119,9 +122,9 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	def acceptMinimalType(WollokType type) {
-		!sealed && minTypes.keySet.fold(type, [t1, t2|t1.refine(t2)]).name != "Object" // TODO: Hardcode
+		!sealed || minTypes.keySet.exists[it.isSuperTypeOf(type)]
 	}
-
+	
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************

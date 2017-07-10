@@ -57,7 +57,7 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	}
 	
 	def boolean isSubclassOf(WClass potSub, WClass potSuper) {
-		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper))   
+		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper)) 
 	}
 	
 }

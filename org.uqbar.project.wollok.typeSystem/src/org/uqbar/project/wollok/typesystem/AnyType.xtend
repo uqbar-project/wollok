@@ -10,6 +10,10 @@ class AnyType extends BasicType implements WollokType {
 		super("Any")
 	}
 	
+	override dispatch refine(WollokType previouslyInferred) {
+		previouslyInferred
+	}
+	
 	override acceptAssignment(WollokType other) {}
 	override understandsMessage(MessageType message) { true }
 	
