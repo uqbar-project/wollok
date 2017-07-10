@@ -33,6 +33,7 @@ class WollokParseHelper extends ParseHelper<WFile>{
 			val f = new File(uri.toFileString)
 			
 			if (!f.exists) {
+				f.parentFile.mkdirs
 				f.createNewFile
 			}
 		}
@@ -48,6 +49,6 @@ class WollokParseHelper extends ParseHelper<WFile>{
 		if (file.key == null)
 			computeUnusedUri(resourceSetToUse)
 		else
-			URI.createURI(file.key + "." + fileExtension);
+			URI.createURI("target/test-files/" + file.key + "." + fileExtension);
 	}
 }

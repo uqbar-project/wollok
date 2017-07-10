@@ -86,7 +86,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		var List<XStackFrame> steps = newArrayList
 		var XStackFrame lastStackElement = null
 		do {
-			Thread.sleep(100)
+			clientSide.waitUntilSuspended
 			
 			lastStackElement = realDebugger.stack.lastElement
 			steps += lastStackElement.clone
@@ -94,6 +94,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 			val code = lastStackElement.code(programContent)
 			println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
 
+			clientSide.suspended = false;
 			realDebugger.stepInto()	
 		} while (!clientSide.isTerminated);
 		
@@ -134,6 +135,8 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher, DebuggerEventAssertion {
 	var boolean started = false
 	var boolean terminated = false
+	var boolean suspended = false
+
 	List<DebuggerEventListener> listeners = newArrayList
 	// an object to manipulate the VM: pause, resume, etc.
 	DebugCommandHandler vm
@@ -143,17 +146,21 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	override started() { 
 		println("STARTED")
 		started = true
+		suspended = false 
 		notify [ started(vm) ]
 	}
 	
 	override terminated() {
-		println("TERMINATED") 
+		println("TERMINATED")
 		terminated = true
+		suspended = false
+		
 		notify [ terminated(vm) ]
 	}
 	
 	override suspendStep() {
 		println("SUSPENDED")
+		suspended = true 
 		notify [ suspended(vm) ]
 	}
 	override resumeStep() {
@@ -167,6 +174,7 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	
 	def waitUntilStarted() { waitUntil [isStarted] }
 	def waitUntilTerminated() { waitUntil [isTerminated] }
+	def waitUntilSuspended() { waitUntil[isSuspended || isTerminated]}
 	
 	// utils
 	
@@ -182,7 +190,8 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	
 	protected def waitUntil(()=>Boolean condition) {
 		// REVIEW: this is an active wait. Not good, but well.. just for testing.
-		while (!condition.apply && assertionFailed != null) Thread.sleep(100)
+		while (!condition.apply && assertionFailed == null) 
+			Thread.sleep(100)
 	}
 	
 	def expect((DebuggerEventAssertion)=>Object director) {
