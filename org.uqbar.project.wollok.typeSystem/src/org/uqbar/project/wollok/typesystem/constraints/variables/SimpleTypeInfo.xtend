@@ -2,33 +2,21 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.Map
 import java.util.function.Consumer
-import org.eclipse.xtend.lib.annotations.AccessorType
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
-
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
 	var Map<WollokType, ConcreteTypeState> minTypes = newHashMap()
 
-	@Accessors
+	@Accessors(PUBLIC_GETTER)
 	var MaximalConcreteTypes maximalConcreteTypes = null
-
-	/**
-	 * A sealed variable can not be further restricted. 
-	 * Minimal and maximal concrete type sets should be equal after sealing a variable. 
-	 */
-	@Accessors(AccessorType.PUBLIC_GETTER)
-	var Boolean sealed = false
 
 	// ************************************************************************
 	// ** Queries

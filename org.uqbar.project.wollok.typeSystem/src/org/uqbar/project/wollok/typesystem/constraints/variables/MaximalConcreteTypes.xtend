@@ -25,6 +25,10 @@ class MaximalConcreteTypes {
 		maximalConcreteTypes.exists[isSuperTypeOf(type)]
 	}
 
+	def containsAll(List<? extends WollokType> types) {
+		types.forall[this.contains(it)]
+	}
+
 	def copy() {
 		new MaximalConcreteTypes(maximalConcreteTypes)
 	}
