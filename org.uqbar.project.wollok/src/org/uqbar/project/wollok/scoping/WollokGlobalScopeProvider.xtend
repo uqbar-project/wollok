@@ -59,19 +59,19 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 */
 	def importedObjects(Resource context) {
 		val rootObject = context.contents.get(0)
-		val imports = rootObject.getAllContentsOfType(Import)
+		val imports = rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
 		// doImportedObjects(context,imports)
 	}
 
-	def doImportedObjects(Resource context, List<Import> imports) {
+	def doImportedObjects(Resource context, Iterable<String> imports) {
 		val objectsFromManifests = libraryLoader.load(context)
 
 		objectsFromLocalImport(context, imports, objectsFromManifests)
 	}
 	
-	def objectsFromLocalImport(Resource context, List<Import> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
-		val imports = (importsEntry.map[ #[importedNamespace]  + localScopeProvider.allRelativeImports(importedNamespace, context.implicitPackage) ].flatten).toSet
+	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
+		val imports = (importsEntry.map[ #[it]  + localScopeProvider.allRelativeImports(it, context.implicitPackage) ].flatten).toSet
 		
 		val importedObjects = imports.filter[
 			it !== null && !objectsFromManifests.exists[o| o.matchesImport(it)]

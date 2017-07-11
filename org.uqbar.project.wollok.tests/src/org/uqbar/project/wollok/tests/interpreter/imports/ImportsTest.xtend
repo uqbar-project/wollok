@@ -382,12 +382,14 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 				}
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 	@Test
 	def void testRefereceByFQNWithoutImport() {
-		#['b' -> '''
+		
+		#[
+		'b' -> '''
 			class Golondrina  {
 			    method volar(kms) {
 			        console.println("flying...")
@@ -399,7 +401,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			        const pepona = new b.Golondrina()
 			}
 		'''
-		].interpretPropagatingErrors
+		].interpretAsFilesPropagatingErrors
 	}
 	
 }
