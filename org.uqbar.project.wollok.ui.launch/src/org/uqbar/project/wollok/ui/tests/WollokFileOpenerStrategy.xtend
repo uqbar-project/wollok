@@ -10,9 +10,11 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.ide.IDE
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 
 import static org.uqbar.project.wollok.WollokConstants.*
+
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 @Accessors
@@ -31,18 +33,18 @@ abstract class AbstractWollokFileOpenerStrategy {
 		}
 	}
 
-	def void initialize(String _data) {
-		val data = _data.split(STACKELEMENT_SEPARATOR)
+	def void initialize(String data) {
 		try {
-			fileName = data.get(0)
-			lineNumber = new Integer(data.get(1))
+			val separatorIndex = data.lastIndexOf(STACKELEMENT_SEPARATOR)
+			fileName = data.substring(0, separatorIndex)
+			lineNumber = Integer.parseInt(data.substring(separatorIndex + 1))
 		} catch (NumberFormatException e) {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while opening file " + data, e)
 		}
 	}
 
-	def ITextEditor getTextEditor(WollokTestResultView view)
+	def ITextEditor getTextEditor(IURIEditorOpener view)
 
 }
 
@@ -55,11 +57,11 @@ class WollokClasspathFileOpenerStrategy extends AbstractWollokFileOpenerStrategy
 		initialize(data)
 	}
 
-	override ITextEditor getTextEditor(WollokTestResultView view) {
+	override ITextEditor getTextEditor(IURIEditorOpener opener) {
 		val projectName = project.name
 		val context = projectName.project
 		val URI realURI = new WorkspaceClasspathUriResolver().resolve(context, URI.createURI(fileName))
-		view.openElement(realURI) as ITextEditor
+		opener.open(realURI, true) as ITextEditor
 	}
 }
 
@@ -69,7 +71,7 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 		initialize(data)
 	}
 
-	override getTextEditor(WollokTestResultView view) {
+	override getTextEditor(IURIEditorOpener opener) {
 		val File fileToOpen = new File(fileName)
 		val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
 		val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()

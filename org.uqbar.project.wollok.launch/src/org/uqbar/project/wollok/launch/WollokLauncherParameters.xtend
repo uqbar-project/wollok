@@ -5,11 +5,12 @@ import java.io.FileWriter
 import java.util.ArrayList
 import java.util.List
 import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.OptionBuilder
 import org.apache.commons.cli.Options
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.parser.OptionalGnuParser
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * @author jfernandes
@@ -52,8 +53,8 @@ class WollokLauncherParameters {
 	}
 
 	def parse(String[] args) {
-		val parser = new GnuParser
-		val cmdLine = parser.parse(options, args)
+		val parser = new OptionalGnuParser
+		val cmdLine = parser.parse(options, args, false)
 		hasRepl = cmdLine.hasOption("r")
 		
 		tests = cmdLine.hasOption("t")
@@ -70,9 +71,8 @@ class WollokLauncherParameters {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
 		}
 		
-		parseLibraries(cmdLine)		
+		parseLibraries(cmdLine)
 		parseWollokFiles(cmdLine)
-		
 		
 		if (!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
 			throw new RuntimeException("Repl can only be used with .wlk files.")
@@ -84,7 +84,7 @@ class WollokLauncherParameters {
 		
 		//If the parameters are empty and we are in the REPL, I generate an empty file to be able of loading the REPL
 		if (wollokFiles.empty){
-			val temp = new File("wollokREPL.wlk")
+			val temp = new File(WollokConstants.REPL_FILE)
 			temp.deleteOnExit
 		
 			val fos = new FileWriter(temp)

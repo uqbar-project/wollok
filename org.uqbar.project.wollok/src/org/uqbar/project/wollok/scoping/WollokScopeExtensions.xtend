@@ -8,8 +8,8 @@ import org.eclipse.xtext.scoping.impl.ImportScope
 import org.eclipse.xtext.scoping.impl.SelectableBasedScope
 import org.eclipse.xtext.scoping.impl.SimpleScope
 
-import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.get
-import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.invoke
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.getFieldValue
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.executeMethod
 
 class WollokScopeExtensions {
 	def static containsImport(IScope scope, String namespace) {
@@ -25,7 +25,7 @@ class WollokScopeExtensions {
 	}
 
 	def static dispatch Iterable<QualifiedName> definedNames(SelectableBasedScope scope) {
-		(scope.invoke("getAllLocalElements") as Iterable<IEObjectDescription>).map[it.qualifiedName] +
+		(scope.executeMethod("getAllLocalElements") as Iterable<IEObjectDescription>).map[it.qualifiedName] +
 			scope.parent.definedNames
 	}
 
@@ -34,12 +34,12 @@ class WollokScopeExtensions {
 	}
 
 	def static dispatch Iterable<QualifiedName> definedNames(SimpleScope scope) {
-		(scope.invoke("getAllLocalElements") as Iterable<IEObjectDescription>).map[it.qualifiedName] +
+		(scope.executeMethod("getAllLocalElements") as Iterable<IEObjectDescription>).map[it.qualifiedName] +
 			scope.parent.definedNames
 	}
 
 	def static dispatch Iterable<QualifiedName> definedNames(WrappingScope scope) {
-		(scope.get("delegate") as IScope).definedNames
+		(scope.getFieldValue("delegate") as IScope).definedNames
 	}
 
 	def static isIncludedIn(QualifiedName qn, String other) {

@@ -23,7 +23,11 @@ class AnsiUtils {
 
 	def static deleteAnsiCharacters(String text) {
 		var escaped = text
-		val matcher = pattern.matcher(text)
+		var matcher = pattern.matcher(text)
+		while (matcher.find) {
+			escaped = matcher.replaceAll('')
+		}
+		matcher = Pattern.compile("\\[m").matcher(escaped) 
 		while (matcher.find) {
 			escaped = matcher.replaceAll('')
 		}

@@ -34,6 +34,7 @@ Import-Package: org.eclipse.xtext.xbase.lib,
  org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.uqbar.project.wollok,
+ org.uqbar.project.wollok.errorHandling,
  org.uqbar.project.wollok.formatting,
  org.uqbar.project.wollok.interpreter,
  org.uqbar.project.wollok.interpreter.api,

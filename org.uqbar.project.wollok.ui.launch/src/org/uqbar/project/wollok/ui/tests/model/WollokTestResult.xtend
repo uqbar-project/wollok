@@ -2,8 +2,10 @@ package org.uqbar.project.wollok.ui.tests.model
 
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
+
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * Test result model for the UI.
@@ -57,7 +59,7 @@ class WollokTestResult {
 	def innerEnded(int lineNumber, String resource, WollokTestState state) {
 		ended(state)
 		this.lineNumber = lineNumber
-		if (resource != null)
+		if (resource !== null)
 			this.errorResource = URI.createURI(resource)
 	}
 	
@@ -74,10 +76,6 @@ class WollokTestResult {
 		exceptionAsString
 	}
 
-	def printStackTrace(StackTraceElementDTO[] stackTrace) {
-		stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink(testResource)  ])
-	}
-	
 	def failed() {
 		#[WollokTestState.ASSERT, WollokTestState.ERROR].contains(state)		
 	}

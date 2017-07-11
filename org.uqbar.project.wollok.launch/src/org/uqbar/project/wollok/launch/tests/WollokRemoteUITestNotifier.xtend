@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.launch.tests
 
 import java.util.List
-import java.util.Map
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 
 /**
  * @author tesonep

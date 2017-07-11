@@ -22,5 +22,5 @@ class WollokStyleRangeListener implements LineStyleListener {
 		}
 		styledText.addStyle(event.lineOffset, styles)
 	}
-		
+	
 }

@@ -90,7 +90,7 @@ class WollokModelExtensions {
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
 
-	def static dispatch namee(EObject it) { null }
+	def static dispatch name(EObject it) { null }
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
 	def static dispatch name(WSuite it) { name }

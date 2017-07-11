@@ -1,14 +1,15 @@
 package org.uqbar.project.wollok.tests.debugger.util
 
+import java.net.URI
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
+import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
-import java.net.URI
 
 /**
  * Base class for testing the debugger XDebuggerImpl'ementation
@@ -21,7 +22,7 @@ import java.net.URI
  */
 abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTestCase {
 	// couldn't reuse the one from xtext because it is hardcoded
-	static val SYNTHETIC_FILE_PREFFIX = "__synthetic"
+	static val SYNTHETIC_FILE_PREFFIX = WollokConstants.SYNTHETIC_FILE
 	
 	
 	/**

@@ -3,12 +3,12 @@ package org.uqbar.project.wollok.ui.console.highlight
 import com.google.inject.Inject
 import java.io.ByteArrayInputStream
 import java.util.List
+import org.eclipse.jface.text.TextAttribute
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
-import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
@@ -20,7 +20,6 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.eclipse.xtext.diagnostics.Severity
 
 /**
  * A line style listener for the console to highlight code
@@ -59,7 +58,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	}
 	
 	override lineGetStyle(LineStyleEvent event) {
-		if (event == null || event.lineText == null || event.lineText.length == 0 || !event.isCodeInputLine)
+		if (event === null || event.lineText === null || event.lineText.length == 0 || !event.isCodeInputLine)
             return;
             
         val originalText = (event.widget as StyledText).text
@@ -75,9 +74,10 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		// add custom highlights
 		calculator.provideHighlightingFor(resource) [ offset, length, styleIds |
 			val styleId = styleIds.get(0) // just get the first one ??
-			val style = stylesProvider.getAttribute(styleId)
+			val TextAttribute style = stylesProvider.getAttribute(styleId)
 			
 			val s = new StyleRange(event.lineOffset + offset - headerLength, length, style.foreground, style.background)
+			s.underline = (style.style.bitwiseAnd(TextAttribute.UNDERLINE)) !== 0
 			s.data = styleId
 			
 			if (s.start <= originalText.length && s.end <= originalText.length) {
@@ -97,7 +97,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 							.forEach [ styles.merge(it) ]
 		
 		// validations (checks)
-		// I HAVE TO DISABLED THIS AFTER FIXING THE WAY IT PARSES THE INPUT (because of linking errors like trying to set Object to object literals)
+		// I HAVE TO DISABLE THIS AFTER FIXING THE WAY IT PARSES THE INPUT (because of linking errors like trying to set Object to object literals)
 //		checker.validate(Activator.getDefault.injector, resource, [], [issues |
 //			issues.filter[ severity != Severity.WARNING ].forEach[ checkerError(event, offset, length) ]
 //		])

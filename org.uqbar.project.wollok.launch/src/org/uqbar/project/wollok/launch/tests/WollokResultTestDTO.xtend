@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.launch.tests
 import java.io.Serializable
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 
 @Accessors
 class WollokResultTestDTO implements Serializable {
