@@ -11,9 +11,10 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		val supertypes = tvar.allSupertypes
 		typeInfo.minTypesDo(tvar)[
 			if (state == Pending) {
-				val localChanged = tvar.propagateMinType(type, supertypes)
-				if (!localChanged)
-					println('''	Propagating min(«type») from: «tvar» to nowhere => «Ready»''')
+//				val localChanged = 
+				tvar.propagateMinType(type, supertypes)
+//				if (!localChanged)
+//					println('''	Propagating min(«type») from: «tvar» to nowhere => «Ready»''')
 
 				ready
 				changed = true
@@ -21,11 +22,11 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		]
 	}
 
-	protected def boolean propagateMinType(TypeVariable tvar, WollokType key, Iterable<TypeVariable> supertypes) {
+	protected def boolean propagateMinType(TypeVariable origin, WollokType key, Iterable<TypeVariable> supertypes) {
 		supertypes.evaluate[ supertype |
-			val newState = supertype.addMinimalType(key)
+			val newState = supertype.addMinType(key, origin)
 			(newState != Ready)
-				=> [ if (it) println('''	Propagating min(«key») from: «tvar» to «supertype» => «newState»''')]
+				=> [ if (it) println('''	Propagating min(«key») from: «origin» to «supertype» => «newState»''')]
 		]
 	}
 	

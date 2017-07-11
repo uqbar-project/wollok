@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
+import java.util.List
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
+
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 
 class MaximalConcreteTypes {
@@ -53,6 +55,6 @@ class MaximalConcreteTypes {
 	}
 
 	override toString() '''max(«maximalConcreteTypes») [«state»]'''
-
+	
 }
 

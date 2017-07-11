@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 abstract class TypeInfo {
 	@Accessors(PUBLIC_GETTER)
@@ -38,7 +37,9 @@ abstract class TypeInfo {
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
-	def void beSealed()
+	def void beSealed() {
+		sealed = true
+	}
 
 	/**
 	 * @param type A new type to be added

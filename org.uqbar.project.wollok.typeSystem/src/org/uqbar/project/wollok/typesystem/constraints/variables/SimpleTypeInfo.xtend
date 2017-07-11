@@ -35,7 +35,7 @@ class SimpleTypeInfo extends TypeInfo {
 	// ************************************************************************
 	override beSealed() {
 		maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
-		sealed = true
+		super.beSealed
 	}
 
 	/**

@@ -61,7 +61,7 @@ class TypeVariablesRegistry {
 	 */
 	def newCollection(EObject owner, ConcreteType collectionType) {
 		TypeVariable.generic(owner, #[ELEMENT]) => [
-			addMinimalType(collectionType)
+			addMinType(collectionType)
 			beSealed
 			register
 		]
@@ -93,7 +93,7 @@ class TypeVariablesRegistry {
 	}
 
 	def beSealed(TypeVariable it, WollokType type) {
-		addMinimalType(type)
+		addMinType(type)
 		beSealed
 	}
 
@@ -103,7 +103,7 @@ class TypeVariablesRegistry {
 	def newSyntheticVar(WollokType type) {
 		// TODO This should disappear when we finish the new type annotations.
 		TypeVariable.synthetic => [
-			addMinimalType(type)
+			addMinType(type)
 			beSealed
 		]
 	}
