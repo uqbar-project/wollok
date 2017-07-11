@@ -50,7 +50,7 @@ interface XDebugger extends Serializable {
 	def void pause()
 	def void resume()
 	def Stack<XStackFrame> getStack()
-	
+		
 	// BPs
 	def void setBreakpoint(String fileURI, int line)
 	def void clearBreakpoint(String fileURI, int line)

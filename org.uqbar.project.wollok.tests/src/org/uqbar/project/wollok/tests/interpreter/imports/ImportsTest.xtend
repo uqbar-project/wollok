@@ -8,6 +8,8 @@ import org.junit.Ignore
  * Test the different combinations and functionality of imports.
  * 
  * @author jfernandes
+ * @author tesonep
+ * 
  */
 class ImportsTest extends AbstractWollokInterpreterTestCase {
 	
@@ -20,7 +22,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			
 		''',
 		'entrenador' -> '''
-			import aves.pepita
+			import aves.*
 			
 			object mostaza {
 				method entrenar() {
@@ -29,7 +31,7 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			}
 		''',
 		'programa' -> '''
-			import entrenador.mostaza
+			import entrenador.*
 			program a {
 				const nombre = mostaza.entrenar()
 				
@@ -38,6 +40,92 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'''
 		].interpretAsFilesPropagatingErrors
 	}
+	
+	@Test
+	def void testImportObjectMultiLevel() {
+		#['model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'model/entrenador' -> '''
+			import model.aves.*
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'pgm/programa' -> '''
+			import model.entrenador.*
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+
+	@Test
+	def void testImportObjectMultiLevelRelative() {
+		#['model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'model/entrenador' -> '''
+			import aves.*
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'pgm/programa' -> '''
+			import model.entrenador.*
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+
+
+	@Test
+	def void testImportObjectInSrc() {
+		#['src/model/aves' -> '''
+			object pepita {
+				method getNombre() = "pepita"
+			}
+			
+		''',
+		'src/model/entrenador' -> '''
+			import aves.*
+			
+			object mostaza {
+				method entrenar() {
+					return pepita.getNombre()
+				} 
+			}
+		''',
+		'src/pgm/programa' -> '''
+			import model.entrenador.*
+			program a {
+				const nombre = mostaza.entrenar()
+				
+				assert.equals('pepita', nombre)
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+
 	
 	@Test
 	def void testMultipleObjectsImports() {
@@ -108,6 +196,39 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 			program a {
 				assert.equals('Patito Feo', patitoFeo.getNombre())
 				assert.equals('pepona', pepona.getNombre())
+			}
+		'''
+		].interpretAsFilesPropagatingErrors
+	}
+	
+	@Test
+	def void importWithPackages(){
+		#["model/armas" -> '''
+			package xxx {
+			
+				class Arma {
+					method disparar() {
+					}
+				}
+			}
+			
+			class Guerrero {
+				
+			}
+		''',
+		"test/test" -> '''
+			import model.*
+			import model.armas.*
+			
+			test "test con arma" {
+				const arma = new armas.xxx.Arma()
+				assert.that(true)
+			}
+			
+			test "thor pelea duro" {
+				const thor = new armas.Guerrero()
+				const thor2 = new Guerrero()
+				assert.that(true)	
 			}
 		'''
 		].interpretAsFilesPropagatingErrors

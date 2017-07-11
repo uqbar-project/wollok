@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
@@ -45,8 +46,11 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -56,9 +60,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
+import org.eclipse.emf.ecore.resource.Resource
+
+import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -70,10 +76,14 @@ import static extension org.uqbar.project.wollok.scoping.root.WollokRootLocator.
 class WollokModelExtensions {
 
 	def static implicitPackage(EObject it) {
-		if(file.URI.toString.startsWith("classpath:/"))
-			file.URI.trimFileExtension.segments.join(".")
+		file.implicitPackage
+	}
+	
+	def static implicitPackage(Resource it){
+		if(URI.toString.startsWith("classpath:/"))
+			URI.trimFileExtension.segments.join(".")
 		else
-			file.fullPackageName
+			fullPackageName(it)
 	}
 	
 	def static file(EObject it) { eResource }
@@ -133,6 +143,10 @@ class WollokModelExtensions {
 	 * Uses of a Variable
 	 */
 	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
+	
+	def static isUsed(WParameter parameter) {
+		!ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty
+	}
 
 	def static assignments(WVariable variable) {
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
@@ -142,7 +156,8 @@ class WollokModelExtensions {
 		variable.eContainer as WVariableDeclaration
 	}
 
-	def static declarationContext(WVariable variable) { variable.declaration.eContainer }
+	def static dispatch declarationContext(WVariable variable) { variable.declaration.eContainer }
+	def static dispatch declarationContext(WParameter parameter) { parameter.eContainer }
 
 	// **********************
 	// ** access containers
@@ -161,7 +176,6 @@ class WollokModelExtensions {
 	def static dispatch WExpression firstExpressionInContext(WBlockExpression b) { b.expressions.head } 
 	def static dispatch WExpression firstExpressionInContext(WTest t) {	t.elements.head	}
 	
-	
 	def static first(WBlockExpression it, Class<?> type) { expressions.findFirst[ type.isInstance(it) ] }
 
 	def static closure(WParameter p) { p.eContainer as WClosure }
@@ -169,10 +183,33 @@ class WollokModelExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
+	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
+	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
+	
+	def static dispatch constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
+		constructorName(c, "self")
+	}
+	
+	def static dispatch constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
+		constructorName(c, "super")
+	}
+	
+	def static constructorName(WConstructor c, String constructorCall) {
+		(constructorCall ?: "constructor") + "(" + c.parameters.map [ name ].join(",") + ")"
+	}
+	
+	def static constructorParameters(WClass c) {
+		c.constructors.map[ constructorName("") ].join(", ")
+	}
+	
 	def static methodName(WMethodDeclaration d) {
-		d.declaringContext.name + "." + d.name + "(" + d.parameters.map[name].join(", ") + ")"
+		d.declaringContext.name + "." + d.messageName
 	}
 
+	def static messageName(WMethodDeclaration d) {
+		d.name + "(" + d.parameters.map[name].join(", ") + ")"
+	}
+	
 	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
 
 	// se puede ir ahora que esta bien la jerarquia de WReferenciable (?)
@@ -416,6 +453,14 @@ class WollokModelExtensions {
 	def static getScope(Import it, WollokGlobalScopeProvider scopeProvider) { scopeProvider.getScope(eResource, WollokDslPackage.Literals.WCLASS__PARENT) }
 	def static upTo(Import it, String segment) { importedNamespace.substring(0, importedNamespace.indexOf(segment) + segment.length) }
 	
+	/**
+	 * Returns all the imports in the context.
+	 **/
+	def static Iterable<Import> allImports(EObject e){ 
+		val locals = e.eContents.filter(Import)
+		if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+	}
+	
 	// *******************************
 	// ** refactoring
 	// *******************************
@@ -436,5 +481,34 @@ class WollokModelExtensions {
 		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) && doApplyRenameTo(e, node.semanticElement)
 	}
 	
+	def static dispatch expectsExpression(EObject e) { false }
+	def static dispatch expectsExpression(WBinaryOperation op) { true }
+	def static dispatch expectsExpression(WUnaryOperation op) { true }
+	def static dispatch expectsExpression(WReturnExpression r) { true }
+	def static dispatch expectsExpression(WVariableDeclaration v) { true }
+	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 	
+	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		val methodBody = m.expression.eContents
+	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
+	}
+	
+	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }
+	def static dispatch boolean callsToSuperWith(WSuperInvocation s, WMethodDeclaration m) {
+		val methodParamsSize = m.parameters.size
+		if (methodParamsSize != s.memberCallArguments.size) return false;
+		if (methodParamsSize == 0 && s.memberCallArguments.size == 0) return true;
+		(0..methodParamsSize - 1).forall [ i |
+			m.parameters.get(i).matchesParam(s.memberCallArguments.get(i))
+		]
+	}
+	
+	def static dispatch boolean callsToSuperWith(WReturnExpression ret, WMethodDeclaration m) {
+		ret.expression.callsToSuperWith(m)
+	}
+	
+	def static dispatch matchesParam(WParameter p, EObject e) { false }
+	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
+	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 }
+

@@ -3,7 +3,7 @@
 // test case
 
 class WithDefaultConstructor {}
-object innheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
+object inheritingFromWitDefaultConstructor inherits WithDefaultConstructor {}
 
 
 // test case
@@ -12,7 +12,7 @@ class WithSingleOneArgConstructor {
 	constructor(param) { }	
 }
 
-// XPECT errors --> "No default constructor in super type WithSingleOneArgConstructor. You must explicitly call a constructor: (param)" at "WithSingleOneArgConstructor"
+// XPECT errors --> "Object must explicitly call a superclass constructor: (param)" at "WithSingleOneArgConstructor"
 object one inherits WithSingleOneArgConstructor { }
 
 
@@ -23,7 +23,7 @@ class TwoConstructors {
 	constructor(p1, p2) { }
 }
 
-// XPECT errors --> "No default constructor in super type TwoConstructors. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
+// XPECT errors --> "Object must explicitly call a superclass constructor: (param), (p1,p2)" at "TwoConstructors"
 object two inherits TwoConstructors { }
 
 object o1 inherits TwoConstructors("hola") { }
@@ -57,7 +57,7 @@ class A {
 	method blah()
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: A.blah()" at "anA"
+// XPECT errors --> "You must implement all inherited abstract methods: A.blah()" at "anA"
 object anA inherits A {
 }
 
@@ -65,5 +65,10 @@ class B inherits A {
 	method otherAbstract(one, two)
 }
 
-// XPECT errors --> "Must implement inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
+object badWko {
+	// XPECT errors --> "Abstract method not allowed inside object definition, you must provide an implementation" at "abstractMethod"
+	method abstractMethod()
+}
+
+// XPECT errors --> "You must implement all inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
 object aB inherits B {}

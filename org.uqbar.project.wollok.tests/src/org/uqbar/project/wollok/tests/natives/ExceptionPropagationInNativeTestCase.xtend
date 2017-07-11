@@ -26,9 +26,9 @@ program natives {
 	catch e {
 		assert.equals(
 "wollok.lang.Exception: SoundGarden
-	at  [natives.wpgm]
-	at natives.Repeater.ntimes(n,closure) [natives.wpgm]
-	at  [natives.wpgm]
+	at  [/natives.wpgm:8]
+	at natives.Repeater.ntimes(n,closure) [/natives.wpgm:2]
+	at  [/natives.wpgm:10]
 ",e.getStackTraceAsString())
 	} 
 }

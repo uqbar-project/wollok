@@ -29,7 +29,7 @@ class ReflectionExtensions {
 		getField(o.class, name).get(o)
 	}
 
-	static def executeMethod(Object o, String methodName, Object[] args) {
+	static def executeMethod(Object o, String methodName, Object... args) {
 		val method = (o.class).getDeclaredMethod(methodName, args.map[it.class])
 		method.accessible = true
 		method.invoke(o, args)
