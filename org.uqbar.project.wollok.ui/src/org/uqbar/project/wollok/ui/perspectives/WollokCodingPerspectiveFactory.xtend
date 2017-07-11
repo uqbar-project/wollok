@@ -45,6 +45,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 		
 		createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.editorArea) => [
 			addView("org.eclipse.ui.views.ContentOutline");
+			addView("org.uqbar.project.wollok.ui.diagrams.class")
 		]
 		
 		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
@@ -64,7 +65,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 	def addPerspectiveShortcuts(IPageLayout it) {
 		#[
 			"org.eclipse.debug.ui.DebugPerspective",
-			"org.eclipse.ui.resourcePerspective",
 			"org.eclipse.team.ui.TeamSynchronizingPerspective"
 		]
 		.forEach[a| addPerspectiveShortcut(a) ]
