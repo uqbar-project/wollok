@@ -337,4 +337,25 @@ Library.
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.uqbar.project.wollok.typeSystem"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.typeSystem.xsemantics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.uqbar.project.wollok.typeSystem.xsemantics.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
