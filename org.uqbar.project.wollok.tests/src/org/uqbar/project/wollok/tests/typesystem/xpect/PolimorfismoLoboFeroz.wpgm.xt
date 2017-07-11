@@ -17,7 +17,8 @@ object lobo {
 	}
 	
 	method correr(minutos){
-		calorias = calorias - minutos * 2
+		// XPECT! noIssues
+		// calorias = calorias - minutos * 2
 	}
 	
 	method comer(personaje){
@@ -29,6 +30,7 @@ object lobo {
 	}
 
 	method soplar(casa){
+		// XPECT! noIssues
 		calorias = calorias - (casa.resistencia() + casa.pesoOcupantes())
 	}
 		
