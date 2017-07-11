@@ -16,9 +16,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Integer >> ">=" === #[Integer] => Boolean
 		Integer >> "<=" === #[Integer] => Boolean
 
-		Double + Double => Integer
-		Double * Double => Integer
-		Double >> "/" === #[Integer] => Integer;
+		Double + Number => Double
+		Double * Number => Double
+		Double >> "/" === #[Number] => Double;
 		(Double > Double) => Boolean
 
 		String >> "size" === #[] => Integer

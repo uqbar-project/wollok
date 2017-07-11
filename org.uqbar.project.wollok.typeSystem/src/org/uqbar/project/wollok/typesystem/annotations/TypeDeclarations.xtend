@@ -67,6 +67,8 @@ abstract class TypeDeclarations {
 
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 	
+	def Number() { classTypeAnnotation(NUMBER) }
+
 	def Integer() { classTypeAnnotation(INTEGER) }
 	
 	def Double() { classTypeAnnotation(DOUBLE) }
