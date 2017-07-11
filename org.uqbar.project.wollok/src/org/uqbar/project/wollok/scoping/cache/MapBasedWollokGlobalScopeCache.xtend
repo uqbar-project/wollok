@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.scoping.cache
 
 import com.google.inject.Singleton
-import java.util.List
-import java.util.Set
 import org.apache.commons.collections.map.LRUMap
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -15,11 +13,11 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 	
 	val cache = new LRUMap(20)
 	
-	override get(URI uri, List<Import> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock) {
+	override get(URI uri, Iterable<String> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock) {
 		val uriString = uri.toString
 		var cacheContent = cache.get(uriString) as MapBasedCacheContent
 		
-		if(cacheContent == null || cacheContent.mismatch(imports)){
+		if(cacheContent === null || cacheContent.mismatch(imports)){
 			cacheContent = new MapBasedCacheContent(uri, imports, ifAbsentBlock.apply)
 			cache.put(uriString, cacheContent)
 		}
@@ -36,16 +34,16 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 @Accessors
 class MapBasedCacheContent {
 	val String uri
-	val Set<String> imports
+	val Iterable<String> imports
 	val Iterable<IEObjectDescription> result
 	
-	new(URI uri, List<Import> imports, Iterable<IEObjectDescription> result){
+	new(URI uri, Iterable<String> imports, Iterable<IEObjectDescription> result){
 		this.uri = uri.toString
-		this.imports = imports.map[importedNamespace].toSet
+		this.imports = imports.toSet
 		this.result = newHashSet(result)
 	}
 	
-	def mismatch(List<Import> imports){
-		this.imports != imports.map[importedNamespace].toSet
+	def mismatch(Iterable<String> imports){
+		this.imports != imports.toSet
 	}
 }

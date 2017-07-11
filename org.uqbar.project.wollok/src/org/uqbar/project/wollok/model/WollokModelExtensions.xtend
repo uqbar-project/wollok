@@ -65,6 +65,8 @@ import org.eclipse.emf.ecore.resource.Resource
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.uqbar.project.wollok.wollokDsl.impl.ImportImpl
 
 /**
  * Extension methods to Wollok semantic model.
@@ -459,6 +461,16 @@ class WollokModelExtensions {
 	def static Iterable<Import> allImports(EObject e){ 
 		val locals = e.eContents.filter(Import)
 		if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+	}
+	
+	def static Iterable<String> allFQNImports(EObject e){
+		val constructors = e.eAllContents.filter(WConstructorCall).toSet
+		constructors
+			.map[NodeModelUtils.findNodesForFeature(it,WollokDslPackage.Literals.WCONSTRUCTOR_CALL__CLASS_REF)]
+			.flatten
+			.map[NodeModelUtils.getTokenText(it)]
+			.filter[it.contains(".")].toSet
+		#{}
 	}
 	
 	// *******************************
