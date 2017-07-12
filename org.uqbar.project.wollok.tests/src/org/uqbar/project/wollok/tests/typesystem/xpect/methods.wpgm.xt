@@ -1,13 +1,11 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-class Golondrina {
-	// XPECT! noIssues 
+class Golondrina { 
 	var energia = 100
 	
-	// XPECT! noIssues 
 	method vola() { energia = energia - 10 }
 	
-	// XPECT methodType at come --> (Number) => Void
+	// XPECT methodType at come --> (Integer) => Void
 	method come(grms) { energia = grms * 0.10 }
 }
 
