@@ -5,6 +5,7 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.junit.Ignore
 
 /**
  * Test cases for type inference of closures.
@@ -33,6 +34,7 @@ class ConsoleInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void coreWKOMethodSignature() {
 		'''
 			program p {

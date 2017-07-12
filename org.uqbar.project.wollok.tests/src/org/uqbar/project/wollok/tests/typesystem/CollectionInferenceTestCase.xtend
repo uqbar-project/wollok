@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
@@ -40,6 +41,7 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void add() {
 		'''
 		program p {
