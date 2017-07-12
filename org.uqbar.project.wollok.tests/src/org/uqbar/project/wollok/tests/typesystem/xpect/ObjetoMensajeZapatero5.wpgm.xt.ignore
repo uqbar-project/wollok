@@ -1,6 +1,8 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-/* Colecciones, sin bloques
+// XPECT_IGNORE
+
+/* Colecciones, con bloques
  * Pepe zapatero. 
  * 
  */
@@ -32,12 +34,6 @@ object salvador {
 	}
 }
 
-object moni{
-	method estaFeliz(){
-		return true
-	}
-	method compraZapatos(){}
-}
 
 // COSAS QUE PEPE PUEDE ARREGLAR >>>
 
@@ -57,12 +53,30 @@ object botaDeCuero {
 	}
 }
 
-object pepe {
-	// XPECT type at clientes --> [fiona|salvador|moni]
-	const clientes = [fiona, salvador]
-   // const clientes = new List() 
+object moni{
+	
+	var calzadoPreferido = botaDeCuero 
+	const calzados = [calzadoPreferido]
+	
+	method estaFeliz(){
+		return calzados.count{c => c.complejidad() < 50} == 2 and
+		   calzados.max{c=>c.complejidad()}.complejidad() >= 100 
+	}
+	
+	// XPECT methodType at clientePredilecto --> () => (fiona|salvador|moni) 
+	method cambiarPreferencia(nuevoCalzado) {
+		calzadoPreferido = nuevoCalzado
+	}
+	
+	method compraZapatos(){
+		calzados.add(calzadoPreferido)
+	}
+}
 
-	//var clientes = [fiona, salvador]   --> idem
+object pepe {
+	// XPECT type at clientes --> Collection of fiona|salvador|moni
+	var clientes = [fiona, salvador]
+
 	var fatiga = 100 
 	
 	method cuantosGolesMetiste(){
@@ -71,7 +85,7 @@ object pepe {
 	
 	// XPECT methodType at labura --> () => Void
 	method labura(){
-		clientes.first().compraZapatos()
+		clientes.forEach{c=>c.compraZapatos()}
 	}	
 	// XPECT methodType at cuantosClientesTenes --> () => Integer
 	method cuantosClientesTenes(){
@@ -87,7 +101,7 @@ object pepe {
 	}
 	
 	method hicisteBienTuTrabajo() {
-		return clientes.first().estaFeliz()
+		return clientes.all{c=>c.estaFeliz()}
 	}
 	
 	// XPECT methodType at llegaCliente --> (fiona|salvador|moni) => Void
@@ -97,10 +111,14 @@ object pepe {
 	method finDelDia(){
 		clientes.clear()
 	}
+	// XPECT methodType at clientesFelices --> () => Collection of (fiona|salvador|moni)
+	method clientesFelices(){
+		return clientes.filter{c=>c.estaFeliz()}
+	}
 	
 	// XPECT methodType at clientePredilecto --> () => (fiona|salvador|moni) 
 	method clientePredilecto() {
-		return clientes.last()
+		return self.clientesFelices().anyOne()
 	}
 	
 	method arregla(calzado) { 					

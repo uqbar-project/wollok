@@ -1,5 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
+// XPECT_IGNORE
+
 object lobo {
 
 	var calorias = 100

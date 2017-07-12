@@ -4,7 +4,7 @@ program p {
 	// XPECT type at [].add(1)  --> Void 
 	[].add(1)
 
-	// XPECT warnings --> "This statement does not produce a value" at "[].add(1)"
+	// XPECT! warnings --> "This statement does not produce a value" at "[].add(1)"
 	const nada = [].add(1)
 	nada
 }
