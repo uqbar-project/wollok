@@ -35,6 +35,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 		createFolder("bottomRight",	IPageLayout.BOTTOM, 0.75f, factory.editorArea) => [
 			addView(IPageLayout.ID_PROBLEM_VIEW)
 			addView(IConsoleConstants.ID_CONSOLE_VIEW)
+			addView("org.uqbar.project.wollok.ui.diagrams.class")
 			addView("org.eclipse.team.ui.GenericHistoryView")
 		]
 
@@ -45,7 +46,6 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 		
 		createFolder("topRight", IPageLayout.RIGHT, 0.75f, factory.editorArea) => [
 			addView("org.eclipse.ui.views.ContentOutline");
-			addView("org.uqbar.project.wollok.ui.diagrams.class")
 		]
 		
 		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
