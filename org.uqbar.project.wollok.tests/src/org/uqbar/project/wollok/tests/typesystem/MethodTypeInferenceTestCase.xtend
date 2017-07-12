@@ -65,7 +65,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+			assertMethodSignature("(Number) => Void", "Golondrina.come")
 		]
 	}
 
