@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
@@ -38,7 +39,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Custom quickfixes.
@@ -518,7 +518,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	def int findPlaceToAddMethod(WMethodContainer it) {
 		val lastMethod = members.lastOf(WMethodDeclaration)
-		if (lastMethod !== null)
+		if (lastMethod !== null) 
 			return lastMethod.after
 		val lastConstructor = members.lastOf(WConstructor)
 		if (lastConstructor !== null)
@@ -603,8 +603,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		if (container.methods.empty) {
 			return 1
 		}
-		val line = document.getLineOfOffset(placeToAdd)
-		placeToAdd - document.getLineOffset(line) - 1
+		val lineInformation = document.getLineInformationOfOffset(placeToAdd)
+		var textLine = document.get(lineInformation.offset, lineInformation.length)
+		var margin = 0
+		while (textLine.startsWith("\t")) {
+			margin++
+			textLine = textLine.substring(1)
+		}
+		margin
 	}
 
 }
