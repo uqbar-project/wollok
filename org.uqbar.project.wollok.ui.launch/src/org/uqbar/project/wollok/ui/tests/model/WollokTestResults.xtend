@@ -5,7 +5,7 @@ import java.util.List
 import java.util.Observable
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.launch.tests.StackTraceElementDTO
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.launch.tests.WollokRemoteUITestNotifier
 import org.uqbar.project.wollok.launch.tests.WollokResultTestDTO
 import org.uqbar.project.wollok.launch.tests.WollokTestInfo
@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.ui.console.RunInUI
 class WollokTestResults extends Observable implements WollokRemoteUITestNotifier { 
 
 	boolean shouldShowOnlyFailuresAndErrors = false
-	
+		
 	@Accessors
 	var WollokTestContainer container
 	
@@ -26,10 +26,11 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		testByName(testName).endedAssertError(message, stackTrace, lineNumber, resource)
 		
 		this.setChanged
-		this.notifyObservers
+		this.notifyObservers()
 	}
 
 	override testOk(String testName) {
+		
 		testByName(testName).endedOk()
 
 		this.setChanged
@@ -72,6 +73,7 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 		this.setChanged
 		this.notifyObservers		
 	}
+	
 	
 	override notifyObservers(Object arg) {
 		RunInUI.runInUI[super.notifyObservers(arg)]

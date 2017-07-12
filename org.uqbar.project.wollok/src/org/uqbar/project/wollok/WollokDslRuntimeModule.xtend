@@ -4,7 +4,9 @@
 package org.uqbar.project.wollok
 
 import com.google.inject.Binder
+import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
+import java.util.List
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
 import org.eclipse.xtext.linking.ILinkingDiagnosticMessageProvider
@@ -21,10 +23,14 @@ import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.interpreter.natives.NativeObjectFactory
+import org.uqbar.project.wollok.libraries.BasicWollokLibraryLoader
+import org.uqbar.project.wollok.libraries.JarWollokLibraries
+import org.uqbar.project.wollok.libraries.StandardWollokLib
+import org.uqbar.project.wollok.libraries.WollokLib
+import org.uqbar.project.wollok.libraries.WollokLibraries
+import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.linking.WollokLinker
 import org.uqbar.project.wollok.linking.WollokLinkingDiagnosticMessageProvider
-import org.uqbar.project.wollok.manifest.BasicWollokManifestFinder
-import org.uqbar.project.wollok.manifest.WollokManifestFinder
 import org.uqbar.project.wollok.parser.WollokSyntaxErrorMessageProvider
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
@@ -49,6 +55,16 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 
 		binder.bind(ILinkingDiagnosticMessageProvider.Extended).to(WollokLinkingDiagnosticMessageProvider);
 		binder.bind(OperationCanceledManager).toInstance(new OperationCanceledManager);
+		
+		binder.bind(WollokLib).annotatedWith(Names.named("standardWollokLib")).to(StandardWollokLib)
+		binder.bind(new TypeLiteral<List<String>>(){}).annotatedWith(Names.named("libraries")).toInstance(libs())
+		binder.bind(WollokLibraries).to(JarWollokLibraries)	
+	
+	}
+	
+	//this method is overriden by WollokLauncherModule
+	def List<String> libs() {
+		#[]
 	}
 
 	def Class<? extends IDefaultResourceDescriptionStrategy> bindIDefaultResourceDescriptionStrategy() {
@@ -63,8 +79,8 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		MapBasedWollokGlobalScopeCache
 	}
 
-	def Class<? extends WollokManifestFinder> bindWollokManifestFinder() {
-		BasicWollokManifestFinder
+	def Class<? extends WollokLibraryLoader> bindWollokManifestFinder() {
+		BasicWollokLibraryLoader
 	}
 
 	override configureIScopeProviderDelegate(Binder binder) {
@@ -99,4 +115,5 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 	override bindIFormatter() {
 		WollokDslFormatter
 	}
+	
 }

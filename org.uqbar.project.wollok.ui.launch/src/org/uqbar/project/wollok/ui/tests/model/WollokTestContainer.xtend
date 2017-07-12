@@ -4,6 +4,7 @@ import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.eclipse.core.resources.ResourcesPlugin
 
 @Accessors
 class WollokTestContainer {
@@ -38,6 +39,12 @@ class WollokTestContainer {
 	def getProject() {
 		if (this.allTests.empty) return null
 		this.allTests.head.testResource.toIFile.project
-	}	
+	}
+	
+	def asText() {
+		if (this.hasSuiteName) return this.suiteName
+		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
+		this.mainResource.deresolve(base).toFileString
+	}
 	
 }

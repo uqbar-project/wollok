@@ -114,7 +114,9 @@
 					<excludes>
 						<exclude>**/Abstract*</exclude>
 						<exclude>**/WollokXPectTest.java</exclude>
+						<exclude>**/TypeSystemXpectTestCase.java</exclude>
 						<exclude>**/WollokContentAssistTest.java</exclude>
+						<exclude>**/LoadLibraryTest.java</exclude>
 
 						<!-- TODO: I WAS NOT ABLE TO MAKE THEM WORK FROM MAVEN :(  -->
 						<exclude>**/ExtractMethodRefactoringTest.java</exclude>
@@ -124,7 +126,7 @@
 			</plugin>
 			
 			<!-- xpect test just with regular junit test -->
-			<plugin>
+		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.18.1</version>
@@ -136,17 +138,20 @@
 						<configuration>
 							<includes>
 								<include>**/WollokXPectTest.java</include>
+								<include>**/TypeSystemXpectTestCase.java</include>
 								<include>**/WollokContentAssistTest.java</include>
+								<include>**/LoadLibraryTest.java</include>
 								<!-- TODO: I WAS NOT ABLE TO MAKE THEM WORK FROM MAVEN :(
 								<include>**/ExtractMethodRefactoringTest.java</include>
 								<include>**/WollokContentAssistTest.java</include>
 								 -->
 							</includes>
-							<forkMode>once</forkMode>
+							<forkCount>1</forkCount>
+							<reuseForks>false</reuseForks>
 							<reportFormat>xml</reportFormat>
 							<testClassesDirectory>target/classes</testClassesDirectory>
 							<argLine>-Dfile.encoding=UTF-8 -Duser.language=en -Duser.country=US -Dnl=en</argLine>
-						</configuration>
+    					</configuration>
 						<goals>
 							<goal>test</goal>
 						</goals>

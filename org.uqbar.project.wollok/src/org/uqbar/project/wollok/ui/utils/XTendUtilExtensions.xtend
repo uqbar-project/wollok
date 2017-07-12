@@ -176,7 +176,7 @@ class XTendUtilExtensions {
 					}
 
 					def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
-						if (e.cause instanceof WollokProgramExceptionWrapper || e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION))
+						if (e.cause instanceof WollokProgramExceptionWrapper || e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN))
 							e.cause
 						else {
 //									WollokJavaConversions.newWollokAssertionException(e.cause.message))

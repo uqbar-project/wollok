@@ -113,6 +113,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		// return key pressed
 		if ((e.keyCode == KEY_RETURN || e.keyCode == SWT.KEYPAD_CR) && !e.controlPressed) {
 			console.updateIfDirty
+			console.updateInputBuffer
 			console.sendInputBuffer
 			historyPosition = -1
 		} else {

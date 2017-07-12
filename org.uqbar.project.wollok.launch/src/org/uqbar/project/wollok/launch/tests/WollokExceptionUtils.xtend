@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.launch.tests
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.List
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -101,7 +102,7 @@ class WollokExceptionUtils {
 	
 	def static dispatch isAssertionException(WollokProgramExceptionWrapper e) {
 		val className = e.wollokException.call("className").toString
-		className.equalsIgnoreCase(ASSERTION_EXCEPTION)
+		className.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN)
 	}
 	
 	def static dispatch isAssertionException(WollokInterpreterException e) {

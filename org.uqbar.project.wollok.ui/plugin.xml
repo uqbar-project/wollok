@@ -156,6 +156,23 @@
 				</enabledWhen>
 		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
 	        </page>
+	      
+	   
+	      
+	        <page
+	            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.eclipse.jdt.internal.ui.preferences.BuildPathsPropertyPage"
+	            id="org.uqbar.project.wollok.ui.properties.wollokProjectPropertyPage"
+	            category="org.uqbar.project.wollok.WollokDsl"
+	            name="%libraries">
+	            <enabledWhen>
+		            <adapt type="org.eclipse.core.resources.IProject"/>
+				</enabledWhen>
+		        <filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
+	        </page>
+	      
+	      
+	      
+	        
 	    </extension>
 	    <!-- VALIDATOR -->
     
@@ -515,6 +532,7 @@
             id="org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard"
             name="%wollokProject"
             project="true">
+            <description>%wollokProjectDescription</description>
       </wizard>
       <category
             id="org.uqbar.project.wollok.ui.category"
@@ -528,6 +546,7 @@
             icon="icons/wollok-icon-object_16.png"
             id="org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard"
             name="%wollokObjectsAndClasses">
+            <description>%wollokObjectsAndClassesDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -537,6 +556,7 @@
             icon="icons/wollok-icon-message_16.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
             name="%wollokTest">
+            <description>%wollokTestDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -546,6 +566,7 @@
             icon="icons/suite.png"
             id="org.uqbar.project.wollok.ui.wizard.tests.NewWollokDescribeWizard"
             name="%wollokDescribe">
+            <description>%wollokDescribeDescription</description>
       </wizard>
       <wizard
             category="org.uqbar.project.wollok.ui.category"
@@ -555,6 +576,7 @@
             icon="icons/wollok-icon-program_16.png"
             id="org.uqbar.project.wollok.ui.wizard.program.NewWollokProgramWizard"
             name="%wollokProgram">
+            <description>%wollokProgramDescription</description>
       </wizard>
    </extension>
    <extension

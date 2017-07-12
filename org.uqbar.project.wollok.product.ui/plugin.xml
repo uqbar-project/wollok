@@ -7,6 +7,9 @@
       <startup
             class="org.uqbar.project.wollok.product.ui.startup.RemoveWizardsStartup">
       </startup>
+      <startup
+            class="org.uqbar.project.wollok.product.ui.startup.OpenDebugPerspectiveOnStartup">
+      </startup>
    </extension>
 
 </plugin>

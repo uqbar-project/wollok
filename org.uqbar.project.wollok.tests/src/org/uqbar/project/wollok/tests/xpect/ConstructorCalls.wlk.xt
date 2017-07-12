@@ -125,3 +125,25 @@ class TestLastConstructorDefinition {
 		d.x()
 	}
 }
+class Persona {
+	var edad = 10
+	constructor(_value){
+		edad = _value
+	}
+	method cumplirAnios() {
+		edad += 1
+	}
+}
+
+class Hijo inherits Persona {
+	
+}
+// XPECT errors --> "Object must explicitly call a superclass constructor: (_value)" at "Persona"
+object pepe inherits Persona {
+	
+}
+class TestPersonas {
+	method testear() {
+		assert.notEquals(new Hijo(2), new Persona(2))
+	}	
+}

@@ -7,9 +7,9 @@ import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.LineBorder
 import org.eclipse.draw2d.ToolbarLayout
 import org.eclipse.swt.graphics.Color
+import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 
 import static org.uqbar.project.wollok.ui.utils.GefUtils.*
-import org.eclipse.draw2d.RoundedRectangle
 
 /**
  * 
@@ -19,29 +19,36 @@ class WClassFigure extends Figure {
 	Label nameLabel
 	Figure attributesFigure
 	Figure methodsFigure
+	AbstractModel castedModel
 
-	new(String name, Color fgColor, Color bgColor) {
+	new(String name, Color fgColor, Color bgColor, AbstractModel castedModel) {
 		super()
 
-		layoutManager = new ToolbarLayout => [
-			matchWidth =  true
-			spacing = 5
-		]
+		this.castedModel = castedModel
 		
+		layoutManager = new ToolbarLayout => [
+			stretchMinorAxis =  true
+			spacing = 3
+		]
+
 		backgroundColor = bgColor
 		foregroundColor = fgColor
 		
 		nameLabel = new Label(name) => [
-			border = margin(2, 2, 5, 2)
+			setBorder(margin(2, 2, 3, 2))
 		]
 		add(nameLabel)
 		abstract = false
+
+		if (castedModel.variablesSize > 0) {
+			attributesFigure = createCompartment 
+			add(attributesFigure)
+		}
 		
-		attributesFigure = createCompartment 
-		add(attributesFigure)
-		
-		methodsFigure = createCompartment
-		add(methodsFigure)
+		if (castedModel.methodsSize > 0) {
+			methodsFigure = createCompartment
+			add(methodsFigure)
+		}
 		
 		opaque = true
 	}
@@ -51,7 +58,7 @@ class WClassFigure extends Figure {
 			layoutManager = new ToolbarLayout => [
 				minorAlignment = ToolbarLayout.ALIGN_TOPLEFT				
 			]
-			border = new WSeparatorBorder
+			setBorder(new WSeparatorBorder)
 			backgroundColor = this.backgroundColor.darker
 			opaque = true
 		]
@@ -62,15 +69,15 @@ class WClassFigure extends Figure {
 	}
 
 	def setName(String newName) {
-		if (nameLabel == null) {
+		if (nameLabel === null) {
 			nameLabel = new Label(newName)
 			add(nameLabel)
 		} else
 			nameLabel.text = newName
 	}
-
+	
 	def getName() {
-		nameLabel.text
+		nameLabel.text ?: "<...>"
 	}
 
 	override add(IFigure figure, Object constraint, int index) { addChild(figure, constraint, index) }
@@ -95,9 +102,9 @@ class WClassFigure extends Figure {
 	}
 	
 	def setFigureProblem(boolean problem) {
-		border = new LineBorder => [ 
+		setBorder(new LineBorder => [ 
 			color = if (problem) ColorConstants.red else ColorConstants.black
-		]
+		])
 	}
 	
 }

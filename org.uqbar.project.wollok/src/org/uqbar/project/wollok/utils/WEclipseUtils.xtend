@@ -9,6 +9,7 @@ import java.util.Map
 import java.util.Set
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IMarker
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.resources.IncrementalProjectBuilder
@@ -107,7 +108,7 @@ class WEclipseUtils {
 			iPath.exists
 		else {
 			val s = URI.toFileString
-			s != null && new File(s).exists
+			s !== null && new File(s).exists
 		}
 	}
 	def static iPath(Resource it) { Path.fromOSString(URI.toPlatformString(true)) }
@@ -155,11 +156,11 @@ class WEclipseUtils {
 	def static openEditor(ITextEditor textEditor, String fileName, int lineNumber) {
 		try {
 			val IDocument document = textEditor.documentProvider.getDocument(textEditor.editorInput)
-			if(document == null) throw new RuntimeException("Could not open file " + fileName +	" in editor")
+			if(document === null) throw new RuntimeException("Could not open file " + fileName +	" in editor")
 			var IRegion lineInfo = null
 			// line count internaly starts with 0, and not with 1 like in GUI
 			lineInfo = document.getLineInformation(lineNumber - 1)
-			if (lineInfo != null) {
+			if (lineInfo !== null) {
 				textEditor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength())
 			}
 		} catch (BadLocationException e) {
@@ -183,6 +184,11 @@ class WEclipseUtils {
 
 	def static dispatch Set<IResource> getAllMembers(IFile file) {
 		#{file}
+	}
+
+	def static hasErrors(IProject project) {
+		val severity = project.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)
+		severity == IMarker.SEVERITY_ERROR
 	}
 	
 }

@@ -119,7 +119,7 @@ class WollokJavaConversions {
 	}
 
 	def static newWollokAssertionException(String message) {
-		evaluator.newInstance(ASSERTION_EXCEPTION, message.javaToWollok)
+		evaluator.newInstance(ASSERTION_EXCEPTION_FQN, message.javaToWollok)
 	}
 
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }

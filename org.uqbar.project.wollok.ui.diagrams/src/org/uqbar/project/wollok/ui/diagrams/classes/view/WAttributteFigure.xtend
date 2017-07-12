@@ -14,16 +14,14 @@ class WAttributteFigure extends AbstractClassMemberFigure<WVariableDeclaration> 
 	}
 
 	def setLineItalic(String text, boolean italic) {
-		font = if (italic)
+		setFont(if (italic)
 			JFaceResources.fontRegistry.getItalic(JFaceResources.TEXT_FONT)
 		else
-			JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT)
-		repaint
+			JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT))
 	}
 	
 	override doGetText() {
 		labelProvider.getText(member.variable)
 	}
-	
 	
 }

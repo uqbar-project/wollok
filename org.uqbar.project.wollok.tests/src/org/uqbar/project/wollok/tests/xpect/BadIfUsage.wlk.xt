@@ -68,4 +68,35 @@ object sarasita {
 		return if (n % 2 == 0) false else true
 	}
 	
+	method ifInsideExpressionWithoutElseShouldFailForBinaryRightOperation() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		return 1 * if(1 == 2) 2
+	}
+	
+	method ifInsideExpressionWithoutElseShouldFailForReturn() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		return if(1 == 2) 2
+	}
+	
+	method ifInsideExpressionWithoutElseShouldFailForBinaryLeftOperation() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		return (if(1 == 2) 2) + 3
+	}
+	
+	method ifInsideExpressionWithoutElseShouldFailInAssignment() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		var failed = if(1 == 2) 2
+		var ok = if (1 == 2) 2 else 3
+		failed = ok
+		return ok == 3
+	}
+
+	method addOneTo(value) {
+		return 1 + value
+	}
+
+	method invokeAddOneTo() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		return self.addOneTo(if (1 == 2) 4)
+	}
 }

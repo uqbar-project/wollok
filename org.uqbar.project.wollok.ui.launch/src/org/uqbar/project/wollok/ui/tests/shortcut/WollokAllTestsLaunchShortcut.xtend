@@ -3,10 +3,13 @@ package org.uqbar.project.wollok.ui.tests.shortcut
 import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.widgets.Display
+import org.uqbar.project.wollok.Messages
 
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
+
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -33,17 +36,20 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	 * - finally: launch tests
 	 */
 	override launch(IProject currProject, String mode) {
-		if (!checkEclipseProject(currProject)) return;
 		activateWollokTestResultView
 		val List<IFile> testFiles = currProject.getTestFiles
 		if (testFiles.empty) {
 			// TODO: i18n
-			MessageDialog.openError(Display.current.activeShell, "No tests to run",
-				"There are no tests to run")
+			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_NoTestToRun_Title,
+				Messages.TestLauncher_NoTestToRun_Message)
 			return;
-		} 
+		}
 		val currFile = testFiles.head
-		this.launch(currFile, mode)
+		this.doLaunch(currFile, mode)
+	}
+
+	override launch(IJavaProject currProject, String mode) {
+		launch(currProject.elementName.project, mode)
 	}
 	
 	def List<IFile> getTestFiles(IProject project) {

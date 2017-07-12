@@ -14,6 +14,7 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.server.handler.AbstractHandler
 import org.eclipse.xtext.resource.IResourceFactory
 import org.eclipse.xtext.resource.XtextResourceSet
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -114,7 +115,7 @@ class WollokServer extends AbstractHandler {
 	}
 
 	def URI computeUnusedUri(ResourceSet resourceSet, String fileExtension) {
-		val String name = "__synthetic"
+		val String name = WollokConstants.SYNTHETIC_FILE
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			val syntheticUri = URI.createURI(name + i + "." + fileExtension)
 			if (resourceSet.getResource(syntheticUri, false) == null)

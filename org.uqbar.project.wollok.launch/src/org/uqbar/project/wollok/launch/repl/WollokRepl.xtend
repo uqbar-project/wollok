@@ -10,16 +10,18 @@ import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.launch.WollokLauncher
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokObject
-
 import static org.uqbar.project.wollok.launch.Messages.*
+
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -104,7 +106,7 @@ class WollokRepl {
 
 	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
-		if (obj == null)
+		if (obj === null)
 			println("null".returnStyle)
 		else if (obj instanceof WollokObject && !(obj as WollokObject).isVoid)
 			doPrintReturnValue(obj)
@@ -138,7 +140,7 @@ class WollokRepl {
 	}
 
 	def uriToUse(ResourceSet resourceSet) {
-		var name = "__synthetic";
+		var name = WollokConstants.SYNTHETIC_FILE
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).
 				appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
@@ -184,20 +186,36 @@ class WollokRepl {
 
 	def dispatch void handleException(WollokProgramExceptionWrapper e) {
 		// Wollok-level user exception
-		printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
+		//printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
+		println((e.exceptionClassName + ": " + e.wollokMessage).errorStyle)
+		val errorLine = e.wollokException
+			.convertStackTrace
+			.filter [ !it.shouldBeFiltered ]
+			.toList
+			.reverse
+			.map [ stackDTO | stackDTO.toLinkForConsole ]
+			.join(System.lineSeparator)
+		
+		printlnIdent(errorLine.errorStyle)
 	}
 
-	def CharSequence filterREPLLines(String originalStackTrace) {
-		val result = originalStackTrace.split(System.lineSeparator).filter [ stack |
-			!stack.toLowerCase.contains("synthetic") && !stack.toLowerCase.contains("repl")
-		].fold(new StringBuffer, [ acum, stackTrace |
-			acum.append(stackTrace)
-			acum.append(System.lineSeparator)
-			acum
-		])
-		val endCharacters = System.lineSeparator.length
-		result.deleteCharAt(result.length - endCharacters)
-		result.toString
+	def toLinkForConsole(StackTraceElementDTO st) {
+		val result = new StringBuffer => [
+			append("   ")
+			append("at")
+			append(" ")
+			if (st.contextDescription !== null) {
+				append(st.contextDescription)
+				append(" ")
+			}
+		]
+		
+		var link = new StringBuffer
+		if (st.hasFileName) {
+			link.append("(" + st.fileName + ":" + st.lineNumber + ")")
+		}
+		
+		result.toString.errorStyle + link.toString.linkStyle
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {
