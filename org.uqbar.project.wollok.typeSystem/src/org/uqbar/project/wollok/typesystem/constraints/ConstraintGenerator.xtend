@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
@@ -36,6 +37,8 @@ class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
 
+	val Logger log = Logger.getLogger(this.class)
+
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
@@ -46,7 +49,7 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(EObject node) {
 		// Default case
-		println('''WARNING: Not generating constraints for: «node»''')
+		log.warn('''WARNING: Not generating constraints for: «node»''')
 	}
 
 	def dispatch void generateVariables(WFile it) {

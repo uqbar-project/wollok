@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
+import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
@@ -8,11 +9,13 @@ abstract class AbstractInferenceStrategy {
 	@Accessors
 	var Boolean changed
 
+	val Logger log = Logger.getLogger(this.class)
+
 	@Accessors
 	var extension TypeVariablesRegistry registry
 
 	def boolean run() {
-		println('''Running strategy: «class.simpleName»''')
+		log.debug('''Running strategy: «class.simpleName»''')
 		var globalChanged = false
 
 		do {
@@ -21,7 +24,7 @@ abstract class AbstractInferenceStrategy {
 			globalChanged = globalChanged || changed
 		} while (changed)
 
-		println('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
+		log.debug('''Ending «if (globalChanged) "with" else "WITHOUT"» changes''')
 		return globalChanged
 	}
 

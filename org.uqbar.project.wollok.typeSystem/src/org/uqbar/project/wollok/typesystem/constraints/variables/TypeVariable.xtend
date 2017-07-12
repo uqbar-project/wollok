@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import java.util.Set
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
@@ -21,6 +22,8 @@ interface ITypeVariable {
 }
 
 class TypeVariable implements ITypeVariable {
+	val Logger log = Logger.getLogger(this.class)
+
 	@Accessors
 	val EObject owner
 
@@ -71,7 +74,7 @@ class TypeVariable implements ITypeVariable {
 // ** For the TypeSystem implementation
 // ************************************************************************
 	def getType() {
-		if (typeInfo != null) typeInfo.getType(this) else WollokType.WAny
+		if (typeInfo !== null) typeInfo.getType(this) else WollokType.WAny
 	}
 
 // ************************************************************************
@@ -93,13 +96,13 @@ class TypeVariable implements ITypeVariable {
 	// REVIEW Is necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
-			println('''Reporting error in «owner.debugInfo»: «message»''')
+			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
 				validator.report(message, owner)
 			}
 			catch (IllegalArgumentException exception) {
 				// We probably reorted a type error to a core object, which is not possible
-				exception.printStackTrace
+				log.error(exception.message, exception)
 			}
 		]
 	}
@@ -122,7 +125,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSubtype(TypeVariable subtype) {
 		this.subtypes.add(subtype)
-		if (typeInfo != null) typeInfo.subtypeAdded()
+		if (typeInfo !== null) typeInfo.subtypeAdded()
 	}
 
 	/**
@@ -130,7 +133,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
-		if (typeInfo != null) typeInfo.supertypeAdded()
+		if (typeInfo !== null) typeInfo.supertypeAdded()
 	}
 
 	def beVoid() {
@@ -147,7 +150,7 @@ class TypeVariable implements ITypeVariable {
 	def dispatch void setTypeInfo(VoidTypeInfo newTypeInfo) {
 		if (typeInfo.isVoid) {
 			return
-		} else if (typeInfo == null && owner.canBeVoid) {
+		} else if (typeInfo === null && owner.canBeVoid) {
 			doSetTypeInfo(newTypeInfo)
 		} else {
 			throw new CannotBeVoidException(owner)
@@ -167,12 +170,12 @@ class TypeVariable implements ITypeVariable {
 	 * @throws TypeSystemException if the new minType is a type error.
 	 */
 	def addMinType(WollokType type) {
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
+		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.addMinType(type)
 	}
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
+		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
@@ -181,14 +184,14 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		// TODO Currently only simple types are supporting message sending, but closures also should.
-		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
+		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.messages.add(new MessageSend(selector, arguments, returnType))
 	}
 
 	/**
 	 * A sealed variable can not be further restricted.
 	 */
-	def isSealed() { typeInfo != null && typeInfo.sealed }
+	def isSealed() { typeInfo !== null && typeInfo.sealed }
 
 	def beSealed() { typeInfo.beSealed() }
 
@@ -196,7 +199,7 @@ class TypeVariable implements ITypeVariable {
 	// ** Unification information
 	// ************************************************************************
 	def unifiedWith(TypeVariable other) {
-		typeInfo != null && typeInfo == other.typeInfo
+		typeInfo !== null && typeInfo == other.typeInfo
 	}
 
 	def isCanonical() {
@@ -213,7 +216,7 @@ class TypeVariable implements ITypeVariable {
 			owner: «owner.debugInfo»,
 			subtypes: «subtypes.map[owner.debugInfo]»,
 			supertypes: «supertypes.map[owner.debugInfo]»,
-			«IF typeInfo == null»
+			«IF typeInfo === null»
 				no type information
 			«ELSEIF canonical || full»
 				«typeInfo.fullDescription»

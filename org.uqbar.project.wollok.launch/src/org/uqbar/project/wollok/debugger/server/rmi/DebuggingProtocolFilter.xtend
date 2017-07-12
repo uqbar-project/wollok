@@ -1,10 +1,11 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
+import java.util.Map
 import net.sf.lipermi.call.IRemoteMessage
 import net.sf.lipermi.call.RemoteCall
-import net.sf.lipermi.handler.filter.DefaultFilter
 import net.sf.lipermi.call.RemoteReturn
-import java.util.Map
+import net.sf.lipermi.handler.filter.DefaultFilter
+import org.apache.log4j.Logger
 
 /**
  * an IProtocolFilter implementation to debug the RMI communication
@@ -14,10 +15,12 @@ import java.util.Map
 class DebuggingProtocolFilter extends DefaultFilter {
 	var Map<Long,Long> timestamps = newHashMap() // callId, startTime
 
+	val Logger log = Logger.getLogger(this.class)
+
 	override readObject(Object obj) {
 		if (obj instanceof RemoteCall)
 			timestamps.put(obj.callId, System.nanoTime)
-		println("[VM] reading object " + obj.description)
+		log.debug("[VM] reading object " + obj.description)
 		super.readObject(obj)
 	}
 
@@ -25,7 +28,7 @@ class DebuggingProtocolFilter extends DefaultFilter {
 		var took = 0l
 		if (message instanceof RemoteReturn)
 			took = System.nanoTime - timestamps.get(message.callId)
-		println("[VM] preparing write " + message.description + " TOOK " + took + " nanosecs") 
+		log.debug("[VM] preparing write " + message.description + " TOOK " + took + " nanosecs") 
 		super.prepareWrite(message)
 	}
 

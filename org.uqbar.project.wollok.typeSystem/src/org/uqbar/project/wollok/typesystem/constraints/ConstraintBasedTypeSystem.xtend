@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import com.google.inject.Inject
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -37,6 +38,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	@Accessors
 	@Inject WollokClassFinder finder
 
+	val Logger log = Logger.getLogger(this.class)
+
 	@Accessors
 	extension TypeVariablesRegistry registry
 	ConstraintGenerator constraintGenerator
@@ -44,7 +47,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
 		this.inferTypes
 
@@ -66,7 +69,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	override analyse(EObject program) {
-		if (registry == null) {
+		if (registry === null) {
 			initialize(program)
 		}
 
@@ -83,10 +86,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 		var currentStage = 0
 
-		println("Starting inference")
+		log.debug("Starting inference")
 
 		do {
-			println("Running stage " + currentStage)
+			log.debug("Running stage " + currentStage)
 
 			if (runStage(stages.get(currentStage)))
 				// Stage produced new inforamtion, start again from stage 0. 

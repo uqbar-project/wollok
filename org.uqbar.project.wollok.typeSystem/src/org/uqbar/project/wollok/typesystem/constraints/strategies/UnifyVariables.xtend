@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import java.util.Set
+import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
@@ -20,10 +21,11 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.variable
  */
 class UnifyVariables extends AbstractInferenceStrategy {
 	Set<TypeVariable> alreadySeen = newHashSet
+	val Logger log = Logger.getLogger(this.class)
 
 	override analiseVariable(TypeVariable tvar) {
 		if (!alreadySeen.contains(tvar)) {
-			println('''	Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
+			log.debug('''	Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
 			var result = Ready
 
 			if (tvar.subtypes.size == 1)
@@ -42,42 +44,42 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * - Error means a type error was detected, variable will not be visited again.
 	 */
 	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
-		println('''		About to unify «subtype» with «supertype»''')
+		log.debug('''		About to unify «subtype» with «supertype»''')
 		if (subtype.unifiedWith(supertype)) {
-			println('''		Already unified, nothing to do''')
+			log.debug('''		Already unified, nothing to do''')
 			return Ready
 		}
 
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if (supertype.hasErrors) {
-			println('''		Errors found, aborting unification''')
+			log.debug('''		Errors found, aborting unification''')
 			return Error
 		}
 
 		// If supertype var is a parameter, the subtype is an argument sent to this parameter
 		// and should not be unified.
 		if (supertype.owner instanceof WParameter) {
-			println('''             Not unifying «subtype» with parameter «supertype»''')
+			log.debug('''             Not unifying «subtype» with parameter «supertype»''')
 			return Error
 		}
 
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending)
-				println('''		Unified «subtype» with «supertype»: «it»''')
+				log.debug('''		Unified «subtype» with «supertype»: «it»''')
 		]
 	}
 
 	def dispatch ConcreteTypeState doUnifyWith(TypeVariable subtype, TypeVariable supertype) {
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
-		if (subtype.typeInfo == null && supertype.typeInfo == null) {
-			println('''		No type info yet, unification postponed''')
+		if (subtype.typeInfo === null && supertype.typeInfo === null) {
+			log.debug('''		No type info yet, unification postponed''')
 			Pending
-		} else if (subtype.typeInfo == null) {
+		} else if (subtype.typeInfo === null) {
 			subtype.copyTypeInfoFrom(supertype)
-		} else if (supertype.typeInfo == null) {
+		} else if (supertype.typeInfo === null) {
 			supertype.copyTypeInfoFrom(subtype)
 		} else {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)

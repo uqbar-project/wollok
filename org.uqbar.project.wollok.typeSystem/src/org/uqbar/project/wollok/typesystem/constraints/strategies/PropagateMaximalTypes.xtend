@@ -1,11 +1,14 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
+import org.apache.log4j.Logger
+import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 
 class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
+	val Logger log = Logger.getLogger(this.class)
+	
 	def dispatch analiseVariable(TypeVariable user, SimpleTypeInfo it) {
 		if (maximalConcreteTypes == null) return;
 		if (maximalConcreteTypes.state != Pending) return;
@@ -18,12 +21,12 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 	}
 
 	def void propagateMaxTypes(SimpleTypeInfo it, TypeVariable user) {
-		println('''	Analising maxTypes of «user»''')
+		log.debug('''	Analising maxTypes of «user»''')
 		user.allSubtypes.forEach [ subtype |
-			println(user.fullDescription)
+			log.debug(user.fullDescription)
 			
 			subtype.setMaximalConcreteTypes(maximalConcreteTypes, user)
-			println('''		Propagating «maximalConcreteTypes» from: «user» to «subtype»''')
+			log.debug('''		Propagating «maximalConcreteTypes» from: «user» to «subtype»''')
 		]
 	}
 }

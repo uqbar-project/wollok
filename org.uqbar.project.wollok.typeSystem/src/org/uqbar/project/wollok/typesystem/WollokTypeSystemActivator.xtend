@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
+import org.apache.log4j.Logger
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
@@ -18,13 +19,15 @@ class WollokTypeSystemActivator extends Plugin {
 	public static val TYPE_SYSTEM_IMPL_EXTENSION_POINT = "org.uqbar.project.wollok.typeSystem.implementation"
 	public static val TYPE_SYSTEM_PREFERENCES_EXTENSION_POINTS = "org.uqbar.project.wollok.typesystem.preferences"
 
+	val Logger log = Logger.getLogger(this.class)
+
 	private static WollokTypeSystemActivator plugin
 	private BundleContext context
 	private List<TypeSystem> typeSystems
 	WollokTypeSystemPreference typeSystemPreferences;
 
 	def synchronized getTypeSystems() {
-		if (typeSystems == null) {
+		if (typeSystems === null) {
 			val configs = Platform.extensionRegistry.getConfigurationElementsFor(TYPE_SYSTEM_IMPL_EXTENSION_POINT)
 			typeSystems = configs.map[it.createExecutableExtension("class") as TypeSystem]
 		}
@@ -32,7 +35,7 @@ class WollokTypeSystemActivator extends Plugin {
 	}
 
 	def synchronized WollokTypeSystemPreference getTypeSystemPreferences() {
-		if (typeSystemPreferences == null) {
+		if (typeSystemPreferences === null) {
 			val configs = Platform.extensionRegistry.getConfigurationElementsFor(TYPE_SYSTEM_PREFERENCES_EXTENSION_POINTS)
 
 			if (configs.size > 0) {
@@ -41,7 +44,7 @@ class WollokTypeSystemActivator extends Plugin {
 				typeSystemPreferences = new DefaultWollokTypeSystemPreferences()
 			}
 			
-			println("Using system preferences:" + typeSystemPreferences.class.name)
+			log.debug("Using system preferences:" + typeSystemPreferences.class.name)
 		}
 
 		typeSystemPreferences

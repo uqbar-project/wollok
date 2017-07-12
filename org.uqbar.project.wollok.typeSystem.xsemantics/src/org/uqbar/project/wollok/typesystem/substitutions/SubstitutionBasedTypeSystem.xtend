@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.substitutions
 import com.google.inject.Inject
 import java.util.List
 import java.util.Set
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.WeakInterningHashSet
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -57,6 +58,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class SubstitutionBasedTypeSystem implements TypeSystem {
 	List<TypeRule> rules = newArrayList
+	val Logger log = Logger.getLogger(this.class)
 	
 	// esto me gustaria evitarlo :S
 	Set<EObject> analyzed = new WeakInterningHashSet
@@ -72,7 +74,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		analyzed = new WeakInterningHashSet
-		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		analyse(file)
 		inferTypes
 		reportErrors(validator)
@@ -106,13 +108,13 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WTest it) { elements.analyze }
 
 	def dispatch void doAnalyse(WClass it) { 
-		if (members != null) members.forEach[analyze]
-		if (constructors != null) constructors.forEach[analyze]
+		if (members !== null) members.forEach[analyze]
+		if (constructors !== null) constructors.forEach[analyze]
 	}
 	
 	def dispatch void doAnalyse(WNamedObject it) {
 		addFact(it, new NamedObjectWollokType(it, this))
-		if (members != null) members.forEach[analyze]
+		if (members !== null) members.forEach[analyze]
 	}
 	
 	def dispatch void doAnalyse(WConstructor it) {
@@ -137,7 +139,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	def dispatch void doAnalyse(WVariableDeclaration it) {
 		addCheck(it, SAME_AS, variable)
-		if (right != null) addCheck(variable, SUPER_OF, right)
+		if (right !== null) addCheck(variable, SUPER_OF, right)
 	}
 
 	def dispatch void doAnalyse(WVariable v) { /* does nothing */ }
@@ -180,7 +182,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	def dispatch void doAnalyse(WAssignment it) {
 		isA(WVoid)
-		if (value != null)
+		if (value !== null)
 			addCheck(feature, SUPER_OF, value)
 	}
 
@@ -199,7 +201,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	def dispatch void doAnalyse(WIfExpression it) {
 		addFact(condition, classType(BOOLEAN))
 		addCheck(it, SUPER_OF, then)
-		if (^else != null) 	addCheck(it, SUPER_OF, ^else)
+		if (^else !== null) 	addCheck(it, SUPER_OF, ^else)
 	}
 
 	def dispatch void doAnalyse(WBlockExpression it) {
@@ -229,8 +231,8 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		var nrSteps = 0
 		var resolved = true
 		while (resolved) {
-			println('Unify #' + nrSteps++)
-			println(this.stateAsString)
+			log.debug('Unify #' + nrSteps++)
+			log.debug(this.stateAsString)
 			resolved = rules.clone.fold(false)[r, rule|
 				// keep local variable to force execution (there's no non-shortcircuit 'or' in xtend! :S)
 				val ruleValue = rule.resolve(this)
@@ -249,7 +251,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 
 	override type(EObject obj) {
 		val t = typeForExcept(obj, null) // horrible
-		if (t == null) WAny
+		if (t === null) WAny
 		else t
 	}
 
@@ -275,7 +277,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		val types = rules.fold(newArrayList)[l, r|
 			if (r != unwantedRule) {
 				val type = r.typeOf(object)
-				if (type != null)
+				if (type !== null)
 					l += type
 			}
 			l
