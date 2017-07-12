@@ -160,21 +160,15 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	/**
-	 * This method is used by the constraint generator. Normally we do not expect errors, 
-	 * in case of finding one, the same variable will be designed as origin of the error.
-	 */
-	def addMinType(WollokType type) {
-		addMinType(type, this)
-	}
-
-	/**
 	 * Adds a minType to this variable. This is only possible for simple types. 
 	 * Therefore, if type info has not yet been assigned, it will be forced to a simple type. 
 	 * If the variable points to a closure type this will produce a type error.
+	 * 
+	 * @throws TypeSystemException if the new minType is a type error.
 	 */
-	def addMinType(WollokType type, TypeVariable origin) {
+	def addMinType(WollokType type) {
 		if (typeInfo == null) setTypeInfo(new SimpleTypeInfo())
-		typeInfo.addMinType(type, origin)
+		typeInfo.addMinType(type)
 	}
 
 	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {

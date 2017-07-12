@@ -85,22 +85,18 @@ class SimpleTypeInfo extends TypeInfo {
 		}
 	}
 
-	override addMinType(WollokType type, TypeVariable origin) {
-		if (minTypes.containsKey(type))
+	override ConcreteTypeState addMinType(WollokType type) {
+		if (minTypes.containsKey(type)) {
 			Ready
-		else {
-			(if (!acceptMinimalType(type)) {
-				origin.addError(new RejectedMinTypeException(origin, type))
-				Error
-			} else {
-				Pending
-			}) => [minTypes.put(type, it)]
+		} else if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+			minTypes.put(type, Error)
+			throw new RejectedMinTypeException(type)
+		} else {
+			minTypes.put(type, Pending)
+			Pending
 		}
 	}
 
-	def acceptMinimalType(WollokType type) {
-		!sealed || minTypes.keySet.exists[it.isSuperTypeOf(type)]
-	}
 	
 	// ************************************************************************
 	// ** Notifications

@@ -34,7 +34,7 @@ class ClosureTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override addMinType(WollokType type, TypeVariable origin) {
+	override addMinType(WollokType type) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 

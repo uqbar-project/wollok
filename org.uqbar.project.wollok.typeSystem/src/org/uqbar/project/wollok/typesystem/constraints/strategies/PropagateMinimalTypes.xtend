@@ -1,10 +1,16 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
+import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
+import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import org.uqbar.project.wollok.wollokDsl.WVariable
+import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo typeInfo) {
@@ -22,16 +28,40 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		]
 	}
 
-	protected def boolean propagateMinType(TypeVariable origin, WollokType key, Iterable<TypeVariable> supertypes) {
+	protected def boolean propagateMinType(TypeVariable origin, WollokType type, Iterable<TypeVariable> supertypes) {
 		supertypes.evaluate[ supertype |
-			val newState = supertype.addMinType(key, origin)
+			val newState = propagateMinType(origin, supertype, type)
 			(newState != Ready)
-				=> [ if (it) println('''	Propagating min(«key») from: «origin» to «supertype» => «newState»''')]
+				=> [ if (it) println('''	Propagating min(«type») from: «origin» to «supertype» => «newState»''')]
 		]
+	}
+
+	def propagateMinType(TypeVariable origin, TypeVariable destination, WollokType type) {
+		try {
+			destination.addMinType(type)
+		}
+		catch (RejectedMinTypeException exception) {
+			val offender = selectOffender(origin.owner, destination.owner)
+			val variable = if (offender == origin.owner) origin else destination
+			variable.addError(exception)
+			exception.variable = variable
+			Error
+		}
 	}
 	
 	def boolean evaluate(Iterable<TypeVariable> variables, (TypeVariable)=>boolean action) {
 		variables.fold(false)[hasChanges, variable | action.apply(variable) || hasChanges ]
 	}
 	
+	def dispatch selectOffender(EObject origin, EObject destination) {
+		println('''	Min type detected without a specific offender detection strategy:
+			origin=«origin.debugInfo» 
+			destination=«destination.debugInfo»''') 
+		origin
+	}
+
+	def dispatch selectOffender(WVariable origin, WVariableReference destination) {
+		// Error report goes to variable usage. 
+		destination
+	}
 }
