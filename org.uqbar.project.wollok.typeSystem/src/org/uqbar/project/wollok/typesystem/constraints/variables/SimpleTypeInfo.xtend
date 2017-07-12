@@ -89,7 +89,6 @@ class SimpleTypeInfo extends TypeInfo {
 		if (minTypes.containsKey(type)) {
 			Ready
 		} else if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
-			minTypes.put(type, Error)
 			throw new RejectedMinTypeException(type)
 		} else {
 			minTypes.put(type, Pending)

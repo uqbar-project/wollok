@@ -27,6 +27,6 @@ class RejectedMinTypeException extends TypeSystemException {
 	}
 
 	override getMessage() {
-		'''expected <<«variable.expectedType»>> but found <<«variable.foundType»>>'''
+		'''expected <<«variable.expectedType»>> but found <<«type»>>'''
 	}
 }
