@@ -140,6 +140,24 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void checkNullByIdentity(){
+		'''
+		program a {
+			var a = null
+			assert.that(a == null)
+			assert.notThat(a != null)
+			assert.that(a === null)
+			assert.notThat(a !== null)			
+			assert.notThat(1 === null)
+			assert.that(1 !== null)			
+		
+			assert.notThat(1 === 2)
+			assert.that(1 !== 2)						
+		}
+		'''.interpretPropagatingErrors
+	}
+
 	private def String definePepitaAndAlpiste() {
 		'''
 		object pepita {

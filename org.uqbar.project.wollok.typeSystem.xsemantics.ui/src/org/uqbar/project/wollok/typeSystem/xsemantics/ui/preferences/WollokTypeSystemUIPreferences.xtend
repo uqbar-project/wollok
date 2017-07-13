@@ -19,8 +19,8 @@ class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 
 	override getSelectedTypeSystem(EObject file) {
 		var selectedTypeSystem = file.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
-		if(selectedTypeSystem == null || selectedTypeSystem == "")
-			selectedTypeSystem = "XSemantics";
+		if(selectedTypeSystem === null || selectedTypeSystem == "")
+			selectedTypeSystem = "Constraints-based";
 		
 		selectedTypeSystem
 	}
