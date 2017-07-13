@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.common.base.Predicate
 import com.google.inject.Inject
-import java.util.List
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
@@ -17,11 +16,9 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
-import org.uqbar.project.wollok.wollokDsl.Import
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
-import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
@@ -58,6 +55,11 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Loads all imported elements from a context
 	 */
 	def importedObjects(Resource context) {
+		
+		if(context === null || context.contents === null){
+			return #{}
+		}
+		
 		val rootObject = context.contents.get(0)
 		val imports = rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
@@ -141,6 +143,8 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		try{
 			context.resourceSet.URIConverter.exists(fileURI,null)
 		}catch(ClasspathUriResolutionException e){
+			false
+		}catch(NullPointerException e){
 			false
 		}
 	}
