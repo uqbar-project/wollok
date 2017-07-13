@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.semantics
 import com.google.inject.Inject
 import it.xsemantics.runtime.RuleEnvironment
 import it.xsemantics.runtime.RuleFailedException
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -21,11 +22,17 @@ class XSemanticsTypeSystem implements TypeSystem {
 	@Inject
 	protected ExtendedXSemanticsWollokDsl xsemanticsSystem
 	RuleEnvironment env
+	val Logger log = Logger.getLogger(this.class)
+	
 
 	override def name() { NAME }
 
+	override initialize(EObject program) {
+		// Nothing to do
+	}
+
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 //		xsemanticsSystem.validate(file, validator)
 		this.analyse(file)
 		this.reportErrors(validator)
@@ -50,10 +57,9 @@ class XSemanticsTypeSystem implements TypeSystem {
 			xsemanticsSystem.env(env, o, WollokType)
 		catch (RuleFailedException e) {
 			val node = NodeModelUtils.getNode(o)
-			println(
+			log.error(
 				"FAILED TO INFER TYPE FOR: " + o.eResource.URI + "[" + node.textRegionWithLineInformation.lineNumber +
-					"]: " + node.text)
-			println(">> " + e.message)
+					"]: " + node.text + " >> " + e.message)
 			WollokType.WAny
 		}
 	}

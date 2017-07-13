@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.quickfix
 
 import com.google.inject.Inject
 import java.util.List
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.resource.OutdatedStateManager
@@ -25,6 +26,7 @@ import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
 abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterTestCase {
 	
 	WollokDslQuickfixProvider issueResolutionProvider
+	val Logger log = Logger.getLogger(this.class)
 
 	@Inject DocumentTokenSource tokenSource
 	@Inject ITextEditComposer composer
@@ -92,12 +94,12 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 
 		resolution.apply
 		
-		println("Expected code")
-		println("*************")
-		println(sources.map [ expectedCode.toString ])
-		println("vs.")
-		println(sources.map [ xtextDocument.get.toString ])
-		println("====================")
+		log.debug("Expected code")
+		log.debug("*************")
+		log.debug(sources.map [ expectedCode.toString ])
+		log.debug("vs.")
+		log.debug(sources.map [ xtextDocument.get.toString ])
+		log.debug("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
 }

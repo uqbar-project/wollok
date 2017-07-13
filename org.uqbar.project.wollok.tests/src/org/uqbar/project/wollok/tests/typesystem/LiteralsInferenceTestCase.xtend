@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
-import org.uqbar.project.wollok.typesystem.bindings.BoundsBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 

@@ -1,0 +1,128 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+// XPECT_IGNORE
+
+/* Colecciones, con bloques
+ * Pepe zapatero. 
+ * 
+ */
+ 
+
+// POSIBLES CLIENTES 
+
+object fiona {	
+	var felicidad = false
+	
+	method compraZapatos() {
+		felicidad = true	
+	}
+	
+	method estaFeliz() {
+		return felicidad
+	}
+}
+
+object salvador {
+	var dinero = 1200
+	
+	method compraZapatos() {
+		dinero = dinero - 700	
+	}
+	
+	method estaFeliz() {
+		return dinero  > 0
+	}
+}
+
+
+// COSAS QUE PEPE PUEDE ARREGLAR >>>
+
+object alpargata { 			
+	method complejidad() {
+		return 10
+	}
+}
+
+object botaDeCuero { 		
+	var destruccion = 100
+	method complejidad() {
+		return destruccion
+	}
+	method malUso(){
+		destruccion = destruccion * 2
+	}
+}
+
+object moni{
+	
+	var calzadoPreferido = botaDeCuero 
+	const calzados = [calzadoPreferido]
+	
+	method estaFeliz(){
+		return calzados.count{c => c.complejidad() < 50} == 2 and
+		   calzados.max{c=>c.complejidad()}.complejidad() >= 100 
+	}
+	
+	// XPECT methodType at clientePredilecto --> () => (fiona|salvador|moni) 
+	method cambiarPreferencia(nuevoCalzado) {
+		calzadoPreferido = nuevoCalzado
+	}
+	
+	method compraZapatos(){
+		calzados.add(calzadoPreferido)
+	}
+}
+
+object pepe {
+	// XPECT type at clientes --> Collection of fiona|salvador|moni
+	var clientes = [fiona, salvador]
+
+	var fatiga = 100 
+	
+	method cuantosGolesMetiste(){
+		return 5
+	}
+	
+	// XPECT methodType at labura --> () => Void
+	method labura(){
+		clientes.forEach{c=>c.compraZapatos()}
+	}	
+	// XPECT methodType at cuantosClientesTenes --> () => Integer
+	method cuantosClientesTenes(){
+		return clientes.size()
+	}
+
+	// XPECT methodType at peleateCon --> (fiona|salvador|moni) => Void
+	method peleateCon(unCliente){
+		clientes.remove(unCliente)
+	}
+	method elSiguiente(){
+		clientes.remove(clientes.first())
+	}
+	
+	method hicisteBienTuTrabajo() {
+		return clientes.all{c=>c.estaFeliz()}
+	}
+	
+	// XPECT methodType at llegaCliente --> (fiona|salvador|moni) => Void
+	method llegaCliente(unCliente) {
+		clientes.add(unCliente)
+	}	
+	method finDelDia(){
+		clientes.clear()
+	}
+	// XPECT methodType at clientesFelices --> () => Collection of (fiona|salvador|moni)
+	method clientesFelices(){
+		return clientes.filter{c=>c.estaFeliz()}
+	}
+	
+	// XPECT methodType at clientePredilecto --> () => (fiona|salvador|moni) 
+	method clientePredilecto() {
+		return self.clientesFelices().anyOne()
+	}
+	
+	method arregla(calzado) { 					
+		fatiga = fatiga + calzado.complejidad()
+	}
+	
+}

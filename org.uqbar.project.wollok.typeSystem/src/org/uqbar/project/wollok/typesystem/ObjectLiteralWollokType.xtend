@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
-import org.uqbar.project.wollok.typesystem.TypeSystem
+import java.util.List
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
@@ -47,7 +47,11 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	}
 	
 	override lookupMethod(MessageType message) {
-		val m = object.lookupMethod(message.name, message.parameterTypes, true)
+		lookupMethod(message.name, message.parameterTypes)		
+	}
+	
+	override lookupMethod(String selector, List<?> parameterTypes) {
+		val m = object.lookupMethod(selector, parameterTypes, true)
 		// TODO: por ahora solo checkea misma cantidad de parametros
 		// 		debería en realidad checkear tipos !  
 		if (m != null)
@@ -64,12 +68,11 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	
 	override getAllMessages() { object.methods.map[messageType] }
 	
-	override refine(WollokType previous) {
+	override dispatch refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}
 	
 	def messageType(WMethodDeclaration m) { typeSystem.queryMessageTypeForMethod(m) }
 	def type(WParameter p) { typeSystem.type(p) }
-	
 }

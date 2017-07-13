@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.debugger.client.source
 
 import java.io.File
+import org.apache.log4j.Logger
 import org.eclipse.core.runtime.AssertionFailedException
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant
@@ -26,6 +27,8 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 // I'm not sure if this is going to work for cross-project files references. 
 class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 	ISourceContainer libContainer
+	val Logger log = Logger.getLogger(this.class)
+	
 	
 	override getSourceName(Object object) throws CoreException {
 		if (object instanceof WollokStackFrame)
@@ -35,7 +38,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 	}
 	
 	def getOrCreateLibContainer() {
-		if (libContainer == null) {
+		if (libContainer === null) {
 			val libLocation = WollokActivator.^default.wollokLib.location
 			val libBundlePath = libLocation.substring(libLocation.lastIndexOf(':') + 1)
 			
@@ -60,8 +63,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 				}
 			}
 			catch (AssertionFailedException e) {
-				println("Error while resolving source location for " + object.fileURI)
-				e.printStackTrace
+				log.error("Error while resolving source location for " + object.fileURI, e)
 				super.findSourceElements(object)	
 			}
 		}

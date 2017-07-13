@@ -23,6 +23,10 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 //TODO: fix typo
 class WollokDSK {
 	
+	// ************************************************************************
+	// ** SDK Classes
+	// ************************************************************************
+
 	public static val OBJECT = "wollok.lang.Object"
 	public static val VOID = "wollok.lang.void"
 
@@ -37,6 +41,7 @@ class WollokDSK {
 	public static val LIST = "wollok.lang.List"
 	public static val SET = "wollok.lang.Set"
 	public static val DICTIONARY = "wollok.lang.Dictionary"
+	public static val RANGE= "wollok.lang.Range"
 	
 	public static val CLOSURE = "wollok.lang.Closure"
 	
@@ -46,6 +51,12 @@ class WollokDSK {
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
+
+	// ************************************************************************
+	// ** SDK Objects
+	// ************************************************************************
+
+	public static val CONSOLE = "wollok.lib.console"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

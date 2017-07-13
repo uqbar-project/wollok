@@ -19,7 +19,7 @@ object console {
 	 * - \n in Unix systems
 	 * - \r\n in Windows systems
 	 */
-	 method newline() native
+	method newline() native
 }
 
 /**

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.multithread
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import org.apache.log4j.Logger
 import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -20,6 +21,8 @@ import static org.junit.Assert.*
  * @author npasserini
  */
 class WollokMultiInterpreterTest {
+	val Logger log = Logger.getLogger(this.class)
+
 	@Test
 	def void testRunSameProgramTwice() {
 		val parameters = new WollokLauncherParameters()
@@ -95,8 +98,8 @@ class WollokMultiInterpreterTest {
 				try{
 					interpreter.interpret(program.parse, true)
 				}catch(WollokProgramExceptionWrapper e){
-					println(e.wollokMessage)
-					println(e.wollokStackTrace)
+					log.error(e.wollokMessage)
+					log.error(e.wollokStackTrace)
 				}
 				stop.countDown
 			]
@@ -112,7 +115,7 @@ class WollokMultiInterpreterTest {
 		
 		var time = System.currentTimeMillis - startTime
 		
-		println("Tiempo(" + numberOfThreads + "):" + time)
+		log.debug("Tiempo(" + numberOfThreads + "):" + time)
 	}
 
 	@Test
@@ -159,7 +162,7 @@ class WollokMultiInterpreterTest {
 		
 		var time = System.currentTimeMillis - startTime
 		
-		println("Tiempo(" + numberOfThreads + "):" + time)
+		log.debug("Tiempo(" + numberOfThreads + "):" + time)
 	}
 
 	@Test

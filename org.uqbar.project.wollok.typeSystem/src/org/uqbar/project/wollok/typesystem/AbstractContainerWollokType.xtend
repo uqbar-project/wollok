@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.typesystem
 
+import java.util.List
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
@@ -24,11 +26,15 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
  		lookupMethod(message) != null		
  	}
  	
- 	override lookupMethod(MessageType message) {		
-  		val m = container.lookupMethod(message.name, message.parameterTypes, true)		
+ 	override lookupMethod(MessageType message) {
+ 		this.lookupMethod(message.name, message.parameterTypes)
+ 	}
+
+ 	override lookupMethod(String selector, List<?> parameterTypes) {		
+  		val m = container.lookupMethod(selector, parameterTypes, true)		
   		// TODO: por ahora solo checkea misma cantidad de parametros		
   		// 		debería en realidad checkear tipos !  		
-  		if (m != null && m.parameters.size == message.parameterTypes.size)		
+  		if (m != null && m.parameters.size == parameterTypes.size)		
   			m		
   		else		
   			null		

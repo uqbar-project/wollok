@@ -28,12 +28,12 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testIfBranchesInferredFromOutside() {
 		''' 
-		program p {
-			var a
-			var b
-			var number = 23
-			number = if (true) a else b 
-		}
+			program p {
+				var a
+				var b
+				var number = 23
+				number = if (true) a else b 
+			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "a")
 			assertTypeOf(classTypeFor(INTEGER), "b")
@@ -43,10 +43,10 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testInferTHENFromELSE() {
 		''' 
-		program p {
-			const a
-			const number = if (true) a else 23
-		}
+			program p {
+				const a
+				const number = if (true) a else 23
+			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "a")
 		]
@@ -55,10 +55,10 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testInferELSEFromTHEN() {
 		'''
-		program p {
-			const a
-			const number = if (true) 23 else a
-		}
+			program p {
+				const a
+				const number = if (true) 23 else a
+			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "a")
 		]
@@ -67,24 +67,23 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void ifConditionMustBeBoolean() {
 		'''
-		program p {
-			const n = 23
-			const number = if (n) 2 else 6
-		}
+			program p {
+				const n = 23
+				const number = if (n) 2 else 6
+			}
 		'''.parseAndInfer.asserting [
 			findByText("n", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
 		]
 	}
 
-
 	@Test
 	def void ifConditionMustBeBooleanWithIntermediateAssignment() {
 		'''
-		program p {
-			const n = 23
-			const p = n
-			const number = if (p) 2 else 6
-		}
+			program p {
+				const n = 23
+				const p = n
+				const number = if (p) 2 else 6
+			}
 		'''.parseAndInfer.asserting [
 			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
 		]
@@ -93,13 +92,14 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void ifConditionMustBeBooleanWithUnimportantNoise() {
 		'''
-		program p {
-			const n = 23
-			const p = n
-			const number = if (n) 2 else 6
-		}
+			program p {
+				const n = 23
+				const p = n
+				const number = if (n) 2 else 6
+			}
 		'''.parseAndInfer.asserting [
-			findAllByText("n", WVariableReference).get(1).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+			findAllByText("n", WVariableReference).get(1).assertIssuesInElement(
+				"expected <<Boolean>> but found <<Integer>>")
 		]
 	}
 }

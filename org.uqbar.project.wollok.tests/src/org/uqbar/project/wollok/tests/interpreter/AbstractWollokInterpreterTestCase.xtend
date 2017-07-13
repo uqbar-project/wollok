@@ -28,7 +28,7 @@ import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 abstract class AbstractWollokInterpreterTestCase extends Assert {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ValidationTestHelper
-	@Inject protected XtextResourceSet resourceSet;
+	@Inject protected XtextResourceSet resourceSet
 	@Inject	protected extension WollokInterpreter interpreter
 	public static val EXAMPLES_PROJECT_PATH = "../wollok-tests"
 

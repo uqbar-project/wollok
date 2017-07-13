@@ -1,12 +1,12 @@
 package org.uqbar.project.wollok.tests.typesystem
 
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 /**
  * The most basic inference tests
@@ -19,7 +19,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	static def Object[] typeSystems() {
 		#[
 			SubstitutionBasedTypeSystem,
-			XSemanticsTypeSystem,
+//			XSemanticsTypeSystem,
 			ConstraintBasedTypeSystem
 //			BoundsBasedTypeSystem,    TO BE FIXED
 		]
@@ -66,6 +66,18 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
+	def void setIndirectVar() {
+		'''
+			program p {
+				var number
+				number = 23
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(INTEGER), "number")
+		]
+	}
+
+	@Test
 	def void setConstant() {
 		'''
 			program p {
@@ -75,7 +87,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(INTEGER), "b")
 		]
-	}			
+	}
 	
 	@Test
 	def void classInstance() { 	'''
@@ -85,6 +97,21 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const c = new Golondrina()
 		}'''.parseAndInfer.asserting [
 			assertTypeOf(classType("Golondrina"), "c")
+		]
+	}
+	
+
+	@Ignore("As of 29/6/17 type system rules allow this assignment.")
+	@Test
+	def void incompatibleTypesAssignment() {
+		''' 
+			program p {
+				var a = 2
+				const b = "aString"
+				a = b
+			}
+		'''.parseAndInfer.asserting [
+			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
 		]
 	}		
 }

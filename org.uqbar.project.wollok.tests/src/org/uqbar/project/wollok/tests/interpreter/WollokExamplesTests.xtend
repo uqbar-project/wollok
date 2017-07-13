@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import org.apache.log4j.Logger
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
@@ -62,11 +63,11 @@ class WollokExamplesTests extends AbstractWollokParameterizedInterpreterTest {
 			reader = new BufferedReader(new FileReader(file))
 			val r = reader.readLine.contains("@test IGNORE")
 			if (r)
-				println("IGNORING " + file.name)
+				Logger.getLogger(WollokExamplesTests).debug("IGNORING " + file.name)
 			r
 		}
 		finally {
-			if (reader != null)
+			if (reader !== null)
 				reader.close
 		} 
 	}

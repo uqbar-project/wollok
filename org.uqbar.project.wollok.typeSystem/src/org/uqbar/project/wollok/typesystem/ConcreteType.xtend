@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
+import java.util.List
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 /**
@@ -15,5 +16,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 interface ConcreteType extends WollokType {
 
 	def WMethodDeclaration lookupMethod(MessageType message)
+	def WMethodDeclaration lookupMethod(String selector, List<?> parameterTypes)
 	
 }

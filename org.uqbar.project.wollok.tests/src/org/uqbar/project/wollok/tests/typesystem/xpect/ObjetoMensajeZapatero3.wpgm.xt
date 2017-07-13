@@ -1,0 +1,88 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+// XPECT_IGNORE
+
+/**
+ * Introduccion a Objetos, Objetos-Mensaje
+ * Pepe zapatero. 
+ * Polimorfismo en el parametro de un mensaje
+ */
+ 
+
+// POSIBLES CLIENTES 
+
+object fiona {	
+	var felicidad = false
+	
+	method compraZapatos() {
+		felicidad = true	
+	}
+	
+	method estaFeliz() {
+		return felicidad
+	}
+}
+
+object salvador {
+	var dinero = 1200
+	
+	method compraZapatos() {
+		dinero = dinero - 700	
+	}
+	
+	method estaFeliz() {
+		return dinero  > 0
+	}
+}
+
+// COSAS QUE PEPE PUEDE ARREGLAR >>>
+
+object alpargata { 			
+	// XPECT! methodType at complejidad  --> () => Integer
+	method complejidad() {
+		return 10
+	}
+}
+
+object botaDeCuero { 		
+	// XPECT! type at destruccion  --> Integer
+	var destruccion = 100
+	
+	// XPECT methodType at complejidad  --> () => Integer
+	method complejidad() {
+		return destruccion
+	}
+//	method malUso(){
+//		destruccion = destruccion * 2
+//	}
+}
+
+object pepe {
+	var cliente = fiona
+
+	// XPECT type at fatiga --> Integer
+	var fatiga = 100 						
+	
+	method cuantosGolesMetiste(){
+		return 5
+	}
+	
+	method labura(){
+		cliente.compraZapatos()
+	}
+	
+	method hicisteBienTuTrabajo() {
+		return cliente.estaFeliz()
+	}
+	
+	method tuClienteEs(unCliente) {
+		cliente = unCliente
+	}	
+	
+	// XPECT! methodType at arregla --> (alpargata) => Void
+	// (alpargata|botaDeCuero) => Void
+	//method arregla(calzado) { 					
+	//	fatiga = fatiga + calzado.complejidad()
+	//}
+	
+}
