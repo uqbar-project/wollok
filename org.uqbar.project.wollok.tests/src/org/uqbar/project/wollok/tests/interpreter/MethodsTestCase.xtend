@@ -10,7 +10,7 @@ import org.junit.Test
 class MethodsTestCase extends AbstractWollokInterpreterTestCase {
 
 	@Test
-	def void literals() {
+	def void inLineOk() {
 		#["objects" -> '''
 			class A {
 				method method1(asd) {

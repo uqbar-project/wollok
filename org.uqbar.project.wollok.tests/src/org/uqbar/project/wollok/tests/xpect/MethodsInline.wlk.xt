@@ -10,12 +10,12 @@ class A {
 
 	method method4(asd) = return 4
 
-	// XPECT errors --> "mismatched input '=' expecting '('" at "="
+	// XPECT errors --> "Missing () in method definition" at "="
 	method method5 = return 4
 
-	// XPECT errors --> "mismatched input '=' expecting '('" at "="
+	// XPECT errors --> "Missing () in method definition" at "="
 	method method6 = 3
 
-	// XPECT errors --> "mismatched input '=' expecting '('" at "="
+	// XPECT errors --> "Missing () in method definition" at "="
 	method method7 = 3 + 23
 }
