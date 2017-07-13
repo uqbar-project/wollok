@@ -2,15 +2,15 @@ package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 
 /**
  * WollokBasicBinaryOperations implementations which includes native
@@ -31,7 +31,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		
 	override asBinaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
-		if (op != null) {
+		if (op !== null) {
 			[a, b| 
 				try {
 					op.invoke(this, a, b).javaToWollok
@@ -61,8 +61,8 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	@BinaryOperation('+') // needed 2 methods: 1st for the annotation, then the multi-dispatch
 	def WollokObject sumOperation(WollokObject a, ()=>WollokObject e) {
 		val b = e.apply;
-		if (a == null) b 
-		else if (b == null) a
+		if (a === null) b 
+		else if (b === null) a
 		else sum(a, b)
 	}  
 	def sum(WollokObject a, WollokObject b) { a.call("+", b) }
@@ -72,18 +72,18 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	@BinaryOperation('-')	
 	def WollokObject minusOperation(WollokObject a, ()=>WollokObject eb) {
 		val b = eb.apply
-		if (a == null) { 
-			if (b != null) b.zero.call("-", b)
+		if (a === null) { 
+			if (b !== null) b.zero.call("-", b)
 			else null
 		}
-		else if (b == null) a
+		else if (b === null) a
 		else a.call("-", b)
 	}
 	
 	@BinaryOperation('*')  
 	def multiplyOperation(WollokObject a, ()=>WollokObject eb) { 
 		val b = eb.apply
-		if (a == null || b == null) null
+		if (a === null || b === null) null
 		else a.call("*", b)
 	}
 	
@@ -125,4 +125,20 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 		else evaluator.theTrue 								// Only one is null => they aren't equal
 	}	
 
+
+	@BinaryOperation('===')
+	def identityOperation(WollokObject a, ()=>WollokObject eb) {
+		val b = eb.apply 
+		if (bothNull(a,b)) evaluator.theTrue		// Two nulls => they are equal
+		else if (noneAreNull(a,b)) a.call("===", b) 	// Two not nulls => they can handle => dispatch
+		else evaluator.theFalse						// Only one is null => they aren't equal
+	}
+
+	@BinaryOperation('!==')
+	def notIdentiyOperation(WollokObject a, ()=>WollokObject eb) {
+		val b = eb.apply
+		if  (bothNull(a,b)) evaluator.theFalse  				// Two nulls => they are equal => false
+		else if (noneAreNull(a,b)) a.call("!==", b)	// Two not nulls => they can handle => dispatch
+		else evaluator.theTrue 								// Only one is null => they aren't equal
+	}	
 }
