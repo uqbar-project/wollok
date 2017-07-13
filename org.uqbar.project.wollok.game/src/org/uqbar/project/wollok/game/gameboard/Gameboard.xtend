@@ -3,19 +3,22 @@ package org.uqbar.project.wollok.game.gameboard;
 import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
+import org.apache.log4j.Logger
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.game.WGPosition
-import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class Gameboard {
 	public static Gameboard instance
 	public static final int CELLZISE = 50
+	
+	val Logger log = Logger.getLogger(this.class)	
 	
 	String title
 	int height
@@ -26,7 +29,7 @@ class Gameboard {
 	VisualComponent character
 	
 	def static getInstance() {
-		if (instance == null) {
+		if (instance === null) {
 			instance = new Gameboard()
 		}
 		return instance
@@ -54,13 +57,13 @@ class Gameboard {
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
-				if (message == null)
+				if (message === null)
 					message = "NO MESSAGE"
 				
-				if (character != null)
+				if (character !== null)
 					character.scream("ERROR: " + message.toString())
-					
-				System.out.println(e.wollokStackTrace)
+				
+				log.error(message, e)	
 			} 
 		}
 

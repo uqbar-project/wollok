@@ -1,0 +1,112 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+// XPECT_IGNORE
+
+/* Colecciones, sin bloques
+ * Pepe zapatero. 
+ * 
+ */
+ 
+
+// POSIBLES CLIENTES 
+
+object fiona {	
+	var felicidad = false
+	
+	method compraZapatos() {
+		felicidad = true	
+	}
+	
+	method estaFeliz() {
+		return felicidad
+	}
+}
+
+object salvador {
+	var dinero = 1200
+	
+	method compraZapatos() {
+		dinero = dinero - 700	
+	}
+	
+	method estaFeliz() {
+		return dinero  > 0
+	}
+}
+
+object moni{
+	method estaFeliz(){
+		return true
+	}
+	method compraZapatos(){}
+}
+
+// COSAS QUE PEPE PUEDE ARREGLAR >>>
+
+object alpargata { 			
+	method complejidad() {
+		return 10
+	}
+}
+
+object botaDeCuero { 		
+	var destruccion = 100
+	method complejidad() {
+		return destruccion
+	}
+	method malUso(){
+		destruccion = destruccion * 2
+	}
+}
+
+object pepe {
+	// XPECT ! type at clientes --> [fiona|salvador|moni]
+	const clientes = [fiona, salvador]
+   // const clientes = new List() 
+
+	//var clientes = [fiona, salvador]   --> idem
+	var fatiga = 100 
+	
+	method cuantosGolesMetiste(){
+		return 5
+	}
+	
+	// XPECT! methodType at labura --> () => Void
+	method labura(){
+		clientes.first().compraZapatos()
+	}	
+	// XPECT! methodType at cuantosClientesTenes --> () => Integer
+	method cuantosClientesTenes(){
+		return clientes.size()
+	}
+
+	// XPECT! methodType at peleateCon --> (fiona|salvador|moni) => Void
+	method peleateCon(unCliente){
+		clientes.remove(unCliente)
+	}
+	method elSiguiente(){
+		clientes.remove(clientes.first())
+	}
+	
+	method hicisteBienTuTrabajo() {
+		return clientes.first().estaFeliz()
+	}
+	
+	// XPECT! methodType at llegaCliente --> (fiona|salvador|moni) => Void
+	method llegaCliente(unCliente) {
+		clientes.add(unCliente)
+	}	
+	method finDelDia(){
+		clientes.clear()
+	}
+	
+	// XPECT ! methodType at clientePredilecto --> () => (fiona|salvador|moni) 
+	method clientePredilecto() {
+		return clientes.last()
+	}
+	
+	method arregla(calzado) { 					
+		fatiga = fatiga + calzado.complejidad()
+	}
+	
+}

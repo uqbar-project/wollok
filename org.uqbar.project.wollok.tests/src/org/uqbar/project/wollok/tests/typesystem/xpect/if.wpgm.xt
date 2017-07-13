@@ -1,0 +1,13 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {
+	const n = 23
+
+	// XPECT noIssues
+	const p = n
+	
+	// XPECT warnings --> "expected <<Boolean>> but found <<Integer>>" at "p"
+	const number = if (p) 2 else 6
+	
+	number
+}

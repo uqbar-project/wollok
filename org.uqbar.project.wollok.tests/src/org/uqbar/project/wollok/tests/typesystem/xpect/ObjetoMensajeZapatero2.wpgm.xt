@@ -1,0 +1,65 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+/**
+ * Introduccion a Objetos, Objetos-Mensaje
+ * Pepe zapatero. 
+ * Polimorfismo en un atributo
+*/
+ 
+object fiona {	
+	// XPECT type at felicidad --> Boolean
+	var felicidad = false
+	
+	method compraZapatos() {
+		felicidad = true	
+	}
+	
+	// XPECT methodType at estaFeliz --> () => Boolean
+	method estaFeliz() {
+		return felicidad
+	}
+}
+
+object salvador {
+	// XPECT type at dinero --> Integer
+	var dinero  = 1200
+	
+	method compraZapatos() {
+		dinero  = dinero - 700	
+	}
+	
+	// XPECT methodType at estaFeliz --> () => Boolean
+	method estaFeliz() {
+		return dinero > 0
+	}
+}
+
+object pepe {
+	// XPECT type at cliente -->  fiona 
+	// deberia ser  fiona | salvador
+	
+	var cliente = fiona 					
+//	var cliente  					
+	
+	method cuantosGolesMetiste(){
+		return 5
+	}
+	
+	method labura(){
+		cliente.compraZapatos()				
+	}
+	
+	// XPECT methodType at hicisteBienTuTrabajo --> () => Boolean
+	method hicisteBienTuTrabajo() {
+		return cliente.estaFeliz() 			
+	}
+	
+	// XPECT methodType at tuClienteEs --> (fiona) => Void
+	// deberia ser (fiona|salvador) => Void
+	method tuClienteEs(unCliente) { 		
+		cliente = unCliente
+	}
+	
+}
+
+

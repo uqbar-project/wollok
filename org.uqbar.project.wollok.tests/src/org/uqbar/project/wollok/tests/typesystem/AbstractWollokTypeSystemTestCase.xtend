@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.Injector
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.junit4.validation.AssertableDiagnostics
 import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
@@ -11,19 +12,24 @@ import org.eclipse.xtext.validation.AbstractValidationDiagnostic
 import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+
+import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
-import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
 
 /**
  * Abstract base class for all type system test cases.
@@ -36,6 +42,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	@Parameter
 	public Class<? extends TypeSystem> tsystemClass
 
+	@Accessors
 	extension TypeSystem tsystem
 
 	@Inject
@@ -51,13 +58,14 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	@Before
 	def void setupTypeSystem() {
+		WollokResourceCache.clearCache
+		
 		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)
 	}
 
 	// Utility
 	def parseAndInfer(CharSequence file) {
-		println('''Parsing «file»''')
 		parseAndInfer(#[file])
 	}
 
@@ -99,7 +107,12 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 	
 	def classType(String className) {
-		new ClassBasedWollokType(findClass(className), null)
+		new ClassBasedWollokType(WClass.find(className), null)
+	}
+
+	def objectType(String objectName) {
+		// TODO Use always fully qualified names
+		new NamedObjectWollokType(WNamedObject.find(objectName.split('\\.').last), null)
 	}
 
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
@@ -199,12 +212,12 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	def findConstructor(String className, int nrOfParams) {
-		findClass(className).constructors.findFirst[matches(nrOfParams)]
+		WClass.find(className).constructors.findFirst[matches(nrOfParams)]
 	}
 
 	def findMethod(String methodFQN) {
 		val fqn = methodFQN.split('\\.')
-		val m = findClass(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
+		val m = WMethodContainer.find(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
 		if (m == null)
 			throw new RuntimeException("Could NOT find method " + methodFQN)
 		m
@@ -212,14 +225,15 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	def findInstanceVar(String instVarFQN) {
 		val fqn = instVarFQN.split('\\.')
-		findClass(fqn.get(0)).variableDeclarations.findFirst[variable.name == fqn.get(1)]
+		WClass.find(fqn.get(0)).variableDeclarations.map[variable].findFirst[name == fqn.get(1)]
 	}
 
-	def findClass(String className) {
-		val c = resourceSet.allContents.filter(WClass).findFirst[name == className]
-		if (c == null)
-			throw new RuntimeException(
-			'''Could NOT find class [«className»] in: «resourceSet.allContents.filter(WClass).map[name].toList»''')
-		c
+	def <T extends EObject> find(Class<T> resourceType, String resourceName) {
+		val resources = resourceSet.allContents.filter(resourceType).toList
+		resources.findFirst[it.name == resourceName] => [
+			if (it == null)
+				throw new RuntimeException(
+					'''Could NOT find «resourceType.simpleName» [«resourceName»] in: «resources.map[it.name].toList»''')
+		]
 	}
 }

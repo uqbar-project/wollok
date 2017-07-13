@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.debugger
 
 import java.util.List
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.junit.Test
@@ -387,6 +388,8 @@ object assert {
 
 @Accessors
 class PostEvaluationTestDebugger extends XDebuggerOff {
+	val Logger log = Logger.getLogger(this.class)
+	
 	var boolean childrenFirst = true
 	var boolean logSession = false
 	val List<Pair<EObject, XStackFrame>> evaluated = newArrayList
@@ -408,7 +411,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 	
 	def store(EObject element) {
 		if (logSession)
-			println('"' + element.sourceCode.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim() + '",')
+			log.debug('"' + element.sourceCode.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim() + '",')
 		evaluated += (element -> interpreter.stack.peek.clone)
 	}
 	
@@ -423,7 +426,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 		for (t : evaluated) {
 			val escaped = t.key.escapedCode 
 			if (logSession)
-				println(escaped)
+				log.debug(escaped)
 			assertEquals(expected.get(i), escaped)
 			i++
 		}

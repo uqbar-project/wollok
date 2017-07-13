@@ -105,7 +105,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
 	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.overridenMethod(m.name, m.parameters) }
-	def protected static overridenMethod(WMethodContainer it, String name, List parameters) {
+	def protected static overridenMethod(WMethodContainer it, String name, List<?> parameters) {
 		lookUpMethod(linearizeHierarchy.tail, name, parameters, true)
 	}
 
@@ -244,11 +244,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c !== null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
-	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List params, boolean acceptsAbstract) {
+	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List<?> params, boolean acceptsAbstract) {
 		lookUpMethod(behavior.linearizeHierarchy, message, params, acceptsAbstract)
 	}
 
-	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List params, boolean acceptsAbstract) {
+	def static lookUpMethod(Iterable<WMethodContainer> hierarchy, String message, List<?> params, boolean acceptsAbstract) {
 		for (chunk : hierarchy) {
 			val method = chunk.methods.findFirst[ (!it.abstract || acceptsAbstract) && matches(message, params)]
 			if (method !== null)
@@ -271,7 +271,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		chain
 	}
 
-	def static matches(WMethodDeclaration it, String message, List params) { matches(message, params.size) }
+	def static matches(WMethodDeclaration it, String message, List<?> params) { matches(message, params.size) }
 
 	def static matches(WMethodDeclaration it, String message, int nrOfArgs) {
 		name == message &&

@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
@@ -27,6 +28,8 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	WollokObject obj
 	@Accessors WollokInterpreter interpreter
 	
+	val Logger log = Logger.getLogger(this.class)
+	
 	new (WollokObject obj, WollokInterpreter interpreter) {
 		this.obj = obj
 		this.interpreter = interpreter
@@ -34,7 +37,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 
 	override WollokObject call(String message, WollokObject... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
-		if (method == null)
+		if (method === null)
 			throw doesNotUnderstand(message, parameters)
 		else
 			try {
@@ -54,8 +57,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 				throw wrapNativeException(e, method, parameters)
 			}
 			catch (Throwable e) {
-				println(''' Method: «method.name» «method.parameterTypes» Parameters:«parameters.toString» Target:«this» ''')
-				e.printStackTrace
+				log.error(''' Method: «method.name» «method.parameterTypes» Parameters:«parameters.toString» Target:«this» ''', e)
 				throw e
 			}
 	}
@@ -71,9 +73,9 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		getMethod(class, message, parameters)
 	}
 	
-	def static getMethod(Class c, String message, Object... parameters) {
+	def static getMethod(Class<?> c, String message, Object... parameters) {
 		var method = c.methods.findFirst[handlesMessage(message, parameters)]
-		if (method == null)
+		if (method === null)
 			method = c.methods.findFirst[name == message && matches(parameters)]
 		method
 	}

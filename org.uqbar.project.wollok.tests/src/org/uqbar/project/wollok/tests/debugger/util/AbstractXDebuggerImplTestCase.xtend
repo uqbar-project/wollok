@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.debugger.util
 
 import java.net.URI
 import java.util.List
+import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
@@ -23,7 +24,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTestCase {
 	// couldn't reuse the one from xtext because it is hardcoded
 	static val SYNTHETIC_FILE_PREFFIX = WollokConstants.SYNTHETIC_FILE
-	
+	val Logger log = Logger.getLogger(this.class)	
 	
 	/**
 	 * Used to test evaluation order by comparing only the code evaluated
@@ -41,7 +42,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 		var i = 0
 		for (s : steps) {
 			if (s.currentLocation.fileURI.contains(SYNTHETIC_FILE_PREFFIX)) {
-				println("Asserting " + s.currentLocation.fileURI)
+				log.debug("Asserting " + s.currentLocation.fileURI)
 				if (i >= asserter.expectedSteps.size) {
 					fail("Found extra step not in expectation: " + s.code(program))
 				}
@@ -93,13 +94,13 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 			steps += lastStackElement.clone
 			
 			val code = lastStackElement.code(programContent)
-			println("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
+			log.debug("Evaluating "+ lastStackElement + " => " + code.replaceAll('\n', '¶'))
 
 			clientSide.suspended = false;
 			realDebugger.stepInto()	
 		} while (!clientSide.isTerminated);
 		
-		println("Steps " + steps.map[System.identityHashCode(it)].join(', '))
+		log.debug("Steps " + steps.map[System.identityHashCode(it)].join(', '))
 		steps
 	}
 	
@@ -134,6 +135,8 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 
 @Accessors
 class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublisher, DebuggerEventAssertion {
+	val Logger log = Logger.getLogger(this.class)
+
 	var boolean started = false
 	var boolean terminated = false
 	var boolean suspended = false
@@ -145,14 +148,14 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	AssertionError assertionFailed
 	
 	override started() { 
-		println("STARTED")
+		log.debug("STARTED")
 		started = true
 		suspended = false 
 		notify [ started(vm) ]
 	}
 	
 	override terminated() {
-		println("TERMINATED")
+		log.debug("TERMINATED")
 		terminated = true
 		suspended = false
 		
@@ -160,16 +163,16 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	}
 	
 	override suspendStep() {
-		println("SUSPENDED")
+		log.debug("SUSPENDED")
 		suspended = true 
 		notify [ suspended(vm) ]
 	}
 	override resumeStep() {
-		println("RESUME")
+		log.debug("RESUME")
 		notify [ resumed(vm) ]
 	}
 	override breakpointHit(String fileName, int lineNumber) {
-		println("BREAKPOINT HIT")
+		log.debug("BREAKPOINT HIT")
 		notify [ breakpointHit(fileName, lineNumber, vm) ]
 	}
 	
@@ -191,7 +194,7 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	
 	protected def waitUntil(()=>Boolean condition) {
 		// REVIEW: this is an active wait. Not good, but well.. just for testing.
-		while (!condition.apply && assertionFailed == null) 
+		while (!condition.apply && assertionFailed === null) 
 			Thread.sleep(100)
 	}
 	
@@ -223,7 +226,7 @@ class TestTextInterpreterEventPublisher implements XTextInterpreterEventPublishe
 	
 	def close() {
 		// todo: close connection ?
-		if (assertionFailed != null)
+		if (assertionFailed !== null)
 			throw assertionFailed
 	}
 	

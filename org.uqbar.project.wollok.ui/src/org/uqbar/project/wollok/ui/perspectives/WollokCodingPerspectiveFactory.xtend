@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.ui.perspectives
 import org.eclipse.jdt.ui.JavaUI
 import org.eclipse.ui.IPageLayout
 import org.eclipse.ui.IPerspectiveFactory
+import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.console.IConsoleConstants
 import org.uqbar.project.wollok.ui.wizard.WollokDslNewProjectWizard
 import org.uqbar.project.wollok.ui.wizard.objects.NewWollokObjectsWizard
@@ -29,6 +30,9 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addPerspectiveShortcuts
 			addViewShortcuts
 		]
+		
+		//I force the opening of the debug perspective. So both are together and usable.
+		PlatformUI.workbench.showPerspective("org.eclipse.debug.ui.DebugPerspective", PlatformUI.workbench.activeWorkbenchWindow)
 	}
 	
 	def addViews(IPageLayout it) {

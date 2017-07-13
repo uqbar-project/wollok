@@ -1,17 +1,21 @@
 package org.uqbar.project.wollok.tests.interpreter.numbers
 
+import org.apache.log4j.Logger
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
-import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+
 /**
  * @author tesonep
  */
 class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
-	extension WollokInterpreterAccess = new WollokInterpreterAccess
+	
+	val Logger log = Logger.getLogger(this.class)
 	
 	@Parameter(0)
 	public String expression
@@ -66,7 +70,7 @@ class ArithmeticTest extends AbstractWollokParameterizedInterpreterTest {
 			assertTrue(expected.call("==", actual).wollokToJava(Boolean) as Boolean)
 		}
 		catch (AssertionError e) {
-			println("Expected " + expected + " but got " + actual)
+			log.error("Expected " + expected + " but got " + actual)
 			throw e
 		}
 	}

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.bindings
 import com.google.inject.Inject
 import java.util.List
 import java.util.Map
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
@@ -47,10 +48,16 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	List<TypeBound> bounds = newArrayList
 	@Inject WollokClassFinder finder
 
+	val Logger log = Logger.getLogger(this.class)
+
 	override def name() { "Bounds Based" }
 	
+	override initialize(EObject program) {
+		// No initialization required
+	}
+
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		println("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
 		this.inferTypes
 		this.reportErrors(validator)
@@ -152,7 +159,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 
 	def dispatch void bind(WVariableDeclaration v) {
 		v.inferredNode [extension b|
-			if (v.right != null)
+			if (v.right !== null)
 				v >= v.right
 		]
 	}
@@ -265,5 +272,4 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		// REVIEWME: should we have a cache ?
 		new ClassBasedWollokType(clazz, this)
 	}
-
 }

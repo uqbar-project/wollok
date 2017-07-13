@@ -44,6 +44,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
@@ -63,7 +64,6 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 
 /**
  * Custom validation rules.
@@ -129,15 +129,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (wollokValidatorExtensions !== null)
 			return wollokValidatorExtensions
 
-		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor(
-			"org.uqbar.project.wollok.wollokValidationExtension")
+		val registry = Platform.getExtensionRegistry
+		if(registry === null)
+			return #{}
+
+		val configs = registry.getConfigurationElementsFor("org.uqbar.project.wollok.wollokValidationExtension")
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
 
 	@Check
 	@NotConfigurable
 	def checkValidationExtensions(WFile wfile) {
-		validatorExtensions.forEach[check(wfile, this)]
+		validatorExtensions.forEach[
+			check(wfile, this)
+		]
 	}
 
 	@Check

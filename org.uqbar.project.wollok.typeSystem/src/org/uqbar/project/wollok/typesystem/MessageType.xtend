@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
-import org.eclipse.xtend.lib.Property
 import org.eclipse.xtend.lib.annotations.Accessors
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
