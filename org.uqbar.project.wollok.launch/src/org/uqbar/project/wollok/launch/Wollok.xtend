@@ -6,6 +6,6 @@ package org.uqbar.project.wollok.launch
 // THIS GETS UPDATED BY OUT BASH SCRIPT
 class Wollok {
 	
-	public static val VERSION = "1.6.0"
+	public static val VERSION = "1.6.1"
 	
 }
