@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.uqbar.project.wollok.sdk_1.6.0.qualifier.jar" id="org.uqbar.project.wollok.sdk" version="1.6.0.qualifier" os="linux,macosx,win32">
+   <feature url="features/org.uqbar.project.wollok.sdk_1.6.0.jar" id="org.uqbar.project.wollok.sdk" version="1.6.0" os="linux,macosx,win32">
       <category name="Wollok"/>
    </feature>
    <category-def name="Wollok" label="Wollok">
