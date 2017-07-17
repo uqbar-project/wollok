@@ -178,7 +178,7 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 }
 
 /**
- * Exports diagram to .wsdi file
+ * Resets the layout and modifications made in the diagram.
  */
 class CleanShapePositionsAction extends Action {
 	StaticDiagramConfiguration configuration
@@ -186,7 +186,7 @@ class CleanShapePositionsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/etool16/saveas_edit.png"))
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.e4.ui.workbench.swt/icons/full/etool16/clear_co.gif"))
 	}
 
 	override run() {
