@@ -1162,6 +1162,8 @@ class Number {
 	 * Example:
 	 * 		8.gcd(12) ==> Answers 4
 	 *		5.gcd(10) ==> Answers 5
+	 *      7.4.gcd(10) ==> throws error
+	 *      7.gcd(10.2) ==> throws error
 	 */
 	method gcd(other) native
 	
@@ -1171,6 +1173,8 @@ class Number {
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
 	 * 		6.lcm(12) ==> Answers 12
+	 *      6.4.lcm(12 ==> throws error
+	 *      5.lcm(10.2) ==> throws error
 	 */
 	method lcm(other) {
 		const mcd = self.gcd(other)
