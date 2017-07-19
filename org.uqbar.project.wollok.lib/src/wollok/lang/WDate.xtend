@@ -1,8 +1,6 @@
 package wollok.lang
 
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -101,12 +99,12 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
-		wDate != null && wrapped == wDate.wrapped
+		wDate !== null && wrapped == wDate.wrapped
 	}
 	
 	def asWString(WollokObject it) { 
 		val wDate = it.getNativeObject(WDate) as WDate
-		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
+		if (wDate === null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
 		wDate
 	}
 

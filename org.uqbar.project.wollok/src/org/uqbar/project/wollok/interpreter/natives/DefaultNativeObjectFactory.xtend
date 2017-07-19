@@ -49,7 +49,6 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	
 	def createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
 		val javaClass = resolveNativeClass(classFQN, obj, interpreter)
-		
 		tryInstantiate(
 			[|javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)],
 			[|javaClass.getConstructor(WollokObject).newInstance(obj)],

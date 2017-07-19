@@ -724,7 +724,8 @@ class List inherits Collection {
 		if (self.isEmpty()) 
 			throw new Exception("Illegal operation 'anyOne' on empty collection")
 		else 
-			return self.get(0.randomUpTo(self.size()))
+			//return self.get(0.randomUpTo(self.size()))
+			return self.get(0)
 	}
 	
 	/**

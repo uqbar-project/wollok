@@ -22,7 +22,7 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
 class WollokJavaConversions {
 
 	def static asNumber(WollokObject it) {
-		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<Integer>).wrapped
+		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 	}
 
 	def static isWBoolean(Object it) { it instanceof WollokObject && (it as WollokObject).hasNativeType(BOOLEAN) }
@@ -32,13 +32,17 @@ class WollokJavaConversions {
 	}
 
 	def static Object wollokToJava(Object o, Class<?> t) {
-		if(o == null) return null
+		if(o === null) return null
 		if(t.isInstance(o)) return o
-		if(t == Object) return o
+		if(t === Object) return o
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
 			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
-		if (o.isNativeType(NUMBER) && (t == Integer || t == Integer.TYPE))
+		if (t == Integer || t == Integer.TYPE)
+			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.intValue
+//		if (t == Integer || t == Integer.TYPE)
+//			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<BigDecimal>).wrapped.doubleValue
+		if (o.isNativeType(NUMBER) && (t == Integer || t == Integer.TYPE || t == BigDecimal || t == Double.TYPE))
 			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
@@ -80,6 +84,10 @@ class WollokJavaConversions {
 		if(o == null) return null
 		convertJavaToWollok(o)
 	}
+
+	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
+
+	def static dispatch WollokObject convertJavaToWollok(Double o) { evaluator.getOrCreateNumber(o.toString) }
 
 	def static dispatch WollokObject convertJavaToWollok(BigDecimal o) { evaluator.getOrCreateNumber(o.toString) }
 

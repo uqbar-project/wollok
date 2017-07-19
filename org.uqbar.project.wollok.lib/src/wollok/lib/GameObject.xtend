@@ -39,14 +39,14 @@ class GameObject {
 	}
 	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
-		var num = key.asNumber
+		var num = key.asNumber.intValue
 		val function = action.asClosure
 		var listener = new KeyboardListener(num, [ function.doApply ])
 		addListener(listener)
 	}
 
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
-		val num = key.asNumber
+		val num = key.asNumber.intValue
 		val function = functionObj.asClosure
 		var listener = new KeyboardListener(num,  [ board.characterSay(function.doApply.asString) ]) 
 		addListener(listener)
@@ -108,12 +108,12 @@ class GameObject {
 	
 	def width() { board.width.javaToWollok }
 	def width(WollokObject cant) {
-		board.width =  cant.asNumber
+		board.width = cant.asNumber.intValue
 	}
 	
 	def height() { board.height.javaToWollok }
 	def height(WollokObject cant) {
-		board.height = cant.asNumber
+		board.height = cant.asNumber.intValue
 	}
 	
 	def ground(WollokObject image) {

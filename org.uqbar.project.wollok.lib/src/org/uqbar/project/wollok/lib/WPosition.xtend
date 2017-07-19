@@ -14,9 +14,9 @@ class WPosition extends Position {
 		wObject = position
 	}
 
-	override getX() { wObject.getInt("x") }
+	override getX() { wObject.getInt("x").intValue }
 
-	override getY() { wObject.getInt("y") }
+	override getY() { wObject.getInt("y").intValue }
 
 	override setX(int num) { wObject.setInt("x", num) }
 
