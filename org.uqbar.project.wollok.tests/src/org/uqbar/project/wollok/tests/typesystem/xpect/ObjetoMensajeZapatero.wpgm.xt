@@ -42,7 +42,7 @@ program p {
 	// XPECT type at alguien -->  fiona
 	const alguien = fiona
 
-	// XPECT type at goles -->  Integer
+	// XPECT type at goles -->  Number
 	const goles = pepe.cuantosGolesMetiste()
 	
 }

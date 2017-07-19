@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Base class for numbers.
@@ -183,10 +183,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		this.stringValue
 	}
 
-	def isInteger(BigDecimal decimal) {
-		return decimal.signum == 0 || decimal.scale <= 0 || decimal.stripTrailingZeros.scale <= 0
-	}
-
 	override equals(Object obj) {
 		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped
 	}
@@ -198,7 +194,7 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	def <BigDecimal> BigDecimal asWollokObject(Object obj) {
-		WollokJavaConversions.javaToWollok(obj) as BigDecimal
+		javaToWollok(obj) as BigDecimal
 	}
 
 	def operate(WollokObject other, (Number)=>Number block) {

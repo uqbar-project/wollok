@@ -1025,7 +1025,7 @@ class Number {
 	override method toString() = self.stringValue()
 	
 	/** Self as a String value. Equivalent: toString() */
-	override method stringValue() native	
+	method stringValue() native	
 	
 	method >(other) native
 	method >=(other) native
@@ -1107,8 +1107,6 @@ class Number {
 	 */
 	method rem(other) { return self % other }
 	
-	method stringValue() = throw new Exception("Should be implemented in the subclass")
-
 	/**
 	 * Answers a random between self and max
 	 */
@@ -1152,8 +1150,9 @@ class Number {
 	 * Builds a Range between self and end
 	 * 
 	 * Example:
-	 * 		1..4   Answers ==> a new Range object from 1 to 4
-	 *      1.7..4 Answers ==> a new Range object from 2 to 4
+	 * 		1..4      Answers ==> a new Range object from 1 to 4
+	 *      1.0..4.0  Answers ==> a new Range object from 1 to 4
+	 *      1.7..4    Throws an error
 	 */
 	method ..(end) = new Range(self.roundUp(), end)
 	 

@@ -21,7 +21,7 @@ object fiona {
 }
 
 object salvador {
-	// XPECT type at dinero --> Integer
+	// XPECT type at dinero --> Number
 	var dinero  = 1200
 	
 	method compraZapatos() {

@@ -54,7 +54,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertMethodSignature("() => Number", 'Golondrina.getEnergia')
 			assertInstanceVarType(classTypeFor(NUMBER), 'Golondrina.energia')
 		// assertTypeOf(classTypeFor(NUMBER), "null")
 		]
@@ -75,7 +75,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
+			assertMethodSignature("() => Number", 'Golondrina.getEnergia')
 			assertInstanceVarType(classTypeFor(NUMBER), 'Golondrina.energiaGolondrina')
 		]
 	}
@@ -116,9 +116,9 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			} 
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Integer", 'NumberOperation.perform')
-			assertMethodSignature("(Integer) => Integer", 'DoubleOperation.perform')
-			assertMethodSignature("(Integer) => Integer", 'TripleOperation.perform')
+			assertMethodSignature("(Number) => Number", 'NumberOperation.perform')
+			assertMethodSignature("(Number) => Number", 'DoubleOperation.perform')
+			assertMethodSignature("(Number) => Number", 'TripleOperation.perform')
 		]
 	}
 

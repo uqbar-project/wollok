@@ -125,6 +125,9 @@ class WollokJavaConversions {
 	}
 
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
-	
+
+	def static boolean isInteger(BigDecimal decimal) {
+		return decimal.signum == 0 || decimal.scale <= 0 || decimal.stripTrailingZeros.scale <= 0
+	}
 
 }

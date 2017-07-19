@@ -164,9 +164,17 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void testRangeForDecimalsIfIntegersAreAllowed() {
+		'''
+		const range = new Range(2.0, 5.0)
+		assert.equals(5, range.max())
+		'''.test
+	}	
+
+	@Test
 	def void testRangeForDecimalsNotAllowed() {
 		'''
-		assert.throwsException({ => new Range(2.0, 5.0)})
+		assert.throwsException({ => new Range(2.4, 5.7)})
 		'''.test
 	}	
 

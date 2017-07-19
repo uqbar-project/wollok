@@ -38,17 +38,17 @@ object salvador {
 // COSAS QUE PEPE PUEDE ARREGLAR >>>
 
 object alpargata { 			
-	// XPECT! methodType at complejidad  --> () => Integer
+	// XPECT! methodType at complejidad  --> () => Number
 	method complejidad() {
 		return 10
 	}
 }
 
 object botaDeCuero { 		
-	// XPECT! type at destruccion  --> Integer
+	// XPECT! type at destruccion  --> Number
 	var destruccion = 100
 	
-	// XPECT methodType at complejidad  --> () => Integer
+	// XPECT methodType at complejidad  --> () => Number
 	method complejidad() {
 		return destruccion
 	}
@@ -60,7 +60,7 @@ object botaDeCuero {
 object pepe {
 	var cliente = fiona
 
-	// XPECT type at fatiga --> Integer
+	// XPECT type at fatiga --> Number
 	var fatiga = 100 						
 	
 	method cuantosGolesMetiste(){

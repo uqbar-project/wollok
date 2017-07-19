@@ -72,7 +72,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (n) 2 else 6
 			}
 		'''.parseAndInfer.asserting [
-			findByText("n", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+			findByText("n", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Number>>")
 		]
 	}
 
@@ -85,7 +85,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (p) 2 else 6
 			}
 		'''.parseAndInfer.asserting [
-			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Number>>")
 		]
 	}
 
@@ -99,7 +99,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			findAllByText("n", WVariableReference).get(1).assertIssuesInElement(
-				"expected <<Boolean>> but found <<Integer>>")
+				"expected <<Boolean>> but found <<Number>>")
 		]
 	}
 }
