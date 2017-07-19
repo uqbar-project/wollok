@@ -111,7 +111,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				a = b
 			}
 		'''.parseAndInfer.asserting [
-			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
+			assertIssues("a = b", "Expecting super type of <<Number>> but found <<String>> which is not")
 		]
 	}		
 }

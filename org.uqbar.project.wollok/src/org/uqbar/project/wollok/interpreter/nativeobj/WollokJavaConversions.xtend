@@ -21,6 +21,10 @@ import static org.uqbar.project.wollok.sdk.WollokSDK.*
  */
 class WollokJavaConversions {
 
+	def static asInteger(WollokObject it) {
+		asNumber.intValue
+	}
+
 	def static asNumber(WollokObject it) {
 		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 	}

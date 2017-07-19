@@ -35,7 +35,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''].interpretPropagatingErrors
 			
 		val counter = interpreter.currentContext.resolve("counter") as WollokObject
-		assertEquals(0, counter.asNumber)
+		assertEquals(0, counter.asInteger)
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			}'''.
 			interpretPropagatingErrors
 			val counter = interpreter.currentContext.resolve("counter") as WollokObject
-			assertEquals(1, counter.asNumber)
+			assertEquals(1, counter.asInteger)
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.
 		interpretPropagatingErrors
 		val counter = interpreter.currentContext.resolve("counter") as WollokObject
-		assertEquals(2, counter.asNumber)
+		assertEquals(2, counter.asInteger)
 	}
 
 	@Test
