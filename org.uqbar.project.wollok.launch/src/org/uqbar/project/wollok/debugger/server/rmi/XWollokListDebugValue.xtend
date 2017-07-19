@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import wollok.lang.WCollection
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Special value for wollok lists.

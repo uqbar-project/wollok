@@ -6,7 +6,7 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * The most basic inference tests
@@ -29,7 +29,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void numberLiteral() { 	'''program p {
 			const a = 46
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 	
@@ -73,7 +73,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = 23
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "number")
+			assertTypeOf(classTypeFor(NUMBER), "number")
 		]
 	}
 
@@ -85,7 +85,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const b = a
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "b")
+			assertTypeOf(classTypeFor(NUMBER), "b")
 		]
 	}
 	

@@ -5,7 +5,6 @@ validatorExtends AbstractWollokDslValidator
 import it.xsemantics.runtime.RuleFailedException
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.BasicType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ClosureType
@@ -49,6 +48,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 inject WollokClassFinder finder
 
@@ -212,32 +212,26 @@ from {
 // ****************************************************************************
 
 rule NumberLiteralType G |- WNumberLiteral lit : WollokType tipe from {
-	if (lit.value.contains('.')) {
-		G |- lit ~~ WollokDSK.DOUBLE :> tipe
-		G.add(lit, tipe)
-	}
-	else {
-		G |- lit ~~ WollokDSK.INTEGER :> tipe
-		G.add(lit, tipe)
-	}
+	G |- lit ~~ WollokSDK.NUMBER :> tipe
+	G.add(lit, tipe)
 }
 
 rule StringLiteralType G |- WStringLiteral lit : WollokType tipe from {
-	G |- lit ~~ WollokDSK.STRING :> tipe
+	G |- lit ~~ WollokSDK.STRING :> tipe
 	G.add(lit, tipe)
 }
 
 rule BooleanLiteralType G |- WBooleanLiteral lit : WollokType tipe from {
-	G |- lit ~~ WollokDSK.BOOLEAN :> tipe
+	G |- lit ~~ WollokSDK.BOOLEAN :> tipe
 	G.add(lit, tipe)
 }
 
 rule ListLiteralType G |- WListLiteral lit : WollokType tipe from {
-	G |- lit ~~ WollokDSK.LIST :> tipe
+	G |- lit ~~ WollokSDK.LIST :> tipe
 	G.add(lit, tipe)
 }
 rule SetLiteralType G |- WSetLiteral lit : WollokType tipe from {
-	G |- lit ~~ WollokDSK.SET :> tipe
+	G |- lit ~~ WollokSDK.SET :> tipe
 	G.add(lit, tipe)
 }
 
@@ -301,8 +295,8 @@ from {
 rule AdditionType
 	G |- WBinaryOperation op : WollokType returnType
 from {
-	G |- op ~~ WollokDSK.BOOLEAN :> var WollokType booleanType
-	G |- op ~~ WollokDSK.INTEGER :> var WollokType integerType
+	G |- op ~~ WollokSDK.BOOLEAN :> var WollokType booleanType
+	G |- op ~~ WollokSDK.NUMBER :> var WollokType numberType
 	
 	var WollokType t = null
 	if (#["&&", "||"].contains(op.^feature)) {
@@ -315,8 +309,8 @@ from {
 		t = WAny
 	}
 	else {
-		returnType = integerType
-		t = integerType
+		returnType = numberType
+		t = numberType
 	}
 
 	// left
@@ -499,10 +493,10 @@ rule UnaryOperationType
 	G |- WUnaryOperation op : WollokType tipe
 from {
 	if (op.^feature == "!" || op.^feature == "not") {
-		G |- op ~~ WollokDSK.BOOLEAN :> tipe
+		G |- op ~~ WollokSDK.BOOLEAN :> tipe
 	}
 	else {
-		G |- op ~~ WollokDSK.INTEGER :> tipe
+		G |- op ~~ WollokSDK.NUMBER :> tipe
 	}
 	G.add(op, tipe)
 } 

@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem
 
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * @author jfernandes
@@ -25,7 +25,7 @@ class TypeSystemUtils {
 		else if (#["==", "!=", "===", "<", "<=", ">", ">="].contains(op))
 			#[OBJECT,OBJECT] -> BOOLEAN
 		else
-			#[INTEGER,INTEGER] -> INTEGER
+			#[NUMBER,NUMBER] -> NUMBER
 	}
 	
 }

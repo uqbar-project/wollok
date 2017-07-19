@@ -14,7 +14,6 @@ import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
-import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -24,12 +23,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
+import org.uqbar.project.wollok.sdk.WollokSDK
 
 /**
  * A wollok user defined (dynamic) object.
@@ -182,7 +182,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		
 	def getKind() { behavior }
 	
-	def isVoid() { this == WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
+	def isVoid() { this == WollokSDK.getVoid(interpreter as WollokInterpreter, behavior) }
 	
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
 	

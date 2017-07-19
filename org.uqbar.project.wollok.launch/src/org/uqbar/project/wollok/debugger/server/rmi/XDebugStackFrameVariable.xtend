@@ -5,7 +5,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * A variable within a stack execution.

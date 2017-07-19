@@ -23,7 +23,8 @@ class WPosition extends Position {
 	override setY(int num) { wObject.setInt("y", num) }
 
 
-	def getInt(WollokObject it, String methodName) { call(methodName).asInteger }
+	def getInt(WollokObject it, String methodName) { call(methodName).asNumber }
+	
 	def setInt(WollokObject it, String methodName, Integer num) { call(methodName, num.javaToWollok) }
 	
 	def void copyFrom(Position position) {

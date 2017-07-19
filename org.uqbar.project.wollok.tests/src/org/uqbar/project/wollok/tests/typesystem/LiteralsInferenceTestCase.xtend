@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.semantics.XSemanticsTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * The most basic inference tests
@@ -29,7 +29,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testNumberLiteral() { 	
 		''' program { 46 } '''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "46")
+			assertTypeOf(classTypeFor(NUMBER), "46")
 		]
 	}
 

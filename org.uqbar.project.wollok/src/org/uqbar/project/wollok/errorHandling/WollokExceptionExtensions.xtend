@@ -8,9 +8,9 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Extension methods for handling Wollok errors.

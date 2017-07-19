@@ -28,10 +28,10 @@ import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -110,7 +110,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
-		newSealed(classType(INTEGER))
+		newSealed(classType(NUMBER))
 	}
 
 	def dispatch void generateVariables(WStringLiteral it) {

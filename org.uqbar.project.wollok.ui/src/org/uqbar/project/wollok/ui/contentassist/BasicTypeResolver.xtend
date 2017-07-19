@@ -34,7 +34,7 @@ class BasicTypeResolver {
 	def dispatch WMethodContainer resolveType(WSetLiteral it) { setClass }
 	def dispatch WMethodContainer resolveType(WStringLiteral it) { stringClass }
 	def dispatch WMethodContainer resolveType(WBooleanLiteral it) { booleanClass }
-	def dispatch WMethodContainer resolveType(WNumberLiteral it) { if (value.contains(".")) doubleClass else integerClass }
+	def dispatch WMethodContainer resolveType(WNumberLiteral it) { numberClass }
 	def dispatch WMethodContainer resolveType(WConstructorCall it) { classRef }
 	def dispatch WMethodContainer resolveType(WMethodContainer it) { it }
 	def dispatch WMethodContainer resolveType(EObject it) { objectClass }

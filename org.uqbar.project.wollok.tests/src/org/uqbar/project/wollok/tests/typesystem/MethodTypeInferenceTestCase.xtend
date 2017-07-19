@@ -4,7 +4,7 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Groups together all test cases for method type inference.
@@ -35,7 +35,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = a + b
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), 'number')
+			assertTypeOf(classTypeFor(NUMBER), 'number')
 		]
 	}
 
@@ -204,7 +204,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				var x = example.number()
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "x")
+			assertTypeOf(classTypeFor(NUMBER), "x")
 		]
 	}
 

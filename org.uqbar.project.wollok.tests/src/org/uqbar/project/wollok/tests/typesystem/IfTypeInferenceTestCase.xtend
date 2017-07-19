@@ -5,7 +5,7 @@ import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Test type inference in if expressions
@@ -35,8 +35,8 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = if (true) a else b 
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
-			assertTypeOf(classTypeFor(INTEGER), "b")
+			assertTypeOf(classTypeFor(NUMBER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "b")
 		]
 	}
 
@@ -48,7 +48,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (true) a else 23
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 
@@ -60,7 +60,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (true) 23 else a
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 

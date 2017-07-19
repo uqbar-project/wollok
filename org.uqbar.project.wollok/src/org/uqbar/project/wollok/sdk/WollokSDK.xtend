@@ -20,8 +20,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author jfernandes
  */
-//TODO: fix typo
-class WollokDSK {
+class WollokSDK {
 	
 	// ************************************************************************
 	// ** SDK Classes
@@ -31,8 +30,6 @@ class WollokDSK {
 	public static val VOID = "wollok.lang.void"
 
 	public static val STRING = "wollok.lang.String"
-	public static val INTEGER = "wollok.lang.Integer"
-	public static val DOUBLE = "wollok.lang.Double"
 	public static val NUMBER = "wollok.lang.Number"
 	public static val BOOLEAN = "wollok.lang.Boolean"
 	public static val DATE = "wollok.lang.Date"
@@ -41,7 +38,7 @@ class WollokDSK {
 	public static val LIST = "wollok.lang.List"
 	public static val SET = "wollok.lang.Set"
 	public static val DICTIONARY = "wollok.lang.Dictionary"
-	public static val RANGE= "wollok.lang.Range"
+	public static val RANGE = "wollok.lang.Range"
 	
 	public static val CLOSURE = "wollok.lang.Closure"
 	
@@ -51,6 +48,8 @@ class WollokDSK {
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
+
+	public static val BASIC_TYPES = #[NUMBER, STRING, BOOLEAN]
 
 	// ************************************************************************
 	// ** SDK Objects
@@ -63,10 +62,8 @@ class WollokDSK {
 	}
 	
 	def static isBasicType(WollokObject it) {
-		val fqn = behavior.fqn
-		val bt = fqn == INTEGER || fqn == DOUBLE || fqn == STRING || fqn == BOOLEAN
 //		println("[VM] \t\tis " + fqn + " basic type " + bt)
-		bt
+		BASIC_TYPES.contains(behavior.fqn)
 	}
 	
 }

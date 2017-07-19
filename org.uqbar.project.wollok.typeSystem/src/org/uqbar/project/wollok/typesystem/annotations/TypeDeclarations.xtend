@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -68,10 +68,6 @@ abstract class TypeDeclarations {
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
-
-	def Integer() { classTypeAnnotation(INTEGER) }
-	
-	def Double() { classTypeAnnotation(DOUBLE) }
 
 	def String() { classTypeAnnotation(STRING) }
 

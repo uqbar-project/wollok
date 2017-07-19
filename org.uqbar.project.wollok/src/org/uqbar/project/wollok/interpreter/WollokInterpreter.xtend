@@ -23,7 +23,7 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * XInterpreter impl for Wollok language.
