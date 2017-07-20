@@ -579,6 +579,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		/** Extending to related files of project
 		 * @See https://kthoms.wordpress.com/2011/07/12/xtend-generating-from-multiple-input-models/
 		 */
+		// TODO: import static extension WEclipseUtils
+		// eObject.getFile.refreshProject but also do a full refresh of this rename in whole project
 	}
 
 	/**
