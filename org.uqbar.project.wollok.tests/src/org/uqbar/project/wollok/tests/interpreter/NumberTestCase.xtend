@@ -270,7 +270,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			fail("decimals should not understand gcd message")
 		} catch (WollokProgramExceptionWrapper e) {
 			println(e.wollokMessage)
-			assertTrue(e.wollokMessage.startsWith("gcd expects receiver to be an integer"))
+			assertTrue(e.wollokMessage.startsWith("gcd can only be applied to integer numbers"))
 		}
 	}
 
