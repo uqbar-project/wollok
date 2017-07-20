@@ -50,6 +50,10 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
  */
 class WMethodContainerExtensions extends WollokModelExtensions {
 
+	def static EObject getContainer(EObject it) { 
+		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
+	}
+
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
 	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
