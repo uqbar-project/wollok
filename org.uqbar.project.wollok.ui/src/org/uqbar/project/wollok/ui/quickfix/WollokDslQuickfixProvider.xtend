@@ -410,9 +410,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
 			Messages.WollokDslQuickFixProvider_create_new_class_description, "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
-			val container = (e as WExpression).container
+			val container = e.container
 			context.xtextDocument.replace(container.before, 0,
-				System.lineSeparator + CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)
+				CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)
 		]
 
 	}
