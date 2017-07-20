@@ -45,7 +45,6 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 				throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")		
 			}
 		} catch (ClassCastException e) {
-			e.printStackTrace
 			throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")
 		}
 	}

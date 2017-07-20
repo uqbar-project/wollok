@@ -122,7 +122,7 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 
 	def gcd(WollokObject other) {
 		if (!wrapped.isInteger) {
-			throw new IllegalArgumentException("gcd expects receiver to be an integer")
+			throw new IllegalArgumentException("gcd can only be applied to integer numbers")
 		}
 		val num1 = BigInteger.valueOf(wrapped.intValue)
 		val divisor = (other.nativeNumber as WNumber).wrapped

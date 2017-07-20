@@ -724,8 +724,7 @@ class List inherits Collection {
 		if (self.isEmpty()) 
 			throw new Exception("Illegal operation 'anyOne' on empty collection")
 		else 
-			//return self.get(0.randomUpTo(self.size()))
-			return self.get(0)
+			return self.get(0.randomUpTo(self.size()))
 	}
 	
 	/**
@@ -1128,7 +1127,7 @@ class Number {
 	 * 14.6165.roundUp(3) ==> 14.617
 	 * 5.roundUp(3) ==> 5
 	 */
-	method roundUp(_decimals) native
+	method roundUp(decimals) native
 
 	/**
 	 * Truncates self up to a certain amount of decimals.
@@ -1151,7 +1150,6 @@ class Number {
 	 * 
 	 * Example:
 	 * 		1..4      Answers ==> a new Range object from 1 to 4
-	 *      1.0..4.0  Answers ==> a new Range object from 1 to 4
 	 *      1.7..4    Throws an error
 	 */
 	method ..(end) = new Range(self.roundUp(), end)

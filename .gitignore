@@ -13,3 +13,5 @@ changelog.txt
 CHANGELOG.md
 xtend-gen
 eclipse
+.classpath
+.project
