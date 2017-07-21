@@ -20,7 +20,7 @@ abstract class ModelElement implements IPropertySource, Serializable {
 	private transient PropertyChangeSupport pcsDelegate = new PropertyChangeSupport(this)
 
 	def synchronized void addPropertyChangeListener(PropertyChangeListener l) {
-		if (l == null)
+		if (l === null)
 			throw new IllegalArgumentException
 		pcsDelegate.addPropertyChangeListener(l);
 	}
@@ -52,7 +52,7 @@ abstract class ModelElement implements IPropertySource, Serializable {
 	}
 
 	def synchronized void removePropertyChangeListener(PropertyChangeListener l) {
-		if (l != null)
+		if (l !== null)
 			pcsDelegate.removePropertyChangeListener(l)
 	}
 

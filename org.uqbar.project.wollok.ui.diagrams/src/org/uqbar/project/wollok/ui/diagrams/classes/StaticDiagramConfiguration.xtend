@@ -136,9 +136,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def hidePart(AbstractModel model, String partName, boolean isVariable) {
-		val _hiddenParts = hiddenParts.get(model.name) ?: newArrayList
+		val _hiddenParts = hiddenParts.get(model.label) ?: newArrayList
 		_hiddenParts.add(new HiddenPart(isVariable, partName))
-		hiddenParts.put(model.name, _hiddenParts)
+		hiddenParts.put(model.label, _hiddenParts)
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
@@ -152,7 +152,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = this.findAssociationBetween(modelSource, modelTarget)
 		if (element === null) {
-			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.name, modelTarget.name))
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.label, modelTarget.label))
 		}
 		relations.remove(element)
 		this.setChanged
@@ -161,7 +161,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def removeDependency(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.DEPENDENCY ]
 		if (element === null) {
-			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Dependency_Not_Found, modelSource.name, modelTarget.name))
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Dependency_Not_Found, modelSource.label, modelTarget.label))
 		}
 		relations.remove(element)
 		this.setChanged
@@ -270,7 +270,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 
 	def getVariablesFor(WMethodContainer container) {
 		if (!showVariables) return #[]
-		val hiddenVariables = container.name.hiddenVariables.map [ name ]
+		val hiddenVariables = container.identifier.hiddenVariables.map [ name ]
 		container.variableDeclarations.filter [ variableDecl |
 			variableDecl !== null && variableDecl.variable !== null && !hiddenVariables.contains(variableDecl.variable.name)
 		].toList
@@ -279,7 +279,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def getMethodsFor(WMethodContainer container) {
 		val variableNames = container.variableNames
 			// filtering null just in case it is not defined yet, user is writing
-		val hiddenMethods = container.name.hiddenMethods.map [ name ]
+		val hiddenMethods = container.identifier.hiddenMethods.map [ name ]
 		container.methods.filter [ method |
 			!hiddenMethods.contains(method.name) && 
 			!variableNames.contains(method.name)  // filtering accessors

@@ -41,7 +41,7 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def static getDescriptors() {
-		if (descriptors != null)
+		if (descriptors !== null)
 			return descriptors
 		
 		descriptors = #[
@@ -67,7 +67,7 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def void addConnection(Connection conn) {
-		if (conn == null)
+		if (conn === null)
 			throw new IllegalArgumentException
 		if (conn.source == this && !sourceConnections.contains(conn)) {
 			sourceConnections.add(conn)
@@ -111,7 +111,7 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def removeConnection(Connection conn) {
-		if (conn == null) {
+		if (conn === null) {
 			throw new IllegalArgumentException
 		}
 		if (conn.source == this) {
@@ -124,7 +124,7 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def setLocation(Point newLocation) {
-		if (newLocation == null) {
+		if (newLocation === null) {
 			throw new IllegalArgumentException
 		}
 		location.location = newLocation
@@ -150,7 +150,7 @@ public abstract class Shape extends ModelElement {
 	}
 
 	def setSize(Dimension newSize) {
-		if (newSize != null) {
+		if (newSize !== null) {
 			size.size = newSize
 			firePropertyChange(SIZE_PROP, null, size)
 		}

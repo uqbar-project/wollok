@@ -3,11 +3,8 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 import com.google.inject.Inject
 import java.util.ArrayList
 import java.util.Comparator
-import java.util.HashMap
-import java.util.List
 import java.util.Observable
 import java.util.Observer
-import java.util.Set
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.Status
@@ -95,7 +92,6 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
-import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
@@ -162,25 +158,33 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def createDiagramModel() {
-		new StaticDiagram(configuration) => [
+		new StaticDiagram(configuration, xtextDocument.readOnly[ allElements ].toList) => [
 			// all objects
 			val objects = xtextDocument.readOnly[ namedObjects ]
 
-			// class
-			val classes = xtextDocument.readOnly[ classes ].toSet
-			val importedClasses = xtextDocument.readOnly [ getImportedClasses ].toSet
-			importedObjects = importedClasses.toList
-			classes.addAll(importedClasses)
-			classes.addAll(classes.clone.map[c| c.superClassesIncludingYourself].flatten)
-			val List<WMethodContainer> allClasses = classes.removeDuplicated as List<WMethodContainer>
-			val List<WMethodContainer> inheritingObjects = objects.filter [ hasRealParent ].toList.clone
-			var List<WMethodContainer> allClassModelAbstractions = newArrayList => [
-				addAll(allClasses.clone)
-				addAll(inheritingObjects)
-			]
-			ClassModel.init(allClassModelAbstractions)
+			// all mixins
+			val mixins = xtextDocument.readOnly[ mixins ]
+
+			// hierarchy level
+			// all classes and named objects inheriting from a class
+			// new way: instead of adding imports we just detect them because of hierarchy
+			// val importedClasses = xtextDocument.readOnly [ getImportedClasses ]
+			val inheritingObjects = objects.filter [ hasRealParent ]
+			val classes = xtextDocument.readOnly[ classes ]
 			
-			// objects (first so that we collect parents in the "classes" set
+			// Now let's collect all elements
+			val staticDiagramBuilder = new StaticDiagramBuilder()
+					.addMixins(mixins)
+					//.addClasses(importedClasses)
+					.addClasses(classes)
+					.addObjects(inheritingObjects)
+			
+			val allHierarchyElements = staticDiagramBuilder.allElements
+				
+			ClassModel.init(allHierarchyElements)
+			
+			// Drawing the Static Diagram
+			// First isolated Objects without parents
 			val singleObjects = objects.filter [ !hasRealParent && !configuration.isHiddenComponent(name) ]
 			
 			singleObjects.forEach[ o | 
@@ -190,17 +194,17 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			]
 
 			// then, all mixins
-			val mixins = xtextDocument.readOnly[ mixins ].toSet
-			mixins.addAll((allClasses + objects).map [ o | o.mixins ].flatten.toSet)
-			var allMixins = mixins.removeDuplicated as List<WMixin>
-			allMixins = allMixins.filter [!configuration.isHiddenComponent(name)].toList
-			allMixins.forEach [ m | addMixin(m) ]
+			staticDiagramBuilder
+				.allMixins
+				.filter [ WMixin m | !configuration.isHiddenComponent(m.identifier)]
+				.forEach [ WMixin m | addMixin(m) ]
 
 			// then, classes
 			// first, superclasses
-			var classesCopy = allClassModelAbstractions
+			var classesCopy = allHierarchyElements
 				.clone
 				.filter [ it.parent === null ]
+				.sortWith(methodContainerDefaultComparator)
 				.toList
 				
 			var int level = 0
@@ -209,16 +213,12 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 				classesCopy.forEach [ c | addComponent(c, levelCopy) ]
 				val parentClasses = classesCopy
 				// then subclasses of parent classes and recursively...
-				classesCopy = allClassModelAbstractions
+				classesCopy = allHierarchyElements
 					.clone
 					.filter [
 						parentClasses.contains(it.parent)
 					]
-					.sortWith([ WMethodContainer a, WMethodContainer b |
-						val orderForA = (a.parent?.name ?: "") + a.name
-						val orderForB = (b.parent?.name ?: "") + b.name
-						orderForA.compareTo(orderForB)
-					] as Comparator<WMethodContainer>)
+					.sortWith(methodContainerDefaultComparator)
 					.toList
 					
 				level++
@@ -230,6 +230,15 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		]
 	}
 	
+	def methodContainerDefaultComparator() {
+		[ WMethodContainer a, WMethodContainer b |
+			val orderForA = (a.parent?.identifier ?: "") + a.identifier
+			val orderForB = (b.parent?.identifier ?: "") + b.identifier
+			orderForA.compareTo(orderForB)
+		] as Comparator<WMethodContainer>
+	}
+	
+	def getAllElements(XtextResource it) { getAllOfType(WMethodContainer) }
 	def getMixins(XtextResource it) { getAllOfType(WMixin) }
 	def getClasses(XtextResource it) { getAllOfType(WClass) }
 	def getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
@@ -258,7 +267,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		createViewer(splitter)
 		
 		splitter.graphicalControl = graphicalViewer.control
-		if (page != null) {
+		if (page !== null) {
 			splitter.externalViewer = page.getPaletteViewer
 			page = null
 		}
@@ -335,7 +344,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def initializeGraphicalViewer() {
-		if (model != null) {
+		if (model !== null) {
 			graphicalViewer.contents = model
 			layout
 		}
@@ -388,7 +397,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getActionRegistry() {
-		if (actionRegistry == null) actionRegistry = new ActionRegistry => [
+		if (actionRegistry === null) actionRegistry = new ActionRegistry => [
 			registerAction(new DeleteElementAction(this, graphicalViewer, configuration))
 			// Adding zoom capabilities
 			val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
@@ -414,7 +423,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	override getAdapter(Class type) {
 		if (type == PalettePage) {
-			if (splitter == null) {
+			if (splitter === null) {
 				page = createPalettePage
 				return page
 			}
@@ -431,9 +440,9 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			return commandStack
 		if (type == ActionRegistry)
 			return actionRegistry
-		if (type == EditPart && graphicalViewer != null)
+		if (type == EditPart && graphicalViewer !== null)
 			return graphicalViewer.rootEditPart
-		if (type == IFigure && graphicalViewer != null)
+		if (type == IFigure && graphicalViewer !== null)
 			return (graphicalViewer.rootEditPart as GraphicalEditPart).figure
 		if (type == ZoomManager)
 			return (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
@@ -445,7 +454,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getSelectionSynchronizer() {
-		if (synchronizer == null)
+		if (synchronizer === null)
 			synchronizer = new SelectionSynchronizer
 		synchronizer
 	}
@@ -457,7 +466,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	override dispose() {
 		site.workbenchWindow.selectionService.removeSelectionListener(this)
 		editDomain.activeTool = null
-		if (actionRegistry != null) actionRegistry.dispose
+		if (actionRegistry !== null) actionRegistry.dispose
 		
 		super.dispose
 	}
@@ -469,8 +478,8 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def updateDocument(IXtextDocument doc) {
-		if (doc != null) {
-			if (xtextDocument != null) xtextDocument.removeDocumentListener(this)
+		if (doc !== null) {
+			if (xtextDocument !== null) xtextDocument.removeDocumentListener(this)
 			xtextDocument = doc
 			xtextDocument.addDocumentListener(this)
 			val IResource resource = xtextDocument.getAdapter(typeof(IResource))
@@ -503,7 +512,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	def getSplitter() { splitter }
 	def getPaletteViewerProvider() {
-		if (provider == null)
+		if (provider === null)
 			provider = createPaletteViewerProvider
 		provider
 	}
@@ -541,7 +550,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 					// the xtext document (and model objects) again, so instances are different
 					ep.castedModel.getComponent.name == c.text.toString 
 				]
-				if (cm != null)
+				if (cm !== null)
 					list += cm
 				list
 			]
@@ -580,14 +589,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 				}
 			}
 		}
-	}
-	
-	def List<? extends WNamed> removeDuplicated(Set<? extends WNamed> wnames) {
-		val namedMap = new HashMap<String, WNamed>()
-		wnames.forEach [ wname |
-			namedMap.put(wname.name, wname)
-		]
-		namedMap.values.toList
 	}
 	
 	/* Static Diagram Configuration Notifications */

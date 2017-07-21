@@ -141,7 +141,7 @@ abstract class AbstractModel extends Shape {
 	}
 		
 	def String getLabel() {
-		this.name
+		component.identifier
 	}
 	
 	/**

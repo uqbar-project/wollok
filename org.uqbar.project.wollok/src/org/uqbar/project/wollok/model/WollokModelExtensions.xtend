@@ -82,7 +82,10 @@ class WollokModelExtensions {
 	}
 	
 	def static implicitPackage(Resource it){
-		if(URI.toString.startsWith("classpath:/"))
+		if (it === null || it.URI === null || it.URI.toString === null) {
+			return null
+		}
+		if (URI.toString.startsWith("classpath:/"))
 			URI.trimFileExtension.segments.join(".")
 		else
 			fullPackageName(it)
@@ -102,6 +105,21 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 	def static dispatch fqn(WSuite it) { nameWithPackage }
 
+	/** 
+	 * This method is intended to univocally identify every WMethodContainer
+	 * (original requirement for static diagram), so it can be decoupled
+	 * from <i>fqn</i>.
+	 */
+	def static dispatch identifier(EObject it) { name }
+	def static dispatch identifier(WMethodContainer it) { 
+		try {
+			return fqn
+		} catch (NullPointerException e) {
+			// Yeah, shameful! But I must find a workaround while user is writing in Static Diagram
+			return name
+		}
+	}
+	
 	def static getMethodContainer(EObject it){
 		method.declaringContext
 	}

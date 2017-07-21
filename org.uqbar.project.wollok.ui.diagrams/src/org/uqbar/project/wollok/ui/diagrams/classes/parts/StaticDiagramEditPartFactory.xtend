@@ -25,7 +25,7 @@ class StaticDiagramEditPartFactory implements EditPartFactory {
 	}
 
 	def dispatch getPartForElement(Object modelElement) {
-		throw new RuntimeException("Can't create part for model element: " + (if (modelElement != null) modelElement.class.name else "null"))
+		throw new RuntimeException("Can't create part for model element: " + (if (modelElement !== null) modelElement.class.name else "null"))
 	}
 	
 	def dispatch getPartForElement(StaticDiagram it) { new StaticDiagramEditPart }
