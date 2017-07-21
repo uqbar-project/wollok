@@ -8,6 +8,8 @@ class MethodTypeInfo {
 	extension TypeVariablesRegistry registry
 
 	new(TypeVariablesRegistry registry, WMethodDeclaration method) {
+		if (method === null)
+			throw new IllegalArgumentException('''Tried to create a «class.simpleName» with a null method''')
 		this.registry = registry
 		this.method = method
 	}
@@ -18,5 +20,5 @@ class MethodTypeInfo {
 
 	def parameters() {
 		method.parameters.map[tvarOrParam]
-	}	
+	}
 }

@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 interface ITypeVariable {
 	def EObject getOwner()
@@ -90,6 +91,10 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	def addError(TypeSystemException exception) {
+		if (owner.isCoreObject) 
+			throw new RuntimeException("Tried to add a type error to a core object")
+		
+		log.info('''Error reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
 

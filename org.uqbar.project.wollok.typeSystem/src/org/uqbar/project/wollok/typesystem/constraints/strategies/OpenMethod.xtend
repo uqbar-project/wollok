@@ -18,8 +18,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		messages.forEach [ message |
-			minTypes.keySet.forEach [ minType |
-				message.openMethod(minType)
+			minTypes.entrySet.forEach [
+				if (value != Error) message.openMethod(key)
 			]
 		]
 	}

@@ -57,6 +57,10 @@ abstract class TypeDeclarations {
 		new ExpectReturnType(target, receiver.type, ">", #[parameterType])
 	}
 
+	def operator_lessThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "<", #[parameterType])
+	}
+
 
 	// ****************************************************************************
 	// ** Core class and object types

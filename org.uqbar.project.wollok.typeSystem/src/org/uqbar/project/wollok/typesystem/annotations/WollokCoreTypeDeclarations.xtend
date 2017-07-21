@@ -17,13 +17,16 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Integer >> "<=" === #[Integer] => Boolean
 
 		Double + Number => Double
+		Double - Number => Double
 		Double * Number => Double
 		Double >> "/" === #[Number] => Double;
-		(Double > Double) => Boolean
+		(Double > Double) => Boolean;
+		(Double < Double) => Boolean
 
 		String >> "size" === #[] => Integer
 		String + String => String;
-		(String > String) => Boolean
+		(String > String) => Boolean;
+		(String < String) => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection
@@ -33,14 +36,15 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
 		List >> "size" === #[] => Integer
-
 		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		
 		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		 
 		Set + Set => Set;
 		
-		(Date > Date) => Boolean
+		Date - Date => Integer;
+		(Date > Date) => Boolean;
+		(Date < Date) => Boolean
 
 		// console
 		console >> "println" === #[Any] => Void

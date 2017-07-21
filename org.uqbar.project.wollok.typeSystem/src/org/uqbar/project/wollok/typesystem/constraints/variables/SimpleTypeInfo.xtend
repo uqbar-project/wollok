@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.Map
 import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
@@ -10,6 +11,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
@@ -56,7 +58,7 @@ class SimpleTypeInfo extends TypeInfo {
 				error(new RejectedMinTypeException(origin, type))
 		]
 
-		if (maximalConcreteTypes == null) {
+		if (maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
@@ -69,8 +71,8 @@ class SimpleTypeInfo extends TypeInfo {
 	 * both original sets were equal, state has to be Pending).  
 	 */
 	def joinMaxTypes(MaximalConcreteTypes other) {
-		if (maximalConcreteTypes != null) {
-			if (other != null) {
+		if (maximalConcreteTypes !== null) {
+			if (other !== null) {
 				if (maximalConcreteTypes != other.maximalConcreteTypes) {
 					maximalConcreteTypes.restrictTo(other)
 					maximalConcreteTypes.state = Pending
@@ -80,7 +82,7 @@ class SimpleTypeInfo extends TypeInfo {
 			} else {
 				maximalConcreteTypes.state = Pending
 			}
-		} else if (other != null) {
+		} else if (other !== null) {
 			maximalConcreteTypes = other.copy
 		}
 	}
@@ -88,7 +90,7 @@ class SimpleTypeInfo extends TypeInfo {
 	override ConcreteTypeState addMinType(WollokType type) {
 		if (minTypes.containsKey(type)) {
 			Ready
-		} else if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+		} else if (canAddMinType(type)) {
 			throw new RejectedMinTypeException(type)
 		} else {
 			minTypes.put(type, Pending)
@@ -96,6 +98,10 @@ class SimpleTypeInfo extends TypeInfo {
 		}
 	}
 
+	def canAddMinType(WollokType type) {
+		messages.forEach[msg| (type as AbstractContainerWollokType).respondsTo(msg)]
+		(sealed && !minTypes.keySet.exists[isSuperTypeOf(type)])
+	}
 	
 	// ************************************************************************
 	// ** Notifications
@@ -106,7 +112,7 @@ class SimpleTypeInfo extends TypeInfo {
 	 */
 	override subtypeAdded() {
 		maximalConcreteTypes => [
-			if (it != null) state = state.join(Pending)
+			if (it !== null) state = state.join(Pending)
 		]
 	}
 

@@ -24,7 +24,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 
 	override addTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {
 		val method = receiver.lookupMethod(selector, paramTypes)
-		method.parameters.biForEach(paramTypes)[parameter, type|beSealed(parameter,type)]
+		method.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
 		method.beSealed(returnType)
 	}
 	
