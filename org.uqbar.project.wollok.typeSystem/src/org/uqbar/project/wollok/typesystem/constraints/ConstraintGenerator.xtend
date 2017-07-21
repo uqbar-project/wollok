@@ -131,7 +131,12 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WSetLiteral it) {
-		newSealed(classType(SET))
+		val setType = newCollection(classType(SET))
+
+		elements.forEach[
+			generateVariables
+			tvar.beSubtypeOf(setType.element)
+		]
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {

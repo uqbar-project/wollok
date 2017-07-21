@@ -7,21 +7,32 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
 
-		Integer + Integer => Integer
-		Integer - Integer => Integer
-		Integer * Integer => Integer
-		Integer >> "/" === #[Integer] => Integer
-		Integer >> ">" === #[Integer] => Boolean
-		Integer >> "<" === #[Integer] => Boolean
-		Integer >> ">=" === #[Integer] => Boolean
-		Integer >> "<=" === #[Integer] => Boolean
+		Number + Number => Number
+		Number - Number => Number
+		Number * Number => Number
+		Number / Number => Number;
+		(Number > Number) => Boolean;
+		(Number < Number) => Boolean;
+		Number >> ">=" === #[Number] => Boolean
+		Number >> "<=" === #[Number] => Boolean
+
+		Integer + Number => Number
+		Integer - Number => Number
+		Integer * Number => Number
+		Integer / Number => Number;
+		(Integer > Number) => Boolean;
+		(Integer < Number) => Boolean;
+		Integer >> ">=" === #[Number] => Boolean
+		Integer >> "<=" === #[Number] => Boolean
 
 		Double + Number => Double
 		Double - Number => Double
 		Double * Number => Double
-		Double >> "/" === #[Number] => Double;
+		Double / Number => Double;
 		(Double > Double) => Boolean;
 		(Double < Double) => Boolean
+		Double >> ">=" === #[Number] => Boolean
+		Double >> "<=" === #[Number] => Boolean
 
 		String >> "size" === #[] => Integer
 		String + String => String;
@@ -41,6 +52,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		 
 		Set + Set => Set;
+		Set >> "add" === #[ELEMENT] => Void
+		Set >> "contains" === #[ELEMENT] => Boolean
+		Set >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		
 		Date - Date => Integer;
 		(Date > Date) => Boolean;
@@ -48,5 +62,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 
 		// console
 		console >> "println" === #[Any] => Void
+		console >> "readLine" === #[] => String
+		console >> "readInt" === #[] => Integer
+		console >> "newline" === #[] => Void
 	}
 }

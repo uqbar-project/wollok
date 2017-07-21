@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -25,29 +26,34 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 	override analiseVariable(TypeVariable tvar) {
 		if (!alreadySeen.contains(tvar)) {
-			log.debug('''	Analising unification of «tvar» «tvar.subtypes.size», «tvar.supertypes.size»''')
 			var result = Ready
 
-			if (tvar.subtypes.size == 1)
+			if (tvar.subtypes.size == 1) {
 				result = tvar.subtypes.uniqueElement.unifyWith(tvar)
-			if (tvar.supertypes.size == 1)
+			}
+			if (tvar.supertypes.size == 1) {
 				result = result.join(tvar.unifyWith(tvar.supertypes.uniqueElement))
+			}
 
-			if (result != Pending) alreadySeen.add(tvar)
+			if(result != Pending) alreadySeen.add(tvar)
 		}
 	}
 
 	/**
 	 * @return ConcreteTypeState
-	 * - Ready means this variable has been analised and needs no further analysis.
+	 * - Ready means this variable has been unified and needs no further analysis.
+	 * - Cancel means this variable has not unified and needs not further analysis.
 	 * - Pending means this variable needs to be visited again.
 	 * - Error means a type error was detected, variable will not be visited again.
 	 */
 	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
-		log.debug('''		About to unify «subtype» with «supertype»''')
 		if (subtype.unifiedWith(supertype)) {
-			log.debug('''		Already unified, nothing to do''')
 			return Ready
+		}
+
+		// Do not unify with core library elements
+		if (subtype.isLibraryElement || supertype.isLibraryElement) {
+			return Cancel
 		}
 
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
@@ -66,9 +72,14 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
-			if (it != Pending)
-				log.debug('''		Unified «subtype» with «supertype»: «it»''')
+			if (it != Pending && it != Cancel)
+				log.debug('''		Unified «subtype» with «supertype»: «it»
+				«subtype.fullDescription»''')
 		]
+	}
+
+	def isLibraryElement(TypeVariable it) {
+		owner !== null && owner.eResource.isClassPathResource
 	}
 
 	def dispatch ConcreteTypeState doUnifyWith(TypeVariable subtype, TypeVariable supertype) {
@@ -81,7 +92,11 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			subtype.copyTypeInfoFrom(supertype)
 		} else if (supertype.typeInfo === null) {
 			supertype.copyTypeInfoFrom(subtype)
-		} else {
+		} else if (subtype.supertypes.size > 1 || supertype.subtypes.size > 1) {
+			// Do not unify unless they are uniques subtype/supertypes respectively
+			// Note that this rule is more strict than for variables without type info.
+			Cancel
+		} else { 
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		}
 	}

@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import com.google.inject.Inject
+import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -42,12 +43,16 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	@Accessors
 	extension TypeVariablesRegistry registry
+
+	@Accessors
+	List<EObject> programs = newArrayList
+
 	ConstraintGenerator constraintGenerator
 
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
 		this.analyse(file)
 		this.inferTypes
 
@@ -59,8 +64,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	override initialize(EObject program) {
 		registry = new TypeVariablesRegistry(this)
+		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
-		
+
 		// This shouldn't be necessary if all global objects had type annotations
 		finder.allGlobalObjects(program).forEach[constraintGenerator.newNamedObject(it)]
 
@@ -73,9 +79,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			initialize(program)
 		}
 
+		programs.add(program)
 		constraintGenerator.generateVariables(program)
 	}
-
 
 	// ************************************************************************
 	// ** Inference
@@ -175,10 +181,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			new NamedObjectWollokType(finder.getCachedObject(context, typeName), this)
 		}
 	}
-	
+
 	def allTypes(EObject context) {
-		finder.allClasses(context).map[new ClassBasedWollokType(it, this)] 
-		+ 
-		finder.allGlobalObjects(context).map[new NamedObjectWollokType(it, this)]
+		finder.allClasses(context).map[new ClassBasedWollokType(it, this)] + finder.allGlobalObjects(context).map [
+			new NamedObjectWollokType(it, this)
+		]
 	}
 }

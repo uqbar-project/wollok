@@ -2,8 +2,10 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
-import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -20,7 +22,7 @@ class OffenderSelector {
 	// ** Utilities
 	// ************************************************************************
 
-	def static handleOffense(TypeVariable subtype, TypeVariable supertype, RejectedMinTypeException offense) {
+	def static handleOffense(TypeVariable subtype, TypeVariable supertype, TypeSystemException offense) {
 		val offender = selectOffenderVariable(subtype, supertype)
 		offender.addError(offense)
 		offense.variable = offender
@@ -36,15 +38,31 @@ class OffenderSelector {
 	// ************************************************************************
 
 	def static dispatch selectOffender(EObject subtype, EObject supertype) {
-		log.warn('''	Min type detected without a specific offender detection strategy:
-			origin=«subtype.debugInfo» 
-			destination=«supertype.debugInfo»''')
+		log.debug('''	Min type detected without a specific offender detection strategy:
+			subtype=«subtype.debugInfo» 
+			supertype=«supertype.debugInfo»''')
 		subtype
 	}
 
-	def static dispatch selectOffender(WVariable variable, WVariableReference reference) {
-		// Error report goes to variable usage. 
-		reference
-	}
+	/**
+	 * If one of the variables has no associated node (remember Void parameter type ==> null node), 
+	 * we have no alternative but marking the error in the other one.
+	 */
+	def static dispatch selectOffender(Void subtype, EObject supertype) { supertype }
+	def static dispatch selectOffender(EObject subtype, Void supertype) { subtype }
 
+	/**
+	 * A variable is subtype of its references.
+	 * Error should be marked when the variable is used.
+	 */
+	def static dispatch selectOffender(WReferenciable referenciable, WVariableReference reference) { reference }
+
+	/** Referenciable appears as supertype when it is assigned, mark the error on the right hand side of the assignment */
+	def static dispatch selectOffender(WVariableReference reference, WReferenciable referenciable) { reference }
+
+	/**
+	 * A method declaration is subtype of the message sends which invoke that method. 
+	 * Errors should go to the sender and not to the method.
+	 */
+	def static dispatch selectOffender(WMethodDeclaration returnType, EObject messageSend) { messageSend }
 }

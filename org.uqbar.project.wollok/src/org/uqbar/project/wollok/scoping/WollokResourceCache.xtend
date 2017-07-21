@@ -5,6 +5,7 @@ import java.util.Map
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.emf.ecore.resource.Resource
 
 class WollokResourceCache {
 	
@@ -26,7 +27,11 @@ class WollokResourceCache {
 	}
 	
 	// TODO I do not think this logic belongs here.
-	static def isClassPathResource(URI uri) {
+	static def boolean isClassPathResource(Resource resource) {
+		resource.URI.isClassPathResource
+	}
+
+	static def boolean isClassPathResource(URI uri) {
 		uri.toString.startsWith(CLASSPATH)
 	}
 	

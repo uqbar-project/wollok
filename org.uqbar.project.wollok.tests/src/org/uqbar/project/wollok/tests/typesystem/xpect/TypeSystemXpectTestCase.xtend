@@ -88,9 +88,9 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 class TypeSystemXpectRunner extends XpectRunner {
 	new(Class<?> testClass) throws InitializationError {
 		super(testClass)
-		Logger.getRootLogger().level = Level.DEBUG
+		Logger.getLogger(TypeSystem.package.name).level = Level.DEBUG
 	}
-
+	
 	override runChild(Runner child, RunNotifier notifier) {
 		WollokResourceCache.clearCache
 		super.runChild(child, notifier)

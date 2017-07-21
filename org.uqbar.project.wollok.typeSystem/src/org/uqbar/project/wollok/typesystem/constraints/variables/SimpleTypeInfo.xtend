@@ -131,5 +131,6 @@ class SimpleTypeInfo extends TypeInfo {
 		sealed: «sealed»,
 		minTypes: «minTypes»,
 		maxTypes: «maximalConcreteTypes?:"unknown"»
+		messages: «messages»
 	'''
 }

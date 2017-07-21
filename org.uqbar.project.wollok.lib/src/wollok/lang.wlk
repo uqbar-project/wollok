@@ -988,6 +988,15 @@ class Dictionary {
  * @noInstantiate
  */	
 class Number {
+	method +(other)
+	method -(other)
+	method *(other)
+	method /(other)
+
+	method >(other)
+	method >=(other)
+	method <(other)
+	method <=(other)
 
 	/** 
 	 * Answers the greater number between two
@@ -1081,10 +1090,10 @@ class Integer inherits Number {
 	 */
 	override method ===(other) native
 
-	method +(other) native
-	method -(other) native
-	method *(other) native
-	method /(other) native
+	override method +(other) native
+	override method -(other) native
+	override method *(other) native
+	override method /(other) native
 	
 	/** Integer division between self and other
 	 *
@@ -1119,10 +1128,10 @@ class Integer inherits Number {
 	 */
 	method ..(end) = new Range(self, end)
 	
-	method >(other) native
-	method >=(other) native
-	method <(other) native
-	method <=(other) native
+	override method >(other) native
+	override method >=(other) native
+	override method <(other) native
+	override method <=(other) native
 
 	/** 
 	 * Answers absolute value of self 
@@ -1212,11 +1221,11 @@ class Double inherits Number {
 	/** the whole wollok identity impl is based on self method */
 	override method ===(other) native
 
-	method +(other) native
-	method -(other) native
-	method *(other) native
-	method /(other) native
-	
+	override method +(other) native
+	override method -(other) native
+	override method *(other) native
+	override method /(other) native
+
 	/** Integer division between self and other
 	 *
 	 * Example:
@@ -1242,10 +1251,10 @@ class Double inherits Number {
 	/** Self as a String value. Equivalent: toString() */
 	override method stringValue() native	
 	
-	method >(other) native
-	method >=(other) native
-	method <(other) native
-	method <=(other) native
+	override method >(other) native
+	override method >=(other) native
+	override method <(other) native
+	override method <=(other) native
 	
 	/** 
 	 * Answers absolute value of self 

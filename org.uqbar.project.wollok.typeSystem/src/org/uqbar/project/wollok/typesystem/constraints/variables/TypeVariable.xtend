@@ -13,7 +13,6 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
-
 interface ITypeVariable {
 	def EObject getOwner()
 
@@ -23,7 +22,7 @@ interface ITypeVariable {
 }
 
 class TypeVariable implements ITypeVariable {
-	val Logger log = Logger.getLogger(this.class)
+	val Logger log = Logger.getLogger(class)
 
 	@Accessors
 	val EObject owner
@@ -239,16 +238,6 @@ class TypeVariable implements ITypeVariable {
 			typeInfo.users.forEach [ unified |
 				unified.supertypes.forEach [ supertype |
 					if (!this.unifiedWith(supertype)) result.add(supertype)
-				]
-			]
-		]
-	}
-
-	def allSubtypes() {
-		newHashSet => [ result |
-			typeInfo.users.forEach [ unified |
-				unified.subtypes.forEach [ subtype |
-					if (!this.unifiedWith(subtype)) result.add(subtype)
 				]
 			]
 		]

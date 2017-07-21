@@ -36,9 +36,9 @@ class WollokTypeSystemPrettyPrinter {
 	// ************************************************************************
 
 	static def prettyPrint(MaximalConcreteTypes it) {
-		if (maximalConcreteTypes.size > 1)
-			maximalConcreteTypes.toString
-		else
+		if (maximalConcreteTypes.size == 1)
 			maximalConcreteTypes.findFirst[true].toString
+		else
+			maximalConcreteTypes.toString
 	}
 }

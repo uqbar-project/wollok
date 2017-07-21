@@ -12,7 +12,7 @@ abstract class SimpleTypeInferenceStrategy extends AbstractInferenceStrategy {
 	 * If typeInfo is null it means we have no information yet, so just ignore this variable for now.
 	 */
 	override analiseVariable(TypeVariable tvar) {
-		if (tvar.typeInfo != null) analiseVariable(tvar, tvar.typeInfo)
+		if (tvar.typeInfo !== null) analiseVariable(tvar, tvar.typeInfo)
 	}
 
 	def dispatch void analiseVariable(TypeVariable tvar, TypeInfo typeInfo) {

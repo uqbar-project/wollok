@@ -130,14 +130,16 @@ class TypeVariablesRegistry {
 	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
 	 */
 	def TypeVariable tvar(EObject obj) {
-		typeVariables.get(obj) => 
-			[ if (it===null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
+		typeVariables.get(obj) => [ if (it === null) {
+			throw new RuntimeException("I don't have type information for " + obj.debugInfo)
+		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
 		typeVariables.get(obj) ?: 
-			typeParameters.get(obj) =>
-				[ if (it===null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
+			typeParameters.get(obj) => [ if (it === null) {
+				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
+			}]
 	}
 
 	// ************************************************************************
@@ -155,7 +157,9 @@ class TypeVariablesRegistry {
 	// ** Debugging
 	// ************************************************************************
 	def fullReport() {
-		typeVariables.values.forEach[log.debug(descriptionForReport)]
+		typeVariables.values.forEach[
+			log.debug(descriptionForReport)
+		]
 	}
 	
 }

@@ -26,8 +26,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 
 	def openMethod(MessageSend it, WollokType type) {
 		if (addOpenType(type)) {
-			val methodTypeInfo = registry.methodTypeInfo(type as ConcreteType, selector, arguments)
 			log.debug('''	Feeding message send «it» with method type info from type «type»''')
+			val methodTypeInfo = registry.methodTypeInfo(type as ConcreteType, selector, arguments)
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
 			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]

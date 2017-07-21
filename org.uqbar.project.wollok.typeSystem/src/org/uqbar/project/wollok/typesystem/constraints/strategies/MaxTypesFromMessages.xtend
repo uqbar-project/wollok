@@ -18,9 +18,8 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 		var maxTypes = allTypes(tvar).filter[newMaxTypeFor(tvar)].toList
 		if (!tvar.sealed && 
 			!maxTypes.empty && 
-			!maximalConcreteTypes.contains(maxTypes) && 
-			tvar.subtypes.empty
-		) { // Last condition is because some test fail, but I don't know if it's OK
+			!maximalConcreteTypes.contains(maxTypes)
+		) {
 			log.debug('''	New max(«maxTypes») type for «tvar»''')
 			setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet), tvar)
 			changed = true

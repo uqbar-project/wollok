@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.exceptions
 
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
@@ -8,9 +7,6 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
 
 class RejectedMinTypeException extends TypeSystemException {
-	@Accessors
-	TypeVariable variable
-
 	WollokType type
 
 	new(TypeVariable variable, WollokType type) {
