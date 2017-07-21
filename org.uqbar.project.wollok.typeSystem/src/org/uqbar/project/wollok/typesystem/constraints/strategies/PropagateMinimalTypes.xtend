@@ -20,21 +20,17 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 			if (state == Pending) {
 				tvar.propagateMinType(type, supertypes)
 				ready
-				changed = true
 			}
 		]
 	}
 
 	def dispatch analiseVariable(TypeVariable user, VoidTypeInfo typeInfo) {
-		// REVIEW I think this will be always an error, a void shouldn't be used as subtype of anything.
-		// Yet it is useful, exactly to report those errors, but if we are conviced that this will always fail,
-		// we could simplify this a bit.
 		user.supertypes.forEach [ supertype |
 			handlingOffensesDo(user, supertype)[
 				supertype.beVoid
 				Ready
 			] => [ newState |
-				log.debug('''Propagating void from «user» to «supertype» => «newState»''')
+				log.debug('''  Propagating void from «user» to «supertype» => «newState»''')
 			]
 		]
 	}
@@ -43,7 +39,10 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		supertypes.evaluate [ supertype |
 			val newState = propagateMinType(origin, supertype, type)
 			(newState != Ready) => [
-				if(it) log.debug('''	Propagating min(«type») from: «origin» to «supertype» => «newState»''')
+				if(it) {
+					log.debug('''  Propagating min(«type») from: «origin» to «supertype» => «newState»''')
+					changed = true
+				}
 			]
 		]
 	}

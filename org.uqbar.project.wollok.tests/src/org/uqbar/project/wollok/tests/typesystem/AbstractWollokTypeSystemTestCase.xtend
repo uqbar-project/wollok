@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import com.google.inject.Inject
 import com.google.inject.Injector
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -59,6 +61,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	@Before
 	def void setupTypeSystem() {
 		WollokResourceCache.clearCache
+		Logger.getLogger(TypeSystem.package.name).level = Level.DEBUG
 		
 		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)
@@ -218,7 +221,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def findMethod(String methodFQN) {
 		val fqn = methodFQN.split('\\.')
 		val m = WMethodContainer.find(fqn.get(0)).methods.findFirst[name == fqn.get(1)]
-		if (m == null)
+		if (m === null)
 			throw new RuntimeException("Could NOT find method " + methodFQN)
 		m
 	}
@@ -231,7 +234,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def <T extends EObject> find(Class<T> resourceType, String resourceName) {
 		val resources = resourceSet.allContents.filter(resourceType).toList
 		resources.findFirst[it.name == resourceName] => [
-			if (it == null)
+			if (it === null)
 				throw new RuntimeException(
 					'''Could NOT find «resourceType.simpleName» [«resourceName»] in: «resources.map[it.name].toList»''')
 		]

@@ -98,7 +98,9 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Animal", 'PerroFactory.createAnimal')
+			assertMethodSignature("() => Animal", 'AnimalFactory.createAnimal')
+			assertMethodSignature("() => Gato", 'GatoFactory.createAnimal')
+			assertMethodSignature("() => Perro", 'PerroFactory.createAnimal')
 		]
 	}
 

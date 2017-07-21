@@ -3,13 +3,16 @@ package org.uqbar.project.wollok.typesystem.constraints
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
+
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WParameter
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
@@ -32,7 +35,7 @@ class WollokModelPrintForDebug {
 	}
 
 	static def dispatch String debugInfo(WVariableReference it)
-		'''ref «ref.debugInfo»'''
+		'''«ref.name»'''
 
 	static def dispatch String debugInfo(WVariableDeclaration it) 
 		'''«if (writeable) "var" else "const"» «variable.debugInfo»'''
@@ -48,4 +51,10 @@ class WollokModelPrintForDebug {
 
 	static def dispatch String debugInfo(WMemberFeatureCall it)
 		'''«memberCallTarget.debugInfo».«feature».(«memberCallArguments.join(', ')[debugInfo]»)'''
+
+	static def dispatch String debugInfo(WVariable it)
+		'''&«name»'''
+
+	static def dispatch String debugInfo(WNumberLiteral it)
+		'''«value»'''
 }
