@@ -74,9 +74,9 @@ abstract class AbstractModel extends Shape {
 	
 	def int getInitialWidth() {
 		if (component.parent === null) return 0
-		val parentClassName = component.parent.name ?: ""
-		if (parentClassName.equals(WollokConstants.ROOT_CLASS)) return 0
-		initialWidthForElement.get(parentClassName) ?: 0
+		val parentClass = component.parent.identifier ?: ""
+		if (parentClass.equals(WollokConstants.ROOT_CLASS)) return 0
+		initialWidthForElement.get(parentClass) ?: 0
 	}
 	
 	def int shapeWidth() {
