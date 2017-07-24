@@ -24,7 +24,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 abstract class AbstractModel extends Shape {
 
-	protected static List<WMethodContainer> allComponents = newArrayList
+	@Accessors protected static List<WMethodContainer> allComponents = newArrayList
 	protected static List<NamedObjectModel> objects
 	protected static List<MixinModel> mixins
 	

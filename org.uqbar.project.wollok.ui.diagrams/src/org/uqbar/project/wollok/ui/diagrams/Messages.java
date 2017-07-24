@@ -19,7 +19,11 @@ public class Messages extends NLS {
 	public static String StaticDiagram_CleanAllRelationships_Description;
 	public static String StaticDiagram_ShowHiddenComponents_Description;
 	public static String StaticDiagram_ShowHiddenParts_Description;
-
+	public static String StaticDiagram_AddOutsiderClass_Description;
+	public static String StaticDiagram_AddOutsiderClass_WindowTitle;
+	public static String StaticDiagram_AddOutsiderClass_AcceptButton;
+	public static String StaticDiagram_AddOutsiderClass_CancelButton;
+	
 	// Tool entries
 	public static String StaticDiagram_CreateAssociation_Title;
 	public static String StaticDiagram_CreateAssociation_Description;

@@ -15,6 +15,7 @@ import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
 import org.eclipse.draw2d.graph.Node
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.gef.DefaultEditDomain
 import org.eclipse.gef.EditPart
@@ -66,6 +67,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.AddOutsiderClass
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanAllRelashionshipsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.CleanShapePositionsAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.DeleteElementAction
@@ -159,6 +161,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	def createDiagramModel() {
 		new StaticDiagram(configuration, xtextDocument.readOnly[ allElements ].toList) => [
+			
 			// all objects
 			val objects = xtextDocument.readOnly[ namedObjects ]
 
@@ -171,13 +174,20 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			// val importedClasses = xtextDocument.readOnly [ getImportedClasses ]
 			val inheritingObjects = objects.filter [ hasRealParent ]
 			val classes = xtextDocument.readOnly[ classes ]
+			val mapOutsiderMethodContainers = configuration.resource.project.mapMethodContainers
+			val outsiderClasses = configuration.outsiderElements.map [ outsiderElement |
+				val uriFile = URI.createURI(outsiderElement.URI)
+				mapOutsiderMethodContainers.get(uriFile)?.findFirst [
+					outsiderElement.identifier.equals(it.identifier)
+				]
+			].filter [ it !== null ].toList
 			
 			// Now let's collect all elements
 			val staticDiagramBuilder = new StaticDiagramBuilder()
-					.addMixins(mixins)
-					//.addClasses(importedClasses)
-					.addClasses(classes)
-					.addObjects(inheritingObjects)
+					.addElements(mixins)
+					.addElements(classes)
+					.addElements(outsiderClasses)
+					.addElements(inheritingObjects)
 			
 			val allHierarchyElements = staticDiagramBuilder.allElements
 				
@@ -319,6 +329,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			add(new CleanAllRelashionshipsAction(Messages.StaticDiagram_CleanAllRelationships_Description, configuration))
 			add(new ShowHiddenComponents(Messages.StaticDiagram_ShowHiddenComponents_Description, configuration))
 			add(new ShowHiddenParts(Messages.StaticDiagram_ShowHiddenParts_Description, configuration))
+			add(new AddOutsiderClass(Messages.StaticDiagram_AddOutsiderClass_Description, configuration))
 //			In a future could remain as options: "Open External wsdi" & "Save As..." 			
 //			add(new LoadStaticDiagramConfigurationAction(Messages.StaticDiagram_LoadConfiguration_Description, configuration, this))
 //			add(new SaveStaticDiagramConfigurationAction(Messages.StaticDiagram_SaveConfiguration_Description, configuration))

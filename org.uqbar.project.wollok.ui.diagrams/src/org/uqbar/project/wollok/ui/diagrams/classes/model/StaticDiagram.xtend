@@ -10,7 +10,6 @@ import org.uqbar.project.wollok.wollokDsl.WMixin
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-
 /**
  *
  * Model of a Static Diagram View
@@ -32,7 +31,7 @@ class StaticDiagram extends ModelElement {
 
 	new(StaticDiagramConfiguration configuration, List<WMethodContainer> objectsInFile) {
 		this.configuration = configuration
-		this.objectsInFile = objectsInFile	
+		this.objectsInFile = objectsInFile
 	}
 	
 	def addClass(ClassModel s) {

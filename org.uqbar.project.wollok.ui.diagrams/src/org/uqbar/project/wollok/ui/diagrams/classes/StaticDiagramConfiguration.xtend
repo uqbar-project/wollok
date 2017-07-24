@@ -4,6 +4,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InvalidClassException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -22,7 +23,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * @author dodain
@@ -47,6 +50,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	List<Relation> relations = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
+	List<OutsiderElement> outsiderElements = newArrayList
+	transient IResource resource
 	
 	new() {
 		init
@@ -62,6 +67,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		internalInitHiddenComponents
 		internalInitHiddenParts
 		internalInitRelationships
+		internalInitOutsiderElements
 	}
 	
 	def void initLocationsAndSizes() {
@@ -75,6 +81,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		sizes = newHashMap
 	}
 
+	def void internalInitOutsiderElements() {
+		outsiderElements = newArrayList
+	}
+	
 	def void showAllComponents() {
 		this.internalInitHiddenComponents
 		this.setChanged
@@ -184,13 +194,20 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
+
+	def addOutsiderElement(WMethodContainer element) {
+		outsiderElements.add(new OutsiderElement(element.eResource.URI.toString, element.identifier))
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)		
+	}
 	
 	/** 
 	 * Fired each time you click on a xtext document
 	 * If resource changed, configuration should clean up its state
 	 */
-	def setResource(IResource resource) {
+	def void setResource(IResource resource) {
 		val previousFileName = this.originalFileName
+		this.resource = resource
 		if (resource.project.locationURI !== null) {
 			this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
 			this.originalFileName = resource.location.lastSegment
@@ -211,6 +228,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			this.init
 			this.loadConfiguration
 		}
+		
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
@@ -249,6 +267,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.hiddenComponents = configuration.hiddenComponents
 		this.relations = configuration.relations
 		this.hiddenParts = configuration.hiddenParts
+		this.outsiderElements = configuration.outsiderElements
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
@@ -301,7 +320,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 				this.copyFrom(newConfiguration)
 			} catch (FileNotFoundException e) {
 				// nothing to worry, it will be saved afterwards
-			}
+			} catch (InvalidClassException e) {
+				// nothing to worry, configuration preferences for static diagram
+				// serialized in a file changed, but it will be saved afterwards
+			} 
 		}
 	}
 	
@@ -386,4 +408,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 class HiddenPart implements Serializable {
 	boolean isVariable
 	String name
+}
+
+@Data
+class OutsiderElement implements Serializable {
+	String URI
+	String identifier
 }

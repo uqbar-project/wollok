@@ -32,18 +32,27 @@ class StaticDiagramBuilder {
 		allMixins = newArrayList
 	}
 
-	def StaticDiagramBuilder addMixin(WMixin m) {
+	def dispatch StaticDiagramBuilder addElements(List<? extends WMethodContainer> elements) {
+		elements.clone.forEach [ element | addElement(element) ]
+		this
+	}
+
+	def dispatch StaticDiagramBuilder addElements(Iterable<? extends WMethodContainer> elements) {
+		addElements(elements.toList)
+	}
+
+	def dispatch StaticDiagramBuilder addElement(WMixin m) {
 		if (!allMixins.map [ identifier ].contains(m.identifier)) {
 			allMixins.add(m)
 		}
 		this
 	}
 		
-	def StaticDiagramBuilder addElement(WMethodContainer m) {
+	def dispatch StaticDiagramBuilder addElement(WMethodContainer m) {
 		if (!allElements.map [ identifier ].contains(m.identifier)) {
 			allElements.add(m)
 			m.doAddElement
-			m.mixins.forEach [ addMixin ]
+			m.mixins.forEach [ addElement ]
 		}
 		this
 	}
@@ -59,34 +68,8 @@ class StaticDiagramBuilder {
 		}
 	}
 
-	def StaticDiagramBuilder addClasses(List<WClass> classes) {
-		classes.clone.forEach [ addElement ]
-		this
-	}
-
-	def StaticDiagramBuilder addClasses(Iterable<WClass> classes) {
-		addClasses(classes.toList)
-	}
-
-	def StaticDiagramBuilder addObjects(List<WNamedObject> objects) {
-		objects.clone.forEach [ addElement ]
-		this
-	}
-
-	def StaticDiagramBuilder addObjects(Iterable<WNamedObject> objects) {
-		addObjects(objects.toList)
-	}
-
-	def StaticDiagramBuilder addMixins(List<WMixin> mixins) {
-		mixins.forEach [ addMixin ]
-		this
-	}
-
-	def StaticDiagramBuilder addMixins(Iterable<WMixin> mixins) {
-		addMixins(mixins.toList)
-	}
-	
 	def allElements() { allElements }
 	
 	def allMixins() { allMixins }
+	
 }
