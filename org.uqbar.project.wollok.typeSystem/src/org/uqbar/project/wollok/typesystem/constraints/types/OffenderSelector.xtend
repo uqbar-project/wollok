@@ -5,11 +5,11 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
-import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
 
 /**
  * When a type error is found because we found an incompatible subtype relationship between two type variables, 
@@ -38,9 +38,11 @@ class OffenderSelector {
 	// ************************************************************************
 
 	def static dispatch selectOffender(EObject subtype, EObject supertype) {
-		log.debug('''	Min type detected without a specific offender detection strategy:
-			subtype=«subtype.debugInfo» 
-			supertype=«supertype.debugInfo»''')
+		log.debug('''
+			Min type detected without a specific offender detection strategy:
+				subtype=«subtype.debugInfoInContext» 
+				supertype=«supertype.debugInfoInContext»
+		''')
 		subtype
 	}
 
@@ -65,4 +67,13 @@ class OffenderSelector {
 	 * Errors should go to the sender and not to the method.
 	 */
 	def static dispatch selectOffender(WMethodDeclaration returnType, EObject messageSend) { messageSend }
+
+	/**
+	 * A direct relationship between two parameters is due to a method override.
+	 * (note inverse relationship: SUBclass method parameter has to be a SUPERtype of the overriden one.)
+	 * We mark the errors in the subclass.
+	 */
+	def static dispatch selectOffender(WParameter superclass, WParameter subclass) { 
+		subclass
+	}
 }

@@ -105,6 +105,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	}
 
 	@Test
+	@Ignore
 	def void testAbstractMethodParameterInferredFromOverridingMethodsInSubclassesWithBasicTypes() {
 		'''
 			class NumberOperation {

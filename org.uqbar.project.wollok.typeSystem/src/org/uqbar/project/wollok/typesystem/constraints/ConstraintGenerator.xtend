@@ -32,6 +32,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -61,11 +62,14 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
+		typeSystem.allTypes.add(it.objectType)
 		members.forEach[generateVariables]
 		newNamedObject
 	}
 
 	def dispatch void generateVariables(WClass it) {
+		typeSystem.allTypes.add(it.classType)
+
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]

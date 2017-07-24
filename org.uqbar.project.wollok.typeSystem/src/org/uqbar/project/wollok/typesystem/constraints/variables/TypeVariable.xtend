@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 interface ITypeVariable {
@@ -216,16 +216,15 @@ class TypeVariable implements ITypeVariable {
 	override toString() '''t(«owner.debugInfo»)'''
 
 	def description(boolean full) '''
-		«class.simpleName» {
-			owner: «owner.debugInfo»,
-			subtypes: «subtypes.map[owner.debugInfo]»,
-			supertypes: «supertypes.map[owner.debugInfo]»,
+		Type information for «owner.debugInfoInContext» {
+			subtypes: «subtypes.map[owner.debugInfoInContext]»,
+			supertypes: «supertypes.map[owner.debugInfoInContext]»,
 			«IF typeInfo === null»
 				no type information
 			«ELSEIF canonical || full»
 				«typeInfo.fullDescription»
 			«ELSE»
-				... unified with «typeInfo.canonicalUser»
+				... unified with «typeInfo.canonicalUser.owner.debugInfoInContext»
 			«ENDIF»
 		}
 	'''

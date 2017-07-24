@@ -29,7 +29,10 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	def basicGetType() {
-		minTypes.entrySet.filter[value != Error].map[key].reduce[t1, t2|t1.refine(t2)]
+		minTypes.entrySet
+			//.filter[value != Error]
+			.map[key]
+			.reduce[t1, t2|t1.refine(t2)]
 	}
 
 	// ************************************************************************

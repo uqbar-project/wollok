@@ -58,7 +58,8 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		if (minTypes.isEmpty && maximalConcreteTypes !== null) {
-			log.debug('''	About to guess min types for «tvar.owner.debugInfo»''')
+			log.debug('''	About to guess min types for «tvar.owner.debugInfoInContext»''')
+			log.debug(tvar.fullDescription)
 			maximalConcreteTypes.forEach[ type |
 				val state = addMinType(type) 
 				log.debug('''		Added min type «type» => «state»''')
@@ -172,7 +173,10 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
 	def dispatch void visitChildren(WClosure it) { expression.visit }
 	def dispatch void visitChildren(WConstructor it) { expression.visit }
-	def dispatch void visitChildren(WMethodDeclaration it) { expression.visit }
+	def dispatch void visitChildren(WMethodDeclaration it) {
+		parameters.visitAll 
+		expression.visit
+	}
 
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
 	def dispatch void visitChildren(WTest it) { elements.visitAll }

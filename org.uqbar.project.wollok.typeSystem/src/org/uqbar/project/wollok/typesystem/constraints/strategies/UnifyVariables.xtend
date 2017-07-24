@@ -59,21 +59,27 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if (supertype.hasErrors) {
-			log.debug('''		Errors found, aborting unification''')
+			log.debug('''	Errors found, aborting unification''')
 			return Error
 		}
 
-		// If supertype var is a parameter, the subtype is an argument sent to this parameter
-		// and should not be unified.
-		if (supertype.owner instanceof WParameter) {
-			log.debug('''             Not unifying «subtype» with parameter «supertype»''')
-			return Error
-		}
+//		// If supertype var is a parameter, the subtype is an argument sent to this parameter
+//		// and should not be unified... 
+//		if (supertype.owner instanceof WParameter 
+//
+//			// ... unless subtype is also a parameter.
+//			// In this case this is an override relationship
+//			// (supertype is a parameter in a method overriding subtype's method).
+//			&& !(subtype.owner instanceof WParameter)
+//		) {
+//			log.debug('''Not unifying «subtype» with parameter «supertype»''')
+//			return Cancel
+//		}
 
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending && it != Cancel)
-				log.debug('''		Unified «subtype» with «supertype»: «it»
+				log.debug('''Unified «subtype» with «supertype» : «it»
 				«subtype.fullDescription»''')
 		]
 	}
@@ -86,7 +92,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
 		if (subtype.typeInfo === null && supertype.typeInfo === null) {
-			log.debug('''		No type info yet, unification postponed''')
+			log.debug('''No type info yet, unification postponed''')
 			Pending
 		} else if (subtype.typeInfo === null) {
 			subtype.copyTypeInfoFrom(supertype)

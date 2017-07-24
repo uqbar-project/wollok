@@ -17,6 +17,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericT
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
@@ -158,7 +159,7 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	def fullReport() {
 		typeVariables.values.forEach[
-			log.debug(descriptionForReport)
+			if (!owner.isCoreObject) log.debug(descriptionForReport)
 		]
 	}
 	
