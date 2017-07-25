@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -10,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -50,7 +52,7 @@ class WollokModelPrintForDebug {
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
 
 	static def dispatch String debugInfo(WMethodDeclaration it) 
-		'''«eContainer.name».«name»(«parameters.join(', ')[name]»)'''
+		'''method «eContainer.name».«name»(«parameters.join(', ')[name]»)'''
 
 	static def dispatch String debugInfo(WParameter it)
 		'''param «name»'''
@@ -64,6 +66,9 @@ class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(WNumberLiteral it)
 		'''«value»'''
 
+	static def dispatch String debugInfo(WStringLiteral it)
+		'''"«value»"'''
+
 	static def dispatch String debugInfo(WAssignment it)
 		'''«feature.debugInfo» = «value.debugInfo»'''
 
@@ -73,6 +78,10 @@ class WollokModelPrintForDebug {
 	// ************************************************************************
 	// ** Debug info with context
 	// ************************************************************************
+
+	static def dispatch String debugInfoInContext(TypeVariable tvar) {
+		tvar.owner.debugInfoInContext
+	}
 
 	static def dispatch String debugInfoInContext(Void obj) {
 		"synthetic"

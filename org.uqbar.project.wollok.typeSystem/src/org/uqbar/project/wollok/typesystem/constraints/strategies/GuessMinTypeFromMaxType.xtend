@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -44,7 +45,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	
@@ -58,11 +58,11 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		if (minTypes.isEmpty && maximalConcreteTypes !== null) {
-			log.debug('''	About to guess min types for «tvar.owner.debugInfoInContext»''')
+			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
 			maximalConcreteTypes.forEach[ type |
 				val state = addMinType(type) 
-				log.debug('''		Added min type «type» => «state»''')
+				log.debug('''  Added min type «type» => «state»''')
 				if (state == Pending) changed = true
 			]
 		}

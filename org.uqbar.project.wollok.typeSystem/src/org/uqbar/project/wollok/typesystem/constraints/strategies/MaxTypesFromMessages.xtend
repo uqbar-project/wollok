@@ -7,36 +7,46 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.MaximalConcreteTypes
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 
 class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
-	private Iterable<AbstractContainerWollokType> allTypes = newArrayList()
-
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch void analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
-		var maxTypes = allTypes(tvar).filter[newMaxTypeFor(tvar)].toList
-		if (!tvar.sealed && 
-			!maxTypes.empty && 
-			!maximalConcreteTypes.contains(maxTypes)
-		) {
-			log.debug('''	New max(«maxTypes») type for «tvar»''')
+		log.trace('''Variable «tvar.owner.debugInfoInContext»''')
+		if (tvar.sealed) {
+			log.trace('Variable is sealed => Ignored')
+			return
+		} 
+		if (messages.empty) {
+			log.trace('Variable receives no messages => Ignored')
+			return;
+		}
+		
+		var maxTypes = allTypes.filter[newMaxTypeFor(tvar)].toList
+		log.trace('''maxTypes = «maxTypes»''')
+		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
+			log.debug('''	New max(«maxTypes») type for «tvar.debugInfoInContext»''')
 			setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet), tvar)
 			changed = true
 		}
 	}
 
 	def contains(MaximalConcreteTypes maxTypes, List<? extends WollokType> types) {
-		maxTypes !== null && maxTypes.containsAll(types)
+		(maxTypes !== null && maxTypes.containsAll(types))
 	}
 
 	def newMaxTypeFor(AbstractContainerWollokType type, TypeVariable it) {
-		!typeInfo.messages.empty && typeInfo.messages.forall[type.respondsTo(it)]
+		typeInfo.messages.forall[type.respondsTo(it) => [result |
+			log.trace('''  «type» «if (result) "responds" else "does not respond"» to «it»''')
+		]]
 	}
 
-	def allTypes(TypeVariable tvar) {
-		var types = registry.typeSystem.allTypes(tvar.owner)
-		if(types.size > allTypes.size) allTypes = types // TODO: Fix typeSystem.allTypes 
-		allTypes
+	def getAllTypes() {
+		// TODO: Fix typeSystem.allTypes 
+//		tvar.owner
+		registry.typeSystem.allTypes
 	}
 }
