@@ -8,19 +8,25 @@ import org.eclipse.jface.dialogs.Dialog
 import org.eclipse.jface.resource.JFaceResources
 import org.eclipse.jface.resource.LocalResourceManager
 import org.eclipse.jface.resource.ResourceManager
+import org.eclipse.jface.viewers.DoubleClickEvent
 import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.ITreeSelection
 import org.eclipse.jface.viewers.LabelProvider
 import org.eclipse.jface.viewers.TreeViewer
 import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
-import org.eclipse.swt.layout.FillLayout
+import org.eclipse.swt.events.KeyEvent
+import org.eclipse.swt.events.KeyListener
+import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.layout.RowLayout
 import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.widgets.Text
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
@@ -35,12 +41,14 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.convertToEclipseURI
+import org.eclipse.swt.layout.RowData
 
 class AddOutsiderClassView extends Dialog {
 
+	Text searchText
 	TreeViewer treeWollokElements
 	Button addButton
-	
+
 	StaticDiagramConfiguration configuration
 	IProject project
 
@@ -56,27 +64,53 @@ class AddOutsiderClassView extends Dialog {
 	}
 
 	override createContents(Composite parent) {
-		val compositeLayout = new GridLayout(1, false)
+		val compositeLayout = new GridLayout(1, false) 
 		val composite = new Composite(parent, SWT.NONE) => [
 			layout = compositeLayout
 		]
 		val buttonGroup = new Composite(parent, SWT.NONE) => [
-			layout = new FillLayout => [
+			layout = new RowLayout => [
 				type = SWT.HORIZONTAL
-				marginHeight = 2
-				marginWidth = 2
+				marginTop = 0
+				marginBottom = 1
+				marginWidth = 2	
+				spacing = 2
+				fill = true
 			]
 		]
 
-		treeWollokElements = new TreeViewer(composite, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.SINGLE))
+		// Search text
+		searchText = new Text(composite, SWT.SINGLE.bitwiseOr(SWT.BORDER)) => [
+    		setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL))
+			addKeyListener(new KeyListener() {
+				
+				override keyPressed(KeyEvent arg0) {
+				}
+				
+				override keyReleased(KeyEvent arg0) {
+					treeWollokElements.refresh(true)					
+				}
+				
+			})	
+		]
+
+		// Tree viewer
+		treeWollokElements = new TreeViewer(composite, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.MULTI))
+		
+		// Buttons
 		addButton = new Button(buttonGroup, SWT.PUSH) => [
 			enabled = false
 			text = Messages.StaticDiagram_AddOutsiderClass_AcceptButton
-			addListener(SWT.Selection, [ event |
-				val selection = treeWollokElements.selection as ITreeSelection
-				configuration.addOutsiderElement((selection.firstElement as WMethodContainer))
-				this.close
-			])
+			addListener(SWT.Selection,
+				[ Event event |
+					val iterator = (treeWollokElements.selection as ITreeSelection).iterator
+					while (iterator.hasNext) {
+						val element = iterator.next as WMethodContainer
+						configuration.addOutsiderElement(element)
+					}
+					this.close
+				]
+			)
 		]
 		new Button(buttonGroup, SWT.PUSH) => [
 			text = Messages.StaticDiagram_AddOutsiderClass_CancelButton
@@ -90,18 +124,25 @@ class AddOutsiderClassView extends Dialog {
 			// - that has any valid method container
 			// - avoiding current resource of static diagram
 			val wollokFiles = project.allWollokFiles.filter [
-				!mapMethodContainers.get(it).isEmpty && 
-				it !== configuration.resource.convertToEclipseURI
+				!mapMethodContainers.get(it).isEmpty && it !== configuration.resource.convertToEclipseURI
 			].toList
-			control.layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1) => [
+			control.layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 0) => [
 				heightHint = 350
 				widthHint = 250
-			] 
+			]
+			addDoubleClickListener([ DoubleClickEvent event |
+					val selection = event.selection as ITreeSelection
+					if (selection.firstElement instanceof WMethodContainer) {
+						configuration.addOutsiderElement(selection.firstElement as WMethodContainer)
+						this.close
+					}
+				]
+			)
 			addSelectionChangedListener([ event |
 				val selection = event.selection as ITreeSelection
 				addButton.enabled = selection !== null && selection.firstElement instanceof WMethodContainer
 			])
-			contentProvider = new WollokMethodContainerContentProvider(mapMethodContainers)
+			contentProvider = new WollokMethodContainerContentProvider(mapMethodContainers, searchText)
 			labelProvider = new WollokMethodContainerLabelProvider
 			input = wollokFiles
 			expandAll
@@ -114,9 +155,11 @@ class AddOutsiderClassView extends Dialog {
 class WollokMethodContainerContentProvider implements ITreeContentProvider {
 
 	Map<URI, List<WMethodContainer>> methodContainers
+	Text searchText
 
-	new(Map<URI, List<WMethodContainer>> methodContainers) {
+	new(Map<URI, List<WMethodContainer>> methodContainers, Text searchText) {
 		this.methodContainers = methodContainers
+		this.searchText = searchText
 	}
 
 	def dispatch getChildren(Object o) {
@@ -125,7 +168,7 @@ class WollokMethodContainerContentProvider implements ITreeContentProvider {
 
 	def dispatch getChildren(URI uri) {
 		val children = methodContainers.get(uri) ?: #[]
-		children.filter [ !AbstractModel.allComponents.contains(it) ].toList
+		children.filter[ !AbstractModel.allElements.map [ identifier ].contains(it.identifier) && (searchText.text === null || it.identifier.contains(searchText.text)) ].toList
 	}
 
 	def dispatch getElements(Object o) {
@@ -146,7 +189,8 @@ class WollokMethodContainerContentProvider implements ITreeContentProvider {
 
 	override dispose() {}
 
-	override inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
+	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	}
 
 }
 
@@ -154,9 +198,12 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 
 	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources())
 
-	def dispatch getImage(WClass element) { showImage("wollok-icon-class_16.png")}
-	def dispatch getImage(WNamedObject element) { showImage("wollok-icon-object_16.png")}
-	def dispatch getImage(WMixin element) { showImage("wollok-icon-mixin_16.png")}
+	def dispatch getImage(WClass element) { showImage("wollok-icon-class_16.png") }
+
+	def dispatch getImage(WNamedObject element) { showImage("wollok-icon-object_16.png") }
+
+	def dispatch getImage(WMixin element) { showImage("wollok-icon-mixin_16.png") }
+
 	def dispatch getImage(URI uri) {
 		val fileExtension = uri.fileExtension
 		if (fileExtension.equals(WollokConstants.TEST_EXTENSION)) {
@@ -167,16 +214,16 @@ class WollokMethodContainerLabelProvider extends LabelProvider {
 		}
 		return showImage("w.png")
 	}
-	
+
 	def dispatch getImage(Object element) {
-		showImage("w.png")		
+		showImage("w.png")
 	}
 
 	def showImage(String path) {
 		val imageDescriptor = Activator.getDefault.getImageDescriptor("icons/" + path)
 		resourceManager.createImage(imageDescriptor)
 	}
-	
+
 	def dispatch getText(WMethodContainer mc) {
 		return mc.name
 	}

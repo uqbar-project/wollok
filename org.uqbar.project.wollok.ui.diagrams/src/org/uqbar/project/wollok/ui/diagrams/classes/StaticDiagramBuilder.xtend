@@ -22,6 +22,7 @@ class StaticDiagramBuilder {
 	
 	List<WMethodContainer> allElements
 	List<WMixin> allMixins
+	List<WNamedObject> allSingleObjects
 	
 	new() {
 		init
@@ -30,6 +31,7 @@ class StaticDiagramBuilder {
 	def void init() {
 		allElements = newArrayList
 		allMixins = newArrayList
+		allSingleObjects = newArrayList
 	}
 
 	def dispatch StaticDiagramBuilder addElements(List<? extends WMethodContainer> elements) {
@@ -47,10 +49,22 @@ class StaticDiagramBuilder {
 		}
 		this
 	}
-		
+	
+	def dispatch void addToRightCollection(WNamedObject o) {
+		if (o.hasRealParent) {
+			allElements.add(o)
+		} else {
+			allSingleObjects.add(o)
+		}
+	}
+
+	def dispatch void addToRightCollection(WMethodContainer mc) {
+		allElements.add(mc)
+	}
+	
 	def dispatch StaticDiagramBuilder addElement(WMethodContainer m) {
 		if (!allElements.map [ identifier ].contains(m.identifier)) {
-			allElements.add(m)
+			m.addToRightCollection
 			m.doAddElement
 			m.mixins.forEach [ addElement ]
 		}
@@ -72,4 +86,5 @@ class StaticDiagramBuilder {
 	
 	def allMixins() { allMixins }
 	
+	def allSingleObjects() { allSingleObjects }
 }

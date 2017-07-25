@@ -14,6 +14,7 @@ import java.util.Observable
 import org.eclipse.core.resources.IResource
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
+import org.eclipse.emf.common.util.URI
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
@@ -70,12 +71,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		internalInitOutsiderElements
 	}
 	
-	def void initLocationsAndSizes() {
-		this.internalInitLocationsAndSizes
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
 	def void internalInitLocationsAndSizes() {
 		locations = newHashMap
 		sizes = newHashMap
@@ -83,18 +78,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 
 	def void internalInitOutsiderElements() {
 		outsiderElements = newArrayList
-	}
-	
-	def void showAllComponents() {
-		this.internalInitHiddenComponents
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
-	def showAllParts() {
-		this.internalInitHiddenParts
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
 	def void internalInitHiddenComponents() {
@@ -105,12 +88,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		hiddenParts = newHashMap
 	}
 
-	def void initRelationships() {
-		this.internalInitRelationships
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}	
-	
 	def void internalInitRelationships() {
 		relations = newArrayList
 	}
@@ -121,6 +98,44 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *  CONFIGURATION CHANGES 
 	 *******************************************************
 	 */	
+
+	def void initRelationships() {
+		this.internalInitRelationships
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}	
+	
+	def void initLocationsAndSizes() {
+		this.internalInitLocationsAndSizes
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def void showAllComponents() {
+		this.internalInitHiddenComponents
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def showAllPartsFrom(AbstractModel model) {
+		hiddenParts.remove(model.label)
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	
+	def showAllParts() {
+		this.internalInitHiddenParts
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	def void initOutsiderElements() {
+		this.internalInitOutsiderElements
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
 	def void saveLocation(Shape shape) {
 		if (!rememberLocationAndSizeShapes) return;
 		locations.put(shape.toString, new Point => [
@@ -140,9 +155,18 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def hideComponent(AbstractModel model) {
-		hiddenComponents.add(model.label)
+		val outsiderElement = model.component.outsiderElement 
+		if (outsiderElement !== null) {
+			outsiderElements.remove(outsiderElement)
+		} else {
+			hiddenComponents.add(model.label)
+		}
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def getOutsiderElement(WMethodContainer mc) {
+		outsiderElements.findFirst [ outsiderElement | outsiderElement.pointsTo(mc) ]
 	}
 	
 	def hidePart(AbstractModel model, String partName, boolean isVariable) {
@@ -196,11 +220,11 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 
 	def addOutsiderElement(WMethodContainer element) {
-		outsiderElements.add(new OutsiderElement(element.eResource.URI.toString, element.identifier))
+		outsiderElements.add(new OutsiderElement(element))
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)		
 	}
-	
+
 	/** 
 	 * Fired each time you click on a xtext document
 	 * If resource changed, configuration should clean up its state
@@ -384,6 +408,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			append("    sizes = ")
 			append(this.sizes)
 			append("\n")
+			append("    outsiderElements = ")
+			append(this.outsiderElements)
+			append("\n")
 			append("}")	
 		]
 		result.toString
@@ -410,8 +437,28 @@ class HiddenPart implements Serializable {
 	String name
 }
 
-@Data
+@Accessors
 class OutsiderElement implements Serializable {
-	String URI
+	String internalURI
 	String identifier
-}
+	
+	new() {	}
+	
+	new(WMethodContainer mc) {
+		internalURI = mc.eResource.URI.toString
+		identifier = mc.identifier
+	}
+	
+	def pointsTo(WMethodContainer mc) {
+		mc.eResource.URI.toString.equals(internalURI) && mc.identifier.equals(identifier)
+	}
+	
+	def getRealURI() {
+		URI.createURI(this.internalURI)
+	}
+	
+	override toString() {
+		internalURI + " => " + identifier		
+	}
+	
+ }

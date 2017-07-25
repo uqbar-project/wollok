@@ -65,6 +65,13 @@ abstract class AbstractModel extends Shape {
 		objects = newArrayList
 	}
 	
+	def static List<WMethodContainer> allElements() {
+		val List<WMethodContainer> allElements = allComponents
+		allElements.addAll(mixins.map [ component ])
+		allElements.addAll(objects.map [ component ])
+		allElements
+	}
+	
 	/**
 	 * ******************************************************************************* 
 	 *    WIDTH CALCULATIONS
