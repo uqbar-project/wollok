@@ -177,6 +177,12 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
+		
+	def hasHiddenParts(AbstractModel model) {
+		val _hiddenParts = hiddenParts.get(model.label) ?: newArrayList
+		!_hiddenParts.isEmpty
+	}
+	
 	def addAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
 		relations.add(new Relation(modelSource.label, modelTarget.label, RelationType.ASSOCIATION))
 		this.setChanged

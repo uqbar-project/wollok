@@ -28,10 +28,18 @@ class ShowHiddenPartsElementAction extends SelectionAction {
 
 	override protected calculateEnabled() {
 		!selectedObjects.empty && selectedObjects.forall [ selectedObject |
-			selectedObject instanceof AbstractMethodContainerEditPart
+			selectedObject.shouldEnableAction
 		]
 	}
-
+	
+	def dispatch shouldEnableAction(Object object) {
+		false
+	}
+	
+	def dispatch shouldEnableAction(AbstractMethodContainerEditPart component) {
+		configuration.hasHiddenParts(component.castedModel as AbstractModel)
+	}
+	
 	override run() {
 		selectedObjects.forEach [ selectedObject |
 			val component = selectedObject as AbstractMethodContainerEditPart

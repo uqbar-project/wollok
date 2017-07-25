@@ -88,9 +88,11 @@ class AddOutsiderClassView extends Dialog {
 				}
 				
 				override keyReleased(KeyEvent arg0) {
-					treeWollokElements.refresh(true)					
+					treeWollokElements => [
+						refresh(true)
+						expandAll
+					]
 				}
-				
 			})	
 		]
 
@@ -168,7 +170,7 @@ class WollokMethodContainerContentProvider implements ITreeContentProvider {
 
 	def dispatch getChildren(URI uri) {
 		val children = methodContainers.get(uri) ?: #[]
-		children.filter[ !AbstractModel.allElements.map [ identifier ].contains(it.identifier) && (searchText.text === null || it.identifier.contains(searchText.text)) ].toList
+		children.filter[ !AbstractModel.allElements.map [ identifier ].contains(it.identifier) && (searchText.text === null || it.identifier.toUpperCase.contains(searchText.text.toUpperCase)) ].toList
 	}
 
 	def dispatch getElements(Object o) {
