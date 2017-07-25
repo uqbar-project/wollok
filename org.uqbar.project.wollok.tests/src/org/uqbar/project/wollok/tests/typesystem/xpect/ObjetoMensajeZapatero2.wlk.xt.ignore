@@ -60,7 +60,6 @@ object pepe {
 	method tuClienteEs(unCliente) { 		
 		cliente = unCliente
 	}
-	
 }
 
 
