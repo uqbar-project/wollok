@@ -166,7 +166,29 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			'''.interpretPropagatingErrors
 	}
-	
+	@Test
+	def void defaultConstructorDelegationToSuper() {
+		'''
+			class SuperClass {
+				var superX
+				
+				method getSuperX() { return superX }
+				method setSuperX(value) { superX = value }
+			}
+			class SubClass inherits SuperClass { 
+				var anotherVariable
+				constructor(n) = super() {
+					anotherVariable = n
+				}
+				method getAnotherVariable() = anotherVariable
+			}
+			program t {
+				const o = new SubClass(20)
+				assert.equals(20, o.getAnotherVariable())
+			}
+			'''.interpretPropagatingErrors
+	}
+		
 	@Test
 	def void twoLevelsDelegationToSuper() {
 		'''
