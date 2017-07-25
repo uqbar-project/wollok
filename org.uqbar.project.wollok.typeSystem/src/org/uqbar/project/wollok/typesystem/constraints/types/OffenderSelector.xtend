@@ -60,7 +60,7 @@ class OffenderSelector {
 	def static dispatch selectOffender(WReferenciable referenciable, WVariableReference reference) { reference }
 
 	/** Referenciable appears as supertype when it is assigned, mark the error on the right hand side of the assignment */
-	def static dispatch selectOffender(WVariableReference reference, WReferenciable referenciable) { reference }
+	def static dispatch selectOffender(EObject reference, WReferenciable referenciable) { reference }
 
 	/**
 	 * A method declaration is subtype of the message sends which invoke that method. 
