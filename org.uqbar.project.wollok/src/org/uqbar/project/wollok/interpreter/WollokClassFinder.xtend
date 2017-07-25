@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -79,8 +80,13 @@ class WollokClassFinder {
 	// ************************************************************************
 	// ** Get all elements in the scope (used by the type system)
 	// ************************************************************************
+
+	def clearCache() {
+		sdkClassesCache = newHashMap
+		sdkObjectsCache = newHashMap
+	}
 	
-	def allGlobalObjects(EObject context) {
+	def allCoreWKOs(EObject context) {
 		getObjectScope(context.eResource)[EObjectOrProxy instanceof WNamedObject]
 		.allElements
 		.filter[EObjectOrProxy instanceof WNamedObject]
@@ -92,9 +98,10 @@ class WollokClassFinder {
 				}
 			]
 		]
+		.filter[isCoreObject]
 	}	
 
-	def allClasses(EObject context) {
+	def allCoreClasses(EObject context) {
 		getClassScope(context.eResource)[EObjectOrProxy instanceof WClass]
 		.allElements
 		.filter[EObjectOrProxy instanceof WClass]
@@ -106,6 +113,7 @@ class WollokClassFinder {
 				}
 			]
 		]
+		.filter[isCoreObject]
 	}	
 
 	// ************************************************************************

@@ -73,9 +73,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
+		finder.clearCache		
+		allTypes = null
 
 		// This shouldn't be necessary if all global objects had type annotations
-		finder.allGlobalObjects(program).forEach[constraintGenerator.newNamedObject(it)]
+		finder.allCoreWKOs(program).forEach[constraintGenerator.newNamedObject(it)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
@@ -194,8 +196,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		// not give me all my classes and I do not have the time to debug it now. 
 		if (allTypes === null) {
 			allTypes = newHashSet
-			allTypes.addAll(finder.allClasses(programs.get(0)).map[new ClassBasedWollokType(it, this)])
-			allTypes.addAll(finder.allGlobalObjects(programs.get(0)).map[new NamedObjectWollokType(it, this)])
+			allTypes.addAll(finder.allCoreClasses(programs.get(0)).map[new ClassBasedWollokType(it, this)])
+			allTypes.addAll(finder.allCoreWKOs(programs.get(0)).map[new NamedObjectWollokType(it, this)])
 		}
 		
 		allTypes

@@ -16,7 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 class TypeVariablesRegistry {
@@ -132,7 +132,7 @@ class TypeVariablesRegistry {
 	 */
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj) => [ if (it === null) {
-			throw new RuntimeException("I don't have type information for " + obj.debugInfo)
+			throw new RuntimeException("I don't have type information for " + obj.debugInfoInContext)
 		}]
 	}
 	

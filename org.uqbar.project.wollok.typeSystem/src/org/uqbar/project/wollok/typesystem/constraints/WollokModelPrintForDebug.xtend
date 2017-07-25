@@ -52,7 +52,7 @@ class WollokModelPrintForDebug {
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
 
 	static def dispatch String debugInfo(WMethodDeclaration it) 
-		'''method «eContainer.name».«name»(«parameters.join(', ')[name]»)'''
+		'''method «eContainer.name».«name»(«parameters.join(', ')[name]») {«System.identityHashCode(it)»}'''
 
 	static def dispatch String debugInfo(WParameter it)
 		'''param «name»'''
