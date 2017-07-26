@@ -33,6 +33,23 @@ class D inherits B {
 	constructor(a) = super(1, a) {}
 }
 
+
+class SuperClass {
+	var superX
+	
+	method getSuperX() { return superX }
+	method setSuperX(value) { superX = value }
+}
+class SubClass inherits SuperClass { 
+	var anotherVariable
+	// XPECT errors --> "Invalid super constructor call. It does not exist. No valid constructors were defined." at "super()"
+	constructor(n) = super() {
+		anotherVariable = n
+	}
+	method getAnotherVariable() = anotherVariable
+}
+
+
 // 
 //  REQUIRED CONSTRUCTOR CALLS 
 //

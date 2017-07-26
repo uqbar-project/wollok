@@ -79,6 +79,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_CANNOT_ACCESS_SUPER_METHODS_WITHIN_CONSTRUCTOR_DELEGATION;
 	public static String WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION;
 	public static String WollokDslValidator_INVALID_CONSTRUCTOR_CALL;
+	public static String WollokDslValidator_INVALID_CONSTRUCTOR_CALL_NO_CONSTRUCTOR;
 	public static String WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS;
 	public static String WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR;
 	public static String WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR;
