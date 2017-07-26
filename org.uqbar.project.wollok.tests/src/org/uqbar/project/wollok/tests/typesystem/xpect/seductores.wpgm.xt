@@ -34,7 +34,7 @@ class Seducible {
 	// XPECT type at generosPreferidos -->  List
 	const generosPreferidos = [] // "List[any]"
 	
-	// XPECT type at nivelIntelectualMinimoBuscado -->  Integer
+	// XPECT type at nivelIntelectualMinimoBuscado -->  Number
 	var nivelIntelectualMinimoBuscado = 0 
 
 	// XPECT type at personalidad -->  libre	 
@@ -59,10 +59,10 @@ class Seducible {
 //	// any => void 
 //	method agregarGeneroPreferido(g) { generosPreferidos.add(g) }
 	
-	// XPECT methodType at getNivelIntelectualMinimoBuscado --> () => Integer 
+	// XPECT methodType at getNivelIntelectualMinimoBuscado --> () => Number 
 	method getNivelIntelectualMinimoBuscado() = nivelIntelectualMinimoBuscado
 	
-	// XPECT methodType at setNivelIntelectualMinimoBuscado --> (Integer) => Void
+	// XPECT methodType at setNivelIntelectualMinimoBuscado --> (Number) => Void
 	method setNivelIntelectualMinimoBuscado(n) { nivelIntelectualMinimoBuscado = n }
 	
 	// XPECT methodType at getPersonalidad --> () => libre
@@ -79,13 +79,13 @@ class Seducible {
 }
 
 object millonarios {
-	// XPECT type at nivelMinimo -->  Integer
+	// XPECT type at nivelMinimo -->  Number
 	var nivelMinimo = 1000
 	
-	// XPECT methodType at getNivelMinimo --> () => Integer
+	// XPECT methodType at getNivelMinimo --> () => Number
 	method getNivelMinimo() = nivelMinimo
 	
-	// XPECT methodType at setNivelMinimo --> (Integer) => Void
+	// XPECT methodType at setNivelMinimo --> (Number) => Void
 	method setNivelMinimo(m) { nivelMinimo = m }
 }
 
@@ -93,13 +93,13 @@ class Seductor {
 	// XPECT type at genero	-->  Any
 	var genero	// any ? generoMasculino | generoFemenino
 	
-	// XPECT type at nivelEconomicoBase	-->  Integer
+	// XPECT type at nivelEconomicoBase	-->  Number
 	var nivelEconomicoBase = 0
 	
-	// XPECT type at nivelIntelectualBase -->  Integer
+	// XPECT type at nivelIntelectualBase -->  Number
 	var nivelIntelectualBase = 0
 
-	// XPECT type at aspectoPersonalBase -->  Integer
+	// XPECT type at aspectoPersonalBase -->  Number
 	var aspectoPersonalBase = 0
 	
 //	// List[
@@ -131,17 +131,17 @@ class Seductor {
 	// XPECT methodType at setGenero --> (Any) => Void 
 	method setGenero(g) { genero = g }		// (any ? generoMasculino | generoFemenino) => void
 	
-	// XPECT methodType at getNivelIntelectual --> () => Integer
+	// XPECT methodType at getNivelIntelectual --> () => Number
 	method getNivelIntelectual() = nivelIntelectualBase + artilugios.sum { artilugio => 
 		artilugio.modificarNivelIntelectual(self, nivelIntelectualBase)
 	}
 	
-	// XPECT methodType at getNivelEconomico --> () => Integer
+	// XPECT methodType at getNivelEconomico --> () => Number
 	method getNivelEconomico() = nivelEconomicoBase + artilugios.sum { 
 		artilugio => artilugio.modificarNivelEconomico(self, nivelEconomicoBase)
 	}
 	
-	// XPECT methodType at getAspectoPersonal --> () => Integer
+	// XPECT methodType at getAspectoPersonal --> () => Number
 	method getAspectoPersonal() = aspectoPersonalBase + artilugios.sum { artilugio => 
 		artilugio.modificarAspectoPersonal(self, aspectoPersonalBase)
 	}
@@ -163,27 +163,27 @@ object generoFemenino {}
 // ******************
 
 class Artilugio {
-	// XPECT methodType at modificarNivelIntelectual --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarNivelIntelectual --> (Seductor, Number) => Number
 	method modificarNivelIntelectual(seductor, nivel) = 0
 	
-	// XPECT methodType at modificarNivelEconomico --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarNivelEconomico --> (Seductor, Number) => Number
 	method modificarNivelEconomico(seductor, nivel) = 0
 
-	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Number) => Number
 	method modificarAspectoPersonal(seductor, nivel) = 0
 }
 
 class Billetera inherits Artilugio {
-	// XPECT type at cantidad -->  Integer
+	// XPECT type at cantidad -->  Number
 	var cantidad;
 	
 	constructor(cantidadInicial) { cantidad = cantidadInicial }
 	
-	// XPECT methodType at modificarNivelEconomico --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarNivelEconomico --> (Seductor, Number) => Number
 	override method modificarNivelEconomico(seductor, nivel) = cantidad
 	
 	// (any, Number) => Number
-	// XPEC methodType at modificarAspectoPersonal --> (Any, Integer) => Integer
+	// XPEC methodType at modificarAspectoPersonal --> (Any, Number) => Number
 	override method modificarAspectoPersonal(seductor, nivel) = nivel * 0.10
 	
 	// (Seductor, Number) => Number
@@ -191,26 +191,26 @@ class Billetera inherits Artilugio {
 }
 
 class Auto inherits Artilugio {
-	// XPECT type at precio -->  Integer
+	// XPECT type at precio -->  Number
 	var precio
 	
 	constructor(_precio) { precio = _precio }
 	
-	// XPECT! methodType at modificarNivelEconomico --> (Seductor, Integer) => Integer
+	// XPECT! methodType at modificarNivelEconomico --> (Seductor, Number) => Number
 	// override method modificarNivelEconomico(seductor, nivel) = -precio * 0.10
 
-	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Number) => Number
 	override method modificarAspectoPersonal(seductor, nivel) = 2 * precio
 }
 
 class Reputacion inherits Artilugio {
-	// XPECT type at intelectual -->  Integer
+	// XPECT type at intelectual -->  Number
 	const intelectual
 	
-	// XPECT type at economica -->  Integer
+	// XPECT type at economica -->  Number
 	const economica
 	
-	// XPECT type at personal -->  Integer
+	// XPECT type at personal -->  Number
 	const personal
 	
 	constructor(i, e, p) {
@@ -219,20 +219,20 @@ class Reputacion inherits Artilugio {
 		personal = p
 	}
 	
-	// XPECT methodType at modificarNivelEconomico --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarNivelEconomico --> (Seductor, Number) => Number
 	override method modificarNivelEconomico(seductor, nivel) = economica
 	
-	// XPECT methodType at modificarNivelIntelectual --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarNivelIntelectual --> (Seductor, Number) => Number
 	override method modificarNivelIntelectual(seductor, nivel) = intelectual
 	
-	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Integer) => Integer
+	// XPECT methodType at modificarAspectoPersonal --> (Seductor, Number) => Number
 	override method modificarAspectoPersonal(seductor, nivel) = personal
 }
 
 object titulo inherits Artilugio {
-	// XPEC methodType at modificarNivelEconomico --> (Any, Integer) => Integer
+	// XPEC methodType at modificarNivelEconomico --> (Any, Number) => Number
 	override method modificarNivelEconomico(seductor, nivel) = nivel * 0.8
 
-	// XPEC methodType at modificarNivelEconomico --> (Any, Integer) => Integer	
+	// XPEC methodType at modificarNivelEconomico --> (Any, Number) => Number	
 	override method modificarNivelIntelectual(seductor, nivel) = nivel * 1.00
 }

@@ -12,7 +12,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Holds common extensions for Wollok to Java and Java to Wollok conversions.
@@ -22,7 +22,11 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 class WollokJavaConversions {
 
 	def static asInteger(WollokObject it) {
-		((it as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
+		asNumber.intValue
+	}
+
+	def static asNumber(WollokObject it) {
+		((it as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 	}
 
 	def static isWBoolean(Object it) { it instanceof WollokObject && (it as WollokObject).hasNativeType(BOOLEAN) }
@@ -32,16 +36,18 @@ class WollokJavaConversions {
 	}
 
 	def static Object wollokToJava(Object o, Class<?> t) {
-		if(o == null) return null
+		if(o === null) return null
 		if(t.isInstance(o)) return o
-		if(t == Object) return o
+		if(t === Object) return o
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
 			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
-		if (o.isNativeType(INTEGER) && (t == Integer || t == Integer.TYPE))
-			return ((o as WollokObject).getNativeObject(INTEGER) as JavaWrapper<Integer>).wrapped
-		if (o.isNativeType(DOUBLE) && (t == Integer || t == Integer.TYPE))
-			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<BigDecimal>).wrapped
+		if (t == Integer || t == Integer.TYPE)
+			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.intValue
+//		if (t == Integer || t == Integer.TYPE)
+//			return ((o as WollokObject).getNativeObject(DOUBLE) as JavaWrapper<BigDecimal>).wrapped.doubleValue
+		if (o.isNativeType(NUMBER) && (t == Integer || t == Integer.TYPE || t == BigDecimal || t == Double.TYPE))
+			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
@@ -123,6 +129,9 @@ class WollokJavaConversions {
 	}
 
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
-	
+
+	def static boolean isInteger(BigDecimal decimal) {
+		return decimal.signum == 0 || decimal.scale <= 0 || decimal.stripTrailingZeros.scale <= 0
+	}
 
 }

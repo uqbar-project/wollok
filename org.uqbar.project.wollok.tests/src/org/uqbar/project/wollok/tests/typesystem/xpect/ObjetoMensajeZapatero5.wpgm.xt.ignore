@@ -87,7 +87,7 @@ object pepe {
 	method labura(){
 		clientes.forEach{c=>c.compraZapatos()}
 	}	
-	// XPECT methodType at cuantosClientesTenes --> () => Integer
+	// XPECT methodType at cuantosClientesTenes --> () => Number
 	method cuantosClientesTenes(){
 		return clientes.size()
 	}

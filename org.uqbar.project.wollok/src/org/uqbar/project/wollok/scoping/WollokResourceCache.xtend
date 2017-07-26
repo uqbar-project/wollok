@@ -18,7 +18,7 @@ class WollokResourceCache {
 		resourceCache.get(uri)
 	}
 	
-	static synchronized def void addResource(URI uri,  Iterable<IEObjectDescription> objects) {
+	static synchronized def void addResource(URI uri, Iterable<IEObjectDescription> objects) {
 		if (uri.toString.startsWith(CLASSPATH) && !hasResource(uri)) {
 			resourceCache.put(uri, objects)
 		}

@@ -40,7 +40,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { a => 2 + a }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("(Integer) => Integer", "c")
+			assertTypeOfAsString("(Number) => Number", "c")
 		]
 	}
 

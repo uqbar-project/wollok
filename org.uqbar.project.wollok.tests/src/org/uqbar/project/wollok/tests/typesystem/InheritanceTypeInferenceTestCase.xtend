@@ -4,8 +4,8 @@ import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.junit.Ignore
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * 
@@ -54,9 +54,9 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
-			assertInstanceVarType(classTypeFor(INTEGER), 'Golondrina.energia')
-		// assertTypeOf(classTypeFor(INTEGER), "null")
+			assertMethodSignature("() => Number", 'Golondrina.getEnergia')
+			assertInstanceVarType(classTypeFor(NUMBER), 'Golondrina.energia')
+		// assertTypeOf(classTypeFor(NUMBER), "null")
 		]
 	}
 
@@ -75,8 +75,8 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
-			assertInstanceVarType(classTypeFor(INTEGER), 'Golondrina.energiaGolondrina')
+			assertMethodSignature("() => Number", 'Golondrina.getEnergia')
+			assertInstanceVarType(classTypeFor(NUMBER), 'Golondrina.energiaGolondrina')
 		]
 	}
 
@@ -116,9 +116,9 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			} 
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Integer", 'NumberOperation.perform')
-			assertMethodSignature("(Integer) => Integer", 'DoubleOperation.perform')
-			assertMethodSignature("(Integer) => Integer", 'TripleOperation.perform')
+			assertMethodSignature("(Number) => Number", 'NumberOperation.perform')
+			assertMethodSignature("(Number) => Number", 'DoubleOperation.perform')
+			assertMethodSignature("(Number) => Number", 'TripleOperation.perform')
 		]
 	}
 

@@ -8,10 +8,10 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.resource.IEObjectDescription
 import com.google.common.base.Predicate
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -34,8 +34,7 @@ class WollokClassFinder {
 	def WClass getListClass(EObject context) { context.getCachedClass(LIST) }
 	def WClass getSetClass(EObject context) { context.getCachedClass(SET) }
 	def WClass getStringClass(EObject context) { context.getCachedClass(STRING) }
-	def WClass getIntegerClass(EObject context) { context.getCachedClass(INTEGER) }
-	def WClass getDoubleClass(EObject context) { context.getCachedClass(DOUBLE) }
+	def WClass getNumberClass(EObject context) { context.getCachedClass(NUMBER) }
 	def WClass getBooleanClass(EObject context) { context.getCachedClass(BOOLEAN) }
 
 	// ************************************************************************

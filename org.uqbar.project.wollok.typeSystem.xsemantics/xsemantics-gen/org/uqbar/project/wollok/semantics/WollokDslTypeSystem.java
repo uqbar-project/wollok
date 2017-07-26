@@ -28,7 +28,7 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.project.wollok.interpreter.WollokClassFinder;
 import org.uqbar.project.wollok.model.WMethodContainerExtensions;
 import org.uqbar.project.wollok.model.WollokModelExtensions;
-import org.uqbar.project.wollok.sdk.WollokDSK;
+import org.uqbar.project.wollok.sdk.WollokSDK;
 import org.uqbar.project.wollok.typesystem.AnyType;
 import org.uqbar.project.wollok.typesystem.BasicType;
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
@@ -1004,27 +1004,14 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleNumberLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WNumberLiteral lit) throws RuleFailedException {
     WollokType tipe = null; // output parameter
-    boolean _contains = lit.getValue().contains(".");
-    if (_contains) {
-      /* G |- lit ~~ WollokDSK.DOUBLE :> tipe */
-      Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.DOUBLE);
-      checkAssignableTo(result.getFirst(), WollokType.class);
-      tipe = (WollokType) result.getFirst();
-      
-      /* G.add(lit, tipe) */
-      if (!G.add(lit, tipe)) {
-        sneakyThrowRuleFailedException("G.add(lit, tipe)");
-      }
-    } else {
-      /* G |- lit ~~ WollokDSK.INTEGER :> tipe */
-      Result<WollokType> result_1 = getTypeInternal(G, _trace_, lit, WollokDSK.INTEGER);
-      checkAssignableTo(result_1.getFirst(), WollokType.class);
-      tipe = (WollokType) result_1.getFirst();
-      
-      /* G.add(lit, tipe) */
-      if (!G.add(lit, tipe)) {
-        sneakyThrowRuleFailedException("G.add(lit, tipe)");
-      }
+    /* G |- lit ~~ WollokSDK.NUMBER :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokSDK.NUMBER);
+    checkAssignableTo(result.getFirst(), WollokType.class);
+    tipe = (WollokType) result.getFirst();
+    
+    /* G.add(lit, tipe) */
+    if (!G.add(lit, tipe)) {
+      sneakyThrowRuleFailedException("G.add(lit, tipe)");
     }
     return new Result<WollokType>(tipe);
   }
@@ -1050,8 +1037,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleStringLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WStringLiteral lit) throws RuleFailedException {
     WollokType tipe = null; // output parameter
-    /* G |- lit ~~ WollokDSK.STRING :> tipe */
-    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.STRING);
+    /* G |- lit ~~ WollokSDK.STRING :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokSDK.STRING);
     checkAssignableTo(result.getFirst(), WollokType.class);
     tipe = (WollokType) result.getFirst();
     
@@ -1083,8 +1070,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleBooleanLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBooleanLiteral lit) throws RuleFailedException {
     WollokType tipe = null; // output parameter
-    /* G |- lit ~~ WollokDSK.BOOLEAN :> tipe */
-    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.BOOLEAN);
+    /* G |- lit ~~ WollokSDK.BOOLEAN :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokSDK.BOOLEAN);
     checkAssignableTo(result.getFirst(), WollokType.class);
     tipe = (WollokType) result.getFirst();
     
@@ -1116,8 +1103,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleListLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WListLiteral lit) throws RuleFailedException {
     WollokType tipe = null; // output parameter
-    /* G |- lit ~~ WollokDSK.LIST :> tipe */
-    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.LIST);
+    /* G |- lit ~~ WollokSDK.LIST :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokSDK.LIST);
     checkAssignableTo(result.getFirst(), WollokType.class);
     tipe = (WollokType) result.getFirst();
     
@@ -1149,8 +1136,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleSetLiteralType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSetLiteral lit) throws RuleFailedException {
     WollokType tipe = null; // output parameter
-    /* G |- lit ~~ WollokDSK.SET :> tipe */
-    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokDSK.SET);
+    /* G |- lit ~~ WollokSDK.SET :> tipe */
+    Result<WollokType> result = getTypeInternal(G, _trace_, lit, WollokSDK.SET);
     checkAssignableTo(result.getFirst(), WollokType.class);
     tipe = (WollokType) result.getFirst();
     
@@ -1379,17 +1366,17 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleAdditionType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WBinaryOperation op) throws RuleFailedException {
     WollokType returnType = null; // output parameter
-    /* G |- op ~~ WollokDSK.BOOLEAN :> var WollokType booleanType */
+    /* G |- op ~~ WollokSDK.BOOLEAN :> var WollokType booleanType */
     WollokType booleanType = null;
-    Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokDSK.BOOLEAN);
+    Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokSDK.BOOLEAN);
     checkAssignableTo(result.getFirst(), WollokType.class);
     booleanType = (WollokType) result.getFirst();
     
-    /* G |- op ~~ WollokDSK.INTEGER :> var WollokType integerType */
-    WollokType integerType = null;
-    Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokDSK.INTEGER);
+    /* G |- op ~~ WollokSDK.NUMBER :> var WollokType numberType */
+    WollokType numberType = null;
+    Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokSDK.NUMBER);
     checkAssignableTo(result_1.getFirst(), WollokType.class);
-    integerType = (WollokType) result_1.getFirst();
+    numberType = (WollokType) result_1.getFirst();
     
     WollokType t = null;
     boolean _contains = Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList("&&", "||")).contains(op.getFeature());
@@ -1402,8 +1389,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         returnType = booleanType;
         t = WollokType.WAny;
       } else {
-        returnType = integerType;
-        t = integerType;
+        returnType = numberType;
+        t = numberType;
       }
     }
     /* G |- op.leftOperand : var WollokType leftType */
@@ -1931,14 +1918,14 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   protected Result<WollokType> applyRuleUnaryOperationType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WUnaryOperation op) throws RuleFailedException {
     WollokType tipe = null; // output parameter
     if ((Objects.equal(op.getFeature(), "!") || Objects.equal(op.getFeature(), "not"))) {
-      /* G |- op ~~ WollokDSK.BOOLEAN :> tipe */
-      Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokDSK.BOOLEAN);
+      /* G |- op ~~ WollokSDK.BOOLEAN :> tipe */
+      Result<WollokType> result = getTypeInternal(G, _trace_, op, WollokSDK.BOOLEAN);
       checkAssignableTo(result.getFirst(), WollokType.class);
       tipe = (WollokType) result.getFirst();
       
     } else {
-      /* G |- op ~~ WollokDSK.INTEGER :> tipe */
-      Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokDSK.INTEGER);
+      /* G |- op ~~ WollokSDK.NUMBER :> tipe */
+      Result<WollokType> result_1 = getTypeInternal(G, _trace_, op, WollokSDK.NUMBER);
       checkAssignableTo(result_1.getFirst(), WollokType.class);
       tipe = (WollokType) result_1.getFirst();
       

@@ -42,13 +42,13 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static org.uqbar.project.wollok.typesystem.WollokType.*
 import static org.uqbar.project.wollok.typesystem.substitutions.TypeCheck.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Implementation that builds up rules
@@ -166,7 +166,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	// literals
 	def dispatch void doAnalyse(WNumberLiteral it) {
 		// TODO: use classes from SDK. if (value.contains('.')) isOfClass(Double) || isOfClass(Integer)
-		isOfClass(if (value.contains('.')) DOUBLE else INTEGER) 
+		isOfClass(NUMBER) 
 	}
 	def dispatch void doAnalyse(WStringLiteral it) { isOfClass(STRING) }
 	def dispatch void doAnalyse(WBooleanLiteral it) { isOfClass(BOOLEAN) }

@@ -7,21 +7,21 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
 
-		Integer + Integer => Integer
-		Integer - Integer => Integer
-		Integer * Integer => Integer
-		Integer >> "/" === #[Integer] => Integer
-		Integer >> ">" === #[Integer] => Boolean
-		Integer >> "<" === #[Integer] => Boolean
-		Integer >> ">=" === #[Integer] => Boolean
-		Integer >> "<=" === #[Integer] => Boolean
+		Number + Number => Number
+		Number - Number => Number
+		Number * Number => Number
+		Number >> "/" === #[Number] => Number
+		Number >> ">" === #[Number] => Boolean
+		Number >> "<" === #[Number] => Boolean
+		Number >> ">=" === #[Number] => Boolean
+		Number >> "<=" === #[Number] => Boolean
 
-		Double + Number => Double
-		Double * Number => Double
-		Double >> "/" === #[Number] => Double;
-		(Double > Double) => Boolean
+		Number + Number => Number
+		Number * Number => Number
+		Number >> "/" === #[Number] => Number;
+		(Number > Number) => Boolean
 
-		String >> "size" === #[] => Integer
+		String >> "size" === #[] => Number
 		String + String => String;
 		(String > String) => Boolean
 
@@ -32,11 +32,11 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "add" === #[ELEMENT] => Void
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
-		List >> "size" === #[] => Integer
+		List >> "size" === #[] => Number
 
-		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
+		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		
-		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
+		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		 
 		Set + Set => Set;
 		

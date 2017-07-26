@@ -57,7 +57,6 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -65,6 +64,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * It's the real "interpreter".
@@ -239,16 +239,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def instantiateNumber(String value) {
-		if (value.contains('.'))
-			doInstantiateNumber(DOUBLE, new BigDecimal(value))
-		else {
-			try {
-				doInstantiateNumber(INTEGER, Integer.valueOf(value))
-			} catch (NumberFormatException e) {
-				// If value is too long, use a decimal
-				doInstantiateNumber(DOUBLE, new BigDecimal(value))
-			}
-		}
+		doInstantiateNumber(NUMBER, new BigDecimal(value))
 	}
 
 	def doInstantiateNumber(String className, Object value) {

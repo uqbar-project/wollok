@@ -1,9 +1,10 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
@@ -39,8 +40,11 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	
 	def Integer validate(Object value) {
 		try {
-			return value.wollokToJava(Integer) as Integer
-		} catch (Throwable e) {
+			val castedValue = value.wollokToJava(BigDecimal) as BigDecimal
+			if (!castedValue.isInteger) {
+				throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")		
+			}
+		} catch (ClassCastException e) {
 			throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")
 		}
 	}

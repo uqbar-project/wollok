@@ -8,9 +8,9 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static org.uqbar.project.wollok.sdk.WollokSDK.*
 
 /**
  * Default implement
@@ -25,8 +25,6 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		LIST -> "wollok.lang.WList",
 		SET -> "wollok.lang.WSet",
 		DICTIONARY -> "wollok.lang.WDictionary",
-		INTEGER -> "wollok.lang.WInteger",
-		DOUBLE -> "wollok.lang.WDouble",
 		NUMBER -> "wollok.lang.WNumber",
 		STRING -> "wollok.lang.WString",
 		BOOLEAN -> "wollok.lang.WBoolean",
@@ -51,7 +49,6 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	
 	def createNativeObject(String classFQN, WollokObject obj, WollokInterpreter interpreter) {
 		val javaClass = resolveNativeClass(classFQN, obj, interpreter)
-		
 		tryInstantiate(
 			[|javaClass.getConstructor(WollokObject, WollokInterpreter).newInstance(obj, interpreter)],
 			[|javaClass.getConstructor(WollokObject).newInstance(obj)],
