@@ -368,7 +368,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument, EObject target) {
 		// issue #452 - contextual menu based on different targets
-		val targetContext = target.getSelfContext
+		val targetContext = target.declaringContext // target.getSelfContext
 		val hasMethodContainer = targetContext !== null
 		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
@@ -410,9 +410,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
 			Messages.WollokDslQuickFixProvider_create_new_class_description, "class.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
-			val container = (e as WExpression).method.declaringContext
-			context.xtextDocument.replace(container.after, 0,
-				System.lineSeparator + CLASS + blankSpace + newClassName + " {" + System.lineSeparator + "}" + System.lineSeparator)
+			val container = e.container
+			context.xtextDocument.replace(container.before, 0,
+				CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)
 		]
 
 	}
@@ -579,6 +579,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		/** Extending to related files of project
 		 * @See https://kthoms.wordpress.com/2011/07/12/xtend-generating-from-multiple-input-models/
 		 */
+		// TODO: import static extension WEclipseUtils
+		// eObject.getFile.refreshProject but also do a full refresh of this rename in whole project
 	}
 
 	/**
