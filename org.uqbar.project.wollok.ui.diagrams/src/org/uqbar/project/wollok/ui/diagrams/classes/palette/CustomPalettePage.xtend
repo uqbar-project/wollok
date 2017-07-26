@@ -18,12 +18,12 @@ class CustomPalettePage extends PaletteViewerPage {
 	
 	override createControl(Composite parent) {
 		super.createControl(parent)
-		if (splitter != null)
+		if (splitter !== null)
 			splitter.externalViewer = viewer
 	}
 
 	override dispose() {
-		if (splitter != null)
+		if (splitter !== null)
 			splitter.externalViewer = null
 		super.dispose
 	}

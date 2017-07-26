@@ -1,10 +1,17 @@
 package org.uqbar.project.wollok.model
 
+import java.util.ArrayList
 import java.util.Arrays
 import java.util.Collections
+import java.util.HashMap
 import java.util.List
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IResource
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -41,6 +48,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -288,7 +296,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
+		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && c.parent.isValidCall(call, finder))
 	}
 
 	// ************************************************************************
@@ -333,13 +341,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
 
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
-		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty)) {
+		if (arguments.size == 0 && (clazz.constructors === null || clazz.constructors.empty)) {
 			// default constructor
 			clazz.findConstructorInSuper(arguments)
 		} else {
 			// FED - previously it was clazz.constructors, now if you don't define constructors class inherits from its superclass
 			val c = clazz.allConstructors.findFirst[ matches(arguments.size) ]
-			if (c == null)
+			if (c === null)
 				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
 			c
 		}
@@ -459,5 +467,50 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch Boolean isVariable(EObject o) { false }
 	def static dispatch Boolean isVariable(WVariableDeclaration member) { true }
+	
+	def static allMethodContainers(IProject project) {
+		project
+			.allWollokFiles
+			.map [ it.getMethodContainers ]
+			.flatten
+			.toList
+	}
+
+	def static mapMethodContainers(IProject project) {
+		val result = new HashMap<URI, List<WMethodContainer>>
+		project.allWollokFiles.forEach [ file | result.put(file, newArrayList)]
+		project
+			.allMethodContainers
+			.forEach [ mc |
+				val uri = mc.file.URI
+				val methodContainers = result.get(uri)
+				methodContainers.add(mc)
+				result.put(uri, methodContainers)
+			]
+		result
+	}
+	
+	def static getMethodContainers(URI uri) {
+		val resSet = new XtextResourceSet()
+	    val file = resSet.getResource(uri, true)
+		val result = new ArrayList<WMethodContainer>
+		searchMethodContainers(file.contents, result)
+		result	
+	}
+	
+	def static void searchMethodContainers(EList<EObject> objects, List<WMethodContainer> containers) {
+		objects.forEach [ object |
+			if (object.isValidContainerForStaticDiagram) {
+				containers.add(object as WMethodContainer)
+			} else {
+				searchMethodContainers(object.eContents, containers)
+			}
+		]
+	}
+	
+	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
+	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
+	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
+		
 }
 

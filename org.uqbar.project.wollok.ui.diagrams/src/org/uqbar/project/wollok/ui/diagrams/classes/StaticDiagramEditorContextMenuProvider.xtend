@@ -8,6 +8,7 @@ import org.eclipse.jface.action.IMenuManager
 import org.eclipse.ui.actions.ActionFactory
 
 import static org.eclipse.gef.ui.actions.GEFActionConstants.*
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenPartsElementAction
 
 /**
  * 
@@ -27,7 +28,8 @@ class StaticDiagramEditorContextMenuProvider extends ContextMenuProvider {
 
 	override buildContextMenu(IMenuManager it) {
 		addStandardActionGroups(it)
-		addToGroup(GROUP_EDIT, ActionFactory.DELETE.id)		
+		addToGroup(GROUP_EDIT, ActionFactory.DELETE.id)
+		addToGroup(GROUP_EDIT, ShowHiddenPartsElementAction.SHOW_HIDDEN_PART_ELEMENT_ID)
 	}
 
 	def getAction(String actionId) {

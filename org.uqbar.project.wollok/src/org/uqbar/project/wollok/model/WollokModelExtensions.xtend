@@ -82,7 +82,10 @@ class WollokModelExtensions {
 	}
 	
 	def static implicitPackage(Resource it){
-		if(URI.toString.startsWith("classpath:/"))
+		if (it === null || it.URI === null || it.URI.toString === null) {
+			return null
+		}
+		if (URI.toString.startsWith("classpath:/"))
 			URI.trimFileExtension.segments.join(".")
 		else
 			fullPackageName(it)
@@ -102,8 +105,24 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 	def static dispatch fqn(WSuite it) { nameWithPackage }
 
-	def static getMethodContainer(EObject it) {	method.declaringContext	}
+	/** 
+	 * This method is intended to univocally identify every WMethodContainer
+	 * (original requirement for static diagram), so it can be decoupled
+	 * from <i>fqn</i>.
+	 */
+	def static dispatch identifier(EObject it) { name }
+	def static dispatch identifier(WMethodContainer it) { 
+		try {
+			return fqn
+		} catch (NullPointerException e) {
+			// Yeah, shameful! But I must find a workaround while user is writing in Static Diagram
+			return name
+		}
+	}
 	
+	def static getMethodContainer(EObject it){
+		method.declaringContext
+	}
 	def static getPackageName(WMethodContainer it) { implicitPackage + if (package !== null) "." + package.name  else ""}
 	def static getNameWithPackage(WMethodContainer it) {
 		getPackageName + "." + name
@@ -182,9 +201,7 @@ class WollokModelExtensions {
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
-	def static declaringContext(WMethodDeclaration m) {
-		m.eContainer as WMethodContainer
-	} //
+	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }

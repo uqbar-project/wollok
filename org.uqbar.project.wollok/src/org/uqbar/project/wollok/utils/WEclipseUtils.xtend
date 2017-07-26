@@ -191,4 +191,20 @@ class WEclipseUtils {
 		severity == IMarker.SEVERITY_ERROR
 	}
 	
+	def static allWollokFiles(IProject project) {
+		project
+			.allMembers
+			.filter [ isWollokExtension ]
+			.map [ convertToEclipseURI ]
+			.toList
+	}
+	
+	def static convertToEclipseURI(IResource res) {
+		URI.createFileURI(res.locationURI.rawPath.toString)
+	}
+	
+	def static isWollokExtension(IResource file) {
+		#[WollokConstants.PROGRAM_EXTENSION, WollokConstants.TEST_EXTENSION, WollokConstants.CLASS_OBJECTS_EXTENSION].contains(file.fileExtension)
+	}
+	
 }

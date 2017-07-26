@@ -282,3 +282,38 @@ class ShowHiddenParts extends Action {
 	}
 	
 }
+
+/**
+ * Adds an outsider class of this project into static diagram
+ */
+class AddOutsiderClass extends Action {
+
+	StaticDiagramConfiguration configuration
+
+	new(String title, StaticDiagramConfiguration configuration) {
+		super(title)
+		this.configuration = configuration
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.ui/icons/full/etool16/newclass_wiz.png"))
+	}
+
+	override run() {
+		new AddOutsiderClassView(configuration).open
+	}
+	
+}
+
+class DeleteAllOutsiderClasses extends Action {
+
+	StaticDiagramConfiguration configuration
+
+	new(String title, StaticDiagramConfiguration configuration) {
+		super(title)
+		this.configuration = configuration
+		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.jdt.ui/icons/full/obj16/classfo_obj.png"))
+	}
+
+	override run() {
+		configuration.initOutsiderElements
+	}
+	
+}

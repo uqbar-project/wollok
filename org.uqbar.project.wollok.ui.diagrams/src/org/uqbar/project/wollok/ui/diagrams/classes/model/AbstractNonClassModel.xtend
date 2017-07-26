@@ -24,7 +24,7 @@ class AbstractNonClassModel extends AbstractModel {
 	}
 	
 	override toString() {
-		this.class.name + "<" + this.name + ">"		
+		this.class.name + "<" + this.label + ">"		
 	}
 	
 }
