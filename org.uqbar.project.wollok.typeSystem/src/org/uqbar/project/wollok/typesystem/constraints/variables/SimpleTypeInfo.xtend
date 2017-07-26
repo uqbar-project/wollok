@@ -12,6 +12,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
@@ -32,7 +33,7 @@ class SimpleTypeInfo extends TypeInfo {
 		minTypes.entrySet
 			//.filter[value != Error]
 			.map[key]
-			.reduce[t1, t2|t1.refine(t2)]
+			.commonSupertype
 	}
 
 	// ************************************************************************
