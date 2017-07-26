@@ -102,9 +102,8 @@ class WollokModelExtensions {
 	def static dispatch fqn(WMixin it) { nameWithPackage }
 	def static dispatch fqn(WSuite it) { nameWithPackage }
 
-	def static getMethodContainer(EObject it){
-		method.declaringContext
-	}
+	def static getMethodContainer(EObject it) {	method.declaringContext	}
+	
 	def static getPackageName(WMethodContainer it) { implicitPackage + if (package !== null) "." + package.name  else ""}
 	def static getNameWithPackage(WMethodContainer it) {
 		getPackageName + "." + name
@@ -183,7 +182,9 @@ class WollokModelExtensions {
 	def static closure(WParameter p) { p.eContainer as WClosure }
 
 	// ojo podría ser un !ObjectLiteral
-	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
+	def static declaringContext(WMethodDeclaration m) {
+		m.eContainer as WMethodContainer
+	} //
 
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }

@@ -50,6 +50,10 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
  */
 class WMethodContainerExtensions extends WollokModelExtensions {
 
+	def static EObject getContainer(EObject it) { 
+		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
+	}
+
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
 	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
@@ -397,6 +401,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		ele.getSelfContext !== null
 	}
 	
+	/**
+	 * We should use declaringContext instead
+	 */ 
+	@Deprecated 
 	def static getSelfContext(EObject ele) {
 		for (var e = ele; e !== null; e = e.eContainer)
 			if (e.isSelfContext) return e
@@ -404,6 +412,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
+	def dispatch static boolean canCreateLocalVariable(WTest it) { true }
 	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
 	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
 	def dispatch static boolean canCreateLocalVariable(EObject ele) {
