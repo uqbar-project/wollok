@@ -5,8 +5,8 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 
 /**
- * All tests for construtors functionality in terms of runtime execution.
- * For static validations see the XPECT test.
+ * All tests for constructors functionality in terms of runtime execution.
+ * For static validations see the X_PECT test.
  * This tests
  * - having multiple constructors
  * - constructor delegation: to this or super
@@ -166,7 +166,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			'''.interpretPropagatingErrors
 	}
 	@Test
-	def void defaultConstructorDelegationToSuper() {
+	def void emptyConstructorDelegationToSuper() {
 		'''
 			class SuperClass {
 				var superX
@@ -177,6 +177,29 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			class SubClass inherits SuperClass { 
 				var anotherVariable
 				constructor(n) = super() {
+					anotherVariable = n
+				}
+				method getAnotherVariable() = anotherVariable
+			}
+			program t {
+				const o = new SubClass(20)
+				assert.equals(20, o.getAnotherVariable())
+			}
+			'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void defaultConstructorDelegationToSuper() {
+		'''
+			class SuperClass {
+				var superX
+				
+				method getSuperX() { return superX }
+				method setSuperX(value) { superX = value }
+			}
+			class SubClass inherits SuperClass { 
+				var anotherVariable
+				constructor(n) {
 					anotherVariable = n
 				}
 				method getAnotherVariable() = anotherVariable
