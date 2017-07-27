@@ -302,7 +302,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def newInstance(String classFQN, WollokObject... arguments) {
-		newInstance(classFinder.searchClass(classFQN, interpreter.evaluating), arguments)
+		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
 	}
 
 	def newInstance(WClass classRef, WollokObject... arguments) {
