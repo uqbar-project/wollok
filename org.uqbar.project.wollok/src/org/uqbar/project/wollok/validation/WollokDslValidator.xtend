@@ -14,7 +14,6 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -305,19 +304,34 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def delegatedConstructorExists(WDelegatingConstructorCall it) {
-		val validConstructors = it.constructorsFor(it.wollokClass).map [ constr | constr.constructorName(it) ].join(",")
-		try {
+	def delegatedDefaultConstructorExists(WDelegatingConstructorCall it) {
+		if (it.arguments.length == 0){
 			val resolved = it.wollokClass.resolveConstructorReference(it)
-			if (resolved === null && it.arguments.length != 0) {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix), it.eContainer,
-					WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+			if (resolved === null) {
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR,
+					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
-		} catch (WollokRuntimeException e) {
-			// mmm... terrible
-			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
-				CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def delegatedConstructorExists(WDelegatingConstructorCall it) {
+		val validConstructors = it.constructorsFor(it.wollokClass).map[constr|constr.constructorName(it)].join(",")
+		if (it.arguments.length != 0){
+			val resolved = it.wollokClass.resolveConstructorReference(it)
+			if (resolved === null) {
+				if (validConstructors.length != 0) {
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
+					it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+				} else {
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
+						it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+				}
+			}	
+		}	
 	}
 
 	def static dispatch constructorPrefix(WSuperDelegatingConstructorCall c) { "super " }

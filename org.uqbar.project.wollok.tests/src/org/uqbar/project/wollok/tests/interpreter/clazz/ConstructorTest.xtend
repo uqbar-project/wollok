@@ -97,7 +97,6 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const p1 = new Point()
 			}
 			'''].interpretPropagatingErrorsWithoutStaticChecks
-			fail("Should have failed !!")
 		}
 		catch (WollokInterpreterException e) {
 			assertEquals("No constructor in class Point for parameters []", e.cause.cause.cause.message)
@@ -171,7 +170,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''
 			class SuperClass {
 				var superX
-				
+				constructor(){}
 				method getSuperX() { return superX }
 				method setSuperX(value) { superX = value }
 			}

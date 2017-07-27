@@ -15,7 +15,6 @@ import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 import org.uqbar.project.wollok.interpreter.natives.DefaultNativeObjectFactory
 import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -64,7 +63,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override call(String message, WollokObject... parameters) {
 //		println("calling " + message + " " + parameters.map[toString].join(','))
 		val method = behavior.lookupMethod(message, parameters, false)
-		if (method == null)
+		if (method === null)
 			throwMessageNotUnderstood(message, parameters)
 		method.call(parameters)
 	}
@@ -101,7 +100,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		val constructorEvalContext = constructor.createEvaluationContext(objects)
 		// delegation
 		val other = constructor.delegatingConstructorCall
-		if (other != null) {
+		if (other !== null) {
 			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
 			delegatedConstructor.invokeOnContext(other, other.arguments, constructorEvalContext) // no 'this' as parent context !
 		}
@@ -112,7 +111,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		}
 		
 		// actual call
-		if (constructor.expression != null) {
+		if (constructor.expression !== null) {
 			val context = then(constructorEvalContext, this)
 			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
 		}
@@ -156,7 +155,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	def allMethods() {
-		if (behavior.parent != null)
+		if (behavior.parent !== null)
 			behavior.methods + behavior.parent.methods
 		else
 			behavior.methods
@@ -228,13 +227,13 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		val subhierarchy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
 		
 		val method = subhierarchy.fold(null) [method, t |
-			if (method != null)
+			if (method !== null)
 				method
 			else 
 				t.methods.findFirst[matches(message, parameters)]
 		]
 
-		if (method == null)
+		if (method === null)
 			// should be an specific error: no super method to call or something
 			throw throwMessageNotUnderstood(this, message, parameters)
 		method.call(parameters)
