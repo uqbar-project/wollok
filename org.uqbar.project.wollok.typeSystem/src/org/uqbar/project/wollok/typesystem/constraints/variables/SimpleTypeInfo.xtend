@@ -3,16 +3,15 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.Map
 import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
@@ -33,7 +32,7 @@ class SimpleTypeInfo extends TypeInfo {
 		minTypes.entrySet
 			//.filter[value != Error]
 			.map[key]
-			.commonSupertype
+			.commonSupertype(messages)
 	}
 
 	// ************************************************************************
@@ -94,7 +93,7 @@ class SimpleTypeInfo extends TypeInfo {
 	override ConcreteTypeState addMinType(WollokType type) {
 		if (minTypes.containsKey(type)) {
 			Ready
-		} else if (canAddMinType(type)) {
+		} else if (!canAddMinType(type)) {
 			throw new RejectedMinTypeException(type)
 		} else {
 			minTypes.put(type, Pending)
@@ -103,8 +102,8 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	def canAddMinType(WollokType type) {
-		messages.forEach[msg| (type as AbstractContainerWollokType).respondsTo(msg)]
-		(sealed && !minTypes.keySet.exists[isSuperTypeOf(type)])
+		if (sealed) minTypes.keySet.exists[isSuperTypeOf(type)]
+		else type.respondsToAll(messages)
 	}
 	
 	// ************************************************************************

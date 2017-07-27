@@ -284,7 +284,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.allMethods.exists[isValidMessage(call)] || (c.parent != null && c.parent.isValidCall(call, finder))
+		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && c.parent.isValidCall(call, finder))
 	}
 
 	// ************************************************************************
@@ -329,13 +329,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
 
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object[] arguments) {
-		if (arguments.size == 0 && (clazz.constructors == null || clazz.constructors.empty)) {
+		if (arguments.size == 0 && (clazz.constructors === null || clazz.constructors.empty)) {
 			// default constructor
 			clazz.findConstructorInSuper(arguments)
 		} else {
 			// FED - previously it was clazz.constructors, now if you don't define constructors class inherits from its superclass
 			val c = clazz.allConstructors.findFirst[ matches(arguments.size) ]
-			if (c == null)
+			if (c === null)
 				throw new WollokRuntimeException('''No constructor in class «clazz.name» for parameters «Arrays.toString(arguments)»''');
 			c
 		}

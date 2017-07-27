@@ -32,7 +32,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -168,7 +167,7 @@ class ConstraintGenerator {
 
 		then.generateVariables
 
-		if (getElse != null) {
+		if (getElse !== null) {
 			getElse.generateVariables
 
 			// If there is a else branch, if can be an expression 
@@ -184,7 +183,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WVariableDeclaration it) {
 		variable.newTypeVariable()
 
-		if (right != null) {
+		if (right !== null) {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
