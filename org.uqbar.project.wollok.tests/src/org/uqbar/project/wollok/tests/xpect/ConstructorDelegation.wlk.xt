@@ -50,7 +50,7 @@ class SuperClass {
 }
 class SubClass inherits SuperClass { 
 	var anotherVariable
-	// XPECT errors --> "Invalid super constructor call. It does not exist. No valid constructors were defined." at "super()"
+	// XPECT errors --> "Invalid super constructor call. Default constructor is not overriden." at "super()"
 	constructor(n) = super() {
 		anotherVariable = n
 	}
