@@ -11,6 +11,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * Just a way to start splitting tests into several classes
  * 
  * @author jfernandes
+ * @author npasserini
  */
 class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 
@@ -35,7 +36,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = a + b
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), 'number')
+			assertTypeOf(classTypeFor(NUMBER), 'number') // TODO Should be Integer?
 		]
 	}
 
@@ -50,7 +51,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.come")
+			assertMethodSignature("(Number) => Void", "Golondrina.come")
 		]
 	}
 
@@ -119,7 +120,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.multiplicarEnergia")
+			assertMethodSignature("(Number) => Void", "Golondrina.multiplicarEnergia") // TODO Should be Integer?
 		]
 	}
 
@@ -156,7 +157,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			noIssues
 			assertMethodSignature("() => Void", 'Golondrina.volar')
-			assertMethodSignature("() => Integer", 'Golondrina.gastoPorVolar')
+			assertMethodSignature("() => Number", 'Golondrina.gastoPorVolar') // TODO Should be Integer?
 		]
 	}
 
@@ -174,8 +175,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", 'Golondrina.comer')
-			assertMethodSignature("(Integer) => Void", 'GolondrinaIneficiente.comer')
+			assertMethodSignature("(Number) => Void", 'Golondrina.comer')
+			assertMethodSignature("(Number) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
 

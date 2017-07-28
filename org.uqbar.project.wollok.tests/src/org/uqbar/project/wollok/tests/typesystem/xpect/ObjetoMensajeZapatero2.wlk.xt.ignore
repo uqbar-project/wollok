@@ -21,7 +21,8 @@ object fiona {
 }
 
 object salvador {
-	// XPECT type at dinero --> Integer
+	// TODO Should be Integer?
+	// XPECT type at dinero --> Number
 	var dinero  = 1200
 	
 	method compraZapatos() {
@@ -59,7 +60,6 @@ object pepe {
 	method tuClienteEs(unCliente) { 		
 		cliente = unCliente
 	}
-	
 }
 
 

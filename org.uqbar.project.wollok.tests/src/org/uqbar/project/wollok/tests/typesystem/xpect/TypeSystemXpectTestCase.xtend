@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.typesystem.xpect
 
 import com.google.inject.Inject
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
@@ -31,6 +32,7 @@ import org.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
 
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import org.apache.log4j.Level
 
 /**
  * Test class for extending xpect to have tests on static proposals (content assist)
@@ -42,7 +44,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
 @XpectImport(WollokTypeSysteTestModule)
 class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 	@Inject TypeSystem typeSystem
-
+	
 	@Xpect(liveExecution=LiveExecutionType.FAST)
 	@ParameterParser(syntax="'at' arg1=OFFSET")
 	@ConsumedIssues(#[Severity.INFO, Severity.ERROR, Severity.WARNING])
@@ -86,8 +88,9 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 class TypeSystemXpectRunner extends XpectRunner {
 	new(Class<?> testClass) throws InitializationError {
 		super(testClass)
+		Logger.getLogger(TypeSystem.package.name).level = Level.DEBUG
 	}
-
+	
 	override runChild(Runner child, RunNotifier notifier) {
 		WollokResourceCache.clearCache
 		super.runChild(child, notifier)

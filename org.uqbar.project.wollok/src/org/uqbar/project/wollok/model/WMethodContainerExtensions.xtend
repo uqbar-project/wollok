@@ -1,9 +1,17 @@
 package org.uqbar.project.wollok.model
 
+import java.util.ArrayList
+import java.util.Arrays
 import java.util.Collections
+import java.util.HashMap
 import java.util.List
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IResource
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -40,6 +48,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -48,6 +57,10 @@ import static extension org.eclipse.xtext.EcoreUtil2.*
  * @author npasserini
  */
 class WMethodContainerExtensions extends WollokModelExtensions {
+
+	def static EObject getContainer(EObject it) { 
+		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
+	}
 
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
@@ -359,7 +372,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch resolveConstructorReference(WMethodContainer behave, WSelfDelegatingConstructorCall call) { behave.resolveConstructor(call.arguments) }
 	def static dispatch resolveConstructorReference(WMethodContainer behave, WSuperDelegatingConstructorCall call) { findConstructorInSuper(behave, call.arguments) }
 
-	def static findConstructorInSuper(WMethodContainer behave,Object[] args) {
+	def static findConstructorInSuper(WMethodContainer behave, Object[] args) {
 		(behave as WClass).parent?.resolveConstructor(args)
 	}
 
@@ -396,6 +409,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		ele.getSelfContext !== null
 	}
 	
+	/**
+	 * We should use declaringContext instead
+	 */ 
+	@Deprecated 
 	def static getSelfContext(EObject ele) {
 		for (var e = ele; e !== null; e = e.eContainer)
 			if (e.isSelfContext) return e
@@ -403,6 +420,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }
+	def dispatch static boolean canCreateLocalVariable(WTest it) { true }
 	def dispatch static boolean canCreateLocalVariable(WMethodContainer it) { true }
 	def dispatch static boolean canCreateLocalVariable(WProgram it) { true }
 	def dispatch static boolean canCreateLocalVariable(EObject ele) {
@@ -449,5 +467,50 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static dispatch Boolean isVariable(EObject o) { false }
 	def static dispatch Boolean isVariable(WVariableDeclaration member) { true }
+	
+	def static allMethodContainers(IProject project) {
+		project
+			.allWollokFiles
+			.map [ it.getMethodContainers ]
+			.flatten
+			.toList
+	}
+
+	def static mapMethodContainers(IProject project) {
+		val result = new HashMap<URI, List<WMethodContainer>>
+		project.allWollokFiles.forEach [ file | result.put(file, newArrayList)]
+		project
+			.allMethodContainers
+			.forEach [ mc |
+				val uri = mc.file.URI
+				val methodContainers = result.get(uri)
+				methodContainers.add(mc)
+				result.put(uri, methodContainers)
+			]
+		result
+	}
+	
+	def static getMethodContainers(URI uri) {
+		val resSet = new XtextResourceSet()
+	    val file = resSet.getResource(uri, true)
+		val result = new ArrayList<WMethodContainer>
+		searchMethodContainers(file.contents, result)
+		result	
+	}
+	
+	def static void searchMethodContainers(EList<EObject> objects, List<WMethodContainer> containers) {
+		objects.forEach [ object |
+			if (object.isValidContainerForStaticDiagram) {
+				containers.add(object as WMethodContainer)
+			} else {
+				searchMethodContainers(object.eContents, containers)
+			}
+		]
+	}
+	
+	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
+	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
+	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
+		
 }
 

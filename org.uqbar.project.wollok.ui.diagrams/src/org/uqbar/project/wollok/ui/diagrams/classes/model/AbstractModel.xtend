@@ -24,7 +24,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 abstract class AbstractModel extends Shape {
 
-	protected static List<WMethodContainer> allComponents = newArrayList
+	@Accessors protected static List<WMethodContainer> allComponents = newArrayList
 	protected static List<NamedObjectModel> objects
 	protected static List<MixinModel> mixins
 	
@@ -65,6 +65,13 @@ abstract class AbstractModel extends Shape {
 		objects = newArrayList
 	}
 	
+	def static List<WMethodContainer> allElements() {
+		val List<WMethodContainer> allElements = allComponents
+		allElements.addAll(mixins.map [ component ])
+		allElements.addAll(objects.map [ component ])
+		allElements
+	}
+	
 	/**
 	 * ******************************************************************************* 
 	 *    WIDTH CALCULATIONS
@@ -74,9 +81,9 @@ abstract class AbstractModel extends Shape {
 	
 	def int getInitialWidth() {
 		if (component.parent === null) return 0
-		val parentClassName = component.parent.name ?: ""
-		if (parentClassName.equals(WollokConstants.ROOT_CLASS)) return 0
-		initialWidthForElement.get(parentClassName) ?: 0
+		val parentClass = component.parent.identifier ?: ""
+		if (parentClass.equals(WollokConstants.ROOT_CLASS)) return 0
+		initialWidthForElement.get(parentClass) ?: 0
 	}
 	
 	def int shapeWidth() {
@@ -141,7 +148,7 @@ abstract class AbstractModel extends Shape {
 	}
 		
 	def String getLabel() {
-		this.name
+		component.identifier
 	}
 	
 	/**

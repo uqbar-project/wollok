@@ -3,7 +3,9 @@ package org.uqbar.project.wollok.scoping
 import java.util.HashMap
 import java.util.Map
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.emf.ecore.resource.Resource
 
 class WollokResourceCache {
 	
@@ -19,9 +21,22 @@ class WollokResourceCache {
 	}
 	
 	static synchronized def void addResource(URI uri,  Iterable<IEObjectDescription> objects) {
-		if (uri.toString.startsWith(CLASSPATH) && !hasResource(uri)) {
+		if (uri.isClassPathResource && !hasResource(uri)) {
 			resourceCache.put(uri, objects)
 		}
+	}
+	
+	// TODO I do not think this logic belongs here.
+	static def boolean isClassPathResource(Resource resource) {
+		resource.URI.isClassPathResource
+	}
+
+	static def boolean isClassPathResource(URI uri) {
+		uri.toString.startsWith(CLASSPATH)
+	}
+	
+	static def isCoreObject(EObject object) {
+		object.eResource.URI.isClassPathResource
 	}
 	
 	static def clearCache() {

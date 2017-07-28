@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.editPolicies.ShowHiddenPartsElementEditPolicy
 
 /**
  * Abstract base class for edit parts for (named) objects and classes
@@ -76,6 +77,7 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 			override protected getCreateCommand(CreateRequest arg0) {}
 		})
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new HideComponentEditPolicy)
+		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new ShowHiddenPartsElementEditPolicy)
 		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateAssociationEditPolicy)
 	}
 	

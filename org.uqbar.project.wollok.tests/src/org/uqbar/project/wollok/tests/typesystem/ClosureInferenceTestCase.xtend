@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
-import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 /**
  * Test cases for type inference of closures.
@@ -15,7 +14,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			SubstitutionBasedTypeSystem,
+//			SubstitutionBasedTypeSystem,
 //			,XSemanticsTypeSystem
 			ConstraintBasedTypeSystem
 //			,BoundsBasedTypeSystem    
@@ -40,7 +39,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { a => 2 + a }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("(Integer) => Integer", "c")
+			assertTypeOfAsString("(Number) => Number", "c")
 		]
 	}
 

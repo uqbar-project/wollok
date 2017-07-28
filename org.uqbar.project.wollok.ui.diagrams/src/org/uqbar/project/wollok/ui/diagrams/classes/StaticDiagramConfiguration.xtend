@@ -4,6 +4,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.InvalidClassException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -13,6 +14,7 @@ import java.util.Observable
 import org.eclipse.core.resources.IResource
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
+import org.eclipse.emf.common.util.URI
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtend.lib.annotations.Data
@@ -22,7 +24,9 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * @author dodain
@@ -47,6 +51,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	List<Relation> relations = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
+	List<OutsiderElement> outsiderElements = newArrayList
+	transient IResource resource
 	
 	new() {
 		init
@@ -62,12 +68,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		internalInitHiddenComponents
 		internalInitHiddenParts
 		internalInitRelationships
-	}
-	
-	def void initLocationsAndSizes() {
-		this.internalInitLocationsAndSizes
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
+		internalInitOutsiderElements
 	}
 	
 	def void internalInitLocationsAndSizes() {
@@ -75,16 +76,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		sizes = newHashMap
 	}
 
-	def void showAllComponents() {
-		this.internalInitHiddenComponents
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
-	def showAllParts() {
-		this.internalInitHiddenParts
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
+	def void internalInitOutsiderElements() {
+		outsiderElements = newArrayList
 	}
 	
 	def void internalInitHiddenComponents() {
@@ -95,12 +88,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		hiddenParts = newHashMap
 	}
 
-	def void initRelationships() {
-		this.internalInitRelationships
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}	
-	
 	def void internalInitRelationships() {
 		relations = newArrayList
 	}
@@ -111,6 +98,44 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *  CONFIGURATION CHANGES 
 	 *******************************************************
 	 */	
+
+	def void initRelationships() {
+		this.internalInitRelationships
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}	
+	
+	def void initLocationsAndSizes() {
+		this.internalInitLocationsAndSizes
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def void showAllComponents() {
+		this.internalInitHiddenComponents
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def showAllPartsFrom(AbstractModel model) {
+		hiddenParts.remove(model.label)
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	
+	def showAllParts() {
+		this.internalInitHiddenParts
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	def void initOutsiderElements() {
+		this.internalInitOutsiderElements
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
 	def void saveLocation(Shape shape) {
 		if (!rememberLocationAndSizeShapes) return;
 		locations.put(shape.toString, new Point => [
@@ -130,17 +155,32 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	}
 	
 	def hideComponent(AbstractModel model) {
-		hiddenComponents.add(model.label)
+		val outsiderElement = model.component.outsiderElement 
+		if (outsiderElement !== null) {
+			outsiderElements.remove(outsiderElement)
+		} else {
+			hiddenComponents.add(model.label)
+		}
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 	
+	def getOutsiderElement(WMethodContainer mc) {
+		outsiderElements.findFirst [ outsiderElement | outsiderElement.pointsTo(mc) ]
+	}
+	
 	def hidePart(AbstractModel model, String partName, boolean isVariable) {
-		val _hiddenParts = hiddenParts.get(model.name) ?: newArrayList
+		val _hiddenParts = hiddenParts.get(model.label) ?: newArrayList
 		_hiddenParts.add(new HiddenPart(isVariable, partName))
-		hiddenParts.put(model.name, _hiddenParts)
+		hiddenParts.put(model.label, _hiddenParts)
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+		
+	def hasHiddenParts(AbstractModel model) {
+		val _hiddenParts = hiddenParts.get(model.label) ?: newArrayList
+		!_hiddenParts.isEmpty
 	}
 	
 	def addAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
@@ -152,7 +192,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def removeAssociation(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = this.findAssociationBetween(modelSource, modelTarget)
 		if (element === null) {
-			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.name, modelTarget.name))
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Association_Not_Found, modelSource.label, modelTarget.label))
 		}
 		relations.remove(element)
 		this.setChanged
@@ -161,7 +201,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def removeDependency(AbstractModel modelSource, AbstractModel modelTarget) {
 		val element = relations.findFirst [ it.source.equals(modelSource.label) && it.target.equals(modelTarget.label) && it.relationType == RelationType.DEPENDENCY ]
 		if (element === null) {
-			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Dependency_Not_Found, modelSource.name, modelTarget.name))
+			throw new RuntimeException(NLS.bind(Messages.StaticDiagram_Dependency_Not_Found, modelSource.label, modelTarget.label))
 		}
 		relations.remove(element)
 		this.setChanged
@@ -184,13 +224,20 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
-	
+
+	def addOutsiderElement(WMethodContainer element) {
+		outsiderElements.add(new OutsiderElement(element))
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)		
+	}
+
 	/** 
 	 * Fired each time you click on a xtext document
 	 * If resource changed, configuration should clean up its state
 	 */
-	def setResource(IResource resource) {
+	def void setResource(IResource resource) {
 		val previousFileName = this.originalFileName
+		this.resource = resource
 		if (resource.project.locationURI !== null) {
 			this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
 			this.originalFileName = resource.location.lastSegment
@@ -211,6 +258,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			this.init
 			this.loadConfiguration
 		}
+		
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
@@ -249,6 +297,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.hiddenComponents = configuration.hiddenComponents
 		this.relations = configuration.relations
 		this.hiddenParts = configuration.hiddenParts
+		this.outsiderElements = configuration.outsiderElements
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
@@ -270,7 +319,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 
 	def getVariablesFor(WMethodContainer container) {
 		if (!showVariables) return #[]
-		val hiddenVariables = container.name.hiddenVariables.map [ name ]
+		val hiddenVariables = container.identifier.hiddenVariables.map [ name ]
 		container.variableDeclarations.filter [ variableDecl |
 			variableDecl !== null && variableDecl.variable !== null && !hiddenVariables.contains(variableDecl.variable.name)
 		].toList
@@ -279,7 +328,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def getMethodsFor(WMethodContainer container) {
 		val variableNames = container.variableNames
 			// filtering null just in case it is not defined yet, user is writing
-		val hiddenMethods = container.name.hiddenMethods.map [ name ]
+		val hiddenMethods = container.identifier.hiddenMethods.map [ name ]
 		container.methods.filter [ method |
 			!hiddenMethods.contains(method.name) && 
 			!variableNames.contains(method.name)  // filtering accessors
@@ -301,7 +350,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 				this.copyFrom(newConfiguration)
 			} catch (FileNotFoundException e) {
 				// nothing to worry, it will be saved afterwards
-			}
+			} catch (InvalidClassException e) {
+				// nothing to worry, configuration preferences for static diagram
+				// serialized in a file changed, but it will be saved afterwards
+			} 
 		}
 	}
 	
@@ -362,6 +414,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			append("    sizes = ")
 			append(this.sizes)
 			append("\n")
+			append("    outsiderElements = ")
+			append(this.outsiderElements)
+			append("\n")
 			append("}")	
 		]
 		result.toString
@@ -387,3 +442,29 @@ class HiddenPart implements Serializable {
 	boolean isVariable
 	String name
 }
+
+@Accessors
+class OutsiderElement implements Serializable {
+	String internalURI
+	String identifier
+	
+	new() {	}
+	
+	new(WMethodContainer mc) {
+		internalURI = mc.eResource.URI.toString
+		identifier = mc.identifier
+	}
+	
+	def pointsTo(WMethodContainer mc) {
+		mc.eResource.URI.toString.equals(internalURI) && mc.identifier.equals(identifier)
+	}
+	
+	def getRealURI() {
+		URI.createURI(this.internalURI)
+	}
+	
+	override toString() {
+		internalURI + " => " + identifier		
+	}
+	
+ }
