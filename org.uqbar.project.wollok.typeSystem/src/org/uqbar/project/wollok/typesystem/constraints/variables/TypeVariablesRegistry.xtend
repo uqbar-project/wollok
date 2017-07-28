@@ -16,7 +16,8 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
@@ -130,14 +131,16 @@ class TypeVariablesRegistry {
 	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
 	 */
 	def TypeVariable tvar(EObject obj) {
-		typeVariables.get(obj) => 
-			[ if (it===null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
+		typeVariables.get(obj) => [ if (it === null) {
+			throw new RuntimeException("I don't have type information for " + obj.debugInfoInContext)
+		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
 		typeVariables.get(obj) ?: 
-			typeParameters.get(obj) =>
-				[ if (it===null) throw new RuntimeException("I don't have type information for " + obj.debugInfo) ]
+			typeParameters.get(obj) => [ if (it === null) {
+				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
+			}]
 	}
 
 	// ************************************************************************
@@ -155,7 +158,9 @@ class TypeVariablesRegistry {
 	// ** Debugging
 	// ************************************************************************
 	def fullReport() {
-		typeVariables.values.forEach[log.debug(descriptionForReport)]
+		typeVariables.values.forEach[
+			if (!owner.isCoreObject) log.debug(descriptionForReport)
+		]
 	}
 	
 }

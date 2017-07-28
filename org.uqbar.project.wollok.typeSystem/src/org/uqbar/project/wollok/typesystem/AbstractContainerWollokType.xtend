@@ -5,13 +5,18 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * 
  * @author jfernandes
+ * @author npasserini
  */
 abstract class AbstractContainerWollokType extends BasicType implements ConcreteType {
+	@Accessors(PUBLIC_GETTER)
 	WMethodContainer container
+	
+	@Accessors(PUBLIC_GETTER)
 	protected TypeSystem typeSystem
 	
 	new(WMethodContainer container, TypeSystem ts) {
@@ -19,9 +24,7 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
 		this.container = container
 		this.typeSystem = ts
 	}
-	
-	def getContainer() { container }
-	
+		
 	override understandsMessage(MessageType message) {
  		lookupMethod(message) != null		
  	}

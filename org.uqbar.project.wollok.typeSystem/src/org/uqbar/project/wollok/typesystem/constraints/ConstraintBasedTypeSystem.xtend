@@ -1,11 +1,14 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import com.google.inject.Inject
+import java.util.List
+import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
@@ -42,12 +45,21 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	@Accessors
 	extension TypeVariablesRegistry registry
+
+	@Accessors
+	List<EObject> programs = newArrayList
+
 	ConstraintGenerator constraintGenerator
 
+	/** 
+	 * TODO It might be more correct to use WollokType, but right now it would only complicate things.
+	 */
+	Set<AbstractContainerWollokType> allTypes
+	
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
+		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
 		this.analyse(file)
 		this.inferTypes
 
@@ -59,10 +71,13 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	override initialize(EObject program) {
 		registry = new TypeVariablesRegistry(this)
+		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
-		
+		finder.clearCache		
+		allTypes = null
+
 		// This shouldn't be necessary if all global objects had type annotations
-		finder.allGlobalObjects(program).forEach[constraintGenerator.newNamedObject(it)]
+		finder.allCoreWKOs(program).forEach[constraintGenerator.newNamedObject(it)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
@@ -73,9 +88,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			initialize(program)
 		}
 
+		programs.add(program)
 		constraintGenerator.generateVariables(program)
 	}
-
 
 	// ************************************************************************
 	// ** Inference
@@ -175,10 +190,16 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			new NamedObjectWollokType(finder.getCachedObject(context, typeName), this)
 		}
 	}
-	
-	def allTypes(EObject context) {
-		finder.allClasses(context).map[new ClassBasedWollokType(it, this)] 
-		+ 
-		finder.allGlobalObjects(context).map[new NamedObjectWollokType(it, this)]
+
+	def getAllTypes() {
+		// TODO This is hacky but I do not understand why finder.allClasses(context) does
+		// not give me all my classes and I do not have the time to debug it now. 
+		if (allTypes === null) {
+			allTypes = newHashSet
+			allTypes.addAll(finder.allCoreClasses(programs.get(0)).map[new ClassBasedWollokType(it, this)])
+			allTypes.addAll(finder.allCoreWKOs(programs.get(0)).map[new NamedObjectWollokType(it, this)])
+		}
+		
+		allTypes
 	}
 }

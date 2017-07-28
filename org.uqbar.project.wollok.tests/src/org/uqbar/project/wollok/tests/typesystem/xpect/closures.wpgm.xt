@@ -4,7 +4,7 @@ program p {
 	// XPECT type at c1 --> () => String
 	const c1 = { "Hello" }
 
-	// XPECT type at c2 --> (Integer) => Integer
+	// XPECT type at c2 --> (Number) => Number
 	const c2 = { a => 2 + a }
 
 	// XPECT type at c3 --> () => Void 

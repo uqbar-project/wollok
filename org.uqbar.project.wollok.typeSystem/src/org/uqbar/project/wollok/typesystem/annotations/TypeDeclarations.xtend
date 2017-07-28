@@ -53,8 +53,16 @@ abstract class TypeDeclarations {
 		new ExpectReturnType(target, receiver.type, "*", #[parameterType])
 	}
 
+	def operator_divide(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "/", #[parameterType])
+	}
+
 	def operator_greaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">", #[parameterType])
+	}
+
+	def operator_lessThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "<", #[parameterType])
 	}
 
 

@@ -7,23 +7,37 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
 
-		Integer + Integer => Integer
-		Integer - Integer => Integer
-		Integer * Integer => Integer
-		Integer >> "/" === #[Integer] => Integer
-		Integer >> ">" === #[Integer] => Boolean
-		Integer >> "<" === #[Integer] => Boolean
-		Integer >> ">=" === #[Integer] => Boolean
-		Integer >> "<=" === #[Integer] => Boolean
+		Number + Number => Number
+		Number - Number => Number
+		Number * Number => Number
+		Number / Number => Number;
+		(Number > Number) => Boolean;
+		(Number < Number) => Boolean;
+		Number >> ">=" === #[Number] => Boolean
+		Number >> "<=" === #[Number] => Boolean
+
+		Integer + Number => Number
+		Integer - Number => Number
+		Integer * Number => Number
+		Integer / Number => Number;
+		(Integer > Number) => Boolean;
+		(Integer < Number) => Boolean;
+		Integer >> ">=" === #[Number] => Boolean
+		Integer >> "<=" === #[Number] => Boolean
 
 		Double + Number => Double
+		Double - Number => Double
 		Double * Number => Double
-		Double >> "/" === #[Number] => Double;
-		(Double > Double) => Boolean
+		Double / Number => Double;
+		(Double > Double) => Boolean;
+		(Double < Double) => Boolean
+		Double >> ">=" === #[Number] => Boolean
+		Double >> "<=" === #[Number] => Boolean
 
 		String >> "size" === #[] => Integer
 		String + String => String;
-		(String > String) => Boolean
+		(String > String) => Boolean;
+		(String < String) => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection
@@ -33,16 +47,23 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
 		List >> "size" === #[] => Integer
-
 		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		
 		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		 
 		Set + Set => Set;
+		Set >> "add" === #[ELEMENT] => Void
+		Set >> "contains" === #[ELEMENT] => Boolean
+		Set >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		
-		(Date > Date) => Boolean
+		Date - Date => Integer;
+		(Date > Date) => Boolean;
+		(Date < Date) => Boolean
 
 		// console
 		console >> "println" === #[Any] => Void
+		console >> "readLine" === #[] => String
+		console >> "readInt" === #[] => Integer
+		console >> "newline" === #[] => Void
 	}
 }

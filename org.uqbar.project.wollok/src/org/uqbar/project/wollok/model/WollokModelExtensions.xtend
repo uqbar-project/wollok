@@ -6,9 +6,11 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -60,13 +62,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
-import org.eclipse.emf.ecore.resource.Resource
 
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.uqbar.project.wollok.wollokDsl.impl.ImportImpl
 
 /**
  * Extension methods to Wollok semantic model.

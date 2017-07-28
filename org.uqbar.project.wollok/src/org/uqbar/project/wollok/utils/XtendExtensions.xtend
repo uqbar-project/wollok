@@ -13,6 +13,13 @@ class XtendExtensions {
 	 * Divides a string into lines
 	 */
 	static def lines(CharSequence input) { input.toString.split("[" + System.lineSeparator() + "]+") }
+
+	/**
+	 * Returns a substring from the begining until the last occurrence of a given character.  
+	 */
+	static def copyUptoLast(String string, Character character) {
+		string.substring(0, string.lastIndexOf(character))
+	}
 	
 	/**
 	 * Returns an random element  

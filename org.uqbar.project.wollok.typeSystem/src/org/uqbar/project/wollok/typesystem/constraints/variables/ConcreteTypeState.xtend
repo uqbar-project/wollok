@@ -5,7 +5,8 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 enum ConcreteTypeState {
 	Pending,
 	Ready,
-	Error
+	Error,
+	Cancel
 }
 
 class ConcreteTypeStateExtensions {

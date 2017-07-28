@@ -1,10 +1,10 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 class Golondrina { 
-	// XPECT! noIssues
+	// XPECT type at energia --> Number
 	var energia = 100
 	
-	// XPECT! noIssues
+	// XPECT methodType at vola --> () => Void
 	method vola() { energia = energia - 10 }
 	
 	// XPECT methodType at come --> (Number) => Void
@@ -12,6 +12,7 @@ class Golondrina {
 }
 
 object pepita {
+	// XPECT methodType at nombreAve --> () => String
 	method nombreAve() = "Pepita"
 }
 
