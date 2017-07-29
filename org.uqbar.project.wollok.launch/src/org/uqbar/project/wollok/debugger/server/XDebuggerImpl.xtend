@@ -1,12 +1,12 @@
 package org.uqbar.project.wollok.debugger.server
 
-import java.util.concurrent.CyclicBarrier
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
+import org.uqbar.project.wollok.interpreter.api.XThread
 
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
@@ -27,6 +27,8 @@ class XDebuggerImpl implements XDebugger {
 	XBreakpoint lastBreakpointHit
 	XDebuggerState state = new RunThroughDebuggerState
 	
+	XThread debuggingThread
+	
 	def void setInterpreter(XInterpreter<?> interpreter) { this.interpreter = interpreter }
 	def void setEventSender(XTextInterpreterEventPublisher eventSender) { this.eventSender = eventSender }
 	
@@ -39,6 +41,7 @@ class XDebuggerImpl implements XDebugger {
 	 * He will call us the "resume" command once he's ready.
 	 */	
 	override started() { 
+		debuggingThread = interpreter.currentThread
 		eventSender.started
 		sleep
 	}
@@ -93,7 +96,7 @@ class XDebuggerImpl implements XDebugger {
 	// ** metodos llamados por comandos
 	// ***********************************
 	
-	override getStack() { interpreter.stack }
+	override getStack() { debuggingThread.stack }
 	
 	override setBreakpoint(String fileURI, int line) { breakpoints.add(new XBreakpoint(fileURI, line)) }
 	override clearBreakpoint(String fileURI, int line) {

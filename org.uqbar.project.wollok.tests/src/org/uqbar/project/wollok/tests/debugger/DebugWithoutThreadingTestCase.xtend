@@ -412,7 +412,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 	def store(EObject element) {
 		if (logSession)
 			log.debug('"' + element.sourceCode.replaceAll(System.lineSeparator, ' ').replaceAll('\\s+', ' ').trim() + '",')
-		evaluated += (element -> interpreter.stack.peek.clone)
+		evaluated += (element -> interpreter.currentThread.stack.peek.clone)
 	}
 	
 		/**

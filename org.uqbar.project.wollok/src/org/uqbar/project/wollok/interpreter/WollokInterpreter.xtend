@@ -18,12 +18,9 @@ import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
-import org.uqbar.project.wollok.interpreter.stack.ObservableStack
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
-import org.uqbar.project.wollok.wollokDsl.WFile
-
-import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.interpreter.threads.WThread
 
 /**
  * XInterpreter impl for Wollok language.
@@ -40,15 +37,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	@Accessors val globalVariables = <String, WollokObject>newHashMap
 
-	override addGlobalReference(String name, WollokObject value) {
-		globalVariables.put(name, value)
-		value
-	}
-
-	override removeGlobalReference(String name) {
-		globalVariables.remove(name)
-	}
-
 	@Inject
 	XInterpreterEvaluator<WollokObject> evaluator
 
@@ -57,16 +45,16 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	@Inject
 	Injector injector
+	
+	@Accessors 
+	var EObject rootContext
+	
 
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
-
-	var executionStack = new ObservableStack<XStackFrame>
-
-	@Accessors var EObject evaluating
-
 	static var WollokInterpreter instance = null
-
 	@Accessors var Boolean interactive = false
+
+	val currentThreadHolder = new ThreadLocal<WThread>
 
 	new() {
 		instance = this
@@ -80,9 +68,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 	def setDebugger(XDebugger debugger) { this.debugger = debugger }
 
-	override getStack() { executionStack }
-
-	override getCurrentContext() { stack.peek.context }
 
 	// ***********************
 	// ** Interprets
@@ -110,10 +95,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	def interpret(List<EObject> eObjects, boolean propagatingErrors) {
 		try {
 			log.debug("Starting interpreter")
-//			val rootObject = eObjects.head
-//			rootObject.initStack 
 			evaluator.evaluateAll(eObjects)
-//			evaluating = null
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
 		} catch (Throwable e) {
@@ -141,40 +123,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			debugger.terminated
 	}
 
-	def void initStack() {
-		executionStack = new ObservableStack<XStackFrame>
-	}
-	
-	def void generateStack(EObject rootObject) {
-		val stackFrame = rootObject.createInitialStackElement
-		executionStack.push(stackFrame)
-		debugger.started
-		evaluating = rootObject
-	}
-
-	def createInitialStackElement(EObject root) {
-		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
-	}
-
-	// non-thread-safe
-	boolean instantiatingStackOverFlow = false
-
-	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext,
-		()=>WollokObject something) {
-		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
-		try
-			return something.apply
-		catch (ReturnValueException e)
-			return e.value
-		catch (StackOverflowError e) {
-			instantiatingStackOverFlow = true
-			val exp = (evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
-			instantiatingStackOverFlow = false
-			throw new WollokProgramExceptionWrapper(exp)
-		} finally
-			stack.pop
-	}
-
 	def evalBinary(WollokObject a, String operand, WollokObject b) {
 		evaluator.resolveBinaryOperation(operand).apply(a, [|b])
 	}
@@ -189,7 +137,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	 */
 	override eval(EObject e) {
 		try {
-			stack.peek.defineCurrentLocation = e
+			currentThread.stack.peek.defineCurrentLocation = e
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
 		} catch (ReturnValueException ex) {
@@ -219,6 +167,63 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 
 		// I18N !
 		throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+	}
+	
+	// Accessing Thread State
+	
+	override WThread getCurrentThread(){
+		var thread = this.currentThreadHolder.get()
+		
+		if(thread !== null) 
+			return thread
+		
+		thread = new WThread(this)	
+		currentThreadHolder.set(thread)
+		
+		
+		//This is a hack, because the threads are created with a root stack. 
+		
+		if(rootContext !== null){
+			val stackFrame = rootContext.createInitialStackElement
+			thread.stack.push(stackFrame)
+		}
+		
+		return thread	
+	}
+	
+	override getCurrentContext() {
+		currentThread.currentContext
+	}
+
+	override performOnStack(EObject executable, EvaluationContext<WollokObject> newContext, ()=>WollokObject something) {
+		currentThread.performOnStack(executable, newContext, something)
+	}
+
+	def void generateStack(EObject rootObject) {
+		val stackFrame = rootObject.createInitialStackElement
+		currentThread.stack.push(stackFrame)
+		debugger.started
+		rootContext = rootObject
+	}
+
+	def createInitialStackElement(EObject root) {
+		new XStackFrame(root, new WollokNativeLobby(console, this), WollokSourcecodeLocator.INSTANCE)
+	}
+
+	def initStack(){
+		currentThread.initStack()
+	}
+
+	// Handling globals
+
+	override addGlobalReference(String name, WollokObject value) {
+		globalVariables.put(name, value)
+		value
+	}
+	
+
+	override removeGlobalReference(String name) {
+		globalVariables.remove(name)
 	}
 
 }

@@ -131,7 +131,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 
 	def void assertIsException(Throwable exception, Class<? extends Throwable> clazz) {
 		if (!clazz.isInstance(exception)) {
-			if (exception.cause == null) {
+			if (exception.cause === null) {
 				exception.printStackTrace
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
 			}
@@ -147,7 +147,7 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 			exception.message
 		}
 		else{
-			if (exception.cause == null)
+			if (exception.cause === null)
 				fail('''Expecting exception «clazz.name» but found «exception.class.name»''')
 
 			getMessageOf(exception.cause, clazz)

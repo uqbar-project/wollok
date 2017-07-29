@@ -34,6 +34,10 @@ class WClassFigure extends Figure {
 		backgroundColor = bgColor
 		foregroundColor = fgColor
 		
+		if (castedModel.label !== null && !castedModel.label.trim.equals("")) {
+			this.setToolTip(new Label(castedModel.label))
+		} 
+		
 		nameLabel = new Label(name) => [
 			setBorder(margin(2, 2, 3, 2))
 		]
@@ -80,6 +84,7 @@ class WClassFigure extends Figure {
 		nameLabel.text ?: "<...>"
 	}
 
+	
 	override add(IFigure figure, Object constraint, int index) { addChild(figure, constraint, index) }
 	def dispatch addChild(WAttributteFigure figure, Object constraint, int index) { attributesFigure.add(figure, constraint, -1) }
 	def dispatch addChild(WMethodFigure figure, Object constraint, int index) { methodsFigure.add(figure, constraint, -1) }

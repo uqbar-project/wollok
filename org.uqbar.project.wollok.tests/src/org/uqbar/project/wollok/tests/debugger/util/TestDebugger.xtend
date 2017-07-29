@@ -29,11 +29,11 @@ class TestDebugger extends XDebuggerOff {
 	}
 	
 	override aboutToEvaluate(EObject element) {
-		assertions.forEach[ before(element -> interpreter.stack.peek) ]
+		assertions.forEach[ before(element -> interpreter.currentThread.stack.peek) ]
 	}
 	
 	override evaluated(EObject element) {
-		assertions.forEach[ after(element -> interpreter.stack.peek) ]	
+		assertions.forEach[ after(element -> interpreter.currentThread.stack.peek) ]	
 	}
 	
 	def addAssertion(InterpreterAssertion assertion) {

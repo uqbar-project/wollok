@@ -24,6 +24,6 @@ class CallableSuper extends AbstractWollokCallable {
 	}
 	
 	override getReceiver() { 
-		(interpreter as WollokInterpreter).stack.peek.context.thisObject as WollokObject //HACKING CAST
+		(interpreter as WollokInterpreter).currentThread.stack.peek.context.thisObject as WollokObject //HACKING CAST
 	}
 }

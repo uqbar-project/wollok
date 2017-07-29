@@ -20,7 +20,7 @@ class MoveOrResizeCommand extends Command {
 	private final Shape shape
 
 	new(Shape shape, ChangeBoundsRequest req, Rectangle newBounds) {
-		if (shape == null || req == null || newBounds == null)
+		if (shape === null || req === null || newBounds === null)
 			throw new IllegalArgumentException
 		this.shape = shape
 		this.request = req

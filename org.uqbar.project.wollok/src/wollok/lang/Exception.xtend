@@ -23,7 +23,7 @@ class Exception {
 	
 	new(WollokObject object, WollokInterpreter interpreter) {
 		exceptionObject = object
-		stackTrace = interpreter.stack.map[f| f.currentLocation].clone
+		stackTrace = interpreter.currentThread.stack.map[f| f.currentLocation].clone
 	}
 	
 	def getStackTrace() {

@@ -7,16 +7,16 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
  * @author jfernandes
  */
 class WMethodFigure extends AbstractClassMemberFigure<WMethodDeclaration> {
-	
+
 	new(WMethodDeclaration m) {
 		super(m)
 	}
 
 	def setAbstract(boolean isAbstract) {
 		setFont(if (isAbstract)
-				JFaceResources.fontRegistry.getItalic(JFaceResources.DEFAULT_FONT)
-			else
-				JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT))
+			JFaceResources.fontRegistry.getItalic(JFaceResources.DEFAULT_FONT)
+		else
+			JFaceResources.fontRegistry.get(JFaceResources.DEFAULT_FONT))
 	}
-	
+
 }
