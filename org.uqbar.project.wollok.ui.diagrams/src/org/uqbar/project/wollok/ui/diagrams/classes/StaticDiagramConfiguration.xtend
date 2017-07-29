@@ -435,6 +435,10 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		}
 	}
 	
+	def resourceIsForStaticDiagram() {
+		originalFileName.endsWith(WollokConstants.CLASS_OBJECTS_EXTENSION)
+	}
+	
 }
 
 @Data
