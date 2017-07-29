@@ -84,8 +84,10 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 		val appenders = Logger.rootLogger.allAppenders
 		while(appenders.hasMoreElements){
 			val appender = appenders.nextElement
-			if(appender instanceof ConsoleAppender)
+			if(appender instanceof ConsoleAppender){
 				appender.threshold = Level.INFO
+				appender.activateOptions
+			}
 		}
 		
 		// I add a new appender with threshold DEBUG as a file
