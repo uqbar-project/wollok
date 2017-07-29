@@ -91,7 +91,7 @@ class TypeVariable implements ITypeVariable {
 
 	def addError(TypeSystemException exception) {
 		if (owner.isCoreObject) 
-			throw new RuntimeException("Tried to add a type error to a core object")
+			throw new RuntimeException('''Tried to add a type error to a core object: «owner.debugInfoInContext»''')
 		
 		log.info('''Error reported in «this.fullDescription»''')
 		errors.add(exception)

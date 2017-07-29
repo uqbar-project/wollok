@@ -43,7 +43,7 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 	}
 	
 	override understandsMessage(MessageType message) {
-		lookupMethod(message) != null
+		lookupMethod(message) !== null
 	}
 	
 	override lookupMethod(MessageType message) {
@@ -54,7 +54,7 @@ class ObjectLiteralWollokType extends BasicType implements ConcreteType {
 		val m = object.lookupMethod(selector, parameterTypes, true)
 		// TODO: por ahora solo checkea misma cantidad de parametros
 		// 		debería en realidad checkear tipos !  
-		if (m != null)
+		if (m !== null)
 			m
 		else
 			null
