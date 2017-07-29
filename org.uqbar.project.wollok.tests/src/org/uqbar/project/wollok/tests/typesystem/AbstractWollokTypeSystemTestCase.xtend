@@ -2,8 +2,12 @@ package org.uqbar.project.wollok.tests.typesystem
 
 import com.google.inject.Inject
 import com.google.inject.Injector
+import org.apache.log4j.ConsoleAppender
+import org.apache.log4j.FileAppender
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import org.apache.log4j.PatternLayout
+import org.apache.log4j.varia.NullAppender
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -60,11 +64,41 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	@Before
 	def void setupTypeSystem() {
-		WollokResourceCache.clearCache
+		WollokResourceCache.clearCache()
+
+		configureLogFileForTravis()
+
 		Logger.getLogger(TypeSystem.package.name).level = Level.DEBUG
 		
 		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)
+	}
+	
+	protected def void configureLogFileForTravis() {
+	
+		val envVariable = System.getenv("CI")
+		if(envVariable === null || envVariable != "true")
+			return
+	
+		// I get all the Console appender and set them to INFO.
+		val appenders = Logger.rootLogger.allAppenders
+		while(appenders.hasMoreElements){
+			val appender = appenders.nextElement
+			if(appender instanceof ConsoleAppender)
+				appender.threshold = Level.INFO
+		}
+		
+		// I add a new appender with threshold DEBUG as a file
+		Logger.getLogger(TypeSystem.package.name).addAppender(new FileAppender() => [
+			name = "file"
+			file = "./target/typeSystem-Debug.log"
+			threshold = Level.DEBUG
+			append = true
+			layout = new PatternLayout => [
+				conversionPattern = "%5p [%t] (%F:%L) - %m%n"
+			]
+			activateOptions
+		])
 	}
 
 	// Utility
