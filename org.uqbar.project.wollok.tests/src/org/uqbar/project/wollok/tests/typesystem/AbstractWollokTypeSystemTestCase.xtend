@@ -77,7 +77,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	protected def void configureLogFileForTravis() {
 	
 		val envVariable = System.getenv("CI")
-		if(envVariable === null || envVariable != "true")
+		if(envVariable === null)
 			return
 	
 		// I get all the Console appender and set them to INFO.
