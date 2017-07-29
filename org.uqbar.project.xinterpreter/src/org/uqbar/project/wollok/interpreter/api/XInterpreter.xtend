@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.interpreter.api
 
-import java.util.Stack
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 
 /**
  * Interface all interpreters must implement in order to
@@ -12,7 +10,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  */
 interface XInterpreter<E extends EObject> {
 
-	def Stack<XStackFrame> getStack()
+	def XThread getCurrentThread()
 	
 	// TODO: return value should be WollokObject
 	def Object interpret(E program)
