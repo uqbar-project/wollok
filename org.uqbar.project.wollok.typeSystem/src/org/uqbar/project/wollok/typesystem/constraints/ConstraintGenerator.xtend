@@ -48,12 +48,37 @@ class ConstraintGenerator {
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
 	}
 
+	// ************************************************************************
+	// ** First pass
+	// ************************************************************************
+	/**
+	 * We have to to two passes through the program. The first one just adds globals, 
+	 * so that they are visible during constraint generation.
+	 */
+	def dispatch void addGlobals(EObject it) {
+		// By default we do nothing.
+	}
+
+	def dispatch void addGlobals(WNamedObject it) {
+		typeSystem.allTypes.add(objectType)
+		newNamedObject
+	}
+
+	def dispatch void addGlobals(WClass it) {
+		typeSystem.allTypes.add(classType)
+	}
+
+	// ************************************************************************
+	// ** Second pass / whole constraint generation
+	// ************************************************************************
+	
 	def dispatch void generateVariables(EObject node) {
 		// Default case
 		log.warn('''WARNING: Not generating constraints for: «node»''')
 	}
 
 	def dispatch void generateVariables(WFile it) {
+		eContents.forEach[addGlobals]
 		eContents.forEach[generateVariables]
 	}
 
@@ -62,13 +87,10 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
-		typeSystem.allTypes.add(it.objectType)
 		members.forEach[generateVariables]
-		newNamedObject
 	}
 
 	def dispatch void generateVariables(WClass it) {
-		typeSystem.allTypes.add(it.classType)
 
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]

@@ -1,0 +1,17 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object booleanConditionError {
+	method m() {
+		return rules.a()
+	}
+
+	// XPECT methodType at m1 --> () => Boolean
+	method m1() {
+		return rules.a()
+	}
+}
+
+object rules {
+	// XPECT methodType at a --> () => Boolean
+	method a() = true
+}
