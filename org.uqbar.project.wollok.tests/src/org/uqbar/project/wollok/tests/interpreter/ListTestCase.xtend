@@ -6,7 +6,14 @@ import org.junit.Test
  * @author jfernandes
  */
 class ListTestCase extends CollectionTestCase {
-	
+
+	@Test
+	def void listConstructor() {
+		'''
+		assert.equals([22,2,3], new List(22,2,3))
+		'''.test
+	}
+
 	@Test
 	def void subList() {
 		'''
