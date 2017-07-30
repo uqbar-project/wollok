@@ -1,15 +1,15 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
+import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.VariableSubtypingRules.*
-
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 
 class MessageLookupExtensions {
 	TypeVariablesRegistry registry
@@ -18,7 +18,15 @@ class MessageLookupExtensions {
 		this.registry = registry
 	}
 
-	def static respondsTo(AbstractContainerWollokType type, MessageSend message) {
+	def static respondsToAll(WollokType type, Iterable<MessageSend> messages) {
+		messages.forall[type.respondsTo(it)]
+	}
+
+	def static dispatch respondsTo(WollokType type, MessageSend message) {
+		false
+	}
+
+	def static dispatch respondsTo(AbstractContainerWollokType type, MessageSend message) {
 		new MessageLookupExtensions(type.registry).canRespondTo(type, message)
 	}
 

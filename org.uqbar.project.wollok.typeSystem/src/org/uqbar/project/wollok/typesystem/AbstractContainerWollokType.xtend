@@ -26,7 +26,7 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
 	}
 		
 	override understandsMessage(MessageType message) {
- 		lookupMethod(message) != null		
+ 		lookupMethod(message) !== null		
  	}
  	
  	override lookupMethod(MessageType message) {
@@ -37,7 +37,7 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
   		val m = container.lookupMethod(selector, parameterTypes, true)		
   		// TODO: por ahora solo checkea misma cantidad de parametros		
   		// 		debería en realidad checkear tipos !  		
-  		if (m != null && m.parameters.size == parameterTypes.size)		
+  		if (m !== null && m.parameters.size == parameterTypes.size)		
   			m		
   		else		
   			null		

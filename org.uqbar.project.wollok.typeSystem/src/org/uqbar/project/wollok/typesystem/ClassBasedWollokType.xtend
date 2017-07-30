@@ -35,7 +35,7 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	
 	def dispatch refine(ClassBasedWollokType previous) {
 		val commonType = commonSuperclass(clazz, previous.clazz)
-		if (commonType == null)
+		if (commonType === null)
 			throw new TypeSystemException("Incompatible types. Expected " + previous.name + " <=> " + name)
 		new ClassBasedWollokType(commonType, typeSystem)
 	}
@@ -44,8 +44,6 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}
-	
-	//
 	
 	def WClass commonSuperclass(WClass a, WClass b) {
 		if (a.isSubclassOf(b))

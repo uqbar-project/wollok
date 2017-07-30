@@ -23,6 +23,9 @@ class RejectedMinTypeException extends TypeSystemException {
 	}
 
 	override getMessage() {
-		'''expected <<«variable.expectedType»>> but found <<«type»>>'''
+		// Support null `variable`. While it should not happen and means
+		// a program error, it is not nice to throw a NPE inside the toString
+		// of a previous exception.
+		'''expected <<«if (variable !== null) variable.expectedType else "unknown"»>> but found <<«type»>>'''
 	}
 }

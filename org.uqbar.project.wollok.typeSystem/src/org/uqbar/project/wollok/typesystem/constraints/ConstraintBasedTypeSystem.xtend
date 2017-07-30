@@ -166,11 +166,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		new MessageType(it.name, parameters.map[type], type)
 	}
 
-	protected def objectType(WNamedObject model) {
+	def objectType(WNamedObject model) {
 		new NamedObjectWollokType(model, this)
 	}
 
-	protected def classType(WClass clazz) {
+	def classType(WClass clazz) {
 		new ClassBasedWollokType(clazz, this)
 	}
 
