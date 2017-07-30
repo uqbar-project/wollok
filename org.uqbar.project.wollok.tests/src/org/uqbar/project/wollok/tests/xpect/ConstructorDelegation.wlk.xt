@@ -27,7 +27,7 @@ class E inherits EmptyB {
 }
 
 class C inherits B {
-	// XPECT errors --> "Invalid super constructor call. Default constructor is not overriden." at "super()"
+	// XPECT warnings --> "Redundant super constructor call. Default constructor is not overriden." at "super()"
 	constructor() = super() {}
 }
 
@@ -50,7 +50,7 @@ class SuperClass {
 }
 class SubClass inherits SuperClass { 
 	var anotherVariable
-	// XPECT errors --> "Invalid super constructor call. Default constructor is not overriden." at "super()"
+	// XPECT warnings --> "Redundant super constructor call. Default constructor is not overriden." at "super()"
 	constructor(n) = super() {
 		anotherVariable = n
 	}
