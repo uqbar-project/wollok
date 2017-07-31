@@ -2,8 +2,8 @@ package org.uqbar.project.wollok.tests.interpreter.repl
 
 import org.eclipse.xtext.testing.InjectWith
 import org.junit.Test
-import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
 /**
  * Tests that the default implementation of the interpreter
@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * 
  * @author tesonep
  */
- @InjectWith(WollokTestInjector)
+ @InjectWith(WollokTestInjectorProvider)
 class WithoutReplMemoryTest extends AbstractWollokInterpreterTestCase {
 
 	@Test
