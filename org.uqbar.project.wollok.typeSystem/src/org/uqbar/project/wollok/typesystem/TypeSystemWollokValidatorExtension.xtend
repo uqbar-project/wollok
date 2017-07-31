@@ -14,7 +14,7 @@ import org.eclipse.xtext.validation.Check
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
 
-	@Check(NORMAL)
+	@Check(NORMAL)	
 	override check(WFile file, WollokDslValidator validator) {
 		//TODO: lee las preferencias cada vez!
 		try
