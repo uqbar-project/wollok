@@ -8,8 +8,8 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
 /**
  * Tests wollok code formatter
@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
  * @author tesonep
  */
 @RunWith(XtextRunner)
-@InjectWith(WollokTestInjector)
+@InjectWith(WollokTestInjectorProvider)
 class WollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer
