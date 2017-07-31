@@ -3,8 +3,8 @@ package org.uqbar.project.wollok.tests.base
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
 /**
  * Helper class to allow parameterized interpreter tests
@@ -18,7 +18,7 @@ abstract class AbstractWollokParameterizedInterpreterTest extends AbstractWollok
 	 */
 	@Before
 	override setUp() {
-		new WollokDslInjectorProvider().injector.injectMembers(this)
+		new WollokTestInjectorProvider().injector.injectMembers(this)
 		super.setUp
 	}
 
