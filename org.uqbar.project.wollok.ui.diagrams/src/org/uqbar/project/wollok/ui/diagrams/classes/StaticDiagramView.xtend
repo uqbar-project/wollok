@@ -161,6 +161,14 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def createDiagramModel() {
+		// dodain - Enhanced performance
+		// Don't create diagram if you are editing a file 
+		//     that is not supposed to be synchronized with a static diagram (eg: tests files)
+		// or if static diagram was disposed
+		if (!configuration.resourceIsForStaticDiagram || splitter.isDisposed) {
+			return new StaticDiagram(configuration, #[])
+		}
+		
 		new StaticDiagram(configuration, xtextDocument.readOnly[ allElements ].toList) => [
 			
 			// all objects

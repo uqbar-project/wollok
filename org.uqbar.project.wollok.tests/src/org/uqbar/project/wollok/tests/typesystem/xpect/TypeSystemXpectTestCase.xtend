@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.tests.typesystem.xpect
 
 import com.google.inject.Inject
-import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.resource.XtextResource
@@ -11,7 +10,6 @@ import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.InitializationError
 import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.tests.typesystem.AbstractWollokTypeSystemTestCase
-import org.uqbar.project.wollok.tests.typesystem.WollokTypeSysteTestModule
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -32,7 +30,7 @@ import org.xpect.xtext.lib.util.XtextOffsetAdapter.IEStructuralFeatureAndEObject
 
 import static extension org.uqbar.project.wollok.typesystem.TypeSystemUtils.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import org.apache.log4j.Level
+import org.uqbar.project.wollok.tests.typesystem.WollokTypeSystemTestModule
 
 /**
  * Test class for extending xpect to have tests on static proposals (content assist)
@@ -41,7 +39,7 @@ import org.apache.log4j.Level
  */
 @RunWith(TypeSystemXpectRunner)
 @XpectSuiteClasses(#[ValidationTest])
-@XpectImport(WollokTypeSysteTestModule)
+@XpectImport(WollokTypeSystemTestModule)
 class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 	@Inject TypeSystem typeSystem
 	
@@ -88,7 +86,6 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 class TypeSystemXpectRunner extends XpectRunner {
 	new(Class<?> testClass) throws InitializationError {
 		super(testClass)
-		Logger.getLogger(TypeSystem.package.name).level = Level.DEBUG
 	}
 	
 	override runChild(Runner child, RunNotifier notifier) {

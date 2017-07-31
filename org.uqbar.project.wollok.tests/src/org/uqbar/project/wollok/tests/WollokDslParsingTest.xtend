@@ -8,6 +8,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
 /**
  * This test is not adding anything. However, we have to keep it because Xtext generates it as an example, if it does not find it.
@@ -16,11 +17,11 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  * @author tesonep
  */
 @RunWith(XtextRunner)
-@InjectWith(WollokDslInjectorProvider)
+@InjectWith(WollokTestInjectorProvider)
 class WollokDslParsingTest {
 	@Inject
 	ParseHelper<WFile> parseHelper
-	
+
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''

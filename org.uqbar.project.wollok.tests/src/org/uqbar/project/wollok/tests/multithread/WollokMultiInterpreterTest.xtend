@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
+import org.uqbar.project.wollok.tests.injectors.WollokTestSetup
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 
 import static org.junit.Assert.*
@@ -26,7 +26,7 @@ class WollokMultiInterpreterTest {
 	@Test
 	def void testRunSameProgramTwice() {
 		val parameters = new WollokLauncherParameters()
-		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+		val injector = new WollokTestSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
 		val interpreter = injector.getInstance(WollokInterpreter)
@@ -68,7 +68,7 @@ class WollokMultiInterpreterTest {
 		var startTime = System.currentTimeMillis
 
 		val parameters = new WollokLauncherParameters()
-		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+		val injector = new WollokTestSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
 		val program = '''
@@ -125,7 +125,7 @@ class WollokMultiInterpreterTest {
 		var startTime = System.currentTimeMillis
 
 		val parameters = new WollokLauncherParameters()
-		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+		val injector = new WollokTestSetup(parameters).createInjectorAndDoEMFRegistration
 		val extension parserHelper = injector.getInstance(WollokParseHelper)
 
 		val program = '''
@@ -168,7 +168,7 @@ class WollokMultiInterpreterTest {
 	@Test
 	def void testGetInjectorTwice() {
 		val parameters = new WollokLauncherParameters()
-		val injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+		val injector = new WollokTestSetup(parameters).createInjectorAndDoEMFRegistration
 		
 		assertNotSame(injector.getInstance(WollokInterpreter), injector.getInstance(WollokInterpreter))
 	}
