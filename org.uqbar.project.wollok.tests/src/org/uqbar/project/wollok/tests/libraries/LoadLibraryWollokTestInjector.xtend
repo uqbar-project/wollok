@@ -1,14 +1,13 @@
 package org.uqbar.project.wollok.tests.libraries
 
-import org.uqbar.project.wollok.tests.WollokDslInjectorProvider
-import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
-import org.uqbar.project.wollok.launch.WollokLauncherParameters
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
-class LoadLibraryWollokTestInjector extends WollokDslInjectorProvider {
+class LoadLibraryWollokTestInjector extends WollokTestInjectorProvider {
 
-	override protected internalCreateInjector() {
-		val params = new WollokLauncherParameters()
+	override protected createParameters() {
+		val params = super.createParameters()
 		params.libraries.add("wollokLib/libfortest.jar")
-		new WollokLauncherSetup(params).createInjectorAndDoEMFRegistration
+		params
 	}
+	
 }

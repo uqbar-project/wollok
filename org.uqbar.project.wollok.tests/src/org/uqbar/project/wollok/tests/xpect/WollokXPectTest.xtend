@@ -6,15 +6,15 @@ import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.InitializationError
 import org.uqbar.project.wollok.scoping.WollokResourceCache
-import org.uqbar.project.wollok.tests.injectors.WollokTestInjector
 import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.tests.XtextTests
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
 /**
  * @author jfernandes
  */
 @RunWith(WollokXpectRunner)
-@InjectWith(WollokTestInjector)
+@InjectWith(WollokTestInjectorProvider)
 class WollokXPectTest extends XtextTests {
 }
 

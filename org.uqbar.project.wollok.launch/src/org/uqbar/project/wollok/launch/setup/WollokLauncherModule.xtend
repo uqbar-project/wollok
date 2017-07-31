@@ -28,7 +28,6 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		this.params = params
 	}
 
-
 	override bindIGlobalScopeProvider() {
 		if (params.hasRepl)
 			return WollokReplGlobalScopeProvider
