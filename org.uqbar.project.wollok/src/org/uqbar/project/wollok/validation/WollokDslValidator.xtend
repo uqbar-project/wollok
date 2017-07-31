@@ -293,7 +293,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
-		if (it.ref == getSelfContext)
+		if (it.ref == declaringContext)
 			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it)
 	}
 
