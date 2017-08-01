@@ -1,12 +1,11 @@
 package org.uqbar.project.wollok.model
 
 import java.util.ArrayList
-import java.util.Arrays
+
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
@@ -16,7 +15,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
-import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -49,6 +47,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 /**
  * Extension methods for WMethodContainers.
@@ -204,10 +203,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		return _hasCyclicHierarchy(c.parent, l)
 	}
 
-	def static dispatch boolean inheritsFromLibClass(EObject e) { false }
-	def static dispatch boolean inheritsFromLibClass(WClass c) { WollokResourceCache.hasResource(c.parent.file.URI)	}
-	def static dispatch boolean inheritsFromLibClass(WNamedObject o) { WollokResourceCache.hasResource(o.parent.file.URI) }
-	def static dispatch boolean inheritsFromLibClass(WObjectLiteral o) { true }
+	def static boolean inheritsFromLibClass(WMethodContainer it) { parent.isCoreObject }
 
 	def static dispatch boolean inheritsFromObject(EObject e) { false }
 	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }

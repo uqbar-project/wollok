@@ -7,6 +7,12 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.emf.ecore.resource.Resource
 
+/**
+ * Cache of wollok classpath resources
+ * 
+ * @author fdodino
+ * @author npasserini
+ */
 class WollokResourceCache {
 	
 	static String CLASSPATH = "classpath"
@@ -39,6 +45,10 @@ class WollokResourceCache {
 		object.eResource.URI.isClassPathResource
 	}
 	
+	/**
+	 * Clears all cached resources and objects.
+	 * Only for test purposes, should not be loaded in live environment.
+	 */
 	static def clearCache() {
 		resourceCache.clear
 	}
