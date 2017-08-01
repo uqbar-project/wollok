@@ -1,7 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-// XPECT_IGNORE
-
 /**
  * Introduccion a Objetos, Objetos-Mensaje
  * Pepe zapatero. 
@@ -38,14 +36,14 @@ object salvador {
 // COSAS QUE PEPE PUEDE ARREGLAR >>>
 
 object alpargata { 			
-	// XPECT! methodType at complejidad  --> () => Integer
+	// XPECT methodType at complejidad  --> () => Integer
 	method complejidad() {
 		return 10
 	}
 }
 
 object botaDeCuero { 		
-	// XPECT! type at destruccion  --> Integer
+	// XPECT type at destruccion  --> Integer
 	var destruccion = 100
 	
 	// XPECT methodType at complejidad  --> () => Integer

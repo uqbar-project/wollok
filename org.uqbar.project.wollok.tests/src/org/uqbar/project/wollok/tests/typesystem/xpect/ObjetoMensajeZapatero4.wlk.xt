@@ -1,6 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-// XPECT_IGNORE
 
 /* Colecciones, sin bloques
  * Pepe zapatero. 
@@ -101,12 +100,14 @@ object pepe {
 	}
 	
 	// XPECT ! methodType at clientePredilecto --> () => (fiona|salvador|moni) 
-	method clientePredilecto() {
-		return clientes.last()
-	}
+//	method clientePredilecto() {
+//		return clientes.first()
+//		return clientes.last()
+//	}
 	
-	method arregla(calzado) { 					
-		fatiga = fatiga + calzado.complejidad()
-	}
+//	method arregla(calzado) { 					
+//		fatiga = fatiga + calzado.complejidad()
+//		fatiga = fatiga + 1
+//	}
 	
 }

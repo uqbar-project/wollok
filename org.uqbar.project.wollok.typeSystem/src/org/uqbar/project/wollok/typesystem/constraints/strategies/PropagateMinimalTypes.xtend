@@ -37,6 +37,7 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 
 	protected def boolean propagateMinType(TypeVariable origin, WollokType type, Iterable<TypeVariable> supertypes) {
 		supertypes.evaluate [ supertype |
+			log.trace('''  About to propagate min(«type») from: «origin» to «supertype»''')
 			val newState = propagateMinType(origin, supertype, type)
 			(newState != Ready) => [
 				if(it) {
