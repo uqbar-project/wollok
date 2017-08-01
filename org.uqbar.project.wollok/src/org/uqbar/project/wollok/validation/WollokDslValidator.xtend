@@ -303,12 +303,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(ERROR)
+	@DefaultSeverity(WARN)
 	def delegatedDefaultConstructorExists(WDelegatingConstructorCall it) {
 		if (it.arguments.isEmpty){
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved === null) {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR,
+				report(NLS.bind(WollokDslValidator_REDUNDANT_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR,
 					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
 					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
