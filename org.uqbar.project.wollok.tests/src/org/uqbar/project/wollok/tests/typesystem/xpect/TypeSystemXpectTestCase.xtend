@@ -89,7 +89,7 @@ class TypeSystemXpectRunner extends XpectRunner {
 	}
 	
 	override runChild(Runner child, RunNotifier notifier) {
-		WollokResourceCache.clearCache
+		WollokResourceCache.clearResourceCache
 		super.runChild(child, notifier)
 	}
 }

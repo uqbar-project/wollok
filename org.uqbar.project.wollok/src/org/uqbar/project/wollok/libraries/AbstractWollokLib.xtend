@@ -43,18 +43,18 @@ abstract class AbstractWollokLib implements WollokLib {
 	def WollokManifest getManifest(Resource resource)
 	
 	def internalLoad(URI uri, Resource resource) {
-		load(uri, resource, this.manager)
+		load(uri, resource, manager)
 	}
 	
 	/**
-	 * find contents in WollokResourceCache, if not found then call internalLoad 
+	 * Find contents in WollokResourceCache, if not found then call internalLoad. 
 	 */
 	 def Iterable<IEObjectDescription> load(URI uri, Resource resource) {
 			try {
 			var Iterable<IEObjectDescription> exportedObjects
 			exportedObjects = WollokResourceCache.getResource(uri)
 			if (exportedObjects === null) {
-				exportedObjects = this.internalLoad(uri, resource)
+				exportedObjects = internalLoad(uri, resource)
 				WollokResourceCache.addResource(uri, exportedObjects)
 			}
 			exportedObjects
