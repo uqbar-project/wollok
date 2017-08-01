@@ -29,8 +29,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Double - Number => Double
 		Double * Number => Double
 		Double / Number => Double;
-		(Double > Number) => Boolean;
-		(Double < Number) => Boolean
+		(Double > Double) => Boolean;
+		(Double < Double) => Boolean
 		Double >> ">=" === #[Number] => Boolean
 		Double >> "<=" === #[Number] => Boolean
 
@@ -45,21 +45,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List + List => List
 		List >> "add" === #[ELEMENT] => Void
 		List >> "contains" === #[ELEMENT] => Boolean
-		List >> "remove" === #[ELEMENT] => Void
 		List >> "first" === #[] => ELEMENT
-		List >> "last" === #[] => ELEMENT
 		List >> "size" === #[] => Integer
-		List >> "anyOne" === #[] => ELEMENT
-		
 		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
-		List >> "all" === #[closure(#[ELEMENT], Boolean)] => Boolean
-		List >> "max" === #[closure(#[ELEMENT], Integer)] => ELEMENT 
-		// deberia ser Any (ordenable)
-		List >> "count" === #[closure(#[ELEMENT], Boolean)] => Integer
-		List >> "forEach" === #[closure(#[ELEMENT], Void)] => Void
-		//List >> "filter" === #[closure(#[ELEMENT], Boolean)] => List
-		
-		
 		
 		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		 
