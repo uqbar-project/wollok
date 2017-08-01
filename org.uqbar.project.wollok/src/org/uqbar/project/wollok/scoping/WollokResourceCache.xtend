@@ -6,6 +6,8 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.emf.ecore.resource.Resource
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * Cache of wollok classpath resources
@@ -45,11 +47,24 @@ class WollokResourceCache {
 		object.eResource.URI.isClassPathResource
 	}
 	
+
+	// ************************************************************************
+	// ** Get all elements in the scope (used by the type system)
+	// ************************************************************************
+
+	static def allCoreWKOs() {
+		resourceCache.values.flatten.map[EObjectOrProxy].filter(WNamedObject)
+	}	
+
+	static def allCoreClasses() {
+		resourceCache.values.flatten.map[EObjectOrProxy].filter(WClass)
+	}	
+
 	/**
 	 * Clears all cached resources and objects.
 	 * Only for test purposes, should not be loaded in live environment.
 	 */
-	static def clearCache() {
+	static def clearResourceCache() {
 		resourceCache.clear
 	}
 }

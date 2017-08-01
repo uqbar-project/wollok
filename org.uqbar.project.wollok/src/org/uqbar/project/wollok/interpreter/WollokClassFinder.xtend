@@ -12,7 +12,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 /**
  * Kind of a hack to be able to resolve a wollok class from anywhere
@@ -76,45 +75,6 @@ class WollokClassFinder {
 			throw new WollokRuntimeException("Could NOT find " + objectFQN + " in scope: " + scope.allElements)
 		a.EObjectOrProxy as WNamedObject
 	}
-
-	// ************************************************************************
-	// ** Get all elements in the scope (used by the type system)
-	// ************************************************************************
-
-	def clearCache() {
-		sdkClassesCache = newHashMap
-		sdkObjectsCache = newHashMap
-	}
-	
-	def allCoreWKOs(EObject context) {
-		getObjectScope(context.eResource)[EObjectOrProxy instanceof WNamedObject]
-		.allElements
-		.filter[EObjectOrProxy instanceof WNamedObject]
-		.map[description|
-			val key = description.name.toString
-			description.EObjectOrProxy as WNamedObject => [namedObject|
-				if (!sdkObjectsCache.containsKey(key)) { 
-					sdkObjectsCache.put(key, namedObject)
-				}
-			]
-		]
-		.filter[isCoreObject]
-	}	
-
-	def allCoreClasses(EObject context) {
-		getClassScope(context.eResource)[EObjectOrProxy instanceof WClass]
-		.allElements
-		.filter[EObjectOrProxy instanceof WClass]
-		.map[description|
-			val key = description.name.toString
-			description.EObjectOrProxy as WClass => [class |
-				if (!sdkClassesCache.containsKey(key)) { 
-					sdkClassesCache.put(key, class)
-				}
-			]
-		]
-		.filter[isCoreObject]
-	}	
 
 	// ************************************************************************
 	// ** Utilities
