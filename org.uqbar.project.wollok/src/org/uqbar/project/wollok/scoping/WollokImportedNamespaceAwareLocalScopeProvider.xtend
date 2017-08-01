@@ -13,6 +13,7 @@ import static java.util.Collections.singletonList
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
+import org.eclipse.xtext.util.OnChangeEvictingCache
 
 /**
  * @author tesonep
@@ -40,6 +41,18 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 	}
 	
 	def getImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope scope) {
+		val cache = new OnChangeEvictingCache().getOrCreate(context.eResource);
+		var result = cache.get("ImportedNamespaceResolvers")
+		
+		if(result === null){
+			result = doGetImportedNamespaceResolvers(context, ignoreCase, scope)
+			cache.set("ImportedNamespaceResolvers", result)
+		}
+		
+		result
+	}
+	
+	def doGetImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope scope) {
 		val result = <ImportNormalizer>newArrayList()
 			
 		val namespaces = context.allImports.map [ #[importedNamespace] + this.allRelativeImports(importedNamespace, context)].flatten.toSet
