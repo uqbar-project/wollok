@@ -37,7 +37,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def preferences(EObject obj) {
 		if (WEclipseUtils.isWorkspaceOpen) {
 			val ifile = obj.IFile
-			if (ifile != null) {
+			if (ifile !== null) {
 				return preferenceStoreAccess.getContextPreferenceStore(ifile.project)
 			}
 		}
@@ -57,7 +57,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def report(String description, EObject invalidObject, EStructuralFeature ref, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 
-		if (severityValue == null)
+		if (severityValue === null)
 			error(description, invalidObject, ref, issueId)
 		switch (severityValue) {
 			case ERROR: error(description, invalidObject, ref, issueId)
@@ -73,7 +73,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 
-		if (severityValue == null)
+		if (severityValue === null)
 			error(description, invalidObject, ref, index, issueId)
 		switch (severityValue) {
 			case ERROR: error(description, invalidObject, ref, index, issueId)
@@ -86,7 +86,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 		val checkMethod = inferCheckMethod()
 		val prefs = preferences(invalidObject)
 		var severityValue = prefs?.getString(checkMethod.name)?.severityEnumValue
-		if (severityValue == null)
+		if (severityValue === null)
 			severityValue = checkMethod.getAnnotation(DefaultSeverity)?.value
 		severityValue
 	}
@@ -98,13 +98,13 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			e.stackTrace
 		val checkStackElement = stackTrace.findLast [ e |
 			val m = this.class.methods.findFirst[name == e.methodName]
-			m != null && m.isAnnotationPresent(Check)
+			m !== null && m.isAnnotationPresent(Check)
 		]
 		return this.class.methods.findFirst[m|m.name == checkStackElement.methodName]
 	}
 
 	def getSeverityEnumValue(String value) {
-		if(value == null || "".equals(value.trim)) null else CheckSeverity.valueOf(value)
+		if(value === null || "".equals(value.trim)) null else CheckSeverity.valueOf(value)
 	}
 
 	/** overrides to add the enabled/disabled behavior */
@@ -139,7 +139,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			val prefs = (instance as WollokDslValidator).preferences(state.currentObject)
 			val key = method.name + PREF_KEY_ENABLED_SUFFIX
 			// default is "enabled" if not present
-			if (method.isAnnotationPresent(NotConfigurable) || prefs == null || !prefs.contains(key) ||
+			if (method.isAnnotationPresent(NotConfigurable) || prefs === null || !prefs.contains(key) ||
 				prefs.getBoolean(key)) {
 				decoratee.invoke(state)
 			} else {

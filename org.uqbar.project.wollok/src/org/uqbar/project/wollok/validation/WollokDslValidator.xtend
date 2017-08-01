@@ -281,7 +281,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def dontUseWKONameOnWKOUseSelfInstead(WVariableReference it) {
-		if (it.ref == getSelfContext)
+		if (ref == declaringContext)
 			report(WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT, it)
 	}
 
@@ -784,7 +784,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
-		if (t.then?.evaluatesToBoolean && t.^else?.evaluatesToBoolean) {
+		if (t.then.evaluatesToBoolean && t.^else.evaluatesToBoolean) {
 			val inlineResult = if(t.then.isReturnTrue) t.condition.sourceCode else ("!(" + t.condition.sourceCode + ")")
 			val replacement = " return " + inlineResult
 			report(WollokDslValidator_BAD_USAGE_OF_IF_AS_BOOLEAN_EXPRESSION + replacement, t, WIF_EXPRESSION__CONDITION,
