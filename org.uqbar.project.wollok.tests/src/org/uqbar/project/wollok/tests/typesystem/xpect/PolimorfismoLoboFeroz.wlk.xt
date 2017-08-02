@@ -4,30 +4,37 @@ object lobo {
 
 	var calorias = 100
 	
+	// XPECT methodType at calorias  --> () => Number
 	method calorias(){
 		return calorias
 	}
 	
+	// XPECT methodType at estasGordo  --> () => Boolean
 	method estasGordo(){
 		return calorias > 200
 	}
 	
+	// XPECT methodType at estasSaludable  --> () => Boolean
 	method estasSaludable(){
 		return calorias > 20 and calorias < 150
 	}
-	
+
+	// XPECT methodType at correr  --> (Number) => Void
 	method correr(minutos){
 		calorias = calorias - minutos * 2
 	}
 	
+	// XPECT! methodType at comer  --> ((abuela|chanchito|chanchitoCasaMadera|chanchitoTrabajador|oveja|caperucita|duende)) => Void
 	method comer(personaje){
 		calorias = calorias + personaje.caloriasQueAporta()
 	}
 	
+	// XPECT! methodType at correrA  --> ((casaPaja|casaMadera|casaLadrillos|casaAbuela|bosque)) => Void
 	method correrA(lugar){
 		self.correr(lugar.minutos())
 	}
 
+	// XPECT! methodType at soplar  --> ((casaPaja|casaMadera|casaLadrillos)) => Void
 	method soplar(casa){
 		calorias = calorias - (casa.resistencia() + casa.pesoOcupantes())
 	}
@@ -38,6 +45,7 @@ object chanchito{
 	method peso(){
 		return 50
 	}
+	// XPECT methodType at caloriasQueAporta  --> () => Number
 	method caloriasQueAporta(){
 		return self.peso() / 10
 	}
@@ -48,6 +56,7 @@ object chanchitoCasaMadera{
 	method peso(){
 		return 20
 	}
+// XPECT methodType at caloriasQueAporta  --> () => Integer
 	method caloriasQueAporta(){
 		return 7
 	}
@@ -59,6 +68,8 @@ object chanchitoTrabajador{
 	method peso(){
 		return edad * 5
 	}
+// XPECT methodType at caloriasQueAporta  --> () => Number
+// deberia ser Integer
 	method caloriasQueAporta(){
 		return self.peso()
 	}
@@ -66,6 +77,7 @@ object chanchitoTrabajador{
 
  
 object casaPaja{
+// XPECT methodType at pesoOcupantes  --> () => Integer
 	method pesoOcupantes(){
 		return chanchito.peso()
 	}
@@ -80,7 +92,9 @@ object casaPaja{
 }
 
 object casaMadera{
+// XPECT type at minutos  --> Integer
 	var minutos = 15
+// XPECT! type at visitante  --> (chanchito|chanchitoCasaMadera|chanchitoTrabajador|canasta)
 	var visitante
 //	var visitante = chanchito
 	
