@@ -46,9 +46,19 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "add" === #[ELEMENT] => Void
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
+		List >> "last" === #[] => ELEMENT
+		List >> "anyOne" === #[] => ELEMENT
 		List >> "size" === #[] => Integer
+		List >> "clear" === #[] => Void
+		List >> "remove" === #[ELEMENT] => Void
 		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
-		
+	    List >> "all" === #[closure(#[ELEMENT], Boolean)] => Boolean
+		List >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT 
+		// deberia ser Any (ordenable)
+		List >> "count" === #[closure(#[ELEMENT], Boolean)] => Integer
+		//List >> "forEach" === #[closure(#[ELEMENT], Void)] => Void
+		List >> "filter" === #[closure(#[ELEMENT], Boolean)] => List
+	
 		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
 		 
 		Set + Set => Set;
