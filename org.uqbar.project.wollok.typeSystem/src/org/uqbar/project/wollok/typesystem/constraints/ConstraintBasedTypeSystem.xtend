@@ -7,7 +7,6 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.MessageType
@@ -31,6 +30,8 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+
+import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 
@@ -73,11 +74,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
-		finder.clearCache		
 		allTypes = null
 
 		// This shouldn't be necessary if all global objects had type annotations
-		finder.allCoreWKOs(program).forEach[constraintGenerator.newNamedObject(it)]
+		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
@@ -182,22 +182,12 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		finder.getCachedClass(context, classFQN).classType
 	}
 
-	def findType(EObject context, String typeName) {
-		// TODO Este método debería volar cuando terminemos las nuevas type annotations.
-		try {
-			new ClassBasedWollokType(finder.getCachedClass(context, typeName), this)
-		} catch (WollokRuntimeException e) {
-			new NamedObjectWollokType(finder.getCachedObject(context, typeName), this)
-		}
-	}
-
 	def getAllTypes() {
-		// TODO This is hacky but I do not understand why finder.allClasses(context) does
-		// not give me all my classes and I do not have the time to debug it now. 
 		if (allTypes === null) {
+			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(finder.allCoreClasses(programs.get(0)).map[new ClassBasedWollokType(it, this)])
-			allTypes.addAll(finder.allCoreWKOs(programs.get(0)).map[new NamedObjectWollokType(it, this)])
+			allTypes.addAll(allCoreClasses.map[new ClassBasedWollokType(it, this)])
+			allTypes.addAll(allCoreWKOs.map[new NamedObjectWollokType(it, this)])
 		}
 		
 		allTypes

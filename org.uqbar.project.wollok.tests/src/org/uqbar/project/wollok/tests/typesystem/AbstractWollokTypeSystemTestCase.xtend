@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.tests.typesystem
 
 import com.google.inject.Inject
+
 import com.google.inject.Injector
 import org.eclipse.emf.common.util.Diagnostic
 import org.eclipse.emf.ecore.EObject
@@ -12,7 +13,6 @@ import org.eclipse.xtext.validation.AbstractValidationDiagnostic
 import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX
+import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
@@ -58,7 +59,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	@Before
 	def void setupTypeSystem() {
-		WollokResourceCache.clearCache()
+		clearResourceCache()
 
 		tsystem = tsystemClass.newInstance
 		injector.injectMembers(tsystem)
