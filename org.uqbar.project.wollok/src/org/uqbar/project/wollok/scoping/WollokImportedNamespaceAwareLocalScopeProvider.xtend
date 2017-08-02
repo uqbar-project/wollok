@@ -2,9 +2,11 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.naming.IQualifiedNameConverter
+import org.eclipse.xtext.resource.ISelectable
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
@@ -40,25 +42,26 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 		throw new RuntimeException("It should never reach here")
 	}
 	
-	def getImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope scope) {
+	def getImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope scope, EReference reference) {
 		val cache = new OnChangeEvictingCache().getOrCreate(context.eResource);
 		var result = cache.get("ImportedNamespaceResolvers")
 		
 		if(result === null){
-			result = doGetImportedNamespaceResolvers(context, ignoreCase, scope)
+//			val globalScope = globalScopeProvider.getScope()
+			result = doGetImportedNamespaceResolvers(context, ignoreCase, getGlobalScope(context.eResource, reference))
 			cache.set("ImportedNamespaceResolvers", result)
 		}
 		
 		result
 	}
 	
-	def doGetImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope scope) {
+	def doGetImportedNamespaceResolvers(EObject context, boolean ignoreCase, IScope globalScope) {
 		val result = <ImportNormalizer>newArrayList()
 			
 		val namespaces = context.allImports.map [ #[importedNamespace] + this.allRelativeImports(importedNamespace, context)].flatten.toSet
 
 		namespaces.filter [ ns | 
-			scope.containsImport(ns)
+			globalScope.containsImport(ns)
 		].forEach [
 			val normalizer = createImportedNamespaceResolver(it, ignoreCase)
 			if (normalizer !== null) {
@@ -74,7 +77,7 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 		var allDescriptions = getAllDescriptions(context.eResource());
 		var name = getQualifiedNameOfLocalElement(context);
 		var ignoreCase = isIgnoreCase(reference);
-		val List<ImportNormalizer> namespaceResolvers = getImportedNamespaceResolvers(context, ignoreCase, result);
+		val List<ImportNormalizer> namespaceResolvers = getImportedNamespaceResolvers(context, ignoreCase, result, reference);
 		if (!namespaceResolvers.isEmpty()) {
 			if (isRelativeImport() && name!==null && !name.isEmpty()) {
 				val localNormalizer = doCreateImportNormalizer(name, true, ignoreCase); 
@@ -89,7 +92,17 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends ImportedNamespaceAw
 		return result;
 	}
 	
-	
+	override protected createImportScope(IScope parent, List<ImportNormalizer> namespaceResolvers, ISelectable importFrom, EClass type, boolean ignoreCase) {
+		if(parent instanceof WollokImportScope){
+			val parentImport = parent as WollokImportScope
+
+			if(parentImport.normalizers == namespaceResolvers && importFrom == parentImport.rawImportFrom && type == parentImport.type)
+				return parentImport
+		}
+		
+		new WollokImportScope(namespaceResolvers, parent, importFrom, type, ignoreCase)
+	}
+
 	def Iterable<String> allRelativeImports(String importedNamespace, EObject context){
 		this.allRelativeImports(importedNamespace, context.implicitPackage)
 	}
