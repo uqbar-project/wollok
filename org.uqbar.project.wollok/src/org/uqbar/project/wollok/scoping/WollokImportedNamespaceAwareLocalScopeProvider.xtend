@@ -8,12 +8,12 @@ import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider
+import org.eclipse.xtext.util.OnChangeEvictingCache
 
 import static java.util.Collections.singletonList
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
-import org.eclipse.xtext.util.OnChangeEvictingCache
 
 /**
  * @author tesonep

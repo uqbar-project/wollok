@@ -8,16 +8,12 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.handlers.IHandlerService
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
-import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.ui.preferences.WollokRootPreferencePage
 
 class WollokDocumentProvider extends XtextDocumentProvider {
 	val String XTEXT_FORMAT_ACTION_COMMAND_ID = "org.eclipse.xtext.ui.FormatAction";
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
-
-	@Inject
-	WollokGlobalScopeCache scopeCache
 
 	override doSaveDocument(IProgressMonitor monitor, Object element, IDocument document, boolean overwrite) throws CoreException {
 
@@ -30,9 +26,6 @@ class WollokDocumentProvider extends XtextDocumentProvider {
 			service.executeCommand(XTEXT_FORMAT_ACTION_COMMAND_ID, null)
 		}
 		
-		//Clearing the cache for the imports
-		scopeCache.clearCache
-
 		super.doSaveDocument(monitor, element, document, overwrite)
 	}
 }
