@@ -39,10 +39,12 @@ object pepe {
 	// XPECT type at cliente --> (fiona|salvador) 
 	var cliente = fiona 					
 	
+	// XPECT methodType at cuantosGolesMetiste --> () => Integer 
 	method cuantosGolesMetiste(){
 		return 5
 	}
 	
+	// XPECT methodType at labura --> () => Void 
 	method labura(){
 		cliente.compraZapatos()				
 	}

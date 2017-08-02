@@ -29,8 +29,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Double - Number => Double
 		Double * Number => Double
 		Double / Number => Double;
-		(Double > Double) => Boolean;
-		(Double < Double) => Boolean
+		(Double > Number) => Boolean;
+		(Double < Number) => Boolean
 		Double >> ">=" === #[Number] => Boolean
 		Double >> "<=" === #[Number] => Boolean
 
