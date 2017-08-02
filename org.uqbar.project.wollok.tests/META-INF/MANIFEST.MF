@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 1.6.1.qualifier
+Bundle-Version: 1.6.2.qualifier
 Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  lib/lipermi-0-4-2.jar,
  .

@@ -139,10 +139,22 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@NotConfigurable
 	def checkValidationExtensions(WFile wfile) {
-		validatorExtensions.forEach[
-			check(wfile, this)
+		validatorExtensions.forEach[ ext |
+			if(ext.shouldRun)
+				ext.check(wfile, this)
 		]
 	}
+	
+	protected def shouldRun(WollokValidatorExtension ext){
+		val method = ext.class.getMethod("check", WFile, WollokDslValidator)
+		val annotation = method.getAnnotation(Check)
+		
+		if(annotation === null) 
+			throw new RuntimeException("Extension " + ext.class.name + " should use the @Check annotation")
+		
+		this.checkMode.shouldCheck(annotation.value)
+	}
+	
 
 	@Check
 	@DefaultSeverity(ERROR)
@@ -303,12 +315,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(ERROR)
+	@DefaultSeverity(WARN)
 	def delegatedDefaultConstructorExists(WDelegatingConstructorCall it) {
 		if (it.arguments.isEmpty){
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved === null) {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR,
+				report(NLS.bind(WollokDslValidator_REDUNDANT_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_DEFAULT_CONSTRUCTOR,
 					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
 					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}

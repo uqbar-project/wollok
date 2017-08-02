@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.core.runtime.AssertionFailedException
+import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -13,7 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
 
-	
+	@Check(NORMAL)
 	override check(WFile file, WollokDslValidator validator) {
 		//TODO: lee las preferencias cada vez!
 		try
