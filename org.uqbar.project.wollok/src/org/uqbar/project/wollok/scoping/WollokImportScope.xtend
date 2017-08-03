@@ -1,44 +1,83 @@
 package org.uqbar.project.wollok.scoping
 
 import java.util.List
-import org.apache.commons.collections.map.LRUMap
 import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.resource.IEObjectDescription
 import org.eclipse.xtext.resource.ISelectable
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
-import org.eclipse.xtext.scoping.impl.ImportScope
-import org.eclipse.xtext.resource.IEObjectDescription
-import org.uqbar.project.wollok.utils.ReflectionExtensions
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.EcoreUtil2
 
-class WollokImportScope extends ImportScope {
+class WollokImportScope implements IScope {
 	
-	val cache = new LRUMap(10)
+	val List<ImportNormalizer> normalizers
+	val ISelectable localElements
+
+	@Accessors val IScope parent
+	@Accessors val EClass type
 	
-	new(List<ImportNormalizer> namespaceResolvers, IScope parent, ISelectable importFrom, EClass type, boolean ignoreCase) {
-		super(namespaceResolvers, parent, importFrom, type, ignoreCase)
+	new(List<ImportNormalizer> namespaceResolvers, IScope parent, ISelectable importFrom, EClass type) {
+		this.normalizers = namespaceResolvers
+		this.localElements = importFrom
+		this.parent = parent
+		this.type = type
 	}
 	
-	override protected getLocalElementsByName(QualifiedName name) {
-		var result = cache.get(name) as Iterable<IEObjectDescription>
-		
-		if(result === null){
-			result = super.getLocalElementsByName(name)
-			cache.put(name, result)
-		}
-		
-		result
-	}
 	
 	def List<ImportNormalizer> getNormalizers(){
-		(ReflectionExtensions.getFieldValue(this,"normalizers")) as List<ImportNormalizer>
+		normalizers
 	}
 	
-	def ISelectable getRawImportFrom(){
-		(ReflectionExtensions.getFieldValue(this,"importFrom")) as ISelectable
+	def ISelectable getImportFrom(){
+		localElements
 	}
 
-	def getType(){
-		(ReflectionExtensions.getFieldValue(this,"type")) as EClass
+	override getAllElements() {
+		val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByType(type) 
+		localElementsFound + parent.allElements.filter[EcoreUtil2.isAssignableFrom(type, it.EClass)]
 	}
+	
+	override getElements(QualifiedName name) {
+		val normalizedNames = (#[name] + normalizers.map[it.resolve(name)].filter[it !== null]).toList
+		var IEObjectDescription result = null
+		
+		if(localElements !== null)
+		 	result = localElements.getExportedObjectsByType(type).findFirst[normalizedNames.contains(it.name)]
+		
+		if(result !== null)
+			return #[result]
+			
+		for(n : normalizedNames){
+			var r = parent.getElements(n).findFirst[EcoreUtil2.isAssignableFrom(type, it.EClass)]
+			if(r !== null) 
+				return #[r]
+		}
+		
+		return #[]
+	}
+	
+	override getElements(EObject object) {
+		val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByObject(object) 
+		localElementsFound + parent.getElements(object)
+	}
+	
+	override getSingleElement(QualifiedName name) {
+		val result = getElements(name);
+		val iterator = result.iterator();
+		if (iterator.hasNext())
+			return iterator.next();
+		return null;
+	}
+	
+	override getSingleElement(EObject object) {
+		val result = getElements(object);
+		val iterator = result.iterator();
+		if (iterator.hasNext())
+			return iterator.next();
+		return null;		
+	}
+	
 }
