@@ -1,7 +1,7 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok Lib
 Bundle-SymbolicName: org.uqbar.project.wollok.lib;singleton:=true
-Bundle-Version: 1.6.2
+Bundle-Version: 1.6.3.qualifier
 Bundle-Activator: org.uqbar.project.wollok.lib.WollokLibActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
