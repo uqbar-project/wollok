@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
@@ -26,7 +27,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WMixin
 
 /**
  * This class contains custom scoping description.
@@ -54,7 +54,7 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 	
 	def dispatch IScope scope(WClass clazz) {
-		val scope = if (clazz.parent != null)
+		val scope = if (clazz.parent !== null)
 			clazz.parent.scope + clazz.declaredVariables
 		else
 			clazz.declaredVariables.asScope
