@@ -57,6 +57,7 @@ class WollokConstants {
 	public static val FIXTURE = "fixture" 
 	
 	public static val ROOT_CLASS = "Object"
+	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 
