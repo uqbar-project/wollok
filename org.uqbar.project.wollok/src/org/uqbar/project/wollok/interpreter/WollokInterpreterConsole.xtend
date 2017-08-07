@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.interpreter
 
 import java.io.Serializable
+import com.google.inject.Singleton
 
 /**
  * A console where the interpreter will write stuff into.
@@ -17,6 +18,7 @@ interface WollokInterpreterConsole extends Serializable {
  * Impl that writes directly to sys out and sys.err
  * @author jfernandes
  */
+@Singleton
 class SysoutWollokInterpreterConsole implements WollokInterpreterConsole {
 	override logMessage(String message) { println(message)	}
 	override logError(Throwable exception) { exception.printStackTrace }

@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.serializer
 
+import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.ICompositeNode
@@ -11,6 +12,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 /**
  * This syntactic sequencer is aware of synthetic links and ignores them during serialization
  */
+@Singleton
 class WollokDslSyntacticSequencerWithSyntheticLinking extends WollokDslSyntacticSequencer {
 	override void acceptAssignedCrossRefDatatype(RuleCall datatypeRC, String token, EObject value, int index,
 		ICompositeNode node) {

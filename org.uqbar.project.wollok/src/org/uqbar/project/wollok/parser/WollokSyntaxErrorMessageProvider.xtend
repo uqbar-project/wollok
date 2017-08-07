@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.parser
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import java.util.Set
 import org.antlr.runtime.MismatchedTokenException
 import org.antlr.runtime.RecognitionException
@@ -16,6 +17,7 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 
+@Singleton
 class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	@Inject
 	private ITokenDefProvider tokenDefProvider

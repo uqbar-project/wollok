@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.utils
 
+import com.google.inject.Singleton
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
 
@@ -31,6 +32,7 @@ class DummyJvmTypeProvider implements IJvmTypeProvider {
 	
 }
 
+@Singleton
 class DummyJvmTypeProviderFactory implements IJvmTypeProvider.Factory {
 	
 	override createTypeProvider() throws UnsupportedOperationException {

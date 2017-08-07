@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
+import com.google.inject.Singleton
 
 /**
  * This class contains custom formatting description.
@@ -37,6 +38,7 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
  * 
  * @author jfernandes
  */
+@Singleton
 class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension WollokDslGrammarAccess access
 	

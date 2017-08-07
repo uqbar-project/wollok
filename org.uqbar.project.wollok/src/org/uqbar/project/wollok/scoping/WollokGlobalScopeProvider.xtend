@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.scoping
 
 import com.google.common.base.Predicate
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
@@ -12,6 +13,7 @@ import org.eclipse.xtext.resource.IResourceDescription
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
+import org.eclipse.xtext.util.OnChangeEvictingCache
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
@@ -20,13 +22,13 @@ import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.util.OnChangeEvictingCache
 
 /**
  * 
  * @author tesonep
  * @author jfernandes
  */
+@Singleton
 class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	@Inject
