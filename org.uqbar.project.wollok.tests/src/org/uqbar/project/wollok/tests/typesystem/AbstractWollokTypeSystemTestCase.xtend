@@ -97,20 +97,42 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	// ************************************************************
-	// ** Assertions
+	// ** Find program elements (classes and named objects)
 	// ************************************************************
+	
+	/**
+	 * Finds core classes by full qualified name, e.g. context.classTypeFor('wollok.lang.String')
+	 */
 	def classTypeFor(EObject context, String classFQN) {
 		new ClassBasedWollokType(finder.getCachedClass(context, classFQN), tsystem)
 	}
-	
+
+	/**
+	 * Finds core named objects by full qualified name, e.g. context.classTypeFor('wollok.lib.console')
+	 */
+	def objectTypeFor(EObject context, String classFQN) {
+		new NamedObjectWollokType(finder.getCachedObject(context, classFQN), tsystem)
+	}
+
+	/**
+	 * Finds user classes by simple name (i.e. not the fully qualified name), 
+	 * e.g. classType('Golondrina')
+	 */	
 	def classType(String className) {
 		new ClassBasedWollokType(WClass.find(className), null)
 	}
 
+	/**
+	 * Finds user classes by simple or qualified name e.g. classType('pepita')
+	 */
 	def objectType(String objectName) {
 		// TODO Use always fully qualified names
 		new NamedObjectWollokType(WNamedObject.find(objectName.split('\\.').last), null)
 	}
+
+	// ************************************************************
+	// ** Assertions
+	// ************************************************************
 
 	def assertTypeOf(EObject program, WollokType expectedType, String programToken) {
 		assertEquals("Unmatched type for '" + programToken + "'", expectedType, program.findByText(programToken).type)
@@ -228,7 +250,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	def <T extends EObject> find(Class<T> resourceType, String resourceName) {
 		val resources = resourceSet.allContents.filter(resourceType).toList
 		resources.findFirst[it.name == resourceName] => [
-			if (it === null)
+			if (it === null) 
 				throw new RuntimeException(
 					'''Could NOT find «resourceType.simpleName» [«resourceName»] in: «resources.map[it.name].toList»''')
 		]
