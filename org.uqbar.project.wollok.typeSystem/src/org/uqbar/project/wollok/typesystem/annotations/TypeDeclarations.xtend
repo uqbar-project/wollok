@@ -41,6 +41,10 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** Synthetic operator syntax
 	// ****************************************************************************
+	def operator_equals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "==", #[parameterType])
+	}
+	
 	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
 	}
@@ -73,6 +77,8 @@ abstract class TypeDeclarations {
 
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }
 
+	def Object() { classTypeAnnotation(OBJECT) }
+
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
@@ -92,6 +98,8 @@ abstract class TypeDeclarations {
 	def Collection() { classTypeAnnotation(COLLECTION) }
 
 	def Range() { classTypeAnnotation(RANGE) }
+
+	def Position() { classTypeAnnotation(POSITION) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
 

@@ -29,7 +29,7 @@ class ConsoleInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				console
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(objectType(CONSOLE), 'console')
+			assertTypeOf(objectTypeFor(CONSOLE), 'console')
 		]
 	}
 
