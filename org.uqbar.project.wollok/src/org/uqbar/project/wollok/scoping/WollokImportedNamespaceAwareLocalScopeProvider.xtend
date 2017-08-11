@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.scoping
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import java.util.Iterator
 import java.util.List
 import org.eclipse.emf.ecore.EClass
@@ -28,6 +29,7 @@ import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
  * @author tesonep
  * @author jfernandes
  */
+@Singleton
 class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScopeDelegatingScopeProvider {
 	
 	@Inject

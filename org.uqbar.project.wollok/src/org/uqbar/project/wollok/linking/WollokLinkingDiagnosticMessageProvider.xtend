@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.linking
 
+import com.google.inject.Singleton
 import org.eclipse.xtext.diagnostics.Diagnostic
 import org.eclipse.xtext.diagnostics.DiagnosticMessage
 import org.eclipse.xtext.diagnostics.Severity
@@ -16,6 +17,7 @@ import static extension org.uqbar.project.wollok.WollokModelUtils.*
  * 
  * @author jfernandes
  */
+ @Singleton
 class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessageProvider {
 	
 	override getUnresolvedProxyMessage(ILinkingDiagnosticContext context) {

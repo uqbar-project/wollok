@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.scoping
 
+import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
@@ -14,6 +15,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * <li>Wfile name</li>
  * 
  */
+@Singleton
 class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvider {
 	
 	def QualifiedName qualifiedName(WObjectLiteral obj) {

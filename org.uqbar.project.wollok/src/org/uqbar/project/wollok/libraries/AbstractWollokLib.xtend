@@ -25,9 +25,9 @@ abstract class AbstractWollokLib implements WollokLib {
 	@Inject
 	var Manager resourceDescriptionManager	
 	
-	new() {
-		
-	}
+	var WollokManifest manifest
+	
+	new() {}
 	
 	new (Manager manager) {
 		this.resourceDescriptionManager = manager
@@ -40,21 +40,28 @@ abstract class AbstractWollokLib implements WollokLib {
 		return getManifest(resource).allURIs.map[it.load(resource)].flatten
 	}
 
-	def WollokManifest getManifest(Resource resource)
+	def WollokManifest getManifest(Resource resource){
+		if(manifest === null)
+			manifest = this.doGetManifest(resource)
+		
+		return manifest
+	}
+	
+	def WollokManifest doGetManifest(Resource resource)
 	
 	def internalLoad(URI uri, Resource resource) {
-		load(uri, resource, this.manager)
+		load(uri, resource, manager)
 	}
 	
 	/**
-	 * find contents in WollokResourceCache, if not found then call internalLoad 
+	 * Find contents in WollokResourceCache, if not found then call internalLoad. 
 	 */
 	 def Iterable<IEObjectDescription> load(URI uri, Resource resource) {
 			try {
 			var Iterable<IEObjectDescription> exportedObjects
 			exportedObjects = WollokResourceCache.getResource(uri)
 			if (exportedObjects === null) {
-				exportedObjects = this.internalLoad(uri, resource)
+				exportedObjects = internalLoad(uri, resource)
 				WollokResourceCache.addResource(uri, exportedObjects)
 			}
 			exportedObjects

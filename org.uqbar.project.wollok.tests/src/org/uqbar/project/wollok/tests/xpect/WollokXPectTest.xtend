@@ -5,7 +5,6 @@ import org.junit.runner.RunWith
 import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.InitializationError
-import org.uqbar.project.wollok.scoping.WollokResourceCache
 import org.xpect.runner.XpectRunner
 import org.xpect.xtext.lib.tests.XtextTests
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
@@ -24,7 +23,6 @@ class WollokXpectRunner extends XpectRunner {
 	}
 
 	override runChild(Runner child, RunNotifier notifier) {
-		WollokResourceCache.clearCache
 		super.runChild(child, notifier)
 	}
 }

@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.linking
 
 import com.google.common.collect.Multimap
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -25,6 +26,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * 
  * @author npasserini
  */
+@Singleton
 class WollokLinker extends LazyLinker {
 	@Inject
 	var SyntheticLinkingSupport syntheticLinkingSupport

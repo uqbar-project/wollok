@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
+import org.eclipse.xtend.lib.annotations.Accessors
 
 class UnionType extends BasicType {
+	@Accessors(PUBLIC_GETTER)
 	List<AbstractContainerWollokType> types
 	
 	new(AbstractContainerWollokType... types) {

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
@@ -16,8 +17,8 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 
 class TypeVariablesRegistry {
 	val Map<EObject, TypeVariable> typeVariables = newHashMap
@@ -132,14 +133,14 @@ class TypeVariablesRegistry {
 	 */
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj) => [ if (it === null) {
-			throw new RuntimeException("I don't have type information for " + obj.debugInfoInContext)
+			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
 		typeVariables.get(obj) ?: 
 			typeParameters.get(obj) => [ if (it === null) {
-				throw new RuntimeException("I don't have type information for " + obj.debugInfo)
+				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 			}]
 	}
 
