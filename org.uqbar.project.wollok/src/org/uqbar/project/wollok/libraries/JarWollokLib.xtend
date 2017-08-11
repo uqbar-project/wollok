@@ -31,7 +31,7 @@ class JarWollokLib extends AbstractWollokLib {
 		this.path = path;
 	}
 		
-	override getManifest(Resource resource) {
+	override doGetManifest(Resource resource) {
 		new WollokManifest(loadAndOpenManifestStream(path))
 	}
 	

@@ -40,7 +40,7 @@ class MapBasedCacheContent {
 	new(URI uri, Set<String> imports, Iterable<IEObjectDescription> result){
 		this.uri = uri.toString
 		this.imports = imports.toSet
-		this.result = newHashSet(result)
+		this.result = result
 	}
 	
 	def mismatch(Set<String> imports){

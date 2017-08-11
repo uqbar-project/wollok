@@ -35,7 +35,7 @@ class ClasspathEntryWollokLib extends AbstractWollokLib {
 		return uri.libName()
 	}
 
-	override getManifest(Resource resource) {
+	override doGetManifest(Resource resource) {
 		wmanifestEntry.manifest()
 	}
 	

@@ -11,12 +11,14 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import com.google.inject.Singleton
 
 /**
  * Default implement
  * 
  * @author jfernandes
  */
+@Singleton
 class DefaultNativeObjectFactory implements NativeObjectFactory {
 	// static public as a temporary "cut the refactor" method
 	public static val Map<String, String> transformations = #{
