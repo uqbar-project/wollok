@@ -1,9 +1,15 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object juan {
+	// XPECT type at mascota --> firulais
+    var mascota = firulais
+
 	method comoEstas() {
 		return "bien"
 	}
+
+	// XPECT methodType at mascota --> () => firulais
+    method mascota() = mascota
 }
 
 object pedro {
@@ -11,6 +17,8 @@ object pedro {
 		return juan
 	}
 }
+
+object firulais {}
 
 program p {
 	 
