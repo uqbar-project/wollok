@@ -22,7 +22,7 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 		do {
 			container = container.eContainer
 			fqn = container.fullyQualifiedName
-		} while (fqn == null)
+		} while (fqn === null)
 		
 		val idx = container.eAllContents.indexed.findFirst[ it.value == obj ].key
 		

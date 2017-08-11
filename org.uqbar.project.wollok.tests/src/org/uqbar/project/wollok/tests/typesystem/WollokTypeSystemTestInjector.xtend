@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.xpect.setup.XpectGuiceModule
+import org.eclipse.xtext.validation.Check
 
 @XpectGuiceModule
 class WollokTypeSystemTestModule extends WollokTestModule {
@@ -47,6 +48,7 @@ class TypeSystemTestValidatorExtension implements WollokValidatorExtension {
 		this.typeSystem = typeSystem
 	}
 
+	@Check(NORMAL)
 	override check(WFile file, WollokDslValidator validator) {
 		typeSystem.initialize(file)
 		typeSystem.validate(file, validator)

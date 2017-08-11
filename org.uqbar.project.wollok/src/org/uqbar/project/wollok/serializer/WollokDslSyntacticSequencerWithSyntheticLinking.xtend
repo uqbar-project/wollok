@@ -3,9 +3,10 @@ package org.uqbar.project.wollok.serializer
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.ICompositeNode
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.linking.WollokLinker
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.linking.WollokLinker
 
 /**
  * This syntactic sequencer is aware of synthetic links and ignores them during serialization
@@ -24,6 +25,6 @@ class WollokDslSyntacticSequencerWithSyntheticLinking extends WollokDslSyntactic
 	 * @see WollokLinker
 	 */	
 	def isSynthetic(ICompositeNode node, String token, EObject value) {
-		node == null && token == "Object" && (value instanceof WClass || value instanceof WNamedObject)
+		node === null && (token == WollokConstants.ROOT_CLASS || token == WollokConstants.FQN_ROOT_CLASS) && (value instanceof WClass || value instanceof WNamedObject)
 	}
 }

@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.util.OnChangeEvictingCache
 
 /**
  * 
@@ -60,10 +61,28 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			return #{}
 		}
 		
-		val rootObject = context.contents.get(0)
-		val imports = rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports
+		val imports = context.calculateImports
+		
 		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
-		// doImportedObjects(context,imports)
+	}
+
+	/**
+	 * Calculates the explicit imports using the import construction and all the objects that are accessed through a FQN
+	 * It caches the values to modifications
+	 */
+	def calculateImports(Resource context){
+		
+		val importsCache = new OnChangeEvictingCache().getOrCreate(context)
+		var result = importsCache.get("ImportsInResource")
+		
+		if(result === null){
+			val rootObject = context.contents.get(0)
+			result = (rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports).toSet
+			
+			importsCache.set("ImportsInResource", result)
+		}
+		
+		result
 	}
 
 	def doImportedObjects(Resource context, Iterable<String> imports) {
