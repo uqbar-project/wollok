@@ -109,15 +109,9 @@ class QuickFixUtils {
 	def static insertVariable(WMethodContainer declaringContext, String newVarName, IModificationContext context) {
 		val lastVariableDefinition = declaringContext.variableDeclarations.sortBy[before]?.last
 		if (lastVariableDefinition !== null) {
-			println("Last variable definition " + lastVariableDefinition)
-			println("Offset " + lastVariableDefinition.before)
 			context.insertAfter(lastVariableDefinition, VAR + " " + newVarName)
 		} else {
-			println(declaringContext.constructorsAndMethods)
-			println(declaringContext.constructorsAndMethods.sortBy[before])
 			val firstMethodOrConstructor = declaringContext.constructorsAndMethods.sortBy[before]?.head
-			println("First method or constructor " + firstMethodOrConstructor)
-			println("Offset " + firstMethodOrConstructor.before)
 			if (firstMethodOrConstructor !== null) {
 				context.insertBefore(firstMethodOrConstructor, VAR + " " + newVarName)
 			}
