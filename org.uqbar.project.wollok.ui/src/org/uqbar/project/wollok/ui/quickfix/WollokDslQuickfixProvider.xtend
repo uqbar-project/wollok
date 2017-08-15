@@ -388,9 +388,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_instance_variable_name,
 				Messages.WollokDslQuickFixProvider_create_instance_variable_description, "variable.gif") [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
-				val declaringContext = e.declaringContext
-				val firstClassChild = declaringContext.eContents.head
-				context.insertBefore(firstClassChild, VAR + " " + newVarName)
+				e.declaringContext.insertVariable(newVarName, context)
 			]
 		}
 

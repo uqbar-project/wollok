@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.ArrayList
-
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
@@ -46,8 +45,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -106,6 +105,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
+	def static constructorsAndMethods(WMethodContainer c) {
+		<EObject>newArrayList => [
+			addAll(c.initializers.toList)
+			if (c.fixture !== null) {
+				add(c.fixture)
+			}
+			addAll(c.methods.toList)
+		] 
+	}
+	
+	def static dispatch initializers(WMethodContainer c) { c.members.filter(WConstructor) }
+	def static dispatch initializers(WClass c) { c.constructors }
+	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
@@ -142,7 +154,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
-	def static fixture(WMethodContainer c) { c.members.filter(WFixture) }
+	def static dispatch EObject fixture(WMethodContainer c) { null }
+	def static dispatch EObject fixture(WSuite s) { s.fixture }
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
@@ -508,6 +521,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
 	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
 	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
-		
+
 }
 
