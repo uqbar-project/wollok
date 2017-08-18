@@ -49,8 +49,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * @author dodain
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
-	val tabChar = "\t"
-	val blankSpace = " "
 
 	@Inject
 	WollokClassFinder classFinder
@@ -367,8 +365,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	// ************************************************
 	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument, EObject target) {
-		// issue #452 - contextual menu based on different targets
-		val targetContext = target.declaringContext // target.getSelfContext
+		val targetContext = target.declaringContext
 		val hasMethodContainer = targetContext !== null
 		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
@@ -456,7 +453,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 */
 	def defaultStubMethod(WMemberFeatureCall call, int numberOfTabsMargin) {
 		val callText = call.node.text
-		val margin = (1..numberOfTabsMargin).map [ tabChar ].reduce [ acum, tab | acum + tab ] 
+		val margin = numberOfTabsMargin.output(tabChar) 
 		System.lineSeparator + margin + METHOD + " " + call.feature +
 					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
 					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
@@ -479,6 +476,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		modificationContextFactory.createModificationContext(issue).xtextDocument
 	}
 
+	// REPETIDO!!!!
 	protected def addMethod(IModificationContext it, WClass parent, String code) {
 		val newContext = getContainerContext(it, parent)
 
@@ -514,6 +512,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		}
 	}
 
+	// REPETIDO!!!!
 	def int findPlaceToAddMethod(WMethodContainer it) {
 		val lastMethod = members.lastOf(WMethodDeclaration)
 		if (lastMethod !== null) 
@@ -592,25 +591,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			0,
 			defaultStubMethod(call, xtextDocument.computeMarginFor(placeToAdd, container))
 		)
-	}
-
-	/**
-	 * Common method - compute margin that should by applied to a new method
-	 * If method container has no methods nor variable declarations, placeToAdd should not be considered
-	 * Otherwise we use default margin based on line we are calling
-	 */
-	def int computeMarginFor(IXtextDocument document, int placeToAdd, WMethodContainer container) {
-		if (container.methods.empty) {
-			return 1
-		}
-		val lineInformation = document.getLineInformationOfOffset(placeToAdd)
-		var textLine = document.get(lineInformation.offset, lineInformation.length)
-		var margin = 0
-		while (textLine.startsWith("\t")) {
-			margin++
-			textLine = textLine.substring(1)
-		}
-		margin
 	}
 
 }

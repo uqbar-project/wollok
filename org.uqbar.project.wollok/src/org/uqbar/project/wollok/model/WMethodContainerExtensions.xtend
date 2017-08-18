@@ -47,6 +47,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import org.uqbar.project.wollok.wollokDsl.impl.WTestImpl
 
 /**
  * Extension methods for WMethodContainers.
@@ -105,13 +106,14 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
-	def static constructorsAndMethods(WMethodContainer c) {
+	def static behaviors(WMethodContainer c) {
 		<EObject>newArrayList => [
 			addAll(c.initializers.toList)
 			if (c.fixture !== null) {
 				add(c.fixture)
 			}
 			addAll(c.methods.toList)
+			addAll(c.tests.toList) // we need to add both methods and tests for describe suites
 		] 
 	}
 	
@@ -119,6 +121,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch initializers(WClass c) { c.constructors }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
+	
+	def static dispatch tests(WMethodContainer c) { newArrayList }
+	def static dispatch tests(WSuite t) { t.tests.toList }
+	
 	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
 

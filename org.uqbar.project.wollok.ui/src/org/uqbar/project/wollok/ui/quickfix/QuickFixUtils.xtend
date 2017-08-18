@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.quickfix
 
 import org.eclipse.emf.ecore.EObject
+
 import org.eclipse.jface.text.IRegion
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.INode
@@ -19,6 +20,8 @@ import static extension org.uqbar.project.wollok.WollokConstants.*
  * @author jfernandes
  */
 class QuickFixUtils {
+	public static val tabChar = "\t"
+	public static val blankSpace = " "
 
 	/**
 	 * Inserts the given text in a new line after the given EObject.
@@ -40,7 +43,7 @@ class QuickFixUtils {
 
 	def static insertBefore(IModificationContext context, EObject e, String textToInsert, boolean withLineSeparator) {
 		var separator = ""
-		if(withLineSeparator) separator = System.lineSeparator
+		if (withLineSeparator) separator = System.lineSeparator
 		val newBlock = (textToInsert + separator).replaceAll(System.lineSeparator, e.marginFromPreviousLine(context))
 		context.xtextDocument.replace(e.before, 0, newBlock)
 	}
@@ -83,10 +86,39 @@ class QuickFixUtils {
 		NodeModelUtils.findActualNodeFor(element)
 	}
 
+	/**
+	 * Common method - compute margin that should by applied to a new method
+	 * If method container has no methods nor variable declarations, placeToAdd should not be considered
+	 * Otherwise we use default margin based on line we are calling
+	 */
+	def static int computeMarginFor(IXtextDocument document, int placeToAdd, WMethodContainer container) {
+		if (container.methods.empty) {
+			return 1
+		}
+		val lineInformation = document.getLineInformationOfOffset(placeToAdd)
+		var textLine = document.get(lineInformation.offset, lineInformation.length)
+		var margin = 0
+		while (textLine.startsWith("\t")) {
+			margin++
+			textLine = textLine.substring(1)
+		}
+		margin
+	}
+
 	def static marginFromPreviousLine(EObject e, IModificationContext context) {
 		// finds out the text from the last line System.lineSeparator and the first char of this object
-		val lastLine = context.getLineInfo(e.node.previousSibling)
-		context.textBetween(lastLine.endOfLine, e.before)
+		val previousSibling = e.node.previousSibling
+		val lastLine = context.getLineInfo(previousSibling)
+		var from = lastLine.endOfLine
+		if (from > e.before) {
+			from = previousSibling.endOffset
+		}
+		//var result = context.textBetween(from, e.before)
+		//if (!result.contains(System.lineSeparator)) {
+		//	result += System.lineSeparator
+		//}
+		val numberOfTabsMargin = computeMarginFor(context.xtextDocument, e.before, e.declaringContext)
+		System.lineSeparator + numberOfTabsMargin.output(tabChar)
 	}
 
 	def static getLineInfo(IModificationContext context, INode node) {
@@ -111,10 +143,15 @@ class QuickFixUtils {
 		if (lastVariableDefinition !== null) {
 			context.insertAfter(lastVariableDefinition, VAR + " " + newVarName)
 		} else {
-			val firstMethodOrConstructor = declaringContext.constructorsAndMethods.sortBy[before]?.head
-			if (firstMethodOrConstructor !== null) {
-				context.insertBefore(firstMethodOrConstructor, VAR + " " + newVarName)
+			val firstBehavior = declaringContext.behaviors.sortBy[before]?.head
+			if (firstBehavior !== null) {
+				context.insertBefore(firstBehavior, VAR + " " + newVarName)
 			}
 		}
+	}
+	
+	def static output(int numberOfChars, String character) {
+		if (numberOfChars < 1) return ""
+		(1..numberOfChars).map [ character ].reduce [ acum, c | acum + c ]
 	}
 }
