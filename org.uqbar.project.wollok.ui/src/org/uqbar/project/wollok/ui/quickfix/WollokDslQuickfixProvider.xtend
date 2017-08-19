@@ -450,18 +450,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * **************************************************************************************
 	 */
 	def defaultStubMethod(WMemberFeatureCall call, int numberOfTabsMargin) {
-		val callText = call.node.text
-		val parameters = callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1)
-		var parametersNames = ""
-		if (parameters.replace(" ", "").length > 2) {
-			val parametersSize = parameters.split(",").size()
-			if (parametersSize > 0) {
-				parametersNames = (1..parametersSize).map [ i | "param" + i ].join(", ")
-			}
-		}
 		val margin = numberOfTabsMargin.output(tabChar)
 		margin + METHOD + " " + call.feature + "(" +
-					parametersNames + ")"
+					call.parameterNames + ")"
 					+ " {" +
 					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
 					System.lineSeparator + margin + "}"

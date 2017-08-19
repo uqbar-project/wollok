@@ -77,6 +77,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
+	
+	def static dispatch parameterNames(EObject o) {
+		val parameters = o.parameters
+		if (parameters === null) return []
+		parameters.map [ name ]
+	}
+	
+	def static dispatch parameterNames(WMemberFeatureCall call) {
+		val parametersSize = call.memberCallArguments.size
+		if (parametersSize < 1) {
+			return ""
+		}
+		(1..parametersSize).map [ i | "param" + i ].join(", ")
+	}
 
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {

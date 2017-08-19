@@ -250,7 +250,7 @@ class MethodOnWKODoesntExistQuickFixTest extends AbstractWollokQuickFixTestCase 
 			
 			object anotherObject{
 				method aMethod(){
-					anObject.otherMethod(55, "hello", [])
+					anObject.otherMethod(55, "hello, wollok", [2, 34, 7])
 				}
 			}
 		''']
@@ -264,7 +264,7 @@ class MethodOnWKODoesntExistQuickFixTest extends AbstractWollokQuickFixTestCase 
 			
 			object anotherObject{
 				method aMethod(){
-					anObject.otherMethod(55, "hello", [])
+					anObject.otherMethod(55, "hello, wollok", [2, 34, 7])
 				}
 			}
 		''']
