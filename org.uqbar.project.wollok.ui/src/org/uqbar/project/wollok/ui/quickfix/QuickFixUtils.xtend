@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.quickfix
 
 import org.eclipse.emf.ecore.EObject
 
+
 import org.eclipse.jface.text.IRegion
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.INode
@@ -11,6 +12,8 @@ import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.xtend.lib.annotations.Data
 
 /**
  * Provides utilities for quickfixes.
@@ -150,8 +153,63 @@ class QuickFixUtils {
 		}
 	}
 	
+	def static insertMethod(WMethodContainer declaringContext, String code, IModificationContext context) {
+		val constructorLocation = declaringContext.placeToAddMethod
+		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
+		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
+	}
+
+	def static insertConstructor(WMethodContainer declaringContext, String code, IModificationContext context) {
+		val constructorLocation = declaringContext.placeToAddConstructor
+		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
+		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
+	}
+	
+	def static placeToAddMethod(WMethodContainer declaringContext) {
+		val behaviors = declaringContext.behaviors
+		if (behaviors.isEmpty) {
+			return new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
+		}
+		new QuickFixLocation(behaviors.sortBy [ before ].last.after, Location.AFTER)
+	}
+
+	def static placeToAddConstructor(WMethodContainer declaringContext) {
+		val constructors = declaringContext.constructors.toList
+		if (!constructors.isEmpty) {
+			return new QuickFixLocation(constructors.sortBy [ before ].last.after, Location.AFTER)
+		}
+		val behaviors = declaringContext.behaviors
+		if (!behaviors.isEmpty) {
+			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
+		}
+		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
+	}
+	
+	def static int getDefaultPlace(WMethodContainer declaringContext) {
+		declaringContext.node.endOffset - 1
+	}
+	
 	def static output(int numberOfChars, String character) {
 		if (numberOfChars < 1) return ""
 		(1..numberOfChars).map [ character ].reduce [ acum, c | acum + c ]
+	}
+	
+}
+
+enum Location { BEFORE, AFTER, ALL }
+
+@Data
+class QuickFixLocation {
+	
+	int placeToAdd
+	Location location
+	
+	def formatCode(String code) {
+		if (location === Location.BEFORE)
+			code + System.lineSeparator
+		else if (location === Location.AFTER) 
+			System.lineSeparator + code
+		else
+			System.lineSeparator + code + System.lineSeparator
 	}
 }

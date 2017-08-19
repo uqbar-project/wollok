@@ -19,7 +19,6 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -116,10 +115,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val constructor = '''
 				«tabChar»constructor(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")»){
 				«tabChar»«tabChar»//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-				«tabChar»}
-			'''
+				«tabChar»}'''
 
-			addMethod(parent, constructor)
+			parent.insertConstructor(constructor, it)
 		]
 	}
 
@@ -271,8 +269,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_create_method_superclass_name,
 			Messages.WollokDslQuickfixProvider_create_method_superclass_description, null) [ e, it |
 			val method = e as WMethodDeclaration
-			val container = method.eContainer as WMethodContainer
-			addMethod(container.parent, defaultStubMethod(container.parent, method))
+			val parent = (method.eContainer as WMethodContainer).parent as WMethodContainer
+			parent.insertMethod(defaultStubMethod(parent, method), it)
 		]
 	}
 
@@ -453,52 +451,39 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 */
 	def defaultStubMethod(WMemberFeatureCall call, int numberOfTabsMargin) {
 		val callText = call.node.text
-		val margin = numberOfTabsMargin.output(tabChar) 
-		System.lineSeparator + margin + METHOD + " " + call.feature +
-					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
+		val parameters = callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1)
+		var parametersNames = ""
+		if (parameters.replace(" ", "").length > 2) {
+			val parametersSize = parameters.split(",").size()
+			if (parametersSize > 0) {
+				parametersNames = (1..parametersSize).map [ i | "param" + i ].join(", ")
+			}
+		}
+		val margin = numberOfTabsMargin.output(tabChar)
+		margin + METHOD + " " + call.feature + "(" +
+					parametersNames + ")"
+					+ " {" +
 					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
 					System.lineSeparator + margin + "}"
 	}
 	
-	def defaultStubMethod(WClass clazz, WMethodDeclaration method) {
-		val margin = adjustMargin(clazz)
+	def defaultStubMethod(WMethodContainer mc, WMethodDeclaration method) {
+		val margin = adjustMargin(mc)
 		'''
 		«margin»«METHOD» «method.name»(«method.parameters.map[name].join(",")») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}''' + System.lineSeparator
 	}
 
-	def adjustMargin(WClass clazz) {
-		if(clazz.methods.empty) tabChar else ""
+	def adjustMargin(WMethodContainer mc) {
+		if (mc.behaviors.empty) tabChar else ""
 	}
 
 	def resolveXtextDocumentFor(Issue issue) {
 		modificationContextFactory.createModificationContext(issue).xtextDocument
 	}
 
-	// REPETIDO!!!!
-	protected def addMethod(IModificationContext it, WClass parent, String code) {
-		val newContext = getContainerContext(it, parent)
-
-		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
-		if (lastConstructor !== null)
-			newContext.insertAfter(lastConstructor, code)
-		else {
-			val lastVar = parent.members.findLast[it instanceof WVariableDeclaration]
-			if (lastVar !== null)
-				newContext.insertAfter(lastVar, code)
-			else {
-				val firstMethod = parent.members.findFirst[it instanceof WMethodDeclaration]
-				if (firstMethod !== null) {
-					newContext.insertBefore(firstMethod, code)
-				} else {
-					newContext.xtextDocument.replace(parent.after - 1, 0, code)
-				}
-			}
-		}
-	}
-
-	def getContainerContext(IModificationContext it, WClass parent) {
+	def getContainerContext(IModificationContext it, WMethodContainer parent) {
 		new IModificationContext() {
 
 			override getXtextDocument() {
@@ -510,21 +495,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			}
 
 		}
-	}
-
-	// REPETIDO!!!!
-	def int findPlaceToAddMethod(WMethodContainer it) {
-		val lastMethod = members.lastOf(WMethodDeclaration)
-		if (lastMethod !== null) 
-			return lastMethod.after
-		val lastConstructor = members.lastOf(WConstructor)
-		if (lastConstructor !== null)
-			return lastConstructor.after
-		val lastInstVar = members.lastOf(WVariableDeclaration)
-		if (lastInstVar !== null)
-			return lastInstVar.after
-
-		return it.node.offset + it.node.text.indexOf("{") + 1
 	}
 
 	def <T> T lastOf(List<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
@@ -584,13 +554,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * Common method for wko, objects, mixins and classes to create a non-existent method based on a call
 	 */
 	def createMethodInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
-		val placeToAdd = container.findPlaceToAddMethod
+		val methodLocation = container.placeToAddMethod
 		val xtextDocument = context.getXtextDocument(container.fileURI)
-		xtextDocument.replace(
-			placeToAdd,
-			0,
-			defaultStubMethod(call, xtextDocument.computeMarginFor(placeToAdd, container))
-		)
+		val code = defaultStubMethod(call, xtextDocument.computeMarginFor(methodLocation.placeToAdd, container))
+		container.insertMethod(code, context)
 	}
 
 }

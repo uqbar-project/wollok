@@ -108,7 +108,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static behaviors(WMethodContainer c) {
 		<EObject>newArrayList => [
-			addAll(c.initializers.toList)
+			addAll(c.constructors.toList)
 			if (c.fixture !== null) {
 				add(c.fixture)
 			}
@@ -117,8 +117,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		] 
 	}
 	
-	def static dispatch initializers(WMethodContainer c) { c.members.filter(WConstructor) }
-	def static dispatch initializers(WClass c) { c.constructors }
+	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
+	def static dispatch constructors(WClass c) { c.constructors }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	
