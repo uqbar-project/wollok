@@ -38,6 +38,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Custom quickfixes.
@@ -367,6 +368,15 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val hasMethodContainer = targetContext !== null
 		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
+
+		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_local_wko_name,
+			Messages.WollokDslQuickFixProvider_create_new_local_wko_description, "wollok-icon-object_16.png") [ e, context |
+			val newObjectName = xtextDocument.get(issue.offset, issue.length)
+			val container = e.container
+			context.xtextDocument.replace(container.before, 0,
+				WKO + blankSpace + newObjectName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)				
+				
+		]
 
 		// create local var
 		if (canCreateLocalVariable) {

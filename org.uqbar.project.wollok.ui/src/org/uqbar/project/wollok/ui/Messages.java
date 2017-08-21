@@ -126,7 +126,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_add_parameter_method_description;
 	public static String WollokDslQuickFixProvider_create_new_class_name; 
 	public static String WollokDslQuickFixProvider_create_new_class_description; 
-
+	public static String WollokDslQuickFixProvider_create_new_local_wko_name;
+	public static String WollokDslQuickFixProvider_create_new_local_wko_description;
 
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
