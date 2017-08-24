@@ -135,6 +135,8 @@ public class Messages extends NLS {
 	public static String AddNewElementQuickFix_NewFile_Title;
 	public static String AddNewElementQuickFix_ExistingFile_Title;
 	public static String AddNewElementQuickFix_NewFileAlreadyExists_ErrorMessage;
+	public static String AddNewElementQuickFix_NewFileCannotBeBlank_ErrorMessage;
+	public static String AddNewElementQuickFix_NewFileCannotStartWithNumber_ErrorMessage;
 	public static String AddNewElementQuickFix_Accept;
 	public static String AddNewElementQuickFix_Cancel;
 	

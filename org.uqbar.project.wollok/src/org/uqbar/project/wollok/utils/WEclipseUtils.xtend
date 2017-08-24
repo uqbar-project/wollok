@@ -67,6 +67,10 @@ class WEclipseUtils {
 	def static imageDescriptor(String name) { PlatformUI.getWorkbench.getSharedImages.getImageDescriptor(name) }
 	
 	def static resource(ITextEditor editor) { editor.editorInput.getAdapter(IResource) as IResource }
+
+	def static refreshProject(EObject e) {
+		e.file.refreshProject
+	}
 	
 	def static refreshProject(IResource resource) {
 		resource.project?.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor)

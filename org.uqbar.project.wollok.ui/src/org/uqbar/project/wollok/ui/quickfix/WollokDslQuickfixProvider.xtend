@@ -384,7 +384,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			Messages.WollokDslQuickFixProvider_create_new_external_wko_description, "wollok-icon-object_16.png") [ e, context |
 			val newObjectName = xtextDocument.get(issue.offset, issue.length)
 			val resource = xtextDocument.getAdapter(typeof(IResource))
-			new AddNewElementQuickFixDialog(newObjectName, newObjectName.generateNewWKOCode, resource, context, e)
+			new AddNewElementQuickFixDialog(newObjectName, true, resource, context, e)
 		]
 
 		// create local var

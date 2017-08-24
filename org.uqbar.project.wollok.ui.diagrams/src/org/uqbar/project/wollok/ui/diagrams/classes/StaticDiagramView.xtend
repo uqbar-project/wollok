@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.diagrams.classes
 
-import com.google.inject.Inject
 import java.util.ArrayList
 import java.util.Comparator
 import java.util.Observable
@@ -15,7 +14,6 @@ import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
 import org.eclipse.draw2d.graph.Node
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.gef.DefaultEditDomain
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.GraphicalEditPart
@@ -56,14 +54,11 @@ import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.progress.UIJob
 import org.eclipse.ui.views.properties.IPropertySheetPage
-import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextDocument
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
 import org.eclipse.xtext.ui.editor.outline.impl.EObjectNode
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.AddOutsiderClass
@@ -76,6 +71,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.RememberShapePosit
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowFileAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenComponents
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenParts
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenPartsElementAction
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowVariablesToggleButton
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
 import org.uqbar.project.wollok.ui.diagrams.classes.model.NamedObjectModel
@@ -89,9 +85,6 @@ import org.uqbar.project.wollok.ui.diagrams.classes.parts.InheritanceConnectionE
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.MixinEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.NamedObjectEditPart
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.StaticDiagramEditPartFactory
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
@@ -99,7 +92,6 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ShowHiddenPartsElementAction
 
 /**
  * 
@@ -138,7 +130,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	// Static diagram state and configuration
 	StaticDiagramConfiguration configuration
 
-	@Inject WollokClassFinder finder
+	//@Inject WollokClassFinder finder
 		
 	new() {
 		editDomain = new DefaultEditDomain(null)
@@ -252,30 +244,6 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			val orderForB = (b.parent?.identifier ?: "") + b.identifier
 			orderForA.compareTo(orderForB)
 		] as Comparator<WMethodContainer>
-	}
-	
-	def getAllElements(XtextResource it) { getAllOfType(WMethodContainer) }
-	def getMixins(XtextResource it) { getAllOfType(WMixin) }
-	def getClasses(XtextResource it) { getAllOfType(WClass) }
-	def getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
-	
-	def <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
-		if (contents.empty) #[]
-		else (contents.get(0) as WFile).eAllContents.filter(type).toList
-	}
-	
-	def getImportedClasses(XtextResource it) {
-		val imports = getAllOfType(Import)
-		imports.fold(newArrayList)[l, i |
-			try {
-				l.add(finder.getCachedClass(i, i.importedNamespace))
-			}
-			catch(ClassCastException e) {
-				// Temporarily user is writing another import
-			}
-			catch(WollokRuntimeException e) { }
-			l
-		]
 	}
 	
 	override createPartControl(Composite parent) {

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
+import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -28,20 +29,26 @@ import org.eclipse.swt.widgets.Button
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Event
+import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Listener
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.widgets.Text
+import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.ui.editor.model.edit.IModificationContext
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.validation.ElementNameValidation
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.uqbar.project.wollok.WollokConstants.*
+
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -53,12 +60,15 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class AddNewElementQuickFixDialog extends Dialog {
 
+	// SWT - UI References
 	Button[] radioButtonsNewOrNot	
 	Text inputNewFileName
+	Label errorMessage
 	TreeViewer treeWollokElements
 	Button newFileRadio
 	Button addButton
 
+	// DSL - XText References
 	IProject project
 	IResource resource
 	IModificationContext context
@@ -67,16 +77,20 @@ class AddNewElementQuickFixDialog extends Dialog {
 	// Element - Object or class to create
 	String elementName
 	String newFileName
-	String code
-	
+	boolean generatesWKO
 	List<URI> wollokFiles
-	
-	Composite treeComposite
-	
-	new(String elementName, String code, IResource resource, IModificationContext context, EObject originalEObject) {
+
+	public static val MAX_WIDTH = 300
+	public static val OK = "Ok"
+	public static val COLOR_WHITE = new Color(Display.current, 234, 234, 234)
+	public static val COLOR_BLACK = new Color(Display.current, 0, 0, 0)
+	public static val COLOR_RED = new Color(Display.current, 240, 10, 0)
+		
+	new(String elementName, boolean generatesWKO, IResource resource, IModificationContext context, EObject originalEObject) {
 		super(Display.getCurrent().activeShell)
+		this.elementName = elementName
 		this.computeFileName(elementName, true)
-		this.code = code
+		this.generatesWKO = generatesWKO
 		this.project = resource.project
 		this.resource = resource
 		this.context = context
@@ -117,10 +131,17 @@ class AddNewElementQuickFixDialog extends Dialog {
 			selection = true
 			addListener(SWT.Selection, fileSelectionListener)
 		]
-		
-		inputNewFileName = new Text(composite, SWT.SINGLE.bitwiseOr(SWT.BORDER)) => [
-			text = this.elementName
-    		setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL))
+
+		val fileNameComposite = new Composite(composite, SWT.NONE) => [
+			layout = new GridLayout => [ numColumns = 2 ]
+		]		
+		inputNewFileName = new Text(fileNameComposite, SWT.SINGLE.bitwiseOr(SWT.BORDER)) => [
+			text = this.newFileName
+			layoutData = new GridData => [
+				horizontalAlignment = SWT.FILL
+				grabExcessHorizontalSpace = false
+				widthHint = MAX_WIDTH
+			]
 			addKeyListener(new KeyListener() {
 				
 				override keyPressed(KeyEvent event) {
@@ -131,15 +152,26 @@ class AddNewElementQuickFixDialog extends Dialog {
 				
 				override keyReleased(KeyEvent arg0) {
 					AddNewElementQuickFixDialog.this.computeFileName(inputNewFileName.text)
-//					if (AddNewElementQuickFixDialog.this.newFileName.alreadyExists) {
-//						new MessageBox(composite.shell, SWT.ICON_ERROR) => [
-//							message = Messages.AddNewElementQuickFix_NewFileAlreadyExists_ErrorMessage 
-//						]
-//					} 
 				}
 			})	
 		]
 
+		new Label(fileNameComposite, SWT.LEFT) => [
+			text = "." + WollokConstants.CLASS_OBJECTS_EXTENSION
+		]
+
+		errorMessage = new Label(composite,SWT.CENTER.bitwiseOr(SWT.BORDER)) => [
+			layoutData = new GridData => [
+				grabExcessHorizontalSpace = false
+				widthHint = MAX_WIDTH + 100
+				heightHint = 25
+			]
+			background = COLOR_WHITE
+			text = ""
+		]
+		
+		new Label(composite, SWT.SEPARATOR.bitwiseOr(SWT.HORIZONTAL))
+		
 		val existingFileRadio = new Button(composite, SWT.RADIO) => [
 			text = Messages.AddNewElementQuickFix_ExistingFile_Title
 			addListener(SWT.Selection, fileSelectionListener)
@@ -148,10 +180,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 		radioButtonsNewOrNot = #[newFileRadio, existingFileRadio]
 
 		// Tree viewer
-		treeComposite = new Composite(composite, SWT.NONE) => [
-			layout = new GridLayout => [ numColumns = 1 ]
-		]
-		treeWollokElements = new TreeViewer(treeComposite, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.MULTI))
+		treeWollokElements = new TreeViewer(composite, SWT.V_SCROLL.bitwiseOr(SWT.BORDER).bitwiseOr(SWT.MULTI))
 		
 		// Buttons
 		addButton = new Button(buttonGroup, SWT.PUSH) => [
@@ -172,12 +201,15 @@ class AddNewElementQuickFixDialog extends Dialog {
 		]
 		treeWollokElements => [
 			// Show wollok files that have any valid method container
-			wollokFiles = project.allWollokFiles
+			wollokFiles = project.allWollokFiles.filter [ it.fileExtension.equals(WollokConstants.CLASS_OBJECTS_EXTENSION) ].toList
 			control.layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 0) => [
 				heightHint = 220
 				widthHint = 250
 			]
-			addDoubleClickListener([ DoubleClickEvent event | AddNewElementQuickFixDialog.this.generateCode	])
+			addDoubleClickListener([ DoubleClickEvent event | 
+				AddNewElementQuickFixDialog.this.generateCode
+				AddNewElementQuickFixDialog.this.close
+			])
 			addSelectionChangedListener([ event |
 				setButtonOkAvailability
 			])
@@ -198,26 +230,45 @@ class AddNewElementQuickFixDialog extends Dialog {
 	}
 	
 	def void computeFileName(String elementName, boolean initialState) {
-		this.elementName = elementName
-		this.newFileName = elementName.toLowerCase + "." + CLASS_OBJECTS_EXTENSION
+		this.newFileName = elementName.toLowerCase
 		if (!initialState) setButtonOkAvailability
 	}
 	
 	def void setButtonOkAvailability() {
 		val selection = treeWollokElements.selection as ITreeSelection
 		addButton.enabled = (selection !== null && selection.firstElement instanceof URI) || (newFileRadio.selection && newFileName.isValid)
+		val message = this.inputFileNameValidationMessage
+		errorMessage.text = message
+		errorMessage.foreground = if (message.equals(OK)) COLOR_BLACK else COLOR_RED 
 	}
 	
 	def setReadOnlyControls() {
 		inputNewFileName.enabled = newFileRadio.selection
-		treeComposite.enabled = !newFileRadio.selection
-		if (!treeComposite.getEnabled) {
+		treeWollokElements.control.enabled = !newFileRadio.selection
+		if (!treeWollokElements.control.getEnabled) {
 			treeWollokElements.selection = null
 		}
 	}
 	
 	def isValid(String newFileName) {
-		elementName.notBlank && !elementName.substring(0).isNumeric && !newFileName.alreadyExists	
+		newFileName.notBlank && !newFileName.substring(0, 1).isNumeric && !fullNewFileName.alreadyExists	
+	}
+	
+	def getFullNewFileName() {
+		newFileName + "." + CLASS_OBJECTS_EXTENSION 
+	}
+	
+	def getInputFileNameValidationMessage() {
+		if (!newFileName.notBlank) {
+			return Messages.AddNewElementQuickFix_NewFileCannotBeBlank_ErrorMessage
+		}
+		if (newFileName.substring(0, 1).isNumeric) {
+			return Messages.AddNewElementQuickFix_NewFileCannotStartWithNumber_ErrorMessage
+		}
+		if (fullNewFileName.alreadyExists) {
+			return Messages.AddNewElementQuickFix_NewFileAlreadyExists_ErrorMessage
+		}
+		OK
 	}
 	
 	def isNumeric(String character) {
@@ -238,36 +289,57 @@ class AddNewElementQuickFixDialog extends Dialog {
 	}
 
 	def void generateCode() {
-		// Adding element definition
-		var BufferedWriter file
 		if (newFileRadio.selection) {
+			// Adding element definition
 			val rawFolder = resource.parent.locationURI.rawPath
-			file = new BufferedWriter(new FileWriter(rawFolder + File.separator + newFileName))
-
+			val newFile = rawFolder + File.separator + fullNewFileName
+			newFile.generateCode(code)
 			// Adding import to generated element
-			val importCode = IMPORT + " " + elementName + ".*" + System.lineSeparator + System.lineSeparator
-			context.xtextDocument.replace(0, 0, importCode)
-
+			context.addImportCode(newFileName)
 			resource.refreshProject
 		} else {
+			// Adding element definition
 			val uri = (treeWollokElements.selection as ITreeSelection).firstElement as URI
-			file = new BufferedWriter(new FileWriter(uri.devicePath, true))
-			//context.xtextDocument.replace
+			uri.devicePath.generateCode(code)
 			
-			//val folder = resource.implicitPackage
-			val imports = originalEObject.allImports
-			//println("Folder " + folder)
-			println("Imports " + imports.map [ importedNamespace ])
-			// TODO: 1) a partir del file, tomar el Resource (por ahi cambiar el URI por un resource)
-			// TODO: 2) OBTENER EL IMPLICIT PACKAGE DEL EOBJECT donde se generó el código (wollokModelExtensions)
-			// TODO: 3) Revisar de cada import si alguno matchea el implicit package del eobject 
-			// Imports [example.*, objects.abc]
-			
+			// Adding import if it does not exists
+			val imports = originalEObject.allImports.map [ importedNamespace ]
+			val newElement = context.getXtextDocument(uri).readOnly(objectOrClass).findFirst [ it.fqn.contains(elementName) ]
+			val elementPackage = newElement.implicitPackage
+			if (!imports.exists [ it.contains(elementPackage) ]) {
+				context.addImportCode(elementPackage)
+			}
+			originalEObject.refreshProject
 		}
-		file.append(System.lineSeparator + code)
-		file.close
 	}
 	
+	def void addImportCode(IModificationContext _context, String importedPackage) {
+		var importCode = IMPORT + " " + importedPackage + ".*" + System.lineSeparator
+		if (_context.xtextDocument.readOnly [ getAllOfType(Import)].isEmpty) {
+			importCode += System.lineSeparator
+		}
+		_context.xtextDocument.replace(0, 0, importCode)
+	}
+	
+	
+	def generateCode(String uri, String code) {
+		new BufferedWriter(new FileWriter(uri, true)) => [
+			append(System.lineSeparator + code)
+			close
+		]
+	}
+
+	def (XtextResource) => Iterable<? extends WMethodContainer> getObjectOrClass() {
+		if (this.generatesWKO)
+			[ it.getAllOfType(WNamedObject) ]
+		else 
+			[ it.getAllOfType(WClass) ]
+	}
+	
+	def getCode() {
+		if (generatesWKO) elementName.generateNewWKOCode else elementName.generateNewClassCode	
+	}
+			
 }
 
 class WollokFileContentProvider implements ITreeContentProvider {

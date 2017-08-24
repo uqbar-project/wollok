@@ -198,6 +198,10 @@ class QuickFixUtils {
 		WKO + blankSpace + newObjectName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator
 	}
 	
+	def static generateNewClassCode(String newClassName) {
+		CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator
+	}
+	
 }
 
 enum Location { BEFORE, AFTER, ALL }
