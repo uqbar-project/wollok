@@ -128,7 +128,16 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_create_new_class_description; 
 	public static String WollokDslQuickFixProvider_create_new_local_wko_name;
 	public static String WollokDslQuickFixProvider_create_new_local_wko_description;
-
+	public static String WollokDslQuickFixProvider_create_new_external_wko_name;
+	public static String WollokDslQuickFixProvider_create_new_external_wko_description;
+	
+	public static String AddNewElementQuickFix_Title;
+	public static String AddNewElementQuickFix_NewFile_Title;
+	public static String AddNewElementQuickFix_ExistingFile_Title;
+	public static String AddNewElementQuickFix_NewFileAlreadyExists_ErrorMessage;
+	public static String AddNewElementQuickFix_Accept;
+	public static String AddNewElementQuickFix_Cancel;
+	
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
 	

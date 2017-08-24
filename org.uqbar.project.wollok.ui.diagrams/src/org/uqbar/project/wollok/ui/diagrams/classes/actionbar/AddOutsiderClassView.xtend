@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.Viewer
 import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
-import org.eclipse.swt.graphics.Color
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -41,7 +40,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.convertToEclipseURI
-import org.eclipse.swt.layout.RowData
 
 class AddOutsiderClassView extends Dialog {
 
@@ -123,7 +121,7 @@ class AddOutsiderClassView extends Dialog {
 		treeWollokElements => [
 			val mapMethodContainers = project.mapMethodContainers
 			// Show wollok files
-			// - that has any valid method container
+			// - that have any valid method container
 			// - avoiding current resource of static diagram
 			val wollokFiles = project.allWollokFiles.filter [
 				!mapMethodContainers.get(it).isEmpty && it !== configuration.resource.convertToEclipseURI

@@ -193,6 +193,10 @@ class QuickFixUtils {
 		if (numberOfChars < 1) return ""
 		(1..numberOfChars).map [ character ].reduce [ acum, c | acum + c ]
 	}
+
+	def static generateNewWKOCode(String newObjectName) {
+		WKO + blankSpace + newObjectName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator
+	}
 	
 }
 

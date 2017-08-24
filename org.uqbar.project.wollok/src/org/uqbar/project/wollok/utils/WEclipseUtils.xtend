@@ -68,6 +68,10 @@ class WEclipseUtils {
 	
 	def static resource(ITextEditor editor) { editor.editorInput.getAdapter(IResource) as IResource }
 	
+	def static refreshProject(IResource resource) {
+		resource.project?.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor)
+	}
+	
 	def static refreshProject(IFile file) {
 		file.project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor)
 	}

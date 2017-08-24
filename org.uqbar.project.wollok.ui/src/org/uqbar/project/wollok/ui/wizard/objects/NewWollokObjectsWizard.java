@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.eclipse.ui.INewWizard;
+import org.uqbar.project.wollok.WollokConstants;
 import org.uqbar.project.wollok.ui.wizard.abstractWizards.AbstractNewWollokFileWizard;
 
 /**
@@ -49,9 +50,9 @@ public class NewWollokObjectsWizard extends AbstractNewWollokFileWizard implemen
 	
 	private String getType() {
 		if (getTypeIndex() == TYPE_OBJECT) { 
-			return "object";
+			return WollokConstants.WKO;
 		} else {
-			return "class";
+			return WollokConstants.CLASS;
 		}
 	}
 
