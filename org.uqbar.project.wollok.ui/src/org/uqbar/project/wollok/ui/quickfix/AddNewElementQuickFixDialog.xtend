@@ -22,6 +22,8 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.graphics.Font
+import org.eclipse.swt.graphics.FontData
 import org.eclipse.swt.layout.GridData
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.layout.RowLayout
@@ -100,7 +102,10 @@ class AddNewElementQuickFixDialog extends Dialog {
 
 	override configureShell(Shell shell) {
 		super.configureShell(shell)
-		shell.setText(Messages.AddNewElementQuickFix_Title)
+		if (this.generatesWKO) 
+			shell.setText(Messages.AddNewWKOQuickFix_Title)
+		else 
+			shell.setText(Messages.AddNewClassQuickFix_Title)
 	}
 
 	override createContents(Composite parent) {
@@ -125,6 +130,34 @@ class AddNewElementQuickFixDialog extends Dialog {
 				AddNewElementQuickFixDialog.this.setReadOnlyControls
 			}
 		}
+
+		val titleComposite = new Composite(composite, SWT.BORDER) => [
+			layout = new GridLayout => [ numColumns = 2 ]
+ 			layoutData = new GridData => [
+				grabExcessHorizontalSpace = false
+			]
+		]
+		
+		val icon = showImage(windowIcon)
+		new Label(titleComposite, SWT.NONE.bitwiseOr(SWT.RIGHT)) => [
+ 			layoutData = new GridData => [
+				grabExcessHorizontalSpace = false
+			]
+			image = icon 
+		]
+ 
+ 		val labelTitle = new Label(titleComposite, SWT.LEFT) => [
+ 			layoutData = new GridData => [
+				grabExcessHorizontalSpace = false
+				widthHint = MAX_WIDTH + 100
+				heightHint = 25
+			]
+			text = elementName
+ 		]
+ 		
+ 		val fontData = labelTitle.font.fontData.get(0)
+		val newFont = new Font(Display.current, new FontData(fontData.name, 14, fontData.style))
+		labelTitle.font = newFont
 
 		newFileRadio = new Button(composite, SWT.RADIO) => [
 			text = Messages.AddNewElementQuickFix_NewFile_Title
@@ -170,7 +203,11 @@ class AddNewElementQuickFixDialog extends Dialog {
 			text = ""
 		]
 		
-		new Label(composite, SWT.SEPARATOR.bitwiseOr(SWT.HORIZONTAL))
+		new Label(composite, SWT.SEPARATOR.bitwiseOr(SWT.HORIZONTAL)) => [
+			layoutData = new GridData => [
+				widthHint = MAX_WIDTH + 100
+			]
+		]
 		
 		val existingFileRadio = new Button(composite, SWT.RADIO) => [
 			text = Messages.AddNewElementQuickFix_ExistingFile_Title
@@ -188,7 +225,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 			text = Messages.AddNewElementQuickFix_Accept
 			addListener(SWT.Selection,
 				[ Event event |
-					AddNewElementQuickFixDialog.this.generateCode
+					AddNewElementQuickFixDialog.this.outputCodeIntoFile
 					this.close
 				]
 			)
@@ -207,7 +244,7 @@ class AddNewElementQuickFixDialog extends Dialog {
 				widthHint = 250
 			]
 			addDoubleClickListener([ DoubleClickEvent event | 
-				AddNewElementQuickFixDialog.this.generateCode
+				AddNewElementQuickFixDialog.this.outputCodeIntoFile
 				AddNewElementQuickFixDialog.this.close
 			])
 			addSelectionChangedListener([ event |
@@ -223,6 +260,10 @@ class AddNewElementQuickFixDialog extends Dialog {
 		setReadOnlyControls
 		
 		composite
+	}
+	
+	def getWindowIcon() {
+		if (this.generatesWKO) "wollok-icon-object_16.png" else "wollok-icon-class_16.png"
 	}
 
 	def void computeFileName(String elementName) {
@@ -288,41 +329,42 @@ class AddNewElementQuickFixDialog extends Dialog {
 		wollokFiles.exists [ it.lastSegment.equalsIgnoreCase(newFileName) ]		
 	}
 
-	def void generateCode() {
+	def void outputCodeIntoFile() {
 		if (newFileRadio.selection) {
 			// Adding element definition
 			val rawFolder = resource.parent.locationURI.rawPath
 			val newFile = rawFolder + File.separator + fullNewFileName
-			newFile.generateCode(code)
+			newFile.outputCodeIntoFile(code)
 			// Adding import to generated element
-			context.addImportCode(newFileName)
 			resource.refreshProject
+			context.addImportCode(newFileName, resource)
 		} else {
 			// Adding element definition
 			val uri = (treeWollokElements.selection as ITreeSelection).firstElement as URI
-			uri.devicePath.generateCode(code)
+			uri.devicePath.outputCodeIntoFile(code)
 			
 			// Adding import if it does not exists
 			val imports = originalEObject.allImports.map [ importedNamespace ]
 			val newElement = context.getXtextDocument(uri).readOnly(objectOrClass).findFirst [ it.fqn.contains(elementName) ]
 			val elementPackage = newElement.implicitPackage
-			if (!imports.exists [ it.contains(elementPackage) ]) {
-				context.addImportCode(elementPackage)
-			}
 			originalEObject.refreshProject
+			if (!imports.exists [ it.contains(elementPackage) ]) {
+				context.addImportCode(elementPackage, resource)
+			}
 		}
 	}
 	
-	def void addImportCode(IModificationContext _context, String importedPackage) {
+	def void addImportCode(IModificationContext context, String importedPackage, IResource resource) {
 		var importCode = IMPORT + " " + importedPackage + ".*" + System.lineSeparator
-		if (_context.xtextDocument.readOnly [ getAllOfType(Import)].isEmpty) {
+		if (context.xtextDocument.readOnly [ getAllOfType(Import)].isEmpty) {
 			importCode += System.lineSeparator
 		}
-		_context.xtextDocument.replace(0, 0, importCode)
+		context.xtextDocument.replace(0, 0, importCode)
+		resource.refreshProject
 	}
 	
 	
-	def generateCode(String uri, String code) {
+	def outputCodeIntoFile(String uri, String code) {
 		new BufferedWriter(new FileWriter(uri, true)) => [
 			append(System.lineSeparator + code)
 			close
@@ -338,6 +380,11 @@ class AddNewElementQuickFixDialog extends Dialog {
 	
 	def getCode() {
 		if (generatesWKO) elementName.generateNewWKOCode else elementName.generateNewClassCode	
+	}
+
+	def showImage(String path) {
+		val imageDescriptor = WollokActivator.instance.getImageDescriptor("icons/" + path)
+		new LocalResourceManager(JFaceResources.getResources()).createImage(imageDescriptor)
 	}
 			
 }

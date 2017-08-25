@@ -419,14 +419,24 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument) {
+			
+		// create inner class
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
-			Messages.WollokDslQuickFixProvider_create_new_class_description, "class.png") [ e, context |
+			Messages.WollokDslQuickFixProvider_create_new_class_description, "wollok-icon-class_16.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = e.container
 			context.xtextDocument.replace(container.before, 0,
 				CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)
 		]
-
+		
+		// create new external class
+		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_external_class_name,
+			Messages.WollokDslQuickFixProvider_create_new_external_class_description, "wollok-icon-class_16.png") [ e, context |
+			val newClassName = xtextDocument.get(issue.offset, issue.length)
+			val resource = xtextDocument.getAdapter(typeof(IResource))
+			new AddNewElementQuickFixDialog(newClassName, false, resource, context, e)
+		]
+			
 	}
 
 	// *********************************************

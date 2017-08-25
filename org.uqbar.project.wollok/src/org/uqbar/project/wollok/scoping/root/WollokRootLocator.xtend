@@ -47,7 +47,7 @@ class WollokRootLocator {
 		value = null
 		
 		if (value === null){
-			value = doLevelsToRoot(parent, resource.resourceSet.URIConverter)
+			value = doLevelsToRoot(parent, resource.resourceSet?.URIConverter)
 			cache.put(parent, value)
 		}
 		
@@ -58,7 +58,7 @@ class WollokRootLocator {
 		var file = orig
 		var levels = 1
 		
-		while (file != null) {
+		while (file !== null) {
 
 			if (!converter.exists(file, null))
 				return 1
