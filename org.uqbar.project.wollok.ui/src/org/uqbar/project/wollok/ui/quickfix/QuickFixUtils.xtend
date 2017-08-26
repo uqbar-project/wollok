@@ -91,11 +91,14 @@ class QuickFixUtils {
 
 	/**
 	 * Common method - compute margin that should by applied to a new method
-	 * If method container has no methods nor variable declarations, placeToAdd should not be considered
+	 * If method container
+	 * - does not exists (such in isolated tests) 
+	 * - has no methods nor variable declarations, 
+	 * 		placeToAdd should not be considered
 	 * Otherwise we use default margin based on line we are calling
 	 */
 	def static int computeMarginFor(IXtextDocument document, int placeToAdd, WMethodContainer container) {
-		if (container.methods.empty) {
+		if (container === null || container.behaviors.isEmpty) {
 			return 1
 		}
 		val lineInformation = document.getLineInformationOfOffset(placeToAdd)

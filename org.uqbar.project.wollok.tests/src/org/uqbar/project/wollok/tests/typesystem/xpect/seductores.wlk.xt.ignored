@@ -6,7 +6,7 @@
 // ******************
 
 object cazafortunas {
-	// XPECT methodType at acepta --> (Any, Seductor) => Boolean
+	// IGNORED-X-PECT methodType at acepta --> (Any, Seductor) => Boolean
 	method acepta(seducible, seductor) = seductor.esMillonario()
 }
 

@@ -121,18 +121,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
 	def static behaviors(WMethodContainer c) {
-		<EObject>newArrayList => [
-			addAll(c.constructors.toList)
+		return <EObject>newArrayList => [
+			addAll(c.constructors)
 			if (c.fixture !== null) {
 				add(c.fixture)
 			}
-			addAll(c.methods.toList)
-			addAll(c.tests.toList) // we need to add both methods and tests for describe suites
+			addAll(c.methods)
+			addAll(c.tests)     // we need to add both methods and tests for describe suites
 		] 
 	}
-	
+
 	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
 	def static dispatch constructors(WClass c) { c.constructors }
+	def static dispatch constructors(WTest t) { newArrayList }
 	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
 	
