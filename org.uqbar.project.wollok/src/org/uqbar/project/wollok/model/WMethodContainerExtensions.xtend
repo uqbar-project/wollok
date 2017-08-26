@@ -508,6 +508,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
 	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
 	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
-		
+
 }
 
