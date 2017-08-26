@@ -541,7 +541,7 @@ class WollokModelExtensions {
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 
-	def static fullMessage(WMemberFeatureCall c) {
+	def static messageName(WMemberFeatureCall c) {
 		var args = ""
 		val argsSize = c.memberCallArguments.size
 		if (argsSize > 0) {
