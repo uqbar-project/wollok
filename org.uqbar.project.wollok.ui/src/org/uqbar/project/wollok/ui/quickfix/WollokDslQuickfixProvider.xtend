@@ -224,8 +224,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val f = (e as WAssignment).feature.ref.eContainer
 			if (f instanceof WVariableDeclaration) {
 				val feature = f as WVariableDeclaration
+				val valueOrNothing = if (feature.right === null) "" else " =" + feature.right.node.text
 				context.xtextDocument.replace(feature.before, feature.node.length,
-					VAR + " " + feature.variable.name + " =" + feature.right.node.text)
+					VAR + " " + feature.variable.name + valueOrNothing)
 			}
 		]
 	}

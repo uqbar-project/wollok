@@ -178,9 +178,8 @@ class AddNewElementQuickFixDialog extends Dialog {
 			addKeyListener(new KeyListener() {
 				
 				override keyPressed(KeyEvent event) {
-					if (ElementNameValidation.INVALID_RESOURCE_CHARACTERS.contains(event.character)) {
-						event.doit = false
-					}
+					val char DOT = '.'
+					event.doit = !(ElementNameValidation.INVALID_RESOURCE_CHARACTERS.contains(event.character) || event.character == DOT)
 				}
 				
 				override keyReleased(KeyEvent arg0) {

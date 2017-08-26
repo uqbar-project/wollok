@@ -95,16 +95,17 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	
 	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
 		val imports = (importsEntry.map[ #[it]  + localScopeProvider.allRelativeImports(it, context.implicitPackage) ].flatten).toSet
-		
+
 		val importedObjects = imports.filter[
 			it !== null && !objectsFromManifests.exists[o| o.matchesImport(it)]
 		]
-		.map[ 
+		.map[
 			toResource(context)
 		].filter[it !== null].map [ r |
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
 		importedObjects
+		
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace) {
