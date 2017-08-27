@@ -71,6 +71,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 				
 				test "x can be 25?" {
 					x = 25
+					assert.equals(25, x)
 				}
 			}
 		''']
@@ -85,6 +86,7 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 				
 				test "x can be 25?" {
 					x = 25
+					assert.equals(25, x)
 				}
 			}
 		''']

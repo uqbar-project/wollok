@@ -4,9 +4,9 @@
 // ******************
 // ** personalidades
 // ******************
-
+	
 object cazafortunas {
-	// IGNORED-X-PECT methodType at acepta --> (Any, Seductor) => Boolean
+	// XPECT methodType at acepta --> (Any, Seductor) => Boolean
 	method acepta(seducible, seductor) = seductor.esMillonario()
 }
 
