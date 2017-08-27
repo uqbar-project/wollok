@@ -154,8 +154,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
 	}
 
-	def static findMethodByName(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst[m | m.name.equalsIgnoreCase(it.feature) ]
+	def static findMethodsByName(WMethodContainer c, WMemberFeatureCall it) {
+		c.allMethods.filter [m | m.name.equalsIgnoreCase(it.feature) ]
 	}
 	
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }

@@ -16,6 +16,9 @@ class Persona {
 		
 		// XPECT errors --> "pepita does not understand fooWithParam(param1, param2, param3), however a similar method exists: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam(new Date(), 2, 4)
+
+		// XPECT errors --> "pepita does not understand foO(), however a similar method exists: foo()" at "foO"
+		pepita.foO()
 	}
 }
 
