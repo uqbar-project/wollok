@@ -545,7 +545,7 @@ class WollokModelExtensions {
 		var args = ""
 		val argsSize = c.memberCallArguments.size
 		if (argsSize > 0) {
-			args = (1..argsSize).map [ "param" + it ].join(',')
+			args = (1..argsSize).map [ "param" + it ].join(', ')
 		}
 		c.feature + "(" + args + ")"
 	}

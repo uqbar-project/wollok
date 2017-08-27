@@ -479,14 +479,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		try {
 			if (call.callToWellKnownObject && !call.isValidCallToWKObject(classFinder)) {
 				val wko = call.resolveWKO(classFinder)
-				val similarMethod = wko.findMethodByName(call)
-				if (similarMethod === null) {
+				val similarMethods = wko.findMethodsByName(call)
+				if (similarMethods.empty) {
 					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, wko.name, call.messageName), call, WMEMBER_FEATURE_CALL__FEATURE,
 						METHOD_ON_WKO_DOESNT_EXIST)
 				} else {
-					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[wko.name, call.messageName, similarMethod.messageName]), call, WMEMBER_FEATURE_CALL__FEATURE)
+					val similarDefinitions = similarMethods.map [ messageName ].join(', ')
+					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[wko.name, call.messageName, similarDefinitions]), call, WMEMBER_FEATURE_CALL__FEATURE)
 				}
 			}
+			// TODO: las clases
+			//if (!call.callToWellKnownObject && ) {
+			//	val
+			//}
 		} catch (Exception e) {
 			e.printStackTrace
 			throw e

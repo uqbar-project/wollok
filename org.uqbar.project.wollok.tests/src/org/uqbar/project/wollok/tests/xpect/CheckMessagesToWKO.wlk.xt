@@ -11,14 +11,20 @@ class Persona {
 		// XPECT errors --> "pepita does not understand fooBar(param1, param2)" at "fooBar"
 		pepita.fooBar(2, "hola")
 		
-		// XPECT errors --> "pepita does not understand fooWithParam(), however a similar method exists: fooWithParam(p)" at "fooWithParam"
+		// XPECT errors --> "pepita does not understand fooWithParam(), however similar definitions exist: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam()
 		
-		// XPECT errors --> "pepita does not understand fooWithParam(param1, param2, param3), however a similar method exists: fooWithParam(p)" at "fooWithParam"
+		// XPECT errors --> "pepita does not understand fooWithParam(param1, param2, param3), however similar definitions exist: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam(new Date(), 2, 4)
 
-		// XPECT errors --> "pepita does not understand foO(), however a similar method exists: foo()" at "foO"
+		// XPECT errors --> "pepita does not understand foO(), however similar definitions exist: foo()" at "foO"
 		pepita.foO()
+		
+		// XPECT errors --> "pepita does not understand severalDef(), however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
+		pepita.severalDef()
+		
+		// XPECT errors --> "pepita does not understand severalDef(param1, param2, param3, param4), however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
+		pepita.severalDef(1, 2, 3, 4)		
 	}
 }
 
@@ -36,4 +42,6 @@ object pepita {
 	method bar() = self.foo()
 	method fooWithParam(p) {
 	}
+	method severalDef(a) { return a + 1 }
+	method severalDef(a, b) = a + b
 }
