@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.ArrayList
-
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
@@ -15,6 +14,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
@@ -46,8 +46,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -154,8 +154,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
 	}
 
-	def static findMethodsByName(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.filter [m | m.name.equalsIgnoreCase(it.feature) ]
+	def static dispatch List<WMethodDeclaration> findMethodsByName(WMethodContainer c, String methodName) {
+		c.allMethods.findMethodsByName(methodName)
+	}
+	
+	def static dispatch List<WMethodDeclaration> findMethodsByName(WollokObject o, String methodName) {
+		o.allMethods.findMethodsByName(methodName)
+	}
+	
+	def static dispatch List<WMethodDeclaration> findMethodsByName(Iterable<WMethodDeclaration> methods, String methodName) {
+		methods.filter [ m | m.name.equalsIgnoreCase(methodName) && !m.overrides ].toList
 	}
 	
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }

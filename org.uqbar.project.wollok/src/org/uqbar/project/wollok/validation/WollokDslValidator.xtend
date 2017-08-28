@@ -14,6 +14,7 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -479,7 +480,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		try {
 			if (call.callToWellKnownObject && !call.isValidCallToWKObject(classFinder)) {
 				val wko = call.resolveWKO(classFinder)
-				val similarMethods = wko.findMethodsByName(call)
+				val similarMethods = wko.findMethodsByName(call.feature)
 				if (similarMethods.empty) {
 					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, wko.name, call.messageName), call, WMEMBER_FEATURE_CALL__FEATURE,
 						METHOD_ON_WKO_DOESNT_EXIST)
@@ -488,10 +489,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[wko.name, call.messageName, similarDefinitions]), call, WMEMBER_FEATURE_CALL__FEATURE)
 				}
 			}
-			// TODO: las clases
-			//if (!call.callToWellKnownObject && ) {
-			//	val
-			//}
 		} catch (Exception e) {
 			e.printStackTrace
 			throw e

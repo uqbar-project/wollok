@@ -1,6 +1,9 @@
 package wollok.lang
 
 import java.util.Collection
+import java.util.List
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
@@ -8,6 +11,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
@@ -28,6 +32,21 @@ class WObject {
 	
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
 	def className() { (obj.kind).fqn }
+	def generateDoesNotUnderstandMessage(String target, String methodName, int parametersSize) {
+		var List<String> parameters = newArrayList
+		if (parametersSize > 0) {
+			parameters = (1..parametersSize).map [ i | "param" + i ].toList	
+		}
+		val fullMessage = methodName + "(" + parameters.join(", ") + ")"
+		val similarMethods = this.obj.allMethods.findMethodsByName(methodName)
+		if (similarMethods.empty) {
+			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, target, fullMessage)
+		} else {
+			val similarDefinitions = similarMethods.map [ messageName ].join(', ')
+			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[target, fullMessage, similarDefinitions])
+		}
+	}
+	
 	
 	def instanceVariables() {
 		newList(obj.instanceVariables.keySet.map[ variableMirror(it) ].toList)

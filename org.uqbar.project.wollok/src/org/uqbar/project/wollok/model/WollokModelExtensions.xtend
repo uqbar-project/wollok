@@ -280,7 +280,6 @@ class WollokModelExtensions {
 		(memberCallTarget as WVariableReference).ref as WNamedObject
 	}
 
-
 	def static isValidMessage(WMethodDeclaration it, WMemberFeatureCall call) {
 		matches(call.feature, call.memberCallArguments)
 	}

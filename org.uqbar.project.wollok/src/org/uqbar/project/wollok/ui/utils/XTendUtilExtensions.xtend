@@ -9,6 +9,8 @@ import java.util.Collection
 import java.util.List
 import java.util.Map
 import java.util.Random
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -19,6 +21,8 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Utilities for xtend code
@@ -136,10 +140,15 @@ class XTendUtilExtensions {
 	}
 
 	def static String createMessage(Object target, String message, Object... args) {
-		
-		// CAMBIAR! DODAINs
-		'''«target» («target.class.simpleName») does not understand «message»(«args.map['p'].join(',')»)'''.toString
-		// 
+		val fullMessage = message + "(" + args.join(",") + ")"
+		val wollokTarget = target.javaToWollok
+		val targetName = '''«target» («target.class.simpleName»)''' // wollokTarget.invoke("toString", #[])
+		val similarMethods = wollokTarget.findMethodsByName(message)
+		if (similarMethods.empty) {
+			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, targetName, fullMessage)
+		}
+		val similarDefinitions = similarMethods.map [ messageName ].join(', ')
+		NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[targetName, fullMessage, similarDefinitions])
 	}
 
 	def static WollokObject invokeConvertingArgs(Method m, Object o, Object... args) {

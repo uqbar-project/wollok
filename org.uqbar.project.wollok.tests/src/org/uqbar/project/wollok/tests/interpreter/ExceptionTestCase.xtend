@@ -175,15 +175,106 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("a A[] does not understand m2()", e.getMessage())
+					assert.equals("Wrong message m2() sent to a A[]", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
-		
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodHowever1() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong argument count in message m1() sent to a A[], however similar definitions exist: m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodHowever2() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m1(2, new Date())
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong argument count in message m1(param1, param2) sent to a A[], however similar definitions exist: m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodWithLiteralsHowever() {
+		'''
+			program p {	
+				try {
+					4.truncate()
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong argument count in message truncate() sent to 4, however similar definitions exist: truncate(_decimals)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
 		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
 		// actual stack trace string e.getStackTraceAsString()
 	}
 	
+	@Test
+	def void testMessageNotUnderstoodWithParams() {
+		'''
+			class A { 
+				method m1() { throw new Exception("hello you see") }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m2(2, 4)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong message m2(param1, param2) sent to a A[]", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+		
 	@Test
 	def void testCatchWithoutType() {
 		'''
