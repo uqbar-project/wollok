@@ -124,5 +124,4 @@ class WollokJavaConversions {
 
 	def static getEvaluator() { (WollokInterpreter.getInstance.evaluator as WollokInterpreterEvaluator) }
 	
-
 }

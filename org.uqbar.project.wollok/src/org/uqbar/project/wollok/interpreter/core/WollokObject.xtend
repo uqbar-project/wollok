@@ -70,13 +70,19 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		method.call(parameters)
 	}
 	
-	def throwMessageNotUnderstood(String name, Object... parameters) {
-		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral || name == "messageNotUnderstood" || name == "toString") {
-			val fullMessage = name + "(" + parameters.join(",") + ")"
-			val similarMethods = this.behavior.findMethodsByName(name)
+	def throwMessageNotUnderstood(String methodName, Object... parameters) {
+		// hack because object literals are not inheriting base methods from wollok.lang.Object
+		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString") {
+			val fullMessage = methodName + "(" + parameters.join(",") + ")"
+			val similarMethods = this.behavior.findMethodsByName(methodName)
 			if (similarMethods.empty) {
-				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
+				val caseSensitiveMethod = this.behavior.allMethods.findMethodIgnoreCase(methodName, parameters.size)
+				if (caseSensitiveMethod !== null) {
+					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
+						#[behavior.name, fullMessage, #[caseSensitiveMethod].convertToString]))
+				} else {
+					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
+				}
 			} else {
 				val similarDefinitions = similarMethods.map [ messageName ].join(', ')
 				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[behavior.name, fullMessage, similarDefinitions]))
@@ -84,7 +90,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		}
 		
 		try {
-			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
+			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			// this one is ok because calling messageNotUnderstood actually throws the exception!

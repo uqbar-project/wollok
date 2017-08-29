@@ -27,8 +27,8 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«defineAssertWithMessage»
 		program a {
-			extendedAssert.assertException({ null.sayHi() }, "Cannot send message sayHi() to null")
-			extendedAssert.assertException({ null.toString() }, "Cannot send message toString() to null")
+			extendedAssert.assertException({ null.sayHi() }, "Wrong message sayHi() sent to null")
+			extendedAssert.assertException({ null.toString() }, "Wrong message toString() sent to null")
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -38,10 +38,10 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«defineAssertWithMessage»
 		program a {
-			extendedAssert.assertException({ null + 3 }, "Cannot send message + to null")
-			extendedAssert.assertException({ null - 3 }, "Cannot send message - to null")
-			extendedAssert.assertException({ null * 3 }, "Cannot send message * to null")
-			extendedAssert.assertException({ null / 3 }, "Cannot send message / to null")
+			extendedAssert.assertException({ null + 3 }, "Wrong message + sent to null")
+			extendedAssert.assertException({ null - 3 }, "Wrong message - sent to null")
+			extendedAssert.assertException({ null * 3 }, "Wrong message * sent to null")
+			extendedAssert.assertException({ null / 3 }, "Wrong message / sent to null")
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -51,8 +51,8 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«defineAssertWithMessage»
 		program a {
-			extendedAssert.assertException({ null || null }, "Cannot send message || to null")
-			extendedAssert.assertException({ null && null }, "Cannot send message && to null")
+			extendedAssert.assertException({ null || null }, "Wrong message || sent to null")
+			extendedAssert.assertException({ null && null }, "Wrong message && sent to null")
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}

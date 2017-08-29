@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.interpreter.core
 
 import java.util.Map
-import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
@@ -29,7 +29,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		this.console = console
 	}
 	
-	override getThisObject() { throw new UnsupportedOperationException("Cannot use reference to self in a program's code !")}
+	override getThisObject() { throw new UnsupportedOperationException(Messages.WollokNativeLobby_cannot_use_self_in_program)}
 	
 	override allReferenceNames() {
 		localProgramVariables.keySet.map[new WVariable(it, true)]

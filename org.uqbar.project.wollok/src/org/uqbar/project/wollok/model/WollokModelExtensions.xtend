@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.model
 
+import java.util.Collection
 import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
@@ -30,6 +31,7 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -66,6 +68,7 @@ import wollok.lang.Exception
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -540,10 +543,6 @@ class WollokModelExtensions {
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 
-	def static fullMessage(WMemberFeatureCall c) {
-		fullMessage(c.feature, c.memberCallArguments.size)
-	}
-
 	def static fullMessage(String methodName, int argumentsSize) {
 		var args = ""
 		val argsSize = argumentsSize
@@ -551,6 +550,10 @@ class WollokModelExtensions {
 			args = (1..argsSize).map [ "param" + it ].join(', ')
 		}
 		methodName + "(" + args + ")"
+	}
+	
+	def static fullMessage(WFeatureCall call) {
+		'''«call.feature»(«call.memberCallArguments.map[sourceCode].join(', ')»)'''
 	}
 	
 }

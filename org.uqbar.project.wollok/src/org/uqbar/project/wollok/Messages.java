@@ -15,6 +15,11 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.messages"; //$NON-NLS-1$
 
 	public static String LINKING_COULD_NOT_RESOLVE_REFERENCE;
+
+	public static String WollokInterpreter_cannot_use_null_in_if;
+	public static String WollokInterpreter_expression_in_if_must_evaluate_to_boolean;
+
+	public static String WollokNativeLobby_cannot_use_self_in_program;
 	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;

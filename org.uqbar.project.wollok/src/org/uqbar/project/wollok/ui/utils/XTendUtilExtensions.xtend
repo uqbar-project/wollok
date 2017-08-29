@@ -142,10 +142,16 @@ class XTendUtilExtensions {
 	def static String createMessage(Object target, String message, Object... args) {
 		val fullMessage = message + "(" + args.join(",") + ")"
 		val wollokTarget = target.javaToWollok
-		val targetName = '''«target» («target.class.simpleName»)''' // wollokTarget.invoke("toString", #[])
+		val targetName = '''«target» («target.class.simpleName»)'''
 		val similarMethods = wollokTarget.findMethodsByName(message)
 		if (similarMethods.empty) {
-			return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, targetName, fullMessage)
+			val caseSensitiveMethod = wollokTarget.allMethods.findMethodIgnoreCase(message, args.size)
+			if (caseSensitiveMethod !== null) {
+				return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
+					#[target, fullMessage, #[caseSensitiveMethod].convertToString])
+			} else {
+				return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, targetName, fullMessage)
+			}
 		}
 		val similarDefinitions = similarMethods.map [ messageName ].join(', ')
 		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[targetName, fullMessage, similarDefinitions])

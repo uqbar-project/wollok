@@ -8,13 +8,13 @@ class Persona {
 		// XPECT errors --> "Wrong message fooBar() sent to pepita" at "fooBar"
 		pepita.fooBar()
 		
-		// XPECT errors --> "Wrong message fooBar(param1, param2) sent to pepita" at "fooBar"
+		// XPECT errors --> "Wrong message fooBar(2, "hola") sent to pepita" at "fooBar"
 		pepita.fooBar(2, "hola")
 		
 		// XPECT errors --> "Wrong argument count in message fooWithParam() sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam()
 		
-		// XPECT errors --> "Wrong argument count in message fooWithParam(param1, param2, param3) sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
+		// XPECT errors --> "Wrong argument count in message fooWithParam(new Date(),  2,  4) sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam(new Date(), 2, 4)
 
 		// XPECT errors --> "Wrong case-sensitive message foO() sent to pepita. Use foo()" at "foO"
@@ -23,7 +23,7 @@ class Persona {
 		// XPECT errors --> "Wrong argument count in message severalDef() sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
 		pepita.severalDef()
 		
-		// XPECT errors --> "Wrong argument count in message severalDef(param1, param2, param3, param4) sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
+		// XPECT errors --> "Wrong argument count in message severalDef(1, 2, 3, 4) sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
 		pepita.severalDef(1, 2, 3, 4)		
 	}
 }
