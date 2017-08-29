@@ -19,8 +19,6 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_cannot_use_null_in_if;
 	public static String WollokInterpreter_expression_in_if_must_evaluate_to_boolean;
 
-	public static String WollokNativeLobby_cannot_use_self_in_program;
-	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;

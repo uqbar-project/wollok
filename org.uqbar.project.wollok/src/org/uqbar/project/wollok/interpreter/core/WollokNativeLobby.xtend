@@ -29,7 +29,7 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 		this.console = console
 	}
 	
-	override getThisObject() { throw new UnsupportedOperationException(Messages.WollokNativeLobby_cannot_use_self_in_program)}
+	override getThisObject() { throw new UnsupportedOperationException(Messages.WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM)}
 	
 	override allReferenceNames() {
 		localProgramVariables.keySet.map[new WVariable(it, true)]
