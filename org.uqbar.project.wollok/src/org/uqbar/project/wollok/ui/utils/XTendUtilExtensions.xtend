@@ -145,10 +145,10 @@ class XTendUtilExtensions {
 		val targetName = '''«target» («target.class.simpleName»)''' // wollokTarget.invoke("toString", #[])
 		val similarMethods = wollokTarget.findMethodsByName(message)
 		if (similarMethods.empty) {
-			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, targetName, fullMessage)
+			return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, targetName, fullMessage)
 		}
 		val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-		NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[targetName, fullMessage, similarDefinitions])
+		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[targetName, fullMessage, similarDefinitions])
 	}
 
 	def static WollokObject invokeConvertingArgs(Method m, Object o, Object... args) {

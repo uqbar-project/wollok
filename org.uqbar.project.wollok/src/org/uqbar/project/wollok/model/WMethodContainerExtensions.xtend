@@ -151,7 +151,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
+		c.allMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
+	}
+	
+	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
+		c.allMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+	}
+
+	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
+		methods.findFirst[m | m.matches(methodName, argumentsSize, true) ] 
 	}
 
 	def static dispatch List<WMethodDeclaration> findMethodsByName(WMethodContainer c, String methodName) {
@@ -163,7 +171,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch List<WMethodDeclaration> findMethodsByName(Iterable<WMethodDeclaration> methods, String methodName) {
-		methods.filter [ m | m.name.equalsIgnoreCase(methodName) && !m.overrides ].toList
+		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
@@ -184,6 +192,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static actuallyOverrides(WMethodDeclaration m) {
 		m.declaringContext !== null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
+	}
+
+	def static convertToString(List<WMethodDeclaration> methods) { 
+		methods.map [ messageName ].join(', ')
 	}
 
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
@@ -221,7 +233,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
 	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
-	
+
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
@@ -291,10 +303,18 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		chain
 	}
 
-	def static matches(WMethodDeclaration it, String message, List<?> params) { matches(message, params.size) }
+	def static matches(WMethodDeclaration it, String message, List<?> params) { 
+		matches(message, params.size)
+	}
 
 	def static matches(WMethodDeclaration it, String message, int nrOfArgs) {
-		name == message &&
+		matches(message, nrOfArgs, false)
+	}
+
+	def static matches(WMethodDeclaration it, String message, int nrOfArgs, boolean ignoreCase) {
+		val messageMatches = if (ignoreCase) name.equalsIgnoreCase(message) else name == message 
+		
+		messageMatches &&
 		if (hasVarArgs)
 			nrOfArgs >= parameters.filter[!isVarArg].size
 		else

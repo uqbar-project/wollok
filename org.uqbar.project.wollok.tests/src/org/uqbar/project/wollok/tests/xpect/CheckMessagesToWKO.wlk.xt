@@ -17,7 +17,7 @@ class Persona {
 		// XPECT errors --> "Wrong argument count in message fooWithParam(param1, param2, param3) sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam(new Date(), 2, 4)
 
-		// XPECT errors --> "Wrong argument count in message foO() sent to pepita, however similar definitions exist: foo()" at "foO"
+		// XPECT errors --> "Wrong case-sensitive message foO() sent to pepita. Use foo()" at "foO"
 		pepita.foO()
 		
 		// XPECT errors --> "Wrong argument count in message severalDef() sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"

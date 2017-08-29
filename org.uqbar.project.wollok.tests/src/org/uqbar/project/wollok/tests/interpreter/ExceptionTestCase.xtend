@@ -210,6 +210,31 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void testMessageNotUnderstoodCaseSensitive() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.M1(3)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
 	def void testMessageNotUnderstoodHowever2() {
 		'''
 			class A { 
@@ -245,6 +270,25 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				catch e : MessageNotUnderstoodException {
 					// ok !
 					assert.equals("Wrong argument count in message truncate() sent to 4, however similar definitions exist: truncate(_decimals)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodWithLiteralsCaseSensitive() {
+		'''
+			program p {	
+				try {
+					4.truncATE(2)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("Wrong case-sensitive message truncATE(param1) sent to 4. Use truncate(_decimals)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -382,7 +426,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					// OK !
 				}
 				catch e {
-					assert.fail("incorrenct catch !")
+					assert.fail("incorrect catch !")
 				}
 			}
 		'''.interpretPropagatingErrors

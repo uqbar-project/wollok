@@ -482,11 +482,16 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				val wko = call.resolveWKO(classFinder)
 				val similarMethods = wko.findMethodsByName(call.feature)
 				if (similarMethods.empty) {
-					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, wko.name, call.messageName), call, WMEMBER_FEATURE_CALL__FEATURE,
-						METHOD_ON_WKO_DOESNT_EXIST)
+					val caseSensitiveMethod = wko.findMethodIgnoreCase(call.feature, call.memberCallArguments.size)
+					if (caseSensitiveMethod !== null) {
+						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE, #[wko.name, call.fullMessage, #[caseSensitiveMethod].convertToString]), call, WMEMBER_FEATURE_CALL__FEATURE)
+					} else {
+						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST, wko.name, call.fullMessage), call, WMEMBER_FEATURE_CALL__FEATURE,
+							METHOD_ON_WKO_DOESNT_EXIST)
+					}
 				} else {
-					val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-					report(NLS.bind(WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[wko.name, call.messageName, similarDefinitions]), call, WMEMBER_FEATURE_CALL__FEATURE)
+					val similarDefinitions = similarMethods.convertToString
+					report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[wko.name, call.fullMessage, similarDefinitions]), call, WMEMBER_FEATURE_CALL__FEATURE)
 				}
 			}
 		} catch (Exception e) {

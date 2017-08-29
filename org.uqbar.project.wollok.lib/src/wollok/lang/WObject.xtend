@@ -22,59 +22,63 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WObject {
 	val WollokObject obj
 	val WollokInterpreter interpreter
-	
+
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		this.obj = obj
 		this.interpreter = interpreter
 	}
-	
+
 	def identity() { System.identityHashCode(obj) }
-	
+
 	def kindName() { ToStringBuilder.objectDescription(obj.behavior) }
+
 	def className() { (obj.kind).fqn }
+
 	def generateDoesNotUnderstandMessage(String target, String methodName, int parametersSize) {
-		var List<String> parameters = newArrayList
-		if (parametersSize > 0) {
-			parameters = (1..parametersSize).map [ i | "param" + i ].toList	
-		}
-		val fullMessage = methodName + "(" + parameters.join(", ") + ")"
+		val fullMessage = methodName.fullMessage(parametersSize)
 		val similarMethods = this.obj.allMethods.findMethodsByName(methodName)
 		if (similarMethods.empty) {
-			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, target, fullMessage)
+			val caseSensitiveMethod = this.obj.allMethods.findMethodIgnoreCase(methodName, parametersSize)
+			if (caseSensitiveMethod !== null) {
+				return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
+					#[target, fullMessage, #[caseSensitiveMethod].convertToString])
+			} else {
+				return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, target, fullMessage)
+			}
 		} else {
-			val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-			return NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[target, fullMessage, similarDefinitions])
+			val similarDefinitions = similarMethods.map[messageName].join(', ')
+			return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND,
+				#[target, fullMessage, similarDefinitions])
 		}
 	}
-	
-	
+
 	def instanceVariables() {
-		newList(obj.instanceVariables.keySet.map[ variableMirror(it) ].toList)
+		newList(obj.instanceVariables.keySet.map[variableMirror(it)].toList)
 	}
-	
+
 	def instanceVariableFor(String name) {
 		variableMirror(name)
 	}
-	
+
 	def variableMirror(String name) {
 		newInstance("wollok.mirror.InstanceVariableMirror", obj, name)
 	}
-	
+
 	def resolve(String instVarName) {
 		obj.resolve(instVarName)
 	}
-	
+
 	def newInstance(String className, Object... arguments) {
 		val wArgs = arguments.map[javaToWollok]
 		(interpreter.evaluator as WollokInterpreterEvaluator).newInstance(className, wArgs)
 	}
-	
+
 	def newList(Collection<WollokObject> elements) {
 		val list = newInstance(WollokDSK.LIST)
-		elements.forEach[ 
+		elements.forEach [
 			list.call("add", it.javaToWollok)
 		]
 		list
 	}
-	
+
 }

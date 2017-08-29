@@ -76,10 +76,10 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val fullMessage = name + "(" + parameters.join(",") + ")"
 			val similarMethods = this.behavior.findMethodsByName(name)
 			if (similarMethods.empty) {
-				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, behavior.name, fullMessage))
+				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
 			} else {
 				val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_ON_WKO_BAD_CALLED, #[behavior.name, fullMessage, similarDefinitions]))
+				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[behavior.name, fullMessage, similarDefinitions]))
 			}
 		}
 		
