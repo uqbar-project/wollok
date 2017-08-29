@@ -53,7 +53,10 @@ class WollokConstants {
 	public static val CONST = "const"
 	public static val OVERRIDE = "override"
 	public static val RETURN = "return"
+	public static val SUITE = "describe"
+	public static val MIXIN = "mixin"
 	public static val CLASS = "class"
+	public static val WKO = "object"
 	public static val FIXTURE = "fixture" 
 	
 	public static val ROOT_CLASS = "Object"

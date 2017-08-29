@@ -239,7 +239,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
-	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
+	def static dispatch contextName(MixedMethodContainer c) { "<mixedObject>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
@@ -508,6 +508,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
 	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
 	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
-		
+
+	def static dispatch canDefineConstructors(EObject o) { false }
+	def static dispatch canDefineConstructors(WClass c) { true }
+
+	def static dispatch constructionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch constructionName(WClass c) { WollokConstants.CLASS }
+	def static dispatch constructionName(WObjectLiteral c) { WollokConstants.WKO }
+	def static dispatch constructionName(WNamedObject c) { WollokConstants.WKO }
+	def static dispatch constructionName(WMixin c) { WollokConstants.MIXIN }
+	def static dispatch constructionName(WSuite s) { WollokConstants.SUITE }
+			
 }
 
