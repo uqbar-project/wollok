@@ -3,8 +3,10 @@ package org.uqbar.project.wollok.parser
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import java.util.Set
+import org.antlr.runtime.CommonToken
 import org.antlr.runtime.EarlyExitException
 import org.antlr.runtime.MismatchedTokenException
+import org.antlr.runtime.MissingTokenException
 import org.antlr.runtime.RecognitionException
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -17,12 +19,15 @@ import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
 
 @Singleton
 class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
+	
+	public static String MISSING_EOF = "<missing EOF>"
+	
 	@Inject
 	private ITokenDefProvider tokenDefProvider
 	@Inject
@@ -96,6 +101,11 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			}
 		}		
 
+		if (exception.parserMessage.contains(MISSING_EOF)) {
+			val construction = context.currentNode.text.split(" ")?.head
+			return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_ORDER_PROBLEM, token, construction), SYNTAX_DIAGNOSTIC)
+		}
+
 		// Now automatic rules
 		val specificMessage = syntaxDiagnosis.findFirst[ msg| exception.isApplicable(msg, context)]
 		if (specificMessage === null) {
@@ -127,7 +137,10 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		(tokenDefProvider.tokenDefMap.get(exception.c) == "'" + msg.token + "'") &&
 			msg.condition.apply(context, exception)
 	}
-	
+
+	def dispatch parserMessage(Exception e) { "" }
+	def dispatch parserMessage(MissingTokenException e) { e.inserted.toString }
+		
 	def dispatch token(Exception exception) { "" }
 	def dispatch token(RecognitionException exception) { exception.token.text }	
 }
