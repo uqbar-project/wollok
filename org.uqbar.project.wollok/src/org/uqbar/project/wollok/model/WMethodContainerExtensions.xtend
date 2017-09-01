@@ -512,6 +512,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch canDefineConstructors(EObject o) { false }
 	def static dispatch canDefineConstructors(WClass c) { true }
 
+	def static dispatch canDefineFixture(EObject o) { false }
+	def static dispatch canDefineFixture(WSuite s) { true }
+
+	def static dispatch canDefineTests(EObject o) { false }
+	def static dispatch canDefineTests(WSuite s) { true }
+	def static dispatch canDefineTests(WTest t) { true }
+
 	def static dispatch constructionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
 	def static dispatch constructionName(WClass c) { WollokConstants.CLASS }
 	def static dispatch constructionName(WObjectLiteral c) { WollokConstants.WKO }

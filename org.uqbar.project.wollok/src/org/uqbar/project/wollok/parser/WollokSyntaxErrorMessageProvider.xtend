@@ -14,12 +14,12 @@ import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider.IParserErrorCo
 import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
 import org.uqbar.project.wollok.Messages
-import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 @Singleton
 class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
@@ -29,11 +29,11 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	private WollokDslGrammarAccess grammarAccess
 
 	private Set<SpecialMessage> syntaxDiagnosis = #{
-		new SpecialMessage(WollokConstants.VAR, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
-		new SpecialMessage(WollokConstants.CONST, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
-		new SpecialMessage(WollokConstants.CONSTRUCTOR, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS),
-		new SpecialMessage(WollokConstants.FIXTURE, Messages.SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS),
-		new SpecialMessage(WollokConstants.ASIGNATION,
+		new SpecialMessage(VAR, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
+		new SpecialMessage(CONST, Messages.SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS),
+		new SpecialMessage(CONSTRUCTOR, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS),
+		new SpecialMessage(FIXTURE, Messages.SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS),
+		new SpecialMessage(ASIGNATION,
 			Messages.SYNTAX_MISSING_BRACKETS_IN_METHOD, [ context, exception |
 				context.grammarRule == grammarAccess.WMethodDeclarationRule
 			])
@@ -60,8 +60,16 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	
 	def enhanceSyntaxErrorMessage(IParserErrorContext context, Exception exception) {
 		// First, manual rules
-		if (exception.token?.equalsIgnoreCase(WollokConstants.CONSTRUCTOR)) {
-			val declaringContext = context.currentContext.declaringContext
+		val declaringContext = context.currentContext.declaringContext
+		val token = exception.token
+
+		if (#[CONST, VAR].contains(token)) {
+			if (declaringContext === null) {
+				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_REFERENCES_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
+			}
+		}		
+		
+		if (token?.equalsIgnoreCase(CONSTRUCTOR)) {
 			if (!declaringContext?.canDefineConstructors) {
 				if (declaringContext !== null) 
 					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
@@ -70,8 +78,26 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			}
 		}		
 
+		if (token?.equalsIgnoreCase(FIXTURE)) {
+			if (!declaringContext?.canDefineFixture) {
+				if (declaringContext !== null)
+					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+				else 	
+					return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
+			}
+		}		
+
+		if (token?.equalsIgnoreCase(TEST)) {
+			if (!declaringContext?.canDefineTests) {
+				if (declaringContext !== null)
+					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+				else 	
+					return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
+			}
+		}		
+
 		// Now automatic rules
-		val specificMessage = syntaxDiagnosis.findFirst[msg|exception.isApplicable(msg, context)]
+		val specificMessage = syntaxDiagnosis.findFirst[ msg| exception.isApplicable(msg, context)]
 		if (specificMessage === null) {
 			return super.getSyntaxErrorMessage(context)
 		}
@@ -89,15 +115,15 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		ruleCall.rule
 	}
 
-	def isApplicable(Exception exception, SpecialMessage msg, IParserErrorContext context) {
+	def dispatch isApplicable(Exception exception, SpecialMessage msg, IParserErrorContext context) {
 		false
 	}
 	
-	def isApplicable(EarlyExitException exception, SpecialMessage msg, IParserErrorContext context) {
+	def dispatch isApplicable(EarlyExitException exception, SpecialMessage msg, IParserErrorContext context) {
 		exception.token.text.equalsIgnoreCase(msg.token) && msg.condition.apply(context, exception)
 	}
 	
-	def isApplicable(MismatchedTokenException exception, SpecialMessage msg, IParserErrorContext context) {
+	def dispatch isApplicable(MismatchedTokenException exception, SpecialMessage msg, IParserErrorContext context) {
 		(tokenDefProvider.tokenDefMap.get(exception.c) == "'" + msg.token + "'") &&
 			msg.condition.apply(context, exception)
 	}
