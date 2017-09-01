@@ -66,19 +66,6 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 	} 
 
 	@Test
-	def void constructorsAfterMethodsInWko() {
-		'''
-		object pepita {
-			var energia
-			method volar() { energia -= 10 }
-			constructor() { 
-				energia = 0
-			}
-		}
-		'''.expectSyntaxError("You should declare constructors before methods.", false)
-	} 
-
-	@Test
 	def void constructorsAfterMethodsInClass() {
 		'''
 		class Ave {
