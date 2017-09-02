@@ -3,11 +3,11 @@ package org.uqbar.project.wollok.parser
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import java.util.Set
-import org.antlr.runtime.CommonToken
 import org.antlr.runtime.EarlyExitException
 import org.antlr.runtime.MismatchedTokenException
 import org.antlr.runtime.MissingTokenException
 import org.antlr.runtime.RecognitionException
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.RuleCall
@@ -17,6 +17,7 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 import static org.uqbar.project.wollok.WollokConstants.*
@@ -66,6 +67,7 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	def enhanceSyntaxErrorMessage(IParserErrorContext context, Exception exception) {
 		// First, manual rules
 		val declaringContext = context.currentContext.declaringContext
+		var construction = context.currentNode?.text?.split(" ")?.head
 		val token = exception.token
 
 		if (#[CONST, VAR].contains(token)) {
@@ -74,45 +76,46 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			}
 		}		
 		
-		if (token?.equalsIgnoreCase(CONSTRUCTOR)) {
-			if (!declaringContext?.canDefineConstructors) {
-				if (declaringContext !== null) 
-					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
-				else 	
-					return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			}
+		if (token?.equalsIgnoreCase(CONSTRUCTOR) && !declaringContext?.canDefineConstructors) {
+			if (declaringContext !== null) 
+				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+			else 	
+				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
 		}		
 
-		if (token?.equalsIgnoreCase(FIXTURE)) {
-			if (!declaringContext?.canDefineFixture) {
-				if (declaringContext !== null)
-					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
-				else 	
-					return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			}
+		if (token?.equalsIgnoreCase(FIXTURE) && !declaringContext?.canDefineFixture) {
+			if (declaringContext !== null)
+				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+			else 	
+				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
 		}		
 
-		if (token?.equalsIgnoreCase(TEST)) {
-			if (!declaringContext?.canDefineTests) {
-				if (declaringContext !== null)
-					return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
-				else 	
-					return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			}
+		if (token?.equalsIgnoreCase(TEST) && !declaringContext?.canDefineTests) {
+			if (declaringContext !== null)
+				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+			else 	
+				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
 		}		
 
-		if (exception.parserMessage.contains(MISSING_EOF)) {
-			val construction = context.currentNode.text.split(" ")?.head
+		if (exception.parserMessage.contains(MISSING_EOF) && orderedConstructions.contains(construction)) {
 			return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_ORDER_PROBLEM, token, construction), SYNTAX_DIAGNOSTIC)
 		}
-
+		
 		// Now automatic rules
-		val specificMessage = syntaxDiagnosis.findFirst[ msg| exception.isApplicable(msg, context)]
+		var specificMessage = syntaxDiagnosis.findFirst[ msg| exception.isApplicable(msg, context)]
+		if (specificMessage === null && context.currentContext !== null) {
+			// Last chance to detect rule
+			specificMessage = changeParserMessage(context.currentContext, exception)
+		} 
 		if (specificMessage === null) {
 			return super.getSyntaxErrorMessage(context)
 		}
-		
+
 		new SyntaxErrorMessage(specificMessage.message, SYNTAX_DIAGNOSTIC)
+	}
+	
+	def orderedConstructions() {
+		#[WKO, CLASS, TEST, SUITE, PROGRAM]
 	}
 	
 	def grammarRule(IParserErrorContext context) {
@@ -142,7 +145,13 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	def dispatch parserMessage(MissingTokenException e) { e.inserted.toString }
 		
 	def dispatch token(Exception exception) { "" }
-	def dispatch token(RecognitionException exception) { exception.token.text }	
+	def dispatch token(RecognitionException exception) { exception.token.text }
+	
+	def dispatch SpecialMessage changeParserMessage(EObject o, Exception e) { null }
+	def dispatch SpecialMessage changeParserMessage(WMethodDeclaration m, MismatchedTokenException e) {
+		new SpecialMessage(e.token.text, NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD, e.token.text))				
+	}
+	
 }
 
 @Accessors

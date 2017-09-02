@@ -58,7 +58,8 @@ class WollokConstants {
 	public static val MIXIN = "mixin"
 	public static val CLASS = "class"
 	public static val WKO = "object"
-	public static val FIXTURE = "fixture" 
+	public static val FIXTURE = "fixture"
+	public static val PROGRAM = "program" 
 	
 	public static val ROOT_CLASS = "Object"
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
