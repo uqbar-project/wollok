@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -941,4 +942,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyPrograms(WProgram it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_PROGRAM_CANNOT_BE_EMPTY, it, WPROGRAM__ELEMENTS)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyTest(WTest it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_TESTS_CANNOT_BE_EMPTY, it, WTEST__ELEMENTS)
+		}
+	}	
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyFixture(WFixture it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
+		}
+	}	
+	
 }
