@@ -165,6 +165,7 @@ public class Messages extends NLS {
 	public static String SYNTAX_MISSING_BRACKETS_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_ORDER_PROBLEM;
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
+	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
 	
 	static {
 		// initialize resource bundle

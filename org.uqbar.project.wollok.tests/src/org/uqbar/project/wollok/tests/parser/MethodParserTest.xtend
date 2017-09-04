@@ -16,7 +16,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 		object pepita {
 			method energiaDefault = 2
 		}
-		'''.expectSyntaxError("Missing () in method definition", false)
+		'''.expectsSyntaxError("Missing () in method definition", false)
 	}
 
 	@Test
@@ -27,7 +27,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 				return true
 			}
 		}
-		'''.expectSyntaxError("Method definition: bad character in parameter. Don't use [", false)
+		'''.expectsSyntaxError("Method definition: bad character in parameter. Don't use [", false)
 	}
 
 	@Test
@@ -38,7 +38,7 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 				return true
 			}
 		}
-		'''.expectSyntaxError("Method definition: bad character in parameter. Don't use {", false)
+		'''.expectsSyntaxError("Method definition: bad character in parameter. Don't use {", false)
 	}
 
 	@Test
@@ -49,28 +49,43 @@ class MethodParserTest extends AbstractWollokInterpreterTestCase {
 				return true
 			}
 		}
-		'''.expectSyntaxError("Method definition: bad character in parameter. Don't use #", false)
+		'''.expectsSyntaxError("Method definition: bad character in parameter. Don't use #", false)
 	}
 
 	@Test
-	@Ignore // until we give a try to a different syntax in WMemberFeatureCall
-	def void MissingSelfInMessage() {
+	def void FourEqualsOperatorErrorMessage() {
 		'''
 		object pepita {
 			var energia = 0
-			var vuelaEstaDistancia = 0
-			method estaEnElRango() = true
-			method distanciaAVolar() {
-				estaEnElRango()
-				//if (estaEnElRango()){
-				//	vuelaEstaDistancia=(energia/5)+10
-				//}
-				//else{
-				//	vuelaEstaDistancia=energia/5
-				//}
-				//return vuelaEstaDistancia
+			method estaCansada() {
+				return energia ==== 0
 			}
 		}
-		'''.expectSyntaxError("Bad character in method definition: don't use [", false)
+		'''.expectsSyntaxError("Bad message: ====", false)
 	}
+
+	@Test
+	def void FourNotEqualsOperatorErrorMessage() {
+		'''
+		object pepita {
+			var energia = 0
+			method estaConEnergia() {
+				return energia !=== 0
+			}
+		}
+		'''.expectsSyntaxError("Bad message: !===", false)
+	}
+
+	@Test
+	def void UnexistentMessageErrorMessage() {
+		'''
+		object pepita {
+			var energia = 0
+			method estaCansada() {
+				return energia.esSiempreIgualA(0)
+			}
+		}
+		'''.expectsNoSyntaxError
+	}
+	
 }

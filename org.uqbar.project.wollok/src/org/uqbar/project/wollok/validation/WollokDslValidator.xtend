@@ -587,7 +587,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (comparisonOperands.contains(op.feature)) {
 			if (op.leftOperand.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__LEFT_OPERAND)
-			if (op.rightOperand.isWellKnownObject)
+			if (op.rightOperand?.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}

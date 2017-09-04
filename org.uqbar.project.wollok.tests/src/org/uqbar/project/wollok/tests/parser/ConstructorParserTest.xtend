@@ -17,7 +17,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 			constructor() { }
 			method volar() { energia = energia - 20 }
 		}
-		'''.expectSyntaxError("Constructors are not allowed in object definition.", false)
+		'''.expectsSyntaxError("Constructors are not allowed in object definition.", false)
 	}
 
 	@Test
@@ -28,7 +28,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 			method volar() { energia = energia - 20 }
 			constructor() { }
 		}
-		'''.expectSyntaxError("Constructors are not allowed in object definition.")
+		'''.expectsSyntaxError("Constructors are not allowed in object definition.")
 	}
 
 	@Test
@@ -40,7 +40,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("Constructors are not allowed in describe definition.")
+		'''.expectsSyntaxError("Constructors are not allowed in describe definition.")
 	} 
 
 	@Test
@@ -51,7 +51,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 			four.even()
 			constructor() { }
 		}
-		'''.expectSyntaxError("Constructors are not allowed in this definition.")
+		'''.expectsSyntaxError("Constructors are not allowed in this definition.")
 	} 
 
 	@Test
@@ -62,7 +62,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 			assert.equals(4, four)
 			constructor() { }
 		}
-		'''.expectSyntaxError("Constructors are not allowed in this definition.", false)
+		'''.expectsSyntaxError("Constructors are not allowed in this definition.", false)
 	} 
 
 	@Test
@@ -75,7 +75,7 @@ class ConstructorParserTest extends AbstractWollokInterpreterTestCase {
 				energia = 0
 			}
 		}
-		'''.expectSyntaxError("You should declare constructors before methods.", false)
+		'''.expectsSyntaxError("You should declare constructors before methods.", false)
 	} 
 
 }

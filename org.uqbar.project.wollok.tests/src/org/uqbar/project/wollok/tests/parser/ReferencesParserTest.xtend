@@ -16,7 +16,7 @@ class ReferencesParserTest extends AbstractWollokInterpreterTestCase {
 			method volar() { energia = energia - 20 }
 			var energia = 0
 		}
-		'''.expectSyntaxError("You should declare references before constructors, methods and tests.", false)
+		'''.expectsSyntaxError("You should declare references before constructors, methods and tests.", false)
 	}
 
 	@Test
@@ -26,7 +26,7 @@ class ReferencesParserTest extends AbstractWollokInterpreterTestCase {
 			method volar() { energia = energia - 20 }
 			var energia = 0
 		}
-		'''.expectSyntaxError("You should declare references before constructors, methods and tests.", false)
+		'''.expectsSyntaxError("You should declare references before constructors, methods and tests.", false)
 	}
 
 	@Test
@@ -39,7 +39,7 @@ class ReferencesParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("You should declare references before constructors, methods and tests.", false)
+		'''.expectsSyntaxError("You should declare references before constructors, methods and tests.", false)
 	}
 
 	@Test
@@ -52,7 +52,7 @@ class ReferencesParserTest extends AbstractWollokInterpreterTestCase {
 			}
 			var energia = 0
 		}
-		'''.expectSyntaxError("You should declare references before constructors, methods and tests.", false)
+		'''.expectsSyntaxError("You should declare references before constructors, methods and tests.", false)
 	}
 
 }

@@ -18,7 +18,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			method volar() { energia = energia - 20 }
 			fixture {}
 		}
-		'''.expectSyntaxError("Fixture is not allowed in object definition.")
+		'''.expectsSyntaxError("Fixture is not allowed in object definition.")
 	} 
 
 	@Test
@@ -29,7 +29,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			fixture {}
 			method volar() { energia = energia - 20 }
 		}
-		'''.expectSyntaxError("Fixture is not allowed in object definition.", false)
+		'''.expectsSyntaxError("Fixture is not allowed in object definition.", false)
 	} 
 
 	@Test
@@ -40,7 +40,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			method volar() { energia = energia - 20 }
 			fixture {}
 		}
-		'''.expectSyntaxError("Fixture is not allowed in class definition.")
+		'''.expectsSyntaxError("Fixture is not allowed in class definition.")
 	} 
 
 	@Test
@@ -51,7 +51,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			fixture {}
 			method volar() { energia = energia - 20 }
 		}
-		'''.expectSyntaxError("Fixture is not allowed in class definition.", false)
+		'''.expectsSyntaxError("Fixture is not allowed in class definition.", false)
 	} 
 
 	@Test
@@ -63,7 +63,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			}
 			fixture {}
 		}
-		'''.expectSyntaxError("Fixture is not allowed in this definition.", false)
+		'''.expectsSyntaxError("Fixture is not allowed in this definition.", false)
 	} 
 
 	@Ignore // it works on IDE but EObject is null when parsing this file
@@ -71,7 +71,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 	def void fixtureAlone() {
 		'''
 		fixture {}
-		'''.expectSyntaxError("Fixture is not allowed in this definition.")
+		'''.expectsSyntaxError("Fixture is not allowed in this definition.")
 	} 
 
 	@Test
@@ -82,7 +82,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 			assert.equals(4, four)
 			fixture { }
 		}
-		'''.expectSyntaxError("Fixture is not allowed in this definition.", false)
+		'''.expectsSyntaxError("Fixture is not allowed in this definition.", false)
 	} 
 
 	@Test
@@ -97,7 +97,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 				four = 4
 			}
 		}
-		'''.expectSyntaxError("You should declare fixture before tests and methods.", false)
+		'''.expectsSyntaxError("You should declare fixture before tests and methods.", false)
 	}
 
 	@Test
@@ -113,7 +113,7 @@ class FixtureParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(4, const) 
 			}
 		}
-		'''.expectSyntaxError("You should declare fixture before tests and methods.", false)
+		'''.expectsSyntaxError("You should declare fixture before tests and methods.", false)
 	}
 	
 }

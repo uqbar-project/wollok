@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.ArrayList
-
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
@@ -16,6 +15,7 @@ import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -33,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -41,13 +42,14 @@ import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -319,9 +321,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
+	def static dispatch feature(WUnaryOperation o) { o.feature }
+	def static dispatch feature(WBinaryOperation o) { o.feature }
+	def static dispatch feature(WPostfixOperation o) { o.feature }
 
 	// TODO Esto no debería ser necesario pero no logro generar bien la herencia entre estas clases para poder tratarlas polimórficamente.
 	def static dispatch memberCallArguments(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
@@ -525,6 +531,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch constructionName(WNamedObject c) { WollokConstants.WKO }
 	def static dispatch constructionName(WMixin c) { WollokConstants.MIXIN }
 	def static dispatch constructionName(WSuite s) { WollokConstants.SUITE }
-			
+
 }
 

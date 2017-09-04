@@ -19,7 +19,7 @@ class OrderConstructionParserTest extends AbstractWollokInterpreterTestCase {
 		class Pepita {
 			method comer()
 		}
-		'''.expectSyntaxError("Bad structure: class definition must be before program.", false)
+		'''.expectsSyntaxError("Bad structure: class definition must be before program.", false)
 	}
 
 	@Test
@@ -32,7 +32,7 @@ class OrderConstructionParserTest extends AbstractWollokInterpreterTestCase {
 		object pepita {
 			method comer()
 		}
-		'''.expectSyntaxError("Bad structure: object definition must be before program.", false)
+		'''.expectsSyntaxError("Bad structure: object definition must be before program.", false)
 	}
 
 	@Test
@@ -45,7 +45,7 @@ class OrderConstructionParserTest extends AbstractWollokInterpreterTestCase {
 		object pepita {
 			method comer()
 		}
-		'''.expectSyntaxError("Bad structure: object definition must be before test.", false)
+		'''.expectsSyntaxError("Bad structure: object definition must be before test.", false)
 	}
 
 	@Test
@@ -58,7 +58,7 @@ class OrderConstructionParserTest extends AbstractWollokInterpreterTestCase {
 		class Ave {
 			method comer()
 		}
-		'''.expectSyntaxError("Bad structure: class definition must be before test.", false)
+		'''.expectsSyntaxError("Bad structure: class definition must be before test.", false)
 	}
 
 }

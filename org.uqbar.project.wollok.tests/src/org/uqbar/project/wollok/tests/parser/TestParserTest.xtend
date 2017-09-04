@@ -17,7 +17,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 			test "nothing to do here" { }
 			method volar() { energia = energia - 20 }
 		}
-		'''.expectSyntaxError("Tests are not allowed in object definition.", false)
+		'''.expectsSyntaxError("Tests are not allowed in object definition.", false)
 	}
 
 	@Test
@@ -30,7 +30,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("Tests are not allowed in object definition.", false)
+		'''.expectsSyntaxError("Tests are not allowed in object definition.", false)
 	}
 
 	@Test
@@ -41,7 +41,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 			test "nothing to do here" { }
 			method volar() { energia = energia - 20 }
 		}
-		'''.expectSyntaxError("Tests are not allowed in class definition.", false)
+		'''.expectsSyntaxError("Tests are not allowed in class definition.", false)
 	}
 
 	@Test
@@ -54,7 +54,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("Tests are not allowed in class definition.", false)
+		'''.expectsSyntaxError("Tests are not allowed in class definition.", false)
 	}
 
 	@Test
@@ -66,7 +66,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("Tests are not allowed in this definition.", false)
+		'''.expectsSyntaxError("Tests are not allowed in this definition.", false)
 	}
 
 	@Test
@@ -79,7 +79,7 @@ class TestParserTest extends AbstractWollokInterpreterTestCase {
 				assert.equals(1, 1)
 			}
 		}
-		'''.expectSyntaxError("Tests are not allowed in this definition.")
+		'''.expectsSyntaxError("Tests are not allowed in this definition.")
 	} 
 
 }

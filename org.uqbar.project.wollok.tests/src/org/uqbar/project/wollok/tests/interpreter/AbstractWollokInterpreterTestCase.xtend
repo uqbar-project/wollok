@@ -54,11 +54,11 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		interpretPropagatingErrors(newArrayList(null as String -> programAsString.toString))
 	}
 	
-	def expectSyntaxError(CharSequence programAsString, String expectedMessage) {
-		expectSyntaxError(programAsString, expectedMessage, true)
+	def expectsSyntaxError(CharSequence programAsString, String expectedMessage) {
+		expectsSyntaxError(programAsString, expectedMessage, true)
 	}
 	
-	def expectSyntaxError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue) {
+	def expectsSyntaxError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue) {
 		val issues = programAsString.parse.validate
 		if (onlyOneIssue && issues.length != 1) {
 			fail("1 issue expected, found " + issues.length + ": " + issues) 
@@ -66,6 +66,11 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 		val issue = issues.findFirst [ message == expectedMessage ]
 		Assert.assertNotNull("No issue found with message " + expectedMessage + ". Issues were: " + issues, issue)
 		Assert.assertTrue(issue.isSyntaxError)
+	}
+
+	def expectsNoSyntaxError(CharSequence programAsString) {
+		val issues = programAsString.parse.validate
+		Assert.assertEquals("No issues were expected. Issues were: " + issues, 0, issues.length)
 	}
 	
 	def test(CharSequence testCode) {

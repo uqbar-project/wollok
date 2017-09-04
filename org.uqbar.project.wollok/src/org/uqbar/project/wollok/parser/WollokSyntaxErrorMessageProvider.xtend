@@ -6,6 +6,7 @@ import java.util.Set
 import org.antlr.runtime.EarlyExitException
 import org.antlr.runtime.MismatchedTokenException
 import org.antlr.runtime.MissingTokenException
+import org.antlr.runtime.NoViableAltException
 import org.antlr.runtime.RecognitionException
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
@@ -52,18 +53,23 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		super.getSyntaxErrorMessage(context)
 	}
 
-	def dispatch getSyntaxErrorMessage(IParserErrorContext context, RecognitionException exception) {
+	def dispatch getSyntaxErrorMessage(IParserErrorContext context, Exception exception) {
 		super.getSyntaxErrorMessage(context)
 	}
 
-	def dispatch getSyntaxErrorMessage(IParserErrorContext context, MismatchedTokenException exception) {
+	def dispatch getSyntaxErrorMessage(IParserErrorContext context, NoViableAltException exception) {
+		val declaringContext = context.currentContext
+		val operation = declaringContext.feature
+		if (operation === null) return super.getSyntaxErrorMessage(context)
+		val token = exception.token.text
+		val completeMessage = operation + token
+		new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_MESSAGE, completeMessage), SYNTAX_DIAGNOSTIC)
+	}
+	
+	def dispatch getSyntaxErrorMessage(IParserErrorContext context, RecognitionException exception) {
 		enhanceSyntaxErrorMessage(context, exception)
 	}
 
-	def dispatch getSyntaxErrorMessage(IParserErrorContext context, EarlyExitException exception) {
-		enhanceSyntaxErrorMessage(context, exception)
-	}
-	
 	def enhanceSyntaxErrorMessage(IParserErrorContext context, Exception exception) {
 		// First, manual rules
 		val declaringContext = context.currentContext.declaringContext
