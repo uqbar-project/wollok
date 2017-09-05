@@ -1,5 +1,6 @@
 *._trace
 xtend-gen
+xsemantics-gen
 .classpath
 .project
 .settings
