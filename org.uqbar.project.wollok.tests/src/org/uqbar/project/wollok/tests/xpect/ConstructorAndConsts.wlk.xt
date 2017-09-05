@@ -6,12 +6,34 @@ class Golondrina {
 	// XPECT errors --> "Variable energia is never assigned in this constructor" at "{ }"
 	constructor() { }
 	
+	constructor(_energia) { energia = _energia}
+
 	// XPECT errors --> "Variable energia is never assigned in this constructor" at "{  		_energia + 1 	}"
 	constructor(_energia, _alegria) { 
 		_energia + 1
 	}
 	
-	constructor(_energia) { energia = _energia}
-	
+	constructor(_energia, _param1, _param2, _param3) = self(_energia)
+		
 	method energia() = energia
+}
+
+class GolondrinaCanadiense inherits Golondrina {
+	constructor(_energia) = super(_energia)
+	
+	constructor(_energia, _otroParam) {
+		energia = _energia
+	} 
+}
+
+class GolondrinaUruguaya inherits Golondrina {
+	const esBotija
+	
+	constructor() {
+		energia = 10
+		esBotija = false
+	}
+	
+	// TODO: Llama a un constructor que no existe!!
+	constructor(_energia, _esBotija) = self(_energia)
 }
