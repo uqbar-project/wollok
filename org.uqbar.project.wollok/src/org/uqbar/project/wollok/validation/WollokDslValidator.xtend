@@ -269,7 +269,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def construtorMustExpliclityCallSuper(WConstructor it) {
+	def construtorMustExplicitlyCallSuper(WConstructor it) {
 		if (delegatingConstructorCall === null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			report(WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR, it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
@@ -549,11 +549,29 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			else if (!writeable)
 				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
 					VARIABLE_NEVER_ASSIGNED)
+		} else {
+			val constructorsOk = assignments
+				.map [ declaringConstructor ]
+				.filter [ it !== null ]
+				.toList
+			
+			if (declaringContext !== null && !isLocalToMethod) {
+				declaringContext
+					.getConstructors
+					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.delegatingConstructorCall === null ]
+					.forEach [ constructor |
+						if (!writeable)
+							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, it.variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+						//else
+						//	warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, it.variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+					]
+			}
 		}
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
+
 
 //  Confirm with @npasserini
 //  @dodain - I think we should not consider this

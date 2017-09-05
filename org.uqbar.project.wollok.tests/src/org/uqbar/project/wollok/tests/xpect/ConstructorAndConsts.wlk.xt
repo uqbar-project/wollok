@@ -1,0 +1,17 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Golondrina {
+	const energia
+	
+	// XPECT errors --> "Variable energia is never assigned in this constructor" at "{ }"
+	constructor() { }
+	
+	// XPECT errors --> "Variable energia is never assigned in this constructor" at "{  		_energia + 1 	}"
+	constructor(_energia, _alegria) { 
+		_energia + 1
+	}
+	
+	constructor(_energia) { energia = _energia}
+	
+	method energia() = energia
+}
