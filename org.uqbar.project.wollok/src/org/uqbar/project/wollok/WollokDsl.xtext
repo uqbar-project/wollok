@@ -219,7 +219,15 @@ OpPostfix:
 	"++" | "--"
 ;
 
-WFeatureCall : WSuperInvocation | WMemberFeatureCall;
+WFeatureCall : WSuperInvocation | WMemberFeatureCall | WWrongMemberFeatureCall;
+
+WWrongMemberFeatureCall returns WExpression:
+  {WWrongMemberFeatureCall} 
+  wrongFeature=FeatureCallID 
+    (('(' 
+      (memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
+    ')') | memberCallArguments+=WClosure  )
+  ;
 
 WMemberFeatureCall returns WExpression:
 	WPrimaryExpression

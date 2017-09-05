@@ -63,6 +63,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WWrongMemberFeatureCall
 
 /**
  * Custom validation rules.
@@ -153,6 +154,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			throw new RuntimeException("Extension " + ext.class.name + " should use the @Check annotation")
 		
 		this.checkMode.shouldCheck(annotation.value)
+	}
+
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def receiverMissing(WWrongMemberFeatureCall wrongFeatureCall) {
+			report(
+				"Falta el objeto receptor", 
+				wrongFeatureCall,
+				WWRONG_MEMBER_FEATURE_CALL__WRONG_FEATURE, 
+				"RECEIVER_MISSING"
+			)
 	}
 	
 
