@@ -22,7 +22,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160813060001"/>
-<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.0/neon"/>
+<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.0/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
@@ -34,7 +34,7 @@
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
-<repository location="http://archive.eclipse.org/eclipse/downloads/drops4/R-4.6.3-201703010400/"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.6/R-4.6.3-201703010400/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
