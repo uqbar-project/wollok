@@ -22,7 +22,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160813060001"/>
-<repository location="http://download.eclipse.org/technology/babel/update-site/R0.14.0/neon"/>
+<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.0/neon/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
