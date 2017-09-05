@@ -19,7 +19,7 @@ script:
 
 # Maven build
 - export MAVEN_OPTS=-Xmx2048m
-- mvn -e -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
+- mvn -e -X -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
 notifications:
   webhooks:
