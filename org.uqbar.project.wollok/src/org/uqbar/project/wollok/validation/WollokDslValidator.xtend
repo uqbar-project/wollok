@@ -540,7 +540,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	// TODO: a single method performs many checks ! cannot configure that
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def unusedVariables(WVariableDeclaration it) {
+	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
 		if (assignments.empty) {
 			if (writeable)
@@ -558,7 +558,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			if (declaringContext !== null && !isLocalToMethod) {
 				declaringContext
 					.getConstructors
-					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.delegatingConstructorCall === null ]
+					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.constantInitializationsMustBeChecked(declaringContext) ]
 					.forEach [ constructor |
 						if (!writeable)
 							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, it.variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
@@ -570,6 +570,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
+	}
+	
+	def boolean constantInitializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
+		val delegatingConstructor = constructor.delegatingConstructorCall
+		if (delegatingConstructor === null) { 
+			return true
+		}
+		val realConstructor = declaringContext.resolveConstructor(delegatingConstructor.arguments)
+		realConstructor.container !== declaringContext
 	}
 
 
