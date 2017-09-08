@@ -34,6 +34,11 @@ class GolondrinaUruguaya inherits Golondrina {
 		esBotija = false
 	}
 	
-	// TODO: Llama a un constructor que no existe!!
+	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "constructor(_energia, _esBotija) = self(_energia)"
 	constructor(_energia, _esBotija) = self(_energia)
+	
+	constructor(_energia, _esBotija, unParametro) = super(_energia) {
+		esBotija = _esBotija
+	}
+	
 }

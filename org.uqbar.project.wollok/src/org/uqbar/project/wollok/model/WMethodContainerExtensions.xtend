@@ -67,6 +67,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static WConstructor declaringConstructor(EObject it) { EcoreUtil2.getContainerOfType(it, WConstructor) }
 
+	def static WFixture declaringFixture(EObject it) { EcoreUtil2.getContainerOfType(it, WFixture) }
+
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 

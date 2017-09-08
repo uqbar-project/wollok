@@ -29,6 +29,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -402,6 +403,50 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			cannotModifyErrorId(a.feature))
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReassignValuesInConstructors(WAssignment a) {
+		val declaringConstructor = a.declaringConstructor
+		if (declaringConstructor === null) return;
+		val variable = a.feature.ref
+		if (declaringConstructor.hasSeveralAssignmentsFor(variable)) {
+			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+				cannotModifyErrorId(a.feature))
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReassignValuesInFixture(WAssignment a) {
+		val declaringFixture = a.declaringFixture
+		if (declaringFixture === null) return;
+		val variable = a.feature.ref
+		if (a.declaringFixture.hasSeveralAssignmentsFor(variable)) {
+			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+				cannotModifyErrorId(a.feature))
+		}
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
+		elements.filter [ hasAssignmentsFor(variable) ].size > 1
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WConstructor it, WReferenciable variable) {
+		expression.hasSeveralAssignmentsFor(variable)
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
+		expressions.filter [ hasAssignmentsFor(variable) ].size > 1
+	}
+	
+	def dispatch boolean hasAssignmentsFor(EObject e, WReferenciable variable) {
+		false
+	}
+	
+	def dispatch boolean hasAssignmentsFor(WAssignment assignment, WReferenciable variable) {
+		assignment.feature.ref === variable
+	}
+
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
 
 	def dispatch String cannotModifyErrorId(WVariable it) { CANNOT_ASSIGN_TO_VAL }
@@ -542,6 +587,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
+		// Variable has no assignments
 		if (assignments.empty) {
 			if (writeable)
 				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
@@ -549,7 +595,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			else if (!writeable)
 				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
 					VARIABLE_NEVER_ASSIGNED)
-		} else {
+		}
+		// Variable has no assignment in its definition and there are several assignments
+		if (!assignments.empty && right === null) {
 			val constructorsOk = assignments
 				.map [ declaringConstructor ]
 				.filter [ it !== null ]
@@ -558,21 +606,22 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			if (declaringContext !== null && !isLocalToMethod) {
 				declaringContext
 					.getConstructors
-					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.constantInitializationsMustBeChecked(declaringContext) ]
+					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.initializationsMustBeChecked(declaringContext) ]
 					.forEach [ constructor |
 						if (!writeable)
-							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, it.variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
-						//else
-						//	warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, it.variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+						else
+							warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
 					]
 			}
 		}
+		// Variable is never used
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
 	
-	def boolean constantInitializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
+	def boolean initializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
 		val delegatingConstructor = constructor.delegatingConstructorCall
 		if (delegatingConstructor === null) { 
 			return true

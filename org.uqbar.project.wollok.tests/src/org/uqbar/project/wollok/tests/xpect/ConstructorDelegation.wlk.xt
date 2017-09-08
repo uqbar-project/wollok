@@ -81,6 +81,8 @@ class Z inherits X {
 
 class Superclase {
 	var a
+	
+	// XPECT warnings --> "Variable a is never assigned in this constructor" at "{}"
 	constructor() {}
 	constructor(_a) {
 		a = _a
