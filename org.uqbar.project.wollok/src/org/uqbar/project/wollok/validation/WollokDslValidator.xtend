@@ -421,7 +421,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val declaringFixture = a.declaringFixture
 		if (declaringFixture === null) return;
 		val variable = a.feature.ref
-		if (a.declaringFixture.hasSeveralAssignmentsFor(variable)) {
+		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
 			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 				cannotModifyErrorId(a.feature))
 		}
