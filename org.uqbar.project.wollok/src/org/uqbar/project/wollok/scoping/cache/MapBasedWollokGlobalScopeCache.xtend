@@ -21,7 +21,6 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 			cacheContent = new MapBasedCacheContent(uri, imports, ifAbsentBlock.apply)
 			cache.put(uriString, cacheContent)
 		}
-		
 		cacheContent.result
 	}
 	

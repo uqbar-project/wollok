@@ -40,21 +40,27 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 
 	
 	override getScope(EObject context, EReference reference) {
-		var IScope result;
-		
-		if (context.eContainer() !== null) {
-			result = getScope(context.eContainer(), reference);
-		} else {
-			result = getResourceScope(context.eResource(), reference);
+		synchronized (this) {
+			var IScope result
+			
+			if (context.eContainer() !== null) {
+				result = getScope(context.eContainer(), reference)
+			} else {
+				result = getResourceScope(context.eResource(), reference)
+			}
+			return getLocalElementsScope(result, context, reference)
 		}
-		return getLocalElementsScope(result, context, reference);
 	}
 	
 	def protected getResourceScope(Resource context, EReference reference){
-		val globalScope = getGlobalScope(context, reference)
-		val normalizers = getImportedNamespaceResolvers(context, reference)
-		
-		createImportScope(globalScope, normalizers, getAllDescriptions(context), reference.EReferenceType)
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				val globalScope = getGlobalScope(context, reference)
+				val normalizers = getImportedNamespaceResolvers(context, reference)
+				
+				createImportScope(globalScope, normalizers, getAllDescriptions(context), reference.EReferenceType)
+			} 
+		}
 	}	
 		
 	

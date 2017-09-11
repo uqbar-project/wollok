@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
+import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.*
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
@@ -45,27 +46,33 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
-		var explicitImportedObjects = context.importedObjects
-		
-		if(filter !== null)
-			explicitImportedObjects = explicitImportedObjects.filter(filter)
-		
-		val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
-		new SimpleScope(defaultScope, explicitImportedObjects)
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				var explicitImportedObjects = context.importedObjects
+				
+				if(filter !== null)
+					explicitImportedObjects = explicitImportedObjects.filter(filter)
+				
+				val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
+				new SimpleScope(defaultScope, explicitImportedObjects)
+			}
+		}
 	}
 
 	/**
 	 * Loads all imported elements from a context
 	 */
-	def importedObjects(Resource context) {
-		
+	def synchronized importedObjects(Resource context) {
 		if(context === null || context.contents === null){
 			return #{}
 		}
-		
-		val imports = context.calculateImports
-		
-		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
+
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				val imports = context.calculateImports
+				cache.get(context.URI, imports, [doImportedObjects(context, imports)])
+			}
+		}		
 	}
 
 	/**
@@ -73,38 +80,53 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * It caches the values to modifications
 	 */
 	def calculateImports(Resource context){
-		
-		val importsCache = new OnChangeEvictingCache().getOrCreate(context)
-		var result = importsCache.get("ImportsInResource")
-		
-		if(result === null){
-			val rootObject = context.contents.get(0)
-			result = (rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports).toSet
-			
-			importsCache.set("ImportsInResource", result)
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				val importsCache = new OnChangeEvictingCache().getOrCreate(context)
+				var result = importsCache.get("ImportsInResource")
+				
+				if(result === null){
+					val rootObject = context.contents.get(0)
+					result = (rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports).toSet
+					
+					importsCache.set("ImportsInResource", result)
+				}
+				result
+			}
 		}
-		
-		result
 	}
 
-	def doImportedObjects(Resource context, Iterable<String> imports) {
-		val objectsFromManifests = libraryLoader.load(context)
-
-		objectsFromLocalImport(context, imports, objectsFromManifests)
+	def synchronized doImportedObjects(Resource context, Iterable<String> imports) {
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				val objectsFromManifests = libraryLoader.load(context)
+				objectsFromLocalImport(context, imports, objectsFromManifests)
+			}
+		}
 	}
 	
-	def objectsFromLocalImport(Resource context, Iterable<String> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
-		val imports = (importsEntry.map[ #[it]  + localScopeProvider.allRelativeImports(it, context.implicitPackage) ].flatten).toSet
-		
-		val importedObjects = imports.filter[
-			it !== null && !objectsFromManifests.exists[o| o.matchesImport(it)]
-		]
-		.map[ 
-			toResource(context)
-		].filter[it !== null].map [ r |
-			resourceDescriptionManager.getResourceDescription(r).exportedObjects
-		].flatten + objectsFromManifests
-		importedObjects
+	def synchronized objectsFromLocalImport(Resource context, Iterable<String> importsEntry, Iterable<IEObjectDescription> objectsFromManifests){
+		synchronized (context) {
+			synchronized (context.resourceSet) {
+				val imports = (importsEntry.map[ #[it]  + localScopeProvider.allRelativeImports(it, context.implicitPackage) ].flatten).toSet
+				
+//				val resourceSet = context.resourceSet
+				
+				val importedObjects = imports.filter[
+//					if (context.resourceSet === null) {
+//						println("RESOURCE SET ES NULL en objectsFromLocalImport 2!")
+//						context.assign("resourceSet", resourceSet)
+//					}
+					it !== null && !objectsFromManifests.exists[o| o.matchesImport(it)]
+				]
+				.map[ 
+					toResource(context)
+				].filter[it !== null].map [ r |
+					resourceDescriptionManager.getResourceDescription(r).exportedObjects
+				].flatten + objectsFromManifests
+				importedObjects
+			}
+		}
 	}
 
 	def matchesImport(IEObjectDescription o, String importedNamespace) {
@@ -122,10 +144,12 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 */	
 	def static toResource(String importedNamespace, Resource resource) {
 		try {
-			var uri = generateUri(resource, importedNamespace)
-			if(uri === null) return null
-			
-			EcoreUtil2.getResource(resource, uri)
+			synchronized (resource) {
+				var uri = generateUri(resource, importedNamespace)
+				if(uri === null) return null
+				
+				EcoreUtil2.getResource(resource, uri)
+			}
 		}
 		catch (RuntimeException e) {
 			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
@@ -136,33 +160,37 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	 * Converts the importedName to a Resource relative to a context
 	 */
 	def static generateUri(Resource context, String importedName) {
-		val levels = WollokRootLocator.levelsToRoot(context)
-		val parts = importedName.split("\\.")
-		var uri = context.URI.trimSegments(levels)
-		
-		//I skip the last part because is the name of the imported object
-		for(var i = 0; i < parts.size -1 ; i++){
-			uri = uri.appendSegment(parts.get(i))
-		}
-				
-		var newUri = uri
-
-		while (newUri.segmentCount >= 1) {
-			val fileURI = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION)
+		synchronized (context) {
+			val levels = WollokRootLocator.levelsToRoot(context)
+			val parts = importedName.split("\\.")
+			var uri = context.URI.trimSegments(levels)
 			
-			if (fileURI.exists(context)) {
-				return fileURI.toString
+			//I skip the last part because is the name of the imported object
+			for(var i = 0; i < parts.size -1 ; i++){
+				uri = uri.appendSegment(parts.get(i))
 			}
-			
-			newUri = newUri.trimSegments(1)
+					
+			var newUri = uri
+	
+			while (newUri.segmentCount >= 1) {
+				val fileURI = newUri.appendFileExtension(CLASS_OBJECTS_EXTENSION)
+				
+				if (fileURI.exists(context)) {
+					return fileURI.toString
+				}
+				
+				newUri = newUri.trimSegments(1)
+			}
+	
+			uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 		}
-
-		uri.appendFileExtension(CLASS_OBJECTS_EXTENSION).toString
 	}
 	
 	def static Boolean exists(URI fileURI, Resource context){
 		try{
-			context.resourceSet.URIConverter.exists(fileURI,null)
+			synchronized (context) {
+				context.resourceSet.URIConverter.exists(fileURI,null)
+			}
 		}catch(ClasspathUriResolutionException e){
 			false
 		}catch(NullPointerException e){
