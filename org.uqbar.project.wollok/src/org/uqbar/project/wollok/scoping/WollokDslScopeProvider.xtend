@@ -31,7 +31,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 /**
  * This class contains custom scoping description.
  * 
- * see : http://www.eclipse.org/Xtext/documentation.html#scoping
+ * see : https://eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
  * on how and when to use it 
  *
  */
@@ -41,9 +41,11 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	WollokImportedNamespaceAwareLocalScopeProvider globalScopeProvider
 
 	def IScope scope_WReferenciable(EObject ctx, EReference ref){
-		val globalScope = globalScopeProvider.getScope(ctx,ref)
-		val elements = ctx.scope.allElements
-		new SimpleScope(globalScope, elements)
+		synchronized (this) {
+			val globalScope = globalScopeProvider.getScope(ctx,ref)
+			val elements = ctx.scope.allElements
+			new SimpleScope(globalScope, elements)
+		}
 	}
 	
 	// scope extension methods for variable refs (with multiple dispatch)

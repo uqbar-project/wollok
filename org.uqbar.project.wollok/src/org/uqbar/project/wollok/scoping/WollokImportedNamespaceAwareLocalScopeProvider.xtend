@@ -63,7 +63,6 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 		}
 	}	
 		
-	
 	def protected getImplicitImports() {
 		val r = newArrayList
 		r.add(new ImportNormalizer(qualifiedNameConverter.toQualifiedName("wollok.lib"), true, false))
