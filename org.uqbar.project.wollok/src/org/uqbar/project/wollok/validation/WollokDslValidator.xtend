@@ -884,14 +884,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def void wrongImport(Import it) {
 		val importedString = importedNamespaceWithoutWildcard
-		println("LLAMO AL scope *************************")
 		val scope = it.getScope(scopeProvider)
-		println("LLAME AL scope *************************")
-		
 		val allImports = #[importedString] + localScopeProvider.allRelativeImports(importedString, it)
 
-		println("allImports " + allImports)
-		
 		allImports.exists [ anImport |
 			val found = scope.getElements(qualifiedNameConverter.toQualifiedName(anImport))
 			!found.empty
