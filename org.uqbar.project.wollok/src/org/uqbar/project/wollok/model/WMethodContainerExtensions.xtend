@@ -249,7 +249,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) {
-		c !== null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
+		c !== null && !c.hasCyclicHierarchy && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List<?> params, boolean acceptsAbstract) {
@@ -292,7 +292,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && c.parent.isValidCall(call, finder))
+		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
 	}
 
 	// ************************************************************************
