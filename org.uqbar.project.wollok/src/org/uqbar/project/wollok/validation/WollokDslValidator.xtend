@@ -399,7 +399,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotReassignValues(WAssignment a) {
-		if(!a.feature.ref.isModifiableFrom(a)) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+		if(!a.feature.ref.isModifiableFrom(a)
+			&& !a.isWithinConstructor
+		) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 			cannotModifyErrorId(a.feature))
 	}
 

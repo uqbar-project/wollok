@@ -12,7 +12,6 @@ class X {
 class Y {
 	const e = 1
 	constructor(_e) {
-		// XPECT errors --> "Cannot modify constants" at "e"
 		e = _e
 	}
 }
