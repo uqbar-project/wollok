@@ -4,7 +4,6 @@ class A {
 	const x = "sarasa"
 	
 	constructor() {
-		// XPECT errors --> "Cannot modify constants" at "x"
 		x = 23
 	}
 	

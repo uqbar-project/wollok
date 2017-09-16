@@ -301,6 +301,9 @@ class WollokModelExtensions {
 		else
 			c.parent.allConstructors
 	}
+
+	def static dispatch getConstructors(EObject o) { newArrayList }
+	def static dispatch getConstructors(WClass c) { c.allConstructors }
 	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
