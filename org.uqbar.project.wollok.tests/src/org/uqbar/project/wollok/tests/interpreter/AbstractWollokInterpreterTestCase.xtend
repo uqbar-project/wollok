@@ -4,10 +4,10 @@ import com.google.inject.Inject
 import java.io.File
 import java.io.FileInputStream
 import org.eclipse.emf.common.util.URI
+import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
-import org.eclipse.xtext.resource.XtextResourceSet
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -52,6 +52,25 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 
 	def interpretPropagatingErrors(CharSequence programAsString) {
 		interpretPropagatingErrors(newArrayList(null as String -> programAsString.toString))
+	}
+	
+	def expectsSyntaxError(CharSequence programAsString, String expectedMessage) {
+		expectsSyntaxError(programAsString, expectedMessage, true)
+	}
+	
+	def expectsSyntaxError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue) {
+		val issues = programAsString.parse.validate
+		if (onlyOneIssue && issues.length != 1) {
+			fail("1 issue expected, found " + issues.length + ": " + issues) 
+		}
+		val issue = issues.findFirst [ message == expectedMessage ]
+		Assert.assertNotNull("No issue found with message " + expectedMessage + ". Issues were: " + issues, issue)
+		Assert.assertTrue(issue.isSyntaxError)
+	}
+
+	def expectsNoSyntaxError(CharSequence programAsString) {
+		val issues = programAsString.parse.validate
+		Assert.assertEquals("No issues were expected. Issues were: " + issues, 0, issues.length)
 	}
 	
 	def test(CharSequence testCode) {

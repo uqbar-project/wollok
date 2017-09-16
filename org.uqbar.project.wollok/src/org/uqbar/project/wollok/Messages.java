@@ -56,8 +56,11 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_CLASS_IN_FILE;
 	public static String WollokDslValidator_DUPLICATED_PACKAGE;
 	public static String WollokDslValidator_PROGRAM_IN_FILE;
+	public static String WollokDslValidator_PROGRAM_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_CLASSES_IN_FILE;
 	public static String WollokDslValidator_TESTS_IN_FILE;
+	public static String WollokDslValidator_TESTS_CANNOT_BE_EMPTY;
+	public static String WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_BODY;
 	public static String WollokDslValidator_NATIVE_METHOD_NO_OVERRIDE;
 	public static String WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES;
@@ -153,9 +156,19 @@ public class Messages extends NLS {
 	// ** Syntax message provider
 	// ****************************
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
+	public static String SYNTAX_DIAGNOSIS_REFERENCES_NOT_ALLOWED_HERE_GENERIC;
+	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE;
+	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC;
+	public static String SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE;
+	public static String SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE_GENERIC;	
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_BEFORE_METHODS;
 	public static String SYNTAX_DIAGNOSIS_FIXTURE_BEFORE_TESTS;
+	public static String SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE;
+	public static String SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC;	
 	public static String SYNTAX_MISSING_BRACKETS_IN_METHOD;
+	public static String SYNTAX_DIAGNOSIS_ORDER_PROBLEM;
+	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
+	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
 	
 	static {
 		// initialize resource bundle

@@ -22,13 +22,13 @@ QualifiedNameWithWildcard: QualifiedName ('.' '*')?;
 
 WProgram:
 	'program' name=ID '{'
-		(elements+=WExpressionOrVarDeclaration ';'?)+
+		(elements+=WExpressionOrVarDeclaration ';'?)*
 	'}'
 ;
 
 WTest:
 	'test' name=STRING '{'
-		(elements+=WExpressionOrVarDeclaration ';'?)+		
+		(elements+=WExpressionOrVarDeclaration ';'?)*		
 	'}'
 ;
 
@@ -43,8 +43,9 @@ WSuite:
 ;
 
 WFixture:
+	{WFixture}
 	'fixture' '{'
-		(elements+=WExpression ';'?)+
+		(elements+=WExpression ';'?)*
 	'}'	
 ;
 

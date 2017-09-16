@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.formatting
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
@@ -10,7 +11,6 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorElements
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFileElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFixtureElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WIfExpressionElements
@@ -29,7 +29,6 @@ import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WTryElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WVariableDeclarationElements
 
 import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
-import com.google.inject.Singleton
 
 /**
  * This class contains custom formatting description.
@@ -49,7 +48,7 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 			.map[ "get" + name.firstUpper + "Access"]
 			.forEach[methodName|
 				val e = reflective(access,methodName)
-				if (e != null)
+				if (e !== null)
 					formatting(e)
 			]
 	}
@@ -237,14 +236,14 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	
 	def dispatch formatting(FormattingConfig it, extension WFixtureElements e) {
 		// wrap line after }
-		setLinewrap.after(leftCurlyBracketKeyword_1)
+		setLinewrap.after(leftCurlyBracketKeyword_2)
 		
 		// wrap before and after close bracket
-		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_3)
-		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_3)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_4)
+		setLinewrap(1, 1, 1).after(rightCurlyBracketKeyword_4)
 		
 		// Indent expressions in fixture
-		setIndentation(leftCurlyBracketKeyword_1, rightCurlyBracketKeyword_3)
+		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_4)
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WSuiteElements e) {
