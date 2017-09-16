@@ -468,7 +468,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
-		if (call.callOnThis && call.method !== null && !call.method.declaringContext.isValidCall(call, classFinder)) {
+		if (call.callOnThis && call.declaringContext !== null && !call.declaringContext.isValidCall(call, classFinder)) {
 			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE,
 				METHOD_ON_THIS_DOESNT_EXIST)
 		}

@@ -130,7 +130,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch evaluate(WSuite it) {
 		tests.fold(null) [ a, test |
-			it.members.forEach[m|evaluate(m)]
+			members.forEach[m|evaluate(m)]
+			fixture.elements.forEach [ evaluate ]
 			test.eval
 		]
 	}
@@ -359,7 +360,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def createCollection(String collectionName, List<WExpression> elements) {
 		newInstance(collectionName) => [
-			elements.forEach [ e |
+			elements.forEach [ e |	
 				call("add", e.eval)
 			]
 		]
