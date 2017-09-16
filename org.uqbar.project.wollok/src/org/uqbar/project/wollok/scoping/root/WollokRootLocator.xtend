@@ -44,7 +44,6 @@ class WollokRootLocator {
 		val parent = uri.trimSegments(1)
 		
 		var value = cache.get(parent) as Integer
-		//value = null
 		
 		if(value === null){
 			value = doLevelsToRoot(parent, resource.resourceSet.URIConverter)
@@ -58,7 +57,7 @@ class WollokRootLocator {
 		var file = orig
 		var levels = 1
 		
-		while (file != null) {
+		while (file !== null) {
 
 			if (!converter.exists(file, null))
 				return 1

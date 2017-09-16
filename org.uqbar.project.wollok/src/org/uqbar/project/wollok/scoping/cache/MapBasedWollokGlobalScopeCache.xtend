@@ -12,35 +12,29 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 	
 	val cache = new LRUMap(20)
 	
-	override get(URI uri, Set<String> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock) {
-		synchronized (this) {
-			val uriString = uri.toString
-			var cacheContent = cache.get(uriString) as MapBasedCacheContent
-			if (cacheContent === null || cacheContent.mismatch(imports)) {
-				cacheContent = new MapBasedCacheContent(uri, imports, ifAbsentBlock.apply)
-				cache.put(uriString, cacheContent)
-			}
-			cacheContent.result
+	override synchronized get(URI uri, Set<String> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock) {
+		val uriString = uri.toString
+		var cacheContent = cache.get(uriString) as MapBasedCacheContent
+		if (cacheContent === null || cacheContent.mismatch(imports)) {
+			cacheContent = new MapBasedCacheContent(uri, imports, ifAbsentBlock.apply)
+			cache.put(uriString, cacheContent)
 		}
+		cacheContent.result
 	}
 	
-	override invalidateDependencies(URI uri) {
-		synchronized (this) {
-			val Set<String> uris = cache.keySet
-			
-			uris.clone.filter [ String uriDependency | 
-				(cache.get(uriDependency) as MapBasedCacheContent).hasDependencyWith(uri)
-			].forEach [
-				cache.remove(it)
-			]
-			cache.remove(uri.toString)
-		}
+	override synchronized invalidateDependencies(URI uri) {
+		val Set<String> uris = cache.keySet
+		
+		uris.clone.filter [ String uriDependency | 
+			(cache.get(uriDependency) as MapBasedCacheContent).hasDependencyWith(uri)
+		].forEach [
+			cache.remove(it)
+		]
+		cache.remove(uri.toString)
 	}
 	
-	override clearCache() {
-		synchronized (this) {
-			cache.clear
-		}
+	override synchronized clearCache() {
+		cache.clear
 	}
 	
 }
