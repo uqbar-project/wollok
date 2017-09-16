@@ -175,7 +175,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong message m2() sent to a A[]", e.getMessage())
+					assert.equals("a A[] does not understand m2()", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -200,7 +200,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong argument count in message m1() sent to a A[], however similar definitions exist: m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand m1(). However other methods exist with different argument count: m1(a)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -225,7 +225,8 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand M1(param1). However other similar methods exist: m1(a)", e.getMessage())
+//					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -250,7 +251,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong argument count in message m1(param1, param2) sent to a A[], however similar definitions exist: m1(a)", e.getMessage())
+					assert.equals("a A[] does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -269,7 +270,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong argument count in message truncate() sent to 4, however similar definitions exist: truncate(_decimals)", e.getMessage())
+					assert.equals("4 does not understand truncate(). However other methods exist with different argument count: truncate(_decimals)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -288,7 +289,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong case-sensitive message truncATE(param1) sent to 4. Use truncate(_decimals)", e.getMessage())
+					assert.equals("4 does not understand truncATE(param1). However other similar methods exist: truncate(_decimals)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors
@@ -313,7 +314,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}	
 				catch e : MessageNotUnderstoodException {
 					// ok !
-					assert.equals("Wrong message m2(param1, param2) sent to a A[]", e.getMessage())
+					assert.equals("a A[] does not understand m2(param1, param2)", e.getMessage())
 				}
 			}
 		'''.interpretPropagatingErrors

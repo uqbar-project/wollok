@@ -5,32 +5,32 @@ class Persona {
 		pepita.foo()
 		pepita.bar()
 		
-		// XPECT errors --> "Wrong message fooBar() sent to pepita" at "fooBar"
+		// XPECT errors --> "pepita does not understand fooBar()" at "fooBar"
 		pepita.fooBar()
 		
-		// XPECT errors --> "Wrong message fooBar(2, "hola") sent to pepita" at "fooBar"
+		// XPECT errors --> "pepita does not understand fooBar(2, "hola")" at "fooBar"
 		pepita.fooBar(2, "hola")
 		
-		// XPECT errors --> "Wrong argument count in message fooWithParam() sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
+		// XPECT errors --> "pepita does not understand fooWithParam(). However other methods exist with different argument count: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam()
-		
-		// XPECT errors --> "Wrong argument count in message fooWithParam(new Date(),  2,  4) sent to pepita, however similar definitions exist: fooWithParam(p)" at "fooWithParam"
+
+		// XPECT errors --> "pepita does not understand fooWithParam(new Date(),  2,  4). However other methods exist with different argument count: fooWithParam(p)" at "fooWithParam"
 		pepita.fooWithParam(new Date(), 2, 4)
 
-		// XPECT errors --> "Wrong case-sensitive message foO() sent to pepita. Use foo()" at "foO"
+		// XPECT errors --> "pepita does not understand foO(). However other similar methods exist: foo()" at "foO"
 		pepita.foO()
 		
-		// XPECT errors --> "Wrong argument count in message severalDef() sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
+		// XPECT errors --> "pepita does not understand severalDef(). However other methods exist with different argument count: severalDef(a), severalDef(a, b)" at "severalDef"
 		pepita.severalDef()
 		
-		// XPECT errors --> "Wrong argument count in message severalDef(1, 2, 3, 4) sent to pepita, however similar definitions exist: severalDef(a), severalDef(a, b)" at "severalDef"
+		// XPECT errors --> "pepita does not understand severalDef(1, 2, 3, 4). However other methods exist with different argument count: severalDef(a), severalDef(a, b)" at "severalDef"
 		pepita.severalDef(1, 2, 3, 4)		
 	}
 }
 
 class B {
 	var i = pepita.foo()
-	// XPECT errors --> "Wrong message zoo() sent to pepita" at "zoo"
+	// XPECT errors --> "pepita does not understand zoo()" at "zoo"
 	var x = pepita.zoo()
 	
 	method a() = i + x
