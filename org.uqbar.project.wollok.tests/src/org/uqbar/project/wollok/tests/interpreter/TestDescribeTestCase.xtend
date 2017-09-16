@@ -201,10 +201,10 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
-	@Test(expected=AssertionError)
+	@Test
 	def void testConstReferencesCannotBeAssignedInAFixture() {
 		'''
-		describe "conjunto de tests re locos" {
+		describe "conjunto de tests que prueban que se puede inicializar adicionalmente en el fixture" {
 		
 			const uno = 1
 			
