@@ -7,6 +7,8 @@ import java.util.List
 import java.util.Map
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
@@ -64,7 +66,6 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.xtext.utils.XTextExtensions.sourceCode
 
 /**
  * It's the real "interpreter".
@@ -154,11 +155,11 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 		// I18N !
 		if (cond === null) {
-			throw newWollokExceptionAsJava('''Cannot use null in 'if' expression''')
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokInterpreter_cannot_use_null_in_if, NULL))
 		}
 		if (!(cond.isWBoolean))
-			throw new WollokInterpreterException('''Expression in 'if' must evaluate to a boolean. Instead got: «cond» («cond?.class.name»)''',
-				it)
+			throw new WollokInterpreterException(NLS.bind(Messages.WollokInterpreter_expression_in_if_must_evaluate_to_boolean, cond, cond?.class.name), it)
+
 		if (wollokToJava(cond, Boolean) == Boolean.TRUE)
 			then.eval
 		else
@@ -395,7 +396,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	private def validateNullOperand(WollokObject leftOperand, String operation) {
 		if (leftOperand === null && !#["==", "!=", "===", "!=="].contains(operation)) {
-			throw newWollokExceptionAsJava('''Cannot send message «operation» to null''')
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, operation))
 		}
 	}
 
@@ -434,7 +435,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch evaluate(WFeatureCall call) {
 		val target = call.evaluateTarget
 		if (target === null)
-			throw newWollokExceptionAsJava('''Cannot send message «call.feature»(«call.memberCallArguments.map[sourceCode].join(',')») to null''')
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, call.fullMessage))
 		target.call(call.feature, call.memberCallArguments.evalEach)
 	}
 

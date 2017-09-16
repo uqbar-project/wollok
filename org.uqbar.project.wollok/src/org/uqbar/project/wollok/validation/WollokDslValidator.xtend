@@ -14,6 +14,7 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -525,8 +526,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def methodInvocationToWellKnownObjectMustExist(WMemberFeatureCall call) {
 		try {
 			if (call.callToWellKnownObject && !call.isValidCallToWKObject(classFinder)) {
-				report(WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE,
-					METHOD_ON_WKO_DOESNT_EXIST)
+				val wko = call.resolveWKO(classFinder)
+				val similarMethods = wko.findMethodsByName(call.feature)
+				if (similarMethods.empty) {
+					val caseSensitiveMethod = wko.findMethodIgnoreCase(call.feature, call.memberCallArguments.size)
+					if (caseSensitiveMethod !== null) {
+						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE, #[wko.name, call.fullMessage, #[caseSensitiveMethod].convertToString]), call, WMEMBER_FEATURE_CALL__FEATURE)
+					} else {
+						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST, wko.name, call.fullMessage), call, WMEMBER_FEATURE_CALL__FEATURE,
+							METHOD_ON_WKO_DOESNT_EXIST)
+					}
+				} else {
+					val similarDefinitions = similarMethods.convertToString
+					report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[wko.name, call.fullMessage, similarDefinitions]), call, WMEMBER_FEATURE_CALL__FEATURE)
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace

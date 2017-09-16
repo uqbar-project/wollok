@@ -179,11 +179,147 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 				}
 			}
 		'''.interpretPropagatingErrors
-		
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodHowever1() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m1()
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("a A[] does not understand m1(). However other methods exist with different argument count: m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodCaseSensitive() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.M1(3)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("a A[] does not understand M1(param1). However other similar methods exist: m1(a)", e.getMessage())
+//					assert.equals("Wrong case-sensitive message M1(param1) sent to a A[]. Use m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodHowever2() {
+		'''
+			class A { 
+				method m1(a) { return a + 1 }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m1(2, new Date())
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("a A[] does not understand m1(param1, param2). However other methods exist with different argument count: m1(a)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodWithLiteralsHowever() {
+		'''
+			program p {	
+				try {
+					4.truncate()
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("4 does not understand truncate(). However other methods exist with different argument count: truncate(_decimals)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
+		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
+		// actual stack trace string e.getStackTraceAsString()
+	}
+
+	@Test
+	def void testMessageNotUnderstoodWithLiteralsCaseSensitive() {
+		'''
+			program p {	
+				try {
+					4.truncATE(2)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("4 does not understand truncATE(param1). However other similar methods exist: truncate(_decimals)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+
 		// TODO: we need to add tests for the stacktrace generation. I'm not able to match the expected
 		// actual stack trace string e.getStackTraceAsString()
 	}
 	
+	@Test
+	def void testMessageNotUnderstoodWithParams() {
+		'''
+			class A { 
+				method m1() { throw new Exception("hello you see") }
+			}
+			
+			program p {	
+				const a = new A()
+				
+				try {
+					a.m2(2, 4)
+					assert.fail("Should have thrown message not understood")
+				}	
+				catch e : MessageNotUnderstoodException {
+					// ok !
+					assert.equals("a A[] does not understand m2(param1, param2)", e.getMessage())
+				}
+			}
+		'''.interpretPropagatingErrors
+	}
+		
 	@Test
 	def void testCatchWithoutType() {
 		'''
@@ -291,7 +427,7 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 					// OK !
 				}
 				catch e {
-					assert.fail("incorrenct catch !")
+					assert.fail("incorrect catch !")
 				}
 			}
 		'''.interpretPropagatingErrors

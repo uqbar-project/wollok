@@ -299,7 +299,9 @@ class MixinsTestCase extends AbstractWollokInterpreterTestCase {
 					t.dehydratate()
 				}
 				catch e:MessageNotUnderstoodException {
+					//assert.equals("Wrong message dehydratate() sent to a Tomato[] (WollokObject)", e.getMessage())
 					assert.equals("a Tomato[] (WollokObject) does not understand dehydratate()", e.getMessage())
+					//assert.equals("wollok.lang.MessageNotUnderstoodException: Wrong message dehydratate() sent to a Tomato[] (WollokObject)
 					assert.equals("wollok.lang.MessageNotUnderstoodException: a Tomato[] (WollokObject) does not understand dehydratate()
 				at __synthetic0.Organic.dehydratate() [__synthetic0.wpgm]
 				at  [__synthetic0.wpgm]

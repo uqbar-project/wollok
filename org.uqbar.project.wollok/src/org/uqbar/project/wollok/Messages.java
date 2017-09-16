@@ -15,7 +15,10 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.messages"; //$NON-NLS-1$
 
 	public static String LINKING_COULD_NOT_RESOLVE_REFERENCE;
-	
+
+	public static String WollokInterpreter_cannot_use_null_in_if;
+	public static String WollokInterpreter_expression_in_if_must_evaluate_to_boolean;
+
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;
@@ -39,7 +42,9 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DUPLICATED_VARIABLE_IN_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_NAME;
 	public static String WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST;
-	public static String WollokDslValidator_METHOD_ON_WKO_DOESNT_EXIST;
+	public static String WollokDslValidator_METHOD_DOESNT_EXIST;
+	public static String WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND;
+	public static String WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE;
 	public static String WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES;
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
