@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+describe "fakeTest" {
+	method sayHi() {
+		console.println("Hello")
+	}
+	
+	test "calling to unexistent method" {
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "fakeSayHi"
+	 	self.fakeSayHi()
+	}
+}

@@ -7,6 +7,7 @@ import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
@@ -38,23 +39,25 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 
 	override protected findCrossReferenceNode(INode node) {
 		val semantic = node.semanticElement
-		if (semantic.isCrossReference(node))
+		if (semantic.isCrossReference(node)) {
 			node
-		else
+		} else {
 			super.findCrossReferenceNode(node)
+		}
 	}
 	
 	protected def dispatch isCrossReference(EObject it, INode node) { false }
+	protected def dispatch isCrossReference(WConstructorCall it, INode node) { classRef.resolveConstructor(arguments) !== null }
 	protected def dispatch isCrossReference(WMemberFeatureCall it, INode node) { isResolvedToMethod }
 	protected def dispatch isCrossReference(WSuperInvocation it, INode node) { !isInMixin }
 	protected def dispatch isCrossReference(Import it, INode node) { node.text != "*" }
 	
-	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) != null }
+	def boolean isResolvedToMethod(WMemberFeatureCall it) { resolveMethod(classFinder) !== null }
 	
 	override getCrossReferencedElement(INode node) {
 		try {
 			val ref = node.semanticElement.resolveReference(node)
-			if (ref != null)
+			if (ref !== null)
 				ref
 			else
 				super.getCrossReferencedElement(node)
@@ -65,6 +68,7 @@ class WollokEObjectAtOffsetHelper extends EObjectAtOffsetHelper {
 	}
 	
 	def dispatch resolveReference(EObject it, INode node) { null }
+	def dispatch resolveReference(WConstructorCall it, INode node) { classRef.resolveConstructor(arguments) }
 	def dispatch resolveReference(WMemberFeatureCall it, INode node) { resolveMethod(classFinder) }
 	def dispatch resolveReference(WSuperInvocation it, INode node) { superMethod }
 	def dispatch resolveReference(Import it, INode node) {

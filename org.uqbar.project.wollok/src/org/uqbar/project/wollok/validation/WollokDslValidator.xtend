@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -270,7 +271,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def construtorMustExpliclityCallSuper(WConstructor it) {
+	def construtorMustExplicitlyCallSuper(WConstructor it) {
 		if (delegatingConstructorCall === null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			report(WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR, it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
@@ -399,8 +400,54 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotReassignValues(WAssignment a) {
-		if(!a.feature.ref.isModifiableFrom(a)) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+		if(!a.feature.ref.isModifiableFrom(a)
+			&& !a.isWithinConstructor
+		) report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 			cannotModifyErrorId(a.feature))
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReassignValuesInConstructors(WAssignment a) {
+		val declaringConstructor = a.declaringConstructor
+		if (declaringConstructor === null) return;
+		val variable = a.feature.ref
+		if (declaringConstructor.hasSeveralAssignmentsFor(variable)) {
+			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+				cannotModifyErrorId(a.feature))
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotReassignValuesInFixture(WAssignment a) {
+		val declaringFixture = a.declaringFixture
+		if (declaringFixture === null) return;
+		val variable = a.feature.ref
+		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
+			report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
+				cannotModifyErrorId(a.feature))
+		}
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WFixture it, WReferenciable variable) {
+		elements.filter [ hasAssignmentsFor(variable) ].size > 1
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WConstructor it, WReferenciable variable) {
+		expression.hasSeveralAssignmentsFor(variable)
+	}
+
+	def dispatch boolean hasSeveralAssignmentsFor(WBlockExpression it, WReferenciable variable) {
+		expressions.filter [ hasAssignmentsFor(variable) ].size > 1
+	}
+	
+	def dispatch boolean hasAssignmentsFor(EObject e, WReferenciable variable) {
+		false
+	}
+	
+	def dispatch boolean hasAssignmentsFor(WAssignment assignment, WReferenciable variable) {
+		assignment.feature.ref === variable
 	}
 
 	def dispatch String cannotModifyErrorId(WReferenciable it) { CANNOT_ASSIGN_TO_NON_MODIFIABLE }
@@ -468,7 +515,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
-		if (call.callOnThis && call.method !== null && !call.method.declaringContext.isValidCall(call, classFinder)) {
+		if (call.callOnThis && call.declaringContext !== null && !call.declaringContext.isValidCall(call, classFinder)) {
 			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE,
 				METHOD_ON_THIS_DOESNT_EXIST)
 		}
@@ -553,8 +600,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	// TODO: a single method performs many checks ! cannot configure that
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def unusedVariables(WVariableDeclaration it) {
+	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
+		// Variable has no assignments
 		if (assignments.empty) {
 			if (writeable)
 				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
@@ -563,10 +611,40 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				error(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
 					VARIABLE_NEVER_ASSIGNED)
 		}
+		// Variable has no assignment in its definition and there are several assignments
+		if (!assignments.empty && right === null) {
+			val constructorsOk = assignments
+				.map [ declaringConstructor ]
+				.filter [ it !== null ]
+				.toList
+			
+			if (declaringContext !== null && !isLocalToMethod) {
+				declaringContext
+					.getConstructors
+					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.initializationsMustBeChecked(declaringContext) ]
+					.forEach [ constructor |
+						if (!writeable)
+							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+						else
+							warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+					]
+			}
+		}
+		// Variable is never used
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
+	
+	def boolean initializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
+		val delegatingConstructor = constructor.delegatingConstructorCall
+		if (delegatingConstructor === null) { 
+			return true
+		}
+		val realConstructor = declaringContext.resolveConstructor(delegatingConstructor.arguments)
+		realConstructor.container !== declaringContext
+	}
+
 
 //  Confirm with @npasserini
 //  @dodain - I think we should not consider this
@@ -600,7 +678,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (comparisonOperands.contains(op.feature)) {
 			if (op.leftOperand.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__LEFT_OPERAND)
-			if (op.rightOperand.isWellKnownObject)
+			if (op.rightOperand?.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}
@@ -954,4 +1032,28 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyPrograms(WProgram it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_PROGRAM_CANNOT_BE_EMPTY, it, WPROGRAM__ELEMENTS)
+		}
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyTest(WTest it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_TESTS_CANNOT_BE_EMPTY, it, WTEST__ELEMENTS)
+		}
+	}	
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def emptyFixture(WFixture it) {
+		if (elements.isEmpty) {
+			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
+		}
+	}	
+	
 }

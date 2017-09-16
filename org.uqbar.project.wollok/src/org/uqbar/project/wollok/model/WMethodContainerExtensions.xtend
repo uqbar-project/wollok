@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -33,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -41,6 +43,7 @@ import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -64,6 +67,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	
 	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
+
+	def static WConstructor declaringConstructor(EObject it) { EcoreUtil2.getContainerOfType(it, WConstructor) }
+
+	def static WFixture declaringFixture(EObject it) { EcoreUtil2.getContainerOfType(it, WFixture) }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
@@ -263,7 +270,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
-	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
+	def static dispatch contextName(MixedMethodContainer c) { "<mixedObject>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
@@ -351,9 +358,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
+	def static dispatch feature(WUnaryOperation o) { o.feature }
+	def static dispatch feature(WBinaryOperation o) { o.feature }
+	def static dispatch feature(WPostfixOperation o) { o.feature }
 
 	// TODO Esto no debería ser necesario pero no logro generar bien la herencia entre estas clases para poder tratarlas polimórficamente.
 	def static dispatch memberCallArguments(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
@@ -540,6 +551,23 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
 	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
 	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
+
+	def static dispatch canDefineConstructors(EObject o) { false }
+	def static dispatch canDefineConstructors(WClass c) { true }
+
+	def static dispatch canDefineFixture(EObject o) { false }
+	def static dispatch canDefineFixture(WSuite s) { true }
+
+	def static dispatch canDefineTests(EObject o) { false }
+	def static dispatch canDefineTests(WSuite s) { true }
+	def static dispatch canDefineTests(WTest t) { true }
+
+	def static dispatch constructionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch constructionName(WClass c) { WollokConstants.CLASS }
+	def static dispatch constructionName(WObjectLiteral c) { WollokConstants.WKO }
+	def static dispatch constructionName(WNamedObject c) { WollokConstants.WKO }
+	def static dispatch constructionName(WMixin c) { WollokConstants.MIXIN }
+	def static dispatch constructionName(WSuite s) { WollokConstants.SUITE }
 
 }
 

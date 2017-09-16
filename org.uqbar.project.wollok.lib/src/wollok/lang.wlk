@@ -10,7 +10,7 @@ class Exception {
 	const cause
 
 	/** Constructs a new exception with no detailed message. */
-	constructor()
+	constructor() { message = null ; cause = null }
 	/** Constructs a new exception with the specified detail message. */
 	constructor(_message) = self(_message, null)
 	/** Constructs a new exception with the specified detail message and cause. */

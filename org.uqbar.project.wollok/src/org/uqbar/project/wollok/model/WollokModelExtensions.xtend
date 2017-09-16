@@ -266,9 +266,7 @@ class WollokModelExtensions {
 		 	null
 	}
 
-
-
-	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
+	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject	}
 
 	def static dispatch boolean isWellKnownObject(EObject it) { false }
 	def static dispatch boolean isWellKnownObject(WVariableReference it) { ref.isWellKnownObject }
@@ -305,6 +303,9 @@ class WollokModelExtensions {
 		else
 			c.parent.allConstructors
 	}
+
+	def static dispatch getConstructors(EObject o) { newArrayList }
+	def static dispatch getConstructors(WClass c) { c.allConstructors }
 	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
@@ -327,7 +328,7 @@ class WollokModelExtensions {
 	def static dispatch WMethodDeclaration method(Void it) { null }
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
-	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(WExpression it) {	eContainer.method }
 	def static dispatch WMethodDeclaration method(WParameter it) { eContainer.method }
 
 	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
