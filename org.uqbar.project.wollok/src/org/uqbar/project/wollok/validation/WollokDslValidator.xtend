@@ -976,8 +976,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def void wrongImport(Import it) {
 		val importedString = importedNamespaceWithoutWildcard
 		val scope = it.getScope(scopeProvider)
-		
 		val allImports = #[importedString] + localScopeProvider.allRelativeImports(importedString, it)
+
+		allImports.exists [ anImport |
+			val found = scope.getElements(qualifiedNameConverter.toQualifiedName(anImport))
+			!found.empty
+		]
 
 		if(allImports.exists [ anImport | 
 			val found = scope.getElements(qualifiedNameConverter.toQualifiedName(anImport))

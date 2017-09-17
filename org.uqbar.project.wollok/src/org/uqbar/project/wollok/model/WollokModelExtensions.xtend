@@ -479,19 +479,25 @@ class WollokModelExtensions {
 	/**
 	 * Returns all the imports in the context.
 	 **/
-	def static Iterable<Import> allImports(EObject e){ 
-		val locals = e.eContents.filter(Import)
-		if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+	def static Iterable<Import> allImports(EObject e){
+		synchronized (e) {
+			val locals = e.eContents.filter(Import)
+			if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+		} 
 	}
 	
+	// unused
 	def static Iterable<String> allFQNImports(EObject e){
-		val constructors = e.eAllContents.filter(WConstructorCall).toSet
-		constructors
-			.map[NodeModelUtils.findNodesForFeature(it,WollokDslPackage.Literals.WCONSTRUCTOR_CALL__CLASS_REF)]
-			.flatten
-			.map[NodeModelUtils.getTokenText(it)]
-			.filter[it.contains(".")].toSet
-		#{}
+		synchronized (e) {
+			val constructors = e.eAllContents.filter(WConstructorCall).toSet
+			constructors
+				.map[ NodeModelUtils.findNodesForFeature(it,WollokDslPackage.Literals.WCONSTRUCTOR_CALL__CLASS_REF)	]
+				.flatten
+				.map[NodeModelUtils.getTokenText(it)]
+				.filter[it.contains(".")].toSet
+			
+			#{}
+		}
 	}
 	
 	// *******************************
