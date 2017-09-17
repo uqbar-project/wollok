@@ -269,7 +269,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			'''.interpretPropagatingErrors 
 			fail("decimals should not understand gcd message")
 		} catch (WollokProgramExceptionWrapper e) {
-			assertTrue(e.wollokMessage.startsWith("5.5 does not understand gcd(p0)"))
+			assertTrue(e.wollokMessage.startsWith("5.5 does not understand gcd(param1)"))
 		}
 	}
 

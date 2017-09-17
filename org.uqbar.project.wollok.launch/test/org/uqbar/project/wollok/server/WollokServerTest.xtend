@@ -80,7 +80,7 @@ class WollokServerTest {
 			// you can change them if you are improving stack traces, but you should be careful to inform
 			// the clients of wollok server, that might depend on this.
 			
-			assertEquals("a Golondrina[] does not understand volar()", message)
+			assertEquals("Wrong message volar() sent to a Golondrina[]", message)
 			assertEquals(2, stackTrace.size)
 			stackTrace.get(0) => [
 				assertEquals("wollok.lang.Object.messageNotUnderstood(name,parameters)", contextDescription)

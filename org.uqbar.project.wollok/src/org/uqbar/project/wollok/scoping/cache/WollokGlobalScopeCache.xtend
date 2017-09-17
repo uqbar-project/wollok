@@ -8,4 +8,5 @@ import org.eclipse.xtext.xbase.lib.Functions.Function0
 interface WollokGlobalScopeCache {
 	def Iterable<IEObjectDescription> get(URI uri, Set<String> imports, Function0<Iterable<IEObjectDescription>> ifAbsentBlock)
 	def void clearCache()
+	def void invalidateDependencies(URI uri)
 }

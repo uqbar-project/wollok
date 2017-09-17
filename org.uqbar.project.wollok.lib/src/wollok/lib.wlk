@@ -126,7 +126,7 @@ object assert {
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new OtherValueExpectedException("The Exception expected was " + exceptionExpected + " but got " + ex.getCause())
+			throw new AssertionException("The Exception expected was " + exceptionExpected + " but got " + ex.getCause())
 		} 
 	}
 
@@ -146,7 +146,7 @@ object assert {
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new OtherValueExpectedException("The error message expected was " + errorMessage + " but got " + ex.getCause().getMessage())
+			throw new AssertionException("The error message expected was " + errorMessage + " but got " + ex.getCause().getMessage())
 		}
 	}
 
@@ -166,7 +166,7 @@ object assert {
 		}
 		catch ex : OtherValueExpectedException 
 		{
-			throw new OtherValueExpectedException("The exception expected was " + exceptionExpected.className() + " but got " + ex.getCause().className())
+			throw new AssertionException("The exception expected was " + exceptionExpected.className() + " but got " + ex.getCause().className())
 		}
 	}
 

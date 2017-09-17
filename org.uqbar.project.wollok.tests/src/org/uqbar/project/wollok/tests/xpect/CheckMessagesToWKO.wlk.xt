@@ -2,29 +2,46 @@
 
 class Persona {
 	method blah() {
-		wellKnown.foo()
-		wellKnown.bar()
+		pepita.foo()
+		pepita.bar()
 		
-		// XPECT errors --> "The well-known object does not understand this message" at "fooBar"
-		wellKnown.fooBar()
+		// XPECT errors --> "pepita does not understand fooBar()" at "fooBar"
+		pepita.fooBar()
 		
-		// XPECT errors --> "The well-known object does not understand this message" at "fooWithParam"
-		wellKnown.fooWithParam()
+		// XPECT errors --> "pepita does not understand fooBar(2, "hola")" at "fooBar"
+		pepita.fooBar(2, "hola")
+		
+		// XPECT errors --> "pepita does not understand fooWithParam(). However other methods exist with different argument count: fooWithParam(p)" at "fooWithParam"
+		pepita.fooWithParam()
+
+		// XPECT errors --> "pepita does not understand fooWithParam(new Date(),  2,  4). However other methods exist with different argument count: fooWithParam(p)" at "fooWithParam"
+		pepita.fooWithParam(new Date(), 2, 4)
+
+		// XPECT errors --> "pepita does not understand foO(). However other similar methods exist: foo()" at "foO"
+		pepita.foO()
+		
+		// XPECT errors --> "pepita does not understand severalDef(). However other methods exist with different argument count: severalDef(a), severalDef(a, b)" at "severalDef"
+		pepita.severalDef()
+		
+		// XPECT errors --> "pepita does not understand severalDef(1, 2, 3, 4). However other methods exist with different argument count: severalDef(a), severalDef(a, b)" at "severalDef"
+		pepita.severalDef(1, 2, 3, 4)		
 	}
 }
 
 class B {
-	var i = wellKnown.foo()
-	// XPECT errors --> "The well-known object does not understand this message" at "zoo"
-	var x = wellKnown.zoo()
+	var i = pepita.foo()
+	// XPECT errors --> "pepita does not understand zoo()" at "zoo"
+	var x = pepita.zoo()
 	
 	method a() = i + x
 }
 
 
-object wellKnown {
+object pepita {
 	method foo() = 23
 	method bar() = self.foo()
 	method fooWithParam(p) {
 	}
+	method severalDef(a) { return a + 1 }
+	method severalDef(a, b) = a + b
 }

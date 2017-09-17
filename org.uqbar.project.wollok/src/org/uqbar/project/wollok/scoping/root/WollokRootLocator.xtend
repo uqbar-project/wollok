@@ -44,11 +44,10 @@ class WollokRootLocator {
 		val parent = uri.trimSegments(1)
 		
 		var value = cache.get(parent) as Integer
-		value = null
 		
-		if (value === null){
-			value = doLevelsToRoot(parent, resource.resourceSet?.URIConverter)
-			cache.put(parent, value)
+		if(value === null){
+			value = doLevelsToRoot(parent, resource.resourceSet.URIConverter)
+			cache.put(parent, value)	
 		}
 		
 		value
