@@ -177,7 +177,7 @@ class QuickFixUtils {
 	}
 
 	def static placeToAddConstructor(WMethodContainer declaringContext) {
-		val constructors = declaringContext.constructors.toList
+		val constructors = declaringContext.constructors().toList
 		if (!constructors.isEmpty) {
 			return new QuickFixLocation(constructors.sortBy [ before ].last.after, Location.AFTER)
 		}

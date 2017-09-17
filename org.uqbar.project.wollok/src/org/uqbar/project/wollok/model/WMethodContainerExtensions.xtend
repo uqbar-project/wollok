@@ -51,7 +51,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
-import org.uqbar.project.wollok.wollokDsl.impl.WTestImpl
 
 /**
  * Extension methods for WMethodContainers.
@@ -130,7 +129,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static behaviors(WMethodContainer c) {
 		return <EObject>newArrayList => [
-			addAll(c.constructors)
+			addAll(c.constructors())
 			if (c.fixture !== null) {
 				add(c.fixture)
 			}
