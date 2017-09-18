@@ -19,6 +19,13 @@ class X2 {
 	}
 }
 
+class X3 {
+	const x = 1
+	constructor(_e) {
+		x = _e
+	}
+}
+
 class Y {
 	const e = 1
 	constructor(_e) {
@@ -29,6 +36,7 @@ class Y {
 describe "group of tests" {
 	const a
 	var b
+	const c = 4
 	
 	fixture {
 		// XPECT errors --> "Cannot modify constants" at "a"
@@ -39,6 +47,7 @@ describe "group of tests" {
 		b = 1
 		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "b"
 		b = 3
+		c = 55
 	}
 	
 	test "easy test" {
