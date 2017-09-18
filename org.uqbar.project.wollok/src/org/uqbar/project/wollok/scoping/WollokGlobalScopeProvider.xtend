@@ -43,17 +43,13 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	@Inject
 	WollokImportedNamespaceAwareLocalScopeProvider localScopeProvider
 
-	override IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
+	override synchronized IScope getScope(IScope parent, Resource context, boolean ignoreCase, EClass type,
 		Predicate<IEObjectDescription> filter) {
-		synchronized (this) {
-			synchronized (context) {
-				var explicitImportedObjects = context.importedObjects
-				if (filter !== null)
-					explicitImportedObjects = explicitImportedObjects.filter(filter)
-				val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
-				new SimpleScope(defaultScope, explicitImportedObjects)
-			}
-		}
+			var explicitImportedObjects = context.importedObjects
+			if (filter !== null)
+				explicitImportedObjects = explicitImportedObjects.filter(filter)
+			val defaultScope = super.getScope(parent, context, ignoreCase, type, filter)
+			new SimpleScope(defaultScope, explicitImportedObjects)
 	}
 
 	/**
@@ -63,10 +59,8 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		if (context === null || context.contents === null) {
 			return #{}
 		}
-		synchronized (cache) {
-			val imports = context.calculateImports
-			cache.get(context.URI, imports, [doImportedObjects(context, imports)])
-		}
+		val imports = context.calculateImports
+		cache.get(context.URI, imports, [doImportedObjects(context, imports)])
 	}
 
 	/**
