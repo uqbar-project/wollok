@@ -4,8 +4,7 @@ sudo: false
 jdk:
 - oraclejdk8
 before_install:
-- openssl aes-256-cbc -K $encrypted_d4a7eb0181c9_key -iv $encrypted_d4a7eb0181c9_iv
-  -in settings.xml.enc -out settings.xml -d
+- openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 script:
 # Creates the correct profile to run
