@@ -1,11 +1,21 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 class X {
-	const e
+	const x
 	constructor(_e) {
-		// XPECT errors --> "Cannot modify constants" at "e"
-		e = _e
-		// XPECT errors --> "Cannot modify constants" at "e"
-		e = 2
+		// XPECT errors --> "Cannot modify constants" at "x"
+		x = _e
+		// XPECT errors --> "Cannot modify constants" at "x"
+		x = 2
+	}
+}
+
+class X2 {
+	var f
+	constructor(_f) {
+		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "f"
+		f = _f
+		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "f"
+		f = 2
 	}
 }
 
@@ -18,12 +28,17 @@ class Y {
 
 describe "group of tests" {
 	const a
+	var b
 	
 	fixture {
 		// XPECT errors --> "Cannot modify constants" at "a"
 		a = new X(10)
 		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 8
+		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "b"
+		b = 1
+		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "b"
+		b = 3
 	}
 	
 	test "easy test" {
