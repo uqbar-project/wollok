@@ -4,6 +4,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.ui.Messages
 
 class QuickFixTest extends AbstractWollokQuickFixTestCase {
+
 	@Test
 	def changeDeclarationToVar(){
 		val initial = #['''
@@ -20,6 +21,72 @@ class QuickFixTest extends AbstractWollokQuickFixTestCase {
 				method someMethod(){
 					var x = 23
 					x = 25
+				}
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_changeToVar_name)		
+	}
+
+	@Test
+	def changeDeclarationToVarInConstructor(){
+		val initial = #['''
+			class SomeClass {
+				const x
+				
+				constructor() {
+					x = 23
+				}
+				
+				method someMethod(){
+					x = 25
+				}
+			}
+		''']
+
+		val result = #['''
+			class SomeClass {
+				var x
+				
+				constructor() {
+					x = 23
+				}
+				
+				method someMethod(){
+					x = 25
+				}
+			}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickfixProvider_changeToVar_name)		
+	}
+
+	@Test
+	def changeDeclarationToVarInFixture(){
+		val initial = #['''
+			describe "some tests" {
+				const x
+				
+				fixture {
+					x = 23
+				}
+				
+				test "x can be 25?" {
+					x = 25
+					assert.equals(25, x)
+				}
+			}
+		''']
+
+		val result = #['''
+			describe "some tests" {
+				var x
+				
+				fixture {
+					x = 23
+				}
+				
+				test "x can be 25?" {
+					x = 25
+					assert.equals(25, x)
 				}
 			}
 		''']

@@ -106,6 +106,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 			resourceDescriptionManager.getResourceDescription(r).exportedObjects
 		].flatten + objectsFromManifests
 		importedObjects
+		
 	}
 
 	def synchronized matchesImport(IEObjectDescription o, String importedNamespace) {

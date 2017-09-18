@@ -12,8 +12,10 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.resource.XtextResource
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
@@ -549,7 +551,31 @@ class WollokModelExtensions {
 	def static dispatch matchesParam(WParameter p, EObject e) { false }
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
+	
+	def static <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
+		if (contents.empty) #[]
+		else (contents.get(0) as WFile).eAllContents.filter(type).toList
+	}
 
+	def static getAllElements(XtextResource it) { getAllOfType(WMethodContainer) }
+	def static getMixins(XtextResource it) { getAllOfType(WMixin) }
+	def static getClasses(XtextResource it) { getAllOfType(WClass) }
+	def static getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
+
+	def static getImportedClasses(XtextResource it, WollokClassFinder finder) {
+		val imports = getAllOfType(Import)
+		imports.fold(newArrayList)[l, i |
+			try {
+				l.add(finder.getCachedClass(i, i.importedNamespace))
+			}
+			catch(ClassCastException e) {
+				// Temporarily user is writing another import
+			}
+			catch(WollokRuntimeException e) { }
+			l
+		]
+	}
+	
 	def static fullMessage(String methodName, int argumentsSize) {
 		var args = ""
 		val argsSize = argumentsSize

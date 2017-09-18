@@ -4,7 +4,7 @@
 // ******************
 // ** personalidades
 // ******************
-
+	
 object cazafortunas {
 	// XPECT methodType at acepta --> (Any, Seductor) => Boolean
 	method acepta(seducible, seductor) = seductor.esMillonario()

@@ -84,6 +84,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
+	
+	def static dispatch parameterNames(EObject o) {
+		val parameters = o.parameters
+		if (parameters === null) return []
+		parameters.map [ name ]
+	}
+	
+	def static dispatch parameterNames(WMemberFeatureCall call) {
+		val parametersSize = call.memberCallArguments.size
+		if (parametersSize < 1) {
+			return ""
+		}
+		(1..parametersSize).map [ i | "param" + i ].join(", ")
+	}
 
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
@@ -113,7 +127,26 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
+	def static behaviors(WMethodContainer c) {
+		return <EObject>newArrayList => [
+			addAll(c.constructors())
+			if (c.fixture !== null) {
+				add(c.fixture)
+			}
+			addAll(c.methods)
+			addAll(c.tests)     // we need to add both methods and tests for describe suites
+		] 
+	}
+
+	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
+	def static dispatch constructors(WClass c) { c.constructors }
+	def static dispatch constructors(WTest t) { newArrayList }
+	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
+	
+	def static dispatch tests(WMethodContainer c) { newArrayList }
+	def static dispatch tests(WSuite t) { t.tests.toList }
+	
 	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
 
@@ -149,7 +182,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
-	def static fixture(WMethodContainer c) { c.members.filter(WFixture) }
+	def static dispatch EObject fixture(WMethodContainer c) { null }
+	def static dispatch EObject fixture(WSuite s) { s.fixture }
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
