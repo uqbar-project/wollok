@@ -12,9 +12,7 @@ class X {
 class X2 {
 	var f
 	constructor(_f) {
-		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "f"
 		f = _f
-		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "f"
 		f = 2
 	}
 }
@@ -43,9 +41,7 @@ describe "group of tests" {
 		a = new X(10)
 		// XPECT errors --> "Cannot modify constants" at "a"
 		a = 8
-		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "b"
 		b = 1
-		// XPECT warnings --> "This variable is several times initialized. Maybe you should keep only one assignment" at "b"
 		b = 3
 		c = 55
 	}

@@ -415,10 +415,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (declaringConstructor === null) return;
 		val variable = a.feature.ref
 		if (declaringConstructor.hasSeveralAssignmentsFor(variable)) {
-			if (variable.writableVarRef) {
-				warning(WollokDslValidator_DOUBLE_ASSIGNMENT_IN_CONSTRUCTOR, a, WASSIGNMENT__FEATURE,
-					cannotModifyErrorId(a.feature))
-			} else {
+			if (!variable.writableVarRef) {
 				error(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 					cannotModifyErrorId(a.feature))
 			}
@@ -432,10 +429,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (declaringFixture === null) return;
 		val variable = a.feature.ref
 		if (declaringFixture.hasSeveralAssignmentsFor(variable)) {
-			if (variable.writableVarRef) {
-				warning(WollokDslValidator_DOUBLE_ASSIGNMENT_IN_CONSTRUCTOR, a, WASSIGNMENT__FEATURE,
-					cannotModifyErrorId(a.feature))
-			} else {
+			if (!variable.writableVarRef) {
 				report(WollokDslValidator_CANNOT_MODIFY_VAL, a, WASSIGNMENT__FEATURE,
 					cannotModifyErrorId(a.feature))
 			}
