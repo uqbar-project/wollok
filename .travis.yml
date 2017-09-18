@@ -1,6 +1,6 @@
 language: java
-dist: precise
-sudo: true
+dist: trusty
+sudo: false
 jdk:
 - oraclejdk8
 before_install:
