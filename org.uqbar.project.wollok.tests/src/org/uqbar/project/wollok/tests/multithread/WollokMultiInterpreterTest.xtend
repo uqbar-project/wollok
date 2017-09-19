@@ -52,7 +52,8 @@ class WollokMultiInterpreterTest {
 			test "pepita vuela" {
 				pepita.volar()
 				assert.equals(90, pepita.energia())
-			}					'''
+			}					
+			'''
 			interpreter.interpret(program.parse, true)
 			fail()
 		} catch (WollokInterpreterException ex) {
@@ -143,7 +144,6 @@ class WollokMultiInterpreterTest {
 				}
 			}
 		'''
-
 
 		val Runnable block = [
 			val interpreter = injector.getInstance(WollokInterpreter)
