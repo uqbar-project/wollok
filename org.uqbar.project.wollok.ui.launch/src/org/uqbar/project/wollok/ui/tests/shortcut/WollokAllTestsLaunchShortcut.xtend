@@ -5,7 +5,9 @@ import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jface.dialogs.MessageDialog
+import org.eclipse.jface.viewers.ISelection
 import org.eclipse.swt.widgets.Display
+import org.eclipse.ui.part.ISetSelectionTarget
 import org.uqbar.project.wollok.Messages
 
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
@@ -39,7 +41,6 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 		activateWollokTestResultView
 		val List<IFile> testFiles = currProject.getTestFiles
 		if (testFiles.empty) {
-			// TODO: i18n
 			MessageDialog.openError(Display.current.activeShell, Messages.TestLauncher_NoTestToRun_Title,
 				Messages.TestLauncher_NoTestToRun_Message)
 			return;

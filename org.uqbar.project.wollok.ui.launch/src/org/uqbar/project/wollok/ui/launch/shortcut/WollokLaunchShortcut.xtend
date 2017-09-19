@@ -134,7 +134,7 @@ class LaunchConfigurationInfo {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
-		libs =  getProject(project).libPaths
+		libs =  getProject(project).libPaths.toList
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
@@ -142,7 +142,6 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
-			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]) == libs
-
+			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs) 
 	}	
 }

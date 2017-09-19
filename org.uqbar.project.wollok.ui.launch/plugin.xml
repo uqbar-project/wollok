@@ -158,7 +158,7 @@
            </enablement>
          </contextualLaunch>
       </shortcut>
-            <shortcut
+      <shortcut
             class="org.uqbar.project.wollok.ui.tests.shortcut.WollokAllTestsLaunchShortcut"
             description="Launch All Wollok Tests"
             icon="icons/wollok-icon-test_16.png"
@@ -247,12 +247,6 @@
               commandId="org.uqbar.project.wollok.ui.launch.shortcut.debug"
               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
               sequence="M2+M3+D W">
-        </key>
-        <key
-              commandId="org.uqbar.project.wollok.ui.launch.commands.sampleCommand"
-              contextId="org.eclipse.ui.contexts.window"
-              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-              sequence="M1+6">
         </key>
     </extension>
    <!-- SHORTCUTS & BINDINGS -->
