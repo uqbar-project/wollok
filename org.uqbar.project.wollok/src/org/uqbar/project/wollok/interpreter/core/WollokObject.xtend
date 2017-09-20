@@ -5,7 +5,9 @@ import java.util.List
 import java.util.Map
 import java.util.Set
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.AbstractWollokCallable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
@@ -68,14 +70,27 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		method.call(parameters)
 	}
 	
-	def throwMessageNotUnderstood(String name, Object... parameters) {
-		// hack because objectliterals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral || name == "messageNotUnderstood" || name == "toString") {
-			throw messageNotUnderstood(behavior.name + " does not understand message " + name + "(" + parameters.join(",") + ")")
+	def throwMessageNotUnderstood(String methodName, Object... parameters) {
+		// hack because object literals are not inheriting base methods from wollok.lang.Object
+		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString") {
+			val fullMessage = methodName + "(" + parameters.join(",") + ")"
+			val similarMethods = this.behavior.findMethodsByName(methodName)
+			if (similarMethods.empty) {
+				val caseSensitiveMethod = this.behavior.allMethods.findMethodIgnoreCase(methodName, parameters.size)
+				if (caseSensitiveMethod !== null) {
+					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
+						#[behavior.name, fullMessage, #[caseSensitiveMethod].convertToString]))
+				} else {
+					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
+				}
+			} else {
+				val similarDefinitions = similarMethods.map [ messageName ].join(', ')
+				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[behavior.name, fullMessage, similarDefinitions]))
+			}
 		}
 		
 		try {
-			call("messageNotUnderstood", name.javaToWollok, parameters.map[javaToWollok].javaToWollok)
+			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)
 		}
 		catch (WollokProgramExceptionWrapper e) {
 			// this one is ok because calling messageNotUnderstood actually throws the exception!
@@ -209,7 +224,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override removeGlobalReference(String name) {
 		interpreter.removeGlobalReference(name)
 	}
-	
 	
 	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
 	def <T> getNativeObject(String clazz) {

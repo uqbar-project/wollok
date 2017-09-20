@@ -201,10 +201,10 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
-	@Test(expected=AssertionError)
+	@Test
 	def void testConstReferencesCannotBeAssignedInAFixture() {
 		'''
-		describe "conjunto de tests re locos" {
+		describe "conjunto de tests que prueban que se puede inicializar adicionalmente en el fixture" {
 		
 			const uno = 1
 			
@@ -238,5 +238,37 @@ class TestDescribeTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void testIssue1221NPEForConstDefinedInFixtures() {
+		'''
+		class Enfermo {}
+		
+		class Doctor {
+			var calidad = 0
+			method calidad() = calidad
+			method calidad(_calidad) { calidad = _calidad }
+			method cura(alguien) { calidad = calidad + 1 }	
+		}
+		
+		describe "issue 1223" {
+			var unDoctorCualquiera
+			var enfermo
 			
+			fixture {
+				enfermo = new Enfermo()
+				unDoctorCualquiera = new Doctor()
+				unDoctorCualquiera.calidad(2)
+			}
+			
+			test "si un doctor cura a un enfermo, la calidad del doctor aumenta" {
+				const calidadInicial = unDoctorCualquiera.calidad()
+				unDoctorCualquiera.cura(enfermo)
+				const calidadFinal = unDoctorCualquiera.calidad()
+				assert.that(calidadFinal > calidadInicial)
+			}
+			
+		}
+		'''.interpretPropagatingErrors
+	}			
 }

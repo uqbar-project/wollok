@@ -126,8 +126,24 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_add_parameter_method_description;
 	public static String WollokDslQuickFixProvider_create_new_class_name; 
 	public static String WollokDslQuickFixProvider_create_new_class_description; 
-
-
+	public static String WollokDslQuickFixProvider_create_new_external_class_name; 
+	public static String WollokDslQuickFixProvider_create_new_external_class_description; 
+	public static String WollokDslQuickFixProvider_create_new_local_wko_name;
+	public static String WollokDslQuickFixProvider_create_new_local_wko_description;
+	public static String WollokDslQuickFixProvider_create_new_external_wko_name;
+	public static String WollokDslQuickFixProvider_create_new_external_wko_description;
+	
+	public static String AddNewElementQuickFix_Title;
+	public static String AddNewWKOQuickFix_Title;
+	public static String AddNewClassQuickFix_Title;
+	public static String AddNewElementQuickFix_NewFile_Title;
+	public static String AddNewElementQuickFix_ExistingFile_Title;
+	public static String AddNewElementQuickFix_NewFileAlreadyExists_ErrorMessage;
+	public static String AddNewElementQuickFix_NewFileCannotBeBlank_ErrorMessage;
+	public static String AddNewElementQuickFix_NewFileCannotStartWithNumber_ErrorMessage;
+	public static String AddNewElementQuickFix_Accept;
+	public static String AddNewElementQuickFix_Cancel;
+	
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
 	

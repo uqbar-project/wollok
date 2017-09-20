@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.model
 
+import java.util.Collection
 import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
@@ -11,8 +12,10 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.resource.XtextResource
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
@@ -30,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -66,6 +70,7 @@ import wollok.lang.Exception
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -263,9 +268,7 @@ class WollokModelExtensions {
 		 	null
 	}
 
-
-
-	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject }
+	def static isCallToWellKnownObject(WMemberFeatureCall c) { c.memberCallTarget.isWellKnownObject	}
 
 	def static dispatch boolean isWellKnownObject(EObject it) { false }
 	def static dispatch boolean isWellKnownObject(WVariableReference it) { ref.isWellKnownObject }
@@ -279,7 +282,6 @@ class WollokModelExtensions {
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) {
 		(memberCallTarget as WVariableReference).ref as WNamedObject
 	}
-
 
 	def static isValidMessage(WMethodDeclaration it, WMemberFeatureCall call) {
 		matches(call.feature, call.memberCallArguments)
@@ -303,6 +305,9 @@ class WollokModelExtensions {
 		else
 			c.parent.allConstructors
 	}
+
+	def static dispatch getConstructors(EObject o) { newArrayList }
+	def static dispatch getConstructors(WClass c) { c.allConstructors }
 	
 	def static matches(WConstructor it, int nrOfArgs) {
 		if (hasVarArgs)
@@ -325,7 +330,7 @@ class WollokModelExtensions {
 	def static dispatch WMethodDeclaration method(Void it) { null }
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
-	def static dispatch WMethodDeclaration method(WExpression it) { eContainer.method }
+	def static dispatch WMethodDeclaration method(WExpression it) {	eContainer.method }
 	def static dispatch WMethodDeclaration method(WParameter it) { eContainer.method }
 
 	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
@@ -476,19 +481,25 @@ class WollokModelExtensions {
 	/**
 	 * Returns all the imports in the context.
 	 **/
-	def static Iterable<Import> allImports(EObject e){ 
-		val locals = e.eContents.filter(Import)
-		if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+	def static Iterable<Import> allImports(EObject e){
+		synchronized (e) {
+			val locals = e.eContents.filter(Import)
+			if(e.eContainer !== null) e.eContainer.allImports() + locals else locals
+		} 
 	}
 	
+	// unused
 	def static Iterable<String> allFQNImports(EObject e){
-		val constructors = e.eAllContents.filter(WConstructorCall).toSet
-		constructors
-			.map[NodeModelUtils.findNodesForFeature(it,WollokDslPackage.Literals.WCONSTRUCTOR_CALL__CLASS_REF)]
-			.flatten
-			.map[NodeModelUtils.getTokenText(it)]
-			.filter[it.contains(".")].toSet
-		#{}
+		synchronized (e) {
+			val constructors = e.eAllContents.filter(WConstructorCall).toSet
+			constructors
+				.map[ NodeModelUtils.findNodesForFeature(it,WollokDslPackage.Literals.WCONSTRUCTOR_CALL__CLASS_REF)	]
+				.flatten
+				.map[NodeModelUtils.getTokenText(it)]
+				.filter[it.contains(".")].toSet
+			
+			#{}
+		}
 	}
 	
 	// *******************************
@@ -540,5 +551,42 @@ class WollokModelExtensions {
 	def static dispatch matchesParam(WParameter p, EObject e) { false }
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
-}
+	
+	def static <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
+		if (contents.empty) #[]
+		else (contents.get(0) as WFile).eAllContents.filter(type).toList
+	}
 
+	def static getAllElements(XtextResource it) { getAllOfType(WMethodContainer) }
+	def static getMixins(XtextResource it) { getAllOfType(WMixin) }
+	def static getClasses(XtextResource it) { getAllOfType(WClass) }
+	def static getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
+
+	def static getImportedClasses(XtextResource it, WollokClassFinder finder) {
+		val imports = getAllOfType(Import)
+		imports.fold(newArrayList)[l, i |
+			try {
+				l.add(finder.getCachedClass(i, i.importedNamespace))
+			}
+			catch(ClassCastException e) {
+				// Temporarily user is writing another import
+			}
+			catch(WollokRuntimeException e) { }
+			l
+		]
+	}
+	
+	def static fullMessage(String methodName, int argumentsSize) {
+		var args = ""
+		val argsSize = argumentsSize
+		if (argsSize > 0) {
+			args = (1..argsSize).map [ "param" + it ].join(', ')
+		}
+		methodName + "(" + args + ")"
+	}
+	
+	def static fullMessage(WFeatureCall call) {
+		'''«call.feature»(«call.memberCallArguments.map[sourceCode].join(', ')»)'''
+	}
+	
+}

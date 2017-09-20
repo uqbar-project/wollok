@@ -10,7 +10,7 @@ class Exception {
 	const cause
 
 	/** Constructs a new exception with no detailed message. */
-	constructor()
+	constructor() { message = null ; cause = null }
 	/** Constructs a new exception with the specified detail message. */
 	constructor(_message) = self(_message, null)
 	/** Constructs a new exception with the specified detail message and cause. */
@@ -219,19 +219,17 @@ class Object {
 	}
 	
 	/** @private */
-	method messageNotUnderstood(name, parameters) {
-		var message = if (name != "toString") 
+	method messageNotUnderstood(messageName, parameters) {
+		const target = if (messageName != "toString") 
 					self.toString()
 				 else 
 				 	self.kindName()
-		message += " does not understand " + name
-		if (parameters.size() > 0)
-			message += "(" + (0..(parameters.size()-1)).map { i => "p" + i }.join(',') + ")"
-		else
-			message += "()"
+		const message = self.generateDoesNotUnderstandMessage(target, messageName, parameters.size())
 		throw new MessageNotUnderstoodException(message)
 	}
 
+	method generateDoesNotUnderstandMessage(target, messageName, parametersSize) native
+	
 	/** Builds an exception with a message */		
 	method error(message) {
 		throw new Exception(message)

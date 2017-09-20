@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.ArrayList
-
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
@@ -15,7 +14,9 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -33,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -41,13 +43,14 @@ import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.eclipse.xtext.EcoreUtil2.*
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
 
 /**
  * Extension methods for WMethodContainers.
@@ -65,6 +68,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 
+	def static WConstructor declaringConstructor(EObject it) { EcoreUtil2.getContainerOfType(it, WConstructor) }
+
+	def static WFixture declaringFixture(EObject it) { EcoreUtil2.getContainerOfType(it, WFixture) }
+
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
 
@@ -77,6 +84,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch parameters(EObject e) { null }
 	def static dispatch parameters(WMethodDeclaration it) { parameters }
 	def static dispatch parameters(WConstructor it) { parameters }
+	
+	def static dispatch parameterNames(EObject o) {
+		val parameters = o.parameters
+		if (parameters === null) return []
+		parameters.map [ name ]
+	}
+	
+	def static dispatch parameterNames(WMemberFeatureCall call) {
+		val parametersSize = call.memberCallArguments.size
+		if (parametersSize < 1) {
+			return ""
+		}
+		(1..parametersSize).map [ i | "param" + i ].join(", ")
+	}
 
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
@@ -106,7 +127,26 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isNative(WMethodContainer it) { methods.exists[m|m.native] }
 
+	def static behaviors(WMethodContainer c) {
+		return <EObject>newArrayList => [
+			addAll(c.constructors())
+			if (c.fixture !== null) {
+				add(c.fixture)
+			}
+			addAll(c.methods)
+			addAll(c.tests)     // we need to add both methods and tests for describe suites
+		] 
+	}
+
+	def static dispatch constructors(WMethodContainer c) { c.members.filter(WConstructor) }
+	def static dispatch constructors(WClass c) { c.constructors }
+	def static dispatch constructors(WTest t) { newArrayList }
+	
 	def static methods(WMethodContainer c) { c.members.filter(WMethodDeclaration) }
+	
+	def static dispatch tests(WMethodContainer c) { newArrayList }
+	def static dispatch tests(WSuite t) { t.tests.toList }
+	
 	def static abstractMethods(WMethodContainer it) { methods.filter[isAbstract] }
 	def static overrideMethods(WMethodContainer it) { methods.filter[overrides].toList }
 
@@ -142,7 +182,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
-	def static fixture(WMethodContainer c) { c.members.filter(WFixture) }
+	def static dispatch EObject fixture(WMethodContainer c) { null }
+	def static dispatch EObject fixture(WSuite s) { s.fixture }
 	
 	def static variables(WMethodContainer c) { c.variableDeclarations.variables }
 	def static variables(WProgram p) { p.elements.filter(WVariableDeclaration).variables }
@@ -151,9 +192,29 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst[m | m.matches(feature, memberCallArguments) ]
+		c.allMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
+	}
+	
+	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
+		c.allMethods.findMethodIgnoreCase(methodName, argumentsSize) 
 	}
 
+	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
+		methods.findFirst[m | m.matches(methodName, argumentsSize, true) ] 
+	}
+
+	def static dispatch List<WMethodDeclaration> findMethodsByName(WMethodContainer c, String methodName) {
+		c.allMethods.findMethodsByName(methodName)
+	}
+	
+	def static dispatch List<WMethodDeclaration> findMethodsByName(WollokObject o, String methodName) {
+		o.allMethods.findMethodsByName(methodName)
+	}
+	
+	def static dispatch List<WMethodDeclaration> findMethodsByName(Iterable<WMethodDeclaration> methods, String methodName) {
+		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
+	}
+	
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
@@ -172,6 +233,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static actuallyOverrides(WMethodDeclaration m) {
 		m.declaringContext !== null && inheritsMethod(m.declaringContext, m.name, m.parameters.size)
+	}
+
+	def static convertToString(List<WMethodDeclaration> methods) { 
+		methods.map [ messageName ].join(', ')
 	}
 
 	def static parents(WMethodContainer c) { _parents(c.parent, newArrayList) }
@@ -209,7 +274,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean inheritsFromObject(WClass c) { c.parent.fqn.equals(WollokDSK.OBJECT) }
 	def static dispatch boolean inheritsFromObject(WNamedObject o) { o.parent.fqn.equals(WollokDSK.OBJECT) }
 	def static dispatch boolean inheritsFromObject(WObjectLiteral o) { true }
-	
+
 	def static dispatch WClass parent(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen")  }
 	def static dispatch WClass parent(WClass it) { parent }
 	def static dispatch WClass parent(WObjectLiteral it) { parent } // can we just reply with wollok.lang.Object class ?
@@ -239,7 +304,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WClass c) { c.fqn }
 	def static dispatch contextName(WObjectLiteral c) { "<anonymousObject>" }
 	def static dispatch contextName(WNamedObject c) { c.fqn }
-	def static dispatch contextName(MixedMethodContainer c) { "<mixedObejct>" }
+	def static dispatch contextName(MixedMethodContainer c) { "<mixedObject>" }
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
@@ -249,7 +314,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) {
-		c !== null && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
+		c !== null && !c.hasCyclicHierarchy && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List<?> params, boolean acceptsAbstract) {
@@ -279,10 +344,18 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		chain
 	}
 
-	def static matches(WMethodDeclaration it, String message, List<?> params) { matches(message, params.size) }
+	def static matches(WMethodDeclaration it, String message, List<?> params) { 
+		matches(message, params.size)
+	}
 
 	def static matches(WMethodDeclaration it, String message, int nrOfArgs) {
-		name == message &&
+		matches(message, nrOfArgs, false)
+	}
+
+	def static matches(WMethodDeclaration it, String message, int nrOfArgs, boolean ignoreCase) {
+		val messageMatches = if (ignoreCase) name.equalsIgnoreCase(message) else name == message 
+		
+		messageMatches &&
 		if (hasVarArgs)
 			nrOfArgs >= parameters.filter[!isVarArg].size
 		else
@@ -292,7 +365,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && c.parent.isValidCall(call, finder))
+		c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
 	}
 
 	// ************************************************************************
@@ -319,9 +392,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
+	def static dispatch feature(WUnaryOperation o) { o.feature }
+	def static dispatch feature(WBinaryOperation o) { o.feature }
+	def static dispatch feature(WPostfixOperation o) { o.feature }
 
 	// TODO Esto no debería ser necesario pero no logro generar bien la herencia entre estas clases para poder tratarlas polimórficamente.
 	def static dispatch memberCallArguments(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
@@ -508,6 +585,23 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isValidContainerForStaticDiagram(EObject o) { false }
 	def static dispatch isValidContainerForStaticDiagram(WMethodContainer mc) {	true }
 	def static dispatch isValidContainerForStaticDiagram(WSuite s) { false }
-		
+
+	def static dispatch canDefineConstructors(EObject o) { false }
+	def static dispatch canDefineConstructors(WClass c) { true }
+
+	def static dispatch canDefineFixture(EObject o) { false }
+	def static dispatch canDefineFixture(WSuite s) { true }
+
+	def static dispatch canDefineTests(EObject o) { false }
+	def static dispatch canDefineTests(WSuite s) { true }
+	def static dispatch canDefineTests(WTest t) { true }
+
+	def static dispatch constructionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch constructionName(WClass c) { WollokConstants.CLASS }
+	def static dispatch constructionName(WObjectLiteral c) { WollokConstants.WKO }
+	def static dispatch constructionName(WNamedObject c) { WollokConstants.WKO }
+	def static dispatch constructionName(WMixin c) { WollokConstants.MIXIN }
+	def static dispatch constructionName(WSuite s) { WollokConstants.SUITE }
+
 }
 

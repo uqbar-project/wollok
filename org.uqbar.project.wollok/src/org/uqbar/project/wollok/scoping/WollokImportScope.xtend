@@ -36,48 +36,58 @@ class WollokImportScope implements IScope {
 	}
 
 	override getAllElements() {
-		val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByType(type) 
-		localElementsFound + parent.allElements.filter[EcoreUtil2.isAssignableFrom(type, it.EClass)]
+		synchronized (this) {
+			val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByType(type) 
+			localElementsFound + parent.allElements.filter[EcoreUtil2.isAssignableFrom(type, it.EClass)]
+		}
 	}
 	
 	override getElements(QualifiedName name) {
-		val normalizedNames = (#[name] + normalizers.map[it.resolve(name)].filter[it !== null]).toList
-		var IEObjectDescription result = null
-		
-		if(localElements !== null)
-		 	result = localElements.getExportedObjectsByType(type).findFirst[normalizedNames.contains(it.name)]
-		
-		if(result !== null)
-			return #[result]
+		synchronized (this) {
+			val normalizedNames = (#[name] + normalizers.map[it.resolve(name)].filter[it !== null]).toList
+			var IEObjectDescription result = null
 			
-		for(n : normalizedNames){
-			var r = parent.getElements(n).findFirst[EcoreUtil2.isAssignableFrom(type, it.EClass)]
-			if(r !== null) 
-				return #[r]
+			if(localElements !== null)
+			 	result = localElements.getExportedObjectsByType(type).findFirst[normalizedNames.contains(it.name)]
+			
+			if(result !== null)
+				return #[result]
+				
+			for(n : normalizedNames){
+				var r = parent.getElements(n).findFirst[EcoreUtil2.isAssignableFrom(type, it.EClass)]
+				if(r !== null) 
+					return #[r]
+			}
+			
+			return #[]
 		}
-		
-		return #[]
 	}
 	
 	override getElements(EObject object) {
-		val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByObject(object) 
-		localElementsFound + parent.getElements(object)
+		synchronized (this) {
+			val localElementsFound = if(localElements === null) #[] else localElements.getExportedObjectsByObject(object) 
+			localElementsFound + parent.getElements(object)
+		}
 	}
 	
 	override getSingleElement(QualifiedName name) {
-		val result = getElements(name);
-		val iterator = result.iterator();
-		if (iterator.hasNext())
-			return iterator.next();
-		return null;
+		synchronized (this) {
+			val result = getElements(name);
+			val iterator = result.iterator();
+			if (iterator.hasNext())
+				return iterator.next();
+			return null;
+		}
 	}
 	
 	override getSingleElement(EObject object) {
-		val result = getElements(object);
-		val iterator = result.iterator();
-		if (iterator.hasNext())
-			return iterator.next();
-		return null;		
+		synchronized (this) {
+			val result = getElements(object);
+			val iterator = result.iterator();
+			if (iterator.hasNext())
+				return iterator.next();
+			return null;		
+		}
 	}
 	
 }

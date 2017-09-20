@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.quickfix
 
 import com.google.inject.Inject
 import java.util.List
+import org.eclipse.core.resources.IResource
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
@@ -19,7 +20,6 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
-import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -49,8 +49,6 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * @author dodain
  */
 class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
-	val tabChar = "\t"
-	val blankSpace = " "
 
 	@Inject
 	WollokClassFinder classFinder
@@ -118,10 +116,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val constructor = '''
 				«tabChar»constructor(«(1..delegatingConstructor.arguments.size).map["param" + it].join(",")»){
 				«tabChar»«tabChar»//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
-				«tabChar»}
-			'''
+				«tabChar»}'''
 
-			addMethod(parent, constructor)
+			parent.insertConstructor(constructor, it)
 		]
 	}
 
@@ -227,8 +224,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val f = (e as WAssignment).feature.ref.eContainer
 			if (f instanceof WVariableDeclaration) {
 				val feature = f as WVariableDeclaration
+				val valueOrNothing = if (feature.right === null) "" else " =" + feature.right.node.text
 				context.xtextDocument.replace(feature.before, feature.node.length,
-					VAR + " " + feature.variable.name + " =" + feature.right.node.text)
+					VAR + " " + feature.variable.name + valueOrNothing)
 			}
 		]
 	}
@@ -273,8 +271,8 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_create_method_superclass_name,
 			Messages.WollokDslQuickfixProvider_create_method_superclass_description, null) [ e, it |
 			val method = e as WMethodDeclaration
-			val container = method.eContainer as WMethodContainer
-			addMethod(container.parent, defaultStubMethod(container.parent, method))
+			val parent = (method.eContainer as WMethodContainer).parent as WMethodContainer
+			parent.insertMethod(defaultStubMethod(parent, method), it)
 		]
 	}
 
@@ -367,11 +365,28 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	// ************************************************
 	protected def quickFixForUnresolvedRefToVariable(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument, EObject target) {
-		// issue #452 - contextual menu based on different targets
-		val targetContext = target.declaringContext // target.getSelfContext
+		val targetContext = target.declaringContext
 		val hasMethodContainer = targetContext !== null
 		val hasParameters = target.declaringMethod !== null && target.declaringMethod.parameters !== null
 		val canCreateLocalVariable = target.canCreateLocalVariable
+
+		// create new local wko
+		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_local_wko_name,
+			Messages.WollokDslQuickFixProvider_create_new_local_wko_description, "wollok-icon-object_16.png") [ e, context |
+			val newObjectName = xtextDocument.get(issue.offset, issue.length)
+			val container = e.container
+			context.xtextDocument.replace(container.before, 0,
+				newObjectName.generateNewWKOCode)				
+				
+		]
+
+		// create new external wko
+		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_external_wko_name,
+			Messages.WollokDslQuickFixProvider_create_new_external_wko_description, "wollok-icon-object_16.png") [ e, context |
+			val newObjectName = xtextDocument.get(issue.offset, issue.length)
+			val resource = xtextDocument.getAdapter(typeof(IResource))
+			new AddNewElementQuickFixDialog(newObjectName, true, resource, context, e)
+		]
 
 		// create local var
 		if (canCreateLocalVariable) {
@@ -388,9 +403,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_instance_variable_name,
 				Messages.WollokDslQuickFixProvider_create_instance_variable_description, "variable.gif") [ e, context |
 				val newVarName = xtextDocument.get(issue.offset, issue.length)
-				val declaringContext = e.declaringContext
-				val firstClassChild = declaringContext.eContents.head
-				context.insertBefore(firstClassChild, VAR + " " + newVarName)
+				e.declaringContext.insertVariable(newVarName, context)
 			]
 		}
 
@@ -407,14 +420,24 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	protected def quickFixForUnresolvedRefToClass(IssueResolutionAcceptor issueResolutionAcceptor, Issue issue,
 		IXtextDocument xtextDocument) {
+			
+		// create inner class
 		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_class_name,
-			Messages.WollokDslQuickFixProvider_create_new_class_description, "class.png") [ e, context |
+			Messages.WollokDslQuickFixProvider_create_new_class_description, "wollok-icon-class_16.png") [ e, context |
 			val newClassName = xtextDocument.get(issue.offset, issue.length)
 			val container = e.container
 			context.xtextDocument.replace(container.before, 0,
 				CLASS + blankSpace + newClassName + " {" + System.lineSeparator + System.lineSeparator + "}" + System.lineSeparator + System.lineSeparator)
 		]
-
+		
+		// create new external class
+		issueResolutionAcceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_new_external_class_name,
+			Messages.WollokDslQuickFixProvider_create_new_external_class_description, "wollok-icon-class_16.png") [ e, context |
+			val newClassName = xtextDocument.get(issue.offset, issue.length)
+			val resource = xtextDocument.getAdapter(typeof(IResource))
+			new AddNewElementQuickFixDialog(newClassName, false, resource, context, e)
+		]
+			
 	}
 
 	// *********************************************
@@ -457,52 +480,31 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * **************************************************************************************
 	 */
 	def defaultStubMethod(WMemberFeatureCall call, int numberOfTabsMargin) {
-		val callText = call.node.text
-		val margin = (1..numberOfTabsMargin).map [ tabChar ].reduce [ acum, tab | acum + tab ] 
-		System.lineSeparator + margin + METHOD + " " + call.feature +
-					callText.substring(callText.indexOf('('), callText.lastIndexOf(')') + 1) + " {" +
+		val margin = numberOfTabsMargin.output(tabChar)
+		margin + METHOD + " " + call.feature + "(" +
+					call.parameterNames + ")"
+					+ " {" +
 					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
 					System.lineSeparator + margin + "}"
 	}
 	
-	def defaultStubMethod(WClass clazz, WMethodDeclaration method) {
-		val margin = adjustMargin(clazz)
+	def defaultStubMethod(WMethodContainer mc, WMethodDeclaration method) {
+		val margin = adjustMargin(mc)
 		'''
 		«margin»«METHOD» «method.name»(«method.parameters.map[name].join(",")») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}''' + System.lineSeparator
 	}
 
-	def adjustMargin(WClass clazz) {
-		if(clazz.methods.empty) tabChar else ""
+	def adjustMargin(WMethodContainer mc) {
+		if (mc.behaviors.empty) tabChar else ""
 	}
 
 	def resolveXtextDocumentFor(Issue issue) {
 		modificationContextFactory.createModificationContext(issue).xtextDocument
 	}
 
-	protected def addMethod(IModificationContext it, WClass parent, String code) {
-		val newContext = getContainerContext(it, parent)
-
-		val lastConstructor = parent.members.findLast[it instanceof WConstructor]
-		if (lastConstructor !== null)
-			newContext.insertAfter(lastConstructor, code)
-		else {
-			val lastVar = parent.members.findLast[it instanceof WVariableDeclaration]
-			if (lastVar !== null)
-				newContext.insertAfter(lastVar, code)
-			else {
-				val firstMethod = parent.members.findFirst[it instanceof WMethodDeclaration]
-				if (firstMethod !== null) {
-					newContext.insertBefore(firstMethod, code)
-				} else {
-					newContext.xtextDocument.replace(parent.after - 1, 0, code)
-				}
-			}
-		}
-	}
-
-	def getContainerContext(IModificationContext it, WClass parent) {
+	def getContainerContext(IModificationContext it, WMethodContainer parent) {
 		new IModificationContext() {
 
 			override getXtextDocument() {
@@ -514,20 +516,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			}
 
 		}
-	}
-
-	def int findPlaceToAddMethod(WMethodContainer it) {
-		val lastMethod = members.lastOf(WMethodDeclaration)
-		if (lastMethod !== null) 
-			return lastMethod.after
-		val lastConstructor = members.lastOf(WConstructor)
-		if (lastConstructor !== null)
-			return lastConstructor.after
-		val lastInstVar = members.lastOf(WVariableDeclaration)
-		if (lastInstVar !== null)
-			return lastInstVar.after
-
-		return it.node.offset + it.node.text.indexOf("{") + 1
 	}
 
 	def <T> T lastOf(List<?> l, Class<T> type) { l.findLast[type.isInstance(it)] as T }
@@ -587,32 +575,10 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * Common method for wko, objects, mixins and classes to create a non-existent method based on a call
 	 */
 	def createMethodInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
-		val placeToAdd = container.findPlaceToAddMethod
+		val methodLocation = container.placeToAddMethod
 		val xtextDocument = context.getXtextDocument(container.fileURI)
-		xtextDocument.replace(
-			placeToAdd,
-			0,
-			defaultStubMethod(call, xtextDocument.computeMarginFor(placeToAdd, container))
-		)
-	}
-
-	/**
-	 * Common method - compute margin that should by applied to a new method
-	 * If method container has no methods nor variable declarations, placeToAdd should not be considered
-	 * Otherwise we use default margin based on line we are calling
-	 */
-	def int computeMarginFor(IXtextDocument document, int placeToAdd, WMethodContainer container) {
-		if (container.methods.empty) {
-			return 1
-		}
-		val lineInformation = document.getLineInformationOfOffset(placeToAdd)
-		var textLine = document.get(lineInformation.offset, lineInformation.length)
-		var margin = 0
-		while (textLine.startsWith("\t")) {
-			margin++
-			textLine = textLine.substring(1)
-		}
-		margin
+		val code = defaultStubMethod(call, xtextDocument.computeMarginFor(methodLocation.placeToAdd, container))
+		container.insertMethod(code, context)
 	}
 
 }

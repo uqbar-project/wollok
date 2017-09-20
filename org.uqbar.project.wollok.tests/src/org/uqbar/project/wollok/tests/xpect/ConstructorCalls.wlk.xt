@@ -82,6 +82,7 @@ class ConstructorCallTest {
 
 class A {
 	var x
+	// XPECT warnings --> "Variable x is never assigned in this constructor" at "{ }"
 	constructor() { }
 	constructor(_x) { x = _x }
 	method x() = x
@@ -102,6 +103,13 @@ class C inherits A {
 
 class D inherits A {
 	
+}
+
+class A_InicializandoX {
+	var x = 1
+	constructor() { }
+	constructor(_x) { x = _x }
+	method x() = x
 }
 
 class TestLastConstructorDefinition {

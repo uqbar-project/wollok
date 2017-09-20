@@ -5,10 +5,10 @@ import org.uqbar.project.wollok.Messages
 
 class ElementNameValidation {
 	
-	static char[] INVALID_RESOURCE_CHARACTERS = #{' ', '-', ',', '*', '\'', '\\', '/', '&', '¿', '?', '{', '}', '[', ']', '(', ')', '=', '>', '<', ':', ';', '%', '!', '¡', '|', '°', '"', '#', '$', '+', '^', '@' }
+	public static char[] INVALID_RESOURCE_CHARACTERS = #{' ', '-', ',', '*', '\'', '\\', '/', '&', '¿', '?', '{', '}', '[', ']', '(', ')', '=', '>', '<', ':', ';', '%', '!', '¡', '|', '°', '"', '#', '$', '+', '^', '@' }
 	
 	static def Validation validateName(String name) {
-		if (name == null || name.length == 0) {
+		if (name === null || name.length == 0) {
 			return Validation.ok
 		}
 		
