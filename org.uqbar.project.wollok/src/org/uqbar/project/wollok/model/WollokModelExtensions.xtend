@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.model
 
-import java.util.Collection
 import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
@@ -588,5 +587,16 @@ class WollokModelExtensions {
 	def static fullMessage(WFeatureCall call) {
 		'''«call.feature»(«call.memberCallArguments.map[sourceCode].join(', ')»)'''
 	}
+
+	// ************************************************************************
+	// ** Compound assignments (+=, -=, *=, /=)
+	// ************************************************************************
 	
+	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
+	public static def isMultiOpAssignment(String operator) { operator.matches(WollokConstants.MULTIOPS_REGEXP) }
+	
+	public static def operator(WBinaryOperation it) { 
+		if (isMultiOpAssignment) feature.substring(0, 1)
+		else throw new UnsupportedOperationException("Binary operation is not a compound assignment.")
+	}
 }

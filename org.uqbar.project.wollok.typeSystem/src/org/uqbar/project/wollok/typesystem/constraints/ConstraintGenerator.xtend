@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -180,7 +181,7 @@ class ConstraintGenerator {
 	}
 	
 	def dispatch void generateVariables(WSelf it) {
-		it.newSealed(getSelfContext.asWollokType)
+		it.newSealed(declaringContext.asWollokType)
 	}
 
 	def dispatch void generateVariables(WIfExpression it) {
@@ -224,7 +225,16 @@ class ConstraintGenerator {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
-		leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+		if (isMultiOpAssignment) {
+			// Handling something of the form "a += b"
+			val operator = feature.substring(0, 1)
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), TypeVariable.synthetic)
+			it.newVoid
+		}
+		else {
+			// Handling a proper BinaryExpression, such as "a + b"
+			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+		}
 	}
 
 	def dispatch void generateVariables(WReturnExpression it) {

@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 
 /**
  * This visitor get all the assignments of the lookedFor variable
@@ -23,13 +23,12 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	List<EObject> uses = newArrayList
 	@Accessors
 	WVariable lookedFor
-	
+
 	// generic visitor methods
-	
 	override doVisit(EObject e) {
-		if (e != null)
+		if (e !== null)
 			visit(e)
-	}	
+	}
 
 	def static assignmentOf(WVariable lookedFor, EObject container) {
 		(new VariableAssignmentsVisitor => [
@@ -37,37 +36,39 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 			doVisit(container)
 		]).uses
 	}
-	
-	// potatoe: specific methods to detect assignments
 
+	// potatoe: specific methods to detect assignments
 	override dispatch visit(WVariableDeclaration it) {
-		addIf[ variable == lookedFor && right != null ]
+		addIf[variable == lookedFor && right !== null]
 	}
+
 	override dispatch visit(WAssignment it) {
 		addIf[feature.ref == lookedFor]
 	}
+
 	override dispatch visit(WPostfixOperation it) {
-		addIf[ operand.isReferenceTo(lookedFor) ]
+		addIf[operand.isReferenceTo(lookedFor)]
 	}
+
 	override dispatch visit(WBinaryOperation it) {
-		addIf[ isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor) ]
+		addIf[isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor)]
 	}
+
 	// helpers
-	
 	protected def <T extends EObject> addIf(T it, (T)=>Boolean condition) {
 		if (condition.apply(it))
 			uses.add(it)
 	}
-	
+
 	def static isReferenceTo(WExpression it, WVariable variable) {
 		it instanceof WVariableReference && (it as WVariableReference).ref == variable
 	}
-	
+
 	// I'm not sure if this is a hack
-	//  why visiting the content of the reference ?
-	//  in a WKO referencing itself was introducing a stackoverflow
+	// why visiting the content of the reference ?
+	// in a WKO referencing itself was introducing a stackoverflow
 	override dispatch void visit(WVariableReference it) {
 		// does nothing ! 
 	}
-	
+
 }
