@@ -22,9 +22,9 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
 class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	override createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_TEST_CONFIGURATION_TYPE.configType
-		val x = cfgType.newInstance(null, info.generateUniqueName)
-		this.configureConfiguration(x, info)
-		x.doSave
+		val runConfiguration = cfgType.newInstance(null, info.generateUniqueName)
+		this.configureConfiguration(runConfiguration, info)
+		runConfiguration.doSave
 	}
 
 	override launch(IFile currFile, String mode) {

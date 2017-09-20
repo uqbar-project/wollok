@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.ui.launch.shortcut
 
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.IAdaptable
 import org.eclipse.debug.ui.ILaunchShortcut
 import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
@@ -44,6 +46,10 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 		throw new RuntimeException("Launcher not found for " + currProject)
 	}
 	
+	def void launch(IFolder currFolder, String mode) {
+		throw new RuntimeException("Launcher not found for " + currFolder)
+	}
+	
 	def dispatch void doLaunch(IProject currProject, String mode) {
 		launch(currProject, mode)
 	}
@@ -56,8 +62,12 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 		launch(project, mode)	
 	}
 	
+	def dispatch void doLaunch(IPackageFragment _package, String mode) {
+		launch(_package.correspondingResource.adapt(IFolder), mode)
+	}
+	
 	def dispatch void doLaunch(IAdaptable adaptable, String mode) {
-		launch(adaptable.adapt(IFile), mode)		
+		launch(adaptable.adapt(IFile), mode)
 	}
 	
 	def dispatch void doLaunch(Object o, String mode) {
