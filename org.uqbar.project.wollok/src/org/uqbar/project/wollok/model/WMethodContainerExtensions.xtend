@@ -393,7 +393,6 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch feature(EObject o) { null }
-	def static dispatch feature(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
 	def static dispatch feature(WUnaryOperation o) { o.feature }
