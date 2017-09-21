@@ -479,17 +479,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	//
 	
 	def static isInASelfContext(EObject ele) {
-		ele.getSelfContext !== null
-	}
-	
-	/**
-	 * We should use declaringContext instead
-	 */ 
-	@Deprecated 
-	def static getSelfContext(EObject ele) {
-		for (var e = ele; e !== null; e = e.eContainer)
-			if (e.isSelfContext) return e
-		null
+		ele.declaringContext !== null
 	}
 	
 	def dispatch static boolean canCreateLocalVariable(WFixture it) { false }

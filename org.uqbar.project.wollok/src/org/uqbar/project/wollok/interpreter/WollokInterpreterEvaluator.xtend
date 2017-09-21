@@ -381,9 +381,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************
 	def dispatch evaluate(WBinaryOperation binary) {
 		if (binary.isMultiOpAssignment) {
-			val operator = binary.feature.substring(0, 1)
 			val reference = binary.leftOperand
-			reference.performOpAndUpdateRef(operator, binary.rightOperand.lazyEval)
+			reference.performOpAndUpdateRef(binary.operator, binary.rightOperand.lazyEval)
 		} else {
 			val leftOperand = binary.leftOperand.eval
 			val operation = binary.feature

@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok
 
-import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-
 /**
  * Contains language keywords defined in the grammar
  * but then used by the interpreter or any other processing (like quickfixes).
@@ -67,7 +65,4 @@ class WollokConstants {
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
 
-	public static def isMultiOpAssignment(WBinaryOperation it) { feature.isMultiOpAssignment }
-	public static def isMultiOpAssignment(String operator) { operator.matches(MULTIOPS_REGEXP) }
-	
 }
