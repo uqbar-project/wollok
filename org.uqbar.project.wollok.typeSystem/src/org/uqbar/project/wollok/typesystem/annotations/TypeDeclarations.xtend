@@ -74,7 +74,7 @@ abstract class TypeDeclarations {
 	}
 	
 	def operator_greaterEqualsThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
-		new ExpectReturnType(target, receiver.type, "<=", #[parameterType])
+		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
 	}
 	
 

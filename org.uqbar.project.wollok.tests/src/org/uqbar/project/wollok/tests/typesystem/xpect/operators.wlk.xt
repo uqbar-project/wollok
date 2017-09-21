@@ -1,5 +1,11 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
-class MochilaChica {
-	method puedeCargar(peso) = peso <= 40
+object pepita{
+	var energia = 100
+
+	// XPECT methodType at estaViva --> () => Boolean
+	method estaViva() = energia >= 0
+
+	// XPECT methodType at estaCansada --> (Integer) => Boolean
+	method estaCansada(cuanto) = energia <= cuanto
 }
