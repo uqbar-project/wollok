@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
+import org.uqbar.project.wollok.typesystem.ConcreteType
+
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		(Object == Any) => Boolean;
@@ -14,34 +16,20 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number - Number => Number
 		Number * Number => Number
 		Number / Number => Number;
-		(Number > Number) => Boolean;
-		(Number < Number) => Boolean;
-		Number >> ">=" === #[Number] => Boolean
-		Number >> "<=" === #[Number] => Boolean
 
 		Integer + Number => Number
 		Integer - Number => Number
 		Integer * Number => Number
 		Integer / Number => Number;
-		(Integer > Number) => Boolean;
-		(Integer < Number) => Boolean;
-		Integer >> ">=" === #[Number] => Boolean
-		Integer >> "<=" === #[Number] => Boolean
 
 		Double + Number => Double
 		Double - Number => Double
 		Double * Number => Double
 		Double / Number => Double;
-		(Double > Double) => Boolean;
-		(Double < Double) => Boolean
-		Double >> ">=" === #[Number] => Boolean
-		Double >> "<=" === #[Number] => Boolean;
 
 		(String == Any) => Boolean
 		String >> "size" === #[] => Integer
 		String + String => String;
-		(String > String) => Boolean;
-		(String < String) => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
@@ -64,8 +52,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		
 		(Date == Any) => Boolean;
 		Date - Date => Integer;
-		(Date > Date) => Boolean;
-		(Date < Date) => Boolean;
 
 		(Position == Any) => Boolean;
 
@@ -74,5 +60,16 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		console >> "readLine" === #[] => String
 		console >> "readInt" === #[] => Integer
 		console >> "newline" === #[] => Void
+
+		comparable(Number, Integer, Double, String, Date)
+	}
+	
+	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
+		types.forEach[ T |
+			(T > T) => Boolean;
+			(T < T) => Boolean;
+			(T <= T) => Boolean;
+			(T >= T) => Boolean;
+		]
 	}
 }
