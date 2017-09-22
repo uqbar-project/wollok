@@ -86,7 +86,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			f = f.replace('$', '.')
 		try {
 			val type = project.findType(fullyQualifiedName)
-			type != null && type.exists
+			type !== null && type.exists
 		} catch (JavaModelException e) {
 			false
 		}

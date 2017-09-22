@@ -41,6 +41,7 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	 * - finally: launch tests
 	 */
 	override launch(IProject currProject, String mode) {
+		this.folder = null
 		currProject.getTestFiles.internalLaunch(mode)
 	}
 
@@ -61,6 +62,7 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	}
 	
 	override launch(IJavaProject currProject, String mode) {
+		this.folder = null
 		launch(currProject.elementName.project, mode)
 	}
 	
@@ -69,7 +71,7 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	}
 
 	def List<IFile> getTestFiles(IFolder folder) {
-		folder.allMembers.testFiles			
+		folder.allMembers.testFiles
 	}
 	
 	def List<IFile> getTestFiles(Set<IResource> files) {
@@ -85,9 +87,12 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	def String testFilesAsString(IFile file) {
 		var testFiles = file.project.testFiles
 		if (this.folder !== null) {
-			testFiles = folder.testFiles	
+			testFiles = folder.testFiles
 		}
-		testFiles.fold(new StringBuilder, [ sb, it  | sb.append(it.locationURI.toURL.file).append(" ") ]).toString
+		testFiles.fold(new StringBuilder, [ sb, testFile |
+			val filePath = testFile.projectRelativePath.toString
+			sb.append(filePath).append(" ")
+		]).toString
 	}
 
 }
