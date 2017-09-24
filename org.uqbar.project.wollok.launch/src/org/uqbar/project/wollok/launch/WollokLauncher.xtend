@@ -41,7 +41,7 @@ class WollokLauncher extends WollokChecker {
 			val filesToParse = fileNames.map [ wollokFile |
 				new File(wollokFile)
 			]
-			interpreter.interpret(filesToParse.parse)
+			interpreter.interpret(filesToParse.parse, parameters.folder)
 			System.exit(0)
 		} catch (Exception e) {
 			System.exit(-1)

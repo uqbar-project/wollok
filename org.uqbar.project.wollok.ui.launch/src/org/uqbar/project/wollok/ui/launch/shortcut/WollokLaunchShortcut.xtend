@@ -124,11 +124,14 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
 }
 
+@Accessors
 class LaunchConfigurationInfo {
-	@Accessors String name
-	@Accessors String project
-	@Accessors String file
-	@Accessors Iterable<String> libs
+	String name
+	String project
+	String file
+	String folder // optional 
+	boolean severalFiles
+	Iterable<String> libs
 
 	new(IFile file) {
 		name = file.name
@@ -142,6 +145,16 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
+			&& a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles
+			&& a.getAttribute(ATTR_WOLLOK_FOLDER, "X").sameFolder()
 			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs) 
-	}	
+	}
+	
+	def sameFolder(String anotherFolder) {
+		(this.folder === null && anotherFolder === null) ||
+		(this.folder !== null && anotherFolder !== null &&
+			this.folder.equalsIgnoreCase(anotherFolder)
+		)
+	}
+	
 }

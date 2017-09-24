@@ -23,10 +23,12 @@ class WollokLaunchConstants {
 	// launch configurations custom attributes
 	public static val ATTR_WOLLOK_PROJECT = "WOLLOK_PROJECT"
 	public static val ATTR_WOLLOK_FILE = "WOLLOK_FILE"
+	public static val ATTR_WOLLOK_SEVERAL_FILES = "ATTR_WOLLOK_SEVERAL_FILES"
 	public static val ATTR_WOLLOK_IS_REPL = "WOLLOK_IS_REPL"
 	public static val ATTR_WOLLOK_DEBUG_PARAM = "WOLLOK_DEBUG_PARAM"
 	public static val ATTR_WOLLOK_DEBUG_COMMAND_PORT = "WOLLOK_DEBUG_COMMAND_PORT"
 	public static val ATTR_WOLLOK_DEBUG_EVENT_PORT = "WOLLOK_DEBUG_EVENT_PORT"
+	public static var ATTR_WOLLOK_FOLDER = "ATTR_WOLLOK_FOLDER"
 	public static var ATTR_WOLLOK_LIBS = "ATTR_WOLLOK_LIBS"
 	
 	
@@ -50,12 +52,20 @@ class WollokLaunchConstants {
 		config.getAttribute(ATTR_WOLLOK_FILE,"")
 	}
 
+	static def getFolder(ILaunchConfiguration config){
+		config.getAttribute(ATTR_WOLLOK_FOLDER,"")
+	}
+
+	static def getSeveralFiles(ILaunchConfiguration config){
+		config.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false)
+	}
+
 	static def getWollokProject(ILaunchConfiguration config){
 		config.getAttribute(ATTR_WOLLOK_PROJECT, "")
 	}
 	
 	def static isWollokFileExtension(String xt) {
-		xt != null && EXTENSIONS.contains(xt)
+		xt !== null && EXTENSIONS.contains(xt)
 	}
 	
 }

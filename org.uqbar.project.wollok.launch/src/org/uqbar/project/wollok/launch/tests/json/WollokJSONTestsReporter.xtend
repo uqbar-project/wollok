@@ -143,7 +143,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 		_writer = writer
 	}
 
-	override initProcessManyFiles() {
+	override initProcessManyFiles(String folder) {
 	}
 	
 	override endProcessManyFiles() {

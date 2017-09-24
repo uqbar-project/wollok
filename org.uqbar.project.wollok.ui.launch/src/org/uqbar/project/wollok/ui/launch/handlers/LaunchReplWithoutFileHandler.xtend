@@ -73,7 +73,6 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 		setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${workspace}")
 		setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true)
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(projectToUse.libPaths))
-		
 	}
 
 	def getOrCreateEmptyProject() {

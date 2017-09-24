@@ -51,7 +51,7 @@ class WollokChecker {
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
-			if (parameters.tests && parameters.wollokFiles.size > 1) {
+			if (parameters.severalFiles) {
 				// Tests may run several files
 				launch(parameters.wollokFiles, parameters)
 			} else {

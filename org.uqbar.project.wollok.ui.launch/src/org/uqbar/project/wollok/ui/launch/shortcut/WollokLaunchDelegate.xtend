@@ -59,7 +59,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		if (configuration.hasRepl) {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			var console = consoleManager.consoles.findFirst[ name == WollokReplConsole.consoleName ] as WollokReplConsole
-			if (console == null) {
+			if (console === null) {
 				console = new WollokReplConsole
 				consoleManager.addConsoles(#[console])
 			}
@@ -101,6 +101,8 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.eventsPort = eventPort
 		parameters.requestsPort = requestPort
 		parameters.wollokFiles += config.wollokFile
+		parameters.severalFiles = config.severalFiles
+		parameters.folder = config.folder
 		parameters.hasRepl = config.hasRepl
 		parameters.libraries = config.libraries
 		parameters

@@ -7,6 +7,7 @@ import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
 import org.eclipse.emf.common.util.URI
+import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.launch.Messages
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -34,6 +35,7 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 	var WollokRemoteUITestNotifier remoteTestNotifier
 	val testsResult = new LinkedList<WollokResultTestDTO>
 	var boolean processingManyFiles
+	var String folder
 	
 	String suiteName
 	List<WollokTestInfo> testFiles
@@ -57,7 +59,11 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		this.suiteName = _suiteName
 		val fileURI = file.eResource.URI.toString
 		if (processingManyFiles) {
-			this.suiteName = Messages.ALL_TEST_IN_PROJECT
+			if (this.folder !== null) {
+				this.suiteName = NLS.bind(Messages.ALL_TEST_IN_FOLDER, this.folder)
+			} else {
+				this.suiteName = Messages.ALL_TEST_IN_PROJECT
+			}
 			this.testFiles.addAll(getRunnedTestsInfo(tests, fileURI))
 		} else {
 			remoteTestNotifier.testsToRun(suiteName, fileURI, getRunnedTestsInfo(tests, fileURI), false)
@@ -80,8 +86,9 @@ class WollokRemoteTestReporter implements WollokTestsReporter {
 		}
 	}
 
-	override initProcessManyFiles() {
-		processingManyFiles = true
+	override initProcessManyFiles(String folder) {
+		this.processingManyFiles = true
+		this.folder = folder
 	}
 	
 	override endProcessManyFiles() {

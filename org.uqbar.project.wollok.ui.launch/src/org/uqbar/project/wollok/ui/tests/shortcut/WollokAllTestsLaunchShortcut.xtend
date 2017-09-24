@@ -28,9 +28,13 @@ class WollokAllTestsLaunchShortcut extends WollokTestLaunchShortcut {
 	
 	override getOrCreateConfig(IFile currFile) {
 		val config = super.getOrCreateConfig(currFile)
-		val runConfiguration = config.getWorkingCopy
-		runConfiguration.setAttribute(ATTR_WOLLOK_FILE, currFile.testFilesAsString)
-		runConfiguration
+		config.getWorkingCopy => [
+			setAttribute(ATTR_WOLLOK_FILE, currFile.testFilesAsString)
+			setAttribute(ATTR_WOLLOK_SEVERAL_FILES, true)
+			if (this.folder !== null) {
+				setAttribute(ATTR_WOLLOK_FOLDER, this.folder?.projectRelativePath.toPortableString)
+			}
+		]
 	}
 	
 	/**
