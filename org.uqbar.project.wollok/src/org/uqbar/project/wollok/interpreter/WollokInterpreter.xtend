@@ -49,7 +49,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 	@Accessors 
 	var EObject rootContext
 	
-
 	@Accessors ClassLoader classLoader = WollokInterpreter.classLoader
 	static var WollokInterpreter instance = null
 	@Accessors var Boolean interactive = false
@@ -82,9 +81,9 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		}
 	}
 
-	def interpret(List<EObject> eObjects) {
+	def interpret(List<EObject> eObjects, String folder) {
 		try {
-			interpret(eObjects, false)
+			interpret(eObjects, folder, false)
 		} catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
 			e.wollokException.call("printStackTrace")
@@ -92,10 +91,10 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		}
 	}
 
-	def interpret(List<EObject> eObjects, boolean propagatingErrors) {
+	def interpret(List<EObject> eObjects, String folder, boolean propagatingErrors) {
 		try {
 			log.debug("Starting interpreter")
-			evaluator.evaluateAll(eObjects)
+			evaluator.evaluateAll(eObjects, folder)
 		} catch (WollokProgramExceptionWrapper e) {
 			throw e
 		} catch (Throwable e) {

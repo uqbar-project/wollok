@@ -33,6 +33,7 @@ import org.eclipse.jface.text.source.IVerticalRuler
 import org.eclipse.jface.text.source.IVerticalRulerInfo
 import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.IEditorPart
+import org.eclipse.ui.IPageLayout
 import org.eclipse.ui.PartInitException
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
@@ -50,7 +51,19 @@ class WEclipseUtils {
 	def static <T> T adapt(IAdaptable adaptable, Class<T> toType) { adaptable.getAdapter(toType) as T }
 	
 	def static openView(String id) {
-		PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage.showView(id)
+		activePage.showView(id)
+	}
+	
+	def static activePage() {
+		PlatformUI.getWorkbench.getActiveWorkbenchWindow.getActivePage
+	}
+	
+	def static findView(String id) {
+		activePage.findView(id)
+	}
+	
+	def static getProjectExplorer() {
+		findView(IPageLayout.ID_PROJECT_EXPLORER)	
 	}
 	
 	def static schedule(Display display, String message, ()=>void toDo) {

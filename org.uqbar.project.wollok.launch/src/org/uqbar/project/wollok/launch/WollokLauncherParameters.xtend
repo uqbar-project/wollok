@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.WollokConstants
 /**
  * @author jfernandes
  * @author tesonep
+ * @author dodain - added severalFiles, a specific folder and a list of files for tests
  */
 @Accessors
 class WollokLauncherParameters {
@@ -27,6 +28,8 @@ class WollokLauncherParameters {
 	boolean jsonOutput = false
 	boolean tests = false
 	boolean noAnsiFormat = false
+	boolean severalFiles = false
+	String folder = null
 	List<String> libraries = new ArrayList()
 	
 	def build() {
@@ -36,6 +39,8 @@ class WollokLauncherParameters {
 		if (eventsPort !== null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
 		if (testPort !== null) sb.append("-testPort " + testPort.toString).append(" ")
 		if (tests) sb.append("-t ")
+		if (severalFiles) sb.append("-severalFiles ")
+		if (folder !== null) sb.append("-folder " + folder).append(" ")
 		if (jsonOutput) sb.append("-jsonOutput ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
 		buildListOption(sb, libraries, "lib", ',')
@@ -58,14 +63,17 @@ class WollokLauncherParameters {
 		hasRepl = cmdLine.hasOption("r")
 		
 		tests = cmdLine.hasOption("t")
-		testPort = parseParameter(cmdLine, "testPort")
+		testPort = parseParameterInt(cmdLine, "testPort")
+		
+		severalFiles = cmdLine.hasOption("severalFiles")
+		folder = parseParameterString(cmdLine, "folder")
 		
 		jsonOutput = cmdLine.hasOption("jsonOutput")
 		
 		noAnsiFormat = cmdLine.hasOption("noAnsiFormat")
 
-		requestsPort = parseParameter(cmdLine, "requestsPort")
-		eventsPort = parseParameter(cmdLine, "eventsPort")
+		requestsPort = parseParameterInt(cmdLine, "requestsPort")
+		eventsPort = parseParameterInt(cmdLine, "eventsPort")
 		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
@@ -115,17 +123,26 @@ class WollokLauncherParameters {
 		}
 	}
 
-	def parseParameter(CommandLine cmdLine, String paramName) {
-		if (cmdLine.hasOption(paramName)) {
-			val s = cmdLine.getOptionValue(paramName)
-			try {
-				Integer::parseInt(s)
-			} catch (NumberFormatException e) {
-				throw new RuntimeException("Invalid number value for " + paramName)
-			}
+	def parseParameterInt(CommandLine cmdLine, String paramName) {
+		if (!cmdLine.hasOption(paramName)) 
+			return 0
+
+		try {			
+			val paramParsed = cmdLine.parseParameterString(paramName)
+			Integer::parseInt(paramParsed)
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("Invalid number value for " + paramName)
 		}
 	}
-	
+
+	def parseParameterString(CommandLine cmdLine, String paramName) {
+		if (cmdLine.hasOption(paramName)) {
+			cmdLine.getOptionValue(paramName)
+		} else {
+			null
+		}
+	}
+		
 	def hasDebuggerPorts() {
 		this.eventsPort != 0
 	}
@@ -136,10 +153,12 @@ class WollokLauncherParameters {
 			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
 			addOption(new Option("jsonOutput", "JSON test report output"))
 			addOption(new Option("noAnsiFormat", "Disables ANSI colors for the console"))
+			addOption(new Option("severalFiles", "Allows to run several files alltogether"))
 
 			add("testPort", "Server port for tests", "port", 1)
 			add("requestsPort", "Request ports", "port", 1)
 			add("eventsPort", "Events ports", "port", 1)	
+			add("folder", "Specific folder", "folder", 1)
 			addList("lib", "libraries jars ", "libs", ',')	
 			addList("wf", "wollokFiles ", "files", ' ')	
 

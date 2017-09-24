@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject
 interface XInterpreterEvaluator<O> extends Serializable {
 	
 	def O evaluate(EObject o)
-	def O evaluateAll(List<EObject> eObjects)
+	def O evaluateAll(List<EObject> eObjects, String folder)
 	
 	// this will be deleted eventually
 	def (O,()=>O)=>O resolveBinaryOperation(String operator)

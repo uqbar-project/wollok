@@ -71,6 +71,17 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 		initialize(data)
 	}
 
+	override initialize(String data) {
+		try {
+			val info = data.split(STACKELEMENT_SEPARATOR)
+			fileName = info.get(0)
+			lineNumber = Integer.parseInt(info.get(1))
+		} catch (NumberFormatException e) {
+		} catch (Exception e) {
+			throw new RuntimeException("Error while opening file " + data, e)
+		}
+	}
+	
 	override getTextEditor(IURIEditorOpener opener) {
 		val File fileToOpen = new File(fileName)
 		val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)

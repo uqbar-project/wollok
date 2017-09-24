@@ -87,7 +87,7 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 	override initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			val program = configuration.getAttribute(WollokLaunchConstants.ATTR_WOLLOK_FILE, null as String)
-			if (program != null)
+			if (program !== null)
 				programText.text = program
 		} catch (CoreException e) {
 			setErrorMessage(e.message)
@@ -106,7 +106,7 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 		val text = programText.text
 		if (text.length() > 0) {
 			val path = new Path(text)
-			if (ResourcesPlugin.workspace.root.findMember(path) == null) {
+			if (ResourcesPlugin.workspace.root.findMember(path) === null) {
 				errorMessage = "Specified program does not exist"
 				return false
 			}

@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.ui.tests.model
 
+import java.io.File
 import java.util.List
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
+
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import org.eclipse.core.resources.ResourcesPlugin
 
 @Accessors
 class WollokTestContainer {
@@ -43,8 +45,7 @@ class WollokTestContainer {
 	
 	def asText() {
 		if (this.hasSuiteName) return this.suiteName
-		val base = URI.createURI(ResourcesPlugin.getWorkspace.root.locationURI.toString + "/")
-		this.mainResource.deresolve(base).toFileString
+		this.mainResource.toIFile.projectRelativePath.toPortableString
 	}
 	
 }

@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.launch
 
 import com.google.inject.Injector
 import java.io.File
+import java.net.URLDecoder
 import java.rmi.ConnectException
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
@@ -37,8 +38,10 @@ class WollokLauncher extends WollokChecker {
 			val interpreter = injector.getInstance(WollokInterpreter)
 			val debugger = createDebugger(interpreter, parameters)
 			interpreter.setDebugger(debugger)
-			val filesToParse = fileNames.map [ wollokFile | new File(wollokFile) ]
-			interpreter.interpret(filesToParse.parse)
+			val filesToParse = fileNames.map [ wollokFile |
+				new File(wollokFile)
+			]
+			interpreter.interpret(filesToParse.parse, parameters.folder)
 			System.exit(0)
 		} catch (Exception e) {
 			System.exit(-1)

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Link
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
 import org.eclipse.swt.widgets.ToolItem
-import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.IViewPart
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -88,14 +88,22 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ToolItem showFailuresAndErrors
 	ToolItem runAgain
 	ToolItem debugAgain
+	
+	static IViewPart previousActivePart
 
 	def static activate() {
 		RunInUI.runInUI [
-			    val view = PlatformUI.workbench.activeWorkbenchWindow.activePage.showView(WollokTestResultView.NAME)
+			// issue #1266 - dodain - this fixes the problem
+			// but only when Wollok Tests are in a different tab that Project Explorer 
+			// val activePart = activePage?.activePart
+			//if (activePart !== null && !(activePart instanceof WollokTestResultView)) {
+			//	previousActivePart = activePage?.activePart as IViewPart
+			//}
+			// 
+		    val view = openView(WollokTestResultView.NAME)
 			(view as WollokTestResultView).cleanView
-			]
+		]
 	}
-
 
 	def canRelaunch() {
 		results !== null && results.container !== null && results.container.mainResource !== null
@@ -346,7 +354,6 @@ class WollokTestResultView extends ViewPart implements Observer {
 	}
 
 	override update(Observable o, Object arg) {
-
 		testTree.refresh(true)
 		testTree.expandAll
 
@@ -372,6 +379,11 @@ class WollokTestResultView extends ViewPart implements Observer {
 			runAgain.enabled = false
 			debugAgain.enabled = false
 		}
+
+		// issue #1266 - dodain - this fixes the problem
+		// but only when Wollok Tests are in a different tab that Project Explorer 
+		//if (previousActivePart !== null) 
+		//	previousActivePart.site.page.activate(previousActivePart)
 	}
 
 	def count((WollokTestResult)=>Boolean predicate) {
@@ -488,3 +500,4 @@ class WTestTreeContentProvider implements ITreeContentProvider {
 	override inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
 }
+

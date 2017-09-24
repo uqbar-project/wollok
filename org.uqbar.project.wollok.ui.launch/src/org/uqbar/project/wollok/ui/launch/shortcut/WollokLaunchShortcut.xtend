@@ -86,7 +86,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 			f = f.replace('$', '.')
 		try {
 			val type = project.findType(fullyQualifiedName)
-			type != null && type.exists
+			type !== null && type.exists
 		} catch (JavaModelException e) {
 			false
 		}
@@ -124,17 +124,20 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
 }
 
+@Accessors
 class LaunchConfigurationInfo {
-	@Accessors String name
-	@Accessors String project
-	@Accessors String file
-	@Accessors Iterable<String> libs
+	String name
+	String project
+	String file
+	String folder // optional 
+	boolean severalFiles
+	Iterable<String> libs
 
 	new(IFile file) {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
-		libs =  getProject(project).libPaths
+		libs =  getProject(project).libPaths.toList
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
@@ -142,7 +145,16 @@ class LaunchConfigurationInfo {
 			&& WollokLauncher.name == a.getAttribute(ATTR_MAIN_TYPE_NAME, "X")
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
-			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]) == libs
-
-	}	
+			&& a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles
+			&& a.getAttribute(ATTR_WOLLOK_FOLDER, "X").sameFolder()
+			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs) 
+	}
+	
+	def sameFolder(String anotherFolder) {
+		(this.folder === null && anotherFolder === null) ||
+		(this.folder !== null && anotherFolder !== null &&
+			this.folder.equalsIgnoreCase(anotherFolder)
+		)
+	}
+	
 }

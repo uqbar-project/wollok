@@ -35,7 +35,7 @@ class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 	
 	override matchFound(PatternMatchEvent event) {
 		try	{
-			val fileReferenceText = console.document.get(event.offset + 1, event.length - 1)
+			val fileReferenceText = console.document.get(event.offset + 0, event.length)
 			val hyperlink = makeHyperlink(fileReferenceText, opener) // a link to any file
 			console.addHyperlink(hyperlink, event.offset, event.length)
 		} catch (Exception exception) {
@@ -54,7 +54,10 @@ class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 				try {
 					val project = openProjects.head
 					// Deletes special ANSI characters of REPL console and opening parentheses
-					val referenceData = fileReferenceText.deleteAnsiCharacters.substring(1)
+					var referenceData = fileReferenceText.deleteAnsiCharacters
+					if (referenceData.startsWith("(")) {
+						referenceData = referenceData.substring(1)
+					}
 					val fileOpenerStrategy = AbstractWollokFileOpenerStrategy.buildOpenerStrategy(referenceData, project)
 					val textEditor = fileOpenerStrategy.getTextEditor(opener)
 					val fileName = fileOpenerStrategy.fileName

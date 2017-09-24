@@ -5,6 +5,7 @@ import java.io.File
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.diagnostics.Severity
@@ -17,7 +18,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
-import org.eclipse.emf.ecore.EObject
 
 /**
  * Wollok checker program.
@@ -51,7 +51,7 @@ class WollokChecker {
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
-			if (parameters.tests && parameters.wollokFiles.size > 1) {
+			if (parameters.severalFiles) {
 				// Tests may run several files
 				launch(parameters.wollokFiles, parameters)
 			} else {

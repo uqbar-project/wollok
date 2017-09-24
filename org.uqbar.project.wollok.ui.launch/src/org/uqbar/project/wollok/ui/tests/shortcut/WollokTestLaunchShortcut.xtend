@@ -1,13 +1,9 @@
 package org.uqbar.project.wollok.ui.tests.shortcut
 
 import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IMarker
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.jface.dialogs.MessageDialog
 import org.eclipse.swt.widgets.Display
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.ui.launch.shortcut.LaunchConfigurationInfo
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
 import org.uqbar.project.wollok.ui.tests.WollokTestResultView
@@ -22,9 +18,9 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
 class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 	override createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_TEST_CONFIGURATION_TYPE.configType
-		val x = cfgType.newInstance(null, info.generateUniqueName)
-		this.configureConfiguration(x, info)
-		x.doSave
+		val runConfiguration = cfgType.newInstance(null, info.generateUniqueName)
+		this.configureConfiguration(runConfiguration, info)
+		runConfiguration.doSave
 	}
 
 	override launch(IFile currFile, String mode) {
