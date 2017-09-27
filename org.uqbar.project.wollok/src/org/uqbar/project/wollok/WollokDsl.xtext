@@ -211,8 +211,19 @@ WUnaryOperation returns WExpression:
 OpUnary:
 	'not' | "!" | "-" | "+";
 	
+// al agregar WWrongMemberFeatureCall como opción, genera el siguiente mensaje
+// error(211): ../org.uqbar.project.wollok/src-gen/org/uqbar/project/wollok/parser/antlr/internal/InternalWollokDsl.g:3104:3: 
+// [fatal] rule ruleWPostfixOperation has non-LL(*) decision due to recursive rule invocations reachable from alts 1,2.  
+// Resolve by left-factoring or using syntactic predicates or using backtrack=true option.
+	// si quito WVariableReference como opción en WPrimaryExpression,
+	// XText acepta la gramática con el agregado del WWrongMemberFeatureCall 
+// el conflicto parece estar entre la referencia de WPrimaryExpression y el featureCallID de WWrongMemberFeatureCall
+// cambiar la referencia por un ID en WPrimaryExpression no arregla el problema.
+// no entiendo el conflicto, dado que el WMemberFeatureCall es ID. mientras que WWrongMemberFeatureCall es ID(, 
+// para mí es un LL(2)
 WPostfixOperation returns WExpression:
-	WMemberFeatureCall =>({WPostfixOperation.operand=current} feature=OpPostfix)?
+	(WMemberFeatureCall | WWrongMemberFeatureCall) =>({WPostfixOperation.operand=current} feature=OpPostfix)?
+//	WMemberFeatureCall  =>({WPostfixOperation.operand=current} feature=OpPostfix)?
 ;
 
 OpPostfix:
@@ -224,9 +235,11 @@ WFeatureCall : WSuperInvocation | WMemberFeatureCall | WWrongMemberFeatureCall;
 WWrongMemberFeatureCall returns WExpression:
   {WWrongMemberFeatureCall} 
   wrongFeature=FeatureCallID 
-    (('(' 
-      (memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
-    ')') | memberCallArguments+=WClosure  )
+    (
+    	=> ('(' 
+		      (memberCallArguments+=WExpression (',' memberCallArguments+=WExpression)*)? 
+    		')') | memberCallArguments+=WClosure  
+    )
   ;
 
 WMemberFeatureCall returns WExpression:
@@ -247,7 +260,9 @@ WSelf returns WExpression:
 ;
 
 WPrimaryExpression returns WExpression:
-	WVariableReference |
+	// si quito WVariableReference como opción en WPrimaryExpression,
+	// XText acepta la gramática con el agregado del WWrongMemberFeatureCall 
+	WVariableReference |   
 	WLiteral |
 	WConstructorCall |
 	WParenthesizedExpression |

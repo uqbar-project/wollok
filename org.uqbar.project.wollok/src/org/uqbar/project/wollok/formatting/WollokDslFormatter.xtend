@@ -111,12 +111,12 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WMemberFeatureCallElements e) {
-		setNoSpace.around(WMemberFeatureCallMemberCallTargetAction_1_0_0_0)
+//		setNoSpace.around(WMemberFeatureCallMemberCallTargetAction_1_0_0_0)
 		setNoSpace.around(featureAssignment_1_1)
 		setNoSpace.around(memberCallArgumentsAssignment_1_2_0_1_0)
 		
 		// no space around '.' or '?.'
-		setNoSpace.around(getAlternatives_1_0_0_1)
+//		setNoSpace.around(getAlternatives_1_0_0_1)
 		
 		setNoSpace.before(commaKeyword_1_2_0_1_1_0)
 		setSpace(' ').after(commaKeyword_1_2_0_1_1_0)
