@@ -252,7 +252,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			throw throwMessageNotUnderstood(this, message, parameters)
 		method.call(parameters)
 	}
-	
+
+	override showableInStackTrace() { true }	
 }
 
 /**

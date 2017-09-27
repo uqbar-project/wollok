@@ -13,6 +13,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+
 class WollokExceptionUtils {
 
 
@@ -31,22 +33,6 @@ class WollokExceptionUtils {
 		wollokException.internalStackTraceToDTO
 	}
 
-	private static def internalStackTraceToDTO(WollokObject fullStackTrace) {
-		val stackTrace = fullStackTrace.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
-		stackTrace.map [ wo |
-			val contextDescription = wo.call("contextDescription").wollokToJava(String) as String
-			val location = wo.call("location").wollokToJava(String) as String
-			val data = location.split(",")
-			val fileName = data.get(0)
-			var Integer lineNumber = 0
-			try {
-				lineNumber = new Integer(data.get(1))
-			} catch (NumberFormatException e) {
-			}
-			new StackTraceElementDTO(contextDescription, fileName, lineNumber)
-		]
-	}
-
 	/**
 	 * Converts an exception to a String
 	 */
@@ -54,7 +40,7 @@ class WollokExceptionUtils {
 		val wollokException = exception.wollokException
 		val className = wollokException.call("className").wollokToJava(String) as String
 		val message = exception.wollokMessage
-		val concatMessage = if (message != null) ": " + message else "" 
+		val concatMessage = if (message !== null) ": " + message else "" 
 		return className + concatMessage
 	}
 
@@ -72,20 +58,20 @@ class WollokExceptionUtils {
 	 * Prepares an exception for a RMI call
 	 */
 	def static dispatch void prepareExceptionForTrip(Throwable e) {
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
 	def static dispatch void prepareExceptionForTrip(WollokInterpreterException e) {
 		e.sourceElement = null
 
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
 	def static dispatch void prepareExceptionForTrip(WollokProgramExceptionWrapper e) {
 		e.URI = null
-		if (e.cause != null)
+		if (e.cause !== null)
 			e.cause.prepareExceptionForTrip
 	}
 
