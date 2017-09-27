@@ -23,6 +23,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.interpreter.threads.WThread
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * XInterpreter impl for Wollok language.
@@ -78,7 +79,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			interpret(rootObject, false)
 		} catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
-			//e.wollokException.call("printStackTrace")
 			e.printStackTraceInConsole
 			throw e
 		}
@@ -89,7 +89,6 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			interpret(eObjects, folder, false)
 		} catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
-			//e.wollokException.call("printStackTrace")
 			e.printStackTraceInConsole
 			throw e
 		}
@@ -240,5 +239,5 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		globalVariables.remove(name)
 	}
 
-	def isREPL() { false }
+	def isRootFile() { rootContext.isASuite	}
 }

@@ -25,5 +25,5 @@ class WollokREPLInterpreter extends WollokInterpreter {
 		new XStackFrame(root, nativeLobby, WollokSourcecodeLocator.INSTANCE)
 	}
 
-	override isREPL() { true }
+	override isRootFile() { true }
 }

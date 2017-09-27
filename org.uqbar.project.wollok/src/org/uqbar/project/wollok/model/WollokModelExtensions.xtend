@@ -599,4 +599,7 @@ class WollokModelExtensions {
 		if (isMultiOpAssignment) feature.substring(0, 1)
 		else throw new UnsupportedOperationException("Binary operation is not a compound assignment.")
 	}
+	
+	def static dispatch isASuite(EObject o) { false }
+	def static dispatch isASuite(WFile it) { tests.empty && suite !== null }
 }

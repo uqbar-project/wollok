@@ -82,6 +82,6 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	
 	override toString() { "Lobby" }
 
-	override showableInStackTrace() { !interpreter.isREPL }
+	override showableInStackTrace() { !interpreter.isRootFile }
 	
 }
