@@ -138,7 +138,8 @@ class ShowOutdatedAction extends ControlContribution {
 	def configureLabel() {
 		label => [
 			if (!isDisposed) {
-				text = if (synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE 
+				text = if (synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
+				toolTipText = if (synced) WollokRepl_SYNCED_TOOLTIP else WollokRepl_OUTDATED_TOOLTIP 
 				val imageURL = if (synced) "platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/synced.png" else "platform:/plugin/org.eclipse.ui.ide/icons/full/dlcl16/synced.png"
 				image = ImageDescriptor.createFromURL(new URL(imageURL)).createImage
 			}
