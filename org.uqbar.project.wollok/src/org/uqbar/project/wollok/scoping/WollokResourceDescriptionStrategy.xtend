@@ -8,6 +8,8 @@ import org.eclipse.xtext.util.IAcceptor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WPackage
+import org.eclipse.emf.common.util.URI
+import org.eclipse.xtext.resource.IReferenceDescription
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -31,6 +33,18 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 		}
 		else
 			false
+	}
+
+	override createReferenceDescriptions(EObject from, URI exportedContainerURI, IAcceptor<IReferenceDescription> acceptor) {
+		try {
+			return super.createReferenceDescriptions(from, exportedContainerURI, acceptor)
+		} catch (Exception e) {
+			e.printStackTrace
+			println(e)
+			println(from)
+			println("URI: " + exportedContainerURI)
+			return true
+		} 
 	}
 	
 }
