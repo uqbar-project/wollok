@@ -434,6 +434,32 @@
             </attribute>
         </markerResolutionGenerator>
     </extension>
+    
+    <!-- Rename Resource -->
+	<extension
+		point="org.eclipse.ltk.core.refactoring.renameParticipants">
+ 		<renameParticipant
+            class="org.uqbar.project.wollok.ui.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.renaming.WollokResourceRenameParticipant"
+            id="dsl.ui.refactoring.resourceRenameParticipant"
+            name="Wollok Rename Participant">
+	         <enablement>
+	         	<with variable="element">
+		         <or>
+		           <instanceof
+	                  value="org.eclipse.core.resources.IFile">
+	               </instanceof>
+		           <instanceof
+	                  value="org.eclipse.core.resources.IProject">
+	               </instanceof>
+		           <instanceof
+	                  value="org.eclipse.jdt.core.IPackageFragment">
+	               </instanceof>
+		         </or>
+		         </with>
+	         </enablement>
+      </renameParticipant>
+	</extension>
+    
    	<!-- Rename Refactoring -->
 	<extension point="org.eclipse.ui.handlers">
 		<handler 

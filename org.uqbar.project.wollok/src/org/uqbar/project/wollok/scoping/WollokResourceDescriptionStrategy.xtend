@@ -1,15 +1,17 @@
 package org.uqbar.project.wollok.scoping
 
 import com.google.inject.Singleton
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.resource.IReferenceDescription
 import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
 import org.eclipse.xtext.util.IAcceptor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WPackage
-import org.eclipse.emf.common.util.URI
-import org.eclipse.xtext.resource.IReferenceDescription
 
 /**
  * Customizes the strategy in order to avoid exporting all "named" objects
@@ -21,6 +23,7 @@ import org.eclipse.xtext.resource.IReferenceDescription
  */
 @Singleton
 class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrategy {
+	static Log log = LogFactory.getLog(WollokResourceDescriptionStrategy)
 	
 	override createEObjectDescriptions(EObject eObject, IAcceptor<IEObjectDescription> acceptor) {
 		if (eObject instanceof WFile)
@@ -39,12 +42,9 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 		try {
 			return super.createReferenceDescriptions(from, exportedContainerURI, acceptor)
 		} catch (Exception e) {
-			e.printStackTrace
-			println(e)
-			println(from)
-			println("URI: " + exportedContainerURI)
+			log.error("Outdated references for " + from + ":" + exportedContainerURI, e)
 			return true
-		} 
+		}
 	}
 	
 }

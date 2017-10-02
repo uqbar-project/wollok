@@ -97,6 +97,11 @@ Workflow {
 			serializer = {
 				generateStub = false
 			}
+			
+			// rename refactoring
+			fragment = ui.refactoring.RefactorElementNameFragment2 auto-inject {
+				useJdtRefactoring = true
+			}
 		}
 	}
 }
