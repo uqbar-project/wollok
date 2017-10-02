@@ -64,5 +64,7 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	def dispatch asText(CompositeEvaluationContext it) { toString }
 	def dispatch asText(MapBasedEvaluationContext it) { toString }
 	def dispatch asText(EvaluationContext it) { class.simpleName }
+	
+	override showableInStackTrace() { true }
 
 }

@@ -109,5 +109,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 	
 	def newInstance(Number naitive) {
 		(interpreter.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
-	} 
+	}
+	
+	def showableInStackTrace() { true } 
 }

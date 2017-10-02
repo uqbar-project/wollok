@@ -52,5 +52,6 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	override toString() {
 		class.simpleName + "{" + values.entrySet.map[key + ":" + (if(value===null)"null" else value.class)].join(',') + '}'
 	}
-	
+
+	override showableInStackTrace() { true }	
 }
