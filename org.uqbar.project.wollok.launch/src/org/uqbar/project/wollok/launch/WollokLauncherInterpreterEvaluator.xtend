@@ -34,10 +34,10 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 		if (main !== null)
 			main.eval
 		else {
-			val isASuite = tests.empty && suite !== null
+			val _isASuite = isASuite
 			var testsToRun = tests
 			var String suiteName = null
-			if (isASuite) {
+			if (_isASuite) {
 				suiteName = suite.name
 				testsToRun = suite.tests
 			}
@@ -45,7 +45,7 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 			try {
 				testsToRun.fold(null) [ a, _test |
 					resetGlobalState
-					if (isASuite) {
+					if (_isASuite) {
 						_test.evalInSuite(suite)
 					} else {
 						_test.eval

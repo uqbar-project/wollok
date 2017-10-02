@@ -22,6 +22,9 @@ import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.interpreter.threads.WThread
 
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 /**
  * XInterpreter impl for Wollok language.
  * Control's the execution flow and stack.
@@ -76,17 +79,17 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			interpret(rootObject, false)
 		} catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
-			e.wollokException.call("printStackTrace")
+			e.printStackTraceInConsole
 			throw e
 		}
 	}
-
+	
 	def interpret(List<EObject> eObjects, String folder) {
 		try {
 			interpret(eObjects, folder, false)
 		} catch (WollokProgramExceptionWrapper e) {
 			// todo: what about "propagating errors?"
-			e.wollokException.call("printStackTrace")
+			e.printStackTraceInConsole
 			throw e
 		}
 	}
@@ -120,6 +123,17 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 			}
 		} finally
 			debugger.terminated
+	}
+
+	def void printStackTraceInConsole(WollokProgramExceptionWrapper e) {
+		println((e.exceptionClassName + ": " + e.wollokMessage))
+		val errorLine = e.wollokException
+			.convertStackTrace
+			.toList
+			.map [ stackDTO | stackDTO.elementForStackTrace ]
+			.join(System.lineSeparator)
+		
+		println(errorLine)
 	}
 
 	def evalBinary(WollokObject a, String operand, WollokObject b) {
@@ -225,4 +239,5 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		globalVariables.remove(name)
 	}
 
+	def isRootFile() { rootContext.isASuite	}
 }

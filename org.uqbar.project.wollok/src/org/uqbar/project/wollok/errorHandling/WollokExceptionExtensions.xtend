@@ -19,7 +19,6 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  */
 class WollokExceptionExtensions {
 
-
 	/**
 	 * Converts a StackTraceElementDTO to a List of parseable Strings for a RMI call
 	 */
@@ -35,7 +34,7 @@ class WollokExceptionExtensions {
 		wollokException.internalStackTraceToDTO
 	}
 
-	private static def internalStackTraceToDTO(WollokObject fullStackTrace) {
+	def static internalStackTraceToDTO(WollokObject fullStackTrace) {
 		val stackTrace = fullStackTrace.call("getFullStackTrace").wollokToJava(List) as List<WollokObject>
 		val result = newArrayList 
 		stackTrace.forEach [ wo |
@@ -154,7 +153,7 @@ class WollokExceptionExtensions {
 	}
 	
 	def static String printStackTrace(StackTraceElementDTO[] stackTrace) {
-		stackTrace.reverse.fold("", [ acum, ste | acum + ste.toLink ])
+		stackTrace.fold("", [ acum, ste | acum + ste.toLink ])
 	}
 	
 }

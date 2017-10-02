@@ -23,17 +23,23 @@ class Exception {
 	
 	new(WollokObject object, WollokInterpreter interpreter) {
 		exceptionObject = object
-		stackTrace = interpreter.currentThread.stack.map[f| f.currentLocation].clone
+		stackTrace = interpreter
+			.currentThread
+			.stack
+			.filter [ frame | frame.context.showableInStackTrace ]
+			.map[f| f.currentLocation ]
+			.clone
+			.reverse
 	}
 	
 	def getStackTrace() {
-		stackTrace.reverse.map[ 
+		stackTrace.map[ 
 			exceptionObject.call("createStackTraceElement", contextDescription.javaToWollok, location.toString.javaToWollok)
 		].toList
 	}
 
 	def getFullStackTrace() {
-		stackTrace.reverse.map[ 
+		stackTrace.map[ 
 			exceptionObject.call("createStackTraceElement", contextDescription.javaToWollok, fullLocation.toString.javaToWollok)
 		].toList
 	}

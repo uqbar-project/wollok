@@ -100,7 +100,7 @@ class WollokRepl {
 			printReturnValue(returnValue)
 		} catch (Exception e) {
 			resetIndent
-			handleException(e)
+			e.handleException
 		}
 	}
 
@@ -134,7 +134,7 @@ class WollokRepl {
 
 		resourceSet.resources.add(resource)
 
-		resource.load(in, #{});
+		resource.load(in, #{})
 		launcher.validate(injector, resource, [], [throw new ReplParserException(it)])
 		resource.contents.get(0) as WFile
 	}
@@ -144,7 +144,7 @@ class WollokRepl {
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			var syntheticUri = parsedMainFile.eResource.URI.trimFileExtension.trimSegments(1).appendSegment(name + i).
 				appendFileExtension(WollokConstants.PROGRAM_EXTENSION)
-			if (resourceSet.getResource(syntheticUri, false) == null) {
+			if (resourceSet.getResource(syntheticUri, false) === null) {
 				return syntheticUri
 			}
 		}
@@ -164,16 +164,6 @@ class WollokRepl {
 		whiteSpaces = ""
 	}
 
-	def dispatch void handleException(ReplParserException e) {
-		e.issues.forEach [
-			printlnIdent(errorStyle('''«severity.name»: «message» («LINE»: «lineNumber - numberOfLinesBefore»)'''))
-		]
-	}
-
-	def dispatch void handleException(Throwable e) {
-		println(e.stackTraceAsString.errorStyle)
-	}
-
 	def stackTraceAsString(Throwable e) {
 		val s = new ByteArrayOutputStream
 		e.printStackTrace(new PrintStream(s))
@@ -184,38 +174,30 @@ class WollokRepl {
 		2 + parsedMainFile.imports.size
 	}
 
+	def toLinkForConsole(StackTraceElementDTO st) {
+		st.contextForStackTrace.errorStyle + st.linkForStackTrace.linkStyle
+	}
+
+	def dispatch void handleException(ReplParserException e) {
+		e.issues.forEach [
+			printlnIdent(errorStyle('''«severity.name»: «message» («LINE»: «lineNumber - numberOfLinesBefore»)'''))
+		]
+	}
+
+	def dispatch void handleException(Throwable e) {
+		println(e.stackTraceAsString.errorStyle)
+	}
+
 	def dispatch void handleException(WollokProgramExceptionWrapper e) {
 		// Wollok-level user exception
-		//printlnIdent(filterREPLLines(e.wollokStackTrace).errorStyle)
 		println((e.exceptionClassName + ": " + e.wollokMessage).errorStyle)
 		val errorLine = e.wollokException
 			.convertStackTrace
-			.filter [ !it.shouldBeFiltered ]
 			.toList
-			.reverse
 			.map [ stackDTO | stackDTO.toLinkForConsole ]
 			.join(System.lineSeparator)
 		
 		printlnIdent(errorLine.errorStyle)
-	}
-
-	def toLinkForConsole(StackTraceElementDTO st) {
-		val result = new StringBuffer => [
-			append("   ")
-			append("at")
-			append(" ")
-			if (st.contextDescription !== null) {
-				append(st.contextDescription)
-				append(" ")
-			}
-		]
-		
-		var link = new StringBuffer
-		if (st.hasFileName) {
-			link.append("(" + st.fileName + ":" + st.lineNumber + ")")
-		}
-		
-		result.toString.errorStyle + link.toString.linkStyle
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {
@@ -223,7 +205,7 @@ class WollokRepl {
 			printlnIdent('''«WVM_ERROR» («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
 		}
 
-		if (e.cause != null) {
+		if (e.cause !== null) {
 			indent
 			handleException(e.cause)
 		}
