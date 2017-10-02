@@ -28,10 +28,10 @@ class WollokReplConsolePartitioner implements IConsoleDocumentPartitioner {
 	override connect(IDocument document) { }
 	override disconnect() { }
 	override documentAboutToBeChanged(DocumentEvent event) { }
-	override documentChanged(DocumentEvent event) { true }
+	override documentChanged(DocumentEvent event) {	true }
 	
 	override getPartition(int offset) {
-		if (partition == null) {
+		if (partition === null) {
            // DUMMY partition (1 partition for the whole doc)
            partition = new ITypedRegion() {
                    override getType() { IDocument.DEFAULT_CONTENT_TYPE }

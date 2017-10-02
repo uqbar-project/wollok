@@ -162,4 +162,6 @@ class WollokReplConsoleViewer extends TextConsoleViewer {
 		styledText.setLeftMargin(Math.max(styledText.getLeftMargin(), 2))
 		return styledText
 	}
+	
+	
 }

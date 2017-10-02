@@ -25,6 +25,13 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String WollokTestState_ASSERT_WAS_NOT_EQUALS;
 	public static String WollokTestState_ASSERT_WAS_NOT_DIFFERENT;
 	
+	public static String WollokRepl_STOP_TITLE;
+	public static String WollokRepl_EXPORT_HISTORY_TITLE;
+	public static String WollokRepl_SYNCED_MESSAGE;
+	public static String WollokRepl_OUTDATED_MESSAGE;
+	public static String WollokRepl_SYNCED_TOOLTIP;
+	public static String WollokRepl_OUTDATED_TOOLTIP;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BASE_NAME, WollokLaunchUIMessages.class);
