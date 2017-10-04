@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.uqbar-project</groupId>
 	<artifactId>wollok-parent</artifactId>
-	<version>1.6.3</version>
+	<version>1.6.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Wollok Parent (Releng)</name>
 	<url>https://github.com/uqbar-project/wollok</url>
