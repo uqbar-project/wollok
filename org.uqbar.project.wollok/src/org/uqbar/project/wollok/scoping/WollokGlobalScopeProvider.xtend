@@ -70,7 +70,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 	def synchronized calculateImports(Resource context) {
 		val importsCache = new OnChangeEvictingCache().getOrCreate(context)
 		var result = importsCache.get("ImportsInResource")
-
+		
 		if (result === null) {
 			val rootObject = context.contents.get(0)
 			// dodain - forcing to refresh global cache when resource changes

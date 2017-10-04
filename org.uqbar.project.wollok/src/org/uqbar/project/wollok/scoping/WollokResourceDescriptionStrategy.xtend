@@ -1,8 +1,12 @@
 package org.uqbar.project.wollok.scoping
 
 import com.google.inject.Singleton
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.resource.IReferenceDescription
 import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
 import org.eclipse.xtext.util.IAcceptor
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -19,6 +23,7 @@ import org.uqbar.project.wollok.wollokDsl.WPackage
  */
 @Singleton
 class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrategy {
+	static Log log = LogFactory.getLog(WollokResourceDescriptionStrategy)
 	
 	override createEObjectDescriptions(EObject eObject, IAcceptor<IEObjectDescription> acceptor) {
 		if (eObject instanceof WFile)
@@ -31,6 +36,15 @@ class WollokResourceDescriptionStrategy extends DefaultResourceDescriptionStrate
 		}
 		else
 			false
+	}
+
+	override createReferenceDescriptions(EObject from, URI exportedContainerURI, IAcceptor<IReferenceDescription> acceptor) {
+		try {
+			return super.createReferenceDescriptions(from, exportedContainerURI, acceptor)
+		} catch (Exception e) {
+			log.error("Outdated references for " + from + ":" + exportedContainerURI, e)
+			return true
+		}
 	}
 	
 }

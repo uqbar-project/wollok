@@ -51,44 +51,42 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 	}
 	
 	override configure(Binder binder) {
-		super.configure(binder);
+		super.configure(binder)
 
-		binder.bind(EObjectAtOffsetHelper).to(WollokEObjectAtOffsetHelper);
-		binder.bind(IEObjectHoverProvider).to(WollokEObjectHoverProvider);
+		binder.bind(EObjectAtOffsetHelper).to(WollokEObjectAtOffsetHelper)
+		binder.bind(IEObjectHoverProvider).to(WollokEObjectHoverProvider)
 		binder.bind(WollokLibraries).to(WollokUILibraries)
 	}
 	
-	
-		
 	override bindITemplateProposalProvider() {
-		WollokTemplateProposalProvider;
+		WollokTemplateProposalProvider
 	}
 	
 	def Class<? extends IHighlightingConfiguration> bindIHighlightingConfiguration () {
-		WollokHighlightingConfiguration;
+		WollokHighlightingConfiguration
 	}
 	
 	def configureOverrideIndicatorSupport(Binder binder) {
-		binder.bind(IXtextEditorCallback).annotatedWith(Names.named("OverrideIndicatorModelListener")).to(WOverrideIndicatorModelListener);
-		binder.bind(IActionContributor).annotatedWith(Names.named("OverrideIndicatorRulerAction")).to(WOverrideRulerAction);
+		binder.bind(IXtextEditorCallback).annotatedWith(Names.named("OverrideIndicatorModelListener")).to(WOverrideIndicatorModelListener)
+		binder.bind(IActionContributor).annotatedWith(Names.named("OverrideIndicatorRulerAction")).to(WOverrideRulerAction)
 		
-		binder.bind(IHighlightingConfiguration).to(WollokHighlightingConfiguration);
-		binder.bind(ISemanticHighlightingCalculator).to(WollokHighlightingCalculator);
+		binder.bind(IHighlightingConfiguration).to(WollokHighlightingConfiguration)
+		binder.bind(ISemanticHighlightingCalculator).to(WollokHighlightingCalculator)
 		
 		// Hacks to be able to reuse the logic to extract method from refactoring
-		binder.bind(IJvmModelAssociations).to(DummyJvmModelAssociations); 
-		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory);
-		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE);
+		binder.bind(IJvmModelAssociations).to(DummyJvmModelAssociations) 
+		binder.bind(IJvmTypeProvider.Factory).to(DummyJvmTypeProviderFactory)
+		binder.bind(TypesFactory).toInstance(TypesFactory.eINSTANCE)
 		
 	}
 	
 	
 	def Class<? extends IProjectCreator> bindIProjectCreator() {
-		WollokProjectCreator;
+		WollokProjectCreator
 	}
 	
 	override provideIAllContainersState() {
-		Access.getWorkspaceProjectsState();
+		Access.getWorkspaceProjectsState()
 	}
 
 	def Class<? extends PluginProjectFactory>bindPluginProjectFactory(){
@@ -114,7 +112,5 @@ class WollokDslUiModule extends AbstractWollokDslUiModule {
 	def Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper(){
 		WollokAntlrTokenToAttributeIdMapper
 	}
-	
-	
-	
+
 }
