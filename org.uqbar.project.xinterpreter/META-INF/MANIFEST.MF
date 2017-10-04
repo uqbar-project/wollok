@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Uqbar XInterpreter
 Bundle-Vendor: Uqbar Project
 Bundle-Localization: plugin
-Bundle-Version: 1.6.3.qualifier
+Bundle-Version: 1.6.3
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.xinterpreter;singleton:=true
 Bundle-ActivationPolicy: lazy
