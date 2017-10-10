@@ -6,11 +6,13 @@ import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.xtext.service.AbstractElementFinder.AbstractParserRuleElementFinder
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WAssignmentElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WBlockExpressionElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WCatchElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WClassElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorCallElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WConstructorElements
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WExpressionOrVarDeclarationElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFileElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WFixtureElements
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WIfExpressionElements
@@ -33,21 +35,25 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.firstUpper
 /**
  * This class contains custom formatting description.
  * see : http://www.eclipse.org/Xtext/documentation.html#formatting on how and when to use it 
- * 
- * 
+ *
+ * @deprecated since 1.6.4
+ * use {@link WollokDslFormatter in org.uqbar.project.wollok.formatting2}
  * @author jfernandes
  */
 @Singleton
+@Deprecated
 class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension WollokDslGrammarAccess access
 	
 	override protected void configureFormatting(FormattingConfig it) {
+		if (1 === 1) return;
+		
 		commentFormatting
 		
 		access.grammar.rules
 			.map[ "get" + name.firstUpper + "Access"]
 			.forEach[methodName|
-				val e = reflective(access,methodName)
+				val e = reflective(access, methodName)
 				if (e !== null)
 					formatting(e)
 			]
@@ -72,7 +78,8 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WMethodDeclarationElements e) {
-		setLinewrap(1, 1, 2).before(group)
+		//setLinewrap(1, 1, 2).before(rule)
+		setSpace("@@").before(rule)
 		setLinewrap(1, 1, 1).after(expressionAssignment_7_0)
 		
 		setNoSpace.after(nameAssignment_2)
@@ -141,19 +148,19 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 	}
 	
 	def dispatch formatting(FormattingConfig it, extension WBlockExpressionElements b) {
-		setLinewrap(0, 1, 1).after(leftCurlyBracketKeyword_1)
-		setLinewrap(0, 1, 1).before(rightCurlyBracketKeyword_3)
+		setLinewrap(1, 1, 1).after(leftCurlyBracketKeyword_1)
+		setLinewrap(1, 1, 1).before(rightCurlyBracketKeyword_3)
 		
 		setIndentation(leftCurlyBracketKeyword_1, rightCurlyBracketKeyword_3)
 		
-//		setLinewrap(1, 1, 2).before(expressionsAssignment_2_0)
-//		setLinewrap(1, 1, 2).before(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
-//		setLinewrap(1, 1, 2).after(b.expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
+		setLinewrap(1, 1, 2).around(expressionsWExpressionOrVarDeclarationParserRuleCall_2_0_0)
+		setLinewrap(1, 1, 2).around(expressionsAssignment_2_0)
 	}
 
-//	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
-//	}
-	
+	def dispatch formatting(FormattingConfig it, extension WExpressionOrVarDeclarationElements e) {
+		setLinewrap(1, 1, 1).after(rule)
+	}
+
 	def dispatch formatting(FormattingConfig it, extension WPackageElements e) {
 		setLinewrap(1, 2, 2).after(leftCurlyBracketKeyword_2)
 		setIndentation(leftCurlyBracketKeyword_2, rightCurlyBracketKeyword_4)
@@ -345,10 +352,37 @@ class WollokDslFormatter extends AbstractDeclarativeFormatter {
 		setNoSpace.after(superKeyword_1)
 	}
 	
-	def dispatch formatting(FormattingConfig it, extension WVariableDeclarationElements i) {
-		 setLinewrap(1, 1, 2).after(group)
+	def dispatch formatting(FormattingConfig it, extension WVariableDeclarationElements e) {
+		setLinewrap(1, 1, 1).after(rightAssignment_3_1)
+		setLinewrap(1, 1, 1).after(rightWExpressionParserRuleCall_3_1_0)
 	}
-	
+
+	def dispatch formatting(FormattingConfig it, extension WAssignmentElements e) {
+		setLinewrap(1, 1, 1).after(valueWAssignmentParserRuleCall_0_3_0)
+		setLinewrap(1, 1, 1).after(valueAssignment_0_3)
+		setLinewrap(1, 1, 1).before(WAssignmentAction_0_0)
+//		setSpace("==1==").after(rule)
+//		setSpace("==2==").after(alternatives)
+//		setSpace("==3==").after(group_0)
+//		setSpace("==4==").after(WAssignmentAction_0_0)
+//		setSpace("==5==").after(featureAssignment_0_1)
+//		setSpace("==6==").after(featureWVariableReferenceParserRuleCall_0_1_0)
+//		setSpace("==7==").after(opSingleAssignParserRuleCall_0_2)
+//		setSpace("==8==").after(valueAssignment_0_3)
+//		setSpace("==8==").after(valueWAssignmentParserRuleCall_0_3_0)
+//		setSpace("==9==").after(group_1)
+//		setSpace("==10==").after(WOrExpressionParserRuleCall_1_0)
+//		setSpace("==11==").after(group_1)
+//		setSpace("==12==").after(group_1_1)
+//		setSpace("==13==").after(group_1_1_0)
+//		setSpace("==14==").after(group_1_1_0_0)
+//		setSpace("==15==").after(WBinaryOperationLeftOperandAction_1_1_0_0_0)
+//		setSpace("==16==").after(featureAssignment_1_1_0_0_1)
+//		setSpace("==17==").after(featureOpMultiAssignParserRuleCall_1_1_0_0_1_0)
+//		setSpace("==18==").after(rightOperandAssignment_1_1_1)
+//		setSpace("==19==").after(rightOperandWAssignmentParserRuleCall_1_1_1_0)
+	}
+
 	// default
 	def dispatch formatting(FormattingConfig it, extension AbstractParserRuleElementFinder i) {
 		// does nothing

@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.tests.xpect.formatter
 
 import com.google.inject.Inject
+import org.eclipse.emf.common.util.EList
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.testing.InjectWith
@@ -8,8 +10,9 @@ import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
+import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
+import org.uqbar.project.wollok.wollokDsl.WAssignment
 
 /**
  * Tests wollok code formatter
@@ -24,11 +27,196 @@ class WollokFormatterTestCase {
 	@Inject protected extension ISerializer
 
 	def assertFormatting(String program, String expected) {
+		program.parse.eContents.show(1)
 		Assert.assertEquals(expected,
         program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))		
 	}
+	
+	def void show(EList<EObject> list, int tabs) {
+		val indentation = (1..tabs).map [ '  ' ].join
+		println(indentation + list.map [ show ])
+		list.forEach [ eContents.show(tabs + 1) ]
+	}
 
+	def dispatch show(EObject e) {
+		e.class.simpleName
+	}
+	
+	def dispatch show(WAssignment a) {
+		"Assignment " + a.feature.ref.name
+	}
+	
 	// TEST METHODS
+
+	@Test
+	def void testSeveralVariableDefinitionsToConstantsInMethods() throws Exception {
+		assertFormatting(
+		'''
+		class Foo {
+			var x var y var z		
+			method addition() { var a = x x = 1 y = 2 z = x + y	}
+		}''', 
+		'''
+		class Foo {
+			var x
+			var y
+			var z
+			method addition() {
+				var a = x
+				x = 1
+				y = 2
+				z = x + y
+			}
+		}''')
+	}
+
+	@Test
+	def void testSeveralVariableDefinitionsToConstantsInMethods2() throws Exception {
+		assertFormatting(
+		'''
+		class Foo {
+			var x var y var z		
+			method addition() { 
+				
+				
+				var a = x 
+				
+				
+				x = 1 
+				
+				
+				y = 2             z = x + y	}
+				
+				
+		}''', 
+		'''
+		class Foo {
+			var x
+			var y
+			var z
+			method addition() {
+				var a = x
+				x = 1
+				y = 2
+				z = x + y
+			}
+		}''')
+	}
+
+	@Test
+	def void testSeveralVariableDefinitionsToConstantsInMethods3() throws Exception {
+		assertFormatting(
+		'''
+		class Foo {
+						var x var y var z		
+						method addition() { 
+										var a = x 
+				x = 1 
+				y = 2             
+										z = x + y	}
+				
+				
+		}''', 
+		'''
+		class Foo {
+			var x
+			var y
+			var z
+			method addition() {
+				var a = x
+				x = 1
+				y = 2
+				z = x + y
+			}
+		}''')
+	}
+
+
+	@Test
+	def void testSeveralVariableDefinitionsToConstantsInMethods4() throws Exception {
+		assertFormatting(
+		'''
+		class Foo {
+			var x		
+			method addition() { x = 1 var a = 2 a = x }
+		}''', 
+		'''
+		class Foo {
+			var x
+			method addition() {
+				x = 1
+				var a = 2
+				a = x
+			}
+		}''')
+	}
+	
+	@Test
+	def void testBasicFormattingInMethod() {
+		assertFormatting(
+		'''
+		object foo {
+		method bar() {
+		console.println("")
+		console.println("")
+		}
+		}
+		''',
+		'''
+		object foo {
+			method bar() {
+				console.println("")
+				console.println("")
+			}
+		}
+		'''
+		)
+	}
+
+	@Test
+	def void testSeveralVariableDefinitionsToConstantsInConstructor() throws Exception {
+		assertFormatting(
+		'''class Foo {
+			var x
+			var y
+		
+			constructor(anX, anY) {	x = 2 y = 3	}
+		}''', 
+		'''
+		class Foo {
+			var x
+			var y
+			constructor(anX, anY) {
+				x = 2
+				y = 3
+			}
+		}''')
+	}
+
+	@Test
+	def void testSeveralVariableDefinitionsToVariablesInConstructor() throws Exception {
+		assertFormatting(
+		'''class Foo {
+			var x
+			var y
+		
+			constructor(anX, anY) {
+				x = anX
+				y = anY
+			}
+		}''', 
+		'''
+		class Foo {
+			var x
+			var y
+			constructor(anX, anY) {
+				x = anX
+				y = anY
+			}
+		}''')
+	}
+	
+	/**
 	@Test
 	def void testSimpleProgramWithVariablesAndMessageSend() throws Exception {
 		assertFormatting('''program p { const a = 10 const b = 20 self.println(a + b) }''', '''
@@ -41,13 +229,15 @@ class WollokFormatterTestCase {
 	}
 
 	@Test
-	def void testClassFormattingOneLineMethodStaysInOneLine() throws Exception {
+	def void testClassFormattingOneLineMethod() throws Exception {
 		assertFormatting('''class Golondrina { const energia = 10 const kmRecorridos = 0 method comer(gr) { energia = energia + gr } }''', '''
 		
 		class Golondrina {
 			const energia = 10
 			const kmRecorridos = 0
-			method comer(gr) { energia = energia + gr }
+			method comer(gr) {
+				energia = energia + gr
+			}
 		}''')
 	}
 
@@ -152,7 +342,10 @@ class WollokFormatterTestCase {
 			var calle
 			var numero
 		
-			constructor(c, n) { calle = c numero = n }
+			constructor(c, n) { 
+				calle = c
+				numero = n
+			}
 		}''')
 	}
 
@@ -171,7 +364,8 @@ class WollokFormatterTestCase {
 			var numero
 		
 			constructor(c, n) {
-				calle = c numero = n
+				calle = c
+				numero = n
 			}
 		}''')
 	}
@@ -184,8 +378,7 @@ class WollokFormatterTestCase {
 	var numero  constructor  (  c  ,   n  , b  ,  d ) { calle = c numero = n } }
 	class Client {
 		method blah() {
-			const a = ""
-			const b = 2
+			const a = "" const b = 2
 			const c = new    Direccion  (  a   ,  b   ,  "blah"   ,   [1,2,3]    )
 		}
 	}''', '''
@@ -194,7 +387,10 @@ class Direccion {
 	var calle
 	var numero
 
-	constructor(c, n, b, d) { calle = c numero = n }
+	constructor(c, n, b, d) { 
+		calle = c
+		numero = n
+	}
 }
 class Client {
 	method blah() {
@@ -243,8 +439,36 @@ test "aSimpleTest" {
 			}
 		}''')
 	}
+	
+	@Test
+	def void abstractMethods() {
+		assertFormatting(
+		'''
+		class Vehicle {
+		    method numberOfPassengers() 
+		    method maxSpeed() 
+		    method expenseFor100Km() 
+		    method efficiency() {
+		        return self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
+		    }
+		}
+		''',
+		'''
+		
+		class Vehicle {
+		    method numberOfPassengers() 
+		    method maxSpeed() 
+		    method expenseFor100Km() 
+		    method efficiency() {
+		        return self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
+		    }
+		}
+		'''
+		)
+	}
 // TODO: test 
 // - named objects and object literals
 // - method parameter declaration
-// - blocks, parameters, etc
+// - blocks, parameters, etc  */
+
 }
