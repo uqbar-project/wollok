@@ -14,6 +14,8 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
+import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
@@ -22,6 +24,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -29,6 +32,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WParenthesizedExpressionElements
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -131,9 +135,23 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document) {
 		c.prepend [ indent ]
 		c.append [ newLine ]
-		c.memberCallTarget.format
-		c.memberCallArguments.forEach [
-			format
+		c.memberCallTarget => [
+			append [ noSpace ]
+			if (!(c.memberCallTarget instanceof WMemberFeatureCall)) {
+				format
+			}
+		]
+		c.regionFor.keyword(".").surround [ noSpace ]
+		c.regionFor.feature(WMEMBER_FEATURE_CALL__NULL_SAFE).surround [ noSpace ]
+		c.regionFor.feature(WMEMBER_FEATURE_CALL__FEATURE).surround [ noSpace ]
+		c.memberCallArguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
 		]
 	}
 	
@@ -162,7 +180,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WSetLiteral s, extension IFormattableDocument document) {
-		s.regionFor.keyword(WollokConstants.BEGIN_SET_LITERAL).prepend [ noSpace ]
 		s.elements.forEach [ element, i |
 			element.prepend [ oneSpace ]
 			if (i == s.elements.length - 1) {
@@ -175,7 +192,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WListLiteral l, extension IFormattableDocument document) {
-		l.regionFor.keyword(WollokConstants.BEGIN_LIST_LITERAL).prepend [ noSpace ]
 		l.elements.forEach [ element, i |
 			element.prepend [ oneSpace ]
 			if (i == l.elements.length - 1) {
@@ -189,8 +205,9 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	
 	def dispatch void format(WClosure c, extension IFormattableDocument document) {
 		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append [ newLine ]
+		val parametersCount = c.parameters.length
 		c.parameters.forEach [ parameter, i |
-			if (i == c.parameters.length - 1) 
+			if (i == parametersCount - 1) 
 				parameter.append [ oneSpace ]
 			else
 				parameter.append [ noSpace ]
@@ -200,7 +217,12 @@ class WollokDslFormatter extends AbstractFormatter2 {
 				parameter.prepend [ oneSpace ]		
 			} 
 		]
-		c.regionFor.keyword("=>").append [ newLine ]
+		c.regionFor.keyword("=>") => [
+			append [ newLine ]
+			if (parametersCount == 0)
+				surround [ indent ]
+		]
+		
 		c.surround [
 			noSpace
 		]
@@ -211,10 +233,59 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		c.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend [ newLine ]
 	}
+
+	def dispatch void format(WConstructor c, extension IFormattableDocument document) {
+		c.regionFor.keyword(WollokConstants.CONSTRUCTOR).append [ noSpace ]
+		c.parameters.forEach [ parameter, i |
+			parameter.append [ noSpace ]
+			if (i == 0) {
+				parameter.prepend [ noSpace ]
+			} else {
+				parameter.prepend [ oneSpace ]		
+			} 
+		]
+		c.regionFor.feature(WNAMED__NAME).append [ noSpace ]
+		c.surround [ newLine ]
+		c.expression => [
+			surround [ oneSpace ]
+			format
+		]
+	}
+
+	def dispatch void format(WConstructorCall c, extension IFormattableDocument document) {
+		c.prepend [ indent ]
+		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
+		c.regionFor.keyword(WollokConstants.BEGIN_PARAMETER_LIST).prepend [ noSpace ]
+		c.regionFor.keyword(WollokConstants.END_PARAMETER_LIST).append [ noSpace ]
+		c.append [ newLine ]
+		c.arguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
+		]
+	}
+
+	def dispatch void format(WTest t, extension IFormattableDocument document) {
+		t.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).prepend [ oneSpace ].append[ newLine ]
+		t.elements.forEach [
+			surround [ indent ]
+			format
+		]
+		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
+	}
+
+	def dispatch void format(WReturnExpression r, extension IFormattableDocument document) {
+		r.prepend [ noSpace ]
+		r.expression.format
+		r.append [ newLine ]
+	}
 	
 	// TODO: implement for 
 	/**
-	 * WTest,
 	 * WSuite, 
 	 * WFixture, 
 	 * WPackage, 
@@ -222,13 +293,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	 * WUnaryOperation, 
 	 * WSuperInvocation, 
 	 * WMixin, 
-	 * WConstructor, 
 	 * WSelfDelegatingConstructorCall, 
 	 * WSuperDelegatingConstructorCall, 
-	 * WConstructorCall, 
 	 * WTry, 
 	 * WCatch, 
-	 * WReturnExpression, 
 	 * WThrow, 
 	 * WPostfixOperation
 	 */

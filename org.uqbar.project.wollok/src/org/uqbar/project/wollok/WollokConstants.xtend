@@ -68,6 +68,9 @@ class WollokConstants {
 	public static val END_LIST_LITERAL = "]"
 	public static val BEGIN_SET_LITERAL = "#{"
 	public static val END_SET_LITERAL = "}"
+	public static val BEGIN_PARAMETER_LIST = "("
+	public static val END_PARAMETER_LIST = ")"
+	public static val INSTANTIATION = "new"
 
 	public static val ROOT_CLASS = "Object"
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"

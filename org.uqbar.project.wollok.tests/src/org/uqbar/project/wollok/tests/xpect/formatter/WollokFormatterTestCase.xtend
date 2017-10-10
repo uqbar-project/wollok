@@ -359,7 +359,6 @@ method comer(gr){energia=energia+gr}}''', '''
 		''')
 	}
 	
-	/**
 	@Test
 	def void messageSendParameters() throws Exception {
 		assertFormatting('''program p { 
@@ -369,14 +368,16 @@ method comer(gr){energia=energia+gr}}''', '''
     		a ?. doSomething  ( a, a,    a , a ,  a   )
     		a ?. doSomething  ({=> a .doSomething()})
     	}''', '''
-		
 		program p {
 			const a = null
-		
 			a.doSomething(a, a, a, a, a)
 			a?.doSomething(a, a, a, a, a)
-			a?.doSomething({ => a.doSomething() })
-		}''')
+			a?.doSomething({
+				=>
+					a.doSomething()
+			})
+		}
+		''')
 	}
 
 	@Test
@@ -384,40 +385,37 @@ method comer(gr){energia=energia+gr}}''', '''
 		assertFormatting('''class Direccion {
 	var calle
 	var numero  constructor  (  c  ,   n   ) { calle = c numero = n } }''', '''
-		
 		class Direccion {
 			var calle
 			var numero
-		
-			constructor(c, n) { 
-				calle = c
-				numero = n
-			}
-		}''')
-	}
-
-	// I think there's a bug here in the block formatting within the constructor body
-	@Test
-	def void constructorDefParametersMultipleLinesConstructor() throws Exception {
-		assertFormatting('''class Direccion {
-	var calle
-	var numero  constructor  (  c  ,   n   ) { 
-		calle = c
-		numero = n
-	} }''', '''
-		
-		class Direccion {
-			var calle
-			var numero
-		
 			constructor(c, n) {
 				calle = c
 				numero = n
 			}
-		}''')
+		}
+		''')
 	}
 
-	// I think there's a bug here in the block formatting within the constructor body
+	@Test
+	def void constructorDefParametersMultipleLinesConstructor() throws Exception {
+		assertFormatting('''class         Direccion            
+{
+	var calle var numero  constructor  (  c  ,   n   ) 
+{ 
+		calle = c
+		numero = n
+	} }''', '''
+		class Direccion {
+			var calle
+			var numero
+			constructor(c, n) {
+				calle = c
+				numero = n
+			}
+		}
+		''')
+	}
+
 	@Test
 	def void constructorCallParameters() throws Exception {
 		assertFormatting('''class Direccion {
@@ -429,35 +427,33 @@ method comer(gr){energia=energia+gr}}''', '''
 			const c = new    Direccion  (  a   ,  b   ,  "blah"   ,   [1,2,3]    )
 		}
 	}''', '''
-
-class Direccion {
-	var calle
-	var numero
-
-	constructor(c, n, b, d) { 
-		calle = c
-		numero = n
+	class Direccion {
+		var calle
+		var numero
+		constructor(c, n, b, d) {
+			calle = c
+			numero = n
+		}
 	}
-}
-class Client {
-	method blah() {
-		const a = ""
-		const b = 2
-		const c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
+	class Client {
+		method blah() {
+			const a = ""
+			const b = 2
+			const c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
+		}
 	}
-}''')
+	''')
 	}
 
 	@Test
 	def void testSimpleTestFormatting() throws Exception {
 		assertFormatting(
-    	'''test "aSimpleTest"{
-    				assert.that(true)
-    	}''', '''
-
-test "aSimpleTest" {
-	assert.that(true)
-}''')
+    	'''test "aSimpleTest"{              assert.that(true)           }''', 
+    	'''
+		test "aSimpleTest" {
+			assert.that(true)
+		}
+		''')
 	}
 
 	@Test
@@ -474,17 +470,16 @@ test "aSimpleTest" {
 				console.println("")
 			}
 		}''', '''
-		
 		object foo {
 			method bar() {
 				self.bar().bar().bar()
-		
-				console.println("") console.println("")
-		
+				console.println("")
+				console.println("")
 				console.println("")
 				console.println("")
 			}
-		}''')
+		}
+		''')
 	}
 	
 	@Test
@@ -492,8 +487,7 @@ test "aSimpleTest" {
 		assertFormatting(
 		'''
 		class Vehicle {
-		    method numberOfPassengers() 
-		    method maxSpeed() 
+		    method numberOfPassengers()   method maxSpeed() 
 		    method expenseFor100Km() 
 		    method efficiency() {
 		        return self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
@@ -501,18 +495,18 @@ test "aSimpleTest" {
 		}
 		''',
 		'''
-		
 		class Vehicle {
-		    method numberOfPassengers() 
-		    method maxSpeed() 
-		    method expenseFor100Km() 
-		    method efficiency() {
-		        return self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
-		    }
+			method numberOfPassengers()
+			method maxSpeed()
+			method expenseFor100Km()
+			method efficiency() {
+				return ( self.numberOfPassengers() * self.maxSpeed() ) / self.expenseFor100Km()
+			}
 		}
 		'''
 		)
 	}
+	
 // TODO: test 
 // - named objects and object literals
 // - method parameter declaration
