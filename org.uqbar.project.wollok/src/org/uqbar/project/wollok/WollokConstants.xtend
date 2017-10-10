@@ -50,6 +50,7 @@ class WollokConstants {
 	public static val VAR = "var"
 	public static val CONST = "const"
 	public static val OVERRIDE = "override"
+	public static val NATIVE = "native"
 	public static val RETURN = "return"
 	public static val IMPORT = "import"
 	public static val SUITE = "describe"
@@ -60,6 +61,14 @@ class WollokConstants {
 	public static val FIXTURE = "fixture"
 	public static val PROGRAM = "program" 
 	
+	public static val ASSIGNMENT = "="
+	public static val BEGIN_EXPRESSION = "{"
+	public static val END_EXPRESSION = "}"
+	public static val BEGIN_LIST_LITERAL = "["
+	public static val END_LIST_LITERAL = "]"
+	public static val BEGIN_SET_LITERAL = "#{"
+	public static val END_SET_LITERAL = "}"
+
 	public static val ROOT_CLASS = "Object"
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
 	

@@ -54,7 +54,7 @@ class WollokFormatterTestCase {
 		'''
 		class Foo {
 			var x var y var z		
-			method addition() { var a = x x = 1 y = 2 z = x + y	}
+			method addition() { var   a    =    x x   =     1         y   = 2 z=x+y	}
 		}''', 
 		'''
 		class Foo {
@@ -67,7 +67,8 @@ class WollokFormatterTestCase {
 				y = 2
 				z = x + y
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
@@ -100,7 +101,8 @@ class WollokFormatterTestCase {
 				y = 2
 				z = x + y
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
@@ -109,7 +111,7 @@ class WollokFormatterTestCase {
 		'''
 		class Foo {
 						var x var y var z		
-						method addition() { 
+						method      addition   ()           { 
 										var a = x 
 				x = 1 
 				y = 2             
@@ -128,7 +130,8 @@ class WollokFormatterTestCase {
 				y = 2
 				z = x + y
 			}
-		}''')
+		}
+		''')
 	}
 
 
@@ -148,15 +151,16 @@ class WollokFormatterTestCase {
 				var a = 2
 				a = x
 			}
-		}''')
+		}
+		''')
 	}
 	
 	@Test
 	def void testBasicFormattingInMethod() {
 		assertFormatting(
 		'''
-		object foo {
-		method bar() {
+		object        foo     {
+		method bar(     param  ,  param2      ) {
 		console.println("")
 		console.println("")
 		}
@@ -164,7 +168,7 @@ class WollokFormatterTestCase {
 		''',
 		'''
 		object foo {
-			method bar() {
+			method bar(param, param2) {
 				console.println("")
 				console.println("")
 			}
@@ -190,7 +194,8 @@ class WollokFormatterTestCase {
 				x = 2
 				y = 3
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
@@ -213,32 +218,36 @@ class WollokFormatterTestCase {
 				x = anX
 				y = anY
 			}
-		}''')
+		}
+		''')
 	}
 	
-	/**
+
 	@Test
 	def void testSimpleProgramWithVariablesAndMessageSend() throws Exception {
 		assertFormatting('''program p { const a = 10 const b = 20 self.println(a + b) }''', '''
-		
 		program p {
 			const a = 10
 			const b = 20
 			self.println(a + b)
-		}''')
+		}
+		''')
 	}
 
 	@Test
 	def void testClassFormattingOneLineMethod() throws Exception {
-		assertFormatting('''class Golondrina { const energia = 10 const kmRecorridos = 0 method comer(gr) { energia = energia + gr } }''', '''
+		assertFormatting('''class    Golondrina {    const    energia      =      10 
 		
+		
+const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr } }''', '''
 		class Golondrina {
 			const energia = 10
 			const kmRecorridos = 0
 			method comer(gr) {
 				energia = energia + gr
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
@@ -246,35 +255,31 @@ class WollokFormatterTestCase {
 		assertFormatting('''class Golondrina { const energia = 10 const kmRecorridos = 0 method comer(gr) { 
     		energia = energia + gr
     	} }''', '''
-		
 		class Golondrina {
 			const energia = 10
 			const kmRecorridos = 0
 			method comer(gr) {
 				energia = energia + gr
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
-	def void classFormatting_twolinesBetweenVarsAndMethods() throws Exception {
+	def void classFormatting_oneLineBetweenVarsAndMethods() throws Exception {
 		assertFormatting('''class Golondrina { 
     		const energia = 10 
     		const kmRecorridos = 0
     		
-    		method comer(gr) { 
-    			energia = energia + gr
-    		}
-    	}''', '''
-		
+method comer(gr){energia=energia+gr}}''', '''
 		class Golondrina {
 			const energia = 10
 			const kmRecorridos = 0
-		
 			method comer(gr) {
 				energia = energia + gr
 			}
-		}''')
+		}
+		''')
 	}
 
 	@Test
@@ -285,17 +290,32 @@ class WollokFormatterTestCase {
     		
     		const c = if (a > 0) b else 0
     	}''', '''
-		
 		program p {
 			const a = 10
 			const b = 0
-		
 			const c = if (a > 0) b else 0
-		}''')
+		}
+		''')
 	}
 
 	@Test
-	def void program_maxTwoLinBreaksBetweenLines() throws Exception {
+	def void program_ifInlineWithExpressions() throws Exception {
+		assertFormatting('''program p { 
+    		const a = 10 
+    		const b = 0
+    		
+    		const c = if (a > 0) b+1 else b-1
+    	}''', '''
+		program p {
+			const a = 10
+			const b = 0
+			const c = if (a > 0) b + 1 else b - 1
+		}
+		''')
+	}
+
+	@Test
+	def void program_maxOneLineBreakBetweenLines() throws Exception {
 		assertFormatting('''program p { 
     		const a = 10 
     		const b = 0
@@ -304,15 +324,42 @@ class WollokFormatterTestCase {
     		
     		const c = a + b
     	}''', '''
-		
 		program p {
 			const a = 10
 			const b = 0
-		
 			const c = a + b
-		}''')
+		}
+		''')
 	}
 
+	@Test
+	def void issue702_forEachAndIf() throws Exception {
+		assertFormatting('''
+		object foo {
+		    method bar() {
+		        [3,              4        ,50,      100 ].forEach({ it => if (it > 4) { console.println(4) } else {console.println(it)
+		            }
+		        })
+		    }
+		}
+		''',
+		'''
+		object foo {
+			method bar() {
+				[ 3, 4, 50, 100 ].forEach({
+					it =>
+						if (it > 4) {
+							console.println(4)
+						} else {
+							console.println(it)
+						}
+				})
+			}
+		}
+		''')
+	}
+	
+	/**
 	@Test
 	def void messageSendParameters() throws Exception {
 		assertFormatting('''program p { 
