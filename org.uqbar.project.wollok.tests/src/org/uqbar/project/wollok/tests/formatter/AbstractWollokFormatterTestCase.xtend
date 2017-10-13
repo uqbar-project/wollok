@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.tests.xpect.formatter
+package org.uqbar.project.wollok.tests.formatter
 
 import com.google.inject.Inject
 import org.eclipse.emf.common.util.EList
@@ -8,7 +8,6 @@ import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
@@ -22,12 +21,12 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
  */
 @RunWith(XtextRunner)
 @InjectWith(WollokTestInjectorProvider)
-class WollokFormatterTestCase {
+class AbstractWollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer
 
 	def assertFormatting(String program, String expected) {
-		program.parse.eContents.show(1)
+		//program.parse.eContents.show(1)
 		Assert.assertEquals(expected,
         program.parse.serialize(SaveOptions.newBuilder.format().getOptions()))		
 	}
@@ -47,135 +46,7 @@ class WollokFormatterTestCase {
 	}
 	
 	// TEST METHODS
-
-	@Test
-	def void testSeveralVariableDefinitionsToConstantsInMethods() throws Exception {
-		assertFormatting(
-		'''
-		class Foo {
-			var x var y var z		
-			method addition() { var   a    =    x x   =     1         y   = 2 z=x+y	}
-		}''', 
-		'''
-		class Foo {
-			var x
-			var y
-			var z
-			method addition() {
-				var a = x
-				x = 1
-				y = 2
-				z = x + y
-			}
-		}
-		''')
-	}
-
-	@Test
-	def void testSeveralVariableDefinitionsToConstantsInMethods2() throws Exception {
-		assertFormatting(
-		'''
-		class Foo {
-			var x var y var z		
-			method addition() { 
-				
-				
-				var a = x 
-				
-				
-				x = 1 
-				
-				
-				y = 2             z = x + y	}
-				
-				
-		}''', 
-		'''
-		class Foo {
-			var x
-			var y
-			var z
-			method addition() {
-				var a = x
-				x = 1
-				y = 2
-				z = x + y
-			}
-		}
-		''')
-	}
-
-	@Test
-	def void testSeveralVariableDefinitionsToConstantsInMethods3() throws Exception {
-		assertFormatting(
-		'''
-		class Foo {
-						var x var y var z		
-						method      addition   ()           { 
-										var a = x 
-				x = 1 
-				y = 2             
-										z = x + y	}
-				
-				
-		}''', 
-		'''
-		class Foo {
-			var x
-			var y
-			var z
-			method addition() {
-				var a = x
-				x = 1
-				y = 2
-				z = x + y
-			}
-		}
-		''')
-	}
-
-
-	@Test
-	def void testSeveralVariableDefinitionsToConstantsInMethods4() throws Exception {
-		assertFormatting(
-		'''
-		class Foo {
-			var x		
-			method addition() { x = 1 var a = 2 a = x }
-		}''', 
-		'''
-		class Foo {
-			var x
-			method addition() {
-				x = 1
-				var a = 2
-				a = x
-			}
-		}
-		''')
-	}
-	
-	@Test
-	def void testBasicFormattingInMethod() {
-		assertFormatting(
-		'''
-		object        foo     {
-		method bar(     param  ,  param2      ) {
-		console.println("")
-		console.println("")
-		}
-		}
-		''',
-		'''
-		object foo {
-			method bar(param, param2) {
-				console.println("")
-				console.println("")
-			}
-		}
-		'''
-		)
-	}
+	/**
 
 	@Test
 	def void testSeveralVariableDefinitionsToConstantsInConstructor() throws Exception {
@@ -446,17 +317,6 @@ method comer(gr){energia=energia+gr}}''', '''
 	}
 
 	@Test
-	def void testSimpleTestFormatting() throws Exception {
-		assertFormatting(
-    	'''test "aSimpleTest"{              assert.that(true)           }''', 
-    	'''
-		test "aSimpleTest" {
-			assert.that(true)
-		}
-		''')
-	}
-
-	@Test
 	def void keepNewlinesInSequences() throws Exception {
 		assertFormatting(
     	'''
@@ -490,8 +350,8 @@ method comer(gr){energia=energia+gr}}''', '''
 		    method numberOfPassengers()   method maxSpeed() 
 		    method expenseFor100Km() 
 		    method efficiency() {
-		        return self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
-		    }
+		        return     self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
+		    } 
 		}
 		''',
 		'''
@@ -506,7 +366,8 @@ method comer(gr){energia=energia+gr}}''', '''
 		'''
 		)
 	}
-	
+ */
+ 	
 // TODO: test 
 // - named objects and object literals
 // - method parameter declaration

@@ -17,22 +17,25 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.services.WollokDslGrammarAccess.WParenthesizedExpressionElements
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -54,10 +57,12 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WProgram p, extension IFormattableDocument document) {
+		p.prepend [ noSpace ]
 		p.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ]
 		p.elements.forEach [
 			surround [ indent ]
 			format
+			append [ newLine ]
 		]
 		p.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
@@ -79,6 +84,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
+		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		o.interior [ 
@@ -118,23 +124,27 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		m.regionFor.feature(WNAMED__NAME).append [ noSpace ]
 		m.surround [ newLine ]
 		m.expression => [
-			surround [ oneSpace ]
+			prepend [ oneSpace ]
 			format
+			append [ newLine ]
 		]
 	}
 	
 	def dispatch void format(WBlockExpression b, extension IFormattableDocument document) {
-		b.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ]
+		b.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION) => [
+			append[ newLine ]
+		]
 		b.expressions.forEach [
 			surround [ indent ]
 			format
+			append [ newLine ]
 		]
 		//b.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
 
 	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document) {
 		c.prepend [ indent ]
-		c.append [ newLine ]
+		c.append [ noSpace ]
 		c.memberCallTarget => [
 			append [ noSpace ]
 			if (!(c.memberCallTarget instanceof WMemberFeatureCall)) {
@@ -158,7 +168,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WAssignment a, extension IFormattableDocument document) {
 		a.feature.surround [ oneSpace ]
 		a.feature.format
-		a.value.surround [ oneSpace ]
+		a.value.prepend [ oneSpace ]
 		a.value.format
 		a.append[ newLine ]
 	}
@@ -272,10 +282,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WTest t, extension IFormattableDocument document) {
 		t.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).prepend [ oneSpace ].append[ newLine ]
 		t.elements.forEach [
-			surround [ indent ]
+			surround [ indent ; newLine ]
 			format
 		]
-		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
+		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ noSpace ; newLine ]
 	}
 
 	def dispatch void format(WReturnExpression r, extension IFormattableDocument document) {
@@ -283,13 +293,44 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		r.expression.format
 		r.append [ newLine ]
 	}
+
+	def dispatch void format(WSuite s, extension IFormattableDocument document) {
+		s.regionFor.keyword(WollokConstants.SUITE).append [ oneSpace ]
+		s.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		s.interior [ indent ]
+		s.variableDeclarations.forEach [ format ]
+		s.fixture.format
+		s.methods.forEach [ format ]
+		s.tests.forEach [ format ]
+		s.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ newLine ]
+	}
+
+	def dispatch void format(WFixture f, extension IFormattableDocument document) {
+		f.regionFor.keyword(WollokConstants.FIXTURE).append [ oneSpace ]
+		f.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		f.interior [ indent ]
+		f.elements.forEach [ format ]
+		f.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ newLine ]
+	}
+
+	def dispatch void format(WPostfixOperation o, extension IFormattableDocument document) {
+		o.operand.append [ noSpace ]
+	}
+
+	def dispatch void format(WObjectLiteral o, extension IFormattableDocument document) {
+		//o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
+		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		o.members.forEach [
+			surround [ indent ]
+			format
+			append [ newLine ]
+		]
+		//o.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
+	}
 	
 	// TODO: implement for 
 	/**
-	 * WSuite, 
-	 * WFixture, 
 	 * WPackage, 
-	 * WObjectLiteral, 
 	 * WUnaryOperation, 
 	 * WSuperInvocation, 
 	 * WMixin, 
@@ -298,6 +339,5 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	 * WTry, 
 	 * WCatch, 
 	 * WThrow, 
-	 * WPostfixOperation
 	 */
 }
