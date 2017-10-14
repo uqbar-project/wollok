@@ -46,7 +46,7 @@
 <unit id="org.eclipse.egit.mylyn.feature.group" version="4.8.0.201706111038-r"/>
 <unit id="org.eclipse.egit.feature.group" version="4.8.0.201706111038-r"/>
 <unit id="org.eclipse.egit.source.feature.group" version="4.8.0.201706111038-r"/>
-<--repository location="http://download.eclipse.org/egit/updates/"/--
+<--repository location="http://download.eclipse.org/egit/updates/"/-->
 <repository location="http://eclipse.c3sl.ufpr.br/egit/updates-4.8/">
 </location>
 </locations>
