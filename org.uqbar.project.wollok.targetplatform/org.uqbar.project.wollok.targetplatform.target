@@ -47,7 +47,7 @@
 <unit id="org.eclipse.egit.feature.group" version="4.8.0.201706111038-r"/>
 <unit id="org.eclipse.egit.source.feature.group" version="4.8.0.201706111038-r"/>
 <!--repository location="http://download.eclipse.org/egit/updates/"/-->
-<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-4.8/">
+<repository location="http://eclipse.c3sl.ufpr.br/egit/updates-4.8/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
