@@ -58,5 +58,9 @@ method bar3() { assert.that(true)		var a = 1 + 1 console.println(a)}
 		'''
 		)
 	}
-	
+
+	// TODO: Metodos que devuelvan con =
+	// TODO 2: Metodos que redefinen otros de la superclase (override)
+	// TODO 3: metodos nativos
+	// TODO 4: Uso de super	
 }

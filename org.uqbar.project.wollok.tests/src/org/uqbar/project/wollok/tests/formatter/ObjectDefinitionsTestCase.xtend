@@ -71,5 +71,6 @@ object { var energia
 		'''
 		)
 	}
-	
+
+	// TODO: wko que heredan de clases	
 }
