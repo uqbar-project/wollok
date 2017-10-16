@@ -8,6 +8,7 @@ import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
@@ -45,6 +46,11 @@ class AbstractWollokFormatterTestCase {
 		"Assignment " + a.feature.ref.name
 	}
 	
+	@Test
+	def void fakeTest() {
+		Assert.assertEquals(1, 1)
+	}
+
 	// TEST METHODS
 	/**
 
@@ -141,7 +147,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		assertFormatting('''class Golondrina { 
     		const energia = 10 
     		const kmRecorridos = 0
-    		
+//    		
 method comer(gr){energia=energia+gr}}''', '''
 		class Golondrina {
 			const energia = 10
