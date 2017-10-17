@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.tests.formatter
 
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
@@ -18,7 +17,6 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 
 	// TEST METHODS
 	@Test
-	
 	def void testSimpleTestFormatting() throws Exception {
 		assertFormatting(
     	'''test "aSimpleTest"{              assert.that(true)           }''', 
@@ -31,7 +29,6 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 
 	// TEST METHODS
 	@Test
-	
 	def void severalTestsSimplesTestFormatting() throws Exception {
 		assertFormatting(
     	'''test "aSimpleTest" {
@@ -42,7 +39,7 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
     			var text = "hola"
     			
     	assert.equals(4, text.length()       )		
-    	assert.equals(4    -     0, (-4)   .   inverted()       )
+    	assert.equals(4    -     0, (   -   4)   .   inverted()       )
     	}		
     			''', 
     	'''
@@ -58,7 +55,6 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
-	
 	def void testTestSeveralLinesFormatting() throws Exception {
 		assertFormatting(
     	'''test "aSimpleTest"{assert.that(true) assert.notThat(false)
@@ -78,7 +74,6 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
-	
 	def void testSimpleDescribeFormatting() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests" 
@@ -101,7 +96,6 @@ assert.that(true)}}''',
 	}
 
 	@Test
-	
 	def void testSimpleDescribeFormatting2() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests"{test "aSimpleTest"{assert.that(true)}}''', 
@@ -115,7 +109,6 @@ assert.that(true)}}''',
 	}
 
 	@Test
-	
 	def void testSimpleDescribeWithFixture() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests" 
@@ -143,7 +136,6 @@ assert.equals(1, a)}}''',
 	}
 
 	@Test
-	
 	def void testSimpleDescribeWithFixtureSeveralLines() throws Exception {
 		assertFormatting(
     	'''describe            "group of tests" 

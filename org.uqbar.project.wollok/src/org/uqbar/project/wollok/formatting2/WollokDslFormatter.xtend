@@ -4,6 +4,7 @@
 package org.uqbar.project.wollok.formatting2
 
 import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
@@ -12,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -31,6 +33,8 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
@@ -68,7 +72,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WClass c, extension IFormattableDocument document) {
+		c.regionFor.keyword(WollokConstants.CLASS).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.CLASS).append [ oneSpace ]
+		c.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
+		c.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		c.interior [ 
 			indent
@@ -86,6 +93,8 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
+		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
+		o.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		o.interior [ 
 			indent
@@ -113,6 +122,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		m.regionFor.feature(WMETHOD_DECLARATION__OVERRIDES).surround [ oneSpace ]
 		m.regionFor.feature(WMETHOD_DECLARATION__NATIVE).surround [ oneSpace ]
 		m.regionFor.keyword(WollokConstants.METHOD).surround [ oneSpace ]
+		m.regionFor.feature(WMETHOD_DECLARATION__EXPRESSION_RETURNS).surround([ oneSpace ])
 		m.parameters.forEach [ parameter, i |
 			parameter.append [ noSpace ]
 			if (i == 0) {
@@ -139,15 +149,15 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			format
 			append [ newLine ]
 		]
-		//b.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
 
 	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document) {
-		c.prepend [ indent ]
-		c.append [ noSpace ]
+		if (c.previousHiddenRegion.length > 1) {
+			c.prepend [ oneSpace ]
+		}
 		c.memberCallTarget => [
 			append [ noSpace ]
-			if (!(c.memberCallTarget instanceof WMemberFeatureCall)) {
+			if (operandShouldBeFormatted) {
 				format
 			}
 		]
@@ -175,6 +185,12 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	
 	def dispatch void format(WBinaryOperation o, extension IFormattableDocument document) {
 		o.leftOperand.append [ oneSpace ]
+		if (o.leftOperand.operandShouldBeFormatted) {
+			o.leftOperand.format
+		}
+		if (o.rightOperand.operandShouldBeFormatted) {
+			o.rightOperand.format
+		}
 		o.rightOperand.prepend [ oneSpace ]
 	}
 
@@ -187,6 +203,34 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			oneSpace
 		]
 		i.^else.format
+	}
+
+	def dispatch void format(WTry t, extension IFormattableDocument document) {
+		t.expression.prepend [ oneSpace ]
+		if (!(t.expression instanceof WBlockExpression)) {
+			t.expression.surround [ newLine ; indent ]
+		}
+		t.expression.format
+		t.catchBlocks.forEach [ format ]
+		t.alwaysExpression?.surround [ oneSpace ]
+		if (!(t.alwaysExpression instanceof WBlockExpression)) {
+			t.alwaysExpression?.surround [ newLine ; indent ]
+		}
+		t.alwaysExpression?.format
+		t.append [ newLine ]
+	}
+	
+	def dispatch void format(WCatch c, extension IFormattableDocument document) {
+		c.surround [ oneSpace ]
+		c.exceptionVarName.surround [ oneSpace ]
+		c.regionFor.keyword(":").surround [ oneSpace ]
+		c.exceptionType.append [ oneSpace ]
+		c.expression.prepend [ oneSpace ]
+		if (!(c.expression instanceof WBlockExpression)) {
+			c.expression.surround [ newLine ; indent ]
+		}
+		
+		c.expression.format
 	}
 	
 	def dispatch void format(WSetLiteral s, extension IFormattableDocument document) {
@@ -318,26 +362,33 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WObjectLiteral o, extension IFormattableDocument document) {
-		//o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		o.members.forEach [
 			surround [ indent ]
 			format
 			append [ newLine ]
 		]
-		//o.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
+
+	def dispatch void format(WUnaryOperation o, extension IFormattableDocument document) {
+		o.interior [ noSpace ]
+		o.operand.surround [ noSpace ]
+	}
+
+	def dispatch operandShouldBeFormatted(EObject o) { false }
+	def dispatch operandShouldBeFormatted(WMemberFeatureCall c) { true }
+	def dispatch operandShouldBeFormatted(WUnaryOperation o) { true }
+	def dispatch operandShouldBeFormatted(WBinaryOperation o) { true }
+	def dispatch operandShouldBeFormatted(WListLiteral l) { true }
+	def dispatch operandShouldBeFormatted(WSetLiteral l) { true }
 	
 	// TODO: implement for 
 	/**
 	 * WPackage, 
-	 * WUnaryOperation, 
 	 * WSuperInvocation, 
 	 * WMixin, 
 	 * WSelfDelegatingConstructorCall, 
 	 * WSuperDelegatingConstructorCall, 
-	 * WTry, 
-	 * WCatch, 
 	 * WThrow, 
 	 */
 }

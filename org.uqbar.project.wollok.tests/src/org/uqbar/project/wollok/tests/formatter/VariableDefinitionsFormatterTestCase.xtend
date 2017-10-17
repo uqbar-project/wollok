@@ -1,12 +1,10 @@
 package org.uqbar.project.wollok.tests.formatter
 
-import org.junit.Ignore
 import org.junit.Test
 
 class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	
 	@Test
-	
 	def void testSeveralVariableDefinitionsToConstantsInMethods() throws Exception {
 		assertFormatting(
 		'''
@@ -30,7 +28,6 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 	}
 
 	@Test
-	
 	def void testSeveralVariableDefinitionsToConstantsInMethods2() throws Exception {
 		assertFormatting(
 		'''
@@ -65,7 +62,6 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 	}
 
 	@Test
-	
 	def void testSeveralVariableDefinitionsToConstantsInMethods3() throws Exception {
 		assertFormatting(
 		'''
@@ -96,7 +92,6 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 
 
 	@Test
-	
 	def void testSeveralVariableDefinitionsToConstantsInMethods4() throws Exception {
 		assertFormatting(
 		'''

@@ -57,6 +57,7 @@ class WollokConstants {
 	public static val TEST = "test"
 	public static val MIXIN = "mixin"
 	public static val CLASS = "class"
+	public static val INHERITS = "inherits"
 	public static val WKO = "object"
 	public static val FIXTURE = "fixture"
 	public static val PROGRAM = "program" 
@@ -71,6 +72,7 @@ class WollokConstants {
 	public static val BEGIN_PARAMETER_LIST = "("
 	public static val END_PARAMETER_LIST = ")"
 	public static val INSTANTIATION = "new"
+	public static val TRY = "try"
 
 	public static val ROOT_CLASS = "Object"
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
