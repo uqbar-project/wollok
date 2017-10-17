@@ -56,8 +56,9 @@ class WThread implements XThread {
 			val exp = (interpreter.evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
 			instantiatingStackOverFlow = false
 			throw new WollokProgramExceptionWrapper(exp)
-		} finally
+		} finally{
 			stack.pop
+		}
 	}
 	
 }
