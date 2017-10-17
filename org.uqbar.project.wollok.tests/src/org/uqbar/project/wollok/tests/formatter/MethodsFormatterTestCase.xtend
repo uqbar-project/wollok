@@ -6,7 +6,7 @@ import org.junit.Test
 class MethodsFormatterTestCase extends AbstractWollokFormatterTestCase {
 
 	@Test
-	@Ignore
+	
 	def void testBasicFormattingInMethod() {
 		assertFormatting(
 		'''
@@ -29,7 +29,7 @@ class MethodsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
-	@Ignore
+	
 	def void testBasicFormattingSeveralMethods() {
 		assertFormatting(
 		'''

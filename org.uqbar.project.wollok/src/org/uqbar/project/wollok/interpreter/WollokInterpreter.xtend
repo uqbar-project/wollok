@@ -94,7 +94,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		}
 	}
 
-	def interpret(List<EObject> eObjects, String folder, boolean propagatingErrors) {
+	def Object interpret(List<EObject> eObjects, String folder, boolean propagatingErrors) {
 		try {
 			log.debug("Starting interpreter")
 			evaluator.evaluateAll(eObjects, folder)
