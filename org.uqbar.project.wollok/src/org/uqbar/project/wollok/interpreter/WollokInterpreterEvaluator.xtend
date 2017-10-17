@@ -112,7 +112,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	// EVALUATIONS (as multimethods)
-	def dispatch evaluate(WFile it) {
+	def dispatch WollokObject evaluate(WFile it) {
 		// Files are not allowed to have both a main program and tests at the same time.
 		if (main !== null)
 			main.eval
@@ -121,15 +121,15 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		}
 	}
 
-	def dispatch evaluate(WClass it) {}
+	def dispatch WollokObject evaluate(WClass it) {}
 
-	def dispatch evaluate(WPackage it) {}
+	def dispatch WollokObject evaluate(WPackage it) {}
 
-	def dispatch evaluate(WProgram it) { elements.evalAll }
+	def dispatch WollokObject evaluate(WProgram it) { elements.evalAll }
 
-	def dispatch evaluate(WTest it) { elements.evalAll }
+	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
 
-	def dispatch evaluate(WSuite it) {
+	def dispatch WollokObject evaluate(WSuite it) {
 		tests.fold(null) [ a, test |
 			members.forEach[m|evaluate(m)]
 			fixture.elements.forEach [ evaluate ]
@@ -137,20 +137,20 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def dispatch evaluate(WMethodDeclaration it) {}
+	def dispatch WollokObject evaluate(WMethodDeclaration it) {}
 
-	def dispatch evaluate(WVariableDeclaration it) {
+	def dispatch WollokObject evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
 	}
 
-	def dispatch evaluate(WVariableReference it) {
+	def dispatch WollokObject evaluate(WVariableReference it) {
 		if (ref instanceof WNamedObject)
 			ref.eval
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
 
-	def dispatch evaluate(WIfExpression it) {
+	def dispatch WollokObject evaluate(WIfExpression it) {
 		val cond = condition.eval
 
 		// I18N !
@@ -166,7 +166,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			^else?.eval
 	}
 
-	def dispatch evaluate(WTry t) {
+	def dispatch WollokObject evaluate(WTry t) {
 		try
 			t.expression.eval
 		catch (WollokProgramExceptionWrapper e) {
@@ -190,7 +190,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		createEvaluationContext(wCatch.exceptionVarName.name, exception)
 	}
 
-	def dispatch evaluate(WThrow t) {
+	def dispatch WollokObject evaluate(WThrow t) {
 		// this must be checked!
 		val obj = t.exception.eval as WollokObject
 		throw new WollokProgramExceptionWrapper(obj, t)
@@ -199,13 +199,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def boolean matches(WCatch cach, WollokObject it) { cach.exceptionType === null || isKindOf(cach.exceptionType) }
 
 	// literals
-	def dispatch evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }
+	def dispatch WollokObject evaluate(WStringLiteral it) { newInstanceWithWrapped(STRING, value) }
 
-	def dispatch evaluate(WBooleanLiteral it) { booleanValue(it.isIsTrue) }
+	def dispatch WollokObject evaluate(WBooleanLiteral it) { booleanValue(it.isIsTrue) }
 
-	def dispatch evaluate(WNullLiteral it) { null }
+	def dispatch WollokObject evaluate(WNullLiteral it) { null }
 
-	def dispatch evaluate(WNumberLiteral it) { value.orCreateNumber }
+	def dispatch WollokObject evaluate(WNumberLiteral it) { value.orCreateNumber }
 
 	def getOrCreateNumber(String value) {
 		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {
@@ -349,7 +349,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def dispatch evaluate(WClosure l) {
+	def dispatch WollokObject evaluate(WClosure l) {
 		newInstance(CLOSURE) => [
 			(getNativeObject(CLOSURE) as NodeAware<WClosure>).EObject = l
 		]
@@ -368,9 +368,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	// other expressions
-	def dispatch evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch WollokObject evaluate(WBlockExpression b) { b.expressions.evalAll }
 
-	def dispatch evaluate(WAssignment a) {
+	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
 		newValue
@@ -379,7 +379,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// ********************************************************
 	// ** operations (unary, binary, multiops, postfix)
 	// ********************************************************
-	def dispatch evaluate(WBinaryOperation binary) {
+	def dispatch WollokObject evaluate(WBinaryOperation binary) {
 		if (binary.isMultiOpAssignment) {
 			val reference = binary.leftOperand
 			reference.performOpAndUpdateRef(binary.operator, binary.rightOperand.lazyEval)
@@ -406,7 +406,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	def dispatch evaluate(WPostfixOperation op) {
+	def dispatch WollokObject evaluate(WPostfixOperation op) {
 		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [|getOrCreateNumber("1")])
 	}
 
@@ -421,17 +421,17 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		newValue
 	}
 
-	def dispatch evaluate(WUnaryOperation oper) {
+	def dispatch WollokObject evaluate(WUnaryOperation oper) {
 		val operation = oper.feature
 		val leftOperand = oper.operand.eval
 		validateNullOperand(leftOperand, operation)
 		operation.asUnaryOperation.apply(leftOperand)
 	}
 
-	def dispatch evaluate(WSelf t) { interpreter.currentContext.thisObject }
+	def dispatch WollokObject evaluate(WSelf t) { interpreter.currentContext.thisObject }
 
 	// member call
-	def dispatch evaluate(WFeatureCall call) {
+	def dispatch WollokObject evaluate(WFeatureCall call) {
 		val target = call.evaluateTarget
 		if (target === null)
 			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, call.fullMessage))

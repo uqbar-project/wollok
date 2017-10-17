@@ -52,7 +52,7 @@ abstract class VisualComponent {
 		addMessage(aText, Color.RED)
 	}
 	
-	def addMessage(String message, Color color) {
+	def void addMessage(String message, Color color) {
 		if (message.length > 50) {
 			var beginning = message.substring(0, 45) + ".."
 			var end = ".." + message.substring(46, message.length)

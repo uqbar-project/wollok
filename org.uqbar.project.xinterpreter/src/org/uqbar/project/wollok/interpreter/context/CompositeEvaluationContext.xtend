@@ -61,9 +61,9 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	}
 
 	// avoid a weird stackoverflow 	
-	def dispatch asText(CompositeEvaluationContext it) { toString }
-	def dispatch asText(MapBasedEvaluationContext it) { toString }
-	def dispatch asText(EvaluationContext it) { class.simpleName }
+	def dispatch asText(CompositeEvaluationContext<O> it) { toString }
+	def dispatch asText(MapBasedEvaluationContext<O> it) { toString }
+	def dispatch asText(EvaluationContext<O> it) { class.simpleName }
 	
 	override showableInStackTrace() { true }
 
