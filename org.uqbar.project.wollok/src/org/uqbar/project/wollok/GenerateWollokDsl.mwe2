@@ -89,7 +89,7 @@ Workflow {
 				javaModelDirectory = "/${projectName}/src-gen"
 			}
 			formatter = {
-				generateStub = true
+				generateStub = false
 			}
 			serializer = {
 				generateStub = false

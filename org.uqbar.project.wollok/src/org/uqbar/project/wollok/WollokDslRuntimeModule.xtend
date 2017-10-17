@@ -112,8 +112,8 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokSyntaxErrorMessageProvider
 	}
 
-	override bindIFormatter2() {
+	/*override bindIFormatter2() {
 		WollokDslFormatter
-	}
+	}*/
 	
 }

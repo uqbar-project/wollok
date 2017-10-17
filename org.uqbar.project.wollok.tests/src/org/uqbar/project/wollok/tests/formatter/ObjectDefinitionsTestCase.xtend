@@ -1,10 +1,12 @@
 package org.uqbar.project.wollok.tests.formatter
 
+import org.junit.Ignore
 import org.junit.Test
 
 class ObjectDefinitionsTestCase extends AbstractWollokFormatterTestCase {
 
 	@Test
+	@Ignore
 	def void testBasicObjectDefinition() {
 		assertFormatting(
 			'''
@@ -23,6 +25,7 @@ class ObjectDefinitionsTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void testBasicUnnamedObjectDefinition() {
 		assertFormatting(
 		'''
@@ -48,6 +51,7 @@ const pepita = object      {var energia             =
 	}
 	
 	@Test
+	@Ignore
 	def void testUnnamedObjectDefinitionInAnExpression() {
 		assertFormatting(
 		'''
