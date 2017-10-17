@@ -147,7 +147,10 @@ inherits       Parent{ var a = 0
 		    method numberOfPassengers()   method maxSpeed() 
 		    method expenseFor100Km() 
 		    method efficiency() {
-		        return        self.numberOfPassengers() * self.maxSpeed() / self.expenseFor100Km()
+		        return        self.numberOfPassengers()      *     self.maxSpeed()     /       
+		        
+		        
+		        self.expenseFor100Km()
 		    } 
 		}
 		''',

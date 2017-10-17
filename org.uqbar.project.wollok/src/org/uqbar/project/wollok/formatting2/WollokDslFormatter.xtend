@@ -33,6 +33,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
 import org.uqbar.project.wollok.wollokDsl.WTest
+import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -198,10 +199,16 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		i.then.surround [
 			oneSpace 
 		]
+		if (!(i.then instanceof WBlockExpression)) {
+			i.then.surround [ newLine ; indent ]
+		}
 		i.then.format
 		i.^else.surround [
 			oneSpace
 		]
+		if (!(i.^else instanceof WBlockExpression)) {
+			i.^else.surround [ newLine ; indent ]
+		}
 		i.^else.format
 	}
 
@@ -375,6 +382,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		o.operand.surround [ noSpace ]
 	}
 
+	def dispatch void format(WThrow t, extension IFormattableDocument document) {
+		t.prepend [ oneSpace ]
+		t.exception.prepend [ oneSpace ]
+		t.append [ newLine ]
+	}
 	def dispatch operandShouldBeFormatted(EObject o) { false }
 	def dispatch operandShouldBeFormatted(WMemberFeatureCall c) { true }
 	def dispatch operandShouldBeFormatted(WUnaryOperation o) { true }
