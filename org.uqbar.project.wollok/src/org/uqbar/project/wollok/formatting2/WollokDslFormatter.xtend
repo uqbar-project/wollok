@@ -261,7 +261,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 				element.append [ noSpace ]		
 			}
 		]
-		l.regionFor.keyword(WollokConstants.END_LIST_LITERAL).append [ noSpace ]
+		//l.regionFor.keyword(WollokConstants.END_LIST_LITERAL).append [ noSpace ]
 	}
 	
 	def dispatch void format(WClosure c, extension IFormattableDocument document) {

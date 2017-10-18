@@ -246,9 +246,11 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 	}
 
 
-/** TODO Hacer un test con esto
- * 
- * class Presentacion {
+	@Test
+	def void listWithPreviousConflicts() throws Exception {
+		assertFormatting(
+		'''
+  class Presentacion {
 	var fecha
 	var musicos
 	var lugar
@@ -275,6 +277,37 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		musico =>
 			musico.precioPorPresentacion(self)
 	}
-}
- */
+}		
+		''',
+		'''
+		class Presentacion {
+			var fecha
+			var musicos
+			var lugar
+			constructor() {
+				musicos = []
+			}
+			method fecha(_fecha) {
+				fecha = _fecha
+			}
+			method lugar(_lugar) {
+				lugar = _lugar
+			}
+			method agregarMusico(musico) {
+				musicos.add(musico)
+			}
+			method eliminarMusicos() {
+				musicos.clear()
+			}
+			method fecha() = fecha
+			method lugarConcurrido() = ( lugar.capacidad(fecha) > 5000 )
+			method tocaSolo(musico) = ( [ musico ] == musicos )
+			method costo() = musicos.sum({
+				musico =>
+					musico.precioPorPresentacion(self)
+			})
+		}
+		''')
+	}
+
 }
