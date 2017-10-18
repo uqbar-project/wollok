@@ -10,15 +10,15 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
     		const a = 10 
     		const b = 0
     		
-    		const c = if (a > 0) b else 0
+    			   const c = if (a > 0) b                    else 
+    			   
+    			   
+    			   0
     	}''', '''
 		program p {
 			const a = 10
 			const b = 0
-			const c = if (a > 0)
-				b
-			else
-				0
+			const c = if (a > 0) b else 0
 		}
 		''')
 	}
@@ -34,10 +34,7 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 		program p {
 			const a = 10
 			const b = 0
-			const c = if (a > 0)
-				b + 1
-			else
-				b - 1
+			const c = if (a > 0) b + 1 else b - 1
 		}
 		''')
 	}
@@ -198,8 +195,7 @@ method attack(target) {
 		object foo {
 			method attack(target) {
 				var attackers = self.standingMembers()
-				if (attackers.isEmpty())
-					throw new CannotAttackException("No attackers available")
+				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
 				attackers.forEach({
 					aMember =>
 						aMember.attack(target)

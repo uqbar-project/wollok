@@ -199,16 +199,16 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		i.then.surround [
 			oneSpace 
 		]
-		if (!(i.then instanceof WBlockExpression)) {
-			i.then.surround [ newLine ; indent ]
-		}
+		//if (!(i.then instanceof WBlockExpression)) {
+		//	i.then.surround [ newLine ; indent ]
+		//}
 		i.then.format
 		i.^else.surround [
 			oneSpace
 		]
-		if (!(i.^else instanceof WBlockExpression)) {
-			i.^else.surround [ newLine ; indent ]
-		}
+		//if (!(i.^else instanceof WBlockExpression)) {
+		//	i.^else.surround [ newLine ; indent ]
+		//}
 		i.^else.format
 	}
 
@@ -401,6 +401,5 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	 * WMixin, 
 	 * WSelfDelegatingConstructorCall, 
 	 * WSuperDelegatingConstructorCall, 
-	 * WThrow, 
 	 */
 }
