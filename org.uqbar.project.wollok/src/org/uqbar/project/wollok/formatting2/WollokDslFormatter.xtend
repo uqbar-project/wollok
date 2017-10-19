@@ -188,7 +188,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WAssignment a, extension IFormattableDocument document) {
-		a.feature.surround [ oneSpace ]
+		a.feature.append [ oneSpace ]
 		a.feature.format
 		a.value.prepend [ oneSpace ]
 		a.value.format
@@ -265,7 +265,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 				element.append [ noSpace ]		
 			}
 		]
-		//l.regionFor.keyword(WollokConstants.END_LIST_LITERAL).append [ noSpace ]
 	}
 	
 	def dispatch void format(WClosure c, extension IFormattableDocument document) {
@@ -323,7 +322,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_PARAMETER_LIST).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.END_PARAMETER_LIST).append [ noSpace ]
-		c.append [ newLine ]
 		c.arguments.forEach [ arg, i |
 			if (i == 0) {
 				arg.prepend [ noSpace ]
@@ -395,7 +393,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WThrow t, extension IFormattableDocument document) {
 		t.prepend [ oneSpace ]
 		t.exception.prepend [ oneSpace ]
-		t.append [ newLine ]
 	}
 
 	def dispatch void format(WMixin m, extension IFormattableDocument document) {

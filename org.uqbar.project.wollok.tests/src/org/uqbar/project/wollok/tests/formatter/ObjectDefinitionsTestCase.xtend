@@ -435,5 +435,29 @@ inherits
 			'''
 		)
 	}
+
+	@Test
+	def void testVariableInitializedBeforeConstructor() {
+		assertFormatting(
+		'''
+		class Ave {
+			var amigas = new Set()
+			constructor() {}
+		}
+		''',
+		'''
+		class Ave {
+		
+			var amigas = new Set()
+		
+			constructor() {
+			}
+
+		}
+		
+		'''
+		)
+	}
+			
 	
 }
