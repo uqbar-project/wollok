@@ -54,13 +54,12 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 		object foo {
 		
 			method bar() {
-				[ 3, 4, 50, 100 ].forEach({
-					it =>
-						if (it > 4) {
-							console.println(4)
-						} else {
-							console.println(it)
-						}
+				[ 3, 4, 50, 100 ].forEach({ it =>
+					if (it > 4) {
+						console.println(4)
+					} else {
+						console.println(it)
+					}
 				})
 			}
 		
@@ -190,7 +189,11 @@ method attack(target) {
                            var attackers = self.standingMembers()
              if (attackers.isEmpty()) throw
                                 new CannotAttackException("No attackers available") attackers.forEach({
-                                        aMember => aMember.attack(target) })
+                                        aMember          =>   
+                                        
+                                        
+                                        aMember.
+                                        attack(target) })
 }		
 }
 		''',
@@ -200,14 +203,64 @@ method attack(target) {
 			method attack(target) {
 				var attackers = self.standingMembers()
 				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
-				attackers.forEach({
-					aMember =>
-						aMember.attack(target)
+				attackers.forEach({ aMember => aMember.attack(target) })
+			}
+		
+		}
+		
+		''')
+	}
+	
+	@Test
+	def void testAllWithClosure() {
+		assertFormatting(
+		'''
+		class Cantante { const albumes = new Set()
+method esMinimalista() = albumes.all{
+				album =>
+					album.sonTodasCancionesCortas()
+			}
+	}	
+		''',
+		'''
+		class Cantante {
+		
+			const albumes = new Set()
+		
+			method esMinimalista() = albumes.all({ album => album.sonTodasCancionesCortas() })
+		
+		}
+		
+		''')
+	}		
+
+	@Test
+	def void testForEachWithComplexClosure() {
+		assertFormatting(
+		'''
+		class Cantante { const albumes = new Set()
+method mejorarAlbumes() {
+	 albumes.forEach{
+				album =>
+					album.agregarCancion(new Cancion())
+					album.sumarCosto(100)
+			}}
+	}	
+		''',
+		'''
+		class Cantante {
+		
+			const albumes = new Set()
+		
+			method mejorarAlbumes() {
+				albumes.forEach({ album =>
+					album.agregarCancion(new Cancion())
+					album.sumarCosto(100)
 				})
 			}
 		
 		}
 		
 		''')
-	}		
+	}			
 }

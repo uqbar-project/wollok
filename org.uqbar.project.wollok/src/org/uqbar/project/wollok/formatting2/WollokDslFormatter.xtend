@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -45,6 +46,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -153,13 +155,22 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WBlockExpression b, extension IFormattableDocument document) {
+		b.format(document, true)	
+	}
+	
+	def dispatch void format(WExpression b, extension IFormattableDocument document, boolean addNewLine) {
+		b.format(document)
+	}
+	
+	def dispatch void format(WBlockExpression b, extension IFormattableDocument document, boolean addNewLine) {
 		b.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION) => [
 			append[ newLine ]
 		]
 		b.expressions.forEach [
 			surround [ indent ]
 			format
-			append [ newLine ]
+			if (addNewLine) 
+				append [ newLine ]
 		]
 	}
 
@@ -268,21 +279,17 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WClosure c, extension IFormattableDocument document) {
-		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append [ newLine ]
 		val parametersCount = c.parameters.length
 		c.parameters.forEach [ parameter, i |
-			if (i == parametersCount - 1) 
-				parameter.append [ oneSpace ]
-			else
-				parameter.append [ noSpace ]
-			if (i == 0) {
-				parameter.prepend [ noSpace ].surround [ indent ]
-			} else {
-				parameter.prepend [ oneSpace ]		
-			} 
+			parameter.surround [ oneSpace ]
 		]
+		val oneExpression = c.expression.hasOneExpression
 		c.regionFor.keyword("=>") => [
-			append [ newLine ]
+			if (oneExpression) {
+				append [ oneSpace ]
+			} else {
+				append [ newLine ]
+			}
 			if (parametersCount == 0)
 				surround [ indent ]
 		]
@@ -290,12 +297,16 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.surround [
 			noSpace
 		]
-		c.expression => [
-			prepend [ oneSpace ]
-			surround [ indent ]
-			format
+		c.expression => [ expression |
+			expression.prepend [ oneSpace ]
+			expression.format(document, !oneExpression)
 		]
-		c.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend [ newLine ]
+		val end = c.regionFor.keyword(WollokConstants.END_EXPRESSION)
+		if (oneExpression) {
+			end.prepend [ oneSpace ]
+		} else {
+			end.prepend [ newLine ]
+		}
 	}
 
 	def dispatch void format(WConstructor c, extension IFormattableDocument document) {

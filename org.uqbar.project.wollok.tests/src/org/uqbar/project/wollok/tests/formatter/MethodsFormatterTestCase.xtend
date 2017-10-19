@@ -279,10 +279,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 			const a = null
 			a.doSomething(a, a, a, a, a)
 			a?.doSomething(a, a, a, a, a)
-			a?.doSomething({
-				=>
-					a.doSomething()
-			})
+			a?.doSomething({=> a.doSomething() })
 		}
 		''')
 	}
@@ -354,10 +351,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		
 			method tocaSolo(musico) = ( [ musico ] == musicos )
 		
-			method costo() = musicos.sum({
-				musico =>
-					musico.precioPorPresentacion(self)
-			})
+			method costo() = musicos.sum({ musico => musico.precioPorPresentacion(self) })
 		
 		}
 		
