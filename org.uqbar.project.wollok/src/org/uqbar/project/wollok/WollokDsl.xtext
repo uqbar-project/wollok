@@ -388,12 +388,12 @@ WDelegatingConstructorCall:
 	WSelfDelegatingConstructorCall | WSuperDelegatingConstructorCall
 ;
 
-// some how this should be referecens to WConstructor
+// somehow this should be references to WConstructor
 WSelfDelegatingConstructorCall:
 	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
-// some how this should be referecens to WConstructor
+// somehow this should be references to WConstructor
 WSuperDelegatingConstructorCall:
 	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;

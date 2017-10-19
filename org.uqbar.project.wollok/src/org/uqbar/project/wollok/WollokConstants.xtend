@@ -44,6 +44,7 @@ class WollokConstants {
 	public static val OP_UNARY_BOOLEAN = #['!', "not"]
 	
 	public static val SELF = "self"
+	public static val SUPER = "super"
 	public static val NULL = "null"
 	public static val METHOD = "method"
 	public static val CONSTRUCTOR = "constructor"
@@ -58,9 +59,11 @@ class WollokConstants {
 	public static val MIXIN = "mixin"
 	public static val CLASS = "class"
 	public static val INHERITS = "inherits"
+	public static val MIXED_WITH = "mixed with"
 	public static val WKO = "object"
 	public static val FIXTURE = "fixture"
-	public static val PROGRAM = "program" 
+	public static val PROGRAM = "program"
+	public static val PACKAGE = "package" 
 	
 	public static val ASSIGNMENT = "="
 	public static val BEGIN_EXPRESSION = "{"

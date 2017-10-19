@@ -361,5 +361,79 @@ inherits
 			'''
 		)
 	}
+
+	@Test
+	def void testBasicMixinDefinition() {
+		assertFormatting(
+			'''
+          
+          
+             
+             mixin           Volador {  
+          
+          
+          var energia
+
+              method volar(lugar) {energia             = 0 }}   
+		''',
+			'''
+			mixin Volador {
+			
+				var energia
+			
+				method volar(lugar) {
+					energia = 0
+				}
+			
+			}
+			
+			'''
+		)
+	}
+
+	@Test
+	def void testBasicMixinUse() {
+		assertFormatting(
+			'''
+          
+          
+             
+             mixin           Volador {  
+          
+          
+          var energia
+
+              method volar(lugar) {energia             = 0 }} class Ave 
+              
+              mixed with  
+              
+               Volador {
+              	
+              	method                 comer() { energia = 100
+              	}
+              }   
+		''',
+			'''
+			mixin Volador {
+			
+				var energia
+			
+				method volar(lugar) {
+					energia = 0
+				}
+			
+			}
+			
+			class Ave mixed with Volador {
+
+				method comer() {
+					energia = 100
+				}
+			
+			}
+			
+			'''
+		)
+	}
 	
 }

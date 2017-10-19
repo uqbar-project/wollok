@@ -364,4 +364,38 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		''')
 	}
 
+	@Test
+	def void testSuperInvocation() throws Exception {
+		assertFormatting('''class   Ave { 
+			
+			
+			var energia = 0
+			method volar(minutos) { energia -= minutos}}
+			class Golondrina {
+				
+				override method volar(minutos) {  super
+				
+				(minutos * ( 10 - 2 ) ) }        
+ }''', '''
+		class Ave {
+		
+			var energia = 0
+		
+			method volar(minutos) {
+				energia -= minutos
+			}
+		
+		}
+		
+		class Golondrina {
+		
+			override method volar(minutos) {
+				super(minutos * ( 10 - 2 ))
+			}
+		
+		}
+		
+		''')
+	}
+
 }

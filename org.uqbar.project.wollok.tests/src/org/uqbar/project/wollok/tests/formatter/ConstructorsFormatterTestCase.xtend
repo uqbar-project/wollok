@@ -136,5 +136,73 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	
 	''')
 	}
+
+	@Test
+	def void constructorSelfDelegation() throws Exception {
+		assertFormatting('''
+		class A { var a constructor(_a) { a = _a } 
+		
+		
+		constructor(_a, _b)   =           self         
+		
+		
+		(a                 +
+		
+		b)}
+		
+		
+		
+		''', 
+		'''
+		class A {
+		
+			var a
+		
+			constructor(_a) {
+				a = _a
+			}
+		
+			constructor(_a, _b) = self(a + b)
+		
+		}
+		
+		''')
+	}
 	
+	@Test
+	def void constructorSuperDelegation() throws Exception {
+		assertFormatting('''
+		class A { var a constructor(_a) { a = _a } 
+		}
+		class B {
+		
+		constructor(_a, _b)   =           super         
+		
+		
+		(a                 +
+		
+		b)}
+		
+		
+		
+		''', 
+		'''
+		class A {
+		
+			var a
+		
+			constructor(_a) {
+				a = _a
+			}
+		
+		}
+		
+		class B {
+		
+			constructor(_a, _b) = super(a + b)
+		
+		}
+		
+		''')
+	}	
 }

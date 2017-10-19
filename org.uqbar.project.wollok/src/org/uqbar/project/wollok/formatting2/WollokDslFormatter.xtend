@@ -9,7 +9,6 @@ import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
-import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -21,17 +20,21 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -67,36 +70,13 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		p.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
 
-	def void formatVariableDeclarations(Iterable<WVariableDeclaration> variableDeclarations, extension IFormattableDocument document) {
-		variableDeclarations.forEach [ variableDecl, i |
-			if (i > 0) {
-				variableDecl.prepend [ newLine ] 
-			}
-			variableDecl.format
-			if (variableDeclarations.size - 1 == i) {
-				variableDecl.append [ setNewLines(2) ]
-			} else {
-				variableDecl.append [ newLine ]
-			}
-		]	
-	}
-
-	def void formatTests(Iterable<WTest> tests, extension IFormattableDocument document) {
-		tests.forEach [ test, i |
-			test.format
-			if (tests.size - 1 == i) {
-				test.append [ newLine ]
-			} else {
-				test.append [ setNewLines(2) ]
-			}
-		]	
-	}
-	
 	def dispatch void format(WClass c, extension IFormattableDocument document) {
 		c.regionFor.keyword(WollokConstants.CLASS).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.CLASS).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
 		c.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
+		c.regionFor.keyword(WollokConstants.MIXED_WITH).surround [ oneSpace ]
+		c.regionFor.feature(WCLASS__MIXINS).surround [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		c.interior [ 
 			indent
@@ -322,6 +302,8 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			} 
 		]
 		c.regionFor.feature(WNAMED__NAME).append [ noSpace ]
+		c.regionFor.keyword(WollokConstants.ASSIGNMENT).surround [ oneSpace ]
+		c.delegatingConstructorCall?.format
 		c.expression => [
 			surround [ oneSpace ]
 			format
@@ -407,20 +389,121 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		t.exception.prepend [ oneSpace ]
 		t.append [ newLine ]
 	}
+
+	def dispatch void format(WMixin m, extension IFormattableDocument document) {
+		m.regionFor.keyword(WollokConstants.MIXIN).prepend [ noSpace ]
+		m.regionFor.keyword(WollokConstants.MIXIN).append [ oneSpace ]
+		m.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
+		m.interior [ 
+			indent
+		]
+		
+		m.variableDeclarations.formatVariableDeclarations(document)
+
+		m.methods.forEach [
+			format
+			append [ setNewLines(2) ]
+		]
+		
+		m.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
+	}
+
+	def dispatch void format(WPackage p, extension IFormattableDocument document) {
+		p.regionFor.keyword(WollokConstants.PACKAGE).prepend [ noSpace ]
+		p.regionFor.keyword(WollokConstants.PACKAGE).append [ oneSpace ]
+		p.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
+		p.interior [ 
+			indent
+		]
+		p.elements.forEach [ format ]
+		p.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
+	}
 	
+	def dispatch void format(WSuperInvocation s, extension IFormattableDocument document) {
+		if (s.previousHiddenRegion.length > 1) {
+			s.prepend [ oneSpace ]
+		}
+		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
+		s.memberCallArguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
+		]
+	}
+
+	def dispatch void format(WSelfDelegatingConstructorCall s, extension IFormattableDocument document) {
+		if (s.previousHiddenRegion.length > 1) {
+			s.prepend [ oneSpace ]
+		}
+		s.regionFor.keyword(WollokConstants.SELF).append [ noSpace ]
+		s.arguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
+		]
+	}
+
+	def dispatch void format(WSuperDelegatingConstructorCall s, extension IFormattableDocument document) {
+		if (s.previousHiddenRegion.length > 1) {
+			s.prepend [ oneSpace ]
+		}
+		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
+		s.arguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
+		]
+	}
+	
+	/** 
+	 * *******************************************************
+	 * 
+	 * INTERNAL DEFINITIONS
+	 * 
+	 * *********************************************************
+	 */
 	def dispatch operandShouldBeFormatted(EObject o) { false }
 	def dispatch operandShouldBeFormatted(WMemberFeatureCall c) { true }
 	def dispatch operandShouldBeFormatted(WUnaryOperation o) { true }
 	def dispatch operandShouldBeFormatted(WBinaryOperation o) { true }
 	def dispatch operandShouldBeFormatted(WListLiteral l) { true }
 	def dispatch operandShouldBeFormatted(WSetLiteral l) { true }
+
+	def void formatVariableDeclarations(Iterable<WVariableDeclaration> variableDeclarations, extension IFormattableDocument document) {
+		variableDeclarations.forEach [ variableDecl, i |
+			if (i > 0) {
+				variableDecl.prepend [ newLine ] 
+			}
+			variableDecl.format
+			if (variableDeclarations.size - 1 == i) {
+				variableDecl.append [ setNewLines(2) ]
+			} else {
+				variableDecl.append [ newLine ]
+			}
+		]	
+	}
+
+	def void formatTests(Iterable<WTest> tests, extension IFormattableDocument document) {
+		tests.forEach [ test, i |
+			test.format
+			if (tests.size - 1 == i) {
+				test.append [ newLine ]
+			} else {
+				test.append [ setNewLines(2) ]
+			}
+		]	
+	}
 	
-	// TODO: implement for 
-	/**
-	 * WPackage, 
-	 * WSuperInvocation, 
-	 * WMixin, 
-	 * WSelfDelegatingConstructorCall, 
-	 * WSuperDelegatingConstructorCall, 
-	 */
 }
