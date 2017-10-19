@@ -9,6 +9,7 @@ import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -51,7 +52,14 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WFile file, extension IFormattableDocument document) {
 		file => [
-			imports.forEach [ format ]
+			imports.forEach [ ^import, i |
+				^import.format
+				if (imports.size - 1 == i) {
+					^import.append [ setNewLines(2) ]
+				} else {
+					^import.append [ newLine ]
+				}
+			]
 			elements.forEach [ format ]
 			main.format
 			tests.formatTests(document)
@@ -417,6 +425,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		p.elements.forEach [ format ]
 		p.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
+	}
+
+	def dispatch void format(Import i, extension IFormattableDocument document) {
+		i.regionFor.keyword(WollokConstants.IMPORT).prepend [ noSpace ]
+		i.regionFor.keyword(WollokConstants.IMPORT).append [ oneSpace ]
 	}
 	
 	def dispatch void format(WSuperInvocation s, extension IFormattableDocument document) {

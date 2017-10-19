@@ -34,4 +34,39 @@ class PackageDefinitionsTestCase extends AbstractWollokFormatterTestCase {
 		)
 	}
 
+	@Test
+	def void testBasicImportDefinition() {
+		assertFormatting(
+			'''
+			import 
+			
+			 pepita.*
+			import    wollok.game.*
+			import archivo.* program abc {
+				game.addVisual(pepita)
+				game.start()
+				pepita.come(5000)
+				pepita.vola(10)
+				pepita.vola(10)
+				pepita.vola(10) pepita.vola(10)
+			}
+		''',
+		'''
+		import pepita.*
+		import wollok.game.*
+		import archivo.*
+		
+		program abc {
+			game.addVisual(pepita)
+			game.start()
+			pepita.come(5000)
+			pepita.vola(10)
+			pepita.vola(10)
+			pepita.vola(10)
+			pepita.vola(10)
+		}
+		'''
+		)
+	}
+
 }
