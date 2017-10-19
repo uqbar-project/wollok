@@ -46,19 +46,14 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	
 	@Inject extension WollokDslGrammarAccess
 
-	def dispatch void format(WFile wFile, extension IFormattableDocument document) {
-		// TODO: format HiddenRegions around keywords, attributes, cross references, etc.
-		for (Import _import : wFile.getImports()) {
-			_import.format
-		}
-		for (WLibraryElement wLibraryElement : wFile.getElements()) {
-			wLibraryElement.format
-		}
-		wFile.getMain.format
-		for (WTest wTest : wFile.getTests()) {
-			wTest.format
-		}
-		wFile.getSuite.format
+	def dispatch void format(WFile file, extension IFormattableDocument document) {
+		file => [
+			imports.forEach [ format ]
+			elements.forEach [ format ]
+			main.format
+			tests.formatTests(document)
+			suite.format
+		]
 	}
 
 	def dispatch void format(WProgram p, extension IFormattableDocument document) {
@@ -72,23 +67,53 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		p.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
 	}
 
+	def void formatVariableDeclarations(Iterable<WVariableDeclaration> variableDeclarations, extension IFormattableDocument document) {
+		variableDeclarations.forEach [ variableDecl, i |
+			if (i > 0) {
+				variableDecl.prepend [ newLine ] 
+			}
+			variableDecl.format
+			if (variableDeclarations.size - 1 == i) {
+				variableDecl.append [ setNewLines(2) ]
+			} else {
+				variableDecl.append [ newLine ]
+			}
+		]	
+	}
+
+	def void formatTests(Iterable<WTest> tests, extension IFormattableDocument document) {
+		tests.forEach [ test, i |
+			test.format
+			if (tests.size - 1 == i) {
+				test.append [ newLine ]
+			} else {
+				test.append [ setNewLines(2) ]
+			}
+		]	
+	}
+	
 	def dispatch void format(WClass c, extension IFormattableDocument document) {
 		c.regionFor.keyword(WollokConstants.CLASS).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.CLASS).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
 		c.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
-		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		c.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		c.interior [ 
 			indent
 		]
-		c.variableDeclarations.forEach [ format ]
+		c.variableDeclarations.formatVariableDeclarations(document)
 		
 		c.constructors.forEach [
 			format
+			append [ setNewLines(2) ]
+		]
+
+		c.methods.forEach [
+			format
+			append [ setNewLines(2) ]
 		]
 		
-		c.methods.forEach [ format ]
-		c.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ newLine ]
+		c.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
 	}
 
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
@@ -96,22 +121,22 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
 		o.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
-		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		o.interior [ 
 			indent
 		]
-		o.variableDeclarations.forEach [
-			format
-		]
 		
+		o.variableDeclarations.formatVariableDeclarations(document)
+
 		o.methods.forEach [
 			format
+			append [ setNewLines(2) ]
 		]
-		o.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ newLine ]
+		
+		o.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
 	}
 
 	def dispatch void format(WVariableDeclaration v, extension IFormattableDocument document) {
-		v.surround[	newLine	]
 		v.regionFor.keyword(WollokConstants.VAR).append [ oneSpace ]
 		v.regionFor.keyword(WollokConstants.CONST).append [ oneSpace ]
 		v.variable.append [ oneSpace ]
@@ -122,7 +147,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WMethodDeclaration m, extension IFormattableDocument document) {
 		m.regionFor.feature(WMETHOD_DECLARATION__OVERRIDES).surround [ oneSpace ]
 		m.regionFor.feature(WMETHOD_DECLARATION__NATIVE).surround [ oneSpace ]
-		m.regionFor.keyword(WollokConstants.METHOD).surround [ oneSpace ]
+		m.regionFor.keyword(WollokConstants.METHOD).append [ oneSpace ]
 		m.regionFor.feature(WMETHOD_DECLARATION__EXPRESSION_RETURNS).surround([ oneSpace ])
 		m.parameters.forEach [ parameter, i |
 			parameter.append [ noSpace ]
@@ -133,11 +158,9 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			} 
 		]
 		m.regionFor.feature(WNAMED__NAME).append [ noSpace ]
-		m.surround [ newLine ]
 		m.expression => [
 			prepend [ oneSpace ]
 			format
-			append [ newLine ]
 		]
 	}
 	
@@ -181,7 +204,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		a.feature.format
 		a.value.prepend [ oneSpace ]
 		a.value.format
-		a.append[ newLine ]
 	}
 	
 	def dispatch void format(WBinaryOperation o, extension IFormattableDocument document) {
@@ -199,16 +221,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		i.then.surround [
 			oneSpace 
 		]
-		//if (!(i.then instanceof WBlockExpression)) {
-		//	i.then.surround [ newLine ; indent ]
-		//}
 		i.then.format
 		i.^else.surround [
 			oneSpace
 		]
-		//if (!(i.^else instanceof WBlockExpression)) {
-		//	i.^else.surround [ newLine ; indent ]
-		//}
 		i.^else.format
 	}
 
@@ -306,7 +322,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			} 
 		]
 		c.regionFor.feature(WNAMED__NAME).append [ noSpace ]
-		c.surround [ newLine ]
 		c.expression => [
 			surround [ oneSpace ]
 			format
@@ -333,10 +348,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WTest t, extension IFormattableDocument document) {
 		t.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).prepend [ oneSpace ].append[ newLine ]
 		t.elements.forEach [
-			surround [ indent ; newLine ]
+			surround [ indent ]
+			append [ newLine ]
 			format
 		]
-		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ noSpace ; newLine ]
+		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ noSpace ]
 	}
 
 	def dispatch void format(WReturnExpression r, extension IFormattableDocument document) {
@@ -347,21 +363,25 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WSuite s, extension IFormattableDocument document) {
 		s.regionFor.keyword(WollokConstants.SUITE).append [ oneSpace ]
-		s.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		s.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		s.interior [ indent ]
-		s.variableDeclarations.forEach [ format ]
+		s.variableDeclarations.formatVariableDeclarations(document)
 		s.fixture.format
+		s.fixture.append [ setNewLines(2) ]
 		s.methods.forEach [ format ]
-		s.tests.forEach [ format ]
-		s.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ newLine ]
+		s.tests.forEach [ 
+			format
+			append [ setNewLines(2) ]
+		]
+		s.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ setNewLines(2) ]
 	}
 
 	def dispatch void format(WFixture f, extension IFormattableDocument document) {
 		f.regionFor.keyword(WollokConstants.FIXTURE).append [ oneSpace ]
 		f.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		f.interior [ indent ]
-		f.elements.forEach [ format ]
-		f.regionFor.keyword(WollokConstants.END_EXPRESSION).surround[ newLine ]
+		f.elements.forEach [ format ; surround [newLine] ]
+		f.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend[ newLine ]
 	}
 
 	def dispatch void format(WPostfixOperation o, extension IFormattableDocument document) {
@@ -387,6 +407,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		t.exception.prepend [ oneSpace ]
 		t.append [ newLine ]
 	}
+	
 	def dispatch operandShouldBeFormatted(EObject o) { false }
 	def dispatch operandShouldBeFormatted(WMemberFeatureCall c) { true }
 	def dispatch operandShouldBeFormatted(WUnaryOperation o) { true }

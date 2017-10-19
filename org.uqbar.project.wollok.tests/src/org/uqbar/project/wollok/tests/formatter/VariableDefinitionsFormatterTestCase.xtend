@@ -14,16 +14,20 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		}''', 
 		'''
 		class Foo {
+		
 			var x
 			var y
 			var z
+		
 			method addition() {
 				var a = x
 				x = 1
 				y = 2
 				z = x + y
 			}
+
 		}
+		
 		''')
 	}
 
@@ -48,16 +52,20 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		}''', 
 		'''
 		class Foo {
+		
 			var x
 			var y = 5
 			var z
+		
 			method addition() {
 				var a = x
 				x = 1
 				y = 2
 				z = x + y
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -77,16 +85,20 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		}''', 
 		'''
 		class Foo {
+		
 			var x
 			var y
 			var z
+		
 			method addition() {
 				var a = x
 				x = 1
 				y = 2
 				z = x + y
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -101,7 +113,9 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		}''', 
 		'''
 		class Foo {
+		
 			var x
+		
 			method addition() {
 				x = 1
 				var a = 2
@@ -109,7 +123,9 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 				a++
 				a.inverted()
 			}
+		
 		}
+		
 		''')
 	}
 	

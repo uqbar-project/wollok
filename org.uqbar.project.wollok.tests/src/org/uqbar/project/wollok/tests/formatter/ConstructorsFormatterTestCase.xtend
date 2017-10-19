@@ -15,13 +15,17 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		}''', 
 		'''
 		class Foo {
+		
 			var x
 			var y
+		
 			constructor(anX, anY) {
 				x = 2
 				y = 3
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -39,13 +43,17 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		}''', 
 		'''
 		class Foo {
+		
 			var x
 			var y
+		
 			constructor(anX, anY) {
 				x = anX
 				y = anY
 			}
+		
 		}
+		
 		''')
 	}
 	
@@ -55,13 +63,17 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	var calle
 	var numero  constructor  (  c  ,   n   ) { calle = c numero = n } }''', '''
 		class Direccion {
+		
 			var calle
 			var numero
+		
 			constructor(c, n) {
 				calle = c
 				numero = n
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -75,13 +87,17 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		numero = n
 	} }''', '''
 		class Direccion {
+		
 			var calle
 			var numero
+		
 			constructor(c, n) {
 				calle = c
 				numero = n
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -97,20 +113,27 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		}
 	}''', '''
 	class Direccion {
+	
 		var calle
 		var numero
+	
 		constructor(c, n, b, d) {
 			calle = c
 			numero = n
 		}
+	
 	}
+	
 	class Client {
+	
 		method blah() {
 			const a = ""
 			const b = 2
 			const c = new Direccion(a, b, "blah", [ 1, 2, 3 ])
 		}
+	
 	}
+	
 	''')
 	}
 	

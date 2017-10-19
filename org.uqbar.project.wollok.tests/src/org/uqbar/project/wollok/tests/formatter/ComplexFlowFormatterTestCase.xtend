@@ -52,6 +52,7 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 		''',
 		'''
 		object foo {
+		
 			method bar() {
 				[ 3, 4, 50, 100 ].forEach({
 					it =>
@@ -62,7 +63,9 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 						}
 				})
 			}
+		
 		}
+		
 		''')
 	}
 	
@@ -193,6 +196,7 @@ method attack(target) {
 		''',
 		'''
 		object foo {
+		
 			method attack(target) {
 				var attackers = self.standingMembers()
 				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
@@ -201,7 +205,9 @@ method attack(target) {
 						aMember.attack(target)
 				})
 			}
+		
 		}
+		
 		''')
 	}		
 }

@@ -17,11 +17,14 @@ class MethodsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		''',
 		'''
 		object foo {
+		
 			method bar(param, param2) {
 				console.println("")
 				console.println("")
 			}
+		
 		}
+		
 		'''
 		)
 	}
@@ -42,19 +45,24 @@ method bar3() { assert.that(true)		var a = 1 + 1 console.println(a)}
 		''',
 		'''
 		object foo {
+		
 			method bar(param, param2) {
 				console.println("")
 				console.println("")
 			}
+		
 			method bar2() {
 				return 3
 			}
+		
 			method bar3() {
 				assert.that(true)
 				var a = 1 + 1
 				console.println(a)
 			}
+		
 		}
+		
 		'''
 		)
 	}
@@ -72,9 +80,13 @@ method bar3() { assert.that(true)		var a = 1 + 1 console.println(a)}
 		''',
 		'''
 		object foo {
+		
 			method bar(param, param2) = 2
+		
 			method bar2() = self.bar(1, "hola")
+		
 		}
+		
 		'''
 		)
 	}
@@ -101,18 +113,27 @@ inherits       Parent{ var a = 0
 		''',
 		'''
 		class Parent {
+		
 			method bar(param, param2) = 2
+		
 			method bar2() {
 				return self.bar(1, "hola")
 			}
+		
 		}
+		
 		class Child inherits Parent {
+		
 			var a = 0
+		
 			override method bar(param, param2) = ( super() + 10 )
+		
 			override method bar2() {
 				a++
 			}
+		
 		}
+		
 		'''
 		)
 	}
@@ -132,9 +153,13 @@ inherits       Parent{ var a = 0
 		''',
 		'''
 		object foo {
+		
 			method bar(param, param2) native
+		
 			method bar2() native
+		
 		}
+		
 		'''
 		)
 	}
@@ -156,13 +181,19 @@ inherits       Parent{ var a = 0
 		''',
 		'''
 		class Vehicle {
+		
 			method numberOfPassengers()
+		
 			method maxSpeed()
+		
 			method expenseFor100Km()
+		
 			method efficiency() {
 				return ( self.numberOfPassengers() * self.maxSpeed() ) / self.expenseFor100Km()
 			}
+		
 		}
+		
 		'''
 		)
 	}
@@ -174,12 +205,16 @@ inherits       Parent{ var a = 0
 		
 const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr } }''', '''
 		class Golondrina {
+		
 			const energia = 10
 			const kmRecorridos = 0
+		
 			method comer(gr) {
 				energia = energia + gr
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -189,12 +224,16 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
     		energia = energia + gr
     	} }''', '''
 		class Golondrina {
+		
 			const energia = 10
 			const kmRecorridos = 0
+		
 			method comer(gr) {
 				energia = energia + gr
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -213,6 +252,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 			}
 		}''', '''
 		object foo {
+		
 			method bar() {
 				self.bar().bar().bar()
 				console.println("")
@@ -220,7 +260,9 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 				console.println("")
 				console.println("")
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -281,32 +323,44 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		''',
 		'''
 		class Presentacion {
+		
 			var fecha
 			var musicos
 			var lugar
+		
 			constructor() {
 				musicos = []
 			}
+		
 			method fecha(_fecha) {
 				fecha = _fecha
 			}
+		
 			method lugar(_lugar) {
 				lugar = _lugar
 			}
+		
 			method agregarMusico(musico) {
 				musicos.add(musico)
 			}
+		
 			method eliminarMusicos() {
 				musicos.clear()
 			}
+		
 			method fecha() = fecha
+		
 			method lugarConcurrido() = ( lugar.capacidad(fecha) > 5000 )
+		
 			method tocaSolo(musico) = ( [ musico ] == musicos )
+		
 			method costo() = musicos.sum({
 				musico =>
 					musico.precioPorPresentacion(self)
 			})
+		
 		}
+		
 		''')
 	}
 

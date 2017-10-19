@@ -46,6 +46,7 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 		test "aSimpleTest" {
 			assert.that(true)
 		}
+		
 		test "secondTest" {
 			var text = "hola"
 			assert.equals(4, text.length())
@@ -88,10 +89,13 @@ test "aSimpleTest"
 assert.that(true)}}''', 
     	'''
 		describe "group of tests" {
+		
 			test "aSimpleTest" {
 				assert.that(true)
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -101,10 +105,13 @@ assert.that(true)}}''',
     	'''describe            "group of tests"{test "aSimpleTest"{assert.that(true)}}''', 
     	'''
 		describe "group of tests" {
+		
 			test "aSimpleTest" {
 				assert.that(true)
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -124,14 +131,19 @@ test "aSimpleTest"
 assert.equals(1, a)}}''', 
     	'''
 		describe "group of tests" {
+		
 			var a
+		
 			fixture {
 				a = 1
 			}
+		
 			test "aSimpleTest" {
 				assert.equals(1, a)
 			}
+		
 		}
+		
 		''')
 	}
 
@@ -166,18 +178,63 @@ assert.equals(b.length() - 1, c)
 ''', 
     	'''
 		describe "group of tests" {
+		
 			var a
 			var b
 			var c = 3
+		
 			fixture {
 				a = 1
 				b = "hola"
 			}
+		
 			test "aSimpleTest" {
 				assert.equals(1, a)
 				assert.equals(b.length() - 1, c)
 			}
+		
 		}
+		
+		''')
+	}
+
+	@Test
+	def void testDescribeWithObjectDefinition() throws Exception {
+		assertFormatting(
+    	'''object foo { method bar() = 1 }describe            "group of tests" 
+{ 
+	var a  
+	= foo.bar()
+	
+test "aSimpleTest"
+{
+
+
+
+assert.equals(1, a)
+
+
+}}
+
+
+''', 
+    	'''
+		object foo {
+		
+			method bar() = 1
+		
+		}
+		
+		describe "group of tests" {
+		
+			var a = foo.bar()
+		
+			test "aSimpleTest" {
+				assert.equals(1, a)
+			}
+		
+		}
+		
 		''')
 	}
 
