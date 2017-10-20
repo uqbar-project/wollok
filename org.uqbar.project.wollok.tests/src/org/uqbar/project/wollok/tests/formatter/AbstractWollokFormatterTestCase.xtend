@@ -6,7 +6,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
 import org.junit.Assert
-import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 
@@ -16,8 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
  * @author jfernandes
  * @author tesonep
  */
-//@RunWith(XtextRunner)
-//@InjectWith(WollokTestInjectorProvider)
 class AbstractWollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer

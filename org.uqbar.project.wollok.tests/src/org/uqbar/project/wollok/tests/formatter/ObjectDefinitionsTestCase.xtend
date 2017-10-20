@@ -465,5 +465,48 @@ inherits
 		)
 	}
 			
+	@Test
+	def testObjectInheritingParentWithParameterizedConstructor() {
+		assertFormatting('''
+object luisAlberto inherits Musico (
 	
+	8
+) {
+
+	var guitarra
+}		
+		''',
+		'''
+		object luisAlberto inherits Musico (8) {
+
+			var guitarra
+		
+		}
+		
+		''')
+	}
+
+	@Test
+	def testObjectInheritingParentWithParameterizedConstructor2() {
+		assertFormatting('''
+object luisAlberto inherits Musico (
+	
+	8
+	
+	, "estrelicia"
+) {
+
+	var guitarra
+}		
+		''',
+		'''
+		object luisAlberto inherits Musico (8, "estrelicia") {
+
+			var guitarra
+		
+		}
+		
+		''')
+	}
+		
 }

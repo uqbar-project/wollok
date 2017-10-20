@@ -293,5 +293,87 @@ method mejorarAlbumes() {
 		}
 		
 		''')
-	}			
+	}
+	
+	@Test
+	def void doubleIfInMethod() {
+		assertFormatting(
+		'''
+		object pepita {
+			const posicion = game.at(2, 0)
+			var energia = 50
+			method energia() {
+				return energia
+			}
+			method imagen() {
+				if (energia < 150) return "pepita.png"
+				if (energia < 300) return "pepita1.png"
+				return "pepita2.png"
+			}
+			
+			
+			}
+		''',
+		'''
+		object pepita {
+		
+			const posicion = game.at(2, 0)
+			var energia = 50
+		
+			method energia() {
+				return energia
+			}
+		
+			method imagen() {
+				if (energia < 150) return "pepita.png"
+				if (energia < 300) return "pepita1.png"
+				return "pepita2.png"
+			}
+
+		}
+		
+		''')
+	}
+
+	@Test
+	def void testWithIfExpression() {
+		assertFormatting(
+		'''
+		object laTrastienda {
+		
+			const capacidadPlantaBaja = 400
+			const capacidadPrimerPiso = 300
+		
+			method capacidad(dia) {
+				if (dia.dayOfWeek() 
+				
+				
+				== 6) {
+					return capacidadPlantaBaja + capacidadPrimerPiso
+				} else {
+					return capacidadPlantaBaja
+				}
+			}
+		
+		}
+		''',
+		'''
+		object laTrastienda {
+		
+			const capacidadPlantaBaja = 400
+			const capacidadPrimerPiso = 300
+		
+			method capacidad(dia) {
+				if (dia.dayOfWeek() == 6) {
+					return capacidadPlantaBaja + capacidadPrimerPiso
+				} else {
+					return capacidadPlantaBaja
+				}
+			}
+		
+		}
+		
+		''')
+		
+	}				
 }
