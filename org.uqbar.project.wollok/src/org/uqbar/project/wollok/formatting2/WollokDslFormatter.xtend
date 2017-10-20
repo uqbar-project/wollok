@@ -173,9 +173,9 @@ class WollokDslFormatter extends AbstractFormatter2 {
 				append [ newLine ]
 		]
 	}
-
-	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document) {
-		if (c.previousHiddenRegion.length > 1) {
+	
+	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document, boolean checkPreviousSpaces) {
+		if (checkPreviousSpaces && c.previousHiddenRegion.length > 1) {
 			c.prepend [ oneSpace ]
 		}
 		c.memberCallTarget => [
@@ -196,6 +196,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			arg.append [ noSpace ]
 			arg.format
 		]
+	}
+	
+	def dispatch void format(WMemberFeatureCall c, extension IFormattableDocument document) {
+		c.format(document, true)
 	}
 	
 	def dispatch void format(WAssignment a, extension IFormattableDocument document) {
@@ -283,7 +287,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.parameters.forEach [ parameter, i |
 			parameter.surround [ oneSpace ]
 		]
-		val oneExpression = c.expression.hasOneExpression
+		val oneExpression = c.expression.hasOneExpressionForFormatting
 		c.regionFor.keyword("=>") => [
 			if (oneExpression) {
 				append [ oneSpace ]
@@ -379,7 +383,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		f.regionFor.keyword(WollokConstants.FIXTURE).append [ oneSpace ]
 		f.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
 		f.interior [ indent ]
-		f.elements.forEach [ format ; surround [newLine] ]
+		f.elements.forEach [ e | 
+			e.surround [ newLine ]
+			e.format(document, false) 
+		]
 		f.regionFor.keyword(WollokConstants.END_EXPRESSION).prepend[ newLine ]
 	}
 

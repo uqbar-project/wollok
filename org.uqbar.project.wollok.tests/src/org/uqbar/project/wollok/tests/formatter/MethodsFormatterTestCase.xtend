@@ -1,7 +1,13 @@
 package org.uqbar.project.wollok.tests.formatter
 
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
+@RunWith(XtextRunner)
+@InjectWith(WollokTestInjectorProvider)
 class MethodsFormatterTestCase extends AbstractWollokFormatterTestCase {
 
 	@Test

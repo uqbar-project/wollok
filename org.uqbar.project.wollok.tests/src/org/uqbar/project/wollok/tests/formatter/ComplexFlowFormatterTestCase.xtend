@@ -1,7 +1,13 @@
 package org.uqbar.project.wollok.tests.formatter
 
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 
+@RunWith(XtextRunner)
+@InjectWith(WollokTestInjectorProvider)
 class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 	
 	@Test
@@ -60,6 +66,31 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
 					} else {
 						console.println(it)
 					}
+				})
+			}
+		
+		}
+		
+		''')
+	}
+
+	@Test
+	def void issue702_forEachAndIf_2() throws Exception {
+		assertFormatting('''
+		object foo {
+		    method bar() {
+		        [3,              4        ,50,      100 ].forEach({ it => if (it > 4) console.println(4) else console.println(it)
+		           
+		        })
+		    }
+		}
+		''',
+		'''
+		object foo {
+		
+			method bar() {
+				[ 3, 4, 50, 100 ].forEach({ it =>
+					if (it > 4) console.println(4) else console.println(it)
 				})
 			}
 		

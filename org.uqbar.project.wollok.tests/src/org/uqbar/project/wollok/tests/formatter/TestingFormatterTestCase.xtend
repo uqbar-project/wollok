@@ -27,7 +27,6 @@ class TestingFormatterTestCase extends AbstractWollokFormatterTestCase {
 		''')
 	}
 
-	// TEST METHODS
 	@Test
 	def void severalTestsSimplesTestFormatting() throws Exception {
 		assertFormatting(
@@ -238,4 +237,75 @@ assert.equals(1, a)
 		''')
 	}
 
+	@Test
+	def void testComplexFixtureDefinition() throws Exception {
+		assertFormatting(
+		'''
+		import musicos.*
+		
+		describe "tests - entrega 1" {
+		
+		var cisne
+			var laFamilia var presentacionLunaPark         var presentacionLaTrastienda
+		
+			fixture {
+				cisne = new Cancion(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
+				laFamilia = new Cancion(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
+				presentacionLunaPark = new Presentacion()
+				presentacionLunaPark.fecha(new Date(20, 4, 2017))
+				presentacionLunaPark.lugar(lunaPark)
+				presentacionLunaPark.agregarMusico(luisAlberto)
+				presentacionLunaPark.agregarMusico(joaquin)
+				presentacionLunaPark.agregarMusico(lucia)
+				presentacionLaTrastienda = new Presentacion()
+				presentacionLaTrastienda.fecha(new Date(15, 11, 2017))
+				presentacionLaTrastienda.lugar(laTrastienda)    				presentacionLaTrastienda.agregarMusico(luisAlberto)
+				presentacionLaTrastienda.agregarMusico(joaquin)
+				presentacionLaTrastienda.agregarMusico(lucia)
+			}
+		
+			test "habilidad de Joaquín en grupo" {
+				assert.equals(25, joaquin.habilidad())
+			}
+		
+
+}
+		''',
+		'''
+		import musicos.*
+		
+		describe "tests - entrega 1" {
+		
+			var cisne
+			var laFamilia
+			var presentacionLunaPark
+			var presentacionLaTrastienda
+		
+			fixture {
+				cisne = new Cancion(312, "Hoy el viento se abrió quedó vacío el aire una vez más y el manantial brotó y nadie está aquí y puedo ver que solo estallan las hojas al brillar")
+				laFamilia = new Cancion(264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
+				presentacionLunaPark = new Presentacion()
+				presentacionLunaPark.fecha(new Date(20, 4, 2017))
+				presentacionLunaPark.lugar(lunaPark)
+				presentacionLunaPark.agregarMusico(luisAlberto)
+				presentacionLunaPark.agregarMusico(joaquin)
+				presentacionLunaPark.agregarMusico(lucia)
+				presentacionLaTrastienda = new Presentacion()
+				presentacionLaTrastienda.fecha(new Date(15, 11, 2017))
+				presentacionLaTrastienda.lugar(laTrastienda)
+				presentacionLaTrastienda.agregarMusico(luisAlberto)
+				presentacionLaTrastienda.agregarMusico(joaquin)
+				presentacionLaTrastienda.agregarMusico(lucia)
+			}
+		
+			test "habilidad de Joaquín en grupo" {
+				assert.equals(25, joaquin.habilidad())
+			}
+		
+		}
+		
+		'''
+		)
+	}
+	
 }

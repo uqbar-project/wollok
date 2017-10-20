@@ -603,9 +603,9 @@ class WollokModelExtensions {
 	def static dispatch isASuite(EObject o) { false }
 	def static dispatch isASuite(WFile it) { tests.empty && suite !== null }
 	
-	def static dispatch boolean hasOneExpression(EObject o) { false }
-	def static dispatch boolean hasOneExpression(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpression }
-	def static dispatch boolean hasOneExpression(WExpression e) { true }
-	def static dispatch boolean hasOneExpression(WIfExpression e) { false }
+	def static dispatch boolean hasOneExpressionForFormatting(EObject o) { false }
+	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
+	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
+	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
 	
 }

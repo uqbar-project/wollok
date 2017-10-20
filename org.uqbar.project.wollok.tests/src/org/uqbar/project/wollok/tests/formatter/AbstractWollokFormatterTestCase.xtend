@@ -5,12 +5,8 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.resource.SaveOptions
 import org.eclipse.xtext.serializer.ISerializer
-import org.eclipse.xtext.testing.InjectWith
-import org.eclipse.xtext.testing.XtextRunner
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.uqbar.project.wollok.tests.injectors.WollokTestInjectorProvider
 import org.uqbar.project.wollok.tests.interpreter.WollokParseHelper
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 
@@ -20,8 +16,8 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
  * @author jfernandes
  * @author tesonep
  */
-@RunWith(XtextRunner)
-@InjectWith(WollokTestInjectorProvider)
+//@RunWith(XtextRunner)
+//@InjectWith(WollokTestInjectorProvider)
 class AbstractWollokFormatterTestCase {
 	@Inject protected extension WollokParseHelper
 	@Inject protected extension ISerializer
@@ -46,8 +42,4 @@ class AbstractWollokFormatterTestCase {
 		"Assignment " + a.feature.ref.name
 	}
 
-	@Test
-	def void fakeTest() {
-		// used just to subclass 
-	}
 }
