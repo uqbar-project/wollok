@@ -169,11 +169,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		b.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION) => [
 			append[ newLine ]
 		]
-		b.expressions.forEach [
-			surround [ indent ]
-			format
+		b.expressions.forEach [ expr, i |
+			expr.surround [ indent ]
+			expr.format(document, false)
 			if (addNewLine) 
-				append [ newLine ]
+				expr.append [ newLine ]
 		]
 	}
 	
@@ -361,6 +361,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	def dispatch void format(WReturnExpression r, extension IFormattableDocument document) {
 		r.prepend [ oneSpace ]
 		r.expression.format
+		r.expression.prepend [ oneSpace ]		
 		r.append [ newLine ]
 	}
 

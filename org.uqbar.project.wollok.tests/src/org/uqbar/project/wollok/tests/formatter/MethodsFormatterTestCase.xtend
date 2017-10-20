@@ -398,4 +398,95 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 		''')
 	}
 
+	@Test
+	def void methodReturningValuesFromIfExpression() {
+		assertFormatting(
+			'''
+			object luisAlberto inherits Musico (8) {
+			
+				var guitarra
+			
+				method guitarra() = guitarra
+			
+				method guitarra(_guitarra) {
+					guitarra = _guitarra
+				}
+			
+				override method costo(presentacion) {
+					if (presentacion.dia() < ( new Date(30, 9, 2017) )) {
+						return 
+						
+						
+						
+						1000
+					} else {
+						return 1200
+					}
+				}
+			
+			}
+			''',
+			'''
+			object luisAlberto inherits Musico (8) {
+			
+				var guitarra
+			
+				method guitarra() = guitarra
+			
+				method guitarra(_guitarra) {
+					guitarra = _guitarra
+				}
+			
+				override method costo(presentacion) {
+					if (presentacion.dia() < ( new Date(30, 9, 2017) )) {
+						return 1000
+					} else {
+						return 1200
+					}
+				}
+			
+			}
+			
+			'''
+		)
+	}
+	
+	@Test
+	def void testWithSeveralExpressions() {
+		assertFormatting(
+			'''
+			class Presentacion {
+			
+				var escenario
+				var dia
+				var musicos = #{ }
+				var restricciones = #{ }
+			
+				method agregarMusico(_musico) {
+					restricciones.forEach{ restriccion => restriccion.aplica(_musico) }
+					musicos.add(_musico)
+					return self
+				}
+			}
+			''',
+			'''
+			class Presentacion {
+			
+				var escenario
+				var dia
+				var musicos = #{ }
+				var restricciones = #{ }
+			
+				method agregarMusico(_musico) {
+					restricciones.forEach({ restriccion => restriccion.aplica(_musico) })
+					musicos.add(_musico)
+					return self
+				}
+			
+			}
+			
+			'''
+		)
+		
+	}
 }

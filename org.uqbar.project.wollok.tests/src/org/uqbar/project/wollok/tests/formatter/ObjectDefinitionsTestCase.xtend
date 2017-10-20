@@ -508,5 +508,5 @@ object luisAlberto inherits Musico (
 		
 		''')
 	}
-		
+
 }
