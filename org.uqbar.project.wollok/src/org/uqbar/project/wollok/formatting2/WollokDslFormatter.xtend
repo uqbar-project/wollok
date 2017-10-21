@@ -360,7 +360,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		r.prepend [ oneSpace ]
 		r.expression.format
 		r.expression.prepend [ oneSpace ]		
-		r.append [ newLine ]
 	}
 
 	def dispatch void format(WSuite s, extension IFormattableDocument document) {

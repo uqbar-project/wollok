@@ -531,4 +531,57 @@ class Cancion {
 		'''
 		)
 	}
+	
+	@Test
+	def void objectDefinition() {
+		assertFormatting(
+			'''
+object luisAlberto inherits Musico {
+
+	var guitarra = null
+
+	method cambiarGuitarra(_guitarra) {
+		guitarra = _guitarra
+	}
+
+	override method habilidad() = return 100.min(8 * guitarra.unidadesDeGuitarra())
+	override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
+
+	method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+		return 1000
+	} else {
+		return 1200
+	}
+
+	override method interpretaBien(cancion) = true
+
+}
+			
+			''',
+			'''
+			object luisAlberto inherits Musico {
+			
+				var guitarra = null
+			
+				method cambiarGuitarra(_guitarra) {
+					guitarra = _guitarra
+				}
+			
+				override method habilidad() = return 100.min(8 * guitarra.unidadesDeGuitarra())
+
+				override method remuneracion(presentacion) = if (presentacion.participo(self)) self.costoPresentacion(presentacion) else 0
+			
+				method costoPresentacion(presentacion) = if (presentacion.fecha() < new Date(01, 09, 2017)) {
+					return 1000
+				} else {
+					return 1200
+				}
+			
+				override method interpretaBien(cancion) = true
+			
+			}
+
+			'''
+		)
+	}
 }
