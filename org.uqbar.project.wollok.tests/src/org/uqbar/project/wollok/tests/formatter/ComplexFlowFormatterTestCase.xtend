@@ -430,5 +430,44 @@ var nombre = ""
 			'''
 		)
 	}
-	
+
+	@Test
+	def testReturnAndIf() {
+		assertFormatting(
+			'''
+object lucia {
+
+	const costePresentacionNoConcurrida = 400
+	const costePresentacionConcurrida = 500
+	var cantaEnGrupo = true
+	const habilidad = 70
+
+	method habilidad() = habilidad + self.sumaHabilidad()
+
+	method sumaHabilidad() {
+		if (cantaEnGrupo) return   -  20
+		return 0
+	}
+			}
+			''',
+			'''
+			object lucia {
+			
+				const costePresentacionNoConcurrida = 400
+				const costePresentacionConcurrida = 500
+				var cantaEnGrupo = true
+				const habilidad = 70
+			
+				method habilidad() = ( habilidad + self.sumaHabilidad() )
+			
+				method sumaHabilidad() {
+					if (cantaEnGrupo) return -20
+					return 0
+				}
+
+			}
+			
+			'''
+		)
+	}	
 }

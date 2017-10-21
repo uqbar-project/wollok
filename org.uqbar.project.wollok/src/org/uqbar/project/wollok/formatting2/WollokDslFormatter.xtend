@@ -403,7 +403,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WUnaryOperation o, extension IFormattableDocument document) {
 		o.interior [ noSpace ]
-		o.operand.surround [ noSpace ]
+		o.operand.prepend [ noSpace ]
 	}
 
 	def dispatch void format(WThrow t, extension IFormattableDocument document) {

@@ -584,4 +584,113 @@ object luisAlberto inherits Musico {
 			'''
 		)
 	}
+	
+	@Test
+	def void testPresentacion() {
+		assertFormatting(
+			'''
+class Presentacion {
+
+	const fecha
+	const locacion
+	var participantes = []
+
+	constructor(_fecha, _locacion) {
+		fecha = _fecha
+		locacion = _locacion
+	}
+
+	method fecha() = fecha
+
+	method locacion() = locacion
+
+	method participantes() = participantes
+
+	method participo(musico) = participantes.contains(musico)
+
+	method capacidad() = self.locacion().capacidadPorDia(fecha)
+
+	method agregarParticipantes(persona) {
+		if (participantes.contains(persona)) {
+			self.error("La persona que se desea agregar ya pertence a la presentaci�n")
+		} else {
+			participantes.add(persona)
+		}
+	}
+
+	method quitarParticipante(persona) {
+		if (not( participantes.isEmpty())) {
+			if (participantes.contains(persona)) {
+				participantes.remove(persona)
+			} else {
+				self.error("La persona que se desea quitar no era integrante de la presentaci�n")
+			}
+		} else {
+			self.error("El conjunto de participantes esta vacio")
+		}
+	}
+
+	method costoPresentacion() {
+		var costo = 0
+		self.participantes().forEach{ participante => costo += participante.remuneracion(self) }
+		return costo
+	}
+
+}
+			
+			''',
+			'''
+			class Presentacion {
+			
+				const fecha
+				const locacion
+				var participantes = []
+			
+				constructor(_fecha, _locacion) {
+					fecha = _fecha
+					locacion = _locacion
+				}
+			
+				method fecha() = fecha
+			
+				method locacion() = locacion
+			
+				method participantes() = participantes
+			
+				method participo(musico) = participantes.contains(musico)
+			
+				method capacidad() = self.locacion().capacidadPorDia(fecha)
+			
+				method agregarParticipantes(persona) {
+					if (participantes.contains(persona)) {
+						self.error("La persona que se desea agregar ya pertence a la presentaci�n")
+					} else {
+						participantes.add(persona)
+					}
+				}
+			
+				method quitarParticipante(persona) {
+					if (not( participantes.isEmpty())) {
+						if (participantes.contains(persona)) {
+							participantes.remove(persona)
+						} else {
+							self.error("La persona que se desea quitar no era integrante de la presentaci�n")
+						}
+					} else {
+						self.error("El conjunto de participantes esta vacio")
+					}
+				}
+			
+				method costoPresentacion() {
+					var costo = 0
+					self.participantes().forEach({ participante => costo += participante.remuneracion(self) })
+					return costo
+				}
+			
+			}
+			
+			'''
+		)
+	}
+	
 }
