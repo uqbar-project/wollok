@@ -305,9 +305,6 @@ class WollokDslFormatter extends AbstractFormatter2 {
 				surround [ indent ]
 		]
 		
-		c.surround [
-			noSpace
-		]
 		c.expression => [ expression |
 			expression.prepend [ oneSpace ]
 			expression.format(document, !oneExpression)
