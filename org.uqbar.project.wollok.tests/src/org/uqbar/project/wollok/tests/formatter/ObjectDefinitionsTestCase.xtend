@@ -509,4 +509,26 @@ object luisAlberto inherits Musico (
 		''')
 	}
 
+	@Test
+	def testClassDefinition() {
+		assertFormatting(
+		'''
+         
+
+
+
+
+class Cancion {
+	
+	
+	}		
+		''',
+		'''
+		class Cancion {
+		
+		}
+		
+		'''
+		)
+	}
 }

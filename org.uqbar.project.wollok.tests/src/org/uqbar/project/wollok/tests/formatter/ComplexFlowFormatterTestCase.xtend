@@ -16,7 +16,7 @@ class ComplexFlowFormatterTestCase extends AbstractWollokFormatterTestCase {
     		const a = 10 
     		const b = 0
     		
-    			   const c = if (a > 0) b                    else 
+    			   const c = if     (a > 0)    b                    else 
     			   
     			   
     			   0
@@ -429,5 +429,6 @@ var nombre = ""
 			
 			'''
 		)
-	}				
+	}
+	
 }

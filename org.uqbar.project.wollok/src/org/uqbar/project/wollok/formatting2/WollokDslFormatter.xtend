@@ -224,6 +224,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WIfExpression i, extension IFormattableDocument document) {
+		i.regionFor.keyword("if").append [ oneSpace ]
 		i.condition => [
 			surround [ noSpace ]
 			format
