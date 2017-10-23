@@ -16,6 +16,7 @@ import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 @Accessors
 abstract class AbstractWollokFileOpenerStrategy {
@@ -74,8 +75,13 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 	override initialize(String data) {
 		try {
 			val info = data.split(STACKELEMENT_SEPARATOR)
-			fileName = info.get(0)
-			lineNumber = Integer.parseInt(info.get(1))
+            if (isOsWindows) {
+            	fileName = info.get(0) + ":" + info.get(1)
+				lineNumber = Integer.parseInt(info.get(2))
+            } else {
+            	fileName = info.get(0)
+				lineNumber = Integer.parseInt(info.get(1))
+            }
 		} catch (NumberFormatException e) {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while opening file " + data, e)
