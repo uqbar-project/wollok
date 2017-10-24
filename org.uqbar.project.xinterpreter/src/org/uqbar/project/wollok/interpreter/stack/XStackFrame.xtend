@@ -20,14 +20,19 @@ import org.eclipse.xtend.lib.annotations.Accessors
  */
 @Accessors
 class XStackFrame implements Serializable, Cloneable {
+
+	public static String CLASSPATH = "classpath:/"
+
 	SourceCodeLocation currentLocation
 	EvaluationContext context
 	SourceCodeLocator sl
+	int currentLocationFirstLine
 	
 	new(EObject currentLocation, EvaluationContext context, extension SourceCodeLocator sl) {
 		this.sl = sl
 		this.currentLocation = currentLocation.toSourceCodeLocation(sl)
 		this.context = context
+		this.currentLocationFirstLine = currentLocation.astNode.startLine
 	}
 	
 	def void defineCurrentLocation(EObject object) {
@@ -40,4 +45,7 @@ class XStackFrame implements Serializable, Cloneable {
 		super.clone as XStackFrame
 	}
 	
+	def showableInStackTrace() {
+		(currentLocation.fileURI.startsWith(CLASSPATH) || currentLocation.startLine > currentLocationFirstLine) && context.showableInStackTrace
+	}
 }

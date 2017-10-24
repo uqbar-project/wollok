@@ -18,11 +18,10 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 @Accessors
 abstract class AbstractWollokFileOpenerStrategy {
-
-	public static String CLASSPATH = "classpath:/"
 
 	protected int lineNumber = 0
 	protected String fileName = ""
