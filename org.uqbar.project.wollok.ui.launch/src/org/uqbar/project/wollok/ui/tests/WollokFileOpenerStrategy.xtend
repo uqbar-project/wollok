@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.tests
 
 import java.io.File
+import java.net.URLDecoder
 import org.eclipse.core.filesystem.EFS
 import org.eclipse.core.filesystem.IFileStore
 import org.eclipse.core.resources.IProject
@@ -14,9 +15,9 @@ import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 @Accessors
 abstract class AbstractWollokFileOpenerStrategy {
@@ -89,7 +90,7 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 	}
 	
 	override getTextEditor(IURIEditorOpener opener) {
-		val File fileToOpen = new File(fileName)
+		val File fileToOpen = new File(URLDecoder.decode(fileName, "UTF-8"))
 		val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
 		val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 		IDE.openEditorOnFileStore(page, fileStore) as ITextEditor

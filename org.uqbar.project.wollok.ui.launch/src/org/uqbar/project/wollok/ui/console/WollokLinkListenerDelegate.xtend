@@ -54,7 +54,11 @@ class WollokLinkListenerDelegate implements IPatternMatchListenerDelegate {
 				try {
 					val project = openProjects.head
 					// Deletes special ANSI characters of REPL console and opening parentheses
-					var referenceData = fileReferenceText.deleteAnsiCharacters
+					var referenceData = fileReferenceText.deleteAnsiCharacters.trim
+					val firstParenthesis = referenceData.lastIndexOf("(")
+					if (firstParenthesis > 0) {
+						referenceData = referenceData.substring(firstParenthesis)
+					}
 					if (referenceData.startsWith("(")) {
 						referenceData = referenceData.substring(1)
 					}

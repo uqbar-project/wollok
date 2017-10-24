@@ -385,7 +385,7 @@
       <consolePatternMatchListener
             class="org.uqbar.project.wollok.ui.console.WollokLinkListenerDelegate"
             id="WollokLink.ConsolePatternMatchListener"
-            regex="([\S]+.:\d+)+">
+            regex="[\S ][/(]([ \S]+.:\d+)+">
          <enablement></enablement>
       </consolePatternMatchListener>
    </extension>
