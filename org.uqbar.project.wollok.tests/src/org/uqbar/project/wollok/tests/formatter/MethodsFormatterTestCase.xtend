@@ -478,7 +478,7 @@ const                  kmRecorridos= 0 method comer(gr) { energia = energia + gr
 				var restricciones = #{ }
 			
 				method agregarMusico(_musico) {
-					restricciones.forEach({ restriccion => restriccion.aplica(_musico) })
+					restricciones.forEach({ restriccion => restriccion.aplica(_musico)})
 					musicos.add(_musico)
 					return self
 				}

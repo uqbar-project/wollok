@@ -234,7 +234,7 @@ method attack(target) {
 			method attack(target) {
 				var attackers = self.standingMembers()
 				if (attackers.isEmpty()) throw new CannotAttackException("No attackers available")
-				attackers.forEach({ aMember => aMember.attack(target) })
+				attackers.forEach({ aMember => aMember.attack(target)})
 			}
 		
 		}
@@ -521,5 +521,35 @@ object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []){
 		}
 		
 		''')
+	}
+	
+	@Test
+	def void testObjectWithClosureImplementingRestrictions() {
+		assertFormatting(
+			'''
+object restriccionCompositor {
+
+	method verificarMusico(musico) {
+		if (!musico.cancionesPublicadas().any{ unaCancion => musico.esSuCancion(unaCancion)}) {
+			throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+		}
+	}
+
+}
+			
+			''',
+			'''
+			object restriccionCompositor {
+			
+				method verificarMusico(musico) {
+					if (!musico.cancionesPublicadas().any({ unaCancion => musico.esSuCancion(unaCancion)})) {
+						throw new UserException("No se puede agregar al musico ya que no compuso ninguna cancion")
+					}
+				}
+			
+			}
+			
+			'''
+		)
 	}	
 }

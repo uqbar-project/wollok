@@ -146,7 +146,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WMethodDeclaration m, extension IFormattableDocument document) {
-		m.regionFor.feature(WMETHOD_DECLARATION__OVERRIDES).surround [ oneSpace ]
+		m.regionFor.feature(WMETHOD_DECLARATION__OVERRIDES).append [ oneSpace ]
 		m.regionFor.feature(WMETHOD_DECLARATION__NATIVE).surround [ oneSpace ]
 		m.regionFor.keyword(WollokConstants.METHOD).append [ oneSpace ]
 		m.regionFor.feature(WMETHOD_DECLARATION__EXPRESSION_RETURNS).surround([ oneSpace ])
@@ -171,7 +171,9 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			append[ newLine ]
 		]
 		b.expressions.forEach [ expr, i |
-			expr.surround [ indent ]
+			if (addNewLine) {
+				expr.surround [ indent ]
+			}
 			expr.format(document, false)
 			if (addNewLine)
 				expr.append [ newLine ]
@@ -201,7 +203,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			if (withParentheses || i < c.memberCallArguments.size - 1) {
 				arg.append [ noSpace ]
 			}
-			arg.format
+			arg.format(document, checkPreviousSpaces)
 		]
 	}
 	
@@ -295,6 +297,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 	
 	def dispatch void format(WClosure c, extension IFormattableDocument document) {
+		c.format(document, true)		
+	}
+	
+	def dispatch void format(WClosure c, extension IFormattableDocument document, boolean allowSpaces) {
 		val parametersCount = c.parameters.length
 		c.parameters.forEach [ parameter, i |
 			parameter.surround [ oneSpace ]
@@ -316,7 +322,11 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		]
 		val end = c.regionFor.keyword(WollokConstants.END_EXPRESSION)
 		if (oneExpression) {
-			end.prepend [ oneSpace ]
+			if (allowSpaces) {
+				end.prepend [ oneSpace ]
+			} else {
+				end.prepend [ noSpace ]	
+			}
 		} else {
 			end.prepend [ newLine ]
 		}

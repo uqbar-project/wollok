@@ -683,7 +683,7 @@ class Presentacion {
 			
 				method costoPresentacion() {
 					var costo = 0
-					self.participantes().forEach({ participante => costo += participante.remuneracion(self) })
+					self.participantes().forEach({ participante => costo += participante.remuneracion(self)})
 					return costo
 				}
 			
@@ -692,5 +692,52 @@ class Presentacion {
 			'''
 		)
 	}
-	
+
+	@Test
+	def void testObjectVarsInitialized() {
+		assertFormatting(
+			'''
+object luisAlberto inherits Musico {
+
+	const valorFechaTope = 1200
+	const valorFechaNoTope = 1000
+	var guitarra = fender
+	var fechaTope = new Date(01, 09, 2017)
+
+	override method habilidad() = (8 * guitarra.valor()).min(100)
+
+	override method interpretaBien(cancion) = true
+
+	method guitarra(_guitarra) {
+		guitarra = _guitarra
+	}
+
+	method costo(presentacion) = if (presentacion.fecha() < fechaTope) valorFechaNoTope else valorFechaTope
+
+}
+			
+			''',
+			'''
+			object luisAlberto inherits Musico {
+			
+				const valorFechaTope = 1200
+				const valorFechaNoTope = 1000
+				var guitarra = fender
+				var fechaTope = new Date(01, 09, 2017)
+			
+				override method habilidad() = (8 * guitarra.valor()).min(100)
+			
+				override method interpretaBien(cancion) = true
+			
+				method guitarra(_guitarra) {
+					guitarra = _guitarra
+				}
+			
+				method costo(presentacion) = if (presentacion.fecha() < fechaTope) valorFechaNoTope else valorFechaTope
+			
+			}
+
+			'''
+		)
+	}	
 }
