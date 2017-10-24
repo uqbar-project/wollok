@@ -4,6 +4,7 @@
 package org.uqbar.project.wollok.formatting2
 
 import com.google.inject.Inject
+import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
@@ -172,7 +173,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		b.expressions.forEach [ expr, i |
 			expr.surround [ indent ]
 			expr.format(document, false)
-			if (addNewLine) 
+			if (addNewLine)
 				expr.append [ newLine ]
 		]
 	}
@@ -184,19 +185,22 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.memberCallTarget => [
 			append [ noSpace ]
 			if (operandShouldBeFormatted) {
-				format
+				format(document, checkPreviousSpaces)
 			}
 		]
 		c.regionFor.keyword(".").surround [ noSpace ]
 		c.regionFor.feature(WMEMBER_FEATURE_CALL__NULL_SAFE).surround [ noSpace ]
 		c.regionFor.feature(WMEMBER_FEATURE_CALL__FEATURE).surround [ noSpace ]
+		val withParentheses = c.regionFor.keyword("(") !== null
 		c.memberCallArguments.forEach [ arg, i |
 			if (i == 0) {
 				arg.prepend [ noSpace ]
 			} else {
 				arg.prepend [ oneSpace ]
 			}
-			arg.append [ noSpace ]
+			if (withParentheses || i < c.memberCallArguments.size - 1) {
+				arg.append [ noSpace ]
+			}
 			arg.format
 		]
 	}
@@ -348,16 +352,22 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WTest t, extension IFormattableDocument document) {
 		t.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).prepend [ oneSpace ].append[ newLine ]
-		t.elements.forEach [
-			surround [ indent ]
-			append [ newLine ]
-			format
+		t.interior [ indent ]
+		t.elements.forEach [ expr |
+			expr.append [ newLine ]
+			expr.format(document, false)
 		]
 		t.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ noSpace ]
 	}
 
 	def dispatch void format(WReturnExpression r, extension IFormattableDocument document) {
-		r.prepend [ oneSpace ]
+		r.format(document, true)	
+	}
+	
+	def dispatch void format(WReturnExpression r, extension IFormattableDocument document, boolean checkPreviousSpace) {
+		if (checkPreviousSpace) {
+			r.prepend [ oneSpace ]
+		}
 		r.expression.format
 		r.expression.prepend [ oneSpace ]		
 	}
@@ -402,8 +412,17 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WUnaryOperation o, extension IFormattableDocument document) {
-		o.interior [ noSpace ]
-		o.operand.prepend [ noSpace ]
+		val symbolPattern = Pattern.compile("\\W")
+		val isSymbol = symbolPattern.matcher(o.feature).find
+		if (isSymbol) {
+			o.interior [ noSpace ]
+			o.operand.prepend [ noSpace ]			
+		} else {
+			o.operand.prepend [ oneSpace ]
+		}
+		if (o.operand.operandShouldBeFormatted) {
+			o.operand.format(document, false)
+		}
 	}
 
 	def dispatch void format(WThrow t, extension IFormattableDocument document) {

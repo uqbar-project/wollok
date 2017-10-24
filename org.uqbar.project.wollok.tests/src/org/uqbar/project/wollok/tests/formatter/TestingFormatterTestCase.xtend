@@ -307,5 +307,127 @@ assert.equals(1, a)
 		'''
 		)
 	}
+
+	@Test
+	def void testUsingPreviousExpressions() {
+		assertFormatting(
+			'''
+	test "La capacidad del Luna Park el 08 de agosot de 2017 es 9290" {
+
+		var dia = new Date(08, 08, 2017)
+
+		   	assert.equals(9290, lunaPark.capacidad(dia))
+	}
 	
-}
+	   
+	''',
+			'''
+			test "La capacidad del Luna Park el 08 de agosot de 2017 es 9290" {
+				var dia = new Date(08, 08, 2017)
+				assert.equals(9290, lunaPark.capacidad(dia))
+			}
+			'''
+		)
+	}
+	
+	@Test
+	def void testFixtureWithComplexDefinition() {
+		assertFormatting(
+			'''
+describe "testDeMusicGuide" {
+
+	// musicos
+	var soledad
+	var kike
+	var lucia
+	var joaquin
+	// canciones
+	const cisne = new Cancion("Cisne", 312, "Hoy el viento se abrio quedo vacio el aire una vez mas y el manantial broto y nadie esta aqui y puedo ver que solo estallan las hojas al brillar")
+	const laFamilia = new Cancion("La Familia", 264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
+	const almaDeDiamante = new Cancion("Alma de Diamante", 216, "Ven a mi con tu dulce luz alma de diamante. Y aunque el sol se nuble despues sos alma de diamante. Cielo o piel silencio o verdad sos alma de diamante. Por eso ven asi con la humanidad alma de diamante")
+	const crisantemo = new Cancion("Crisantemo", 175, "Tocame junto a esta pared, yo quede por aqui...cuando no hubo mas luz...quiero mirar a traves de mi piel...Crisantemo, que se abrio...encuentra el camino hacia el cielo")
+	const eres = new Cancion("Eres", 145, "Eres lo mejor que me paso en la vida, no tengo duda, no habra mas nada despues de ti. Eres lo que le dio brillo al dia a dia, y asi sera por siempre, no cambiara, hasta el final de mis dias")
+	const corazonAmericano = new Cancion("Corazon Americano", 154, "Canta corazon, canta mas alto, que tu pena al fin se va marchando, el nuevo milenio ha de encontrarnos, junto corazon, como soiamos")
+	const aliciaEnElPais = new Cancion("Cancion de Alicia en el pais", 510, "Quien sabe Alicia, este pais no estuvo hecho porque si. Te vas a ir, vas a salir pero te quedas, ¿donde más vas a ir? Y es que aqui, sabes el trabalenguas, trabalenguas, el asesino te asesina, y es mucho para ti. Se acabo ese juego que te hacia feliz")
+	const remixLaFamilia = new Remix(laFamilia.nombre(), laFamilia.duracion(), laFamilia.letra())
+	const mashupAlmaCrisantemo = new Mashup("nombre", "duracion", "letra", [ almaDeDiamante, crisantemo ])
+	// albumes
+	const paraLosArboles = new Album("Para los arboles", new Date(31, 3, 2003), 50000, 49000).agregarCancion(cisne).agregarCancion(almaDeDiamante)
+	const justCrisantemo = new Album("Just Crisantemo", new Date(05, 12, 2007), 28000, 27500).agregarCancion(crisantemo)
+	const especialLaFamilia = new Album("Especial La Familia", new Date(17, 06, 1992), 100000, 89000).agregarCancion(laFamilia)
+	const laSole = new Album("La Sole", new Date(04, 02, 2005), 200000, 130000).agregarCancion(eres).agregarCancion(corazonAmericano)
+	// presentaciones
+	var presentacionEnLuna
+	var presentacionEnTrastienda
+	// guitarras
+	const fender = new Guitarra()
+	const gibson = new Gibson()
+
+	fixture {
+		soledad = new VocalistaPopular().habilidad(55).palabraBienInterpretada("amor").agregarAlbum(laSole).agregarCancionDeSuAutoria(eres).agregarCancionDeSuAutoria(corazonAmericano)
+		kike = new MusicoDeGrupo().habilidad(60).plusPorCantarEnGrupo(20)
+		lucia = new VocalistaPopular().habilidad(70).palabraBienInterpretada("familia").grupo("Pimpinela")
+		joaquin = new MusicoDeGrupo().habilidad(20).plusPorCantarEnGrupo(5).grupo("Pimpinela").agregarAlbum(especialLaFamilia).agregarCancionDeSuAutoria(laFamilia)
+		luisAlberto.agregarGuitarra(fender).agregarGuitarra(gibson).agregarAlbum(paraLosArboles).agregarAlbum(justCrisantemo).agregarCancionDeSuAutoria(cisne).agregarCancionDeSuAutoria(almaDeDiamante).agregarCancionDeSuAutoria(crisantemo).cambiarGuitarraActiva(gibson)
+		presentacionEnLuna = new Presentacion(lunaPark, new Date(20, 04, 2017), [ joaquin, lucia, luisAlberto ])
+		presentacionEnTrastienda = new Presentacion(laTrastienda, new Date(15, 11, 2017), [ joaquin, lucia, luisAlberto ])
+		pdpalooza.lugar(lunaPark).fecha(new Date(15, 12, 2017))
+		restriccionPuedeCantarCancion.parametroRestrictivo(aliciaEnElPais)
+	}
+	
+	test "fake" { assert.that(true) }
+	}			
+			''',
+			'''
+			describe "testDeMusicGuide" {
+			
+				// musicos
+				var soledad
+				var kike
+				var lucia
+				var joaquin
+				// canciones
+				const cisne = new Cancion("Cisne", 312, "Hoy el viento se abrio quedo vacio el aire una vez mas y el manantial broto y nadie esta aqui y puedo ver que solo estallan las hojas al brillar")
+				const laFamilia = new Cancion("La Familia", 264, "Quiero brindar por mi gente sencilla, por el amor brindo por la familia")
+				const almaDeDiamante = new Cancion("Alma de Diamante", 216, "Ven a mi con tu dulce luz alma de diamante. Y aunque el sol se nuble despues sos alma de diamante. Cielo o piel silencio o verdad sos alma de diamante. Por eso ven asi con la humanidad alma de diamante")
+				const crisantemo = new Cancion("Crisantemo", 175, "Tocame junto a esta pared, yo quede por aqui...cuando no hubo mas luz...quiero mirar a traves de mi piel...Crisantemo, que se abrio...encuentra el camino hacia el cielo")
+				const eres = new Cancion("Eres", 145, "Eres lo mejor que me paso en la vida, no tengo duda, no habra mas nada despues de ti. Eres lo que le dio brillo al dia a dia, y asi sera por siempre, no cambiara, hasta el final de mis dias")
+				const corazonAmericano = new Cancion("Corazon Americano", 154, "Canta corazon, canta mas alto, que tu pena al fin se va marchando, el nuevo milenio ha de encontrarnos, junto corazon, como soiamos")
+				const aliciaEnElPais = new Cancion("Cancion de Alicia en el pais", 510, "Quien sabe Alicia, este pais no estuvo hecho porque si. Te vas a ir, vas a salir pero te quedas, ¿donde más vas a ir? Y es que aqui, sabes el trabalenguas, trabalenguas, el asesino te asesina, y es mucho para ti. Se acabo ese juego que te hacia feliz")
+				const remixLaFamilia = new Remix(laFamilia.nombre(), laFamilia.duracion(), laFamilia.letra())
+				const mashupAlmaCrisantemo = new Mashup("nombre", "duracion", "letra", [ almaDeDiamante, crisantemo ])
+				// albumes
+				const paraLosArboles = new Album("Para los arboles", new Date(31, 3, 2003), 50000, 49000).agregarCancion(cisne).agregarCancion(almaDeDiamante)
+				const justCrisantemo = new Album("Just Crisantemo", new Date(05, 12, 2007), 28000, 27500).agregarCancion(crisantemo)
+				const especialLaFamilia = new Album("Especial La Familia", new Date(17, 06, 1992), 100000, 89000).agregarCancion(laFamilia)
+				const laSole = new Album("La Sole", new Date(04, 02, 2005), 200000, 130000).agregarCancion(eres).agregarCancion(corazonAmericano)
+				// presentaciones
+				var presentacionEnLuna
+				var presentacionEnTrastienda
+				// guitarras
+				const fender = new Guitarra()
+				const gibson = new Gibson()
+			
+				fixture {
+					soledad = new VocalistaPopular().habilidad(55).palabraBienInterpretada("amor").agregarAlbum(laSole).agregarCancionDeSuAutoria(eres).agregarCancionDeSuAutoria(corazonAmericano)
+					kike = new MusicoDeGrupo().habilidad(60).plusPorCantarEnGrupo(20)
+					lucia = new VocalistaPopular().habilidad(70).palabraBienInterpretada("familia").grupo("Pimpinela")
+					joaquin = new MusicoDeGrupo().habilidad(20).plusPorCantarEnGrupo(5).grupo("Pimpinela").agregarAlbum(especialLaFamilia).agregarCancionDeSuAutoria(laFamilia)
+					luisAlberto.agregarGuitarra(fender).agregarGuitarra(gibson).agregarAlbum(paraLosArboles).agregarAlbum(justCrisantemo).agregarCancionDeSuAutoria(cisne).agregarCancionDeSuAutoria(almaDeDiamante).agregarCancionDeSuAutoria(crisantemo).cambiarGuitarraActiva(gibson)
+					presentacionEnLuna = new Presentacion(lunaPark, new Date(20, 04, 2017), [ joaquin, lucia, luisAlberto ])
+					presentacionEnTrastienda = new Presentacion(laTrastienda, new Date(15, 11, 2017), [ joaquin, lucia, luisAlberto ])
+					pdpalooza.lugar(lunaPark).fecha(new Date(15, 12, 2017))
+					restriccionPuedeCantarCancion.parametroRestrictivo(aliciaEnElPais)
+				}
+			
+				test "fake" {
+					assert.that(true)
+				}
+			
+			}
+			
+			'''
+			)
+			
+		}	
+	}

@@ -469,5 +469,57 @@ object lucia {
 			
 			'''
 		)
+	}
+
+	@Test
+	def void testReturnSelfExpression() {
+		assertFormatting(
+		'''
+class AlbumBuilder {
+
+	var fechaLanzamiento
+
+	method fechaLanzamiento(dia, mes, anio) {
+		fechaLanzamiento = new Date(dia, mes, anio)
+		return self
+	}
+
+}		''',
+		'''
+		class AlbumBuilder {
+		
+			var fechaLanzamiento
+		
+			method fechaLanzamiento(dia, mes, anio) {
+				fechaLanzamiento = new Date(dia, mes, anio)
+				return self
+			}
+
+		}
+
+		''')
+	}
+	
+	@Test
+	def void unaryWordExpression() {
+		assertFormatting('''
+object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []){
+	const restriccionHabilidad = { musico => if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")}
+	const restriccionCompusoAlgunaCancion = {musico => if (not musico.compusoAlgunaCancion()) throw new Exception("El músico debe haber compuesto al menos una canción")}
+}		
+		''',
+		'''
+		object pdpalooza inherits Presentacion(new Date(15, 12, 2017), lunaPark, []) {
+		
+			const restriccionHabilidad = { musico =>
+				if (musico.habilidad() < 70) throw new Exception("La habilidad del músico debe ser mayor a 70")
+			}
+			const restriccionCompusoAlgunaCancion = { musico =>
+				if (not musico.compusoAlgunaCancion()) throw new Exception("El músico debe haber compuesto al menos una canción")
+			}
+		
+		}
+		
+		''')
 	}	
 }

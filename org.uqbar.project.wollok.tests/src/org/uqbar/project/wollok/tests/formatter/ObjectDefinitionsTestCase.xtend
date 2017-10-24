@@ -619,7 +619,7 @@ class Presentacion {
 	}
 
 	method quitarParticipante(persona) {
-		if (not( participantes.isEmpty())) {
+		if (not        (participantes.isEmpty())) {
 			if (participantes.contains(persona)) {
 				participantes.remove(persona)
 			} else {
@@ -670,7 +670,7 @@ class Presentacion {
 				}
 			
 				method quitarParticipante(persona) {
-					if (not( participantes.isEmpty())) {
+					if (not (participantes.isEmpty())) {
 						if (participantes.contains(persona)) {
 							participantes.remove(persona)
 						} else {
