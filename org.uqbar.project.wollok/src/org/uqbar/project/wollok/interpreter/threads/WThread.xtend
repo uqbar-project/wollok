@@ -27,8 +27,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * 
  */
 
-class WThread implements XThread {
-	var executionStack = new ObservableStack<XStackFrame>
+class WThread implements XThread<WollokObject> {
+	var executionStack = new ObservableStack<XStackFrame<WollokObject>>
 	boolean instantiatingStackOverFlow = false
 	val WollokInterpreter interpreter 
 	
@@ -41,10 +41,10 @@ class WThread implements XThread {
 	def getCurrentContext() { stack.peek.context }
 	
 	def void initStack() {
-		executionStack = new ObservableStack<XStackFrame>
+		executionStack = new ObservableStack<XStackFrame<WollokObject>>
 	}	
 
-	def performOnStack(EObject executable, EvaluationContext<WollokObject> newContext,
+	def WollokObject performOnStack(EObject executable, EvaluationContext<WollokObject> newContext,
 		()=>WollokObject something) {
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
 		try
@@ -56,8 +56,9 @@ class WThread implements XThread {
 			val exp = (interpreter.evaluator as WollokInterpreterEvaluator).newInstance(STACK_OVERFLOW_EXCEPTION)
 			instantiatingStackOverFlow = false
 			throw new WollokProgramExceptionWrapper(exp)
-		} finally
+		} finally {
 			stack.pop
+		}
 	}
 	
 }

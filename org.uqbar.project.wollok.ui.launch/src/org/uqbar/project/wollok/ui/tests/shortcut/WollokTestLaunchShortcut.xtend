@@ -35,7 +35,7 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 		}
 	}
 	
-	def activateWollokTestResultView() {
+	def void activateWollokTestResultView() {
 		WollokTestResultView.activate()
 	}
 

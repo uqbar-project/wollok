@@ -159,7 +159,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getActionRegistry() {
-		if (actionRegistry == null) actionRegistry = new ActionRegistry
+		if (actionRegistry === null) actionRegistry = new ActionRegistry
 		actionRegistry
 	}
 	def CommandStack getCommandStack() {
@@ -175,8 +175,8 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		else if (type == GraphicalViewer) graphicalViewer
 		else if (type == CommandStack) commandStack
 		else if (type == ActionRegistry) actionRegistry
-		else if (type == EditPart && graphicalViewer != null) graphicalViewer.rootEditPart
-		else if (type == IFigure && graphicalViewer != null) (graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		else if (type == EditPart && graphicalViewer !== null) graphicalViewer.rootEditPart
+		else if (type == IFigure && graphicalViewer !== null) (graphicalViewer.rootEditPart as GraphicalEditPart).figure
 		else super.getAdapter(type)
 	}
 	
@@ -185,7 +185,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getSelectionSynchronizer() {
-		if (synchronizer == null) synchronizer = new SelectionSynchronizer
+		if (synchronizer === null) synchronizer = new SelectionSynchronizer
 		synchronizer
 	}
 	
