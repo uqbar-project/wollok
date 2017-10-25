@@ -15,7 +15,7 @@ import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
 import org.eclipse.xtext.service.OperationCanceledManager
-import org.uqbar.project.wollok.formatting.WollokDslFormatter
+import org.uqbar.project.wollok.formatting2.WollokDslFormatter
 import org.uqbar.project.wollok.interpreter.SysoutWollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterConsole
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
@@ -112,8 +112,4 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		WollokSyntaxErrorMessageProvider
 	}
 
-	override bindIFormatter() {
-		WollokDslFormatter
-	}
-	
 }

@@ -34,7 +34,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author jfernandes
  */
 // Rename to XInterpreter and move up to "xinterpreter" project
-class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Serializable {
+class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokInterpreter, Serializable {
 	static Log log = LogFactory.getLog(WollokInterpreter)
 	XDebugger debugger = new XDebuggerOff
 
@@ -94,7 +94,7 @@ class WollokInterpreter implements XInterpreter<EObject>, IWollokInterpreter, Se
 		}
 	}
 
-	def interpret(List<EObject> eObjects, String folder, boolean propagatingErrors) {
+	def Object interpret(List<EObject> eObjects, String folder, boolean propagatingErrors) {
 		try {
 			log.debug("Starting interpreter")
 			evaluator.evaluateAll(eObjects, folder)

@@ -19,7 +19,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 // Migrate to java8 "ReentrantLock" to be able to check if it is paused (locked) or not
 class XDebuggerImpl implements XDebugger {
 	static Logger log = Logger.getLogger(XDebuggerImpl)
-	XInterpreter<?> interpreter
+	XInterpreter<?,?> interpreter
 	@Accessors var XTextInterpreterEventPublisher eventSender
 	val breakpoints = <XBreakpoint>newArrayList 
 	val Object suspendedLock = new Object
@@ -29,7 +29,7 @@ class XDebuggerImpl implements XDebugger {
 	
 	XThread debuggingThread
 	
-	def void setInterpreter(XInterpreter<?> interpreter) { this.interpreter = interpreter }
+	def void setInterpreter(XInterpreter<?,?> interpreter) { this.interpreter = interpreter }
 	def void setEventSender(XTextInterpreterEventPublisher eventSender) { this.eventSender = eventSender }
 	
 	def void setState(XDebuggerState state) { this.state = state }
