@@ -46,6 +46,6 @@ class XStackFrame implements Serializable, Cloneable {
 	}
 	
 	def showableInStackTrace() {
-		(currentLocation.fileURI.startsWith(CLASSPATH) || currentLocation.startLine > currentLocationFirstLine) && context.showableInStackTrace
+		(currentLocation.fileURI.startsWith(CLASSPATH) || currentLocation.startLine !== currentLocationFirstLine) && context.showableInStackTrace
 	}
 }
