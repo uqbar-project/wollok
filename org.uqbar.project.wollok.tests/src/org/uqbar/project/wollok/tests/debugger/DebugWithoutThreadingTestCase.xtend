@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
@@ -392,7 +393,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 	
 	var boolean childrenFirst = true
 	var boolean logSession = false
-	val List<Pair<EObject, XStackFrame>> evaluated = newArrayList
+	val List<Pair<EObject, XStackFrame<WollokObject>>> evaluated = newArrayList
 	WollokInterpreter interpreter
 	
 	new(WollokInterpreter interpreter) {

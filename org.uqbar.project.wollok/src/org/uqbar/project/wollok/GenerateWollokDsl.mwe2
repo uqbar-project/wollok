@@ -63,11 +63,11 @@ Workflow {
 				runtimeTest = {
 					enabled = true
 				}
-				
+
 				eclipsePluginTest = {
 					enabled = true
 					name = "${projectName}.tests"
-					root = "../${projectName}.tests"					
+					root = "../${projectName}.tests"
 				}
 
 				genericIde = {
@@ -85,15 +85,12 @@ Workflow {
 			resourceSet = theResourceSet
 			grammarUri = grammarURI
 			fileExtensions = fileExtensions
-	
 			emfGenerator = {
 				javaModelDirectory = "/${projectName}/src-gen"
 			}
-
-//			formatter = {
-//				generateStub = true
-//			}
-
+			formatter = {
+				generateStub = true
+			}
 			serializer = {
 				generateStub = false
 			}
@@ -104,5 +101,6 @@ Workflow {
 			}
 		}
 	}
+
 }
 
