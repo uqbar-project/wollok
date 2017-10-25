@@ -21,6 +21,10 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
+- df -h
+- du -h -d 2
+
+
 notifications:
   webhooks:
     urls:
@@ -33,7 +37,6 @@ cache:
   - $HOME/.m2
 
 before_deploy:
-- df -h
 - cd ..
 - mkdir results-server
 - cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
