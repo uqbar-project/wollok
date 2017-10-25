@@ -4,6 +4,7 @@ sudo: false
 jdk:
 - oraclejdk8
 before_install:
+- df -h
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
 - mv settings.xml ~/.m2/settings.xml
 script:
@@ -32,6 +33,7 @@ cache:
   - $HOME/.m2
 
 before_deploy:
+- df -h
 - cd ..
 - mkdir results-server
 - cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
