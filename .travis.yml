@@ -47,7 +47,7 @@ before_deploy:
 - mv org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
 - mv org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
 - ls results-server
-- ls results-product
+- ls results-products
 - df -h
 
 # If there is an error I will try to upload the logs
