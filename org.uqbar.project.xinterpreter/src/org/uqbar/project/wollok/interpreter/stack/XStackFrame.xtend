@@ -2,10 +2,10 @@ package org.uqbar.project.wollok.interpreter.stack
 
 import java.io.Serializable
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 
 import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
-import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Represents a stack execution element.
@@ -26,13 +26,11 @@ class XStackFrame<T> implements Serializable, Cloneable {
 	SourceCodeLocation currentLocation
 	EvaluationContext<T> context
 	SourceCodeLocator sl
-	int currentLocationFirstLine
 	
-	new(EObject currentLocation, EvaluationContext<T> context, extension SourceCodeLocator sl) {
+	new(EObject object, EvaluationContext<T> context, extension SourceCodeLocator sl) {
 		this.sl = sl
-		this.currentLocation = currentLocation.toSourceCodeLocation(sl)
 		this.context = context
-		this.currentLocationFirstLine = currentLocation.astNode.startLine
+		this.defineCurrentLocation(object)
 	}
 	
 	def void defineCurrentLocation(EObject object) {
@@ -46,7 +44,7 @@ class XStackFrame<T> implements Serializable, Cloneable {
 	}
 	
 	def showableInStackTrace() {
-		(currentLocation.fileURI.startsWith(CLASSPATH) || currentLocation.startLine !== currentLocationFirstLine) && context.showableInStackTrace
+		context.showableInStackTrace
 	}
 	
 }

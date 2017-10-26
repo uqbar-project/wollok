@@ -86,10 +86,10 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 				test.endedOk()
 			}
 			if (it.failure()) {
-				test.endedAssertError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
+				test.endedAssertError(it.message, it.stackTraceFiltered, it.errorLineNumber, it.resource)
 			}
 			if (it.error()) {
-				test.endedError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
+				test.endedError(it.message, it.stackTraceFiltered, it.errorLineNumber, it.resource)
 			}
 		]
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)

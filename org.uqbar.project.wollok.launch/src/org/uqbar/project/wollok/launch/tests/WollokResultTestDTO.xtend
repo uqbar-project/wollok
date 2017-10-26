@@ -54,5 +54,9 @@ class WollokResultTestDTO implements Serializable {
 		]
 	}
 	
+	def getStackTraceFiltered() {
+		stackTrace.filter [ it.contextDescription !== null && !it.contextDescription.equals("")]
+	}
+	
 }
 
