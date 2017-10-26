@@ -21,8 +21,6 @@ script:
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
   jacoco:report coveralls:report -P $PROFILES
-- df -h
-- du -h -d 2 ..
 
 
 notifications:
@@ -46,6 +44,10 @@ before_deploy:
 
 # If there is an error I will try to upload the logs
 after_failure:
+# I list the used space if there is a problem with the size of the build
+- df -h
+- du -h -d 4 ..
+# I generate and upload a file with the output of the tests
 - cd ..
 - cd org.uqbar.project.wollok.tests
 - zip -r -9 target.zip target/
