@@ -41,10 +41,13 @@ before_deploy:
 # Generating the release
 - cd ..
 - mkdir results-server
-- cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
+- mv org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
 - mkdir results-products
-- cp org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
-- cp org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
+- mv org.uqbar.project.wollok.updatesite/target/org.uqbar.project.wollok.updatesite-*.zip results-products/
+- mv org.uqbar.project.wollok.updatesite/target/products/*.zip results-products/
+- ls results-server
+- ls results-product
+- df -h
 
 # If there is an error I will try to upload the logs
 after_failure:
