@@ -35,6 +35,10 @@ cache:
   - $HOME/.m2
 
 before_deploy:
+# I list the used space if there is a problem with the size of the build
+- df -h
+- du -h -d 4 ..
+# Generating the release
 - cd ..
 - mkdir results-server
 - cp org.uqbar.project.wollok.launch/target/org.uqbar.project.wollok.launch-*-wdk.zip results-server/
