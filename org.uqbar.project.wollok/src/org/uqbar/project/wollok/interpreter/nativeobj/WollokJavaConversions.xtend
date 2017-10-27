@@ -32,7 +32,7 @@ class WollokJavaConversions {
 	}
 
 	def static Object wollokToJava(Object o, Class<?> t) {
-		if(o == null) return null
+		if(o === null) return null
 		if(t.isInstance(o)) return o
 		if(t == Object) return o
 
