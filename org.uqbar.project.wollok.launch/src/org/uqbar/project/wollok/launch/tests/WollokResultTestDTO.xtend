@@ -16,7 +16,7 @@ class WollokResultTestDTO implements Serializable {
 	boolean error = false
 	
 	def boolean ok() {
-		message == null && errorLineNumber == 0	
+		message === null && errorLineNumber == 0	
 	}
 	
 	def boolean failure() {
