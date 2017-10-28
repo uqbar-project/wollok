@@ -1,0 +1,51 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+
+	property var energia = 0
+	property const peso = 50
+	property var color = "azul"
+
+	method volar() {
+		energia -= 100
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "peso"
+		self.peso(1, 1)
+	}
+	
+	override method toString() {
+		return "pepita [" + energia + ", " + self.peso() + "]"
+	}
+}
+
+class Ave {
+	property var energia = 10
+	property const peso = 5
+	property var color = "azul"
+	
+	method volar() {
+		energia -= 10
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "peso"
+		self.peso(1)
+	}
+	
+	override method toString() {
+		return "ave [" + energia + ", " + self.peso() + "]"
+	}
+}
+
+program prueba {
+	pepita.energia(1002)
+	pepita.volar()
+	// XPECT errors --> "pepita does not understand energia2()" at "energia2"
+	pepita.energia2()
+	pepita.energia()
+	// XPECT errors --> "pepita does not understand peso(10)" at "peso"
+	pepita.peso(10)
+	pepita.peso()
+	
+	const tweety = new Ave()
+	tweety.energia()
+	tweety.energia(102)
+	tweety.volar()
+	tweety.peso()
+}

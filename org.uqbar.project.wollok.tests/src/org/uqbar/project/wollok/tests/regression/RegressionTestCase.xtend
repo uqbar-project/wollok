@@ -12,7 +12,8 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 	
 	@Test
 	def void bug_38() {
-			'''object pajarera {
+			'''
+			object pajarera {
 		    var pajaros = [pepita,pepe,pepona]
 		
 		    method agregarA(pajaro){
@@ -42,7 +43,7 @@ class RegressionTestCase extends AbstractWollokInterpreterTestCase {
 		    method cualEstaSaludable(){
 		        return pajaros.filter{p=>p.energia() > 100}
 		    }
-		
+
 		    method retornaEnergias(energiaMinima){
 		        return  pajaros.filter{p=>p.energia() < energiaMinima}
 		    }

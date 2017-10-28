@@ -5,12 +5,17 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 
 /**
@@ -21,13 +26,16 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isM
 class VariableAssignmentsVisitor extends AbstractVisitor {
 	@Accessors
 	List<EObject> uses = newArrayList
+	List<String> methodsAlreadyVisited = newArrayList
+	
 	@Accessors
 	WVariable lookedFor
 
 	// generic visitor methods
 	override doVisit(EObject e) {
-		if (e !== null)
+		if (e !== null) {
 			visit(e)
+		}
 	}
 
 	def static assignmentOf(WVariable lookedFor, EObject container) {
@@ -42,6 +50,30 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 		addIf[variable == lookedFor && right !== null]
 	}
 
+	override dispatch visit(WConstructor it) {
+		doVisit(expression)
+	}
+
+	override dispatch visit(WBlockExpression it) {
+		expressions.forEach [ expression |
+			doVisit(expression)
+		]
+	}
+	
+	override dispatch visit(WMemberFeatureCall it) {
+		addIf[feature == lookedFor.name && memberCallArguments.size == 1 ]
+		val method = declaringContext?.findMethod(it)
+		if (method !== null) {
+			doVisit(method)
+		}
+	}
+	
+	override dispatch visit(WMethodDeclaration it) {
+		if (methodsAlreadyVisited.contains(it.name)) return;
+		methodsAlreadyVisited.add(it.name)
+		doVisit(expression)
+	}
+	
 	override dispatch visit(WAssignment it) {
 		addIf[feature.ref == lookedFor]
 	}

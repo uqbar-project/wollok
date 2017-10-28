@@ -74,10 +74,13 @@ abstract class AbstractWollokCallable implements WCallable {
 	// ** Native objects handling
 	// ********************************************************************************************
 	
+	def hasProperty(String name) { false }
+	
 	def dispatch invokeNative(Object nativeObject, String name, WollokObject... parameters) {
 		val method = AbstractWollokDeclarativeNativeObject.getMethod(nativeObject.class, name, parameters)
-		if (method == null)
+		if (method === null && !this.hasProperty(name)) {
 			throw throwMessageNotUnderstood(nativeObject, name, parameters)
+		}
 		method.accesibleVersion.invokeConvertingArgs(nativeObject, parameters)
 	}
 	

@@ -1,0 +1,27 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+class Producto {
+	var precioRegular
+	
+	constructor() {
+		self.initialize()
+	}
+	
+	constructor(valor) {
+		self.determinarPrecio(valor)	
+	}
+	
+	constructor(valor1, valor2) {
+		self.precioRegular(valor1 + valor2)	
+	}
+	
+ 	method initialize() {
+		precioRegular = 0
+	}
+	
+	method determinarPrecio(valor) {
+		precioRegular = 100 + valor
+	}
+	
+	method precioRegular(precio) { precioRegular = precio }
+}

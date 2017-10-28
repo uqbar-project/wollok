@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+describe "group of tests" {
+
+	property var valor
+	property const cuatro = 4
+
+	test "cuatro es 4" {
+		self.valor(4)
+		assert.equals(self.valor(), self.cuatro())
+	}
+	
+	test "cuatro no es valor sin inicializar" {
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "cuatro"
+		self.cuatro(1)
+		assert.notEquals(self.valor(), cuatro)
+	}
+}

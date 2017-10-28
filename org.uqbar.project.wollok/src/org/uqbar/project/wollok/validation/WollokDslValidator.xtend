@@ -619,15 +619,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 		// Variable has no assignment in its definition and there are several assignments
 		if (!assignments.empty && right === null) {
-			val constructorsOk = assignments
-				.map [ declaringConstructor ]
-				.filter [ it !== null ]
-				.toList
-			
 			if (declaringContext !== null && !isLocalToMethod) {
 				declaringContext
 					.getConstructors
-					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.initializationsMustBeChecked(declaringContext) ]
+					.filter [ constructor | 
+						constructor.initializationsMustBeChecked(declaringContext)
+						&& variable.assignments(constructor).isEmpty
+					]
 					.forEach [ constructor |
 						if (!writeable)
 							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
@@ -637,7 +635,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			}
 		}
 		// Variable is never used
-		if (variable.uses.empty)
+		if (variable.uses.empty && !property)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
@@ -651,14 +649,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		realConstructor.container !== declaringContext
 	}
 
-
-//  Confirm with @npasserini
-//  @dodain - I think we should not consider this
-//	@Check
-//	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-//	def unusedParameters(WMethodDeclaration it) {
-//		checkUnusedParameters(it.parameters)
-//	}
 
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
