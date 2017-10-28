@@ -26,7 +26,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isM
 class VariableAssignmentsVisitor extends AbstractVisitor {
 	@Accessors
 	List<EObject> uses = newArrayList
-	List<String> methodsAlreadyVisited = newArrayList
+	List<WMethodDeclaration> methodsAlreadyVisited = newArrayList
 	
 	@Accessors
 	WVariable lookedFor
@@ -69,8 +69,8 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	}
 	
 	override dispatch visit(WMethodDeclaration it) {
-		if (methodsAlreadyVisited.contains(it.name)) return;
-		methodsAlreadyVisited.add(it.name)
+		if (methodsAlreadyVisited.contains(it)) return;
+		methodsAlreadyVisited.add(it)
 		doVisit(expression)
 	}
 	

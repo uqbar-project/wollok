@@ -190,6 +190,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			WNAMED__NAME, VARIABLE_NAME_MUST_START_LOWERCASE)
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def propertyOnlyAllowedInMethodContainer(WVariableDeclaration it) {
+		if (property && (declaringContext === null || isLocal)) {
+			report(WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER, it,
+			WVARIABLE_DECLARATION__PROPERTY, WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER)
+		} 
+	}
+
 	// **************************************
 	// ** instantiation and constructors
 	// **************************************

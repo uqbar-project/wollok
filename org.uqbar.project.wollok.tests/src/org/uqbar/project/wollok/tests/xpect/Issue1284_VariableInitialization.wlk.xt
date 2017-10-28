@@ -16,7 +16,11 @@ class Producto {
 	}
 	
  	method initialize() {
-		precioRegular = 0
+		self.initialize(0)
+	}
+
+ 	method initialize(valor) {
+		precioRegular = 0	
 	}
 	
 	method determinarPrecio(valor) {

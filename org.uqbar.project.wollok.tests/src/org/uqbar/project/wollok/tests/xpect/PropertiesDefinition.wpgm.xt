@@ -21,11 +21,23 @@ class Ave {
 	property var energia = 10
 	property const peso = 5
 	property var color = "azul"
-	
+
+	constructor() {
+		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+		property var localVariable = 0
+	}
+		
 	method volar() {
 		energia -= 10
 		// XPECT errors --> "Method does not exist or invalid number of arguments" at "peso"
 		self.peso(1)
+	}
+	
+	method propertyMalDefinida() {
+		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+		property var localVariable = 0
+		localVariable++
+		return localVariable
 	}
 	
 	override method toString() {
@@ -34,6 +46,8 @@ class Ave {
 }
 
 program prueba {
+	// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+	property var localVar = 0
 	pepita.energia(1002)
 	pepita.volar()
 	// XPECT errors --> "pepita does not understand energia2()" at "energia2"

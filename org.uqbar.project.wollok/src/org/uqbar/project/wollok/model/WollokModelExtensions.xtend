@@ -460,7 +460,12 @@ class WollokModelExtensions {
 	// *******************************
 	
 	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null }
-
+	def static isLocalToConstructor(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WConstructor) !== null }
+	def static isLocalToTest(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WTest) !== null }
+	def static isLocal(WVariableDeclaration it) {
+		isLocalToConstructor || isLocalToTest || isLocalToMethod
+	}
+	
 	def static onlyUsedInReturn(WVariableDeclaration it) {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
