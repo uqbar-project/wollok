@@ -39,6 +39,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Custom quickfixes.
@@ -127,6 +128,14 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_constructor_name,
 			Messages.WollokDslQuickFixProvider_remove_constructor_description, null) [ e, it |
 			xtextDocument.delete(e)
+		]
+	}
+
+	@Fix(PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER)
+	def deleteBadPropertyDefinition(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_property_definition_name,
+			Messages.WollokDslQuickFixProvider_remove_property_definition_description, null) [ e, it |
+			xtextDocument.deleteToken(e, WollokConstants.PROPERTY)
 		]
 	}
 

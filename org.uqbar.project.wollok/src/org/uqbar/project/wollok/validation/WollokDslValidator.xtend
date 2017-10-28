@@ -121,6 +121,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
+	public static val PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER = "PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER"
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -195,7 +196,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def propertyOnlyAllowedInMethodContainer(WVariableDeclaration it) {
 		if (property && (declaringContext === null || isLocal)) {
 			report(WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER, it,
-			WVARIABLE_DECLARATION__PROPERTY, WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER)
+			WVARIABLE_DECLARATION__PROPERTY, PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER)
 		} 
 	}
 
