@@ -15,6 +15,7 @@ import org.eclipse.xtext.ui.editor.quickfix.Fix
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.eclipse.xtext.validation.Issue
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.validation.WollokDslValidator
@@ -39,7 +40,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Custom quickfixes.
@@ -200,6 +200,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	 * 							Unexistent methods
 	 * ***********************************************************************
 	 */
+	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST_SEVERAL_ARGS)
+	def createNonExistingMethodWKO(Issue issue, IssueResolutionAcceptor acceptor) {
+		createNonExistingMethodOnWKO(issue, acceptor)
+	}
+
+	@Fix(WollokDslValidator.PROPERTY_NOT_WRITABLE_ON_WKO)
+	def createNonExistingMethodWKOOneArg(Issue issue, IssueResolutionAcceptor acceptor) {
+		createNonExistingMethodOnWKO(issue, acceptor)
+	}
+	
 	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
 	def createNonExistingMethodOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createMethod_name,
@@ -209,6 +219,40 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			createMethodInContainer(context, call, container)
 		]
 	}
+
+	@Fix(WollokDslValidator.PROPERTY_NOT_WRITABLE_ON_WKO)
+	def addWritablePropertyOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_convertPropertyVar_name,
+			Messages.WollokDslQuickfixProvider_convertPropertyVar_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.resolveWKO(classFinder)
+			upgradeToPropertyInContainer(context, call, container, true)
+		]
+	}
+	
+	@Fix(WollokDslValidator.METHOD_ON_WKO_DOESNT_EXIST)
+	def createPropertyOnWKO(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createProperty_name,
+			Messages.WollokDslQuickfixProvider_createProperty_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.resolveWKO(classFinder)
+			if (container.hasVariable(call.feature)) {
+				upgradeToPropertyInContainer(context, call, container)
+			} else {
+				createPropertyInContainer(context, call, container)
+			}
+		]
+	}
+
+	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST_SEVERAL_ARGS)
+	def createNonExistingMethodSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		createNonExistingMethodOnSelf(issue, acceptor)
+	}
+	
+	@Fix(WollokDslValidator.PROPERTY_NOT_WRITABLE_ON_THIS)
+	def createNonExistingMethodSelfOneArg(Issue issue, IssueResolutionAcceptor acceptor) {
+		createNonExistingMethodOnSelf(issue, acceptor)
+	}
 	
 	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
 	def createNonExistingMethodOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
@@ -217,6 +261,30 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val call = e as WMemberFeatureCall
 			val container = call.method.eContainer as WMethodContainer
 			createMethodInContainer(context, call, container)
+		]
+	}
+
+	@Fix(WollokDslValidator.PROPERTY_NOT_WRITABLE_ON_THIS)
+	def addWritablePropertyOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_convertPropertyVar_name,
+			Messages.WollokDslQuickfixProvider_convertPropertyVar_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.method.eContainer as WMethodContainer
+			upgradeToPropertyInContainer(context, call, container, true)
+		]
+	}
+	
+	@Fix(WollokDslValidator.METHOD_ON_THIS_DOESNT_EXIST)
+	def createPropertyOnSelf(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickfixProvider_createProperty_name,
+			Messages.WollokDslQuickfixProvider_createProperty_description, null) [ e, context |
+			val call = e as WMemberFeatureCall
+			val container = call.method.eContainer as WMethodContainer
+			if (container.hasVariable(call.feature)) {
+				upgradeToPropertyInContainer(context, call, container)
+			} else {
+				createPropertyInContainer(context, call, container)
+			}
 		]
 	}
 	
@@ -496,7 +564,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 					System.lineSeparator + margin + tabChar + "//TODO: " + Messages.WollokDslQuickfixProvider_createMethod_stub +
 					System.lineSeparator + margin + "}"
 	}
-	
+
 	def defaultStubMethod(WMethodContainer mc, WMethodDeclaration method) {
 		val margin = adjustMargin(mc)
 		'''
@@ -507,6 +575,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	def adjustMargin(WMethodContainer mc) {
 		if (mc.behaviors.empty) tabChar else ""
+	}
+
+	def defaultStubProperty(WMemberFeatureCall call, int numberOfTabsMargin, boolean constant) {
+		val margin = numberOfTabsMargin.output(tabChar)
+		margin + PROPERTY + " " + (if (constant) CONST else VAR) + " " + call.feature + " = initialValue" + System.lineSeparator
 	}
 
 	def resolveXtextDocumentFor(Issue issue) {
@@ -588,6 +661,26 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val xtextDocument = context.getXtextDocument(container.fileURI)
 		val code = defaultStubMethod(call, xtextDocument.computeMarginFor(methodLocation.placeToAdd, container))
 		container.insertMethod(code, context)
+	}
+
+	def createPropertyInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
+		val xtextDocument = context.getXtextDocument(container.fileURI)
+		val code = defaultStubProperty(call, xtextDocument.computeMarginFor(container.placeToAddVariable.placeToAdd, container), call.memberCallArguments.isEmpty)
+		container.insertProperty(code, context)
+	}
+
+	def upgradeToPropertyInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
+		val variable = container.getVariableDeclaration(call.feature)
+		upgradeToPropertyInContainer(context, call, container, variable.writeable)
+	}
+
+	def upgradeToPropertyInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container, boolean isVariable) {
+		val xtextDocument = context.getXtextDocument(container.fileURI)
+		val variable = container.getVariableDeclaration(call.feature)
+		val varOrConst = if (isVariable) VAR else CONST
+		val propertyDef = if (variable.property) PROPERTY + " " else "" 
+		val previousVarOrConst = if (variable.writeable) VAR else CONST
+		xtextDocument.replace(variable.before, previousVarOrConst.length + propertyDef.length, PROPERTY + " " + varOrConst) 
 	}
 
 }

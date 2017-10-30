@@ -56,8 +56,14 @@ class QuickFixUtils {
 	}
 
 	def static void deleteToken(IXtextDocument it, EObject e, String token) {
+		var length = token.length
+		var afterToken = e.before + length
+		val hasSpaceAfter = get.substring(afterToken, afterToken + 1).equals(" ")
 		val trimText = get.substring(e.before, e.after)
-		replace(e.before + trimText.indexOf(token), token.length, "")
+		if (hasSpaceAfter) {
+			length++
+		}
+		replace(e.before + trimText.indexOf(token), length, "")
 	}
 
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {
@@ -167,6 +173,12 @@ class QuickFixUtils {
 		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
 		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
 	}
+
+	def static insertProperty(WMethodContainer declaringContext, String code, IModificationContext context) {
+		val variableLocation = declaringContext.placeToAddVariable
+		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
+		xtextDocument.replace(variableLocation.placeToAdd, 0, variableLocation.formatCode(code))
+	}
 	
 	def static placeToAddMethod(WMethodContainer declaringContext) {
 		val behaviors = declaringContext.behaviors
@@ -184,6 +196,22 @@ class QuickFixUtils {
 		val behaviors = declaringContext.behaviors
 		if (!behaviors.isEmpty) {
 			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
+		}
+		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
+	}
+
+	def static placeToAddVariable(WMethodContainer declaringContext) {
+		val constructors = declaringContext.constructors().toList
+		if (!constructors.isEmpty) {
+			return new QuickFixLocation(constructors.sortBy [ before ].head.before, Location.BEFORE)
+		}
+		val behaviors = declaringContext.behaviors
+		if (!behaviors.isEmpty) {
+			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
+		}
+		val variables = declaringContext.variables.toList
+		if (!variables.isEmpty) {
+			return new QuickFixLocation(variables.sortBy [ before ].last.after, Location.AFTER)
 		}
 		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
 	}

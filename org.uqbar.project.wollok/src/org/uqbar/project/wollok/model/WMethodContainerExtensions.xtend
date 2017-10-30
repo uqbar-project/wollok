@@ -171,6 +171,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static variableNames(WMethodContainer it) {	variables.map [ v | v.name ].toList }
 
+	def static hasVariable(WMethodContainer it, String name) { variableNames.contains(name) }
+	
 	def dispatch static isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
@@ -191,6 +193,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
+	def static getVariableDeclaration(WMethodContainer c, String _name) {
+		c.variableDeclarations.findFirst [ variable.name.equals(_name) ]
+	}
+	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
 		c.allMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}

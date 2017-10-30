@@ -61,7 +61,7 @@ program prueba {
 	// XPECT errors --> "pepita does not understand energia2()" at "energia2"
 	pepita.energia2()
 	pepita.energia()
-	// XPECT errors --> "pepita does not understand peso(10)" at "peso"
+	// XPECT errors --> "Cannot modify constant property peso" at "peso"
 	pepita.peso(10)
 	pepita.peso()
 	

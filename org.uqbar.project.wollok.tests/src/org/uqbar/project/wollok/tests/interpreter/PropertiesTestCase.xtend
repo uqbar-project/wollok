@@ -209,5 +209,5 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
-	
+
 }
