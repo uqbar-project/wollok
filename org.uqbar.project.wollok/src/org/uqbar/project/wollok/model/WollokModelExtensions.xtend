@@ -209,15 +209,15 @@ class WollokModelExtensions {
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
 	
-	def static dispatch constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
+	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
 		constructorName(c, "self")
 	}
 	
-	def static dispatch constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
+	def static dispatch String constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
 		constructorName(c, "super")
 	}
 	
-	def static constructorName(WConstructor c, String constructorCall) {
+	def static dispatch String constructorName(WConstructor c, String constructorCall) {
 		(constructorCall ?: "constructor") + "(" + c.parameters.map [ name ].join(",") + ")"
 	}
 	
@@ -356,12 +356,16 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
 	def static IFile getIFile(EObject obj) {
-		val platformString = obj.eResource.URI.toPlatformString(true)
+		getIFile(obj.eResource)
+	}
+	
+	def static IFile getIFile(Resource resource){
+		val platformString = resource.URI.toPlatformString(true)
 		if (platformString === null) {
 			// could be a synthetic file
 			return null;
 		}
-		ResourcesPlugin.workspace.root.getFile(new Path(platformString))
+		ResourcesPlugin.workspace.root.getFile(new Path(platformString))		
 	}
 
 	// ******************************
