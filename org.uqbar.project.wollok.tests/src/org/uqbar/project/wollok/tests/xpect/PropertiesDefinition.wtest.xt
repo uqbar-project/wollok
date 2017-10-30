@@ -20,7 +20,7 @@ describe "group of tests" {
 	test "cuatro no es valor = 1" {
 		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
 		property var localVariable = 0
-		// XPECT errors --> "Method does not exist or invalid number of arguments" at "cuatro"
+		// XPECT errors --> "Cannot modify constant property cuatro" at "cuatro"
 		self.cuatro(1)
 		assert.notEquals(self.valor(), cuatro)
 	}

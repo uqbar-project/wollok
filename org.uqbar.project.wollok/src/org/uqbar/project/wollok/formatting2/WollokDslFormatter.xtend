@@ -138,6 +138,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 	}
 
 	def dispatch void format(WVariableDeclaration v, extension IFormattableDocument document) {
+		v.regionFor.keyword(WollokConstants.PROPERTY).append [ oneSpace ]
 		v.regionFor.keyword(WollokConstants.VAR).append [ oneSpace ]
 		v.regionFor.keyword(WollokConstants.CONST).append [ oneSpace ]
 		v.variable.append [ oneSpace ]

@@ -33,11 +33,11 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterForPropertyConstInClass() {
 		'''
 		class Ave {
-			property const energia = 100
+			property const fechaNacimiento = new Date()
 			property var vecesQueVolo
 			
 			constructor() {
-				vecesQueVolo = self.energia() - 100
+				vecesQueVolo = 0
 			}
 			
 			method volar() {
@@ -45,15 +45,14 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "energia inicial de pepita" {
+		test "fecha de nacimiento de pepita" {
 			const pepita = new Ave()
-			assert.equals(100, pepita.energia())
+			assert.equals(new Date(), pepita.fechaNacimiento())
 		}
 		
-		test "al volar sigue constante la energia de pepita" {
+		test "al volar sigue constante la fecha de nacimiento de pepita" {
 			const pepita = new Ave()
 			pepita.volar()
-			assert.equals(100, pepita.energia())
 			assert.equals(1, pepita.vecesQueVolo())
 		}
 		'''.interpretPropagatingErrors
@@ -64,6 +63,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		object pepita {
 			property const energia = 100
+			property const numerosFavoritos = [1, 3, 5, 8]
 			property var vecesQueVolo = self.energia() - 100
 			
 			method volar() {
@@ -79,6 +79,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			pepita.volar()
 			assert.equals(100, pepita.energia())
 			assert.equals(1, pepita.vecesQueVolo())
+			assert.equals([1, 3, 5, 8], pepita.numerosFavoritos())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -139,9 +140,74 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			test "el valor es 5" {
 				assert.equals(5, self.valor())
 			}
-
 		}
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void setterForPropertyConstInObject() {
+		'''
+		object pepita {
+			property const energia = 0
+		}
+		program prueba {
+			try {
+				pepita.energia(10)
+			} catch e : Exception {
+				assert.equals("Cannot modify constant property energia", e.getMessage())
+			}
+		}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+
+	@Test
+	def void badSetterForPropertyConstInObject() {
+		'''
+		object pepita {
+			property const energia = 0
+		}
+		program prueba {
+			try {
+				pepita.energia(10, "hola")
+			} catch e : Exception {
+				assert.equals("pepita[energia=0] does not understand energia(param1, param2)", e.getMessage())
+			}
+		}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+
+	@Test
+	def void setterForPropertyConstInClass() {
+		'''
+		class Ave {
+			property const energia = 0
+		}
+		program prueba {
+			const pepita = new Ave()
+			try {
+				pepita.energia(10)
+			} catch e : Exception {
+				assert.equals("Cannot modify constant property energia", e.getMessage())
+			}
+		}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+	
+	@Test
+	def void badSetterForPropertyConstInClass() {
+		'''
+		class Ave {
+			property const energia = 0
+		}
+		program prueba {
+			const pepita = new Ave()
+			try {
+				pepita.energia(10, [21, 1])
+			} catch e : Exception {
+				assert.equals("a Ave[energia=0] does not understand energia(param1, param2)", e.getMessage())
+			}
+		}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+	
 }

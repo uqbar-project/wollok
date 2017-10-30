@@ -14,7 +14,6 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -56,9 +55,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.Messages.*
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
@@ -531,9 +530,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
-		if (call.callOnThis && call.declaringContext !== null && !call.declaringContext.isValidCall(call, classFinder)) {
-			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE,
-				METHOD_ON_THIS_DOESNT_EXIST)
+		val declaringContext = call.declaringContext
+		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call, classFinder)) {
+			var message = WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST
+			val args = call.memberCallArguments.size
+			if (args == 1 && declaringContext.constantProperty(call.feature, 1)) {
+				message = NLS.bind(WollokDslValidator_PROPERTY_NOT_WRITABLE, call.feature)
+			}
+			report(message, call, WMEMBER_FEATURE_CALL__FEATURE, METHOD_ON_THIS_DOESNT_EXIST)
 		}
 	}
 

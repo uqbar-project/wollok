@@ -44,6 +44,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext<WollokObject> parentContext
 	List<String> properties = newArrayList
+	List<String> constantsProperties = newArrayList
 	
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
@@ -57,6 +58,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [| declaration.right?.eval ])
 		if (declaration.property) {
 			properties.add(declaration.variable.name)
+			if (!declaration.writeable) {
+				constantsProperties.add(declaration.variable.name)			
+			}
 		}
 	}
 		
@@ -85,6 +89,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		}
 		if (parameters.size > 1) {
 			throwMessageNotUnderstood(message, parameters)
+		}
+		if (constantsProperties.contains(message)) {
+			throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_PROPERTY_NOT_WRITABLE, message))
 		}
 		setReference(message, parameters.head)
 		return theVoid

@@ -482,13 +482,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean matchesProperty(WVariableDeclaration decl, String propertyName, int parametersSize) {
 		matchesGetter(decl, propertyName, parametersSize) || matchesSetter(decl, propertyName, parametersSize) 
 	}
-	
+
 	def static boolean matchesGetter(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		decl.variable?.name?.equals(propertyName) && decl.property && parametersSize == 0
+		decl.variable.name.equals(propertyName) && decl.property && parametersSize == 0
 	}
 	
 	def static boolean matchesSetter(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		decl.variable?.name?.equals(propertyName) && decl.property && decl.writeable && parametersSize == 1
+		decl.variable.name.equals(propertyName) && decl.property && decl.writeable && parametersSize == 1
+	}
+
+	def static boolean constantProperty(WMethodContainer mc, String propertyName, int parametersSize) {
+		mc.variableDeclarations.exists [ decl | decl.variable.name.equals(propertyName) && decl.property && !decl.writeable ]
 	}
 	
 	// 
