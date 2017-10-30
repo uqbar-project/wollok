@@ -165,13 +165,17 @@ class WollokModelExtensions {
 	/*
 	 * Uses of a Variable
 	 */
-	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
+	def static uses(WVariable variable) { 
+		if (variable === null || variable.declarationContext === null) return newArrayList
+		VariableUsesVisitor.usesOf(variable, variable.declarationContext)
+	}
 	
 	def static isUsed(WParameter parameter) {
 		!ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty
 	}
 
 	def static assignments(WVariable variable) {
+		if (variable === null || variable.declarationContext === null) return newArrayList
 		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 

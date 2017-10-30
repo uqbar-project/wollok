@@ -169,7 +169,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// FED - new convention
 	def static isGetter(WMethodDeclaration it) { (it.eContainer as WMethodContainer).variableNames.contains(name) && parameters.empty }
 	
-	def static variableNames(WMethodContainer it) {	variables.map [ v | v.name ].toList }
+	def static variableNames(WMethodContainer it) {	variables.map [ v | v?.name ].toList }
 
 	def static hasVariable(WMethodContainer it, String name) { variableNames.contains(name) }
 	
@@ -194,7 +194,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
 	def static getVariableDeclaration(WMethodContainer c, String _name) {
-		c.variableDeclarations.findFirst [ variable.name.equals(_name) ]
+		c.variableDeclarations.findFirst [ variable?.name.equals(_name) ]
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
@@ -490,15 +490,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static boolean matchesGetter(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		decl.variable.name.equals(propertyName) && decl.property && parametersSize == 0
+		decl.variable !== null && decl.variable.name.equals(propertyName) && decl.property && parametersSize == 0
 	}
 	
 	def static boolean matchesSetter(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		decl.variable.name.equals(propertyName) && decl.property && decl.writeable && parametersSize == 1
+		decl.variable !== null && decl.variable.name.equals(propertyName) && decl.property && decl.writeable && parametersSize == 1
 	}
 
 	def static boolean constantProperty(WMethodContainer mc, String propertyName, int parametersSize) {
-		mc.variableDeclarations.exists [ decl | decl.variable.name.equals(propertyName) && decl.property && !decl.writeable ]
+		mc.variableDeclarations.exists [ decl | decl.variable !== null && decl.variable.name.equals(propertyName) && decl.property && !decl.writeable ]
 	}
 	
 	// 

@@ -103,7 +103,16 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			concatResolvedType(": ", variable)
 	}
 
-	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
+	def image(WVariableDeclaration it) { 
+		if (property) {
+			if (writeable) 
+				'wollok-icon-property_var_16.png'
+			else
+				'wollok-icon-property_const_16.png'
+		} else {
+			'wollok-icon-variable_16.png'
+		} 
+	}
 
 	def text(WVariable it) { name + concatResolvedType(": ", it) }
 

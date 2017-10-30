@@ -45,7 +45,7 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 	def _createChildren(IOutlineNode parentNode, WSuite it) {
 	    #[members].children(parentNode)
-	    if (fixture != null) {
+	    if (fixture !== null) {
 			parentNode.createEObjectNode(fixture)
 	    }
 		#[tests].children(parentNode)
@@ -64,7 +64,7 @@ class WollokDslOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	def _isLeaf(WMemberFeatureCall c) 	{ true }
 	
 	/** don't want to go inside a var (unless it's assigned to an object literal) */
-	def _isLeaf(WVariableDeclaration v) { v.right == null || !(v.right instanceof WObjectLiteral) }
+	def _isLeaf(WVariableDeclaration v) { v.right === null || !(v.right instanceof WObjectLiteral) }
 	def _isLeaf(WAssignment v) { !(v.value instanceof WObjectLiteral) }
 	 
 }
