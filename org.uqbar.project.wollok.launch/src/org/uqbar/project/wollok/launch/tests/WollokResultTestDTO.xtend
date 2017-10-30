@@ -16,7 +16,7 @@ class WollokResultTestDTO implements Serializable {
 	boolean error = false
 	
 	def boolean ok() {
-		message == null && errorLineNumber == 0	
+		message === null && errorLineNumber == 0	
 	}
 	
 	def boolean failure() {
@@ -52,6 +52,10 @@ class WollokResultTestDTO implements Serializable {
 			resource = _resource
 			error = true
 		]
+	}
+	
+	def getStackTraceFiltered() {
+		stackTrace.filter [ it.contextDescription !== null && !it.contextDescription.equals("")]
 	}
 	
 }

@@ -130,6 +130,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		val errorLine = e.wollokException
 			.convertStackTrace
 			.toList
+			.filter [ stackDTO | stackDTO.hasContextDescription ]
 			.map [ stackDTO | stackDTO.elementForStackTrace ]
 			.join(System.lineSeparator)
 		

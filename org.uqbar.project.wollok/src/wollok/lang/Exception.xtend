@@ -26,7 +26,7 @@ class Exception {
 		stackTrace = interpreter
 			.currentThread
 			.stack
-			.filter [ frame | frame.context.showableInStackTrace ]
+			.filter [ frame | frame.showableInStackTrace ]
 			.map[f| f.currentLocation ]
 			.clone
 			.reverse
