@@ -226,7 +226,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			Messages.WollokDslQuickfixProvider_convertPropertyVar_description, null) [ e, context |
 			val call = e as WMemberFeatureCall
 			val container = call.resolveWKO(classFinder)
-			upgradeToPropertyInContainer(context, call, container, true)
+			if (container.hasVariable(call.feature)) {
+				upgradeToPropertyInContainer(context, call, container, true)
+			} else {
+				createPropertyInContainer(context, call, container)
+			}			
 		]
 	}
 	

@@ -110,7 +110,10 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			else
 				'wollok-icon-property_const_16.png'
 		} else {
-			'wollok-icon-variable_16.png'
+			if (writeable)
+				'wollok-icon-variable_16.png'
+			else 
+				'wollok-icon-constant_16.png'
 		} 
 	}
 

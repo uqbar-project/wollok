@@ -182,7 +182,7 @@ class WollokModelExtensions {
 	def static assignments(WVariable variable, EObject context) {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
-	
+		
 	def static declaration(WVariable variable) {
 		variable.eContainer as WVariableDeclaration
 	}
