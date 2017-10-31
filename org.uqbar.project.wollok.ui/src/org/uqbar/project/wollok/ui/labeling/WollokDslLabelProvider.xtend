@@ -96,10 +96,10 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 		// TODO: Considerar si es property
 		(if (writeable)
 			// var 
-			grammar.WVariableDeclarationAccess.writeableVarKeyword_2_0_0.value
+			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
 		else
 			// const 
-			grammar.WVariableDeclarationAccess.constKeyword_2_1.value) + " " + variable.name +
+			grammar.WVariableDeclarationAccess.constKeyword_1_1.value) + " " + variable.name +
 			concatResolvedType(": ", variable)
 	}
 

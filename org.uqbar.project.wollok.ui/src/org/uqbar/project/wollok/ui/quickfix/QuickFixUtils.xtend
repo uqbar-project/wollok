@@ -57,13 +57,15 @@ class QuickFixUtils {
 
 	def static void deleteToken(IXtextDocument it, EObject e, String token) {
 		var length = token.length
-		var afterToken = e.before + length
-		val hasSpaceAfter = get.substring(afterToken, afterToken + 1).equals(" ")
 		val trimText = get.substring(e.before, e.after)
+		if (trimText.indexOf(token) == -1) return;
+		var start = e.before + trimText.indexOf(token)
+		var afterToken = start + length
+		val hasSpaceAfter = get.substring(afterToken, afterToken + 1).equals(" ")
 		if (hasSpaceAfter) {
 			length++
 		}
-		replace(e.before + trimText.indexOf(token), length, "")
+		replace(start, length, "")
 	}
 
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {

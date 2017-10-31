@@ -583,7 +583,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 
 	def defaultStubProperty(WMemberFeatureCall call, int numberOfTabsMargin, boolean constant) {
 		val margin = numberOfTabsMargin.output(tabChar)
-		margin + PROPERTY + " " + (if (constant) CONST else VAR) + " " + call.feature + " = initialValue" + System.lineSeparator
+		margin + (if (constant) CONST else VAR) + " " + PROPERTY + " " + call.feature + " = initialValue" + System.lineSeparator
 	}
 
 	def resolveXtextDocumentFor(Issue issue) {
@@ -684,7 +684,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		val varOrConst = if (isVariable) VAR else CONST
 		val propertyDef = if (variable.property) PROPERTY + " " else "" 
 		val previousVarOrConst = if (variable.writeable) VAR else CONST
-		xtextDocument.replace(variable.before, previousVarOrConst.length + propertyDef.length, PROPERTY + " " + varOrConst) 
+		xtextDocument.replace(variable.before, previousVarOrConst.length + propertyDef.length, varOrConst + " " + PROPERTY) 
 	}
 
 }

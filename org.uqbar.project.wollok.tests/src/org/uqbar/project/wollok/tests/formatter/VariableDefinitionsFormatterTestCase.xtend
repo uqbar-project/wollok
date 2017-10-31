@@ -140,23 +140,24 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		assertFormatting(
 		'''
 		class Foo {
-			property         var 
+			var              property 
 			
 			
 			 x
 			 
+			 const 
 			 property
 			 
 			 
-			 const y
+			 y
 			    =    
 			      1		
 		}''', 
 		'''
 		class Foo {
 		
-			property var x
-			property const y = 1
+			var property x
+			const property y = 1
 		
 		}
 		
@@ -168,23 +169,25 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		assertFormatting(
 		'''
 		object romualdo {
-			property         var 
+			var      property 
 			
 			
 			 x
 			 
+			 const
+			 
 			 property
 			 
 			 
-			 const y
+			  y
 			    =    
 			      1		
 		}''', 
 		'''
 		object romualdo {
 		
-			property var x
-			property const y = 1
+			var property x
+			const property y = 1
 		
 		}
 		
@@ -196,23 +199,24 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		assertFormatting(
 		'''
 		mixin Jugable {
-			property         var 
+			         var   property 
 			
 			
 			 x
 			 
+			 const         
 			 property
 			 
 			 
-			 const y
+			  y
 			    =    
 			      1		
 		}''', 
 		'''
 		mixin Jugable {
 		
-			property var x
-			property const y = 1
+			var property x
+			const property y = 1
 		
 		}
 		
@@ -227,15 +231,15 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		
 		 "group of tests"  
 		 {
-			property         var 
+			var					property         
 			
 			
 			 x
 			 
-			 property
+			 const  			property
 			 
 			 
-			 const y
+			 y
 			    =    
 			      1		
 			      
@@ -244,8 +248,8 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		'''
 		describe "group of tests" {
 		
-			property var x
-			property const y = 1
+			var property x
+			const property y = 1
 		
 			test "true is true" {
 				assert.that(true)

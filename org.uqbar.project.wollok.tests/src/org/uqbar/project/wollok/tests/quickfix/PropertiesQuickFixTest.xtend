@@ -13,7 +13,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #['''
 			class MyClass{
 				method someMethod(){ 
-					property var hello = "hola"
+					var property hello = "hola"
 				}
 			}
 		''']
@@ -33,7 +33,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #['''
 			object pepita {
 				method someMethod() {
-					property var hello = "hola"
+					var property hello = "hola"
 				}
 			}
 		''']
@@ -52,7 +52,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def testRemovePropertyInTestLocalVariable(){
 		val initial = #['''
 			test "a special test" {
-				property var x = 1
+				var property x = 1
 				assert.equals(1, x)
 			}
 		''']
@@ -71,7 +71,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #['''
 			class Ave {
 				constructor() {
-					property var hello = "hola"
+					var property hello = "hola"
 				}
 			}
 		''']
@@ -103,7 +103,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property const energia = initialValue
+				const property energia = initialValue
 			
 				method volar() { 
 				}
@@ -132,7 +132,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property const energia = initialValue
+				const property energia = initialValue
 			
 			}
 			
@@ -169,7 +169,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 				var color = "azul"
 			
 			
-				property const energia = initialValue
+				const property energia = initialValue
 			
 				method volar() {
 					color = "rojo"
@@ -201,7 +201,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #['''
 			object pepita {
 			
-				property const energia = initialValue
+				const property energia = initialValue
 			
 			}
 			
@@ -229,7 +229,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() {
 					energia++
@@ -258,7 +258,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 			}
@@ -290,7 +290,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property const energia = 0
+				const property energia = 0
 				
 				method valentia() = energia
 			}
@@ -322,7 +322,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 			}
@@ -354,7 +354,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 			}
@@ -372,7 +372,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def testAddPropertyWritableToWko3(){
 		val initial = #['''
 			object pepita {
-				property const energia = 0
+				const property energia = 0
 				
 				method valentia() = energia
 			}
@@ -386,7 +386,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 			}
@@ -415,7 +415,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 				method volar() {
@@ -441,7 +441,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 				method volar() {
@@ -456,7 +456,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def testAddPropertyWritableToSelf3(){
 		val initial = #['''
 			object pepita {
-				property const energia = 0
+				const property energia = 0
 				
 				method valentia() = energia
 				method volar() {
@@ -467,7 +467,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 
 		val result = #['''
 			object pepita {
-				property var energia = 0
+				var property energia = 0
 				
 				method valentia() = energia
 				method volar() {

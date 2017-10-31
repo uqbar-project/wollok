@@ -8,7 +8,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterAndSetterForPropertyVarInClass() {
 		'''
 		class Ave {
-			property var energia = 100
+			var property energia = 100
 			
 			method volar() {
 				energia -= 10
@@ -33,8 +33,8 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterForPropertyConstInClass() {
 		'''
 		class Ave {
-			property const fechaNacimiento = new Date()
-			property var vecesQueVolo
+			const property fechaNacimiento = new Date()
+			var property vecesQueVolo
 			
 			constructor() {
 				vecesQueVolo = 0
@@ -62,9 +62,9 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterForPropertyConstInWko() {
 		'''
 		object pepita {
-			property const energia = 100
-			property const numerosFavoritos = [1, 3, 5, 8]
-			property var vecesQueVolo = self.energia() - 100
+			const property energia = 100
+			const property numerosFavoritos = [1, 3, 5, 8]
+			var property vecesQueVolo = self.energia() - 100
 			
 			method volar() {
 				vecesQueVolo++
@@ -88,7 +88,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterAndSetterForPropertyVarInWko() {
 		'''
 		object pepita {
-			property var energia = 100
+			var property energia = 100
 			
 			method volar() {
 				energia -= 10
@@ -111,8 +111,8 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterAndSetterForPropertyVarInDescribe() {
 		'''
 		describe "grupo de tests" {
-			property var valorInicial = 5
-			property var valor = self.valorInicial()
+			var property valorInicial = 5
+			var property valor = self.valorInicial()
 			
 			test "el valor es 5" {
 				assert.equals(5, self.valor())
@@ -131,7 +131,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void getterForPropertyConstInDescribe() {
 		'''
 		describe "grupo de tests" {
-			property const valor
+			const property valor
 			
 			fixture {
 				valor = 5
@@ -148,7 +148,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void setterForPropertyConstInObject() {
 		'''
 		object pepita {
-			property const energia = 0
+			const property energia = 0
 		}
 		program prueba {
 			try {
@@ -164,7 +164,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void badSetterForPropertyConstInObject() {
 		'''
 		object pepita {
-			property const energia = 0
+			const property energia = 0
 		}
 		program prueba {
 			try {
@@ -180,7 +180,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void setterForPropertyConstInClass() {
 		'''
 		class Ave {
-			property const energia = 0
+			const property energia = 0
 		}
 		program prueba {
 			const pepita = new Ave()
@@ -197,7 +197,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	def void badSetterForPropertyConstInClass() {
 		'''
 		class Ave {
-			property const energia = 0
+			const property energia = 0
 		}
 		program prueba {
 			const pepita = new Ave()

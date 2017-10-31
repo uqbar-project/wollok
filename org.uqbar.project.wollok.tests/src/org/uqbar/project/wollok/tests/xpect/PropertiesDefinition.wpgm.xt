@@ -2,9 +2,9 @@
 
 object pepita {
 
-	property var energia = 0
-	property const peso = 50
-	property var color = "azul"
+	var property energia = 0
+	const property peso = 50
+	var property color = "azul"
 
 	method volar() {
 		energia -= 100
@@ -20,14 +20,14 @@ object pepita {
 }
 
 class Ave {
-	property var energia = 10
-	property const peso = 5
-	property var color = "azul"
+	var property energia = 10
+	const property peso = 5
+	var property color = "azul"
 	var alas = []
 
 	constructor() {
 		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
-		property var localVariable = 0
+		var property localVariable = 0
 	}
 		
 	method volar() {
@@ -36,14 +36,14 @@ class Ave {
 		self.peso(1)
 		alas.forEach { ala => 
 			// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
-			property var lado = ""
+			var property lado = ""
 			ala.cansarse(lado)
 		}
 	}
 	
 	method propertyMalDefinida() {
 		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
-		property var localVariable = 0
+		var property localVariable = 0
 		localVariable++
 		return localVariable
 	}
@@ -55,7 +55,7 @@ class Ave {
 
 program prueba {
 	// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
-	property var localVar = 0
+	var property localVar = 0
 	pepita.energia(1002)
 	pepita.volar()
 	// XPECT errors --> "pepita does not understand energia2()" at "energia2"
