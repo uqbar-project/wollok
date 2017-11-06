@@ -41,7 +41,13 @@ public class Messages extends NLS {
 	public static String WollokDslNewProjectWizard_windowTitle;
 	public static String WollokTemplateProposalProvider_WProgram_name;
 	public static String WollokTemplateProposalProvider_WProgram_description;
-	
+
+	public static String WollokTemplateProposalProvider_WSuite_name;
+	public static String WollokTemplateProposalProvider_WSuite_description;
+
+	public static String WollokTemplateProposalProvider_WTest_name;
+	public static String WollokTemplateProposalProvider_WTest_description;
+
 	public static String WollokTemplateProposalProvider_WPackage_name;
 	public static String WollokTemplateProposalProvider_WPackage_description;
 	
@@ -61,6 +67,9 @@ public class Messages extends NLS {
 	
 	public static String WollokTemplateProposalProvider_WConstructorCall_name;
 	public static String WollokTemplateProposalProvider_WConstructorCall_description;
+	
+	public static String WollokTemplateProposalProvider_WConstructor_name;
+	public static String WollokTemplateProposalProvider_WConstructor_description;
 	
 	public static String WollokTemplateProposalProvider_WIfExpression_name;
 	public static String WollokTemplateProposalProvider_WIfExpression_description;
