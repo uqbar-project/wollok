@@ -44,6 +44,7 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 		synchronized (this) {
 			val globalScope = globalScopeProvider.getScope(ctx, ref)
 			val elements = ctx.scope.allElements
+			println("elements " + elements)
 			new SimpleScope(globalScope, elements)
 		}
 	}

@@ -646,7 +646,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		}
 		class B {
 			method b() {
-				const a = new A("hola", null, null, null)
+				const a = new A("hola", _y, _z, _t)
 				console.println(a.toString())
 			}
 		}

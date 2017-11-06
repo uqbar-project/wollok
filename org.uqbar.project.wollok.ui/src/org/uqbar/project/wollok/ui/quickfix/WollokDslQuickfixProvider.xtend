@@ -126,16 +126,20 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			Messages.WollokDslQuickFixProvider_adjust_constructor_call_description, null) [ e, it |
 			val call = e as WConstructorCall
 			val clazz = call.classRef
-			val constructors = clazz.constructors.sortBy [ a | (a.parameters.size - call.arguments.size).abs ]
+			val numberOfParameters = call.numberOfParameters
+			val constructors = clazz.constructors.sortBy [ a | (a.parameters.size - numberOfParameters).abs ]
 			var paramsSize = 0
+			var WConstructor constructor = null
 			if (!constructors.isEmpty) {
-				paramsSize = constructors.head.parameters.size
+				constructor = constructors.head
+				paramsSize = constructor.parameters.size
 			}
-			val diffSize = call.arguments.size - paramsSize
+			val diffSize = numberOfParameters - paramsSize
 			var List<String> newParams = newArrayList
+			val List<String> paramsConstructor = if (constructor === null) newArrayList else constructor.parameters.map [ name ]
 			if (diffSize < 0) {
 				newParams = (call.arguments.map [ node.text.trim ]
-					+ ((1..diffSize.abs).map [ NULL ])).toList
+					+ ((1..diffSize.abs).map [ paramsConstructor.get(it + numberOfParameters - 1) ])).toList
 			} else {
 				newParams =	call.arguments.subList(0, paramsSize)
 					.map [ node.text.trim ].toList
