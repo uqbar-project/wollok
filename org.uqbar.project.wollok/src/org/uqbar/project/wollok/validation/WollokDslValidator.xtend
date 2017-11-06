@@ -316,6 +316,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 
+	/**
+	 * TODO: Confirm with NicoP 
 	@Check
 	@DefaultSeverity(WARN)
 	def delegatedDefaultConstructorExists(WDelegatingConstructorCall it) {
@@ -328,12 +330,22 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			}
 		}
 	}
+	 */
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cyclicConstructorDefinition(WConstructor it) {
+		if (hasCyclicDefinition) {
+			report(WollokDslValidator_CONSTRUCTOR_HAS_CYCLIC_DELEGATION, it, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)			
+		}
+		//}	
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def delegatedConstructorExists(WDelegatingConstructorCall it) {
 		val validConstructors = it.constructorsFor(it.wollokClass).map[constr|constr.constructorName(it)].join(",")
-		if (!it.arguments.isEmpty){
+		//if (!it.arguments.isEmpty){
 			val resolved = it.wollokClass.resolveConstructorReference(it)
 			if (resolved === null) {
 				if (!validConstructors.isEmpty) {
@@ -345,7 +357,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 				}
 			}	
-		}	
+		//}	
 	}
 
 	def static dispatch constructorPrefix(WSuperDelegatingConstructorCall c) { "super " }
@@ -618,30 +630,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					VARIABLE_NEVER_ASSIGNED)
 		}
 		// Variable has no assignment in its definition and there are several assignments
-		if (!assignments.empty && right === null) {
-			val constructorsOk = assignments
-				.map [ declaringConstructor ]
-				.filter [ it !== null ]
-				.toList
-			
-			if (declaringContext !== null && !isLocalToMethod) {
-				declaringContext
-					.getConstructors
-					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.initializationsMustBeChecked(declaringContext) ]
-					.forEach [ constructor |
-						if (!writeable)
-							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
-						else
-							warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
-					]
-			}
+		if (!assignments.empty && right === null && declaringContext !== null && !isLocalToMethod) {
+			declaringContext
+				.getConstructors
+				.filter [ constructor | variable.assignments(constructor).isEmpty ]
+				.forEach [ constructor |
+					if (!writeable)
+						error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+					else
+						warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+				]
 		}
 		// Variable is never used
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
-	
+
+	@Deprecated	
 	def boolean initializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
 		val delegatingConstructor = constructor.delegatingConstructorCall
 		if (delegatingConstructor === null) { 

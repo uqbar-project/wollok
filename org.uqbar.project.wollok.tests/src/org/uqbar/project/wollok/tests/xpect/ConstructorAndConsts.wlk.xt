@@ -29,16 +29,21 @@ class GolondrinaCanadiense inherits Golondrina {
 class GolondrinaUruguaya inherits Golondrina {
 	const esBotija
 	
+	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "{ 		energia = 10 	}"
 	constructor() {
 		energia = 10
-		esBotija = false
 	}
 	
-	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "constructor(_energia, _esBotija) = self(_energia)"
-	constructor(_energia, _esBotija) = self(_energia)
+	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "constructor(_energia, _esBotija) = self()"
+	constructor(_energia, _esBotija) = self()
 	
 	constructor(_energia, _esBotija, unParametro) = super(_energia) {
 		esBotija = _esBotija
+	}
+
+	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "{ 		console.println(param1 + param2) 	}"
+	constructor(_energia, _esBotija, param1, param2) = super() {
+		console.println(param1 + param2)
 	}
 	
 }

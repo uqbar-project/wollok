@@ -105,6 +105,18 @@ class D inherits A {
 	
 }
 
+class E inherits D {
+	var var1
+	constructor(_var1) { var1 = _var1 }	
+}
+
+class F inherits E {
+	var var2
+	constructor(_var1, _var2) = super(_var1) {
+		var2 = _var2
+	}
+}
+
 class A_InicializandoX {
 	var x = 1
 	constructor() { }
@@ -130,6 +142,16 @@ class TestLastConstructorDefinition {
 		c.doWhatCDoesWell()
 		var d = new D()
 		d = new D(4)
+		new F(1, 2)
+		new E(1)
+		// XPECT errors --> "Wrong number of arguments. Should be new E(_var1)" at "new E()"
+		new E()
+		// XPECT errors --> "Wrong number of arguments. Should be new E(_var1)" at "1"
+		new E(1, 2)
+		// XPECT errors --> "Wrong number of arguments. Should be new F(_var1, _var2)" at "new F()"
+		new F()
+		// XPECT errors --> "Wrong number of arguments. Should be new F(_var1, _var2)" at "1"
+		new F(1)
 		d.x()
 	}
 }
