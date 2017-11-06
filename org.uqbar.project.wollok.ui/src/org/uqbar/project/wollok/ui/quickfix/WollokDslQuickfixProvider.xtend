@@ -41,6 +41,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
+import static extension java.lang.Math.*
+
 /**
  * Custom quickfixes.
  * see https://eclipse.org/Xtext/documentation/310_eclipse_support.html#quick-fixes
@@ -118,9 +120,32 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	// TODO: Agregar un fix más a @Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
-	// para que modifique la llamada en base a los parámetros  
-	
+	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+	def adjustConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name,
+			Messages.WollokDslQuickFixProvider_adjust_constructor_call_description, null) [ e, it |
+			val call = e as WConstructorCall
+			val clazz = call.classRef
+			val constructors = clazz.constructors.sortBy [ a | (a.parameters.size - call.arguments.size).abs ]
+			var paramsSize = 0
+			if (!constructors.isEmpty) {
+				paramsSize = constructors.head.parameters.size
+			}
+			val diffSize = call.arguments.size - paramsSize
+			var List<String> newParams = newArrayList
+			if (diffSize < 0) {
+				newParams = (call.arguments.map [ node.text.trim ]
+					+ ((1..diffSize.abs).map [ NULL ])).toList
+			} else {
+				newParams =	call.arguments.subList(0, paramsSize)
+					.map [ node.text.trim ].toList
+			}
+			val newConstructorCall = INSTANTIATION + " " + clazz.name + "(" +
+				newParams.join(", ") + ")"
+			xtextDocument.replaceWith(call, newConstructorCall)
+		]
+	}
+
 	@Fix(CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 	def createConstructorInSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_superclass_name,
@@ -512,14 +537,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	def defaultStubConstructor(WConstructorCall call) {
-		val margin = 1.output(tabChar)
+		call.arguments.size.defaultStubConstructor
+	}
+
+	def defaultStubConstructor(int paramsSize) {
 		var args = ""
-		val parametersSize = call.arguments.size 
-		if (parametersSize >= 1) {
-			args = (1..parametersSize).map [ i | "param" + i ].join(", ")
+		val margin = 1.output(tabChar)
+		if (paramsSize >= 1) {
+			args = (1..paramsSize).map [ i | "param" + i ].join(", ")
 		}
 		'''
-		«margin»constructor(«args») {
+		«margin»«CONSTRUCTOR»(«args») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}'''	
 	}

@@ -510,4 +510,180 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_create_constructor_class_name)
 	}
 
+	@Test
+	def adjustConstructorCallParams(){
+		val initial = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_y) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola", 1)
+				console.println(a.toString())
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_y) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola")
+				console.println(a.toString())
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
+	}
+
+	@Test
+	def adjustConstructorCallParams2(){
+		val initial = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_x, _y, _z) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola", 1, 8, true)
+				console.println(a.toString())
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_x, _y, _z) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola", 1, 8)
+				console.println(a.toString())
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
+	}
+
+	@Test
+	def adjustConstructorCallParams3(){
+		val initial = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_y) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola", 1, 8, true)
+				console.println(a.toString())
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_y) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola")
+				console.println(a.toString())
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
+	}
+
+	@Test
+	def adjustConstructorCallParams4(){
+		val initial = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_x, _y, _z, _t) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola")
+				console.println(a.toString())
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var y = 0
+			constructor(_x, _y, _z, _t) {
+				y = _y
+			}
+		}
+		class B {
+			method b() {
+				const a = new A("hola", null, null, null)
+				console.println(a.toString())
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
+	}
+
+	@Test
+	def adjustConstructorCallParams5(){
+		val initial = #[
+		'''
+		class A {
+			var y = 0
+			method y() = y
+		}
+		class B {
+			method b() {
+				const a = new A("hola", 1)
+				console.println(a.toString())
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var y = 0
+			method y() = y
+		}
+		class B {
+			method b() {
+				const a = new A()
+				console.println(a.toString())
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
+	}
+
 }
