@@ -14,7 +14,6 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -56,9 +55,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.Messages.*
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
@@ -121,6 +120,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
+	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -255,7 +255,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				""
 			else
 				c.classRef.constructors.map['(' + parameters.map[name].join(",") + ')'].join(' or ')
-			report(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
+			report(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c,
+				//WCONSTRUCTOR_CALL__CLASS_REF - issue #1277? 
+				WCONSTRUCTOR_CALL__ARGUMENTS,
+				WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL
+			)
 		}
 	}
 

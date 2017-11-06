@@ -105,6 +105,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_create_method_superclass_description;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_name;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_description;
+	public static String WollokDslQuickFixProvider_create_constructor_class_name; 
+	public static String WollokDslQuickFixProvider_create_constructor_class_description; 
 	public static String WollokDslQuickFixProvider_create_constructor_superclass_name; 
 	public static String WollokDslQuickFixProvider_create_constructor_superclass_description; 
 	public static String WollokDslQuickFixProvider_remove_unused_variable_name;

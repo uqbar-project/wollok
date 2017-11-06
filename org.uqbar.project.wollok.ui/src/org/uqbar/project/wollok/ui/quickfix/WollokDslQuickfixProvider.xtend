@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -106,6 +107,20 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+	def createConstructorInClass(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_class_name,
+			Messages.WollokDslQuickFixProvider_create_constructor_class_description, null) [ e, it |
+			val call = e as WConstructorCall
+			val clazz = call.classRef
+			val constructor = call.defaultStubConstructor.toString 
+			clazz.insertConstructor(constructor, it)
+		]
+	}
+
+	// TODO: Agregar un fix más a @Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+	// para que modifique la llamada en base a los parámetros  
+	
 	@Fix(CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 	def createConstructorInSuperClass(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_superclass_name,
@@ -489,13 +504,26 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 	
 	def defaultStubMethod(WMethodContainer mc, WMethodDeclaration method) {
-		val margin = adjustMargin(mc)
+		val margin = mc.adjustMargin
 		'''
 		«margin»«METHOD» «method.name»(«method.parameters.map[name].join(",")») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}''' + System.lineSeparator
 	}
 
+	def defaultStubConstructor(WConstructorCall call) {
+		val margin = 1.output(tabChar)
+		var args = ""
+		val parametersSize = call.arguments.size 
+		if (parametersSize >= 1) {
+			args = (1..parametersSize).map [ i | "param" + i ].join(", ")
+		}
+		'''
+		«margin»constructor(«args») {
+		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+		«margin»}'''	
+	}
+	
 	def adjustMargin(WMethodContainer mc) {
 		if (mc.behaviors.empty) tabChar else ""
 	}
