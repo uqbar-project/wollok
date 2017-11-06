@@ -271,7 +271,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def construtorMustExplicitlyCallSuper(WConstructor it) {
+	def constructorMustExplicitlyCallSuper(WConstructor it) {
 		if (delegatingConstructorCall === null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			report(WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR, it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
@@ -646,25 +646,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
-
-	@Deprecated	
-	def boolean initializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
-		val delegatingConstructor = constructor.delegatingConstructorCall
-		if (delegatingConstructor === null) { 
-			return true
-		}
-		val realConstructor = declaringContext.resolveConstructor(delegatingConstructor.arguments)
-		realConstructor.container !== declaringContext
-	}
-
-
-//  Confirm with @npasserini
-//  @dodain - I think we should not consider this
-//	@Check
-//	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-//	def unusedParameters(WMethodDeclaration it) {
-//		checkUnusedParameters(it.parameters)
-//	}
 
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)

@@ -172,7 +172,9 @@ class WollokModelExtensions {
 	}
 
 	def static assignments(WVariable variable) {
-		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
+		if (variable.declarationContext !== null) {
+			VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
+		}
 	}
 
 	def static assignments(WVariable variable, EObject context) {
