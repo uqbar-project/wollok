@@ -42,3 +42,12 @@ class GolondrinaUruguaya inherits Golondrina {
 	}
 	
 }
+
+class A {
+	var energia
+
+	constructor(e) { energia = e }
+	method energia() = energia
+	// XPECT errors --> "Couldn't resolve reference to Referenciable 'e'." at "e"
+	method setEnergia() { energia = e }
+}

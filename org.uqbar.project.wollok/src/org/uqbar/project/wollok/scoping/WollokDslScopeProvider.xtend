@@ -44,7 +44,6 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 		synchronized (this) {
 			val globalScope = globalScopeProvider.getScope(ctx, ref)
 			val elements = ctx.scope.allElements
-			println("elements " + elements)
 			new SimpleScope(globalScope, elements)
 		}
 	}
@@ -77,11 +76,15 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def dispatch IScope scope(WObjectLiteral it) { declaredVariables.asScope }
 
-	def dispatch IScope scope(WConstructor it) { eContainer.scope + parameters }
+	def dispatch IScope scope(WConstructor it) {
+		eContainer.scope + parameters
+	}
 
 	def dispatch IScope scope(WClosure it) { eContainer.scope + parameters }
 
-	def dispatch IScope scope(WMethodDeclaration it) { eContainer.scope + parameters }
+	def dispatch IScope scope(WMethodDeclaration it) {
+		eContainer.scope + parameters
+	}
 
 	def dispatch IScope scope(WCatch it) { eContainer.scope + exceptionVarName }
 
