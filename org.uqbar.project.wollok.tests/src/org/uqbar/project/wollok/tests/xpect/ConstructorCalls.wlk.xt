@@ -50,14 +50,14 @@ class ConstructorCallTest {
 		const d1 = new Direccion()
 		
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new Direccion(c,n)" at "\"Juan\""
+		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion(\"Juan\")"
 		   "Unused variable" at "d2"
 		   ---
 		*/
 		const d2 = new Direccion("Juan")
 		
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new Direccion(c,n)" at "1"
+		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion(1, 2, 3)"
 		   "Unused variable" at "d3"
 		   ---
 		*/
@@ -69,7 +69,7 @@ class ConstructorCallTest {
 		const p2 = new Point(2,3)
 		p2.blah()
 		
-		// XPECT errors --> "Wrong number of arguments. Should be new Point() or (ax,ay)" at "1"
+		// XPECT errors --> "Wrong number of arguments. Should be new Point() or (ax,ay)" at "new Point(1, 2, 3)"
 		const p3 = new Point(1, 2, 3)
 		p3.blah()
 		
@@ -127,7 +127,7 @@ class A_InicializandoX {
 class TestLastConstructorDefinition {
 	method doSomething() {
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new B()" at "2"
+		   "Wrong number of arguments. Should be new B()" at "new B(2)"
 		   "Unused variable" at "b"
 		   ---
 		*/
@@ -137,7 +137,7 @@ class TestLastConstructorDefinition {
 		var c = new C(1, 5)
 		// XPECT errors --> "Wrong number of arguments. Should be new C(_x, _y)" at "new C()"
 		c = new C()
-		// XPECT errors --> "Wrong number of arguments. Should be new C(_x, _y)" at "1"
+		// XPECT errors --> "Wrong number of arguments. Should be new C(_x, _y)" at "new C(1)"
 		c = new C(1)
 		c.doWhatCDoesWell()
 		var d = new D()
@@ -146,11 +146,11 @@ class TestLastConstructorDefinition {
 		new E(1)
 		// XPECT errors --> "Wrong number of arguments. Should be new E(_var1)" at "new E()"
 		new E()
-		// XPECT errors --> "Wrong number of arguments. Should be new E(_var1)" at "1"
+		// XPECT errors --> "Wrong number of arguments. Should be new E(_var1)" at "new E(1, 2)"
 		new E(1, 2)
 		// XPECT errors --> "Wrong number of arguments. Should be new F(_var1, _var2)" at "new F()"
 		new F()
-		// XPECT errors --> "Wrong number of arguments. Should be new F(_var1, _var2)" at "1"
+		// XPECT errors --> "Wrong number of arguments. Should be new F(_var1, _var2)" at "new F(1)"
 		new F(1)
 		d.x()
 	}

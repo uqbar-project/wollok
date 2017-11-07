@@ -255,11 +255,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				""
 			else
 				c.classRef.constructors.map['(' + parameters.map[name].join(",") + ')'].join(' or ')
-			report(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c,
-				//WCONSTRUCTOR_CALL__CLASS_REF - issue #1277? 
-				WCONSTRUCTOR_CALL__ARGUMENTS,
-				WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL
-			)
+				
+			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
 		}
 	}
 
@@ -1056,5 +1053,5 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
 		}
 	}	
-	
+
 }
