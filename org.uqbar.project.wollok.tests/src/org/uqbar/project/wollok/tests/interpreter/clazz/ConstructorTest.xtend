@@ -919,5 +919,5 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
-	
+
 }

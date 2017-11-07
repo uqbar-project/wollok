@@ -686,4 +686,96 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name)
 	}
 
+	@Test
+	def removeUnusedInitializationForVar(){
+		val initial = #[
+		'''
+		class A {
+			var valor = 0
+			constructor() {
+				valor = 1
+			}
+			constructor(_a) {
+				valor = _a
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			var valor
+			constructor() {
+				valor = 1
+			}
+			constructor(_a) {
+				valor = _a
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_initialization_name)
+	}
+	
+	@Test
+	def removeUnusedInitializationForConst(){
+		val initial = #[
+		'''
+		class A {
+			const valor = 0
+			constructor() {
+				valor = 1
+			}
+			constructor(_a) {
+				valor = _a
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class A {
+			const valor
+			constructor() {
+				valor = 1
+			}
+			constructor(_a) {
+				valor = _a
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_initialization_name)
+	}
+
+	@Test
+	def removeUnusedInitializationForVar2(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			constructor() {
+				energia = 4
+			}
+			constructor(_saludo) = self() {
+				saludo = _saludo
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia
+			var saludo = "Hola"
+			constructor() {
+				energia = 4
+			}
+			constructor(_saludo) = self() {
+				saludo = _saludo
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_initialization_name)
+	}
+	
 }

@@ -291,6 +291,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(INITIALIZATION_VALUE_NEVER_USED)
+	def removeInitialization(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_initialization_name,
+			Messages.WollokDslQuickFixProvider_remove_initialization_description, null) [ e, it |
+			val varDef = e as WVariableDeclaration
+			val code = (if (varDef.isWriteable) VAR else CONST) + " " + varDef.variable.name			
+			xtextDocument.replaceWith(e, code)
+		]
+	}
+
 	/** 
 	 * ***********************************************************************
 	 * 						  	Overriding methods

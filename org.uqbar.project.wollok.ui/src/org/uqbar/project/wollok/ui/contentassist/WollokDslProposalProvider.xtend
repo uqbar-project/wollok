@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WMember
@@ -81,9 +80,10 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		builder.reference = ref.methodContainer.nameWithPackage
 		ref.allMessageSent.filter[feature !== null].forEach[ addProposal( it, acceptor) ]
 	}
+	
 	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
 		builder.reference = ref.nameWithPackage
-		ref.allMethods.forEach[ addProposal( it, acceptor) ]
+		ref.allMethods.sortBy [ class.name ]. forEach[ addProposal( it, acceptor) ]
 	}
 
 	def addProposal(WMember m, ICompletionProposalAcceptor acceptor) {
