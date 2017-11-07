@@ -515,7 +515,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_y) {
 				y = _y
 			}
@@ -531,7 +531,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_y) {
 				y = _y
 			}
@@ -551,7 +551,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_x, _y, _z) {
 				y = _y
 			}
@@ -567,7 +567,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_x, _y, _z) {
 				y = _y
 			}
@@ -587,7 +587,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_y) {
 				y = _y
 			}
@@ -603,7 +603,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_y) {
 				y = _y
 			}
@@ -623,7 +623,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val initial = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_x, _y, _z, _t) {
 				y = _y
 			}
@@ -639,7 +639,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		val result = #[
 		'''
 		class A {
-			var y = 0
+			var y
 			constructor(_x, _y, _z, _t) {
 				y = _y
 			}

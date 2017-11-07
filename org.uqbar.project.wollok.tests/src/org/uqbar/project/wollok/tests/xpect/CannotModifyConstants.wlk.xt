@@ -6,6 +6,10 @@ class A {
 	constructor() {
 		x = 23
 	}
+
+	constructor(_aParam) {
+		
+	}
 	
 	method s() {
 		const aBlock = {a =>
