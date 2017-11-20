@@ -308,6 +308,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def newInstance(WClass classRef, WollokObject... arguments) {
+		if (!classRef.hasConstructorForArgs(arguments.size)) {
+			throw newWollokExceptionAsJava(Messages.WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + classRef.prettyPrintConstructors)
+		}
 		new WollokObject(interpreter, classRef) => [ wo |
 			classRef.addInheritsMembers(wo)
 			classRef.addMixinsMembers(wo)

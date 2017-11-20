@@ -252,12 +252,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = " new " + c.classRef.name + if (c.classRef.constructors === null)
-				""
-			else
-				c.classRef.constructors.map['(' + parameters.map[name].join(",") + ')'].join(' or ')
-				
-			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + c.prettyPrint, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
 		}
 	}
 
@@ -347,19 +342,17 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def delegatedConstructorExists(WDelegatingConstructorCall it) {
 		val validConstructors = it.constructorsFor(it.wollokClass).map[constr|constr.constructorName(it)].join(",")
-		//if (!it.arguments.isEmpty){
-			val resolved = it.wollokClass.resolveConstructorReference(it)
-			if (resolved === null) {
-				if (!validConstructors.isEmpty) {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
-					it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
-				} else {
-				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
-						it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
-					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
-				}
-			}	
-		//}	
+		val resolved = it.wollokClass.resolveConstructorReference(it)
+		if (resolved === null) {
+			if (!validConstructors.isEmpty) {
+			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
+				it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+			} else {
+			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
+					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+				CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+			}
+		}	
 	}
 
 	def static dispatch constructorPrefix(WSuperDelegatingConstructorCall c) { "super " }

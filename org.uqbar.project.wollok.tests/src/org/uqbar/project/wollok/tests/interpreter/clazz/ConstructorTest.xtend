@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter.clazz
 import org.junit.Assert
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
 /**
@@ -44,8 +45,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const p2 = new Point(1)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new Point", e.message)
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals("Wrong number of arguments. Should be new Point()", message)
 		}
 	}
 
@@ -59,10 +61,13 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				const p2 = new Point(1, 2)
+				console.println(p2)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new Point", e.message)
+			Assert.fail("Should have thrown an error in new Point(1, 2)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals("Wrong number of arguments. Should be new Point()", message)
 		}
 	}
 
@@ -91,8 +96,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const pepita = new Ave()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new Ave(_energia)", e.message)
+			Assert.fail("Should have thrown an error in new Ave()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals("Wrong number of arguments. Should be new Ave(_energia)", message)
 		}
 	}
 
@@ -108,8 +115,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const pepita = new Ave(10, "pepita")
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new Ave(_energia)", e.message)
+			Assert.fail("Should have thrown an error in new Ave(10, \"pepita\")")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals("Wrong number of arguments. Should be new Ave(_energia)", message)
 		}
 	}
 	
@@ -181,9 +190,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const p1 = new Point()
 			}
 			'''].interpretPropagatingErrorsWithoutStaticChecks
-		}
-		catch (WollokInterpreterException e) {
-			assertEquals("No constructor in class Point with 0 parameters", e.cause.cause.cause.message)
+			Assert.fail("Should have thrown an error in new Point()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new Point(ax, ay)", message)
 		}
 	}
 	
@@ -494,8 +504,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const b = new B()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new B(_x)", e.message)
+			Assert.fail("Should have thrown an error in new B()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new B(_x)", message)
 		}
 	}
 
@@ -517,8 +529,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const c = new C()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new C(_x)", e.message)
+			Assert.fail("Should have thrown an error in new C()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new C(_x)", message)
 		}
 	}
 
@@ -541,8 +555,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const c = new C(1, 2)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new C(_x)", e.message)
+			Assert.fail("Should have thrown an error in new C(1, 2)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new C(_x)", message)
 		}
 	}
 
@@ -596,8 +612,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const a = new A()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new A(_a)", e.message)
+			Assert.fail("Should have thrown an error in new A()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new A(_a)", message)
 		}
 	}
 
@@ -622,8 +640,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const a = new A(1, 2)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new A(_a)", e.message)
+			Assert.fail("Should have thrown an error in new A(1, 2)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new A(_a)", message)
 		}
 	}
 
@@ -648,8 +668,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const b = new B()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new B(_y, _x)", e.message)
+			Assert.fail("Should have thrown an error in new B()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new B(_y, _x)", message)
 		}
 	}
 
@@ -674,8 +696,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const b = new B(1)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new B(_y, _x)", e.message)
+			Assert.fail("Should have thrown an error in new B(1)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new B(_y, _x)", message)
 		}
 	}
 	
@@ -700,9 +724,11 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const c = new C(1)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new C", e.message)
-		}
+			Assert.fail("Should have thrown an error in new C(1)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new C()", message)
+		}			
 	}
 	
 	@Test
@@ -726,8 +752,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const c = new C(1, 7)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-		} catch (Exception e) {
-			Assert.assertEquals("Wrong number of arguments. Should be new C", e.message)
+			Assert.fail("Should have thrown an error in new C(1, 7)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			assertEquals("Wrong number of arguments. Should be new C()", message)
 		}
 	}
 	
@@ -807,9 +835,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				new VocalistaPopular()
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-			
-		} catch (WollokInterpreterException e) {
-			Assert.assertEquals(e.cause.cause.message, "No constructor in class VocalistaPopular with 0 parameters")
+			Assert.fail("Should have thrown an error in new VocalistaPopular()")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals("Wrong number of arguments. Should be new VocalistaPopular(_habilidadBase, _rolInterpretador, _rolCobrador)", message)
 		}
 	}
 	
@@ -847,9 +876,10 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				new VocalistaPopular(2)
 			}
 			'''.interpretPropagatingErrorsWithoutStaticChecks
-			
-		} catch (WollokInterpreterException e) {
-			Assert.assertEquals(e.cause.cause.message, "No constructor in class VocalistaPopular with 1 parameters")
+			Assert.fail("Should have thrown an error in new VocalistaPopular(2)")
+		} catch (WollokProgramExceptionWrapper e) {
+			val message = e.wollokException.instanceVariables.get("message").toString
+			Assert.assertEquals(message, "Wrong number of arguments. Should be new VocalistaPopular(_habilidadBase, _rolInterpretador, _rolCobrador)")
 		}
 	}
 	

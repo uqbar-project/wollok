@@ -43,21 +43,21 @@ class ConstructorCallTest {
 		const direccion = new Direccion("Jose Marti", 155)
 		
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion()"
+		   "Wrong number of arguments. Should be new Direccion(c, n)" at "new Direccion()"
 		   "Unused variable" at "d1"
 		   ---
 		*/
 		const d1 = new Direccion()
 		
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion(\"Juan\")"
+		   "Wrong number of arguments. Should be new Direccion(c, n)" at "new Direccion(\"Juan\")"
 		   "Unused variable" at "d2"
 		   ---
 		*/
 		const d2 = new Direccion("Juan")
 		
 		/* XPECT issues --- 
-		   "Wrong number of arguments. Should be new Direccion(c,n)" at "new Direccion(1, 2, 3)"
+		   "Wrong number of arguments. Should be new Direccion(c, n)" at "new Direccion(1, 2, 3)"
 		   "Unused variable" at "d3"
 		   ---
 		*/
@@ -69,11 +69,11 @@ class ConstructorCallTest {
 		const p2 = new Point(2,3)
 		p2.blah()
 		
-		// XPECT errors --> "Wrong number of arguments. Should be new Point() or (ax,ay)" at "new Point(1, 2, 3)"
+		// XPECT errors --> "Wrong number of arguments. Should be new Point() or new Point(ax, ay)" at "new Point(1, 2, 3)"
 		const p3 = new Point(1, 2, 3)
 		p3.blah()
 		
-		// XPECT errors --> "Wrong number of arguments. Should be new Circle(ap,ar) or (x,y,ar)" at "new Circle()"
+		// XPECT errors --> "Wrong number of arguments. Should be new Circle(ap, ar) or new Circle(x, y, ar)" at "new Circle()"
 		const c1 = new Circle()
 		c1.blah()
 	}	

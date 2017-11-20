@@ -300,12 +300,28 @@ class WollokModelExtensions {
 
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
-	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.allConstructors.exists[matches(nrOfArgs)]
+	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
+		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static boolean inheritsDefaultConstructor(WClass c) {
+		if (c.hasConstructorDefinitions) {
+			return false
+		}
+		
+		if (!c.hasCustomParent) {
+			return true
+		}
+		
+		return c.parent.inheritsDefaultConstructor
+	}
+	
+	def static boolean hasCustomParent(WClass c) {
+		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)	
+	}
+	
 	def static EList<WConstructor> allConstructors(WClass c) {
-		if (c.hasConstructorDefinitions || c.parent === null) 
+		if (c.hasConstructorDefinitions || !c.hasCustomParent) 
 			c.constructors
 		else
 			c.parent.allConstructors
@@ -617,5 +633,20 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
-	
+
+	def static prettyPrint(WConstructorCall c) {
+		c.classRef.prettyPrintConstructors
+	}
+
+	def static prettyPrintConstructors(WClass c) {
+		val newPrevExpression = WollokConstants.INSTANTIATION + " " + c.declaringContext.name + "("
+		val newPostExpression = ")"
+		val constructors = (c.declaringContext as WClass).allConstructors
+		if (constructors.isEmpty) {
+			newPrevExpression + newPostExpression
+		} else {
+			constructors.map[newPrevExpression + parameters.map[name].join(", ") + newPostExpression].join(" or ")
+		}
+	}
+
 }
