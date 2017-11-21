@@ -335,7 +335,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (hasCyclicDefinition) {
 			report(WollokDslValidator_CONSTRUCTOR_HAS_CYCLIC_DELEGATION, it, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)			
 		}
-		//}	
 	}
 
 	@Check
@@ -345,12 +344,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val resolved = it.wollokClass.resolveConstructorReference(it)
 		if (resolved === null) {
 			if (!validConstructors.isEmpty) {
-			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
-				it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
+					it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			} else {
-			report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
+				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
 					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
-				CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
+					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
 			}
 		}	
 	}

@@ -51,3 +51,23 @@ class A {
 	// XPECT errors --> "Couldn't resolve reference to Referenciable 'e'." at "e"
 	method setEnergia() { energia = e }
 }
+
+class C { 
+	const x
+	constructor(_x) {
+		x = _x
+	} 
+}
+
+class D inherits C {
+	/* XPECT errors ---
+		"Unused variable" at "y"
+		"Variable is never assigned" at "y"
+	--- 
+		XPECT warnings ---
+		"Unused variable" at "y"
+		"Variable is never assigned" at "y"
+	---
+	*/
+	const y
+}

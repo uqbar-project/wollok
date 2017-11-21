@@ -418,9 +418,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			//default constructor
 			return null
 		}
-		val c = clazz.constructors.findFirst[ matches(arguments.size) ]
 		if (clazz.hasConstructorDefinitions) {
-			c //throw new WollokRuntimeException("No constructor in class " + originalClazz.name + " with " + arguments.size + " parameters")
+			clazz.constructors.findFirst[ matches(arguments.size) ]
 		} else {
 			originalClazz.resolveConstructor(clazz.parent, arguments)
 		}
@@ -438,7 +437,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
+		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''')
 	}
 
 
