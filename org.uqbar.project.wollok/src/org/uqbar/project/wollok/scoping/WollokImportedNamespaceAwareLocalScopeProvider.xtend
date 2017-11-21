@@ -54,6 +54,7 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 	def protected getResourceScope(Resource context, EReference reference) {
 		synchronized (context) {
 			synchronized (context.resourceSet) {
+				// ES ACA
 				val globalScope = getGlobalScope(context, reference)
 				val normalizers = getImportedNamespaceResolvers(context, reference)
 

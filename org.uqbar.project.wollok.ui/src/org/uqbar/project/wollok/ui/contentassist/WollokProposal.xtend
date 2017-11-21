@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.contentassist
 
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.jface.viewers.StyledString
 import org.eclipse.jface.viewers.StyledString.Styler
 import org.eclipse.swt.SWT
@@ -25,20 +26,25 @@ import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 @Accessors
 class WollokProposal {
 	String referencePackage
+	EObject model
 	WMember member
 	Image image
+	int priority = 0
 	ContentAssistContext context
 	boolean isCalledFromSelf
 
-	new(String reference, WMember m, Image image, ContentAssistContext context) {
+	new(String reference, WMember m, Image image, int priority, ContentAssistContext context, EObject model) {
 		this.referencePackage = reference
 		this.member = m
 		this.image = image
 		this.context = context
+		this.priority = priority
+		this.model = model
 	}
 
 	def getMethodName() {
@@ -58,28 +64,42 @@ class WollokProposal {
 	}
 
 	def createProposalStyler() {
-		val display = Display.getCurrent();
+		val display = Display.getCurrent()
 		new Styler() {
 
 			override applyStyles(TextStyle textStyle) {
 				textStyle.foreground = display.getSystemColor(SWT.COLOR_DARK_GRAY)
 			}
-		};
+		}
 	}
 
 	def getDisplayMessage() {
-		var String fromMessage
-		if (member.eContainer.name.toLowerCase == "object" || !isCalledFromSelf)
-			fromMessage = ""
-		else if (member.isInMixin)
-			fromMessage = " - " + Messages.WollokProposal_form_mixin + " " + containerName + " (" + containerPackage + ")"
-		else if (member.wollokClass !== null) {
-			fromMessage = " - " + Messages.WollokProposal_form_class + " " + containerName
-			if (containerFqn != referencePackage)
-				fromMessage += " (" + containerPackage + ")"
-		} else
-			fromMessage = " - " + Messages.WollokProposal_form_object + " " + this.getContainerName() // member.eContainer.name.toString()
-		(new StyledString(methodName)).append(fromMessage, createProposalStyler)
+		if (member.eContainer.name.toLowerCase.equals(WollokConstants.ROOT_CLASS.toLowerCase) ||
+			(isCalledFromSelf && member.declaringContext !== null && model.equals(member.declaringContext)))
+			return new StyledString(methodName)
+
+		val fromMessage = new StringBuilder => [
+			append(" - ")
+			if (member.isInMixin) {
+				append(Messages.WollokProposal_from_mixin)
+			} else if (member.wollokClass !== null) {
+				append(Messages.WollokProposal_from_class)
+			} else {
+				append(Messages.WollokProposal_from_object)
+			}
+			append(" ")
+			append(containerName)
+			if (!containerFqn.equals(referencePackage)) {
+				append(" (")
+				append(containerPackage)
+				append(")")
+			}
+		]
+		(new StyledString(methodName)).append(fromMessage.toString, createProposalStyler)
+	}
+
+	def String origin() {
+		if(member !== null && member.declaringContext !== null) member.declaringContext.name + "." else ""
 	}
 
 	def dispatch asProposal(WMemberFeatureCall call) {

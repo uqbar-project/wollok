@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -39,6 +40,8 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+
+import static extension java.lang.Math.*
 
 /**
  * Custom quickfixes.
@@ -103,6 +106,47 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val _object = e as WNamedObject
 			val firstConstructor = _object.parent.constructors.map['''(«parameters.map[name].join(',')») '''].head
 			xtextDocument.replace(issue.offset + issue.length, 0, firstConstructor)
+		]
+	}
+
+	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+	def createConstructorInClass(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_create_constructor_class_name,
+			Messages.WollokDslQuickFixProvider_create_constructor_class_description, null) [ e, it |
+			val call = e as WConstructorCall
+			val clazz = call.classRef
+			val constructor = call.defaultStubConstructor.toString 
+			clazz.insertConstructor(constructor, it)
+		]
+	}
+
+	@Fix(WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
+	def adjustConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_adjust_constructor_call_name,
+			Messages.WollokDslQuickFixProvider_adjust_constructor_call_description, null) [ e, it |
+			val call = e as WConstructorCall
+			val clazz = call.classRef
+			val numberOfParameters = call.numberOfParameters
+			val constructors = clazz.constructors.sortBy [ a | (a.parameters.size - numberOfParameters).abs ]
+			var paramsSize = 0
+			var WConstructor constructor = null
+			if (!constructors.isEmpty) {
+				constructor = constructors.head
+				paramsSize = constructor.parameters.size
+			}
+			val diffSize = numberOfParameters - paramsSize
+			var List<String> newParams = newArrayList
+			val List<String> paramsConstructor = if (constructor === null) newArrayList else constructor.parameters.map [ name ]
+			if (diffSize < 0) {
+				newParams = (call.arguments.map [ node.text.trim ]
+					+ ((1..diffSize.abs).map [ paramsConstructor.get(it + numberOfParameters - 1) ])).toList
+			} else {
+				newParams =	call.arguments.subList(0, paramsSize)
+					.map [ node.text.trim ].toList
+			}
+			val newConstructorCall = INSTANTIATION + " " + clazz.name + "(" +
+				newParams.join(", ") + ")"
+			xtextDocument.replaceWith(call, newConstructorCall)
 		]
 	}
 
@@ -244,6 +288,16 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 				inlineResult = RETURN + " " + inlineResult
 			}
 			xtextDocument.replaceWith(e, inlineResult)
+		]
+	}
+
+	@Fix(INITIALIZATION_VALUE_NEVER_USED)
+	def removeInitialization(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_initialization_name,
+			Messages.WollokDslQuickFixProvider_remove_initialization_description, null) [ e, it |
+			val varDef = e as WVariableDeclaration
+			val code = (if (varDef.isWriteable) VAR else CONST) + " " + varDef.variable.name			
+			xtextDocument.replaceWith(e, code)
 		]
 	}
 
@@ -489,13 +543,29 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 	
 	def defaultStubMethod(WMethodContainer mc, WMethodDeclaration method) {
-		val margin = adjustMargin(mc)
+		val margin = mc.adjustMargin
 		'''
 		«margin»«METHOD» «method.name»(«method.parameters.map[name].join(",")») {
 		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
 		«margin»}''' + System.lineSeparator
 	}
 
+	def defaultStubConstructor(WConstructorCall call) {
+		call.arguments.size.defaultStubConstructor
+	}
+
+	def defaultStubConstructor(int paramsSize) {
+		var args = ""
+		val margin = 1.output(tabChar)
+		if (paramsSize >= 1) {
+			args = (1..paramsSize).map [ i | "param" + i ].join(", ")
+		}
+		'''
+		«margin»«CONSTRUCTOR»(«args») {
+		«margin»	//TODO: «Messages.WollokDslQuickfixProvider_createMethod_stub»
+		«margin»}'''	
+	}
+	
 	def adjustMargin(WMethodContainer mc) {
 		if (mc.behaviors.empty) tabChar else ""
 	}

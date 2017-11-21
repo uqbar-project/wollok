@@ -106,7 +106,7 @@ class WollokJavaConversions {
 		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
 	}
 
-	def static newWollokExceptionAsJava(String message) {
+	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
 		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 

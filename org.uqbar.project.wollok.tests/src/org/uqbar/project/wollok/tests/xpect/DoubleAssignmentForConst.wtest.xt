@@ -18,14 +18,14 @@ class X2 {
 }
 
 class X3 {
-	const x = 1
+	const x
 	constructor(_e) {
 		x = _e
 	}
 }
 
 class Y {
-	const e = 1
+	const e
 	constructor(_e) {
 		e = _e
 	}

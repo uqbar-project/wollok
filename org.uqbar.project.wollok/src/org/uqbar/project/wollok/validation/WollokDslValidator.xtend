@@ -14,7 +14,6 @@ import org.eclipse.xtext.validation.Check
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
@@ -56,9 +55,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.Messages.*
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
-import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
@@ -118,9 +117,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val METHOD_DOESNT_OVERRIDE_ANYTHING = "METHOD_DOESNT_OVERRIDE_ANYTHING"
 	public static val DUPLICATED_METHOD = "DUPLICATED_METHOD"
 	public static val CYCLIC_HIERARCHY = "CYCLIC_HIERARCHY"
+	public static val INITIALIZATION_VALUE_NEVER_USED = "INITIALIZATION_VALUE_NEVER_USED"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
+	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -251,11 +252,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
 		if (!c.isValidConstructorCall()) {
-			val expectedMessage = " new " + c.classRef.name + if (c.classRef.constructors === null)
-				""
-			else
-				c.classRef.constructors.map['(' + parameters.map[name].join(",") + ')'].join(' or ')
-			report(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + expectedMessage, c, WCONSTRUCTOR_CALL__ARGUMENTS)
+			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + c.prettyPrint, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
 		}
 	}
 
@@ -271,7 +268,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def construtorMustExplicitlyCallSuper(WConstructor it) {
+	def constructorMustExplicitlyCallSuper(WConstructor it) {
 		if (delegatingConstructorCall === null && wollokClass.superClassRequiresNonEmptyConstructor) {
 			report(WollokDslValidator_MUST_CALL_SUPERCLASS_CONSTRUCTOR, it, WCONSTRUCTOR__PARAMETERS, MUST_CALL_SUPER)
 		}
@@ -316,6 +313,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 
+	/**
+	 * TODO: Confirm with NicoP 
 	@Check
 	@DefaultSeverity(WARN)
 	def delegatedDefaultConstructorExists(WDelegatingConstructorCall it) {
@@ -328,23 +327,30 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			}
 		}
 	}
+	 */
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cyclicConstructorDefinition(WConstructor it) {
+		if (hasCyclicDefinition) {
+			report(WollokDslValidator_CONSTRUCTOR_HAS_CYCLIC_DELEGATION, it, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL)			
+		}
+	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def delegatedConstructorExists(WDelegatingConstructorCall it) {
 		val validConstructors = it.constructorsFor(it.wollokClass).map[constr|constr.constructorName(it)].join(",")
-		if (!it.arguments.isEmpty){
-			val resolved = it.wollokClass.resolveConstructorReference(it)
-			if (resolved === null) {
-				if (!validConstructors.isEmpty) {
+		val resolved = it.wollokClass.resolveConstructorReference(it)
+		if (resolved === null) {
+			if (!validConstructors.isEmpty) {
 				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL, validConstructors, it.constructorPrefix),
 					it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL, CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
-				} else {
+			} else {
 				report(NLS.bind(WollokDslValidator_INVALID_CONSTRUCTOR_CALL_SUPERCLASS_WITHOUT_CONSTRUCTORS,
-						it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
+					it.constructorPrefix), it.eContainer, WCONSTRUCTOR__DELEGATING_CONSTRUCTOR_CALL,
 					CONSTRUCTOR_IN_SUPER_DOESNT_EXIST)
-				}
-			}	
+			}
 		}	
 	}
 
@@ -603,6 +609,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
+	@Check
+	@DefaultSeverity(WARN)
+	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
+	def defaultValueForVariableNeverUsed(WVariableDeclaration it) {
+		if (declaringContext !== null && right !== null && !declaringContext.getConstructors.empty && !declaringContext.getConstructors.exists [ constructor | variable.assignments(constructor).isEmpty ]) {
+			report(WollokDslValidator_INITIALIZATION_VALUE_FOR_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__RIGHT, INITIALIZATION_VALUE_NEVER_USED)
+		}
+	}
+	
 	// TODO: a single method performs many checks ! cannot configure that
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
@@ -618,47 +633,22 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					VARIABLE_NEVER_ASSIGNED)
 		}
 		// Variable has no assignment in its definition and there are several assignments
-		if (!assignments.empty && right === null) {
-			val constructorsOk = assignments
-				.map [ declaringConstructor ]
-				.filter [ it !== null ]
-				.toList
-			
-			if (declaringContext !== null && !isLocalToMethod) {
-				declaringContext
-					.getConstructors
-					.filter [ constructor |	!constructorsOk.contains(constructor) && constructor.initializationsMustBeChecked(declaringContext) ]
-					.forEach [ constructor |
-						if (!writeable)
-							error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
-						else
-							warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
-					]
-			}
+		if (!assignments.empty && right === null && declaringContext !== null && !isLocalToMethod) {
+			declaringContext
+				.getConstructors
+				.filter [ constructor | variable.assignments(constructor).isEmpty ]
+				.forEach [ constructor |
+					if (!writeable)
+						error(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+					else
+						warning(NLS.bind(WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR, variable.name), constructor, WCONSTRUCTOR__EXPRESSION)
+				]
 		}
 		// Variable is never used
 		if (variable.uses.empty)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}
-	
-	def boolean initializationsMustBeChecked(WConstructor constructor, WMethodContainer declaringContext) {
-		val delegatingConstructor = constructor.delegatingConstructorCall
-		if (delegatingConstructor === null) { 
-			return true
-		}
-		val realConstructor = declaringContext.resolveConstructor(delegatingConstructor.arguments)
-		realConstructor.container !== declaringContext
-	}
-
-
-//  Confirm with @npasserini
-//  @dodain - I think we should not consider this
-//	@Check
-//	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-//	def unusedParameters(WMethodDeclaration it) {
-//		checkUnusedParameters(it.parameters)
-//	}
 
 	@Check
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
@@ -1065,5 +1055,5 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_FIXTURE_CANNOT_BE_EMPTY, it, WFIXTURE__ELEMENTS)
 		}
 	}	
-	
+
 }

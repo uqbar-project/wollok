@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import java.lang.reflect.Method
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator
 import org.eclipse.xtext.validation.Check
@@ -52,6 +53,27 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	// ******************************
 	def report(String message, EObject source, EStructuralFeature feature) {
 		report(message, source, feature, INSIGNIFICANT_INDEX)
+	}
+
+	def reportEObject(String description, EObject invalidObject, String issueId) {
+		val severityValue = calculateSeverity(invalidObject) ?: CheckSeverity.ERROR
+		val length = invalidObject.after - invalidObject.before
+		generateIssue(severityValue, description, invalidObject, invalidObject.before, length, issueId)
+		
+	}
+	
+	def generateIssue(CheckSeverity severity, String description, EObject invalidObject, int before, int length, String issueId) {
+		switch (severity) {
+			case ERROR: 
+				messageAcceptor.acceptError(description, invalidObject,	before, length, issueId)
+			
+			case WARN: 
+				messageAcceptor.acceptWarning(description, invalidObject, before, length, issueId)
+					
+			case INFO: 
+				messageAcceptor.acceptInfo(description, invalidObject, before, length, issueId)
+		} 
+		
 	}
 
 	def report(String description, EObject invalidObject, EStructuralFeature ref, String issueId) {
@@ -145,6 +167,19 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			} else {
 			}
 		}
+	}
+
+	// DUPLICATED / UNIFY WITH QuickFixUtils
+	def static before(EObject element) {
+		element.node.offset
+	}
+
+	def static after(EObject element) {
+		element.node.endOffset
+	}
+
+	def static node(EObject element) {
+		NodeModelUtils.findActualNodeFor(element)
 	}
 
 }

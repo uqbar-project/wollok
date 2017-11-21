@@ -4,7 +4,7 @@ import java.util.Map
 
 /**
  * Simple EvaluationContext impl backed up by a map.
- * Usualy used for local scopes like methods local variables.
+ * Usually used for local scopes like methods local variables.
  * 
  * @author jfernandes
  */
@@ -42,11 +42,13 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	}
 	
 	override addGlobalReference(String name, O value) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		addReference(name, value)
+		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override removeGlobalReference(String name) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		values.remove(name)
+		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override toString() {
