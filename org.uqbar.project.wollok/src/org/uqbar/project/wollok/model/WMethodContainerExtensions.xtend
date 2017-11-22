@@ -309,6 +309,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
+	def static dispatch abstractionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch abstractionName(WClass c) { WollokConstants.CLASS }
+	def static dispatch abstractionName(WNamedObject o) { WollokConstants.WKO }
+	def static dispatch abstractionName(WMixin m) { WollokConstants.MIXIN }
+	def static dispatch abstractionName(WMethodDeclaration m) { WollokConstants.METHOD }
+	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
+	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
 		(mixins !== null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
 		|| (parent !== null && parent.hasOrInheritMethod(name, argSize))

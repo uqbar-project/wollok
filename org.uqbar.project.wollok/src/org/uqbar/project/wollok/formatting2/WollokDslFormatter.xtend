@@ -6,6 +6,7 @@ package org.uqbar.project.wollok.formatting2
 import com.google.inject.Inject
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
@@ -53,7 +54,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WollokDslFormatter extends AbstractFormatter2 {
 	
 	@Inject extension WollokDslGrammarAccess
-
+	
 	def dispatch void format(WFile file, extension IFormattableDocument document) {
 		file => [
 			imports.forEach [ ^import, i |

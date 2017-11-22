@@ -29,16 +29,20 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  */
 class WollokChecker {
 	protected static Logger log = Logger.getLogger(WollokLauncher)
-	var Injector injector
+	protected var Injector injector
 
 	def static void main(String[] args) {
 		new WollokChecker().doMain(args)
 	}
 
+	def String processName() {
+		"Wollok Launcher"
+	}
+	
 	def doMain(String[] args) {
 		try {
 			log.debug("========================")
-			log.debug("    Wollok Launcher")
+			log.debug("    " + this.processName)
 			log.debug("========================")
 			log.debug(" args: " + args.toList)
 
@@ -50,6 +54,8 @@ class WollokChecker {
 			val parameters = new WollokLauncherParameters().parse(args)
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+
+			this.doConfigureParser(parameters)
 
 			if (parameters.severalFiles) {
 				// Tests may run several files
@@ -67,6 +73,8 @@ class WollokChecker {
 			System.exit(1)
 		}
 	}
+
+	def void doConfigureParser(WollokLauncherParameters parameters) {}
 
 	def void launch(List<String> fileNames, WollokLauncherParameters parameters) {
 		doSomething(fileNames, injector, parameters)	

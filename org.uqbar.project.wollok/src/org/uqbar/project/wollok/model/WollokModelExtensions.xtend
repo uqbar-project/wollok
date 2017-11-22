@@ -236,7 +236,11 @@ class WollokModelExtensions {
 	}
 
 	def static messageName(WMethodDeclaration d) {
-		d.name + "(" + d.parameters.map[name].join(", ") + ")"
+		d.name + d.parametersAsString
+	}
+	
+	def static parametersAsString(WMethodDeclaration d) {
+		"(" + d.parameters.map[name].join(", ") + ")"
 	}
 	
 	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
