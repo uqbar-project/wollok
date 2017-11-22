@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 
 class VoidTypeInfo extends TypeInfo {
 
@@ -25,6 +26,7 @@ class VoidTypeInfo extends TypeInfo {
 	static def dispatch canBeVoid(WVariableDeclaration object) { true }
 	static def dispatch canBeVoid(WReturnExpression object) { true }
 	static def dispatch canBeVoid(WAssignment object) { true }
+	static def dispatch canBeVoid(WIfExpression object) { true }
 	static def dispatch canBeVoid(WBinaryOperation it) { isMultiOpAssignment }
 	
 	static def dispatch isVoid(Void typeInfo) { false }
