@@ -90,6 +90,7 @@ class WollokDocParser extends WollokChecker {
 				    	<link rel="stylesheet" href="../mdb/css/bootstrap.min.css">
 				    	<link rel="stylesheet" href="../mdb/css/mdb.min.css">
 				    	<link rel="stylesheet" href="../mdb/css/style.css">
+				    	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 				    	<script type="text/javascript" src="./js/jquery-1.7.2.min.js"></script>
 				    	<script type="text/javascript" src="./js/navbar.js"></script>
 					</head>
@@ -139,6 +140,7 @@ class WollokDocParser extends WollokChecker {
 				</a>
 				<ul class="navbar-nav mr-auto">
 					«allFiles.map [ file | file.generateLink ].join(" ")»
+					<li class="nav-item"><a class="nav-link" href="../index.html"><b>Back to Site </b><i class="fa fa-sign-out 2x" aria-hidden="true"></i></a></li>
 				</ul>
 				<span class="navbar-text white-text">
 			        Complete Language Reference
