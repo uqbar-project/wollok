@@ -87,9 +87,9 @@ class WollokDocParser extends WollokChecker {
 			write('''
 				<html>
 					<head>
-				    	<link rel="stylesheet" href="./mdb/css/bootstrap.min.css">
-				    	<link rel="stylesheet" href="./mdb/css/mdb.min.css">
-				    	<link rel="stylesheet" href="./mdb/css/style.css">
+				    	<link rel="stylesheet" href="../mdb/css/bootstrap.min.css">
+				    	<link rel="stylesheet" href="../mdb/css/mdb.min.css">
+				    	<link rel="stylesheet" href="../mdb/css/style.css">
 				    	<script type="text/javascript" src="./js/jquery-1.7.2.min.js"></script>
 				    	<script type="text/javascript" src="./js/navbar.js"></script>
 					</head>
@@ -169,7 +169,7 @@ class WollokDocParser extends WollokChecker {
 		val comment = m.comment
 		val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 		val nativeDescription = if (m.native) badge("native", "indigo") else ""
-		writeFile(TABLE_DATA_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + SPACE + SPACE +
+		writeFile("<td id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + SPACE + SPACE +
 			abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 	}
@@ -225,6 +225,12 @@ class WollokDocParser extends WollokChecker {
 		'''
 	}
 	
+	def String linkToMethod(String messageName, String anchor, String fileName) {
+		'''
+		<a href="javascript:selectFile('«fileName.libraryName»', '«anchor»')">«messageName»</a>
+		'''
+	}
+	
 	def badge(String title, String color) {
 		'''
 		<span class="badge badge-pill «color»">«title»</span><br>
@@ -243,7 +249,9 @@ class WollokDocParser extends WollokChecker {
 		}
 		val currentMc = mc.parent
 		val methodsOverriden = mc.methods.filter [ overrides ].map [ name ].toList
-		val inheritedMethods = currentMc.methods.filter [ !methodsOverriden.contains(it.name) ].map [ messageName ].sort.join(", ")
+		val inheritedMethods = currentMc.methods.filter [ !methodsOverriden.contains(it.name) ].map [ 
+			linkToMethod(messageName, anchor, currentMc.declaringContext.file.URI.lastSegment)
+		].sort.join(", ")
 		card("Methods inherited from " + currentMc.name, inheritedMethods)
 		writeInheritedMethods(currentMc)
 	}
@@ -253,6 +261,10 @@ class WollokDocParser extends WollokChecker {
 		if (comment !== null) {
 			writeFile(PARAGRAPH_ON + SPACE + comment + PARAGRAPH_OFF)
 		}
+	}
+	
+	def String anchor(WMethodDeclaration m) {
+		m.declaringContext.name + "_" + m.name + "_" + m.parameters.size
 	}
 	
 	def void header(String text, String name) {
