@@ -7,5 +7,15 @@ program p {
 	// XPECT! warnings --> "This statement does not produce a value" at "[].add(1)"
 	const nada = [].add(1)
 	nada
+
+	/* XPECT errors --- 
+		"An expression is expected at this position." at "if (1 == 2) { 3 }"
+		"An expression is expected at this position." at "if (1 == 2) { 3 }"
+		"An expression is expected at this position." at "if (1 == 2) { 3 }"
+		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+	--- */
+	const invalid = if (1 == 2) { 3 };
+	invalid
 }
 

@@ -71,11 +71,18 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
  * see http://www.eclipse.org/Xtext/documentation.html#validation
  *
  * @author jfernandes
+ * @author fdodino
+ * @author ptesone
+ * @author npasserini
+ * @author jcontardo
+ * @author fbulgarelli
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
 	List<WollokValidatorExtension> wollokValidatorExtensions
+	
 	@Inject
 	WollokClassFinder classFinder
+	
 	@Inject
 	WollokGlobalScopeProvider scopeProvider
 
@@ -674,7 +681,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (comparisonOperands.contains(op.feature)) {
 			if (op.leftOperand.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__LEFT_OPERAND)
-			if (op.rightOperand?.isWellKnownObject)
+			if (op.rightOperand !== null && op.rightOperand.isWellKnownObject)
 				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}
