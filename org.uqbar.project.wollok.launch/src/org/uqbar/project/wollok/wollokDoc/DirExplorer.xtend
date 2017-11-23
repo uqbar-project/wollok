@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.wollokDoc
 
 import java.io.File
+import org.apache.commons.collections.Closure
 
 class DirExplorer {
 
@@ -28,6 +29,10 @@ class DirExplorer {
 		}
 	}
 
+	def closeWith(()=>void closure) {
+		closure.apply
+	}
+		
 }
 
 interface FileHandler {

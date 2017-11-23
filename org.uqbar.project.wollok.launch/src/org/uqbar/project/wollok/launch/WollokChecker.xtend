@@ -95,13 +95,18 @@ class WollokChecker {
 	}
 
 	def parse(File mainFile) {
+		mainFile.parse(true)
+	}
+
+	def parse(File mainFile, boolean validate) {
 		val resourceSet = injector.getInstance(XtextResourceSet)
 		this.createClassPath(mainFile, resourceSet)
 
 		val resource = resourceSet.getResource(URI.createURI(mainFile.toURI.toString), false)
 		resource.load(#{})
 
-		validate(injector, resource)
+		if (validate) 
+			validate(injector, resource)
 
 		resource.contents.get(0) as WFile
 	}
