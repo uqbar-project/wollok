@@ -531,8 +531,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 
 	def static dispatch boolean hasRealParent(EObject it) { false }
-	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.name.equals(WollokConstants.ROOT_CLASS) }
-	def static dispatch boolean hasRealParent(WClass c) { c.parent !== null && c.parent.name !== null && !c.parent.name.equals(WollokConstants.ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WClass c) {
+		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn?.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
+	}
 		
 	/* Including file name for multiple tests */
 	def static getFullName(WTest test, boolean processingManyFiles) {

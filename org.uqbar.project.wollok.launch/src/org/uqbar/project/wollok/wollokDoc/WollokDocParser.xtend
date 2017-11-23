@@ -29,8 +29,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class WollokDocParser extends WollokChecker {
 	
-	val static HEADER_ON = "<h2>"
-	val static HEADER_OFF = "</h2>"
 	val static HEADER2_ON = "<h3>"
 	val static HEADER2_OFF = "</h3>"
 	val static HEADER3_ON = "<h4>"
@@ -92,14 +90,13 @@ class WollokDocParser extends WollokChecker {
 				    	<link rel="stylesheet" href="./mdb/css/bootstrap.min.css">
 				    	<link rel="stylesheet" href="./mdb/css/mdb.min.css">
 				    	<link rel="stylesheet" href="./mdb/css/style.css">
-				    	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+				    	<script type="text/javascript" src="./js/jquery-1.7.2.min.js"></script>
 				    	<script type="text/javascript" src="./js/navbar.js"></script>
 					</head>
 					<body>
 						<hr>
-						<div class="container">
 							«generateNavbar»
-							<div id="content"/>
+							<div id="content" class="container" style="padding-top: 5rem;"/>
 						</div>
 					</body>
 				</html>
@@ -113,18 +110,13 @@ class WollokDocParser extends WollokChecker {
 		file => [
 			allFiles.add(mainFile)
 			val htmlFile = mainFile.name.toHtmlFile
-			wollokDocFile = Files.newWriter(new File(outputFolder + File.separator + htmlFile), Charsets.UTF_8) => [
-				write('''
-				<hr>
+			wollokDocFile = Files.newWriter(new File(outputFolder + File.separator + htmlFile), Charsets.UTF_8)
+			wollokDocFile
+				.write('''
 				<div class="container">
-					<p class="mx-auto">«lastUpdated»</p>
-					<hr>
-				''')
-			]
-			elements.forEach [ generateWollokDoc ]
-			wollokDocFile.write('''
-					<p>«lastUpdated»</p>
+					«elements.forEach [ generateWollokDoc ]»
 				</div>
+				<p>«lastUpdated»</p>
 				''')
 		]
 		wollokDocFile.close
@@ -134,21 +126,30 @@ class WollokDocParser extends WollokChecker {
 		fileName.replace(WollokConstants.CLASS_OBJECTS_EXTENSION, "html")
 	}
 	
+	def String libraryName(String fileName) {
+		fileName.split("\\.").head
+	}
+	
 	def String generateNavbar() {
 		'''
-		<nav class="navbar navbar-expand-lg navbar-dark red darken-2">
-			<a class="navbar-brand" href="#">
-				<img src="../images/WollokLogo.png" height="50" alt="">
-			</a>
-	        <ul class="navbar-nav mr-auto">
-	        	«allFiles.map [ file | file.generateLink ].join(" ")»
-	        </ul>
+		<nav class="navbar navbar-expand-lg navbar-dark red darken-2 fixed-top">
+			<div class="container"/>
+				<a class="navbar-brand" href="#">
+					<img src="../images/WollokLogo.png" height="50" alt="">
+				</a>
+				<ul class="navbar-nav mr-auto">
+					«allFiles.map [ file | file.generateLink ].join(" ")»
+				</ul>
+				<span class="navbar-text white-text">
+			        Complete Language Reference
+				</span>
+			</div>
 		</nav>
 		'''
 	}
 	
 	def String generateLink(File file) {
-		val libraryName = file.name.split("\\.").head
+		val libraryName = file.name.libraryName
 		'''
 		<li class="nav-item" id="«libraryName»">
 			<a class="nav-link" href="javascript:selectFile('«libraryName»')">«file.name» <span class="sr-only">(current)</span></a>
@@ -162,23 +163,25 @@ class WollokDocParser extends WollokChecker {
 	def dispatch void generateWollokDoc(WConstructor c) {
 		writeFile(BOLD_ON + WollokConstants.CONSTRUCTOR + BOLD_OFF + "(" + c.parameters.map[name].join(", ") + ")")
 		c.showComment
-		writeFile(HORIZONTAL_LINE)
 	}
 	
 	def dispatch void generateWollokDoc(WMethodDeclaration m) {
 		val comment = m.comment
-		val abstractDescription = if (m.abstract) ITALIC_ON + "abstract" + ITALIC_OFF + SPACE else ""
-		val nativeDescription = if (m.native) ITALIC_ON + "native" + ITALIC_OFF + SPACE else ""
-		writeFile(TABLE_DATA_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + TABLE_DATA_OFF +
-			TABLE_DATA_ON + nativeDescription +
-			comment + TABLE_DATA_OFF)
+		val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
+		val nativeDescription = if (m.native) badge("native", "indigo") else ""
+		writeFile(TABLE_DATA_ON + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + SPACE + SPACE +
+			abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
+			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 	}
+	
+	def dispatch getDefinedConstructors(WMethodContainer mc) { newArrayList }
+	def dispatch getDefinedConstructors(WClass c) { c.constructors }
 	
 	def dispatch void generateWollokDoc(WMethodContainer mc) {
 		header(mc.imageName + SPACE + mc.name, mc.name)
-		writeFile(showHierarchy(mc.parent))
+		writeFile(showHierarchy(mc))
 		mc.showComment
-		val constructors = mc.members.filter(WConstructor)
+		val constructors = mc.definedConstructors
 		if (!constructors.isEmpty) {
 			header2("Constructors")
 			writeFile(TABLE_ON)
@@ -191,7 +194,7 @@ class WollokDocParser extends WollokChecker {
 			writeFile(TABLE_ON)
 			tableHeader("Method", "Description")
 			writeFile(TABLE_BODY_ON)
-			mc.methods.forEach [ 
+			mc.methods.sortBy [ name ].forEach [ 
 				writeFile(TABLE_ROW_ON)
 				generateWollokDoc
 				writeFile(TABLE_ROW_OFF)
@@ -203,19 +206,28 @@ class WollokDocParser extends WollokChecker {
 		writeFile(HORIZONTAL_LINE)
 	}
 	
-	def String showHierarchy(WClass c) {
-		if (c === null) return ""
-		'''
+	def String showHierarchy(WMethodContainer c) {
+		if (!c.hasRealParent) {
+			return ""
+		}
+		val parent = c.parent
+		return '''
 		<ul>
-			<li>inherits from «linkTo(c.name, c.file.URI.lastSegment)»</li>
-			«showHierarchy(c.parent)»
+			<li>inherits from «linkTo(parent.name, parent.file.URI.lastSegment)»</li>
+			«showHierarchy(parent)»
 		</ul>
 		'''
 	}
 	
 	def String linkTo(String name, String fileName) {
 		'''
-		<a href="«fileName.toHtmlFile»#«name»">«name»</a>
+		<a href="javascript:selectFile('«fileName.libraryName»', '«name»')">«name»</a>
+		'''
+	}
+	
+	def badge(String title, String color) {
+		'''
+		<span class="badge badge-pill «color»">«title»</span><br>
 		'''
 	}
 	
@@ -226,11 +238,12 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def void writeInheritedMethods(WMethodContainer mc) {
-		val currentMc = mc.parent
-		if (mc.parent === null) {
+		if (!mc.hasRealParent) {
 			return
 		}
-		val inheritedMethods = currentMc.methods.map [ messageName ].join(", ")
+		val currentMc = mc.parent
+		val methodsOverriden = mc.methods.filter [ overrides ].map [ name ].toList
+		val inheritedMethods = currentMc.methods.filter [ !methodsOverriden.contains(it.name) ].map [ messageName ].sort.join(", ")
 		card("Methods inherited from " + currentMc.name, inheritedMethods)
 		writeInheritedMethods(currentMc)
 	}
