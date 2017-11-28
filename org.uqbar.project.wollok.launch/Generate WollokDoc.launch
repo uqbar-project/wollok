@@ -9,7 +9,7 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.uqbar.project.wollok.wollokDoc.WollokDocParser"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="&quot;/home/fernando/workspace/wollok-dev/wollok/org.uqbar.project.wollok.lib/src/wollok/&quot; -folder &quot;/home/fernando/workspace/wollok-doc/wollok-site/wollokDoc&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="&quot;/home/fernando/workspace/wollok-dev/wollok/org.uqbar.project.wollok.lib/src/wollok/&quot; -folder &quot;/home/fernando/workspace/wollok-doc/wollok-site/documentacion/wollokDoc&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.uqbar.project.wollok.launch"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
