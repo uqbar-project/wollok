@@ -7,6 +7,7 @@ import java.io.BufferedWriter
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.uqbar.project.wollok.WollokConstants
@@ -82,20 +83,38 @@ class WollokDocParser extends WollokChecker {
 	}
 	
 	def void writeNavbar() {
-		val file = new File(outputFolder + File.separator + "index.html")
+		val path = URI.createFileURI(outputFolder).segmentsList
+		val parentOutputFolder = path.subList(0, path.length - 1)
+		val file = new File(File.separator + parentOutputFolder.join(File.separator) + File.separator + "wollokDoc.md")
 		wollokDocFile = Files.newWriter(file, Charsets.UTF_8) => [
 			write('''
+				---
+				layout: hyde
+				title: 'WollokDoc'
+				lang: 'es'
+				--- 
+				
+				<div class="container">
+				<img src="/images/documentation/wollokDoc.png" height="64" width="64" align="left" style="padding: 0px;"/>
+				<br>
+				<h2>&nbsp;&nbsp;Guía completa del lenguaje</h2>
+				<br>
+				</div>
+				
+				<div class="container">
 				<p>
 					Esta es la guía completa de las bibliotecas de objetos y clases que vienen con Wollok.
 				</p>
+				</div>
+				
 				«generateNavbar»
 
-				<div class="tab-content card">
-					<div id="content" class="container" style="padding-top: 1rem;"/>
+				<div class="tab-content card container">
+					<div id="content" style="padding-top: 1rem;"/>
 				</div>
 				
 				<script>
-				selectWollokDocFile("lang")
+				selectFile("lang")
 				</script>
 			''')
 			close
@@ -129,17 +148,19 @@ class WollokDocParser extends WollokChecker {
 	
 	def String generateNavbar() {
 		'''
-		<ul class="nav nav-tabs nav-justified">
-			«allFiles.map [ file | file.generateLink ].join(" ")»
-		</ul>
+		<div class="container">
+			<ul class="nav breadcrumb nav-tabs nav-justified" role="tablist">
+				«allFiles.map [ file | file.generateLink ].join(" ")»
+			</ul>
+		</div>
 		'''
 	}
 	
 	def String generateLink(File file) {
 		val libraryName = file.name.libraryName
 		'''
-		<li class="nav-item" id="«libraryName»">
-			<a class="nav-link «if (libraryName.equalsIgnoreCase("lang")) "active" else ""»" href="javascript:selectWollokDocFile('«libraryName»')">«file.name» <span class="sr-only">(current)</span></a>
+		<li class="nav-item">
+			<a id="«libraryName»" class="nav-link wollokNavLink" href="javascript:selectFile('«libraryName»')">«file.name» <span class="sr-only">(current)</span></a>
 		</li>
 		'''
 	}
@@ -208,13 +229,13 @@ class WollokDocParser extends WollokChecker {
 	
 	def String linkTo(String name, String fileName) {
 		'''
-		<a href="javascript:selectWollokDocFile('«fileName.libraryName»', '«name»')">«name»</a>
+		<a href="javascript:selectFile('«fileName.libraryName»', '«name»')">«name»</a>
 		'''
 	}
 	
 	def String linkToMethod(String messageName, String anchor, String fileName) {
 		'''
-		<a href="javascript:selectWollokDocFile('«fileName.libraryName»', '«anchor»')">«messageName»</a>
+		<a href="javascript:selectFile('«fileName.libraryName»', '«anchor»')">«messageName»</a>
 		'''
 	}
 	
