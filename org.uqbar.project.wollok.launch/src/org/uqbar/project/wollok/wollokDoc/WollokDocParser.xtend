@@ -42,8 +42,8 @@ class WollokDocParser extends WollokChecker {
 	val static PARAGRAPH_ON = "<p>"
 	val static PARAGRAPH_OFF = "</p>"
 	val static SPACE = " "
-	val static TABLE_ON = "<table class=\"table table-striped table-hover table-sm\">"
-	val static TABLE_OFF = "</table>"
+	val static TABLE_ON = "<div class=\"container\"><table class=\"table table-striped table-hover table-sm table-responsive w-auto\">"
+	val static TABLE_OFF = "</table></div>"
 	val static TABLE_HEADING_CONF_ON = "<thead>"
 	val static TABLE_HEADING_CONF_OFF = "</thread>"
 	val static TABLE_BODY_ON = "<tbody>"
@@ -177,7 +177,7 @@ class WollokDocParser extends WollokChecker {
 		val comment = m.comment
 		val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 		val nativeDescription = if (m.native) badge("native", "indigo") else ""
-		writeFile("<td id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + m.parametersAsString + SPACE + SPACE +
+		writeFile("<td id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
 			abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 	}
