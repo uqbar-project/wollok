@@ -210,8 +210,11 @@ class WollokDocParser extends WollokChecker {
 			writeFile(TABLE_BODY_OFF)
 			writeFile(TABLE_OFF)
 			writeInheritedMethods(mc)
+			writeFile(HORIZONTAL_LINE)
 		}
-		writeFile(HORIZONTAL_LINE)
+		if (constructors.isEmpty && mc.methods.isEmpty) {
+			writeFile(HORIZONTAL_LINE)
+		}
 	}
 	
 	def String showHierarchy(WMethodContainer c) {
