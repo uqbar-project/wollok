@@ -41,7 +41,13 @@ public class Messages extends NLS {
 	public static String WollokDslNewProjectWizard_windowTitle;
 	public static String WollokTemplateProposalProvider_WProgram_name;
 	public static String WollokTemplateProposalProvider_WProgram_description;
-	
+
+	public static String WollokTemplateProposalProvider_WSuite_name;
+	public static String WollokTemplateProposalProvider_WSuite_description;
+
+	public static String WollokTemplateProposalProvider_WTest_name;
+	public static String WollokTemplateProposalProvider_WTest_description;
+
 	public static String WollokTemplateProposalProvider_WPackage_name;
 	public static String WollokTemplateProposalProvider_WPackage_description;
 	
@@ -61,6 +67,9 @@ public class Messages extends NLS {
 	
 	public static String WollokTemplateProposalProvider_WConstructorCall_name;
 	public static String WollokTemplateProposalProvider_WConstructorCall_description;
+	
+	public static String WollokTemplateProposalProvider_WConstructor_name;
+	public static String WollokTemplateProposalProvider_WConstructor_description;
 	
 	public static String WollokTemplateProposalProvider_WIfExpression_name;
 	public static String WollokTemplateProposalProvider_WIfExpression_description;
@@ -100,6 +109,10 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_create_method_superclass_description;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_name;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_description;
+	public static String WollokDslQuickFixProvider_create_constructor_class_name; 
+	public static String WollokDslQuickFixProvider_create_constructor_class_description; 
+	public static String WollokDslQuickFixProvider_adjust_constructor_call_name; 
+	public static String WollokDslQuickFixProvider_adjust_constructor_call_description; 
 	public static String WollokDslQuickFixProvider_create_constructor_superclass_name; 
 	public static String WollokDslQuickFixProvider_create_constructor_superclass_description; 
 	public static String WollokDslQuickFixProvider_remove_unused_variable_name;
@@ -115,6 +128,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_remove_method_name; 
 	public static String WollokDslQuickFixProvider_remove_method_description; 
 	public static String WollokDslQuickFixProvider_initialize_value_name; 
+	public static String WollokDslQuickFixProvider_remove_initialization_name; 
+	public static String WollokDslQuickFixProvider_remove_initialization_description; 
 	public static String WollokDslQuickFixProvider_initialize_value_description; 
 	public static String WollokDslQuickFixProvider_add_call_super_name; 
 	public static String WollokDslQuickFixProvider_add_call_super_description;
@@ -164,9 +179,9 @@ public class Messages extends NLS {
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
-	public static String WollokProposal_form_class;
-	public static String WollokProposal_form_object;
-	public static String WollokProposal_form_mixin;
+	public static String WollokProposal_from_class;
+	public static String WollokProposal_from_object;
+	public static String WollokProposal_from_mixin;
 	public static String WollokProposal_cannot_instantiate;
 	
 	static {

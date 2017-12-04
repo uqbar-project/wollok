@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WMember
@@ -28,7 +27,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	WollokProposalBuilder builder
 
 	// This whole implementation is just an heuristic until we have a type system
-
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
 		builder = new WollokProposalBuilder
@@ -56,10 +54,12 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// for variables tries to resolve the type based on the initial value (for literal objects like strings, lists, etc)
 	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		val WMethodContainer type = ref.resolveType
-		if (type !== null)
+		if (type !== null) {
 			type.methodsAsProposals( acceptor)
-		else
+		}
+		else {
 			ref.messageSentAsProposals( acceptor)
+		}
 	}
 
 	// message to WKO's (shows the object's methods)
@@ -81,13 +81,16 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		builder.reference = ref.methodContainer.nameWithPackage
 		ref.allMessageSent.filter[feature !== null].forEach[ addProposal( it, acceptor) ]
 	}
+	
 	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
+		builder.model = ref
 		builder.reference = ref.nameWithPackage
 		ref.allMethods.forEach[ addProposal( it, acceptor) ]
 	}
 
 	def addProposal(WMember m, ICompletionProposalAcceptor acceptor) {
 		builder.member = m
+		builder.assignPriority
 		acceptor.addProposal(builder.proposal)
 	}
 
@@ -97,7 +100,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// *****************************
 
 	def addProposal(ICompletionProposalAcceptor acceptor, WollokProposal aProposal) {
-		if (aProposal !== null) acceptor.accept(createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.context))
+		if (aProposal !== null) acceptor.accept(createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, "", aProposal.context))
 	}
 	// ****************************************
 	// ** imports

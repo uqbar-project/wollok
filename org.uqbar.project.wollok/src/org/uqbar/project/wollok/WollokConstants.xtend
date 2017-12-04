@@ -13,6 +13,8 @@ package org.uqbar.project.wollok
  */
 class WollokConstants {
 	
+	public static String CLASSPATH = "classpath:/"
+	
 	public static val SOURCE_FOLDER = "src"
 	
 	public static val NATURE_ID = "org.uqbar.project.wollok.wollokNature"

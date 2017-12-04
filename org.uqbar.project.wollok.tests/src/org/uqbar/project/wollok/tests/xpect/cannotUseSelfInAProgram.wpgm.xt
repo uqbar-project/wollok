@@ -1,18 +1,18 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
 program a {
-   // XPECT errors --> "Cannot use 'self' keyword in a program" at "self"
+   // XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    self.println()
    
    var a = true
    if (a) {
-   		// XPECT errors --> "Cannot use 'self' keyword in a program" at "self"
+   		// XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    		self.println()
    }
    
    var collection = ['a', 'b', 'c']
    
-   // XPECT errors --> "Cannot use 'self' keyword in a program" at "self"
+   // XPECT errors --> "Cannot use 'self' keyword outside an object, class, mixin or describe." at "self"
    collection.contains(self)
    
    // safe !

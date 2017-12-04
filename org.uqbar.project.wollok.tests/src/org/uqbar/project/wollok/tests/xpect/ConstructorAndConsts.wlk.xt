@@ -34,11 +34,40 @@ class GolondrinaUruguaya inherits Golondrina {
 		esBotija = false
 	}
 	
-	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "constructor(_energia, _esBotija) = self(_energia)"
-	constructor(_energia, _esBotija) = self(_energia)
+	// XPECT errors --> "Variable esBotija is never assigned in this constructor" at "constructor(_energia, _esBotija) = super(_energia)"
+	constructor(_energia, _esBotija) = super(_energia)
 	
 	constructor(_energia, _esBotija, unParametro) = super(_energia) {
 		esBotija = _esBotija
 	}
 	
+}
+
+class A {
+	var energia
+
+	constructor(e) { energia = e }
+	method energia() = energia
+	// XPECT errors --> "Couldn't resolve reference to Referenciable 'e'." at "e"
+	method setEnergia() { energia = e }
+}
+
+class C { 
+	const x
+	constructor(_x) {
+		x = _x
+	} 
+}
+
+class D inherits C {
+	/* XPECT errors ---
+		"Unused variable" at "y"
+		"Variable is never assigned" at "y"
+	--- 
+		XPECT warnings ---
+		"Unused variable" at "y"
+		"Variable is never assigned" at "y"
+	---
+	*/
+	const y
 }

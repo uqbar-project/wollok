@@ -17,6 +17,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 
 /**
  * This visitor get all the assignments of the lookedFor variable
@@ -27,6 +29,7 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 	@Accessors
 	List<EObject> uses = newArrayList
 	List<WMethodDeclaration> methodsAlreadyVisited = newArrayList
+	List<WConstructor> constructorsAlreadyVisited = newArrayList
 	
 	@Accessors
 	WVariable lookedFor
@@ -52,8 +55,20 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 
 	override dispatch visit(WConstructor it) {
 		doVisit(expression)
+
+		if (delegatingConstructorCall !== null) {
+			doVisit(delegatingConstructorCall)
+		}
 	}
 
+	def dispatch visit(WDelegatingConstructorCall it) {
+		val constructor = declaringContext.resolveConstructor(arguments)
+		if (constructor !== null && !constructorsAlreadyVisited.contains(constructor)) {
+			constructorsAlreadyVisited.add(constructor)
+			constructor.doVisit
+		}		
+	}
+	
 	override dispatch visit(WBlockExpression it) {
 		expressions.forEach [ expression |
 			doVisit(expression)

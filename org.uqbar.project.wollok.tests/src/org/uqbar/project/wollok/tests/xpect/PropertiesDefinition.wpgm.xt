@@ -26,8 +26,15 @@ class Ave {
 	var alas = []
 
 	constructor() {
-		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
-		var property localVariable = 0
+		/* XPECT errors ---
+			"Property are only allowed in objects, classes and mixins" at "property"
+			"Variable is never assigned" at "localVariable"
+		---
+		 XPECT warnings ---
+			"Property are only allowed in objects, classes and mixins" at "property"
+			"Variable is never assigned" at "localVariable"
+		--- */
+		var property localVariable
 	}
 		
 	method volar() {

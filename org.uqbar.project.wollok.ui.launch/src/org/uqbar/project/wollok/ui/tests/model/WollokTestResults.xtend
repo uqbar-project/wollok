@@ -81,15 +81,15 @@ class WollokTestResults extends Observable implements WollokRemoteUITestNotifier
 	
 	override testsResult(List<WollokResultTestDTO> tests) {
 		tests.forEach [
-			val test = testByName(it.testName)
-			if (it.ok()) {
+			val test = testByName(testName)
+			if (ok()) {
 				test.endedOk()
 			}
-			if (it.failure()) {
-				test.endedAssertError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
+			if (failure()) {
+				test.endedAssertError(message, stackTraceFiltered, errorLineNumber, resource)
 			}
-			if (it.error()) {
-				test.endedError(it.message, it.stackTrace, it.errorLineNumber, it.resource)
+			if (error()) {
+				test.endedError(message, stackTraceFiltered, errorLineNumber, resource)
 			}
 		]
 		this.container.filterTestByState(this.shouldShowOnlyFailuresAndErrors)

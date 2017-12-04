@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.tests
 
 import java.io.File
+import java.net.URLDecoder
 import org.eclipse.core.filesystem.EFS
 import org.eclipse.core.filesystem.IFileStore
 import org.eclipse.core.resources.IProject
@@ -14,13 +15,13 @@ import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.util.WorkspaceClasspathUriResolver
 
 import static org.uqbar.project.wollok.WollokConstants.*
+import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static org.uqbar.project.wollok.WollokConstants.*
 
 @Accessors
 abstract class AbstractWollokFileOpenerStrategy {
-
-	public static String CLASSPATH = "classpath:/"
 
 	protected int lineNumber = 0
 	protected String fileName = ""
@@ -74,8 +75,13 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 	override initialize(String data) {
 		try {
 			val info = data.split(STACKELEMENT_SEPARATOR)
-			fileName = info.get(0)
-			lineNumber = Integer.parseInt(info.get(1))
+            if (isOsWindows) {
+            	fileName = info.get(0) + ":" + info.get(1)
+				lineNumber = Integer.parseInt(info.get(2))
+            } else {
+            	fileName = info.get(0)
+				lineNumber = Integer.parseInt(info.get(1))
+            }
 		} catch (NumberFormatException e) {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while opening file " + data, e)
@@ -83,7 +89,7 @@ class WollokFileOpenerStrategy extends AbstractWollokFileOpenerStrategy {
 	}
 	
 	override getTextEditor(IURIEditorOpener opener) {
-		val File fileToOpen = new File(fileName)
+		val File fileToOpen = new File(URLDecoder.decode(fileName, "UTF-8"))
 		val IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI)
 		val IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 		IDE.openEditorOnFileStore(page, fileStore) as ITextEditor

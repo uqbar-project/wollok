@@ -88,6 +88,10 @@ class StackTraceElementDTO implements Serializable {
 		result.toString 			
  	}
 	
+	def hasContextDescription() {
+		contextDescription !== null && !contextDescription.equals("")	
+	}
+	
 	def getElementForStackTrace() {
 		contextForStackTrace + linkForStackTrace
 	}

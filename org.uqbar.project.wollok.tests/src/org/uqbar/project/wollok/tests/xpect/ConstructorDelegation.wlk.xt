@@ -27,7 +27,7 @@ class E inherits EmptyB {
 }
 
 class C inherits B {
-	// XPECT warnings --> "Redundant super constructor call. Default constructor is not overriden." at "super()"
+	// XPECT warnings --> "Invalid super constructor call. It does not exist in superclass. Valid constructors are: super(_x)" at "super()"
 	constructor() = super() {}
 }
 
@@ -50,7 +50,7 @@ class SuperClass {
 }
 class SubClass inherits SuperClass { 
 	var anotherVariable
-	// XPECT warnings --> "Redundant super constructor call. Default constructor is not overriden." at "super()"
+	// XPECT warnings --> "Invalid super constructor call. Superclass has no explicit constructors." at "super()"
 	constructor(n) = super() {
 		anotherVariable = n
 	}
@@ -77,7 +77,6 @@ class Y inherits X {
 class Z inherits X {
 	constructor() = super("something") {}
 }
-
 
 class Superclase {
 	var a
@@ -116,4 +115,14 @@ class InvalidInstanceAccessOnConstructorDelegation3 inherits Superclase {
 class InvalidInstanceAccessOnConstructorDelegation4 inherits Superclase {	
 	// XPECT errors --> "Cannot access super methods within constructor delegation." at "super(\"blah\")"
 	constructor() = super(super("blah"))
+}
+
+class Cyclic {
+	// XPECT errors --> "Constructor has an infinit loop delegation to self. You must change this definition." at "self(_param)"
+	constructor(_param) = self(_param)
+}
+
+class Cyclic2 {
+	// XPECT errors --> "Invalid super constructor call. Superclass has no explicit constructors." at "super(_param)"
+	constructor(_param) = super(_param)
 }

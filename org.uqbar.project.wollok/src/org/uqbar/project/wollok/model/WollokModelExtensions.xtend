@@ -182,7 +182,7 @@ class WollokModelExtensions {
 	def static assignments(WVariable variable, EObject context) {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
-		
+
 	def static declaration(WVariable variable) {
 		variable.eContainer as WVariableDeclaration
 	}
@@ -217,15 +217,15 @@ class WollokModelExtensions {
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
 	
-	def static dispatch constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
+	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
 		constructorName(c, "self")
 	}
 	
-	def static dispatch constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
+	def static dispatch String constructorName(WConstructor c, WSuperDelegatingConstructorCall dc) {
 		constructorName(c, "super")
 	}
 	
-	def static constructorName(WConstructor c, String constructorCall) {
+	def static dispatch String constructorName(WConstructor c, String constructorCall) {
 		(constructorCall ?: "constructor") + "(" + c.parameters.map [ name ].join(",") + ")"
 	}
 	
@@ -302,12 +302,28 @@ class WollokModelExtensions {
 
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
-	def static hasConstructorForArgs(WClass c, int nrOfArgs) {
-		(nrOfArgs == 0 && !c.hasConstructorDefinitions) || c.allConstructors.exists[matches(nrOfArgs)]
+	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
+		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static boolean inheritsDefaultConstructor(WClass c) {
+		if (c.hasConstructorDefinitions) {
+			return false
+		}
+		
+		if (!c.hasCustomParent) {
+			return true
+		}
+		
+		return c.parent.inheritsDefaultConstructor
+	}
+	
+	def static boolean hasCustomParent(WClass c) {
+		c.parent !== null && !c.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)	
+	}
+	
 	def static EList<WConstructor> allConstructors(WClass c) {
-		if (c.hasConstructorDefinitions || c.parent === null) 
+		if (c.hasConstructorDefinitions || !c.hasCustomParent) 
 			c.constructors
 		else
 			c.parent.allConstructors
@@ -364,12 +380,16 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
 	def static IFile getIFile(EObject obj) {
-		val platformString = obj.eResource.URI.toPlatformString(true)
+		getIFile(obj.eResource)
+	}
+	
+	def static IFile getIFile(Resource resource){
+		val platformString = resource.URI.toPlatformString(true)
 		if (platformString === null) {
 			// could be a synthetic file
 			return null;
 		}
-		ResourcesPlugin.workspace.root.getFile(new Path(platformString))
+		ResourcesPlugin.workspace.root.getFile(new Path(platformString))		
 	}
 
 	// ******************************
@@ -620,5 +640,20 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
-	
+
+	def static prettyPrint(WConstructorCall c) {
+		c.classRef.prettyPrintConstructors
+	}
+
+	def static prettyPrintConstructors(WClass c) {
+		val newPrevExpression = WollokConstants.INSTANTIATION + " " + c.declaringContext.name + "("
+		val newPostExpression = ")"
+		val constructors = (c.declaringContext as WClass).allConstructors
+		if (constructors.isEmpty) {
+			newPrevExpression + newPostExpression
+		} else {
+			constructors.map[newPrevExpression + parameters.map[name].join(", ") + newPostExpression].join(" or ")
+		}
+	}
+
 }

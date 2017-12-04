@@ -51,6 +51,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 
 /**
  * Extension methods for WMethodContainers.
@@ -418,17 +419,20 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch isKindOf(WMethodContainer c1, WMethodContainer c2) { c1 == c2 }
 	def static dispatch isKindOf(WClass c1, WClass c2) { WollokModelExtensions.isSuperTypeOf(c2, c1) }
 
-	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
-		if (clazz.parent === null){
+	def static WConstructor resolveConstructor(WClass originalClazz, WClass clazz, Object... arguments) {
+		if (clazz.parent === null) {
 			//default constructor
 			return null
-		} else {
-			val c = clazz.constructors.findFirst[ matches(arguments.size) ]
-			if (c === null)
-				clazz.findConstructorInSuper(arguments)
-			else
-				return c
 		}
+		if (clazz.hasConstructorDefinitions) {
+			clazz.constructors.findFirst[ matches(arguments.size) ]
+		} else {
+			originalClazz.resolveConstructor(clazz.parent, arguments)
+		}
+	}
+
+	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
+		clazz.resolveConstructor(clazz, arguments)
 	}
 
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
@@ -439,7 +443,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''');
+		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''')
 	}
 
 
@@ -626,5 +630,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		val declaringContext = o.declaringContext
 		declaringContext !== null && declaringContext.isPropertyAllowed
 	}
+	
+	def static hasCyclicDefinition(WConstructor it) {
+		if (delegatingConstructorCall === null) return false
+		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
+	}
+	
+	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
+	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
 	
 }

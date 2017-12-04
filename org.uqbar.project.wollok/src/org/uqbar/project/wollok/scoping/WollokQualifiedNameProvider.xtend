@@ -4,10 +4,12 @@ import com.google.inject.Singleton
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.naming.DefaultDeclarativeQualifiedNameProvider
 import org.eclipse.xtext.naming.QualifiedName
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.WollokConstants
 
 /**
  * Customizes FQN named provider for
@@ -28,11 +30,16 @@ class WollokQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvide
 		
 		val idx = container.eAllContents.indexed.findFirst[ it.value == obj ].key
 		
-		fqn.append("$" + idx);
+		fqn.append("$" + idx)
 	}
 	
 	def qualifiedName(WFile ele) {
 		QualifiedName.create(ele.implicitPackage.split("\\."))		
+	}
+	
+	def qualifiedName(WConstructor c) {
+		val size = if (c.parameters !== null) c.parameters.size else 0
+		QualifiedName.create(WollokConstants.CONSTRUCTOR + size)
 	}
 	
 }

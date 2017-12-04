@@ -83,7 +83,7 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 				}
 			}
 		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_property_definition_name)
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_property_definition_name, 2)
 	}
 
 	@Test
