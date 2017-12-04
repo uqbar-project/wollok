@@ -70,20 +70,24 @@ class PropertiesQuickFixTest extends AbstractWollokQuickFixTestCase {
 	def testRemovePropertyInConstructorLocalVariable(){
 		val initial = #['''
 			class Ave {
+				var alas
 				constructor() {
 					var property hello = "hola"
+					alas = hello.size()
 				}
 			}
 		''']
 
 		val result = #['''
 			class Ave {
+				var alas
 				constructor() {
 					var hello = "hola"
+					alas = hello.size()
 				}
 			}
 		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_property_definition_name, 2)
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_property_definition_name)
 	}
 
 	@Test

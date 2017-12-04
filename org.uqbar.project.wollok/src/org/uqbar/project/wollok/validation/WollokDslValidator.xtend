@@ -650,7 +650,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def defaultValueForVariableNeverUsed(WVariableDeclaration it) {
-		if (declaringContext !== null && right !== null && !declaringContext.getConstructors.empty && !declaringContext.getConstructors.exists [ constructor | variable.assignments(constructor).isEmpty ]) {
+		if (!isLocal && declaringContext !== null && right !== null && !declaringContext.getConstructors.empty && !declaringContext.getConstructors.exists [ constructor | variable.assignments(constructor).isEmpty ]) {
 			report(WollokDslValidator_INITIALIZATION_VALUE_FOR_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__RIGHT, INITIALIZATION_VALUE_NEVER_USED)
 		}
 	}
