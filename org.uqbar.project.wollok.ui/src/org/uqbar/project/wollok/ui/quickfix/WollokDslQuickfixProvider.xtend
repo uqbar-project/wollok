@@ -131,7 +131,7 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
-	@Fix(PROPERTY_ONLY_ALLOWED_IN_METHOD_CONTAINER)
+	@Fix(WollokDslValidator.PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
 	def deleteBadPropertyDefinition(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_property_definition_name,
 			Messages.WollokDslQuickFixProvider_remove_property_definition_description, null) [ e, it |

@@ -26,7 +26,7 @@ class Ave {
 	var alas = []
 
 	constructor() {
-		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 		var property localVariable = 0
 	}
 		
@@ -35,14 +35,14 @@ class Ave {
 		// XPECT errors --> "Cannot modify constant property peso" at "peso"
 		self.peso(1)
 		alas.forEach { ala => 
-			// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+			// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 			var property lado = ""
 			ala.cansarse(lado)
 		}
 	}
 	
 	method propertyMalDefinida() {
-		// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 		var property localVariable = 0
 		localVariable++
 		return localVariable
@@ -54,7 +54,7 @@ class Ave {
 }
 
 program prueba {
-	// XPECT errors --> "Property are only allowed in objects, classes, describes and mixins" at "property"
+	// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 	var property localVar = 0
 	pepita.energia(1002)
 	pepita.volar()

@@ -619,5 +619,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch constructionName(WMixin c) { WollokConstants.MIXIN }
 	def static dispatch constructionName(WSuite s) { WollokConstants.SUITE }
 
+	def static dispatch boolean isPropertyAllowed(WSuite s) { false	}
+	def static dispatch boolean isPropertyAllowed(WProgram p) { false }
+	def static dispatch boolean isPropertyAllowed(WMethodContainer mc) { true }
+	def static dispatch boolean isPropertyAllowed(EObject o) { 
+		val declaringContext = o.declaringContext
+		declaringContext !== null && declaringContext.isPropertyAllowed
+	}
+	
 }
-

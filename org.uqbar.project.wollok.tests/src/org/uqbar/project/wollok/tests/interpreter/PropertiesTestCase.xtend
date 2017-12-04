@@ -108,43 +108,6 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void getterAndSetterForPropertyVarInDescribe() {
-		'''
-		describe "grupo de tests" {
-			var property valorInicial = 5
-			var property valor = self.valorInicial()
-			
-			test "el valor es 5" {
-				assert.equals(5, self.valor())
-			}
-
-			test "el valor es 2 cuando se lo digo" {
-				self.valor(2)
-				assert.equals(2, self.valor())
-			}
-
-		}
-		'''.interpretPropagatingErrors
-	}
-
-	@Test
-	def void getterForPropertyConstInDescribe() {
-		'''
-		describe "grupo de tests" {
-			const property valor
-			
-			fixture {
-				valor = 5
-			}
-			
-			test "el valor es 5" {
-				assert.equals(5, self.valor())
-			}
-		}
-		'''.interpretPropagatingErrors
-	}
-
-	@Test
 	def void setterForPropertyConstInObject() {
 		'''
 		object pepita {
@@ -191,6 +154,21 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
+
+	@Test
+	def void customGetterForPropertyConstInClass() {
+		'''
+		class Ave {
+			var property energia = 0
+			method energia() = energia / 2
+		}
+		program prueba {
+			const pepita = new Ave()
+			pepita.energia(10)
+			assert.equals(5, pepita.energia())
+		}
+		'''.interpretPropagatingErrors
 	}
 	
 	@Test
