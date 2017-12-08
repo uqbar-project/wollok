@@ -16,16 +16,19 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number - Number => Number
 		Number * Number => Number
 		Number / Number => Number;
+		Number >> "between" === #[Number, Number] => Boolean
 
 		Integer + Number => Number
 		Integer - Number => Number
 		Integer * Number => Number
 		Integer / Number => Number;
+		Integer % Number => Integer;
 
 		Double + Number => Double
 		Double - Number => Double
 		Double * Number => Double
 		Double / Number => Double;
+		Double % Number => Integer;
 
 		(String == Any) => Boolean
 		String >> "size" === #[] => Integer

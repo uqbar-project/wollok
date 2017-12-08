@@ -163,6 +163,7 @@ public class Messages extends NLS {
 	// ****************************
 	// ** Syntax message provider
 	// ****************************
+
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_NOT_ALLOWED_HERE_GENERIC;
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE;
@@ -177,7 +178,13 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_ORDER_PROBLEM;
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
+
+	// ****************************
+	// ** Wollok Type System
+	// ****************************
 	
+	public static String WollokTypeSystem_AN_EXPRESSION_IS_EXPECTED_AT_THIS_POSITION;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
