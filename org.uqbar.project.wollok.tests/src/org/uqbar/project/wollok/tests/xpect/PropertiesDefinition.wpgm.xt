@@ -1,0 +1,80 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object pepita {
+
+	var property energia = 0
+	const property peso = 50
+	var property color = "azul"
+
+	method volar() {
+		energia -= 100
+		// XPECT errors --> "Method does not exist or invalid number of arguments" at "peso"
+		self.peso(1, 1)
+		// XPECT errors --> "Cannot modify constant property peso" at "peso" 
+		self.peso(2)
+	}
+	
+	override method toString() {
+		return "pepita [" + energia + ", " + self.peso() + "]"
+	}
+}
+
+class Ave {
+	var property energia = 10
+	const property peso = 5
+	var property color = "azul"
+	var alas = []
+
+	constructor() {
+		/* XPECT errors ---
+			"Property are only allowed in objects, classes and mixins" at "property"
+			"Variable is never assigned" at "localVariable"
+		---
+		 XPECT warnings ---
+			"Property are only allowed in objects, classes and mixins" at "property"
+			"Variable is never assigned" at "localVariable"
+		--- */
+		var property localVariable
+	}
+		
+	method volar() {
+		energia -= 10
+		// XPECT errors --> "Cannot modify constant property peso" at "peso"
+		self.peso(1)
+		alas.forEach { ala => 
+			// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+			var property lado = ""
+			ala.cansarse(lado)
+		}
+	}
+	
+	method propertyMalDefinida() {
+		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+		var property localVariable = 0
+		localVariable++
+		return localVariable
+	}
+	
+	override method toString() {
+		return "ave [" + energia + ", " + self.peso() + "]"
+	}
+}
+
+program prueba {
+	// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+	var property localVar = 0
+	pepita.energia(1002)
+	pepita.volar()
+	// XPECT errors --> "pepita does not understand energia2()" at "energia2"
+	pepita.energia2()
+	pepita.energia()
+	// XPECT errors --> "Cannot modify constant property peso" at "peso"
+	pepita.peso(10)
+	pepita.peso()
+	
+	const tweety = new Ave()
+	tweety.energia()
+	tweety.energia(102)
+	tweety.volar()
+	tweety.peso()
+}

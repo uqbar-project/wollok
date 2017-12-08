@@ -60,6 +60,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		]
 
 		assertEquals("The number of issues should be exactly " + numberOfIssues + ": " + issues, issues.size, numberOfIssues)
+		
 		val testedIssue = issues.get(0)
 
 		val Answer<XtextDocument> answerXtextDocument = [ call |
@@ -89,7 +90,6 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
-		// println("Resolutions: " + resolutions.map [ label ])
 		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply

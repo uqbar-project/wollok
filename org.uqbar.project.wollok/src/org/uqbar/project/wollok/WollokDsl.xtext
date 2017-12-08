@@ -77,7 +77,7 @@ WObjectLiteral returns WExpression:
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
-	(writeable?='var'|'const') variable=WVariable ('=' right=WExpression)?
+	(writeable?='var'|'const') (property?='property')? variable=WVariable ('=' right=WExpression)?
 ;
 
 WMethodDeclaration:

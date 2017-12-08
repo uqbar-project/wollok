@@ -1,0 +1,24 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+describe "group of tests" {
+	
+	var valor = 4
+	
+	// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+	var property valor2 = 0
+	
+	const cuatro = 4
+	
+	// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+	const property cuatro2 = 4
+	
+	test "cuatro es 4" {
+		assert.equals(valor, cuatro)
+	}
+	
+	test "cuatro no es 3" {
+		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
+		var property localVariable = 0
+		assert.notEquals(3, cuatro)
+	}
+}

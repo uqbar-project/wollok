@@ -104,8 +104,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val PARAMETER_NAME_MUST_START_LOWERCASE = "PARAMETER_NAME_MUST_START_LOWERCASE"
 	public static val VARIABLE_NAME_MUST_START_LOWERCASE = "VARIABLE_NAME_MUST_START_LOWERCASE"
 	public static val OBJECT_NAME_MUST_START_LOWERCASE = "OBJECT_NAME_MUST_START_LOWERCASE"
+	public static val PROPERTY_NOT_WRITABLE_ON_THIS = "PROPERTY_NOT_WRITABLE_ON_THIS"
 	public static val METHOD_ON_THIS_DOESNT_EXIST = "METHOD_ON_THIS_DOESNT_EXIST"
+	public static val METHOD_ON_THIS_DOESNT_EXIST_SEVERAL_ARGS = "METHOD_ON_THIS_DOESNT_EXIST_SEVERAL_ARGS"
+	public static val PROPERTY_NOT_WRITABLE_ON_WKO = "PROPERTY_NOT_WRITABLE_ON_WKO"
 	public static val METHOD_ON_WKO_DOESNT_EXIST = "METHOD_ON_WKO_DOESNT_EXIST"
+	public static val METHOD_ON_WKO_DOESNT_EXIST_SEVERAL_ARGS = "METHOD_ON_WKO_DOESNT_EXIST_SEVERAL_ARGS"
 	public static val VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES = "VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES"
 	public static val METHOD_MUST_HAVE_OVERRIDE_KEYWORD = "METHOD_MUST_HAVE_OVERRIDE_KEYWORD"
 	public static val OVERRIDING_METHOD_MUST_RETURN_VALUE = "OVERRIDING_METHOD_MUST_RETURN_VALUE"
@@ -128,6 +132,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
+	public static val PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS = "PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS"
 	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
 
 	// WARNING KEYS
@@ -196,6 +201,15 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def referenciableNameMustStartWithLowerCase(WVariable c) {
 		if(Character.isUpperCase(c.name.charAt(0))) report(WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE, c,
 			WNAMED__NAME, VARIABLE_NAME_MUST_START_LOWERCASE)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def propertyOnlyAllowedInMethodContainer(WVariableDeclaration it) {
+		if (property && (!isPropertyAllowed || isLocal)) {
+			report(WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS, it,
+			WVARIABLE_DECLARATION__PROPERTY, org.uqbar.project.wollok.validation.WollokDslValidator.PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS)
+		} 
 	}
 
 	// **************************************
@@ -534,9 +548,21 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
-		if (call.callOnThis && call.declaringContext !== null && !call.declaringContext.isValidCall(call, classFinder)) {
-			report(WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST, call, WMEMBER_FEATURE_CALL__FEATURE,
-				METHOD_ON_THIS_DOESNT_EXIST)
+		val declaringContext = call.declaringContext
+		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call, classFinder)) {
+			var message = WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST
+			val args = call.memberCallArguments.size
+			var issueId = METHOD_ON_THIS_DOESNT_EXIST
+			if (args == 1) {
+				issueId = PROPERTY_NOT_WRITABLE_ON_THIS
+				if (declaringContext.constantProperty(call.feature, 1)) {
+					message = NLS.bind(WollokDslValidator_PROPERTY_NOT_WRITABLE, call.feature)
+				}
+			}
+			if (args > 1) {
+				issueId = METHOD_ON_THIS_DOESNT_EXIST_SEVERAL_ARGS
+			}
+			report(message, call, WMEMBER_FEATURE_CALL__FEATURE, issueId)
 		}
 	}
 
@@ -552,8 +578,19 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 					if (caseSensitiveMethod !== null) {
 						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE, #[wko.name, call.fullMessage, #[caseSensitiveMethod].convertToString]), call, WMEMBER_FEATURE_CALL__FEATURE)
 					} else {
-						report(NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST, wko.name, call.fullMessage), call, WMEMBER_FEATURE_CALL__FEATURE,
-							METHOD_ON_WKO_DOESNT_EXIST)
+						var issueId = METHOD_ON_WKO_DOESNT_EXIST
+						val args = call.memberCallArguments.size
+						var message = NLS.bind(WollokDslValidator_METHOD_DOESNT_EXIST, wko.name, call.fullMessage)
+						if (args == 1) {
+							issueId = PROPERTY_NOT_WRITABLE_ON_WKO
+							if (wko.constantProperty(call.feature, 1)) {
+								message = NLS.bind(WollokDslValidator_PROPERTY_NOT_WRITABLE, call.feature)
+							}	
+						}
+						if (args > 1) {
+							issueId = METHOD_ON_WKO_DOESNT_EXIST_SEVERAL_ARGS	
+						}
+						report(message, call, WMEMBER_FEATURE_CALL__FEATURE, issueId)
 					}
 				} else {
 					val similarDefinitions = similarMethods.convertToString
@@ -620,7 +657,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(WARN)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def defaultValueForVariableNeverUsed(WVariableDeclaration it) {
-		if (declaringContext !== null && right !== null && !declaringContext.getConstructors.empty && !declaringContext.getConstructors.exists [ constructor | variable.assignments(constructor).isEmpty ]) {
+		if (!isLocal && declaringContext !== null && right !== null && !declaringContext.getConstructors.empty && !declaringContext.getConstructors.exists [ constructor | variable.assignments(constructor).isEmpty ]) {
 			report(WollokDslValidator_INITIALIZATION_VALUE_FOR_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__RIGHT, INITIALIZATION_VALUE_NEVER_USED)
 		}
 	}
@@ -652,7 +689,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				]
 		}
 		// Variable is never used
-		if (variable.uses.empty)
+		if (variable.uses.empty && !property)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}

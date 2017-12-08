@@ -134,5 +134,130 @@ class VariableDefinitionsFormatterTestCase extends AbstractWollokFormatterTestCa
 		
 		''')
 	}
+
+	@Test
+	def void propertyDefinitionInClass() throws Exception {
+		assertFormatting(
+		'''
+		class Foo {
+			var              property 
+			
+			
+			 x
+			 
+			 const 
+			 property
+			 
+			 
+			 y
+			    =    
+			      1		
+		}''', 
+		'''
+		class Foo {
+		
+			var property x
+			const property y = 1
+		
+		}
+		
+		''')
+	}
+
+	@Test
+	def void propertyDefinitionInWko() throws Exception {
+		assertFormatting(
+		'''
+		object romualdo {
+			var      property 
+			
+			
+			 x
+			 
+			 const
+			 
+			 property
+			 
+			 
+			  y
+			    =    
+			      1		
+		}''', 
+		'''
+		object romualdo {
+		
+			var property x
+			const property y = 1
+		
+		}
+		
+		''')
+	}
+	
+	@Test
+	def void propertyDefinitionInMixin() throws Exception {
+		assertFormatting(
+		'''
+		mixin Jugable {
+			         var   property 
+			
+			
+			 x
+			 
+			 const         
+			 property
+			 
+			 
+			  y
+			    =    
+			      1		
+		}''', 
+		'''
+		mixin Jugable {
+		
+			var property x
+			const property y = 1
+		
+		}
+		
+		''')
+	}
+	
+	@Test
+	def void propertyDefinitionInDescribe() throws Exception {
+		assertFormatting(
+		'''
+		describe
+		
+		 "group of tests"  
+		 {
+			var					property         
+			
+			
+			 x
+			 
+			 const  			property
+			 
+			 
+			 y
+			    =    
+			      1		
+			      
+			      test "true is true" { assert.that(true) }
+		}''', 
+		'''
+		describe "group of tests" {
+		
+			var property x
+			const property y = 1
+		
+			test "true is true" {
+				assert.that(true)
+			}
+		
+		}
+		
+		''')
+	}
 	
 }

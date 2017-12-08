@@ -95,6 +95,10 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_createMethod_name;
 	public static String WollokDslQuickfixProvider_createMethod_description;
 	public static String WollokDslQuickfixProvider_createMethod_stub;	
+	public static String WollokDslQuickfixProvider_createProperty_name;
+	public static String WollokDslQuickfixProvider_createProperty_description;
+	public static String WollokDslQuickfixProvider_convertPropertyVar_name;
+	public static String WollokDslQuickfixProvider_convertPropertyVar_description;
 	public static String WollokDslQuickfixProvider_return_variable_name;
 	public static String WollokDslQuickfixProvider_return_variable_description;
 	public static String WollokDslQuickfixProvider_return_last_expression_name;
@@ -118,7 +122,9 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_add_constructors_superclass_name; 
 	public static String WollokDslQuickFixProvider_add_constructors_superclass_description;
 	public static String WollokDslQuickFixProvider_remove_constructor_name;
-	public static String WollokDslQuickFixProvider_remove_constructor_description; 
+	public static String WollokDslQuickFixProvider_remove_constructor_description;
+	public static String WollokDslQuickFixProvider_remove_property_definition_name;
+	public static String WollokDslQuickFixProvider_remove_property_definition_description;
 	public static String WollokDslQuickFixProvider_remove_method_name; 
 	public static String WollokDslQuickFixProvider_remove_method_description; 
 	public static String WollokDslQuickFixProvider_initialize_value_name; 

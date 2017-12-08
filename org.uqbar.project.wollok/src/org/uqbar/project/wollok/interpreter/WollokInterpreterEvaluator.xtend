@@ -75,7 +75,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * for each element.
  * 
  * @author jfernandes
- * @author dodain - Added evaluating multiple files
+ * @author dodain - Added multiple files evaluation
  * 
  */
 class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> {

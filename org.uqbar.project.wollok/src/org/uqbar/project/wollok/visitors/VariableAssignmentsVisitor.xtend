@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
@@ -35,8 +36,9 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 
 	// generic visitor methods
 	override doVisit(EObject e) {
-		if (e !== null)
+		if (e !== null) {
 			visit(e)
+		}
 	}
 
 	def static assignmentOf(WVariable lookedFor, EObject container) {
@@ -53,6 +55,7 @@ class VariableAssignmentsVisitor extends AbstractVisitor {
 
 	override dispatch visit(WConstructor it) {
 		doVisit(expression)
+
 		if (delegatingConstructorCall !== null) {
 			doVisit(delegatingConstructorCall)
 		}

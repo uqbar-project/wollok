@@ -166,22 +166,24 @@ class WollokModelExtensions {
 	/*
 	 * Uses of a Variable
 	 */
-	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
+	def static uses(WVariable variable) { 
+		if (variable === null || variable.declarationContext === null) return newArrayList
+		VariableUsesVisitor.usesOf(variable, variable.declarationContext)
+	}
 	
 	def static isUsed(WParameter parameter) {
 		!ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty
 	}
 
 	def static assignments(WVariable variable) {
-		if (variable.declarationContext !== null) {
-			VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
-		}
+		if (variable === null || variable.declarationContext === null) return newArrayList
+		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 
 	def static assignments(WVariable variable, EObject context) {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
-	
+
 	def static declaration(WVariable variable) {
 		variable.eContainer as WVariableDeclaration
 	}
@@ -483,7 +485,12 @@ class WollokModelExtensions {
 	// *******************************
 	
 	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null }
-
+	def static isLocalToConstructor(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WConstructor) !== null }
+	def static isLocalToTest(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WTest) !== null }
+	def static isLocal(WVariableDeclaration it) {
+		isLocalToConstructor || isLocalToTest || isLocalToMethod
+	}
+	
 	def static onlyUsedInReturn(WVariableDeclaration it) {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
