@@ -78,7 +78,7 @@ class WEvaluationExtension {
 	def static dispatch boolean isEvaluatesToAValue(WBinaryOperation it, WollokClassFinder finder) { !WollokConstants.OPMULTIASSIGN.contains(feature) }
 	def static dispatch boolean isEvaluatesToAValue(WConstructorCall it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WUnaryOperation it, WollokClassFinder finder) { true }
-	def static dispatch boolean isEvaluatesToAValue(WPostfixOperation it, WollokClassFinder finder) { true }
+	def static dispatch boolean isEvaluatesToAValue(WPostfixOperation it, WollokClassFinder finder) { false }
 	// constructions
 	def static dispatch boolean isEvaluatesToAValue(WReturnExpression it, WollokClassFinder finder) { true }
 	def static dispatch boolean isEvaluatesToAValue(WIfExpression it, WollokClassFinder finder) { then.isEvaluatesToAValue(finder) && (^else == null || ^else.isEvaluatesToAValue(finder)) }

@@ -1,7 +1,8 @@
 package org.uqbar.project.wollok.model
 
+import java.util.HashMap
 import java.util.List
-
+import java.util.Map
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -33,10 +34,12 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WExpressionOrInitializer
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -657,4 +660,17 @@ class WollokModelExtensions {
 		}
 	}
 
+	def static Map<String, EObject> namedArguments(WConstructorCall c) {
+		c.arguments.filter [ isNamedParameter ].toList.fold(new HashMap, [ total, i | 
+			val namedParameter = i as WInitializer
+			total.put(namedParameter.initializer.name, namedParameter)
+			total
+		])
+	}
+	
+	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
+	def static dispatch isNamedParameter(WInitializer i) { true }
+	
+	def static dispatch hasNamedParameters(EObject o) { false }
+	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
 }

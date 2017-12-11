@@ -13,7 +13,6 @@ program p {
 		"An expression is expected at this position." at "if (1 == 2) { 3 }"
 		"An expression is expected at this position." at "if (1 == 2) { 3 }"
 		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
-		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
 	--- */
 	const invalid = if (1 == 2) { 3 };
 	invalid
