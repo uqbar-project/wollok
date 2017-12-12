@@ -5,14 +5,16 @@ import org.eclipse.xtext.nodemodel.ICompositeNode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultSemanticHighlightingCalculator
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightedPositionAcceptor
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
+import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.ui.highlight.WollokHighlightingConfiguration.*
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 /**
  * Customizes highlighting
@@ -28,6 +30,7 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	
 	// default: delegates to super
 	def dispatch highlight(EObject obj, ICompositeNode node, IHighlightedPositionAcceptor acceptor) {
+		println("   EObject => " + node.offset + " " + obj)
 		super.highlightElement(obj, acceptor)
 	}
 	
@@ -48,6 +51,8 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 	}
 	
 	def styleFor(WReferenciable it) {
+		if (isParameter)
+			println("Style for " + it)
 		if (isInstanceVar) 		INSTANCE_VAR_STYLE_ID 
 		else if (isParameter) 	PARAMETER_STYLE_ID
 		else 					LOCAL_VAR_STYLE_ID
@@ -57,6 +62,9 @@ class WollokHighlightingCalculator extends DefaultSemanticHighlightingCalculator
 		obj.eContainer instanceof WVariableDeclaration && obj.eContainer.eContainer instanceof WMethodContainer
 	}
 	
-	def isParameter(WReferenciable r) { r instanceof WParameter }
-	
+	def dispatch isParameter(EObject o) { false }
+	def dispatch isParameter(WParameter p) { true }
+	def dispatch isParameter(WVariable v) { 
+		v.eContainer instanceof WInitializer
+	}
 }
