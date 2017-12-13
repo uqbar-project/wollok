@@ -14,8 +14,6 @@ import org.eclipse.xtext.nodemodel.INode
 
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 
-import static org.uqbar.project.wollok.WollokConstants.*
-
 /**
  * Moved this logic to its own class.
  * It basically computes styles ranges for highligthing wollok code.
@@ -33,8 +31,6 @@ import static org.uqbar.project.wollok.WollokConstants.*
 class WollokConsoleHighlighter {
 	public static val KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
 
-	val bypassedKeywords = #["#{", "=>", "->"]
- 
 	val terminalColors = #{
 		"STRING" -> newColor(42, 0, 255),
 		"INT" -> newColor(125, 125, 125),
@@ -42,8 +38,15 @@ class WollokConsoleHighlighter {
 		"ML_COMMENT" -> newColor(62, 127, 95)
 	}
 	
+	def boolean allSymbols(String value) {
+		for(var i = 0; i < value.length; i++) {
+			if (Character.isLetterOrDigit(value.charAt(i))) return false
+		}
+		return true
+	}
+	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
-		if (value.length > 1 && !bypassedKeywords.contains(value)) {
+		if (value.length > 1 && !value.allSymbols) {
 			addStyle(event, n, headerLength, styles, "KEYWORD", KEYWORD_COLOR, null, SWT.BOLD)
 		}
 	}

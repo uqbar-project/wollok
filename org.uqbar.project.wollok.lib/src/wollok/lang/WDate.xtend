@@ -87,9 +87,9 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
 	
 	override toString() {
-		val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") 
-		"Date[" + wrapped.format(formatter) + "]"
-		//"Date[" + wrapped.toString + "]"
+		//val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") 
+		//"Date[" + wrapped.format(formatter) + "]"
+		"Date[" + wrapped.toString + "]"
 	}
 
 	override hashCode() { wrapped.hashCode }

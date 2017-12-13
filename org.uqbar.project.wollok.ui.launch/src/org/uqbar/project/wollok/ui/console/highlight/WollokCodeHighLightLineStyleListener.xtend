@@ -92,7 +92,7 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		val stylesEditor = newArrayList
 		
 		resource.contents.get(0).node.asTreeIterable
-			.filter[offset > programHeader.length && offset < footerOffset && length > 1 ]
+			.filter[offset > programHeader.length && offset < footerOffset ]
 			.forEach [n |
 				// Hack - Dodain: to avoid several times to pass
 				// and also there are nodes with leading spaces that causes everything to go mad
