@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.semantics
 
 import com.google.inject.Inject
-import it.xsemantics.runtime.RuleEnvironment
-import it.xsemantics.runtime.RuleFailedException
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xsemantics.runtime.RuleEnvironment
+import org.eclipse.xsemantics.runtime.RuleFailedException
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType

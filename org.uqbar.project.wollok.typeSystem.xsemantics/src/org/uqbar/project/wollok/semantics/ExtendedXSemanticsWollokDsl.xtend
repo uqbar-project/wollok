@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.semantics
 
 import com.google.inject.Inject
-import it.xsemantics.runtime.RuleEnvironment
-import it.xsemantics.runtime.validation.XsemanticsValidatorErrorGenerator
+import org.eclipse.xsemantics.runtime.RuleEnvironment
+import org.eclipse.xsemantics.runtime.validation.XsemanticsValidatorErrorGenerator
 import org.eclipse.xtext.validation.ValidationMessageAcceptor
 import org.uqbar.project.wollok.validation.DecoratedValidationMessageAcceptor
 import org.uqbar.project.wollok.validation.WollokDslValidator
