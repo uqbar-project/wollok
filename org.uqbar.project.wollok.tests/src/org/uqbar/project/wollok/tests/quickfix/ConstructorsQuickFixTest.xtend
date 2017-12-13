@@ -905,5 +905,69 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
 	}	
+
+	@Test
+	def removeUnexistentAttributeInConstructorCall5(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2,   pavlov = 2)
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2)
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}	
+
+	@Test
+	def removeUnexistentAttributeInConstructorCall6(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2,pavlov = 2)
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2)
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}	
 	
 }

@@ -134,9 +134,9 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			if(m.supposedToReturnValue) (" → " + concatResolvedType("", m)) else ""
 	}
 
-	def text(WConstructor m) {
-		grammar.WConstructorAccess.constructorKeyword_1 + '(' +
-			m.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
+	def text(WConstructor c) {
+		c.declaringContext?.name + '(' +
+			c.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
 	}
 
 	def image(WMethodDeclaration method) {

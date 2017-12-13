@@ -14,6 +14,8 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
+import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -23,10 +25,11 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 @Accessors
 class WollokProposal {
@@ -129,4 +132,7 @@ class WollokProposal {
 	def dispatch asProposalParameter(WSelf c) { WollokConstants.SELF } // mmm
 
 	def dispatch asProposalParameter(WExpression r) { "something" }
+	
+	def dispatch asProposalParameter(WVariable v) { v.name }
+	
 }
