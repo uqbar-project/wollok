@@ -777,5 +777,133 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_initialization_name)
 	}
+
+	@Test
+	def removeUnexistentAttributeInConstructorCall(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energiaz = 100,   saludo = "Que onda?")
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(saludo = "Que onda?")
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}
+
+	@Test
+	def removeUnexistentAttributeInConstructorCall2(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 100, pavlov = 2, saludo = "Que onda?")
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 100, saludo = "Que onda?")
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}
+
+	@Test
+	def removeUnexistentAttributeInConstructorCall3(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(pavlov = 2, energia = 100, saludo = "Que onda?")
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 100, saludo = "Que onda?")
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}
+	
+	@Test
+	def removeUnexistentAttributeInConstructorCall4(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(pavlov = 2)
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia = 1
+			var saludo = "Hola"
+			method energiaCalculada() = saludo.size() + energia
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave()
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
+	}	
 	
 }

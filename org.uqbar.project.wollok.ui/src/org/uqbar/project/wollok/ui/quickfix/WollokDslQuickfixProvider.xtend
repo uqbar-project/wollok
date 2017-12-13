@@ -202,6 +202,15 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(ATTRIBUTE_NOT_FOUND)
+	def deleteUnexistentAttributeInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name,
+			Messages.WollokDslQuickFixProvider_remove_attribute_initialization_description, null) [ e, it |
+			val additional = if (e.node.hasNextSibling && e.hasEffectiveNextSiblings) e.effectiveNextSibling.offset - e.node.endOffset else 0
+			xtextDocument.replace(e.before, e.node.length + additional, "")
+		]
+	}
+
 	/** 
 	 * ***********************************************************************
 	 * 							Getters

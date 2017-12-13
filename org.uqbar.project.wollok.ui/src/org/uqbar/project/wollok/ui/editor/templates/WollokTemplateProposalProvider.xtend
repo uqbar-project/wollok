@@ -101,7 +101,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 '''#{${content}}'''
 
 << WClosure >>
-'''[ ${params} => ${content} ]'''
+'''{ ${params} => ${content} }'''
 
 << WSuite >>
 '''describe "${name}" {
