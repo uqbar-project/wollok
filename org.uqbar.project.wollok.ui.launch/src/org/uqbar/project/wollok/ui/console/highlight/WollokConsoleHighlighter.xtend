@@ -34,7 +34,7 @@ class WollokConsoleHighlighter {
 	public static val KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
 
 	val bypassedKeywords = #["#{", "=>", "->"]
-
+ 
 	val terminalColors = #{
 		"STRING" -> newColor(42, 0, 255),
 		"INT" -> newColor(125, 125, 125),
