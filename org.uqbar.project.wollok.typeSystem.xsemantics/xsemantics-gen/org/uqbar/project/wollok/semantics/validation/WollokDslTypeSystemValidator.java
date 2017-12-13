@@ -1,9 +1,10 @@
 package org.uqbar.project.wollok.semantics.validation;
 
-import com.google.inject.Inject;
-import it.xsemantics.runtime.validation.XsemanticsValidatorErrorGenerator;
+import org.eclipse.xsemantics.runtime.validation.XsemanticsValidatorErrorGenerator;
 import org.uqbar.project.wollok.semantics.WollokDslTypeSystem;
 import org.uqbar.project.wollok.validation.AbstractWollokDslValidator;
+
+import com.google.inject.Inject;
 
 @SuppressWarnings("all")
 public class WollokDslTypeSystemValidator extends AbstractWollokDslValidator {
