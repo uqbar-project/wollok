@@ -67,7 +67,10 @@ public class Messages extends NLS {
 	
 	public static String WollokTemplateProposalProvider_WConstructorCall_name;
 	public static String WollokTemplateProposalProvider_WConstructorCall_description;
-	
+
+	public static String WollokTemplateProposalProvider_WConstructorCallWithNamedParameter_name;
+	public static String WollokTemplateProposalProvider_WConstructorCallWithNamedParameter_description;
+
 	public static String WollokTemplateProposalProvider_WConstructor_name;
 	public static String WollokTemplateProposalProvider_WConstructor_description;
 	

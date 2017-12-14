@@ -40,7 +40,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
 	static Properties properties
 	ContextTypeIdHelper helper
 	@Inject
-	extension WollokDslGrammarAccess ga;
+	extension WollokDslGrammarAccess ga
 	
 	@Inject
 	new(TemplateStore templateStore, ContextTypeRegistry registry, ContextTypeIdHelper helper) {
@@ -54,7 +54,7 @@ class WollokTemplateProposalProvider extends DefaultTemplateProposalProvider {
     
     val extension builder = new TemplateBuilder(grammar, "org.uqbar.project.wollok", "WollokTemplateProposalProvider", getProperties,  [rule, name, description, id, content | 
     	addTemplate(rule, templateContext, acceptor, name, description, id, context, content)
-    ]);
+    ])
     
     builder
     
@@ -141,12 +141,12 @@ try {
 	}
 		
 	def addTemplate(AbstractRule rule, TemplateContext templateContext, ITemplateAcceptor acceptor, String name, String description, String tid, ContentAssistContext context, String c) {
-		val id = helper.getId(rule);
+		val id = helper.getId(rule)
 		template(templateContext, id, name, description, tid, c, acceptor, context)
 	}
 	
 	def addTemplate(AbstractElement rule, TemplateContext templateContext, ITemplateAcceptor acceptor, String name, String description, String tid, ContentAssistContext context, String c) {
-		val id = helper.getId(rule);
+		val id = helper.getId(rule)
 		template(templateContext, id, name, description, tid, c, acceptor, context)
 	}
 	

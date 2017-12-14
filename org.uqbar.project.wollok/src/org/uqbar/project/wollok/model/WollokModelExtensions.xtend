@@ -680,4 +680,8 @@ class WollokModelExtensions {
 		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
 	}
 	
+	def static createInitializersForNamedParametersInConstructor(WConstructorCall it) {
+		uninitializedNamedParameters.map 
+			[ variable.name + " = value" ].join(", ")
+	}
 }

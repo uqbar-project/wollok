@@ -215,9 +215,9 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	def addMissingAttributesInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_missing_initializations_name,
 			Messages.WollokDslQuickFixProvider_add_missing_initializations_description, null) [ e, it |
-			val initializations = (e as WConstructorCall)
-				.uninitializedNamedParameters.map 
-					[ ", " + variable.name + " = value" ].join
+			val call = e as WConstructorCall
+			val preffix = if (call.hasNamedParameters) ", " else ""  
+			val initializations = preffix + call.createInitializersForNamedParametersInConstructor
 			xtextDocument.replace(e.node.endOffset - 1, 0, initializations)
 		]
 	}
