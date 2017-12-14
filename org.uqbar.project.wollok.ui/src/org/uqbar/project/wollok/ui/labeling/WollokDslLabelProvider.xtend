@@ -75,9 +75,9 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			labelExtensionResolved = true
 		}
 
-		if (labelExtension != null) {
+		if (labelExtension !== null) {
 			val type = labelExtension.resolvedType(obj)
-			if(type != null) (separator + type) else ""
+			if(type !== null) (separator + type) else ""
 		} else
 			""
 	}
