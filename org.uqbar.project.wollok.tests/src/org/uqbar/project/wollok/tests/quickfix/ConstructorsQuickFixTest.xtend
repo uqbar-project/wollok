@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.tests.quickfix
 
 import org.junit.Test
 import org.uqbar.project.wollok.ui.Messages
+import org.uqbar.project.wollok.validation.WollokDslValidator
 
 class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 	
@@ -969,5 +970,69 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 		''']
 		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name)
 	}	
+
+	@Test
+	def addInitializationsInConstructorCall(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia
+			var saludo
+			var color
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2)
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia
+			var saludo
+			var color
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2, saludo = value, color = value)
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 7, "You must provide initial value to the following references: saludo, color")
+	}	
+
+	@Test
+	def addInitializationsInConstructorCall2(){
+		val initial = #[
+		'''
+		class Ave {
+			var energia
+			var saludo = 0
+			var color
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2)
+			}
+		}
+		''']
+
+		val result = #[
+		'''
+		class Ave {
+			var energia
+			var saludo = 0
+			var color
+		}
+		object aveBuilder {
+			method construirAve() {
+				return new Ave(energia = 2, color = value)
+			}
+		}
+		''']
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 6, "You must provide initial value to the following references: color")
+	}
 	
 }

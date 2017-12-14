@@ -130,8 +130,10 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_initialize_value_name; 
 	public static String WollokDslQuickFixProvider_remove_initialization_name; 
 	public static String WollokDslQuickFixProvider_remove_initialization_description;
-	public static String WollokDslQuickFixProvider_remove_attribute_initialization_name; 
+	public static String WollokDslQuickFixProvider_remove_attribute_initialization_name;
 	public static String WollokDslQuickFixProvider_remove_attribute_initialization_description;
+	public static String WollokDslQuickFixProvider_add_missing_initializations_name;
+	public static String WollokDslQuickFixProvider_add_missing_initializations_description;
 	public static String WollokDslQuickFixProvider_initialize_value_description; 
 	public static String WollokDslQuickFixProvider_add_call_super_name; 
 	public static String WollokDslQuickFixProvider_add_call_super_description;

@@ -673,4 +673,11 @@ class WollokModelExtensions {
 	
 	def static dispatch hasNamedParameters(EObject o) { false }
 	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
+	
+	def static uninitializedNamedParameters(WConstructorCall it) {
+		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
+		val namedArguments = namedArguments.keySet
+		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
+	}
+	
 }

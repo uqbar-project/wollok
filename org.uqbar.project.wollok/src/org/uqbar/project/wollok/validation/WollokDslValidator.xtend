@@ -119,8 +119,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val UNNECESARY_OVERRIDE = "UNNECESARY_OVERRIDE"
-	public static val ATTRIBUTE_NOT_FOUND = "ATTRIBUTE_NOT_FOUND"
-	public static val MISSING_ASSIGNMENTS = "MISSING_ASSIGNMENTS"
+	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMTER_CONSTRUCTOR"
+	public static val MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR = "MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR"
 	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
 	public static val NATIVE_METHOD_CANNOT_OVERRIDES = "NATIVE_METHOD_CANNOT_OVERRIDES"
@@ -248,21 +248,18 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val namedArguments = arguments.keySet
 		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
 		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), ATTRIBUTE_NOT_FOUND)
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), org.uqbar.project.wollok.validation.WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		]
 	}
 
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUninitializedAttributesInConstructorNamedParameters(WConstructorCall it) {
-		val arguments = namedArguments
-		if (arguments.isEmpty()) return;
-		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
-		val namedArguments = arguments.keySet
-		val unusedVarDeclarations = uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
+		if (!hasNamedParameters) return;
+		val unusedVarDeclarations = uninitializedNamedParameters
 		if (!unusedVarDeclarations.isEmpty) {
 			val variableNames = unusedVarDeclarations.map [ variable.name ].join(", ")
-			reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS)
+			reportEObject(NLS.bind(WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL, variableNames), it, MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		}
 	}
 	
