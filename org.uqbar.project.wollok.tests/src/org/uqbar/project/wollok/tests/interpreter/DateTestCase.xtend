@@ -166,7 +166,8 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void toStringDefaultTest() {
 		'''
 		const aDay = new Date(28, 12, 2016)
-		assert.equals("Date[2016-12-28]", aDay.toString())
+		assert.equals("a Date[day = 28, month = 12, year = 2016]", aDay.toString())
+		assert.equals("a Date[day = 28, month = 12, year = 2016]", aDay.toSmartString(false))
 		'''.test
 	}
 	
@@ -174,7 +175,8 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	def void toStringWithA1DigitMonthTest() {
 		'''
 		const aDay = new Date(28, 2, 2016)
-		assert.equals("Date[2016-02-28]", aDay.toString())
+		assert.equals("a Date[day = 28, month = 2, year = 2016]", aDay.toString())
+		assert.equals("a Date[day = 28, month = 2, year = 2016]", aDay.toSmartString(false))
 		'''.test
 	}
 

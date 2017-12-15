@@ -52,6 +52,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
 	public static String WollokDslValidator_PARAMETER_NEVER_USED;
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
@@ -110,6 +111,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
+	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;

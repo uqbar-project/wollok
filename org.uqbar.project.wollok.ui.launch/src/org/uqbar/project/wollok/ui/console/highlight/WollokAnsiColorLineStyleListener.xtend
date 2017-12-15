@@ -33,9 +33,9 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
         WollokConsoleColorPalette.setPalette(currentPalette)
         var StyleRange defStyle
 
-        if (event.styles != null && event.styles.length > 0) {
+        if (event.styles !== null && event.styles.length > 0) {
             defStyle = event.styles.get(0).clone as StyleRange
-            if (defStyle.background == null)
+            if (defStyle.background === null)
                 defStyle.background = WollokConsolePreferenceUtils.getDebugConsoleBgColor
         }
         else {
