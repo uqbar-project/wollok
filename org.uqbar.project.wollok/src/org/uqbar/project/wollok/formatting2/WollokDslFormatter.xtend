@@ -23,7 +23,6 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -351,33 +350,17 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_PARAMETER_LIST).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.END_PARAMETER_LIST).append [ noSpace ]
-		if (c.hasNamedParameters) {
-			c.arguments.forEach [ arg, i | (arg as WInitializer).format(document, i) ]
-		} else {
-			c.arguments.forEach [ arg, i |
-				if (i == 0) {
-					arg.prepend [ noSpace ]
-				} else {
-					arg.prepend [ oneSpace ]
-				}
-				arg.append [ noSpace ]
-				arg.format
-			]
-		}
+		c.arguments.forEach [ arg, i |
+			if (i == 0) {
+				arg.prepend [ noSpace ]
+			} else {
+				arg.prepend [ oneSpace ]
+			}
+			arg.append [ noSpace ]
+			arg.format
+		]
 	}
 
-	def void format(WInitializer init, extension IFormattableDocument document, int i) {
-		if (i != 0) {
-			init.initializer.surround [ oneSpace ]
-		} else {
-			init.initializer.prepend [ noSpace ]
-			init.initializer.append [ oneSpace ]
-		}
-		init.initialValue.prepend [ oneSpace ]
-		init.initialValue.format
-		init.append [ noSpace ]
-	}
-	
 	def dispatch void format(WTest t, extension IFormattableDocument document) {
 		t.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).prepend [ oneSpace ].append[ newLine ]
 		t.interior [ indent ]

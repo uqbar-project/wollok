@@ -1663,7 +1663,7 @@ class Date {
 	constructor()
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
-	override method toString() = self.toSmartString(false) 
+	override method toString() native 
 	
 	/** Two dates are equals if they represent the same date */
 	override method ==(_aDate) native
@@ -1739,7 +1739,4 @@ class Date {
 		return (self >= _startDate) && (self <= _endDate) 
 	}
 
-	/** Shows nicely an internal representation of a date **/
-	override method toSmartString(alreadyShown) =
-		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
 }

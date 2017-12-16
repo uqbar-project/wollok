@@ -11,8 +11,6 @@ import org.eclipse.swt.graphics.RGB
  * For example for styles, highlighting etc.
  * 
  * @author jfernandes
- * @author dodain
- * 
  */
 class WTextExtensions {
 
@@ -22,53 +20,40 @@ class WTextExtensions {
 	 * The new style is considered priority so it will "win" over the existing ones.
 	 */
 	def static merge(List<StyleRange> ranges, StyleRange newStyle) {
-		val List<StyleRange> _ranges = newArrayList(ranges)
-		val sorted = _ranges.sortBy[start]
+		val sorted = ranges.sortBy[start]
 		val toAppend = newArrayList
 
 		// overlapping before
 		val before = sorted.filter[start < newStyle.start && end > newStyle.start]
 		// reduce end (from right)
 		before.filter[end.between(newStyle)].forEach[length = newStyle.start - start]
-
 		// larger than original -> split in 2
-		before.filter[end > newStyle.end].forEach [ range |
-			toAppend.add(range.clone as StyleRange => [
-				val newLength = range.end - newStyle.end
-				start = newStyle.end
-				length = newLength
-			])
-			range.length = newStyle.start - range.start
+		before.filter[end > newStyle.end].forEach [
+			toAppend.add(it.clone as StyleRange => [start = newStyle.end])
+			length = newStyle.start - start
 		]
-
 
 		val after = sorted.filter[start >= newStyle.start]
 		// exceeding to right -> reduce start (from left)
-		val rangesAfterStyle = after.filter[end > newStyle.end].sortBy [ start ]
-		if (!rangesAfterStyle.isEmpty) {
-			rangesAfterStyle.fold(newStyle.end - rangesAfterStyle.head.start, 
-				[acum, style |
-					if (acum > 0) {
-						style.start += acum  
-						val total = acum - style.length
-						style.length -= acum
-						total
-					} else {
-						0
-					}
-				])
-		}
+		//after.filter[end > newStyle.end].forEach[start = newStyle.end]
+		after.filter[end > newStyle.end].fold(newStyle.length, 
+			[acum, style |
+				if (acum > 0) {
+					style.start += acum  
+					val total = acum - style.length
+					style.length -= acum
+					total
+				} else {
+					0
+				}
+			])
 
 		// between -> remove
-		_ranges.removeAll(after.filter[length <= 0].toList)
-		_ranges.removeAll(after.filter[end <= newStyle.end].toList)
-		_ranges.addAll(toAppend)
-		// add new one
-		_ranges.add(newStyle)
-
-		// now adding all ranges sorted by start
-		ranges.clear
-		ranges.addAll(_ranges.sortBy [ start ])
+		ranges.removeAll(after.filter[length <= 0].toList)
+		ranges.removeAll(after.filter[end <= newStyle.end].toList)
+		ranges.addAll(toAppend)
+		// finally add the new one
+		ranges.add(newStyle)
 	}
 
 	def static end(StyleRange it) { start + length }

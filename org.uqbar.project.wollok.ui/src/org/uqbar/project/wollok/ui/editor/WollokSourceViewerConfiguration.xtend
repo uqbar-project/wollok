@@ -16,13 +16,13 @@ class WollokSourceViewerConfiguration extends XtextSourceViewerConfiguration {
 	
 	override getPresentationReconciler(ISourceViewer sourceViewer) {
 		val reconciler = super.getPresentationReconciler(sourceViewer) as XtextPresentationReconciler
-		val store = JavaPlugin.getDefault().combinedPreferenceStore
-		val colorManager = JavaPlugin.getDefault().javaTextTools.colorManager
-		val javaDocScanner = new JavaDocScanner(colorManager, store, null)
-		val dr = new DefaultDamagerRepairer(javaDocScanner)
-		reconciler.setRepairer(dr, TokenTypeToPartitionMapper.JAVA_DOC_PARTITION)
-		reconciler.setDamager(dr, TokenTypeToPartitionMapper.JAVA_DOC_PARTITION)
-		reconciler
+		val store = JavaPlugin.getDefault().getCombinedPreferenceStore();
+		val colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
+		val javaDocScanner = new JavaDocScanner(colorManager, store, null);
+		val dr = new DefaultDamagerRepairer(javaDocScanner);
+		reconciler.setRepairer(dr, TokenTypeToPartitionMapper.JAVA_DOC_PARTITION);
+		reconciler.setDamager(dr, TokenTypeToPartitionMapper.JAVA_DOC_PARTITION);
+		return reconciler;
 	}
 	
 }

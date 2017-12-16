@@ -8,15 +8,14 @@ program p {
 	const nada = [].add(1)
 	nada
 
-	/* X-PECT errors --- 
+	/* XPECT errors --- 
 		"An expression is expected at this position." at "if (1 == 2) { 3 }"
 		"An expression is expected at this position." at "if (1 == 2) { 3 }"
 		"An expression is expected at this position." at "if (1 == 2) { 3 }"
 		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
+		"If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "1 == 2"
 	--- */
-	// @dodain - Randomly there are one or two lines of xpect errors for If-statements without else...
-	// commenting it
-	//const invalid = if (1 == 2) { 3 };
-	//invalid
+	const invalid = if (1 == 2) { 3 };
+	invalid
 }
 

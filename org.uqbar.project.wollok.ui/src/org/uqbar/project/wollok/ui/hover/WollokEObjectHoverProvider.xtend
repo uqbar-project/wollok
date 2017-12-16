@@ -2,11 +2,10 @@ package org.uqbar.project.wollok.ui.hover
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.WollokModelUtils.*
 
@@ -29,6 +28,6 @@ class WollokEObjectHoverProvider extends DefaultEObjectHoverProvider {
 	def dispatch modelTypeDescription(WNamedObject it) { "Object" }
 	def dispatch modelTypeDescription(WObjectLiteral it) { "Object" }
 	def dispatch modelTypeDescription(WMethodDeclaration it) { "Method" }
-	def dispatch modelTypeDescription(WVariableDeclaration it) { if (writeable) "Variable" else "Constant" }
+	def dispatch modelTypeDescription(WVariableDeclaration it) { if (writeable) "Variable" else "Value" }
 	
 }

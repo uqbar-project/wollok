@@ -86,9 +86,17 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	 
 	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
 	
+	override toString() {
+		//val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") 
+		//"Date[" + wrapped.format(formatter) + "]"
+		"Date[" + wrapped.toString + "]"
+	}
+
 	override hashCode() { wrapped.hashCode }
 	
-//	def convertToWString(WollokObject it) { call("toString") as WollokObject }
+	def toSmartString(Object alreadyShown) { wollokToString }
+	
+	def convertToWString(WollokObject it) { call("toString") as WollokObject }
 
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
@@ -98,7 +106,6 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	
 	def asWString(WollokObject it) { 
 		val wDate = it.getNativeObject(WDate) as WDate
-		// TODO: i18n
 		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
 		wDate
 	}

@@ -56,15 +56,12 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	}
 
 	def reportEObject(String description, EObject invalidObject, String issueId) {
-		reportEObject(description, invalidObject, issueId, CheckSeverity.ERROR)
-	}
-
-	def reportEObject(String description, EObject invalidObject, String issueId, CheckSeverity severity) {
-		val severityValue = calculateSeverity(invalidObject) ?: severity
+		val severityValue = calculateSeverity(invalidObject) ?: CheckSeverity.ERROR
 		val length = invalidObject.after - invalidObject.before
 		generateIssue(severityValue, description, invalidObject, invalidObject.before, length, issueId)
+		
 	}
-
+	
 	def generateIssue(CheckSeverity severity, String description, EObject invalidObject, int before, int length, String issueId) {
 		switch (severity) {
 			case ERROR: 
