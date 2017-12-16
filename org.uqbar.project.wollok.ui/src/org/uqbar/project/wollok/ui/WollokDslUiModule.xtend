@@ -9,7 +9,6 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider
-import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.resource.EObjectAtOffsetHelper
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 import org.eclipse.xtext.ui.editor.actions.IActionContributor
@@ -19,6 +18,7 @@ import org.eclipse.xtext.ui.editor.model.ITokenTypeToPartitionTypeMapper
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider
 import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
+import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.shared.Access
 import org.eclipse.xtext.ui.util.PluginProjectFactory
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension

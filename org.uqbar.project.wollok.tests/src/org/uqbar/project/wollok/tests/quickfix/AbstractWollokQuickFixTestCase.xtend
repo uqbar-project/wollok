@@ -42,10 +42,6 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	 * @see MethodOnWKODoesntExistQuickFixTest for an example
 	 */
 	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues) {
-		assertQuickfix(initial, result, quickFixDescription, numberOfIssues, null)
-	}
-
-	def void assertQuickfix(List<String> initial, List<String> result, String quickFixDescription, int numberOfIssues, String issueDescription) {
 		val sources = <QuickFixTestSource>newArrayList()
 		val issues = <Issue>newArrayList()
 
@@ -65,8 +61,8 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 
 		assertEquals("The number of issues should be exactly " + numberOfIssues + ": " + issues, issues.size, numberOfIssues)
 		
-		val testedIssue = if (issueDescription === null) issues.get(0) else issues.findFirst [ issueDescription.equalsIgnoreCase(message) ]
-		
+		val testedIssue = issues.get(0)
+
 		val Answer<XtextDocument> answerXtextDocument = [ call |
 			val uri = if(call.arguments.size == 0) testedIssue.uriToProblem else (call.arguments.get(0) as URI)
 			val value = uri.trimFragment.toString
@@ -94,7 +90,7 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 	
 		val resolution = resolutions.findFirst[it.label == quickFixDescription]
 		
-		assertNotNull("Could not find a quickFix with the description " + quickFixDescription, resolution)
+		assertNotNull("Could not find a quickFix with the description " + quickFixDescription,resolution)
 
 		resolution.apply
 		
@@ -106,8 +102,6 @@ abstract class AbstractWollokQuickFixTestCase extends AbstractWollokInterpreterT
 		log.debug("====================")
 		sources.forEach [ assertEquals(expectedCode.toString, xtextDocument.get.toString)  ]
 	}
-
-
 }
 
 @Accessors

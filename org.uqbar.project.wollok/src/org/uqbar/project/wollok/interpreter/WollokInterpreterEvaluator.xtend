@@ -59,14 +59,13 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.WollokConstants.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 
 /**
  * It's the real "interpreter".
@@ -103,7 +102,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	protected def WollokObject[] evalEach(EList e) { e.map[eval] }
+	protected def WollokObject[] evalEach(EList<WExpression> e) { e.map[eval] }
 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
@@ -150,7 +149,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		else
 			interpreter.currentContext.resolve(ref.name)
 	}
-	
+
 	def dispatch WollokObject evaluate(WIfExpression it) {
 		val cond = condition.eval
 
@@ -290,14 +289,6 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WConstructorCall call) {
-		if (call.hasNamedParameters) {
-			val initializers = call.arguments.fold(newHashMap, [ total, arg | 
-				val namedParameter = arg as WInitializer
-				total.put(namedParameter.initializer.name, namedParameter.initialValue.eval)
-				total
-			])
-			return newInstance(call.classRef, initializers)
-		}
 		if (call.mixins.empty)
 			newInstance(call.classRef, call.arguments.evalEach)
 		else {
@@ -316,26 +307,16 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		newInstance(classFinder.searchClass(classFQN, interpreter.rootContext), arguments)
 	}
 
-	def WollokObject createInstance(WClass classRef) {
-		new WollokObject(interpreter, classRef) => [ wo |
-			classRef.addInheritsMembers(wo)
-			classRef.addMixinsMembers(wo)
-		]
-	}
-	
 	def newInstance(WClass classRef, WollokObject... arguments) {
 		if (!classRef.hasConstructorForArgs(arguments.size)) {
 			throw newWollokExceptionAsJava(Messages.WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + classRef.prettyPrintConstructors)
 		}
-		val wo = classRef.createInstance
-		wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
-		wo
-	}
+		new WollokObject(interpreter, classRef) => [ wo |
+			classRef.addInheritsMembers(wo)
+			classRef.addMixinsMembers(wo)
 
-	def newInstance(WClass classRef, Map<String, WollokObject> initializers) {
-		val wo = classRef.createInstance
-		initializers.forEach [ refName, value | wo.setReference(refName, value) ]
-		wo
+			wo.invokeConstructor(arguments.toArray(newArrayOfSize(arguments.size)))
+		]
 	}
 
 	def dispatch evaluate(WNamedObject namedObject) {
