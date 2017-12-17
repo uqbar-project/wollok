@@ -239,9 +239,13 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WReturnExpression it) {
+		newTypeVariable
 		expression.generateVariables
-		declaringMethod.beSupertypeOf(expression)
-		newVoid
+		if (declaringClosure === null) {
+			declaringMethod.beSupertypeOf(expression)
+			beVoid			
+		}
+		else beSupertypeOf(expression)
 	}
 
 	// ************************************************************************

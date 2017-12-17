@@ -65,13 +65,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
 	}
 
-	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
-	
-	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
-
-	def static WConstructor declaringConstructor(EObject it) { EcoreUtil2.getContainerOfType(it, WConstructor) }
-
-	def static WFixture declaringFixture(EObject it) { EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
+	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
+	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
+	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
