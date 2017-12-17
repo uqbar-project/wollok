@@ -9,4 +9,7 @@ program p {
 
 	// XPECT type at c3 --> () => Void 
 	const c3 = { }
+	
+	// XPECT type at cReturn --> () => Boolean 
+	const cReturn = { return true }
 }
