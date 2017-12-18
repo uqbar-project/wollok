@@ -1,13 +1,13 @@
 package wollok.lang
 
-import java.text.SimpleDateFormat
+import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 /**
  * Native implementation of the date wollok class
  * 
@@ -25,20 +25,20 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	 
 	/** Fin constructores */
 
-	def void initialize(int day, int month, int year) {
-		wrapped = LocalDate.of(year, month, day)
+	def void initialize(BigDecimal day, BigDecimal month, BigDecimal year) {
+		wrapped = LocalDate.of(year.coerceToInteger, month.coerceToInteger, day.coerceToInteger)
 	}
 
-	def plusDays(int days) { 
-		wrapped.plusDays(days)
+	def plusDays(BigDecimal days) { 
+		wrapped.plusDays(days.coerceToInteger)
 	}
 
-	def plusMonths(int months) {
-		wrapped.plusMonths(months)
+	def plusMonths(BigDecimal months) {
+		wrapped.plusMonths(months.coerceToInteger)
 	}
 
-	def plusYears(int years) { 
-		wrapped.plusYears(years) 
+	def plusYears(BigDecimal years) { 
+		wrapped.plusYears(years.coerceToInteger) 
 	}
 
 	def isLeapYear() { wrapped.isLeapYear }
@@ -62,16 +62,16 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		Math.abs(difference)
 	}
 	
-	def minusDays(int days) {
-		wrapped.minusDays(days)
+	def minusDays(BigDecimal days) {
+		wrapped.minusDays(days.coerceToInteger)
 	}
 	
-	def minusMonths(int months) { 
-		wrapped.minusMonths(months)
+	def minusMonths(BigDecimal months) { 
+		wrapped.minusMonths(months.coerceToInteger)
 	}
 	
-	def minusYears(int years) { 
-		wrapped.minusYears(years)
+	def minusYears(BigDecimal years) { 
+		wrapped.minusYears(years.coerceToInteger)
 	}
 	
 	def dayOfWeek() { wrapped.dayOfWeek.value }

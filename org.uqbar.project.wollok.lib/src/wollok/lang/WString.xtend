@@ -1,9 +1,11 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Native implementation of the string wollok class
@@ -17,8 +19,8 @@ class WString extends AbstractJavaWrapper<String> {
 
 	def length() { wrapped.length }
 	
-	def charAt(Integer index) {
-		wrapped.charAt(index).toString
+	def charAt(BigDecimal index) {
+		wrapped.charAt(index.coerceToPositiveInteger).toString
 	}
 	
 	@NativeMessage("+")
@@ -28,7 +30,7 @@ class WString extends AbstractJavaWrapper<String> {
 		def dispatch WollokObject doConcatWith(Object it) { throw new RuntimeException("Concat doesn't support " + it + " (" + it.class.name + ")") }
 		
 	def startsWith(WollokObject other) { wrapped.startsWith(other.asWString.wrapped) }
-	def endsWith(WollokObject other ) { wrapped.endsWith(other.asWString.wrapped) }
+	def endsWith(WollokObject other) { wrapped.endsWith(other.asWString.wrapped) }
 	def indexOf(WollokObject other) { 
 		val result = wrapped.indexOf(other.asWString.wrapped)
 		if(result == -1)
@@ -45,8 +47,10 @@ class WString extends AbstractJavaWrapper<String> {
 	def toLowerCase() { wrapped.toLowerCase }
 	def toUpperCase() { wrapped.toUpperCase }
 	def trim() { wrapped.trim }
-	def substring(Integer length) { wrapped.substring(length) }
-	def substring(Integer startIndex, Integer length ) { wrapped.substring(startIndex, length) }
+	def substring(BigDecimal index) { 
+		wrapped.substring(index.coerceToPositiveInteger)
+	}
+	def substring(BigDecimal startIndex, BigDecimal length ) { wrapped.substring(startIndex.coerceToPositiveInteger, length.coerceToPositiveInteger) }
 	
 	@NativeMessage("toString")
 	def wollokToString() { wrapped.toString }
@@ -81,4 +85,5 @@ class WString extends AbstractJavaWrapper<String> {
 		if (wString == null) throw new WollokRuntimeException("Expecting object to be a string: " + it)
 		wString
 	}
+	
 }

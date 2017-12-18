@@ -102,11 +102,11 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		((Math.random * (maximum - minimum)) + minimum).doubleValue()
 	}
 
-	def roundUp(int decimals) {
+	def roundUp(BigDecimal decimals) {
 		scale(decimals, BigDecimal.ROUND_UP)
 	}
 
-	def truncate(int decimals) {
+	def truncate(BigDecimal decimals) {
 		scale(decimals, BigDecimal.ROUND_DOWN)
 	}
 
@@ -178,9 +178,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		operand.setScale(decimalPrecision, BigDecimal.ROUND_HALF_UP)
 	}
 
-	def scale(int decimals, int operation) {
+	def scale(BigDecimal _decimals, int operation) {
 		// TODO : Wollok exception?
 		// TODO : i18n
+		val decimals = _decimals.coerceToInteger
 		if (decimals < 0) throw new WollokRuntimeException("Cannot set new scale with " + decimals + " decimals")
 		wrapped.setScale(decimals, operation)
 	}

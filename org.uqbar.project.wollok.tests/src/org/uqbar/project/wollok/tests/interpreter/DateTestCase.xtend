@@ -37,6 +37,15 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	// Default behavior is truncate decimals
+	// We should add more tests changing IDE preferences
+	@Test
+	def void year2000WasLeapWithDecimals() {
+		'''
+		const year2000 = new Date(4.8, 5.1, 2000.7)
+		assert.that(year2000.isLeapYear())
+		'''.test
+	}
 	@Test
 	def void year2001WasNotLeap() {
 		'''
@@ -138,6 +147,16 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		const originalDay = new Date(29, 2, 2016)
 		const finalDay = new Date(29, 12, 2015)
 		const result = originalDay.minusMonths(2)
+		assert.that(result.equals(finalDay))
+		'''.test
+	}
+
+	@Test
+	def void subtractTwoMonthsPassingDecimals() {
+		'''
+		const originalDay = new Date(29, 2, 2016)
+		const finalDay = new Date(29, 12, 2015)
+		const result = originalDay.minusMonths(2.4)
 		assert.that(result.equals(finalDay))
 		'''.test
 	}

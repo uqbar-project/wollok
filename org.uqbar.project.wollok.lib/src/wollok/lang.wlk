@@ -228,6 +228,12 @@ class Object {
 		throw new MessageNotUnderstoodException(message)
 	}
 
+	/**
+	  * @private
+	  *
+	  * internal method: generates a does not understand message
+	  * parametersSize must be an integer value
+	  */
 	method generateDoesNotUnderstandMessage(target, messageName, parametersSize) native
 	
 	/** Builds an exception with a message */		
@@ -782,12 +788,13 @@ class List inherits Collection {
 	 *		[1, 5, 3, 2, 7, 9].subList(2, 3)		=> Answers [3, 2]	
 	 *		[1, 5, 3, 2, 7, 9].subList(4, 6)		=> Answers [7, 9] 
 	 */
-	method subList(start,end) {
+	method subList(start, end) {
 		if(self.isEmpty())
 			return self.newInstance()
+		
 		const newList = self.newInstance()
-		const _start = start.limitBetween(0,self.size()-1)
-		const _end = end.limitBetween(0,self.size()-1)
+		const _start = start.coerceToInteger().limitBetween(0, self.size() - 1)
+		const _end = end.coerceToInteger().limitBetween(0, self.size() - 1)
 		(_start.._end).forEach { i => newList.add(self.get(i)) }
 		return newList
 	}
@@ -809,7 +816,7 @@ class List inherits Collection {
 		if(n <= 0)
 			self.newInstance()
 		else
-			self.subList(0,n-1)
+			self.subList(0, n - 1)
 		
 	
 	/**
@@ -825,7 +832,7 @@ class List inherits Collection {
 		if(n >= self.size())
 			self.newInstance()
 		else
-			self.subList(n,self.size()-1)
+			self.subList(n, self.size() - 1)
 		
 	/**
 	 * Answers a new list reversing the elements, so that first element becomes last element of the new list and so on.
@@ -835,7 +842,7 @@ class List inherits Collection {
 	 *  	[1, 9, 2, 3].reverse()  ==> Answers [3, 2, 9, 1]
 	 *
 	 */
-	method reverse() = self.subList(self.size()-1,0)
+	method reverse() = self.subList(self.size() - 1, 0)
 
 	// REFACTORME: DUP METHODS
 	/** 
@@ -1166,7 +1173,8 @@ class Number {
 
 	/**
 	 * Rounds up self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
+	 * Amount of decimals must be a positive and integer value.
+	 *
 	 * 1.223445.roundUp(3) ==> 1.224
 	 * -1.223445.roundUp(3) ==> -1.224
 	 * 14.6165.roundUp(3) ==> 14.617
@@ -1176,7 +1184,8 @@ class Number {
 
 	/**
 	 * Truncates self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
+	 * Amount of decimals must be a positive and integer value.
+	 *
 	 * 1.223445.truncate(3) ==> 1.223
 	 * 14.6165.truncate(3) ==> 14.616
 	 * -14.6165.truncate(3) ==> -14.616
@@ -1279,6 +1288,7 @@ class String {
 	/** 
 	 * Answers the char value at the specified index. An index ranges from 0 to length() - 1. 
 	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+	 * Parameter index must be a positive integer value.
 	 */
 	method charAt(index) native
 	
@@ -1372,13 +1382,14 @@ class String {
 	}
 	
 	/**
-	 * Answers a substring of this string beginning from an inclusive index. 
+	 * Answers a substring of this string beginning from an inclusive index.
+	 * Parameter index must be a positive integer value.
 	 *
 	 * Examples:
 	 * 		"substitute".substring(6)  ==> Answers "tute", because second "t" is in position 6
 	 * 		"effect".substring(0)      ==> Answers "effect", has no effect at all
 	 */
-	method substring(length) native
+	method substring(index) native
 	
 	/**
 	 * Answers a substring of this string beginning from an inclusive index up to another inclusive index
@@ -1637,7 +1648,14 @@ class Closure {
  */	
 class Date {
 
+	/**
+	  * Default constructor instantiates the current day 
+	  */
 	constructor()
+	
+	/**
+	 * Constructor: you should pass the day, month and year (integer values only).
+	 */
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
 	override method toString() = self.toSmartString(false) 
@@ -1645,13 +1663,19 @@ class Date {
 	/** Two dates are equals if they represent the same date */
 	override method ==(_aDate) native
 	
-	/** Answers a copy of this Date with the specified number of days added. */
+	/** Answers a copy of this Date with the specified number of days added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusDays(_days) native
 	
-	/** Answers a copy of this Date with the specified number of months added. */
+	/** Answers a copy of this Date with the specified number of months added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusMonths(_months) native
 	
-	/** Answers a copy of this Date with the specified number of years added. */
+	/** Answers a copy of this Date with the specified number of years added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusYears(_years) native
 	
 	/** Checks if the year is a leap year, like 2000, 2004, 2008, 2012, 2016... */
@@ -1690,16 +1714,20 @@ class Date {
 	/** 
 	 * Answers a copy of this date with the specified number of days subtracted.
 	 * For example, 2009-01-01 minus one day would result in 2008-12-31.
-	 * This instance is immutable and unaffected by this method call.  
+	 * This instance is immutable and unaffected by this method call.
+	 * Parameter must be an integer value.
 	 */
 	method minusDays(_days) native
 	
 	/** 
 	 * Answers a copy of this date with the specified number of months subtracted.
+	 * Parameter must be an integer value.
 	 */
 	method minusMonths(_months) native
 	
-	/** Answers a copy of this date with the specified number of years subtracted. */
+	/** Answers a copy of this date with the specified number of years subtracted.
+	  * Parameter must be an integer value.
+	  */
 	method minusYears(_years) native
 	
 	method <(_aDate) native

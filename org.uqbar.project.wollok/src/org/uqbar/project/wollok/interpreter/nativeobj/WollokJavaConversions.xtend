@@ -39,8 +39,8 @@ class WollokJavaConversions {
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
 			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
-		if (t == Integer || t == Integer.TYPE)
- 			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.intValue
+		//if (t == Integer || t == Integer.TYPE)
+ 		//	return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.intValue
 		if (o.isNativeType(NUMBER) && (t == BigDecimal || t == Double.TYPE))
 			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
 		if (o.isNativeType(STRING) && t == String)
@@ -136,6 +136,10 @@ class WollokJavaConversions {
 	 */
 	def static int asInteger(WollokObject o) {
 		o.asNumber.intValue
+	}
+	
+	def static int coerceToPositiveInteger(BigDecimal value) {
+		value.coerceToInteger // FIXME: que tire error en caso contrario
 	}
 	
 	def static dispatch int coerceToInteger(Integer value) { value }

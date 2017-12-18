@@ -1,8 +1,11 @@
 package natives
 
+import java.math.BigDecimal
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import wollok.lang.WNumber
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * @author jfernandes
@@ -19,8 +22,8 @@ class MyNativeWithAccessToObject {
 		delta + (obj.resolve("initialValue") as WollokObject).getNativeObject(WNumber).wrapped.intValue
 	}
 	
-	def newDelta(Integer newValue) {
-		delta = newValue
+	def newDelta(BigDecimal newValue) {
+		delta = newValue.coerceToInteger
 	}
 	
 	@NativeMessage("final")
