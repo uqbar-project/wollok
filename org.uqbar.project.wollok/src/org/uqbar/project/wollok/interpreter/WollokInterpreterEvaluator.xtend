@@ -242,7 +242,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def instantiateNumber(String value) {
-		doInstantiateNumber(NUMBER, new BigDecimal(value))
+		doInstantiateNumber(NUMBER, new BigDecimal(value).adaptValue)
 	}
 
 	def doInstantiateNumber(String className, Object value) {

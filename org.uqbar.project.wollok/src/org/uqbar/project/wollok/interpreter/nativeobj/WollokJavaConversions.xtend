@@ -4,10 +4,13 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.util.Collection
+import java.util.Date
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.xbase.lib.Functions.Function1
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -32,6 +35,16 @@ class WollokJavaConversions {
 		it instanceof WollokObject && ((it as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
 	}
 
+	/**
+	 * Only used to show a representative error message when converting Java and Wollok types
+	 */
+	def static Map conversionTypes() {
+		#{Function1 -> CLOSURE, BigDecimal -> NUMBER, String -> STRING,
+			List -> LIST, Map -> DICTIONARY, Set -> SET, Boolean -> BOOLEAN,
+			Date -> DATE
+		}
+	}
+	
 	def static Object wollokToJava(Object o, Class<?> t) {
 		if (o === null) return null
 		if (t.isInstance(o)) return o
@@ -39,10 +52,8 @@ class WollokJavaConversions {
 
 		if (o.isNativeType(CLOSURE) && t == Function1)
 			return [Object a|((o as WollokObject).getNativeObject(CLOSURE) as Function1).apply(a)]
-		//if (t == Integer || t == Integer.TYPE)
- 		//	return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.intValue
 		if (o.isNativeType(NUMBER) && (t == BigDecimal || t == Double.TYPE))
-			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped
+			return ((o as WollokObject).getNativeObject(NUMBER) as JavaWrapper<BigDecimal>).wrapped.adaptValue
 		if (o.isNativeType(STRING) && t == String)
 			return ((o as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		if (o.isNativeType(LIST) && (t == Collection || t == List))
@@ -57,11 +68,6 @@ class WollokJavaConversions {
 			return (o as WollokObject).getNativeObject(DATE)
 		}
 
-//		if (t.array && t.componentType == Object) {
-//			val a = newArrayOfSize(1)
-//			a.set(0, o)
-//			return a
-//		}
 		if (t == Collection || t == List)
 			return #[o]
 
@@ -70,7 +76,7 @@ class WollokJavaConversions {
 			primitive)
 			return o
 
-		throw new RuntimeException('''Cannot convert parameter "«o»" of type «o.class.name» to type "«t.simpleName»""''')
+		WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, conversionTypes.get(t) ?: t.simpleName))
 	}
 
 	def static dispatch isNativeType(Object o, String type) { false }
@@ -80,9 +86,11 @@ class WollokJavaConversions {
 	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
 
 	def static WollokObject javaToWollok(Object o) {
-		if(o == null) return null
+		if (o == null) return null
 		convertJavaToWollok(o)
 	}
+
+	def static dispatch WollokObject convertJavaToWollok(BigInteger o) { evaluator.getOrCreateNumber(o.toString) }
 
 	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
 
@@ -104,7 +112,7 @@ class WollokJavaConversions {
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		throw new UnsupportedOperationException('''Unsupported convertion from java «o» («o.class.name») to wollok''')
+		throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, o, o.class.name))
 	}
 
 	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
@@ -139,50 +147,55 @@ class WollokJavaConversions {
 	}
 	
 	def static int coerceToPositiveInteger(BigDecimal value) {
-		value.coerceToInteger // FIXME: que tire error en caso contrario
+		if (value.intValue < 0) {
+			throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED, value))
+		}
+		value.coerceToInteger
 	}
 	
 	def static dispatch int coerceToInteger(Integer value) { value }
 	
 	def static dispatch int coerceToInteger(WollokObject o) {
+		var int result
 		try {
-			return o.asNumber.coerceToInteger
+			result = o.asNumber.coerceToInteger
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("TODO: Hay que mejorar esto")	
+			throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
 		} catch (ClassCastException c) {
-			throw new RuntimeException(o + " is not a number", c)
+			throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
 		}
+		result
 	} 
 	
 	def static dispatch int coerceToInteger(BigDecimal value) {
-		// TODO: Tomar la configuración y delegar a 3 strategies
-		// 1 - roundUp del valor tomando el scale de la configuración
-		// 2 - truncate del valor tomando el scale de la configuración
-		// 3 - que tire error si tiene decimales (un error de Wollok)
-		value.intValue
+		coercingStrategy.coerceToInteger(value)
+	}
+	
+	def static Throwable throwInvalidOperation(String message) {
+		println(message)
+		throw new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 	
 	def static String printValueAsString(BigDecimal value) {
-		// TODO: Ver la configuración y delegar a dos strategies
-		// 1 - que haga esto
-		if (value.isInteger) {
-			val resultIntValue = value.intValue
-			return resultIntValue.toString
-		}
-		return value.toPlainString
-	 	// 2 - que imprima siempre plainString
+		printingStrategy.printString(value)
 	}
 	
 	def static BigDecimal adaptValue(BigDecimal value) {
-		// TODO: Tomar la configuración y delegar a 3 strategies
-		// 1 - roundUp del valor tomando el scale de la configuración
-		// 2 - truncate del valor tomando el scale de la configuración
-		// 3 - que tire error si tiene más escala que eso (un error de Wollok)
-		return new BigDecimal(0)
+		coercingStrategy.adaptValue(value)
 	}
 
 	def static isInteger(BigDecimal value) {
 		value.signum == 0 || value.scale <= 0 || value.stripTrailingZeros.scale <= 0
+	}
+
+	// FIXME: Tomarlo de la configuración en lugar de hardcodearlo
+	def static NumberCoercionStrategy coercingStrategy() {
+		new TruncateDecimalsCoercionStrategy()
+	}
+	
+	// FIXME: Tomarlo de la configuración en lugar de hardcodearlo
+	def static PrintNumberStrategy printingStrategy() {
+		new DecimalPrintingStrategy()
 	}
 	
 }

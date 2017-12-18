@@ -3,13 +3,14 @@ package wollok.lang
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Base class for numbers.
@@ -19,8 +20,6 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * 
  */
 class WNumber extends AbstractJavaWrapper<BigDecimal> {
-
-	public static int DECIMAL_PRECISION = 5
 
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
@@ -40,57 +39,38 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage("+")
-	def plus(WollokObject other) { operate(other)[doPlus(it)] }
-
-	def dispatch Number doPlus(BigDecimal w) {
-		this.add(wrapped, w)
+	def plus(BigDecimal other) { 
+		wrapped.add(other)
 	}
-
-	// TODO: here it should throw a 100% wollok exception class
-	def dispatch Number doPlus(Object w) { throw new WollokRuntimeException("Cannot add " + w) }
 
 	@NativeMessage("-")
-	def minus(WollokObject other) { operate(other)[doMinus(it)] }
-
-	def dispatch Number doMinus(BigDecimal w) {
-		this.subtract(wrapped, w)
+	def minus(BigDecimal other) { 
+		wrapped.subtract(other)
 	}
-
-	def dispatch Number doMinus(Object w) { throw new WollokRuntimeException("Cannot substract " + w) }
 
 	@NativeMessage("*")
-	def multiply(WollokObject other) { operate(other)[doMultiply(it)] }
-
-	def dispatch Number doMultiply(BigDecimal w) {
-		this.mul(wrapped, w)
+	def multiply(BigDecimal other) { 
+		wrapped.multiply(other)
 	}
-
-	def dispatch Number doMultiply(Object w) { throw new WollokRuntimeException("Cannot multiply " + w) }
 
 	@NativeMessage("/")
-	def divide(WollokObject other) { operate(other)[doDivide(it)] }
-
-	def dispatch Number doDivide(BigDecimal w) {
-		this.div(wrapped, w)
+	def divide(BigDecimal other) { 
+		wrapped.divide(other, RoundingMode.HALF_UP)
 	}
 
-	def dispatch Number doDivide(Object w) { throw new WollokRuntimeException("Cannot divide " + w) }
-
+	def div(BigDecimal other) { 
+		wrapped.divide(other, RoundingMode.HALF_UP).intValue
+	}
+	
 	@NativeMessage("**")
-	def raise(WollokObject other) { operate(other)[doRaise(it)] }
-
-	def dispatch Number doRaise(BigDecimal w) { Math.pow(wrapped.doubleValue, w.doubleValue) }
-
-	def dispatch Number doRaise(Object w) { throw new WollokRuntimeException("Cannot raise " + w) }
+	def raise(BigDecimal other) { 
+		Math.pow(wrapped.doubleValue, other.doubleValue)
+	}
 
 	@NativeMessage("%")
-	def module(WollokObject other) { operate(other)[doModule(it)] }
-
-	def dispatch Number doModule(BigDecimal w) {
-		this.remainder(wrapped, w)
+	def module(BigDecimal other) { 
+		wrapped.remainder(other)
 	}
-
-	def dispatch Number doModule(Object w) { throw new WollokRuntimeException("Cannot module " + w) }
 
 	def abs() { this.wrapped.abs.asWollokObject }
 
@@ -128,13 +108,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		num1.gcd(BigInteger.valueOf(divisor)).intValue
 	}
 
-	def div(WollokObject other) {
-		val n = other.nativeNumber
-		// FIXME: Debería validar que no sea 0
-		// O al menos que tire error esta división
-		Math.floor(this.doubleValue / n.doubleValue).intValue
-	}
-
 	def coerceToInteger() {
 		wrapped.coerceToInteger
 	}
@@ -143,41 +116,12 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		wrapped.isInteger
 	}
 	
-	/**
-	 * **********************************************************************
-	 *                INTERNAL MATHEMATICAL OPERATIONS
-	 * **********************************************************************
-	 */
-	def add(BigDecimal sumand1, BigDecimal sumand2) {
-		adapt(sumand1).add(sumand2).adapt
-	}
-
-	def subtract(BigDecimal minuend, BigDecimal sustraend) {
-		adapt(minuend).subtract(sustraend).adapt
-	}
-
-	def mul(BigDecimal mul1, BigDecimal mul2) {
-		adapt(mul1).multiply(mul2).adapt
-	}
-
-	def div(BigDecimal dividend, BigDecimal divisor) {
-		adapt(dividend).divide(divisor, RoundingMode.HALF_UP).adapt
-	}
-
-	def remainder(BigDecimal dividend, BigDecimal divisor) {
-		adapt(dividend).remainder(divisor).adapt
-	}
-
 	/** *******************************************************************
 	 * 
 	 * INTERNAL METHODS
 	 * 
 	 * *******************************************************************
 	 */
-	private def adapt(BigDecimal operand) {
-		operand.setScale(decimalPrecision, BigDecimal.ROUND_HALF_UP)
-	}
-
 	def scale(BigDecimal _decimals, int operation) {
 		// TODO : Wollok exception?
 		// TODO : i18n
@@ -221,11 +165,12 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	def WNumber nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
 
 	def stringValue() {
-		printValueAsString(wrapped)
+		wrapped.printValueAsString
 	}
 
+	// FIXME: Tomarlo de las preferencias
 	def decimalPrecision() {
-		DECIMAL_PRECISION
+		WollokConstants.DECIMAL_PRECISION
 	}
 	
 }

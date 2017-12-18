@@ -183,6 +183,19 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
 
+	
+	// ****************************
+	// ** Conversions
+	// ****************************
+	
+	public static String WollokConversion_INVALID_CONVERSION;
+	public static String WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK;
+	public static String WollokConversion_INTEGER_VALUE_REQUIRED;
+	public static String WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED;
+	public static String WollokConversion_DECIMAL_SCALE_REQUIRED;
+	public static String WollokConversion_WARNING_NUMBER_VALUE_SCALED;
+	public static String WollokConversion_WARNING_NUMBER_VALUE_INTEGER;
+	
 	// ****************************
 	// ** Wollok Type System
 	// ****************************

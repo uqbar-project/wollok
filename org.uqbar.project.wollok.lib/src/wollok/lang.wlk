@@ -717,8 +717,7 @@ class List inherits Collection {
 	 * Answers the element at the specified position in this list.
 	 * 
 	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
-	 * Index is coerced to integer, that is if it is a decimal value, this could lead to an error,
-	 * rounding up or down. 
+	 * Index must be a positive and integer value. 
 	 */
 	method get(index) native
 	
@@ -1141,8 +1140,7 @@ class Number {
 	
 	/** 
 	 * Answers whether self is an even number (divisible by 2, mathematically 2k) 
-	 *
-	 * Not valid for decimal numbers
+	 * Self must be an integer value
 	 */
 	method even() {
 		self.coerceToInteger()
@@ -1151,8 +1149,7 @@ class Number {
 	
 	/** 
 	 * Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) 
-	 *
-	 * Not valid for decimal numbers
+	 * Self must be an integer value
 	 */
 	method odd() { 
 		self.coerceToInteger()
@@ -1207,7 +1204,7 @@ class Number {
 	method roundUp() = self.roundUp(0)
 
  	/**
-  	 * greater common divisor. Both self and other are coerced to integer values.
+  	 * greater common divisor. Both self and "other" parameter are coerced to be integer values.
   	 *
   	 * Example:
   	 * 		8.gcd(12) ==> Answers 4
@@ -1218,7 +1215,7 @@ class Number {
   	method gcd(other) native
 
 	/**
-	 * least common multiple
+	 * least common multiple. Both self and "other" parameter are coerced to be integer values.
 	 *
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
@@ -1248,8 +1245,12 @@ class Number {
 	/** Tells if this number could be considered an integer number */
 	method isInteger() native
 	
-	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... */
+	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... 
+	  * Self must be an integer positive value
+	  */
 	method isPrime() {
+		self.coerceToInteger()
+		if (self < 0) self.error("Negative numbers cannot be prime")
 		if (self == 1) return false
 		return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 	}
@@ -1257,8 +1258,7 @@ class Number {
 	/**
 	 * Executes the given action n times (n = self)
 	 *
-	 * Self is coerced to integer, so this could lead to error, rounding up or rounding down when
-	 * sent to a decimal value.
+	 * Self must be a positive integer value.
 	 *
 	 * Example:
 	 * 		4.times({ i => console.println(i) }) ==> Answers 
@@ -1267,8 +1267,10 @@ class Number {
 	 * 			3
 	 * 			4
 	 */
-	method times(action) { 
-		(1..self).forEach(action) 
+	method times(action) {
+		self.coerceToInteger()
+		if (self < 0) self.error("times requires a positive integer number")
+		(1..self).forEach(action)
 	}
 
 	/** Allows users to define a positive number with 1 or +1 */
@@ -1512,10 +1514,13 @@ class Range {
 	const end
 	var step
 	
+	/**
+	  * Instantiates a Range. Both _start and _end must be integer values.
+	  */
 	constructor(_start, _end) {
 		_start.coerceToInteger()
 		_end.coerceToInteger()
-		start = _start 
+		start = _start
 		end = _end
 		if (_start > _end) { 
 			step = -1 
