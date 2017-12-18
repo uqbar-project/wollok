@@ -43,6 +43,10 @@ class Gameboard {
 		ground = "ground.png" 
 		createCells(ground)
 	}
+	
+	def void start() {
+		start(false)
+	}
 
 	def void start(Boolean fromREPL) {
 		Application.instance.start(this, fromREPL)
