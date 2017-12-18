@@ -38,17 +38,15 @@ class GameObject {
 		board.remove(visual)
 	}
 	
-	def whenKeyPressedDo(WollokObject key, WollokObject action) {
-		var num = key.asInteger
+	def whenKeyPressedDo(int key, WollokObject action) {
 		val function = action.asClosure
-		var listener = new KeyboardListener(num, [ function.doApply ])
+		var listener = new KeyboardListener(key, [ function.doApply ])
 		addListener(listener)
 	}
 
-	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
-		val num = key.asInteger
+	def whenKeyPressedSay(int key, WollokObject functionObj) {	
 		val function = functionObj.asClosure
-		var listener = new KeyboardListener(num,  [ board.characterSay(function.doApply.asString) ]) 
+		var listener = new KeyboardListener(key, [ board.characterSay(function.doApply.asString) ]) 
 		addListener(listener)
 	}
 	
@@ -76,8 +74,8 @@ class GameObject {
 		.toList.javaToWollok
 	}
 		
-	def say(WollokObject visual, WollokObject message) {
-		board.findVisual(visual).say(message.asString)
+	def say(WollokObject visual, String message) {
+		board.findVisual(visual).say(message)
 	}
 	
 	def clear() { board.clear }
@@ -101,22 +99,14 @@ class GameObject {
 	
 	
 //	 ACCESSORS
-	def title() { board.title.javaToWollok }
-	def title(WollokObject title) {
-		board.title = title.asString
-	}
+	def title() { board.title }
+	def title(String title) { board.title = title }
 	
-	def width() { board.width.javaToWollok }
-	def width(WollokObject cant) {
-		board.width =  cant.asInteger
-	}
+	def width() { board.width }
+	def width(int cant) { board.width =  cant }
 	
-	def height() { board.height.javaToWollok }
-	def height(WollokObject cant) {
-		board.height = cant.asInteger
-	}
+	def height() { board.height }
+	def height(int cant) { board.height = cant }
 	
-	def ground(WollokObject image) {
-		board.createCells(image.asString)
-	}
+	def ground(String image) { board.ground = image }
 }
