@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
@@ -9,6 +8,7 @@ import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -21,6 +21,7 @@ class Gameboard {
 	val Logger log = Logger.getLogger(this.class)	
 	
 	String title
+	String ground
 	int height
 	int width
 	List<Cell> cells = newArrayList
@@ -39,15 +40,16 @@ class Gameboard {
 		title = "Wollok Game"
 		height = 5
 		width = 5
-		createCells("ground.png")
+		ground = "ground.png" 
+		createCells(ground)
 	}
 
 	def void start(Boolean fromREPL) {
-		new WollokGDXApplication(this, fromREPL)
+		Application.instance.start(this, fromREPL)
 	}
 	
-	def stop() {
-		Gdx.app.exit
+	def void stop() {
+		Application.instance.stop
 	}
 	
 	def void draw(Window window) {

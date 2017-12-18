@@ -8,13 +8,13 @@ class Keyboard {
 	var static Keyboard instance
 	
 	def static getInstance() {
-		if (instance == null)
+		if (instance === null)
 			instance = new Keyboard()
 			
 		instance
 	}
 	
-	// For testing
+	// For testing TODO: use DI
 	def static setInstance(Keyboard keyboard) {
 		instance = keyboard
 	}

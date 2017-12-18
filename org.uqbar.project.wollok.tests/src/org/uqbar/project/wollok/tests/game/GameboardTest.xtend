@@ -28,11 +28,12 @@ class GameboardTest {
 
 	@Before
 	def void init(){
-		Keyboard.setInstance(mock(Keyboard))
+		Keyboard.instance = mock(Keyboard)
 		gameboard = new Gameboard => [
 			title = "UnTitulo"
 			width = 2
 			height = 5
+			ground = "Piso.png"
 		]
 		
 		listener = mock(GameboardListener)
