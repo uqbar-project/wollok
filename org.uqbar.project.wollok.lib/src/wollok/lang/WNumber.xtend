@@ -3,6 +3,7 @@ package wollok.lang
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
@@ -123,10 +124,8 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	 * *******************************************************************
 	 */
 	def scale(BigDecimal _decimals, int operation) {
-		// TODO : Wollok exception?
-		// TODO : i18n
 		val decimals = _decimals.coerceToInteger
-		if (decimals < 0) throw new WollokRuntimeException("Cannot set new scale with " + decimals + " decimals")
+		if (decimals < 0) throwInvalidOperation(Messages.WollokConversion_INVALID_SCALE_NUMBER)
 		wrapped.setScale(decimals, operation)
 	}
 
@@ -148,14 +147,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 
 	def <BigDecimal> BigDecimal asWollokObject(Object obj) {
 		javaToWollok(obj) as BigDecimal
-	}
-
-	def operate(WollokObject other, (Number)=>Number block) {
-		val n = other.nativeNumber
-		if (n === null)
-			throw new WollokRuntimeException("Operation doesn't support parameter " + other)
-		val result = block.apply(n.wrapped)
-		newInstance(result)
 	}
 
 	def newInstance(Number naitive) {

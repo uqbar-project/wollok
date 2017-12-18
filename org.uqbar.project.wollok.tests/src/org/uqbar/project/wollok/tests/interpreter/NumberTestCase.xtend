@@ -352,7 +352,15 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(4, 16.div(4))
 		assert.equals(4, 18.div(4))
 		assert.equals(5, 21.div(4))
-		//assert.equals(5, (21.2).div(4.1))
+		assert.equals(5, (21.2).div(4.1))
+		'''.test
+	}	
+
+	@Test
+	def void integerDivisionByZero() {
+		'''
+		assert.throwsExceptionWithMessage("/ by zero", { 16.div(0) })
+		assert.throwsExceptionWithMessage("/ by zero", { (21.2).div(0.0) })
 		'''.test
 	}	
 

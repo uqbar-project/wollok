@@ -195,6 +195,7 @@ public class Messages extends NLS {
 	public static String WollokConversion_DECIMAL_SCALE_REQUIRED;
 	public static String WollokConversion_WARNING_NUMBER_VALUE_SCALED;
 	public static String WollokConversion_WARNING_NUMBER_VALUE_INTEGER;
+	public static String WollokConversion_INVALID_SCALE_NUMBER;
 	
 	// ****************************
 	// ** Wollok Type System
