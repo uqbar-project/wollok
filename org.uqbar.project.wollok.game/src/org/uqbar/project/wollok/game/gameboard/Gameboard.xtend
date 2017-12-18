@@ -41,7 +41,6 @@ class Gameboard {
 		height = 5
 		width = 5
 		ground = "ground.png" 
-		createCells(ground)
 	}
 	
 	def void start() {
@@ -49,6 +48,7 @@ class Gameboard {
 	}
 
 	def void start(Boolean fromREPL) {
+		createCells(ground)
 		Application.instance.start(this, fromREPL)
 	}
 	
