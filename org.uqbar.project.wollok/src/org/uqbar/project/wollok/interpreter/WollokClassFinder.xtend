@@ -40,9 +40,7 @@ class WollokClassFinder {
 
 	def WClass getStringClass(EObject context) { context.getCachedClass(STRING) }
 
-	def WClass getIntegerClass(EObject context) { context.getCachedClass(INTEGER) }
-
-	def WClass getDoubleClass(EObject context) { context.getCachedClass(DOUBLE) }
+	def WClass getNumberClass(EObject context) { context.getCachedClass(NUMBER) }
 
 	def WClass getBooleanClass(EObject context) { context.getCachedClass(BOOLEAN) }
 

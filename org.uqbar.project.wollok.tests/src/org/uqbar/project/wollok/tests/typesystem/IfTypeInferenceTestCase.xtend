@@ -35,8 +35,8 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = if (true) a else b 
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
-			assertTypeOf(classTypeFor(INTEGER), "b")
+			assertTypeOf(classTypeFor(NUMBER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "b")
 		]
 	}
 
@@ -48,7 +48,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (true) a else 23
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 
@@ -60,7 +60,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (true) 23 else a
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 
@@ -72,7 +72,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (n) 2 else 6
 			}
 		'''.parseAndInfer.asserting [
-			findByText("n", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+			findByText("n", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Number>>")
 		]
 	}
 
@@ -85,7 +85,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = if (p) 2 else 6
 			}
 		'''.parseAndInfer.asserting [
-			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Integer>>")
+			findByText("p", WVariableReference).assertIssuesInElement("expected <<Boolean>> but found <<Number>>")
 		]
 	}
 
@@ -99,7 +99,7 @@ class IfTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			findAllByText("n", WVariableReference).get(1).assertIssuesInElement(
-				"expected <<Boolean>> but found <<Integer>>")
+				"expected <<Boolean>> but found <<Number>>")
 		]
 	}
 }

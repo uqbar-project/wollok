@@ -707,8 +707,12 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
-	/** Answers the element at the specified position in this list.
-	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing. 
+	/** 
+	 * Answers the element at the specified position in this list.
+	 * 
+	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+	 * Index is coerced to integer, that is if it is a decimal value, this could lead to an error,
+	 * rounding up or down. 
 	 */
 	method get(index) native
 	
@@ -742,7 +746,7 @@ class List inherits Collection {
 	/**
 	 * Answers the last element of the non-empty list.
 	 * @returns last element
-	 * Example:
+	 * Example:	
 	 *		[1, 2, 3, 4].last()		=> Answers 4	
 	 */
 	method last() = self.get(self.size() - 1)
@@ -981,20 +985,114 @@ class Dictionary {
 
 /**
  *
+ * In Wollok we have numbers as immutable representation. You can customize
+ * how many decimals you want to work with, and printing strategies. So
+ * number two could be printed as "2", "2,00000", "2,000", etc.
+ *
+ * You can coerce a parameter or a result to integer, in that case
+ * you can customize the coercing strategy: rounding up, down or throwing an error
+ * if reference points to a non-integer value.
+ *
  * @author jfernandes
+ * @author dodain (unification between Double and Integer in a single Number class)
+ *
  * @since 1.3
  * @noInstantiate
  */	
 class Number {
-	method +(other)
-	method -(other)
-	method *(other)
-	method /(other)
 
-	method >(other)
-	method >=(other)
-	method <(other)
-	method <=(other)
+	/** @private */
+	override method simplifiedToSmartString(){ return self.stringValue() }
+	
+	/** @private */
+	override method internalToSmartString(alreadyShown) { return self.stringValue() }
+	
+	/** 
+	 * @private
+	 *
+	 * Applies coercing strategy to integer. If it is an integer, nothing happens. Otherwise, 
+	 * if it is a decimal, one of this coercing algorithms can be used
+	 * 
+	 * - self is rounded up to an integer
+	 * - self is rounded down to an integer
+	 * - an error is thrown
+	 */
+	method coerceToInteger() native
+	
+	/**
+	 * The whole wollok identity implementation is based on self method
+	 */
+	override method ===(other) native
+
+	method +(other) native
+	method -(other) native
+	method *(other) native
+	method /(other) native
+
+	/** 
+	 * Integer division between self and other
+	 *
+	 * Example:
+	 *		8.div(3)  ==> Answers 2
+	 * 		15.div(5) ==> Answers 3
+	 *		8.2.div(3.3)  ==> Answers 2
+	 * 		15.0.div(5) ==> Answers 3
+	 */
+	method div(other) native
+	
+	/**
+	 * raisedTo operation
+     *
+	 * Example:
+	 *      3.2 ** 2 ==> Answers 10.24
+	 * 		3 ** 2 ==> Answers 9
+	 */
+	method **(other) native
+	
+	/**
+	 * Answers remainder of division between self and other
+	 */
+	method %(other) native
+	
+	/** String representation of self number */
+	override method toString() native
+	
+	/** 
+	 * Builds a Range between self and end
+	 * 
+	 * Example:
+	 * 		1..4   		Answers ==> a new Range object from 1 to 4
+	 *      1.1..2.4 	Could lead to an error or answer a new Range object from 1 to 2
+	 * 					depending on coercing strategy (see above) 
+	 */
+	method ..(end) = new Range(self, end)
+	
+	method >(other) native
+	method >=(other) native
+	method <(other) native
+	method <=(other) native
+
+	/** 
+	 * Answers absolute value of self 
+	 *
+	 * Example:
+	 * 		2.abs() ==> 2
+	 * 		(-3).abs() ==> 3 (be careful with parentheses)
+	 * 		2.7.abs() ==> Answers 2.7
+	 *		(-3.2).abs() ==> Answers 3.2 (be careful with parentheses)
+	 */		
+	method abs() native
+	
+	/**
+	 * Inverts sign of self
+	 *
+	 * Example:
+	 * 		3.invert() ==> Answers -3
+	 * 		(-2).invert() ==> Answers 2 (be careful with parentheses)
+	 * 		3.2.invert() ==> -3.2
+	 * 		(-2.4).invert() ==> 2.4 (be careful with parentheses)
+	 */
+	method invert() native
 
 	/** 
 	 * Answers the greater number between two
@@ -1021,12 +1119,6 @@ class Number {
 										 else 
 										 	limitB.max(self).min(limitA)
 
-	/** @private */
-	override method simplifiedToSmartString(){ return self.stringValue() }
-	
-	/** @private */
-	override method internalToSmartString(alreadyShown) { return self.stringValue() }
-	
 	/** Answers whether self is between min and max */
 	method between(min, max) { return (self >= min) && (self <= max) }
 	
@@ -1040,19 +1132,37 @@ class Number {
 	 */
 	method square() { return self * self }
 	
-	/** Answers whether self is an even number (divisible by 2, mathematically 2k) */
-	method even() { return self % 2 == 0 }
+	/** 
+	 * Answers whether self is an even number (divisible by 2, mathematically 2k) 
+	 *
+	 * Not valid for decimal numbers
+	 */
+	method even() {
+		self.coerceToInteger()
+		return self % 2 == 0 
+	}
 	
-	/** Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) */
-	method odd() { return self.even().negate() }
+	/** 
+	 * Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) 
+	 *
+	 * Not valid for decimal numbers
+	 */
+	method odd() { 
+		self.coerceToInteger()
+		return self.even().negate() 
+	}
 	
 	/** Answers remainder between self and other
 	 * Example:
-	 * 		5.rem(3) ==> Answers 2
+	 * 		5.rem(3) 	==> Answers 2
+	 *      5.5.rem(3) 	==> Answers 2
 	 */
 	method rem(other) { return self % other }
 	
-	method stringValue() = throw new Exception("Should be implemented in the subclass")
+	/*
+	 * Self as String value. Equivalent: toString()
+	 */
+	method stringValue() = self.toString()
 
 	/**
 	 * Rounds up self up to a certain amount of decimals.
@@ -1062,7 +1172,7 @@ class Number {
 	 * 14.6165.roundUp(3) ==> 14.617
 	 * 5.roundUp(3) ==> 5
 	 */
-	 method roundUp(_decimals)
+	 method roundUp(_decimals) native
 
 	/**
 	 * Truncates self up to a certain amount of decimals.
@@ -1072,98 +1182,40 @@ class Number {
 	 * -14.6165.truncate(3) ==> -14.616
 	 * 5.truncate(3) ==> 5
 	 */
-	method truncate(_decimals)
+	method truncate(_decimals) native
 
-	method plus() = self
-}
+	/**
+	 * Answers a random number between self and max
+	 */
+	method randomUpTo(max) native
+	
+	/**
+	 * Answers the next integer greater than self
+	 * 13.224.roundUp() ==> 14
+	 * -13.224.roundUp() ==> -14
+	 * 15.942.roundUp() ==> 16
+	 */
+	method roundUp() = self.roundUp(0)
 
-/**
- * @author jfernandes
- * @since 1.3
- * @noInstantiate
- */
-class Integer inherits Number {
-	/**
-	 * The whole wollok identity implementation is based on self method
-	 */
-	override method ===(other) native
+ 	/**
+  	 * greater common divisor. Both self and other are coerced to integer values.
+  	 *
+  	 * Example:
+  	 * 		8.gcd(12) ==> Answers 4
+  	 *		5.gcd(10) ==> Answers 5
+ 	 *      7.4.gcd(10) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
+ 	 *      7.gcd(10.2) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
+  	 */
+  	method gcd(other) native
 
-	override method +(other) native
-	override method -(other) native
-	override method *(other) native
-	override method /(other) native
-	
-	/** Integer division between self and other
-	 *
-	 * Example:
-	 *		8.div(3)  ==> Answers 2
-	 * 		15.div(5) ==> Answers 3
-	 */
-	method div(other) native
-	
-	/**
-	 * raisedTo
-	 * 		3 ** 2 ==> Answers 9
-	 */
-	method **(other) native
-	
-	/**
-	 * Answers remainder of division between self and other
-	 */
-	method %(other) native
-	
-	/** String representation of self number */
-	override method toString() native
-	
-	/** Self as a String value. Equivalent: toString() */
-	override method stringValue() native	
-	
-	/** 
-	 * Builds a Range between self and end
-	 * 
-	 * Example:
-	 * 		1..4   Answers ==> a new Range object from 1 to 4
-	 */
-	method ..(end) = new Range(self, end)
-	
-	override method >(other) native
-	override method >=(other) native
-	override method <(other) native
-	override method <=(other) native
-
-	/** 
-	 * Answers absolute value of self 
-	 *
-	 * Example:
-	 * 		2.abs() ==> 2
-	 * 		(-3).abs() ==> 3 (be careful with parentheses)
-	 */		
-	method abs() native
-	
-	/**
-	 * Inverts sign of self
-	 *
-	 * Example:
-	 * 		3.invert() ==> Answers -3
-	 * 		(-2).invert() ==> Answers 2 (be careful with parentheses)
-	 */
-	method invert() native
-	
-	/**
-	 * greater common divisor
-	 *
-	 * Example:
-	 * 		8.gcd(12) ==> Answers 4
-	 *		5.gcd(10) ==> Answers 5
-	 */
-	method gcd(other) native
-	
 	/**
 	 * least common multiple
 	 *
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
 	 * 		6.lcm(12) ==> Answers 12
+	 *      6.4.lcm(12 ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
+	 *      5.lcm(10.2) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
 	 */
 	method lcm(other) {
 		const mcd = self.gcd(other)
@@ -1178,22 +1230,27 @@ class Integer inherits Number {
 		if (self < 0) {
 			digits -= 1
 		}
+		if (!self.isInteger()) {
+			digits -= 1
+		}
 		return digits
 	}
+	
+	/** Tells if this number could be considered an integer number */
+	method isInteger() native
 	
 	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... */
 	method isPrime() {
 		if (self == 1) return false
 		return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 	}
-	
-	/**
-	 * Answers a random between self and max
-	 */
-	method randomUpTo(max) native
-	
+
 	/**
 	 * Executes the given action n times (n = self)
+	 *
+	 * Self is coerced to integer, so this could lead to error, rounding up or rounding down when
+	 * sent to a decimal value.
+	 *
 	 * Example:
 	 * 		4.times({ i => console.println(i) }) ==> Answers 
 	 * 			1
@@ -1204,86 +1261,9 @@ class Integer inherits Number {
 	method times(action) { 
 		(1..self).forEach(action) 
 	}
-	
-	override method roundUp(_decimals) = self
-	override method truncate(_decimals) = self
-	
-}
 
-/**
- * @author jfernandes
- * @since 1.3
- * @noInstantiate
- */
-class Double inherits Number {
-	/** the whole wollok identity impl is based on self method */
-	override method ===(other) native
-
-	override method +(other) native
-	override method -(other) native
-	override method *(other) native
-	override method /(other) native
-
-	/** Integer division between self and other
-	 *
-	 * Example:
-	 *		8.2.div(3.3)  ==> Answers 2
-	 * 		15.0.div(5) ==> Answers 3
-	 */
-	method div(other) native
-	
-	/**
-	 * raisedTo
-	 * 3.2 ** 2 ==> Answers 10.24
-	 */
-	method **(other) native
-	
-	/**
-	 * Answers remainder of division between self and other
-	 */
-	method %(other) native		
-
-	/** String representation of a self number */
-	override method toString() = self.stringValue()
-	
-	/** Self as a String value. Equivalent: toString() */
-	override method stringValue() native	
-	
-	override method >(other) native
-	override method >=(other) native
-	override method <(other) native
-	override method <=(other) native
-	
-	/** 
-	 * Answers absolute value of self 
-	 *
-	 * Example:
-	 * 		2.7.abs() ==> Answers 2.7
-	 *		(-3.2).abs() ==> Answers 3.2 (be careful with parentheses)
-	 */		
-	method abs() native
-	
-	/**
-	 * 3.2.invert() ==> -3.2
-	 * (-2.4).invert() ==> 2.4 (be careful with parentheses)
-	 */
-	method invert() native
-	
-	/**
-	 * Answers a random between self and max
-	 */
-	method randomUpTo(max) native
-	
-	/**
-	 * Answers the next integer greater than self
-	 * 13.224.roundUp() ==> 14
-	 * -13.224.roundUp() ==> -14
-	 * 15.942.roundUp() ==> 16
-	 */
-	method roundUp() = self.roundUp(0)
-	
-	override method roundUp(_decimals) native
-	override method truncate(_decimals) native
+	/** Allows users to define a positive number with 1 or +1 */
+	method plus() = self	
 }
 
 /**
@@ -1522,8 +1502,8 @@ class Range {
 	var step
 	
 	constructor(_start, _end) {
-		self.validate(_start)
-		self.validate(_end)
+		_start.coerceToInteger()
+		_end.coerceToInteger()
 		start = _start 
 		end = _end
 		if (_start > _end) { 
@@ -1535,9 +1515,6 @@ class Range {
 	
 	method step(_step) { step = _step }
 
-	/** @private */		
-	method validate(_limit) native
-	
 	/** 
 	 * Iterates over a Range from start to end, based on step
 	 */

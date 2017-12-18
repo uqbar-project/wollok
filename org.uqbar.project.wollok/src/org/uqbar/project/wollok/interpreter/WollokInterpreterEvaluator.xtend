@@ -242,16 +242,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def instantiateNumber(String value) {
-		if (value.contains('.'))
-			doInstantiateNumber(DOUBLE, new BigDecimal(value))
-		else {
-			try {
-				doInstantiateNumber(INTEGER, Integer.valueOf(value))
-			} catch (NumberFormatException e) {
-				// If value is too long, use a decimal
-				doInstantiateNumber(DOUBLE, new BigDecimal(value))
-			}
-		}
+		doInstantiateNumber(NUMBER, new BigDecimal(value))
 	}
 
 	def doInstantiateNumber(String className, Object value) {

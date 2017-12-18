@@ -34,7 +34,7 @@ class Seducible {
 	// XPECT type at generosPreferidos -->  List
 	const generosPreferidos = [] // "List[any]"
 	
-	// XPECT type at nivelIntelectualMinimoBuscado -->  Integer
+	// XPECT type at nivelIntelectualMinimoBuscado -->  Number
 	var nivelIntelectualMinimoBuscado = 0 
 
 	// XPECT type at personalidad -->  libre	 
@@ -59,10 +59,10 @@ class Seducible {
 //	// any => void 
 //	method agregarGeneroPreferido(g) { generosPreferidos.add(g) }
 	
-	// XPECT methodType at getNivelIntelectualMinimoBuscado --> () => Integer
+	// XPECT methodType at getNivelIntelectualMinimoBuscado --> () => Number
 	method getNivelIntelectualMinimoBuscado() = nivelIntelectualMinimoBuscado
 	
-	// XPECT methodType at setNivelIntelectualMinimoBuscado --> (Integer) => Void
+	// XPECT methodType at setNivelIntelectualMinimoBuscado --> (Number) => Void
 	method setNivelIntelectualMinimoBuscado(n) { nivelIntelectualMinimoBuscado = n }
 	
 	// XPECT methodType at getPersonalidad --> () => libre

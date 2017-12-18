@@ -35,7 +35,7 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const firstOfStrings = ["hola"].first()
 		}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "firstOfNumbers")
+			assertTypeOf(classTypeFor(NUMBER), "firstOfNumbers")
 			assertTypeOf(classTypeFor(STRING), "firstOfStrings")
 		]
 	}
@@ -50,7 +50,7 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const firstOfNumbers = l.first()
 		}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "firstOfNumbers")
+			assertTypeOf(classTypeFor(NUMBER), "firstOfNumbers")
 		]
 	}
 }

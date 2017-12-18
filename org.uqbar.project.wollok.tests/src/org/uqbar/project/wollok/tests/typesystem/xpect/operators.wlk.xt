@@ -6,6 +6,6 @@ object pepita{
 	// XPECT methodType at estaViva --> () => Boolean
 	method estaViva() = energia >= 0
 
-	// XPECT methodType at estaCansada --> (Integer) => Boolean
+	// XPECT methodType at estaCansada --> (Number) => Boolean
 	method estaCansada(cuanto) = energia <= cuanto
 }

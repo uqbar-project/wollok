@@ -36,7 +36,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = a + b
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(NUMBER), 'number') // TODO Should be Integer?
+			assertTypeOf(classTypeFor(NUMBER), 'number')
 		]
 	}
 
@@ -79,7 +79,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
+			assertMethodSignature("() => Number", "Golondrina.getEnergia")
 		]
 	}
 
@@ -92,7 +92,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", "Golondrina.getEnergia")
+			assertMethodSignature("() => Number", "Golondrina.getEnergia")
 		]
 	}
 
@@ -105,7 +105,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Integer) => Void", "Golondrina.setEnergia")
+			assertMethodSignature("(Number) => Void", "Golondrina.setEnergia")
 		]
 	}
 
@@ -120,7 +120,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("(Number) => Void", "Golondrina.multiplicarEnergia") // TODO Should be Integer?
+			assertMethodSignature("(Number) => Void", "Golondrina.multiplicarEnergia")
 		]
 	}
 
@@ -136,8 +136,8 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergia')
-			assertMethodSignature("() => Integer", 'Golondrina.getEnergiaDelegando')
+			assertMethodSignature("() => Number", 'Golondrina.getEnergia')
+			assertMethodSignature("() => Number", 'Golondrina.getEnergiaDelegando')
 		]
 	}
 
@@ -157,7 +157,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''.parseAndInfer.asserting [
 			noIssues
 			assertMethodSignature("() => Void", 'Golondrina.volar')
-			assertMethodSignature("() => Number", 'Golondrina.gastoPorVolar') // TODO Should be Integer?
+			assertMethodSignature("() => Number", 'Golondrina.gastoPorVolar')
 		]
 	}
 
@@ -205,7 +205,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				var x = example.number()
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "x")
+			assertTypeOf(classTypeFor(NUMBER), "x")
 		]
 	}
 

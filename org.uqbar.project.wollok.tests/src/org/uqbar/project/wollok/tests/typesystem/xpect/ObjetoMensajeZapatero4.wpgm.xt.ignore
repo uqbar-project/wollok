@@ -75,7 +75,7 @@ object pepe {
 	method labura(){
 		clientes.first().compraZapatos()
 	}	
-	// XPECT! methodType at cuantosClientesTenes --> () => Integer
+	// XPECT! methodType at cuantosClientesTenes --> () => Number
 	method cuantosClientesTenes(){
 		return clientes.size()
 	}

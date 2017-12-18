@@ -93,13 +93,13 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
-		wDate != null && wrapped == wDate.wrapped
+		wDate !== null && wrapped == wDate.wrapped
 	}
 	
 	def asWString(WollokObject it) { 
 		val wDate = it.getNativeObject(WDate) as WDate
 		// TODO: i18n
-		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
+		if (wDate === null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
 		wDate
 	}
 

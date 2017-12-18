@@ -27,8 +27,6 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 		LIST -> "wollok.lang.WList",
 		SET -> "wollok.lang.WSet",
 		DICTIONARY -> "wollok.lang.WDictionary",
-		INTEGER -> "wollok.lang.WInteger",
-		DOUBLE -> "wollok.lang.WDouble",
 		NUMBER -> "wollok.lang.WNumber",
 		STRING -> "wollok.lang.WString",
 		BOOLEAN -> "wollok.lang.WBoolean",

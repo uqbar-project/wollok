@@ -34,15 +34,7 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	}
 	
 	def solve(String fieldName) {
-		obj.resolve(fieldName).wollokToJava(Integer) as Integer
-	}
-	
-	def Integer validate(Object value) {
-		try {
-			return value.wollokToJava(Integer) as Integer
-		} catch (Throwable e) {
-			throw new IllegalArgumentException(value.toString() + " : only integers are allowed in a Range")
-		}
+		coerceToInteger(obj.resolve(fieldName)).intValue
 	}
 	
 	def anyOne() {

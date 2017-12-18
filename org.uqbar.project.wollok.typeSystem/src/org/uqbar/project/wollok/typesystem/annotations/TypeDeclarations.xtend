@@ -95,10 +95,6 @@ abstract class TypeDeclarations {
 	
 	def Number() { classTypeAnnotation(NUMBER) }
 
-	def Integer() { classTypeAnnotation(INTEGER) }
-	
-	def Double() { classTypeAnnotation(DOUBLE) }
-
 	def String() { classTypeAnnotation(STRING) }
 
 	def Date() { classTypeAnnotation(DATE) }
