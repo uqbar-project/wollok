@@ -27,8 +27,8 @@ class TruncateDecimalsCoercionStrategy implements NumberCoercionStrategy {
 		result
 	}
 	override adaptValue(BigDecimal value) { 
-		val result = value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
-		if (value.scale > WollokInterpreterPreferences.instance.decimalPositions) {
+		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
+		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
 			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
 		}
 		result
@@ -50,10 +50,10 @@ class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
 	}
 	
 	override adaptValue(BigDecimal value) {
-		if (value.scale > WollokInterpreterPreferences.instance.decimalPositions) {
+		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
 			throw new WollokProgramExceptionWrapper(newWollokException(NLS.bind(Messages.WollokConversion_DECIMAL_SCALE_REQUIRED, value, value.scale)))
 		}
-		value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.UNNECESSARY)
+		value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.UNNECESSARY)
 	}
 
 	override description() {
@@ -67,7 +67,7 @@ class RoundingDecimalsCoercionStrategy implements NumberCoercionStrategy {
 	override coerceToInteger(BigDecimal value) {
 		value.round(new MathContext(1, RoundingMode.HALF_UP)).intValue
 	}
-	override adaptValue(BigDecimal value) { value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.DOWN) }
+	override adaptValue(BigDecimal value) { value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN) }
 	
 	override description() {
 		"Rounding decimals coercion strategy"

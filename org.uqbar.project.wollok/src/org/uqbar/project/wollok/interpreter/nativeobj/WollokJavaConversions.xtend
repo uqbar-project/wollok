@@ -188,11 +188,11 @@ class WollokJavaConversions {
 	}
 
 	def static NumberCoercionStrategy coercingStrategy() {
-		WollokInterpreterPreferences.instance.numberCoercionStrategy
+		WollokNumbersPreferences.instance.numberCoercionStrategy
 	}
 	
 	def static PrintNumberStrategy printingStrategy() {
-		WollokInterpreterPreferences.instance.numberPrintingStrategy
+		WollokNumbersPreferences.instance.numberPrintingStrategy
 	}
 	
 }

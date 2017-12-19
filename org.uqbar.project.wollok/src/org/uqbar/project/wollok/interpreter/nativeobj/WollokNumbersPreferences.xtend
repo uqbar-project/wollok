@@ -1,40 +1,37 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
-import org.eclipse.core.runtime.preferences.ConfigurationScope
+import org.eclipse.core.runtime.Platform
+import org.eclipse.core.runtime.preferences.IPreferencesService
+import org.eclipse.core.runtime.preferences.InstanceScope
 import org.osgi.service.prefs.Preferences
 
-class WollokInterpreterPreferences {
+class WollokNumbersPreferences {
 
-	public static val DECIMAL_POSITIONS = "Wollok.decimalPositions"
+	public static val DECIMAL_POSITIONS = "decimalPositions"
 	public static val DECIMAL_POSITIONS_DEFAULT = 5
 
-	public static val NUMBER_COERCING_STRATEGY = "Wollok.coercingStrategy"
+	public static val NUMBER_COERCING_STRATEGY = "coercingStrategy"
 	public static val NUMBER_COERCING_STRATEGY_DEFAULT = new TruncateDecimalsCoercionStrategy().description
 
-	public static val NUMBER_PRINTING_STRATEGY = "Wollok.printingStrategy"
+	public static val NUMBER_PRINTING_STRATEGY = "printingStrategy"
 	public static val NUMBER_PRINTING_STRATEGY_DEFAULT = new DecimalPrintingStrategy().description
 
-	Preferences prefs = ConfigurationScope.INSTANCE.getNode("org.uqbar.project.wollok.ui")
+	Preferences prefs = InstanceScope.INSTANCE.getNode("org.uqbar.project.wollok.WollokDsl")
 
-	private static WollokInterpreterPreferences instance
+	private static WollokNumbersPreferences instance
 	 
 	static def getInstance() {
 		if (instance === null) {
-			instance = new WollokInterpreterPreferences
+			instance = new WollokNumbersPreferences
 		}
 		instance
 	}
 	
-	private new() {}
+	private new() {
+	}
 
 	def decimalPositions() {
-		val result = prefs.getInt(DECIMAL_POSITIONS, DECIMAL_POSITIONS_DEFAULT)
-//		if (result == DECIMAL_POSITIONS_DEFAULT) {
-//			println("Actualizo decimal positions")
-//			prefs.putInt(DECIMAL_POSITIONS, 3)
-//			prefs.flush
-//		}
-		result
+		prefs.getInt(DECIMAL_POSITIONS, DECIMAL_POSITIONS_DEFAULT)
 	}
 
 	def numberCoercionStrategy() {
@@ -49,11 +46,11 @@ class WollokInterpreterPreferences {
 		printingStrategies.get(index)
 	}
 	
-	def coercingStrategies() {
+	def static coercingStrategies() {
 		#[new TruncateDecimalsCoercionStrategy, new DecimalsNotAllowedCoercionStrategy, new RoundingDecimalsCoercionStrategy]
 	}
 	
-	def printingStrategies() {
+	def static printingStrategies() {
 		#[new DecimalPrintingStrategy, new PlainPrintingStrategy]
 	}
 }

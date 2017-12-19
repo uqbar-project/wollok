@@ -10,9 +10,9 @@ import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokInterpreterPreferences
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 /**
  * Base class for numbers.
@@ -202,7 +202,7 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	def decimalPrecision() {
-		WollokInterpreterPreferences.instance.decimalPositions
+		WollokNumbersPreferences.instance.decimalPositions
 	}
 
 	/**
