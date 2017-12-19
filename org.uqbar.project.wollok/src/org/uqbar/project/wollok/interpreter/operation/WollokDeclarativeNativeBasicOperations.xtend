@@ -2,12 +2,14 @@ package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.LazyWollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
@@ -61,10 +63,20 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	@BinaryOperation('+') // needed 2 methods: 1st for the annotation, then the multi-dispatch
 	def WollokObject sumOperation(WollokObject a, ()=>WollokObject e) {
 		val b = e.apply
-		if (a === null) b 
-		else if (b === null) a
-		else sum(a, b)
-	}  
+		// hack - necessary for assertions? dodain
+		if (a.isNativeType(STRING) && b === null) {
+			return a
+		}
+		b.checkNotNull('+')
+		sum(a, b)
+	}
+	
+	def checkNotNull(WollokObject o, String operation) {
+		if (o === null) {
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation)) 	
+		}
+	}
+	
 	def sum(WollokObject a, WollokObject b) { a.call("+", b) }
 	
 	def zero(WollokObject nonNull) { minusOperation(nonNull, [nonNull]) }
@@ -72,19 +84,17 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	@BinaryOperation('-')	
 	def WollokObject minusOperation(WollokObject a, ()=>WollokObject eb) {
 		val b = eb.apply
-		if (a === null) { 
-			if (b !== null) b.zero.call("-", b)
-			else null
-		}
-		else if (b === null) a
-		else a.call("-", b)
+		a.checkNotNull('-')
+		b.checkNotNull('-')
+		a.call("-", b)
 	}
 	
 	@BinaryOperation('*')  
 	def multiplyOperation(WollokObject a, ()=>WollokObject eb) { 
 		val b = eb.apply
-		if (a === null || b === null) null
-		else a.call("*", b)
+		a.checkNotNull('*')
+		b.checkNotNull('*')
+		a.call("*", b)
 	}
 	
 	// ********************************************************************************************

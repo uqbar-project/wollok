@@ -28,6 +28,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * Utilities for xtend code
  * 
  * @author jfernandes
+ * @author dodain (added i18n, null handling and better exception mechanism)
+ * 
  */
 class XTendUtilExtensions {
 
@@ -122,7 +124,8 @@ class XTendUtilExtensions {
 		if (matchingMethods.isEmpty)
 			throw throwMessageNotUnderstood(target, message, args)
 		if (matchingMethods.size > 1)
-			throw new RuntimeException('''Cannot call on object «target» message «message» there are multiple options !! Not yet implemented''')
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_MULTIPLE_MESSAGES_ERROR, target, message))
+
 		// takes the first one and tries out :S Should do something like multiple-dispatching based on args. 
 		matchingMethods.head.accesibleVersion.invokeConvertingArgs(target, args)
 	}
@@ -160,7 +163,9 @@ class XTendUtilExtensions {
 	def static WollokObject invokeConvertingArgs(Method m, Object o, Object... args) {
 		if ((!m.varArgs && m.parameterTypes.size != args.size) || (m.varArgs && args.length < m.parameterTypes.length -
 			1)) {
-				throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»(«m.parameterTypes.length»)". Given arguments «args» («args.length»)''')
+				throw throwInvalidOperation(
+					NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE, m.name, m.parameterTypes.map[simpleName] + "(" + m.parameterTypes.length + ")")
+				)
 			}
 
 			var Object[] result = null
@@ -184,8 +189,8 @@ class XTendUtilExtensions {
 			} catch (InvocationTargetException e) {
 				throw wrapNativeException(e, m, result)
 			} catch (IllegalArgumentException e) {
-				throw new WollokRuntimeException(
-					"Error while calling java method " + m + " with parameters: " + result, e)
+				throw throwInvalidOperation(
+					NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, args.map [ toString ].join(", ")))
 			}
 		}
 

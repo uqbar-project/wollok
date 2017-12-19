@@ -76,7 +76,7 @@ class WollokJavaConversions {
 			primitive)
 			return o
 
-		WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, conversionTypes.get(t) ?: t.simpleName))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, conversionTypes.get(t) ?: t.simpleName))
 	}
 
 	def static dispatch isNativeType(Object o, String type) { false }
@@ -160,9 +160,9 @@ class WollokJavaConversions {
 		try {
 			result = o.asNumber.coerceToInteger
 		} catch (NumberFormatException e) {
-			throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
 		} catch (ClassCastException c) {
-			throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
 		}
 		result
 	} 
@@ -172,7 +172,7 @@ class WollokJavaConversions {
 	}
 	
 	def static Throwable throwInvalidOperation(String message) {
-		throw new WollokProgramExceptionWrapper(newWollokException(message))
+		new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 	
 	def static String printValueAsString(BigDecimal value) {

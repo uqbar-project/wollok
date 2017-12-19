@@ -36,13 +36,62 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void addFailingParameters() {
+	def void addWithFailingParameters() {
 		'''
-		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date() })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date(18, 12, 2017) })
 		assert.throwsExceptionWithMessage("Operation doesn't support parameter pepe", { 3 + "pepe" })
 		'''.test
 	}
 
+	@Test
+	def void add1ToNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation + doesn't support null parameters", { 1 + null })
+		'''.test
+	}
+
+	@Test
+	def void max() {
+		'''
+		assert.equals(7, 4.max(7))
+		'''.test
+	}
+
+	@Test
+	def void maxUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation max doesn't support null parameters", { 4.max(null) })
+		'''.test
+	}
+
+	@Test
+	def void min() {
+		'''
+		assert.equals(4, 4.min(7))
+		'''.test
+	}
+
+	@Test
+	def void minUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation min doesn't support null parameters", { 4.min(null) })
+		'''.test
+	}
+
+	@Test
+	def void subtractUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation - doesn't support null parameters", { 1 - null })
+		'''.test
+	}
+	
+	@Test
+	def void multiplyUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation * doesn't support null parameters", { 1 * null })
+		'''.test
+	}
+	
 	@Test
 	def void addSeveralDecimals() {
 		'''
@@ -267,6 +316,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void gcdUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation gcd doesn't support null parameters", { 4.gcd(null) })
+		'''.test
+	}
+	
+	@Test
+	def void gcdForInvalidArguments() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.gcd(new Date(1, 1, 2018)) })
+		'''.test
+	}
+	
 	// FIXME: We must use several tests depending on different coercing strategies
 	// @Test
 	def void gcdForDecimalsIsInvalid() {
@@ -361,6 +424,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(4, 18.div(4))
 		assert.equals(5, 21.div(4))
 		assert.equals(5, (21.2).div(4.1))
+		assert.throwsExceptionWithMessage("Operation div doesn't support null parameters", { 4.div(null) })
 		'''.test
 	}	
 

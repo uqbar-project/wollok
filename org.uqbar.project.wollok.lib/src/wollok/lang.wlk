@@ -1013,6 +1013,9 @@ class Number {
 	/** @private */
 	override method internalToSmartString(alreadyShown) { return self.stringValue() }
 	
+	/** @private */
+	method checkNotNull(value, operation) native
+	
 	/** 
 	 * @private
 	 *
@@ -1074,9 +1077,10 @@ class Number {
 	method ..(end) = new Range(self, end)
 	
 	method >(other) native
-	method >=(other) native
 	method <(other) native
-	method <=(other) native
+
+	method >=(other) = self > other || self == other
+	method <=(other) = self < other || self == other
 
 	/** 
 	 * Answers absolute value of self 
@@ -1105,10 +1109,16 @@ class Number {
 	 * Example:
 	 * 		5.max(8)    ==> Answers 8 
 	 */
-	method max(other) = if (self >= other) self else other
+	method max(other) {
+		self.checkNotNull(other, "max")
+		return if (self >= other) self else other
+	}
 	
 	/** Answers the lower number between two. @see max */
-	method min(other) = if (self <= other) self else other
+	method min(other) {
+		self.checkNotNull(other, "min")
+		return if (self <= other) self else other
+	}
 	
 	/**
 	 * Given self and a range of integer values, Answers self if it is in that range
@@ -1250,7 +1260,6 @@ class Number {
 	  */
 	method isPrime() {
 		self.coerceToInteger()
-		if (self < 0) self.error("Negative numbers cannot be prime")
 		if (self == 1) return false
 		return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
 	}
