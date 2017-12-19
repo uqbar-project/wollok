@@ -13,20 +13,30 @@ import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversio
 interface NumberCoercionStrategy {
 	def int coerceToInteger(BigDecimal value)
 	def BigDecimal adaptValue(BigDecimal value)
+	def String description()
 }
 
 class TruncateDecimalsCoercionStrategy implements NumberCoercionStrategy {
 	override coerceToInteger(BigDecimal value) {
+		val result = value.intValue
 		try {
 			value.intValueExact
 		} catch (ArithmeticException e) {
-			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, value.intValue))
+			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
 		}
-		value.intValue
+		result
 	}
 	override adaptValue(BigDecimal value) { 
-		value.setScale(WollokConstants.decimalPrecision, RoundingMode.HALF_UP)
+		val result = value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
+		if (value.scale > WollokInterpreterPreferences.instance.decimalPositions) {
+			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
+		}
+		result
 	}
+	override description() {
+		"Truncating decimals coercion strategy"
+	}
+	
 }
 
 class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
@@ -40,10 +50,14 @@ class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
 	}
 	
 	override adaptValue(BigDecimal value) {
-		if (value.scale > WollokConstants.decimalPrecision) {
+		if (value.scale > WollokInterpreterPreferences.instance.decimalPositions) {
 			throw new WollokProgramExceptionWrapper(newWollokException(NLS.bind(Messages.WollokConversion_DECIMAL_SCALE_REQUIRED, value, value.scale)))
 		}
-		value.setScale(WollokConstants.decimalPrecision, RoundingMode.UNNECESSARY)
+		value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.UNNECESSARY)
+	}
+
+	override description() {
+		"Exceeding decimals not allowed (throwing errors)"
 	}
 
 }
@@ -53,6 +67,10 @@ class RoundingDecimalsCoercionStrategy implements NumberCoercionStrategy {
 	override coerceToInteger(BigDecimal value) {
 		value.round(new MathContext(1, RoundingMode.HALF_UP)).intValue
 	}
-	override adaptValue(BigDecimal value) { value.setScale(WollokConstants.decimalPrecision, RoundingMode.DOWN) }
+	override adaptValue(BigDecimal value) { value.setScale(WollokInterpreterPreferences.instance.decimalPositions, RoundingMode.DOWN) }
+	
+	override description() {
+		"Rounding decimals coercion strategy"
+	}
 	
 }

@@ -1518,15 +1518,13 @@ class Range {
 	  * Instantiates a Range. Both _start and _end must be integer values.
 	  */
 	constructor(_start, _end) {
-		_start.coerceToInteger()
-		_end.coerceToInteger()
-		start = _start
-		end = _end
+		start = _start.coerceToInteger()
+		end = _end.coerceToInteger()
 		if (_start > _end) { 
 			step = -1 
 		} else {
 			step = 1
-		}  
+		}
 	}
 	
 	method step(_step) { step = _step }

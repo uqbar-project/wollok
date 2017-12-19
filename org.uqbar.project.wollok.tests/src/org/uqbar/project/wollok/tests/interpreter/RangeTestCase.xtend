@@ -163,11 +163,11 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test	
 	}
 	
-	// FIXME : We must define several tests depending on coercing strategy
-	// @Test
+	@Test
 	def void testRangeForDecimalsNotAllowed() {
 		'''
-		assert.throwsException({ => new Range(2.4, 5.7)})
+		const range = new Range(2.4, 5.7)
+		assert.equals([2, 3, 4, 5], range.asList())
 		'''.test
 	}	
 

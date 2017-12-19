@@ -121,8 +121,7 @@ class XTendUtilExtensions {
 		var matchingMethods = target.class.methods.filter[name == message && parameterTypes.size == args.size]
 		if (matchingMethods.isEmpty)
 			throw throwMessageNotUnderstood(target, message, args)
-		if (matchingMethods.size >
-			1)
+		if (matchingMethods.size > 1)
 			throw new RuntimeException('''Cannot call on object «target» message «message» there are multiple options !! Not yet implemented''')
 		// takes the first one and tries out :S Should do something like multiple-dispatching based on args. 
 		matchingMethods.head.accesibleVersion.invokeConvertingArgs(target, args)
@@ -153,102 +152,98 @@ class XTendUtilExtensions {
 				return NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, targetName, fullMessage)
 			}
 		}
-		val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[targetName, fullMessage, similarDefinitions])
+		val similarDefinitions = similarMethods.map[messageName].join(', ')
+		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND,
+			#[targetName, fullMessage, similarDefinitions])
 	}
 
 	def static WollokObject invokeConvertingArgs(Method m, Object o, Object... args) {
-		if ((!m.varArgs && m.parameterTypes.size != args.size) ||
-			(m.varArgs &&
-				args.length <
-					m.parameterTypes.length -
-						1)) {
-							throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»(«m.parameterTypes.length»)". Given arguments «args» («args.length»)''')
-						}
+		if ((!m.varArgs && m.parameterTypes.size != args.size) || (m.varArgs && args.length < m.parameterTypes.length -
+			1)) {
+				throw new RuntimeException('''Wrong number of arguments for message: «m.name» expected arguments "«m.parameterTypes.map[simpleName]»(«m.parameterTypes.length»)". Given arguments «args» («args.length»)''')
+			}
 
-						var Object[] result = null
-						if (m.isVarArgs) {
-							// todo: contemplate vararg method with more than one arg
-//			result = args
-							result = newArrayOfSize(1)
-							result.set(0, args)
-						} else {
-							val converted = newArrayList
-							args.fold(0) [ i, a |
-								val conv = a.wollokToJava(m.parameterTypes.get(i))
-								converted.add(conv);
-								i + 1
-							]
-							result = converted.toArray
-						}
+			var Object[] result = null
+			if (m.isVarArgs) {
+				// TODO: contemplate vararg method with more than one arg
+				result = newArrayOfSize(1)
+				result.set(0, args)
+			} else {
+				val converted = newArrayList
+				args.fold(0) [ i, a |
+					val conv = a.wollokToJava(m.parameterTypes.get(i))
+					converted.add(conv)
+					i + 1
+				]
+				result = converted.toArray
+			}
 
-						try {
-							val returnVal = m.invoke(o, result)
-							javaToWollok(returnVal)
-						} catch (InvocationTargetException e) {
-							throw wrapNativeException(e, m, result)
-						} catch (IllegalArgumentException e) {
-							throw new WollokRuntimeException(
-								"Error while calling java method " + m + " with parameters: " + result, e)
-						}
-					}
+			try {
+				val returnVal = m.invoke(o, result)
+				javaToWollok(returnVal)
+			} catch (InvocationTargetException e) {
+				throw wrapNativeException(e, m, result)
+			} catch (IllegalArgumentException e) {
+				throw new WollokRuntimeException(
+					"Error while calling java method " + m + " with parameters: " + result, e)
+			}
+		}
 
-					def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
-						if (e.cause instanceof WollokProgramExceptionWrapper || e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN))
-							e.cause
-						else {
-//									WollokJavaConversions.newWollokAssertionException(e.cause.message))
-							new WollokProgramExceptionWrapper(
-									WollokJavaConversions.newWollokException(e.cause.message))
-						}
-					}
+		def static wrapNativeException(InvocationTargetException e, Method m, Object[] params) {
+			if (e.cause instanceof WollokProgramExceptionWrapper ||
+				e.cause.class.name.equalsIgnoreCase(ASSERTION_EXCEPTION_FQN))
+				e.cause
+			else {
+				new WollokProgramExceptionWrapper(WollokJavaConversions.newWollokException(e.cause.message))
+			}
+		}
 
-					def static accesibleVersion(Method m) {
-						var c = m.declaringClass
-						var metodin = m
-						while (metodin.cannotBeCalled() && c != null) {
-							c = c.superclass
-							metodin = c.getMethod(m.name, m.parameterTypes)
-						}
-						metodin
-					}
+		def static accesibleVersion(Method m) {
+			var c = m.declaringClass
+			var metodin = m
+			while (metodin.cannotBeCalled() && c != null) {
+				c = c.superclass
+				metodin = c.getMethod(m.name, m.parameterTypes)
+			}
+			metodin
+		}
 
-					def static getShortDescription(
-						Method method) '''«method.declaringClass.simpleName».«method.name»(«method.parameterTypes.map[simpleName].join(', ')»)'''
+		def static getShortDescription(
+			Method method) '''«method.declaringClass.simpleName».«method.name»(«method.parameterTypes.map[simpleName].join(', ')»)'''
 
-					def static cannotBeCalled(Method m) {
-						!m.isPublic || !m.declaringClass.isPublic
-					}
+		def static cannotBeCalled(Method m) {
+			!m.isPublic || !m.declaringClass.isPublic
+		}
 
-					def static isPublic(Method m) { Modifier.isPublic(m.modifiers) }
+		def static isPublic(Method m) { Modifier.isPublic(m.modifiers) }
 
-					def static isPublic(Class<?> c) { Modifier.isPublic(c.modifiers) }
+		def static isPublic(Class<?> c) { Modifier.isPublic(c.modifiers) }
 
-					def static randomBetween(int a, int b) {
-						new Random().nextInt(b - a) + a
-					}
+		def static randomBetween(int a, int b) {
+			new Random().nextInt(b - a) + a
+		}
 
-					def static <T> T readPrivateField(Object o, String fieldName) {
-						val field = o.class.declaredFields.findFirst[name == fieldName]
-						field.accessible = true
-						try
-							field.get(o) as T
-						finally
-							field.accessible = false
-					}
+		def static <T> T readPrivateField(Object o, String fieldName) {
+			val field = o.class.declaredFields.findFirst[name == fieldName]
+			field.accessible = true
+			try
+				field.get(o) as T
+			finally
+				field.accessible = false
+		}
 
-					def static toPhrase(String string) {
-						(Character.toUpperCase(string.charAt(0)) + string.substring(1)).splitCamelCase
-					}
+		def static toPhrase(String string) {
+			(Character.toUpperCase(string.charAt(0)) + string.substring(1)).splitCamelCase
+		}
 
-					def static splitCamelCase(String s) {
-						s.replaceAll(String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])",
-							"(?<=[A-Za-z])(?=[^A-Za-z])"), " ")
-					}
+		def static splitCamelCase(String s) {
+			s.replaceAll(String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])",
+				"(?<=[A-Za-z])(?=[^A-Za-z])"), " ")
+		}
 
-					def static int randonBetween(int Min, int Max) {
-						Min + (Math.random() * ((Max - Min) + 1)).intValue
-					}
+		def static int randonBetween(int Min, int Max) {
+			Min + (Math.random() * ((Max - Min) + 1)).intValue
+		}
 
-				}
-				
+	}
+	

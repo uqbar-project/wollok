@@ -172,7 +172,6 @@ class WollokJavaConversions {
 	}
 	
 	def static Throwable throwInvalidOperation(String message) {
-		println(message)
 		throw new WollokProgramExceptionWrapper(newWollokException(message))
 	}
 	
@@ -188,14 +187,12 @@ class WollokJavaConversions {
 		value.signum == 0 || value.scale <= 0 || value.stripTrailingZeros.scale <= 0
 	}
 
-	// FIXME: Tomarlo de la configuración en lugar de hardcodearlo
 	def static NumberCoercionStrategy coercingStrategy() {
-		new TruncateDecimalsCoercionStrategy()
+		WollokInterpreterPreferences.instance.numberCoercionStrategy
 	}
 	
-	// FIXME: Tomarlo de la configuración en lugar de hardcodearlo
 	def static PrintNumberStrategy printingStrategy() {
-		new DecimalPrintingStrategy()
+		WollokInterpreterPreferences.instance.numberPrintingStrategy
 	}
 	
 }

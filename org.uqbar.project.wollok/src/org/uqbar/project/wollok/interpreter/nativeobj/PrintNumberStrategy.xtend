@@ -5,6 +5,7 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
 
 interface PrintNumberStrategy {
 	def String printString(BigDecimal value)
+	def String description()
 }
 
 class DecimalPrintingStrategy implements PrintNumberStrategy {
@@ -16,12 +17,20 @@ class DecimalPrintingStrategy implements PrintNumberStrategy {
 		value.stripTrailingZeros.toString	
 	}
 	
+	override description() {
+		"Decimal printing strategy"
+	}
+	
 }
 
 class PlainPrintingStrategy implements PrintNumberStrategy {
 	
 	override printString(BigDecimal value) {
 		value.toPlainString
+	}
+	
+	override description() {
+		"Plain printing strategy (including trailing zeros)"
 	}
 	
 }

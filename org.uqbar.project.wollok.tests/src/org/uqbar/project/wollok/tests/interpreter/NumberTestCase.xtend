@@ -36,6 +36,14 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void addFailingParameters() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 18, month = 12, year = 2017]", { 3 + new Date() })
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter pepe", { 3 + "pepe" })
+		'''.test
+	}
+
+	@Test
 	def void addSeveralDecimals() {
 		'''
 		assert.equals(4.00001, 3.000004 + 1.000006)

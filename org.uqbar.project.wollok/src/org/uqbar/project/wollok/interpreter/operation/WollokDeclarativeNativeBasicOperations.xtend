@@ -60,7 +60,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	
 	@BinaryOperation('+') // needed 2 methods: 1st for the annotation, then the multi-dispatch
 	def WollokObject sumOperation(WollokObject a, ()=>WollokObject e) {
-		val b = e.apply;
+		val b = e.apply
 		if (a === null) b 
 		else if (b === null) a
 		else sum(a, b)

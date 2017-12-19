@@ -174,7 +174,10 @@ public class Messages extends NLS {
 	
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
-	
+	public static String WollokRootPreferencePage_decimalPositionsAmount;
+	public static String WollokRootPreferencePage_numberCoercingStrategy;
+	public static String WollokRootPreferencePage_numberPrintingStrategy;
+			
 	public static String ExtractMethodUserInputPage_methodName;
 	public static String ExtractMethodUserInputPage_methodSignaturePreview;
 	public static String ExtractMethodUserInputPage_provideMethodName;

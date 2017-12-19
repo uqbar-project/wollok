@@ -12,8 +12,6 @@ package org.uqbar.project.wollok
  * @author jfernandes
  */
 class WollokConstants {
-	public static int DECIMAL_PRECISION = 5
-	
 	public static String CLASSPATH = "classpath:/"
 	
 	public static val SOURCE_FOLDER = "src"
@@ -85,6 +83,4 @@ class WollokConstants {
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
-
-	def static decimalPrecision() { DECIMAL_PRECISION }
 }
