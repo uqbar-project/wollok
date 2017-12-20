@@ -3,12 +3,12 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 import java.math.BigDecimal
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
-interface PrintNumberStrategy {
+interface NumberPrintingStrategy {
 	def String printString(BigDecimal value)
 	def String description()
 }
 
-class DecimalPrintingStrategy implements PrintNumberStrategy {
+class DecimalPrintingStrategy implements NumberPrintingStrategy {
 	
 	override printString(BigDecimal value) {
 		if (value.isInteger) {
@@ -23,7 +23,7 @@ class DecimalPrintingStrategy implements PrintNumberStrategy {
 	
 }
 
-class PlainPrintingStrategy implements PrintNumberStrategy {
+class PlainPrintingStrategy implements NumberPrintingStrategy {
 	
 	override printString(BigDecimal value) {
 		value.toPlainString

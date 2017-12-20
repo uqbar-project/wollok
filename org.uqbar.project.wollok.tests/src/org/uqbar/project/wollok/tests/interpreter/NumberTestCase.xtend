@@ -93,6 +93,16 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void multiply() {
+		'''
+		assert.equals(8, 4 * 2)
+		assert.equals(8.0, 4 * 2.0)
+		assert.equals(8.0, 4.0 * 2.0)
+		assert.equals(8.0, 4.0 * 2)
+		'''.test
+	}
+	
+	@Test
 	def void addSeveralDecimals() {
 		'''
 		assert.equals(4.00001, 3.000004 + 1.000006)
@@ -112,16 +122,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
-	@Test
-	def void multiply() {
-		'''
-		assert.equals(8, 4 * 2)
-		assert.equals(8.0, 4 * 2.0)
-		assert.equals(8.0, 4.0 * 2.0)
-		assert.equals(8.0, 4.0 * 2)
-		'''.test
-	}
-	
 	@Test
 	def void multiplySeveralDecimals() {
 		'''

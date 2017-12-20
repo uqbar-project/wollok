@@ -5,18 +5,24 @@ import java.io.FileWriter
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.NoSuchFileException
 import java.nio.file.Paths
 import java.util.Map
-import static org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersConfigurationProvider.*
-import java.nio.file.NoSuchFileException
+import org.eclipse.xtend.lib.annotations.Accessors
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersConfigurationProvider.*
 
 class WollokNumbersPreferences {
-	
+
+	@Accessors int decimalPositions
+	@Accessors NumberCoercingStrategy numberCoercingStrategy
+	@Accessors NumberPrintingStrategy numberPrintingStrategy
+	Map<String, String> prefs = newHashMap
+		
 	public static val DECIMAL_POSITIONS = "decimalPositions"
 	public static val DECIMAL_POSITIONS_DEFAULT = 5
 
 	public static val NUMBER_COERCING_STRATEGY = "coercingStrategy"
-	public static val NUMBER_COERCING_STRATEGY_DEFAULT = new TruncateDecimalsCoercionStrategy().description
+	public static val NUMBER_COERCING_STRATEGY_DEFAULT = new RoundingDecimalsCoercingStrategy().description
 
 	public static val NUMBER_PRINTING_STRATEGY = "printingStrategy"
 	public static val NUMBER_PRINTING_STRATEGY_DEFAULT = new DecimalPrintingStrategy().description
@@ -30,30 +36,21 @@ class WollokNumbersPreferences {
 		instance
 	}
 
-	Map<String, String> prefs = newHashMap
-		
 	private new() {
 		prefs.putAll(WollokNumbersConfigurationProvider.getPreferences())			
+		decimalPositions = new Integer(prefs.getOrDefault(DECIMAL_POSITIONS, "" + DECIMAL_POSITIONS_DEFAULT))
+		numberCoercingStrategy = calculateNumberCoercingStrategy(prefs)
+		numberPrintingStrategy = calculateNumberPrintingStrategy(prefs)
 	}
-	
-	def decimalPositions() {
-		new Integer(prefs.getOrDefault(DECIMAL_POSITIONS, "" + DECIMAL_POSITIONS_DEFAULT))	
-	}
-	
-	def numberCoercionStrategy() {
-		val numberCoercingStrategy = prefs.getOrDefault(NUMBER_COERCING_STRATEGY, NUMBER_COERCING_STRATEGY_DEFAULT)
-		val index = coercingStrategies.map [ description ].indexOf(numberCoercingStrategy)
-		coercingStrategies.get(index)
-	}
-	
-	def numberPrintingStrategy() {
-		val numberPrintingStrategy = prefs.getOrDefault(NUMBER_PRINTING_STRATEGY, NUMBER_PRINTING_STRATEGY_DEFAULT)
-		val index = printingStrategies.map [ description ].indexOf(numberPrintingStrategy)
-		printingStrategies.get(index)
+
+	def initializeForTests() {
+		decimalPositions = DECIMAL_POSITIONS_DEFAULT
+		numberCoercingStrategy = calculateNumberCoercingStrategy(NUMBER_COERCING_STRATEGY_DEFAULT)
+		numberPrintingStrategy = calculateNumberPrintingStrategy(NUMBER_PRINTING_STRATEGY_DEFAULT)
 	}
 	
 	def static coercingStrategies() {
-		#[new TruncateDecimalsCoercionStrategy, new DecimalsNotAllowedCoercionStrategy, new RoundingDecimalsCoercionStrategy]
+		#[new TruncateDecimalsCoercingStrategy, new DecimalsNotAllowedCoercingStrategy, new RoundingDecimalsCoercingStrategy]
 	}
 	
 	def static printingStrategies() {
@@ -64,7 +61,32 @@ class WollokNumbersPreferences {
 		prefs.put(key, newValue)
 		writePreferences(prefs)
 	}
+
+	/** *******************************************************************
+	 *                         INTERNAL METHODS
+	 * ********************************************************************
+	 */	
 	
+	private def calculateNumberCoercingStrategy(Map<String, String> prefs) {
+		val coercingDescription = prefs.getOrDefault(NUMBER_COERCING_STRATEGY, NUMBER_COERCING_STRATEGY_DEFAULT)
+		calculateNumberCoercingStrategy(coercingDescription)
+	}
+
+	private def calculateNumberCoercingStrategy(String coercingDescription) {
+		val index = coercingStrategies.map [ description ].indexOf(coercingDescription)
+		coercingStrategies.get(index)
+	}
+	
+	private def calculateNumberPrintingStrategy(Map<String, String> prefs) {
+		val printingDescription = prefs.getOrDefault(NUMBER_PRINTING_STRATEGY, NUMBER_PRINTING_STRATEGY_DEFAULT)
+		calculateNumberPrintingStrategy(printingDescription)
+	}
+	
+	private def calculateNumberPrintingStrategy(String printingDescription) {
+		val index = printingStrategies.map [ description ].indexOf(printingDescription)
+		printingStrategies.get(index)
+	}
+	 
 }
 
 class WollokNumbersConfigurationProvider {

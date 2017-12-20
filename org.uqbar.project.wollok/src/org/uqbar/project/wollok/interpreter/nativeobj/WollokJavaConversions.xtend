@@ -187,11 +187,11 @@ class WollokJavaConversions {
 		value.signum == 0 || value.scale <= 0 || value.stripTrailingZeros.scale <= 0
 	}
 
-	def static NumberCoercionStrategy coercingStrategy() {
-		WollokNumbersPreferences.instance.numberCoercionStrategy
+	def static NumberCoercingStrategy coercingStrategy() {
+		WollokNumbersPreferences.instance.numberCoercingStrategy
 	}
 	
-	def static PrintNumberStrategy printingStrategy() {
+	def static NumberPrintingStrategy printingStrategy() {
 		WollokNumbersPreferences.instance.numberPrintingStrategy
 	}
 	

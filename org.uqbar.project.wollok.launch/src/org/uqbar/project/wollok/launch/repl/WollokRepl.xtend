@@ -51,7 +51,7 @@ class WollokRepl {
 		this.formatter = formatter
 	}
 
-	def void printWelcomeStructure() {
+	def synchronized void printWelcomeStructure() {
 		println(REPL_WELCOME.importantMessageStyle)
 		printPrompt
 	}
@@ -71,7 +71,7 @@ class WollokRepl {
 		}
 	}
 
-	def printPrompt() {
+	def synchronized printPrompt() {
 		print(prompt.messageStyle)
 	}
 
@@ -86,7 +86,7 @@ class WollokRepl {
 			input
 	}
 
-	def executeInput(String input) {
+	def synchronized executeInput(String input) {
 		try {
 			val returnValue = interpreter.interpret('''
 				«FOR a : parsedMainFile.imports.map[importedNamespace]»
@@ -197,7 +197,9 @@ class WollokRepl {
 			.map [ stackDTO | stackDTO.toLinkForConsole ]
 			.join(System.lineSeparator)
 		
-		printlnIdent(errorLine.errorStyle)
+		if (!errorLine.equals("")) {
+			printlnIdent(errorLine.errorStyle)
+		}
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {

@@ -10,15 +10,15 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
-interface NumberCoercionStrategy {
+interface NumberCoercingStrategy {
 	def int coerceToInteger(BigDecimal value)
 	def BigDecimal adaptValue(BigDecimal value)
 	def String description()
 }
 
-class TruncateDecimalsCoercionStrategy implements NumberCoercionStrategy {
+class TruncateDecimalsCoercingStrategy implements NumberCoercingStrategy {
 	override coerceToInteger(BigDecimal value) {
-		val result = value.intValue
+		val result = value.setScale(0, RoundingMode.DOWN).intValue
 		try {
 			value.intValueExact
 		} catch (ArithmeticException e) {
@@ -26,8 +26,9 @@ class TruncateDecimalsCoercionStrategy implements NumberCoercionStrategy {
 		}
 		result
 	}
+	
 	override adaptValue(BigDecimal value) { 
-		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
+		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN)
 		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
 			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
 		}
@@ -39,7 +40,7 @@ class TruncateDecimalsCoercionStrategy implements NumberCoercionStrategy {
 	
 }
 
-class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
+class DecimalsNotAllowedCoercingStrategy implements NumberCoercingStrategy {
 	
 	override coerceToInteger(BigDecimal value) {
 		try {
@@ -62,12 +63,12 @@ class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
 
 }
 
-class RoundingDecimalsCoercionStrategy implements NumberCoercionStrategy {
+class RoundingDecimalsCoercingStrategy implements NumberCoercingStrategy {
 	
 	override coerceToInteger(BigDecimal value) {
-		value.round(new MathContext(1, RoundingMode.HALF_UP)).intValue
+		value.intValue
 	}
-	override adaptValue(BigDecimal value) { value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN) }
+	override adaptValue(BigDecimal value) { value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP) }
 	
 	override description() {
 		"Rounding decimals coercion strategy"
