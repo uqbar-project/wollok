@@ -219,11 +219,11 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	def mul(BigDecimal mul1, BigDecimal mul2) {
-		mul1.multiply(mul2)
+		mul1.multiply(mul2).adaptResult
 	}
 
 	def div(BigDecimal dividend, BigDecimal divisor) {
-		dividend.divide(divisor, RoundingMode.HALF_UP)
+		dividend.divide(divisor, RoundingMode.HALF_UP).adaptResult
 	}
 
 	def remainder(BigDecimal dividend, BigDecimal divisor) {

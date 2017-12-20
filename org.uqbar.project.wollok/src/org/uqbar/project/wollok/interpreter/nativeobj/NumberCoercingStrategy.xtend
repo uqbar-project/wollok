@@ -1,22 +1,21 @@
 package org.uqbar.project.wollok.interpreter.nativeobj
 
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
-import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 import static org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
-interface NumberCoercingStrategy {
+abstract class NumberCoercingStrategy {
 	def int coerceToInteger(BigDecimal value)
 	def BigDecimal adaptValue(BigDecimal value)
+	def BigDecimal adaptResult(BigDecimal value) { value }
 	def String description()
 }
 
-class TruncateDecimalsCoercingStrategy implements NumberCoercingStrategy {
+class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {
 	override coerceToInteger(BigDecimal value) {
 		val result = value.setScale(0, RoundingMode.DOWN).intValue
 		try {
@@ -40,7 +39,7 @@ class TruncateDecimalsCoercingStrategy implements NumberCoercingStrategy {
 	
 }
 
-class DecimalsNotAllowedCoercingStrategy implements NumberCoercingStrategy {
+class DecimalsNotAllowedCoercingStrategy extends NumberCoercingStrategy {
 	
 	override coerceToInteger(BigDecimal value) {
 		try {
@@ -57,13 +56,17 @@ class DecimalsNotAllowedCoercingStrategy implements NumberCoercingStrategy {
 		value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.UNNECESSARY)
 	}
 
+	override adaptResult(BigDecimal value) {
+		value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN)
+	}
+	
 	override description() {
 		"Exceeding decimals not allowed (throwing errors)"
 	}
 
 }
 
-class RoundingDecimalsCoercingStrategy implements NumberCoercingStrategy {
+class RoundingDecimalsCoercingStrategy extends NumberCoercingStrategy {
 	
 	override coerceToInteger(BigDecimal value) {
 		value.intValue

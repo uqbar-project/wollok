@@ -206,7 +206,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WNullLiteral it) { null }
 
-	def dispatch WollokObject evaluate(WNumberLiteral it) { value.orCreateNumber }
+	def dispatch WollokObject evaluate(WNumberLiteral it) { value.getOrCreateNumber }
 
 	def getOrCreateNumber(String value) {
 		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {

@@ -183,6 +183,10 @@ class WollokJavaConversions {
 		coercingStrategy.adaptValue(value)
 	}
 
+	def static BigDecimal adaptResult(BigDecimal value) {
+		coercingStrategy.adaptResult(value)
+	}
+	
 	def static isInteger(BigDecimal value) {
 		value.signum == 0 || value.scale <= 0 || value.stripTrailingZeros.scale <= 0
 	}
