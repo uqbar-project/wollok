@@ -118,10 +118,14 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WClosure it) {
+		newTypeVariable //For returns
 		parameters.forEach[generateVariables]
 		expression.generateVariables
 
-		newClosure(parameters.map[tvar], expression.tvar)
+		if (!tvar.subtypes.empty) //There are returns
+			newClosure(parameters.map[tvar], tvar) 
+		else
+			newClosure(parameters.map[tvar], expression.tvar)
 	}
 
 	def dispatch void generateVariables(WParameter it) {
@@ -241,11 +245,11 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WReturnExpression it) {
 		newTypeVariable
 		expression.generateVariables
-		if (declaringClosure === null) {
+		if (declaringClosure !== null) 
+			declaringClosure.beSupertypeOf(expression)
+		else 
 			declaringMethod.beSupertypeOf(expression)
-			beVoid			
-		}
-		else beSupertypeOf(expression)
+		beVoid			
 	}
 
 	// ************************************************************************
