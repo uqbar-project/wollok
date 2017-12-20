@@ -1,9 +1,10 @@
 package org.uqbar.project.wollok.tests.interpreter
 
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 import org.uqbar.project.wollok.interpreter.nativeobj.TruncateDecimalsCoercingStrategy
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 /**
  * @author dodain
@@ -13,6 +14,11 @@ class NumbersConfigurationTruncateStrategyTestCase extends AbstractWollokInterpr
 	@Before
 	def void init() {
 		WollokNumbersPreferences.instance.numberCoercingStrategy = new TruncateDecimalsCoercingStrategy
+	}
+	
+	@After
+	def void end() {
+		WollokNumbersPreferences.instance.initializeForTests
 	}
 	
 	@Test

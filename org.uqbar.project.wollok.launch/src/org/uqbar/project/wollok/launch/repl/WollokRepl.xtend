@@ -197,7 +197,7 @@ class WollokRepl {
 			.map [ stackDTO | stackDTO.toLinkForConsole ]
 			.join(System.lineSeparator)
 		
-		if (!errorLine.equals("")) {
+		if (errorLine !== null && !errorLine.equals("")) {
 			printlnIdent(errorLine.errorStyle)
 		}
 	}

@@ -86,7 +86,7 @@ class WollokNumbersPreferences {
 		val index = printingStrategies.map [ description ].indexOf(printingDescription)
 		printingStrategies.get(index)
 	}
-	 
+
 }
 
 class WollokNumbersConfigurationProvider {

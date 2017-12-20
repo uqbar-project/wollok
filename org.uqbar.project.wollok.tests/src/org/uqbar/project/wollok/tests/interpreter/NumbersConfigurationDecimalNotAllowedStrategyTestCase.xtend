@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.nativeobj.DecimalsNotAllowedCoercingStrategy
@@ -16,6 +17,11 @@ class NumbersConfigurationDecimalNotAllowedStrategyTestCase extends AbstractWoll
 			numberCoercingStrategy = new DecimalsNotAllowedCoercingStrategy
 			decimalPositions = 2	
 		]
+	}
+	
+	@After
+	def void end() {
+		WollokNumbersPreferences.instance.initializeForTests
 	}
 	
 	@Test
