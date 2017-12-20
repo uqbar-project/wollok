@@ -7,6 +7,7 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 import static org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences.*
 import static org.uqbar.project.wollok.ui.Messages.*
@@ -50,6 +51,7 @@ class WollokNumbersConfigurationBlock extends OptionsConfigurationBlock {
 		if (changedKey.equalsIgnoreCase(DECIMAL_POSITIONS)) {
 			// TODO: Que sea numerico
 		}
+		WollokNumbersPreferences.instance.updateKey(changedKey, newValue)
 	}
 	
 }

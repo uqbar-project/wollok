@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.ui.preferences
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.runtime.preferences.InstanceScope
 import org.eclipse.jface.preference.IPreferencePageContainer
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.IWorkbenchPropertyPage
@@ -11,13 +10,12 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.Constants
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage
-import org.osgi.service.prefs.Preferences
 
 class WollokNumbersPreferencePage extends PropertyAndPreferencePage implements IWorkbenchPropertyPage {
 	@Inject @Named(Constants.LANGUAGE_NAME) String languageName
 	@Inject IPreferenceStoreAccess preferenceStoreAccess
 	WollokNumbersConfigurationBlock builderConfigurationBlock
-
+	
 	override createControl(Composite parent) {
 		val container = container as IWorkbenchPreferenceContainer
 		val preferenceStore = preferenceStoreAccess.getWritablePreferenceStore(project)
