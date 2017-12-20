@@ -51,7 +51,7 @@ class DecimalsNotAllowedCoercionStrategy implements NumberCoercionStrategy {
 	
 	override adaptValue(BigDecimal value) {
 		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
-			throw new WollokProgramExceptionWrapper(newWollokException(NLS.bind(Messages.WollokConversion_DECIMAL_SCALE_REQUIRED, value, value.scale)))
+			throw new WollokProgramExceptionWrapper(newWollokException(NLS.bind(Messages.WollokConversion_DECIMAL_SCALE_REQUIRED, value, WollokNumbersPreferences.instance.decimalPositions)))
 		}
 		value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.UNNECESSARY)
 	}

@@ -33,7 +33,6 @@ class WollokNumbersPreferences {
 	Map<String, String> prefs = newHashMap
 		
 	private new() {
-		println(WollokNumbersConfigurationProvider.getPreferences())
 		prefs.putAll(WollokNumbersConfigurationProvider.getPreferences())			
 	}
 	
@@ -70,7 +69,7 @@ class WollokNumbersPreferences {
 
 class WollokNumbersConfigurationProvider {
 
-	val static FILE_NAME = "/home/fernando/Desktop/IDEs/numberConfiguration.wollok"
+	val static FILE_NAME = System.getProperty("user.home") + File.separator + "numberConfiguration.wollok"
 	val static SEPARATOR = " = "
 	
 	static def Map<String, String> getPreferences() {
@@ -88,6 +87,7 @@ class WollokNumbersConfigurationProvider {
 			]
 			return result
 		} catch (NoSuchFileException e) {
+			e.printStackTrace
 			newHashMap
 		}
 	}
@@ -97,7 +97,7 @@ class WollokNumbersConfigurationProvider {
 			val File file = new File(FILE_NAME)
 			new FileWriter(file) => [
 				values.keySet.forEach [ key |
-					write(key + SEPARATOR + values.get(key))
+					write(key + SEPARATOR + values.get(key) + "\n")
 				]
 				flush()
 				close()
