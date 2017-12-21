@@ -34,6 +34,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
+import org.uqbar.project.wollok.wollokDsl.WExpression
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -122,8 +123,17 @@ class ConstraintGenerator {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
 		
-		val containsReturn = !tvar.subtypes.empty 
-		val returnVar = if (containsReturn) tvar else expression.tvar
+		val containsReturn = !tvar.subtypes.empty
+		
+		val returnVar = 
+		if (containsReturn) {
+			if (expression.hasClosureReturnValue) {
+				tvar.beSupertypeOf(expression.tvar)
+			} 
+			tvar 
+		}
+		else 
+			expression.tvar
 			
 		newClosure(parameters.map[tvar], returnVar)
 	}
@@ -274,4 +284,8 @@ class ConstraintGenerator {
 	def dispatch WollokType asWollokType(WClass wClass) {
 		classType(wClass)
 	}
+
+	def dispatch Boolean hasClosureReturnValue(WReturnExpression it)	{ false }
+	def dispatch Boolean hasClosureReturnValue(WBlockExpression it) 	{ expressions.last.hasClosureReturnValue }
+	def dispatch Boolean hasClosureReturnValue(WExpression it) 			{ true }
 }
