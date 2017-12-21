@@ -121,11 +121,11 @@ class ConstraintGenerator {
 		newTypeVariable //For returns
 		parameters.forEach[generateVariables]
 		expression.generateVariables
-
-		if (!tvar.subtypes.empty) //There are returns
-			newClosure(parameters.map[tvar], tvar) 
-		else
-			newClosure(parameters.map[tvar], expression.tvar)
+		
+		val containsReturn = !tvar.subtypes.empty 
+		val returnVar = if (containsReturn) tvar else expression.tvar
+			
+		newClosure(parameters.map[tvar], returnVar)
 	}
 
 	def dispatch void generateVariables(WParameter it) {

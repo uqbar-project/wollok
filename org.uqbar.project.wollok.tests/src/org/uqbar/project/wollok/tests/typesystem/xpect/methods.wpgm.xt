@@ -34,4 +34,7 @@ class Entrenador {
 	
 	// XPECT methodType at condicion2 --> () => () => Boolean	
 	method condicion2() = { return true }
+	
+	// XPECT methodType at condicion3 --> () => () => Boolean	
+	method condicion3() { return { return true } }
 }
