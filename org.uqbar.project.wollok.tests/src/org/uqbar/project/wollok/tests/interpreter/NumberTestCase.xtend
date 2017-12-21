@@ -1,11 +1,8 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
-
+import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.wollokToJava
 
 /**
  * 
@@ -98,11 +95,25 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("Operation - doesn't support null parameters", { 1 - null })
 		'''.test
 	}
-	
+
+	@Test
+	def void subtractFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 4 - "a" })
+		'''.test
+	}
+
 	@Test
 	def void multiplyUsingNull() {
 		'''
 		assert.throwsExceptionWithMessage("Operation * doesn't support null parameters", { 1 * null })
+		'''.test
+	}
+	
+	@Test
+	def void multiplyFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 4 * "a" })
 		'''.test
 	}
 	
@@ -243,6 +254,22 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	// We need a more intention revealing message - perhaps when type system gets activated
+	@Test
+	@Ignore
+	def void timesFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation forEach doesn't support null parameters", { 4.times("a") } )
+		'''.test
+	}
+	
+	@Test
+	def void timesUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation times doesn't support null parameters", { 4.times(null) } )
+		'''.test
+	}
+	
 	@Test
 	def void integersFromNativeObjects() {
 		'''
@@ -386,7 +413,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
-	// FIXME: We must use several tests depending on different coercing strategies
 	// @Test
 	def void gcdForDecimalsIsInvalid() {
 		try {
@@ -401,7 +427,6 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		}
 	}
 
-	// FIXME: We must use several tests depending on different coercing strategies
 	// @Test
 	def void gcdForDecimalsIsInvalid2() {
 		try {
@@ -425,6 +450,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(25, lcm1)
 		assert.equals(56, lcm2)
 		assert.equals(30, lcm3)
+		'''.test
+	}
+
+	@Test
+	def void lcmUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation lcm doesn't support null parameters", { 4.lcm(null) })
+		'''.test
+	}
+	
+	@Test
+	def void lcmForInvalidArguments() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { 4.lcm(new Date(1, 1, 2018)) })
 		'''.test
 	}
 	
@@ -465,6 +504,19 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}	
 
 	@Test
+	def void randomUpToFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 4.randomUpTo("a") } )
+		'''.test
+	}
+
+	@Test
+	def void randomUpUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation randomUpTo doesn't support null parameters", { 4.randomUpTo(null) } )
+		'''.test
+	}
+	@Test
 	def void randomForReals() {
 		'''
 		const random1 = (3.2).randomUpTo(8.9)
@@ -490,8 +542,22 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsExceptionWithMessage("/ by zero", { 16.div(0) })
 		assert.throwsExceptionWithMessage("/ by zero", { (21.2).div(0.0) })
 		'''.test
-	}	
+	}
 
+	@Test
+	def void integerDivisionFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 8.div("a") })
+		'''.test
+	}
+	
+	@Test
+	def void integerDivisionUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation div doesn't support null parameters", { 8.div(null) })
+		'''.test
+	}
+	
 	@Test
 	def void printString() {
 		'''
@@ -555,12 +621,40 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void roundUpUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation roundUp doesn't support null parameters", { (10/2).roundUp(null) })
+		'''.test
+	}
+
+	@Test
+	def void roundUpFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { (10/2).roundUp("a") })
+		'''.test
+	}
+	
+	@Test
 	def void integerTruncate() {
 		'''
 		assert.equals(5, (10/2).truncate(2))
 		'''.test
 	}
-	
+
+	@Test
+	def void truncateUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation truncate doesn't support null parameters", { (10/2).truncate(null) })
+		'''.test
+	}
+
+	@Test
+	def void truncateFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { (10/2).truncate("a") })
+		'''.test
+	}
+		
 	@Test
 	def void doubleRoundUp() {
 		'''
@@ -585,7 +679,21 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(0, 4.0 % 1)
 		'''.test
 	}
+	
+	@Test
+	def void modulusUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation % doesn't support null parameters", { 2 % null } )
+		'''.test
+	}
 
+	@Test
+	def void modulusFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 2 % "a" } )
+		'''.test
+	}
+	
 	@Test
 	def void numberComparison() {
 		'''

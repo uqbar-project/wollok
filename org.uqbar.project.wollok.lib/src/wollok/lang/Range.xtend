@@ -20,6 +20,7 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	
 	def void forEach(WollokObject proc) {
 		val c = (proc.getNativeObject(CLOSURE) as Closure)
+		c.checkNotNull("forEach")
 		initWrapped.forEach[e| c.doApply(e.javaToWollok) ]
 	}
 	

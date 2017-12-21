@@ -1234,6 +1234,7 @@ class Number {
 	 *      5.lcm(10.2) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
 	 */
 	method lcm(other) {
+		self.checkNotNull(other, "lcm")
 		const mcd = self.gcd(other)
 		return self * (other / mcd)
 	}
@@ -1277,6 +1278,7 @@ class Number {
 	 * 			4
 	 */
 	method times(action) {
+	    self.checkNotNull(action, "times")
 		self.coerceToInteger()
 		if (self < 0) self.error("times requires a positive integer number")
 		(1..self).forEach(action)

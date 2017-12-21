@@ -7,12 +7,11 @@ import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 /**
  * Base class for numbers.
@@ -125,11 +124,11 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 
 	def invert() { (-wrapped).asWollokObject }
 
-	def randomUpTo(WollokObject other) {
-		val maximum = other.nativeNumber.wrapped
-		maximum.checkNotNull("randomUpTo")
-		val minimum = wrapped.doubleValue()
-		((Math.random * (maximum.doubleValue - minimum)) + minimum).doubleValue()
+	def randomUpTo(BigDecimal other) {
+		other.checkNotNull("randomUpTo")
+		val maximum = other.doubleValue
+		val minimum = wrapped.doubleValue
+		return (Math.random * (maximum - minimum) + minimum).doubleValue
 	}
 
 	def roundUp(BigDecimal decimals) {
@@ -175,12 +174,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	 * 
 	 * *******************************************************************
 	 */
-	def checkNotNull(Object o, String operation) {
-		if (o === null) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation)) 	
-		}
-	}
-	 
 	def scale(BigDecimal _decimals, int operation) {
 		val decimals = _decimals.coerceToInteger
 		if (decimals < 0) throw throwInvalidOperation(Messages.WollokConversion_INVALID_SCALE_NUMBER)
