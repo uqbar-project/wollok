@@ -58,6 +58,13 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void maxFailingParameter() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(21, 12, 2017)) })
+		'''.test
+	}
+
+	@Test
 	def void maxUsingNull() {
 		'''
 		assert.throwsExceptionWithMessage("Operation max doesn't support null parameters", { 4.max(null) })
@@ -71,6 +78,13 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void minFailingParameter() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 21, month = 12, year = 2017]", { 4.min(new Date(21, 12, 2017)) })
+		'''.test
+	}
+	
 	@Test
 	def void minUsingNull() {
 		'''
@@ -205,7 +219,21 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(2, 4.0 / 2.0)
 		'''.test
 	}
+
+	@Test
+	def void divisionUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation / doesn't support null parameters",  { 3 / null })
+		'''.test
+	}
 	
+	@Test
+	def void divisionFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a",  { 3 / "a" })
+		'''.test
+	}
+		
 	@Test
 	def void times() {
 		'''
@@ -236,6 +264,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void betweenUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation < doesn't support null parameters", { 2.between(1, null) } )
+		'''.test
+	}
+	
+	@Test
+	def void betweenFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 2.between("a", 2) } )
+		'''.test
+	}
+	
 	@Test
 	def void absoluteValueOfAPositiveInteger() {
 		'''
@@ -285,6 +327,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(3, remainder)
 		assert.equals(0, remainder2)
 		assert.equals(0.11521, 1.1152112.rem(1.0000002))
+		'''.test
+	}
+
+	@Test
+	def void remainderUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation % doesn't support null parameters", { 2.rem(null) } )
+		'''.test
+	}
+
+	@Test
+	def void remainderFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 2.rem("a") } )
 		'''.test
 	}
 	
@@ -469,6 +525,20 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
+	def void exponentiationUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation ** doesn't support null parameters", { 4 ** null } )
+		'''.test
+	}
+	
+	@Test
+	def void exponentiationFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a", { 4 ** "a" } )
+		'''.test
+	}
+
+	@Test
 	def void exponentiationPrecedence() {
 		'''
 		assert.equals(24, 3 * 2 ** 3)
@@ -527,7 +597,35 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 		assert.that(1 >= 1)
 		'''.test
 	}
+	
+	@Test
+	def void greaterThanFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter [1, 2] to type wollok.lang.Number", { 3 > [1, 2] })
+		'''.test
+	}
 
+	@Test
+	def void greaterThanUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation > doesn't support null parameters", { 3 > null })
+		'''.test
+	}
+
+	@Test
+	def void lesserThanFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter [1, 2] to type wollok.lang.Number", { 3 < [1, 2] })
+		'''.test
+	}
+
+	@Test
+	def void lesserThanUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation < doesn't support null parameters", { 3 < null })
+		'''.test
+	}
+	
 	@Test
 	def void veryBigIntegerAdd() {
 		'''

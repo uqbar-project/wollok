@@ -38,19 +38,24 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage("+")
-	def plus(WollokObject other) { operate(other)[doPlus(it)] }
+	def plus(WollokObject other) { 
+		other.checkNotNull("+")
+		operate(other)[doPlus(it)]
+	}
 
 	def dispatch Number doPlus(BigDecimal w) {
 		this.add(wrapped, w)
 	}
 
-	// TODO: here it should throw a 100% wollok exception class
 	def dispatch Number doPlus(Object w) { 
 		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
 	}
 
 	@NativeMessage("-")
-	def minus(WollokObject other) { operate(other)[doMinus(it)] }
+	def minus(WollokObject other) { 
+		other.checkNotNull("-")
+		operate(other)[doMinus(it)]
+	}
 
 	def dispatch Number doMinus(BigDecimal w) {
 		this.subtract(wrapped, w)
@@ -61,7 +66,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage("*")
-	def multiply(WollokObject other) { operate(other)[doMultiply(it)] }
+	def multiply(WollokObject other) { 
+		other.checkNotNull("*")
+		operate(other)[doMultiply(it)]
+	}
 
 	def dispatch Number doMultiply(BigDecimal w) {
 		this.mul(wrapped, w)
@@ -72,7 +80,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage("/")
-	def divide(WollokObject other) { operate(other)[doDivide(it)] }
+	def divide(WollokObject other) { 
+		other.checkNotNull("/")
+		operate(other)[doDivide(it)]
+	}
 
 	def dispatch Number doDivide(BigDecimal w) {
 		this.div(wrapped, w)
@@ -83,16 +94,24 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage("**")
-	def raise(WollokObject other) { operate(other)[doRaise(it)] }
+	def raise(WollokObject other) { 
+		other.checkNotNull("**")
+		operate(other)[doRaise(it)]
+	}
 
-	def dispatch Number doRaise(BigDecimal w) { Math.pow(wrapped.doubleValue, w.doubleValue) }
+	def dispatch Number doRaise(BigDecimal w) { 
+		Math.pow(wrapped.doubleValue, w.doubleValue)
+	}
 
 	def dispatch Number doRaise(Object w) { 
 		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
 	}
 
 	@NativeMessage("%")
-	def module(WollokObject other) { operate(other)[doModule(it)] }
+	def module(WollokObject other) { 
+		other.checkNotNull("%")
+		operate(other)[doModule(it)]
+	}
 
 	def dispatch Number doModule(BigDecimal w) {
 		this.remainder(wrapped, w)
@@ -124,19 +143,16 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	@NativeMessage(">")
-	def greater(WollokObject other) { 
+	def greater(BigDecimal other) { 
 		other.checkNotNull(">")
-		wrapped.doubleValue > other.nativeNumber.wrapped.doubleValue
+		wrapped.doubleValue > other.doubleValue
 	}
 
-	@NativeMessage(">=")
-	def greaterOrEquals(WollokObject other) { wrapped.doubleValue >= other.nativeNumber.wrapped.doubleValue }
-
 	@NativeMessage("<")
-	def lesser(WollokObject other) { wrapped.doubleValue < other.nativeNumber.wrapped.doubleValue }
-
-	@NativeMessage("<=")
-	def lesserOrEquals(WollokObject other) { wrapped.doubleValue <= other.nativeNumber.wrapped.doubleValue }
+	def lesser(BigDecimal other) { 
+		other.checkNotNull("<")
+		wrapped.doubleValue < other.doubleValue
+	}
 
 	def gcd(BigDecimal other) {
 		other.checkNotNull("gcd")
