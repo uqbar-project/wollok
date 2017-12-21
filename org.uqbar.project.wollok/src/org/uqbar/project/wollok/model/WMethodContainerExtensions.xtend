@@ -72,7 +72,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	
 	def static EObject declaringContainer(WReturnExpression it)	{ 
-		if (declaringClosure !== null) declaringClosure else declaringMethod
+		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
 	}
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}

@@ -24,8 +24,8 @@ program p {
 		return "2"
 	}
 	
-	// XPECT type at c6 --> () => Integer
-	const c6 = { 
+	// XPECT type at c7 --> () => Integer
+	const c7 = { 
 		if (bool) { return 1 } 
 		"2" //TODO: Ignored for return
 	}
