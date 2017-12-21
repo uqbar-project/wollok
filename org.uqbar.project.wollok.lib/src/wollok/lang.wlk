@@ -1390,9 +1390,7 @@ class String {
 	 * Example:
 	 *		"WoRD".equalsIgnoreCase("Word")  ==> Answers true
 	 */
-	method equalsIgnoreCase(aString) {
-		return self.toUpperCase() == aString.toUpperCase()
-	}
+	method equalsIgnoreCase(aString) = self.toUpperCase() == aString.toUpperCase()
 	
 	/**
 	 * Answers a substring of this string beginning from an inclusive index.
@@ -1717,11 +1715,11 @@ class Date {
 	method year() native
 	
 	/** 
-	 * Answers the difference in days between two dates, in absolute values.
+	 * Answers the difference in days between two dates, assuming self is minuend and _aDate is subtrahend. 
 	 * 
 	 * Examples:
 	 * 		new Date().plusDays(4) - new Date() ==> Answers 4
-	 *		new Date() - new Date().plusDays(2) ==> Answers 2
+	 *		new Date() - new Date().plusDays(2) ==> Answers -2
 	 */
 	method -(_aDate) native
 	

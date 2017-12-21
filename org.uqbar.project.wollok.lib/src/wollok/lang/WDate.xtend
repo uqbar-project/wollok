@@ -29,15 +29,18 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		wrapped = LocalDate.of(year.coerceToInteger, month.coerceToInteger, day.coerceToInteger)
 	}
 
-	def plusDays(BigDecimal days) { 
+	def plusDays(BigDecimal days) {
+		days.checkNotNull("plusDays") 
 		wrapped.plusDays(days.coerceToInteger)
 	}
 
 	def plusMonths(BigDecimal months) {
+		months.checkNotNull("plusMonths")
 		wrapped.plusMonths(months.coerceToInteger)
 	}
 
-	def plusYears(BigDecimal years) { 
+	def plusYears(BigDecimal years) {
+		years.checkNotNull("plusYears") 
 		wrapped.plusYears(years.coerceToInteger) 
 	}
 
@@ -57,50 +60,51 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	}
 
 	@NativeMessage("-")
-	def minus(WDate aDate) { 
-		val difference = (aDate.wrapped.toEpochDay - wrapped.toEpochDay) as int
-		Math.abs(difference)
+	def minus(LocalDate aDate) { 
+		wrapped.toEpochDay - aDate.toEpochDay
 	}
 	
 	def minusDays(BigDecimal days) {
+		days.checkNotNull("minusDays") 
 		wrapped.minusDays(days.coerceToInteger)
 	}
 	
 	def minusMonths(BigDecimal months) { 
+		months.checkNotNull("minusMonths") 
 		wrapped.minusMonths(months.coerceToInteger)
 	}
 	
-	def minusYears(BigDecimal years) { 
+	def minusYears(BigDecimal years) {
+		years.checkNotNull("minusYears") 
 		wrapped.minusYears(years.coerceToInteger)
 	}
 	
 	def dayOfWeek() { wrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
-	def lessThan(WDate aDate) {
+	def lessThan(LocalDate aDate) {
+		aDate.checkNotNull("<")
 		compareTo(aDate) < 0
 	}
 	
 	@NativeMessage(">")
-	def greaterThan(WDate aDate) { compareTo(aDate) > 0 }
+	def greaterThan(LocalDate aDate) { 
+		aDate.checkNotNull(">")
+		compareTo(aDate) > 0
+	}
 	 
-	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
+	def compareTo(LocalDate aDate) { 
+		wrapped.compareTo(aDate)
+	}
 	
-	override hashCode() { wrapped.hashCode }
+	override hashCode() { 
+		wrapped.hashCode
+	}
 	
-//	def convertToWString(WollokObject it) { call("toString") as WollokObject }
-
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
 		wDate !== null && wrapped == wDate.wrapped
 	}
 	
-	def asWString(WollokObject it) { 
-		val wDate = it.getNativeObject(WDate) as WDate
-		// TODO: i18n
-		if (wDate === null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
-		wDate
-	}
-
 }

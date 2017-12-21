@@ -11,22 +11,22 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testWithAssertsOk() {
 		'''
-		const x = "Hola, wollok!".substring(0,3)
-		assert.equals("Hol", x)			
+		const x = "Hola, wollok!".substring(0, 3)
+		assert.equals("Hol", x)
 		'''.test
 	}
 
 	@Test
 	def void testLessThan() {
 		'''
-		assert.that("miau" < "ufa")			
+		assert.that("miau" < "ufa")
 		'''.test
 	}
 
 	@Test
 	def void testLessThanFalseCondition() {
 		'''
-		assert.notThat("zapallo" <= "ufa")			
+		assert.notThat("zapallo" <= "ufa")
 		'''.test
 	}
 
@@ -35,21 +35,21 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.that("zapallo" >= "ufa")
 		assert.that("zapallo" >= "zapallo")
-		assert.notThat("aguacero" >= "guarecer")			
+		assert.notThat("aguacero" >= "guarecer")
 		'''.test
 	}
 
 	@Test
 	def void testLessOrEqualThanForLess() {
 		'''
-		assert.that("miau" <= "ufa")			
+		assert.that("miau" <= "ufa")
 		'''.test
 	}
 
 	@Test
 	def void testLessOrEqualThanForEqual() {
 		'''
-		assert.that("miau" <= "miau")			
+		assert.that("miau" <= "miau")
 		'''.test
 	}
 
@@ -83,7 +83,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void testisEmpty() {
 		'''
-		assert.that("".isEmpty())			
+		assert.that("".isEmpty())
 		assert.notThat("pepe".isEmpty())
 		'''.test
 	}
@@ -93,14 +93,14 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		const unString = "perro"
 		const otroString = "per" + "ro"
-		assert.that(unString == otroString)			
+		assert.that(unString == otroString)
 		'''.test
 	}
 	
 	@Test
 	def void testEqualsIgnoreCase() {
 		'''
-		assert.that("mARejaDA".equalsIgnoreCase("MAREJADA"))			
+		assert.that("mARejaDA".equalsIgnoreCase("MAREJADA"))
 		'''.test
 	}
 
@@ -122,7 +122,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		const mardel = "Mar del Plata"
 		const tuyu = mardel.replace("Plata", "Tuyu")
-		assert.that("Mar del Tuyu" == tuyu)			
+		assert.that("Mar del Tuyu" == tuyu)
 		'''.test
 	}
 
@@ -175,6 +175,168 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		assert.equals("hola".printString(), "\"hola\"")
 		assert.equals("3".printString(), "\"3\"")
+		'''.test
+	}
+
+	@Test
+	def void charAtUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation charAt doesn't support null parameters", { "hola".charAt(null) })
+		'''.test
+	}
+	
+	@Test
+	def void charAtFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { "hola".charAt("a") })
+		'''.test
+	}
+	
+	@Test
+	def void charAt() {
+		'''
+		assert.equals("l", "hola".charAt(2))
+		'''.test
+	}
+
+	@Test
+	def void startsWithUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation startsWith doesn't support null parameters", { "hola".startsWith(null) })
+		'''.test
+	}
+	
+	@Test
+	def void startsWithFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".startsWith(new Date(1, 1, 2018)) })
+		'''.test
+	}
+	
+	@Test
+	def void startsWith() {
+		'''
+		assert.that("hola".startsWith("ho"))
+		'''.test
+	}
+
+	@Test
+	def void endsWithUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation endsWith doesn't support null parameters", { "hola".endsWith(null) })
+		'''.test
+	}
+	
+	@Test
+	def void endsWithFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".endsWith(new Date(1, 1, 2018)) })
+		'''.test
+	}
+	
+	@Test
+	def void endsWith() {
+		'''
+		assert.that("hola".endsWith("la"))
+		'''.test
+	}
+
+	@Test
+	def void indexOfUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation indexOf doesn't support null parameters", { "hola".indexOf(null) })
+		'''.test
+	}
+	
+	@Test
+	def void indexOfFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".indexOf(new Date(1, 1, 2018)) })
+		'''.test
+	}
+
+	@Test
+	def void lastIndexOfUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation lastIndexOf doesn't support null parameters", { "hola".lastIndexOf(null) })
+		'''.test
+	}
+	
+	@Test
+	def void lastIndexOfFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".lastIndexOf(new Date(1, 1, 2018)) })
+		'''.test
+	}
+
+	@Test
+	def void containsUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation contains doesn't support null parameters", { "hola".contains(null) })
+		'''.test
+	}
+	
+	@Test
+	def void containsFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018]", { "hola".contains(new Date(1, 1, 2018)) })
+		'''.test
+	}
+
+	@Test
+	def void substring2UsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation substring doesn't support null parameters", { "hola".substring(null, null) })
+		'''.test
+	}
+	
+	@Test
+	def void substring2Fail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { "hola".substring("a", "e") })
+		'''.test
+	}
+
+	@Test
+	def void substring1UsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation substring doesn't support null parameters", { "hola".substring(null) })
+		'''.test
+	}
+	
+	@Test
+	def void substring1Fail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { "hola".substring("a") })
+		'''.test
+	}
+	
+	@Test
+	def void equalsIgnoreCaseNull() {
+		'''
+		assert.throwsExceptionWithMessage("null does not understand toUpperCase()", { "hola".equalsIgnoreCase(null) })
+		'''.test
+	}
+	
+	@Test
+	def void equalsIgnoreCaseFail() {
+		'''
+		assert.throwsExceptionWithMessage("a Date[day = 1, month = 1, year = 2018] does not understand toUpperCase()", { "hola".equalsIgnoreCase(new Date(1, 1, 2018)) })
+		'''.test
+	}
+
+	@Test
+	def void replaceUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation replace doesn't support null parameters", { "hola".replace("1", null) })
+		assert.throwsExceptionWithMessage("Operation replace doesn't support null parameters", { "hola".replace(null, "2") })
+		'''.test
+	}
+	
+	@Test
+	def void replaceFail() {
+		'''
+		assert.throwsExceptionWithMessage("Operation doesn't support parameter a Date[day = 1, month = 1, year = 2018], a", { "hola".replace(new Date(1, 1, 2018), "a") })
 		'''.test
 	}
 
