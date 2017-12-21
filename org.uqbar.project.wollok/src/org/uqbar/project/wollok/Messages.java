@@ -202,6 +202,13 @@ public class Messages extends NLS {
 	public static String WollokConversion_INVALID_ARGUMENTS_SIZE;
 
 	// ****************************
+	// ** Wollok Number Preferences 
+	// ****************************
+	
+	public static String WollokNumberPreferences_COERCING_STRATEGY_NOTFOUND;
+	public static String WollokNumberPreferences_PRINTING_STRATEGY_NOTFOUND;
+	
+	// ****************************
 	// ** Wollok Type System
 	// ****************************
 	

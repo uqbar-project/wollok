@@ -13,6 +13,7 @@ abstract class NumberCoercingStrategy {
 	def BigDecimal adaptValue(BigDecimal value)
 	def BigDecimal adaptResult(BigDecimal value) { value }
 	def String description()
+	def String name()
 }
 
 class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {
@@ -33,6 +34,11 @@ class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {
 		}
 		result
 	}
+	
+	override name(){
+		"truncate"
+	}
+	
 	override description() {
 		"Truncating decimals coercion strategy"
 	}
@@ -59,6 +65,10 @@ class DecimalsNotAllowedCoercingStrategy extends NumberCoercingStrategy {
 	override adaptResult(BigDecimal value) {
 		value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN)
 	}
+
+	override name(){
+		"error"
+	}
 	
 	override description() {
 		"Exceeding decimals not allowed (throwing errors)"
@@ -72,6 +82,10 @@ class RoundingDecimalsCoercingStrategy extends NumberCoercingStrategy {
 		value.intValue
 	}
 	override adaptValue(BigDecimal value) { value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP) }
+	
+	override name(){
+		"decimals"
+	}
 	
 	override description() {
 		"Rounding decimals coercion strategy"

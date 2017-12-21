@@ -18,7 +18,11 @@ class NumbersConfigurationTruncateStrategyTestCase extends AbstractWollokInterpr
 	
 	@After
 	def void end() {
-		WollokNumbersPreferences.instance.initializeForTests
+		WollokNumbersPreferences.instance => [
+			decimalPositions = WollokNumbersPreferences.DECIMAL_POSITIONS_DEFAULT
+			numberCoercingStrategy = WollokNumbersPreferences.NUMBER_COERCING_STRATEGY_DEFAULT
+			numberPrintingStrategy = WollokNumbersPreferences.NUMBER_PRINTING_STRATEGY_DEFAULT
+		]
 	}
 	
 	@Test
