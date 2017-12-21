@@ -200,7 +200,10 @@ public class Messages extends NLS {
 	public static String WollokConversion_INVALID_OPERATION_NULL_PARAMETER;
 	public static String WollokConversion_MULTIPLE_MESSAGES_ERROR;
 	public static String WollokConversion_INVALID_ARGUMENTS_SIZE;
+	public static String WollokConversion_STRING_CONVERSION_FAILED;
 
+	public static String WollokMessage_ELEMENT_NOT_FOUND;
+	
 	// ****************************
 	// ** Wollok Number Preferences 
 	// ****************************

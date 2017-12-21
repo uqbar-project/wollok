@@ -301,7 +301,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void betweenFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 2.between("a", 2) } )
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { 2.between("a", 2) } )
 		'''.test
 	}
 	
@@ -506,7 +506,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void randomUpToFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 4.randomUpTo("a") } )
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { 4.randomUpTo("a") } )
 		'''.test
 	}
 
@@ -547,7 +547,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void integerDivisionFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { 8.div("a") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { 8.div("a") })
 		'''.test
 	}
 	
@@ -630,7 +630,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void roundUpFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { (10/2).roundUp("a") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { (10/2).roundUp("a") })
 		'''.test
 	}
 	
@@ -651,7 +651,7 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void truncateFail() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter a to type wollok.lang.Number", { (10/2).truncate("a") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { (10/2).truncate("a") })
 		'''.test
 	}
 		

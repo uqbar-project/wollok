@@ -41,7 +41,7 @@ class WollokJavaConversions {
 	def static Map conversionTypes() {
 		#{Function1 -> CLOSURE, BigDecimal -> NUMBER, String -> STRING,
 			List -> LIST, Map -> DICTIONARY, Set -> SET, Boolean -> BOOLEAN,
-			Date -> DATE
+			LocalDate -> DATE
 		}
 	}
 	
@@ -65,7 +65,7 @@ class WollokJavaConversions {
 		if (o.isNativeType(BOOLEAN) && (t == Boolean || t == Boolean.TYPE))
 			return ((o as WollokObject).getNativeObject(BOOLEAN) as JavaWrapper<Boolean>).wrapped
 		if (o.isNativeType(DATE)) {
-			return (o as WollokObject).getNativeObject(DATE)
+			return ((o as WollokObject).getNativeObject(DATE) as JavaWrapper<LocalDate>).wrapped
 		}
 
 		if (t == Collection || t == List)
@@ -76,7 +76,7 @@ class WollokJavaConversions {
 			primitive)
 			return o
 
-		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, conversionTypes.get(t) ?: t.simpleName))
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, (o as WollokObject).call("printString"), conversionTypes.get(t) ?: t.simpleName))
 	}
 
 	def static dispatch isNativeType(Object o, String type) { false }
@@ -91,6 +91,8 @@ class WollokJavaConversions {
 	}
 
 	def static dispatch WollokObject convertJavaToWollok(BigInteger o) { evaluator.getOrCreateNumber(o.toString) }
+
+	def static dispatch WollokObject convertJavaToWollok(Long o) { evaluator.getOrCreateNumber(o.toString) }
 
 	def static dispatch WollokObject convertJavaToWollok(Integer o) { evaluator.getOrCreateNumber(o.toString) }
 
@@ -112,7 +114,7 @@ class WollokJavaConversions {
 	def static dispatch WollokObject convertJavaToWollok(WollokObject it) { it }
 
 	def static dispatch WollokObject convertJavaToWollok(Object o) {
-		throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, o, o.class.name))
+		throw WollokJavaConversions.throwInvalidOperation(NLS.bind(Messages.WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK, (o as WollokObject).call("printString"), o.class.name))
 	}
 
 	def static WollokProgramExceptionWrapper newWollokExceptionAsJava(String message) {
@@ -160,9 +162,9 @@ class WollokJavaConversions {
 		try {
 			result = o.asNumber.coerceToInteger
 		} catch (NumberFormatException e) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call("printString"), "Number"))
 		} catch (ClassCastException c) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o, "Number"))
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_CONVERSION, o.call("printString"), "Number"))
 		}
 		result
 	} 

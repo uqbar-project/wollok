@@ -50,8 +50,8 @@ class DecimalTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void roundUpAlphabeticDecimalsThrowsError() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot convert parameter A to type wollok.lang.Number", { 1.223445.truncate("A") })
-		assert.throwsExceptionWithMessage("Cannot convert parameter B to type wollok.lang.Number", { 1.223445.roundUp("B") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"A\" to type wollok.lang.Number", { 1.223445.truncate("A") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"B\" to type wollok.lang.Number", { 1.223445.roundUp("B") })
 		'''.test
 	}
 	

@@ -114,7 +114,7 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void differenceBetweenDates() {
+	def void differenceBetweenDatesPositive() {
 		'''
 		const day1 = new Date(7, 6, 2016)
 		const day2 = new Date(9, 7, 2016)
@@ -122,6 +122,15 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test
+	def void differenceBetweenDatesNegative() {
+		'''
+		const day1 = new Date(7, 6, 2016)
+		const day2 = new Date(9, 7, 2016)
+		assert.equals(day1 - day2, -32) 
+		'''.test
+	}
+	
 	@Test
 	def void differenceBetweenEqualDates() {
 		'''
@@ -199,4 +208,116 @@ class DateTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
-}	
+	@Test
+	def void plusDaysUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation plusDays doesn't support null parameters", { new Date(28, 2, 2017).plusDays(null) })
+		'''.test
+	}
+	
+	@Test
+	def void plusMonthsUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation plusMonths doesn't support null parameters", { new Date(28, 2, 2017).plusMonths(null) })
+		'''.test
+	}
+	
+	@Test
+	def void plusYearsUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation plusYears doesn't support null parameters", { new Date(28, 2, 2017).plusYears(null) })
+		'''.test
+	}
+	
+	@Test
+	def void differenceFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"2\" to type wollok.lang.Date", { new Date(28, 2, 2017) - "2" })
+		'''.test
+	}
+
+	@Test
+	def void minusDaysUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation minusDays doesn't support null parameters", { new Date(28, 2, 2017).minusDays(null) })
+		'''.test
+	}
+	
+	@Test
+	def void minusMonthsUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation minusMonths doesn't support null parameters", { new Date(28, 2, 2017).minusMonths(null) })
+		'''.test
+	}
+	
+	@Test
+	def void minusYearsUsingNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation minusYears doesn't support null parameters", { new Date(28, 2, 2017).minusYears(null) })
+		'''.test
+	}
+	
+	@Test
+	def void betweenFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter 2 to type wollok.lang.Date", { new Date(28, 2, 2017).between(2, 9) })
+		'''.test
+	}
+
+	@Test
+	def void betweenNull() {
+		'''
+		assert.throwsExceptionWithMessage("Operation > doesn't support null parameters", { new Date(28, 2, 2017).between(null, null) })
+		'''.test
+	}
+
+	@Test
+	def void greaterThanFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter 2 to type wollok.lang.Date", { new Date(28, 2, 2017) > 2 })
+		'''.test
+	}
+
+	@Test
+	def void plusDaysFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).plusDays("a") })
+		'''.test
+	}
+	
+	@Test
+	def void plusMonthsFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).plusMonths("a") })
+		'''.test
+	}
+	
+	@Test
+	def void plusYearsFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).plusYears("a") })
+		'''.test
+	}
+	
+	@Test
+	def void minusDaysFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).minusDays("a") })
+		'''.test
+	}
+	
+	@Test
+	def void minusMonthsFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).minusMonths("a") })
+		'''.test
+	}
+	
+	@Test
+	def void minusYearsFail() {
+		'''
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"a\" to type wollok.lang.Number", { new Date(28, 2, 2017).minusYears("a") })
+		'''.test
+	}
+
+}
