@@ -14,6 +14,11 @@ abstract class NumberCoercingStrategy {
 	def BigDecimal adaptResult(BigDecimal value) { value }
 	def String description()
 	def String name()
+	def void warnIfScaleDoesNotMatch(BigDecimal value, BigDecimal result) {
+		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
+			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
+		}
+	}
 }
 
 class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {
@@ -27,11 +32,9 @@ class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {
 		result
 	}
 	
-	override adaptValue(BigDecimal value) { 
+	override adaptValue(BigDecimal value) {
 		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.DOWN)
-		if (value.scale > WollokNumbersPreferences.instance.decimalPositions) {
-			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
-		}
+		value.warnIfScaleDoesNotMatch(result)
 		result
 	}
 	
@@ -81,7 +84,11 @@ class RoundingDecimalsCoercingStrategy extends NumberCoercingStrategy {
 	override coerceToInteger(BigDecimal value) {
 		value.intValue
 	}
-	override adaptValue(BigDecimal value) { value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP) }
+	override adaptValue(BigDecimal value) { 
+		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
+		value.warnIfScaleDoesNotMatch(result)
+		result
+	}
 	
 	override name(){
 		"decimals"

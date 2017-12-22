@@ -75,8 +75,6 @@ class WollokLauncherParameters {
 		val parser = new OptionalGnuParser
 		val cmdLine = parser.parse(options, args, false)
 		
-		args.forEach[ println(it) ]
-		
 		hasRepl = cmdLine.hasOption("r")
 		
 		tests = cmdLine.hasOption("t")
