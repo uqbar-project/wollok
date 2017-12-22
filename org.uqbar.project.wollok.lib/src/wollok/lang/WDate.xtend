@@ -101,6 +101,10 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		wrapped.hashCode
 	}
 	
+	override toString() {
+		"Date[" + wrapped.toString + "]"
+	}
+
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate

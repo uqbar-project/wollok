@@ -4,7 +4,6 @@ import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -27,11 +26,6 @@ class VariableUsesVisitor extends AbstractVisitor {
 	override dispatch visit(WVariableReference ref) {
 		if (ref.ref == lookedFor)
 			uses.add(ref.eContainer)
-	}
-
-	override dispatch visit(WInitializer i) {
-		if (i.initializer.name == lookedFor)
-			uses.add(i)
 	}
 
 	def static usesOf(WVariable lookedFor, EObject container) {

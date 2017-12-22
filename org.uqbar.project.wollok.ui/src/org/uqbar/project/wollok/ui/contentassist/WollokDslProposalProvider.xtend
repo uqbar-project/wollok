@@ -2,12 +2,8 @@ package org.uqbar.project.wollok.ui.contentassist
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
-import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.uqbar.project.wollok.ui.Messages
-import org.uqbar.project.wollok.ui.WollokActivator
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WMember
@@ -30,14 +26,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
 	WollokProposalBuilder builder
 
-	override complete_WConstructorCall(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		if (model instanceof WConstructorCall) {
-			val initializations = (model as WConstructorCall).createInitializersForNamedParametersInConstructor
-			acceptor.accept(createCompletionProposal(initializations, Messages.WollokTemplateProposalProvider_WConstructorCallWithNamedParameter_name, WollokActivator.getInstance.getImageDescriptor('icons/assignment.png').createImage, context))
-		}
-		super.complete_WConstructorCall(model, ruleCall, context, acceptor)
-	}
-	
 	// This whole implementation is just an heuristic until we have a type system
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall

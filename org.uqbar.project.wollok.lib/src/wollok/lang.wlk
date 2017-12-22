@@ -1759,4 +1759,5 @@ class Date {
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
 		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+
 }

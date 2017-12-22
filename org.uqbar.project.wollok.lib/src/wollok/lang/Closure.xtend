@@ -1,25 +1,25 @@
 package wollok.lang
 
-import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.xbase.lib.Functions.Function1
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokObject
-import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
-import org.uqbar.project.wollok.wollokDsl.WClosure
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
+import org.eclipse.xtext.xbase.lib.Functions.Function1
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import java.util.List
+import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
  * @author jfernandes
  */
-class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
-	@Accessors WClosure EObject
+class Closure implements NodeAware<org.uqbar.project.wollok.wollokDsl.WClosure>, Function1<WollokObject, Object> {
+	@Accessors org.uqbar.project.wollok.wollokDsl.WClosure EObject
 	extension WollokInterpreter interpreter
 	WollokObject obj
 	EvaluationContext container
@@ -30,9 +30,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		this.container = interpreter.currentContext
 	}
 	
-	def closure() { 
-		EObject
-	}
+	def closure() { EObject }
 	
 	// REVIEW: all the convertions between list, array, etc
 	
@@ -50,13 +48,13 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		]	
 	}
 	
-	def static createEvaluationContext(WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }
+	def static createEvaluationContext(org.uqbar.project.wollok.wollokDsl.WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }
 	
-	def static getParameterNames(WClosure it) { parameters.map[name] }
+	def static getParameterNames(org.uqbar.project.wollok.wollokDsl.WClosure it) { parameters.map[name] }
 	def getParameters() { closure.parameters }
 	
 	override toString() {
-		"a Closure(" + closure.astNode?.text?.trim + ")"
+		"aClosure(" + parameters.map[name].join(', ') + ")"
 	}
 	
 }

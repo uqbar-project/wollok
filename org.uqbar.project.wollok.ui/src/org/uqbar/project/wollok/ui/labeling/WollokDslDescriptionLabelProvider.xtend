@@ -13,6 +13,10 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
  */
 class WollokDslDescriptionLabelProvider extends DefaultDescriptionLabelProvider {
 	
+//	override text(IEObjectDescription ele) {
+//		ele.name.toString
+//	}
+//	 
 	override image(IEObjectDescription ele) {
 		switch (ele.EClass) {
 			case WCLASS: 'wollok-icon-class_16.png'

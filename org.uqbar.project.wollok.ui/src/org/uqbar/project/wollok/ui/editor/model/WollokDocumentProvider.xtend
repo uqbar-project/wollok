@@ -11,8 +11,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.ui.preferences.WollokRootPreferencePage
 
 class WollokDocumentProvider extends XtextDocumentProvider {
-	val String XTEXT_FORMAT_ACTION_COMMAND_ID = "org.eclipse.xtext.ui.FormatAction"
-	
+	val String XTEXT_FORMAT_ACTION_COMMAND_ID = "org.eclipse.xtext.ui.FormatAction";
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
 

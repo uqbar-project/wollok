@@ -37,11 +37,12 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
-import static extension java.lang.Math.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+
+import static extension java.lang.Math.*
 
 /**
  * Custom quickfixes.
@@ -198,27 +199,6 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 			val call = " = super()" // this could be more involved here and useful for the user :P
 			val paramCloseOffset = const.node.text.indexOf(")")
 			xtextDocument.replace(e.before + paramCloseOffset - 1, 0, call)
-		]
-	}
-
-	@Fix(WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
-	def deleteUnexistentAttributeInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_attribute_initialization_name,
-			Messages.WollokDslQuickFixProvider_remove_attribute_initialization_description, null) [ e, it |
-			val additional = if (e.hasEffectiveNextSibling) e.effectiveNextSibling.offset - e.node.endOffset else 0
-			val before = if (!e.hasEffectiveNextSibling && e.hasEffectivePreviousSibling) e.node.offset - e.effectivePreviousSibling.endOffset else 0
-			xtextDocument.replace(e.before - before, e.node.length + additional + before, "")
-		]
-	}
-
-	@Fix(WollokDslValidator.MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR)
-	def addMissingAttributesInConstructorCall(Issue issue, IssueResolutionAcceptor acceptor) {
-		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_missing_initializations_name,
-			Messages.WollokDslQuickFixProvider_add_missing_initializations_description, null) [ e, it |
-			val call = e as WConstructorCall
-			val preffix = if (call.hasNamedParameters) ", " else ""  
-			val initializations = preffix + call.createInitializersForNamedParametersInConstructor
-			xtextDocument.replace(e.node.endOffset - 1, 0, initializations)
 		]
 	}
 
