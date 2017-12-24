@@ -12,21 +12,30 @@ program p {
 	// XPECT type at c3 --> () => Void 
 	const c3 = { }
 	
-	// XPECT type at c4 --> () => Boolean 
-	const c4 = { return true }
+	// XPECT type at c4 --> () => Void 
+	const c4 = { [].add(1) }
 	
-	// XPECT type at c5 --> () => Integer
-	const c5 = { if (bool) return 1 else return 2 }
+	// XPECT type at c5 --> () => Boolean 
+	const c5 = { return true }
 	
-	// XPECT type at c6 --> () => (Integer|String)
-	const c6 = { 
+	// XPECT type at c6 --> () => Integer
+	const c6 = { if (bool) return 1 else return 2 }
+	
+	// XPECT type at c7 --> () => (Integer|String)
+	const c7 = { 
 		if (bool) { return 1 } 
 		return "2"
 	}
 	
-	// XPECT type at c7 --> () => Integer
-	const c7 = { 
+	// XPECT type at c8 --> () => Integer
+	const c8 = { 
 		if (bool) { return 1 } 
-		"2" //TODO: Ignored for return
+		"2"
+	}
+	
+	// XPECT type at c9 --> () => Integer
+	const c9 = { 
+		if (bool) { return 1 } 
+		[].add(1)
 	}
 }
