@@ -28,7 +28,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { "Hello" }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("() => String", "c")
+			assertTypeOfAsString("{() => String}", "c")
 		]
 	}
 
@@ -39,7 +39,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { a => 2 + a }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("(Number) => Number", "c")
+			assertTypeOfAsString("{(Number) => Number}", "c")
 		]
 	}
 
@@ -50,7 +50,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("() => Void", "c")
+			assertTypeOfAsString("{() => Void}", "c")
 		]
 	}
 
@@ -61,7 +61,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const c = { return true }
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOfAsString("() => Boolean", "c")
+			assertTypeOfAsString("{() => Boolean}", "c")
 		]
 	}
 }
