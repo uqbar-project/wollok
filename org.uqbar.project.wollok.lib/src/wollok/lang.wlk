@@ -707,6 +707,13 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
+    constructor() = super() {}
+    
+    constructor(head, tail...) = self() {
+        self.add(head)
+		self.addAll(tail)
+	}
+    
 	/** Answers the element at the specified position in this list.
 	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing. 
 	 */
