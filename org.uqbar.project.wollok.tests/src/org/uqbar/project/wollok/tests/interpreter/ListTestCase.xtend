@@ -148,5 +148,21 @@ class ListTestCase extends CollectionTestCase {
 		assert.equals([2,10,22], numbers)
 		'''.test
 	}		
+
+	@Test
+	def void getHappyPath() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		assert.equals(22, numbers.get(0))
+		'''.test
+	}		
+
+	@Test
+	def void getUnhappyPath() {
+		'''
+		«instantiateCollectionAsNumbersVariable»
+		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
+		'''.test
+	}		
 		
 }

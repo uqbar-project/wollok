@@ -84,6 +84,7 @@ class RoundingDecimalsCoercingStrategy extends NumberCoercingStrategy {
 	override coerceToInteger(BigDecimal value) {
 		value.intValue
 	}
+
 	override adaptValue(BigDecimal value) { 
 		val result = value.setScale(WollokNumbersPreferences.instance.decimalPositions, RoundingMode.HALF_UP)
 		value.warnIfScaleDoesNotMatch(result)

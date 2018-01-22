@@ -31,9 +31,6 @@ class WString extends AbstractJavaWrapper<String> {
 	def concat(Object other) { doConcatWith(other) }
 		def dispatch WollokObject doConcatWith(WString o) { newInstanceWithWrapped(this.wrapped + o.wrapped) }
 		def dispatch WollokObject doConcatWith(WollokObject it) { convertToWString.asWString.doConcatWith }
-		def dispatch WollokObject doConcatWith(Object it) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, it.toString))
-		}
 		
 	def startsWith(String other) { 
 		other.checkNotNull("startsWith")
@@ -104,7 +101,6 @@ class WString extends AbstractJavaWrapper<String> {
 	}
 	
 	def replace(String expression, String replacement) {
-		wrapped.checkNotNull("replace")
 		expression.checkNotNull("replace")
 		replacement.checkNotNull("replace")
 		wrapped.replaceAll(expression, replacement)

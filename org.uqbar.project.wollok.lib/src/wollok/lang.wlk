@@ -995,9 +995,10 @@ class Dictionary {
  * how many decimals you want to work with, and printing strategies. So
  * number two could be printed as "2", "2,00000", "2,000", etc.
  *
- * You can coerce a parameter or a result to integer, in that case
- * you can customize the coercing strategy: rounding up, down or throwing an error
- * if reference points to a non-integer value.
+ * Coercing strategy for numbers can be 
+ * 1) rounding up: 2,3258 using 3 decimals will result in 2,326
+ * 2) rounding down or truncation: 2,3258 using 3 decimals will result in 2,325 
+ * 3) not allowed: 2,3258 using 3 decimals will throw an exception since decimals exceeds maximum allowed
  *
  * @author jfernandes
  * @author dodain (unification between Double and Integer in a single Number class)
@@ -1020,16 +1021,12 @@ class Number {
 	 * @private
 	 *
 	 * Applies coercing strategy to integer. If it is an integer, nothing happens. Otherwise, 
-	 * if it is a decimal, one of this coercing algorithms can be used
-	 * 
-	 * - self is rounded up to an integer
-	 * - self is rounded down to an integer
-	 * - an error is thrown
+	 * if it is a decimal, defined coercing algorithm is applied (see definition of class Number)
 	 */
 	method coerceToInteger() native
 	
 	/**
-	 * The whole wollok identity implementation is based on self method
+	 * Two references are identical if they are the same number
 	 */
 	override method ===(other) native
 
@@ -1045,7 +1042,6 @@ class Number {
 	 *		8.div(3)  ==> Answers 2
 	 * 		15.div(5) ==> Answers 3
 	 *		8.2.div(3.3)  ==> Answers 2
-	 * 		15.0.div(5) ==> Answers 3
 	 */
 	method div(other) native
 	
@@ -1071,8 +1067,6 @@ class Number {
 	 * 
 	 * Example:
 	 * 		1..4   		Answers ==> a new Range object from 1 to 4
-	 *      1.1..2.4 	Could lead to an error or answer a new Range object from 1 to 2
-	 * 					depending on coercing strategy (see above) 
 	 */
 	method ..(end) = new Range(self, end)
 	
@@ -1153,8 +1147,8 @@ class Number {
 	 * Self must be an integer value
 	 */
 	method even() {
-		self.coerceToInteger()
-		return self % 2 == 0 
+		const intValue = self.coerceToInteger()
+		return intValue % 2 == 0 
 	}
 	
 	/** 
@@ -1162,8 +1156,8 @@ class Number {
 	 * Self must be an integer value
 	 */
 	method odd() { 
-		self.coerceToInteger()
-		return self.even().negate() 
+		const intValue = self.coerceToInteger()
+		return intValue.even().negate() 
 	}
 	
 	/** Answers remainder between self and other
@@ -1219,8 +1213,6 @@ class Number {
   	 * Example:
   	 * 		8.gcd(12) ==> Answers 4
   	 *		5.gcd(10) ==> Answers 5
- 	 *      7.4.gcd(10) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
- 	 *      7.gcd(10.2) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
   	 */
   	method gcd(other) native
 
@@ -1230,8 +1222,6 @@ class Number {
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
 	 * 		6.lcm(12) ==> Answers 12
-	 *      6.4.lcm(12 ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
-	 *      5.lcm(10.2) ==> Depends on coercing strategy (error, rounding up, rounding down, etc.)
 	 */
 	method lcm(other) {
 		self.checkNotNull(other, "lcm")
@@ -1260,9 +1250,9 @@ class Number {
 	  * Self must be an integer positive value
 	  */
 	method isPrime() {
-		self.coerceToInteger()
-		if (self == 1) return false
-		return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
+		const intValue = self.coerceToInteger()
+		if (intValue == 1) return false
+		return (2..(intValue.div(2) + 1)).any({ i => intValue % i == 0 }).negate()
 	}
 
 	/**
@@ -1279,9 +1269,9 @@ class Number {
 	 */
 	method times(action) {
 	    self.checkNotNull(action, "times")
-		self.coerceToInteger()
-		if (self < 0) self.error("times requires a positive integer number")
-		(1..self).forEach(action)
+		const intValue = self.coerceToInteger()
+		if (intValue < 0) self.error("times requires a positive integer number")
+		(1..intValue).forEach(action)
 	}
 
 	/** Allows users to define a positive number with 1 or +1 */
