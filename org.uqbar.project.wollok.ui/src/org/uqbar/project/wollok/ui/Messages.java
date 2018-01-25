@@ -165,8 +165,21 @@ public class Messages extends NLS {
 	public static String AddNewElementQuickFix_Accept;
 	public static String AddNewElementQuickFix_Cancel;
 	
+	// ****************************
+	// ** Root preference page
+	// ****************************
+
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
+
+	// ****************************
+	// ** Numbers preference page
+	// ****************************
+
+	public static String WollokNumbersPreferencePage_decimalPositionsAmount;
+	public static String WollokNumbersPreferencePage_numberCoercingStrategy;
+	public static String WollokNumbersPreferencePage_numberPrintingStrategy;
+
 	
 	public static String ExtractMethodUserInputPage_methodName;
 	public static String ExtractMethodUserInputPage_methodSignaturePreview;
@@ -183,6 +196,7 @@ public class Messages extends NLS {
 	public static String WollokProposal_from_object;
 	public static String WollokProposal_from_mixin;
 	public static String WollokProposal_cannot_instantiate;
+
 	
 	static {
 		// initialize resource bundle

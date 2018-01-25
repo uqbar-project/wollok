@@ -141,7 +141,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
-		newSealed(classType(INTEGER))
+		newSealed(classType(NUMBER))
 	}
 
 	def dispatch void generateVariables(WStringLiteral it) {

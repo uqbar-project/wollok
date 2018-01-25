@@ -34,7 +34,7 @@ class ConstructorTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			}
 		'''.parseAndInfer.asserting [
 			noIssues
-			assertConstructorType("Direccion", "(String, Integer)")
+			assertConstructorType("Direccion", "(String, Number)")
 		]
 	}
 	

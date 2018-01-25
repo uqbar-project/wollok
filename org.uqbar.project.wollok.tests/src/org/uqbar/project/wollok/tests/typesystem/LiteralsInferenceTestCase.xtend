@@ -29,7 +29,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void testNumberLiteral() { 	
 		''' program { 46 } '''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "46")
+			assertTypeOf(classTypeFor(NUMBER), "46")
 		]
 	}
 

@@ -15,24 +15,19 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number + Number => Number
 		Number - Number => Number
 		Number * Number => Number
-		Number / Number => Number;
+		Number >> "/" === #[Number] => Number
+		Number >> ">" === #[Number] => Boolean
+		Number >> "<" === #[Number] => Boolean
+		Number >> ">=" === #[Number] => Boolean
+		Number >> "<=" === #[Number] => Boolean
+		Number / Number => Number
 		Number >> "between" === #[Number, Number] => Boolean
-
-		Integer + Number => Number
-		Integer - Number => Number
-		Integer * Number => Number
-		Integer / Number => Number;
-		Integer % Number => Integer;
-
-		Double + Number => Double
-		Double - Number => Double
-		Double * Number => Double
-		Double / Number => Double;
-		Double % Number => Integer;
+		Number % Number => Number;
 
 		(String == Any) => Boolean
-		String >> "size" === #[] => Integer
+		String >> "size" === #[] => Number
 		String + String => String;
+		(String > String) => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
@@ -42,29 +37,29 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "add" === #[ELEMENT] => Void
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
-		List >> "size" === #[] => Integer
-		List >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer
+		List >> "size" === #[] => Number
+		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		
-		Range >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer;
+		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		 
 		(Set == Any) => Boolean
 		Set + Set => Set;
 		Set >> "add" === #[ELEMENT] => Void
 		Set >> "contains" === #[ELEMENT] => Boolean
-		Set >> "sum" === #[closure(#[ELEMENT], Integer)] => Integer;
+		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		
 		(Date == Any) => Boolean;
-		Date - Date => Integer;
+		Date - Date => Number;
 
 		(Position == Any) => Boolean;
 
 		// console
 		console >> "println" === #[Any] => Void
 		console >> "readLine" === #[] => String
-		console >> "readInt" === #[] => Integer
+		console >> "readInt" === #[] => Number
 		console >> "newline" === #[] => Void
 
-		comparable(Number, Integer, Double, String, Date)
+		comparable(Number, Number, Number, String, Date)
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {

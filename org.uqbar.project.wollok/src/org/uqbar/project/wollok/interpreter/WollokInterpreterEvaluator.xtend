@@ -102,7 +102,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	protected def WollokObject[] evalEach(EList<WExpression> e) { e.map[eval] }
+	protected def WollokObject[] evalEach(EList e) { e.map[eval] }
 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
@@ -205,7 +205,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WNullLiteral it) { null }
 
-	def dispatch WollokObject evaluate(WNumberLiteral it) { value.orCreateNumber }
+	def dispatch WollokObject evaluate(WNumberLiteral it) { value.getOrCreateNumber }
 
 	def getOrCreateNumber(String value) {
 		if (numbersCache.containsKey(value) && numbersCache.get(value).get !== null) {
@@ -241,16 +241,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def instantiateNumber(String value) {
-		if (value.contains('.'))
-			doInstantiateNumber(DOUBLE, new BigDecimal(value))
-		else {
-			try {
-				doInstantiateNumber(INTEGER, Integer.valueOf(value))
-			} catch (NumberFormatException e) {
-				// If value is too long, use a decimal
-				doInstantiateNumber(DOUBLE, new BigDecimal(value))
-			}
-		}
+		doInstantiateNumber(NUMBER, new BigDecimal(value).adaptValue)
 	}
 
 	def doInstantiateNumber(String className, Object value) {

@@ -25,7 +25,7 @@ class TypeSystemUtils {
 		else if (#["==", "!=", "===", "<", "<=", ">", ">="].contains(op))
 			#[OBJECT,OBJECT] -> BOOLEAN
 		else
-			#[INTEGER,INTEGER] -> INTEGER
+			#[NUMBER,NUMBER] -> NUMBER
 	}
 	
 }

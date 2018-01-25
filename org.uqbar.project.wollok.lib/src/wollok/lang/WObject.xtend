@@ -1,7 +1,7 @@
 package wollok.lang
 
+import java.math.BigDecimal
 import java.util.Collection
-import java.util.List
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
@@ -34,7 +34,8 @@ class WObject {
 
 	def className() { (obj.kind).fqn }
 
-	def generateDoesNotUnderstandMessage(String target, String methodName, int parametersSize) {
+	def generateDoesNotUnderstandMessage(String target, String methodName, BigDecimal _parametersSize) {
+		val parametersSize = _parametersSize.coerceToInteger
 		val fullMessage = methodName.fullMessage(parametersSize)
 		val similarMethods = this.obj.allMethods.findMethodsByName(methodName)
 		if (similarMethods.empty) {

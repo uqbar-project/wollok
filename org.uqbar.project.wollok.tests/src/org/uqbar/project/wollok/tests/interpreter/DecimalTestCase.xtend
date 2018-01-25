@@ -42,16 +42,16 @@ class DecimalTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void roundUpNegativeDecimalsThrowsError() {
 		'''
-		assert.throwsExceptionWithMessage("Cannot set new scale with -3 decimals", { 1.223445.truncate(-3) })
-		assert.throwsExceptionWithMessage("Cannot set new scale with -3 decimals", { 1.223445.roundUp(-3) })
+		assert.throwsExceptionWithMessage("Scale must be an integer and positive value", { 1.223445.truncate(-3) })
+		assert.throwsExceptionWithMessage("Scale must be an integer and positive value", { 1.223445.roundUp(-3) })
 		'''.test
 	}
 
 	@Test
 	def void roundUpAlphabeticDecimalsThrowsError() {
 		'''
-		assert.throwsException({ 1.223445.truncate("A") })
-		assert.throwsException({ 1.223445.roundUp("B") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"A\" to type wollok.lang.Number", { 1.223445.truncate("A") })
+		assert.throwsExceptionWithMessage("Cannot convert parameter \"B\" to type wollok.lang.Number", { 1.223445.roundUp("B") })
 		'''.test
 	}
 	

@@ -29,7 +29,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void numberLiteral() { 	'''program p {
 			const a = 46
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "a")
+			assertTypeOf(classTypeFor(NUMBER), "a")
 		]
 	}
 	
@@ -73,7 +73,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				number = 23
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "number")
+			assertTypeOf(classTypeFor(NUMBER), "number")
 		]
 	}
 
@@ -85,7 +85,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const b = a
 			}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(INTEGER), "b")
+			assertTypeOf(classTypeFor(NUMBER), "b")
 		]
 	}
 	
@@ -111,7 +111,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				a = b
 			}
 		'''.parseAndInfer.asserting [
-			assertIssues("a = b", "Expecting super type of <<Integer>> but found <<String>> which is not")
+			assertIssues("a = b", "Expecting super type of <<Number>> but found <<String>> which is not")
 		]
 	}		
 }

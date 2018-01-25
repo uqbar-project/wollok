@@ -212,14 +212,8 @@ from {
 // ****************************************************************************
 
 rule NumberLiteralType G |- WNumberLiteral lit : WollokType tipe from {
-	if (lit.value.contains('.')) {
-		G |- lit ~~ WollokDSK.DOUBLE :> tipe
-		G.add(lit, tipe)
-	}
-	else {
-		G |- lit ~~ WollokDSK.INTEGER :> tipe
-		G.add(lit, tipe)
-	}
+	G |- lit ~~ WollokDSK.NUMBER :> tipe
+	G.add(lit, tipe)
 }
 
 rule StringLiteralType G |- WStringLiteral lit : WollokType tipe from {
@@ -302,7 +296,7 @@ rule AdditionType
 	G |- WBinaryOperation op : WollokType returnType
 from {
 	G |- op ~~ WollokDSK.BOOLEAN :> var WollokType booleanType
-	G |- op ~~ WollokDSK.INTEGER :> var WollokType integerType
+	G |- op ~~ WollokDSK.NUMBER :> var WollokType numberType
 	
 	var WollokType t = null
 	if (#["&&", "||"].contains(op.^feature)) {
@@ -315,8 +309,8 @@ from {
 		t = WAny
 	}
 	else {
-		returnType = integerType
-		t = integerType
+		returnType = numberType
+		t = numberType
 	}
 
 	// left
@@ -502,7 +496,7 @@ from {
 		G |- op ~~ WollokDSK.BOOLEAN :> tipe
 	}
 	else {
-		G |- op ~~ WollokDSK.INTEGER :> tipe
+		G |- op ~~ WollokDSK.NUMBER :> tipe
 	}
 	G.add(op, tipe)
 } 

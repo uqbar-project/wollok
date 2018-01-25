@@ -21,7 +21,6 @@ object fiona {
 }
 
 object salvador {
-	// TODO Should be Integer?
 	// XPECT type at dinero --> Number
 	var dinero  = 1200
 	
