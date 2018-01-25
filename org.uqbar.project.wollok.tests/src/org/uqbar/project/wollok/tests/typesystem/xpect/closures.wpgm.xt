@@ -18,22 +18,22 @@ program p {
 	// XPECT type at c5 --> {() => Boolean}
 	const c5 = { return true }
 	
-	// XPECT type at c6 --> {() => Integer}
+	// XPECT type at c6 --> {() => Number}
 	const c6 = { if (bool) return 1 else return 2 }
 	
-	// XPECT type at c7 --> {() => (Integer|String)}
+	// XPECT type at c7 --> {() => (Number|String)}
 	const c7 = { 
 		if (bool) { return 1 } 
 		return "2"
 	}
 	
-	// XPECT type at c8 --> {() => Integer}
+	// XPECT type at c8 --> {() => Number}
 	const c8 = { 
 		if (bool) { return 1 } 
 		"2"
 	}
 	
-	// XPECT type at c9 --> {() => Integer}
+	// XPECT type at c9 --> {() => Number}
 	const c9 = { 
 		if (bool) { return 1 } 
 		[].add(1)
