@@ -1243,7 +1243,18 @@ class Number {
 		return digits
 	}
 	
-	/** Tells if this number could be considered an integer number */
+	/** 
+	 * Tells if this number can be considered an integer number.
+	 *
+	 * Examples:
+	 *              2.isInteger() ==> Answers true
+	 *              (2.0).isInteger() ==> Answers true
+	 *              (2.3).isInteger() ==> Answers false
+	 * 
+	 * This could depend also on the rounding strategy, for example:
+	 *              (2.0001).isInteger() ==> Answers false if the rounding strategy is set to 5 decimal places (default)
+	 *              (2.0001).isInteger() ==> Answers true if the rounding strategy is set to 3 decimal places
+	 */
 	method isInteger() native
 	
 	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... 
