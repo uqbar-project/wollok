@@ -1,12 +1,41 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 program p {
-	// XPECT type at c1 --> () => String
+	var bool = true
+	
+	// XPECT type at c1 --> {() => String}
 	const c1 = { "Hello" }
 
-	// XPECT type at c2 --> (Number) => Number
+	// XPECT type at c2 --> {(Number) => Number}
 	const c2 = { a => 2 + a }
 
-	// XPECT type at c3 --> () => Void 
+	// XPECT type at c3 --> {() => Void}
 	const c3 = { }
+	
+	// XPECT type at c4 --> {() => Void}
+	const c4 = { [].add(1) }
+	
+	// XPECT type at c5 --> {() => Boolean}
+	const c5 = { return true }
+	
+	// XPECT type at c6 --> {() => Integer}
+	const c6 = { if (bool) return 1 else return 2 }
+	
+	// XPECT type at c7 --> {() => (Integer|String)}
+	const c7 = { 
+		if (bool) { return 1 } 
+		return "2"
+	}
+	
+	// XPECT type at c8 --> {() => Integer}
+	const c8 = { 
+		if (bool) { return 1 } 
+		"2"
+	}
+	
+	// XPECT type at c9 --> {() => Integer}
+	const c9 = { 
+		if (bool) { return 1 } 
+		[].add(1)
+	}
 }
