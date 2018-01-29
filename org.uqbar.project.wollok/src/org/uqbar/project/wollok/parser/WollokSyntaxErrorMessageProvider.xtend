@@ -108,7 +108,9 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		}
 		
 		// Now automatic rules
-		var specificMessage = syntaxDiagnosis.findFirst[ msg| exception.isApplicable(msg, context)]
+		var specificMessage = syntaxDiagnosis.findFirst[ msg|
+			exception !== null && exception.isApplicable(msg, context)
+		]
 		if (specificMessage === null && context.currentContext !== null) {
 			// Last chance to detect rule
 			specificMessage = changeParserMessage(context.currentContext, exception)
@@ -139,7 +141,7 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	}
 	
 	def dispatch isApplicable(EarlyExitException exception, SpecialMessage msg, IParserErrorContext context) {
-		exception.token.text.equalsIgnoreCase(msg.token) && msg.condition.apply(context, exception)
+		exception.token !== null && exception.token.text !== null && exception.token.text.equalsIgnoreCase(msg.token) && msg.condition !== null && msg.condition.apply(context, exception)
 	}
 	
 	def dispatch isApplicable(MismatchedTokenException exception, SpecialMessage msg, IParserErrorContext context) {
