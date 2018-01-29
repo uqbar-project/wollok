@@ -212,7 +212,7 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		''')
 	}
 	
-		@Test
+	@Test
 	def void constructorCallFormatting() throws Exception {
 		assertFormatting('''
 		class A { var a
