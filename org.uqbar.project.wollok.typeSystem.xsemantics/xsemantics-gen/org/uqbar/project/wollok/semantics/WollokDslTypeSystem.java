@@ -1,21 +1,19 @@
 package org.uqbar.project.wollok.semantics;
 
-import com.google.common.base.Objects;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import it.xsemantics.runtime.ErrorInformation;
-import it.xsemantics.runtime.Result;
-import it.xsemantics.runtime.RuleApplicationTrace;
-import it.xsemantics.runtime.RuleEnvironment;
-import it.xsemantics.runtime.RuleFailedException;
-import it.xsemantics.runtime.XsemanticsRuntimeSystem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xsemantics.runtime.ErrorInformation;
+import org.eclipse.xsemantics.runtime.Result;
+import org.eclipse.xsemantics.runtime.RuleApplicationTrace;
+import org.eclipse.xsemantics.runtime.RuleEnvironment;
+import org.eclipse.xsemantics.runtime.RuleFailedException;
+import org.eclipse.xsemantics.runtime.XsemanticsRuntimeSystem;
 import org.eclipse.xtext.util.PolymorphicDispatcher;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -69,6 +67,10 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation;
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration;
 import org.uqbar.project.wollok.wollokDsl.WVariableReference;
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage;
+
+import com.google.common.base.Objects;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 @SuppressWarnings("all")
 public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {

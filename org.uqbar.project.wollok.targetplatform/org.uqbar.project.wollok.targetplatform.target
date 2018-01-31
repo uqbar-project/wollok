@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="org.uqbar.project.wollok.targetplatform" sequenceNumber="56">
+<?pde version="3.8"?><target name="org.uqbar.project.wollok.targetplatform" sequenceNumber="61">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.xpect.sdk.feature.group" version="0.2.0.201611211350"/>
 <repository location="http://www.xpect-tests.org/updatesite/nightly/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.11.0.v20170201-0242"/>
-<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="it.xsemantics.runtime.feature.feature.group" version="1.11.1.v20170211-1001"/>
-<unit id="it.xsemantics.sdk.feature.group" version="1.11.1.v20170211-1001"/>
-<unit id="it.xsemantics.feature.feature.group" version="1.11.1.v20170211-1001"/>
-<repository location="https://dl.bintray.com/lorenzobettini/xsemantics/updates/1.11/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="de.itemis.xtext.antlr.feature.feature.group" version="2.1.1.v201405091103"/>
@@ -21,33 +11,43 @@
 <repository location="http://download.itemis.com/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.6.0.v20160813060001"/>
-<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.14.0/neon/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.xpand" version="0.0.0"/>
 <unit id="org.eclipse.xtend" version="0.0.0"/>
 <unit id="org.eclipse.xtend.typesystem.emf" version="0.0.0"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/releases/neon/"/>
+<repository location="http://download.eclipse.org/releases/oxygen/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
-<unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
 <unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.egit.mylyn.feature.group" version="4.8.0.201706111038-r"/>
 <unit id="org.eclipse.egit.feature.group" version="4.8.0.201706111038-r"/>
+<unit id="org.eclipse.egit.mylyn.feature.group" version="4.8.0.201706111038-r"/>
 <unit id="org.eclipse.egit.source.feature.group" version="4.8.0.201706111038-r"/>
-<!--repository location="http://download.eclipse.org/egit/updates/"/-->
 <repository location="http://eclipse.c3sl.ufpr.br/egit/updates-4.8/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.13.0.v20171020-0920"/>
+<repository location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.babel.nls_eclipse_es.feature.group" version="4.7.0.v20170819060001"/>
+<repository location="http://archive.eclipse.org/technology/babel/update-site/R0.15.0/oxygen/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<unit id="org.eclipse.xsemantics.feature.feature.group" version="1.13.0.201712122358"/>
+<unit id="org.eclipse.xsemantics.feature.source.feature.group" version="1.13.0.201712122358"/>
+<unit id="org.eclipse.xsemantics.runtime.feature.feature.group" version="1.13.0.201712122358"/>
+<unit id="org.eclipse.xsemantics.runtime.feature.source.feature.group" version="1.13.0.201712122358"/>
+<repository location="https://dl.bintray.com/wollok/xsemantics-test-updateSite/"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
