@@ -29,7 +29,7 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExten
  * @author jfernandes
  */
 class WollokConsoleHighlighter {
-	var KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
+	public static val KEYWORD_COLOR = new Color(null, new RGB(127, 0, 85))
 
 	val terminalColors = #{
 		"STRING" -> newColor(42, 0, 255),
@@ -38,8 +38,15 @@ class WollokConsoleHighlighter {
 		"ML_COMMENT" -> newColor(62, 127, 95)
 	}
 	
+	def boolean allSymbols(String value) {
+		for(var i = 0; i < value.length; i++) {
+			if (Character.isLetterOrDigit(value.charAt(i))) return false
+		}
+		return true
+	}
+	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Keyword it, LineStyleEvent event, int headerLength) { 
-		if (value.length > 1) {
+		if (value.length > 1 && !value.allSymbols) {
 			addStyle(event, n, headerLength, styles, "KEYWORD", KEYWORD_COLOR, null, SWT.BOLD)
 		}
 	}
@@ -53,7 +60,7 @@ class WollokConsoleHighlighter {
 	}
 	
 	def dispatch processASTNode(List<StyleRange> styles, INode n, EObject it, LineStyleEvent event, int headerLength) {
-//		println("UNKNOWN " + it.grammarDescription)
+//		println("UNKNOWN " + it)
 	}
 
 	def dispatch processASTNode(List<StyleRange> styles, INode n, Void it, LineStyleEvent event, int headerLength) { }
@@ -66,7 +73,7 @@ class WollokConsoleHighlighter {
 	}
 	
 	def addStyle(LineStyleEvent event, INode n, int headerLength, List<StyleRange> styles, String data, Color fgColor, Color bgColor, int style) {
-		val newStyle = new StyleRange(event.lineOffset + n.offset - headerLength, n.length, fgColor, bgColor, style)
+		val newStyle = new StyleRange(event.lineOffset + n.totalOffset - headerLength, n.length, fgColor, bgColor, style)
 		newStyle.data = data
 		styles.merge(newStyle)
 	}	
