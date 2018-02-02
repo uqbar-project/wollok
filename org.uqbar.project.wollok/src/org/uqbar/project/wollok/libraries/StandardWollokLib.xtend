@@ -27,6 +27,5 @@ class StandardWollokLib extends AbstractWollokLib {
 	override doGetManifest(Resource resource) {
 		return newManifest("org.uqbar.project.wollok.lib", standardLibManifestName )
 	}
-
 		
 }

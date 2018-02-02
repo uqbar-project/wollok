@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.typesystem.exceptions
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static org.uqbar.project.wollok.Messages.*
 
 class CannotBeVoidException extends TypeSystemException {
 	/**
@@ -12,9 +12,7 @@ class CannotBeVoidException extends TypeSystemException {
 	 */
 	EObject object
 	
-	new(EObject object) {
-		this.object = object
-	}
+	new(EObject object) { this.object = object }
 	
-	override getMessage() '''«object.debugInfo» can not be void'''
+	override getMessage() { WollokTypeSystem_AN_EXPRESSION_IS_EXPECTED_AT_THIS_POSITION }
 }

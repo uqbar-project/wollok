@@ -210,5 +210,51 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		}
 		
 		''')
-	}	
+	}
+	
+	@Test
+	def void constructorCallFormatting() throws Exception {
+		assertFormatting('''
+		class A { var a
+		var b = 2 var c var d 
+		}
+		class B {
+			
+		method buildA() {
+		new A(                     a
+		
+		
+		 = 
+		 
+		 200			
+		,
+		b                = "Hello"
+		
+		,
+		
+		c =               new        Date()    
+		
+		, d=#{1   , 8} )	
+		}
+		''', 
+		'''
+		class A {
+		
+			var a
+			var b = 2
+			var c
+			var d
+		
+		}
+		
+		class B {
+		
+			method buildA() {
+				new A(a = 200, b = "Hello", c = new Date(), d = #{ 1, 8 })
+			}
+		
+		}
+		
+		''')
+	}
 }

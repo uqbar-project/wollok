@@ -1,8 +1,11 @@
 package wollok.lang
 
-import java.util.List
-import java.util.Comparator
+import java.math.BigDecimal
 import java.util.Collection
+import java.util.Comparator
+import java.util.List
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
@@ -23,7 +26,10 @@ class WList extends WCollection<List<WollokObject>> implements JavaWrapper<List<
 		wrapped = newArrayList
 	}
 	
-	def get(int index) { wrapped.get(index) }
+	def get(BigDecimal index) {
+		val convertedIndex = index.coerceToPositiveInteger
+		wrapped.get(convertedIndex)
+	}
 
 	def sortBy(WollokObject predicate) {
 		val closure = predicate.asClosure

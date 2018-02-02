@@ -59,7 +59,6 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		binder.bind(WollokLib).annotatedWith(Names.named("standardWollokLib")).to(StandardWollokLib)
 		binder.bind(new TypeLiteral<List<String>>(){}).annotatedWith(Names.named("libraries")).toInstance(libs())
 		binder.bind(WollokLibraries).to(JarWollokLibraries)	
-	
 	}
 	
 	//this method is overriden by WollokLauncherModule

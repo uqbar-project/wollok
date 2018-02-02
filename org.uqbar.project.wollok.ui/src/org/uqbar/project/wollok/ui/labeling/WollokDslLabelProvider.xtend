@@ -75,9 +75,9 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			labelExtensionResolved = true
 		}
 
-		if (labelExtension != null) {
+		if (labelExtension !== null) {
 			val type = labelExtension.resolvedType(obj)
-			if(type != null) (separator + type) else ""
+			if(type !== null) (separator + type) else ""
 		} else
 			""
 	}
@@ -93,6 +93,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def text(WVariableDeclaration it) {
+		// TODO: Considerar si es property
 		(if (writeable)
 			// var 
 			grammar.WVariableDeclarationAccess.writeableVarKeyword_1_0_0.value
@@ -102,7 +103,19 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			concatResolvedType(": ", variable)
 	}
 
-	def image(WVariableDeclaration ele) { 'wollok-icon-variable_16.png' }
+	def image(WVariableDeclaration it) { 
+		if (property) {
+			if (writeable) 
+				'wollok-icon-property_var_16.png'
+			else
+				'wollok-icon-property_const_16.png'
+		} else {
+			if (writeable)
+				'wollok-icon-variable_16.png'
+			else 
+				'wollok-icon-constant_16.png'
+		} 
+	}
 
 	def text(WVariable it) { name + concatResolvedType(": ", it) }
 
@@ -121,9 +134,9 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 			if(m.supposedToReturnValue) (" → " + concatResolvedType("", m)) else ""
 	}
 
-	def text(WConstructor m) {
-		grammar.WConstructorAccess.constructorKeyword_1 + '(' +
-			m.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
+	def text(WConstructor c) {
+		c.declaringContext?.name + '(' +
+			c.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
 	}
 
 	def image(WMethodDeclaration method) {

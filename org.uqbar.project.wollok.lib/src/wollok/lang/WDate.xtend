@@ -1,13 +1,13 @@
 package wollok.lang
 
-import java.text.SimpleDateFormat
+import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 /**
  * Native implementation of the date wollok class
  * 
@@ -25,20 +25,23 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	 
 	/** Fin constructores */
 
-	def void initialize(int day, int month, int year) {
-		wrapped = LocalDate.of(year, month, day)
+	def void initialize(BigDecimal day, BigDecimal month, BigDecimal year) {
+		wrapped = LocalDate.of(year.coerceToInteger, month.coerceToInteger, day.coerceToInteger)
 	}
 
-	def plusDays(int days) { 
-		wrapped.plusDays(days)
+	def plusDays(BigDecimal days) {
+		days.checkNotNull("plusDays") 
+		wrapped.plusDays(days.coerceToInteger)
 	}
 
-	def plusMonths(int months) {
-		wrapped.plusMonths(months)
+	def plusMonths(BigDecimal months) {
+		months.checkNotNull("plusMonths")
+		wrapped.plusMonths(months.coerceToInteger)
 	}
 
-	def plusYears(int years) { 
-		wrapped.plusYears(years) 
+	def plusYears(BigDecimal years) {
+		years.checkNotNull("plusYears") 
+		wrapped.plusYears(years.coerceToInteger) 
 	}
 
 	def isLeapYear() { wrapped.isLeapYear }
@@ -57,55 +60,60 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 	}
 
 	@NativeMessage("-")
-	def minus(WDate aDate) { 
-		val difference = (aDate.wrapped.toEpochDay - wrapped.toEpochDay) as int
-		Math.abs(difference)
+	def minus(LocalDate aDate) { 
+		wrapped.toEpochDay - aDate.toEpochDay
 	}
 	
-	def minusDays(int days) {
-		wrapped.minusDays(days)
+	def minusDays(BigDecimal days) {
+		days.checkNotNull("minusDays") 
+		wrapped.minusDays(days.coerceToInteger)
 	}
 	
-	def minusMonths(int months) { 
-		wrapped.minusMonths(months)
+	def minusMonths(BigDecimal months) { 
+		months.checkNotNull("minusMonths") 
+		wrapped.minusMonths(months.coerceToInteger)
 	}
 	
-	def minusYears(int years) { 
-		wrapped.minusYears(years)
+	def minusYears(BigDecimal years) {
+		years.checkNotNull("minusYears") 
+		wrapped.minusYears(years.coerceToInteger)
 	}
 	
 	def dayOfWeek() { wrapped.dayOfWeek.value }
 	
 	@NativeMessage("<")
-	def lessThan(WDate aDate) {
+	def lessThan(LocalDate aDate) {
+		aDate.checkNotNull("<")
 		compareTo(aDate) < 0
 	}
 	
 	@NativeMessage(">")
-	def greaterThan(WDate aDate) { compareTo(aDate) > 0 }
+	def greaterThan(LocalDate aDate) { 
+		aDate.checkNotNull(">")
+		compareTo(aDate) > 0
+	}
 	 
-	def compareTo(WDate aDate) { wrapped.compareTo(aDate.wrapped) }
+	def compareTo(LocalDate aDate) { 
+		wrapped.compareTo(aDate)
+	}
+	
+	override hashCode() { 
+		wrapped.hashCode
+	}
 	
 	override toString() {
-		//val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") 
-		//"Date[" + wrapped.format(formatter) + "]"
 		"Date[" + wrapped.toString + "]"
 	}
-
-	override hashCode() { wrapped.hashCode }
-	
-	def toSmartString(Object alreadyShown) { wollokToString }
-	
-	def convertToWString(WollokObject it) { call("toString") as WollokObject }
 
 	@NativeMessage("==")
 	def wollokIdentityEquals(WollokObject other) {
 		val wDate = other.getNativeObject(WDate) as WDate
-		wDate != null && wrapped == wDate.wrapped
+		wDate !== null && wrapped == wDate.wrapped
 	}
 	
 	def asWString(WollokObject it) { 
 		val wDate = it.getNativeObject(WDate) as WDate
+		// TODO: i18n
 		if (wDate == null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
 		wDate
 	}

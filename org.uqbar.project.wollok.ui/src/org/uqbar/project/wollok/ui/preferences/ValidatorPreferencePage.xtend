@@ -54,7 +54,7 @@ class ValidatorPreferencePage extends PropertyAndPreferencePage {
 		super.dispose
 	}
 	
-		override enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
+	override enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
 		super.enableProjectSpecificSettings(useProjectSpecificSettings)
 		if (configurationBlock != null)
 			configurationBlock.useProjectSpecificSettings(useProjectSpecificSettings)

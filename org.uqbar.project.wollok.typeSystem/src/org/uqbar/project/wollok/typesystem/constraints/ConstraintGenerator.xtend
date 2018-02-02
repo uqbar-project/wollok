@@ -32,6 +32,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
 
 class ConstraintGenerator {
@@ -117,10 +118,14 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WClosure it) {
+		newTypeVariable //For returns
 		parameters.forEach[generateVariables]
 		expression.generateVariables
-
-		newClosure(parameters.map[tvar], expression.tvar)
+		
+		val containsReturn = !tvar.subtypes.empty 
+		val returnVar = if (containsReturn) tvar else expression.tvar
+			
+		newClosure(parameters.map[tvar], returnVar)
 	}
 
 	def dispatch void generateVariables(WParameter it) {
@@ -136,7 +141,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
-		newSealed(classType(INTEGER))
+		newSealed(classType(NUMBER))
 	}
 
 	def dispatch void generateVariables(WStringLiteral it) {
@@ -238,9 +243,10 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WReturnExpression it) {
+		newTypeVariable
 		expression.generateVariables
-		declaringMethod.beSupertypeOf(expression)
-		newVoid
+		declaringContainer.beSupertypeOf(expression)
+		beVoid
 	}
 
 	// ************************************************************************

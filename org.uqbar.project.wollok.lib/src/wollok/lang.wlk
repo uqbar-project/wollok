@@ -228,6 +228,12 @@ class Object {
 		throw new MessageNotUnderstoodException(message)
 	}
 
+	/**
+	  * @private
+	  *
+	  * internal method: generates a does not understand message
+	  * parametersSize must be an integer value
+	  */
 	method generateDoesNotUnderstandMessage(target, messageName, parametersSize) native
 	
 	/** Builds an exception with a message */		
@@ -707,8 +713,11 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
-	/** Answers the element at the specified position in this list.
-	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing. 
+	/** 
+	 * Answers the element at the specified position in this list.
+	 * 
+	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+	 * Index must be a positive and integer value. 
 	 */
 	method get(index) native
 	
@@ -742,7 +751,7 @@ class List inherits Collection {
 	/**
 	 * Answers the last element of the non-empty list.
 	 * @returns last element
-	 * Example:
+	 * Example:	
 	 *		[1, 2, 3, 4].last()		=> Answers 4	
 	 */
 	method last() = self.get(self.size() - 1)
@@ -778,12 +787,13 @@ class List inherits Collection {
 	 *		[1, 5, 3, 2, 7, 9].subList(2, 3)		=> Answers [3, 2]	
 	 *		[1, 5, 3, 2, 7, 9].subList(4, 6)		=> Answers [7, 9] 
 	 */
-	method subList(start,end) {
+	method subList(start, end) {
 		if(self.isEmpty())
 			return self.newInstance()
+		
 		const newList = self.newInstance()
-		const _start = start.limitBetween(0,self.size()-1)
-		const _end = end.limitBetween(0,self.size()-1)
+		const _start = start.coerceToInteger().limitBetween(0, self.size() - 1)
+		const _end = end.coerceToInteger().limitBetween(0, self.size() - 1)
 		(_start.._end).forEach { i => newList.add(self.get(i)) }
 		return newList
 	}
@@ -805,7 +815,7 @@ class List inherits Collection {
 		if(n <= 0)
 			self.newInstance()
 		else
-			self.subList(0,n-1)
+			self.subList(0, n - 1)
 		
 	
 	/**
@@ -821,7 +831,7 @@ class List inherits Collection {
 		if(n >= self.size())
 			self.newInstance()
 		else
-			self.subList(n,self.size()-1)
+			self.subList(n, self.size() - 1)
 		
 	/**
 	 * Answers a new list reversing the elements, so that first element becomes last element of the new list and so on.
@@ -831,7 +841,7 @@ class List inherits Collection {
 	 *  	[1, 9, 2, 3].reverse()  ==> Answers [3, 2, 9, 1]
 	 *
 	 */
-	method reverse() = self.subList(self.size()-1,0)
+	method reverse() = self.subList(self.size() - 1, 0)
 
 	// REFACTORME: DUP METHODS
 	/** 
@@ -981,30 +991,128 @@ class Dictionary {
 
 /**
  *
+ * In Wollok we have numbers as immutable representation. You can customize
+ * how many decimals you want to work with, and printing strategies. So
+ * number two could be printed as "2", "2,00000", "2,000", etc.
+ *
+ * Coercing strategy for numbers can be 
+ * 1) rounding up: 2,3258 using 3 decimals will result in 2,326
+ * 2) rounding down or truncation: 2,3258 using 3 decimals will result in 2,325 
+ * 3) not allowed: 2,3258 using 3 decimals will throw an exception since decimals exceeds maximum allowed
+ *
  * @author jfernandes
+ * @author dodain (unification between Double and Integer in a single Number class)
+ *
  * @since 1.3
  * @noInstantiate
  */	
 class Number {
-	method +(other)
-	method -(other)
-	method *(other)
-	method /(other)
 
-	method >(other)
-	method >=(other)
-	method <(other)
-	method <=(other)
+	/** @private */
+	override method simplifiedToSmartString(){ return self.stringValue() }
+	
+	/** @private */
+	override method internalToSmartString(alreadyShown) { return self.stringValue() }
+	
+	/** @private */
+	method checkNotNull(value, operation) native
+	
+	/** 
+	 * @private
+	 *
+	 * Applies coercing strategy to integer. If it is an integer, nothing happens. Otherwise, 
+	 * if it is a decimal, defined coercing algorithm is applied (see definition of class Number)
+	 */
+	method coerceToInteger() native
+	
+	/**
+	 * Two references are identical if they are the same number
+	 */
+	override method ===(other) native
+
+	method +(other) native
+	method -(other) native
+	method *(other) native
+	method /(other) native
+
+	/** 
+	 * Integer division between self and other
+	 *
+	 * Example:
+	 *		8.div(3)  ==> Answers 2
+	 * 		15.div(5) ==> Answers 3
+	 *		8.2.div(3.3)  ==> Answers 2
+	 */
+	method div(other) native
+	
+	/**
+	 * raisedTo operation
+     *
+	 * Example:
+	 *      3.2 ** 2 ==> Answers 10.24
+	 * 		3 ** 2 ==> Answers 9
+	 */
+	method **(other) native
+	
+	/**
+	 * Answers remainder of division between self and other
+	 */
+	method %(other) native
+	
+	/** String representation of self number */
+	override method toString() native
+	
+	/** 
+	 * Builds a Range between self and end
+	 * 
+	 * Example:
+	 * 		1..4   		Answers ==> a new Range object from 1 to 4
+	 */
+	method ..(end) = new Range(self, end)
+	
+	method >(other) native
+	method <(other) native
+
+	method >=(other) = self > other || self == other
+	method <=(other) = self < other || self == other
+
+	/** 
+	 * Answers absolute value of self 
+	 *
+	 * Example:
+	 * 		2.abs() ==> 2
+	 * 		(-3).abs() ==> 3 (be careful with parentheses)
+	 * 		2.7.abs() ==> Answers 2.7
+	 *		(-3.2).abs() ==> Answers 3.2 (be careful with parentheses)
+	 */		
+	method abs() native
+	
+	/**
+	 * Inverts sign of self
+	 *
+	 * Example:
+	 * 		3.invert() ==> Answers -3
+	 * 		(-2).invert() ==> Answers 2 (be careful with parentheses)
+	 * 		3.2.invert() ==> -3.2
+	 * 		(-2.4).invert() ==> 2.4 (be careful with parentheses)
+	 */
+	method invert() native
 
 	/** 
 	 * Answers the greater number between two
 	 * Example:
 	 * 		5.max(8)    ==> Answers 8 
 	 */
-	method max(other) = if (self >= other) self else other
+	method max(other) {
+		self.checkNotNull(other, "max")
+		return if (self >= other) self else other
+	}
 	
 	/** Answers the lower number between two. @see max */
-	method min(other) = if (self <= other) self else other
+	method min(other) {
+		self.checkNotNull(other, "min")
+		return if (self <= other) self else other
+	}
 	
 	/**
 	 * Given self and a range of integer values, Answers self if it is in that range
@@ -1021,12 +1129,6 @@ class Number {
 										 else 
 										 	limitB.max(self).min(limitA)
 
-	/** @private */
-	override method simplifiedToSmartString(){ return self.stringValue() }
-	
-	/** @private */
-	override method internalToSmartString(alreadyShown) { return self.stringValue() }
-	
 	/** Answers whether self is between min and max */
 	method between(min, max) { return (self >= min) && (self <= max) }
 	
@@ -1040,132 +1142,89 @@ class Number {
 	 */
 	method square() { return self * self }
 	
-	/** Answers whether self is an even number (divisible by 2, mathematically 2k) */
-	method even() { return self % 2 == 0 }
+	/** 
+	 * Answers whether self is an even number (divisible by 2, mathematically 2k) 
+	 * Self must be an integer value
+	 */
+	method even() {
+		const intValue = self.coerceToInteger()
+		return intValue % 2 == 0 
+	}
 	
-	/** Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) */
-	method odd() { return self.even().negate() }
+	/** 
+	 * Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) 
+	 * Self must be an integer value
+	 */
+	method odd() { 
+		const intValue = self.coerceToInteger()
+		return intValue.even().negate() 
+	}
 	
 	/** Answers remainder between self and other
 	 * Example:
-	 * 		5.rem(3) ==> Answers 2
+	 * 		5.rem(3) 	==> Answers 2
+	 *      5.5.rem(3) 	==> Answers 2
 	 */
 	method rem(other) { return self % other }
 	
-	method stringValue() = throw new Exception("Should be implemented in the subclass")
+	/*
+	 * Self as String value. Equivalent: toString()
+	 */
+	method stringValue() = self.toString()
 
 	/**
 	 * Rounds up self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
+	 * Amount of decimals must be a positive and integer value.
+	 *
 	 * 1.223445.roundUp(3) ==> 1.224
 	 * -1.223445.roundUp(3) ==> -1.224
 	 * 14.6165.roundUp(3) ==> 14.617
 	 * 5.roundUp(3) ==> 5
 	 */
-	 method roundUp(_decimals)
+	 method roundUp(_decimals) native
 
 	/**
 	 * Truncates self up to a certain amount of decimals.
-	 * Amount of decimals must be positive
+	 * Amount of decimals must be a positive and integer value.
+	 *
 	 * 1.223445.truncate(3) ==> 1.223
 	 * 14.6165.truncate(3) ==> 14.616
 	 * -14.6165.truncate(3) ==> -14.616
 	 * 5.truncate(3) ==> 5
 	 */
-	method truncate(_decimals)
+	method truncate(_decimals) native
 
-	method plus() = self
-}
+	/**
+	 * Answers a random number between self and max
+	 */
+	method randomUpTo(max) native
+	
+	/**
+	 * Answers the next integer greater than self
+	 * 13.224.roundUp() ==> 14
+	 * -13.224.roundUp() ==> -14
+	 * 15.942.roundUp() ==> 16
+	 */
+	method roundUp() = self.roundUp(0)
 
-/**
- * @author jfernandes
- * @since 1.3
- * @noInstantiate
- */
-class Integer inherits Number {
-	/**
-	 * The whole wollok identity implementation is based on self method
-	 */
-	override method ===(other) native
+ 	/**
+  	 * greater common divisor. Both self and "other" parameter are coerced to be integer values.
+  	 *
+  	 * Example:
+  	 * 		8.gcd(12) ==> Answers 4
+  	 *		5.gcd(10) ==> Answers 5
+  	 */
+  	method gcd(other) native
 
-	override method +(other) native
-	override method -(other) native
-	override method *(other) native
-	override method /(other) native
-	
-	/** Integer division between self and other
-	 *
-	 * Example:
-	 *		8.div(3)  ==> Answers 2
-	 * 		15.div(5) ==> Answers 3
-	 */
-	method div(other) native
-	
 	/**
-	 * raisedTo
-	 * 		3 ** 2 ==> Answers 9
-	 */
-	method **(other) native
-	
-	/**
-	 * Answers remainder of division between self and other
-	 */
-	method %(other) native
-	
-	/** String representation of self number */
-	override method toString() native
-	
-	/** Self as a String value. Equivalent: toString() */
-	override method stringValue() native	
-	
-	/** 
-	 * Builds a Range between self and end
-	 * 
-	 * Example:
-	 * 		1..4   Answers ==> a new Range object from 1 to 4
-	 */
-	method ..(end) = new Range(self, end)
-	
-	override method >(other) native
-	override method >=(other) native
-	override method <(other) native
-	override method <=(other) native
-
-	/** 
-	 * Answers absolute value of self 
-	 *
-	 * Example:
-	 * 		2.abs() ==> 2
-	 * 		(-3).abs() ==> 3 (be careful with parentheses)
-	 */		
-	method abs() native
-	
-	/**
-	 * Inverts sign of self
-	 *
-	 * Example:
-	 * 		3.invert() ==> Answers -3
-	 * 		(-2).invert() ==> Answers 2 (be careful with parentheses)
-	 */
-	method invert() native
-	
-	/**
-	 * greater common divisor
-	 *
-	 * Example:
-	 * 		8.gcd(12) ==> Answers 4
-	 *		5.gcd(10) ==> Answers 5
-	 */
-	method gcd(other) native
-	
-	/**
-	 * least common multiple
+	 * least common multiple. Both self and "other" parameter are coerced to be integer values.
 	 *
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
 	 * 		6.lcm(12) ==> Answers 12
 	 */
 	method lcm(other) {
+		self.checkNotNull(other, "lcm")
 		const mcd = self.gcd(other)
 		return self * (other / mcd)
 	}
@@ -1178,22 +1237,40 @@ class Integer inherits Number {
 		if (self < 0) {
 			digits -= 1
 		}
+		if (!self.isInteger()) {
+			digits -= 1
+		}
 		return digits
 	}
 	
-	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... */
-	method isPrime() {
-		if (self == 1) return false
-		return (2..(self.div(2) + 1)).any({ i => self % i == 0 }).negate()
-	}
-	
-	/**
-	 * Answers a random between self and max
+	/** 
+	 * Tells if this number can be considered an integer number.
+	 *
+	 * Examples:
+	 *              2.isInteger() ==> Answers true
+	 *              (2.0).isInteger() ==> Answers true
+	 *              (2.3).isInteger() ==> Answers false
+	 * 
+	 * This could depend also on the rounding strategy, for example:
+	 *              (2.0001).isInteger() ==> Answers false if the rounding strategy is set to 5 decimal places (default)
+	 *              (2.0001).isInteger() ==> Answers true if the rounding strategy is set to 3 decimal places
 	 */
-	method randomUpTo(max) native
+	method isInteger() native
 	
+	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... 
+	  * Self must be an integer positive value
+	  */
+	method isPrime() {
+		const intValue = self.coerceToInteger()
+		if (intValue == 1) return false
+		return (2..(intValue.div(2) + 1)).any({ i => intValue % i == 0 }).negate()
+	}
+
 	/**
 	 * Executes the given action n times (n = self)
+	 *
+	 * Self must be a positive integer value.
+	 *
 	 * Example:
 	 * 		4.times({ i => console.println(i) }) ==> Answers 
 	 * 			1
@@ -1201,89 +1278,15 @@ class Integer inherits Number {
 	 * 			3
 	 * 			4
 	 */
-	method times(action) { 
-		(1..self).forEach(action) 
+	method times(action) {
+	    self.checkNotNull(action, "times")
+		const intValue = self.coerceToInteger()
+		if (intValue < 0) self.error("times requires a positive integer number")
+		(1..intValue).forEach(action)
 	}
-	
-	override method roundUp(_decimals) = self
-	override method truncate(_decimals) = self
-	
-}
 
-/**
- * @author jfernandes
- * @since 1.3
- * @noInstantiate
- */
-class Double inherits Number {
-	/** the whole wollok identity impl is based on self method */
-	override method ===(other) native
-
-	override method +(other) native
-	override method -(other) native
-	override method *(other) native
-	override method /(other) native
-
-	/** Integer division between self and other
-	 *
-	 * Example:
-	 *		8.2.div(3.3)  ==> Answers 2
-	 * 		15.0.div(5) ==> Answers 3
-	 */
-	method div(other) native
-	
-	/**
-	 * raisedTo
-	 * 3.2 ** 2 ==> Answers 10.24
-	 */
-	method **(other) native
-	
-	/**
-	 * Answers remainder of division between self and other
-	 */
-	method %(other) native		
-
-	/** String representation of a self number */
-	override method toString() = self.stringValue()
-	
-	/** Self as a String value. Equivalent: toString() */
-	override method stringValue() native	
-	
-	override method >(other) native
-	override method >=(other) native
-	override method <(other) native
-	override method <=(other) native
-	
-	/** 
-	 * Answers absolute value of self 
-	 *
-	 * Example:
-	 * 		2.7.abs() ==> Answers 2.7
-	 *		(-3.2).abs() ==> Answers 3.2 (be careful with parentheses)
-	 */		
-	method abs() native
-	
-	/**
-	 * 3.2.invert() ==> -3.2
-	 * (-2.4).invert() ==> 2.4 (be careful with parentheses)
-	 */
-	method invert() native
-	
-	/**
-	 * Answers a random between self and max
-	 */
-	method randomUpTo(max) native
-	
-	/**
-	 * Answers the next integer greater than self
-	 * 13.224.roundUp() ==> 14
-	 * -13.224.roundUp() ==> -14
-	 * 15.942.roundUp() ==> 16
-	 */
-	method roundUp() = self.roundUp(0)
-	
-	override method roundUp(_decimals) native
-	override method truncate(_decimals) native
+	/** Allows users to define a positive number with 1 or +1 */
+	method plus() = self	
 }
 
 /**
@@ -1299,6 +1302,7 @@ class String {
 	/** 
 	 * Answers the char value at the specified index. An index ranges from 0 to length() - 1. 
 	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+	 * Parameter index must be a positive integer value.
 	 */
 	method charAt(index) native
 	
@@ -1387,18 +1391,17 @@ class String {
 	 * Example:
 	 *		"WoRD".equalsIgnoreCase("Word")  ==> Answers true
 	 */
-	method equalsIgnoreCase(aString) {
-		return self.toUpperCase() == aString.toUpperCase()
-	}
+	method equalsIgnoreCase(aString) = self.toUpperCase() == aString.toUpperCase()
 	
 	/**
-	 * Answers a substring of this string beginning from an inclusive index. 
+	 * Answers a substring of this string beginning from an inclusive index.
+	 * Parameter index must be a positive integer value.
 	 *
 	 * Examples:
 	 * 		"substitute".substring(6)  ==> Answers "tute", because second "t" is in position 6
 	 * 		"effect".substring(0)      ==> Answers "effect", has no effect at all
 	 */
-	method substring(length) native
+	method substring(index) native
 	
 	/**
 	 * Answers a substring of this string beginning from an inclusive index up to another inclusive index
@@ -1521,23 +1524,21 @@ class Range {
 	const end
 	var step
 	
+	/**
+	  * Instantiates a Range. Both _start and _end must be integer values.
+	  */
 	constructor(_start, _end) {
-		self.validate(_start)
-		self.validate(_end)
-		start = _start 
-		end = _end
+		start = _start.coerceToInteger()
+		end = _end.coerceToInteger()
 		if (_start > _end) { 
 			step = -1 
 		} else {
 			step = 1
-		}  
+		}
 	}
 	
 	method step(_step) { step = _step }
 
-	/** @private */		
-	method validate(_limit) native
-	
 	/** 
 	 * Iterates over a Range from start to end, based on step
 	 */
@@ -1660,21 +1661,34 @@ class Closure {
  */	
 class Date {
 
+	/**
+	  * Default constructor instantiates the current day 
+	  */
 	constructor()
+	
+	/**
+	 * Constructor: you should pass the day, month and year (integer values only).
+	 */
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
-	override method toString() native 
+	override method toString() = self.toSmartString(false) 
 	
 	/** Two dates are equals if they represent the same date */
 	override method ==(_aDate) native
 	
-	/** Answers a copy of this Date with the specified number of days added. */
+	/** Answers a copy of this Date with the specified number of days added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusDays(_days) native
 	
-	/** Answers a copy of this Date with the specified number of months added. */
+	/** Answers a copy of this Date with the specified number of months added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusMonths(_months) native
 	
-	/** Answers a copy of this Date with the specified number of years added. */
+	/** Answers a copy of this Date with the specified number of years added. 
+	  * Parameter must be an integer value.
+	  */
 	method plusYears(_years) native
 	
 	/** Checks if the year is a leap year, like 2000, 2004, 2008, 2012, 2016... */
@@ -1702,27 +1716,31 @@ class Date {
 	method year() native
 	
 	/** 
-	 * Answers the difference in days between two dates, in absolute values.
+	 * Answers the difference in days between two dates, assuming self is minuend and _aDate is subtrahend. 
 	 * 
 	 * Examples:
 	 * 		new Date().plusDays(4) - new Date() ==> Answers 4
-	 *		new Date() - new Date().plusDays(2) ==> Answers 2
+	 *		new Date() - new Date().plusDays(2) ==> Answers -2
 	 */
 	method -(_aDate) native
 	
 	/** 
 	 * Answers a copy of this date with the specified number of days subtracted.
 	 * For example, 2009-01-01 minus one day would result in 2008-12-31.
-	 * This instance is immutable and unaffected by this method call.  
+	 * This instance is immutable and unaffected by this method call.
+	 * Parameter must be an integer value.
 	 */
 	method minusDays(_days) native
 	
 	/** 
 	 * Answers a copy of this date with the specified number of months subtracted.
+	 * Parameter must be an integer value.
 	 */
 	method minusMonths(_months) native
 	
-	/** Answers a copy of this date with the specified number of years subtracted. */
+	/** Answers a copy of this date with the specified number of years subtracted.
+	  * Parameter must be an integer value.
+	  */
 	method minusYears(_years) native
 	
 	method <(_aDate) native
@@ -1738,5 +1756,9 @@ class Date {
 	method between(_startDate, _endDate) { 
 		return (self >= _startDate) && (self <= _endDate) 
 	}
+
+	/** Shows nicely an internal representation of a date **/
+	override method toSmartString(alreadyShown) =
+		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
 
 }

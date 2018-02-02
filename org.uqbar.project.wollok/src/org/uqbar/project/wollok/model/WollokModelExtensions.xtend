@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.model
 
+import java.util.HashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -32,10 +34,12 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WExpressionOrInitializer
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -165,22 +169,24 @@ class WollokModelExtensions {
 	/*
 	 * Uses of a Variable
 	 */
-	def static uses(WVariable variable) { VariableUsesVisitor.usesOf(variable, variable.declarationContext) }
+	def static uses(WVariable variable) { 
+		if (variable === null || variable.declarationContext === null) return newArrayList
+		VariableUsesVisitor.usesOf(variable, variable.declarationContext)
+	}
 	
 	def static isUsed(WParameter parameter) {
 		!ParameterUsesVisitor.usesOf(parameter, parameter.declarationContext).isEmpty
 	}
 
 	def static assignments(WVariable variable) {
-		if (variable.declarationContext !== null) {
-			VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
-		}
+		if (variable === null || variable.declarationContext === null) return newArrayList
+		VariableAssignmentsVisitor.assignmentOf(variable, variable.declarationContext)
 	}
 
 	def static assignments(WVariable variable, EObject context) {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
-	
+
 	def static declaration(WVariable variable) {
 		variable.eContainer as WVariableDeclaration
 	}
@@ -486,7 +492,12 @@ class WollokModelExtensions {
 	// *******************************
 	
 	def static isLocalToMethod(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null }
-
+	def static isLocalToConstructor(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WConstructor) !== null }
+	def static isLocalToTest(WVariableDeclaration it) { EcoreUtil2.getContainerOfType(it, WTest) !== null }
+	def static isLocal(WVariableDeclaration it) {
+		isLocalToConstructor || isLocalToTest || isLocalToMethod
+	}
+	
 	def static onlyUsedInReturn(WVariableDeclaration it) {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
@@ -653,4 +664,28 @@ class WollokModelExtensions {
 		}
 	}
 
+	def static Map<String, EObject> namedArguments(WConstructorCall c) {
+		c.arguments.filter [ isNamedParameter ].toList.fold(new HashMap, [ total, i | 
+			val namedParameter = i as WInitializer
+			total.put(namedParameter.initializer.name, namedParameter)
+			total
+		])
+	}
+	
+	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
+	def static dispatch isNamedParameter(WInitializer i) { true }
+	
+	def static dispatch hasNamedParameters(EObject o) { false }
+	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
+	
+	def static uninitializedNamedParameters(WConstructorCall it) {
+		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
+		val namedArguments = namedArguments.keySet
+		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
+	}
+	
+	def static createInitializersForNamedParametersInConstructor(WConstructorCall it) {
+		uninitializedNamedParameters.map 
+			[ variable.name + " = value" ].join(", ")
+	}
 }

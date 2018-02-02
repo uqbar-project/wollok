@@ -97,7 +97,7 @@ class TypeVariable implements ITypeVariable {
 		errors.add(exception)
 	}
 
-	// REVIEW Is necessary to pass 'user'?
+	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
 			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
@@ -105,7 +105,7 @@ class TypeVariable implements ITypeVariable {
 				validator.report(message, owner)
 			}
 			catch (IllegalArgumentException exception) {
-				// We probably reorted a type error to a core object, which is not possible
+				// We probably reported a type error to a core object, which is not possible
 				log.error(exception.message, exception)
 			}
 		]

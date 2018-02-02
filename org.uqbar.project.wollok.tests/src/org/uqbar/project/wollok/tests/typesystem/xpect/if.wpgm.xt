@@ -6,7 +6,7 @@ program p {
 	// XPECT noIssues
 	const p = n
 	
-	// XPECT warnings --> "expected <<Boolean>> but found <<Integer>>" at "p"
+	// XPECT warnings --> "expected <<Boolean>> but found <<Number>>" at "p"
 	const number = if (p) 2 else 6
 	
 	number

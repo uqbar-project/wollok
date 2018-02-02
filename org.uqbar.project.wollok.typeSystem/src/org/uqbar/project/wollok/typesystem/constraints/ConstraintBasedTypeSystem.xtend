@@ -107,7 +107,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			log.debug("Running stage " + currentStage)
 
 			if (runStage(stages.get(currentStage)))
-				// Stage produced new inforamtion, start again from stage 0. 
+				// Stage produced new information, start again from stage 0. 
 				currentStage = 0
 			else
 				// No new information, go to next stage. 

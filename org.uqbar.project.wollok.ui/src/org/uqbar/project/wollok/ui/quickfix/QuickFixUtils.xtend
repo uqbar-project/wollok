@@ -56,8 +56,16 @@ class QuickFixUtils {
 	}
 
 	def static void deleteToken(IXtextDocument it, EObject e, String token) {
+		var length = token.length
 		val trimText = get.substring(e.before, e.after)
-		replace(e.before + trimText.indexOf(token), token.length, "")
+		if (trimText.indexOf(token) == -1) return;
+		var start = e.before + trimText.indexOf(token)
+		var afterToken = start + length
+		val hasSpaceAfter = get.substring(afterToken, afterToken + 1).equals(" ")
+		if (hasSpaceAfter) {
+			length++
+		}
+		replace(start, length, "")
 	}
 
 	def static void replaceWith(IXtextDocument it, EObject what, EObject withWhat) {
@@ -89,6 +97,36 @@ class QuickFixUtils {
 		NodeModelUtils.findActualNodeFor(element)
 	}
 
+	def static nextSiblingCode(EObject element) {
+		element.node?.nextSibling?.text?.trim	
+	}
+	
+	def static previousSiblingCode(EObject element) {
+		element.node?.previousSibling?.text?.trim	
+	}
+	
+	def static firstNonEmptyPosition(IXtextDocument document, INode node) {
+		var position = node.offset
+		while (document.getChar(position++) == ' ') { }
+		position - node.offset
+	}
+	
+	def static hasEffectiveNextSibling(EObject o) {
+		o.node.hasNextSibling && o.nextSiblingCode.equals(",") && o.effectiveNextSibling !== null
+	}
+	
+	def static effectiveNextSibling(EObject o) {
+		o.node.nextSibling?.nextSibling
+	}
+
+	def static hasEffectivePreviousSibling(EObject o) {
+		o.node.hasPreviousSibling && o.previousSiblingCode.equals(",") && o.effectivePreviousSibling !== null 
+	}
+	
+	def static effectivePreviousSibling(EObject o) {
+		o.node.previousSibling?.previousSibling
+	}
+	
 	/**
 	 * Common method - compute margin that should by applied to a new method
 	 * If method container
@@ -167,6 +205,12 @@ class QuickFixUtils {
 		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
 		xtextDocument.replace(constructorLocation.placeToAdd, 0, constructorLocation.formatCode(code))
 	}
+
+	def static insertProperty(WMethodContainer declaringContext, String code, IModificationContext context) {
+		val variableLocation = declaringContext.placeToAddVariable
+		val xtextDocument = context.getXtextDocument(declaringContext.fileURI)
+		xtextDocument.replace(variableLocation.placeToAdd, 0, variableLocation.formatCode(code))
+	}
 	
 	def static placeToAddMethod(WMethodContainer declaringContext) {
 		val behaviors = declaringContext.behaviors
@@ -184,6 +228,22 @@ class QuickFixUtils {
 		val behaviors = declaringContext.behaviors
 		if (!behaviors.isEmpty) {
 			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
+		}
+		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
+	}
+
+	def static placeToAddVariable(WMethodContainer declaringContext) {
+		val constructors = declaringContext.constructors().toList
+		if (!constructors.isEmpty) {
+			return new QuickFixLocation(constructors.sortBy [ before ].head.before, Location.BEFORE)
+		}
+		val behaviors = declaringContext.behaviors
+		if (!behaviors.isEmpty) {
+			return new QuickFixLocation(behaviors.sortBy [ before ].head.before - 1, Location.BEFORE)
+		}
+		val variables = declaringContext.variables.toList
+		if (!variables.isEmpty) {
+			return new QuickFixLocation(variables.sortBy [ before ].last.after, Location.AFTER)
 		}
 		new QuickFixLocation(declaringContext.defaultPlace, Location.ALL)
 	}

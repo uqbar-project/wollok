@@ -29,6 +29,11 @@ class WollokLauncherParameters {
 	boolean tests = false
 	boolean noAnsiFormat = false
 	boolean severalFiles = false
+	
+	Integer numberOfDecimals = null
+	String printingStrategy = null
+	String coercingStrategy = null
+	
 	String folder = null
 	List<String> libraries = new ArrayList()
 	
@@ -43,9 +48,18 @@ class WollokLauncherParameters {
 		if (folder !== null) sb.append("-folder " + folder).append(" ")
 		if (jsonOutput) sb.append("-jsonOutput ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
+		
+		buildNumberPreferences(sb)
+		
 		buildListOption(sb, libraries, "lib", ',')
 		buildListOption(sb, wollokFiles, "wf", ' ')
 		sb.toString
+	}
+
+	def buildNumberPreferences(StringBuilder sb){
+		if(numberOfDecimals !== null) sb.append("-numberOfDecimals ").append(numberOfDecimals).append(" ")
+		if(printingStrategy !== null) sb.append("-printingStrategy ").append(printingStrategy).append(" ")
+		if(coercingStrategy !== null) sb.append("-coercingStrategy ").append(coercingStrategy).append(" ")
 	}
 	
 	def buildListOption(StringBuilder sb, List<String> options, String option, char separator) {
@@ -60,6 +74,7 @@ class WollokLauncherParameters {
 	def parse(String[] args) {
 		val parser = new OptionalGnuParser
 		val cmdLine = parser.parse(options, args, false)
+		
 		hasRepl = cmdLine.hasOption("r")
 		
 		tests = cmdLine.hasOption("t")
@@ -74,6 +89,10 @@ class WollokLauncherParameters {
 
 		requestsPort = parseParameterInt(cmdLine, "requestsPort")
 		eventsPort = parseParameterInt(cmdLine, "eventsPort")
+		
+		numberOfDecimals = parseParameterInt(cmdLine, "numberOfDecimals", null)
+		printingStrategy = parseParameterString(cmdLine, "printingStrategy")
+		coercingStrategy = parseParameterString(cmdLine, "coercingStrategy")
 		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
 			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
@@ -123,9 +142,13 @@ class WollokLauncherParameters {
 		}
 	}
 
-	def parseParameterInt(CommandLine cmdLine, String paramName) {
+	def parseParameterInt(CommandLine cmdLine, String paramName){
+		parseParameterInt(cmdLine, paramName, 0)
+	}
+
+	def parseParameterInt(CommandLine cmdLine, String paramName, Integer missingValue) {
 		if (!cmdLine.hasOption(paramName)) 
-			return 0
+			return missingValue
 
 		try {			
 			val paramParsed = cmdLine.parseParameterString(paramName)
@@ -159,6 +182,11 @@ class WollokLauncherParameters {
 			add("requestsPort", "Request ports", "port", 1)
 			add("eventsPort", "Events ports", "port", 1)	
 			add("folder", "Specific folder", "folder", 1)
+			
+			add("numberOfDecimals", "Number of decimals to use in the printing and rounding", "decimals", 1)
+			add("printingStrategy", "Strategy to use when printing a number", "name", 1)
+			add("coercingStrategy", "Strategy to use when converting numbers", "name", 1)
+			
 			addList("lib", "libraries jars ", "libs", ',')	
 			addList("wf", "wollokFiles ", "files", ' ')	
 

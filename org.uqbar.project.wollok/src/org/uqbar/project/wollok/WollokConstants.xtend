@@ -12,7 +12,6 @@ package org.uqbar.project.wollok
  * @author jfernandes
  */
 class WollokConstants {
-	
 	public static String CLASSPATH = "classpath:/"
 	
 	public static val SOURCE_FOLDER = "src"
@@ -51,6 +50,7 @@ class WollokConstants {
 	public static val METHOD = "method"
 	public static val CONSTRUCTOR = "constructor"
 	public static val VAR = "var"
+	public static val PROPERTY = "property"
 	public static val CONST = "const"
 	public static val OVERRIDE = "override"
 	public static val NATIVE = "native"
@@ -83,5 +83,4 @@ class WollokConstants {
 	public static val FQN_ROOT_CLASS = "wollok.lang.Object"
 	
 	public static val MULTIOPS_REGEXP = "[+\\-*/%]="
-
 }

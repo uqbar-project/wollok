@@ -37,7 +37,7 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 
 	override WollokObject call(String message, WollokObject... parameters) {
 		val method = getMethod(toJavaMethod(message), parameters)
-		if (method === null)
+		if (method === null) 
 			throw doesNotUnderstand(message, parameters)
 		else
 			try {

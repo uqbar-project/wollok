@@ -67,7 +67,7 @@ WReferenciable: WParameter | {WVariable} | WNamedObject ;
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
-	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpressionOrInitializer (',' parentParameters+=WExpressionOrInitializer)* ')')? )?
 	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
@@ -77,7 +77,7 @@ WObjectLiteral returns WExpression:
 
 WVariableDeclaration returns WExpression:
 	{WVariableDeclaration}
-	(writeable?='var'|'const') variable=WVariable ('=' right=WExpression)?
+	(writeable?='var'|'const') (property?='property')? variable=WVariable ('=' right=WExpression)?
 ;
 
 WMethodDeclaration:
@@ -340,7 +340,7 @@ WSetLiteral:
 	
 WNamedObject:
 	'object' name=ID 
-		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')')? )?
+		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpressionOrInitializer (',' parentParameters+=WExpressionOrInitializer)* ')')? )?
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
@@ -402,8 +402,16 @@ WSuperDelegatingConstructorCall:
 
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('
-		(arguments+=WExpression (',' arguments+=WExpression)*)?		
+		(arguments+=WExpressionOrInitializer (',' arguments+=WExpressionOrInitializer)*)?		
 	')' ('with' mixins+=[WMixin])*
+;
+
+WExpressionOrInitializer:
+	(=> WInitializer) | WExpression
+;
+
+WInitializer:
+	initializer=WVariable "=" initialValue=WExpression
 ;
 
 WTry:

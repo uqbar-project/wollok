@@ -216,7 +216,7 @@ class BoundsBasedTypeSystem implements TypeSystem {
 	// literals
 	def dispatch void bind(WNullLiteral p) { p.inferredNode }
 	def dispatch void bind(WNumberLiteral it) {
-		val type = classType(if(value.contains(".")) DOUBLE else INTEGER) 
+		val type = classType(NUMBER) 
 		type.fixedNode(it)
 	}
 	def dispatch void bind(WStringLiteral it) { classType(STRING).fixedNode(it) }

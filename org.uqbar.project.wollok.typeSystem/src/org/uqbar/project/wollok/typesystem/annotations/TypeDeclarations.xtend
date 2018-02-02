@@ -76,6 +76,10 @@ abstract class TypeDeclarations {
 	def operator_greaterEqualsThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
 	}
+
+	def operator_modulo(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
+	}
 	
 
 	// ****************************************************************************
@@ -90,10 +94,6 @@ abstract class TypeDeclarations {
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
-
-	def Integer() { classTypeAnnotation(INTEGER) }
-	
-	def Double() { classTypeAnnotation(DOUBLE) }
 
 	def String() { classTypeAnnotation(STRING) }
 

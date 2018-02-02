@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -119,6 +120,7 @@ class AbstractVisitor {
 	def dispatch void visit(WTest it) { elements.visitAll }
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
 	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
+	
 	def dispatch void visit(WCollectionLiteral it) { elements.visitAll }
 
 	def dispatch void visit(WBlockExpression it) { expressions.visitAll	}
@@ -126,8 +128,8 @@ class AbstractVisitor {
 	def dispatch void visit(WReturnExpression it) { expression.doVisit }
 
 	// terminal elements
-
 	def dispatch void visit(WVariableReference it) { ref.doVisit }
+	def dispatch void visit(WInitializer i) { i.initializer.doVisit }
 
 	// terminals
 	def dispatch void visit(WReferenciable ref){}

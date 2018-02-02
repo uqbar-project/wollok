@@ -1,130 +1,252 @@
 package wollok.lang
 
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.math.RoundingMode
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
-import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 /**
  * Base class for numbers.
- * Probably this (int double and number) will be replaced by a BigDecimal.
- * 
+ *
  * @author jfernandes
+ * @author dodain - 1.6.4 - unification between decimal and integers
+ * 
  */
-abstract class WNumber<T extends Number> extends AbstractJavaWrapper<T> {
+class WNumber extends AbstractJavaWrapper<BigDecimal> {
 
-	public static int DECIMAL_PRECISION = 5
-	
 	new(WollokObject obj, WollokInterpreter interpreter) {
 		super(obj, interpreter)
-	}	
+	}
+
+	/**
+	 * **********************************************************
+	 *               BASIC MATHEMATICAL OPERATIONS
+	 * **********************************************************
+	 */
+	def div(BigDecimal other) { 
+		other.checkNotNull("div")
+		wrapped.divide(other, RoundingMode.HALF_UP).intValue
+	}
+
+	@NativeMessage("+")
+	def plus(WollokObject other) { 
+		other.checkNotNull("+")
+		operate(other)[doPlus(it)]
+	}
+
+	def dispatch Number doPlus(BigDecimal w) {
+		this.add(wrapped, w)
+	}
+
+	def dispatch Number doPlus(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
+
+	@NativeMessage("-")
+	def minus(WollokObject other) { 
+		other.checkNotNull("-")
+		operate(other)[doMinus(it)]
+	}
+
+	def dispatch Number doMinus(BigDecimal w) {
+		this.subtract(wrapped, w)
+	}
+
+	def dispatch Number doMinus(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
+
+	@NativeMessage("*")
+	def multiply(WollokObject other) { 
+		other.checkNotNull("*")
+		operate(other)[doMultiply(it)]
+	}
+
+	def dispatch Number doMultiply(BigDecimal w) {
+		this.mul(wrapped, w)
+	}
+
+	def dispatch Number doMultiply(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
+
+	@NativeMessage("/")
+	def divide(WollokObject other) { 
+		other.checkNotNull("/")
+		operate(other)[doDivide(it)]
+	}
+
+	def dispatch Number doDivide(BigDecimal w) {
+		this.div(wrapped, w)
+	}
+
+	def dispatch Number doDivide(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
+
+	@NativeMessage("**")
+	def raise(WollokObject other) { 
+		other.checkNotNull("**")
+		operate(other)[doRaise(it)]
+	}
+
+	def dispatch Number doRaise(BigDecimal w) { 
+		Math.pow(wrapped.doubleValue, w.doubleValue)
+	}
+
+	def dispatch Number doRaise(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
+
+	@NativeMessage("%")
+	def module(WollokObject other) { 
+		other.checkNotNull("%")
+		operate(other)[doModule(it)]
+	}
+
+	def dispatch Number doModule(BigDecimal w) {
+		this.remainder(wrapped, w)
+	}
+
+	def dispatch Number doModule(Object w) { 
+		throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, w))
+	}
 	
-	def max(WNumber<?> other) { doMax(this, other).asWollokObject }
+	def abs() { this.wrapped.abs.asWollokObject }
 
-	def dispatch doMax(WInteger a, WInteger b) { Math.max(a.wrapped, b.wrapped) }
+	def invert() { (-wrapped).asWollokObject }
 
-	def dispatch doMax(WNumber<?> a, WNumber<?> b) { Math.max(a.doubleValue, b.doubleValue) }
-
-	def min(WNumber<?> other) { doMin(this, other).asWollokObject }
-
-	def dispatch doMin(WInteger a, WInteger b) { Math.min(a.wrapped, b.wrapped) }
-
-	def dispatch doMin(WNumber<?> a, WNumber<?> b) { Math.min(a.doubleValue, b.doubleValue) }
-
-	def div(WollokObject other) {
-		val n = other.nativeNumber
-		Math.floor(this.doubleValue / n.doubleValue).intValue
+	def randomUpTo(BigDecimal other) {
+		other.checkNotNull("randomUpTo")
+		val maximum = other.doubleValue
+		val minimum = wrapped.doubleValue
+		return (Math.random * (maximum - minimum) + minimum).doubleValue
 	}
 
-	def add(BigDecimal sumand1, BigDecimal sumand2) {
-		adapt(sumand1).add(sumand2).checkResult
+	def roundUp(BigDecimal decimals) {
+		decimals.checkNotNull("roundUp")
+		scale(decimals, BigDecimal.ROUND_UP)
+	}
+
+	def truncate(BigDecimal decimals) {
+		decimals.checkNotNull("truncate")
+		scale(decimals, BigDecimal.ROUND_DOWN)
+	}
+
+	@NativeMessage(">")
+	def greater(BigDecimal other) { 
+		other.checkNotNull(">")
+		wrapped.doubleValue > other.doubleValue
+	}
+
+	@NativeMessage("<")
+	def lesser(BigDecimal other) { 
+		other.checkNotNull("<")
+		wrapped.doubleValue < other.doubleValue
+	}
+
+	def gcd(BigDecimal other) {
+		other.checkNotNull("gcd")
+		val num1 = BigInteger.valueOf(wrapped.coerceToInteger)
+		val divisor = other.coerceToInteger
+		num1.gcd(BigInteger.valueOf(divisor)).intValue
+	}
+
+	def coerceToInteger() {
+		wrapped.coerceToInteger
+	}
+
+	def isInteger() {
+		wrapped.isInteger
 	}
 	
-	def subtract(BigDecimal minuend, BigDecimal sustraend) {
-		adapt(minuend).subtract(sustraend).checkResult
-	}
-	
-	def mul(BigDecimal mul1, BigDecimal mul2) {
-		adapt(mul1).multiply(mul2).checkResult
-	}
-
-	def div(BigDecimal dividend, BigDecimal divisor) {
-		adapt(dividend).divide(divisor, RoundingMode.HALF_UP).checkResult
-	}
-
-	def remainder(BigDecimal dividend, BigDecimal divisor) {
-		adapt(dividend).remainder(divisor).checkResult
-	}
-
 	/** *******************************************************************
 	 * 
 	 * INTERNAL METHODS
 	 * 
 	 * *******************************************************************
 	 */
-	private def adapt(BigDecimal operand) {
-		operand.setScale(DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+	def scale(BigDecimal _decimals, int operation) {
+		val decimals = _decimals.coerceToInteger
+		if (decimals < 0) throw throwInvalidOperation(Messages.WollokConversion_INVALID_SCALE_NUMBER)
+		wrapped.setScale(decimals, operation)
 	}
 
-	private def checkResult(BigDecimal result) {
-		val resultRounded = adapt(result)
-		val resultIntValue = result.intValue
-		if (result == resultIntValue) {
-			return resultIntValue
-		}
-		return resultRounded
-	}
-
-	// ********************************************************************************************
-	// ** Basics
-	// ********************************************************************************************	
-	
 	def doubleValue() { wrapped.doubleValue }
 
-	def stringValue() { wrapped.toString }
-	
-	override toString() { wrapped.toString }
-	
-	override equals(Object obj) {
-		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped 
+	override toString() {
+		this.stringValue
 	}
-	
+
+	override equals(Object obj) {
+		this.class.isInstance(obj) && wrapped == (obj as WNumber).wrapped
+	}
+
 	@NativeMessage("===")
 	def wollokEquals(WollokObject other) {
 		val n = other.nativeNumber
-		n != null && n.doubleValue == this.doubleValue
+		n !== null && n.doubleValue === this.doubleValue
 	}
-	
-	def <T> T asWollokObject(Object obj) { WollokJavaConversions.javaToWollok(obj) as T }
-	
+
+	def <BigDecimal> BigDecimal asWollokObject(Object obj) {
+		javaToWollok(obj) as BigDecimal
+	}
+
+	def newInstance(Number naitive) {
+		(interpreter.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
+	}
+
+	def WNumber nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
+
+	def stringValue() {
+		wrapped.printValueAsString
+	}
+
+	def decimalPrecision() {
+		WollokNumbersPreferences.instance.decimalPositions
+	}
+
+	/**
+	 * **********************************************************************
+	 *                INTERNAL MATHEMATICAL OPERATIONS
+	 * **********************************************************************
+	 */
+	def add(BigDecimal sumand1, BigDecimal sumand2) {
+		sumand1.add(sumand2)
+	}
+
+	def subtract(BigDecimal minuend, BigDecimal sustraend) {
+		minuend.subtract(sustraend)
+	}
+
+	def mul(BigDecimal mul1, BigDecimal mul2) {
+		mul1.multiply(mul2).adaptResult
+	}
+
+	def div(BigDecimal dividend, BigDecimal divisor) {
+		dividend.divide(divisor, RoundingMode.HALF_UP).adaptResult
+	}
+
+	def remainder(BigDecimal dividend, BigDecimal divisor) {
+		dividend.remainder(divisor)
+	}
+
 	def operate(WollokObject other, (Number)=>Number block) {
 		val n = other.nativeNumber
-		if (n == null)
-			throw new WollokRuntimeException("Operation doesn't support parameter " + other)
+		if (n === null) {
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_PARAMETER, other))
+		}
 		val result = block.apply(n.wrapped)
 		newInstance(result)
 	}
-	
-	def newInstance(Number naitive) {
-		(interpreter.evaluator as WollokInterpreterEvaluator).getOrCreateNumber(naitive.toString)
-	} 
-	
-	def WNumber<? extends Number> nativeNumber(WollokObject obj) { obj.getNativeObject(WNumber) }
 
-	protected def integerOrElse(BigDecimal decimal) {
-		val resultIntValue = decimal.intValue
-		 
-		if (decimal == resultIntValue) {
-			return resultIntValue
-		}
-		return decimal
-	}
 	
-	protected def integerOrElse(double decimal) {
-		integerOrElse(new BigDecimal(decimal))
-	}
 }

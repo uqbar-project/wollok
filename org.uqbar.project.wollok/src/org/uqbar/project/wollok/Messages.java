@@ -25,6 +25,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_PARAMETER_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_OBJECT_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_CANNOT_INSTANTIATE_ABSTRACT_CLASS;
+	public static String WollokDslValidator_PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS;
+	public static String WollokDslValidator_PROPERTY_NOT_WRITABLE;
 	
 	// overrides
 	public static String WollokDslValidator_METHOD_NOT_OVERRIDING;
@@ -50,6 +52,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED;
 	public static String WollokDslValidator_ERROR_VARIABLE_NEVER_ASSIGNED_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_MISSING_ASSIGNMENTS_IN_CONSTRUCTOR_CALL;
 	public static String WollokDslValidator_VARIABLE_NEVER_USED;
 	public static String WollokDslValidator_PARAMETER_NEVER_USED;
 	public static String WollokDslValidator_SUPER_ONLY_IN_CLASSES;
@@ -108,6 +111,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
+	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
@@ -163,6 +167,7 @@ public class Messages extends NLS {
 	// ****************************
 	// ** Syntax message provider
 	// ****************************
+
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_BEFORE_CONSTRUCTOR_AND_METHODS;
 	public static String SYNTAX_DIAGNOSIS_REFERENCES_NOT_ALLOWED_HERE_GENERIC;
 	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE;
@@ -177,7 +182,41 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_ORDER_PROBLEM;
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
+
 	
+	// ****************************
+	// ** Conversions
+	// ****************************
+	
+	public static String WollokConversion_INVALID_CONVERSION;
+	public static String WollokConversion_UNSUPPORTED_CONVERSION_JAVA_WOLLOK;
+	public static String WollokConversion_INTEGER_VALUE_REQUIRED;
+	public static String WollokConversion_POSITIVE_INTEGER_VALUE_REQUIRED;
+	public static String WollokConversion_DECIMAL_SCALE_REQUIRED;
+	public static String WollokConversion_WARNING_NUMBER_VALUE_SCALED;
+	public static String WollokConversion_WARNING_NUMBER_VALUE_INTEGER;
+	public static String WollokConversion_INVALID_SCALE_NUMBER;
+	public static String WollokConversion_INVALID_OPERATION_PARAMETER;
+	public static String WollokConversion_INVALID_OPERATION_NULL_PARAMETER;
+	public static String WollokConversion_MULTIPLE_MESSAGES_ERROR;
+	public static String WollokConversion_INVALID_ARGUMENTS_SIZE;
+	public static String WollokConversion_STRING_CONVERSION_FAILED;
+
+	public static String WollokMessage_ELEMENT_NOT_FOUND;
+	
+	// ****************************
+	// ** Wollok Number Preferences 
+	// ****************************
+	
+	public static String WollokNumberPreferences_COERCING_STRATEGY_NOTFOUND;
+	public static String WollokNumberPreferences_PRINTING_STRATEGY_NOTFOUND;
+	
+	// ****************************
+	// ** Wollok Type System
+	// ****************************
+	
+	public static String WollokTypeSystem_AN_EXPRESSION_IS_EXPECTED_AT_THIS_POSITION;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
