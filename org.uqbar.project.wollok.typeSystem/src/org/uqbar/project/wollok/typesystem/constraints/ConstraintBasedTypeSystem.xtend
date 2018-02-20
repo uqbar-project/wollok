@@ -34,6 +34,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
+import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -56,6 +57,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * TODO It might be more correct to use WollokType, but right now it would only complicate things.
 	 */
 	Set<AbstractContainerWollokType> allTypes
+
+	new() {
+		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
+	}
 	
 	override def name() { "Constraints-based" }
 
@@ -193,3 +198,4 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		allTypes
 	}
 }
+	
