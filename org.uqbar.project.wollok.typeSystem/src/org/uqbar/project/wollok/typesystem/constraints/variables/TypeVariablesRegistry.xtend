@@ -143,6 +143,10 @@ class TypeVariablesRegistry {
 				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 			}]
 	}
+	
+	def type(EObject obj) {
+		typeVariables.get(obj)?.type
+	}
 
 	// ************************************************************************
 	// ** Method types

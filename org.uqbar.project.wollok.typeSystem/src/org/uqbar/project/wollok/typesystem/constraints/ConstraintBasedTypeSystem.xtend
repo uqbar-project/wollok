@@ -160,7 +160,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ** Other (TBD)
 	// ************************************************************************
 	override type(EObject obj) {
-		obj.tvar.type
+		registry?.type(obj)
 	}
 
 	override issues(EObject obj) {
