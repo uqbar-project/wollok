@@ -63,6 +63,7 @@ class SimpleTypeInfo extends TypeInfo {
 
 		if (maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
+			true
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
 		}
