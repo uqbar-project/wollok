@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
+
 import java.util.Map
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
@@ -19,10 +20,12 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericT
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
+import org.eclipse.emf.common.util.URI
 
 class TypeVariablesRegistry {
-	val Map<EObject, TypeVariable> typeVariables = newHashMap
-	val Map<EObject, ClassParameterTypeVariable> typeParameters = newHashMap
+	val Map<URI, TypeVariable> typeVariables = newHashMap
+	val Map<URI, ClassParameterTypeVariable> typeParameters = newHashMap
 	val Logger log = Logger.getLogger(this.class)
 	
 
@@ -39,14 +42,14 @@ class TypeVariablesRegistry {
 	def register(TypeVariable it) {
 		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
 		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeVariables.put(owner, it)
+		if (owner !== null) typeVariables.put(owner.URI, it)
 		return it
 	}
 
 	def register(ClassParameterTypeVariable it) {
 		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
 		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeParameters.put(owner, it)
+		if (owner !== null) typeParameters.put(owner.URI, it)
 		return it
 	}
 	
@@ -132,20 +135,20 @@ class TypeVariablesRegistry {
 	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
 	 */
 	def TypeVariable tvar(EObject obj) {
-		typeVariables.get(obj) => [ if (it === null) {
+		typeVariables.get(obj.URI) => [ if (it === null) {
 			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
-		typeVariables.get(obj) ?: 
-			typeParameters.get(obj) => [ if (it === null) {
+		typeVariables.get(obj.URI) ?: 
+			typeParameters.get(obj.URI) => [ if (it === null) {
 				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 			}]
 	}
 	
 	def type(EObject obj) {
-		typeVariables.get(obj)?.type
+		typeVariables.get(obj.URI)?.type
 	}
 
 	// ************************************************************************
