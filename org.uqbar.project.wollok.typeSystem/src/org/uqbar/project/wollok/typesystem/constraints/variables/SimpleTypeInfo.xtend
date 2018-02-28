@@ -12,6 +12,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 
 class SimpleTypeInfo extends TypeInfo {
 	@Accessors
@@ -91,19 +92,23 @@ class SimpleTypeInfo extends TypeInfo {
 	}
 
 	override ConcreteTypeState addMinType(WollokType type) {
-		if (minTypes.containsKey(type)) {
-			Ready
-		} else if (!canAddMinType(type)) {
-			throw new RejectedMinTypeException(type)
-		} else {
-			minTypes.put(type, Pending)
-			Pending
-		}
+		if (minTypes.containsKey(type)) return Ready
+		
+		validateNewMinType(type)
+		
+		minTypes.put(type, Pending)
+		Pending
+	
 	}
 
-	def canAddMinType(WollokType type) {
-		if (sealed) minTypes.keySet.exists[isSuperTypeOf(type)]
-		else type.respondsToAll(messages)
+	def validateNewMinType(WollokType type) {
+		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) 
+			throw new RejectedMinTypeException(type)
+		
+		messages.forEach[
+			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
+		]
+			
 	}
 	
 	// ************************************************************************
