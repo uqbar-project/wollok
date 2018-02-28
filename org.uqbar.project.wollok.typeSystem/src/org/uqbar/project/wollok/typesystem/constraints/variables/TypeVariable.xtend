@@ -164,6 +164,7 @@ class TypeVariable implements ITypeVariable {
 	def doSetTypeInfo(TypeInfo newTypeInfo) {
 		newTypeInfo.addUser(this)
 		this.typeInfo = newTypeInfo
+		this.typeInfo.messages.addAll(messagesCache)
 	}
 
 	/**
@@ -183,13 +184,17 @@ class TypeVariable implements ITypeVariable {
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
+	val List<MessageSend> messagesCache = newArrayList
+
 	/** 
 	 * Register that a message has been sent to this type variable.
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
-		// TODO Currently only simple types are supporting message sending, but closures also should.
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
-		typeInfo.messages.add(new MessageSend(selector, arguments, returnType))
+		val message = new MessageSend(selector, arguments, returnType)
+		if (typeInfo === null)
+			messagesCache.add(message)
+		else
+			typeInfo.messages.add(message)
 	}
 
 	/**
