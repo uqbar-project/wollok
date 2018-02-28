@@ -64,4 +64,16 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("{() => Boolean}", "c")
 		]
 	}
+
+	@Test
+	def void applyStringLiteralClosure() {
+		'''
+			program p {
+				const c = { "Hello" }
+				const s = c.apply()
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("String", "s")
+		]
+	}
 }
