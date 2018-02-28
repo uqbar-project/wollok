@@ -104,6 +104,8 @@ abstract class TypeDeclarations {
 	def Set() { classTypeAnnotation(SET) }
 
 	def Collection() { classTypeAnnotation(COLLECTION) }
+	
+	def Closure() { classTypeAnnotation(CLOSURE) }
 
 	def Range() { classTypeAnnotation(RANGE) }
 

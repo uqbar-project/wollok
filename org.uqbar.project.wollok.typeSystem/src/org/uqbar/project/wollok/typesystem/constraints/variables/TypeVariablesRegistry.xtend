@@ -151,7 +151,7 @@ class TypeVariablesRegistry {
 		new MethodTypeInfo(this, type.lookupMethod(selector, arguments))
 	}
 
-	def methodTypeInfo(WClass container, String selector, List<WParameter> arguments) {
+	def methodTypeInfo(WClass container, String selector, List<?> arguments) {
 		new MethodTypeInfo(this, container.lookupMethod(selector, arguments, true))
 	}
 

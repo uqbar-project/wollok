@@ -60,6 +60,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		console >> "newline" === #[] => Void
 
 		comparable(Number, Number, Number, String, Date)
+		
+		Closure >> "apply" === #[Any] => String
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
