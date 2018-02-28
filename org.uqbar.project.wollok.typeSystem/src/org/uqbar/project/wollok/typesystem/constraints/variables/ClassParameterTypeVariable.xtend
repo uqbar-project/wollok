@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import javax.management.openmbean.SimpleType
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -60,8 +61,18 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	}
 
 	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
-		val receiverTypeInfo = messageSend.memberCallTarget.tvar.typeInfo as GenericTypeInfo
-		receiverTypeInfo.param(paramName)
+		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
 	}
 
+	def dispatch classTypeParameterFor(SimpleTypeInfo typeInfo) {
+		val receiverTypeInfo = typeInfo as GenericTypeInfo
+		receiverTypeInfo.param(paramName)
+	}
+	
+	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
+		switch (paramName) {
+			case ClosureTypeInfo.RETURN: typeInfo.returnType 
+			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')
+		}
+	}
 }

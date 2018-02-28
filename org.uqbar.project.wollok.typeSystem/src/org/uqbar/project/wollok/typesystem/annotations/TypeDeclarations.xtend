@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -114,6 +115,8 @@ abstract class TypeDeclarations {
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
+	
+	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }
 
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
 
