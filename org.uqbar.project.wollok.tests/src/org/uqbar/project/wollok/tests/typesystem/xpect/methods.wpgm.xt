@@ -8,7 +8,7 @@ class Golondrina {
 	method vola() { energia = energia - 10 }
 	
 	// XPECT methodType at come --> (Number) => Void
-	method come(grms) { energia = grms * 0.10 }
+	method come(grms) { energia = energia + grms * 0.10 }
 }
 
 object pepita {
