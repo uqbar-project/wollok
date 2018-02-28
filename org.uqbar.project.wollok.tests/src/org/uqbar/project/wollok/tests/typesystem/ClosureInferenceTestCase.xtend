@@ -66,7 +66,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	def void applyStringLiteralClosure() {
+	def void inferenceReturnApplyClosure() {
 		'''
 			program p {
 				const c = { "Hello" }
@@ -74,6 +74,20 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOfAsString("String", "s")
+		]
+	}
+	
+	@Test
+	def void inferenceParametersApplyClosure() {
+		'''
+			class Calculator {
+				method next(n) {
+					const c = { a => 2 + a }
+					return c.apply(n)
+				}
+			}
+		'''.parseAndInfer.asserting [
+			assertMethodSignature("(Number) => Number", "Calculator.next")
 		]
 	}
 }
