@@ -164,7 +164,6 @@ class TypeVariable implements ITypeVariable {
 	def doSetTypeInfo(TypeInfo newTypeInfo) {
 		newTypeInfo.addUser(this)
 		this.typeInfo = newTypeInfo
-		this.typeInfo.messages.addAll(messagesCache)
 	}
 
 	/**
@@ -184,17 +183,16 @@ class TypeVariable implements ITypeVariable {
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
-	val List<MessageSend> messagesCache = newArrayList
-
 	/** 
 	 * Register that a message has been sent to this type variable.
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
-		val message = new MessageSend(selector, arguments, returnType)
-		if (typeInfo === null)
-			messagesCache.add(message)
-		else
-			typeInfo.messages.add(message)
+		val it = new MessageSend(selector, arguments, returnType)
+		if (typeInfo === null) {
+			if (isClosureMessage)	setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
+			else					setTypeInfo(new SimpleTypeInfo())
+		} 
+		typeInfo.messages.add(it)
 	}
 
 	/**

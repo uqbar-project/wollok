@@ -32,6 +32,10 @@ class MessageSend {
 	def addOpenType(WollokType type) {
 		openTypes.add(type)
 	}
+	
+	def isClosureMessage() {
+		selector == "apply"
+	}
 
 	override toString() { returnType.owner.debugInfo }
 }
