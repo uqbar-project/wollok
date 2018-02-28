@@ -1482,7 +1482,7 @@ class String {
  * Represents a Boolean value (true or false)
  *
  * @author jfernandes
- * @noinstantiate
+ * @noInstantiate
  */
 class Boolean {
 
