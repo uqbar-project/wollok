@@ -1,17 +1,17 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.apache.log4j.Logger
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
-import org.uqbar.project.wollok.typesystem.ClosureType
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * This strategy takes a message send for which receiver we know a possible concrete type (i.e. a Wollok Class) 
@@ -22,7 +22,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 
 	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo it) {
 		log.trace('''Trying to open closure methods for «tvar.debugInfoInContext»''')
-		messages.forEach[openClosureMethod(tvar)]
+		val type = WollokClassFinder.instance.getClosureClass(tvar.owner)
+		messages.forEach[openClosureMethod(type)]
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
@@ -46,9 +47,8 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 		}
 	}
 
-	def openClosureMethod(MessageSend it, TypeVariable tvar) {
-		val type = WollokClassFinder.instance.getClosureClass(tvar.owner)
-		if (addOpenType(null)) {
+	def openClosureMethod(MessageSend it, WClass type) {
+		if (addOpenType(registry.typeSystem.classType(type))) {
 			log.debug('''  Feeding message send «it» with method type info from type «type»''')
 			val methodTypeInfo = registry.methodTypeInfo(type, selector, arguments)
 			changed = true
