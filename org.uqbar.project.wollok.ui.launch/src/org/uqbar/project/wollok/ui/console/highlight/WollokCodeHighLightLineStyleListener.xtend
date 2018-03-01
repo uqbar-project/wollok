@@ -3,15 +3,14 @@ package org.uqbar.project.wollok.ui.console.highlight
 import com.google.inject.Inject
 import java.io.ByteArrayInputStream
 import java.util.List
-import org.eclipse.jface.text.TextAttribute
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.LineStyleEvent
 import org.eclipse.swt.custom.LineStyleListener
 import org.eclipse.swt.custom.StyleRange
 import org.eclipse.swt.custom.StyledText
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.resource.XtextResource
 import org.eclipse.xtext.resource.XtextResourceSet
-import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator
 import org.eclipse.xtext.ui.editor.syntaxcoloring.TextAttributeProvider
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.ui.launch.Activator
@@ -20,6 +19,7 @@ import static extension org.uqbar.project.wollok.ui.console.highlight.AnsiUtils.
 import static extension org.uqbar.project.wollok.ui.console.highlight.WTextExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import org.eclipse.jface.text.TextAttribute
 
 /**
  * A line style listener for the console to highlight code
@@ -72,10 +72,12 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		val List<StyleRange> styles = event.styles.filter[length > 0].sortBy[start].toList
 		
 		// add custom highlights
-		calculator.provideHighlightingFor(resource) [ offset, length, styleIds |
-			val styleId = styleIds.get(0) // just get the first one ??
-			val TextAttribute style = stylesProvider.getAttribute(styleId)
+		calculator.provideHighlightingFor(resource, [ offset, length, styleIds |
 			
+			val styleId = styleIds.get(0) // just get the first one ??
+			
+			val TextAttribute style = stylesProvider.getAttribute(styleId)
+
 			val s = new StyleRange(event.lineOffset + offset - headerLength, length, style.foreground, style.background)
 			s.underline = (style.style.bitwiseAnd(TextAttribute.UNDERLINE)) !== 0
 			s.data = styleId
@@ -83,13 +85,22 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 			if (s.start <= originalText.length && s.end <= originalText.length) {
 				styles.merge(s)
 			}
-		]
+
+			] , [ | false ] ) 
 		
 		// try to imitate some styles as the editor "manually"
+		val stylesEditor = newArrayList
+		
 		resource.contents.get(0).node.asTreeIterable
-			.filter[offset > programHeader.length && offset < footerOffset]
-			.forEach [n | highlighter.processASTNode(styles, n, n.grammarElement, event, headerLength) ]
-			
+			.filter[offset > programHeader.length && offset < footerOffset ]
+			.forEach [n |
+				// Hack - Dodain: to avoid several times to pass
+				// and also there are nodes with leading spaces that causes everything to go mad
+				if (!stylesEditor.contains(n.text + n.offset) && !n.text.startsWith(" ")) {
+					highlighter.processASTNode(styles, n, n.grammarElement, event, headerLength)
+				}
+			]
+		 	
 		// highlight errors
 		resource.parseResult.syntaxErrors
 							.filter[offset > programHeader.length && offset < footerOffset]
@@ -106,11 +117,9 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 		event.styles = styles.sortBy[start].toList 
 		
 		// FIX exceeding styles
-		event.styles.filter[it != null && end > originalText.length].forEach[
+		event.styles.filter[it !== null && end > originalText.length].forEach[
 			length = originalText.length - start
 		]
-		
-		safelyPrintStyles(event, originalText)
 	}
 	
 	// *******************************************
@@ -136,8 +145,8 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 	}
 
 	def errorStyle(LineStyleEvent event, Integer offset, Integer length, String type) {
-		val theOffset = if(offset != null) offset else programHeader.length
-		val theLength = if(length != null) length else event.lineText.length
+		val theOffset = if(offset !== null) offset else programHeader.length
+		val theLength = if(length !== null) length else event.lineText.length
 		new StyleRange(event.lineOffset + (theOffset - programHeader.length), theLength, PARSER_ERROR_COLOR, null,
 			SWT.ITALIC) => [
 			data = type
@@ -148,18 +157,4 @@ class WollokCodeHighLightLineStyleListener implements LineStyleListener {
 
 	def isCodeInputLine(LineStyleEvent it) { lineText.startsWith(PROMPT) || lineText.startsWith(PROMPT_ANSI) }
 
-	protected def safelyPrintStyles(LineStyleEvent event, String originalText) {
-//		if (!event.styles.empty) {
-//			event.styles.filter[it != null].sortBy[start].toList.forEach[
-//				try {
-//					println('''[«start»,«start + length», «data», "«originalText.substring(start, end)»"]''')
-//				}
-//				catch (StringIndexOutOfBoundsException e) {
-//					println('''//////////////// BOOM !: text size «originalText.length» and OFFENDING STYLE: «it»''')
-//					// cutting it
-//					length = originalText.length - start
-//				}
-//			]
-//		}
-	}
 }

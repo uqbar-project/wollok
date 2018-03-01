@@ -67,7 +67,10 @@ public class Messages extends NLS {
 	
 	public static String WollokTemplateProposalProvider_WConstructorCall_name;
 	public static String WollokTemplateProposalProvider_WConstructorCall_description;
-	
+
+	public static String WollokTemplateProposalProvider_WConstructorCallWithNamedParameter_name;
+	public static String WollokTemplateProposalProvider_WConstructorCallWithNamedParameter_description;
+
 	public static String WollokTemplateProposalProvider_WConstructor_name;
 	public static String WollokTemplateProposalProvider_WConstructor_description;
 	
@@ -129,7 +132,11 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_remove_method_description; 
 	public static String WollokDslQuickFixProvider_initialize_value_name; 
 	public static String WollokDslQuickFixProvider_remove_initialization_name; 
-	public static String WollokDslQuickFixProvider_remove_initialization_description; 
+	public static String WollokDslQuickFixProvider_remove_initialization_description;
+	public static String WollokDslQuickFixProvider_remove_attribute_initialization_name;
+	public static String WollokDslQuickFixProvider_remove_attribute_initialization_description;
+	public static String WollokDslQuickFixProvider_add_missing_initializations_name;
+	public static String WollokDslQuickFixProvider_add_missing_initializations_description;
 	public static String WollokDslQuickFixProvider_initialize_value_description; 
 	public static String WollokDslQuickFixProvider_add_call_super_name; 
 	public static String WollokDslQuickFixProvider_add_call_super_description;
@@ -165,8 +172,21 @@ public class Messages extends NLS {
 	public static String AddNewElementQuickFix_Accept;
 	public static String AddNewElementQuickFix_Cancel;
 	
+	// ****************************
+	// ** Root preference page
+	// ****************************
+
 	public static String WollokRootPreferencePage_autoformat_description;
 	public static String WollokRootPreferencePage_debuggerWaitTimeForConnect;
+
+	// ****************************
+	// ** Numbers preference page
+	// ****************************
+
+	public static String WollokNumbersPreferencePage_decimalPositionsAmount;
+	public static String WollokNumbersPreferencePage_numberCoercingStrategy;
+	public static String WollokNumbersPreferencePage_numberPrintingStrategy;
+
 	
 	public static String ExtractMethodUserInputPage_methodName;
 	public static String ExtractMethodUserInputPage_methodSignaturePreview;
@@ -183,6 +203,7 @@ public class Messages extends NLS {
 	public static String WollokProposal_from_object;
 	public static String WollokProposal_from_mixin;
 	public static String WollokProposal_cannot_instantiate;
+
 	
 	static {
 		// initialize resource bundle

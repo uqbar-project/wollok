@@ -4,7 +4,7 @@ program p {
 	// XPECT type at unString -->  String 
 	const unString = "Hola" 
 
-	// XPECT type at largo -->  Integer
+	// XPECT type at largo -->  Number
 	const largo = "Hola".size() 
 
 	// XPECT type at coleccion -->  List

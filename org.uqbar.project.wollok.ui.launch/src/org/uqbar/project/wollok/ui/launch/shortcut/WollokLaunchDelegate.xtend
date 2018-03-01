@@ -31,6 +31,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore
 import java.util.ArrayList
 import java.util.Arrays
 import org.eclipse.core.resources.ResourcesPlugin
+import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 
 /**
  * Launches the process to execute the interpreter.
@@ -105,7 +106,21 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.folder = config.folder
 		parameters.hasRepl = config.hasRepl
 		parameters.libraries = config.libraries
+	
+		configureNumberPreferences(parameters)
+		
 		parameters
+	}
+	
+	def configureNumberPreferences(WollokLauncherParameters parameters){
+		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.DECIMAL_POSITIONS))
+			parameters.numberOfDecimals = preferenceStoreAccess.preferenceStore.getInt(WollokNumbersConfigurationBlock.DECIMAL_POSITIONS)
+		
+		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY))
+			parameters.coercingStrategy = preferenceStoreAccess.preferenceStore.getString(WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY)
+
+		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY))
+			parameters.printingStrategy = preferenceStoreAccess.preferenceStore.getString(WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY)		
 	}
 		
 	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){

@@ -10,7 +10,7 @@ import java.util.List
 class ClosureType extends BasicType {
 	
 	new(List<WollokType> paramTypes, WollokType returnType) {
-		super('''(«paramTypes?.map[name].join(',')») => «returnType?.name»''')
+		super('''{(«paramTypes?.map[name].join(',')») => «returnType?.name»}''')
 	}
 	
 }

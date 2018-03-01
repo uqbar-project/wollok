@@ -178,3 +178,55 @@ class TestPersonas {
 		assert.notEquals(new Hijo(2), new Persona(2))
 	}	
 }
+
+class Ave {
+	var energia
+	var edad = 10
+	method cumplirAnios() {
+		edad++
+	}
+	method volar() { energia -= 10 }
+}
+class Golondrina inherits Ave {
+	// XPECT warnings --> "Variable is never assigned" at "peso"
+	var peso
+	method estaGorda() = peso > 100
+}
+class Torcaza inherits Ave {
+	var color
+	constructor(_color) {
+		color = _color
+		energia = 10
+		edad = 1
+	}
+}
+class Entrenador {
+	var pepita = null
+	var otraPepita = null
+	var torcaza = null
+	method crearUnAve() {
+		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Ave(edad = 2)"
+		pepita = new Ave(edad = 2)
+		// XPECT errors --> "Reference inexistente not found in class Ave" at "inexistente = true"
+		pepita = new Ave(energia = 12, inexistente = true)
+		pepita = new Ave(edad = 2, energia = 50)
+		pepita = new Ave(energia = 50)
+	}
+	method crearOtraAve() {
+		// XPECT errors --> "You must provide initial value to the following references: peso, energia" at "new Golondrina(edad = 2)"
+		otraPepita = new Golondrina(edad = 2)
+		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Golondrina(edad = 10, peso = 5)"
+		otraPepita = new Golondrina(edad = 10, peso = 5)
+		otraPepita = new Golondrina(edad = 10, peso = 5, energia = 56)
+	}
+	method crearTorcaza() {
+		torcaza = new Torcaza("azul")
+		torcaza = new Torcaza(color = "rojo", energia = 25, edad = 3)
+		// XPECT errors --> "You must provide initial value to the following references: energia" at "new Torcaza(color = "rojo")"
+		torcaza = new Torcaza(color = "rojo")
+		// XPECT errors --> "You must provide initial value to the following references: color, energia" at "new Torcaza(edad = 5)"
+		torcaza = new Torcaza(edad = 5)
+		// XPECT errors --> "Wrong number of arguments. Should be new Torcaza(_color)" at "new Torcaza()"
+		torcaza = new Torcaza()
+	}
+}

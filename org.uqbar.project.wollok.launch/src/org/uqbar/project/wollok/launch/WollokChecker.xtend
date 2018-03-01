@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.launch.setup.WollokLauncherSetup
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
+import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
 
 /**
  * Wollok checker program.
@@ -49,6 +50,8 @@ class WollokChecker {
 
 			val parameters = new WollokLauncherParameters().parse(args)
 
+			this.configureNumberPreferences(parameters)
+
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
 
 			if (parameters.severalFiles) {
@@ -66,6 +69,17 @@ class WollokChecker {
 			t.printStackTrace
 			System.exit(1)
 		}
+	}
+	
+	def configureNumberPreferences(WollokLauncherParameters parameters) {
+		if(parameters.numberOfDecimals !== null)
+			WollokNumbersPreferences.instance.decimalPositions = parameters.numberOfDecimals
+
+		if(parameters.coercingStrategy !== null)
+			WollokNumbersPreferences.instance.setNumberCoercingStrategyByName(parameters.coercingStrategy)
+
+		if(parameters.printingStrategy !== null)
+			WollokNumbersPreferences.instance.setNumberPrintingStrategyByName(parameters.printingStrategy)
 	}
 
 	def void launch(List<String> fileNames, WollokLauncherParameters parameters) {

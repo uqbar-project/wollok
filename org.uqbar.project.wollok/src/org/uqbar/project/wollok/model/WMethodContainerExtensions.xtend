@@ -22,6 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -51,7 +52,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 
 /**
  * Extension methods for WMethodContainers.
@@ -65,13 +65,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		EcoreUtil2.getContainerOfType(it, WMethodContainer) ?: EcoreUtil2.getContainerOfType(it, WTest) 
 	}
 
-	def static WMethodContainer declaringContext(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodContainer) }
+	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
+	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
+	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
+	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	
-	def static WMethodDeclaration declaringMethod(EObject it) { EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
-
-	def static WConstructor declaringConstructor(EObject it) { EcoreUtil2.getContainerOfType(it, WConstructor) }
-
-	def static WFixture declaringFixture(EObject it) { EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static EObject declaringContainer(WReturnExpression it)	{ 
+		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
+	}
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
@@ -172,6 +174,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static variableNames(WMethodContainer it) {	variables.map [ v | v?.name ].toList }
 
+	def static allVariableNames(WMethodContainer it) { allVariables.map [ v | v?.name ].toList }
+
 	def static hasVariable(WMethodContainer it, String name) { variableNames.contains(name) }
 	
 	def dispatch static isReturnWithValue(EObject it) { false }
@@ -182,6 +186,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
 
+	def static allVariableDeclarations(WMethodContainer it) { 
+		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
+			variableDeclarations.addAll(type.variableDeclarations)
+			variableDeclarations
+		]
+	}
+	
 	def static variableDeclarations(WMethodContainer c) { c.members.filter(WVariableDeclaration) }
 	def static variableDeclarations(WTest p) { p.elements.filter(WVariableDeclaration) }
 
@@ -229,6 +240,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass it) { inheritedMethods }
 	def static dispatch Iterable<WMethodDeclaration> allMethods(WSuite it) { methods }
 
+	def static allVariables(WMethodContainer it) {
+		allVariableDeclarations.map [ variable ]
+	}
+	
 	def static getInheritedMethods(WMethodContainer it) {
 		linearizeHierarchy.fold(newArrayList) [methods, type |
 			val currents = type.methods
@@ -638,5 +653,5 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
 	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
-	
+
 }

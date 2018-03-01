@@ -950,4 +950,70 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrorsWithoutStaticChecks
 	}
 
+	@Test
+	def void namedParametersWithNumbers() {
+		'''
+		class Point {
+			var x
+			var y
+		}
+		program t {
+			console.println(new Point(x = 1, y = 2))
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void namedParametersWithLiterals() {
+		'''
+		object chayanne {
+			method nombre() = "Chayanne"
+		}
+		class Presentacion {
+			var fecha
+			var property cantante
+			var property localidades
+		}
+		program t {
+			const presentacion = new Presentacion(fecha = new Date(), cantante = chayanne, localidades = [100, 50, 200])
+			console.println(presentacion)
+			assert.equals(chayanne, presentacion.cantante())
+			assert.equals(350, presentacion.localidades().sum())
+		}
+		'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void namedParametersWithInheritance() {
+		'''
+		object chayanne {
+			method nombre() = "Chayanne"
+		}
+		object lunaPark {}
+		class Evento {
+			var fecha
+		}
+		class EventoLocalizado inherits Evento {
+			var lugar
+			method lugar() = lugar
+		}
+		class Presentacion inherits EventoLocalizado {
+			var property cantante
+			var property localidades
+		}
+		program t {
+			const presentacion = new Presentacion(
+				lugar = lunaPark, 
+				fecha = new Date(), 
+				cantante = chayanne, 
+				localidades = [100, 50, 200]
+			)
+			console.println(presentacion)
+			assert.equals(chayanne, presentacion.cantante())
+			assert.equals(350, presentacion.localidades().sum())
+			assert.equals(presentacion.lugar(), lunaPark)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

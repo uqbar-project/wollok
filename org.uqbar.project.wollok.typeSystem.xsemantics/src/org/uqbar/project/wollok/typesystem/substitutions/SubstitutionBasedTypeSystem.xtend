@@ -166,7 +166,7 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 	// literals
 	def dispatch void doAnalyse(WNumberLiteral it) {
 		// TODO: use classes from SDK. if (value.contains('.')) isOfClass(Double) || isOfClass(Integer)
-		isOfClass(if (value.contains('.')) DOUBLE else INTEGER) 
+		isOfClass(NUMBER) 
 	}
 	def dispatch void doAnalyse(WStringLiteral it) { isOfClass(STRING) }
 	def dispatch void doAnalyse(WBooleanLiteral it) { isOfClass(BOOLEAN) }

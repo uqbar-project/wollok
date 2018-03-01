@@ -38,15 +38,17 @@ class GameObject {
 		board.remove(visual)
 	}
 	
-	def whenKeyPressedDo(int key, WollokObject action) {
+	def whenKeyPressedDo(WollokObject key, WollokObject action) {
+		var num = key.coerceToInteger
 		val function = action.asClosure
-		var listener = new KeyboardListener(key, [ function.doApply ])
+		var listener = new KeyboardListener(num, [ function.doApply ])
 		addListener(listener)
 	}
 
-	def whenKeyPressedSay(int key, WollokObject functionObj) {	
+	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
+		val num = key.coerceToInteger
 		val function = functionObj.asClosure
-		var listener = new KeyboardListener(key, [ board.characterSay(function.doApply.asString) ]) 
+		var listener = new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]) 
 		addListener(listener)
 	}
 	
@@ -102,11 +104,19 @@ class GameObject {
 	def title() { board.title }
 	def title(String title) { board.title = title }
 	
-	def width() { board.width }
-	def width(int cant) { board.width =  cant }
+	def width() { board.width.javaToWollok }
+	def width(WollokObject cant) {
+		board.width =  cant.coerceToInteger
+	}
 	
-	def height() { board.height }
-	def height(int cant) { board.height = cant }
+	def height() { board.height.javaToWollok }
+	def height(WollokObject cant) {
+		board.height = cant.coerceToInteger
+	}
 	
 	def ground(String image) { board.ground = image }
+	def ground(WollokObject image) {
+		board.createCells(image.asString)
+	}
+	
 }

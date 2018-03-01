@@ -97,6 +97,36 @@ class QuickFixUtils {
 		NodeModelUtils.findActualNodeFor(element)
 	}
 
+	def static nextSiblingCode(EObject element) {
+		element.node?.nextSibling?.text?.trim	
+	}
+	
+	def static previousSiblingCode(EObject element) {
+		element.node?.previousSibling?.text?.trim	
+	}
+	
+	def static firstNonEmptyPosition(IXtextDocument document, INode node) {
+		var position = node.offset
+		while (document.getChar(position++) == ' ') { }
+		position - node.offset
+	}
+	
+	def static hasEffectiveNextSibling(EObject o) {
+		o.node.hasNextSibling && o.nextSiblingCode.equals(",") && o.effectiveNextSibling !== null
+	}
+	
+	def static effectiveNextSibling(EObject o) {
+		o.node.nextSibling?.nextSibling
+	}
+
+	def static hasEffectivePreviousSibling(EObject o) {
+		o.node.hasPreviousSibling && o.previousSiblingCode.equals(",") && o.effectivePreviousSibling !== null 
+	}
+	
+	def static effectivePreviousSibling(EObject o) {
+		o.node.previousSibling?.previousSibling
+	}
+	
 	/**
 	 * Common method - compute margin that should by applied to a new method
 	 * If method container
