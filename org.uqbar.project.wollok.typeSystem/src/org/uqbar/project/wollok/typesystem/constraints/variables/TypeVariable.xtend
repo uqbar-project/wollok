@@ -178,7 +178,7 @@ class TypeVariable implements ITypeVariable {
 		typeInfo.addMinType(type)
 	}
 
-	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}

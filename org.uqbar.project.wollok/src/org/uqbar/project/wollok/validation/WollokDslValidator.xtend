@@ -153,8 +153,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
 
-	@Check
 	@NotConfigurable
+	@Check
 	def checkValidationExtensions(WFile wfile) {
 		validatorExtensions.forEach[ ext |
 			if(ext.shouldRun)
