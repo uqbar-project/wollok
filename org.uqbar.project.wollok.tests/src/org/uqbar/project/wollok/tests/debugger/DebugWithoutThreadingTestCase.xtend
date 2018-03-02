@@ -40,8 +40,6 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void evaluatedCalled() {
 		val deb = debugger()
-		//Tip: if tests fail you should use activate it
- 		deb.logSession = true
  		deb.childrenFirst = true
 		
 		'''
@@ -121,8 +119,6 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"other",
 						"self === other",
 						"other != null && self === other",
-						"return other != null && self === other",
-						"{ return other != null && self === other }",
 						"(self == other)",
 						"! (self == other)",
 						"expected != actual",
@@ -130,7 +126,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"{ if (expected != actual) throw new AssertionException(\"Expected [\" + expected.printString() + \"] but found [\" + actual.printString() + \"]\", expected.printString(), actual.printString()) }",
 				"assert.equals(6, sum)",
 			"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }"
-		])
+		 ])
 	}
 	
 	@Test
@@ -216,15 +212,13 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 							"self",
 							"other",
 							// body
-							"{ return other != null && self === other }",
-								"return other != null && self === other",
-									"other != null && self === other",
-										"other != null",
-											"other",
-											"null",
-									"self === other",
-										"self",
-											"other"
+							"other != null && self === other",
+							"other != null",
+							"other",
+							"null",
+							"self === other",
+							"self",
+							"other"
 		])
 	}
 	
@@ -416,7 +410,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 		evaluated += (element -> interpreter.currentThread.stack.peek.clone)
 	}
 	
-		/**
+	/**
 	 * This method is for backward compatibility in tests.
 	 * It is expected to be called AFTER execution
 	 */
@@ -425,7 +419,7 @@ class PostEvaluationTestDebugger extends XDebuggerOff {
 		
 		var i = 0
 		for (t : evaluated) {
-			val escaped = t.key.escapedCode 
+			val escaped = t.key.escapedCode
 			if (logSession)
 				log.debug(escaped)
 			assertEquals(expected.get(i), escaped)
