@@ -566,8 +566,10 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 	
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		if (m.overridenMethod === null) return false
+		if (m.expressionReturns) return m.expression.callsToSuperWith(m) 			
 		val methodBody = m.expression.eContents
-	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
+	 	methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
 	}
 	
 	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }

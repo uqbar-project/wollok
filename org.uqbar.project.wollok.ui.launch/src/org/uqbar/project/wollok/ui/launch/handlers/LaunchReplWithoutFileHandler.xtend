@@ -78,7 +78,7 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	def getOrCreateEmptyProject() {
 		val emptyProject = getProject(EMPTY_PROJECT_NAME)
 
-		if (emptyProject != null) {
+		if (emptyProject !== null) {
 			emptyProject.open(null)
 			return emptyProject
 		}

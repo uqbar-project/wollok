@@ -23,6 +23,10 @@ class Golondrina {
 	
 	method estasCurada() = energia > 10
 	
+	method estasAlegre() = true
+	
+	method estasPensativa() = false
+	
 	method alegria(tiempo) = energia * tiempo 
 }
 
@@ -54,6 +58,11 @@ class GolondrinaSarasa inherits Golondrina {
 	override method estasCurada() {
         return super()
     }
+
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasAlegre"
+	override method estasAlegre() = super()
+
+	override method estasPensativa() = !super()
     	
 }
 
