@@ -24,7 +24,7 @@ class WollokComparisonFailure extends ComparisonFailure {
 	}
 
 	override fillInStackTrace() {
-		if(wollokException == null)
+		if(wollokException === null)
 			return this
 		
 		val elements = WollokExceptionUtils.convertStackTrace(wollokException).map[asStackTraceElement]
