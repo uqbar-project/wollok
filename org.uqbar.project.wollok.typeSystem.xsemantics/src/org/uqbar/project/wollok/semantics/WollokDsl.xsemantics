@@ -94,14 +94,14 @@ rule InferClass
 	G |- WClass c
 from {
 	if (!G.environment.containsKey(c)) {
-		if (c.parent != null) { G |- c.parent }
+		if (c.parent !== null) { G |- c.parent }
 
 		// create a new type for this class and register in env
 		G ||- c >> var WollokType classType
 
 		for (p : c.variableDeclarations) { G |- p : var WollokType pType }
 
-		if (c.constructors != null)
+		if (c.constructors !== null)
 			c.constructors.forEach[ G |- it ]
 
 		c.methods => [
@@ -140,7 +140,7 @@ from {
 	m.parameters.forEach[p| G.add(p, WAny)]
 
 	// Expression == null => método abstracto
-	if (m.expression != null) {
+	if (m.expression !== null) {
 		val currentReturnType = G.env(m, WollokType)
 		if (currentReturnType != WAny) {
 			// si ya teniamos un return type inferido, refinar el tipo del body
@@ -250,7 +250,7 @@ rule WSelfType
 	G |- WSelf thiz : WollokType t
 from {
 	val containingMethod = thiz.method
-	if (containingMethod == null) { // codigo suelto
+	if (containingMethod === null) { // codigo suelto
 		t = WAny
 	}
 	else {
@@ -374,7 +374,7 @@ from {
 		if (thisType instanceof ClassBasedWollokType) {
 			G |- call ~> var MessageType typeOfMessage
 			var method = thisType.lookupMethod(typeOfMessage)
-			if (method != null && thisType.resolveReturnType(typeOfMessage) == WAny) {
+			if (method !== null && thisType.resolveReturnType(typeOfMessage) == WAny) {
 				G.add(method, newType)
 				// then re-evaluate method (some body vars might change type based on returnType)
 				G |- method
@@ -399,7 +399,7 @@ from {
 rule VariableDeclarationType
 	G |- WVariableDeclaration decl : WVoid
 from {
-	if (decl.right != null) {
+	if (decl.right !== null) {
 		G |- decl.right : var WollokType t
 		G.add(decl.variable, t)
 	}

@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
+		
 		(Object == Any) => Boolean;
 
 		(Boolean == Any) => Boolean		
@@ -11,6 +12,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "&&" === #[Boolean] => Boolean
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
+		Boolean >> "negate" === #[] => Boolean
+		Boolean >> "toString" === #[] => String;
 
 		Number + Number => Number
 		Number - Number => Number
@@ -59,7 +62,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		console >> "readInt" === #[] => Number
 		console >> "newline" === #[] => Void
 
-		comparable(Number, Number, Number, String, Date)
+		comparable(Number, String, Date)
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {

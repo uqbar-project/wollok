@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -188,6 +189,15 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WSelf it) {
 		it.newSealed(declaringContext.asWollokType)
 	}
+
+// FED
+	def dispatch void generateVariables(WUnaryOperation it) {
+		if (feature.equals("!")) {
+			it.newSealed(classType(BOOLEAN))
+		}
+		it.operand.generateVariables
+	}
+//	
 
 	def dispatch void generateVariables(WIfExpression it) {
 		condition.generateVariables
