@@ -1,0 +1,23 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pairTest {
+	
+	// XPECT methodType at m1 --> () => Pair
+	method m1() {
+		return new Pair(2, 3)
+	}
+	
+	// XPECT methodType at m2 --> () => Number
+	method m2() = 2
+	
+	// XPECT methodType at m3 --> () => Grama
+	method m3() {
+		return new Grama()
+	}
+	
+	
+}
+
+class Grama {
+	
+}

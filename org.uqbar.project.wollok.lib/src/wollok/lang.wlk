@@ -247,8 +247,8 @@ class Pair {
 		x = _x
 		y = _y
 	}
-	method getKey() = { self.x() }
-	method getValue() { self.y() }
+	method getKey() = self.x()
+	method getValue() = self.y()
 }
 
 /**
