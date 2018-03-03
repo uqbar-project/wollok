@@ -702,6 +702,13 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
+	constructor() {}
+
+	constructor(head, tail...) = self() {
+		self.add(head)
+		self.addAll(tail)
+	}
+
 	/** 
 	 * Answers the element at the specified position in this list.
 	 * 

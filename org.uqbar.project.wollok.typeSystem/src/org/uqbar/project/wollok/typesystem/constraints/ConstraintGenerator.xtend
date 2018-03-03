@@ -190,14 +190,12 @@ class ConstraintGenerator {
 		it.newSealed(declaringContext.asWollokType)
 	}
 
-// FED
 	def dispatch void generateVariables(WUnaryOperation it) {
 		if (feature.equals("!")) {
-			it.newSealed(classType(BOOLEAN))
+			newSealed(classType(BOOLEAN))
 		}
-		it.operand.generateVariables
+		operand.generateVariables
 	}
-//	
 
 	def dispatch void generateVariables(WIfExpression it) {
 		condition.generateVariables

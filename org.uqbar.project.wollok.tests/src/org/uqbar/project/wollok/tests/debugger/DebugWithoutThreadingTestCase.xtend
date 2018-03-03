@@ -55,6 +55,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 		deb
 			.assertEvaluated(#[
 			// program
+					"{}",
 					"1",
 					"2",
 					"3",
@@ -71,6 +72,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"closure",
 						"e",
 						// closure 1st time
+						"{}",
 						"sum",
 						"sum",
 						"s",
@@ -81,6 +83,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"closure",
 						"e",
 						// closure 2st time
+						"{}",
 						"sum",
 						"sum",
 						"s",
@@ -91,6 +94,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 						"closure",
 						"e",
 						// closure 3rd time
+						"{}",
 						"sum",
 						"sum",
 						"s",
@@ -149,6 +153,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 				"program a { const strings = [1, 2, 3] var sum = 0 strings.forEach { s => sum += s } assert.equals(6, sum) }",
 					"const strings = [1, 2, 3]",
 						"[1, 2, 3]",
+							"{}",
 							"1",
 							"2",
 							"3",
@@ -169,6 +174,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 										"closure",
 										"e",
 											// closure apply
+											"{}",
 											"sum += s",
 											"sum += s",
 												"sum",
@@ -180,6 +186,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 										"closure",
 										"e",
 											// closure apply
+											"{}",
 											"sum += s",   // why is it duplicated ?
 											"sum += s",
 												"sum",
@@ -191,6 +198,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 										"closure",
 										"e",
 											// closure apply
+											"{}",
 											"sum += s",
 											"sum += s",
 												"sum",
