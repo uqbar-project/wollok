@@ -92,6 +92,8 @@ abstract class TypeDeclarations {
 	def Object() { classTypeAnnotation(OBJECT) }
 
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
+
+	def PairType() { classTypeAnnotation(PAIR) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
 

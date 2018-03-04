@@ -58,7 +58,7 @@ class WollokModelPrintForDebug {
 		'''param «name»'''
 
 	static def dispatch String debugInfo(WMemberFeatureCall it)
-		'''«memberCallTarget.debugInfo».«feature».(«memberCallArguments.join(', ')[debugInfo]»)'''
+		'''«memberCallTarget.debugInfo».«feature»(«memberCallArguments.join(', ')[debugInfo]»)'''
 
 	static def dispatch String debugInfo(WVariable it)
 		'''&«name»'''

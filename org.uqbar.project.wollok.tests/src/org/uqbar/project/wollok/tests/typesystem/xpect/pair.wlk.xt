@@ -2,20 +2,30 @@
 
 object pairTest {
 	
-	// XPECT methodType at m1 --> () => Pair
+	/* 
+	// X PECT methodType at m1 --> () => Pair
 	method m1() {
 		return new Pair(2, 3)
 	}
 	
-	// XPECT methodType at m2 --> () => Number
+	// X PECT methodType at m2 --> () => Number
 	method m2() = 2
 	
-	// XPECT methodType at m3 --> () => Grama
+	// X PECT methodType at m3 --> () => Grama
 	method m3() {
 		return new Grama()
 	}
-	
-	
+	*/
+
+	// XP ECT methodType at m4 --> () => Number
+	//method m4() {
+		//return new Pair(2, 3).getKey()
+	//}
+
+   	// XPECT methodType at m5 --> (Pair) => Any
+	method m5(pair) {
+		return pair.getKey()
+	}
 }
 
 class Grama {

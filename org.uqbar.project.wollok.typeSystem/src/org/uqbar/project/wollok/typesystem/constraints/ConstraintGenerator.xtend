@@ -172,9 +172,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		// FED
 		arguments.forEach [ generateVariables ]
-		// 
 		newSealed(classType(classRef))
 	}
 
