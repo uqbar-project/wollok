@@ -2,32 +2,15 @@
 
 object pairTest {
 	
-	/* 
-	// X PECT methodType at m1 --> () => Pair
+	// XPECT methodType at m1 --> () => Pair
 	method m1() {
 		return new Pair(2, 3)
 	}
 	
-	// X PECT methodType at m2 --> () => Number
-	method m2() = 2
-	
-	// X PECT methodType at m3 --> () => Grama
-	method m3() {
-		return new Grama()
-	}
-	*/
-
-	// XP ECT methodType at m4 --> () => Number
-	//method m4() {
-		//return new Pair(2, 3).getKey()
+	// TODO: Add more tests for getKey() and getValue()
+   	// X PECT methodType at m2 --> (Pair) => Any
+	// method m2(pair) {
+	//	return pair.getKey()
 	//}
-
-   	// XPECT methodType at m5 --> (Pair) => Any
-	method m5(pair) {
-		return pair.getKey()
-	}
-}
-
-class Grama {
 	
 }
