@@ -21,15 +21,41 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number - Number => Number
 		Number * Number => Number
 		Number >> "/" === #[Number] => Number
+		Number >> "div" === #[Number] => Number
+		Number >> "rem" === #[Number] => Number
+		Number >> "**" === #[Number] => Number
 		Number >> ">" === #[Number] => Boolean
 		Number >> "<" === #[Number] => Boolean
 		Number >> ">=" === #[Number] => Boolean
 		Number >> "<=" === #[Number] => Boolean
 		Number / Number => Number
 		Number >> "between" === #[Number, Number] => Boolean
-		Number % Number => Number;
+		Number % Number => Number
+		Number >> "toString" === #[] => String
+		Number >> "invert" === #[] => Number
+		Number >> "abs" === #[] => Number
+		Number >> "limitBetween" === #[Number, Number] => Number
+		Number >> ".." === #[Number] => Range
+		Number >> "max" === #[Number] => Number
+		Number >> "min" === #[Number] => Number
+		Number >> "square" === #[] => Number
+		Number >> "squareRoot" === #[] => Number
+		Number >> "even" === #[] => Boolean
+		Number >> "odd" === #[] => Boolean
+		Number >> "roundUp" === #[] => Number
+		Number >> "roundUp" === #[Number] => Number
+		Number >> "truncate" === #[Number] => Number;
+		Number >> "randomUpTo" === #[Number] => Number;
+		Number >> "gcd" === #[Number] => Number;
+		Number >> "lcm" === #[Number] => Number;
+		Number >> "digits" === #[] => Number;
+		Number >> "isInteger" === #[] => Boolean;
+		Number >> "isPrime" === #[] => Boolean;
+		Number >> "plus" === #[] => Number;
+		Number >> "times" === #[closure(#[ELEMENT], Any)] => Any;
 
 		(String == Any) => Boolean
+		String >> "length" === #[] => Number
 		String >> "size" === #[] => Number
 		String + String => String;
 		(String > String) => Boolean
@@ -73,6 +99,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			(T < T) => Boolean;
 			(T <= T) => Boolean;
 			(T >= T) => Boolean;
+			(T === T) => Boolean;
 		]
 	}
 }

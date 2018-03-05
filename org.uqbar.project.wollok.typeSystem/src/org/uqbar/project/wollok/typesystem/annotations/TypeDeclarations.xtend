@@ -44,6 +44,10 @@ abstract class TypeDeclarations {
 	def operator_equals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "==", #[parameterType])
 	}
+
+	def operator_tripleEquals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
+	}
 	
 	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])

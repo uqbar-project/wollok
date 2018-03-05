@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object stringsTests {
+	
+	// XPECT methodType at m1 --> (String) => Number
+	method m1(s) = s.length() + 1
+
+	// XPECT methodType at m2 --> (Number) => String
+	method m2(n) = "hola".charAt(n) + "e"
+	
+}
