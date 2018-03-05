@@ -57,6 +57,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		(String == Any) => Boolean
 		String >> "length" === #[] => Number
 		String >> "size" === #[] => Number
+		String >> "charAt" === #[Number] => String
 		String + String => String;
 		(String > String) => Boolean
 
