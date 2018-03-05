@@ -179,7 +179,6 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-
 		newVoid
 	}
 

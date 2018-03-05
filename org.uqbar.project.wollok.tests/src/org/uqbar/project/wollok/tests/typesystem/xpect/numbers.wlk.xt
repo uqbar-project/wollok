@@ -104,12 +104,10 @@ object numberTest {
 	// XPECT methodType at m26 --> (Number) => Number
 	method m26(a) = a.plus()
 	
-	// X PECT methodType at m27 --> (Number) => Void
-	/* TODO: Volver a probar cuando estén los closures
+	// XPECT methodType at m27 --> (Number) => Void
 	method m27(a) {
 		var b = 0
 		a.times({ i => b = i })
 	}
-	*/
 	
 }

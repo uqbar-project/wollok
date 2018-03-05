@@ -6,6 +6,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		
 		(Object == Any) => Boolean;
+		Object >> "toString" === #[] => String;
+		Object >> "printString" === #[] => String;
 
 		(Boolean == Any) => Boolean		
 		Boolean >> "||" === #[Boolean] => Boolean
@@ -52,15 +54,34 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number >> "isInteger" === #[] => Boolean;
 		Number >> "isPrime" === #[] => Boolean;
 		Number >> "plus" === #[] => Number;
-		Number >> "times" === #[closure(#[ELEMENT], Any)] => Any;
+		Number >> "times" === #[closure(#[], Any)] => Void;
 
 		(String == Any) => Boolean
 		String >> "length" === #[] => Number
 		String >> "size" === #[] => Number
 		String >> "charAt" === #[Number] => String
+		String >> "startsWith" === #[String] => Boolean
+		String >> "endsWith" === #[String] => Boolean
+		String >> "indexOf" === #[String] => Number
+		String >> "lastIndexOf" === #[String] => Number
+		String >> "toUpperCase" === #[] => String
+		String >> "trim" === #[] => String
+		String >> "contains" === #[String] => Boolean
+		String >> "isEmpty" === #[] => Boolean
+		String >> "substring" === #[Number] => String
+		String >> "substring" === #[Number, Number] => String
+		String >> "split" === #[String] => List
+		String >> "equalsIgnoreCase" === #[String] => Boolean
+		String >> "printString" === #[] => String
+		String >> "toString" === #[] => String
+		String >> "replace" === #[String, String] => String
 		String + String => String;
 		(String > String) => Boolean
-
+		String >> "take" === #[Number] => String
+		String >> "drop" === #[Number] => String
+		String >> "words" === #[] => List
+		String >> "capitalize" === #[] => String
+		
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
 
