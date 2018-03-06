@@ -5,7 +5,7 @@ import org.junit.Test
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
-import org.uqbar.project.wollok.game.gameboard.Cell
+import org.uqbar.project.wollok.game.gameboard.Background
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.game.helpers.Application
@@ -16,6 +16,7 @@ import static org.junit.Assert.*
 import static org.mockito.Mockito.*
 import static org.uqbar.project.wollok.game.helpers.Application.*
 import static org.uqbar.project.wollok.game.helpers.Keyboard.*
+import org.uqbar.project.wollok.game.gameboard.CellsBackground
 
 class GameboardTest {
 	Gameboard gameboard
@@ -35,7 +36,7 @@ class GameboardTest {
 			title = "UnTitulo"
 			width = 3
 			height = 5
-			ground = "Piso.png"
+			background = mock(Background)
 			addListener(listener)
 			addComponent(component)
 			addCharacter(character)
@@ -52,9 +53,9 @@ class GameboardTest {
 	}
 
 	@Test
-	def on_start_should_have_all_cells_created() {
+	def on_start_should_create_cells_background() {
 		gameboard.start
-		assertEquals(15, gameboard.cells.size)
+		assertEquals(CellsBackground, gameboard.background.class)
 	}
 
 	@Test
@@ -73,15 +74,15 @@ class GameboardTest {
 	}
 
 	@Test
-	def on_rendering_draw_cells_components_and_character_in_order() {
-		val cell = mock(Cell)
-		gameboard.cells.add(cell)
+	def on_rendering_draw_background_components_and_character_in_order() {
+		val background = mock(Background)
+		gameboard.background = background
 
 		var window = mock(Window)
 		gameboard.draw(window)
 
-		var inOrder = inOrder(cell, component, character)
-		inOrder.verify(cell).draw(window)
+		var inOrder = inOrder(background, component, character)
+		inOrder.verify(background).draw(window)
 		inOrder.verify(component).draw(window)
 		inOrder.verify(character).draw(window)
 	}

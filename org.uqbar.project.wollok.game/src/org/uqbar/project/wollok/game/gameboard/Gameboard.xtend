@@ -24,7 +24,7 @@ class Gameboard {
 	String ground
 	int height
 	int width
-	List<Cell> cells = newArrayList
+	Background background
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
@@ -48,8 +48,12 @@ class Gameboard {
 	}
 
 	def void start(Boolean fromREPL) {
-		createCells(ground)
+		background = createBackgroud()
 		Application.instance.start(this, fromREPL)
+	}
+	
+	def createBackgroud() {
+		new CellsBackground(ground, height, width)
 	}
 	
 	def void stop() {
@@ -73,17 +77,8 @@ class Gameboard {
 			} 
 		}
 
-		cells.forEach[ it.draw(window) ]
+		background.draw(window)
 		components.forEach[it.draw(window)]
-	}
-
-	def createCells(String groundImage) {
-		cells.clear
-		for (var i = 0; i < width ; i++) {
-			for (var j = 0; j < height; j++) {
-				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
-			}
-		}
 	}
 
 	def pixelHeight() {
