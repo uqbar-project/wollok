@@ -4,10 +4,8 @@ import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener

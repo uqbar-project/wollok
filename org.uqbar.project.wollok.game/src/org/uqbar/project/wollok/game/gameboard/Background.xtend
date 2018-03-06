@@ -1,13 +1,11 @@
 package org.uqbar.project.wollok.game.gameboard
 
 import java.util.List
-import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.Image
-import javax.swing.text.Position.Bias
+import org.uqbar.project.wollok.game.WGPosition
 
 interface Background {	
-	def void draw(Window window)
-	
+	def void draw(Window window)	
 }
 
 class CellsBackground implements Background {

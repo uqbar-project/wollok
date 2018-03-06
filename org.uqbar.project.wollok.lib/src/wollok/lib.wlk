@@ -335,9 +335,14 @@ object game {
 	method height() native
 
 	/**
-	 * Sets cells image.
+	 * Sets cells background image.
 	 */			
 	method ground(image) native
+	
+	/**
+	 * Sets full background image.
+	 */			
+	method boardGround(image) native
 	
 	/** 
 	* @private

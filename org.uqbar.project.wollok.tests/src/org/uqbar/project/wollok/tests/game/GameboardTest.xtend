@@ -6,6 +6,8 @@ import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.gameboard.Background
+import org.uqbar.project.wollok.game.gameboard.CellsBackground
+import org.uqbar.project.wollok.game.gameboard.FullBackground
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.gameboard.Window
 import org.uqbar.project.wollok.game.helpers.Application
@@ -16,8 +18,6 @@ import static org.junit.Assert.*
 import static org.mockito.Mockito.*
 import static org.uqbar.project.wollok.game.helpers.Application.*
 import static org.uqbar.project.wollok.game.helpers.Keyboard.*
-import org.uqbar.project.wollok.game.gameboard.CellsBackground
-import org.uqbar.project.wollok.game.gameboard.FullBackground
 
 class GameboardTest {
 	Gameboard gameboard
