@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.game.gameboard
 import java.util.List
 import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.Image
+import javax.swing.text.Position.Bias
 
 interface Background {	
 	def void draw(Window window)
@@ -10,7 +11,7 @@ interface Background {
 }
 
 class CellsBackground implements Background {
-	List<Cell> cells = newArrayList
+	val List<Cell> cells = newArrayList
 	
 	new(String image, int height, int width) {
 		for (var i = 0; i < width ; i++) {
@@ -25,3 +26,17 @@ class CellsBackground implements Background {
 	}
 	
 }
+
+class FullBackground implements Background {
+	val origin = new WGPosition(0,0)
+	val Image image
+	
+	new(String path) {
+		image = new Image(path)
+	}
+	
+	override draw(Window window) {
+		window.draw(image, origin)
+	}
+	
+} 

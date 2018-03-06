@@ -17,6 +17,7 @@ import static org.mockito.Mockito.*
 import static org.uqbar.project.wollok.game.helpers.Application.*
 import static org.uqbar.project.wollok.game.helpers.Keyboard.*
 import org.uqbar.project.wollok.game.gameboard.CellsBackground
+import org.uqbar.project.wollok.game.gameboard.FullBackground
 
 class GameboardTest {
 	Gameboard gameboard
@@ -56,6 +57,15 @@ class GameboardTest {
 	def on_start_should_create_cells_background() {
 		gameboard.start
 		assertEquals(CellsBackground, gameboard.background.class)
+	}
+	
+	@Test
+	def when_boardGround_is_not_null_should_create_full_background() {
+		gameboard => [
+			boardGround = "background.png"
+			start
+		]
+		assertEquals(FullBackground, gameboard.background.class)
 	}
 
 	@Test

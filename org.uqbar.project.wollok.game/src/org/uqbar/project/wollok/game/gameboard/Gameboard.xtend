@@ -22,6 +22,7 @@ class Gameboard {
 	
 	String title
 	String ground
+	String boardGround
 	int height
 	int width
 	Background background
@@ -53,7 +54,10 @@ class Gameboard {
 	}
 	
 	def createBackgroud() {
-		new CellsBackground(ground, height, width)
+		if (boardGround !== null)
+		 	new FullBackground(boardGround)
+		else 
+			new CellsBackground(ground, height, width)
 	}
 	
 	def void stop() {
