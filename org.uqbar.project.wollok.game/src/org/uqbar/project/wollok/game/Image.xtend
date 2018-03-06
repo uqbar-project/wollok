@@ -3,9 +3,13 @@ package org.uqbar.project.wollok.game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import org.uqbar.project.wollok.game.gameboard.Gameboard
+import org.eclipse.xtend.lib.annotations.Accessors
 
+@Accessors
 class Image {
-	
+	var int width = Gameboard.CELLZISE
+	var int height = Gameboard.CELLZISE
 	String path
 	protected String currentPath
 	Texture texture

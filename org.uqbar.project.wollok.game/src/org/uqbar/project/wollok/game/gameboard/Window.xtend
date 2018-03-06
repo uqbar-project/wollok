@@ -27,19 +27,23 @@ class Window {
 	}
 	
 	def draw(Image image, Position position) {
-		drawIn(image, position.xinPixels, position.yinPixels)
+		drawIn(image, position.xinPixels, position.yinPixels, image.width, image.height)
 	}
 	
-	def drawIn(Image image, int x, int y) {
+	def fullDraw(Image image, Position position) {
+		batch.draw(image.texture, position.xinPixels, position.yinPixels, Gdx.graphics.width, Gdx.graphics.height)
+	}
+	
+	def drawIn(Image image, int x, int y, int width, int heigth) {
 		val texture = image.texture
 		if (texture != null) //TODO: Think a better implementation
-			batch.draw(texture, x, y)
+			batch.draw(texture, x, y, width, heigth)
 		else
-			drawNotFoundImage(x, y)
+			drawNotFoundImage(x, y, width, heigth)
 	}
 	
-	def drawNotFoundImage(int x, int y) {
-		batch.draw(defaultImage, x, y)
+	def drawNotFoundImage(int x, int y, int width, int heigth) {
+		batch.draw(defaultImage, x, y, width, heigth)
 		write(notFoundText, Color.BLACK, x - 80, y + 50)
 	}
 	

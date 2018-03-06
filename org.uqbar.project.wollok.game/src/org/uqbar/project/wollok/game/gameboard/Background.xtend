@@ -34,7 +34,7 @@ class FullBackground implements Background {
 	}
 	
 	override draw(Window window) {
-		window.draw(image, origin)
+		window.fullDraw(image, origin)
 	}
 	
 } 
