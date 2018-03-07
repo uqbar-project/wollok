@@ -102,10 +102,23 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Set >> "contains" === #[ELEMENT] => Boolean
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		
-		(Date == Any) => Boolean;
-		Date - Date => Number;
-		Date >> "initialize" === #[Number, Number, Number] => Void;
-
+		(Date == Date) => Boolean
+		Date - Date => Number
+		Date >> "initialize" === #[Number, Number, Number] => Void
+		Date >> "plusDays" === #[Number] => Date
+		Date >> "plusMonths" === #[Number] => Date
+		Date >> "plusYears" === #[Number] => Date
+		Date >> "isLeapYear" === #[] => Boolean
+		Date >> "day" === #[] => Number
+		Date >> "dayOfWeek" === #[] => Number
+		Date >> "month" === #[] => Number
+		Date >> "year" === #[] => Number
+		Date >> "minusDays" === #[Number] => Date
+		Date >> "minusMonths" === #[Number] => Date
+		Date >> "minusYears" === #[Number] => Date
+		Date >> "between" === #[Date, Date] => Boolean
+		Date >> "toSmartString" === #[Boolean] => String;
+		
 		(Position == Any) => Boolean;
 
 		// console
