@@ -115,8 +115,14 @@ abstract class TypeDeclarations {
 
 	def Position() { classTypeAnnotation(POSITION) }
 
+	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
+
+	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
+
 	def console() { objectTypeAnnotation(CONSOLE) }
 
+	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
 
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }

@@ -135,7 +135,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WBlockExpression it) {
-		expressions.forEach[generateVariables]
+		expressions.forEach[ generateVariables ]
 
 		it.newTypeVariable
 
@@ -249,7 +249,6 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
-
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 

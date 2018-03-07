@@ -115,5 +115,11 @@ object numberTest {
 		var b = 0
 		a.times({ i => b = i })
 	}
+
+	// XPECT methodType at m28 --> (Number, Boolean) => String
+	method m28(n, b) = n.coerceToInteger().internalToSmartString(b)
+	
+	// XPECT methodType at m29 --> () => String
+	method m29() = 4.4.simplifiedToSmartString()
 	
 }

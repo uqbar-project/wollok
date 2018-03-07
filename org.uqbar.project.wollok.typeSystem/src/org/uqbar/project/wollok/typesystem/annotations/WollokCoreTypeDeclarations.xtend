@@ -57,6 +57,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number >> "plus" === #[] => Number;
 		Number >> "times" === #[closure(#[], Any)] => Void;
 		Number >> "checkNotNull" === #[Any, String] => Void;
+		Number >> "simplifiedToSmartString" === #[] => String;
+		Number >> "internalToSmartString" === #[Boolean] => String;
+		Number >> "coerceToInteger" === #[] => Number;
 
 		(String == Any) => Boolean
 		String >> "length" === #[] => Number
@@ -83,6 +86,15 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		String >> "drop" === #[Number] => String
 		String >> "words" === #[] => List
 		String >> "capitalize" === #[] => String
+
+		ExceptionType >> "getMessage" === #[] => String
+		ExceptionType >> "getCause" === #[] => ExceptionType
+		ExceptionType >> "equals" === #[ExceptionType] => Boolean
+		ExceptionType >> "printStackTrace" === #[] => Void
+		ExceptionType >> "getStackTraceAsString" === #[] => String
+		ExceptionType >> "getFullStackTrace" === #[] => List
+		ExceptionType >> "getStackTrace" === #[] => List
+		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 		
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
@@ -127,6 +139,17 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		console >> "readLine" === #[] => String
 		console >> "readInt" === #[] => Number
 		console >> "newline" === #[] => Void
+
+		assertWKO >> "that" === #[Boolean] => Void
+		assertWKO >> "notThat" === #[Boolean] => Void
+		//assert >> "equals" === #[Any, Any] => Void
+		//assert >> "notEquals" === #[Any, Any] => Void
+		//assert >> "throwsException" === #[closure(#[], Void)] => Void
+		//assert >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
+		//assert >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
+		//assert >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
+		//assert >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
+		//assert >> "fail" === #[String] => Void
 
 		comparable(Number, String, Date)
 	}

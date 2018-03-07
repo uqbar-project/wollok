@@ -1,0 +1,10 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object assertsTest {
+	
+	// XPECT methodType at m1 --> (Boolean) => Void
+	method m1(condition) {
+		assert.notThat(condition)
+	}
+
+}
