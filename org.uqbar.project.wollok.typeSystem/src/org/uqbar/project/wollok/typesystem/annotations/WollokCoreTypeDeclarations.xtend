@@ -56,6 +56,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number >> "isPrime" === #[] => Boolean;
 		Number >> "plus" === #[] => Number;
 		Number >> "times" === #[closure(#[], Any)] => Void;
+		Number >> "checkNotNull" === #[Any, String] => Void;
 
 		(String == Any) => Boolean
 		String >> "length" === #[] => Number

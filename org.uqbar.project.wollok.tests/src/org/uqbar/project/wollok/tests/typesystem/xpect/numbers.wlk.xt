@@ -2,6 +2,12 @@
 
 object numberTest {
 
+	// XPECT methodType at m0 --> (Any) => Void
+	method m0(_a) {
+		2.checkNotNull(_a, "m0")
+		console.println("end")
+	}
+
 	// XPECT methodType at m1 --> (Number) => Number
 	method m1(a) = (a ** 2).div(5)
 
@@ -15,9 +21,9 @@ object numberTest {
 		return a === 2
 	}
 	
-	// XPECT methodType at m4 --> (Object) => Boolean
+	// XPECT methodType at m4 --> (Any) => Boolean
 	method m4(a) {
-		return a == a
+		return 3 == a
 	}
  
 	// X PECT methodType at m5 --> (Number) => Boolean
