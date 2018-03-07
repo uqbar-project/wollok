@@ -173,14 +173,18 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
+		/*
+		 * NOT SURE FOR NOW - Dodain
+		 * Maybe we just need to annotate constructors 
 		val associatedConstructor = constructor
 		associatedConstructor?.generateVariables
+		*/
 		arguments.forEach [ arg, i |
 			arg.generateVariables
-			val parameterOfConstructor = associatedConstructor.parameters.get(i)
-			if (parameterOfConstructor !== null) {
-				arg.tvarOrParam.beSubtypeOf(parameterOfConstructor.tvar)
-			}
+			//val parameterOfConstructor = associatedConstructor.parameters.get(i)
+			//if (parameterOfConstructor !== null) {
+			//	arg.tvarOrParam.beSubtypeOf(parameterOfConstructor.tvar)
+			//}
 		]
 		newSealed(classType(classRef))
 	}

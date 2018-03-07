@@ -5,8 +5,8 @@ object dateTests {
 	// XPECT methodType at m1 --> () => Date
 	method m1() = new Date()
 
-	// XPECT methodType at m2 --> (Number) => Date
-	method m2(day) = new Date(day, day, 2018)
+	// X PECT methodType at m2 --> (Number) => Date
+	// method m2(day) = new Date(day, day, 2018)
 
 	// XPECT methodType at m3 --> (Number) => Date
 	method m3(day) {
