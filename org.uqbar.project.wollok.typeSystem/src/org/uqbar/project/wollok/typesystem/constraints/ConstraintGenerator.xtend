@@ -103,7 +103,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
-		expression.generateVariables
+		expression?.generateVariables
 	}
 
 	def dispatch void generateVariables(WMethodDeclaration it) {
@@ -173,7 +173,15 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		arguments.forEach [ generateVariables ]
+		val associatedConstructor = constructor
+		associatedConstructor?.generateVariables
+		arguments.forEach [ arg, i |
+			arg.generateVariables
+			val parameterOfConstructor = associatedConstructor.parameters.get(i)
+			if (parameterOfConstructor !== null) {
+				arg.tvarOrParam.beSubtypeOf(parameterOfConstructor.tvar)
+			}
+		]
 		newSealed(classType(classRef))
 	}
 

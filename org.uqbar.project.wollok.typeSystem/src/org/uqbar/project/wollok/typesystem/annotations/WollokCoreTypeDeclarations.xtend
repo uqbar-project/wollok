@@ -17,7 +17,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "negate" === #[] => Boolean
 		Boolean >> "toString" === #[] => String;
 
-		//PairType >> "getKey" === #[] => Any;
+		PairType >> "getKey" === #[] => Any;
+		PairType >> "getValue" === #[] => Any;
 		
 		Number + Number => Number
 		Number - Number => Number
@@ -103,6 +104,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		
 		(Date == Any) => Boolean;
 		Date - Date => Number;
+		Date >> "initialize" === #[Number, Number, Number] => Void;
 
 		(Position == Any) => Boolean;
 

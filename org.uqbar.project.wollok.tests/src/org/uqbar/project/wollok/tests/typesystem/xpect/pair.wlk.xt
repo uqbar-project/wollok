@@ -2,14 +2,14 @@
 
 object pairTest {
 	
-	// XPECT methodType at m1 --> () => Pair
-	method m1() {
-		return new Pair(2, 3)
-	}
+	// XP ECT methodType at m1 --> () => Pair
+	//method m1() {
+	//	return new Pair(2, 3)
+	//}
 	
 	// TODO: Add more tests for getKey() and getValue()
-   	// X PECT methodType at m2 --> (Pair) => Any
-	// method m2(pair) {
+   	// XP ECT methodType at m2 --> (Pair) => Any
+	//method m2(pair) {
 	//	return pair.getKey()
 	//}
 	

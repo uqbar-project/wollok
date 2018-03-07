@@ -298,6 +298,10 @@ class WollokModelExtensions {
 		matches(call.feature, call.memberCallArguments)
 	}
 
+	def static constructor(WConstructorCall c) {
+		c.classRef.constructors.findFirst [ const | const.parameters.size.equals(c.arguments.size) ] 
+	}
+	
 	def static isValidConstructorCall(WConstructorCall c) {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
