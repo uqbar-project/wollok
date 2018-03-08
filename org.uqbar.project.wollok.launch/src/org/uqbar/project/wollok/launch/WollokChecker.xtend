@@ -30,16 +30,20 @@ import org.uqbar.project.wollok.interpreter.nativeobj.WollokNumbersPreferences
  */
 class WollokChecker {
 	protected static Logger log = Logger.getLogger(WollokLauncher)
-	var Injector injector
+	protected var Injector injector
 
 	def static void main(String[] args) {
 		new WollokChecker().doMain(args)
 	}
 
+	def String processName() {
+		"Wollok Launcher"
+	}
+	
 	def doMain(String[] args) {
 		try {
 			log.debug("========================")
-			log.debug("    Wollok Launcher")
+			log.debug("    " + this.processName)
 			log.debug("========================")
 			log.debug(" args: " + args.toList)
 
@@ -53,6 +57,8 @@ class WollokChecker {
 			this.configureNumberPreferences(parameters)
 
 			injector = new WollokLauncherSetup(parameters).createInjectorAndDoEMFRegistration
+
+			this.doConfigureParser(parameters)
 
 			if (parameters.severalFiles) {
 				// Tests may run several files
@@ -82,6 +88,8 @@ class WollokChecker {
 			WollokNumbersPreferences.instance.setNumberPrintingStrategyByName(parameters.printingStrategy)
 	}
 
+	def void doConfigureParser(WollokLauncherParameters parameters) {}
+
 	def void launch(List<String> fileNames, WollokLauncherParameters parameters) {
 		doSomething(fileNames, injector, parameters)	
 	}
@@ -101,13 +109,18 @@ class WollokChecker {
 	}
 
 	def parse(File mainFile) {
+		mainFile.parse(true)
+	}
+
+	def parse(File mainFile, boolean validate) {
 		val resourceSet = injector.getInstance(XtextResourceSet)
 		this.createClassPath(mainFile, resourceSet)
 
 		val resource = resourceSet.getResource(URI.createURI(mainFile.toURI.toString), false)
 		resource.load(#{})
 
-		validate(injector, resource)
+		if (validate) 
+			validate(injector, resource)
 
 		resource.contents.get(0) as WFile
 	}

@@ -43,6 +43,8 @@ class WollokClassFinder {
 	def WClass getNumberClass(EObject context) { context.getCachedClass(NUMBER) }
 
 	def WClass getBooleanClass(EObject context) { context.getCachedClass(BOOLEAN) }
+	
+	def WClass getClosureClass(EObject context) { context.getCachedClass(CLOSURE) }
 
 	// ************************************************************************
 	// ** Main API: cache access

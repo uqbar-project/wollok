@@ -144,14 +144,17 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
+		// TODO: Uncomment these definitions solving closure parameters
+		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
+		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
+		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
+		//assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
+		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void
 
 		comparable(Number, String, Date)
+		
+		Closure >> "apply" === #[List] => RETURN
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {

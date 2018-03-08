@@ -45,6 +45,7 @@ class ClosureTypeInfo extends TypeInfo {
 				origin: «origin»
 		''')
 	}
+	
 
 	// ************************************************************************
 	// ** Misc
@@ -54,4 +55,14 @@ class ClosureTypeInfo extends TypeInfo {
 		parameters: «parameters»
 		returnType: «returnType»
 	'''
+	
+	
+	// ************************************************************************
+	// ** Utilities
+	// ************************************************************************
+
+	/**
+	 * type parameter for closure types
+	 */
+	public static val RETURN = "return"
 }

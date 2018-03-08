@@ -178,7 +178,7 @@ class TypeVariable implements ITypeVariable {
 		typeInfo.addMinType(type)
 	}
 
-	def setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
@@ -187,9 +187,12 @@ class TypeVariable implements ITypeVariable {
 	 * Register that a message has been sent to this type variable.
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
-		// TODO Currently only simple types are supporting message sending, but closures also should.
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
-		typeInfo.messages.add(new MessageSend(selector, arguments, returnType))
+		val it = new MessageSend(selector, arguments, returnType)
+		if (typeInfo === null) {
+			if (isClosureMessage)	setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
+			else					setTypeInfo(new SimpleTypeInfo())
+		} 
+		typeInfo.messages.add(it)
 	}
 
 	/**

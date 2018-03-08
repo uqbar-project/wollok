@@ -153,8 +153,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		wollokValidatorExtensions = configs.map[it.createExecutableExtension("class") as WollokValidatorExtension]
 	}
 
-	@Check
 	@NotConfigurable
+	@Check
 	def checkValidationExtensions(WFile wfile) {
 		validatorExtensions.forEach[ ext |
 			if(ext.shouldRun)
@@ -742,7 +742,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def nonBooleanValueInIfCondition(WIfExpression it) {
-		if (!condition.isBooleanOrUnknownType) {
+		if (!condition?.isBooleanOrUnknownType) {
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
 		}
 	}
