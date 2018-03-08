@@ -1,0 +1,29 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object exceptionTest {
+	
+	// XPECT methodType at m1 --> () => String
+	method m1() = new Exception().getMessage()
+
+	// XPECT methodType at m2 --> (Exception) => Boolean
+	method m2(e) = e.getCause().equals(e)
+
+	// XPECT methodType at m3 --> (Exception) => List
+	method m3(e) {
+		return e.getStackTrace()
+	}
+
+	// XPECT methodType at m4 --> (Exception) => Void
+	method m4(e) {
+		// XPECT type at fst --> List
+		const fst = e.getFullStackTrace()
+		// XPECT type at stAs --> String
+		const stAs = e.getStackTraceAsString()
+		console.println(fst.size())
+		e.printStackTrace()
+	}
+
+	// XPECT methodType at m5 --> () => StackTraceElement
+	method m5() = new Exception().createStackTraceElement("contextDescription", "2")
+	
+}

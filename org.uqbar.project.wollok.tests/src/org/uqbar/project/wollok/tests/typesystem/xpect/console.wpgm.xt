@@ -1,10 +1,20 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
+object consoleTest {
+
+	// XPECT methodType at m1 --> (Any) => Void 
+	method m1(a) {
+	 	console.println(a)
+	}
+	
+}
+
 program p {
 	// XPECT type at console --> console 
  	console
 
-	// XPECT! methodType at println --> (Any) => Void 
- 	// console.println("hola")
+	// XPECT methodType at println --> (String) => Void 
+ 	console.println("hola")
+ 	
 }
 

@@ -26,6 +26,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -34,6 +35,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -101,7 +103,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
-		expression.generateVariables
+		expression?.generateVariables
 	}
 
 	def dispatch void generateVariables(WMethodDeclaration it) {
@@ -133,7 +135,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WBlockExpression it) {
-		expressions.forEach[generateVariables]
+		expressions.forEach[ generateVariables ]
 
 		it.newTypeVariable
 
@@ -171,22 +173,47 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
+		/*
+		 * NOT SURE FOR NOW - Dodain
+		 * Maybe we just need to annotate constructors 
+		val associatedConstructor = constructor
+		associatedConstructor?.generateVariables
+		*/
+		arguments.forEach [ arg, i |
+			arg.generateVariables
+			//val parameterOfConstructor = associatedConstructor.parameters.get(i)
+			//if (parameterOfConstructor !== null) {
+			//	arg.tvarOrParam.beSubtypeOf(parameterOfConstructor.tvar)
+			//}
+		]
 		newSealed(classType(classRef))
 	}
 
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-
 		newVoid
 	}
 
+	def dispatch void generateVariables(WPostfixOperation it) {
+		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
+		operand.generateVariables
+		newVoid
+	}
+	
 	def dispatch void generateVariables(WVariableReference it) {
 		it.newWithSubtype(ref)
 	}
 	
 	def dispatch void generateVariables(WSelf it) {
 		it.newSealed(declaringContext.asWollokType)
+	}
+
+	def dispatch void generateVariables(WUnaryOperation it) {
+		if (feature.equals("!")) {
+			newSealed(classType(BOOLEAN))
+		}
+		operand.generateVariables
 	}
 
 	def dispatch void generateVariables(WIfExpression it) {
@@ -222,7 +249,6 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
-
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 

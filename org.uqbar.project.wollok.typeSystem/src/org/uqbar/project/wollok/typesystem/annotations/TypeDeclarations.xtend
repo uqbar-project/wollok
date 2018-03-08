@@ -45,6 +45,10 @@ abstract class TypeDeclarations {
 	def operator_equals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "==", #[parameterType])
 	}
+
+	def operator_tripleEquals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
+	}
 	
 	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
@@ -93,6 +97,8 @@ abstract class TypeDeclarations {
 	def Object() { classTypeAnnotation(OBJECT) }
 
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
+
+	def PairType() { classTypeAnnotation(PAIR) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
 
@@ -112,8 +118,14 @@ abstract class TypeDeclarations {
 
 	def Position() { classTypeAnnotation(POSITION) }
 
+	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
+
+	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
+
 	def console() { objectTypeAnnotation(CONSOLE) }
 
+	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
 	
 	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }

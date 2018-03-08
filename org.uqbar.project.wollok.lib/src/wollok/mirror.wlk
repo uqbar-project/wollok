@@ -1,8 +1,9 @@
 class InstanceVariableMirror {
 	const target
-	const name
+	const property name
+	
 	constructor(_target, _name) { target = _target ; name = _name }
-	method name() = name
+
 	method value() = target.resolve(name)
 	
 	method valueToSmartString(alreadyShown) {

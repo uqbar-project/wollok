@@ -358,7 +358,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def definingAMethodThatOnlyCallsToSuper(WMethodDeclaration it) {
-		if (it.redefinesSendingOnlySuper) {
+		if (redefinesSendingOnlySuper) {
 			report(WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT, it,
 			WNAMED__NAME, UNNECESARY_OVERRIDE)
 		}

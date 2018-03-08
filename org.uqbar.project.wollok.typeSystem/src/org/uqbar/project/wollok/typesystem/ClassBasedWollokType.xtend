@@ -25,7 +25,7 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 				&& clazz.isSuperTypeOf((other as ClassBasedWollokType).clazz)
 			)
 		if (!value)
-			throw new TypeSystemException('''<<«other»>> is not a valid substitude for <<«this»>>''')	
+			throw new TypeSystemException('''<<«other»>> is not a valid substitute for <<«this»>>''')	
 	}
 	
 	// ***************************************************************************

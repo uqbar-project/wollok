@@ -302,6 +302,10 @@ class WollokModelExtensions {
 		matches(call.feature, call.memberCallArguments)
 	}
 
+	def static constructor(WConstructorCall c) {
+		c.classRef.constructors.findFirst [ const | const.parameters.size.equals(c.arguments.size) ] 
+	}
+	
 	def static isValidConstructorCall(WConstructorCall c) {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
@@ -570,8 +574,10 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 	
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		if (m.overridenMethod === null) return false
+		if (m.expressionReturns) return m.expression.callsToSuperWith(m) 			
 		val methodBody = m.expression.eContents
-	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
+	 	methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
 	}
 	
 	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }
