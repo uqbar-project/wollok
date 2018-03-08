@@ -1,0 +1,8 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object constructorTests {
+	method m1() {
+		// XPECT constructorType at Date --> (Number, Number, Number)
+		return new Date(1, 2, 3)	
+	}
+}

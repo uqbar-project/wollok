@@ -298,10 +298,6 @@ class WollokModelExtensions {
 		matches(call.feature, call.memberCallArguments)
 	}
 
-	def static constructor(WConstructorCall c) {
-		c.classRef.constructors.findFirst [ const | const.parameters.size.equals(c.arguments.size) ] 
-	}
-	
 	def static isValidConstructorCall(WConstructorCall c) {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
@@ -335,6 +331,15 @@ class WollokModelExtensions {
 			c.constructors
 		else
 			c.parent.allConstructors
+	}
+
+	/**
+	 * Look for a constructor matching the number of parameters, 
+	 * but only among the constructors written in the class itself. 
+	 * Ignore constructor inheritance.
+	 */	
+	def static getOwnConstructor(WClass clazz, int nrOfParams) {
+		clazz.constructors.findFirst[matches(nrOfParams)]
 	}
 
 	def static dispatch getConstructors(EObject o) { newArrayList }
