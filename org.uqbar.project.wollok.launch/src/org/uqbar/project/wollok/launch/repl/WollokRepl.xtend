@@ -106,9 +106,7 @@ class WollokRepl {
 
 	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
-		if (obj === null)
-			println("null".returnStyle)
-		else if (obj instanceof WollokObject && !(obj as WollokObject).isVoid)
+		if (obj !== null && obj instanceof WollokObject && !(obj as WollokObject).isVoid)
 			doPrintReturnValue(obj)
 	}
 

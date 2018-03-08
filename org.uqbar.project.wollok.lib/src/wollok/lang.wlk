@@ -1264,6 +1264,7 @@ class Number {
 	 * Executes the given action n times (n = self)
 	 *
 	 * Self must be a positive integer value.
+	 * The closure must have one argument (index goes from 1 to self)
 	 *
 	 * Example:
 	 * 		4.times({ i => console.println(i) }) ==> Answers 

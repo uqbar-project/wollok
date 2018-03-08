@@ -1,8 +1,10 @@
 package wollok.lang
 
 import java.util.List
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.xbase.lib.Functions.Function1
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -50,7 +52,12 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		]	
 	}
 	
-	def static createEvaluationContext(WClosure c, WollokObject... values) { c.parameterNames.createEvaluationContext(values) }
+	def static createEvaluationContext(WClosure c, WollokObject... values) {
+		if (values.size !== c.parameters.size) {
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE, c.parameters.size, values.size))
+		} 
+		c.parameterNames.createEvaluationContext(values)
+	}
 	
 	def static getParameterNames(WClosure it) { parameters.map[name] }
 	def getParameters() { closure.parameters }

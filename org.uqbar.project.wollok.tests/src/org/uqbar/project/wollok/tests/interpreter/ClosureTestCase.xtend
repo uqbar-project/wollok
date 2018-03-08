@@ -83,4 +83,28 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void closuresWrongArguments() {
+		'''
+		try {
+			{ a => a + 2 }.apply(1, 2)
+			assert.fail("Should have failed sending more arguments to a closure")
+		} catch e: Exception {
+			assert.equals("Wrong number of arguments for closure: expected 1 but you sent 2", e.getMessage())
+		}
+		'''.test
+	}
+	
+	@Test
+	def void closuresWrongArguments2() {
+		'''
+		try {
+			{ a => a + 2 }.apply()
+			assert.fail("Should have failed sending more arguments to a closure")
+		} catch e: Exception {
+			assert.equals("Wrong number of arguments for closure: expected 1 but you sent 0", e.getMessage())
+		}
+		'''.test
+	}
+
 }
