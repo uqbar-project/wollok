@@ -82,8 +82,7 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		'''
 			class Calculator {
 				method next(n) {
-					const c = { a => 2 + a }
-					return c.apply(n)
+					return { a => a + 1 }.apply(n)
 				}
 			}
 		'''.parseAndInfer.asserting [

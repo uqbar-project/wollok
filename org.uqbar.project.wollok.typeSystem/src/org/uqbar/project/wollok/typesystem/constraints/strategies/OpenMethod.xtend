@@ -20,10 +20,10 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 class OpenMethod extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
-	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo it) {
+	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo info) {
 		log.trace('''Trying to open closure methods for «tvar.debugInfoInContext»''')
 		val type = WollokClassFinder.instance.getClosureClass(tvar.owner)
-		messages.forEach[openClosureMethod(type)]
+		info.messages.forEach[openClosureMethod(type, info)]
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
@@ -47,13 +47,13 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 		}
 	}
 
-	def openClosureMethod(MessageSend it, WClass type) {
+	def openClosureMethod(MessageSend it, WClass type, ClosureTypeInfo info) {
 		if (addOpenType(registry.typeSystem.classType(type))) {
 			log.debug('''  Feeding message send «it» with method type info from type «type»''')
 			val methodTypeInfo = registry.methodTypeInfo(type, selector, arguments)
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
-//			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] //TODO: params method arguments 
+			info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] 
 		} else {
 			log.trace('''  Skip message «it», already been fed with method type info from type «type»''')
 		}
