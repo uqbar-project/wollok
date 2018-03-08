@@ -64,4 +64,29 @@ class ClosureInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOfAsString("{() => Boolean}", "c")
 		]
 	}
+
+	@Test
+	def void inferenceReturnApplyClosure() {
+		'''
+			program p {
+				const c = { "Hello" }
+				const s = c.apply()
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("String", "s")
+		]
+	}
+	
+	@Test
+	def void inferenceParametersApplyClosure() {
+		'''
+			class Calculator {
+				method next(n) {
+					return { a => a + 1 }.apply(n)
+				}
+			}
+		'''.parseAndInfer.asserting [
+			assertMethodSignature("(Number) => Number", "Calculator.next")
+		]
+	}
 }
