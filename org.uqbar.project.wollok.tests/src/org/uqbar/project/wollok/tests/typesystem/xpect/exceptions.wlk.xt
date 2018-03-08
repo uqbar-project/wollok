@@ -23,7 +23,7 @@ object exceptionTest {
 		e.printStackTrace()
 	}
 
-	// XP ECT methodType at m5 --> () => StackTraceElement
-	// method m5() = new Exception().createStackTraceElement("contextDescription", "2")
+	// XPECT methodType at m5 --> () => StackTraceElement
+	method m5() = new Exception().createStackTraceElement("contextDescription", "2")
 	
 }
