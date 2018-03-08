@@ -42,8 +42,6 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
 			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]
-		} else {
-			log.trace('''  Skip message «it», already been fed with method type info from type «type»''')
 		}
 	}
 
@@ -54,8 +52,6 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
 			info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] 
-		} else {
-			log.trace('''  Skip message «it», already been fed with method type info from type «type»''')
 		}
 	}
 }
