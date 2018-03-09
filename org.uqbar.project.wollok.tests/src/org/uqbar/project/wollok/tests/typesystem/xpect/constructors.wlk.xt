@@ -5,4 +5,23 @@ object constructorTests {
 		// XPECT constructorType at Date --> (Number, Number, Number)
 		return new Date(1, 2, 3)	
 	}
+
+	// XPECT methodType at m2 --> (Number) => Date
+	method m2(day) = new Date(day, day, 2018)
+
+	// XPECT methodType at m3 --> (Number, Dog) => C
+	method m3(n, dog) = new C(n, dog)
+}
+
+class C {
+	var number
+
+	constructor(n, dog) {
+		number = n * 2
+		dog.bark()
+	}
+}
+
+class Dog {
+	method bark() {}
 }

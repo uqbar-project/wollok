@@ -37,6 +37,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
+/**
+ * @author npasserini
+ */
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
@@ -44,11 +47,13 @@ class ConstraintGenerator {
 	val Logger log = Logger.getLogger(this.class)
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
+	ConstructorConstraintsGenerator constructorConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
+		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
@@ -175,18 +180,13 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WConstructorCall it) {
 		/*
 		 * NOT SURE FOR NOW - Dodain
-		 * Maybe we just need to annotate constructors 
 		val associatedConstructor = constructor
 		associatedConstructor?.generateVariables
 		*/
-		arguments.forEach [ arg, i |
-			arg.generateVariables
-			//val parameterOfConstructor = associatedConstructor.parameters.get(i)
-			//if (parameterOfConstructor !== null) {
-			//	arg.tvarOrParam.beSubtypeOf(parameterOfConstructor.tvar)
-			//}
-		]
+		arguments.forEach [ generateVariables ]
 		newSealed(classType(classRef))
+
+		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
 	def dispatch void generateVariables(WAssignment it) {
@@ -278,8 +278,9 @@ class ConstraintGenerator {
 	// ************************************************************************
 	// ** Method overriding
 	// ************************************************************************
-	def addInheritanceConstraints() {
+	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
+		constructorConstraintsGenerator.run()
 	}
 
 	def newNamedObject(WNamedObject it) {
