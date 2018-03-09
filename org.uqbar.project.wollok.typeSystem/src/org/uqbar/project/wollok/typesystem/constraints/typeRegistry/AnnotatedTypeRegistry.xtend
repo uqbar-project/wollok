@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
@@ -22,10 +23,15 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		this.context = context
 	}
 
-	override addTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {
+	override addMethodTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {
 		val method = receiver.lookupMethod(selector, paramTypes)
 		method.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
 		method.beSealed(returnType)
+	}
+
+	override addConstructorTypeDeclaration(ClassBasedWollokType receiver, TypeAnnotation[] paramTypes) {
+		var constructor = receiver.getConstructor(paramTypes)
+		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
 	}
 	
 	def dispatch ITypeVariable beSealed(EObject object, SimpleTypeAnnotation<?> annotation) {

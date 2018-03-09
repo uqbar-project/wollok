@@ -115,6 +115,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Set >> "contains" === #[ELEMENT] => Boolean
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		
+		Date.constructor(Number, Number, Number)
 		(Date == Date) => Boolean
 		Date - Date => Number
 		Date >> "initialize" === #[Number, Number, Number] => Void

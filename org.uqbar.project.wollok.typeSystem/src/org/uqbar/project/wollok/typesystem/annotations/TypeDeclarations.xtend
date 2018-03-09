@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.annotations
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -37,6 +38,10 @@ abstract class TypeDeclarations {
 
 	def operator_doubleArrow(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
 		new MethodTypeDeclaration(parameterTypes, returnType)
+	}
+	
+	def constructor(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, TypeAnnotation... parameterTypes) {
+		target.addConstructorTypeDeclaration(owner.type, parameterTypes)
 	}
 
 	// ****************************************************************************
@@ -161,7 +166,7 @@ class ExpectReturnType {
 	}
 
 	def operator_doubleArrow(TypeAnnotation returnType) {
-		target.addTypeDeclaration(receiver, selector, parameterTypes, returnType)
+		target.addMethodTypeDeclaration(receiver, selector, parameterTypes, returnType)
 	}
 }
 
@@ -177,7 +182,7 @@ class MethodIdentifier {
 	}
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
-		target.addTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
+		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
 }
 
