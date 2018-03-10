@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
+import java.util.Map
+import com.badlogic.gdx.graphics.Texture.TextureFilter
 
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
@@ -20,7 +22,9 @@ class Window {
 	val batch = new SpriteBatch()
 	val font = new BitmapFont()
 	val glyphLayout = new GlyphLayout()
-	OrthographicCamera camera
+	val OrthographicCamera camera
+	
+	val Map<String, Texture> textures = newHashMap
 	
 	new(OrthographicCamera camera) {
 		this.camera = camera
@@ -31,7 +35,7 @@ class Window {
 	}
 	
 	def fullDraw(Image image, Position position) {
-		batch.draw(image.texture, position.xinPixels, position.yinPixels, Gdx.graphics.width, Gdx.graphics.height)
+		drawIn(image, position.xinPixels, position.yinPixels, Gdx.graphics.width, Gdx.graphics.height)
 	}
 	
 	def drawIn(Image image, int x, int y, int width, int heigth) {
@@ -95,5 +99,24 @@ class Window {
 		batch.dispose()
 	}
 
+	def Texture texture(Image it) {
+		val texture = textures.get(path)
+		if (texture === null && !textures.containsKey(path)) {
+			path.addTexture
+			it.texture
+		} 
+		else texture
+	}
 	
+	def addTexture(String path) {
+		val file = Gdx.files.internal(path)
+			
+		if (!file.exists) 
+			textures.put(path, null)
+		else {			
+			val texture = new Texture(file)
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
+			textures.put(path, texture)
+		}
+	}
 }
