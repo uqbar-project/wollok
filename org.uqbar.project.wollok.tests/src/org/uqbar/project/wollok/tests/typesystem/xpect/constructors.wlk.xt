@@ -11,6 +11,9 @@ object constructorTests {
 
 	// XPECT methodType at m3 --> (Number, Dog) => C
 	method m3(n, dog) = new C(n, dog)
+
+	// XPECT methodType at m4 --> (Dog) => D
+	method m4(dog) = new D(2, dog)
 }
 
 class C {
@@ -20,6 +23,9 @@ class C {
 		number = n * 2
 		dog.bark()
 	}
+}
+
+class D inherits C {
 }
 
 class Dog {
