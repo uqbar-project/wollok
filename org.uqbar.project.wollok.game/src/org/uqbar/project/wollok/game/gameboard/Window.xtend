@@ -13,6 +13,8 @@ import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import java.util.Map
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.ImageSize
 
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
@@ -30,25 +32,25 @@ class Window {
 		this.camera = camera
 	}
 	
-	def draw(Image image, Position position) {
-		drawIn(image, position.xinPixels, position.yinPixels, image.width, image.height)
+	def draw(Image it) {
+		draw(new WGPosition)
 	}
 	
-	def fullDraw(Image image, Position position) {
-		drawIn(image, position.xinPixels, position.yinPixels, Gdx.graphics.width, Gdx.graphics.height)
-	}
-	
-	def drawIn(Image image, int x, int y, int width, int heigth) {
-		val texture = image.texture
-		if (texture != null) //TODO: Think a better implementation
-			batch.draw(texture, x, y, width, heigth)
+	def draw(Image it, Position position) {
+		val t = texture  
+		if (t !== null)
+			doDraw(t, position, size)
 		else
-			drawNotFoundImage(x, y, width, heigth)
+			drawNotFoundImage(it, position)
 	}
 	
-	def drawNotFoundImage(int x, int y, int width, int heigth) {
-		batch.draw(defaultImage, x, y, width, heigth)
-		write(notFoundText, Color.BLACK, x - 80, y + 50)
+	def drawNotFoundImage(Image image, Position it) {
+		doDraw(defaultImage, it, image.size)
+		write(notFoundText, Color.BLACK, xinPixels - 80, yinPixels + 50)
+	}
+	
+	def doDraw(Texture texture, Position it, ImageSize size) {
+		batch.draw(texture, xinPixels, yinPixels, size.width(texture.width), size.height(texture.height))
 	}
 	
 	def writeAttributes(String text, Position position, Color color) {

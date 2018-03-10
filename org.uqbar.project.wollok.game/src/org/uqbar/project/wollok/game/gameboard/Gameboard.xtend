@@ -53,9 +53,9 @@ class Gameboard {
 	
 	def createBackgroud() {
 		if (boardGround !== null)
-		 	new FullBackground(boardGround)
+		 	new FullBackground(boardGround, this)
 		else 
-			new CellsBackground(ground, height, width)
+			new CellsBackground(ground, this)
 	}
 	
 	def void stop() {
