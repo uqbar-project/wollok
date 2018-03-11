@@ -103,7 +103,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	protected def WollokObject[] evalEach(EList e) { e.map[eval] }
+	protected def WollokObject[] evalEach(EList<? extends EObject> objects) { objects.map[eval] }
 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
@@ -467,5 +467,4 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			createNamedObject(classFinder.getCachedObject(context, qualifiedName), qualifiedName)
 		}
 	}
-
 }
