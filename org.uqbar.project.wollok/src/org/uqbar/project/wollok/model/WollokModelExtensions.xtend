@@ -396,9 +396,9 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
-	def static IFile getIFile(EObject obj) {
-		getIFile(obj.eResource)
-	}
+	def static getProject(EObject obj) { obj.IFile.project }
+
+	def static IFile getIFile(EObject obj) { obj.eResource.IFile }
 	
 	def static IFile getIFile(Resource resource){
 		val platformString = resource.URI.toPlatformString(true)

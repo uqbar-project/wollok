@@ -5,6 +5,8 @@ import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.ui.labeling.WollokTypeSystemLabelExtension
 import org.apache.log4j.Logger
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.getProject
+
 /**
  * 
  */
@@ -14,8 +16,8 @@ class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelE
 	val Logger log = Logger.getLogger(this.class)
 
 	override resolvedType(EObject o) {
-		// if disabeld
-		if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(o))
+		// if disabled
+		if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(o.project))
 			return null
 
 		this.doResolvedType(o) ?: "Any"
@@ -23,7 +25,7 @@ class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelE
 
 	def doResolvedType(EObject o) {
 		try {
-			val typeSystem = WollokTypeSystemActivator.^default.getTypeSystem(o)
+			val typeSystem = WollokTypeSystemActivator.^default.getTypeSystem(o.project)
 //			typeSystem.analyse(o.eResource.contents.get(0)) // analyses all the file
 //			typeSystem.inferTypes
 			return typeSystem.type(o)?.toString

@@ -2,17 +2,16 @@ package org.uqbar.project.wollok.typesystem
 
 import java.util.Collection
 import org.apache.log4j.Logger
+import org.eclipse.core.resources.IProject
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
-import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.typesystem.preferences.DefaultWollokTypeSystemPreferences
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
 
 /**
- * 
- * 
  * @author jfernandes
+ * @author npasserini
  */
 class WollokTypeSystemActivator extends Plugin {
 	public static val BUNDLE_NAME = " org.uqbar.project.wollok.typeSystem"
@@ -50,8 +49,8 @@ class WollokTypeSystemActivator extends Plugin {
 		typeSystemPreferences
 	}
 
-	def getTypeSystem(EObject context) {
-		var selectedTypeSystem = this.getTypeSystemPreferences().getSelectedTypeSystem(context)
+	def getTypeSystem(IProject project) {
+		var selectedTypeSystem = this.getTypeSystemPreferences().getSelectedTypeSystem(project)
 		getTypeSystem(selectedTypeSystem)
 	}
 
@@ -74,8 +73,8 @@ class WollokTypeSystemActivator extends Plugin {
 		plugin
 	}
 
-	def isTypeSystemEnabled(EObject file) {
-		getTypeSystemPreferences().isTypeSystemEnabled(file)
+	def isTypeSystemEnabled(IProject project) {
+		getTypeSystemPreferences().isTypeSystemEnabled(project)
 	}
 
 }

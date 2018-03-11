@@ -62,6 +62,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
 	}
 	
+	/** 
+	 * WARNING this name is used as default value in DefaultWollokTypeSystemPreferences, it shouldn't be changed. 
+	 */
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {

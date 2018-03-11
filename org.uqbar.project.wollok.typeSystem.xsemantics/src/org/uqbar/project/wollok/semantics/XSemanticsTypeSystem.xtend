@@ -18,7 +18,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
  * @author jfernandes
  */
 class XSemanticsTypeSystem implements TypeSystem {
-	public static val NAME = "XSemantics" // used as default value ! beware if it changes look for refs
+	public static val NAME = "XSemantics"
 	@Inject
 	protected ExtendedXSemanticsWollokDsl xsemanticsSystem
 	RuleEnvironment env
