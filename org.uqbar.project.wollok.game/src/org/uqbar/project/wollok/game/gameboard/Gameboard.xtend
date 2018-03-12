@@ -4,10 +4,8 @@ import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WGPosition
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
@@ -22,9 +20,10 @@ class Gameboard {
 	
 	String title
 	String ground
+	String boardGround
 	int height
 	int width
-	List<Cell> cells = newArrayList
+	Background background
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
@@ -48,8 +47,15 @@ class Gameboard {
 	}
 
 	def void start(Boolean fromREPL) {
-		createCells(ground)
+		background = createBackgroud()
 		Application.instance.start(this, fromREPL)
+	}
+	
+	def createBackgroud() {
+		if (boardGround !== null)
+		 	new FullBackground(boardGround, this)
+		else 
+			new CellsBackground(ground, this)
 	}
 	
 	def void stop() {
@@ -73,17 +79,8 @@ class Gameboard {
 			} 
 		}
 
-		cells.forEach[ it.draw(window) ]
+		background.draw(window)
 		components.forEach[it.draw(window)]
-	}
-
-	def createCells(String groundImage) {
-		cells.clear
-		for (var i = 0; i < width ; i++) {
-			for (var j = 0; j < height; j++) {
-				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
-			}
-		}
 	}
 
 	def pixelHeight() {

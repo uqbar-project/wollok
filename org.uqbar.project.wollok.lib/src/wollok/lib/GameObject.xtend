@@ -115,8 +115,6 @@ class GameObject {
 	}
 	
 	def ground(String image) { board.ground = image }
-	def ground(WollokObject image) {
-		board.createCells(image.asString)
-	}
+	def boardGround(String image) { board.boardGround = image }
 	
 }
