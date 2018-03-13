@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.NativeMessage
 import org.uqbar.project.wollok.interpreter.nativeobj.NodeAware
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WClosure
 
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
@@ -49,7 +50,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 		val context = closure.createEvaluationContext(args).then(container)
 		interpreter.performOnStack(closure, context) [|
 			interpreter.eval(closure.expression)
-		]	
+		]
 	}
 	
 	def static createEvaluationContext(WClosure c, WollokObject... values) {
