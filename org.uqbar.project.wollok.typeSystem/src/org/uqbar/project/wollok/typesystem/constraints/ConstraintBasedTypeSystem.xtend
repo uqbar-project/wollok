@@ -102,7 +102,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	override inferTypes() {
 		// These constraints have to be created after all files have been `analise`d
-		constraintGenerator.addInheritanceConstraints
+		constraintGenerator.addCrossReferenceConstraints
 
 		var currentStage = 0
 
