@@ -17,6 +17,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "negate" === #[] => Boolean
 		Boolean >> "toString" === #[] => String;
 
+		// TODO Parametric types for Pairs
+		PairType.constructor(Any, Any)
 		PairType >> "getKey" === #[] => Any;
 		PairType >> "getValue" === #[] => Any;
 		
@@ -115,6 +117,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Set >> "contains" === #[ELEMENT] => Boolean
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		
+		Date.constructor(Number, Number, Number)
 		(Date == Date) => Boolean
 		Date - Date => Number
 		Date >> "initialize" === #[Number, Number, Number] => Void

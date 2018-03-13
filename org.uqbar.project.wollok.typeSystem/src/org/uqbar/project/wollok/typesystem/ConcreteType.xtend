@@ -17,5 +17,4 @@ interface ConcreteType extends WollokType {
 
 	def WMethodDeclaration lookupMethod(MessageType message)
 	def WMethodDeclaration lookupMethod(String selector, List<?> parameterTypes)
-	
 }
