@@ -939,6 +939,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
+	@DefaultSeverity(WARN)
+	def testShouldSendOneAssertMessage(WTest test) {
+		if (!test.elements.empty && !test.elements.exists [ sendsMessageToAssert ])
+			report(WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT, test, WTEST__ELEMENTS)
+	}
+	
+	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.CODE_STYLE)
 	def badUsageOfIfAsBooleanExpression(WIfExpression t) {
