@@ -221,6 +221,7 @@ class WEclipseUtils {
 	}
 	
 	def static convertToEclipseURI(IResource res) {
+		// URI.createFileURI(res.locationURI.rawPath.toString.replaceAll("%20", " "))
 		URI.createFileURI(res.locationURI.rawPath.toString)
 	}
 	
