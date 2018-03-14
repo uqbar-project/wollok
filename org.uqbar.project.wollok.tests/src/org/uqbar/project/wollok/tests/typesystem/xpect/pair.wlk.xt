@@ -7,10 +7,24 @@ object pairTest {
 		return new Pair(2, 3)
 	}
 	
-	// TODO: Add more tests for getKey() and getValue()
-   	// XP ECT methodType at m2 --> (Pair) => Any
-	//method m2(pair) {
-	//	return pair.getKey()
-	//}
+   	// XPECT methodType at m2 --> (Pair) => Any
+	method m2(pair) {
+		return pair.getKey()
+	}
+
+	// XPECT methodType at m3 --> (Pair) => Any
+	method m3(pair) {
+		return pair.getValue()
+	}
 	
+	// This test is ignored until we have parametric types for Pair
+   	// XPECT! methodType at m4 --> () => Number
+	method m4() {
+		return new Pair(2, 5).getKey()
+	}
+	
+	// XPECT methodType at m5 --> (Number) => Pair
+	method m5(n) {
+		return new Pair(n + 1, n - 1)
+	}
 }
