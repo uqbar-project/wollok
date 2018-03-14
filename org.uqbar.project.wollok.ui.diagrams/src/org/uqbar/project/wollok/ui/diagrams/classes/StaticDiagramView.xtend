@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui.diagrams.classes
 
 import java.util.ArrayList
 import java.util.Comparator
+import java.util.List
+import java.util.Map
 import java.util.Observable
 import java.util.Observer
 import org.eclipse.core.resources.IResource
@@ -14,6 +16,7 @@ import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
 import org.eclipse.draw2d.graph.Node
+import org.eclipse.emf.common.util.URI
 import org.eclipse.gef.DefaultEditDomain
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.GraphicalEditPart
@@ -173,7 +176,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			// all classes and named objects inheriting from a class
 			// new way: instead of adding imports we just detect them because of hierarchy
 			val classes = xtextDocument.readOnly[ classes ]
-			val mapOutsiderMethodContainers = configuration.resource.project.mapMethodContainers
+			val Map<URI, List<WMethodContainer>> mapOutsiderMethodContainers = configuration.resource.project.mapMethodContainers(configuration.isPlatformFile)
 			val outsiderElements = configuration.outsiderElements.map [ outsiderElement |
 				mapOutsiderMethodContainers.get(outsiderElement.realURI)?.findFirst [
 					outsiderElement.identifier.equals(it.identifier)

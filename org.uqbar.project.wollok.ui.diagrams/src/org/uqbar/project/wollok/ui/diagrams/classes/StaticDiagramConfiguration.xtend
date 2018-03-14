@@ -362,9 +362,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def void saveConfiguration() {
 		if (this.resourceCanBeUsed) {
 			var File _file = null
-			//if (!this.isPlatformFile)
-			//	_file = new File(staticDiagramFullName.adaptFile)
-			//else 
+			if (!this.isPlatformFile)
+				_file = new File(staticDiagramFullName.adaptFile)
+			else 
 				_file = new File(staticDiagramFullName)
 				
 			val file = new FileOutputStream(_file)
@@ -395,44 +395,21 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *******************************************************
 	 */	
 	override toString() {
-		val result = new StringBuffer() => [
-			append("Static Diagram {")
-			append("\n")
-			append("    relations = ")
-			append(this.relations)
-			append("\n")
-			append("    hidden components = ")
-			append(this.hiddenComponents)
-			append("\n")
-			append("    hidden parts = ")
-			append(this.hiddenParts)
-			append("\n")
-			append("    full path = ")
-			append(this.fullPath)
-			append("\n")
-			append("    original file name = ")
-			append(this.originalFileName)
-			append("\n")
-			append("    show variables = ")
-			append(this.showVariables)
-			append("\n")
-			append("    remember locations = ")
-			append(this.rememberLocationAndSizeShapes)
-			append("\n")
-			append("    locations = ")
-			append(this.locations)
-			append("\n")
-			append("    sizes = ")
-			append(this.sizes)
-			append("\n")
-			append("    outsiderElements = ")
-			append(this.outsiderElements)
-			append("\n")
-			append("}")	
-		]
-		result.toString
+		'''
+		Static Diagram {
+			relations = «this.relations»
+			hidden components = «this.hiddenComponents»
+			hidden parts = «this.hiddenParts»
+			full path = «this.fullPath»
+			original file name = «this.originalFileName»
+			show variables = «this.showVariables»
+			remember locations = «this.rememberLocationAndSizeShapes»
+			locations = «this.locations»
+			sizes = «this.sizes»
+			outsider elements = «this.outsiderElements»
+		}
+		'''
 	}
-
 
 	/** 
 	 ******************************************************

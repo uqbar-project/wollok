@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.core.resources.IProject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
@@ -594,7 +595,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			.toList
 	}
 
-	def static mapMethodContainers(IProject project) {
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project) {
 		val result = new HashMap<URI, List<WMethodContainer>>
 		project.allWollokFiles.forEach [ file | result.put(file, newArrayList)]
 		project
@@ -606,6 +607,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 				result.put(uri, methodContainers)
 			]
 		result
+	}
+
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project, boolean platformFile) {
+		if (platformFile) return newHashMap
+		project.mapMethodContainers
 	}
 	
 	def static getMethodContainers(URI uri) {

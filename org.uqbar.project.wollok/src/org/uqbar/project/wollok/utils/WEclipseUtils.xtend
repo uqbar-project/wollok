@@ -221,8 +221,7 @@ class WEclipseUtils {
 	}
 	
 	def static convertToEclipseURI(IResource res) {
-		// URI.createFileURI(res.locationURI.rawPath.toString.replaceAll("%20", " "))
-		URI.createFileURI(res.locationURI.rawPath.toString)
+		URI.createFileURI(res.locationURI.rawPath.toString.replaceAll("%20", " "))
 	}
 	
 	def static isWollokExtension(IResource file) {
