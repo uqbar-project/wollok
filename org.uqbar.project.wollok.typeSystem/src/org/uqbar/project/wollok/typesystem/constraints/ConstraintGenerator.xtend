@@ -60,7 +60,7 @@ class ConstraintGenerator {
 	// ** First pass
 	// ************************************************************************
 	/**
-	 * We have to to two passes through the program. The first one just adds globals, 
+	 * We have two passes through the program. The first one just adds globals, 
 	 * so that they are visible during constraint generation.
 	 */
 	def dispatch void addGlobals(EObject it) {
@@ -95,11 +95,11 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
+		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
 
 	def dispatch void generateVariables(WClass it) {
-
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
@@ -178,11 +178,6 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		/*
-		 * NOT SURE FOR NOW - Dodain
-		val associatedConstructor = constructor
-		associatedConstructor?.generateVariables
-		*/
 		arguments.forEach [ generateVariables ]
 		newSealed(classType(classRef))
 

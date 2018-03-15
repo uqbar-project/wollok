@@ -40,7 +40,7 @@ class ClosureTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		throw new UnsupportedOperationException('''
-			Tring to assign a maxType to a clousure
+			Tring to assign a maxType to a closure
 				maxTypes: «maxTypes»
 				origin: «origin»
 		''')

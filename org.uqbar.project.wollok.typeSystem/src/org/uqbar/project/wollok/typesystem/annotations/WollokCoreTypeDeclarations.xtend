@@ -147,7 +147,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment these definitions solving closure parameters
+		// TODO: Uncomment these definitions when solving closure parameters
 		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
