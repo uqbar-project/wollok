@@ -19,6 +19,7 @@ class MessageNotUnderstoodException extends TypeSystemException {
 	}
 
 	override getMessage() {
-		'''type <<«type»>> does not understand message <<«messageSend.text»>>'''
+//		NLS.bind()
+		'''type <<«type»>> does not understand message <<«messageSend.fullMessage»>>'''
 	}	
 }

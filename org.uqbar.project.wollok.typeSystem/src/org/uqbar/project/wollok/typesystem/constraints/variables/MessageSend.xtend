@@ -4,6 +4,9 @@ import java.util.List
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 class MessageSend {
@@ -33,8 +36,8 @@ class MessageSend {
 		openTypes.add(type)
 	}
 	
-	def text() { //TODO: Consultar de dónde puedo sacar esto
-		'''«selector»(«arguments.map[it.owner].join(', ')»)'''
+	def fullMessage() {
+		(returnType.owner as WMemberFeatureCall).fullMessage
 	}
 
 	override toString() { returnType.owner.debugInfo }
