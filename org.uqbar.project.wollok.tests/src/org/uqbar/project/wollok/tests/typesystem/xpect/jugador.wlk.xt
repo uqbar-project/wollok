@@ -1,0 +1,28 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Jugador {
+	// XPECT type at edad --> Number
+	var edad = 20 
+	
+	// XPECT type at partidosJugados --> Number
+	var partidosJugados = 0
+	
+	// XPECT type at nombre --> String
+	var nombre = "Juan"
+	
+	// XPECT methodType at esBueno --> () => Boolean
+	method esBueno() = (edad % 5) == 0
+
+	// XPECT methodType at jugar --> () => Void	
+	method jugar() {
+		assert.equals(true, false)
+		//partidosJugados = partidosJugados + 1
+		partidosJugados++
+	}
+	
+	// XPECT methodType at debutar --> () => Void
+	method debutar() {
+		nombre = nombre.capitalize()
+	}
+	
+}

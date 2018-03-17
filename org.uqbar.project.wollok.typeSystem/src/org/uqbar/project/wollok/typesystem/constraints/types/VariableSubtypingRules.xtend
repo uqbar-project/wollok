@@ -14,13 +14,13 @@ class VariableSubtypingRules {
 	// ** Type Info
 	// ************************************************************************
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(Void supertype, Void subtype) { true }
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(Void supertype, TypeInfo subtype) { true }
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, Void subtype) { true }
 
 	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, VoidTypeInfo subtype) { true }
