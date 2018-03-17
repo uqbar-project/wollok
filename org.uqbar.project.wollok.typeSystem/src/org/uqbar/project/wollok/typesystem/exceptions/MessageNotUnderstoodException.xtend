@@ -15,9 +15,10 @@ class MessageNotUnderstoodException extends TypeSystemException {
 	new(WollokType type, MessageSend message) {
 		this.type = type
 		this.messageSend = message
+		this.variable = message.returnType
 	}
 
 	override getMessage() {
-		'''type <<«type»>> does not understand message <<«messageSend.selector»>>'''
+		'''type <<«type»>> does not understand message <<«messageSend.text»>>'''
 	}	
 }

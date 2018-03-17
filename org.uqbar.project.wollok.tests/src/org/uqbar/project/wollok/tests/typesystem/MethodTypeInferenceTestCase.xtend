@@ -223,7 +223,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "number")
-			findByText("number", WVariableReference).assertIssuesInElement("type <<Number>> does not understand message <<isBig>>")
+			findByText("number.isBig()", WMemberFeatureCall).assertIssuesInElement("type <<Number>> does not understand message <<isBig()>>")
 		]
 	}
 	

@@ -102,7 +102,7 @@ class TypeVariable implements ITypeVariable {
 		errors.forEach [
 			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
-				validator.report(message, owner)
+				validator.report(message, variable.owner)
 			}
 			catch (IllegalArgumentException exception) {
 				// We probably reported a type error to a core object, which is not possible

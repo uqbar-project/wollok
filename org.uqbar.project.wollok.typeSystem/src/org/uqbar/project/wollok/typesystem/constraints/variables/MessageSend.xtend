@@ -32,6 +32,10 @@ class MessageSend {
 	def addOpenType(WollokType type) {
 		openTypes.add(type)
 	}
+	
+	def text() { //TODO: Consultar de dónde puedo sacar esto
+		'''«selector»(«arguments.map[it.owner].join(', ')»)'''
+	}
 
 	override toString() { returnType.owner.debugInfo }
 }

@@ -25,7 +25,7 @@ class OffenderSelector {
 	def static handleOffense(TypeVariable subtype, TypeVariable supertype, TypeSystemException offense) {
 		val offender = selectOffenderVariable(subtype, supertype)
 		offender.addError(offense)
-		offense.variable = offender
+		if (offense.variable === null) offense.variable = offender
 	}
 
 	def static selectOffenderVariable(TypeVariable subtype, TypeVariable supertype) {
