@@ -1,0 +1,40 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object assertsTest {
+	
+	// XPECT methodType at m1 --> (Boolean) => Void
+	method m1(condition) {
+		assert.notThat(condition)
+	}
+
+	// XPECT methodType at m2 --> (Boolean) => Void
+	method m2(condition) {
+		assert.that(condition)
+	}
+
+	// XPECT methodType at m3 --> (String) => Void
+	method m3(message) {
+		assert.fail(message)
+	}
+	
+	// XPECT methodType at m4 --> (Any) => Void
+	method m4(n) {
+		assert.equals(2, n)
+	}
+	
+	// XPECT methodType at m5 --> (Any) => Void
+	method m5(n) {
+		assert.notEquals(2, n)
+	}
+
+	// XPECT! methodType at m6 --> () => Void
+	//method m6() {
+	//	assert.throwsException({ 1 / 0})
+	//}
+
+	// XPECT! methodType at m7 --> (() => Any) => Void
+	//method m7(clos) {
+	//	assert.throwsException(clos)
+	//}
+	
+}

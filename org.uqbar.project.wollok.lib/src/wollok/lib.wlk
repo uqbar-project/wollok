@@ -335,9 +335,14 @@ object game {
 	method height() native
 
 	/**
-	 * Sets cells image.
+	 * Sets cells background image.
 	 */			
 	method ground(image) native
+	
+	/**
+	 * Sets full background image.
+	 */			
+	method boardGround(image) native
 	
 	/** 
 	* @private
@@ -346,8 +351,8 @@ object game {
 }
 
 class Position {
-	var x = 0
-	var y = 0
+	var property x = 0
+	var property y = 0
 	
 	/**
 	 * Returns the position at origin: (0,0).
@@ -427,26 +432,6 @@ class Position {
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
-	
-	/**
-	 * Returns x coordinate.
-	 */	
-	method x() = x
-
-	/**
-	 * Sets x coordinate.
-	 */	
-	method x(_x) { x = _x }
-	
-	/**
-	 * Returns y coordinate.
-	 */	
-	method y() = y
-
-	/**
-	 * Sets y coordinate.
-	 */	
-	method y(_y) { y = _y }
 	
 	/**
 	 * Two positions are equals if have same coordinates.

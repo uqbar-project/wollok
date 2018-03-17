@@ -22,7 +22,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
 		// TODO A variable without an owner is a synthetic var.
-		// Syntetetic variables should have their own way of specifying something that allows us to identify where came this variable from.
+		// Synthetic variables should have their own way of specifying something that allows us to identify where came this variable from.
 		// Also this might not be the best place for this kind of logic, specific to synthetic variables.
 		"synthetic"
 	}
@@ -58,7 +58,7 @@ class WollokModelPrintForDebug {
 		'''param «name»'''
 
 	static def dispatch String debugInfo(WMemberFeatureCall it)
-		'''«memberCallTarget.debugInfo».«feature».(«memberCallArguments.join(', ')[debugInfo]»)'''
+		'''«memberCallTarget.debugInfo».«feature»(«memberCallArguments.join(', ')[debugInfo]»)'''
 
 	static def dispatch String debugInfo(WVariable it)
 		'''&«name»'''

@@ -23,6 +23,7 @@ import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBas
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeUnaryOperations
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -35,6 +36,7 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -66,7 +68,6 @@ import static extension org.uqbar.project.wollok.interpreter.context.EvaluationC
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 
 /**
  * It's the real "interpreter".
@@ -103,7 +104,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	protected def WollokObject[] evalEach(EList e) { e.map[eval] }
+	protected def WollokObject[] evalEach(EList<? extends EObject> objects) { objects.map[eval] }
 
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
@@ -381,7 +382,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	// other expressions
-	def dispatch WollokObject evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch WollokObject evaluate(WBlockExpression b) { 
+		if (b.expressions.isEmpty) 
+			return WollokDSK.getVoid(interpreter as WollokInterpreter, b)
+
+		b.expressions.evalAll
+	}
 
 	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
@@ -467,5 +473,4 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			createNamedObject(classFinder.getCachedObject(context, qualifiedName), qualifiedName)
 		}
 	}
-
 }

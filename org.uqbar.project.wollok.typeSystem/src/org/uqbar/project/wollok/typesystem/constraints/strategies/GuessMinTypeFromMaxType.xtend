@@ -45,6 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	
@@ -73,7 +74,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	// ************************************************************************
 
 	/** We will stop visits after a change is found */
-	def dispatch shouldVisit(EObject e) { !changed }
+	def dispatch shouldVisit(EObject e) { !changed && !e.isCoreObject }
 
 	/** Handle nulls in multiple dispatch */
 	def dispatch shouldVisit(Void it) { false }

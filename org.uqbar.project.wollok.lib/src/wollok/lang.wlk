@@ -68,9 +68,7 @@ class Exception {
  * @author jfernandes
  * @since 1.5.1
  */
-class StackOverflowException inherits Exception {
-	constructor() = super()
-}
+class StackOverflowException inherits Exception {}
 
 /**
  * An exception that is thrown when a specified element cannot be found
@@ -101,14 +99,12 @@ class MessageNotUnderstoodException inherits Exception {
  * An element in a stack trace, represented by a context and a location of a method where a message was sent
  */
 class StackTraceElement {
-	const contextDescription
-	const location
+	const property contextDescription
+	const property location
 	constructor(_contextDescription, _location) {
 		contextDescription = _contextDescription
 		location = _location
 	}
-	method contextDescription() = contextDescription
-	method location() = location
 }
 
 /**
@@ -129,6 +125,7 @@ class Object {
 	method instanceVariableFor(name) native
 	/** Accesses a variable by name, in a reflexive way. */
 	method resolve(name) native
+	
 	/** Object description in english/spanish/... (depending on i18n configuration)
 	 *
 	 * Examples:
@@ -143,9 +140,7 @@ class Object {
 	 * Tells whether self object is "equal" to the given object
 	 * The default behavior compares them in terms of identity (===)
 	 */
-	method ==(other) {
-		return other != null && self === other 
-	}
+	method ==(other) = other != null && self === other 
 	
 	/** Tells whether self object is not equal to the given one */
 	method !=(other) = ! (self == other)
@@ -155,9 +150,7 @@ class Object {
 	 * It does it by comparing their identities.
 	 * So self basically relies on the wollok.lang.Integer equality (which is native)
 	 */
-	method ===(other) {
-		return self.identity() == other.identity()
-	}
+	method ===(other) = self.identity() == other.identity()
 
 	/**
 	 * Tells whether self object is not identical (the same) to the given one.
@@ -182,7 +175,7 @@ class Object {
 	 */
 	method toString() {
 		// TODO: should be a set
-		// return self.toSmartString(#{})
+		//return self.toSmartString(#{})
 		return self.toSmartString([])
 	}
 	
@@ -205,9 +198,7 @@ class Object {
 	} 
 	
 	/** @private */
-	method simplifiedToSmartString(){
-		return self.kindName()
-	}
+	method simplifiedToSmartString() = self.kindName()
 	
 	/** @private */
 	method internalToSmartString(alreadyShown) {
@@ -250,16 +241,14 @@ object void { }
  * It is also useful if you want to model a Point. 
  */
 class Pair {
-	const x
-	const y
+	const property x
+	const property y
 	constructor (_x, _y) {
 		x = _x
 		y = _y
 	}
-	method getX() { return x }
-	method getY() { return y }
-	method getKey() { return self.getX() }
-	method getValue() { return self.getY() }
+	method getKey() = x
+	method getValue() = y
 }
 
 /**
@@ -312,13 +301,13 @@ class Collection {
 			if (acc == null)
 				new Pair(e, n)
 			else {
-				if (criteria.apply(n, acc.getY()))
+				if (criteria.apply(n, acc.y()))
 					new Pair(e, n)
 				else
 					acc
 			}
 		})
-		return result.getX()
+		return result.x()
 	}
 	 
 	// non-native methods
@@ -713,6 +702,13 @@ class Set inherits Collection {
  */
 class List inherits Collection {
 
+	constructor() {}
+
+	constructor(head, tail...) = self() {
+		self.add(head)
+		self.addAll(tail)
+	}
+
 	/** 
 	 * Answers the element at the specified position in this list.
 	 * 
@@ -908,8 +904,6 @@ class List inherits Collection {
  */
 class Dictionary {
 
-	constructor() { }
-	
 	/**
 	 * Adds or updates a value based on a key
 	 */
@@ -1135,12 +1129,12 @@ class Number {
 	/** Answers squareRoot of self
 	 * 		9.squareRoot() => Answers 3 
 	 */
-	method squareRoot() { return self ** 0.5 }
+	method squareRoot() = self ** 0.5
 	
 	/** Answers square of self
 	 * 		3.square() => Answers 9 
 	 */
-	method square() { return self * self }
+	method square() = self * self
 	
 	/** 
 	 * Answers whether self is an even number (divisible by 2, mathematically 2k) 
@@ -1165,7 +1159,7 @@ class Number {
 	 * 		5.rem(3) 	==> Answers 2
 	 *      5.5.rem(3) 	==> Answers 2
 	 */
-	method rem(other) { return self % other }
+	method rem(other) = self % other
 	
 	/*
 	 * Self as String value. Equivalent: toString()
@@ -1270,6 +1264,7 @@ class Number {
 	 * Executes the given action n times (n = self)
 	 *
 	 * Self must be a positive integer value.
+	 * The closure must have one argument (index goes from 1 to self)
 	 *
 	 * Example:
 	 * 		4.times({ i => console.println(i) }) ==> Answers 
@@ -1381,9 +1376,7 @@ class String {
 	method contains(other) native
 	
 	/** Answers whether this string has no characters */
-	method isEmpty() {
-		return self.size() == 0
-	}
+	method isEmpty() = self.size() == 0
 
 	/** 
 	 * Compares this String to another String, ignoring case considerations.
@@ -1482,7 +1475,7 @@ class String {
  * Represents a Boolean value (true or false)
  *
  * @author jfernandes
- * @noinstantiate
+ * @noInstantiate
  */
 class Boolean {
 
@@ -1573,19 +1566,19 @@ class Range {
 	method size() { return end - start + 1 }
 	
 	/** @see List#any(closure) */
-	method any(closure) { return self.asList().any(closure) }
+	method any(closure) = self.asList().any(closure)
 	
 	/** @see List#all(closure) */
-	method all(closure) { return self.asList().all(closure) }
+	method all(closure) = self.asList().all(closure)
 	
 	/** @see List#filter(closure) */
-	method filter(closure) { return self.asList().filter(closure) }
+	method filter(closure) = self.asList().filter(closure)
 	
 	/** @see List#min() */
-	method min() { return self.asList().min() }
+	method min() = self.asList().min()
 	
 	/** @see List#max() */
-	method max() { return self.asList().max() }
+	method max() = self.asList().max()
 	
 	/**
 	 * Answers a random integer contained in the range
@@ -1593,10 +1586,10 @@ class Range {
 	method anyOne() native
 	
 	/** Tests whether a number e is contained in the range */
-	method contains(e) { return self.asList().contains(e) }
+	method contains(e) = self.asList().contains(e)
 	
 	/** @see List#sum() */
-	method sum() { return self.asList().sum() }
+	method sum() = self.asList().sum()
 	
 	/**
 	 * Sums all elements that match the boolean closure 
@@ -1604,7 +1597,7 @@ class Range {
 	 * Example:
 	 * 		(1..9).sum({ i => if (i.even()) i else 0 }) ==> Answers 20
 	 */
-	method sum(closure) { return self.asList().sum(closure) }
+	method sum(closure) = self.asList().sum(closure)
 	
 	/**
 	 * Counts how many elements match the boolean closure
@@ -1612,19 +1605,19 @@ class Range {
 	 * Example:
 	 * 		(1..9).count({ i => i.even() }) ==> Answers 4 (2, 4, 6 and 8 are even)
 	 */
-	method count(closure) { return self.asList().count(closure) }
+	method count(closure) = self.asList().count(closure)
 	
 	/** @see List#find(closure) */
-	method find(closure) { return self.asList().find(closure) }
+	method find(closure) = self.asList().find(closure)
 	
 	/** @see List#findOrElse(predicate, continuation)	 */
-	method findOrElse(closure, continuation) { return self.asList().findOrElse(closure, continuation) }
+	method findOrElse(closure, continuation) = self.asList().findOrElse(closure, continuation)
 	
 	/** @see List#findOrDefault(predicate, value) */
-	method findOrDefault(predicate, value) { return self.asList().findOrDefault(predicate, value) }
+	method findOrDefault(predicate, value) = self.asList().findOrDefault(predicate, value)
 	
 	/** @see List#sortBy */
-	method sortedBy(closure) { return self.asList().sortedBy(closure) }
+	method sortedBy(closure) = self.asList().sortedBy(closure)
 	
 	/** @private */
 	override method internalToSmartString(alreadyShown) = start.toString() + ".." + end.toString()
@@ -1745,17 +1738,11 @@ class Date {
 	
 	method <(_aDate) native
 	method >(_aDate) native
-	method <=(_aDate) { 
-		return (self < _aDate) || (self.equals(_aDate))
-	}
-	method >=(_aDate) { 
-		return (self > _aDate) || (self.equals(_aDate)) 
-	}
+	method <=(_aDate) = (self < _aDate) || (self.equals(_aDate))
+	method >=(_aDate) = (self > _aDate) || (self.equals(_aDate)) 
 	
 	/** Answers whether self is between two dates (both inclusive comparison) */
-	method between(_startDate, _endDate) { 
-		return (self >= _startDate) && (self <= _endDate) 
-	}
+	method between(_startDate, _endDate) = (self >= _startDate) && (self <= _endDate) 
 
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =

@@ -134,7 +134,7 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		range.step(2)
 		const counter = new Dictionary()
 		range.forEach({n => counter.put(n,0)})
-		5000.times({
+		5000.times({ i =>
 			var n = range.anyOne()
 			var c = counter.get(n) + 1
 			counter.put(n,c)

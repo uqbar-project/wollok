@@ -1,0 +1,71 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object stringsTests {
+	
+	// XPECT methodType at m1 --> (String) => Number
+	method m1(s) = s.length() + 1
+
+	// XPECT methodType at m2 --> (Number) => String
+	method m2(n) = ("hola".charAt(n) + "e").toUpperCase()
+
+	// XPECT methodType at m3 --> (String) => Boolean
+	method m3(s) = "hola".startsWith(s)
+
+	// XPECT methodType at m4 --> (String) => Boolean
+	method m4(s) = "hola".endsWith(s)
+
+	// XPECT methodType at m5 --> (String) => Number
+	method m5(s) = "hola".indexOf(s) + "chau".lastIndexOf(s)
+
+	// XPECT methodType at m6 --> () => String
+	method m6() = "hola".trim()
+
+	// XPECT methodType at m7 --> (String) => Number
+	method m7(a) = if (a >= "hello") 0 else 1
+
+	// XPECT methodType at m8 --> (String) => Boolean
+	method m8(a) = a > (a.trim())
+
+	// XPECT methodType at m9 --> (String) => Boolean
+	method m9(a) = a < (a.toUpperCase())
+
+	// XPECT methodType at m10 --> (String) => Boolean
+	method m10(a) = a <= (a.trim())
+
+	// XPECT methodType at m11 --> (String) => Boolean
+	method m11(s) = "hello".contains(s)
+
+	// XPECT methodType at m12 --> (String, Number) => Boolean
+	method m12(s, n) = s.substring(n).isEmpty()
+
+	// XPECT methodType at m13 --> (String) => Boolean
+	method m13(s) = s.equalsIgnoreCase(s)
+
+	// XPECT methodType at m14 --> (String, Number) => List
+	method m14(s, n) = s.substring(0, n).split("s")
+
+	// XPECT methodType at m15 --> (Object, String) => String
+	method m15(s, s2) {
+		// XPECT type at value --> String
+		var value = s.printString()
+		// XPECT type at value2 --> String
+		const value2 = value.toString()
+		return value.replace("h", s2)
+	}
+
+	// XPECT methodType at m16 --> (String) => String
+	method m16(s) = (s + "").take(s.size() - 1)
+
+	// XPECT methodType at m17 --> (Any) => Boolean
+	method m17(s) = "hola" == s
+
+	// XPECT methodType at m18 --> (String, Number) => List
+	method m18(s, n) {
+		// XPECT type at value --> String
+		const value = s.capitalize()
+		// XPECT type at value2 --> String
+		const value2 = value.drop(n)
+		return if (value == value2) ["hola"] else value2.words()
+	}
+	
+}

@@ -242,7 +242,11 @@ class WollokModelExtensions {
 	}
 
 	def static messageName(WMethodDeclaration d) {
-		d.name + "(" + d.parameters.map[name].join(", ") + ")"
+		d.name + d.parametersAsString
+	}
+	
+	def static parametersAsString(WMethodDeclaration d) {
+		"(" + d.parameters.map[name].join(", ") + ")"
 	}
 	
 	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
@@ -331,6 +335,15 @@ class WollokModelExtensions {
 			c.constructors
 		else
 			c.parent.allConstructors
+	}
+
+	/**
+	 * Look for a constructor matching the number of parameters, 
+	 * but only among the constructors written in the class itself. 
+	 * Ignore constructor inheritance.
+	 */	
+	def static getOwnConstructor(WClass clazz, int nrOfParams) {
+		clazz.constructors.findFirst[matches(nrOfParams)]
 	}
 
 	def static dispatch getConstructors(EObject o) { newArrayList }
@@ -566,8 +579,10 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 	
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		if (m.overridenMethod === null) return false
+		if (m.expressionReturns) return m.expression.callsToSuperWith(m) 			
 		val methodBody = m.expression.eContents
-	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
+	 	methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
 	}
 	
 	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }

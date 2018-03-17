@@ -38,12 +38,16 @@ class MessageSend {
 	}
 	
 	def fullMessage() {
-		(returnType.owner as WMemberFeatureCall).fullMessage
+		featureCall.fullMessage
 	}
 	
 	def argumentNames() {
-		(returnType.owner as WMemberFeatureCall).memberCallArguments.map[sourceCode]
+		featureCall.memberCallArguments.map[sourceCode]
 	}
+	
+	def isClosureMessage() { selector == "apply" }
+
+	def featureCall() { returnType.owner as WMemberFeatureCall }
 
 	override toString() { returnType.owner.debugInfo }
 }

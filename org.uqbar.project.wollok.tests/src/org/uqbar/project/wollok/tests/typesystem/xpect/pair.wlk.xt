@@ -1,0 +1,16 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pairTest {
+	
+	// XPECT methodType at m1 --> () => Pair
+	method m1() {
+		return new Pair(2, 3)
+	}
+	
+	// TODO: Add more tests for getKey() and getValue()
+   	// XP ECT methodType at m2 --> (Pair) => Any
+	//method m2(pair) {
+	//	return pair.getKey()
+	//}
+	
+}

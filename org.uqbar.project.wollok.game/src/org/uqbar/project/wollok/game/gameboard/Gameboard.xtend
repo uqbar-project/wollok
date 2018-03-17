@@ -1,14 +1,12 @@
 package org.uqbar.project.wollok.game.gameboard;
 
-import com.badlogic.gdx.Gdx
 import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -21,9 +19,11 @@ class Gameboard {
 	val Logger log = Logger.getLogger(this.class)	
 	
 	String title
+	String ground
+	String boardGround
 	int height
 	int width
-	List<Cell> cells = newArrayList
+	Background background
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
@@ -39,15 +39,27 @@ class Gameboard {
 		title = "Wollok Game"
 		height = 5
 		width = 5
-		createCells("ground.png")
+		ground = "ground.png" 
+	}
+	
+	def void start() {
+		start(false)
 	}
 
 	def void start(Boolean fromREPL) {
-		new WollokGDXApplication(this, fromREPL)
+		background = createBackgroud()
+		Application.instance.start(this, fromREPL)
 	}
 	
-	def stop() {
-		Gdx.app.exit
+	def createBackgroud() {
+		if (boardGround !== null)
+		 	new FullBackground(boardGround, this)
+		else 
+			new CellsBackground(ground, this)
+	}
+	
+	def void stop() {
+		Application.instance.stop
 	}
 	
 	def void draw(Window window) {
@@ -67,17 +79,8 @@ class Gameboard {
 			} 
 		}
 
-		cells.forEach[ it.draw(window) ]
+		background.draw(window)
 		components.forEach[it.draw(window)]
-	}
-
-	def createCells(String groundImage) {
-		cells.clear
-		for (var i = 0; i < width ; i++) {
-			for (var j = 0; j < height; j++) {
-				cells.add(new Cell(new WGPosition(i, j), new Image(groundImage)));
-			}
-		}
 	}
 
 	def pixelHeight() {

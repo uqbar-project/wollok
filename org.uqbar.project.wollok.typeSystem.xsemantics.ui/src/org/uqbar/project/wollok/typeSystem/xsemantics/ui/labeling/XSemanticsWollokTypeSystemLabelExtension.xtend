@@ -17,24 +17,19 @@ class XSemanticsWollokTypeSystemLabelExtension implements WollokTypeSystemLabelE
 		// if disabeld
 		if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(o))
 			return null
-			
-		val x = this.doResolvedType(o)
-		if (x === null) 
-			null
-		else
-			x.toString
+
+		this.doResolvedType(o) ?: "Any"
 	}
 
 	def doResolvedType(EObject o) {
 		try {
 			val typeSystem = WollokTypeSystemActivator.^default.getTypeSystem(o)
-			typeSystem.analyse(o.eResource.contents.get(0)) // analyses all the file
-			typeSystem.inferTypes
-			typeSystem.type(o)
-		}
-		catch (Exception e) {
+//			typeSystem.analyse(o.eResource.contents.get(0)) // analyses all the file
+//			typeSystem.inferTypes
+			return typeSystem.type(o)?.toString
+		} catch (Exception e) {
 			log.error("Error in type system !! " + e.message, e)
-			"Any"
+			return null
 		}
 	}
 

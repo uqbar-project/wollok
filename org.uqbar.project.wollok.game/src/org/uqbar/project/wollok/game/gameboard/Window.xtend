@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
+import java.util.Map
+import com.badlogic.gdx.graphics.Texture.TextureFilter
+import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.ImageSize
 
 class Window {
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
@@ -20,27 +24,33 @@ class Window {
 	val batch = new SpriteBatch()
 	val font = new BitmapFont()
 	val glyphLayout = new GlyphLayout()
-	OrthographicCamera camera
+	val OrthographicCamera camera
+	
+	val Map<String, Texture> textures = newHashMap
 	
 	new(OrthographicCamera camera) {
 		this.camera = camera
 	}
 	
-	def draw(Image image, Position position) {
-		drawIn(image, position.xinPixels, position.yinPixels)
+	def draw(Image it) {
+		draw(new WGPosition)
 	}
 	
-	def drawIn(Image image, int x, int y) {
-		val texture = image.texture
-		if (texture != null) //TODO: Think a better implementation
-			batch.draw(texture, x, y)
+	def draw(Image it, Position position) {
+		val t = texture  
+		if (t !== null)
+			doDraw(t, position, size)
 		else
-			drawNotFoundImage(x, y)
+			drawNotFoundImage(it, position)
 	}
 	
-	def drawNotFoundImage(int x, int y) {
-		batch.draw(defaultImage, x, y)
-		write(notFoundText, Color.BLACK, x - 80, y + 50)
+	def drawNotFoundImage(Image image, Position it) {
+		doDraw(defaultImage, it, image.size)
+		write(notFoundText, Color.BLACK, xinPixels - 80, yinPixels + 50)
+	}
+	
+	def doDraw(Texture texture, Position it, ImageSize size) {
+		batch.draw(texture, xinPixels, yinPixels, size.width(texture.width), size.height(texture.height))
 	}
 	
 	def writeAttributes(String text, Position position, Color color) {
@@ -91,5 +101,24 @@ class Window {
 		batch.dispose()
 	}
 
+	def Texture texture(Image it) {
+		val texture = textures.get(path)
+		if (texture === null && !textures.containsKey(path)) {
+			path.addTexture
+			it.texture
+		} 
+		else texture
+	}
 	
+	def addTexture(String path) {
+		val file = Gdx.files.internal(path)
+			
+		if (!file.exists) 
+			textures.put(path, null)
+		else {			
+			val texture = new Texture(file)
+			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
+			textures.put(path, texture)
+		}
+	}
 }

@@ -605,8 +605,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     boolean _not = (!_containsKey);
     if (_not) {
       WClass _parent = c.getParent();
-      boolean _notEquals = (!Objects.equal(_parent, null));
-      if (_notEquals) {
+      boolean _tripleNotEquals = (_parent != null);
+      if (_tripleNotEquals) {
         /* G |- c.parent */
         WClass _parent_1 = c.getParent();
         inferTypesInternal(G, _trace_, _parent_1);
@@ -627,8 +627,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         
       }
       EList<WConstructor> _constructors = c.getConstructors();
-      boolean _notEquals_1 = (!Objects.equal(_constructors, null));
-      if (_notEquals_1) {
+      boolean _tripleNotEquals_1 = (_constructors != null);
+      if (_tripleNotEquals_1) {
         final Consumer<WConstructor> _function = (WConstructor it) -> {
           /* G |- it */
           inferTypesInternal(G, _trace_, it);
@@ -741,11 +741,11 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
     };
     m.getParameters().forEach(_function);
     WExpression _expression = m.getExpression();
-    boolean _notEquals = (!Objects.equal(_expression, null));
-    if (_notEquals) {
+    boolean _tripleNotEquals = (_expression != null);
+    if (_tripleNotEquals) {
       final WollokType currentReturnType = this.<WollokType>env(G, m, WollokType.class);
-      boolean _notEquals_1 = (!Objects.equal(currentReturnType, WollokType.WAny));
-      if (_notEquals_1) {
+      boolean _notEquals = (!Objects.equal(currentReturnType, WollokType.WAny));
+      if (_notEquals) {
         /* G |- m.expression << currentReturnType */
         WExpression _expression_1 = m.getExpression();
         refineTypeInternal(G, _trace_, _expression_1, currentReturnType);
@@ -1243,8 +1243,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   protected Result<WollokType> applyRuleWSelfType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WSelf thiz) throws RuleFailedException {
     WollokType t = null; // output parameter
     final WMethodDeclaration containingMethod = WollokModelExtensions.method(thiz);
-    boolean _equals = Objects.equal(containingMethod, null);
-    if (_equals) {
+    if ((containingMethod == null)) {
       t = WollokType.WAny;
     } else {
       final WMethodContainer context = WollokModelExtensions.declaringContext(containingMethod);
@@ -1563,7 +1562,7 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
         typeOfMessage = (MessageType) result_1.getFirst();
         
         WMethodDeclaration method = ((ClassBasedWollokType)thisType).lookupMethod(typeOfMessage);
-        if (((!Objects.equal(method, null)) && Objects.equal(((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage), WollokType.WAny))) {
+        if (((method != null) && Objects.equal(((ClassBasedWollokType)thisType).resolveReturnType(typeOfMessage), WollokType.WAny))) {
           boolean _add = G.add(method, newType);
           /* G.add(method, newType) */
           if (!_add) {
@@ -1631,8 +1630,8 @@ public class WollokDslTypeSystem extends XsemanticsRuntimeSystem {
   
   protected Result<WollokType> applyRuleVariableDeclarationType(final RuleEnvironment G, final RuleApplicationTrace _trace_, final WVariableDeclaration decl) throws RuleFailedException {
     WExpression _right = decl.getRight();
-    boolean _notEquals = (!Objects.equal(_right, null));
-    if (_notEquals) {
+    boolean _tripleNotEquals = (_right != null);
+    if (_tripleNotEquals) {
       /* G |- decl.right : var WollokType t */
       WExpression _right_1 = decl.getRight();
       WollokType t = null;

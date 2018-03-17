@@ -34,6 +34,7 @@ class WollokDSK {
 	public static val NUMBER = "wollok.lang.Number"
 	public static val BOOLEAN = "wollok.lang.Boolean"
 	public static val DATE = "wollok.lang.Date"
+	public static val PAIR = "wollok.lang.Pair"
 
 	public static val COLLECTION = "wollok.lang.Collection"
 	public static val LIST = "wollok.lang.List"
@@ -44,6 +45,7 @@ class WollokDSK {
 	public static val CLOSURE = "wollok.lang.Closure"
 	
 	public static val EXCEPTION = "wollok.lang.Exception"
+	public static val STACK_TRACE_ELEMENT = "wollok.lang.StackTraceElement"
 	
 	public static val POSITION = "wollok.lib.Position"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"
@@ -56,6 +58,7 @@ class WollokDSK {
 	// ************************************************************************
 
 	public static val CONSOLE = "wollok.lib.console"
+	public static val ASSERT = "wollok.lib.assert"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

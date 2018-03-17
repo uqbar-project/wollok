@@ -144,8 +144,8 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 
 	def assertConstructorType(EObject program, String className, String paramsSignature) {
 		val nrOfParams = paramsSignature.split(',').length;
-		assertEquals(paramsSignature,
-			"(" + findConstructor(className, nrOfParams).parameters.map[type?.name].join(", ") + ")")
+		assertEquals(paramsSignature, findConstructor(className, nrOfParams).constructorType(tsystem))
+			
 	}
 
 	def assertMethodSignature(EObject program, String expectedSignature, String methodFQN) {
@@ -231,7 +231,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	}
 
 	def findConstructor(String className, int nrOfParams) {
-		WClass.find(className).constructors.findFirst[matches(nrOfParams)]
+		WClass.find(className).getOwnConstructor(nrOfParams)
 	}
 
 	def findMethod(String methodFQN) {

@@ -3,12 +3,14 @@ package org.uqbar.project.wollok.typesystem.annotations
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -37,12 +39,20 @@ abstract class TypeDeclarations {
 	def operator_doubleArrow(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
 		new MethodTypeDeclaration(parameterTypes, returnType)
 	}
+	
+	def constructor(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, TypeAnnotation... parameterTypes) {
+		target.addConstructorTypeDeclaration(owner.type, parameterTypes)
+	}
 
 	// ****************************************************************************
 	// ** Synthetic operator syntax
 	// ****************************************************************************
 	def operator_equals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "==", #[parameterType])
+	}
+
+	def operator_tripleEquals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
 	
 	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
@@ -92,6 +102,8 @@ abstract class TypeDeclarations {
 	def Object() { classTypeAnnotation(OBJECT) }
 
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
+
+	def PairType() { classTypeAnnotation(PAIR) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
 
@@ -104,14 +116,24 @@ abstract class TypeDeclarations {
 	def Set() { classTypeAnnotation(SET) }
 
 	def Collection() { classTypeAnnotation(COLLECTION) }
+	
+	def Closure() { classTypeAnnotation(CLOSURE) }
 
 	def Range() { classTypeAnnotation(RANGE) }
 
 	def Position() { classTypeAnnotation(POSITION) }
 
+	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
+
+	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
+
 	def console() { objectTypeAnnotation(CONSOLE) }
 
+	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
+	
+	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }
 
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
 
@@ -144,7 +166,7 @@ class ExpectReturnType {
 	}
 
 	def operator_doubleArrow(TypeAnnotation returnType) {
-		target.addTypeDeclaration(receiver, selector, parameterTypes, returnType)
+		target.addMethodTypeDeclaration(receiver, selector, parameterTypes, returnType)
 	}
 }
 
@@ -160,7 +182,7 @@ class MethodIdentifier {
 	}
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
-		target.addTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
+		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
 }
 

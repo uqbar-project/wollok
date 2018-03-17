@@ -11,9 +11,10 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
-
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -45,6 +46,10 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * - Pending means this variable needs to be visited again.
 	 * - Error means a type error was detected, variable will not be visited again.
 	 */
+	def unifyWith(ITypeVariable subtype, ITypeVariable supertype) {
+		unifyWith(subtype as TypeVariable, supertype as TypeVariable)
+	}
+
 	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
 		if (subtype.unifiedWith(supertype)) {
 			return Ready
@@ -74,7 +79,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 //			log.debug('''Not unifying «subtype» with parameter «supertype»''')
 //			return Cancel
 //		}
-
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending && it != Cancel)
@@ -103,7 +107,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			// Do not unify unless they are uniques subtype/supertypes respectively
 			// Note that this rule is more strict than for variables without type info.
 			Cancel
-		} else { 
+		} else {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		}
 	}
@@ -131,7 +135,9 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
-		throw new UnsupportedOperationException()
+		t1.parameters.biForEach(t2.parameters, [param1, param2 | param1.unifyWith(param2)])
+		t1.returnType.unifyWith(t2.returnType)
+		Ready
 	}
 
 	def dispatch doUnifyWith(VoidTypeInfo t1, VoidTypeInfo t2) {

@@ -4,11 +4,11 @@ class Golondrina {
 	// XPECT type at energia --> Number
 	var energia = 100
 	
-	// XPECT methodType at vola --> () => Void
-	method vola() { energia = energia - 10 }
+	// XPECT methodType at vola --> (Number) => Void
+	method vola(kilometros) { energia = energia - kilometros * 10 }
 	
 	// XPECT methodType at come --> (Number) => Void
-	method come(grms) { energia = grms * 0.10 }
+	method come(grms) { energia += grms * 0.10 }
 }
 
 object pepita {
@@ -18,13 +18,13 @@ object pepita {
 
 class Entrenador {
 	// XPECT type at estrategia --> {(Golondrina) => Void}
-	const estrategia = { ave => ave.vola() }
+	const estrategia = { ave => ave.vola(5) }
 	
 	// XPECT methodType at entrena --> (Golondrina) => Void
-	method entrena(ave) { ave.vola() }
+	method entrena(ave) { ave.vola(5) }
 	
 	// XPECT methodType at llama --> (pepita) => String
-	method llama(ave) = ave.nombreAve()
+	method llama(p) = p.nombreAve()
 	
 	// XPECT methodType at estrategia --> () => {(Golondrina) => Void}
 	method estrategia() = estrategia
@@ -52,4 +52,13 @@ class Entrenador {
 	
 	// XPECT methodType at condicion3 --> () => {() => Boolean}	
 	method condicion3() { return { return true } }
+	
+	// XPECT methodType at entrenarConEstrategia --> (Golondrina) => Void	
+	method entrenarConEstrategia(ave) { self.estrategia().apply(ave) }
+	
+	// XPECT methodType at alimentar --> (Golondrina, Number) => Void	
+	method alimentar(golondrina, comida) {
+		var c = { g => g.come(comida) } 
+		c.apply(golondrina)
+	}
 }

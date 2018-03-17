@@ -83,4 +83,58 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		}'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void closuresWrongArguments() {
+		'''
+		assert.throwsExceptionWithMessage(
+			"Wrong number of arguments for closure: expected 1 but you sent 2",
+			{ { a => a + 2 }.apply(1, 2) }
+			)
+		'''.test
+	}
+	
+	@Test
+	def void closuresWrongArguments2() {
+		'''
+		assert.throwsExceptionWithMessage(
+			"Wrong number of arguments for closure: expected 1 but you sent 0",
+			{ { a => a + 2 }.apply() }
+			)
+		'''.test
+	}
+
+	@Test
+	def void emptyClosure() {
+		'''
+		assert.equals(void, { }.apply())
+		'''.test
+	}
+
+	@Test
+	def void voidClosure() {
+		'''
+		assert.equals(void, { a => const numeros = []; numeros.add(a) }.apply(2))
+		'''.test
+	}
+
+	@Test
+	def void voidClosure2() {
+		'''
+		assert.equals(void, { a => }.apply(2))
+		'''.test
+	}
+
+	@Test
+	def void numberClosure() {
+		'''
+		assert.equals(2, { a => a }.apply(2))
+		'''.test
+	}
+
+	@Test
+	def void nullClosure() {
+		'''
+		assert.equals(null, { null }.apply())
+		'''.test
+	}
 }
