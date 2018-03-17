@@ -45,7 +45,7 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 		
 		program a {
 			«position(0,0)».drawElement(myVisual)
-			2.times{ «position(0,0)».drawElement(new Visual()) }
+			2.times{ i => «position(0,0)».drawElement(new Visual()) }
 			«position(0,1)».drawElement(new Visual())
 			
 			assert.equals(2, game.colliders(myVisual).size())
