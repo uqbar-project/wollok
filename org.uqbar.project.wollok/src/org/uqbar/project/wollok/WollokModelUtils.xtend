@@ -22,7 +22,7 @@ class WollokModelUtils {
 				(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
 					#[container.name, fullMessage, #[caseSensitiveMethod].convertToString]))
 			} else {
-				(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, container.name, fullMessage))
+				methodNotFoundMessage(container.name, fullMessage)
 			}
 		} else {
 			val similarDefinitions = similarMethods.map[messageName].join(', ')
