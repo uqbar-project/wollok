@@ -3,10 +3,9 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
-import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 /**
  * Groups together all test cases for method type inference.
@@ -218,28 +217,12 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = 10
 				
 				method withError() {
-					number.isBig(true,1)
+					number.isBig(true, 1)
 				} 
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "number")
-			findByText("number.isBig(true,1)", WMemberFeatureCall).assertIssuesInElement("type <<Number>> does not understand message <<isBig(true, 1)>>")
+			findByText("number.isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true,  1)")
 		]
 	}
-	
-//	@Test
-//	def void variableAssignedToReturnValueOfAnotherObjectsMethod() { 	'''
-//		object stringGenerator {
-//			method generateString() = "ABC"
-//		}
-//		object stringConsumer {
-//			method consume() {
-//				const pepe = stringGenerator.generateString()
-//			}
-//		}
-//		
-//		'''.parseAndInfer.asserting [
-//			assertTypeOfAsString("List", "pepe")
-//		]
-//	}
 }

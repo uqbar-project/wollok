@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem.exceptions
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 
 class MessageNotUnderstoodException extends TypeSystemException {
 	WollokType type
@@ -19,7 +21,6 @@ class MessageNotUnderstoodException extends TypeSystemException {
 	}
 
 	override getMessage() {
-//		NLS.bind()
-		'''type <<«type»>> does not understand message <<«messageSend.fullMessage»>>'''
+		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, type.name, messageSend.fullMessage)
 	}	
 }
