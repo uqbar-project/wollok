@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.typesystem.exceptions
 
-import org.eclipse.osgi.util.NLS
-import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -13,10 +11,6 @@ class MessageNotUnderstoodException extends TypeSystemException {
 	WollokType type
 	MessageSend messageSend
 	
-	/**
-	 * This constructor allows for a later assignment of the offending variable, 
-	 * for cases in which we want a more sophisticated algorithm for determining it.
-	 */
 	new(WollokType type, MessageSend message) {
 		this.type = type
 		this.messageSend = message
@@ -26,7 +20,7 @@ class MessageNotUnderstoodException extends TypeSystemException {
 	override getMessage() {	message(type) }
 	
 	def dispatch message(WollokType type) {
-		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, type.name, messageSend.fullMessage)
+		type.name.methodNotFoundMessage(messageSend.fullMessage.toString)
 	}
 	
 	def dispatch message(AbstractContainerWollokType type) {

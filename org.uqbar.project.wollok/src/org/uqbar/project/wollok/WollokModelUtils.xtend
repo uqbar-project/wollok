@@ -12,7 +12,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class WollokModelUtils {
 
 	def static humanReadableModelTypeName(EClass it) { if(name.startsWith("W")) name.substring(1) else name }
-
+	
 	def static methodNotFoundMessage(WMethodContainer container, String methodName, Object... parameters) {
 		val fullMessage = methodName + "(" + parameters.join(",") + ")"
 		val similarMethods = container.findMethodsByName(methodName)
@@ -29,5 +29,9 @@ class WollokModelUtils {
 			(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND,
 					#[container.name, fullMessage, similarDefinitions]))
 		}
+	}
+	
+	def static methodNotFoundMessage(String type, String message) {
+		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, type, message)
 	}
 }
