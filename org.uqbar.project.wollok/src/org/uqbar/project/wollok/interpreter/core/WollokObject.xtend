@@ -27,6 +27,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.WollokModelUtils.*
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -103,22 +104,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	
 	def throwMessageNotUnderstood(String methodName, Object... parameters) {
 		// hack because object literals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString") {
-			val fullMessage = methodName + "(" + parameters.join(",") + ")"
-			val similarMethods = this.behavior.findMethodsByName(methodName)
-			if (similarMethods.empty) {
-				val caseSensitiveMethod = this.behavior.allMethods.findMethodIgnoreCase(methodName, parameters.size)
-				if (caseSensitiveMethod !== null) {
-					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
-						#[behavior.name, fullMessage, #[caseSensitiveMethod].convertToString]))
-				} else {
-					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
-				}
-			} else {
-				val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[behavior.name, fullMessage, similarDefinitions]))
-			}
-		}
+		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString")
+			throw messageNotUnderstood(this.behavior.methodNotFoundMessage(methodName))
 		
 		try {
 			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)

@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 class MessageSend {
 	@Accessors(PUBLIC_GETTER)
@@ -38,6 +39,10 @@ class MessageSend {
 	
 	def fullMessage() {
 		(returnType.owner as WMemberFeatureCall).fullMessage
+	}
+	
+	def argumentNames() {
+		(returnType.owner as WMemberFeatureCall).memberCallArguments.map[sourceCode]
 	}
 
 	override toString() { returnType.owner.debugInfo }

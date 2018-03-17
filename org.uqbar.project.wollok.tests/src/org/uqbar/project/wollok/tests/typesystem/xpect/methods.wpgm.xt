@@ -33,8 +33,8 @@ class Entrenador {
 	// XPECT methodType at falla --> (Golondrina) => Any
 	method falla(ave) {
 		ave.vola()
-		// XPECT errors --> "Golondrina does not understand come()" at "ave.come()" 
-		return ave.come() 
+		// XPECT errors --> "Golondrina does not understand come(). However other methods exist with different argument count: come(grms)" at "ave.come()" 
+		return ave.come()	
 	}
 	
 	
