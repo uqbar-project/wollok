@@ -17,11 +17,10 @@ object pairTest {
 		return pair.getValue()
 	}
 	
-	// This test is ignored until we have parametric types for Pair
-   	// XPECT! methodType at m4 --> () => Number
-	method m4() {
-		return new Pair(2, 5).getKey()
-	}
+   	// XPECT! methodType at m4 --> (Number) => Number
+	//method m4(n) {
+	//	return new Pair(2, 5).getKey()
+	//}
 	
 	// XPECT methodType at m5 --> (Number) => Pair
 	method m5(n) {

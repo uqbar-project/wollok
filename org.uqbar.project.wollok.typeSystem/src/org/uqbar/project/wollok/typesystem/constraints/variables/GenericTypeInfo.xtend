@@ -30,4 +30,11 @@ class GenericTypeInfo extends SimpleTypeInfo {
 		(user.typeInfo as GenericTypeInfo).param(ELEMENT)
 	}
 
+	override fullDescription() {
+		super.fullDescription()
+		'''
+		generic(«params.keySet»)
+		'''
+	}
+	
 }

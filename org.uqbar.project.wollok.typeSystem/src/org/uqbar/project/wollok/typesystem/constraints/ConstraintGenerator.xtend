@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -31,11 +32,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
-import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
 /**
  * @author npasserini
@@ -179,7 +180,15 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WConstructorCall it) {
 		arguments.forEach [ generateVariables ]
-		newSealed(classType(classRef))
+//		if (classRef.name === "Pair") {
+//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
+//				tv.addMinType(classType(classRef))
+//				tv.beSealed
+//				tv.register
+//			]
+//		} else {
+			newSealed(classType(classRef))
+//		}
 
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
