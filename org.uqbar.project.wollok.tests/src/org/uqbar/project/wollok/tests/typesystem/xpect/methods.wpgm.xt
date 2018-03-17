@@ -21,7 +21,11 @@ class Entrenador {
 	const estrategia = { ave => ave.vola() }
 	
 	// XPECT methodType at entrena --> (Golondrina) => Void
-	method entrena(ave) { ave.vola() }
+	method entrena(ave) {
+		// XPECT errors --> "type <<Golondrina>> does not understand message <<come()>>" at "ave.come()" 
+		ave.come() 
+		ave.vola()
+	}
 	
 	// XPECT methodType at llama --> (pepita) => String
 	method llama(ave) = ave.nombreAve()
