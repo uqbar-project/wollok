@@ -180,15 +180,15 @@ class ConstraintGenerator {
 
 	def dispatch void generateVariables(WConstructorCall it) {
 		arguments.forEach [ generateVariables ]
-//		if (classRef.name === "Pair") {
-//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
-//				tv.addMinType(classType(classRef))
-//				tv.beSealed
-//				tv.register
-//			]
-//		} else {
+		if (classRef.name === "Pair") {
+			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
+				tv.addMinType(classType(classRef))
+				tv.beSealed
+				tv.register
+			]
+		} else {
 			newSealed(classType(classRef))
-//		}
+		}
 
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}

@@ -8,14 +8,14 @@ object pairTest {
 	//}
 	
    	// XPECT! methodType at m2 --> (Pair) => Any
-	method m2(pair) {
-		return pair.getKey()
-	}
+	//method m2(pair) {
+	//	return pair.getKey()
+	//}
 
 	// XPECT! methodType at m3 --> (Pair) => Any
-	method m3(pair) {
-		return pair.getValue()
-	}
+	//method m3(pair) {
+	//	return pair.getValue()
+	//}
 	
    	// XPECT! methodType at m4 --> (Number) => Number
 	//method m4(n) {

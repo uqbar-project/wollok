@@ -24,6 +24,8 @@ class ConstructorConstraintsGenerator {
 	}
 
 	def run() {
+		println(registry.allVariables)
+				
 		constructorCalls.forEach[
 			val constructor = classRef.resolveConstructor(arguments)
 
