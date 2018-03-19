@@ -65,7 +65,7 @@ class TypeVariablesRegistry {
 	/**
 	 * This should be a special case of a generic type variable, for now collections are the only generic types.
 	 */
-	def newCollection(EObject owner, ConcreteType collectionType) {
+	def TypeVariable newCollection(EObject owner, ConcreteType collectionType) {
 		TypeVariable.generic(owner, #[ELEMENT]) => [
 			addMinType(collectionType)
 			beSealed
