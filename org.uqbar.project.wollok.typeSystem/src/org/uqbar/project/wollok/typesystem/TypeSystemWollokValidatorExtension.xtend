@@ -5,6 +5,8 @@ import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+
 /**
  * A validator extension that runs the currently configured type system to
  * check types.
@@ -13,21 +15,10 @@ import org.uqbar.project.wollok.wollokDsl.WFile
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
 
-	@Check(NORMAL)
+	@Check(FAST)
 	override check(WFile file, WollokDslValidator validator) {
-		//TODO: lee las preferencias cada vez!
-//		try
-//			if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(file))
-//				return
-//		catch (IllegalStateException e) {
-//			// headless launcher doesn't open workspace, so this fails.
-//			// but it's ok since the type system won't run in runtime. 
-//			return
-//		}
-//		catch (AssertionFailedException e) 
-//			return;
-//		
-//		WollokTypeSystemActivator.^default.getTypeSystem(file).validate(file, validator)		
+		WollokTypeSystemActivator.^default.ifEnabledFor(file.project) [ ts |
+			ts.reportErrors(file.eResource, validator)
+		]
 	}
-	
 }

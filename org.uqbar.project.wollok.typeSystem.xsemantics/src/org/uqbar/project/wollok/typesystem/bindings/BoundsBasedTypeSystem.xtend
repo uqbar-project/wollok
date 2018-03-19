@@ -5,6 +5,7 @@ import java.util.List
 import java.util.Map
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -60,10 +61,10 @@ class BoundsBasedTypeSystem implements TypeSystem {
 		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		this.analyse(file)
 		this.inferTypes
-		this.reportErrors(validator)
+		this.reportErrors(file.eResource, validator)
 	}
 
-	override def reportErrors(ConfigurableDslValidator validator) {
+	override def reportErrors(Resource resource, ConfigurableDslValidator validator) {
 		// TODO: report errors !
 	}
 

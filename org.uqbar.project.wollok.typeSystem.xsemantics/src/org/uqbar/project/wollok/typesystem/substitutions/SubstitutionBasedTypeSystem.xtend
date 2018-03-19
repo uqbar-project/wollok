@@ -6,6 +6,7 @@ import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.WeakInterningHashSet
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
@@ -77,10 +78,10 @@ class SubstitutionBasedTypeSystem implements TypeSystem {
 		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 		analyse(file)
 		inferTypes
-		reportErrors(validator)
+		reportErrors(file.eResource, validator)
 	}
 	
-	override def reportErrors(ConfigurableDslValidator validator) {
+	override def reportErrors(Resource resource, ConfigurableDslValidator validator) {
 		rules.forEach[rule|
 			try rule.check 
 			catch (TypeExpectationFailedException it) 

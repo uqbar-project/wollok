@@ -4,15 +4,17 @@ import java.util.List
 import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
+
 interface ITypeVariable {
 	def EObject getOwner()
 
@@ -98,11 +100,11 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	// REVIEW Is it necessary to pass 'user'?
-	def reportErrors(ConfigurableDslValidator validator) {
+	def reportErrors(Resource resource, ConfigurableDslValidator validator) {
 		errors.forEach [
 			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
-				validator.report(message, owner)
+				validator.report(message, resource.getEObject(owner.eResource.getURIFragment(owner)))
 			}
 			catch (IllegalArgumentException exception) {
 				// We probably reported a type error to a core object, which is not possible

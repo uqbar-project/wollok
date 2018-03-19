@@ -3,8 +3,10 @@ package org.uqbar.project.wollok.typesystem.constraints
 import com.google.inject.Inject
 import java.util.List
 import java.util.Set
+import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
@@ -23,7 +25,6 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -34,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
-import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -61,7 +61,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	new() {
 		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
 	}
-	
+
 	/** 
 	 * WARNING this name is used as default value in DefaultWollokTypeSystemPreferences, it shouldn't be changed. 
 	 */
@@ -72,7 +72,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		this.analyse(file)
 		this.inferTypes
 
-		reportErrors(validator)
+		reportErrors(file.eResource, validator)
 	}
 
 	// ************************************************************************
@@ -155,8 +155,12 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Error reporting
 	// ************************************************************************
-	override reportErrors(ConfigurableDslValidator validator) {
-		allVariables.forEach[(it as TypeVariable).reportErrors(validator)]
+	override reportErrors(Resource resource, ConfigurableDslValidator validator) {
+		// Registry will be null if ts is not yet initialized.
+		registry?.allVariables?.forEach [
+			if (it.owner.eResource.URI == resource.URI)
+				it.reportErrors(resource, validator)
+		]
 	}
 
 	// ************************************************************************
@@ -197,8 +201,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			allTypes.addAll(allCoreClasses.map[new ClassBasedWollokType(it, this)])
 			allTypes.addAll(allCoreWKOs.map[new NamedObjectWollokType(it, this)])
 		}
-		
+
 		allTypes
 	}
 }
-	

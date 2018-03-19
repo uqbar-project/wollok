@@ -5,6 +5,7 @@ import it.xsemantics.runtime.RuleEnvironment
 import it.xsemantics.runtime.RuleFailedException
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -35,10 +36,10 @@ class XSemanticsTypeSystem implements TypeSystem {
 		log.debug("Validation with " + class.simpleName + ": " + file.eResource.URI.lastSegment)
 //		xsemanticsSystem.validate(file, validator)
 		this.analyse(file)
-		this.reportErrors(validator)
+		this.reportErrors(file.eResource, validator)
 	}
 
-	override def reportErrors(ConfigurableDslValidator validator) {
+	override def reportErrors(Resource resource, ConfigurableDslValidator validator) {
 		// TODO: report errors !
 	}
 
