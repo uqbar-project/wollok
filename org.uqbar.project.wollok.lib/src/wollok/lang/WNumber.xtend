@@ -2,6 +2,7 @@ package wollok.lang
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.MathContext
 import java.math.RoundingMode
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
@@ -214,6 +215,10 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		WollokNumbersPreferences.instance.decimalPositions
 	}
 
+	def mathContext() {
+		new MathContext(0, RoundingMode.HALF_UP)
+	}
+	
 	/**
 	 * **********************************************************************
 	 *                INTERNAL MATHEMATICAL OPERATIONS
@@ -228,7 +233,7 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	def mul(BigDecimal mul1, BigDecimal mul2) {
-		mul1.multiply(mul2).adaptResult
+		mul1.multiply(mul2, mathContext).adaptResult
 	}
 
 	def div(BigDecimal dividend, BigDecimal divisor) {
@@ -248,5 +253,4 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		newInstance(result)
 	}
 
-	
 }
