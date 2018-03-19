@@ -125,6 +125,52 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	def void voidClosureForVarDeclaration() {
+		'''
+		assert.equals(void, { var a = 0 }.apply())
+		'''.test
+	}
+
+	@Test
+	def void voidClosureForConstDeclaration() {
+		'''
+		assert.equals(void, { const a = 0 }.apply())
+		'''.test
+	}
+
+	@Test
+	def void voidClosureForVarAssignment() {
+		'''
+		var a = 0
+		assert.equals(void, { a = 2 }.apply())
+		'''.test
+	}
+
+	@Test
+	def void voidClosureForPostfixOperation() {
+		'''
+		var a = 0
+		assert.equals(void, { a++ }.apply())
+		'''.test
+	}
+
+	@Test
+	def void voidClosureForPostfixOperation2() {
+		'''
+		var a = 0
+		assert.equals(void, { a-- }.apply())
+		'''.test
+	}
+	
+	@Test
+	def void voidClosureForMultipleOperation() {
+		'''
+		var a = 0
+		assert.equals(void, { a += 2 }.apply())
+		'''.test
+	}
+			
+	@Test
 	def void numberClosure() {
 		'''
 		assert.equals(2, { a => a }.apply(2))

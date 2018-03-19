@@ -143,6 +143,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
+		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
@@ -392,7 +393,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
-		newValue
+		WollokDSK.getVoid(interpreter as WollokInterpreter, a)
 	}
 
 	// ********************************************************
@@ -437,7 +438,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		validateNullOperand(reference.eval, operator)
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
-		newValue
+		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
 	}
 
 	def dispatch WollokObject evaluate(WUnaryOperation oper) {
