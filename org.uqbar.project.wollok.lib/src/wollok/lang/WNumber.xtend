@@ -215,10 +215,6 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 		WollokNumbersPreferences.instance.decimalPositions
 	}
 
-	def mathContext() {
-		new MathContext(0, RoundingMode.HALF_UP)
-	}
-	
 	/**
 	 * **********************************************************************
 	 *                INTERNAL MATHEMATICAL OPERATIONS
@@ -233,11 +229,11 @@ class WNumber extends AbstractJavaWrapper<BigDecimal> {
 	}
 
 	def mul(BigDecimal mul1, BigDecimal mul2) {
-		mul1.multiply(mul2, mathContext).adaptResult
+		mul1.multiply(mul2).stripTrailingZeros.adaptResult
 	}
 
 	def div(BigDecimal dividend, BigDecimal divisor) {
-		dividend.divide(divisor, RoundingMode.HALF_UP).adaptResult
+		dividend.divide(divisor, RoundingMode.HALF_UP).stripTrailingZeros.adaptResult
 	}
 
 	def remainder(BigDecimal dividend, BigDecimal divisor) {
