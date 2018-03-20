@@ -32,7 +32,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
@@ -179,16 +178,16 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		arguments.forEach [ generateVariables ]
-		if (classRef.name === "Pair") {
-			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
-				tv.addMinType(classType(classRef))
-				tv.beSealed
-				tv.register
-			]
-		} else {
+		arguments.forEach [ arg | arg.generateVariables ]
+//		if (classRef.name.equalsIgnoreCase("Pair")) {
+//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
+//				tv.addMinType(classType(classRef))
+//				tv.beSealed
+//				tv.register
+//			]
+//		} else {
 			newSealed(classType(classRef))
-		}
+//		}
 
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}

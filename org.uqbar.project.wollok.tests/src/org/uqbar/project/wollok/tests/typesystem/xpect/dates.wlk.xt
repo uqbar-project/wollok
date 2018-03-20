@@ -1,7 +1,7 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object dateTests {
-	
+
 	// XPECT methodType at m1 --> () => Date
 	method m1() = new Date()
 

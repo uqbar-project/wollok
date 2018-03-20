@@ -133,7 +133,7 @@ class TypeVariablesRegistry {
 	 */
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj.URI) => [ if (it === null) {
-			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
+			throw new TypeSystemException("Missing type information for " + obj + " " + obj.debugInfoInContext)
 		}]
 	}
 	
