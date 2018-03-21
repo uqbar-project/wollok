@@ -421,6 +421,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch memberTarget(WFeatureCall call) { null }
+	def static dispatch memberTarget(WMemberFeatureCall call) { call.memberCallTarget }
+	
 	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }

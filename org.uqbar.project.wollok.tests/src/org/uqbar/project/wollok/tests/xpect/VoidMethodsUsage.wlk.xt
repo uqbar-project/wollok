@@ -18,12 +18,12 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	method setA(a) { e = a }
 
 	method asParameter() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		self.setA(pepita.eat(10))
 	}
 	
 	method initialization(aParam) {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		const a = pepita.eat(10)
 		
 		self.setA(a)
@@ -32,19 +32,19 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	method assignment(aParam) {
 		var a = null
 		
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		a = pepita.eat(10)
 		
 		self.setA(a)
 	}
 	
 	method asReturnValue() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		return pepita.eat(10)
 	}
 	
 	method asAnIfCondition() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		return if (pepita.eat(10))
 			20
 		else 
@@ -54,38 +54,38 @@ class MethodsCalledOnWellKnowObjects inherits A {
 	method asABinaryOperatorArgument() {
 		var cond = true
 		return [
-			// XPECT errors --> "This message call produces no value" at "eat" 
+			// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 			10 + pepita.eat(10),
-			// XPECT errors --> "This message call produces no value" at "eat" 
+			// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 			10 * pepita.eat(10),
-			// XPECT errors --> "This message call produces no value" at "eat"
+			// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 			cond && pepita.eat(10),
-			// XPECT errors --> "This message call produces no value" at "eat"
+			// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 			cond || pepita.eat(10)
 		]
 	}
 	
 	method asTargetForNewMessageSend() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		pepita.eat(10).cantina() 
 	}
 	
 	method asListLiteralElement() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		return [1, 2, 3, pepita.eat(10)] 
 	}
 	
 	override method toBeOverriden(a) {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		super(pepita.eat(10))
 	}
 	
 	method asConstructorArg() {
-		// XPECT errors --> "This message call produces no value" at "eat"
+		// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 		return new B(pepita.eat(10)) 
 	}
 	
-	// XPECT errors --> "This message call produces no value" at "eat"
+	// XPECT errors --> "Message call "eat(10)" produces no value (missing return in method?)" at "eat"
 	method asExpressionOnMethodShortcut() = pepita.eat(10) 
 }
 

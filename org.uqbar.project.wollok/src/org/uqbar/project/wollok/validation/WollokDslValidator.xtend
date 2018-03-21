@@ -663,7 +663,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val method = call.resolveMethod(classFinder)
 		if (method !== null && !method.native && !method.abstract && !method.supposedToReturnValue &&
 			call.isUsedAsValue(classFinder)) {
-			report(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call, WMEMBER_FEATURE_CALL__FEATURE,
+			report(NLS.bind(WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, call.fullMessage), call, WMEMBER_FEATURE_CALL__FEATURE,
 				VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES)
 		}
 	}

@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.interpreter
 
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -104,6 +105,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void emptyClosure() {
 		'''
 		assert.equals(void, { }.apply())
@@ -111,6 +113,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void voidClosure() {
 		'''
 		assert.equals(void, { a => const numeros = []; numeros.add(a) }.apply(2))
@@ -118,6 +121,7 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
+	@Ignore
 	def void voidClosure2() {
 		'''
 		assert.equals(void, { a => }.apply(2))

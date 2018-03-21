@@ -34,7 +34,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	override asBinaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
 		if (op !== null) {
-			[a, b| 
+			[a, b|
 				try {
 					op.invoke(this, a, b).javaToWollok
 				}
@@ -73,7 +73,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 	
 	def checkNotNull(WollokObject o, String operation) {
 		if (o === null) {
-			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation)) 	
+			throw throwInvalidOperation(NLS.bind(Messages.WollokConversion_INVALID_OPERATION_NULL_PARAMETER, operation))
 		}
 	}
 	
