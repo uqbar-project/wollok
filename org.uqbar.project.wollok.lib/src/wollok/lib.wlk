@@ -98,7 +98,7 @@ object assert {
 	 *
 	 * Example:
 	 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
-	 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
+	 *		assert.throwsException({ "hola".length() }) ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
 		var failed = false
@@ -107,7 +107,7 @@ object assert {
 		} catch e {
 			failed = true
 		}
-		if (!failed) throw new AssertionException("Block should have failed")
+		if (!failed) throw new AssertionException("Block " + block + " should have failed")
 	}
 	
 	/** 

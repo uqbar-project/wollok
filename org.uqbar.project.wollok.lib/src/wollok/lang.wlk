@@ -174,8 +174,6 @@ class Object {
 	 * String representation of Wollok object
 	 */
 	method toString() {
-		// TODO: should be a set
-		//return self.toSmartString(#{})
 		return self.toSmartString([])
 	}
 	
