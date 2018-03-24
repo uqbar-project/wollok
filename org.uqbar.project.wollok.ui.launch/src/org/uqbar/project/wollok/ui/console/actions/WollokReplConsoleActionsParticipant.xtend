@@ -120,9 +120,9 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 			stop.enabled = true
 		}
 		if (lastTimeActivation !== null && lastTimeActivation > this.console.timeStart) {
-			outdated.update(this.projectName)
+			outdated.update
 		} else {
-			outdated.init(this.projectName)
+			outdated.init
 		}
 		lastTimeActivation = System.currentTimeMillis
 		bars.updateActionBars
@@ -155,6 +155,7 @@ class ShowOutdatedAction extends ControlContribution {
 	CLabel label
 	boolean synced = true
 	WollokReplConsoleActionsParticipant parent
+	String projectName
 	
 	new(WollokReplConsoleActionsParticipant parent) {
 		super("showOutdatedAction")
@@ -171,7 +172,7 @@ class ShowOutdatedAction extends ControlContribution {
 	}
 
 	def configureLabel() {
-		val projectName = parent.projectName
+		this.projectName = parent.projectName
 		label => [
 			if (!isDisposed) {
 				text = if(synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
@@ -184,15 +185,15 @@ class ShowOutdatedAction extends ControlContribution {
 		]
 	}
 
-	override void update(String projectName) {
-		projectName.update(!parent.projectName.equals(projectName))
+	override void update() {
+		update(!parent.projectName.equals(this.projectName))
 	}
 
-	def void init(String projectName) {
-		projectName.update(true)
+	def void init() {
+		update(true)
 	}
 	
-	private def void update(String projectName, boolean updateSync) {
+	private def void update(boolean updateSync) {
 		if (updateSync) {
 			synced = true
 		}
