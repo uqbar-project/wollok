@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.interpreter
 
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -101,30 +100,6 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 			"Wrong number of arguments for closure: expected 1 but you sent 0",
 			{ { a => a + 2 }.apply() }
 			)
-		'''.test
-	}
-
-	@Test
-	@Ignore
-	def void emptyClosure() {
-		'''
-		assert.equals(void, { }.apply())
-		'''.test
-	}
-
-	@Test
-	@Ignore
-	def void voidClosure() {
-		'''
-		assert.equals(void, { a => const numeros = []; numeros.add(a) }.apply(2))
-		'''.test
-	}
-
-	@Test
-	@Ignore
-	def void voidClosure2() {
-		'''
-		assert.equals(void, { a => }.apply(2))
 		'''.test
 	}
 

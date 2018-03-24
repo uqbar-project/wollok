@@ -45,7 +45,7 @@ class VoidTestCase extends AbstractWollokInterpreterTestCase {
 			var dia = new Date()
 			var fecha = new Ejemplo(dia)
 			assert.throwsExceptionWithMessage(
-				"Message call \"fecha.hoy()\" produces no value (missing return in method?)", 
+				"Message send \"fecha.hoy()\" produces no value (missing return in method?)", 
 				{ assert.equals("27", fecha.hoy()) }
 			)
 		}
@@ -61,7 +61,7 @@ class VoidTestCase extends AbstractWollokInterpreterTestCase {
 			var dia = new Date()
 			var fecha = new Ejemplo(dia)
 			assert.throwsExceptionWithMessage(
-				"Message call \"fecha.hoy()\" produces no value (missing return in method?)", 
+				"Message send \"fecha.hoy()\" produces no value (missing return in method?)", 
 				{ assert.that(comparar.diaMayorA(15)) }
 			)
 		}
@@ -77,7 +77,7 @@ class VoidTestCase extends AbstractWollokInterpreterTestCase {
 			var dia = new Date()
 			var fecha = new Ejemplo(dia)
 			assert.throwsExceptionWithMessage(
-				"Message call \"fecha.hoy()\" produces no value (missing return in method?)", 
+				"Message send \"fecha.hoy()\" produces no value (missing return in method?)", 
 				{ assert.that(fecha.hoy().abs()) }
 			)
 		}
