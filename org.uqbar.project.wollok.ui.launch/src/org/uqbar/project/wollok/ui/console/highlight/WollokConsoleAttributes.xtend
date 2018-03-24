@@ -51,7 +51,7 @@ class WollokConsoleAttributes implements Cloneable {
     }
 
     def static hiliteRgbColor(Color it) {
-        if (it == null)
+        if (it === null)
             return new RGB(0xff, 0xff, 0xff).color
 		
         new RGB((red * 2).safe, (green * 2).safe, (blue * 2).safe).color
