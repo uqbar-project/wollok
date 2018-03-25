@@ -5,7 +5,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 
-import static extension org.uqbar.project.wollok.WollokModelUtils.*
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 
 class MessageNotUnderstoodException extends TypeSystemException {
 	WollokType type

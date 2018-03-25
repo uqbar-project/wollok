@@ -27,11 +27,11 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.WollokModelUtils.*
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 
 /**
  * A wollok user defined (dynamic) object.
