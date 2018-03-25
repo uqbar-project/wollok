@@ -48,6 +48,8 @@ class MessageSend {
 	def isClosureMessage() { selector == "apply" }
 
 	def featureCall() { returnType.owner as WMemberFeatureCall }
+	
+	def isValid() { !returnType.hasErrors	}
 
 	override toString() { returnType.owner.debugInfo }
 }

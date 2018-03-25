@@ -58,7 +58,7 @@ class SimpleTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		minTypesDo(origin) [
-			if (!maxTypes.contains(type))
+			if (!maxTypes.empty && !maxTypes.contains(type))
 				error(new RejectedMinTypeException(origin, type))
 		]
 
@@ -106,7 +106,7 @@ class SimpleTypeInfo extends TypeInfo {
 		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) 
 			throw new RejectedMinTypeException(type)
 		
-		messages.forEach[
+		messages.filter[isValid].forEach[
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
 		]
 			

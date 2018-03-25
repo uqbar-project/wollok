@@ -217,12 +217,12 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const number = 10
 				
 				method withError() {
-					number.isBig(true, 1)
+					number.div(1).isBig(true, 1)
 				}
 			}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "number")
-			findByText("number.isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
+			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
 		]
 	}
 }

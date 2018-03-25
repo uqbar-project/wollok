@@ -37,11 +37,14 @@ class Entrenador {
 		return ave.come()	
 	}
 	
-	// XPECT methodType at falla2 --> (Any) => Any
-	method falla2(ave) {
-		// No errors because Any. Maybe we can throw a warning? 
-		return ave.come()	
+	// XPECT methodType at falla2 --> (pepita) => Any
+	method falla2(p) {
+		// XPECT errors --> "String does not understand esEstrambotico()" at "p.nombreAve().esEstrambotico()"
+		return p.nombreAve().esEstrambotico()
 	}
+	
+	// XPECT methodType at falla3 --> (Any) => Any
+	method falla3(ave) = ave.come() //TODO: should fail! 
 	
 	
 	// XPECT methodType at condicion --> () => {() => Boolean}

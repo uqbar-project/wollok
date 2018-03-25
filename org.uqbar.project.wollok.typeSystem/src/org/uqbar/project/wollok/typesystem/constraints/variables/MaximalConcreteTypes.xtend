@@ -34,6 +34,10 @@ class MaximalConcreteTypes {
 	def copy() {
 		new MaximalConcreteTypes(maximalConcreteTypes)
 	}
+	
+	def empty() {
+		maximalConcreteTypes.empty
+	}
 
 	// ************************************************************************
 	// ** Restricting

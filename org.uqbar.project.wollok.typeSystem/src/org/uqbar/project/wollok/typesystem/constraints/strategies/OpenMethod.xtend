@@ -54,7 +54,4 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] 
 		}
 	}
-	
-	
-	def isValid(MessageSend it) { !returnType.hasErrors	}
 }
