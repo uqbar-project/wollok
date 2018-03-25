@@ -100,9 +100,9 @@ class TypeVariable implements ITypeVariable {
 	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
-			log.debug('''Reporting error in «variable.owner.debugInfo»: «message»''')
+			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
-				validator.report(message, variable.owner)
+				validator.report(message, owner)
 			}
 			catch (IllegalArgumentException exception) {
 				// We probably reported a type error to a core object, which is not possible
