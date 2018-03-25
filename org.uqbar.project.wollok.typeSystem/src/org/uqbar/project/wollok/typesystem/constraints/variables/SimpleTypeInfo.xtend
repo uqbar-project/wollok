@@ -106,7 +106,7 @@ class SimpleTypeInfo extends TypeInfo {
 		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) 
 			throw new RejectedMinTypeException(type)
 		
-		messages.filter[isValid].forEach[
+		validMessages.forEach[
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
 		]
 			

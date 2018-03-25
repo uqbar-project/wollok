@@ -23,12 +23,12 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo info) {
 		log.trace('''Trying to open closure methods for «tvar.debugInfoInContext»''')
 		val type = WollokClassFinder.instance.getClosureClass(tvar.owner)
-		info.messages.filter[isValid].forEach[openClosureMethod(type, info)]
+		info.validMessages.forEach[openClosureMethod(type, info)]
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
 		log.trace('''Trying to open methods for «tvar.debugInfoInContext»''')
-		messages.filter[isValid].forEach [ message |
+		validMessages.forEach [ message |
 			minTypes.entrySet.forEach [
 				if(value != Error) message.openMethod(key)
 			]

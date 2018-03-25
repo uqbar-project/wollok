@@ -33,6 +33,8 @@ abstract class TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
+	
+	def validMessages() { messages.filter[isValid] }
 
 	// ************************************************************************
 	// ** Adding type information
