@@ -103,10 +103,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	def throwMessageNotUnderstood(String methodName, Object... parameters) {
-		// hack because object literals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString")
-			throw messageNotUnderstood(this.behavior.methodNotFoundMessage(methodName))
-		
 		try {
 			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)
 		}
