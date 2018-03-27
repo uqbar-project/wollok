@@ -1,12 +1,14 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
+import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import javax.management.openmbean.SimpleType
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.resolveConstructor
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -31,6 +33,8 @@ class ClassParameterTypeVariable implements ITypeVariable {
 
 	String paramName
 
+	val Logger log = Logger.getLogger(class)
+	
 	new(EObject owner, String paramName) {
 		this.owner = owner
 		this.paramName = paramName
@@ -47,15 +51,27 @@ class ClassParameterTypeVariable implements ITypeVariable {
 
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
-	 * The received type variable should be being used as a parametr to a message send, i.e.
+	 * The received type variable should be being used as a parameter to a message send, i.e.
 	 * its container should be a message send, 
 	 * such as {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}.
 	 */
 	override beSupertypeOf(TypeVariable variable) {
-		variable.owner.eContainer.classTypeParameter.beSupertypeOf(variable)
+		variable.owner.eContainer.doBeSupertype(variable)
 	}
 
-
+	def dispatch void doBeSupertype(EObject it, TypeVariable variable) {
+		throw new TypeSystemException('''Extracting a class type parameter from a «it.class» is not possible or yet not implemented''')
+	}
+	
+	def dispatch void doBeSupertype(WMemberFeatureCall it, TypeVariable variable) {
+		classTypeParameter.beSupertypeOf(variable)
+	}
+	
+	def dispatch void doBeSupertype(WConstructorCall it, TypeVariable variable) {
+		newTypeVariable(owner)
+		variable.beSubtypeOf(owner.tvar)
+	}
+	
 	def dispatch classTypeParameter(EObject unknownObject) {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}
@@ -68,7 +84,7 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		val receiverTypeInfo = typeInfo as GenericTypeInfo
 		receiverTypeInfo.param(paramName)
 	}
-	
+
 	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
 		switch (paramName) {
 			case ClosureTypeInfo.RETURN: typeInfo.returnType 

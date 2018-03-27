@@ -131,6 +131,10 @@ abstract class TypeDeclarations {
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
 	
+	def KEY() { new ClassParameterTypeAnnotation(GenericTypeInfo.KEY) }
+	
+	def VALUE() { new ClassParameterTypeAnnotation(GenericTypeInfo.VALUE) }
+	
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
 	
 	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }

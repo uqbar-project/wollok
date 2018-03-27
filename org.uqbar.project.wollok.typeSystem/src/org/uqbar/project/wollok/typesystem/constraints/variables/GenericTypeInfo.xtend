@@ -22,6 +22,8 @@ class GenericTypeInfo extends SimpleTypeInfo {
 	/**
 	 * Default type parameter for collection types
 	 */
+	public static val KEY = "key"
+	public static val VALUE = "value"
 	public static val ELEMENT = "element"
 
 	static def TypeVariable element(TypeVariable user) {

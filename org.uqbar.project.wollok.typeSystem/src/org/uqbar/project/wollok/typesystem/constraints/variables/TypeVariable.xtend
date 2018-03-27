@@ -19,6 +19,7 @@ interface ITypeVariable {
 	def void beSubtypeOf(TypeVariable variable)
 
 	def void beSupertypeOf(TypeVariable variable)
+	
 }
 
 class TypeVariable implements ITypeVariable {
