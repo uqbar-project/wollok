@@ -150,9 +150,9 @@ class GenericTypeInfo extends TypeInfo {
 	/**
 	 * Default type parameter for collection types
 	 */
-	public static val ELEMENT = "element"
 	public static val KEY = "key"
 	public static val VALUE = "value"
+	public static val ELEMENT = "element"
 
 	static def TypeVariable element(TypeVariable user) {
 		(user.typeInfo as GenericTypeInfo).param(ELEMENT)

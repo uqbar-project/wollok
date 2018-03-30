@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.resolveConstructor
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.

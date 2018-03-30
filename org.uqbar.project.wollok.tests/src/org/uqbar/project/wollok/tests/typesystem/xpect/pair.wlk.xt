@@ -2,9 +2,9 @@
 
 object pairTest {
 	
-	// XPECT methodType at m1 --> () => Pair
+	// XPECT methodType at m1 --> () => Number
 	method m1() {
-		return new Pair(2, 3)
+		return new Pair(2, 3).getKey()
 	}
 	
    	// XPECT methodType at m2 --> (Pair) => Any
@@ -17,14 +17,13 @@ object pairTest {
 		return pair.getValue()
 	}
 	
-   	// XPECT! methodType at m4 --> (Number) => Number
-	//method m4(n) {
-	//	return new Pair(2, 5).getKey()
-	//}
-	
-	// XPECT methodType at m5 --> (Number) => Pair
-	method m5(n) {
+	// XPECT methodType at m4 --> (Number) => Pair
+	method m4(n) {
 		return new Pair(n + 1, n - 1)
 	}
 
+	// XPECT! methodType at m5 --> () => Number
+	method m5() {
+		return new Pair(2, 4).getKey()
+	}
 }
