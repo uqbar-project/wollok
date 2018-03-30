@@ -44,7 +44,9 @@ interface TypeSystem {
 
 	/**
 	 * # 3a: 
-	 * Now we can report errors
+	 * Now we can report errors.
+	 * Since the validation (and error reporting) systems works on a per-Resource basis
+	 * we need to report only the errors that are in the currently validated resource.
 	 */
 	def void reportErrors(Resource resource, ConfigurableDslValidator validator)
 

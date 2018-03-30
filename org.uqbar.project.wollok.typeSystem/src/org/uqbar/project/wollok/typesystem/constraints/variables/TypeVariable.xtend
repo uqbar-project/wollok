@@ -99,18 +99,25 @@ class TypeVariable implements ITypeVariable {
 		errors.add(exception)
 	}
 
-	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(Resource resource, ConfigurableDslValidator validator) {
 		errors.forEach [
 			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
-				validator.report(message, resource.getEObject(owner.eResource.getURIFragment(owner)))
+				validator.report(message, ownerIn(resource))
 			}
 			catch (IllegalArgumentException exception) {
 				// We probably reported a type error to a core object, which is not possible
 				log.error(exception.message, exception)
 			}
 		]
+	}
+
+	/** 
+	 * The EObject we have (owner) can be obsolete, most likely because it belongs to 
+	 * an old build. The Resource can get us the right EObject, i.e. one with the same URI
+	 */
+	def ownerIn(Resource resource) {
+		resource.getEObject(owner.eResource.getURIFragment(owner))		
 	}
 
 	// ************************************************************************
