@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.annotations.ClassParameterTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.ClosureTypeAnnotation
@@ -12,7 +13,6 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
@@ -39,7 +39,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	}
 
 	def dispatch ITypeVariable beSealed(EObject object, ClassParameterTypeAnnotation annotation) {
-		registry.newClassParameterVar(object, annotation.paramName)
+		registry.newClassParameterVar(object, annotation.type, annotation.paramName)
 	}
 	
 	def dispatch ITypeVariable beSealed(EObject object, VoidTypeAnnotation annotation) {

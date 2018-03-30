@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -160,7 +161,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WListLiteral it) {
-		val listType = newCollection(classType(LIST))
+		val listType = newSealed(genericType(LIST, GenericTypeInfo.ELEMENT))
 		
 		elements.forEach[
 			generateVariables
@@ -169,7 +170,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WSetLiteral it) {
-		val setType = newCollection(classType(SET))
+		val setType = newSealed(genericType(SET, GenericTypeInfo.ELEMENT))
 
 		elements.forEach[
 			generateVariables

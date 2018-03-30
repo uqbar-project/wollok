@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.Map
 import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
@@ -20,19 +21,8 @@ class GenericTypeInfo extends TypeInfo {
 	@Accessors(PUBLIC_GETTER)
 	var MaximalConcreteTypes maximalConcreteTypes = null
 
-	@Accessors
-	Map<String, TypeVariable> params
-
-	new() {
-		this(newHashMap)
-	}
-	
-	new(Map<String, TypeVariable> params) {
-		this.params = params
-	}
-
 	// ************************************************************************
-	// ** Queries & Accessing
+	// ** Queries 
 	// ************************************************************************
 	override getType(TypeVariable tvar) {
 		// Imposibility to find a unique type now are reported as WAny, this has to be improved
@@ -46,10 +36,26 @@ class GenericTypeInfo extends TypeInfo {
 			.commonSupertype(messages)
 	}
 
-	def param(String paramName) {
-		params.get(paramName)
+	// ************************************************************************
+	// ** Type parameters
+	// ************************************************************************
+
+	def param(GenericType type, String paramName) {
+		findCompatibleTypeFor(type).findParam(paramName)
+	}
+	
+	def findCompatibleTypeFor(GenericType type) {
+		minTypes.keySet.findFirst[acceptsAssignment(type)]
+	}
+	
+	def void findParam(GenericTypeInstance typeInstance, String paramName) {
+		typeInstance.param(paramName)
 	}
 
+	def void findParam(WollokType type, String paramName) {
+		throw new IllegalArgumentException('''Expecting a generic type but found «type».''')
+	}
+	
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
@@ -154,20 +160,14 @@ class GenericTypeInfo extends TypeInfo {
 	public static val VALUE = "value"
 	public static val ELEMENT = "element"
 
-	static def TypeVariable element(TypeVariable user) {
-		(user.typeInfo as GenericTypeInfo).param(ELEMENT)
-	}
-
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
 	override fullDescription() '''
-		«IF !params.isEmpty»
-		generic(«params.keySet»)
-		«ENDIF»
 		sealed: «sealed»,
 		minTypes: «minTypes»,
 		maxTypes: «maximalConcreteTypes?:"unknown"»
 		messages: «messages»
 	'''
+	
 }

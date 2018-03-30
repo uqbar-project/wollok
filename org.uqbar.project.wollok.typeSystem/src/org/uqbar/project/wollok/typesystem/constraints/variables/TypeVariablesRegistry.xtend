@@ -7,14 +7,13 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WClass
-
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
 import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
@@ -62,17 +61,6 @@ class TypeVariablesRegistry {
 		TypeVariable.closure(owner, parameters, expression).register
 	}
 
-	/**
-	 * This should be a special case of a generic type variable, for now collections are the only generic types.
-	 */
-	def TypeVariable newCollection(EObject owner, ConcreteType collectionType) {
-		TypeVariable.generic(owner, #[ELEMENT]) => [
-			addMinType(collectionType)
-			beSealed
-			register
-		]
-	}
-
 	def newVoid(EObject owner) {
 		TypeVariable.newVoid(owner).register
 	}
@@ -98,7 +86,7 @@ class TypeVariablesRegistry {
 	}
 
 	def beSealed(TypeVariable it, WollokType type) {
-		addMinType(type)
+		addMinType(TypeVariable.instance(type))
 		beSealed
 	}
 
@@ -113,9 +101,9 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	def newClassParameterVar(EObject owner, String paramName) {
+	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
 		log.debug("New class parameter " + owner.debugInfoInContext + " " + owner.URI + " - paramName " + paramName)
-		TypeVariable.classParameter(owner, paramName) => [
+		TypeVariable.classParameter(owner, type, paramName) => [
 			registry = this 
 			register
 		]

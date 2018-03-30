@@ -3,12 +3,14 @@ package org.uqbar.project.wollok.typesystem.constraints
 import com.google.inject.Inject
 import java.util.List
 import java.util.Set
+import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeProvider
@@ -23,7 +25,6 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -34,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
-import org.apache.log4j.Level
 
 /**
  * @author npasserini
@@ -179,12 +179,20 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		new ClassBasedWollokType(clazz, this)
 	}
 
+	def genericType(WClass clazz, String... typeParameterNames) {
+		new GenericType(clazz, this, typeParameterNames)
+	}
+
 	override objectType(EObject context, String objectFQN) {
 		finder.getCachedObject(context, objectFQN).objectType
 	}
 
 	override classType(EObject context, String classFQN) {
 		finder.getCachedClass(context, classFQN).classType
+	}
+
+	override genericType(EObject context, String classFQN, String... typeParameterNames) {
+		finder.getCachedClass(context, classFQN).genericType(typeParameterNames)		
 	}
 
 	def getAllTypes() {
