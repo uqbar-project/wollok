@@ -174,12 +174,12 @@ class TypeVariable implements ITypeVariable {
 	 * @throws TypeSystemException if the new minType is a type error.
 	 */
 	def addMinType(WollokType type) {
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
+		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.addMinType(type)
 	}
 
 	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
+		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
@@ -190,7 +190,7 @@ class TypeVariable implements ITypeVariable {
 		val it = new MessageSend(selector, arguments, returnType)
 		if (typeInfo === null) {
 			if (isClosureMessage)	setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
-			else					setTypeInfo(new SimpleTypeInfo())
+			else					setTypeInfo(new GenericTypeInfo())
 		} 
 		typeInfo.messages.add(it)
 	}

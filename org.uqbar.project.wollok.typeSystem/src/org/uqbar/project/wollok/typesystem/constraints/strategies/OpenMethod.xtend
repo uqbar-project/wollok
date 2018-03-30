@@ -5,13 +5,13 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
-import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
  * This strategy takes a message send for which receiver we know a possible concrete type (i.e. a Wollok Class) 
@@ -26,7 +26,7 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 		info.messages.forEach[openClosureMethod(type, info)]
 	}
 
-	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
+	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
 		log.trace('''Trying to open methods for «tvar.debugInfoInContext»''')
 		messages.forEach [ message |
 			minTypes.entrySet.forEach [

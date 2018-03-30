@@ -6,15 +6,16 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -123,7 +124,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 	}
 
-	def dispatch doUnifyWith(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {
 		t1.minTypes = minTypesUnion(t1, t2)
 		t1.joinMaxTypes(t2.maximalConcreteTypes)
 		t1.messages.addAll(t2.messages)
@@ -145,7 +146,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		Ready
 	}
 
-	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+	protected def minTypesUnion(GenericTypeInfo t1, GenericTypeInfo t2) {
 		(t1.minTypes.keySet + t2.minTypes.keySet).toSet.toInvertedMap [
 			if (isReadyIn(t1) && isReadyIn(t2))
 				// It was already present and ready in both originating typeInfo's
@@ -160,7 +161,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * Verify if the received type is already present as a mintype in the variable
 	 * and if its Ready (i.e. type information has already been propagated.
 	 */
-	def boolean isReadyIn(WollokType wollokType, SimpleTypeInfo type) {
+	def boolean isReadyIn(WollokType wollokType, GenericTypeInfo type) {
 		type.minTypes.get(wollokType) == Ready
 	}
 
