@@ -89,7 +89,7 @@ class TypeVariablesRegistry {
 		addMinType(TypeVariable.instance(type))
 		beSealed
 	}
-
+	
 	// ************************************************************************
 	// ** Synthetic type variables
 	// ************************************************************************

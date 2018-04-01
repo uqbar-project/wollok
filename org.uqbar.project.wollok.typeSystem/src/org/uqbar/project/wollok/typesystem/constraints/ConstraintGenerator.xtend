@@ -4,6 +4,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -36,7 +37,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
 
 /**
  * @author npasserini
@@ -161,20 +161,24 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WListLiteral it) {
-		val listType = newSealed(genericType(LIST, GenericTypeInfo.ELEMENT))
-		
+		val listType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+		val paramType = listType.param(GenericTypeInfo.ELEMENT)
+
+		newSealed(listType)
 		elements.forEach[
 			generateVariables
-			tvar.beSubtypeOf(listType.element)
+			tvar.beSubtypeOf(paramType)
 		]
 	}
 
 	def dispatch void generateVariables(WSetLiteral it) {
-		val setType = newSealed(genericType(SET, GenericTypeInfo.ELEMENT))
+		val setType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
+		newSealed(setType)
 		elements.forEach[
 			generateVariables
-			tvar.beSubtypeOf(setType.element)
+			tvar.beSubtypeOf(paramType)
 		]
 	}
 

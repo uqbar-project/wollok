@@ -53,7 +53,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def void findParam(WollokType type, String paramName) {
-		throw new IllegalArgumentException('''Expecting a generic type but found «type».''')
+		throw new IllegalArgumentException('''Expecting a generic type but found «type» of type «type.class».''')
 	}
 	
 	// ************************************************************************

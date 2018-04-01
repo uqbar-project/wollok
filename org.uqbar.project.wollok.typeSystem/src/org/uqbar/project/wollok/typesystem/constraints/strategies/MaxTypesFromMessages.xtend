@@ -45,8 +45,6 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	}
 
 	def getAllTypes() {
-		// TODO: Fix typeSystem.allTypes 
-//		tvar.owner
 		registry.typeSystem.allTypes
 	}
 }
