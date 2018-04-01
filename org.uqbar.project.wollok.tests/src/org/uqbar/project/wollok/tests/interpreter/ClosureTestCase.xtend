@@ -104,27 +104,6 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void emptyClosure() {
-		'''
-		assert.equals(void, { }.apply())
-		'''.test
-	}
-
-	@Test
-	def void voidClosure() {
-		'''
-		assert.equals(void, { a => const numeros = []; numeros.add(a) }.apply(2))
-		'''.test
-	}
-
-	@Test
-	def void voidClosure2() {
-		'''
-		assert.equals(void, { a => }.apply(2))
-		'''.test
-	}
-
-	@Test
 	def void numberClosure() {
 		'''
 		assert.equals(2, { a => a }.apply(2))
