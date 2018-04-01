@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
-import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.MessageType
-import org.uqbar.project.wollok.typesystem.GenericType
 import java.util.Map
+import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.MessageType
+import org.uqbar.project.wollok.typesystem.WollokType
+import java.util.List
 
 /**
  * Represents an 'instantiated' generic type, i.e. the type of a specific instance of a generic type.
@@ -16,13 +18,13 @@ import java.util.Map
  * 
  * @author npasserini
  */
-class GenericTypeInstance implements WollokType {
+class GenericTypeInstance implements ConcreteType {
 	GenericType genericType
 	
 	Map<String, TypeVariable> typeParameters
 	
 	new(GenericType type, Map<String, TypeVariable> typeParameters) {
-		this.genericType = genericType
+		this.genericType = type
 		this.typeParameters = typeParameters
 	}
 
@@ -60,6 +62,14 @@ class GenericTypeInstance implements WollokType {
 	
 	override getAllMessages() {
 		genericType.allMessages
+	}
+	
+	override lookupMethod(MessageType message) {
+		genericType.lookupMethod(message)
+	}
+	
+	override lookupMethod(String selector, List<?> parameterTypes) {
+		genericType.lookupMethod(selector, parameterTypes)
 	}
 		
 }

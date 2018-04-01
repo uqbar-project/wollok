@@ -16,9 +16,9 @@ import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeIn
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 
 class TypeVariablesRegistry {
 	val Map<URI, TypeVariable> typeVariables = newHashMap
@@ -140,8 +140,12 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Method types
 	// ************************************************************************
-	def methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
+	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
 		new MethodTypeInfo(this, type.lookupMethod(selector, arguments))
+	}
+
+	def dispatch methodTypeInfo(WollokType type, String selector, List<TypeVariable> arguments) {
+		throw new UnsupportedOperationException('''Can't extract methodTypeInfo for methods of «type»''')
 	}
 
 	def methodTypeInfo(WClass container, String selector, List<?> arguments) {

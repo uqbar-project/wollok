@@ -48,11 +48,11 @@ class GenericTypeInfo extends TypeInfo {
 		minTypes.keySet.findFirst[acceptsAssignment(type)]
 	}
 	
-	def void findParam(GenericTypeInstance typeInstance, String paramName) {
+	def dispatch findParam(GenericTypeInstance typeInstance, String paramName) {
 		typeInstance.param(paramName)
 	}
 
-	def void findParam(WollokType type, String paramName) {
+	def dispatch findParam(WollokType type, String paramName) {
 		throw new IllegalArgumentException('''Expecting a generic type but found «type» of type «type.class».''')
 	}
 	
@@ -118,7 +118,7 @@ class GenericTypeInfo extends TypeInfo {
 		} else if (!canAddMinType(type)) {
 			throw new RejectedMinTypeException(type)
 		} else {
-			minTypes.put(type, Pending)
+			minTypes.put(TypeVariable.instance(type), Pending)
 			Pending
 		}
 	}

@@ -59,7 +59,7 @@ abstract class AbstractInferenceStrategy {
 	def tvar(EObject node) { registry.tvar(node) }
 	
 	def addFatalError(TypeVariable variable, Exception exception) {
-		val message = '''Fatal type system error: «exception.message»'''
+		val message = '''Fatal type system error: «exception.message ?: exception.class.simpleName»'''
 		
 		log.fatal(message, exception)
 		variable.addError(new TypeSystemException(message) => [ it.variable = variable ])		
