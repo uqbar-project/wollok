@@ -153,7 +153,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ** Error reporting
 	// ************************************************************************
 	override reportErrors(ConfigurableDslValidator validator) {
-		allVariables.forEach[(it as TypeVariable).reportErrors(validator)]
+		allVariables.forEach[it.reportErrors(validator)]
 	}
 
 	// ************************************************************************

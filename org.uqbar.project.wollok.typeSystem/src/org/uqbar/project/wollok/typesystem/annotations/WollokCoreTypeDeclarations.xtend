@@ -17,10 +17,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "negate" === #[] => Boolean
 		Boolean >> "toString" === #[] => String;
 
-		// TODO Parametric types for Pairs
-		PairType.constructor(Any, Any)
-		PairType >> "getKey" === #[] => Any;
-		PairType >> "getValue" === #[] => Any;
+		PairType.constructor(Any, Any);
+		PairType >> "key" === #[] => Any;
+		PairType >> "value" === #[] => Any;
 		
 		Number + Number => Number
 		Number - Number => Number
@@ -147,7 +146,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment these definitions solving closure parameters
+		// TODO: Uncomment these definitions when solving closure parameters
 		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
@@ -158,6 +157,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
+		
+		InstanceVariableMirror >> "value" === #[] => Any;
+		InstanceVariableMirror >> "toString" === #[] => String;
+		
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {

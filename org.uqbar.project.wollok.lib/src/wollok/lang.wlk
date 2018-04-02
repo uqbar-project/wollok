@@ -247,8 +247,8 @@ class Pair {
 		x = _x
 		y = _y
 	}
-	method getKey() = x
-	method getValue() = y
+	method key() = x
+	method value() = y
 }
 
 /**

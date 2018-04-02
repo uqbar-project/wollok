@@ -21,6 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -35,7 +36,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
-import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
 /**
  * @author npasserini
@@ -60,7 +60,7 @@ class ConstraintGenerator {
 	// ** First pass
 	// ************************************************************************
 	/**
-	 * We have to to two passes through the program. The first one just adds globals, 
+	 * We have two passes through the program. The first one just adds globals, 
 	 * so that they are visible during constraint generation.
 	 */
 	def dispatch void addGlobals(EObject it) {
@@ -95,11 +95,11 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
+		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
 
 	def dispatch void generateVariables(WClass it) {
-
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
@@ -178,13 +178,16 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		/*
-		 * NOT SURE FOR NOW - Dodain
-		val associatedConstructor = constructor
-		associatedConstructor?.generateVariables
-		*/
-		arguments.forEach [ generateVariables ]
-		newSealed(classType(classRef))
+		arguments.forEach [ arg | arg.generateVariables ]
+//		if (classRef.name.equalsIgnoreCase("Pair")) {
+//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
+//				tv.addMinType(classType(classRef))
+//				tv.beSealed
+//				tv.register
+//			]
+//		} else {
+			newSealed(classType(classRef))
+//		}
 
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}

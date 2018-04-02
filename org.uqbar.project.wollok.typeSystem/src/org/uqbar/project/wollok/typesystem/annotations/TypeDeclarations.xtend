@@ -127,11 +127,17 @@ abstract class TypeDeclarations {
 
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
 
+	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
+
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
 	
 	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
+
+	def KEY() { new ClassParameterTypeAnnotation(GenericTypeInfo.KEY) }
+
+	def VALUE() { new ClassParameterTypeAnnotation(GenericTypeInfo.VALUE) }
 	
 	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }
 
@@ -142,6 +148,7 @@ abstract class TypeDeclarations {
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
 		new ClosureTypeAnnotation(parameters, returnType)
 	}
+	
 }
 
 // ****************************************************************************

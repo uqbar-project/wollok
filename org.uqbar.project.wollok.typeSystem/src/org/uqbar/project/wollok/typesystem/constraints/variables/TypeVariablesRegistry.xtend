@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
-
 import java.util.Map
 import org.apache.log4j.Logger
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
@@ -13,15 +13,13 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
 
+import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
-import org.eclipse.emf.common.util.URI
 
 class TypeVariablesRegistry {
 	val Map<URI, TypeVariable> typeVariables = newHashMap
@@ -67,7 +65,7 @@ class TypeVariablesRegistry {
 	/**
 	 * This should be a special case of a generic type variable, for now collections are the only generic types.
 	 */
-	def newCollection(EObject owner, ConcreteType collectionType) {
+	def TypeVariable newCollection(EObject owner, ConcreteType collectionType) {
 		TypeVariable.generic(owner, #[ELEMENT]) => [
 			addMinType(collectionType)
 			beSealed
@@ -78,7 +76,6 @@ class TypeVariablesRegistry {
 	def newVoid(EObject owner) {
 		TypeVariable.newVoid(owner).register
 	}
-
 
 	def newWithSubtype(EObject it, EObject... subtypes) {
 		newTypeVariable => [subtypes.forEach[subtype|it.beSupertypeOf(subtype.tvar)]]
@@ -136,7 +133,7 @@ class TypeVariablesRegistry {
 	 */
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj.URI) => [ if (it === null) {
-			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
+			throw new TypeSystemException("Missing type information for " + obj + " " + obj.debugInfoInContext)
 		}]
 	}
 	

@@ -61,15 +61,19 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	}
 
 	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
-		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
+		classTypeParameterFor(messageSend.memberCallTarget.tvar, messageSend.memberCallTarget.tvar.typeInfo)
 	}
 
-	def dispatch classTypeParameterFor(SimpleTypeInfo typeInfo) {
+	def dispatch classTypeParameterFor(TypeVariable tvar, SimpleTypeInfo typeInfo) {
 		val receiverTypeInfo = typeInfo as GenericTypeInfo
 		receiverTypeInfo.param(paramName)
 	}
+
+	def dispatch classTypeParameterFor(TypeVariable tvar, GenericTypeInfo typeInfo) {
+		typeInfo.param(paramName)
+	}
 	
-	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
+	def dispatch classTypeParameterFor(TypeVariable tvar, ClosureTypeInfo typeInfo) {
 		switch (paramName) {
 			case ClosureTypeInfo.RETURN: typeInfo.returnType 
 			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')

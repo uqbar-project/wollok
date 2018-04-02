@@ -7,10 +7,24 @@ object pairTest {
 		return new Pair(2, 3)
 	}
 	
-	// TODO: Add more tests for getKey() and getValue()
-   	// XP ECT methodType at m2 --> (Pair) => Any
-	//method m2(pair) {
-	//	return pair.getKey()
+   	// XPECT methodType at m2 --> (Pair) => Any
+	method m2(pair) {
+		return pair.key()
+	}
+
+	// XPECT methodType at m3 --> ((InstanceVariableMirror|Pair)) => Any
+	method m3(pair) {
+		return pair.value()
+	}
+	
+   	// XPECT! methodType at m4 --> (Any) => Number
+	//method m4(n) {
+	//	return new Pair(2, 5).key()
 	//}
 	
+	// XPECT methodType at m5 --> (Number) => Pair
+	method m5(n) {
+		return new Pair(n + 1, n - 1)
+	}
+
 }

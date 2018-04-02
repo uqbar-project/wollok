@@ -168,7 +168,7 @@ class WollokChecker {
 		// goes up all the way (I wanted to search for something like ".project" file but
 		// the launcher is executing this interpreter with a relative path to the file, like "src/blah/myfile.wlk"
 		// so I cannot make it up to the project folder :(
-		if(folder.parentFile == null) folder else findProjectRoot(folder.parentFile)
+		if(folder.parentFile === null) folder else findProjectRoot(folder.parentFile)
 	}
 
 }

@@ -109,6 +109,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
+	public static String WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
