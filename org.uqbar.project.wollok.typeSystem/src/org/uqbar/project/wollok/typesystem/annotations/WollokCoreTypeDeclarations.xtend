@@ -157,6 +157,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
+		
+		InstanceVariableMirror >> "value" === #[] => Any;
+		InstanceVariableMirror >> "toString" === #[] => String;
+		
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
