@@ -128,6 +128,8 @@ abstract class TypeDeclarations {
 
 	def StackTraceElement() { classTypeAnnotation(STACK_TRACE_ELEMENT) }
 
+	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
+
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }

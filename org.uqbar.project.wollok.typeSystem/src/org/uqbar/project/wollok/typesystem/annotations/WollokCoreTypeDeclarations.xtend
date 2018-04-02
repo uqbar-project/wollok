@@ -18,8 +18,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "toString" === #[] => String;
 
 		PairType.constructor(KEY, VALUE)
-		PairType >> "getKey" === #[] => KEY;
-		PairType >> "getValue" === #[] => VALUE;
+		PairType >> "key" === #[] => KEY;
+		PairType >> "value" === #[] => VALUE;
 		
 		Number + Number => Number
 		Number - Number => Number
@@ -157,6 +157,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
+		
+		InstanceVariableMirror >> "value" === #[] => Void
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
