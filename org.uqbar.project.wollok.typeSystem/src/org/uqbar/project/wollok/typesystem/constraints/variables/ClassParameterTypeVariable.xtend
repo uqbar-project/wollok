@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -86,4 +87,6 @@ class ClassParameterTypeVariable implements ITypeVariable {
 			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')
 		}
 	}
+	
+	override toString() '''t(«owner.debugInfo»: «type».«paramName»)'''
 }

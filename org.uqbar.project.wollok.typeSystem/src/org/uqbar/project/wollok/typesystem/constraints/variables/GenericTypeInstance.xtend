@@ -1,11 +1,12 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
+import java.util.List
 import java.util.Map
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.WollokType
-import java.util.List
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * Represents an 'instantiated' generic type, i.e. the type of a specific instance of a generic type.
@@ -19,12 +20,13 @@ import java.util.List
  * @author npasserini
  */
 class GenericTypeInstance implements ConcreteType {
-	GenericType genericType
+	@Accessors(PUBLIC_GETTER)
+	GenericType rawType
 	
 	Map<String, TypeVariable> typeParameters
 	
 	new(GenericType type, Map<String, TypeVariable> typeParameters) {
-		this.genericType = type
+		this.rawType = type
 		this.typeParameters = typeParameters
 	}
 
@@ -33,59 +35,59 @@ class GenericTypeInstance implements ConcreteType {
 	}
 
 	// ************************************************************************
-	// ** Interface WollokType, mostly delegated to the GenericType itself
+	// ** Interface WollokType, mostly delegated to the rawType itself
 	// ************************************************************************
 	
 	override getName() {
-		genericType.name
+		rawType.name
 	}
 	
 	override getContainer() {
-		genericType.container
+		rawType.container
 	}
 	
 	override getTypeSystem() {
-		genericType.typeSystem
+		rawType.typeSystem
 	}
 
 	override acceptsAssignment(WollokType other) {
-		genericType.acceptsAssignment(other)
+		rawType.acceptsAssignment(other)
 	}
 	
 	override acceptAssignment(WollokType other) {
-		genericType.acceptAssignment(other)
+		rawType.acceptAssignment(other)
 	}
 	
 	override understandsMessage(MessageType message) {
-		genericType.understandsMessage(message)
+		rawType.understandsMessage(message)
 	}
 	
 	override resolveReturnType(MessageType message) {
-		genericType.resolveReturnType(message)
+		rawType.resolveReturnType(message)
 	}
 	
 	override refine(WollokType previouslyInferred) {
-		genericType.refine(previouslyInferred)
+		rawType.refine(previouslyInferred)
 	}
 	
 	override getAllMessages() {
-		genericType.allMessages
+		rawType.allMessages
 	}
 	
 	override lookupMethod(MessageType message) {
-		genericType.lookupMethod(message)
+		rawType.lookupMethod(message)
 	}
 	
 	override lookupMethod(String selector, List<?> parameterTypes) {
-		genericType.lookupMethod(selector, parameterTypes)
+		rawType.lookupMethod(selector, parameterTypes)
 	}		
 
 	// ************************************************************************
 	// ** Basics
 	// ************************************************************************
 	
-	override toString() { genericType.toString }
+	override toString() { rawType.toString }
 	
 	def dispatch equals(Object other ) { false }
-	def dispatch equals(GenericTypeInstance other) { genericType == other.genericType }
+	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
 }

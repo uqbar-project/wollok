@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
@@ -41,11 +41,15 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 
 	def param(GenericType type, String paramName) {
-		findCompatibleTypeFor(type).findParam(paramName)
+		val typeInstance = findCompatibleTypeFor(type)
+		if (typeInstance === null)  
+			throw new IllegalStateException('''Can't find a minType compatible with «type».«paramName», known minTypes are «minTypes.keySet»''')	
+		
+		typeInstance.findParam(paramName)
 	}
 	
 	def findCompatibleTypeFor(GenericType type) {
-		minTypes.keySet.findFirst[acceptsAssignment(type)]
+		minTypes.keySet.findFirst[type.isSuperTypeOf(it)]
 	}
 	
 	def dispatch findParam(GenericTypeInstance typeInstance, String paramName) {
