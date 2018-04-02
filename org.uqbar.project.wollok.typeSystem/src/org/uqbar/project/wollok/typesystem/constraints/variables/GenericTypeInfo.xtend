@@ -117,19 +117,28 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	override ConcreteTypeState addMinType(WollokType type) {
-		if (minTypes.containsKey(type)) {
+		val compatibleType = minTypes.keySet.findFirst[isSuperTypeOf(type)]
+		if (compatibleType !== null) {
+			compatibleType.unifyWith(type)			
 			Ready
-		} else if (!canAddMinType(type)) {
-			throw new RejectedMinTypeException(type)
-		} else {
+		} else if (!sealed && type.respondsToAll(messages)) {
 			minTypes.put(TypeVariable.instance(type), Pending)
 			Pending
+		} else {
+			throw new RejectedMinTypeException(type)
 		}
 	}
+	
+	def unifyWith(WollokType existing, WollokType added) { 
+		// Nothing to do (?)
+	}
 
-	def canAddMinType(WollokType type) {
-		if (sealed) minTypes.keySet.exists[isSuperTypeOf(type)]
-		else type.respondsToAll(messages)
+	def unifyWith(GenericTypeInstance existing, GenericTypeInstance added) { 
+		existing.typeParameters.forEach[name, param|
+			// This makes all type parameters invariant, co- and contra-variance needs further work.
+			param.beSubtypeOf(added.param(name))
+			param.beSupertypeOf(added.param(name))
+		]
 	}
 	
 	// ************************************************************************

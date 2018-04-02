@@ -54,8 +54,9 @@ abstract class AbstractInferenceStrategy {
 
 	abstract def void analiseVariable(TypeVariable tvar)
 	
+	def getTypeSystem() { registry.typeSystem } 
 	def allVariables() { registry.allVariables }
-	def allFiles() { registry.typeSystem.programs }
+	def allFiles() { typeSystem.programs }
 	def tvar(EObject node) { registry.tvar(node) }
 	
 	def addFatalError(TypeVariable variable, Exception exception) {

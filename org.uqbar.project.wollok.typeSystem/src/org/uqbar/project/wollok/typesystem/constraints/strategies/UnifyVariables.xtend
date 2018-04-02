@@ -47,11 +47,11 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * - Pending means this variable needs to be visited again.
 	 * - Error means a type error was detected, variable will not be visited again.
 	 */
-	def unifyWith(ITypeVariable subtype, ITypeVariable supertype) {
+	def ConcreteTypeState unifyWith(ITypeVariable subtype, ITypeVariable supertype) {
 		unifyWith(subtype as TypeVariable, supertype as TypeVariable)
 	}
 
-	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
+	def ConcreteTypeState unifyWith(TypeVariable subtype, TypeVariable supertype) {
 		if (subtype.unifiedWith(supertype)) {
 			return Ready
 		}

@@ -23,6 +23,7 @@ class GenericTypeInstance implements ConcreteType {
 	@Accessors(PUBLIC_GETTER)
 	GenericType rawType
 	
+	@Accessors(PUBLIC_GETTER)
 	Map<String, TypeVariable> typeParameters
 	
 	new(GenericType type, Map<String, TypeVariable> typeParameters) {
