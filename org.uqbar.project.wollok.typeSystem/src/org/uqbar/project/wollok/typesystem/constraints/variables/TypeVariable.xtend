@@ -70,8 +70,8 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	def static dispatch instance(WollokType it) { it }
-	
-	def static dispatch instance(GenericType it) { 
+
+	def static dispatch instance(GenericType it) {
 		new GenericTypeInstance(it, typeParameterNames.toInvertedMap[synthetic])
 	}
 
@@ -193,9 +193,10 @@ class TypeVariable implements ITypeVariable {
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
 		if (typeInfo === null) {
-			if(isClosureMessage) setTypeInfo(
-				new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType)) else setTypeInfo(
-				new GenericTypeInfo())
+			if (isClosureMessage)
+				setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
+			else
+				setTypeInfo(new GenericTypeInfo())
 		}
 		typeInfo.messages.add(it)
 	}

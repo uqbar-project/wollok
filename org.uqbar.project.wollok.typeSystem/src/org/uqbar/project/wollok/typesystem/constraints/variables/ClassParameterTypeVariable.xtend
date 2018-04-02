@@ -47,11 +47,7 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
 	override beSubtypeOf(TypeVariable variable) {
-		try {
-			variable.owner.classTypeParameter.beSubtypeOf(variable)		
-		} catch (NullPointerException e) {
-			e.printStackTrace
-		}
+		variable.owner.classTypeParameter.beSubtypeOf(variable)		
 	}
 
 	/**
