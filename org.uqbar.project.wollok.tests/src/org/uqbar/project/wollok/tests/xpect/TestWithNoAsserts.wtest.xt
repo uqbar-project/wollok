@@ -23,8 +23,9 @@ test "testForBinaryOperationForAssert" {
 test "testTryWithAssert" {
 	try {
 		assert.equals(1, 1)
+		return 1 / 0
 	} catch e : Exception {
-			
+		
 	}
 }
 

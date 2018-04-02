@@ -18,8 +18,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "toString" === #[] => String;
 
 		PairType.constructor(Any, Any);
-		PairType >> "getKey" === #[] => Any;
-		PairType >> "getValue" === #[] => Any;
+		PairType >> "key" === #[] => Any;
+		PairType >> "value" === #[] => Any;
 		
 		Number + Number => Number
 		Number - Number => Number

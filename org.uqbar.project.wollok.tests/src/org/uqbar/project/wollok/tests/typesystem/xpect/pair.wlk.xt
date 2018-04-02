@@ -9,17 +9,17 @@ object pairTest {
 	
    	// XPECT methodType at m2 --> (Pair) => Any
 	method m2(pair) {
-		return pair.getKey()
+		return pair.key()
 	}
 
-	// XPECT methodType at m3 --> (Pair) => Any
+	// XPECT methodType at m3 --> ((InstanceVariableMirror|Pair)) => Any
 	method m3(pair) {
-		return pair.getValue()
+		return pair.value()
 	}
 	
-   	// XPECT! methodType at m4 --> (Number) => Number
+   	// XPECT! methodType at m4 --> (Any) => Number
 	//method m4(n) {
-	//	return new Pair(2, 5).getKey()
+	//	return new Pair(2, 5).key()
 	//}
 	
 	// XPECT methodType at m5 --> (Number) => Pair
