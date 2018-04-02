@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
-import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
@@ -11,6 +11,9 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.VariableSubtypingRules.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 
+/**
+ * @author npasserini
+ */
 class MessageLookupExtensions {
 	TypeVariablesRegistry registry
 
@@ -26,15 +29,12 @@ class MessageLookupExtensions {
 		false
 	}
 
-	def static dispatch respondsTo(AbstractContainerWollokType type, MessageSend message) {
-		new MessageLookupExtensions(type.registry).canRespondTo(type, message)
+	def static dispatch respondsTo(ConcreteType type, MessageSend message) {
+		val registry = (type.typeSystem as ConstraintBasedTypeSystem).registry
+		new MessageLookupExtensions(registry).canRespondTo(type, message)
 	}
 
-	def static getRegistry(AbstractContainerWollokType type) {
-		(type.typeSystem as ConstraintBasedTypeSystem).registry
-	}
-
-	def canRespondTo(AbstractContainerWollokType it, MessageSend message) {
+	def canRespondTo(ConcreteType it, MessageSend message) {
 		container.allMethods.exists [ method |
 			match(method, message)
 		]

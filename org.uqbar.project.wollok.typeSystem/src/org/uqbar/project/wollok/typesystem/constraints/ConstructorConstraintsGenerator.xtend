@@ -31,9 +31,7 @@ class ConstructorConstraintsGenerator {
 			// And wouldn't be an error if the constructor call has no parameters.
 			// TODO Handle and inform error conditions.
 			constructor?.parameters?.biForEach(arguments)[param, arg|
-				try {
-					arg.tvar.beSubtypeOf(param.tvar)
-				} catch (Exception e) {}
+				param.tvarOrParam.beSupertypeOf(arg.tvar)
 			]
 		]
 	}

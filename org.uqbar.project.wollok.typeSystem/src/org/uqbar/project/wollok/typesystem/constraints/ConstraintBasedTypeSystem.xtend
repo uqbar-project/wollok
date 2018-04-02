@@ -213,7 +213,6 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
-			log.debug('''Registering generic type for «classFQN»''')
 			genericTypes.put(classFQN, it)
 		]		
 	}

@@ -31,7 +31,7 @@ class GenericTypeInstance implements ConcreteType {
 	def param(String paramName) {
 		typeParameters.get(paramName)	
 	}
-	
+
 	// ************************************************************************
 	// ** Interface WollokType, mostly delegated to the GenericType itself
 	// ************************************************************************
@@ -40,6 +40,14 @@ class GenericTypeInstance implements ConcreteType {
 		genericType.name
 	}
 	
+	override getContainer() {
+		genericType.container
+	}
+	
+	override getTypeSystem() {
+		genericType.typeSystem
+	}
+
 	override acceptsAssignment(WollokType other) {
 		genericType.acceptsAssignment(other)
 	}
@@ -70,6 +78,14 @@ class GenericTypeInstance implements ConcreteType {
 	
 	override lookupMethod(String selector, List<?> parameterTypes) {
 		genericType.lookupMethod(selector, parameterTypes)
-	}
-		
+	}		
+
+	// ************************************************************************
+	// ** Basics
+	// ************************************************************************
+	
+	override toString() { genericType.toString }
+	
+	def dispatch equals(Object other ) { false }
+	def dispatch equals(GenericTypeInstance other) { genericType == other.genericType }
 }

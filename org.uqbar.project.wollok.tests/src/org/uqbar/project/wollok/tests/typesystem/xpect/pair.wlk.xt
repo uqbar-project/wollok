@@ -4,26 +4,43 @@ object pairTest {
 	
 	// XPECT methodType at m1 --> () => Number
 	method m1() {
-		return new Pair(2, 3).getKey()
+		return new Pair(2, "hola").getKey()
 	}
 	
-   	// XPECT methodType at m2 --> (Pair) => Any
-	method m2(pair) {
+	// XPECT methodType at m2 --> () => String
+	method m2() {
+		return new Pair(2, "hola").getValue()
+	}
+
+   	// XPECT methodType at m3 --> (Pair) => Any
+	method m3(pair) {
 		return pair.getKey()
 	}
 
-	// XPECT methodType at m3 --> (Pair) => Any
-	method m3(pair) {
+	// XPECT methodType at m4 --> (Pair) => Any
+	method m4(pair) {
 		return pair.getValue()
 	}
 	
-	// XPECT methodType at m4 --> (Number) => Pair
-	method m4(n) {
+	// XPECT methodType at m5 --> (Number) => Pair
+	method m5(n) {
 		return new Pair(n + 1, n - 1)
 	}
 
-	// XPECT! methodType at m5 --> () => Number
-	method m5() {
-		return new Pair(2, 4).getKey()
+	method m6() {
+		// XPECT type at n --> Number
+		var n = new Pair(2, 3).getValue()
+
+		// XPECT type at n --> String
+		var s = new Pair(2, "").getValue()
+	}
+
+	// XPECT methodType at m7 --> (Number) => Number
+	method m7(n) {
+		/* XPECT warnings at p ---
+			"Local variable used just to return. Consider removing it" at "p"
+		--- */
+		var p = new Pair(n + 1, n - 1)
+		return p.getValue()
 	}
 }

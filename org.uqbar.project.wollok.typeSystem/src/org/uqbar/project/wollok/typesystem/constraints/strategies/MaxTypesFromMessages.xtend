@@ -29,7 +29,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 		log.trace('''maxTypes = «maxTypes»''')
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
 			log.debug('''	New max(«maxTypes») type for «tvar.debugInfoInContext»''')
-			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet), tvar)
+			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[TypeVariable.instance(it)].toSet), tvar)
 			changed = changed || newChanges
 		}
 	}

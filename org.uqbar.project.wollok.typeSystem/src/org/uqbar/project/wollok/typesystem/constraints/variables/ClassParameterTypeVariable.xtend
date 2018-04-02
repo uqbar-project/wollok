@@ -5,6 +5,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
@@ -67,15 +68,19 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}
 
-	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
-		classTypeParameterFor(messageSend.memberCallTarget.tvar, messageSend.memberCallTarget.tvar.typeInfo)
+	def dispatch classTypeParameter(WConstructorCall constructorCall) {
+		classTypeParameterFor(constructorCall.tvar.typeInfo)
 	}
 
-	def dispatch classTypeParameterFor(TypeVariable tvar, GenericTypeInfo typeInfo) {
+	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
+		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
+	}
+
+	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
 		typeInfo.param(type, paramName)
 	}
 	
-	def dispatch classTypeParameterFor(TypeVariable tvar, ClosureTypeInfo typeInfo) {
+	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
 		switch (paramName) {
 			case ClosureTypeInfo.RETURN: typeInfo.returnType 
 			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')

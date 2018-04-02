@@ -161,7 +161,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WListLiteral it) {
-		val listType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+		val listType = TypeVariable.instance(genericType(LIST, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
 		val paramType = listType.param(GenericTypeInfo.ELEMENT)
 
 		newSealed(listType)
