@@ -119,8 +119,9 @@ class WollokChecker {
 		val resource = resourceSet.getResource(URI.createURI(mainFile.toURI.toString), false)
 		resource.load(#{})
 
-		if (validate) 
+		if (validate) {
 			validate(injector, resource)
+		}
 
 		resource.contents.get(0) as WFile
 	}
@@ -147,7 +148,7 @@ class WollokChecker {
 
 	def validate(Injector injector, Resource resource) {
 		val handler = injector.getInstance(WollokLauncherIssueHandler)
-		this.validate(injector, resource, [handler.handleIssue(it)], [handler.finished; System.exit(-1)])
+		this.validate(injector, resource, [handler.handleIssue(it)], [handler.finished])
 	}
 
 	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler,
