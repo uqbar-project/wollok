@@ -2,18 +2,19 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-import javax.management.openmbean.SimpleType
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
  * I am a class type parameter, please note that there is currently no support for method type parameters in Wollok type system.
  * 
- * In the current state of the art, parametric types (and hence, type parameters) are only introduced by type annotations
- * (and more specifically: the Collection hierarchy).
+ * In the current state of the art, parametric types (and hence, type parameters) are only introduced by type annotations,
  * But they can be progagated to other parts of the code that use objects with parametric types.
  * Blocks have also parametric types, but they are handled by normal type variables and a special type info ({@link ClosureTypeInfo}).
  * 
@@ -27,12 +28,16 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	EObject owner
 	
 	@Accessors
+	GenericType type
+	
+	@Accessors
 	extension TypeVariablesRegistry registry
 
 	String paramName
 
-	new(EObject owner, String paramName) {
+	new(EObject owner, GenericType type, String paramName) {
 		this.owner = owner
+		this.type = type
 		this.paramName = paramName
 	}
 
@@ -42,7 +47,7 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
 	override beSubtypeOf(TypeVariable variable) {
-		variable.owner.classTypeParameter.beSubtypeOf(variable)
+		variable.owner.classTypeParameter.beSubtypeOf(variable)		
 	}
 
 	/**
@@ -60,23 +65,24 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}
 
+	def dispatch classTypeParameter(WConstructorCall constructorCall) {
+		classTypeParameterFor(constructorCall.tvar.typeInfo)
+	}
+
 	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
-		classTypeParameterFor(messageSend.memberCallTarget.tvar, messageSend.memberCallTarget.tvar.typeInfo)
+		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
 	}
 
-	def dispatch classTypeParameterFor(TypeVariable tvar, SimpleTypeInfo typeInfo) {
-		val receiverTypeInfo = typeInfo as GenericTypeInfo
-		receiverTypeInfo.param(paramName)
-	}
-
-	def dispatch classTypeParameterFor(TypeVariable tvar, GenericTypeInfo typeInfo) {
-		typeInfo.param(paramName)
+	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
+		typeInfo.param(type, paramName)
 	}
 	
-	def dispatch classTypeParameterFor(TypeVariable tvar, ClosureTypeInfo typeInfo) {
+	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
 		switch (paramName) {
 			case ClosureTypeInfo.RETURN: typeInfo.returnType 
 			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')
 		}
 	}
+	
+	override toString() '''t(«owner.debugInfo»: «type».«paramName»)'''
 }

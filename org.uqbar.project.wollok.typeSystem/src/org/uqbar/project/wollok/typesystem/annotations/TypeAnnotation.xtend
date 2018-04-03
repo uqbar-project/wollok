@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
+import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
-import java.util.List
+import org.uqbar.project.wollok.typesystem.GenericType
 
 interface TypeAnnotation {
 }
@@ -18,11 +19,17 @@ class SimpleTypeAnnotation<T extends WollokType> implements TypeAnnotation {
 
 class ClassParameterTypeAnnotation implements TypeAnnotation {
 	@Accessors(PUBLIC_GETTER)
-	String paramName
+	GenericType type
 
-	new(String paramName) {
+	@Accessors(PUBLIC_GETTER)
+	String paramName
+	
+
+	new(GenericType type, String paramName) {
+		this.type = type
 		this.paramName = paramName
 	}
+	
 }
 
 

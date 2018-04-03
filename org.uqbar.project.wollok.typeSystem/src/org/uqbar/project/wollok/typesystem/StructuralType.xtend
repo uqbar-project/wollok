@@ -19,6 +19,10 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 	
 	override getAllMessages() { messages }
 	
+	override acceptsAssignment(WollokType other) {
+		messages.exists[m| !other.understandsMessage(m)]
+	}
+	
 	override acceptAssignment(WollokType other) {
 		val notSupported = messages.filter[m| !other.understandsMessage(m)]
 		if (notSupported.size > 0)
