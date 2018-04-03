@@ -167,4 +167,24 @@ class SetTestCase extends CollectionTestCase {
 		'''.test
 	} 	
 	
+	@Test
+	def void elementsToString() {
+		'''
+		object a {
+			override method printString() = "es un a"
+		}
+		
+		class B {
+			override method printString() = "cierto que era un b!"
+		}
+		
+		program c {
+			assert.throwsExceptionWithMessage(
+				"Expected [#{es un a}] but found [#{cierto que era un b!}]", 
+				{ assert.equals(#{a}, #{new B()}) }
+			)
+		}
+		'''.interpretPropagatingErrors
+	}
+
 }

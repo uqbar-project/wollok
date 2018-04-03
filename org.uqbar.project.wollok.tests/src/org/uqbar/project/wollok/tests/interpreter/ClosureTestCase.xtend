@@ -116,4 +116,12 @@ class ClosureTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(null, { null }.apply())
 		'''.test
 	}
+	
+	@Test
+	def void toStringClosure() {
+		'''
+		assert.equals("{ a => a + 1 }", { a => a + 1 }.toString())
+		'''.test
+	}
+	
 }
