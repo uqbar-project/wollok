@@ -17,10 +17,9 @@ class CollisionListener implements GameboardListener {
 
 	override notify(Gameboard gameboard) {
 		gameboard.getComponentsInPosition(component.position)
+			.clone
 			.filter[ it != component ]
-			.forEach[ 
-				block.apply(it)
-			]
+			.forEach[ block.apply(it) ]
 	}
 	
 	override isObserving(VisualComponent otherComponent) {
