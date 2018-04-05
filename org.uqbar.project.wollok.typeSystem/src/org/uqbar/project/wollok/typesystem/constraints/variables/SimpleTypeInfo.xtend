@@ -58,7 +58,7 @@ class SimpleTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		minTypesDo(origin) [
-			if (!maxTypes.empty && !maxTypes.contains(type))
+			if (!maxTypes.contains(type))
 				error(new RejectedMinTypeException(origin, type))
 		]
 
