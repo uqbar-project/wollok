@@ -14,8 +14,12 @@ abstract class BasicType implements WollokType {
 		this.name = name
 	}
 	
+	override acceptsAssignment(WollokType other) {
+		other == this
+	}
+
 	override acceptAssignment(WollokType other) {
-		if (other != this) 
+		if (!acceptsAssignment(other)) 
 			throw new TypeSystemException("Incompatible type")
 	}
 	

@@ -174,8 +174,6 @@ class Object {
 	 * String representation of Wollok object
 	 */
 	method toString() {
-		// TODO: should be a set
-		//return self.toSmartString(#{})
 		return self.toSmartString([])
 	}
 	
@@ -247,8 +245,8 @@ class Pair {
 		x = _x
 		y = _y
 	}
-	method getKey() = x
-	method getValue() = y
+	method key() = x
+	method value() = y
 }
 
 /**
@@ -506,9 +504,8 @@ class Collection {
 	method flatten() = self.flatMap { e => e }
 	
 	/** @private */
-	override method internalToSmartString(alreadyShown) {
-		return self.toStringPrefix() + self.map{e=> e.toSmartString(alreadyShown) }.join(', ') + self.toStringSufix()
-	}
+	override method internalToSmartString(alreadyShown) =
+		self.toStringPrefix() + self.map{ e => if (alreadyShown.contains(e)) e.toSmartString(alreadyShown) else e.printString() }.join(', ') + self.toStringSufix()
 	
 	/** @private */
 	method toStringPrefix()

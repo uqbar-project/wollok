@@ -9,7 +9,7 @@ class WollokTypeSystemPrettyPrinter {
 
 	static def expectedType(TypeVariable it) { typeInfo.expected(it) }
 	
-	static def dispatch expected(SimpleTypeInfo it, TypeVariable user) {
+	static def dispatch expected(GenericTypeInfo it, TypeVariable user) {
 		maximalConcreteTypes?.prettyPrint ?: getType(user).toString
 	}
 	
@@ -23,7 +23,7 @@ class WollokTypeSystemPrettyPrinter {
 
 	static def foundType(TypeVariable it) { typeInfo.found }
 
-	static def dispatch found(SimpleTypeInfo it) {
+	static def dispatch found(GenericTypeInfo it) {
 		minTypes.entrySet.findFirst[value == Error]?.key?.toString
 	}
 

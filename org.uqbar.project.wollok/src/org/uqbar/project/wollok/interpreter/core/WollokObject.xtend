@@ -70,7 +70,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override getThisObject() { this }
 	
 	override call(String message, WollokObject... parameters) {
-//		println("calling " + message + " " + parameters.map[toString].join(','))
 		val method = behavior.lookupMethod(message, parameters, false)
 		if (method === null) {
 			if (message.hasProperty) {

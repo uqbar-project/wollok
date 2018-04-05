@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -645,9 +646,34 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
 	
 	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
+	
 	def static dispatch isNamedParameter(WInitializer i) { true }
 	
 	def static dispatch hasNamedParameters(EObject o) { false }
 	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
 	
+	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
+	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
+		c.memberCallTarget.isAssertWKO
+	}
+	def static dispatch boolean sendsMessageToAssert(WTry t) {
+		t.expression.sendsMessageToAssert || t.catchBlocks.exists [ sendsMessageToAssert ] || t.alwaysExpression?.sendsMessageToAssert
+	}
+	def static dispatch boolean sendsMessageToAssert(WClosure c) {
+		c.expression.sendsMessageToAssert
+	}
+	def static dispatch boolean sendsMessageToAssert(WBlockExpression b) {
+		b.expressions.exists [ sendsMessageToAssert ]
+	}
+	def static dispatch boolean sendsMessageToAssert(WCatch c) {
+		c.expression.sendsMessageToAssert
+	}
+	
+	def static dispatch boolean isAssertWKO(EObject e) { false }
+	def static dispatch boolean isAssertWKO(WNamedObject wko) {
+		wko.fqn.equals(WollokDSK.ASSERT)
+	}
+	def static dispatch boolean isAssertWKO(WVariableReference ref) {
+		ref.ref.isAssertWKO
+	}
 }

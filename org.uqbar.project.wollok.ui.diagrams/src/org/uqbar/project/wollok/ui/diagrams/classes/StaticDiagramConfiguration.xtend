@@ -51,6 +51,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	List<Relation> relations = newArrayList
 	String originalFileName = ""
 	String fullPath = ""
+	boolean isPlatformFile = false
 	List<OutsiderElement> outsiderElements = newArrayList
 	transient IResource resource
 	
@@ -238,7 +239,8 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def void setResource(IResource resource) {
 		val previousFileName = this.originalFileName
 		this.resource = resource
-		if (resource.project.locationURI !== null) {
+		this.isPlatformFile = resource.project.locationURI === null
+		if (!this.isPlatformFile) {
 			this.fullPath = resource.project.locationURI.rawPath + File.separator + WollokConstants.DIAGRAMS_FOLDER
 			this.originalFileName = resource.location.lastSegment
 		} else {
@@ -359,11 +361,20 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	
 	def void saveConfiguration() {
 		if (this.resourceCanBeUsed) {
-			val file = new FileOutputStream(staticDiagramFullName)
+			var File _file = null
+			if (!this.isPlatformFile)
+				_file = new File(staticDiagramFullName.adaptFile)
+			else 
+				_file = new File(staticDiagramFullName)
+				
+			val file = new FileOutputStream(_file)
 			val oos = new ObjectOutputStream(file)
 			oos.writeObject(this)
 		}
-		
+	}
+	
+	protected def java.net.URI adaptFile(String path) {
+		new java.net.URI("file:///" + path)
 	}
 
 	def getStaticDiagramFullName() {
@@ -384,44 +395,21 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *******************************************************
 	 */	
 	override toString() {
-		val result = new StringBuffer() => [
-			append("Static Diagram {")
-			append("\n")
-			append("    relations = ")
-			append(this.relations)
-			append("\n")
-			append("    hidden components = ")
-			append(this.hiddenComponents)
-			append("\n")
-			append("    hidden parts = ")
-			append(this.hiddenParts)
-			append("\n")
-			append("    full path = ")
-			append(this.fullPath)
-			append("\n")
-			append("    original file name = ")
-			append(this.originalFileName)
-			append("\n")
-			append("    show variables = ")
-			append(this.showVariables)
-			append("\n")
-			append("    remember locations = ")
-			append(this.rememberLocationAndSizeShapes)
-			append("\n")
-			append("    locations = ")
-			append(this.locations)
-			append("\n")
-			append("    sizes = ")
-			append(this.sizes)
-			append("\n")
-			append("    outsiderElements = ")
-			append(this.outsiderElements)
-			append("\n")
-			append("}")	
-		]
-		result.toString
+		'''
+		Static Diagram {
+			relations = «this.relations»
+			hidden components = «this.hiddenComponents»
+			hidden parts = «this.hiddenParts»
+			full path = «this.fullPath»
+			original file name = «this.originalFileName»
+			show variables = «this.showVariables»
+			remember locations = «this.rememberLocationAndSizeShapes»
+			locations = «this.locations»
+			sizes = «this.sizes»
+			outsider elements = «this.outsiderElements»
+		}
+		'''
 	}
-
 
 	/** 
 	 ******************************************************
@@ -429,7 +417,13 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *******************************************************
 	 */	
 	def createDiagramsFolderIfNotExists(String folder) {
-		val directory = new File(folder)
+		var File directory = null
+		
+		if (this.isPlatformFile) 
+			directory = new File(folder)
+		else
+			directory = new File(folder.adaptFile)
+		
 		if (!directory.exists) {
 			directory.mkdir			
 		}

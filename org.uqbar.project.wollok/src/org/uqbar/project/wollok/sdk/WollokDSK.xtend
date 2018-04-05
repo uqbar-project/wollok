@@ -46,6 +46,7 @@ class WollokDSK {
 	
 	public static val EXCEPTION = "wollok.lang.Exception"
 	public static val STACK_TRACE_ELEMENT = "wollok.lang.StackTraceElement"
+	public static val INSTANCE_VARIABLE_MIRROR = "wollok.mirror.InstanceVariableMirror"
 	
 	public static val POSITION = "wollok.lib.Position"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"

@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
@@ -35,7 +35,7 @@ class VariableSubtypingRules {
 	}
 
 	/** The maxTypes of the supertype has to include every minType in subtype */
-	static def dispatch boolean isSupertypeOf(SimpleTypeInfo supertype, SimpleTypeInfo subtype) {
+	static def dispatch boolean isSupertypeOf(GenericTypeInfo supertype, GenericTypeInfo subtype) {
 		supertype.maximalConcreteTypes == null 
 		||
 		subtype.minTypes.keySet.forall[

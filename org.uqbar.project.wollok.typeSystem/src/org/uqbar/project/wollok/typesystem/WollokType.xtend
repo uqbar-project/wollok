@@ -21,6 +21,11 @@ interface WollokType {
 	// ** Interface
 	// ************************************************************************
 
+	def boolean acceptsAssignment(WollokType other)
+
+	/**
+	 * Very similar to {@link acceptsAssignment} but throws exception instead of returning a boolean
+	 */
 	def void acceptAssignment(WollokType other)
 	
 	def boolean understandsMessage(MessageType message)
@@ -40,6 +45,7 @@ interface WollokType {
 	 * This is useful for content assist, for example.
 	 */
 	def Iterable<MessageType> getAllMessages()
+	
 	
 }
 
