@@ -4,7 +4,11 @@ import java.util.List
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 class MessageSend {
 	@Accessors(PUBLIC_GETTER)
@@ -33,9 +37,19 @@ class MessageSend {
 		openTypes.add(type)
 	}
 	
-	def isClosureMessage() {
-		selector == "apply"
+	def fullMessage() {
+		featureCall.fullMessage
 	}
+	
+	def argumentNames() {
+		featureCall.memberCallArguments.map[sourceCode]
+	}
+	
+	def isClosureMessage() { selector == "apply" }
+
+	def featureCall() { returnType.owner as WMemberFeatureCall }
+	
+	def isValid() { !returnType.hasErrors	}
 
 	override toString() { returnType.owner.debugInfo }
 }

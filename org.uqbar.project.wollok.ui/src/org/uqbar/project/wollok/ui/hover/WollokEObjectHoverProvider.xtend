@@ -2,13 +2,8 @@ package org.uqbar.project.wollok.ui.hover
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.hover.html.DefaultEObjectHoverProvider
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
-import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
-import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
-import static extension org.uqbar.project.wollok.WollokModelUtils.*
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 
 /**
  * Customizes default hover provider to avoid including the grammar rule's
@@ -21,14 +16,6 @@ class WollokEObjectHoverProvider extends DefaultEObjectHoverProvider {
 	
 	override getFirstLine(EObject o) {
 		val label = getLabel(o)
-		return o.modelTypeDescription + (if (label != null) " <b>"+label+"</b>" else "")
+		return o.modelTypeDescription + (if (label !== null) " <b>"+label+"</b>" else "")
 	}
-	
-	// default: removes the "W" prefix and uses the class name
-	def dispatch modelTypeDescription(EObject it) { eClass.humanReadableModelTypeName }
-	def dispatch modelTypeDescription(WNamedObject it) { "Object" }
-	def dispatch modelTypeDescription(WObjectLiteral it) { "Object" }
-	def dispatch modelTypeDescription(WMethodDeclaration it) { "Method" }
-	def dispatch modelTypeDescription(WVariableDeclaration it) { if (writeable) "Variable" else "Constant" }
-	
 }

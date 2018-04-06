@@ -13,7 +13,7 @@ program p {
 	// XPECT type at console --> console 
  	console
 
-	// XPECT methodType at println --> (Any) => Void 
+	// XPECT methodType at println --> (String) => Void 
  	console.println("hola")
  	
 }

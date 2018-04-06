@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.interpreter.core.ToStringBuilder
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*

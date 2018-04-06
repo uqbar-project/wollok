@@ -13,6 +13,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -30,28 +31,25 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def basicGetType() {
-		minTypes.entrySet
-			//.filter[value != Error]
-			.map[key]
-			.commonSupertype(messages)
+		minTypes.entrySet// .filter[value != Error]
+		.map[key].commonSupertype(messages)
 	}
 
 	// ************************************************************************
 	// ** Type parameters
 	// ************************************************************************
-
 	def param(GenericType type, String paramName) {
 		val typeInstance = findCompatibleTypeFor(type)
-		if (typeInstance === null)  
-			throw new IllegalStateException('''Can't find a minType compatible with «type».«paramName», known minTypes are «minTypes.keySet»''')	
-		
+		if (typeInstance === null)
+			throw new IllegalStateException('''Can't find a minType compatible with «type».«paramName», known minTypes are «minTypes.keySet»''')
+
 		typeInstance.findParam(paramName)
 	}
-	
+
 	def findCompatibleTypeFor(GenericType type) {
 		minTypes.keySet.findFirst[type.isSuperTypeOf(it)]
 	}
-	
+
 	def dispatch findParam(GenericTypeInstance typeInstance, String paramName) {
 		typeInstance.param(paramName)
 	}
@@ -59,7 +57,7 @@ class GenericTypeInfo extends TypeInfo {
 	def dispatch findParam(WollokType type, String paramName) {
 		throw new IllegalArgumentException('''Expecting a generic type but found «type» of type «type.class».''')
 	}
-	
+
 	// ************************************************************************
 	// ** Adding type information
 	// ************************************************************************
@@ -117,30 +115,37 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	override ConcreteTypeState addMinType(WollokType type) {
-		val compatibleType = minTypes.keySet.findFirst[isSuperTypeOf(type)]
-		if (compatibleType !== null) {
-			compatibleType.unifyWith(type)			
-			Ready
-		} else if (!sealed && type.respondsToAll(messages)) {
-			minTypes.put(TypeVariable.instance(type), Pending)
-			Pending
-		} else {
-			throw new RejectedMinTypeException(type)
-		}
+		if(minTypes.containsKey(type)) return Ready
+
+		validateNewMinType(type)
+
+		minTypes.put(type, Pending)
+		Pending
+
 	}
-	
-	def unifyWith(WollokType existing, WollokType added) { 
+
+	def validateNewMinType(WollokType type) {
+		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)])
+			throw new RejectedMinTypeException(type)
+
+		validMessages.forEach [
+			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
+		]
+
+	}
+
+	def unifyWith(WollokType existing, WollokType added) {
 		// Nothing to do (?)
 	}
 
-	def unifyWith(GenericTypeInstance existing, GenericTypeInstance added) { 
-		existing.typeParameters.forEach[name, param|
+	def unifyWith(GenericTypeInstance existing, GenericTypeInstance added) {
+		existing.typeParameters.forEach [ name, param |
 			// This makes all type parameters invariant, co- and contra-variance needs further work.
 			param.beSubtypeOf(added.param(name))
 			param.beSupertypeOf(added.param(name))
 		]
 	}
-	
+
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
@@ -150,7 +155,7 @@ class GenericTypeInfo extends TypeInfo {
 	 */
 	override subtypeAdded() {
 		maximalConcreteTypes => [
-			if (it !== null) state = state.join(Pending)
+			if(it !== null) state = state.join(Pending)
 		]
 	}
 
@@ -165,7 +170,6 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Utilities for generic types
 	// ************************************************************************
-
 	/**
 	 * Default type parameter for collection types
 	 */
@@ -182,5 +186,5 @@ class GenericTypeInfo extends TypeInfo {
 		maxTypes: «maximalConcreteTypes?:"unknown"»
 		messages: «messages»
 	'''
-	
+
 }

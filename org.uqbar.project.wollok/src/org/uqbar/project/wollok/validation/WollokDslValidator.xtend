@@ -58,6 +58,7 @@ import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
@@ -248,7 +249,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val namedArguments = arguments.keySet
 		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
 		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), org.uqbar.project.wollok.validation.WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		]
 	}
 

@@ -20,7 +20,6 @@ import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.WollokConstants.*
@@ -101,24 +100,6 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 	
 	def throwMessageNotUnderstood(String methodName, Object... parameters) {
-		// hack because object literals are not inheriting base methods from wollok.lang.Object
-		if (this.behavior instanceof WObjectLiteral || methodName == "messageNotUnderstood" || methodName == "toString") {
-			val fullMessage = methodName + "(" + parameters.join(",") + ")"
-			val similarMethods = this.behavior.findMethodsByName(methodName)
-			if (similarMethods.empty) {
-				val caseSensitiveMethod = this.behavior.allMethods.findMethodIgnoreCase(methodName, parameters.size)
-				if (caseSensitiveMethod !== null) {
-					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
-						#[behavior.name, fullMessage, #[caseSensitiveMethod].convertToString]))
-				} else {
-					throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, behavior.name, fullMessage))
-				}
-			} else {
-				val similarDefinitions = similarMethods.map [ messageName ].join(', ')
-				throw messageNotUnderstood(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_BUT_SIMILAR_FOUND, #[behavior.name, fullMessage, similarDefinitions]))
-			}
-		}
-		
 		try {
 			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)
 		}

@@ -22,12 +22,12 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, ClosureTypeInfo info) {
 		log.trace('''Trying to open closure methods for «tvar.debugInfoInContext»''')
 		val type = tvar.owner.closureType
-		info.messages.forEach[openClosureMethod(type, info)]
+		info.validMessages.forEach[openClosureMethod(type, info)]
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
 		log.trace('''Trying to open methods for «tvar.debugInfoInContext»''')
-		messages.forEach [ message |
+		validMessages.forEach [ message |
 			minTypes.entrySet.forEach [
 				if(value != Error) message.openMethod(key)
 			]
