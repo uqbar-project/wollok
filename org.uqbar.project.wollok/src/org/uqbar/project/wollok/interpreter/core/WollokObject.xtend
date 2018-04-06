@@ -148,8 +148,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		if (other !== null) {
 			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
 			delegatedConstructor?.invokeOnContext(other, other.arguments, constructorEvalContext) // no 'this' as parent context !
-		}
-		else {
+		} else {
 			// automatic super() call
 			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
 			delegatedConstructor?.invokeOnContext(constructor, Collections.EMPTY_LIST, constructorEvalContext)

@@ -23,7 +23,7 @@ object console {
 }
 
 /**
- * Exception to handle other values in assert.trowException*
+ * Exception to handle other values in assert.throwException*
  */
 class OtherValueExpectedException inherits wollok.lang.Exception {
 	constructor(_message) = super(_message)	
@@ -32,8 +32,8 @@ class OtherValueExpectedException inherits wollok.lang.Exception {
 
 class AssertionException inherits Exception {
 
-	var expected = null
-	var actual = null
+	const property expected = null
+	const property actual = null
 
 	constructor(message) = super(message)
 	
@@ -44,11 +44,6 @@ class AssertionException inherits Exception {
 		actual = _actual
 	}
 	
-	/** Answers the expected value, if present */
-	method getExpected() = expected
-	
-	/** Answers the actual value, if present */
-	method getActual() = actual
 }
 
 
@@ -351,13 +346,13 @@ object game {
 }
 
 class Position {
-	var property x = 0
-	var property y = 0
+	var property x
+	var property y
 	
 	/**
 	 * Returns the position at origin: (0,0).
 	 */		
-	constructor() = self(0,0)
+	constructor() = self(0, 0)
 			
 	/**
 	 * Returns a position with given x and y coordinates.

@@ -35,5 +35,25 @@ program natives {
 		''']
 		.interpretPropagatingErrors
 	}
+
+	@Test
+	def void assertExceptionIssue1356() {
+		#["assertTest"->
+		'''
+		program prueba {
+			try {
+				assert.equals(1, true)
+			} catch e {
+				assert.equals(e.getStackTraceAsString(), 
+		"wollok.lib.AssertionException: Expected [1] but found [true]
+			at wollok.lib.assert.equals(expected,actual) [/lib.wlk:83]
+			at  [/assertTest.wpgm:3]
+		"
+				)
+			}
+		}
+		''']
+		.interpretPropagatingErrors
+	}
 	
 }

@@ -84,10 +84,13 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 
 	override dispatch evaluate(WTest test) {
 		try {
-			// wollokTestsReporter.testStart(test)
-			val testResult = test.elements.evalAll
+			test.elements.forEach [ expr |
+				interpreter.performOnStack(expr, currentContext) [ |
+					expr.eval
+				]
+			]
 			wollokTestsReporter.reportTestOk(test)
-			testResult
+			null
 		} catch (Exception e) {
 			handleExceptionInTest(e, test)
 		}
@@ -96,11 +99,10 @@ class WollokLauncherInterpreterEvaluator extends WollokInterpreterEvaluator {
 	protected def WollokObject handleExceptionInTest(Exception e, WTest test) {
 		if (e.isAssertionException) {
 			wollokTestsReporter.reportTestAssertError(test, e.generateAssertionError, e.lineNumber, e.URI)
-			null
 		} else {
 			wollokTestsReporter.reportTestError(test, e, e.lineNumber, e.URI)
-			null
 		}
+		null
 	}
 
 }

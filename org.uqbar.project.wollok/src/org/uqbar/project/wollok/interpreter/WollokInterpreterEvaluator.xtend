@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -67,7 +68,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
@@ -107,6 +107,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	protected def WollokObject[] evalEach(EList<? extends EObject> objects) { objects.map[eval] }
 
+	protected def EvaluationContext<WollokObject> currentContext() {
+		interpreter.currentContext
+	}
+	
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
