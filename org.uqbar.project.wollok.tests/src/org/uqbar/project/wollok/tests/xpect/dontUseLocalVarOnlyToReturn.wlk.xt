@@ -16,7 +16,6 @@ class A {
 	}
 	
 	method localVarWithoutReturningItDirectly() {
-		// XPECT warnings --> "Local variable used just to return. Consider removing it" at "a"
 		var a = 23
 		return a * 3
 	}

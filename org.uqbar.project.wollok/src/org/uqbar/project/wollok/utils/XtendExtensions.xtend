@@ -4,9 +4,12 @@ import java.util.List
 import java.util.Random
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
+import static extension java.lang.Math.*
 
 /**
  * Our extensions to basic Java/XTend classes
+ * 
+ * @author npasserini
  */
 class XtendExtensions {
 	/**
@@ -59,4 +62,12 @@ class XtendExtensions {
 		
 		result
 	}	
+
+	/**
+	 * Returns a copy of the list with the last element removed, 
+	 * or an empty list if the received list is empty.
+	 */
+	static def <T> allButLast(List<T> list) {
+		list.subList(0, (list.size - 1).max(0))
+	}
 }

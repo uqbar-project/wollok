@@ -40,7 +40,7 @@ class WollokLauncher extends WollokChecker {
 			val filesToParse = fileNames.map [ wollokFile |
 				new File(wollokFile)
 			]
-			interpreter.interpret(filesToParse.parse, parameters.folder)
+			interpreter.interpret(filesToParse.parse(parameters), parameters.folder)
 			System.exit(0)
 		} catch (Exception e) {
 			System.exit(-1)
@@ -129,4 +129,11 @@ class WollokLauncher extends WollokChecker {
 		log.debug("Client connected now proceeding with execution")
 	}
 
+	override blockErrorHandler(WollokLauncherIssueHandler handler, WollokLauncherParameters parameters) {
+		if (parameters.hasRepl) {
+			return [ handler.finished ; System.exit(-1) ]
+		}
+		super.blockErrorHandler(handler, parameters)
+	}
+	
 }

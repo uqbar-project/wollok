@@ -32,9 +32,7 @@
 				=> A > 23
 			}
 			
-			[car, Lota, aBlock];
-			
-			return "algo"
+			return [car, Lota, aBlock]
 		}
 		
 	}
