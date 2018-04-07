@@ -9,8 +9,11 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WThrow
 
 import static extension java.lang.Math.max
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 
 /**
  * This visitor to find effects in an expression tree
@@ -20,8 +23,17 @@ import static extension java.lang.Math.max
 class EffectFinderVisitor extends AbstractVisitor {
 	public static val PURE = 0
 	public static val SHOULD_BE_PURE = 1
-	public static val UNKNOWN = 2
-	public static val EFFECTFUL = 3 
+	
+	/**
+	 * This is designed for managing return and throw sentences. While they are not effects in the strict sense,
+	 * they should be considered correct in a sequence, so they have to be handled specifically.
+	 * 
+	 * This might be a bit custom for the current usage of this visitor (detecting pure expressions in sequences).
+	 * Other uses of the effect/purity might need to refine this further. 
+	 */
+	public static val ALTERS_FLOW = 2
+	public static val UNKNOWN = 3
+	public static val EFFECTFUL = 4 
 	
 	int _purity = PURE
 	int acceptedPurity
@@ -39,7 +51,7 @@ class EffectFinderVisitor extends AbstractVisitor {
 	override dispatch visit(WVariableDeclaration it) { purity = EFFECTFUL }
 	
 	override dispatch visit(WBinaryOperation it) { 
-		purity = SHOULD_BE_PURE
+		purity = if (isMultiOpAssignment) EFFECTFUL else SHOULD_BE_PURE
 		super._visit(it)
 	}
 
@@ -55,6 +67,16 @@ class EffectFinderVisitor extends AbstractVisitor {
 	
 	override dispatch visit(WSuperInvocation it) {
 		purity = UNKNOWN
+		super._visit(it)
+	}
+
+	override dispatch visit(WReturnExpression it) {
+		purity = ALTERS_FLOW
+		super._visit(it)
+	}
+
+	override dispatch visit(WThrow it) {
+		purity = ALTERS_FLOW
 		super._visit(it)
 	}
 	

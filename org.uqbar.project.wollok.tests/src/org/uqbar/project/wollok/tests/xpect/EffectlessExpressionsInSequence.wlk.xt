@@ -10,4 +10,11 @@ object testObject {
 		helper(100)
 		return 1
 	}
+	
+	method multiAssignment() {
+		var v = 0
+		v += 15
+		if (v < 10) v += 10
+		return v
+	}
 }
