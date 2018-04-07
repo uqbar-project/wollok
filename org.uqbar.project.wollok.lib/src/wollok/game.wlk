@@ -1,6 +1,6 @@
 object keyboard {
 
-	method any_key() = new Key(-1)
+	method any() = new Key(-1)
 
 	method num_0() = new Key(7, 144)
 

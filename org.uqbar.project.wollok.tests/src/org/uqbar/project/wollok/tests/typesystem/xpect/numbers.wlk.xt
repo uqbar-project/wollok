@@ -107,7 +107,7 @@ object numberTest {
 		return value.isInteger()
 	}
 
-	// XPECT methodType at m26 --> (Number) => Number
+	// XPECT methodType at m26 --> ((Number|keyboard)) => (Key|Number)
 	method m26(a) = a.plus()
 	
 	// XPECT methodType at m27 --> (Number) => Void

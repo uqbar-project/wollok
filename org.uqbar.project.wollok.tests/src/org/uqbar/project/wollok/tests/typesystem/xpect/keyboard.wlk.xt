@@ -5,11 +5,11 @@ object keysTest {
 	
 	// XPECT methodType at m1 --> () => Key
 	method m1() {
-		return keyboard.a()
+		return keyboard.any()
 	}
 
 	// XPECT! methodType at m2 --> ({(Key) => Void}) => Void
 //	method m2(action) {
-//		keyboard.a().onPressDo(action)
+//		keyboard.any().onPressDo(action)
 //	}
 }
