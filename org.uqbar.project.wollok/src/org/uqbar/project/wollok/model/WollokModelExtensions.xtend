@@ -512,11 +512,8 @@ class WollokModelExtensions {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
 		visitor.visit(EcoreUtil2.getContainerOfType(it, WMethodDeclaration))
-		visitor.uses.length == 1 && visitor.uses.get(0).isReturnOrInReturn
+		visitor.uses.length == 1 && visitor.uses.get(0) instanceof WReturnExpression
 	}
-	
-	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
-	def static boolean isInReturn(EObject e) { e.eContainer !== null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports
