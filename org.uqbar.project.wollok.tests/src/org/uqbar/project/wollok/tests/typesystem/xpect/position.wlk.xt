@@ -2,12 +2,12 @@
 
 object positionTest {
 	
-	// XPECT methodType at m1 --> (Position) => Number
+	// XPECT! methodType at m1 --> (Position) => Number
 	method m1(pos) {
 		return pos.x()
 	}
 
-	// XPECT methodType at m2 --> (Position) => Number
+	// XPECT! methodType at m2 --> (Position) => Number
 	method m2(pos) {
 		return pos.y()
 	}
@@ -52,9 +52,9 @@ object positionTest {
 		pos.deleteElement(obj)
 	}
 	
-	// XPECT methodType at m11 --> (Position, Any, String) => Void
-	method m11(pos, obj, msj) {
-		pos.say(obj, msj)
+	// XPECT methodType at m11 --> (Any, String) => Void
+	method m11(obj, msj) {
+		new Position().say(obj, msj) //TODO: Game.say
 	}
 	
 	// XPECT methodType at m12 --> (Position) => List
@@ -72,15 +72,11 @@ object positionTest {
 		return pos1.distance(pos2)
 	}
 	
-	// XPECT methodType at m15 --> (Position) => Void
-	method m15(pos) {
-		pos.clear()
-	}
-	
-	// XPECT methodType at m16 --> () => String
-	method m16() {
+	// XPECT methodType at m15 --> () => String
+	method m15() {
 		// XPECT type at p --> Position
 		const p = new Position()
+		p.clear()
 		return p.toString()
 	}
 }

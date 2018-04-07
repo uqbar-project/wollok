@@ -135,9 +135,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "toSmartString" === #[Boolean] => String;
 		
 		Position.constructor(Number, Number)
-		(Position == Any) => Boolean
-		Position >> "x" === #[] => Number
-		Position >> "y" === #[] => Number
+		(Position == Any) => Boolean;
+//		Position >> "x" === #[] => Number
+//		Position >> "y" === #[] => Number
 		Position >> "moveRight" === #[Number] => Void
 		Position >> "moveLeft" === #[Number] => Void
 		Position >> "moveUp" === #[Number] => Void
@@ -149,7 +149,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Position >> "allElements" === #[] => List
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
-		Position >> "clear" === #[] => Void;
+		Position >> "clear" === #[] => Void
+		Position >> "toString" === #[] => String;
 		
 
 		// console
