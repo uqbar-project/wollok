@@ -1,0 +1,13 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+object helper {}
+object testObject {
+	method motivation() {
+		/* XPECT errors ---
+			"This expression does not make sense in the middle of a sequence, as it does not produce any effects." at "(100)"
+			"This expression does not make sense in the middle of a sequence, as it does not produce any effects." at "helper"
+		--- */
+		helper(100)
+		return 1
+	}
+}

@@ -702,12 +702,15 @@ class WollokModelExtensions {
 			[ variable.name + " = value" ].join(", ")
 	}
 	
+	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
 	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
 		c.memberCallTarget.isAssertWKO
 	}
 	def static dispatch boolean sendsMessageToAssert(WTry t) {
-		t.expression.sendsMessageToAssert || t.catchBlocks.exists [ sendsMessageToAssert ] || t.alwaysExpression?.sendsMessageToAssert
+		t.expression.sendsMessageToAssert 
+			|| t.catchBlocks.exists [ sendsMessageToAssert ] 
+			|| t.alwaysExpression.sendsMessageToAssert
 	}
 	def static dispatch boolean sendsMessageToAssert(WClosure c) {
 		c.expression.sendsMessageToAssert

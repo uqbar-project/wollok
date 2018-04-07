@@ -64,6 +64,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * Custom validation rules.
@@ -248,7 +249,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val namedArguments = arguments.keySet
 		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
 		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), org.uqbar.project.wollok.validation.WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), 
+				arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR
+			)
 		]
 	}
 
@@ -742,7 +745,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def nonBooleanValueInIfCondition(WIfExpression it) {
-		if (!condition?.isBooleanOrUnknownType) {
+		if (!condition.isBooleanOrUnknownType) {
 			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
 		}
 	}
@@ -1029,6 +1032,24 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
+	def noEffectlessExpressionsInSequence(WProgram sequence) {
+		sequence.elements.allButLast.forEach[ it, index |
+			if (isPure)
+				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WPROGRAM__ELEMENTS, index)
+		]
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def noEffectlessExpressionsInSequence(WBlockExpression sequence) {
+		sequence.expressions.allButLast.forEach[ it, index |
+			if (isPure)
+				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WBLOCK_EXPRESSION__EXPRESSIONS, index)
+		]
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
 	def overridingMethodMustHaveABody(WMethodDeclaration it) {
 		if (overrides && expression === null && !native)
 			report(WollokDslValidator_OVERRIDING_METHOD_MUST_HAVE_A_BODY, it)
@@ -1088,14 +1109,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
 			if(expression !== null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-//			I remove this because I'm not sure if it is needed (Pablo 2016/07/25)
-//			 if (overrides) report("Native methods cannot override anything", it, WMETHOD_DECLARATION__OVERRIDES, NATIVE_METHOD_CANNOT_OVERRIDES)
 			if(declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it,
 				WMETHOD_DECLARATION__NATIVE)
-		// this is currently a limitation on native objects
-//			 if(declaringContext instanceof WClass)
-//				 if ((declaringContext as WClass).parent != null && (declaringContext as WClass).parent.native)
-//				 	error(WollokDslValidator_NATIVE_IN_NATIVE_SUBCLASS, it, WMETHOD_DECLARATION__NATIVE)
 		}
 	}
 

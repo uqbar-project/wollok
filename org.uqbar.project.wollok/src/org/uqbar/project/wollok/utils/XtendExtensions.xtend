@@ -7,6 +7,8 @@ import java.util.function.BiFunction
 
 /**
  * Our extensions to basic Java/XTend classes
+ * 
+ * @author npasserini
  */
 class XtendExtensions {
 	/**
@@ -59,4 +61,8 @@ class XtendExtensions {
 		
 		result
 	}	
+
+	static def <T> allButLast(List<T> list) {
+		list.subList(0, list.size - 1)
+	}
 }
