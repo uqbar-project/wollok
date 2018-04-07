@@ -131,8 +131,10 @@ abstract class TypeDeclarations {
 	def InstanceVariableMirror() { classTypeAnnotation(INSTANCE_VARIABLE_MIRROR) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
-
+	
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
+	def game() { objectTypeAnnotation(GAME) }
 	
 	def KEY() { PairType.param(GenericTypeInfo.KEY) }
 	

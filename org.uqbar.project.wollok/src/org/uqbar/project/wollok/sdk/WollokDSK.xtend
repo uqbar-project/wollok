@@ -60,6 +60,7 @@ class WollokDSK {
 
 	public static val CONSOLE = "wollok.lib.console"
 	public static val ASSERT = "wollok.lib.assert"
+	public static val GAME = "wollok.lib.game"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

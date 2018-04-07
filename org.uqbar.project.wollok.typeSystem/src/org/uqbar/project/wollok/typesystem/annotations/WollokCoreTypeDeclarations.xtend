@@ -169,13 +169,33 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
-		assertWKO >> "fail" === #[String] => Void
+		assertWKO >> "fail" === #[String] => Void;
 
+		game.property("title", String)
+		game.property("width", Number)
+		game.property("height", Number)
+		game >> "addVisual" === #[Any] => Void
+		game >> "addVisualIn" === #[Any, Position] => Void
+		game >> "addVisualCharacter" === #[Any] => Void
+		game >> "addVisualCharacterIn" === #[Any, Position] => Void
+		game >> "removeVisual" === #[Any] => Void
+//		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
+//		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
+		game >> "getObjectsIn" === #[Position] => List
+		game >> "say" === #[Any, String] => Void
+		game >> "clear" === #[] => Void
+		game >> "colliders" === #[Any] => List
+		game >> "stop" === #[] => Void
+		game >> "start" === #[] => Void
+		game >> "at" === #[Number, Number] => Position
+		game >> "origin" === #[] => Position
+		game >> "center" === #[] => Position
+		game >> "ground" === #[String] => Void
+		game >> "boardGround" === #[String] => Void;
+		
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
-		
-		
 		
 		InstanceVariableMirror >> "value" === #[] => Void
 	}
@@ -188,5 +208,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			(T >= T) => Boolean;
 			(T === T) => Boolean;
 		]
+	}
+	
+	def property(SimpleTypeAnnotation<? extends ConcreteType> it, String property, SimpleTypeAnnotation<? extends ConcreteType> type) {
+		it >> property === #[type] => Void
+		it >> property === #[] => type
 	}
 }
