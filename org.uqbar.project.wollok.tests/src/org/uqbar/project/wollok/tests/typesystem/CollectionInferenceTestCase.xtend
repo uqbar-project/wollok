@@ -23,7 +23,7 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			const l = []
 		}
 		'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(LIST), "l")
+			assertTypeOfAsString("List", "l")
 		]
 	}
 

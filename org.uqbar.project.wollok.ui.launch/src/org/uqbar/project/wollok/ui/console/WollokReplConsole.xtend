@@ -45,7 +45,9 @@ class WollokReplConsole extends TextConsole {
 	List<String> sessionCommands = newArrayList
 	@Accessors
 	val lastCommands = new OrderedBoundedSet<String>(10)
-
+	@Accessors(PUBLIC_GETTER)
+	Long timeStart
+	
 	def static getConsoleName() { "Wollok REPL Console" }
 
 	new() {
@@ -55,6 +57,7 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def startForProcess(IProcess process) {
+		timeStart = System.currentTimeMillis
 		loadHistory
 		this.process = process
 		streamsProxy = process.streamsProxy

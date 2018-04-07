@@ -58,13 +58,14 @@ import static org.uqbar.project.wollok.Messages.*
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 import static extension org.uqbar.project.wollok.model.WBlockExtensions.*
 import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
 
 /**
  * Custom validation rules.
@@ -249,9 +250,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		val namedArguments = arguments.keySet
 		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
 		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), 
-				arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR
-			)
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		]
 	}
 
@@ -1033,7 +1032,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noEffectlessExpressionsInSequence(WProgram sequence) {
-		sequence.elements.allButLast.forEach[ it, index |
+		sequence.elements.forEach[ it, index |
 			if (isPure)
 				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WPROGRAM__ELEMENTS, index)
 		]
@@ -1047,7 +1046,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WBLOCK_EXPRESSION__EXPRESSIONS, index)
 		]
 	}
-	
+
 	@Check
 	@DefaultSeverity(ERROR)
 	def overridingMethodMustHaveABody(WMethodDeclaration it) {

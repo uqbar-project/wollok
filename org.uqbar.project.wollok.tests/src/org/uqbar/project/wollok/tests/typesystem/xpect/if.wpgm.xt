@@ -9,5 +9,5 @@ program p {
 	// XPECT warnings --> "expected <<Boolean>> but found <<Number>>" at "p"
 	const number = if (p) 2 else 6
 	
-	number
+	console.println(number)
 }

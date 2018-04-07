@@ -64,6 +64,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*

@@ -32,7 +32,7 @@
 				=> A > 23
 			}
 			
-			return [car, Lota, aBlock].size()
+			return [car, Lota, aBlock]
 		}
 		
 	}

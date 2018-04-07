@@ -211,11 +211,8 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		
 		
 		String fullPathFile = container.getRawLocationURI().getPath() + "/" + fileName;
-		try {
-			fullPathFile = URLEncoder.encode(fullPathFile, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		}
 		java.nio.file.Path path = Paths.get(fullPathFile);
+		
 		if (Files.exists(path)) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameAlreadyExists);
 			return;

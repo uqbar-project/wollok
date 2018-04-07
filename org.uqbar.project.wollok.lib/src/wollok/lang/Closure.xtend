@@ -64,7 +64,7 @@ class Closure implements NodeAware<WClosure>, Function1<WollokObject, Object> {
 	def getParameters() { closure.parameters }
 	
 	override toString() {
-		"a Closure(" + closure.astNode?.text?.trim + ")"
+		closure.astNode?.text?.trim
 	}
 	
 }

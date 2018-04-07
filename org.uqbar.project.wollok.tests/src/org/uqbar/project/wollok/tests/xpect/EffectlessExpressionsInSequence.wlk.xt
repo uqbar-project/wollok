@@ -4,11 +4,11 @@ object helper {}
 object testObject {
 	method motivation() {
 		/* XPECT errors ---
-			"This expression does not make sense in the middle of a sequence, as it does not produce any effects." at "(100)"
-			"This expression does not make sense in the middle of a sequence, as it does not produce any effects." at "helper"
+			"This expression does not make sense in a sequence, as it does not produce any effects." at "(100)"
+			"This expression does not make sense in a sequence, as it does not produce any effects." at "helper"
 		--- */
 		helper(100)
-		return 1
+		return 0
 	}
 	
 	method multiAssignment() {
@@ -17,4 +17,9 @@ object testObject {
 		if (v < 10) v += 10
 		return v
 	}
+	
+	// XPECT errors --> "This expression does not make sense in a sequence, as it does not produce any effects." at "helper" 
+	method invalidBlock() = { helper(100) }
+
+	method validBlock() = { var a = helper; [a] }
 }

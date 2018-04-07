@@ -29,6 +29,28 @@ class Entrenador {
 	// XPECT methodType at estrategia --> () => {(Golondrina) => Void}
 	method estrategia() = estrategia
 	
+	
+	// XPECT methodType at falla --> (Golondrina) => Any
+	method falla(ave) { 
+		// XPECT errors --> "Golondrina does not understand habla()" at "ave.habla()"
+		ave.habla()
+		
+		ave.vola(1)
+		
+		// XPECT errors --> "Golondrina does not understand come(). However other methods exist with different argument count: come(grms)" at "ave.come()" 
+		return ave.come()	
+	}
+	
+	// XPECT methodType at falla2 --> (pepita) => Any
+	method falla2(p) {
+		// XPECT errors --> "String does not understand esEstrambotico()" at "p.nombreAve().esEstrambotico()"
+		return p.nombreAve().esEstrambotico()
+	}
+	
+	// XPECT methodType at falla3 --> (Any) => Any
+	method falla3(ave) = ave.come() //TODO: should fail! 
+	
+	
 	// XPECT methodType at condicion --> () => {() => Boolean}
 	method condicion() = { true }
 	

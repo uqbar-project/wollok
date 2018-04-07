@@ -5,12 +5,13 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -103,7 +104,7 @@ abstract class TypeDeclarations {
 
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 
-	def PairType() { classTypeAnnotation(PAIR) }
+	def PairType() { genericTypeAnnotation(PAIR, GenericTypeInfo.KEY, GenericTypeInfo.VALUE) }
 	
 	def Number() { classTypeAnnotation(NUMBER) }
 
@@ -111,13 +112,13 @@ abstract class TypeDeclarations {
 
 	def Date() { classTypeAnnotation(DATE) }
 
-	def List() { classTypeAnnotation(LIST) }
+	def List() { genericTypeAnnotation(LIST, GenericTypeInfo.ELEMENT) }
 
-	def Set() { classTypeAnnotation(SET) }
+	def Set() { genericTypeAnnotation(SET, GenericTypeInfo.ELEMENT) }
 
-	def Collection() { classTypeAnnotation(COLLECTION) }
+	def Collection() { genericTypeAnnotation(COLLECTION, GenericTypeInfo.ELEMENT) }
 	
-	def Closure() { classTypeAnnotation(CLOSURE) }
+	def Closure() { genericTypeAnnotation(CLOSURE, ClosureTypeInfo.RETURN) }
 
 	def Range() { classTypeAnnotation(RANGE) }
 
@@ -133,22 +134,29 @@ abstract class TypeDeclarations {
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
 	
-	def ELEMENT() { new ClassParameterTypeAnnotation(GenericTypeInfo.ELEMENT) }
-
-	def KEY() { new ClassParameterTypeAnnotation(GenericTypeInfo.KEY) }
-
-	def VALUE() { new ClassParameterTypeAnnotation(GenericTypeInfo.VALUE) }
+	def KEY() { PairType.param(GenericTypeInfo.KEY) }
 	
-	def RETURN() { new ClassParameterTypeAnnotation(ClosureTypeInfo.RETURN) }
+	def VALUE() { PairType.param(GenericTypeInfo.VALUE) }
+	
+	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
+
+	def RETURN() { Closure.param(ClosureTypeInfo.RETURN) }
 
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
 
 	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
+
+	def genericTypeAnnotation(String classFQN, String... typeParameterNames) { 
+		new SimpleTypeAnnotation(types.genericType(context, classFQN, typeParameterNames))
+	}
 	
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
 		new ClosureTypeAnnotation(parameters, returnType)
 	}
 	
+	def param(SimpleTypeAnnotation<GenericType> genericType, String paramName) {
+		new ClassParameterTypeAnnotation(genericType.type, paramName)
+	}
 }
 
 // ****************************************************************************

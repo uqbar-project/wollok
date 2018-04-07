@@ -26,13 +26,12 @@ class ConstructorConstraintsGenerator {
 	def run() {
 		constructorCalls.forEach[
 			val constructor = classRef.resolveConstructor(arguments)
+
 			// Constructor might be null when neither the referred class nor any of it superclasses define a constructor,
 			// And wouldn't be an error if the constructor call has no parameters.
 			// TODO Handle and inform error conditions.
 			constructor?.parameters?.biForEach(arguments)[param, arg|
-				try {
-				arg.tvar.beSubtypeOf(param.tvar)
-				} catch (Exception e) {}
+				param.tvarOrParam.beSupertypeOf(arg.tvar)
 			]
 		]
 	}

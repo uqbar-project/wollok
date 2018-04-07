@@ -4,8 +4,8 @@ import java.util.List
 import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.MaximalConcreteTypes
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
 class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
-	def dispatch void analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
+	def dispatch void analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
 		log.trace('''Variable «tvar.owner.debugInfoInContext»''')
 		if (tvar.sealed) {
 			log.trace('Variable is sealed => Ignored')
@@ -29,7 +29,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 		log.trace('''maxTypes = «maxTypes»''')
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
 			log.debug('''	New max(«maxTypes») type for «tvar.debugInfoInContext»''')
-			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[it as WollokType].toSet), tvar)
+			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[TypeVariable.instance(it)].toSet), tvar)
 			changed = changed || newChanges
 		}
 	}
@@ -45,8 +45,6 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	}
 
 	def getAllTypes() {
-		// TODO: Fix typeSystem.allTypes 
-//		tvar.owner
 		registry.typeSystem.allTypes
 	}
 }

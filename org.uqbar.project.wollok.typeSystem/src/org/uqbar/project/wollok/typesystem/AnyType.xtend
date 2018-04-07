@@ -14,7 +14,7 @@ class AnyType extends BasicType implements WollokType {
 		previouslyInferred
 	}
 	
-	override acceptAssignment(WollokType other) {}
+	override acceptsAssignment(WollokType other) { true }
 	override understandsMessage(MessageType message) { true }
 	
 }

@@ -14,6 +14,8 @@ import org.uqbar.project.wollok.wollokDsl.WThrow
 
 import static extension java.lang.Math.max
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.hasNamedParameters
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 
 /**
  * This visitor to find effects in an expression tree
@@ -52,6 +54,11 @@ class EffectFinderVisitor extends AbstractVisitor {
 	
 	override dispatch visit(WBinaryOperation it) { 
 		purity = if (isMultiOpAssignment) EFFECTFUL else SHOULD_BE_PURE
+		super._visit(it)
+	}
+
+	override dispatch visit(WConstructorCall it) {
+		if (!hasNamedParameters) purity = SHOULD_BE_PURE
 		super._visit(it)
 	}
 

@@ -795,7 +795,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			constructor() = super(armeria.arco())
 		}
 		program prueba {
-			new Arquero()
+			console.println(new Arquero())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -1014,5 +1014,4 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
-
 }
