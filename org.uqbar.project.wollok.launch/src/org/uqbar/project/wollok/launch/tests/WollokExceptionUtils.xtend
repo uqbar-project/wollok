@@ -44,6 +44,16 @@ class WollokExceptionUtils {
 		return className + concatMessage
 	}
 
+	def static dispatch String convertToString(WollokInterpreterException exception) {
+		exception.printStackTrace
+		return "ERROR: " + exception.originalCause.message
+	}
+
+	def static Throwable originalCause(Throwable e) {
+		if (e.cause === null) return e
+		e.cause.originalCause
+	}
+	
 	def static dispatch String convertToString(Exception exception) {
 		val sw = new StringWriter
 		exception.printStackTrace(new PrintWriter(sw))

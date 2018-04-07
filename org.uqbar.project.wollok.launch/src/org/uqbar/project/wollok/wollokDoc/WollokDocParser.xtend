@@ -327,7 +327,7 @@ class WollokDocParser extends WollokChecker {
 	def FileHandler launchWollokDocGeneration() {
 		[ int level, String path, File file | 
 			log.debug("Parsing program...")
-			WollokDocParser.this.generateWollokDocFile(file.parse(false), file)
+			WollokDocParser.this.generateWollokDocFile(file.parse(false, null), file)
 		]
 	}
 	
