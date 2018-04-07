@@ -2,13 +2,15 @@
 
 object positionTest {
 	
-	// XPECT! methodType at m1 --> (Position) => Number
-	method m1(pos) {
+	// XPECT methodType at m1 --> (Position, Number) => Number
+	method m1(pos, n) {
+		pos.x(n)
 		return pos.x()
 	}
 
-	// XPECT! methodType at m2 --> (Position) => Number
-	method m2(pos) {
+	// XPECT methodType at m2 --> (Position, Number) => Number
+	method m2(pos, n) {
+		pos.y(n)
 		return pos.y()
 	}
 	

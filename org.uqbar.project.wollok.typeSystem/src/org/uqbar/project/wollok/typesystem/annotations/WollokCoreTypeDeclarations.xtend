@@ -135,9 +135,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "toSmartString" === #[Boolean] => String;
 		
 		Position.constructor(Number, Number)
+		Position.fakeProperty("x", Number)
+		Position.fakeProperty("y", Number)
 		(Position == Any) => Boolean;
-//		Position >> "x" === #[] => Number
-//		Position >> "y" === #[] => Number
 		Position >> "moveRight" === #[Number] => Void
 		Position >> "moveLeft" === #[Number] => Void
 		Position >> "moveUp" === #[Number] => Void
@@ -163,7 +163,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment these definitions when solving closure parameters
+		// TODO: Uncomment all definitions when solving closure parameters
 		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
@@ -171,9 +171,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void;
 
-		game.property("title", String)
-		game.property("width", Number)
-		game.property("height", Number)
+		game.fakeProperty("title", String)
+		game.fakeProperty("width", Number)
+		game.fakeProperty("height", Number)
 		game >> "addVisual" === #[Any] => Void
 		game >> "addVisualIn" === #[Any, Position] => Void
 		game >> "addVisualCharacter" === #[Any] => Void
@@ -210,7 +210,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		]
 	}
 	
-	def property(SimpleTypeAnnotation<? extends ConcreteType> it, String property, SimpleTypeAnnotation<? extends ConcreteType> type) {
+	def fakeProperty(SimpleTypeAnnotation<? extends ConcreteType> it, String property, SimpleTypeAnnotation<? extends ConcreteType> type) {
+		//TODO: This is fake because properties not create methods!
 		it >> property === #[type] => Void
 		it >> property === #[] => type
 	}
