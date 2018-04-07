@@ -509,11 +509,8 @@ class WollokModelExtensions {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
 		visitor.visit(EcoreUtil2.getContainerOfType(it, WMethodDeclaration))
-		visitor.uses.length == 1 && visitor.uses.get(0).isReturnOrInReturn
+		visitor.uses.length == 1 && visitor.uses.get(0) instanceof WReturnExpression
 	}
-	
-	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
-	def static boolean isInReturn(EObject e) { e.eContainer !== null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports
@@ -652,12 +649,15 @@ class WollokModelExtensions {
 	def static dispatch hasNamedParameters(EObject o) { false }
 	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
 	
+	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
 	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
 		c.memberCallTarget.isAssertWKO
 	}
 	def static dispatch boolean sendsMessageToAssert(WTry t) {
-		t.expression.sendsMessageToAssert || t.catchBlocks.exists [ sendsMessageToAssert ] || t.alwaysExpression?.sendsMessageToAssert
+		t.expression.sendsMessageToAssert 
+			|| t.catchBlocks.exists [ sendsMessageToAssert ] 
+			|| t.alwaysExpression.sendsMessageToAssert
 	}
 	def static dispatch boolean sendsMessageToAssert(WClosure c) {
 		c.expression.sendsMessageToAssert
