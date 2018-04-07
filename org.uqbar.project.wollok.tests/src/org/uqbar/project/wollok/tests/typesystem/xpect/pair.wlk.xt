@@ -36,7 +36,7 @@ object pairTest {
 		// XPECT type at n --> Number
 		var n = new Pair(2, 3).value()
 
-		// XPECT type at n --> String
+		// XPECT type at s --> String
 		var s = new Pair(2, "").value()
 	}
 

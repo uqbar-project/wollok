@@ -1,0 +1,86 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object positionTest {
+	
+	// XPECT methodType at m1 --> (Position) => Number
+	method m1(pos) {
+		return pos.x()
+	}
+
+	// XPECT methodType at m2 --> (Position) => Number
+	method m2(pos) {
+		return pos.y()
+	}
+	
+	// XPECT methodType at m3 --> (Number, Number) => Position 
+	method m3(_x, _y) {
+		return new Position(_x, _y)
+	}
+	
+	// XPECT methodType at m4 --> (Position, Number) => Void
+	method m4(pos, n) {
+		pos.moveRight(n)
+	}
+	
+	// XPECT methodType at m5 --> (Position, Number) => Void
+	method m5(pos, n) {
+		pos.moveLeft(n)
+	}
+	
+	// XPECT methodType at m6 --> (Position, Number) => Void
+	method m6(pos, n) {
+		pos.moveUp(n)
+	}
+	
+	// XPECT methodType at m7 --> (Position, Number) => Void
+	method m7(pos, n) {
+		pos.moveDown(n)
+	}
+	
+	// XPECT methodType at m8 --> (Position, Any) => Void
+	method m8(pos, obj) {
+		pos.drawElement(obj)
+	}
+	
+	// XPECT methodType at m9 --> (Position, Any) => Void
+	method m9(pos, obj) {
+		pos.drawCharacter(obj)
+	}
+	
+	// XPECT methodType at m10 --> (Position, Any) => Void
+	method m10(pos, obj) {
+		pos.deleteElement(obj)
+	}
+	
+	// XPECT methodType at m11 --> (Position, Any, String) => Void
+	method m11(pos, obj, msj) {
+		pos.say(obj, msj)
+	}
+	
+	// XPECT methodType at m12 --> (Position) => List
+	method m12(pos) {
+		return pos.allElements()
+	}
+	
+	// XPECT methodType at m13 --> (Position) => Position
+	method m13(pos) {
+		return pos.clone()
+	}
+	
+	// XPECT methodType at m14 --> (Position, Position) => Number
+	method m14(pos1, pos2) {
+		return pos1.distance(pos2)
+	}
+	
+	// XPECT methodType at m15 --> (Position) => Void
+	method m15(pos) {
+		pos.clear()
+	}
+	
+	// XPECT methodType at m16 --> () => String
+	method m16() {
+		// XPECT type at p --> Position
+		const p = new Position()
+		return p.toString()
+	}
+}

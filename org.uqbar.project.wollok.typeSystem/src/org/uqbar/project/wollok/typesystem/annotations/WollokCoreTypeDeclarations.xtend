@@ -134,7 +134,23 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "between" === #[Date, Date] => Boolean
 		Date >> "toSmartString" === #[Boolean] => String;
 		
-		(Position == Any) => Boolean;
+		Position.constructor(Number, Number)
+		(Position == Any) => Boolean
+		Position >> "x" === #[] => Number
+		Position >> "y" === #[] => Number
+		Position >> "moveRight" === #[Number] => Void
+		Position >> "moveLeft" === #[Number] => Void
+		Position >> "moveUp" === #[Number] => Void
+		Position >> "moveDown" === #[Number] => Void
+		Position >> "drawElement" === #[Any] => Void
+		Position >> "drawCharacter" === #[Any] => Void
+		Position >> "deleteElement" === #[Any] => Void
+		Position >> "say" === #[Any, String] => Void
+		Position >> "allElements" === #[] => List
+		Position >> "clone" === #[] => Position
+		Position >> "distance" === #[Position] => Number
+		Position >> "clear" === #[] => Void;
+		
 
 		// console
 		console >> "println" === #[Any] => Void
@@ -157,6 +173,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
+		
+		
 		
 		InstanceVariableMirror >> "value" === #[] => Void
 	}
