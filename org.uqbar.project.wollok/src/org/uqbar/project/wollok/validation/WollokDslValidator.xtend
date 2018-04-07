@@ -755,7 +755,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (isBooleanExpression) {
 			if (!leftOperand.isBooleanOrUnknownType)
 				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
-			if (!rightOperand.isBooleanOrUnknownType)
+			if (rightOperand !== null && !rightOperand.isBooleanOrUnknownType)
 				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}

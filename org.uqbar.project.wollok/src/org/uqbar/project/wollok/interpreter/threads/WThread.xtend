@@ -47,8 +47,9 @@ class WThread implements XThread<WollokObject> {
 	def WollokObject performOnStack(EObject executable, EvaluationContext<WollokObject> newContext,
 		()=>WollokObject something) {
 		stack.push(new XStackFrame(executable, newContext, WollokSourcecodeLocator.INSTANCE))
-		try
+		try {
 			return something.apply
+		}
 		catch (ReturnValueException e)
 			return e.value
 		catch (StackOverflowError e) {
