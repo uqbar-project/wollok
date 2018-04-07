@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
+		// TODO: Uncomment all definitions when solving closure parameters
 		
 		(Object == Any) => Boolean;
 		Object >> "toString" === #[] => String;
@@ -150,7 +151,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
 		Position >> "clear" === #[] => Void
-		Position >> "toString" === #[] => String;
+		Position >> "toString" === #[] => String
+		
+//		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 		
 
 		// console
@@ -163,7 +166,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment all definitions when solving closure parameters
 		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
@@ -191,7 +193,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		game >> "origin" === #[] => Position
 		game >> "center" === #[] => Position
 		game >> "ground" === #[String] => Void
-		game >> "boardGround" === #[String] => Void;
+		game >> "boardGround" === #[String] => Void
+		
+		keyboard.allMethods === #[] => Key
 		
 		comparable(Number, String, Date)
 		
