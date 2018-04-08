@@ -38,6 +38,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.validation.WollokDslValidator.*
 
 import static extension java.lang.Math.*
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.ui.quickfix.QuickFixUtils.*

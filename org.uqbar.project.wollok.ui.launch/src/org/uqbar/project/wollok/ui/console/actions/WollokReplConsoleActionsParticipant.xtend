@@ -2,11 +2,15 @@ package org.uqbar.project.wollok.ui.console.actions
 
 import java.net.URL
 import org.eclipse.core.resources.IResourceChangeEvent
+import org.eclipse.core.resources.IResourceChangeListener
 import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.IPath
+import org.eclipse.core.runtime.Path
 import org.eclipse.jface.action.Action
 import org.eclipse.jface.action.ControlContribution
 import org.eclipse.jface.action.Separator
 import org.eclipse.jface.resource.ImageDescriptor
+import org.eclipse.osgi.util.NLS
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.CLabel
 import org.eclipse.swt.graphics.Color
@@ -19,8 +23,7 @@ import org.eclipse.ui.console.IConsolePageParticipant
 import org.eclipse.ui.part.IPageBookViewPage
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
 
-import static extension org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
-import org.eclipse.core.resources.IResourceChangeListener
+import static org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages.*
 
 /**
  * Contributes with buttons to wollok repl console
@@ -35,24 +38,45 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	IActionBars bars
 	WollokReplConsole console
 	IResourceChangeListener resourceListener
+	Long lastTimeActivation
+	
+	def hasAssociatedFile() {
+		!this.console.fileName.equals("")
+	}
+
+	def projectName() {
+		if(hasAssociatedFile) this.console.project else ""
+	}
 
 	override init(IPageBookViewPage page, IConsole console) {
 		this.console = console as WollokReplConsole
 		this.page = page
 		val site = page.site
 		this.bars = site.actionBars
+		val _self = this
 		this.resourceListener = new IResourceChangeListener() {
-			
+
 			override resourceChanged(IResourceChangeEvent evt) {
-				WollokReplConsoleActionsParticipant.this.outdated.markOutdated
+				if (!hasAssociatedFile) {
+					return;
+				}
+				if (evt.delta.affectedChildren.size < 1) {
+					return;
+				}
+				val project = new Path(_self.console.project)
+				val resourceDelta = evt.delta.findMember(project)
+				if (resourceDelta === null) {
+					return;
+				}
+				_self.outdated.markOutdated
 			}
-			
+
 		}
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE)
 
 		createTerminateAllButton
 		createRemoveButton
-		this.outdated = new ShowOutdatedAction
+		this.outdated = new ShowOutdatedAction(this)
 
 		bars => [
 			menuManager.add(new Separator)
@@ -67,6 +91,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 
 			updateActionBars
 		]
+		outdated.update(_self.console.project)
 	}
 
 	def createTerminateAllButton() {
@@ -94,6 +119,12 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		if (console.running) {
 			stop.enabled = true
 		}
+		if (lastTimeActivation !== null && lastTimeActivation > this.console.timeStart) {
+			outdated.update
+		} else {
+			outdated.init
+		}
+		lastTimeActivation = System.currentTimeMillis
 		bars.updateActionBars
 	}
 
@@ -103,6 +134,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 
 	override dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener)
+		outdated.dispose
 		stop = null
 		bars = null
 		page = null
@@ -122,12 +154,16 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 class ShowOutdatedAction extends ControlContribution {
 	CLabel label
 	boolean synced = true
-
-	new() {
+	WollokReplConsoleActionsParticipant parent
+	String projectName
+	
+	new(WollokReplConsoleActionsParticipant parent) {
 		super("showOutdatedAction")
+		this.parent = parent
 	}
-
+	
 	override protected createControl(Composite parent) {
+		synced = true
 		label = new CLabel(parent, SWT.LEFT) => [
 			background = new Color(Display.current, 240, 241, 240)
 		]
@@ -136,14 +172,34 @@ class ShowOutdatedAction extends ControlContribution {
 	}
 
 	def configureLabel() {
+		this.projectName = parent.projectName
 		label => [
 			if (!isDisposed) {
-				text = if (synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
-				toolTipText = if (synced) WollokRepl_SYNCED_TOOLTIP else WollokRepl_OUTDATED_TOOLTIP 
-				val imageURL = if (synced) "platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/synced.png" else "platform:/plugin/org.eclipse.ui.ide/icons/full/dlcl16/synced.png"
+				text = if(synced) "  " + WollokRepl_SYNCED_MESSAGE + "  " else WollokRepl_OUTDATED_MESSAGE
+				toolTipText = if(synced) NLS.bind(WollokRepl_SYNCED_TOOLTIP, projectName) else NLS.bind(
+					WollokRepl_OUTDATED_TOOLTIP, projectName)
+				val imageURL = if(synced) "platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/synced.png" else "platform:/plugin/org.eclipse.ui.ide/icons/full/dlcl16/synced.png"
 				image = ImageDescriptor.createFromURL(new URL(imageURL)).createImage
+				visible = projectName !== null && !projectName.equals("")
 			}
 		]
+	}
+
+	override void update() {
+		update(!parent.projectName.equals(this.projectName))
+	}
+
+	def void init() {
+		update(true)
+	}
+	
+	private def void update(boolean updateSync) {
+		if (updateSync) {
+			synced = true
+		}
+		Display.^default.asyncExec([|
+			configureLabel
+		])
 	}
 
 	def markOutdated() {

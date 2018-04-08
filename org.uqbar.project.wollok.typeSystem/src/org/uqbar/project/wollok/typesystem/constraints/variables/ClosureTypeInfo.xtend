@@ -40,11 +40,12 @@ class ClosureTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		throw new UnsupportedOperationException('''
-			Tring to assign a maxType to a clousure
+			Tring to assign a maxType to a closure
 				maxTypes: «maxTypes»
 				origin: «origin»
 		''')
 	}
+	
 
 	// ************************************************************************
 	// ** Misc
@@ -54,4 +55,14 @@ class ClosureTypeInfo extends TypeInfo {
 		parameters: «parameters»
 		returnType: «returnType»
 	'''
+	
+	
+	// ************************************************************************
+	// ** Utilities
+	// ************************************************************************
+
+	/**
+	 * type parameter for closure types
+	 */
+	public static val RETURN = "return"
 }

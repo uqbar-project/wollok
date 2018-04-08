@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 /**
- * Used for iterating through the map of minTypes of a {@link SimpleTypeInfo}. 
+ * Used for iterating through the map of minTypes of a {@link GenericTypeInfo}. 
  * Allows to change the state of each entry in the map (Pending, Ready, Error). 
  * In case of an error, it is reported to the 'origin' type variable.
  * 

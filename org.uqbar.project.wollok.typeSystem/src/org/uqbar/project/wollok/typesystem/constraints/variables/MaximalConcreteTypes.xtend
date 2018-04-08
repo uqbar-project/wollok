@@ -34,6 +34,10 @@ class MaximalConcreteTypes {
 	def copy() {
 		new MaximalConcreteTypes(maximalConcreteTypes)
 	}
+	
+	def empty() {
+		maximalConcreteTypes.empty
+	}
 
 	// ************************************************************************
 	// ** Restricting
@@ -43,8 +47,9 @@ class MaximalConcreteTypes {
 
 		maximalConcreteTypes.removeIf[!supertype.contains(it)]
 
-		if (maximalConcreteTypes.size < originalSize)
-			state = Pending
+		val changed = maximalConcreteTypes.size < originalSize
+		if (changed) state = Pending
+		return changed
 	}
 
 	// ************************************************************************

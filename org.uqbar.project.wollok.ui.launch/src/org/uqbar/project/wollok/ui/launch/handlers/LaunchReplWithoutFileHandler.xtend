@@ -41,7 +41,7 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	public val String EMPTY_PROJECT_NAME = "__EMPTY__"
 
 	override execute(ExecutionEvent event) throws ExecutionException {
-		DebugUITools.launch(createConfiguration, "run");
+		DebugUITools.launch(createConfiguration, "run"); 
 		null
 	}
 
@@ -78,7 +78,7 @@ class LaunchReplWithoutFileHandler extends AbstractHandler {
 	def getOrCreateEmptyProject() {
 		val emptyProject = getProject(EMPTY_PROJECT_NAME)
 
-		if (emptyProject != null) {
+		if (emptyProject !== null) {
 			emptyProject.open(null)
 			return emptyProject
 		}

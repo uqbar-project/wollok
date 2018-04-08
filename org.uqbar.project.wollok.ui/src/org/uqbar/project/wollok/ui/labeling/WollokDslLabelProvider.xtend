@@ -130,13 +130,13 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	def text(WMethodDeclaration m) {
-		(m.name ?: "<...>") + '(' + m.parameters.map[(name) + concatResolvedType(":", it)].join(',') + ')' +
+		(m.name ?: "<...>") + '(' + m.parameters.map[(name) + concatResolvedType(": ", it)].join(', ') + ')' +
 			if(m.supposedToReturnValue) (" → " + concatResolvedType("", m)) else ""
 	}
 
 	def text(WConstructor c) {
 		c.declaringContext?.name + '(' +
-			c.parameters.map[name + concatResolvedType(":", it)].join(',') + ')'
+			c.parameters.map[name + concatResolvedType(": ", it)].join(', ') + ')'
 	}
 
 	def image(WMethodDeclaration method) {

@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.tests.interpreter.clazz
 
 import org.junit.Assert
 import org.junit.Test
-import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
@@ -796,7 +795,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			constructor() = super(armeria.arco())
 		}
 		program prueba {
-			new Arquero()
+			console.println(new Arquero())
 		}
 		'''.interpretPropagatingErrors
 	}
@@ -1015,5 +1014,4 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		'''.interpretPropagatingErrors
 	}
-
 }

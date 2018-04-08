@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
-import java.util.List
+import java.util.Collection
 import org.apache.log4j.Logger
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
@@ -23,13 +23,13 @@ class WollokTypeSystemActivator extends Plugin {
 
 	private static WollokTypeSystemActivator plugin
 	private BundleContext context
-	private List<TypeSystem> typeSystems
+	private Collection<TypeSystem> typeSystems
 	WollokTypeSystemPreference typeSystemPreferences;
 
 	def synchronized getTypeSystems() {
 		if (typeSystems === null) {
 			val configs = Platform.extensionRegistry.getConfigurationElementsFor(TYPE_SYSTEM_IMPL_EXTENSION_POINT)
-			typeSystems = configs.map[it.createExecutableExtension("class") as TypeSystem]
+			typeSystems = configs.map[it.createExecutableExtension("class") as TypeSystem].toSet
 		}
 		return typeSystems
 	}

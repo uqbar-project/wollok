@@ -593,4 +593,16 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 			assert.equals(19, cuenta.sacar(0))
 		}'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void assertThrowsExceptionFailing() {
+		'''
+		var a = 0
+		assert.throwsExceptionWithMessage(
+			"Block { a + 1 } should have failed",
+			{ assert.throwsException({ a + 1 }) }
+		)
+		'''.test
+	}
+	
 }

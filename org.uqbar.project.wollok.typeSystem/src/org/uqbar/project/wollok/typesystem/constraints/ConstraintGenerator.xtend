@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -21,11 +23,13 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -33,8 +37,10 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
 
+/**
+ * @author npasserini
+ */
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
@@ -42,18 +48,20 @@ class ConstraintGenerator {
 	val Logger log = Logger.getLogger(this.class)
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
+	ConstructorConstraintsGenerator constructorConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
+		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
 	// ** First pass
 	// ************************************************************************
 	/**
-	 * We have to to two passes through the program. The first one just adds globals, 
+	 * We have two passes through the program. The first one just adds globals, 
 	 * so that they are visible during constraint generation.
 	 */
 	def dispatch void addGlobals(EObject it) {
@@ -88,11 +96,11 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WNamedObject it) {
+		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
 
 	def dispatch void generateVariables(WClass it) {
-
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
@@ -101,7 +109,7 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
-		expression.generateVariables
+		expression?.generateVariables
 	}
 
 	def dispatch void generateVariables(WMethodDeclaration it) {
@@ -133,7 +141,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WBlockExpression it) {
-		expressions.forEach[generateVariables]
+		expressions.forEach[ generateVariables ]
 
 		it.newTypeVariable
 
@@ -153,40 +161,67 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WListLiteral it) {
-		val listType = newCollection(classType(LIST))
-		
+		val listType = TypeVariable.instance(genericType(LIST, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+		val paramType = listType.param(GenericTypeInfo.ELEMENT)
+
+		newSealed(listType)
 		elements.forEach[
 			generateVariables
-			tvar.beSubtypeOf(listType.element)
+			tvar.beSubtypeOf(paramType)
 		]
 	}
 
 	def dispatch void generateVariables(WSetLiteral it) {
-		val setType = newCollection(classType(SET))
+		val setType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
+		newSealed(setType)
 		elements.forEach[
 			generateVariables
-			tvar.beSubtypeOf(setType.element)
+			tvar.beSubtypeOf(paramType)
 		]
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		newSealed(classType(classRef))
+		arguments.forEach [ arg | arg.generateVariables ]
+//		if (classRef.name.equalsIgnoreCase("Pair")) {
+//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
+//				tv.addMinType(classType(classRef))
+//				tv.beSealed
+//				tv.register
+//			]
+//		} else {
+			newSealed(classType(classRef))
+//		}
+
+		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
 	def dispatch void generateVariables(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-
 		newVoid
 	}
 
+	def dispatch void generateVariables(WPostfixOperation it) {
+		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
+		operand.generateVariables
+		newVoid
+	}
+	
 	def dispatch void generateVariables(WVariableReference it) {
 		it.newWithSubtype(ref)
 	}
 	
 	def dispatch void generateVariables(WSelf it) {
 		it.newSealed(declaringContext.asWollokType)
+	}
+
+	def dispatch void generateVariables(WUnaryOperation it) {
+		if (feature.equals("!")) {
+			newSealed(classType(BOOLEAN))
+		}
+		operand.generateVariables
 	}
 
 	def dispatch void generateVariables(WIfExpression it) {
@@ -222,7 +257,6 @@ class ConstraintGenerator {
 	def dispatch void generateVariables(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
-
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 
@@ -252,8 +286,9 @@ class ConstraintGenerator {
 	// ************************************************************************
 	// ** Method overriding
 	// ************************************************************************
-	def addInheritanceConstraints() {
+	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
+		constructorConstraintsGenerator.run()
 	}
 
 	def newNamedObject(WNamedObject it) {

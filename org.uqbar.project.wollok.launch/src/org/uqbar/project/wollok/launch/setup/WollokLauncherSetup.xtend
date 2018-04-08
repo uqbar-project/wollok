@@ -28,7 +28,7 @@ class WollokLauncherSetup extends WollokDslStandaloneSetup {
 	}
 	
 	override createInjector() {
-		return Guice.createInjector(new WollokLauncherModule(params), this);
+		return Guice.createInjector(new WollokLauncherModule(params), this)
 	}
 
 	override configure(Binder binder) {

@@ -1,0 +1,49 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pairTest {
+	
+	// XPECT methodType at m0 --> () => Pair
+	method m0() {
+		return new Pair(2, 3)
+	}
+	
+	// XPECT methodType at m1 --> () => Number
+	method m1() {
+		return new Pair(2, "hola").key()
+	}
+	
+	// XPECT methodType at m2 --> () => String
+	method m2() {
+		return new Pair(2, "hola").value()
+	}
+
+   	// XPECT methodType at m3 --> (Pair) => Any
+	method m3(pair) {
+		return pair.key()
+	}
+
+	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair)) => Void
+	method m4(pair) {
+		return pair.value()
+	}
+	
+	// XPECT methodType at m5 --> (Number) => Pair
+	method m5(n) {
+		return new Pair(n + 1, n - 1)
+	}
+
+	method m6() {
+		// XPECT type at n --> Number
+		var n = new Pair(2, 3).value()
+
+		// XPECT type at n --> String
+		var s = new Pair(2, "").value()
+	}
+
+	// XPECT methodType at m7 --> (Number) => Number
+	method m7(n) {
+		// XPECT type at p --> Pair
+		var p = new Pair(n + 1, n - 1)
+		return p.value()
+	}
+}

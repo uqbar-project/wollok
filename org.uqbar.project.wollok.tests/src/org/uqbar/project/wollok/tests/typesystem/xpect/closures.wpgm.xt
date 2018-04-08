@@ -6,8 +6,14 @@ program p {
 	// XPECT type at c1 --> {() => String}
 	const c1 = { "Hello" }
 
+	// XPECT type at hello --> String
+	const hello = c1.apply()
+
 	// XPECT type at c2 --> {(Number) => Number}
 	const c2 = { a => 2 + a }
+	
+	// XPECT type at four --> Number
+	const four = c2.apply(2)
 
 	// XPECT type at c3 --> {() => Void}
 	const c3 = { }

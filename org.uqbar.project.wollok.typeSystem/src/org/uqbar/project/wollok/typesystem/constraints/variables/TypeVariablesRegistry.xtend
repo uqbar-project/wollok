@@ -3,26 +3,26 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 import java.util.List
 import java.util.Map
 import org.apache.log4j.Logger
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.wollokDsl.WParameter
 
-import static org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.ELEMENT
-
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
+import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 
 class TypeVariablesRegistry {
-	val Map<EObject, TypeVariable> typeVariables = newHashMap
-	val Map<EObject, ClassParameterTypeVariable> typeParameters = newHashMap
+	val Map<URI, TypeVariable> typeVariables = newHashMap
+	val Map<URI, ClassParameterTypeVariable> typeParameters = newHashMap
 	val Logger log = Logger.getLogger(this.class)
 	
 
@@ -39,14 +39,14 @@ class TypeVariablesRegistry {
 	def register(TypeVariable it) {
 		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
 		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeVariables.put(owner, it)
+		if (owner !== null) typeVariables.put(owner.URI, it)
 		return it
 	}
 
 	def register(ClassParameterTypeVariable it) {
 		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
 		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeParameters.put(owner, it)
+		if (owner !== null) typeParameters.put(owner.URI, it)
 		return it
 	}
 	
@@ -61,21 +61,9 @@ class TypeVariablesRegistry {
 		TypeVariable.closure(owner, parameters, expression).register
 	}
 
-	/**
-	 * This should be a special case of a generic type variable, for now collections are the only generic types.
-	 */
-	def newCollection(EObject owner, ConcreteType collectionType) {
-		TypeVariable.generic(owner, #[ELEMENT]) => [
-			addMinType(collectionType)
-			beSealed
-			register
-		]
-	}
-
 	def newVoid(EObject owner) {
 		TypeVariable.newVoid(owner).register
 	}
-
 
 	def newWithSubtype(EObject it, EObject... subtypes) {
 		newTypeVariable => [subtypes.forEach[subtype|it.beSupertypeOf(subtype.tvar)]]
@@ -98,10 +86,10 @@ class TypeVariablesRegistry {
 	}
 
 	def beSealed(TypeVariable it, WollokType type) {
-		addMinType(type)
+		addMinType(TypeVariable.instance(type))
 		beSealed
 	}
-
+	
 	// ************************************************************************
 	// ** Synthetic type variables
 	// ************************************************************************
@@ -113,8 +101,9 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	def newClassParameterVar(EObject owner, String paramName) {
-		TypeVariable.classParameter(owner, paramName) => [
+	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
+		log.debug("New class parameter " + owner.debugInfoInContext + " " + owner.URI + " - paramName " + paramName)
+		TypeVariable.classParameter(owner, type, paramName) => [
 			registry = this 
 			register
 		]
@@ -132,26 +121,34 @@ class TypeVariablesRegistry {
 	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
 	 */
 	def TypeVariable tvar(EObject obj) {
-		typeVariables.get(obj) => [ if (it === null) {
+		typeVariables.get(obj.URI) => [ if (it === null) {
 			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
-		typeVariables.get(obj) ?: 
-			typeParameters.get(obj) => [ if (it === null) {
+		typeVariables.get(obj.URI) ?: 
+			typeParameters.get(obj.URI) => [ if (it === null) {
 				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 			}]
+	}
+	
+	def type(EObject obj) {
+		typeVariables.get(obj.URI)?.type
 	}
 
 	// ************************************************************************
 	// ** Method types
 	// ************************************************************************
-	def methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
+	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
 		new MethodTypeInfo(this, type.lookupMethod(selector, arguments))
 	}
 
-	def methodTypeInfo(WClass container, String selector, List<WParameter> arguments) {
+	def dispatch methodTypeInfo(WollokType type, String selector, List<TypeVariable> arguments) {
+		throw new UnsupportedOperationException('''Can't extract methodTypeInfo for methods of «type»''')
+	}
+
+	def methodTypeInfo(WClass container, String selector, List<?> arguments) {
 		new MethodTypeInfo(this, container.lookupMethod(selector, arguments, true))
 	}
 

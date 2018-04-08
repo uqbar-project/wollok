@@ -1,0 +1,73 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object dateTests {
+
+	// XPECT methodType at m1 --> () => Date
+	method m1() = new Date()
+
+	// XPECT methodType at m2 --> (Number) => Date
+	method m2(day) = new Date(day, day, 2018)
+
+	// XPECT methodType at m3 --> (Number) => Date
+	method m3(day) {
+		const fecha = new Date()
+		fecha.initialize(day, day, 2018)
+		return fecha
+	}
+
+	// XPECT methodType at m4 --> (Number) => Date
+	method m4(days) = new Date().plusDays(days)
+
+	// XPECT methodType at m5 --> (Date) => Boolean
+	method m5(a) {
+		var b = new Date()
+		b = b.plusDays(1)
+		return b == a
+	}
+
+	// XPECT methodType at m6 --> (Number) => Date
+	method m6(months) = new Date().plusMonths(months)
+
+	// XPECT methodType at m7 --> (Number) => Date
+	method m7(years) = new Date().plusYears(years)
+
+	// XPECT methodType at m8 --> (Date) => Boolean
+	method m8(_date) = _date.isLeapYear()
+
+	// XPECT methodType at m9 --> (Date) => Boolean
+	method m9(_date) = _date.isLeapYear()
+
+	// XPECT methodType at m10 --> (Date) => Number
+	method m10(_date) = _date.day() + _date.dayOfWeek() + _date.month() + _date.year()
+
+	// XPECT methodType at m10 --> (Date) => Number
+	method m10(_date) = _date - new Date()
+
+	// XPECT methodType at m11 --> (Date) => Date
+	method m11(_date) = _date.minusYears(1)
+
+	// XPECT methodType at m12 --> (Date) => Date
+	method m12(_date) = _date.minusMonths(1)
+
+	// XPECT methodType at m13 --> (Date) => Date
+	method m13(_date) = _date.minusDays(1)
+
+	// XPECT methodType at m14 --> (Date) => Boolean
+	method m14(_date) = _date < new Date()
+
+	// XPECT methodType at m15 --> (Date) => Boolean
+	method m15(_date) = _date <= new Date()
+
+	// XPECT methodType at m16 --> (Date) => Boolean
+	method m16(_date) = _date > new Date()
+
+	// XPECT methodType at m17 --> (Date) => Boolean
+	method m17(_date) = _date >= new Date()
+
+	// XPECT methodType at m18 --> (Date, Date) => Boolean
+	method m18(_date, _date1) = _date.between(_date1, new Date())
+
+	// XPECT methodType at m19 --> (Boolean) => String
+	method m19(b) = new Date().toSmartString(b)
+
+}

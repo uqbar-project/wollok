@@ -13,7 +13,6 @@ import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
-import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions
@@ -35,13 +34,13 @@ class XTendUtilExtensions {
 
 	def static stackTraceAsString(Throwable e) {
 		val s = new StringWriter()
-		e.printStackTrace(new PrintWriter(s));
+		e.printStackTrace(new PrintWriter(s))
 		s.buffer.toString
 	}
 
-	def static bothNull(Object a, Object b) { a == null && b == null }
+	def static bothNull(Object a, Object b) { a === null && b === null }
 
-	def static noneAreNull(Object a, Object b) { a != null && b != null }
+	def static noneAreNull(Object a, Object b) { a !== null && b !== null }
 
 	// ***************************************
 	// ** Collections
@@ -59,7 +58,7 @@ class XTendUtilExtensions {
 
 	def static <E> E findFirstIfNone(Iterable<E> col, (E)=>Boolean predicate, ()=>E ifNone) {
 		val f = col.findFirst(predicate)
-		if(f != null) f else ifNone.apply
+		if(f !== null) f else ifNone.apply
 	}
 
 	def static <E, T> findFirstAndMap(Iterable<E> col, (E)=>Boolean predicate, (E)=>T ifFoundDo) {
@@ -68,13 +67,13 @@ class XTendUtilExtensions {
 
 	def static <E, T> void findFirstAndDo(Iterable<E> col, (E)=>Boolean predicate, (E)=>void ifFoundDo) {
 		val f = col.findFirst(predicate)
-		if (f != null)
+		if (f !== null)
 			ifFoundDo.apply(f)
 	}
 
 	def static <E, T> findFirstAndMap(Iterable<E> col, (E)=>Boolean predicate, (E)=>T ifFoundDo, ()=>T ifNotThen) {
 		val f = col.findFirst(predicate)
-		if (f != null)
+		if (f !== null)
 			ifFoundDo.apply(f)
 		else
 			ifNotThen.apply
@@ -107,7 +106,7 @@ class XTendUtilExtensions {
 		var E accE = null
 		for (e : col) {
 			val thisVal = func.apply(e)
-			if (accE == null || comparator.apply(thisVal, accVal)) {
+			if (accE === null || comparator.apply(thisVal, accVal)) {
 				accVal = thisVal
 				accE = e
 			}
@@ -206,7 +205,7 @@ class XTendUtilExtensions {
 		def static accesibleVersion(Method m) {
 			var c = m.declaringClass
 			var metodin = m
-			while (metodin.cannotBeCalled() && c != null) {
+			while (metodin.cannotBeCalled() && c !== null) {
 				c = c.superclass
 				metodin = c.getMethod(m.name, m.parameterTypes)
 			}

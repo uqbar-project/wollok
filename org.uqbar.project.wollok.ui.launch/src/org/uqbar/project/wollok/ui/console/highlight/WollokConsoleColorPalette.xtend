@@ -21,7 +21,7 @@ class WollokConsoleColorPalette {
         new RGB(170,  85,   0), // brown/yellow
         new RGB(  0,   0, 170), // blue
         new RGB(170,   0, 170), // magenta
-        new RGB(  0, 170, 170), // cyan
+        new RGB(  0, 102, 102), // cyan
         new RGB(170, 170, 170), // gray
         new RGB( 85,  85,  85), // dark gray
         new RGB(255,  85,  85), // bright red
@@ -39,7 +39,7 @@ class WollokConsoleColorPalette {
         new RGB(128, 128,   0), // brown/yellow
         new RGB(  0,   0, 128), // blue
         new RGB(128,   0, 128), // magenta
-        new RGB(  0, 128, 128), // cyan
+        new RGB(  0, 102, 102), // cyan
         new RGB(192, 192, 192), // gray
         new RGB(128, 128, 128), // dark gray
         new RGB(255,   0,   0), // bright red
@@ -57,7 +57,7 @@ class WollokConsoleColorPalette {
         new RGB(173, 173,  39), // brown/yellow
         new RGB( 73,  46, 225), // blue
         new RGB(211,  56, 211), // magenta
-        new RGB( 51, 187, 200), // cyan
+        new RGB( 51, 102, 102), // cyan
         new RGB(203, 204, 205), // gray
         new RGB(129, 131, 131), // dark gray
         new RGB(252,  57,  31), // bright red
@@ -75,7 +75,7 @@ class WollokConsoleColorPalette {
         new RGB(187, 187,   0), // brown/yellow
         new RGB(  0,   0, 187), // blue
         new RGB(187,   0, 187), // magenta
-        new RGB(  0, 187, 187), // cyan
+        new RGB(  0, 102, 102), // cyan
         new RGB(187, 187, 187), // gray
         new RGB( 85,  85,  85), // dark gray
         new RGB(255,  85,  85), // bright red
@@ -93,7 +93,7 @@ class WollokConsoleColorPalette {
         new RGB(205, 205,   0), // brown/yellow
         new RGB(  0,   0, 238), // blue
         new RGB(205,   0, 205), // magenta
-        new RGB(  0, 205, 205), // cyan
+        new RGB(  0, 102, 102), // cyan
         new RGB(229, 229, 229), // gray
         new RGB(127, 127, 127), // dark gray
         new RGB(255,   0,   0), // bright red
@@ -157,7 +157,7 @@ class WollokConsoleColorPalette {
             palette = paletteXTerm
         else {
             val os = System.getProperty("os.name");
-            if (os == null || os.startsWith("Windows"))
+            if (os === null || os.startsWith("Windows"))
                 setPalette(PALETTE_WINXP)
             else if (os.startsWith("Mac"))
                 setPalette(PALETTE_MAC)

@@ -9,7 +9,8 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface TypeProvider {
 
-	public abstract ClassBasedWollokType classType(EObject context, String classFQN);
-	public abstract NamedObjectWollokType objectType(EObject context, String classFQN);
+	public ClassBasedWollokType classType(EObject context, String classFQN);
+	public GenericType genericType(EObject context, String classFQN, String... typeParameterNames);
+	public NamedObjectWollokType objectType(EObject context, String classFQN);
 
 }

@@ -33,6 +33,8 @@ abstract class TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
+	
+	def validMessages() { messages.filter[isValid] }
 
 	// ************************************************************************
 	// ** Adding type information
@@ -51,7 +53,7 @@ abstract class TypeInfo {
 	 * @param maxType A new set of maxTypes that will be merged with current maxTypes (or assigned if no current maxTypes).
 	 * @origin The type variable from where we obtained this information, and will be target of error reports if any.
 	 */
-	def void setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin)
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin)
 
 	// ************************************************************************
 	// ** Notifications

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.tests.typesystem
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -209,19 +210,19 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		]
 	}
 
-//	@Test
-//	def void variableAssignedToReturnValueOfAnotherObjectsMethod() { 	'''
-//		object stringGenerator {
-//			method generateString() = "ABC"
-//		}
-//		object stringConsumer {
-//			method consume() {
-//				const pepe = stringGenerator.generateString()
-//			}
-//		}
-//		
-//		'''.parseAndInfer.asserting [
-//			assertTypeOfAsString("List", "pepe")
-//		]
-//	}
+	@Test
+	def void messageDoesNotUnderstand() {
+		'''
+			object example {
+				const number = 10
+				
+				method withError() {
+					number.div(1).isBig(true, 1)
+				}
+			}
+		'''.parseAndInfer.asserting [
+			assertTypeOf(classTypeFor(NUMBER), "number")
+			findByText("number.div(1).isBig(true, 1)", WMemberFeatureCall).assertIssuesInElement("Number does not understand isBig(true, 1)")
+		]
+	}
 }
