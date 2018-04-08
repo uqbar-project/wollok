@@ -45,7 +45,6 @@ class WollokExceptionUtils {
 	}
 
 	def static dispatch String convertToString(WollokInterpreterException exception) {
-		exception.printStackTrace
 		return "ERROR: " + exception.originalCause.message
 	}
 
