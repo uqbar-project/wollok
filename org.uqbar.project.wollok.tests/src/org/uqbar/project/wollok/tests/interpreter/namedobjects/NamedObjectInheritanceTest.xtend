@@ -19,7 +19,7 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 			
 			program p {
 				assert.equals("abc", myObject.something())
-				assert.equals(myObject, (myObject->"42").getX())
+				assert.equals(myObject, (myObject->"42").x())
 			}
 		'''.interpretPropagatingErrors
 	}

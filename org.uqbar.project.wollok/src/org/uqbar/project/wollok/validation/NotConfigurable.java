@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * To ignore a @check method.
- * It won't be available to enabled disabled it from preferences.
+ * It won't be available to enabled / disabled it from preferences.
  * 
  * @author jfernandes
  */

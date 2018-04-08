@@ -2,7 +2,8 @@
 
 class Golondrina {
 	var energia = 100
-
+	var nivelAturdimiento = 0
+	
 	method energia() {
 		// XPECT errors --> "Super can only be used in an overriding method" at "super()"
 		super()
@@ -23,7 +24,15 @@ class Golondrina {
 	
 	method estasCurada() = energia > 10
 	
-	method alegria(tiempo) = energia * tiempo 
+	method estasAlegre() = true
+	
+	method estasPensativa() = false
+	
+	method alegria(tiempo) = energia * tiempo
+	
+	method estasAturdida() = nivelAturdimiento > 10
+	
+	method estasRemolona() = false
 }
 
 class GolondrinaSarasa inherits Golondrina {
@@ -54,7 +63,15 @@ class GolondrinaSarasa inherits Golondrina {
 	override method estasCurada() {
         return super()
     }
-    	
+
+	// XPECT errors --> "Redefining a method just to delegate in super() is unnecessary." at "estasAlegre"
+	override method estasAlegre() = super()
+
+	override method estasPensativa() = !super()
+
+	override method estasAturdida() = super() && comio
+    
+    override method estasRemolona() = super() == comio
 }
 
 class GolondrinaLoca inherits Golondrina {

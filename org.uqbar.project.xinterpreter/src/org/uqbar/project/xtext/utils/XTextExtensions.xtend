@@ -48,7 +48,7 @@ class XTextExtensions {
 		var i = 0
 		while (i < Integer.MAX_VALUE) {
 			val syntheticUri = URI.createURI(name + i + "." + ext)
-			if (resourceSet.getResource(syntheticUri, false) == null)
+			if (resourceSet.getResource(syntheticUri, false) === null)
 				return syntheticUri
 			i++
 		}

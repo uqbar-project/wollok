@@ -11,7 +11,7 @@ class TypeSystemException extends RuntimeException {
 	 * (Currently optional) type variable.
 	 * This is highly coupled with ConstraintBasedTypeSystem, but given that we maybe deleting the others
 	 * I thought it is not worth to do something more sophisticated to avoid the coupling.
-	 * Anyway, other type systems should work correctly without a type variable asigned in their exceptions.
+	 * Anyway, other type systems should work correctly without a type variable assigned in their exceptions.
 	 */
 	@Accessors
 	TypeVariable variable

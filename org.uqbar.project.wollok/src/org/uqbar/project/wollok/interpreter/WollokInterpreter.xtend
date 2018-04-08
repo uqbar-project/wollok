@@ -24,6 +24,7 @@ import org.uqbar.project.wollok.interpreter.threads.WThread
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
 
 /**
  * XInterpreter impl for Wollok language.
@@ -151,7 +152,9 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 	 */
 	override eval(EObject e) {
 		try {
-			currentThread.stack.peek.defineCurrentLocation = e
+			if (e.shouldGetDeeperInStack) {
+				currentThread.stack.peek.defineCurrentLocation = e
+			}
 			debugger.aboutToEvaluate(e)
 			evaluator.evaluate(e)
 		} catch (ReturnValueException ex) {
@@ -164,7 +167,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			debugger.evaluated(e)
 		}
 	}
-
+	
 	def getConsole() { console }
 
 	def setReference(String variableName, WollokObject value) {

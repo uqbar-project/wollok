@@ -81,7 +81,7 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testFirstAndHead() {
 		'''
-		const list = [1,2,3]		
+		const list = [1,2,3]
 		assert.equals(1, list.first())
 		assert.equals(1, list.head())
 		'''.test
@@ -91,9 +91,9 @@ class ListTest extends ListTestCase {
 	def void testSortBy() {
 		''' 
 		var list = [1,2,3]
-		list.sortBy({x,y => x > y})		
+		list.sortBy({x,y => x > y})
 		assert.equals([3,2,1], list)
-		list.sortBy({x,y => x < y})		
+		list.sortBy({x,y => x < y})
 		assert.equals([1,2,3], list)
 		'''.test
 	}
@@ -130,10 +130,10 @@ class ListTest extends ListTestCase {
 	@Test
 	def void testEqualityWithOtherObjects(){
 		'''
-			assert.notEquals(2, [])
-			assert.notEquals(2, [2])
-			assert.notEquals(2, [2,3,4])
-			assert.notEquals(console, [])
+		assert.notEquals(2, [])
+		assert.notEquals(2, [2])
+		assert.notEquals(2, [2,3,4])
+		assert.notEquals(console, [])
 		'''.test
 	}
 }

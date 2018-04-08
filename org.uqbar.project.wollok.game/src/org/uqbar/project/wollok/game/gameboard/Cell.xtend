@@ -1,8 +1,9 @@
 package org.uqbar.project.wollok.game.gameboard
 
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.CellSize
 import org.uqbar.project.wollok.game.Image
 import org.uqbar.project.wollok.game.Position
-import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class Cell {
@@ -11,7 +12,7 @@ class Cell {
 
 	new(Position position, Image image) {
 		this.position = position
-		this.image = image
+		this.image = image => [ size = new CellSize(Gameboard.CELLZISE) ]
 	}
 	
 	def draw(Window window) {

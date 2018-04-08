@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.core.resources.IProject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
@@ -330,6 +331,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch contextName(WMixin c) { c.fqn }
 	def static dispatch contextName(WSuite s) { s.name }
 
+	def static dispatch abstractionName(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+	def static dispatch abstractionName(WClass c) { WollokConstants.CLASS }
+	def static dispatch abstractionName(WNamedObject o) { WollokConstants.WKO }
+	def static dispatch abstractionName(WMixin m) { WollokConstants.MIXIN }
+	def static dispatch abstractionName(WMethodDeclaration m) { WollokConstants.METHOD }
+	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
+	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
 		(mixins !== null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
 		|| (parent !== null && parent.hasOrInheritMethod(name, argSize))
@@ -414,6 +422,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch memberTarget(WFeatureCall call) { null }
+	def static dispatch memberTarget(WMemberFeatureCall call) { call.memberCallTarget }
+	
 	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
@@ -566,8 +577,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean callsSuper(EObject it) { eAllContents.exists[ e | e.callsSuper] }
 
 	def static dispatch boolean hasRealParent(EObject it) { false }
-	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.name.equals(WollokConstants.ROOT_CLASS) }
-	def static dispatch boolean hasRealParent(WClass c) { c.parent !== null && c.parent.name !== null && !c.parent.name.equals(WollokConstants.ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS) }
+	def static dispatch boolean hasRealParent(WClass c) {
+		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn?.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
+	}
 		
 	/* Including file name for multiple tests */
 	def static getFullName(WTest test, boolean processingManyFiles) {
@@ -585,7 +598,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			.toList
 	}
 
-	def static mapMethodContainers(IProject project) {
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project) {
 		val result = new HashMap<URI, List<WMethodContainer>>
 		project.allWollokFiles.forEach [ file | result.put(file, newArrayList)]
 		project
@@ -597,6 +610,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 				result.put(uri, methodContainers)
 			]
 		result
+	}
+
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project, boolean platformFile) {
+		if (platformFile) return newHashMap
+		project.mapMethodContainers
 	}
 	
 	def static getMethodContainers(URI uri) {

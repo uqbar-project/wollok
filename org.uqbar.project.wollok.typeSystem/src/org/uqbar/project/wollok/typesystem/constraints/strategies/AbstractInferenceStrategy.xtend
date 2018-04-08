@@ -48,12 +48,21 @@ abstract class AbstractInferenceStrategy {
 	def walkThroughVariable(TypeVariable it) {
 		if (!hasErrors) 
 			try analiseVariable
-			catch (TypeSystemException exception) addError(exception) 
+			catch (TypeSystemException exception) addError(exception)
+			catch (Exception exception) addFatalError(exception)
 	}
 
 	abstract def void analiseVariable(TypeVariable tvar)
 	
+	def getTypeSystem() { registry.typeSystem } 
 	def allVariables() { registry.allVariables }
-	def allFiles() { registry.typeSystem.programs }
+	def allFiles() { typeSystem.programs }
 	def tvar(EObject node) { registry.tvar(node) }
+	
+	def addFatalError(TypeVariable variable, Exception exception) {
+		val message = '''Fatal type system error: «exception.message ?: exception.class.simpleName»'''
+		
+		log.fatal(message, exception)
+		variable.addError(new TypeSystemException(message) => [ it.variable = variable ])		
+	}
 }

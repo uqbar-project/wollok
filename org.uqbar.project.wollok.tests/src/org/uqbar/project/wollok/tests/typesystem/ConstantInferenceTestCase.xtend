@@ -53,7 +53,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void listLiteral() { 	'''program p {
 			const c = [1,2,3]
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(LIST), "c")
+			assertTypeOfAsString("List", "c")
 		]
 	}
 	
@@ -61,7 +61,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	def void setLiteral() { 	'''program p {
 			const c = #{1,2,3}
 		}'''.parseAndInfer.asserting [
-			assertTypeOf(classTypeFor(SET), "c")
+			assertTypeOfAsString("Set", "c")
 		]
 	}
 

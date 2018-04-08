@@ -27,8 +27,8 @@ class NullTestCase extends AbstractWollokInterpreterTestCase {
 		'''
 		«defineAssertWithMessage»
 		program a {
-			extendedAssert.assertException({ null.sayHi() }, "null does not understand sayHi()")
-			extendedAssert.assertException({ null.toString() }, "null does not understand toString()")
+			var a = null
+			extendedAssert.assertException({ a.sayHi() }, "Reference a is not initialized")
 		}
 		'''.interpretPropagatingErrors
 	}

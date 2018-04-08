@@ -1,6 +1,9 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object booleanConditionError {
+	var a = 2
+	var b = 3
+	
 	method m() {
 		return rules.a()
 	}
@@ -9,6 +12,30 @@ object booleanConditionError {
 	method m1() {
 		return rules.a()
 	}
+	
+	// XPECT methodType at m2 --> () => Boolean
+	method m2() = a > 0 && b < 0
+
+	// XPECT methodType at m3 --> () => Boolean
+	method m3() = a < 0 || b > 0
+
+	// XPECT methodType at m4 --> () => Boolean
+	method m4() = (a > 0) and (b < 0)
+
+	// XPECT methodType at m5 --> () => Boolean
+	method m5() {
+		return (a < 0) or (b > 0)
+	}
+	
+	// XPECT methodType at m6 --> () => Boolean
+	method m6() = (a > 0).negate()
+
+	// XPECT methodType at m7 --> () => Boolean
+	method m7() = !(a > 0)
+	
+	// XPECT methodType at m8 --> () => String
+	method m8() = rules.a().toString()
+	
 }
 
 object rules {

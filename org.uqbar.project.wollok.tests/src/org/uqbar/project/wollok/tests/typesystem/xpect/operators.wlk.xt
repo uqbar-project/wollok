@@ -8,4 +8,15 @@ object pepita{
 
 	// XPECT methodType at estaCansada --> (Number) => Boolean
 	method estaCansada(cuanto) = energia <= cuanto
+	
+	// XPECT methodType at comer --> () => Void
+	method comer() {
+		energia++
+	}
+	
+	// XPECT methodType at volar --> (Number) => Void
+	method volar(cantidad) {
+		if (cantidad > 0) energia -= cantidad else energia--
+	}
+	
 }

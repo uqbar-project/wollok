@@ -2,7 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
@@ -14,13 +14,13 @@ class VariableSubtypingRules {
 	// ** Type Info
 	// ************************************************************************
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(Void supertype, Void subtype) { true }
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(Void supertype, TypeInfo subtype) { true }
 
-	/** Missing type info => I can allways be super or subtype */
+	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, Void subtype) { true }
 
 	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, VoidTypeInfo subtype) { true }
@@ -35,7 +35,7 @@ class VariableSubtypingRules {
 	}
 
 	/** The maxTypes of the supertype has to include every minType in subtype */
-	static def dispatch boolean isSupertypeOf(SimpleTypeInfo supertype, SimpleTypeInfo subtype) {
+	static def dispatch boolean isSupertypeOf(GenericTypeInfo supertype, GenericTypeInfo subtype) {
 		supertype.maximalConcreteTypes == null 
 		||
 		subtype.minTypes.keySet.forall[

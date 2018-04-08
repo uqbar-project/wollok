@@ -14,22 +14,20 @@ import org.eclipse.jface.text.source.Annotation
 import org.eclipse.jface.text.source.IAnnotationModel
 import org.eclipse.jface.text.source.IAnnotationModelExtension
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.xtext.ui.editor.IXtextEditorCallback
 import org.eclipse.xtext.ui.editor.SchedulingRuleFactory
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.IXtextModelListener
 import org.eclipse.xtext.util.concurrent.IUnitOfWork
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
-import org.eclipse.xtext.ui.editor.IXtextEditorCallback.NullImpl
-
-import static org.uqbar.project.wollok.ui.editor.annotations.WOverrideIndicatorModelListener.*
 
 import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
 
 /**
  * @author jfernandes
  */
-class WOverrideIndicatorModelListener extends NullImpl implements IXtextModelListener {
+class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl implements IXtextModelListener {
 	public static final String JOB_NAME = "Override Indicator Updater";
 	private static ISchedulingRule SCHEDULING_RULE = SchedulingRuleFactory.INSTANCE.newSequence();
 	private Job currentJob
@@ -48,13 +46,13 @@ class WOverrideIndicatorModelListener extends NullImpl implements IXtextModelLis
 	}
 
 	override beforeDispose(XtextEditor xtextEditor) {
-		if (this.xtextEditor != null) {
+		if (this.xtextEditor !== null) {
 			this.xtextEditor = null;
 		}
 	}
 	
 	def installModelListener(XtextEditor xtextEditor) {
-		if (xtextEditor.getDocument != null) {
+		if (xtextEditor.getDocument !== null) {
 			asyncUpdateAnnotationModel
 			xtextEditor.document.addModelListener(this)
 		}
@@ -67,7 +65,7 @@ class WOverrideIndicatorModelListener extends NullImpl implements IXtextModelLis
 	}
 	
 	private def asyncUpdateAnnotationModel() {
-		if (currentJob != null) {
+		if (currentJob !== null) {
 			currentJob.cancel
 		}
 
@@ -90,7 +88,7 @@ class WOverrideIndicatorModelListener extends NullImpl implements IXtextModelLis
 		val annotationToPosition = xtextDocument
 				.readOnly(new IUnitOfWork<Map<Annotation, Position>, XtextResource>() {
 					override exec(XtextResource xtextResource) {
-						if (xtextResource == null)
+						if (xtextResource === null)
 							Collections.emptyMap
 						else
 							createOverrideIndicatorAnnotationMap(xtextResource)
@@ -110,13 +108,13 @@ class WOverrideIndicatorModelListener extends NullImpl implements IXtextModelLis
 	}
 	
 	private def anyIsNull() {
-		xtextEditor == null || xtextEditor.getDocument() == null || xtextEditor.internalSourceViewer.annotationModel == null
+		xtextEditor === null || xtextEditor.getDocument() === null || xtextEditor.internalSourceViewer.annotationModel === null
 	}
 	
 	def private getLockObject(IAnnotationModel annotationModel) {
 		if (annotationModel instanceof ISynchronizable) {
 			val lock = (annotationModel as ISynchronizable).lockObject
-			if (lock != null)
+			if (lock !== null)
 				return lock
 		}
 		return annotationModel;

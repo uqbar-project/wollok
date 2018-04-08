@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.typesystem
 
+import java.util.List
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructor
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -18,14 +20,21 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	
 	def clazz() { container as WClass }
 	
-	override acceptAssignment(WollokType other) {
-		val value = this == other ||
+	def WConstructor getConstructor(List<?> parameterTypes) {
+		clazz.getOwnConstructor(parameterTypes.size)
+	}	
+	
+	override acceptsAssignment(WollokType other) {
+		this == other ||
 			// hackeo por ahora. Esto no permite compatibilidad entre classes y structural types
 			(other instanceof ClassBasedWollokType
 				&& clazz.isSuperTypeOf((other as ClassBasedWollokType).clazz)
 			)
-		if (!value)
-			throw new TypeSystemException('''<<«other»>> is not a valid substitude for <<«this»>>''')	
+	}
+
+	override acceptAssignment(WollokType other) {
+		if (!acceptsAssignment(other))
+			throw new TypeSystemException('''<<«other»>> is not a valid substitute for <<«this»>>''')	
 	}
 	
 	// ***************************************************************************

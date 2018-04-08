@@ -49,21 +49,30 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 class AbstractVisitor {
 
 	/**
-	 * Main method to be used to visit an object
-	 * Avoids NPE if the given object is null.
-	 * The others (multiple dispatch) will fail and there's no way to define
-	 * a multimethod for "null" param.
-	 * Using this methods avoids all the "ifs" in each different multimethod
+	 * Main method to be used to visit an object.
+	 * Allow to interrupt execution if it does not make sense to continue.
 	 */
 	def doVisit(EObject e) {
-		if (e != null)
-			visit(e)
+		if (shouldContinue(e)) visit(e)
 	}
+	
+	/**
+	 * Lets subclasses to decide whether it is necessary to continue with execution.
+	 * By default it always visits the whole program tree.
+	 */
+	def shouldContinue(EObject e) { true }
 
-	// helper
+	/**
+	 * Helper method for visiting a collection of EObjects
+	 */
 	def void visitAll(Iterable<? extends EObject> all) {
 		all.forEach[doVisit]
 	}
+
+	/**
+	 * Avoids NPE if the given object is null.
+	 */
+	def dispatch void visit(Void it) {}
 
 	def dispatch void visit(WIfExpression it) {
 		condition.doVisit

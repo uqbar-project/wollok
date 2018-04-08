@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -45,6 +44,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	
@@ -56,7 +57,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		globalChanged = changed
 	}
 		
-	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo it) {
+	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
 		if (minTypes.isEmpty && maximalConcreteTypes !== null) {
 			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
@@ -73,7 +74,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	// ************************************************************************
 
 	/** We will stop visits after a change is found */
-	def dispatch shouldVisit(EObject e) { !changed }
+	def dispatch shouldVisit(EObject e) { !changed && !e.isCoreObject }
 
 	/** Handle nulls in multiple dispatch */
 	def dispatch shouldVisit(Void it) { false }

@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.model
 
-import java.util.HashMap
 import java.util.List
-import java.util.Map
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
@@ -19,6 +17,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
@@ -35,7 +34,6 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WExpressionOrInitializer
-import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -72,8 +70,8 @@ import wollok.lang.Exception
 
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -242,7 +240,11 @@ class WollokModelExtensions {
 	}
 
 	def static messageName(WMethodDeclaration d) {
-		d.name + "(" + d.parameters.map[name].join(", ") + ")"
+		d.name + d.parametersAsString
+	}
+	
+	def static parametersAsString(WMethodDeclaration d) {
+		"(" + d.parameters.map[name].join(", ") + ")"
 	}
 	
 	def static void addMembersTo(WMethodContainer cl, WollokObject wo) { cl.members.forEach[wo.addMember(it)] }
@@ -331,6 +333,15 @@ class WollokModelExtensions {
 			c.constructors
 		else
 			c.parent.allConstructors
+	}
+
+	/**
+	 * Look for a constructor matching the number of parameters, 
+	 * but only among the constructors written in the class itself. 
+	 * Ignore constructor inheritance.
+	 */	
+	def static getOwnConstructor(WClass clazz, int nrOfParams) {
+		clazz.constructors.findFirst[matches(nrOfParams)]
 	}
 
 	def static dispatch getConstructors(EObject o) { newArrayList }
@@ -498,11 +509,8 @@ class WollokModelExtensions {
 		val visitor = new VariableUsesVisitor
 		visitor.lookedFor = variable
 		visitor.visit(EcoreUtil2.getContainerOfType(it, WMethodDeclaration))
-		visitor.uses.length == 1 && visitor.uses.get(0).isReturnOrInReturn
+		visitor.uses.length == 1 && visitor.uses.get(0) instanceof WReturnExpression
 	}
-	
-	def static boolean isReturnOrInReturn(EObject e) { e instanceof WReturnExpression || e.isInReturn }
-	def static boolean isInReturn(EObject e) { e.eContainer !== null && e.eContainer.isReturnOrInReturn }
 
 	// *******************************
 	// ** imports
@@ -566,8 +574,10 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 	
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
+		if (m.overridenMethod === null) return false
+		if (m.expressionReturns) return m.expression.callsToSuperWith(m) 			
 		val methodBody = m.expression.eContents
-	 	m.overridenMethod !== null && ((methodBody.size == 1 && methodBody.head.callsToSuperWith(m)) || m.expression.callsToSuperWith(m))
+	 	methodBody.size == 1 && methodBody.head.callsToSuperWith(m)
 	}
 	
 	def static dispatch boolean callsToSuperWith(EObject e, WMethodDeclaration m) {	false }
@@ -611,19 +621,6 @@ class WollokModelExtensions {
 			l
 		]
 	}
-	
-	def static fullMessage(String methodName, int argumentsSize) {
-		var args = ""
-		val argsSize = argumentsSize
-		if (argsSize > 0) {
-			args = (1..argsSize).map [ "param" + it ].join(', ')
-		}
-		methodName + "(" + args + ")"
-	}
-	
-	def static fullMessage(WFeatureCall call) {
-		'''«call.feature»(«call.memberCallArguments.map[sourceCode].join(', ')»)'''
-	}
 
 	// ************************************************************************
 	// ** Compound assignments (+=, -=, *=, /=)
@@ -644,44 +641,39 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
-
-	def static prettyPrint(WConstructorCall c) {
-		c.classRef.prettyPrintConstructors
-	}
-
-	def static prettyPrintConstructors(WClass c) {
-		val newPrevExpression = WollokConstants.INSTANTIATION + " " + c.declaringContext.name + "("
-		val newPostExpression = ")"
-		val constructors = (c.declaringContext as WClass).allConstructors
-		if (constructors.isEmpty) {
-			newPrevExpression + newPostExpression
-		} else {
-			constructors.map[newPrevExpression + parameters.map[name].join(", ") + newPostExpression].join(" or ")
-		}
-	}
-
-	def static Map<String, EObject> namedArguments(WConstructorCall c) {
-		c.arguments.filter [ isNamedParameter ].toList.fold(new HashMap, [ total, i | 
-			val namedParameter = i as WInitializer
-			total.put(namedParameter.initializer.name, namedParameter)
-			total
-		])
-	}
 	
 	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
+	
 	def static dispatch isNamedParameter(WInitializer i) { true }
 	
 	def static dispatch hasNamedParameters(EObject o) { false }
 	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
 	
-	def static uninitializedNamedParameters(WConstructorCall it) {
-		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
-		val namedArguments = namedArguments.keySet
-		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
+	def static dispatch boolean sendsMessageToAssert(Void e) { false }
+	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
+	def static dispatch boolean sendsMessageToAssert(WMemberFeatureCall c) {
+		c.memberCallTarget.isAssertWKO
+	}
+	def static dispatch boolean sendsMessageToAssert(WTry t) {
+		t.expression.sendsMessageToAssert 
+			|| t.catchBlocks.exists [ sendsMessageToAssert ] 
+			|| t.alwaysExpression.sendsMessageToAssert
+	}
+	def static dispatch boolean sendsMessageToAssert(WClosure c) {
+		c.expression.sendsMessageToAssert
+	}
+	def static dispatch boolean sendsMessageToAssert(WBlockExpression b) {
+		b.expressions.exists [ sendsMessageToAssert ]
+	}
+	def static dispatch boolean sendsMessageToAssert(WCatch c) {
+		c.expression.sendsMessageToAssert
 	}
 	
-	def static createInitializersForNamedParametersInConstructor(WConstructorCall it) {
-		uninitializedNamedParameters.map 
-			[ variable.name + " = value" ].join(", ")
+	def static dispatch boolean isAssertWKO(EObject e) { false }
+	def static dispatch boolean isAssertWKO(WNamedObject wko) {
+		wko.fqn.equals(WollokDSK.ASSERT)
+	}
+	def static dispatch boolean isAssertWKO(WVariableReference ref) {
+		ref.ref.isAssertWKO
 	}
 }

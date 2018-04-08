@@ -23,7 +23,7 @@ object console {
 }
 
 /**
- * Exception to handle other values in assert.trowException*
+ * Exception to handle other values in assert.throwException*
  */
 class OtherValueExpectedException inherits wollok.lang.Exception {
 	constructor(_message) = super(_message)	
@@ -32,8 +32,8 @@ class OtherValueExpectedException inherits wollok.lang.Exception {
 
 class AssertionException inherits Exception {
 
-	var expected = null
-	var actual = null
+	const property expected = null
+	const property actual = null
 
 	constructor(message) = super(message)
 	
@@ -44,11 +44,6 @@ class AssertionException inherits Exception {
 		actual = _actual
 	}
 	
-	/** Answers the expected value, if present */
-	method getExpected() = expected
-	
-	/** Answers the actual value, if present */
-	method getActual() = actual
 }
 
 
@@ -98,7 +93,7 @@ object assert {
 	 *
 	 * Example:
 	 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
-	 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
+	 *		assert.throwsException({ "hola".length() }) ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
 		var failed = false
@@ -107,7 +102,7 @@ object assert {
 		} catch e {
 			failed = true
 		}
-		if (!failed) throw new AssertionException("Block should have failed")
+		if (!failed) throw new AssertionException("Block " + block + " should have failed")
 	}
 	
 	/** 
@@ -335,9 +330,14 @@ object game {
 	method height() native
 
 	/**
-	 * Sets cells image.
+	 * Sets cells background image.
 	 */			
 	method ground(image) native
+	
+	/**
+	 * Sets full background image.
+	 */			
+	method boardGround(image) native
 	
 	/** 
 	* @private
@@ -346,13 +346,13 @@ object game {
 }
 
 class Position {
-	var x = 0
-	var y = 0
+	var property x
+	var property y
 	
 	/**
 	 * Returns the position at origin: (0,0).
 	 */		
-	constructor() = self(0,0)
+	constructor() = self(0, 0)
 			
 	/**
 	 * Returns a position with given x and y coordinates.
@@ -427,26 +427,6 @@ class Position {
 	method clear() {
 		self.allElements().forEach{it => game.removeVisual(it)}
 	}
-	
-	/**
-	 * Returns x coordinate.
-	 */	
-	method x() = x
-
-	/**
-	 * Sets x coordinate.
-	 */	
-	method x(_x) { x = _x }
-	
-	/**
-	 * Returns y coordinate.
-	 */	
-	method y() = y
-
-	/**
-	 * Sets y coordinate.
-	 */	
-	method y(_y) { y = _y }
 	
 	/**
 	 * Two positions are equals if have same coordinates.

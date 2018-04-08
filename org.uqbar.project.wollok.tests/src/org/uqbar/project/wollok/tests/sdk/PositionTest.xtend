@@ -145,7 +145,7 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		}
 		
 		program p {
-			2.times{ «position».drawElement(new Visual()) }
+			2.times{ i => «position».drawElement(new Visual()) }
 			new Position(1,1).drawElement(new Visual())
 		}'''.interpretPropagatingErrors
 		

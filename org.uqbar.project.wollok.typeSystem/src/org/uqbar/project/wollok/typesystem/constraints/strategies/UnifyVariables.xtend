@@ -6,7 +6,8 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
@@ -14,6 +15,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -45,7 +47,11 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * - Pending means this variable needs to be visited again.
 	 * - Error means a type error was detected, variable will not be visited again.
 	 */
-	def unifyWith(TypeVariable subtype, TypeVariable supertype) {
+	def ConcreteTypeState unifyWith(ITypeVariable subtype, ITypeVariable supertype) {
+		unifyWith(subtype as TypeVariable, supertype as TypeVariable)
+	}
+
+	def ConcreteTypeState unifyWith(TypeVariable subtype, TypeVariable supertype) {
 		if (subtype.unifiedWith(supertype)) {
 			return Ready
 		}
@@ -74,7 +80,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 //			log.debug('''Not unifying «subtype» with parameter «supertype»''')
 //			return Cancel
 //		}
-
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending && it != Cancel)
@@ -103,7 +108,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			// Do not unify unless they are uniques subtype/supertypes respectively
 			// Note that this rule is more strict than for variables without type info.
 			Cancel
-		} else { 
+		} else {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		}
 	}
@@ -119,7 +124,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 	}
 
-	def dispatch doUnifyWith(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {
 		t1.minTypes = minTypesUnion(t1, t2)
 		t1.joinMaxTypes(t2.maximalConcreteTypes)
 		t1.messages.addAll(t2.messages)
@@ -131,7 +136,9 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
-		throw new UnsupportedOperationException()
+		t1.parameters.biForEach(t2.parameters, [param1, param2 | param1.unifyWith(param2)])
+		t1.returnType.unifyWith(t2.returnType)
+		Ready
 	}
 
 	def dispatch doUnifyWith(VoidTypeInfo t1, VoidTypeInfo t2) {
@@ -139,7 +146,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		Ready
 	}
 
-	protected def minTypesUnion(SimpleTypeInfo t1, SimpleTypeInfo t2) {
+	protected def minTypesUnion(GenericTypeInfo t1, GenericTypeInfo t2) {
 		(t1.minTypes.keySet + t2.minTypes.keySet).toSet.toInvertedMap [
 			if (isReadyIn(t1) && isReadyIn(t2))
 				// It was already present and ready in both originating typeInfo's
@@ -154,7 +161,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	 * Verify if the received type is already present as a mintype in the variable
 	 * and if its Ready (i.e. type information has already been propagated.
 	 */
-	def boolean isReadyIn(WollokType wollokType, SimpleTypeInfo type) {
+	def boolean isReadyIn(WollokType wollokType, GenericTypeInfo type) {
 		type.minTypes.get(wollokType) == Ready
 	}
 

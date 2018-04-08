@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Wollok Product
 Bundle-SymbolicName: org.uqbar.project.wollok.product;singleton:=true
-Bundle-Version: 1.6.4
+Bundle-Version: 1.6.5.qualifier
 Bundle-Vendor: Uqbar Project
 Bundle-Localization: plugin
 Require-Bundle: org.uqbar.project.wollok,

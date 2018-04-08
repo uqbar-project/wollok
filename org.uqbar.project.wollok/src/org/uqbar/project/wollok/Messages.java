@@ -103,12 +103,14 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_SUPER_EXPRESSION_IN_CONSTRUCTOR;
 	public static String WollokDslValidator_RETURN_FORGOTTEN;
 	public static String WollokDslValidator_METHOD_DOES_NOT_RETURN_A_VALUE_ON_EVERY_POSSIBLE_FLOW;
+	public static String WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
-	
+	public static String WollokDslValidator_REFERENCE_UNITIALIZED;
 	
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
 	public static String WollokDslValidator_DONT_DUPLICATE_TEST_DESCRIPTION;
+	public static String WollokDslValidator_TEST_SHOULD_HAVE_AT_LEAST_ONE_ASSERT;
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
@@ -200,6 +202,7 @@ public class Messages extends NLS {
 	public static String WollokConversion_INVALID_OPERATION_NULL_PARAMETER;
 	public static String WollokConversion_MULTIPLE_MESSAGES_ERROR;
 	public static String WollokConversion_INVALID_ARGUMENTS_SIZE;
+	public static String WollokConversion_INVALID_ARGUMENTS_SIZE_IN_CLOSURE;
 	public static String WollokConversion_STRING_CONVERSION_FAILED;
 
 	public static String WollokMessage_ELEMENT_NOT_FOUND;

@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -23,6 +24,7 @@ import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeBas
 import org.uqbar.project.wollok.interpreter.operation.WollokDeclarativeNativeUnaryOperations
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.scoping.WollokQualifiedNameProvider
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -35,6 +37,7 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -62,11 +65,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.interpreter.context.EvaluationContextExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WInitializer
+import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 /**
  * It's the real "interpreter".
@@ -103,8 +106,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		]
 	}
 
-	protected def WollokObject[] evalEach(EList e) { e.map[eval] }
+	protected def WollokObject[] evalEach(EList<? extends EObject> objects) { objects.map[eval] }
 
+	protected def EvaluationContext<WollokObject> currentContext() {
+		interpreter.currentContext
+	}
+	
 	/* BINARY */
 	override resolveBinaryOperation(String operator) { operator.asBinaryOperation }
 
@@ -142,6 +149,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WVariableDeclaration it) {
 		interpreter.currentContext.addReference(variable.name, right?.eval)
+		WollokDSK.getVoid(interpreter as WollokInterpreter, it)
 	}
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
@@ -381,12 +389,17 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	// other expressions
-	def dispatch WollokObject evaluate(WBlockExpression b) { b.expressions.evalAll }
+	def dispatch WollokObject evaluate(WBlockExpression b) { 
+		if (b.expressions.isEmpty) 
+			return WollokDSK.getVoid(interpreter as WollokInterpreter, b)
+
+		b.expressions.evalAll
+	}
 
 	def dispatch WollokObject evaluate(WAssignment a) {
 		val newValue = a.value.eval
 		interpreter.currentContext.setReference(a.feature.ref.name, newValue)
-		newValue
+		WollokDSK.getVoid(interpreter as WollokInterpreter, a)
 	}
 
 	// ********************************************************
@@ -400,6 +413,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			val leftOperand = binary.leftOperand.eval
 			val operation = binary.feature
 			validateNullOperand(leftOperand, operation)
+			validateVoidOperand(leftOperand, binary.leftOperand)
 			operation.asBinaryOperation.apply(leftOperand, binary.rightOperand.lazyEval)// this is just for the null == null comparisson. Otherwise is re-retrying to convert
 			.javaToWollok
 		}
@@ -415,10 +429,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def lazyEval(EObject expression) {
 		val lazyContext = interpreter.currentContext
 		return [|
-			interpreter.performOnStack(expression, lazyContext, [|expression.eval])
+			interpreter.performOnStack(expression, lazyContext, [|
+				val result = expression.eval
+				result.validateVoidOperand(expression as WExpression)
+				result
+			])
 		]
 	}
-
+	
 	def dispatch WollokObject evaluate(WPostfixOperation op) {
 		op.operand.performOpAndUpdateRef(op.feature.substring(0, 1), [|getOrCreateNumber("1")])
 	}
@@ -431,13 +449,14 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		validateNullOperand(reference.eval, operator)
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
 		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
-		newValue
+		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
 	}
 
 	def dispatch WollokObject evaluate(WUnaryOperation oper) {
 		val operation = oper.feature
 		val leftOperand = oper.operand.eval
 		validateNullOperand(leftOperand, operation)
+		validateVoidOperand(leftOperand, oper.operand)
 		operation.asUnaryOperation.apply(leftOperand)
 	}
 
@@ -446,9 +465,22 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	// member call
 	def dispatch WollokObject evaluate(WFeatureCall call) {
 		val target = call.evaluateTarget
-		if (target === null)
-			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, NULL, call.fullMessage))
-		target.call(call.feature, call.memberCallArguments.evalEach)
+		val memberTarget = call.memberTarget
+		if (target === null) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_REFERENCE_UNITIALIZED, memberTarget.sourceCode.trim))
+		}
+		if (target === getVoid(interpreter, call) && memberTarget !== null) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, memberTarget.sourceCode.trim)) 
+		}
+		val parameters = call.memberCallArguments.evalEach
+		parameters.forEach [ param, i | param.validateVoidOperand(call.memberCallArguments.get(i)) ]
+		target.call(call.feature, parameters)
+	}
+
+	private def void validateVoidOperand(WollokObject o, WExpression expression) {
+		if (o !== null && o === getVoid(interpreter, o.behavior)) {
+			throw newWollokExceptionAsJava(NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES, expression.sourceCode.trim)) 
+		}
 	}
 
 	// ********************************************************************************************
@@ -467,5 +499,4 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			createNamedObject(classFinder.getCachedObject(context, qualifiedName), qualifiedName)
 		}
 	}
-
 }

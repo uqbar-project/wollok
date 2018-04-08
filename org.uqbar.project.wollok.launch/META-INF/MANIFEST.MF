@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.uqbar.project.wollok.launch
 Bundle-Vendor: Uqbar Project
-Bundle-Version: 1.6.4
+Bundle-Version: 1.6.5.qualifier
 Bundle-SymbolicName: org.uqbar.project.wollok.launch;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui,
