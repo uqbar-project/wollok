@@ -76,7 +76,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLas
  * @author fdodino
  * @author ptesone
  * @author npasserini
- * @author jcontardo
+ * @author jcontardoeff
  * @author fbulgarelli
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
@@ -1032,7 +1032,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noEffectlessExpressionsInSequence(WProgram sequence) {
-		sequence.elements.forEach[ it, index |
+		sequence.elements.allButLast.forEach[ it, index |
 			if (isPure)
 				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WPROGRAM__ELEMENTS, index)
 		]
