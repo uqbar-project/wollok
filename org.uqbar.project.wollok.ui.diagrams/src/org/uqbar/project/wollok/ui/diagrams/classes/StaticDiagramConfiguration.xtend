@@ -363,7 +363,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		if (this.resourceCanBeUsed) {
 			var File _file = null
 			if (!this.isPlatformFile)
-				_file = new File(staticDiagramFullName.adaptFile)
+				_file = new File(new File(fullPath), staticDiagramFileName)
 			else 
 				_file = new File(staticDiagramFullName)
 				
