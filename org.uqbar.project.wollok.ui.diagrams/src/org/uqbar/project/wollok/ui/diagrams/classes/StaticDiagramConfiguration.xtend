@@ -251,11 +251,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		// Starting from project/source folder,
 		// and discarding file name (like objects.wlk) 
 		//     we try to recreate same folder structure
-		this.createDiagramsFolderIfNotExists(this.fullPath)
-		resource.fullPath.removeFirstSegments(2).removeLastSegments(1).segments.toList.forEach [ segment |
-			this.fullPath += File.separator + segment
-			this.createDiagramsFolderIfNotExists(this.fullPath)	
-		] 
+		this.createDiagramsFolderIfNotExists()
 		if (!this.originalFileName.equals(previousFileName)) {
 			this.init
 			this.loadConfiguration
@@ -346,7 +342,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	def void loadConfiguration() {
 		if (this.resourceCanBeUsed) {
 			try {
-				val file = new FileInputStream(staticDiagramFullName)
+				val file = new FileInputStream(staticDiagramFile)
 				val ois = new ObjectInputStream(file)
 				val newConfiguration = ois.readObject as StaticDiagramConfiguration
 				this.copyFrom(newConfiguration)
@@ -361,24 +357,14 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	
 	def void saveConfiguration() {
 		if (this.resourceCanBeUsed) {
-			var File _file = null
-			if (!this.isPlatformFile)
-				_file = new File(new File(fullPath), staticDiagramFileName)
-			else 
-				_file = new File(staticDiagramFullName)
-				
-			val file = new FileOutputStream(_file)
+			val file = new FileOutputStream(staticDiagramFile)
 			val oos = new ObjectOutputStream(file)
 			oos.writeObject(this)
 		}
 	}
 	
-	protected def java.net.URI adaptFile(String path) {
-		new java.net.URI("file:///" + path)
-	}
-
-	def getStaticDiagramFullName() {
-		fullPath + File.separator + staticDiagramFileName
+	def getStaticDiagramFile() {
+		new File(fullPath, staticDiagramFileName)
 	}
 	
 	def getStaticDiagramFileName() {
@@ -416,16 +402,11 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *  INTERNAL METHODS 
 	 *******************************************************
 	 */	
-	def createDiagramsFolderIfNotExists(String folder) {
-		var File directory = null
-		
-		if (this.isPlatformFile) 
-			directory = new File(folder)
-		else
-			directory = new File(folder.adaptFile)
+	def createDiagramsFolderIfNotExists() {
+		val directory = new File(this.fullPath)
 		
 		if (!directory.exists) {
-			directory.mkdir			
+			directory.mkdirs			
 		}
 	}
 	
