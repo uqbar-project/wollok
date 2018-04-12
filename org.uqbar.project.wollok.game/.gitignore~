@@ -1,6 +1,7 @@
 *.class
 .project
 .classpath
+.recommenders/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
