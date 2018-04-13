@@ -372,7 +372,7 @@
                id="org.eclipse.debug.ui.launchActionSet">
             <command
                   commandId="org.uqbar.project.wollok.ui.launch.launchReplWithoutFile"
-                  icon="icons/wollok_run_repl.png"
+                  icon="platform:/plugin/org.eclipse.jdt.debug.ui/icons/full/elcl16/resume_co.gif"
                   label="%wollok.launch.replWithoutFile"
                   style="push"
                   tooltip="%wollok.launch.replWithoutFile.desc">
@@ -390,4 +390,75 @@
       </consolePatternMatchListener>
    </extension>
   <!-- /REPL -->
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRun" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRun" pattern="org.eclipse.debug.internal.ui.actions.RunDropDownAction">  
+	   </activityPatternBinding>
+	</extension> 
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideDebug" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRun" pattern="org.eclipse.debug.internal.ui.actions.DebugDropDownAction">  
+	   </activityPatternBinding>
+	</extension> 
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRunExternalTool" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRunExternalTool" pattern="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar">  
+	   </activityPatternBinding>
+	</extension> 
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRunExternal" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRunExternal" pattern="org.eclipse.ui.externalTools.commands.OpenExternalToolsConfigurations">  
+	   </activityPatternBinding>
+	</extension>
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRunLast" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRunLast" pattern="org.eclipse.debug.ui.commands.RunLast">  
+	   </activityPatternBinding>
+	</extension>	
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRun" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRun" pattern="org.eclipse.debug.internal.ui.actions.RunDropDownAction">  
+	   </activityPatternBinding>
+	</extension>	
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideDebug" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideDebug" pattern="org.eclipse.debug.internal.ui.actions.DebugDropDownAction">
+	   </activityPatternBinding>
+	</extension>	
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideOpenTask" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideOpenTask" pattern="org.eclipse.mylyn.tasks.ui.command.openTask">  
+	   </activityPatternBinding>
+	</extension>	
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideNextAnnotation" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideNextAnnotation" pattern="org.eclipse.ui.navigate.next">  
+	   </activityPatternBinding>
+	</extension>	
+
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hidePrevAnnotation" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hidePrevAnnotation" pattern="org.eclipse.ui.navigate.previous">  
+	   </activityPatternBinding>
+	</extension>	
+
 </plugin>

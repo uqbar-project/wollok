@@ -52,14 +52,16 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addView("org.eclipse.ui.views.ContentOutline");
 		]
 		
-		addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
-		addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f)
+		// It has no effect since 4.6 (Eclipse Neon) - we should discuss if we want them
+		// visible or not
+		// addFastView("org.eclipse.team.ccvs.ui.RepositoriesView", 0.50f)
+		// addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f)
 	}
 
 	def addActionSets(IPageLayout it) {
 		#[	
-			"org.eclipse.debug.ui.launchActionSet",
-			"org.eclipse.jdt.junit.JUnitActionSet",
+//			"org.eclipse.debug.ui.launchActionSet",
+//			"org.eclipse.jdt.junit.JUnitActionSet",
 			"org.eclipse.team.ui.actionSet",
 			IPageLayout.ID_NAVIGATE_ACTION_SET
 		]
@@ -68,7 +70,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 	
 	def addPerspectiveShortcuts(IPageLayout it) {
 		#[
-			"org.eclipse.debug.ui.DebugPerspective",
+//			"org.eclipse.debug.ui.DebugPerspective",
 			"org.eclipse.team.ui.TeamSynchronizingPerspective"
 		]
 		.forEach[a| addPerspectiveShortcut(a) ]
