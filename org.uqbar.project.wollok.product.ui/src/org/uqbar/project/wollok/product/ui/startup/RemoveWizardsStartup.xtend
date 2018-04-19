@@ -3,16 +3,10 @@ package org.uqbar.project.wollok.product.ui.startup
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler
-import org.eclipse.jface.action.GroupMarker
-import org.eclipse.jface.action.IContributionItem
-import org.eclipse.jface.action.MenuManager
-import org.eclipse.jface.action.Separator
 import org.eclipse.ui.PlatformUI
-import org.eclipse.ui.internal.ActionSetContributionItem
 import org.eclipse.ui.internal.Workbench
 import org.eclipse.ui.internal.WorkbenchWindow
 import org.eclipse.ui.internal.dialogs.WorkbenchWizardElement
-import org.eclipse.ui.internal.ide.actions.BuildSetMenu
 import org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry
 import org.eclipse.ui.wizards.IWizardCategory
 import org.eclipse.ui.wizards.IWizardDescriptor
@@ -30,12 +24,11 @@ import org.uqbar.project.wollok.ui.WollokUIStartup
 class RemoveWizardsStartup implements WollokUIStartup {
 
 	override startup() {
-		println("Wollok startup!")
 		PlatformUI.workbench.newWizardRegistry.removeWizards
 		PlatformUI.workbench.exportWizardRegistry.removeWizards
 		PlatformUI.workbench.importWizardRegistry.removeWizards
 		removeUnwantedPerspectives
-		
+				
 		val window = Workbench.getInstance().getActiveWorkbenchWindow() as WorkbenchWindow
 		window.addPerspectiveListener(new WollokPerspectiveListener)
 
@@ -46,24 +39,6 @@ class RemoveWizardsStartup implements WollokUIStartup {
 //		]
 	}
 
-	def ignoredPerspectives() {
-		#[
-		"org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaHierarchyPerspective",
-		"org.eclipse.mylyn.tasks.ui.perspectives.planning", "org.eclipse.pde.ui.PDEPerspective",
-		"org.eclipse.debug.ui.DebugPerspective"
-		].map [ toLowerCase ]	
-	}
-	
-	def removeUnwantedPerspectives() {
-        val perspectiveRegistry = PlatformUI.getWorkbench().getPerspectiveRegistry()
-        val perspectiveDescriptors = perspectiveRegistry.getPerspectives()
-        val unwantedPerspectives = perspectiveDescriptors.filter [ perspectiveDescriptor |
-        	ignoredPerspectives.contains(perspectiveDescriptor.id.toLowerCase)
-        ]
-        val extChgHandler = perspectiveRegistry as IExtensionChangeHandler
-        extChgHandler.removeExtension(null, unwantedPerspectives)
-	}
-	
 	// reusable code
 	def removeWizards(IWizardRegistry it) {
 		(it as AbstractExtensionWizardRegistry).removeWizards
@@ -109,4 +84,22 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		results
 	}
 
+	def ignoredPerspectives() {
+		#[
+		"org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaHierarchyPerspective",
+		"org.eclipse.mylyn.tasks.ui.perspectives.planning", "org.eclipse.pde.ui.PDEPerspective",
+		"org.eclipse.debug.ui.DebugPerspective", "org.eclipse.jdt.ui.JavaBrowsingPerspective"
+		].map [ toLowerCase ]	
+	}
+	
+	def void removeUnwantedPerspectives() {
+        val perspectiveRegistry = PlatformUI.getWorkbench().perspectiveRegistry
+        val perspectiveDescriptors = perspectiveRegistry.perspectives
+        val unwantedPerspectives = perspectiveDescriptors.filter [ perspectiveDescriptor |
+	        ignoredPerspectives.contains(perspectiveDescriptor.id.toLowerCase)
+        ]
+        val extChgHandler = perspectiveRegistry as IExtensionChangeHandler
+        extChgHandler.removeExtension(null, unwantedPerspectives)
+	}
+	
 }

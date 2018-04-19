@@ -459,6 +459,13 @@
 	   </activity>
 	   <activityPatternBinding activityId="hidePrevAnnotation" pattern="org.eclipse.ui.navigate.previous">  
 	   </activityPatternBinding>
+	</extension>
+	
+	<extension point="org.eclipse.ui.activities">  
+	   <activity id="hideRunOSGI" name="MenuHidingActivity">  
+	   </activity>
+	   <activityPatternBinding activityId="hideRunOSGI" pattern="org.eclipse.pde.ui.EquinoxLaunchShortcut.run">  
+	   </activityPatternBinding>
 	</extension>	
 
 </plugin>

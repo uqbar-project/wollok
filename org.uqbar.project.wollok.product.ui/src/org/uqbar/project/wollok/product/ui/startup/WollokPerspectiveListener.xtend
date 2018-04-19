@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.product.ui.startup
 
+import java.util.List
+import org.eclipse.jface.action.ActionContributionItem
 import org.eclipse.jface.action.GroupMarker
 import org.eclipse.jface.action.IContributionItem
 import org.eclipse.jface.action.MenuManager
@@ -7,27 +9,33 @@ import org.eclipse.jface.action.Separator
 import org.eclipse.ui.IPerspectiveDescriptor
 import org.eclipse.ui.IPerspectiveListener
 import org.eclipse.ui.IWorkbenchPage
+import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.actions.NewWizardMenu
 import org.eclipse.ui.internal.ActionSetContributionItem
+import org.eclipse.ui.internal.ActionSetMenuManager
 import org.eclipse.ui.internal.Workbench
 import org.eclipse.ui.internal.WorkbenchWindow
 import org.eclipse.ui.internal.ide.actions.BuildSetMenu
+import org.eclipse.ui.keys.IBindingService
+import org.uqbar.project.wollok.utils.ReflectionExtensions
 
 class WollokPerspectiveListener implements IPerspectiveListener {
 	
 	override perspectiveActivated(IWorkbenchPage arg0, IPerspectiveDescriptor perspective) {
-		println("Activation " + perspective.id)
-		removeUnwantedActions
+		//removeUnwantedActions
 	}
-	
-	override perspectiveChanged(IWorkbenchPage arg0, IPerspectiveDescriptor arg1, String arg2) {
-		println("Changed " + arg1.id + " " + arg2)
+
+	override perspectiveChanged(IWorkbenchPage arg0, IPerspectiveDescriptor perspective, String event) {
 		removeUnwantedActions
+		removeUnwantedKeyBindings
 	}
 	
 	def void removeUnwantedActions() {
 		val window = Workbench.getInstance().getActiveWorkbenchWindow() as WorkbenchWindow
-		val menuManager = window.menuManager
-		menuManager.visit
+		window.menuManager => [
+			visit
+			update(true)			
+		]
 	}
 
 	def dispatch void visit(MenuManager manager) {
@@ -53,25 +61,62 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		// Project Properties
 		"projectProperties",
 		// Navigate - Open Attached Javadoc and Source files
-		"org.eclipse.xtext.ui.shared.OpenSourceFileCommand"
-		].map [ toLowerCase ]
+		"org.eclipse.xtext.ui.shared.OpenSourceFileCommand",
+		// Refactor
+		"org.eclipse.jdt.ui.actions.ModifyParameters",
+		"org.eclipse.jdt.ui.actions.ExtractTemp",
+		"org.eclipse.jdt.ui.actions.ExtractConstant",
+		"org.eclipse.jdt.ui.actions.Inline",
+		"reorgGroup2",
+		"org.eclipse.jdt.ui.actions.ConvertLocalToField",
+		"org.eclipse.jdt.ui.actions.ConvertAnonymousToNested",
+		"org.eclipse.jdt.ui.actions.ConvertNestedToTop",
+		"typeGroup",
+		"org.eclipse.jdt.ui.actions.ExtractSuperclass",
+		"org.eclipse.jdt.ui.actions.ExtractInterface",
+		"org.eclipse.jdt.ui.actions.UseSupertype",
+		"org.eclipse.jdt.ui.actions.PushDown",
+		"org.eclipse.jdt.ui.actions.PullUp",
+		"typeGroup2",
+		"org.eclipse.jdt.ui.actions.ExtractClass",
+		"org.eclipse.jdt.ui.actions.IntroduceParameterObject",
+		"codingGroup2",
+		"org.eclipse.jdt.ui.actions.IntroduceIndirection",
+		"org.eclipse.jdt.ui.actions.IntroduceFactory",
+		"org.eclipse.jdt.ui.actions.IntroduceParameter",
+		"org.eclipse.jdt.ui.actions.SelfEncapsulateField",
+		"typeGroup3",
+		"org.eclipse.jdt.ui.actions.ChangeType",
+		"org.eclipse.jdt.ui.actions.InferTypeArguments",
+		"scriptGroup",
+		"org.eclipse.jdt.ui.actions.MigrateJarFile",
+		"org.eclipse.ltk.ui.actions.CreateRefactoringScript",
+		"org.eclipse.ltk.ui.actions.ApplyRefactoringStript",
+		"org.eclipse.ltk.ui.actions.ShowRefactoringHistory",
+		// File New ...
+		"New Project|P&roject...",
+		"New|&Other..."
+		]
+	}
+	
+	def dispatch String identifier(IContributionItem it) { id }
+	def dispatch String identifier(ActionContributionItem it) { 
+		if (id === null) {
+			(action.description ?: "") + "|" + (action.text ?: "")
+		} else {
+			id
+		}
 	}
 	
 	def dispatch void visit(IContributionItem it) {
-		println("IContribution: [" + id + "] class [" + class + "]")
-		if (id !== null && unwantedContributionItems.contains(id.toLowerCase)) {
+		if (unwantedContributionItems.includesCase(identifier)) {
 			visible = false
-			update
-			println("   it.visible " + visible)
 		}
 	}
 	
 	def dispatch void visit(Separator it) {
-		println("IContribution: [" + id + "] class [" + class + "]")
-		if (id !== null && (id.equalsIgnoreCase("run") || id.equalsIgnoreCase("debug"))) {
+		if (#["run", "debug"].includesCase(id)) {
 			visible = false
-			update
-			println("   it.visible " + visible)
 		}
 	}
 	
@@ -90,6 +135,8 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"openType",
 		"openTypeInHierarchy",
 		"org.eclipse.jdt.ui.actions.OpenCallHierarchy",
+		"org.eclipse.jdt.ui.actions.GoToType",
+		"org.eclipse.jdt.ui.actions.GoToPackage",
 		// DEBUG - we should remove them when Wollok debugger is up again
 		"org.eclipse.debug.ui.actions.DebugLast",
 		"org.eclipse.debug.internal.ui.actions.DebugHistoryMenuAction",
@@ -116,13 +163,48 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		// Run external tools - if you want to allow you have to remove these lines 
 		"ExternalToolsGroup",
 		"org.eclipse.ui.externaltools.ExternalToolMenuDelegateMenu",
+		// Search
+		"org.eclipse.jdt.ui.actions.OpenJavaSearchPage",
+		"junit.actions.GotoTestAction",
 		// Source (Java) menu item
 		"org.eclipse.jdt.ui.source.menu",
 		// Mylyn Tasks
 		"org.eclipse.mylyn.tasks.ui.openTask",
 		"org.eclipse.mylyn.tasks.ui.switchTask",
-		"org.eclipse.mylyn.tasks.ui.deactivateAllTasks"
-		].map [ toLowerCase ]	
+		"org.eclipse.mylyn.tasks.ui.deactivateAllTasks",
+		// Refactor - hidden items
+		"codingGroup",
+		"org.eclipse.jdt.ui.actions.ModifyParameters",
+		"org.eclipse.jdt.ui.actions.ExtractTemp",
+		"org.eclipse.jdt.ui.actions.ExtractConstant",
+		"org.eclipse.jdt.ui.actions.Inline",
+		"reorgGroup2",
+		"org.eclipse.jdt.ui.actions.ConvertLocalToField",
+		"org.eclipse.jdt.ui.actions.ConvertAnonymousToNested",
+		"org.eclipse.jdt.ui.actions.ConvertNestedToTop",
+		"typeGroup",
+		"org.eclipse.jdt.ui.actions.ExtractSuperclass",
+		"org.eclipse.jdt.ui.actions.ExtractInterface",
+		"org.eclipse.jdt.ui.actions.UseSupertype",
+		"org.eclipse.jdt.ui.actions.PushDown",
+		"org.eclipse.jdt.ui.actions.PullUp",
+		"typeGroup2",
+		"org.eclipse.jdt.ui.actions.ExtractClass",
+		"org.eclipse.jdt.ui.actions.IntroduceParameterObject",
+		"codingGroup2",
+		"org.eclipse.jdt.ui.actions.IntroduceIndirection",
+		"org.eclipse.jdt.ui.actions.IntroduceFactory",
+		"org.eclipse.jdt.ui.actions.IntroduceParameter",
+		"org.eclipse.jdt.ui.actions.SelfEncapsulateField",
+		"typeGroup3",
+		"org.eclipse.jdt.ui.actions.ChangeType",
+		"org.eclipse.jdt.ui.actions.InferTypeArguments",
+		"scriptGroup",
+		"org.eclipse.jdt.ui.actions.MigrateJarFile",
+		"org.eclipse.ltk.ui.actions.CreateRefactoringScript",
+		"org.eclipse.ltk.ui.actions.ApplyRefactoringStript",
+		"org.eclipse.ltk.ui.actions.ShowRefactoringHistory"
+		]
 	}
 	
 	def dispatch void visit(BuildSetMenu it) {
@@ -130,15 +212,14 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	}
 	
 	def dispatch void visit(ActionSetContributionItem it) {
-		println("ActionSetContributionItem: [" + id + "] actionSetId [" + actionSetId + "]")
-		if (id !== null && shouldHideActionSet) {
+		if (shouldHideActionSet) {
 			visible = false
-			update
-			println("   it.visible " + visible)
-			println("   inner item " + innerItem)
 			if (innerItem !== null) {
 				innerItem.visible = false
 			}
+		}
+		if (innerItem !== null) {
+			innerItem.visit
 		}
 	}
 	
@@ -147,20 +228,62 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	}
 	
 	def shouldHideActionSet(ActionSetContributionItem it) {
-		unwantedActionSets.contains(id.toLowerCase) || (id.equals("") && unwantedNullActionSets.contains(actionSetId))
+		id !== null && unwantedActionSets.includesCase(id) || (id.equals("") && unwantedNullActionSets.includesCase(actionSetId))
 	}
 	
 	static val unwantedGroupMarkers = {
-		#["build.ext", "additions", "group.tutorials", "group.tools", "group.main.ext"].map [ toLowerCase ]
+		#["build.ext", "additions", "group.tutorials", "group.tools", "group.main.ext"]
 	}
 
 	def dispatch void visit(GroupMarker it) {
-		println("GroupMarker: [" + id + "]")
-		if (id !== null && unwantedGroupMarkers.contains(id.toLowerCase)) {
-			println("    visible false")
+		if (unwantedGroupMarkers.includesCase(id)) {
 			visible = false
-			update
 		}
 	}
 
+	def dispatch void visit(NewWizardMenu it) {
+		val contributionItems = ReflectionExtensions.executeMethod(it, "getContributionItems", #[]) as IContributionItem[]
+		contributionItems.forEach [ item | item.visit ]
+		update
+	}
+
+	def dispatch void visit(ActionSetMenuManager it) {
+		getItems.forEach [ item | item.visit ]
+		update
+	}
+
+	static val unwantedKeyBindings = #[
+		"org.eclipse.jdt.ui.navigate.open.type",
+		"org.eclipse.jdt.ui.edit.text.java.organize.imports",
+		"org.eclipse.jdt.ui.navigate.open.type.in.hierarchy",
+		"org.eclipse.jdt.ui.edit.text.java.open.call.hierarchy",
+		"org.eclipse.mylyn.tasks.ui.command.openTask",
+		"org.eclipse.mylyn.tasks.ui.command.openRemoteTask",
+		"org.eclipse.mylyn.context.ui.commands.toggle.focus.active.view",
+		"org.eclipse.xtext.ui.editor.OpenCallHierarchy",
+		"org.eclipse.xtext.xbase.ui.organizeImports",
+		"org.eclipse.xtext.xbase.ui.hierarchy.OpenCallHierarchy",
+		"org.eclipse.jdt.ui.edit.text.java.open.hierarchy",
+		"org.eclipse.xtext.xbase.ui.hierarchy.OpenTypeHierarchy",
+		"org.eclipse.xtend.ide.launching.junitShortcut.run",
+		"org.eclipse.xtend.ide.launching.junitPdeShortcut.debug",
+		"org.eclipse.xtend.ide.launching.localJavaShortcut.run",
+		"org.eclipse.xtend.ide.launching.localJavaShortcut.debug"
+	]
+	
+	def removeUnwantedKeyBindings() {
+		val bindingService = PlatformUI.workbench.getAdapter(typeof(IBindingService)) as IBindingService
+		bindingService.bindings.forEach [  
+			if (unwantedKeyBindings.includesCase(parameterizedCommand?.command?.id)) {
+				parameterizedCommand.command.undefine
+			}
+		]
+	}
+	
+	/**
+	 * EXTENSION METHODS
+	 */
+	def boolean includesCase(List<String> unwanted, String id) {
+		unwanted.map [ toLowerCase ].contains((id ?: "").toLowerCase)
+	}	
 }
