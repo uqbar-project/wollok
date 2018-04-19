@@ -23,17 +23,17 @@ class WDictionary implements JavaWrapper<Map> {
 		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
 	}
 	
-	def clear() { 
+	def void clear() { 
 		wrapped.clear
 	}
-	
+
 	def basicGet(WollokObject key) { 
 		wrapped.get(key)
 	}
 	
-	def put(WollokObject key, WollokObject value) {
-		if (key == null) throw new IllegalArgumentException("You cannot put a null key in a Dictionary") 
-		if (value == null) throw new IllegalArgumentException("You cannot put a null value in a Dictionary")
+	def void put(WollokObject key, WollokObject value) {
+		if (key === null) throw new IllegalArgumentException("You cannot put a null key in a Dictionary") 
+		if (value === null) throw new IllegalArgumentException("You cannot put a null value in a Dictionary")
 		wrapped.put(key, value)
 	}
 

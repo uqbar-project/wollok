@@ -153,6 +153,18 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		assert.that(mapaTelefonos.isEmpty())
 		'''.test
 	}
+
+	@Test
+	def void testToString() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		assert.equals(mapaTelefonos.toString(), "a Dictionary []")
+		mapaTelefonos.put("choli", "2142-5980")
+		assert.equals(mapaTelefonos.toString(), "a Dictionary [\"choli\" -> \"2142-5980\"]")
+		mapaTelefonos.put(2, 33)
+		assert.equals(mapaTelefonos.toString(), "a Dictionary [\"choli\" -> \"2142-5980\", 2 -> 33]")
+		'''.test
+	}
 	
 	@Test
 	def void testPutNullKeyShouldThrowAnException() {
