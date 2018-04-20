@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.ui.wizard.abstractWizards;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -27,7 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.uqbar.project.wollok.WollokConstants;
 import org.uqbar.project.wollok.ui.Messages;
+import org.uqbar.project.wollok.utils.WEclipseUtils;
 import org.uqbar.project.wollok.validation.ElementNameValidation;
 import org.uqbar.project.wollok.validation.Validation;
 
@@ -209,8 +210,17 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			}
 		}
 		
+		int dotQuantity = fileName.length() - fileName.replace(".", "").length();
+		if (dotQuantity > 1) {
+			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeValid); //$NON-NLS-2$
+			return;
+		}
 		
-		String fullPathFile = container.getRawLocationURI().getPath() + "/" + fileName;
+		URI rootURI = container.getRawLocationURI();
+		if (rootURI == null) {
+			rootURI = container.getLocationURI();
+		}
+		String fullPathFile = rootURI.getPath() + "/" + fileName;
 		java.nio.file.Path path = Paths.get(fullPathFile);
 		
 		if (Files.exists(path)) {
@@ -241,26 +251,12 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 	
 	@SuppressWarnings("rawtypes")
 	protected String initialContainerValue() {
-			Iterator it = selection.iterator();
-			if (it.hasNext()) {
-				Object object = it.next();
-				IResource selectedResource = null;
-				if (object instanceof IResource) {
-					selectedResource = (IResource) object;
-				} else if (object instanceof IAdaptable) {
-					selectedResource = (IResource) ((IAdaptable) object)
-							.getAdapter(IResource.class);
-				}
-				if (selectedResource != null) {
-					if (selectedResource.getType() == IResource.FILE) {
-						selectedResource = selectedResource.getParent();
-					}
-					if (selectedResource.isAccessible()) {
-						return selectedResource.getFullPath().toString();
-					}
-				}
-			}
-			return ""; //$NON-NLS-1$
+		Iterator it = selection.iterator();
+		if (it.hasNext()) {
+			Object object = it.next();
+			return WEclipseUtils.getFullPath(object);
 		}
+		return ""; //$NON-NLS-1$
+	}
 
 }
