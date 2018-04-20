@@ -39,10 +39,12 @@ class WCollection<T extends Collection<WollokObject>> {
 	}
 
 	def void add(WollokObject e) { wrapped.add(e) }
+	
 	def void remove(WollokObject e) { 
 		// This is necessary because native #contains does not take into account Wollok object equality 
 		wrapped.remove(wrapped.findFirst[it.wollokEquals(e)])
 	}
+
 	def size() { wrapped.size }
 	
 	def void clear() { wrapped.clear }
@@ -52,7 +54,7 @@ class WCollection<T extends Collection<WollokObject>> {
 	def join(String separator) {
 		wrapped.map[ if (it instanceof WCallable) call("toString") else toString ].join(separator)
 	}
-		
+	
 	@NativeMessage("==")
 	def wollokEqualsEquals(WollokObject other) { wollokEquals(other) }
 	

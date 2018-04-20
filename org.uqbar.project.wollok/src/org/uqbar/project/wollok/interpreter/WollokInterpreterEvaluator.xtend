@@ -135,7 +135,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WProgram it) { elements.evalAll }
 
-	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
+	def dispatch WollokObject evaluate(WTest it) { elements.evalAll	}
 
 	def dispatch WollokObject evaluate(WSuite it) {
 		tests.fold(null) [ a, test |

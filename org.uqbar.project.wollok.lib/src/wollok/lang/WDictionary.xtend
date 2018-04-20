@@ -54,7 +54,7 @@ class WDictionary implements JavaWrapper<Map> {
 	}
 	
 	def void forEach(WollokObject proc) {
-		wrapped.entrySet.forEach [ Entry entry |
+		wrapped.entrySet.sortBy [ toString ].forEach [ Entry entry |
 			val c = proc.asClosure
 			c.doApply(entry.key.javaToWollok, entry.value.javaToWollok)
 		]

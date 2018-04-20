@@ -162,7 +162,7 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		mapaTelefonos.put("choli", "2142-5980")
 		assert.equals(mapaTelefonos.toString(), "a Dictionary [\"choli\" -> \"2142-5980\"]")
 		mapaTelefonos.put(2, 33)
-		assert.equals(mapaTelefonos.toString(), "a Dictionary [\"choli\" -> \"2142-5980\", 2 -> 33]")
+		assert.equals(mapaTelefonos.toString(), "a Dictionary [2 -> 33, \"choli\" -> \"2142-5980\"]")
 		'''.test
 	}
 	

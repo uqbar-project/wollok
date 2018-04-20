@@ -1,10 +1,10 @@
 package wollok.lang
 
+import java.util.Collection
 import java.util.Set
 import java.util.TreeSet
-import java.util.Collection
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * @author jfernandes
@@ -27,5 +27,5 @@ class WSet extends WCollection<Set<WollokObject>> {
 			set.exists[ it.wollokEquals(elem) ]
 		]
 	}
-
+	
 }
