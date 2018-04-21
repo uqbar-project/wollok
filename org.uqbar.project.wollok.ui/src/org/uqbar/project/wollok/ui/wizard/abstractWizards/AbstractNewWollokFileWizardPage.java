@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.ui.wizard.abstractWizards;
 
-import java.net.URI;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -8,7 +8,6 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -26,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.uqbar.project.wollok.WollokConstants;
 import org.uqbar.project.wollok.ui.Messages;
 import org.uqbar.project.wollok.utils.WEclipseUtils;
 import org.uqbar.project.wollok.validation.ElementNameValidation;
@@ -132,13 +130,9 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			if (ssel.size() > 1)
 				return;
 			Object obj = ssel.getFirstElement();
-			if (obj instanceof IResource) {
-				IContainer container;
-				if (obj instanceof IContainer)
-					container = (IContainer) obj;
-				else
-					container = ((IResource) obj).getParent();
-				containerText.setText(container.getFullPath().toString());
+			IContainer container = WEclipseUtils.getContainer(obj);
+			if (container != null) {
+				containerText.setText (container.getFullPath().toString());
 			}
 		}
 		fileText.setText(this.initialFileName);
@@ -155,7 +149,10 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
-				containerText.setText(((Path) result[0]).toString());
+				Path path = (Path) result[0];
+				IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+				IContainer container = WEclipseUtils.getContainer(resource);
+				containerText.setText(WEclipseUtils.getFullPath(container));
 			}
 		}
 	}
@@ -209,18 +206,14 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				return;
 			}
 		}
-		
+
 		int dotQuantity = fileName.length() - fileName.replace(".", "").length();
 		if (dotQuantity > 1) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeValid); //$NON-NLS-2$
 			return;
 		}
 		
-		URI rootURI = container.getRawLocationURI();
-		if (rootURI == null) {
-			rootURI = container.getLocationURI();
-		}
-		String fullPathFile = rootURI.getPath() + "/" + fileName;
+		String fullPathFile = container.getLocation().toOSString() + File.separator + fileName;
 		java.nio.file.Path path = Paths.get(fullPathFile);
 		
 		if (Files.exists(path)) {

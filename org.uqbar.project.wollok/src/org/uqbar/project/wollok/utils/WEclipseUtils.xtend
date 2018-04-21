@@ -7,6 +7,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.Map
 import java.util.Set
+import org.eclipse.core.internal.resources.Project
 import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IMarker
@@ -27,8 +28,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.internal.core.JavaProject
-import org.eclipse.jdt.internal.core.PackageFragment
-import org.eclipse.jdt.internal.core.PackageFragmentRoot
 import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.jface.text.IRegion
@@ -234,19 +233,27 @@ class WEclipseUtils {
 
 	def static dispatch String getFullPath(JavaProject p) {
 		val firstSourceFolder = if (p.allPackageFragmentRoots.empty) "" else p.allPackageFragmentRoots.head?.resource.name
-		var newPath = p.getAdapter(typeof(IResource)).path
-		if (!newPath.endsWith(firstSourceFolder)) {
-			newPath += "/" + firstSourceFolder
-		}
-		newPath
+		p.forceSourceFolderPath(firstSourceFolder)
 	}
 
+	def static dispatch String getFullPath(Project p) {
+		p.forceSourceFolderPath(WollokConstants.SOURCE_FOLDER)		
+	}
+	
 	def static dispatch getFullPath(IResource r) {
 		r.path
 	}
 
 	def static dispatch getFullPath(IAdaptable a) {
 		a.getAdapter(typeof(IResource)).path
+	}
+
+	def static forceSourceFolderPath(IAdaptable project, String sourceFolder) {
+		var newPath = project.getAdapter(typeof(IResource)).path
+		if (!newPath.endsWith(sourceFolder)) {
+			newPath += "/" + sourceFolder
+		}
+		newPath
 	}
 
 	def static String getPath(IResource r) {
@@ -259,5 +266,26 @@ class WEclipseUtils {
 		}
 		return ""
 	}
+	
+	def static dispatch IContainer getContainer(Object o) { null }
+	
+	def static dispatch IContainer getContainer(Project p) {
+		var resource = p.getAdapter(typeof(IResource))
+		if (!resource.path.endsWith(WollokConstants.SOURCE_FOLDER)) {
+			resource = p.findMember(WollokConstants.SOURCE_FOLDER)
+		}
+		resource.container
+	}
+
+	def static dispatch IContainer getContainer(JavaProject p) {
+		if (p.allPackageFragmentRoots.empty) {
+			return null
+		} 
+		p.allPackageFragmentRoots.head?.resource.container
+	}
+	
+	def static dispatch IContainer getContainer(IContainer c) { c }
+	
+	def static dispatch IContainer getContainer(IResource r) { r.parent }
 	
 }
