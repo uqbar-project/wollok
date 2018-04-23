@@ -146,6 +146,7 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 				Messages.AbstractNewWollokFileWizardPage_selectContainer);
+		dialog.setValidator(new WollokElementValidator());
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
@@ -173,12 +174,10 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileContainerDoesNotExists);
 			return;
 		}
-
 		if (!container.isAccessible()) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_projectMustBeWritable);
 			return;
 		}
-		
 		if (fileName.length() == 0) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeSpecified);
 			return;
@@ -192,7 +191,6 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 			updateStatus(nameValidation.getMessage());
 			return;
 		}
-		
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
@@ -206,21 +204,17 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				return;
 			}
 		}
-
 		int dotQuantity = fileName.length() - fileName.replace(".", "").length();
 		if (dotQuantity > 1) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameMustBeValid); //$NON-NLS-2$
 			return;
 		}
-		
 		String fullPathFile = container.getLocation().toOSString() + File.separator + fileName;
 		java.nio.file.Path path = Paths.get(fullPathFile);
-		
 		if (Files.exists(path)) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameAlreadyExists);
 			return;
 		}
-		
 		boolean ok = doDialogChanged();
 		if (ok) updateStatus(null);
 	}

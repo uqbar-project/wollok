@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.internal.core.JavaProject
 import org.eclipse.jface.text.BadLocationException
@@ -288,4 +289,7 @@ class WEclipseUtils {
 	
 	def static dispatch IContainer getContainer(IResource r) { r.parent }
 	
+	def static boolean isSourceFolder(IContainer c) {
+		#["bin", ".settings", "META-INF"].forall [ !c.path.contains(it) ]
+	}
 }
