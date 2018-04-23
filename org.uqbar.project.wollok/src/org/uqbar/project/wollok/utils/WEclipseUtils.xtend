@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.jobs.Job
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jdt.internal.core.JavaProject
 import org.eclipse.jface.text.BadLocationException
@@ -42,7 +41,8 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.model.XtextDocumentUtil
-import org.uqbar.project.wollok.WollokConstants
+
+import static org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Utilities on top of eclipse platform.
@@ -202,7 +202,7 @@ class WEclipseUtils {
 
 	def static dispatch Set<IResource> getAllMembers(IContainer container) {
 		val Map<String, IResource> result = newHashMap
-		container.members.filter[fullPath.toPortableString.contains(WollokConstants.SOURCE_FOLDER)].forEach [
+		container.members.filter[fullPath.toPortableString.contains(SOURCE_FOLDER)].forEach [
 			allMembers.forEach[result.put(it.fullPath.toPortableString, it)]
 		]
 		result.values.toSet
@@ -226,8 +226,7 @@ class WEclipseUtils {
 	}
 
 	def static isWollokExtension(IResource file) {
-		#[WollokConstants.PROGRAM_EXTENSION, WollokConstants.TEST_EXTENSION, WollokConstants.CLASS_OBJECTS_EXTENSION].
-			contains(file.fileExtension)
+		#[PROGRAM_EXTENSION, TEST_EXTENSION, CLASS_OBJECTS_EXTENSION].contains(file.fileExtension)
 	}
 
 	def static dispatch String getFullPath(Object o) { "" }
@@ -238,7 +237,7 @@ class WEclipseUtils {
 	}
 
 	def static dispatch String getFullPath(Project p) {
-		p.forceSourceFolderPath(WollokConstants.SOURCE_FOLDER)		
+		p.forceSourceFolderPath(SOURCE_FOLDER)		
 	}
 	
 	def static dispatch getFullPath(IResource r) {
@@ -268,12 +267,10 @@ class WEclipseUtils {
 		return ""
 	}
 	
-	def static dispatch IContainer getContainer(Object o) { null }
-	
 	def static dispatch IContainer getContainer(Project p) {
 		var resource = p.getAdapter(typeof(IResource))
-		if (!resource.path.endsWith(WollokConstants.SOURCE_FOLDER)) {
-			resource = p.findMember(WollokConstants.SOURCE_FOLDER)
+		if (!resource.path.endsWith(SOURCE_FOLDER)) {
+			resource = p.findMember(SOURCE_FOLDER)
 		}
 		resource.container
 	}
@@ -288,8 +285,11 @@ class WEclipseUtils {
 	def static dispatch IContainer getContainer(IContainer c) { c }
 	
 	def static dispatch IContainer getContainer(IResource r) { r.parent }
+
+	def static dispatch IContainer getContainer(Object o) { null }
 	
-	def static boolean isSourceFolder(IContainer c) {
-		#["bin", ".settings", "META-INF"].forall [ !c.path.contains(it) ]
+	def static boolean isSourceFolder(IResource r) {
+		HIDDEN_FOLDERS.forall [ !r.path.contains("/" + it) ]
 	}
+
 }

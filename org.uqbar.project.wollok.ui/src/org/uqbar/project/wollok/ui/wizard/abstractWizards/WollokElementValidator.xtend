@@ -11,11 +11,10 @@ class WollokElementValidator implements ISelectionValidator {
 	override isValid(Object arg0) {
 		val path = arg0 as Path
 		val resource = ResourcesPlugin.workspace.root.findMember(path)
-		if (resource.hidden) {
+		if (resource === null || resource.hidden) {
 			return Messages.ELEMENT_VALIDATOR_SELECT_SOURCE_FOLDER
 		}
-		val container = resource.container
-		if (container.isSourceFolder) null else Messages.ELEMENT_VALIDATOR_SELECT_SOURCE_FOLDER
+		if (resource.isSourceFolder) null else Messages.ELEMENT_VALIDATOR_SELECT_SOURCE_FOLDER
 	}
 	
 }
