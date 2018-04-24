@@ -3,6 +3,8 @@ package wollok.lang
 import java.util.Collection
 import java.util.Set
 import java.util.TreeSet
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
@@ -17,7 +19,7 @@ class WSet extends WCollection<Set<WollokObject>> {
 	
 	def anyOne() { 
 		if(wrapped.isEmpty) 
-			throw new WollokRuntimeException("Illegal operation 'anyOne' on empty collection")
+			throw new WollokRuntimeException(NLS.bind(Messages.WollokInterpreter_illegalOperationEmptyCollection, "anyOne"))
 		else
 			wrapped.head
 	}

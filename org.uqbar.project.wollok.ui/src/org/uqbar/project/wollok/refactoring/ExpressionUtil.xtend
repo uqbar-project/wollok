@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.refactoring
 
-import static java.util.Collections.*;
-
 import com.google.inject.Inject
 import java.util.List
 import org.eclipse.emf.ecore.EObject
@@ -12,10 +10,11 @@ import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.ILocationInFileProvider
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.xtext.util.ITextRegion
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.eclipse.xtext.util.ITextRegion
-import org.eclipse.xtext.nodemodel.ICompositeNode
+
+import static java.util.Collections.*
 
 /**
  * 
@@ -35,7 +34,7 @@ class ExpressionUtil {
 		if (selectedExpression instanceof WBlockExpression) {
 			selectedExpression.expressions.filter[subExpression | intersects(getTextRegion(subExpression), trimmedSelection) ].toList
 		} 
-		else if (selectedExpression == null)
+		else if (selectedExpression === null)
 			emptyList
 		else
 			singletonList(selectedExpression)
@@ -51,7 +50,7 @@ class ExpressionUtil {
 	
 	def ITextSelection trimSelection(XtextResource resource, ITextSelection selection) {
 		val parseResult = resource.parseResult
-		if (parseResult != null) {
+		if (parseResult !== null) {
 			val model = parseResult.rootNode.text
 			val selectedText = model.substring(selection.offset, selection.offset + selection.length)
 			val trimmedSelection = selectedText.trim
@@ -65,10 +64,10 @@ class ExpressionUtil {
 	 */
 	def findSelectedExpression(XtextResource resource, ITextSelection selection) {
 		val parseResult = resource.parseResult
-		if (parseResult != null) {
+		if (parseResult !== null) {
 			val rootNode = parseResult.rootNode
 			var INode node = NodeModelUtils.findLeafNodeAtOffset(rootNode, selection.offset)
-			if (node == null) {
+			if (node === null) {
 				return null
 			}
 			if (isHidden(node)) {
@@ -80,11 +79,11 @@ class ExpressionUtil {
 			else if (node.offset == selection.offset && !isBeginOfExpression(node)) { 
 				node = NodeModelUtils.findLeafNodeAtOffset(rootNode, selection.offset - 1)
 			}
-			if (node != null) {
+			if (node !== null) {
 				var currentSemanticElement = NodeModelUtils.findActualSemanticObjectFor(node);
 				while (!(contains(currentSemanticElement, node, selection) && currentSemanticElement instanceof WExpression)) {
 					node = nextNodeForFindSelectedExpression(currentSemanticElement, node, selection)
-					if (node == null)
+					if (node === null)
 						return null
 					currentSemanticElement = NodeModelUtils.findActualSemanticObjectFor(node)
 				}
@@ -111,7 +110,7 @@ class ExpressionUtil {
 	}
 
 	def contains(EObject element, INode node, ITextSelection selection) {
-		element != null && contains(getTotalTextRegion(element, node), selection)
+		element !== null && contains(getTotalTextRegion(element, node), selection)
 	}
 
 	def contains(ITextRegion textRegion, ITextSelection selection) {

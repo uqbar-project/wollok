@@ -28,6 +28,8 @@ public class Messages extends NLS {
 	public static String WollokInterpreter_operatorNotSupported;
 	public static String WollokInterpreter_constructorCallNotAllowed;
 	public static String WollokInterpreter_binaryOperationNotCompoundAssignment;
+	public static String WollokInterpreter_visualObjectWithoutPosition;
+	public static String WollokInterpreter_illegalOperationEmptyCollection;
 	
 	public static String WollokScopeProvider_unresolvedImport;
 	

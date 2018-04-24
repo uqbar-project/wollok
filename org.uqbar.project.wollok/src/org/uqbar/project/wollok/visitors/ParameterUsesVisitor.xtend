@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
-class ParameterUsesVisitor extends AbstractVisitor {
+class ParameterUsesVisitor extends AbstractWollokVisitor {
 
 	List<EObject> uses = newArrayList
 	WParameter lookedFor

@@ -97,7 +97,7 @@ class ExtractMethodRefactoring extends Refactoring {
 	override getName() { "Extract Method Refactoring" }
 	
 	def initialize(XtextEditor editor, List<WExpression> expressions, boolean doSave) {
-		if (expressions.empty || editor.document == null)
+		if (expressions.empty || editor.document === null)
 			return false
 		
 		this.document = editor.document
@@ -110,7 +110,7 @@ class ExtractMethodRefactoring extends Refactoring {
 		this.xtendClass = EcoreUtil2.getContainerOfType(firstExpression, WMethodContainer)
 		this.originalMethod = EcoreUtil2.getContainerOfType(firstExpression, WMethodDeclaration)
 		
-		if (xtendClass == null || originalMethod == null)
+		if (xtendClass === null || originalMethod === null)
 			return false
 		
 		val successorExpression = expressionUtil.findSuccessorExpressionForVariableDeclaration(lastExpression)
@@ -282,7 +282,7 @@ class ExtractMethodRefactoring extends Refactoring {
 	}
 	
 	def isNeedsReturnExpression() {
-		returnExpression != null 
+		returnExpression !== null 
 			// TODO: this seems an oversimplification
 			&& !(lastExpression.eContainer instanceof WBlockExpression)  
 	}

@@ -102,7 +102,7 @@ class ExtractMethodUserInputPage extends UserInputWizardPage {
 	}
 
 	def updatePreview() {
-		if (signaturePreview != null)
+		if (signaturePreview !== null)
 			partialEditor.updateModel(partialEditorModelPrefix, refactoring.methodSignature, partialEditorModelSuffix)
 	}
 	

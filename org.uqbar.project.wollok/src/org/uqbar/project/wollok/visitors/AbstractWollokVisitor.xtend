@@ -45,8 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
  * @author tesonep
  * @author jfernandes
  */
- //RENAME: AbstractWollokVisitor (?)
-class AbstractVisitor {
+class AbstractWollokVisitor {
 
 	/**
 	 * Main method to be used to visit an object.
