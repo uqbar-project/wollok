@@ -3,7 +3,8 @@ package org.uqbar.project.wollok.errorHandling
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.List
-import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
@@ -134,7 +135,7 @@ class WollokExceptionExtensions {
 	}
 	
 	def static dispatch getURI(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
+		throw new IllegalArgumentException(NLS.bind(Messages.WollokInterpreter_assertionExceptionNotValid, e.class.name))
 	}
 	
 	/**
@@ -149,7 +150,7 @@ class WollokExceptionExtensions {
 	}
 	
 	def static dispatch getLineNumber(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
+		throw new IllegalArgumentException(NLS.bind(Messages.WollokInterpreter_assertionExceptionNotValid, e.class.name))
 	}
 	
 	def static String printStackTrace(StackTraceElementDTO[] stackTrace) {

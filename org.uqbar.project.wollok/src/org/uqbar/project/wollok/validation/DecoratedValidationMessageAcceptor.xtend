@@ -19,7 +19,7 @@ class DecoratedValidationMessageAcceptor implements ValidationMessageAcceptor {
 	}
 
 	def checkCode(String code) {
-		if (code == null)  defaultCode else code
+		if (code === null)  defaultCode else code
 	}
 	
 	override acceptError(String message, EObject object, EStructuralFeature feature, int index, String code, String... issueData) {

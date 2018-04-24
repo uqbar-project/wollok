@@ -26,7 +26,7 @@ class WVisual extends VisualComponent {
 	override getAttributes() {
 		wObject
 		.printableVariables
-		.filter[value != null]
+		.filter[value !== null]
 		.map[key + ":" + value.toString]
 		.toList
 	}
@@ -44,7 +44,7 @@ class WVisual extends VisualComponent {
 	}
 
 	def getObjectPosition() {
-		if (wPosition != null)
+		if (wPosition !== null)
 			return new WPosition(wPosition)
 
 		new WPosition(wObject.position)

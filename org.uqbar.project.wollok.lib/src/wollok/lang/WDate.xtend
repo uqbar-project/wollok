@@ -111,11 +111,4 @@ class WDate extends AbstractJavaWrapper<LocalDate> {
 		wDate !== null && wrapped == wDate.wrapped
 	}
 	
-	def asWString(WollokObject it) { 
-		val wDate = it.getNativeObject(WDate) as WDate
-		// TODO: i18n
-		if (wDate === null) throw new WollokRuntimeException("Expecting object to be a date: " + it)
-		wDate
-	}
-
 }

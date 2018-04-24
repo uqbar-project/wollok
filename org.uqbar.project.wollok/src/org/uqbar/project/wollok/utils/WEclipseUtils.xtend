@@ -48,6 +48,8 @@ import static org.uqbar.project.wollok.WollokConstants.*
  * Utilities on top of eclipse platform.
  * 
  * @author jfernandes 
+ * @author dodain - added new extension methods for New Object/Test/Program wizards
+ * 
  */
 class WEclipseUtils {
 

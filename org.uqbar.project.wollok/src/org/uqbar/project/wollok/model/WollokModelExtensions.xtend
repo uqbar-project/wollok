@@ -12,6 +12,7 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextResource
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -72,6 +73,7 @@ import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -90,7 +92,7 @@ class WollokModelExtensions {
 		if (it === null || it.URI === null || it.URI.toString === null) {
 			return null
 		}
-		if (URI.toString.startsWith("classpath:/"))
+		if (URI.toString.startsWith(CLASSPATH))
 			URI.trimFileExtension.segments.join(".")
 		else
 			fullPackageName(it)
@@ -631,7 +633,7 @@ class WollokModelExtensions {
 	
 	public static def operator(WBinaryOperation it) { 
 		if (isMultiOpAssignment) feature.substring(0, 1)
-		else throw new UnsupportedOperationException("Binary operation is not a compound assignment.")
+		else throw new UnsupportedOperationException(Messages.WollokInterpreter_binaryOperationNotCompoundAssignment)
 	}
 	
 	def static dispatch isASuite(EObject o) { false }

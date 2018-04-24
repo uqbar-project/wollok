@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.debugger.model.WollokStackFrame
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Given a stack frame it resolves the file to be opened by the editor.
@@ -53,7 +54,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 		if (object instanceof WollokStackFrame) {
 			try {
 				// this can probably be done in a better way
-				if (object.fileURI.toString.startsWith("classpath:")) {
+				if (object.fileURI.toString.startsWith(CLASSPATH)) {
 //					val fileName = object.fileURI.toString.substring(object.fileURI.toString.indexOf(':') + 2)
 //					return getOrCreateLibContainer.findSourceElements(fileName)
 					super.findSourceElements(object)

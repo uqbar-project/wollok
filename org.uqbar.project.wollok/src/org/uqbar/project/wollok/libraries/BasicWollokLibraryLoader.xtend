@@ -26,9 +26,7 @@ class BasicWollokLibraryLoader implements WollokLibraryLoader {
 	}
 	
 	def libraries(Resource resource) {
-		#[standardLib] + libs.getWollokLibs(resource);
+		#[standardLib] + libs.getWollokLibs(resource)
 	}
 	
-
-
 }

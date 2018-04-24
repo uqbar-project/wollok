@@ -108,7 +108,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			throw e
 		}
 		catch (RuntimeException e) {
-			throw new RuntimeException("Error while executing 'messageNotUnderstood': " + e.message, e)
+			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_errorWhileMessageNotUnderstood, e.message), e)
 		}
 	}
 	
@@ -164,9 +164,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
  	
 	override setReference(String name, WollokObject value) {
 		if (name == SELF)
-			throw new RuntimeException("Cannot modify \"" +  SELF + "\" variable")
+			throw new RuntimeException(NLS.bind(Messages.WollokDslValidator_CANNOT_MODIFY_REFERENCE, SELF))
 		if (!instanceVariables.containsKey(name))
-			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
+			throw new UnresolvableReference(NLS.bind(Messages.WollokInterpreter_unrecognizedVariable, name, this))
 		
 		val oldValue = instanceVariables.put(name, value)
 		listeners.forEach[fieldChanged(name, oldValue, value)]
@@ -223,11 +223,8 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	def addFieldChangedListener(WollokObjectListener listener) { this.listeners.add(listener) }
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
 	
-	// UFFF no estoy seguro de esto ya 
 	override addReference(String variable, WollokObject value) {
-//		throw new UnsupportedOperationException("ERROR while adding reference [" + variable + "] to value [" + value + "]")
 		setReference(variable, value)
-//		addGlobalReference(variable, value)
 		value
 	}
 	

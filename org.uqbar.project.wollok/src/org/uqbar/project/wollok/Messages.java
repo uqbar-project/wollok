@@ -18,7 +18,19 @@ public class Messages extends NLS {
 
 	public static String WollokInterpreter_cannot_use_null_in_if;
 	public static String WollokInterpreter_expression_in_if_must_evaluate_to_boolean;
-
+	public static String WollokInterpreter_error_evaluating_line;
+	public static String WollokInterpreter_errorWhileMessageNotUnderstood;
+	public static String WollokInterpreter_unrecognizedVariable;
+	public static String WollokInterpreter_lazyValuesOnlySupportEval;
+	public static String WollokInterpreter_assertionExceptionNotValid;
+	public static String WollokInterpreter_errorWhileResolvingOperation;
+	public static String WollokInterpreter_operationNotSupported;
+	public static String WollokInterpreter_operatorNotSupported;
+	public static String WollokInterpreter_constructorCallNotAllowed;
+	public static String WollokInterpreter_binaryOperationNotCompoundAssignment;
+	
+	public static String WollokScopeProvider_unresolvedImport;
+	
 	public static String WollokDslValidator_CLASS_NAME_MUST_START_UPPERCASE;
 	public static String WollokDslValidator_REFERENCIABLE_NAME_MUST_START_LOWERCASE;
 	public static String WollokDslValidator_VARIABLE_NAME_MUST_START_LOWERCASE;
@@ -38,6 +50,7 @@ public class Messages extends NLS {
 
 	public static String WollokDslValidator_GETTER_METHOD_SHOULD_RETURN_VALUE;
 	public static String WollokDslValidator_CANNOT_MODIFY_VAL;
+	public static String WollokDslValidator_CANNOT_MODIFY_REFERENCE;
 	public static String WollokDslValidator_CANNOT_ASSIGN_TO_ITSELF;
 	public static String WollokDslValidator_CYCLIC_HIERARCHY;
 	public static String WollokDslValidator_DUPLICATED_METHOD;
@@ -213,6 +226,9 @@ public class Messages extends NLS {
 	
 	public static String WollokNumberPreferences_COERCING_STRATEGY_NOTFOUND;
 	public static String WollokNumberPreferences_PRINTING_STRATEGY_NOTFOUND;
+	
+	public static String WollokDictionary_CANNOT_PUT_NULL_KEY;
+	public static String WollokDictionary_CANNOT_PUT_NULL_VALUE;
 	
 	// ****************************
 	// ** Wollok Type System

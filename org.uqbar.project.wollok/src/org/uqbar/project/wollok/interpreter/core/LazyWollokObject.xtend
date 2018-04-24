@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.interpreter.core
 
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
@@ -24,13 +25,13 @@ class LazyWollokObject extends WollokObject {
 	}
 	
 	override call(String message, WollokObject... parameters) {
-		if (message != "eval")
-			throw messageNotUnderstood("Lazy values only support eval()")
+		if (message !== "eval")
+			throw messageNotUnderstood(Messages.WollokInterpreter_lazyValuesOnlySupportEval)
 		eval
 	}
 	
 	def synchronized eval() { 
-		if (evaluated == null)
+		if (evaluated === null)
 			evaluated = lazyValue.apply
 		evaluated	
 	}
