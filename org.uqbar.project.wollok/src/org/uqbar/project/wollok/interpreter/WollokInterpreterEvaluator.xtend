@@ -154,9 +154,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
 		if (ref instanceof WNamedObject)
-			ref.eval
-		else
-			interpreter.currentContext.resolve(ref.name)
+			return ref.eval
+		
+		val variableName = ref.name
+		if (variableName === null) {
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + astNode.text.trim)
+		}
+		interpreter.currentContext.resolve(variableName)
 	}
 	
 	def dispatch WollokObject evaluate(WIfExpression it) {
@@ -447,8 +451,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>WollokObject rightPart) {
 		validateNullOperand(reference.eval, operator)
+		val variableName = (reference as WVariableReference).ref.name
+		if (variableName === null) {
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + reference.astNode.text)
+		}
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
-		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
+		
+		interpreter.currentContext.setReference(variableName, newValue)
 		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
 	}
 
