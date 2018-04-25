@@ -102,7 +102,6 @@ class TypeVariablesRegistry {
 	}
 
 	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
-		log.debug("New class parameter " + owner.debugInfoInContext + " " + owner.URI + " - paramName " + paramName)
 		TypeVariable.classParameter(owner, type, paramName) => [
 			registry = this 
 			register

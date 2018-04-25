@@ -1,0 +1,82 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+// Clase sin constructor, permite constructor vacío
+class Persona {
+	method comoEstas() {
+		return "bien"
+	}
+}
+
+// Clase sin constructores para instanciación directa
+class Direccion {
+	var calle = "Medrano"
+	var numero = 951
+
+	// Esto garantiza los tipos de calle y número
+	method tipar() = calle.charAt(numero)
+}
+
+// Clase sin constructores, instanciación directa usando variables de superclase
+class DireccionRemota inherits Direccion {
+	var ciudad = new Ciudad()
+	
+	override method tipar() = ciudad.nombreCiudad()
+}
+
+class Ciudad {
+	method nombreCiudad() = "Buenos Aires"
+}
+
+// Clase con múltiples constructores
+class Point {
+	var x
+	var y
+	
+	constructor() { x = 0; y = 0 }
+	constructor(ax, ay) {
+		x = ax ; y = ay
+	}
+	
+	method tipar() = x / y
+}
+
+// Clase con constructores heredados
+class Point3D inherits Point {
+	var z = 0
+	
+	override method tipar() = z.even()
+}
+
+class TestConstructors {
+	method basicConstruction() {
+		// XPECT type at alguien -->  Persona
+		const alguien = new Persona()
+	
+		// XPECT type at saludo -->  String
+		const saludo = new Persona().comoEstas()
+	
+		// XPECT type at saludo2 --> String	
+		const saludo2 = alguien.comoEstas()
+	}
+
+	// XPECT methodType at directInstantiation --> (String, Number) => Direccion
+	method directInstantiation(c, n) {
+		return new Direccion(calle = c, numero = n)
+	}
+
+	// XPECT methodType at directInstantiationWithInheritance --> (String, Number, Ciudad) => DireccionRemota
+	method directInstantiationWithInheritance(c, n) {
+		return new Direccion(calle = c, numero = n)
+	}
+}
+
+class MultipleConstructors {
+	// XPECT methodType at noParameters --> () => Point
+	method noParameters() = new Point()
+	
+	// XPECT methodType at withParameters --> (Number, Number) => Point
+	method withParameters(x, y) = new Point(x, y)
+
+	// XPECT methodType at inherited --> (Number, Number) => Point3D
+	method inherited(x, y) = new Point3D(x, y)
+}
