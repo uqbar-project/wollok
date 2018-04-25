@@ -15,6 +15,7 @@ import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer
 import org.uqbar.project.wollok.WollokActivator
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
 /**
@@ -27,9 +28,9 @@ class WollokSourcePathComputer implements ISourcePathComputerDelegate {
 	override computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor) throws CoreException {
 		val path = configuration.getAttribute(WollokLaunchConstants.ID_DEBUG_MODEL, null as String)
 		var ISourceContainer sourceContainer = null
-		if (path != null) {
+		if (path !== null) {
 			val resource = ResourcesPlugin.workspace.root.findMember(new Path(path))
-			if (resource != null) {
+			if (resource !== null) {
 				val container = resource.parent
 				if (container.type == IResource.PROJECT) {
 					sourceContainer = new ProjectSourceContainer(container as IProject, false);
@@ -38,7 +39,7 @@ class WollokSourcePathComputer implements ISourcePathComputerDelegate {
 				}
 			}
 		}
-		if (sourceContainer == null)
+		if (sourceContainer === null)
 			sourceContainer = new WorkspaceSourceContainer
 		return #[sourceContainer/* , libContainer*/]
 	}
@@ -47,7 +48,7 @@ class WollokSourcePathComputer implements ISourcePathComputerDelegate {
 		val libLocation = WollokActivator.^default.wollokLib.location
 		val libBundlePath = libLocation.substring(libLocation.lastIndexOf(':') + 1)
 		
-		val filePath = libBundlePath + 'src' 
+		val filePath = libBundlePath + WollokConstants.SOURCE_FOLDER 
 		val file = new File(filePath)
 		new DirectorySourceContainer(file, true)
 	}

@@ -15,7 +15,7 @@ class WollokLibrariesStore {
 	
 	def static getLibPaths(IProject project) { 
 		try {
-			var IJavaProject javaProject =	JavaCore.create(project);
+			var IJavaProject javaProject =	JavaCore.create(project)
 			
 			return javaProject.getWollokLibrariesClasspathEntries().map[it.path.toString]
 		}

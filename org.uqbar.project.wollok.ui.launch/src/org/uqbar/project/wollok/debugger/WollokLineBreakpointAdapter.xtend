@@ -24,12 +24,12 @@ class WollokLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	
 	override toggleLineBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		val textEditor = part.editor
-		if (textEditor != null) {
+		if (textEditor !== null) {
 			val resource = textEditor.resource
 			val lineNumber = (selection as ITextSelection).startLine
 		
 			val alreadyABp = ID_DEBUG_MODEL.breakpoints.findFirst[marker.resource == resource && isInLine(lineNumber + 1)]
-			if (alreadyABp != null) 
+			if (alreadyABp !== null) 
 				alreadyABp.delete
 			else 
 				new WollokLineBreakpoint(resource, lineNumber + 1).addBreakpoint
@@ -39,7 +39,7 @@ class WollokLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	def getEditor(IWorkbenchPart part) {
 		if (part instanceof ITextEditor) {
 			val resource = part.resource
-			if (resource != null) {
+			if (resource !== null) {
 				val ext = resource.getFileExtension
 				if (WollokLaunchConstants.isWollokFileExtension(ext))
 					return part
@@ -49,7 +49,7 @@ class WollokLineBreakpointAdapter implements IToggleBreakpointsTarget {
 	}
 	
 	override canToggleLineBreakpoints(IWorkbenchPart part, ISelection selection) {
-		part.editor != null
+		part.editor !== null
 	}
 	
 	// *************************************

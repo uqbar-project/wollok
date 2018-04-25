@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Link
 import org.eclipse.swt.widgets.Text
 import org.eclipse.swt.widgets.ToolBar
 import org.eclipse.swt.widgets.ToolItem
-import org.eclipse.ui.IViewPart
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.texteditor.ITextEditor
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -89,7 +88,7 @@ class WollokTestResultView extends ViewPart implements Observer {
 	ToolItem runAgain
 	ToolItem debugAgain
 	
-	static IViewPart previousActivePart
+//	static IViewPart previousActivePart
 
 	def static activate() {
 		RunInUI.runInUI [

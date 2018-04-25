@@ -31,14 +31,14 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
 			castedModel.addPropertyChangeListener(this)
 		}
 	}
 	
 	override deactivate() {
 		if (active) {
-			super.deactivate;
+			super.deactivate
 			castedModel.removePropertyChangeListener(this)
 		}
 	}
@@ -85,7 +85,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	def getCastedModel() { model as VariableModel }
 
 	def getConnectionAnchor() {
-		if (anchor == null) anchor = createConnectionAnchor()
+		if (anchor === null) anchor = createConnectionAnchor()
 		anchor
 	}
 	

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.FileDialog
 import org.eclipse.swt.widgets.Label
 import org.eclipse.ui.PlatformUI
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 
@@ -84,7 +85,7 @@ class SaveStaticDiagramConfigurationAction extends Action {
 	override run() {
 		val shell = PlatformUI.workbench.activeWorkbenchWindow.shell
 		val FileDialog fileSelecter = new FileDialog(shell, SWT.SAVE) => [
-			filterExtensions = #["*.wsdi"]
+			filterExtensions = #["*." + WollokConstants.STATIC_DIAGRAM_EXTENSION]
 			overwrite = true
 		]
 		val fileName = fileSelecter.open
@@ -112,7 +113,7 @@ class LoadStaticDiagramConfigurationAction extends Action {
 		val shell = PlatformUI.workbench.activeWorkbenchWindow.shell
 		val FileDialog fileSelecter = new FileDialog(shell, SWT.OPEN) => [
 			text = Messages.StaticDiagram_OpenFile
-			filterExtensions = #["*.wsdi"]
+			filterExtensions = #["*." + WollokConstants.STATIC_DIAGRAM_EXTENSION ]
 		]
 		val fileName = fileSelecter.open
 		if (fileName !== null && !fileName.equals("")) {
@@ -143,7 +144,7 @@ class ShowVariablesToggleButton extends Action implements Observer {
 	}
 	
 	override update(Observable o, Object event) {
-		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.checked = configuration.showVariables
 		}
 	}
@@ -171,7 +172,7 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 	}
 	
 	override update(Observable o, Object event) {
-		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.checked = configuration.rememberLocationAndSizeShapes
 		}
 	}
@@ -210,7 +211,7 @@ class ShowFileAction extends ControlContribution implements Observer {
 	}
 
 	override update(Observable o, Object event) {
-		if ((event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) && (label !== null) && !(label.disposed)) {
+		if ((event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) && (label !== null) && !(label.disposed)) {
 			label.text = "  " + configuration.originalFileName + "  "
 			label.parent.requestLayout
 		}
@@ -238,7 +239,6 @@ class CleanAllRelashionshipsAction extends Action {
 	new(String title, StaticDiagramConfiguration configuration) {
 		super(title)
 		this.configuration = configuration
-		//imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.debug.ui/icons/full/elcl16/disconnect_co.gif"))
 		imageDescriptor = ImageDescriptor.createFromFile(this.class, "/icons/association_delete_all.png")
 	}
 

@@ -8,10 +8,12 @@ import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant
 import org.eclipse.debug.core.sourcelookup.ISourceContainer
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer
 import org.uqbar.project.wollok.WollokActivator
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.debugger.model.WollokStackFrame
 
+import static org.uqbar.project.wollok.WollokConstants.*
+
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Given a stack frame it resolves the file to be opened by the editor.
@@ -43,7 +45,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 			val libLocation = WollokActivator.^default.wollokLib.location
 			val libBundlePath = libLocation.substring(libLocation.lastIndexOf(':') + 1)
 			
-			val filePath = libBundlePath + 'src' 
+			val filePath = libBundlePath + WollokConstants.SOURCE_FOLDER 
 			val file = new File(filePath)
 			libContainer = new DirectorySourceContainer(file, true)
 		}

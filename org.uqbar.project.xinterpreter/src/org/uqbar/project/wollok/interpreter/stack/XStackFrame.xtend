@@ -21,8 +21,6 @@ import static extension org.uqbar.project.xtext.utils.XTextExtensions.*
 @Accessors
 class XStackFrame<T> implements Serializable, Cloneable {
 
-	public static String CLASSPATH = "classpath:/"
-
 	SourceCodeLocation currentLocation
 	EvaluationContext<T> context
 	SourceCodeLocator sl

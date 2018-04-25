@@ -39,7 +39,7 @@ import static extension org.uqbar.project.wollok.utils.StringUtils.*
 class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 	static Properties properties
 	static val SETTINGS_SECTION_NAME = "ValidatorConfigurationBlock"
-	public static final String PROPERTY_PREFIX = "StaticValidatorConfiguration";
+	public static final String PROPERTY_PREFIX = "StaticValidatorConfiguration"
 	
 	IPreferenceStore store
 	
@@ -52,7 +52,7 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 	override getPropertyPrefix() { PROPERTY_PREFIX }
 	
 	def getGetProperties() {
-		if (properties == null)
+		if (properties === null)
 			properties = Messages.loadProperties 
 		properties
 	}
@@ -71,7 +71,7 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 		]
 	}
 	
-	def getI18n(String string) { val k = "CheckGroup_" + string; getProperties.getProperty(k, k) }
+	def getI18n(String string) { val k = "CheckGroup_" + string getProperties.getProperty(k, k) }
 	
 	protected def doCreateContentsBlah(Composite parent, Iterable<Method> methods) {
 		val severityKeys = CheckSeverity.values.map[name]
@@ -85,7 +85,7 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 			
 			methods
 			.forEach[ m |
-				if (m.getAnnotation(DefaultSeverity) != null)
+				if (m.getAnnotation(DefaultSeverity) !== null)
 					store.setDefault(m.name, m.getAnnotation(DefaultSeverity).value.name)
 				store.setDefault(m.enabledPropertyName, TRUE)
 				
@@ -96,7 +96,6 @@ class ValidatorConfigurationBlock extends AbstractValidatorConfigurationBlock {
 		]
 	}
 	
-	//TODO: i18n
 	protected def validationLabel(Method m) { splitCamelCase(m.name).firstUpper }
 	
 	/** property name for enabled/disabled in pref store */

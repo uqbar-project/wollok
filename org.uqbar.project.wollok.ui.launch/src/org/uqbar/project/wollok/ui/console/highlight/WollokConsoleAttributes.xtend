@@ -84,7 +84,7 @@ class WollokConsoleAttributes implements Cloneable {
 
         // Prepare the foreground color
         if (hilite) {
-            if (tempAttrib.currentFgColor == null) {
+            if (tempAttrib.currentFgColor === null) {
                 range.foreground = getDebugConsoleFgColor
                 range.foreground = hiliteRgbColor(range.foreground)
             } else {
@@ -94,20 +94,20 @@ class WollokConsoleAttributes implements Cloneable {
                     	getColor(tempAttrib.currentFgColor).color
             }
         } else {
-            if (tempAttrib.currentFgColor != null)
+            if (tempAttrib.currentFgColor !== null)
                 range.foreground = getColor(tempAttrib.currentFgColor).color
         }
 
         // Prepare the background color
-        if (tempAttrib.currentBgColor != null)
+        if (tempAttrib.currentBgColor !== null)
             range.background = getColor(tempAttrib.currentBgColor).color
 
         // These two still mess with the foreground/background colors
         // We need to solve them before we use them for strike/underline/frame colors
         if (tempAttrib.invert) {
-            if (range.foreground == null)
+            if (range.foreground === null)
                 range.foreground = getDebugConsoleFgColor
-            if (range.background == null)
+            if (range.background === null)
                 range.background = getDebugConsoleBgColor
             val tmp = range.background
             range.background = range.foreground
@@ -115,7 +115,7 @@ class WollokConsoleAttributes implements Cloneable {
         }
 
         if (tempAttrib.conceal) {
-            if (range.background == null)
+            if (range.background === null)
                 range.background = getDebugConsoleBgColor
             range.foreground = range.background
         }

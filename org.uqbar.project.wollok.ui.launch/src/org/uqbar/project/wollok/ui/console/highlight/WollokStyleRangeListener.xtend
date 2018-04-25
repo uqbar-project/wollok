@@ -17,7 +17,7 @@ class WollokStyleRangeListener implements LineStyleListener {
 	
 	override lineGetStyle(LineStyleEvent event) {
 		var List<StyleRange> styles = event.styles?.toList
-		if (styles == null) {
+		if (styles === null) {
 			 styles = #[]
 		}
 		styledText.addStyle(event.lineOffset, styles)

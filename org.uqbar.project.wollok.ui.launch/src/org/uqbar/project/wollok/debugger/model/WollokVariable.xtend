@@ -19,7 +19,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	new(WollokDebugTarget target, XDebugStackFrameVariable adaptee) {
 		super(target)
 		this.adaptee = adaptee
-		value = if (adaptee.value == null) null else adaptee.value.toEclipseValue
+		value = if (adaptee.value === null) null else adaptee.value.toEclipseValue
 	}
 	
 	def dispatch toEclipseValue(XWollokObjectDebugValue value) { new WollokObjectValue(target, value) }
