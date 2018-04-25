@@ -34,7 +34,6 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WExpressionOrInitializer
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -69,11 +68,11 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.WollokConstants.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -644,7 +643,7 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
 	
-	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
+	def static dispatch isNamedParameter(WExpression e) { false }
 	
 	def static dispatch isNamedParameter(WInitializer i) { true }
 	

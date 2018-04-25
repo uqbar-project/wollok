@@ -6,10 +6,12 @@ import org.eclipse.xtext.diagnostics.DiagnosticMessage
 import org.eclipse.xtext.diagnostics.Severity
 import org.eclipse.xtext.linking.impl.IllegalNodeException
 import org.eclipse.xtext.linking.impl.LinkingDiagnosticMessageProvider
+import org.uqbar.project.wollok.wollokDsl.WAssignment
 
 import static org.uqbar.project.wollok.Messages.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * Overrides the default implementation to i18nize messages
@@ -23,8 +25,19 @@ class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessagePro
 	override getUnresolvedProxyMessage(ILinkingDiagnosticContext context) {
 		val referenceType = context.reference.EReferenceType
 		var linkText = try context.linkText catch (IllegalNodeException e) e.node.text
-		
-		val msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.modelTypeName + " '" + linkText + "'."
+
+		var msg = ""
+		val constructorCall = context.context.declaringConstructorCall
+		if (constructorCall !== null) {
+			val namedParameters = constructorCall.arguments.filter [ it instanceof WAssignment ].size
+			val arguments = constructorCall.arguments.filter [ !(it instanceof WAssignment) ].size
+			if (arguments > 0 && namedParameters != arguments) {
+				msg = SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES	
+			}
+		}
+		if (msg.equals("")) {
+			msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.modelTypeName + " '" + linkText + "'."
+		}
 		new DiagnosticMessage(msg, Severity.ERROR, Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	

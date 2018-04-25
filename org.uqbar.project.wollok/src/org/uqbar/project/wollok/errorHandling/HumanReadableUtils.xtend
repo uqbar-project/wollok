@@ -78,7 +78,7 @@ class HumanReadableUtils {
 			total
 		])
 	} 
-	
+
 	def static uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
 		val namedArguments = namedArguments.keySet
