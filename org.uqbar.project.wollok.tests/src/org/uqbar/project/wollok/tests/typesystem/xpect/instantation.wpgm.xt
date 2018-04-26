@@ -65,8 +65,8 @@ class TestConstructors {
 	}
 
 	// XPECT methodType at directInstantiationWithInheritance --> (String, Number, Ciudad) => DireccionRemota
-	method directInstantiationWithInheritance(c, n) {
-		return new Direccion(calle = c, numero = n)
+	method directInstantiationWithInheritance(c, n, i) {
+		return new DireccionRemota(calle = c, numero = n, ciudad = i)
 	}
 }
 
