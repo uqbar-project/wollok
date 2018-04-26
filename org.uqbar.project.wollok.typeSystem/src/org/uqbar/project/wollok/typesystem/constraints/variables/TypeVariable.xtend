@@ -101,7 +101,7 @@ class TypeVariable implements ITypeVariable {
 		log.info('''Error reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
-
+	
 	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
