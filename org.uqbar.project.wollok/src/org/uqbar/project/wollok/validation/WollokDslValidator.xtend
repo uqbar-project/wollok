@@ -624,7 +624,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
-		if (parent !== null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
+		if (parent !== null && !hasParentParameterValues && !hasParentParameterInitializers && superClassRequiresNonEmptyConstructor) {
 			report(NLS.bind(WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR, parent.name, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 		}
@@ -633,7 +633,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def objectSuperClassConstructorMustExists(WNamedObject it) {
-		if (parent !== null && !parentParameters.empty && !parent.hasConstructorForArgs(parentParameters.size)) {
+		if (parent !== null && parentParameters !== null && !parent.hasConstructorForArgs(parentParametersSize)) {
 			report(NLS.bind(WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT)
 		}

@@ -68,8 +68,7 @@ WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
 	('inherits' parent=[WClass|QualifiedName] 
-		(=> ( '(' parentParameters+=WInitializer (',' parentParameters+=WInitializer)* ')') |
-		( '(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')'))?
+		(=> ( '(' parentParameters = WArgumentList ')'))?
 	)?
 	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
@@ -344,8 +343,7 @@ WSetLiteral:
 WNamedObject:
 	'object' name=ID 
 		('inherits' parent=[WClass|QualifiedName] 
-			(=> ( '(' parentParameters+=WInitializer (',' parentParameters+=WInitializer)* ')') |
-			( '(' parentParameters+=WExpression (',' parentParameters+=WExpression)* ')'))?
+			(=> ( '(' parentParameters = WArgumentList ')'))?
 		)?
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'

@@ -51,6 +51,7 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -110,19 +111,33 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
 	}
 
+	def dispatch void format(WArgumentList l, extension IFormattableDocument document) {
+		l.surround [ noSpace ]
+		l.initializers.forEach [ initializer, i |
+			if (i == 0) {
+				initializer.prepend [ noSpace ]
+			} else {
+				initializer.prepend [ oneSpace ]
+			}
+			format
+			initializer.append [ noSpace ]
+		]
+		l.values.forEach [ initializer, i |
+			if (i == 0) {
+				initializer.prepend [ noSpace ]
+			} else {
+				initializer.prepend [ oneSpace ]
+			}
+			format
+			initializer.append [ noSpace ]
+		]
+	}
+	
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		o.parentParameters.forEach [ param, i |
-			if (i == 0) {
-				param.prepend [ noSpace ]
-			} else {
-				param.prepend [ oneSpace ]
-			}
-			param.append [ noSpace ]
-			param.format
-		]
+		o.parentParameters.format
 		o.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		o.interior [ 

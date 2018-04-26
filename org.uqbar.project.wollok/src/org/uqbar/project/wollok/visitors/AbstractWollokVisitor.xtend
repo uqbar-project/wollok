@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.visitors
 
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -38,6 +39,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
@@ -94,6 +96,11 @@ class AbstractWollokVisitor {
 		expr.value.doVisit
 	}
 
+	def dispatch void visit(WArgumentList args) {
+		args.initializers.forEach [ doVisit ]
+		args.values.forEach [ doVisit ]
+	}
+	
 	def dispatch void visit(WBinaryOperation it){
 		leftOperand.doVisit
 		rightOperand.doVisit

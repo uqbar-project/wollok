@@ -463,7 +463,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
 		clazz.resolveConstructor(clazz, arguments)
 	}
-
+	def static dispatch WConstructor resolveConstructor(WObjectLiteral obj, Object... arguments) {
+		obj.parent.resolveConstructor(arguments)
+	}
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
 		obj.parent.resolveConstructor(arguments)
 	}
@@ -675,4 +677,28 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
 	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
 
+	def static dispatch hasParentParameterValues(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterValues(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.initializers.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
+	}
+	
+	def static parentParametersSize(WNamedObject o) {
+		if (o.parentParameters === null) 
+			return 0
+			
+		val parentParameters = if (!o.parentParameters.initializers.isEmpty) o.parentParameters.initializers else o.parentParameters.values
+		parentParameters.size
+	}
+	
 }
