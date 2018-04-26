@@ -37,7 +37,6 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -71,7 +70,6 @@ import wollok.lang.Exception
 import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
-import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
@@ -305,7 +303,13 @@ class WollokModelExtensions {
 		c.classRef.hasConstructorForArgs(c.numberOfParameters)
 	}
 
-	def static numberOfParameters(WConstructorCall c) { if(c.arguments === null) 0 else c.arguments.size }
+	def static arguments(WConstructorCall c) {
+		if (c.argumentList.values.empty) c.argumentList.initializers else c.argumentList.values
+	}
+	
+	def static numberOfParameters(WConstructorCall c) {
+		if(c.argumentList.values.empty) 0 else c.argumentList.values.size
+	}
 
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
@@ -642,13 +646,12 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
-	
-	def static dispatch isNamedParameter(WExpression e) { false }
-	
-	def static dispatch isNamedParameter(WInitializer i) { true }
-	
+
 	def static dispatch hasNamedParameters(EObject o) { false }
-	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
+	def static dispatch hasNamedParameters(WConstructorCall c) { !c.initializers.isEmpty }
+	
+	def static initializers(WConstructorCall c) { c.argumentList.initializers }
+	def static values(WConstructorCall c) { c.argumentList.values }
 	
 	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }

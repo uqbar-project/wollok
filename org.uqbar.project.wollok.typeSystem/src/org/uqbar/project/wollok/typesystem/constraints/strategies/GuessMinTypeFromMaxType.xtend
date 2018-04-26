@@ -46,6 +46,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	

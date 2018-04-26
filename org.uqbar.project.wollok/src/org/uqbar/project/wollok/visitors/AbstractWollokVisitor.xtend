@@ -38,6 +38,7 @@ import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Implements an abstract visitor for the AST

@@ -4,10 +4,12 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 /**
@@ -61,11 +63,15 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	}
 
 
-	def dispatch classTypeParameter(EObject unknownObject) {
+	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}
 
-	def dispatch classTypeParameter(WConstructorCall constructorCall) {
+	def dispatch ITypeVariable classTypeParameter(WArgumentList arg) {
+		arg.eContainer.classTypeParameter
+	}
+
+	def dispatch ITypeVariable classTypeParameter(WConstructorCall constructorCall) {
 		classTypeParameterFor(constructorCall.tvar.typeInfo)
 	}
 

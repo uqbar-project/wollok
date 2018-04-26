@@ -4,8 +4,9 @@ import java.util.List
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.resolveConstructor
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * @author npasserini
@@ -30,7 +31,8 @@ class ConstructorConstraintsGenerator {
 			// Constructor might be null when neither the referred class nor any of it superclasses define a constructor,
 			// And wouldn't be an error if the constructor call has no parameters.
 			// TODO Handle and inform error conditions.
-			constructor?.parameters?.biForEach(arguments)[param, arg|
+			// TODO 2: We should consider also argumentList.initializers
+			constructor?.parameters?.biForEach(values)[param, arg|
 				param.tvarOrParam.beSupertypeOf(arg.tvar)
 			]
 		]

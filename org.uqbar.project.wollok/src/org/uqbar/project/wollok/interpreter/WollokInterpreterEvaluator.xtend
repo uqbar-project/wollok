@@ -294,7 +294,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch evaluate(WConstructorCall call) {
 		if (call.hasNamedParameters) {
-			val initializers = call.arguments.fold(newHashMap, [ total, arg | 
+			val initializers = call.initializers.fold(newHashMap, [ total, arg | 
 				val namedParameter = arg as WInitializer
 				total.put(namedParameter.initializer.name, namedParameter.initialValue.eval)
 				total

@@ -20,7 +20,7 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
@@ -165,7 +165,7 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		new SpecialMessage(e.token.text, NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD, e.token.text))				
 	}
 	def dispatch SpecialMessage changeParserMessage(EObject o, AbstractRule r, Exception e) { null }
-	def dispatch SpecialMessage changeParserMessage(WConstructorCall c, ParserRule r, MismatchedTokenException e) {
+	def dispatch SpecialMessage changeParserMessage(WArgumentList l, ParserRule r, MismatchedTokenException e) {
 		if (r.name.equalsIgnoreCase("WVariable")) {
 			new SpecialMessage(e.token.text, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES)
 		} else null

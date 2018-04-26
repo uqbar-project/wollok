@@ -404,13 +404,17 @@ WSuperDelegatingConstructorCall:
 	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
 ;
 
-
-
 WConstructorCall:
 	'new' classRef=[WClass|QualifiedName]'('
-		(=> arguments+=WInitializer (',' arguments+=WInitializer)*)?
-		(arguments += WExpression (',' arguments += WExpression)*)?		
-	')' ('with' mixins+=[WMixin])*
+	argumentList=WArgumentList
+	')'
+	('with' mixins+=[WMixin])*
+;
+
+WArgumentList:
+	{WArgumentList}	
+		(=> initializers+=WInitializer (',' initializers+=WInitializer)*)?
+		(values += WExpression (',' values += WExpression)*)?
 ;
 
 WInitializer:

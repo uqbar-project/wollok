@@ -69,7 +69,7 @@ class WEvaluationExtension {
 		// collections literals
 		|| it == WCOLLECTION_LITERAL__ELEMENTS
 		|| it == WSUPER_INVOCATION__MEMBER_CALL_ARGUMENTS
-		|| it == WCONSTRUCTOR_CALL__ARGUMENTS
+		|| it == WARGUMENT_LIST__VALUES
 		|| it == WTHROW__EXCEPTION
 	}
 
