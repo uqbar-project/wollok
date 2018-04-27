@@ -56,6 +56,90 @@ const pepita = object      {var energia             =
 		'''
 		)
 	}
+
+	@Test
+	def void testInheritingUnnamedObjectDefinition() {
+		assertFormatting(
+		'''
+		class A { var _n = 0 constructor(_n) { n = _n } }
+        program prueba {    
+        	
+const pepita = object     inherits A( 
+
+
+
+5
+
+
+)
+ {var energia             =
+0
+		method volar() {energia++ }
+	}        	
+ }          
+		''',
+		'''
+		class A {
+		
+			var _n = 0
+		
+			constructor(_n) {
+				n = _n
+			}
+		
+		}
+		
+		program prueba {
+			const pepita = object inherits A(5) {
+				var energia = 0
+				method volar() {
+					energia++
+				}
+			}
+		}
+		'''
+		)
+	}
+
+	@Test
+	def void testInheritingNamedParametersUnnamedObjectDefinition() {
+		assertFormatting(
+		'''
+		class A { var edad = 0 }
+        program prueba {    
+        	
+const pepita = object     inherits A( 
+
+
+
+edad = 22
+
+
+)
+ {var energia             =
+0
+		method volar() {energia++ }
+	}        	
+ }          
+		''',
+		'''
+		class A {
+		
+			var edad = 0
+		
+		}
+		
+		program prueba {
+			const pepita = object inherits A(edad = 22) {
+				var energia = 0
+				method volar() {
+					energia++
+				}
+			}
+		}
+		'''
+		)
+	}
 	
 	@Test
 	def void testUnnamedObjectDefinitionInAnExpression() {

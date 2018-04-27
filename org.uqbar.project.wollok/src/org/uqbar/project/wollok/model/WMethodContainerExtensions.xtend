@@ -692,12 +692,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
 	}
 	
-	def static parentParametersSize(WNamedObject o) {
+	def static parentParametersValues(WNamedObject o) {
 		if (o.parentParameters === null) 
 			return 0
 			
-		val parentParameters = if (!o.parentParameters.initializers.isEmpty) o.parentParameters.initializers else o.parentParameters.values
-		parentParameters.size
+		o.parentParameters.values.size
 	}
 	
 }

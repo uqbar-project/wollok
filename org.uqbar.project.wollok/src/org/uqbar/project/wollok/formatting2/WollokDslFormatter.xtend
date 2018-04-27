@@ -435,6 +435,8 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WObjectLiteral o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
+		o.parentParameters.format
 		o.members.forEach [
 			surround [ indent ]
 			format
