@@ -206,8 +206,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
-	def static getVariableDeclaration(WMethodContainer c, String _name) {
-		c.variableDeclarations.findFirst [ variable?.name.equals(_name) ]
+	/**
+	 * If the variable is not found in the method container, look up the hierarchy until it is found.
+	 * TODO: Consider mixins.
+	 */
+	def static WVariableDeclaration getVariableDeclaration(WMethodContainer it, String name) {
+		getOwnVariableDeclaration(name) ?: parent?.getVariableDeclaration(name)
+	}
+	
+	/**
+	 * Looks for "own" variables, i.e. not inherited ones.
+	 */
+	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
+		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {

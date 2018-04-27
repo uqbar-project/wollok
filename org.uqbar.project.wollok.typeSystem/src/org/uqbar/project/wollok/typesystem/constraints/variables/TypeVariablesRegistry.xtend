@@ -102,7 +102,6 @@ class TypeVariablesRegistry {
 	}
 
 	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
-		log.debug("New class parameter " + owner.debugInfoInContext + " " + owner.URI + " - paramName " + paramName)
 		TypeVariable.classParameter(owner, type, paramName) => [
 			registry = this 
 			register
@@ -153,8 +152,28 @@ class TypeVariablesRegistry {
 	}
 
 	// ************************************************************************
-	// ** Debugging
+	// ** Error handling & debugging
 	// ************************************************************************
+
+	def addFatalError(EObject it, Exception exception) {
+		val tvar = typeVariables.get(URI)
+		if (tvar !== null) tvar.addFatalError(exception)
+		else {
+			val message = '''Fatal type system error working with «debugInfoInContext»: «exception.message ?: exception.class.simpleName»'''
+			log.fatal(message, exception)
+		}
+		
+		
+	}	
+		
+	def addFatalError(TypeVariable variable, Exception exception) {
+		val message = '''Fatal type system error: «exception.message ?: exception.class.simpleName»'''
+		
+		log.fatal(message, exception)
+		
+		variable.addError(new TypeSystemException(message) => [ it.variable = variable ])
+	}
+	
 	def fullReport() {
 		typeVariables.values.forEach[
 			if (!owner.isCoreObject) log.debug(descriptionForReport)
