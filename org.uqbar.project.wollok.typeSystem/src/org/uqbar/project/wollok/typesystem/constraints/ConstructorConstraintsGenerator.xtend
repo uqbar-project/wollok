@@ -26,7 +26,7 @@ class ConstructorConstraintsGenerator {
 
 	def run() {
 		constructorCalls.forEach[
-			val constructor = classRef.resolveConstructor(arguments)
+			val constructor = classRef.resolveConstructor(values)
 
 			// Constructor might be null when neither the referred class nor any of it superclasses define a constructor,
 			// And wouldn't be an error if the constructor call has no parameters.

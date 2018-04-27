@@ -135,7 +135,9 @@ class AbstractWollokVisitor {
 	def dispatch void visit(WProgram it) { elements.visitAll }
 	def dispatch void visit(WTest it) { elements.visitAll }
 	def dispatch void visit(WSuperInvocation it) { memberCallArguments.visitAll }
-	def dispatch void visit(WConstructorCall it) {	arguments.visitAll }
+	def dispatch void visit(WConstructorCall it) {	
+		argumentList.visit
+	}
 	
 	def dispatch void visit(WCollectionLiteral it) { elements.visitAll }
 

@@ -72,7 +72,7 @@ class HumanReadableUtils {
 	}
 
 	def static Map<String, EObject> namedArguments(WConstructorCall c) {
-		c.argumentList.initializers.fold(new HashMap, [ total, i | 
+		c.initializers.fold(new HashMap, [ total, i | 
 			val namedParameter = i as WInitializer
 			total.put(namedParameter.initializer.name, namedParameter)
 			total

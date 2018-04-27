@@ -403,17 +403,29 @@ WSuperDelegatingConstructorCall:
 ;
 
 WConstructorCall:
-	'new' classRef=[WClass|QualifiedName]'('
-	argumentList=WArgumentList
+	'new' classRef=[WClass|QualifiedName] '('
+	(=> argumentList=WArgumentList)?
 	')'
 	('with' mixins+=[WMixin])*
 ;
 
-WArgumentList:
-	{WArgumentList}	
-		(=> initializers+=WInitializer (',' initializers+=WInitializer)*)?
-		(values += WExpression (',' values += WExpression)*)?
+WArgumentList: (=> WNamedArgumentsList | WPositionalArgumentsList);
+
+WNamedArgumentsList:
+	{WNamedArgumentsList}
+	(=> initializers+=WInitializer (',' initializers+=WInitializer)*)
 ;
+
+WPositionalArgumentsList:
+	{WPositionalArgumentsList}
+	(=> values += WExpression (',' values += WExpression)*)
+;
+
+//WArgumentList:
+//	{WArgumentList}	
+//	((=> initializers+=WInitializer (',' initializers+=WInitializer)*) |
+//	(values += WExpression (',' values += WExpression)*))?
+//;
 
 WInitializer:
 	initializer=WVariable "=" initialValue=WExpression

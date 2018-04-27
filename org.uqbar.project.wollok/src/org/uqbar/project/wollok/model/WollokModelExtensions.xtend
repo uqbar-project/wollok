@@ -37,17 +37,20 @@ import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -71,6 +74,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.emf.common.util.ECollections
 
 /**
  * Extension methods to Wollok semantic model.
@@ -300,17 +304,31 @@ class WollokModelExtensions {
 	}
 
 	def static isValidConstructorCall(WConstructorCall c) {
-		c.classRef.hasConstructorForArgs(c.numberOfParameters)
+		c.classRef.hasConstructorForArgs(c.arguments.size)
 	}
 
+	def static dispatch EList<WExpression> values(WConstructorCall c) { 
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.values
+	}
+	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
+	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
+	
+	def static dispatch EList<WInitializer> initializers(WConstructorCall c) { 
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.initializers
+	}
+	def static dispatch EList<WInitializer> initializers(WNamedArgumentsList l) { 
+		l.initializers
+	}
+	def static dispatch EList<WInitializer> initializers(EObject o) { 
+		ECollections.emptyEList
+	} 
+	
 	def static arguments(WConstructorCall c) {
-		if (c.argumentList.values.empty) c.argumentList.initializers else c.argumentList.values
+		if (c.hasNamedParameters) c.initializers.map [ initialValue ] else c.values	
 	}
 	
-	def static numberOfParameters(WConstructorCall c) {
-		if(c.argumentList.values.empty) 0 else c.argumentList.values.size
-	}
-
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
 	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
@@ -647,11 +665,13 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
 
-	def static dispatch hasNamedParameters(EObject o) { false }
-	def static dispatch hasNamedParameters(WConstructorCall c) { !c.initializers.isEmpty }
-	
-	def static initializers(WConstructorCall c) { c.argumentList.initializers }
-	def static values(WConstructorCall c) { c.argumentList.values }
+	def static dispatch boolean hasNamedParameters(EObject o) { false }
+	def static dispatch boolean hasNamedParameters(WConstructorCall c) { 
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
+	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
 	
 	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }

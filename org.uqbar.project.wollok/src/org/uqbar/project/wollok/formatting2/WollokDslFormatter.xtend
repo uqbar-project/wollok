@@ -6,7 +6,6 @@ package org.uqbar.project.wollok.formatting2
 import com.google.inject.Inject
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
@@ -51,7 +50,8 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WArgumentList
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -111,25 +111,24 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
 	}
 
-	def dispatch void format(WArgumentList l, extension IFormattableDocument document) {
-		l.surround [ noSpace ]
+	def dispatch void format(WNamedArgumentsList l, extension IFormattableDocument document) {
+		l.prepend [ noSpace ]
 		l.initializers.forEach [ initializer, i |
-			if (i == 0) {
-				initializer.prepend [ noSpace ]
-			} else {
-				initializer.prepend [ oneSpace ]
-			}
-			format
-			initializer.append [ noSpace ]
+			initializer.format(document, i)
 		]
-		l.values.forEach [ initializer, i |
+		l.append [ noSpace ]
+	}
+
+	def dispatch void format(WPositionalArgumentsList l, extension IFormattableDocument document) {
+		l.surround [ noSpace ]
+		l.values.forEach [ value, i |
 			if (i == 0) {
-				initializer.prepend [ noSpace ]
+				value.prepend [ noSpace ]
 			} else {
-				initializer.prepend [ oneSpace ]
+				value.prepend [ oneSpace ]
 			}
-			format
-			initializer.append [ noSpace ]
+			value.format
+			value.append [ noSpace ]
 		]
 	}
 	
@@ -367,19 +366,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_PARAMETER_LIST).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.END_PARAMETER_LIST).append [ noSpace ]
-		if (c.hasNamedParameters) {
-			c.arguments.forEach [ arg, i | (arg as WInitializer).format(document, i) ]
-		} else {
-			c.arguments.forEach [ arg, i |
-				if (i == 0) {
-					arg.prepend [ noSpace ]
-				} else {
-					arg.prepend [ oneSpace ]
-				}
-				arg.append [ noSpace ]
-				arg.format
-			]
-		}
+		c.argumentList?.format
 	}
 
 	def void format(WInitializer init, extension IFormattableDocument document, int i) {

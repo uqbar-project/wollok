@@ -12,6 +12,7 @@ import static org.uqbar.project.wollok.Messages.*
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Overrides the default implementation to i18nize messages
@@ -31,7 +32,7 @@ class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessagePro
 		if (constructorCall !== null) {
 			val namedParameters = constructorCall.arguments.filter [ it instanceof WAssignment ].size
 			val arguments = constructorCall.arguments.filter [ !(it instanceof WAssignment) ].size
-			if (arguments > 0 && namedParameters != arguments) {
+			if (arguments > 0 && namedParameters > 0) {
 				msg = SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES	
 			}
 		}

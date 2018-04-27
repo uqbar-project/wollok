@@ -1002,9 +1002,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		program t {
 			const presentacion = new Presentacion(
-				lugar = lunaPark, 
-				fecha = new Date(), 
-				cantante = chayanne, 
+				lugar = lunaPark,
+				fecha = new Date(),
+				cantante = chayanne,
 				localidades = [100, 50, 200]
 			)
 			console.println(presentacion)

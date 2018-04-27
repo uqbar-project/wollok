@@ -303,16 +303,16 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		if (call.hasNamedParameters) {
 			return newInstance(call.classRef, call.initializers)
 		}
+		val values = call.values.evalEach
 		if (call.mixins.empty)
-			newInstance(call.classRef, call.arguments.evalEach)
+			newInstance(call.classRef, values)
 		else {
 			val container = new MixedMethodContainer(call.classRef, call.mixins)
 			new WollokObject(interpreter, container) => [ wo |
 				// mixins first
 				call.mixins.forEach[addMembersTo(wo)]
 				call.classRef.addInheritsMembers(wo)
-
-				wo.invokeConstructor(call.arguments.evalEach.toArray(newArrayOfSize(call.arguments.size)))
+				wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
 			]
 		}
 	}

@@ -183,7 +183,8 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generateVariables(WConstructorCall it) {
-		arguments.forEach [ arg | arg.generateVariables ]
+		values.forEach [ arg | arg.generateVariables ]
+		initializers.forEach [ arg | arg.generateVariables ]
 //		if (classRef.name.equalsIgnoreCase("Pair")) {
 //			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
 //				tv.addMinType(classType(classRef))

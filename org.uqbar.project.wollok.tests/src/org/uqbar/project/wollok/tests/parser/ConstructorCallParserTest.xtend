@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void constructorsNotAllowedInObjects() {
+	def void mixingNamedAndPositionalParameters() {
 		'''
 		object wollok {
 			method perro() {
@@ -27,7 +27,28 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 				edad = e
 			}
 		}
-		'''.expectsSyntaxError("You should not mix named parameters with values in constructor calls", false)
+		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+	}
+
+	@Test
+	def void mixingNamedAndPositionalParameters2() {
+		'''
+		object wollok {
+			method perro() {
+				return new Perro(23, 30, nombre = "firulais", edad = 12, 23)
+			}
+		}
+		
+		class Perro {
+			var nombre
+			var edad
+			
+			constructor(n, m, e) {
+				nombre = n
+				edad = e
+			}
+		}
+		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
 	}
 
 }
