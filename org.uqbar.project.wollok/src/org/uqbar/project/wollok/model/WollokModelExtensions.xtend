@@ -4,6 +4,7 @@ import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -23,6 +24,7 @@ import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -74,7 +76,6 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.emf.common.util.ECollections
 
 /**
  * Extension methods to Wollok semantic model.
@@ -318,16 +319,31 @@ class WollokModelExtensions {
 		if (c.argumentList === null) return ECollections.emptyEList
 		c.argumentList.initializers
 	}
+	
 	def static dispatch EList<WInitializer> initializers(WNamedArgumentsList l) { 
 		l.initializers
 	}
+	
 	def static dispatch EList<WInitializer> initializers(EObject o) { 
 		ECollections.emptyEList
 	} 
 	
-	def static arguments(WConstructorCall c) {
-		if (c.hasNamedParameters) c.initializers else c.values	
+	def static dispatch EList<? extends EObject> arguments(WSelfDelegatingConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
 	}
+	def static dispatch EList<? extends EObject> arguments(WSuperDelegatingConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
+	}
+	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
+	}
+	def static dispatch EList<? extends EObject> arguments(WArgumentList l) {
+		if (l.hasNamedParameters) l.initializers else l.values	
+	}
+	def static dispatch EList<? extends EObject> arguments(EObject o) { ECollections.emptyEList }
 	
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
@@ -667,6 +683,14 @@ class WollokModelExtensions {
 
 	def static dispatch boolean hasNamedParameters(EObject o) { false }
 	def static dispatch boolean hasNamedParameters(WConstructorCall c) { 
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
 		if (c.argumentList === null) return false
 		c.argumentList.hasNamedParameters
 	}

@@ -394,12 +394,18 @@ WDelegatingConstructorCall:
 
 // somehow this should be references to WConstructor
 WSelfDelegatingConstructorCall:
-	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+	{WSelfDelegatingConstructorCall} 'self' '(' 
+	(=> argumentList=WArgumentList)?
+	//(arguments+=WExpression (',' arguments+=WExpression)*)? 
+	')'
 ;
 
 // somehow this should be references to WConstructor
 WSuperDelegatingConstructorCall:
-	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+	{WSuperDelegatingConstructorCall} 'super' '(' 
+	(=> argumentList=WArgumentList)?
+	//(arguments+=WExpression (',' arguments+=WExpression)*)? 
+	')'
 ;
 
 WConstructorCall:

@@ -518,15 +518,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			s.prepend [ oneSpace ]
 		}
 		s.regionFor.keyword(WollokConstants.SELF).append [ noSpace ]
-		s.arguments.forEach [ arg, i |
-			if (i == 0) {
-				arg.prepend [ noSpace ]
-			} else {
-				arg.prepend [ oneSpace ]
-			}
-			arg.append [ noSpace ]
-			arg.format
-		]
+		s.argumentList.format
 	}
 
 	def dispatch void format(WSuperDelegatingConstructorCall s, extension IFormattableDocument document) {
@@ -534,15 +526,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			s.prepend [ oneSpace ]
 		}
 		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
-		s.arguments.forEach [ arg, i |
-			if (i == 0) {
-				arg.prepend [ noSpace ]
-			} else {
-				arg.prepend [ oneSpace ]
-			}
-			arg.append [ noSpace ]
-			arg.format
-		]
+		s.argumentList.format
 	}
 	
 	/** 
