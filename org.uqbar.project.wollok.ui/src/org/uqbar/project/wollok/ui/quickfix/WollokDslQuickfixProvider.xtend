@@ -765,13 +765,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 	}
 
 	def upgradeToPropertyInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container) {
-		val variable = container.getVariableDeclaration(call.feature)
+		val variable = container.getOwnVariableDeclaration(call.feature)
 		upgradeToPropertyInContainer(context, call, container, variable.writeable)
 	}
 
 	def upgradeToPropertyInContainer(IModificationContext context, WMemberFeatureCall call, WMethodContainer container, boolean isVariable) {
 		val xtextDocument = context.getXtextDocument(container.fileURI)
-		val variable = container.getVariableDeclaration(call.feature)
+		val variable = container.getOwnVariableDeclaration(call.feature)
 		val varOrConst = if (isVariable) VAR else CONST
 		val propertyDef = if (variable.property) PROPERTY + " " else "" 
 		val previousVarOrConst = if (variable.writeable) VAR else CONST

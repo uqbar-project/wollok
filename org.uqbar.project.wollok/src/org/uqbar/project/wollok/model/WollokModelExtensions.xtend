@@ -326,7 +326,7 @@ class WollokModelExtensions {
 	} 
 	
 	def static arguments(WConstructorCall c) {
-		if (c.hasNamedParameters) c.initializers.map [ initialValue ] else c.values	
+		if (c.hasNamedParameters) c.initializers else c.values	
 	}
 	
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }

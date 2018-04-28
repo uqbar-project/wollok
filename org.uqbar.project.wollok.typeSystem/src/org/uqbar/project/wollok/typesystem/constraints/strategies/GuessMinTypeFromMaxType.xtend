@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -96,6 +97,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch afterVisit(WProgram it) {}
 	def dispatch afterVisit(WClass it) {}
 	def dispatch afterVisit(WConstructor it) {}
+	def dispatch afterVisit(WInitializer it) {}
 
 	// ************************************************************************
 	// ** Generic visiting construct 
@@ -139,11 +141,18 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WThrow it) { exception.visit }
 	def dispatch void visitChildren(WCatch it) { expression.visit }
 
-	def dispatch void visitChildren(WAssignment expr) {
+	def dispatch void visitChildren(WAssignment it) {
 		// We are not generating type variables for the reference in an assignment.
 		// Warning: if we generalize this algorithm we should not propagate this type-system-specific tuning to the generic version.
-		// expr.feature.visit
-		expr.value.visit
+		// feature.visit
+		value.visit
+	}
+
+	def dispatch void visitChildren(WInitializer it) {
+		// We are not generating type variables for the variable reference in an initializer
+		// Warning: if we generalize this algorithm we should not propagate this type-system-specific tuning to the generic version.
+		// initializer.visit
+		initialValue.visit
 	}
 
 	def dispatch void visitChildren(WBinaryOperation it){
