@@ -220,7 +220,7 @@ class WollokModelExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
-	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
+	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
 	
 	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
@@ -465,7 +465,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WSuite p, WReferenciable v) {
 		p.tests.exists [ (it.variables + p.variables).existsMoreThanOne(v) ]
 	}
-
+	def static dispatch boolean isDuplicated(WInitializer i, WReferenciable v) { false }
 	// classes, objects and mixins
 	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 

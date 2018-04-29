@@ -7,7 +7,9 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -16,9 +18,8 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 
 /**
  * This visitor get all the assignments of the lookedFor variable
@@ -62,6 +63,9 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	}
 
 	def dispatch visit(WDelegatingConstructorCall it) {
+		if (hasNamedParameters) {
+			argumentList.initializers.forEach [ doVisit ]
+		}
 		val constructor = declaringContext.resolveConstructor(arguments)
 		if (constructor !== null && !constructorsAlreadyVisited.contains(constructor)) {
 			constructorsAlreadyVisited.add(constructor)
@@ -99,6 +103,10 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 
 	override dispatch visit(WBinaryOperation it) {
 		addIf[isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor)]
+	}
+	
+	override dispatch visit(WInitializer it) {
+		addIf [ initializer.name == lookedFor.name ]
 	}
 
 	// helpers

@@ -682,6 +682,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static hasCyclicDefinition(WConstructor it) {
 		if (delegatingConstructorCall === null) return false
+		if (delegatingConstructorCall.hasNamedParameters) return false
 		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
 	}
 	

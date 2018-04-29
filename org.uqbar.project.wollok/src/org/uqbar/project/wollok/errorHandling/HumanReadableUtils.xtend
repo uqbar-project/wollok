@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import java.util.Map
 import java.util.HashMap
 import org.uqbar.project.wollok.wollokDsl.WInitializer
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 
 /**
  * @author jfernandes
@@ -71,17 +72,9 @@ class HumanReadableUtils {
 		}
 	}
 
-	def static Map<String, EObject> namedArguments(WConstructorCall c) {
-		c.initializers.fold(new HashMap, [ total, i | 
-			val namedParameter = i as WInitializer
-			total.put(namedParameter.initializer.name, namedParameter)
-			total
-		])
-	} 
-
 	def static uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
-		val namedArguments = namedArguments.keySet
+		val namedArguments = initializers.map [ initializer.name ]
 		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
 	}
 	

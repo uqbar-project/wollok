@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -66,7 +67,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
-import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 
 /**
  * Custom validation rules.
@@ -241,17 +242,47 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
-		val arguments = namedArguments
-		if (arguments.isEmpty) return;
-		val validAttributes = classRef.allVariableNames
-		val namedArguments = arguments.keySet
-		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
-		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+		if (!hasNamedParameters) return;
+		classRef.validateNamedParameters(argumentList)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
+		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
+		parent.validateNamedParameters(parentParameters)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
+		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
+		parent.validateNamedParameters(parentParameters)
+	}
+	
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WSelfDelegatingConstructorCall it) {
+		if (declaringContext === null || argumentList === null || !argumentList.hasNamedParameters) return;
+		(declaringContext as WClass).validateNamedParameters(argumentList)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WSuperDelegatingConstructorCall it) {
+		val clazz = declaringContext
+		if (clazz === null || clazz.parent === null || argumentList === null || !argumentList.hasNamedParameters) return;
+		clazz.parent.validateNamedParameters(argumentList)
+	}
+	
+	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
+		val validAttributes = clazz.allVariableNames
+		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
+		invalidInitializers.forEach [ 
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		]
 	}
 
