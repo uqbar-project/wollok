@@ -1,0 +1,66 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+
+// test case
+
+class WithDefaultConstructor {}
+
+class WithSingleOneArgConstructor {
+	constructor(param) { }	
+}
+
+class TwoConstructors {
+	constructor(param) { }
+	constructor(p1, p2) { }
+}
+
+class WithExplicitDefaultConstructor {
+	constructor() {}
+}
+
+class WithExplicitDefaultConstructorAndAnother {
+	constructor() {}
+	constructor(a) {}
+}
+
+// abstract class
+class A {
+	method blah()
+}
+
+class B inherits A {
+	method otherAbstract(one, two)
+}
+
+program p {
+	// XPECT errors --> "Object must explicitly call a superclass constructor: (param)" at "WithSingleOneArgConstructor"
+	var o = object inherits WithSingleOneArgConstructor { }
+	
+	// XPECT errors --> "Object must explicitly call a superclass constructor: (param), (p1,p2)" at "TwoConstructors"
+	o = object inherits TwoConstructors { }
+	
+	o = object inherits TwoConstructors("hola") { }
+	
+	o = object inherits TwoConstructors(23) { }
+	
+	o = object inherits TwoConstructors("hola", 23) { }
+	
+	// XPECT errors --> "No superclass constructor or wrong number of arguments. You must explicitly call a constructor: (param), (p1,p2)" at "TwoConstructors"
+	o = object inherits TwoConstructors("hola", 23, "chau") { }
+	
+	o = object inherits WithExplicitDefaultConstructor { }
+	
+	o = object inherits WithExplicitDefaultConstructorAndAnother { }
+	
+	// XPECT errors --> "You must implement all inherited abstract methods: A.blah()" at "object inherits A {}"
+	o = object inherits A {}
+	
+	o = object {
+		// XPECT errors --> "Abstract method not allowed inside object definition, you must provide an implementation" at "abstractMethod"
+		method abstractMethod()
+	}
+	
+	// XPECT errors --> "You must implement all inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "object inherits B {}"
+	o = object inherits B {}
+
+	console.println(o)
+}

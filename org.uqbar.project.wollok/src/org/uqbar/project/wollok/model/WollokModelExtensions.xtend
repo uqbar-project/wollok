@@ -398,6 +398,7 @@ class WollokModelExtensions {
 
 	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
 	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WObjectLiteral it) { parent !== null && !parent.hasEmptyConstructor }
 
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 

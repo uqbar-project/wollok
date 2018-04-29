@@ -705,9 +705,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static parentParametersValues(WNamedObject o) {
-		if (o.parentParameters === null) 
-			return 0
-			
+		if (o.parentParameters === null) return 0
+		o.parentParameters.values.size
+	}
+
+	def static parentParametersValues(WObjectLiteral o) {
+		if (o.parentParameters === null) return 0
 		o.parentParameters.values.size
 	}
 

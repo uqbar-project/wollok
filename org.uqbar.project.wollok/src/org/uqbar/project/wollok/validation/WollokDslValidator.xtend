@@ -66,6 +66,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
+import org.uqbar.project.wollok.Messages
 
 /**
  * Custom validation rules.
@@ -649,6 +650,44 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				val methodDescriptions = abstractMethods.map[methodName].join(", ")
 				report('''«WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''',
 					it, WNAMED__NAME)
+			} else {
+				abstractMethods.forEach [ abstractMethod |
+					report('''«WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS»''',
+						abstractMethod, WNAMED__NAME)
+				]
+			}
+		}
+	}
+
+	// Object Literals
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectMustExplicitlyCallASuperclassConstructor(WObjectLiteral it) {
+		if (parent !== null && !hasParentParameterValues && !hasParentParameterInitializers && superClassRequiresNonEmptyConstructor) {
+			report(NLS.bind(WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR, parent.name, parent.constructorParameters),
+				it, WOBJECT_LITERAL__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectSuperClassConstructorMustExists(WObjectLiteral it) {
+		if (parent !== null && parentParameters !== null && !parent.hasConstructorForArgs(parentParametersValues)) {
+			report(NLS.bind(WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR, parent.constructorParameters),
+				it, WOBJECT_LITERAL__PARENT)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectMustImplementAbstractMethods(WObjectLiteral it) {
+		val abstractMethods = unimplementedAbstractMethods
+		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== it ]
+		if (!abstractMethods.empty) {
+			if (inheritingAbstractMethods) {
+				val methodDescriptions = abstractMethods.map[methodName].join(", ")
+				report('''«WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''',
+					it)
 			} else {
 				abstractMethods.forEach [ abstractMethod |
 					report('''«WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS»''',

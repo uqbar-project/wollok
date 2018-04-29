@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void mixingNamedAndPositionalParameters() {
+	def void mixingNamedAndPositionalParametersForWKO() {
 		'''
 		object wollok {
 			method perro() {
@@ -31,7 +31,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void mixingNamedAndPositionalParameters2() {
+	def void mixingPositionAndNamedParametersForWKO() {
 		'''
 		object wollok {
 			method perro() {
