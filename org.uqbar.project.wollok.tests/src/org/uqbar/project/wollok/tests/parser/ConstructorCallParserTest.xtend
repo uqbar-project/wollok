@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.tests.parser
 
+import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
@@ -51,4 +52,29 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
 	}
 
+	// TODO: Ver si agregamos una validación
+	@Test
+	@Ignore
+	def void mixingPositionAndNamedParametersForSuperDelegatingConstructor() {
+		'''
+		class Animal {
+			var edad
+		
+			constructor(e, e0, e1) {
+				edad = e
+			}
+		}
+		
+		class Perro inherits Animal {
+			var nombre
+		
+			constructor(n, e) = super(1, edad = e, 22) {
+				nombre = n
+			}
+		
+			method nombre() = nombre
+		}
+		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+	}
+	
 }

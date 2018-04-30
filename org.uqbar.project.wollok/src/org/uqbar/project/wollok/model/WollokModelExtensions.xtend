@@ -35,6 +35,7 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
@@ -349,6 +350,13 @@ class WollokModelExtensions {
 
 	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
 		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
+	}
+
+	def static variables(WDelegatingConstructorCall c) {
+		c.arguments
+			.filter(WAssignment)
+			.filter [ arg | ((arg as WAssignment).feature instanceof WVariableReference) ]
+			.map [ arg | (arg as WAssignment).feature as WVariableReference ]
 	}
 
 	def static boolean inheritsDefaultConstructor(WClass c) {

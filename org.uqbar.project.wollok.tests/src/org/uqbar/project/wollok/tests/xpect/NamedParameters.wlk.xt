@@ -89,7 +89,7 @@ class ReVillano inherits AntiHeroe {
 	var nivelMaldad
 	// XPECT errors --> "Reference ciudadesQueAma not found in class AntiHeroe" at "ciudadesQueAma = [\"New York\"]"
 	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
-		nivelMaldad = 2		
+		nivelMaldad = 2
 	}
 	constructor(_nivelMaldad, _fraseCabecera) = self(_fraseCabecera) {
 		nivelMaldad = _nivelMaldad

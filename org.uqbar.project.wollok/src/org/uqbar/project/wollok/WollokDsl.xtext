@@ -396,7 +396,6 @@ WDelegatingConstructorCall:
 WSelfDelegatingConstructorCall:
 	{WSelfDelegatingConstructorCall} 'self' '(' 
 	(=> argumentList=WArgumentList)?
-	//(arguments+=WExpression (',' arguments+=WExpression)*)? 
 	')'
 ;
 
@@ -404,7 +403,6 @@ WSelfDelegatingConstructorCall:
 WSuperDelegatingConstructorCall:
 	{WSuperDelegatingConstructorCall} 'super' '(' 
 	(=> argumentList=WArgumentList)?
-	//(arguments+=WExpression (',' arguments+=WExpression)*)? 
 	')'
 ;
 
@@ -426,12 +424,6 @@ WPositionalArgumentsList:
 	{WPositionalArgumentsList}
 	(=> values += WExpression (',' values += WExpression)*)
 ;
-
-//WArgumentList:
-//	{WArgumentList}	
-//	((=> initializers+=WInitializer (',' initializers+=WInitializer)*) |
-//	(values += WExpression (',' values += WExpression)*))?
-//;
 
 WInitializer:
 	initializer=WVariable "=" initialValue=WExpression

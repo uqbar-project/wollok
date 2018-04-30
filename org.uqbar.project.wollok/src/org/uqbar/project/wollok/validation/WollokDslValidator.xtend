@@ -332,8 +332,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
+		val namedParameters = variables.toList
 		eAllContents.filter(WVariableReference).forEach [ ref |
-			if (ref.ref instanceof WVariable) {
+			if (ref.ref instanceof WVariable && !namedParameters.contains(ref)) {
 				report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION, ref, WVARIABLE_REFERENCE__REF)
 			}
 		]
