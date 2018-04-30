@@ -11,7 +11,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
 class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 	
 	@Test
-	def void mixingNamedAndPositionalParametersForWKO() {
+	def void mixingNamedAndPositionalParametersInConstructorCall1() {
 		'''
 		object wollok {
 			method perro() {
@@ -32,7 +32,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void mixingPositionAndNamedParametersForWKO() {
+	def void mixingPositionAndNamedParametersInConstructorCall2() {
 		'''
 		object wollok {
 			method perro() {
@@ -48,6 +48,28 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 				nombre = n
 				edad = e
 			}
+		}
+		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+	}
+
+	// TODO: Ver si agregamos una validación
+	@Test
+	@Ignore
+	def void mixingNamedAndPositionalParametersInWKO1() {
+		'''
+		class Perro {
+			var nombre = ""
+			var edad = 0
+			constructor() {
+			}
+			constructor(_nombre, _edad) {
+				nombre = _nombre
+				edad = _edad
+			}
+		}
+
+		object firulais inherits Perro(nombre = "Firu", 22) {
+			method ladrar() = "Guau"
 		}
 		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
 	}

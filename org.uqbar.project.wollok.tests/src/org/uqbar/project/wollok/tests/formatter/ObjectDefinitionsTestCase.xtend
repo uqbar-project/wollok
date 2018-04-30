@@ -58,7 +58,7 @@ const pepita = object      {var energia             =
 	}
 
 	@Test
-	def void testInheritingUnnamedObjectDefinition() {
+	def void testInheritingPositionalUnnamedObjectDefinition() {
 		assertFormatting(
 		'''
 		class A { var _n = 0 constructor(_n) { n = _n } }
@@ -105,7 +105,7 @@ const pepita = object     inherits A(
 	def void testInheritingNamedParametersUnnamedObjectDefinition() {
 		assertFormatting(
 		'''
-		class A { var edad = 0 }
+		class A { var edad = 0 var nombre = ""}
         program prueba {    
         	
 const pepita = object     inherits A( 
@@ -115,6 +115,14 @@ const pepita = object     inherits A(
 edad = 22
 
 
+,
+
+
+nombre
+
+
+=       
+"Carlono"
 )
  {var energia             =
 0
@@ -126,11 +134,12 @@ edad = 22
 		class A {
 		
 			var edad = 0
+			var nombre = ""
 		
 		}
 		
 		program prueba {
-			const pepita = object inherits A(edad = 22) {
+			const pepita = object inherits A(edad = 22, nombre = "Carlono") {
 				var energia = 0
 				method volar() {
 					energia++
@@ -167,7 +176,7 @@ object { var energia
 	}
 
 	@Test
-	def void testInheritingObjectDefinition() {
+	def void testInheritingPositionalParametersObjectDefinition() {
 		assertFormatting(
 			'''
           object        pepita  
@@ -550,7 +559,7 @@ inherits
 	}
 			
 	@Test
-	def testObjectInheritingParentWithParameterizedConstructor() {
+	def testObjectInheritingPosicionalParametersForWKO() {
 		assertFormatting('''
 object luisAlberto inherits Musico (
 	
@@ -571,7 +580,7 @@ object luisAlberto inherits Musico (
 	}
 
 	@Test
-	def testObjectInheritingParentWithParameterizedConstructor2() {
+	def testObjectInheritingPosicionalParametersForWKO2() {
 		assertFormatting('''
 object luisAlberto inherits Musico (
 	
@@ -585,6 +594,36 @@ object luisAlberto inherits Musico (
 		''',
 		'''
 		object luisAlberto inherits Musico (8, "estrelicia") {
+
+			var guitarra
+		
+		}
+		
+		''')
+	}
+
+	@Test
+	def testObjectInheritingNamedParametersForWKO() {
+		assertFormatting('''
+object luisAlberto inherits Musico (calidad
+	
+	
+	
+= 
+8
+	
+	, 
+	
+	
+				cancionPreferida                      =
+	"estrelicia"
+) {
+
+	var guitarra
+}		
+		''',
+		'''
+		object luisAlberto inherits Musico (calidad = 8, cancionPreferida = "estrelicia") {
 
 			var guitarra
 		
