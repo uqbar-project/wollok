@@ -352,13 +352,15 @@ class WollokModelExtensions {
 		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
-	def static variables(WDelegatingConstructorCall c) {
-		c.arguments
+	def static variables(WArgumentList c) {
+		c
+			.arguments
 			.filter(WAssignment)
 			.filter [ arg | ((arg as WAssignment).feature instanceof WVariableReference) ]
 			.map [ arg | (arg as WAssignment).feature as WVariableReference ]
+			.toList
 	}
-
+	
 	def static boolean inheritsDefaultConstructor(WClass c) {
 		if (c.hasConstructorDefinitions) {
 			return false

@@ -121,6 +121,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
 	public static String WollokDslValidator_REFERENCE_UNITIALIZED;
+	public static String WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS;
 	
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	

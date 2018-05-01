@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.parser
 
-import org.junit.Ignore
 import org.junit.Test
 import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestCase
 
@@ -28,7 +27,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 				edad = e
 			}
 		}
-		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
 	}
 
 	@Test
@@ -49,12 +48,15 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 				edad = e
 			}
 		}
-		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
 	}
 
-	// TODO: Ver si agregamos una validación
+	/**
+	 * From now on these tests are not syntax errors, but validation ones
+	 * since Wollok Parser can't distinguish between initializers and values 
+	 * when they both appear, so it is mapped as a list of positional parameters  
+	 */
 	@Test
-	@Ignore
 	def void mixingNamedAndPositionalParametersInWKO1() {
 		'''
 		class Perro {
@@ -71,12 +73,72 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		object firulais inherits Perro(nombre = "Firu", 22) {
 			method ladrar() = "Guau"
 		}
-		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
 	}
 
-	// TODO: Ver si agregamos una validación
 	@Test
-	@Ignore
+	def void mixingNamedAndPositionalParametersInWKO2() {
+		'''
+		class Perro {
+			var nombre = ""
+			var edad = 0
+			constructor() {
+			}
+			constructor(_nombre, _edad) {
+				nombre = _nombre
+				edad = _edad
+			}
+		}
+
+		object firulais inherits Perro(22, nombre = "Firu") {
+			method ladrar() = "Guau"
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
+	def void mixingNamedAndPositionalParametersInObjectLiteral1() {
+		'''
+		class Perro {
+			var nombre = ""
+			var edad = 0
+			constructor() {
+			}
+			constructor(_nombre, _edad) {
+				nombre = _nombre
+				edad = _edad
+			}
+		}
+		program prueba {
+			const firulais = object inherits Perro(nombre = "Firu", 22) {
+				method ladrar() = "Guau"
+			}
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
+	def void mixingNamedAndPositionalParametersInObjectLiteral2() {
+		'''
+		class Perro {
+			var nombre = ""
+			var edad = 0
+			constructor() {
+			}
+			constructor(_nombre, _edad) {
+				nombre = _nombre
+				edad = _edad
+			}
+		}
+		program prueba {
+			const firulais = object inherits Perro(22, nombre = "Firu") {
+				method ladrar() = "Guau"
+			}
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
 	def void mixingPositionAndNamedParametersForSuperDelegatingConstructor() {
 		'''
 		class Animal {
@@ -96,7 +158,84 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		
 			method nombre() = nombre
 		}
-		'''.expectsValidationError("You should not mix named parameters with values in constructor calls", false)
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
+	def void mixingPositionAndNamedParametersForSuperDelegatingConstructor2() {
+		'''
+		class Animal {
+			var edad
+		
+			constructor(e, e0, e1) {
+				edad = e
+			}
+		}
+		
+		class Perro inherits Animal {
+			var nombre
+		
+			constructor(n, e) = super(edad = e, 1, 22) {
+				nombre = n
+			}
+		
+			method nombre() = nombre
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
+	def void mixingPositionAndNamedParametersForSelfDelegatingConstructor1() {
+		'''
+		class Animal {
+			var edad
+		
+			constructor(e, e0, e1) {
+				edad = e
+			}
+		}
+		
+		class Perro inherits Animal {
+			var nombre
+			var otraVariable
+		
+			constructor(n) = self(otraVariable = 2, 1) {
+			}
+			
+			constructor(n, e) {
+				nombre = n
+			}
+		
+			method nombre() = nombre
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
+	}
+
+	@Test
+	def void mixingPositionAndNamedParametersForSelfDelegatingConstructor2() {
+		'''
+		class Animal {
+			var edad
+		
+			constructor(e, e0, e1) {
+				edad = e
+			}
+		}
+		
+		class Perro inherits Animal {
+			var nombre
+			var otraVariable
+		
+			constructor(n) = self(1, otraVariable = 2) {
+			}
+			
+			constructor(n, e) {
+				nombre = n
+			}
+		
+			method nombre() = nombre
+		}
+		'''.expectsValidationError("You should not mix named and positional parameters", false)
 	}
 	
 }

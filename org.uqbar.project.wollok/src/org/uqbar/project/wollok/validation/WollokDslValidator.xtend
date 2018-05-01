@@ -332,12 +332,36 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
-		val namedParameters = variables.toList
+		val namedParameters = if (argumentList === null) newArrayList else argumentList.variables
 		eAllContents.filter(WVariableReference).forEach [ ref |
 			if (ref.ref instanceof WVariable && !namedParameters.contains(ref)) {
 				report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION, ref, WVARIABLE_REFERENCE__REF)
 			}
 		]
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotMixNamedAndPositionalParametersInConstructorDelegation(WDelegatingConstructorCall it) {
+		if (argumentList === null) return;
+		if (!argumentList.values.isEmpty && !argumentList.variables.isEmpty)	
+			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WDELEGATING_CONSTRUCTOR_CALL__ARGUMENT_LIST)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotMixNamedAndPositionalParametersInObjectLiteral(WObjectLiteral it) {
+		if (parentParameters === null) return;
+		if (!parentParameters.values.isEmpty && !parentParameters.variables.isEmpty)
+			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WOBJECT_LITERAL__PARENT_PARAMETERS)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotMixNamedAndPositionalParametersInWKO(WNamedObject it) {
+		if (parentParameters === null) return;
+		if (!parentParameters.values.isEmpty && !parentParameters.variables.isEmpty)
+			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WNAMED_OBJECT__PARENT_PARAMETERS)
 	}
 
 	@Check
