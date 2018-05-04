@@ -508,6 +508,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def dispatch boolean hasSeveralAssignmentsFor(WConstructor it, WReferenciable variable) {
+		if (expression === null) return false
 		expression.hasSeveralAssignmentsFor(variable)
 	}
 

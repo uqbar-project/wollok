@@ -426,7 +426,7 @@ WPositionalArgumentsList:
 ;
 
 WInitializer:
-	initializer=WVariable "=" initialValue=WExpression
+	initializer= WVariable "=" initialValue=WExpression
 ;
 
 WTry:

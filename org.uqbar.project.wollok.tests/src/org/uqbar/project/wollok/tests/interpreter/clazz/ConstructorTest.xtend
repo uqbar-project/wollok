@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * For static validations see the X_PECT test.
  * This tests
  * - having multiple constructors
- * - constructor delegation: to this or super
+ * - constructor delegation: to self or super
  * - automatic delegation for no-args constructors
  * 
  * @author jfernandes
@@ -260,7 +260,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void constructorDelegationToSuperNamedParameters() {
+	def void constructorDelegationToSuperNamedParameters1() {
 		'''
 			class SuperClass {
 				var superX
@@ -296,6 +296,42 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			program t {
 				const o = new SubClass(5)
+				assert.equals(2.5, o.total())
+			}
+			'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void constructorDelegationToSelfNamedParameters1() {
+		'''
+			class Prueba {
+				var superX
+				constructor(a) { superX = a }
+				constructor(n, x) = self(a = n + (x * 2)) {}
+				method getSuperX() { return superX }
+			}
+			program t {
+				const o = new Prueba(5, 4)
+				assert.equals(13, o.getSuperX())
+			}
+			'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void constructorDelegationToSelfNamedParameters2() {
+		'''
+			class Prueba {
+				var superX
+				var superY
+				constructor(a, b) { 
+					superX = a
+					superY = b
+				}
+				constructor(n) = self(b = n - 1, a = n * 2) {}
+				method total() { return superX / superY }
+			}
+			program t {
+				const o = new Prueba(5)
 				assert.equals(2.5, o.total())
 			}
 			'''.interpretPropagatingErrors

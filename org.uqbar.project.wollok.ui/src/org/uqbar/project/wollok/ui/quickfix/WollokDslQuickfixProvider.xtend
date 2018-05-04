@@ -624,7 +624,11 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		IssueResolutionAcceptor issueResolutionAcceptor, Issue issue, IXtextDocument xtextDocument) {
 		if (target instanceof WVariableReference && reference.EType == WollokDslPackage.Literals.WREFERENCIABLE &&
 			reference.name == "ref") {
-			quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument, target)
+			if (target.declaringArgumentList === null) {
+				quickFixForUnresolvedRefToVariable(issueResolutionAcceptor, issue, xtextDocument, target)
+			} else {
+				// TODO: quickFixForUnresolvedRefToNamedParameter
+			}
 		} else if (reference.EType == WollokDslPackage.Literals.WCLASS) {
 			quickFixForUnresolvedRefToClass(issueResolutionAcceptor, issue, xtextDocument)
 		}

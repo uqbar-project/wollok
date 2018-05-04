@@ -106,7 +106,7 @@ class A {
 		b = y
 	}
 	// XPECT errors --> "Reference inexistente not found in delegated constructor" at "inexistente = 3"
-	constructor(x, y, z) = self(x = x + y, inexistente = 3) {
+	constructor(x, y, z) = self(x = y, inexistente = 3) {
 		b = y
 	}
 }
