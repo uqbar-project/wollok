@@ -406,7 +406,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// all calls to 'this' are valid in mixins
 //	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.matchesProperty(call.feature, call.memberCallArguments.size) || c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
+		c.matchesProperty(call.feature, call.memberCallArguments.size) 
+			|| c.allMethods.exists[isValidMessage(call)] 
+			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
 	}
 
 	// ************************************************************************
@@ -520,6 +522,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
+	
+	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
+		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+	} 
 	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }
 	def static dispatch boolean matchesProperty(WMethodContainer it, String propertyName, int parametersSize) {

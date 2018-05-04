@@ -1,0 +1,14 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object propertiesTest {
+	const property constante = 7
+	var property variable = "hola"
+	
+	method pruebas() {
+		// XPECT type at p1 --> Number
+		const p1 = self.constante()
+		
+		// XPECT type at p2 --> String
+		const p2 = self.variable()		
+	}
+}
