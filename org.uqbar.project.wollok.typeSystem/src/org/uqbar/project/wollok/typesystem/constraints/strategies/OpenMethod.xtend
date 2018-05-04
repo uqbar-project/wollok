@@ -37,7 +37,7 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	def openMethod(MessageSend it, WollokType type) {
 		if (addOpenType(type)) {
 			log.debug('''  Feeding message send «it» with method type info from type «type»''')
-			val methodTypeInfo = registry.methodTypeInfo(type, selector, arguments)
+			val methodTypeInfo = registry.methodTypes.forType(type, selector, arguments)
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
 			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]
@@ -54,7 +54,7 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	def openClosureMethod(MessageSend it, WollokType type, ClosureTypeInfo info) {
 		if (addOpenType(type)) {
 			log.debug('''  Feeding message send «it» with method type info from type «type»''')
-			val methodTypeInfo = registry.methodTypeInfo(type, selector, arguments)
+			val methodTypeInfo = registry.methodTypes.forType(type, selector, arguments)
 			changed = true
 			methodTypeInfo.returnType.beSubtypeOf(returnType)
 			info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] 
