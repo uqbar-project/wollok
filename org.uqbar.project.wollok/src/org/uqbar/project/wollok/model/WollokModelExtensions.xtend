@@ -352,6 +352,12 @@ class WollokModelExtensions {
 		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static getArgument(WArgumentList l, String name) {
+		val initializer = l.initializers.findFirst [ init | init.initializer.name.equals(name) ]
+		if (initializer === null) return null
+		initializer.initialValue
+	}
+	
 	def static variables(WArgumentList c) {
 		c
 			.arguments

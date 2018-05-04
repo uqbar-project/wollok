@@ -63,14 +63,11 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	}
 
 	def dispatch visit(WDelegatingConstructorCall it) {
-		if (hasNamedParameters) {
-			argumentList.initializers.forEach [ doVisit ]
-		}
 		val constructor = declaringContext.resolveConstructor(arguments)
 		if (constructor !== null && !constructorsAlreadyVisited.contains(constructor)) {
 			constructorsAlreadyVisited.add(constructor)
 			constructor.doVisit
-		}		
+		}
 	}
 	
 	override dispatch visit(WBlockExpression it) {

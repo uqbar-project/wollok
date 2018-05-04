@@ -81,13 +81,13 @@ class AntiHeroe inherits Heroe {
 }
 class Villano inherits AntiHeroe {
 	var nivelMaldad
-	constructor(_fraseCabecera) = super(fraseCabecera = "No soy malo, estoy enojado") {
+	constructor(_fraseCabecera) = super(_fraseCabecera = "No soy malo, estoy enojado") {
 		nivelMaldad = 2		
 	}
 }
 class ReVillano inherits AntiHeroe {
 	var nivelMaldad
-	// XPECT errors --> "Reference ciudadesQueAma not found in class AntiHeroe" at "ciudadesQueAma = [\"New York\"]"
+	// XPECT errors --> "Reference ciudadesQueAma not found in delegated constructor" at "ciudadesQueAma = [\"New York\"]"
 	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
 		nivelMaldad = 2
 	}
@@ -95,14 +95,18 @@ class ReVillano inherits AntiHeroe {
 		nivelMaldad = _nivelMaldad
 	}
 }
+
 class A {
 	var a
 	var b = 1
 	constructor(_a) {
 		a = _a
 	}
-	// XPECT errors --> "Reference inexistente not found in class A" at "inexistente = 3"
-	constructor(_a, _b) = self(a = _a, inexistente = 3) {
-		b = _b
+	constructor(x, y) = self(_a = x) {
+		b = y
+	}
+	// XPECT errors --> "Reference inexistente not found in delegated constructor" at "inexistente = 3"
+	constructor(x, y, z) = self(x = x + y, inexistente = 3) {
+		b = y
 	}
 }

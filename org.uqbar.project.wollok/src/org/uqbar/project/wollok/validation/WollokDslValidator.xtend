@@ -45,6 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -67,7 +68,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 
 /**
  * Custom validation rules.
@@ -123,7 +123,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val UNNECESARY_OVERRIDE = "UNNECESARY_OVERRIDE"
-	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMTER_CONSTRUCTOR"
+	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR"
 	public static val MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR = "MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR"
 	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
@@ -266,8 +266,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUnexistentNamedParametersInheritingConstructor(WSelfDelegatingConstructorCall it) {
-		if (declaringContext === null || argumentList === null || !argumentList.hasNamedParameters) return;
-		(declaringContext as WClass).validateNamedParameters(argumentList)
+		val clazz = declaringContext as WClass
+		if (clazz === null || argumentList === null || !argumentList.hasNamedParameters) return;
+		val constructor = clazz.resolveConstructor(arguments)
+		clazz.validateDelegatingConstructor(argumentList, constructor)
 	}
 
 	@Check
@@ -275,7 +277,9 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def checkUnexistentNamedParametersInheritingConstructor(WSuperDelegatingConstructorCall it) {
 		val clazz = declaringContext
 		if (clazz === null || clazz.parent === null || argumentList === null || !argumentList.hasNamedParameters) return;
-		clazz.parent.validateNamedParameters(argumentList)
+		val parent = clazz.parent
+		val constructor = parent.resolveConstructor(arguments)
+		parent.validateDelegatingConstructor(argumentList, constructor)
 	}
 	
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
@@ -286,6 +290,14 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 
+	def void validateDelegatingConstructor(WClass clazz, WArgumentList parameterList, WConstructor constructor) {
+		val validNames = constructor.parameters.map [ name ]
+		val invalidInitializers = parameterList.initializers.filter [ !validNames.contains(initializer.name) ]
+		invalidInitializers.forEach [ 
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR, initializer.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+		]
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUninitializedAttributesInConstructorNamedParameters(WConstructorCall it) {
