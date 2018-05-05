@@ -3,11 +3,11 @@ package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.ConcreteType
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -22,7 +22,7 @@ class MethodTypeProvider {
 		this.registry = registry	
 	}
 	
-	def dispatch forType(ConcreteType type, String selector, List<TypeVariable> arguments) {
+	def dispatch methodType(ConcreteType type, MessageSend it) {
 		val method = type.lookupMethod(selector, arguments)
 		if (method !== null) 
 			return new RegularMethodTypeInfo(registry, method)
@@ -32,11 +32,10 @@ class MethodTypeProvider {
 			return if (arguments.size == 0) new PropertyGetterTypeInfo(registry, property)
 				else new PropertySetterTypeInfo(registry, property)
 				
-		// throw new MessageNotUnderstoodException()
-		throw new TypeSystemException()
+		 throw new MessageNotUnderstoodException(type, it)
 	}
 
-	def dispatch forType(WollokType type, String selector, List<TypeVariable> arguments) {
+	def dispatch methodType(WollokType type, MessageSend it) {
 		throw new UnsupportedOperationException('''Can't extract methodTypeInfo for methods of «type»''')
 	}
 

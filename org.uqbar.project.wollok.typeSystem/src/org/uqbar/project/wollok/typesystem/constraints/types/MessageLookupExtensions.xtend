@@ -3,11 +3,11 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeProvider
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
-import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.VariableSubtypingRules.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 
@@ -16,9 +16,11 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
  */
 class MessageLookupExtensions {
 	TypeVariablesRegistry registry
+	extension MethodTypeProvider methodTypes
 
 	new(TypeVariablesRegistry registry) {
 		this.registry = registry
+		this.methodTypes = new MethodTypeProvider(registry)
 	}
 
 	def static respondsToAll(WollokType type, Iterable<MessageSend> messages) {
@@ -35,24 +37,12 @@ class MessageLookupExtensions {
 	}
 
 	def canRespondTo(ConcreteType it, MessageSend message) {
-		container.allMethods.exists [ method |
-			match(method, message)
-		]
+		methodType(message).matchesParameters(message)
 	}
 
-	def private match(WMethodDeclaration declaration, MessageSend message) {
-		declaration.name == message.selector && declaration.parameters.size == message.arguments.size &&
-			matchParameters(declaration, message)
-	}
-
-	def private matchParameters(WMethodDeclaration method, MessageSend message) {
+	def matchesParameters(MethodTypeInfo method, MessageSend message) {
 		return method.parameters.biForAll(message.arguments) [ parameter, argument |
-			try {
-				registry.tvar(parameter).typeInfo.isSupertypeOf(argument.typeInfo)
-			} catch (RuntimeException exception) {
-				// This is most probably because lack of a type annotation, ignore it for now.
-				true
-			}
+			parameter.isSuperVarOf(argument)
 		]
 	}
 }
