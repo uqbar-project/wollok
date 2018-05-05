@@ -4,11 +4,41 @@ object propertiesTest {
 	const property constante = 7
 	var property variable = "hola"
 	
-	method pruebas() {
+	// XPECT methodType at pruebas --> (String) => Void
+	method pruebas(param) {
 		// XPECT type at p1 --> Number
 		const p1 = self.constante()
 		
 		// XPECT type at p2 --> String
-		const p2 = self.variable()		
+		const p2 = self.variable()
+
+		self.variable(param)
 	}
+}
+
+object propertiesInferenceTest {
+	var property variable
+	
+	method prueba1() {
+		self.variable(123)
+
+		// XPECT type at p1 --> Number
+		const p1 = self.variable()
+	}
+	
+	method prueba2() {
+		const cl = new PropertiesInferenceClass()
+		cl.notInitialized(true)
+		
+		// XPECT! type at p2 --> Number
+		const p2 = cl.notInitialized()
+	}
+}
+
+class PropertiesInferenceClass {
+	/* XPECT warnings ---
+		"Variable is never assigned" at "notInitialized"
+		"Variable is never assigned" at "notInitialized"
+	--- */ 
+	var property notInitialized
 }
