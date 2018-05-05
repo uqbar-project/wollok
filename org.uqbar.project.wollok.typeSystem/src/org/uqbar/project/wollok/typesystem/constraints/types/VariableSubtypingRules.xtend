@@ -36,7 +36,7 @@ class VariableSubtypingRules {
 
 	/** The maxTypes of the supertype has to include every minType in subtype */
 	static def dispatch boolean isSupertypeOf(GenericTypeInfo supertype, GenericTypeInfo subtype) {
-		supertype.maximalConcreteTypes == null 
+		supertype.maximalConcreteTypes === null 
 		||
 		subtype.minTypes.keySet.forall[
 			supertype.maximalConcreteTypes.contains(it)
