@@ -566,7 +566,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
 		val declaringContext = call.declaringContext
-		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call, classFinder)) {
+		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call)) {
 			var message = WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST
 			val args = call.memberCallArguments.size
 			var issueId = METHOD_ON_THIS_DOESNT_EXIST

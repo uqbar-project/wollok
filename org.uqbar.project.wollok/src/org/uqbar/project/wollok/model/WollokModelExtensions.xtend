@@ -289,7 +289,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 
 	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) {
-		resolveWKO(finder).isValidCall(it, finder)
+		resolveWKO(finder).isValidCall(it)
 	}
 
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) {

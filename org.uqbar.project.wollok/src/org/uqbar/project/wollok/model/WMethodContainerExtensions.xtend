@@ -13,7 +13,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
@@ -404,11 +403,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	// all calls to 'this' are valid in mixins
-//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
-	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
+	//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call) { true }
+	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
 		c.matchesProperty(call.feature, call.memberCallArguments.size) 
 			|| c.allMethods.exists[isValidMessage(call)] 
-			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
+			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call))
 	}
 
 	// ************************************************************************
