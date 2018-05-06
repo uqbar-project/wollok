@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 
 /**
  * This strategy takes a message send for which receiver we know a possible concrete type (i.e. a Wollok Class) 
@@ -36,11 +37,13 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 
 	def openMethod(MessageSend it, WollokType type) {
 		if (addOpenType(type)) {
-			log.debug('''  Feeding message send «it» with method type info from type «type»''')
-			val methodTypeInfo = registry.methodTypes.methodType(type, it)
-			changed = true
-			methodTypeInfo.returnType.beSubtypeOf(returnType)
-			methodTypeInfo.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]
+			log.debug('''Feeding message send «it» with method type info from type «type»''')
+
+			registry.methodTypes.methodTypeDo(type, it) [ methodType |
+				changed = true
+				methodType.returnType.beSubtypeOf(returnType)
+				methodType.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]				
+			]
 		}
 	}
 
@@ -54,10 +57,12 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	def openClosureMethod(MessageSend it, WollokType type, ClosureTypeInfo info) {
 		if (addOpenType(type)) {
 			log.debug('''  Feeding message send «it» with method type info from type «type»''')
-			val methodTypeInfo = registry.methodTypes.methodType(type, it)
-			changed = true
-			methodTypeInfo.returnType.beSubtypeOf(returnType)
-			info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)] 
+
+			registry.methodTypes.methodTypeDo(type, it) [ methodType |
+				changed = true
+				methodType.returnType.beSubtypeOf(returnType)
+				info.parameters.biForEach(arguments)[param, arg|param.beSupertypeOf(arg)]
+			]
 		}
 	}
 	

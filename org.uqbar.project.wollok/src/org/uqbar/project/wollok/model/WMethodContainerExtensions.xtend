@@ -52,6 +52,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
 
 /**
  * Extension methods for WMethodContainers.
@@ -595,7 +596,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean hasRealParent(EObject it) { false }
 	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS) }
 	def static dispatch boolean hasRealParent(WClass c) {
-		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn?.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
+		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn.notNullAnd[equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)]
 	}
 		
 	/* Including file name for multiple tests */

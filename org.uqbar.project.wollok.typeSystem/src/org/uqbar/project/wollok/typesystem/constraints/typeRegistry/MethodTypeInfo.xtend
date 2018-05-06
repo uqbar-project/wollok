@@ -22,17 +22,23 @@ class MethodTypeProvider {
 		this.registry = registry	
 	}
 	
+	def methodTypeDo(WollokType type, MessageSend it, (MethodTypeInfo) => void actions) {
+		val methodType = this.methodType(type, it)
+		if (methodType === null) throw new MessageNotUnderstoodException(type, it)
+		actions.apply(methodType)
+	}
+	
 	def dispatch methodType(ConcreteType type, MessageSend it) {
 		val method = type.lookupMethod(selector, arguments)
 		if (method !== null) 
 			return new RegularMethodTypeInfo(registry, method)
 			
 		val property = type.container.findProperty(selector, arguments.size)
-		if (property !== null) 
-			return if (arguments.size == 0) new PropertyGetterTypeInfo(registry, property)
-				else new PropertySetterTypeInfo(registry, property)
-				
-		 throw new MessageNotUnderstoodException(type, it)
+		if (property !== null) {
+			if (arguments.size == 0) new PropertyGetterTypeInfo(registry, property)
+			else new PropertySetterTypeInfo(registry, property)
+		} 
+		else null	
 	}
 
 	def dispatch methodType(WollokType type, MessageSend it) {

@@ -25,7 +25,9 @@ class VariableSubtypingRules {
 
 	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, VoidTypeInfo subtype) { true }
 
-	static def dispatch boolean isSupertypeOf(ClosureTypeInfo supertype, ClosureTypeInfo subtype) { 
+	static def dispatch boolean isSupertypeOf(ClosureTypeInfo supertype, ClosureTypeInfo subtype) {
+		supertype.parameters.size === subtype.parameters.size
+		&& 
 		supertype.parameters.biForAll(subtype.parameters)[superParam, subParam|
 			// Note that the subtype relationship is inverted for parameters
 			subParam.isSuperVarOf(superParam)

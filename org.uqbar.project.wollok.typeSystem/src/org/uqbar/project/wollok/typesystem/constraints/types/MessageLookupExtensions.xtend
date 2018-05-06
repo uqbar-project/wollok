@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.VariableSubtypingRules.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
 
 /**
  * @author npasserini
@@ -37,7 +38,7 @@ class MessageLookupExtensions {
 	}
 
 	def canRespondTo(ConcreteType it, MessageSend message) {
-		methodType(message).matchesParameters(message)
+		methodType(message).notNullAnd[matchesParameters(message)]
 	}
 
 	def matchesParameters(MethodTypeInfo method, MessageSend message) {
