@@ -6,6 +6,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		
 		(Object == Any) => Boolean;
+		Object >> "equals" === #[Any] => Boolean;
 		Object >> "toString" === #[] => String;
 		Object >> "printString" === #[] => String;
 
@@ -99,18 +100,24 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
+		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
+		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 
 		(List == Any) => Boolean
 		List + List => List
+		List >> "equals" === #[Any] => Boolean;
 		List >> "add" === #[ELEMENT] => Void
 		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
 		List >> "size" === #[] => Number
+		List >> "drop" === #[Number] => List
+		List >> "take" === #[Number] => List
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		
 		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 		 
 		(Set == Any) => Boolean
+		Set >> "equals" === #[Any] => Boolean;
 		Set + Set => Set;
 		Set >> "add" === #[ELEMENT] => Void
 		Set >> "contains" === #[ELEMENT] => Boolean
@@ -159,6 +166,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Closure >> "apply" === #[List] => RETURN
 		
 		InstanceVariableMirror >> "value" === #[] => Void
+		
+		StringPrinter >> "println" === #[Any] => Void
+		StringPrinter >> "getBuffer" === #[] => String		
 	}
 	
 	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
