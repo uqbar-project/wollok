@@ -6,19 +6,16 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
-import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeInfo
-import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeProvider
 
 import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
 
 class TypeVariablesRegistry {
 	val Map<URI, TypeVariable> typeVariables = newHashMap
@@ -31,6 +28,9 @@ class TypeVariablesRegistry {
 
 	@Accessors
 	AnnotatedTypeRegistry annotatedTypes
+
+	@Accessors(PUBLIC_GETTER)
+	val methodTypes = new MethodTypeProvider(this)
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
@@ -134,21 +134,6 @@ class TypeVariablesRegistry {
 	
 	def type(EObject obj) {
 		typeVariables.get(obj.URI)?.type
-	}
-
-	// ************************************************************************
-	// ** Method types
-	// ************************************************************************
-	def dispatch methodTypeInfo(ConcreteType type, String selector, List<TypeVariable> arguments) {
-		new MethodTypeInfo(this, type.lookupMethod(selector, arguments))
-	}
-
-	def dispatch methodTypeInfo(WollokType type, String selector, List<TypeVariable> arguments) {
-		throw new UnsupportedOperationException('''Can't extract methodTypeInfo for methods of «type»''')
-	}
-
-	def methodTypeInfo(WClass container, String selector, List<?> arguments) {
-		new MethodTypeInfo(this, container.lookupMethod(selector, arguments, true))
 	}
 
 	// ************************************************************************

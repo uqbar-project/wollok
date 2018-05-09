@@ -98,7 +98,7 @@ class TypeVariable implements ITypeVariable {
 		if (owner.isCoreObject)
 			throw new RuntimeException('''Tried to add a type error to a core object: «owner.debugInfoInContext»''')
 
-		log.info('''Error reported in «this.fullDescription»''')
+		log.info('''«exception.message» ==> reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
 	

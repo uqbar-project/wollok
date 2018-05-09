@@ -13,7 +13,6 @@ import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
@@ -53,6 +52,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
 
 /**
  * Extension methods for WMethodContainers.
@@ -404,9 +404,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	// all calls to 'this' are valid in mixins
-//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
-	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.matchesProperty(call.feature, call.memberCallArguments.size) || c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
+	//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call) { true }
+	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
+		c.matchesProperty(call.feature, call.memberCallArguments.size) 
+			|| c.allMethods.exists[isValidMessage(call)] 
+			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call))
 	}
 
 	// ************************************************************************
@@ -521,6 +523,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
 	
+	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
+		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+	} 
+	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }
 	def static dispatch boolean matchesProperty(WMethodContainer it, String propertyName, int parametersSize) {
 		variableDeclarations.exists [ variable | variable.matchesProperty(propertyName, parametersSize) ]
@@ -590,7 +596,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean hasRealParent(EObject it) { false }
 	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS) }
 	def static dispatch boolean hasRealParent(WClass c) {
-		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn?.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
+		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn.notNullAnd[equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)]
 	}
 		
 	/* Including file name for multiple tests */
