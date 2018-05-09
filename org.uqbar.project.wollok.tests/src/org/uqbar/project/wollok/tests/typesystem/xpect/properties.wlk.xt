@@ -30,12 +30,12 @@ object propertiesInferenceTest {
 		const cl = new PropertiesInferenceClass()
 		cl.notInitialized(true)
 		
-		// XPECT! type at p2 --> Number
+		// XPECT type at p2 --> Boolean
 		const p2 = cl.notInitialized()
 	}
 }
 
 class PropertiesInferenceClass {
-	// XPECT! type at notInitialized --> Number
+	// XPECT type at notInitialized --> Boolean
 	var property notInitialized
 }
