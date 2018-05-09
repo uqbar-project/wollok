@@ -23,7 +23,11 @@ class VariableSubtypingRules {
 	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, Void subtype) { true }
 
-	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, VoidTypeInfo subtype) { true }
+	/** 
+	 * Void is supertype of anything, i.e. we can receive anything where void is expected.
+	 * The opposite is not true, void is unacceptable where another type of value is expected.
+	 */
+	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, TypeInfo subtype) { true }
 
 	static def dispatch boolean isSupertypeOf(ClosureTypeInfo supertype, ClosureTypeInfo subtype) {
 		supertype.parameters.size === subtype.parameters.size

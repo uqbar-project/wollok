@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.typesystem.annotations
+ package org.uqbar.project.wollok.typesystem.annotations
 
 import org.uqbar.project.wollok.typesystem.ConcreteType
 
@@ -9,6 +9,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Object >> "equals" === #[Any] => Boolean;
 		Object >> "toString" === #[] => String;
 		Object >> "printString" === #[] => String;
+		Object >> "internalToSmartString" === #[Boolean] => String;
 
 		(Boolean == Any) => Boolean		
 		Boolean >> "||" === #[Boolean] => Boolean
@@ -57,7 +58,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number >> "isInteger" === #[] => Boolean;
 		Number >> "isPrime" === #[] => Boolean;
 		Number >> "plus" === #[] => Number;
-		Number >> "times" === #[closure(#[], Any)] => Void;
+		Number >> "times" === #[closure(#[Number], Void)] => Void;
 		Number >> "checkNotNull" === #[Any, String] => Void;
 		Number >> "simplifiedToSmartString" === #[] => String;
 		Number >> "internalToSmartString" === #[Boolean] => String;
@@ -102,6 +103,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Collection + Collection => Collection;
 		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
+		Collection >> "internalToSmartString" === #[Boolean] => String;
 
 		(List == Any) => Boolean
 		List + List => List
@@ -115,6 +117,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		
 		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
+		Range >> "internalToSmartString" === #[Boolean] => String;
 		 
 		(Set == Any) => Boolean
 		Set >> "equals" === #[Any] => Boolean;
