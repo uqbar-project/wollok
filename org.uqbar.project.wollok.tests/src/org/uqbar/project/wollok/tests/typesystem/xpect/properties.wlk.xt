@@ -36,8 +36,6 @@ object propertiesInferenceTest {
 }
 
 class PropertiesInferenceClass {
-	/* XPECT warnings ---
-		"Variable is never assigned" at "notInitialized"
-	--- */ 
+	// XPECT! type at notInitialized --> Number
 	var property notInitialized
 }
