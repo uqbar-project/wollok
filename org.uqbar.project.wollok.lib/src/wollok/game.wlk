@@ -2,25 +2,25 @@ object keyboard {
 
 	method any() = new Key(-1)
 
-	method num_0() = new Key(7, 144)
+	method num0() = new Key(7, 144)
 
-	method num_1() = new Key(8, 145)
+	method num1() = new Key(8, 145)
 
-	method num_2() = new Key(9, 146)
+	method num2() = new Key(9, 146)
 
-	method num_3() = new Key(10, 147)
+	method num3() = new Key(10, 147)
 
-	method num_4() = new Key(11, 148)
+	method num4() = new Key(11, 148)
 
-	method num_5() = new Key(12, 149)
+	method num5() = new Key(12, 149)
 
-	method num_6() = new Key(13, 150)
+	method num6() = new Key(13, 150)
 
-	method num_7() = new Key(14, 151)
+	method num7() = new Key(14, 151)
 
-	method num_8() = new Key(15, 152)
+	method num8() = new Key(15, 152)
 
-	method num_9() = new Key(16, 153)
+	method num9() = new Key(16, 153)
 
 	method a() = new Key(29)
 
