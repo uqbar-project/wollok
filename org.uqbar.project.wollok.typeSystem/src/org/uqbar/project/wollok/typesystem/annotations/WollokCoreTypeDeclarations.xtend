@@ -183,6 +183,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void;
 
+		//TODO: getter and setters are implemented because native implementations exist
 		game.fakeProperty("title", String)
 		game.fakeProperty("width", Number)
 		game.fakeProperty("height", Number)
@@ -228,7 +229,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 	}
 	
 	def fakeProperty(SimpleTypeAnnotation<? extends ConcreteType> it, String property, SimpleTypeAnnotation<? extends ConcreteType> type) {
-		//TODO: This is fake because properties not create methods!
 		it >> property === #[type] => Void
 		it >> property === #[] => type
 	}
