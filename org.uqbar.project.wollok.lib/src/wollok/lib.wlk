@@ -390,6 +390,26 @@ class Position {
 	method moveDown(n) { y -= n }
 	
 	/**
+	 * Returns a new Position n steps right from this one.
+	 */		
+	method right(n) = new Position(x + n, y)
+	
+	/**
+	 * Returns a new Position n steps left from this one.
+	 */		
+	method left(n) = new Position(x - n, y)
+	
+	/**
+	 * Returns a new Position n steps up from this one.
+	 */		
+	method up(n) = new Position(x, y + n)
+	
+	/**
+	 * Returns a new Position, n steps down from this one.
+	 */		
+	method down(n) = new Position(x, y - n) 
+
+	/**
 	 * Adds an object to the board for drawing it in self.
 	 */
 	method drawElement(element) { game.addVisualIn(element, self) } //TODO: Implement native

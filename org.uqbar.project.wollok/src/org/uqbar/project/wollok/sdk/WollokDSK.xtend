@@ -50,6 +50,7 @@ class WollokDSK {
 	
 	public static val POSITION = "wollok.lib.Position"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"
+	public static val STRING_PRINTER = "wollok.lib.StringPrinter"
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"

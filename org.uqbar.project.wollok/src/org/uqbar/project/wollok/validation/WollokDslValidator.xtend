@@ -76,7 +76,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLas
  * @author fdodino
  * @author ptesone
  * @author npasserini
- * @author jcontardo
+ * @author jcontardoeff
  * @author fbulgarelli
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
@@ -566,7 +566,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
 		val declaringContext = call.declaringContext
-		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call, classFinder)) {
+		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call)) {
 			var message = WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST
 			val args = call.memberCallArguments.size
 			var issueId = METHOD_ON_THIS_DOESNT_EXIST
@@ -1032,7 +1032,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def noEffectlessExpressionsInSequence(WProgram sequence) {
-		sequence.elements.forEach[ it, index |
+		sequence.elements.allButLast.forEach[ it, index |
 			if (isPure)
 				report(WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE, it.eContainer, WPROGRAM__ELEMENTS, index)
 		]
