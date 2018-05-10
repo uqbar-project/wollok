@@ -68,7 +68,7 @@ object keyboard {
 
 	method m() = new Key(41)
 
-	method minus() = new Key(69)
+	method minusKey() = new Key(69)
 
 	method n() = new Key(42)
 
@@ -76,7 +76,7 @@ object keyboard {
 
 	method p() = new Key(44)
 
-	method plus() = new Key(81)
+	method plusKey() = new Key(81)
 
 	method q() = new Key(45)
 
