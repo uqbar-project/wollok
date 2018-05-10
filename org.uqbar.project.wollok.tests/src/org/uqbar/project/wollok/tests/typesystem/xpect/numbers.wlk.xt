@@ -65,4 +65,61 @@ object numberTest {
 
 	// XPECT methodType at m14 --> (Number) => Number
 	method m14(a) = a.min(a.limitBetween(0, 1))
+	
+	// XPECT methodType at m15 --> (Number) => Boolean
+	method m15(a) = (a + 1).between(0, 10)
+
+	// XPECT methodType at m16 --> (Number) => Number
+	method m16(a) = a.square()
+
+	// XPECT methodType at m17 --> (Number) => Number
+	method m17(a) = a.squareRoot()
+
+	// XPECT methodType at m18 --> (Number) => Number
+	method m18(a) = if (a.even()) 2 else 1
+
+	// XPECT methodType at m19 --> (Number) => Number
+	method m19(a) = if (a.odd()) 2 else 1
+
+	// XPECT methodType at m20 --> (Number) => Number
+	method m20(a) {
+		// XPECT type at value --> Number
+		const value = a.rem(a)
+		return value.roundUp(2)
+	}
+
+	// XPECT methodType at m21 --> (Number) => Number
+	method m21(a) = a.roundUp()
+	
+	// XPECT methodType at m22 --> (Number) => Number
+	method m22(a) = a.truncate(3)
+
+	// XPECT methodType at m23 --> (Number, Number) => Number
+	method m23(a, b) = a.gcd(b + 1)
+
+	// XPECT methodType at m24 --> (Number, Number) => Number
+	method m24(a, b) = a.lcm(b + 1)
+
+	// XPECT methodType at m25 --> (Number) => Boolean
+	method m25(a) {
+		// XPECT type at value --> Number
+		const value = a.digits()
+		return value.isInteger()
+	}
+
+	// XPECT methodType at m26 --> (Number) => Number
+	method m26(a) = a.plus()
+	
+	// XPECT methodType at m27 --> (Number) => Void
+	method m27(a) {
+		var b = 0
+		a.times({ i => b = i })
+	}
+
+	// XPECT methodType at m28 --> (Number, Boolean) => String
+	method m28(n, b) = n.coerceToInteger().internalToSmartString(b)
+	
+	// XPECT methodType at m29 --> () => String
+	method m29() = 4.4.simplifiedToSmartString()
+	
 }
