@@ -50,6 +50,10 @@ abstract class TypeDeclarations {
 	def constructor(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, TypeAnnotation... parameterTypes) {
 		target.addConstructorTypeDeclaration(owner.type, parameterTypes)
 	}
+	
+	def variable(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, String selector , TypeAnnotation type) {
+		target.addVariableTypeDeclaration(owner.type, selector, type)
+	}
 
 	// ****************************************************************************
 	// ** Synthetic operator syntax

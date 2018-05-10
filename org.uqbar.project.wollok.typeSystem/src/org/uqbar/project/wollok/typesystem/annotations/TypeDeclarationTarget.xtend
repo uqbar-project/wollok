@@ -9,4 +9,6 @@ interface TypeDeclarationTarget {
 
 	def void addConstructorTypeDeclaration(ClassBasedWollokType receiver, TypeAnnotation[] parameterTypes)
 	
+	def void addVariableTypeDeclaration(ClassBasedWollokType receiver, String selector, TypeAnnotation type)
+	
 }

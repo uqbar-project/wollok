@@ -146,8 +146,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "toSmartString" === #[Boolean] => String;
 		
 		Position.constructor(Number, Number)
-		Position.fakeProperty("x", Number)
-		Position.fakeProperty("y", Number)
+		Position.variable("x", Number)
+		Position.variable("y", Number)
 		(Position == Any) => Boolean;
 		Position >> "moveRight" === #[Number] => Void
 		Position >> "moveLeft" === #[Number] => Void

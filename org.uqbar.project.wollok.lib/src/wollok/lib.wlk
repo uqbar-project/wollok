@@ -346,8 +346,8 @@ object game {
 }
 
 class Position {
-	var x = 0
-	var y = 0
+	var property x = 0
+	var property y = 0
 	
 	/**
 	 * Returns the position at origin: (0,0).
@@ -361,13 +361,6 @@ class Position {
 		x = _x
 		y = _y
 	}
-	
-	//TODO: Fix properties for TS
-	method x() = x
-	method x(_x) { x = _x }
-	method y() = y
-	method y(_y) { y = _y }
-	
 	
 	/**
 	 * Sums n to x coordinate.
