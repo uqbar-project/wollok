@@ -7,6 +7,8 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -57,6 +59,9 @@ class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(WParameter it)
 		'''param «name»'''
 
+	static def dispatch String debugInfo(WInitializer it)
+		'''«initializer.name» = «initialValue.debugInfo»'''
+
 	static def dispatch String debugInfo(WMemberFeatureCall it)
 		'''«memberCallTarget.debugInfo».«feature»(«memberCallArguments.join(', ')[debugInfo]»)'''
 
@@ -75,6 +80,9 @@ class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(WBlockExpression it)
 		'''body of «eContainer.debugInfoInContext»'''
 
+	static def dispatch String debugInfo(WConstructorCall it)
+		'''new «classRef.name»(...)'''
+
 	// ************************************************************************
 	// ** Debug info with context
 	// ************************************************************************
@@ -91,6 +99,9 @@ class WollokModelPrintForDebug {
 		obj.debugInfo
 	}
 	
+	static def dispatch String debugInfoInContext(WInitializer it)
+		'''«debugInfo» from «eContainer.debugInfoInContext»'''
+
 	static def dispatch String debugInfoInContext(WParameter it)
 		'''«debugInfo» from «eContainer.debugInfoInContext»'''
 

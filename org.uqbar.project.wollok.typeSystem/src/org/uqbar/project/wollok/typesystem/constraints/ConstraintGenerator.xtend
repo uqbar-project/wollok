@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
-import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
@@ -17,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -44,8 +44,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
-
-	val Logger log = Logger.getLogger(this.class)
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
@@ -81,38 +79,41 @@ class ConstraintGenerator {
 	// ** Second pass / whole constraint generation
 	// ************************************************************************
 	
-	def dispatch void generateVariables(EObject node) {
-		// Default case
-		log.warn('''WARNING: Not generating constraints for: «node»''')
+	def void generateVariables(EObject it) {
+		try {
+			generate		
+		} catch (Exception e) {
+			addFatalError(e)
+		}
 	}
 
-	def dispatch void generateVariables(WFile it) {
+	def dispatch void generate(WFile it) {
 		eContents.forEach[addGlobals]
 		eContents.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WProgram it) {
+	def dispatch void generate(WProgram it) {
 		elements.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WNamedObject it) {
+	def dispatch void generate(WNamedObject it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WClass it) {
+	def dispatch void generate(WClass it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WConstructor it) {
+	def dispatch void generate(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
 		expression?.generateVariables
 	}
 
-	def dispatch void generateVariables(WMethodDeclaration it) {
+	def dispatch void generate(WMethodDeclaration it) {
 		it.newTypeVariable
 		parameters.forEach[generateVariables]
 
@@ -125,7 +126,7 @@ class ConstraintGenerator {
 		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
-	def dispatch void generateVariables(WClosure it) {
+	def dispatch void generate(WClosure it) {
 		newTypeVariable //For returns
 		parameters.forEach[generateVariables]
 		expression.generateVariables
@@ -136,11 +137,11 @@ class ConstraintGenerator {
 		newClosure(parameters.map[tvar], returnVar)
 	}
 
-	def dispatch void generateVariables(WParameter it) {
+	def dispatch void generate(WParameter it) {
 		newTypeVariable
 	}
 
-	def dispatch void generateVariables(WBlockExpression it) {
+	def dispatch void generate(WBlockExpression it) {
 		expressions.forEach[ generateVariables ]
 
 		it.newTypeVariable
@@ -148,19 +149,19 @@ class ConstraintGenerator {
 		if (!expressions.empty) it.beSupertypeOf(expressions.last) else it.beVoid
 	}
 
-	def dispatch void generateVariables(WNumberLiteral it) {
+	def dispatch void generate(WNumberLiteral it) {
 		newSealed(classType(NUMBER))
 	}
 
-	def dispatch void generateVariables(WStringLiteral it) {
+	def dispatch void generate(WStringLiteral it) {
 		newSealed(classType(STRING))
 	}
 
-	def dispatch void generateVariables(WBooleanLiteral it) {
+	def dispatch void generate(WBooleanLiteral it) {
 		newSealed(classType(BOOLEAN))
 	}
 
-	def dispatch void generateVariables(WListLiteral it) {
+	def dispatch void generate(WListLiteral it) {
 		val listType = TypeVariable.instance(genericType(LIST, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
 		val paramType = listType.param(GenericTypeInfo.ELEMENT)
 
@@ -171,7 +172,7 @@ class ConstraintGenerator {
 		]
 	}
 
-	def dispatch void generateVariables(WSetLiteral it) {
+	def dispatch void generate(WSetLiteral it) {
 		val setType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
 		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
@@ -182,49 +183,49 @@ class ConstraintGenerator {
 		]
 	}
 
-	def dispatch void generateVariables(WConstructorCall it) {
+	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach [ arg | arg.generateVariables ]
-//		if (classRef.name.equalsIgnoreCase("Pair")) {
-//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
-//				tv.addMinType(classType(classRef))
-//				tv.beSealed
-//				tv.register
-//			]
-//		} else {
-			newSealed(classType(classRef))
-//		}
+		newSealed(classType(classRef))
 
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
-	def dispatch void generateVariables(WAssignment it) {
+	def dispatch void generate(WInitializer it) {
+		val instantiatedClass = (eContainer as WConstructorCall).classRef
+		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
+
+		initialValue.generateVariables
+		initializedVariable.variable.beSupertypeOf(initialValue)		
+	}
+	
+	def dispatch void generate(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
 		newVoid
 	}
 
-	def dispatch void generateVariables(WPostfixOperation it) {
+	def dispatch void generate(WPostfixOperation it) {
 		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
 		operand.generateVariables
 		newVoid
 	}
 	
-	def dispatch void generateVariables(WVariableReference it) {
+	def dispatch void generate(WVariableReference it) {
 		it.newWithSubtype(ref)
 	}
 	
-	def dispatch void generateVariables(WSelf it) {
+	def dispatch void generate(WSelf it) {
 		it.newSealed(declaringContext.asWollokType)
 	}
 
-	def dispatch void generateVariables(WUnaryOperation it) {
+	def dispatch void generate(WUnaryOperation it) {
 		if (feature.equals("!")) {
 			newSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
 	}
 
-	def dispatch void generateVariables(WIfExpression it) {
+	def dispatch void generate(WIfExpression it) {
 		condition.generateVariables
 		condition.beSealed(classType(BOOLEAN))
 
@@ -243,7 +244,7 @@ class ConstraintGenerator {
 		}
 	}
 
-	def dispatch void generateVariables(WVariableDeclaration it) {
+	def dispatch void generate(WVariableDeclaration it) {
 		variable.newTypeVariable()
 
 		if (right !== null) {
@@ -254,13 +255,13 @@ class ConstraintGenerator {
 		it.newVoid
 	}
 
-	def dispatch void generateVariables(WMemberFeatureCall it) {
+	def dispatch void generate(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 
-	def dispatch void generateVariables(WBinaryOperation it) {
+	def dispatch void generate(WBinaryOperation it) {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
@@ -276,7 +277,7 @@ class ConstraintGenerator {
 		}
 	}
 
-	def dispatch void generateVariables(WReturnExpression it) {
+	def dispatch void generate(WReturnExpression it) {
 		newTypeVariable
 		expression.generateVariables
 		declaringContainer.beSupertypeOf(expression)

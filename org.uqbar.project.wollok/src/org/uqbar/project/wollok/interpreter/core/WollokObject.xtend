@@ -44,7 +44,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	val EvaluationContext<WollokObject> parentContext
 	List<String> properties = newArrayList
 	List<String> constantsProperties = newArrayList
-	
+
 	new(IWollokInterpreter interpreter, WMethodContainer behavior) {
 		super(interpreter, behavior)
 		parentContext = interpreter.currentContext
@@ -53,34 +53,36 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override getReceiver() { this }
 
 	def dispatch void addMember(WMethodDeclaration method) { /** Nothing to do */ }
+
 	def dispatch void addMember(WVariableDeclaration declaration) {
-		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [| declaration.right?.eval ])
+		instanceVariables.put(declaration.variable.name, interpreter.performOnStack(declaration, this) [|
+			declaration.right?.eval
+		])
 		if (declaration.property) {
 			properties.add(declaration.variable.name)
 			if (!declaration.writeable) {
-				constantsProperties.add(declaration.variable.name)			
+				constantsProperties.add(declaration.variable.name)
 			}
 		}
 	}
-		
+
 	// ******************************************
 	// **
 	// ******************************************
-	
 	override getThisObject() { this }
-	
+
 	override call(String message, WollokObject... parameters) {
 		val method = behavior.lookupMethod(message, parameters, false)
 		if (method === null) {
 			if (message.hasProperty) {
-				return resolveProperty(message, parameters)				
+				return resolveProperty(message, parameters)
 			} else {
 				throwMessageNotUnderstood(message, parameters)
 			}
 		}
 		method.call(parameters)
 	}
-	
+
 	def resolveProperty(String message, WollokObject[] parameters) {
 		if (parameters.empty) {
 			return resolve(message)
@@ -94,34 +96,32 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		setReference(message, parameters.head)
 		return theVoid
 	}
-	
+
 	override hasProperty(String variableName) {
 		properties.contains(variableName)
 	}
-	
+
 	def throwMessageNotUnderstood(String methodName, Object... parameters) {
 		try {
 			call("messageNotUnderstood", methodName.javaToWollok, parameters.map[javaToWollok].javaToWollok)
-		}
-		catch (WollokProgramExceptionWrapper e) {
+		} catch (WollokProgramExceptionWrapper e) {
 			// this one is ok because calling messageNotUnderstood actually throws the exception!
 			throw e
-		}
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_errorWhileMessageNotUnderstood, e.message), e)
 		}
 	}
-	
+
 	def messageNotUnderstood(String message) {
 		val e = evaluator.newInstance(MESSAGE_NOT_UNDERSTOOD_EXCEPTION, message.javaToWollok)
 		new WollokProgramExceptionWrapper(e)
 	}
-	
+
 	// ahh repetido ! no son polimorficos metodos y constructores! :S
 	def invokeConstructor(WollokObject... objects) {
 		behavior.resolveConstructor(objects)?.evaluateConstructor(objects)
 	}
-	
+
 	def void evaluateConstructor(WConstructor constructor, WollokObject[] objects) {
 		val constructorEvalContext = constructor.createEvaluationContext(objects)
 		// delegation
@@ -134,127 +134,125 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)
 			delegatedConstructor?.invokeOnContext(constructor, Collections.EMPTY_LIST, constructorEvalContext)
 		}
-		
+
 		// actual call
 		if (constructor.expression !== null) {
 			val context = then(constructorEvalContext, this)
-			interpreter.performOnStack(constructor, context) [| interpreter.eval(constructor.expression) ]
+			interpreter.performOnStack(constructor, context)[|interpreter.eval(constructor.expression)]
 		}
 	}
-	
-	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval, EvaluationContext context) {
+
+	def invokeOnContext(WConstructor constructor, EObject call, List<? extends EObject> argumentsToEval,
+		EvaluationContext<WollokObject> context) {
 		interpreter.performOnStack(call, context) [|
-			evaluateConstructor(constructor, argumentsToEval.evalAll) 
+			evaluateConstructor(constructor, argumentsToEval.evalAll)
 			null
 		]
-	} 
-	
+	}
+
 	def createEvaluationContext(WConstructor declaration, WollokObject... values) {
 		asEvaluationContext(declaration.parameters.createMap(values))
 	}
-	
+
 	override resolve(String variableName) {
 		if (variableName == SELF)
 			this
 		else if (instanceVariables.containsKey(variableName))
 			instanceVariables.get(variableName)
 		else
-			parentContext.resolve(variableName)				
- 	}
- 	
+			parentContext.resolve(variableName)
+	}
+
 	override setReference(String name, WollokObject value) {
 		if (name == SELF)
-			throw new RuntimeException(NLS.bind(Messages.WollokDslValidator_CANNOT_MODIFY_REFERENCE, SELF))
+ 			throw new RuntimeException(NLS.bind(Messages.WollokDslValidator_CANNOT_MODIFY_REFERENCE, SELF))
 		if (!instanceVariables.containsKey(name))
-			throw new UnresolvableReference(NLS.bind(Messages.WollokInterpreter_unrecognizedVariable, name, this))
-		
+			throw new UnresolvableReference('''Unrecognized variable "«name»" in object "«this»"''')
+
 		val oldValue = instanceVariables.put(name, value)
 		listeners.forEach[fieldChanged(name, oldValue, value)]
 	}
-	
+
 	// query (kind of reflection api)
-	override allReferenceNames() { 
-		instanceVariables.keySet.map[new WVariable(it, false)]
-		+ 
-		#[SELF_VAR]
+	override allReferenceNames() {
+		instanceVariables.keySet.map[new WVariable(it, false)] + #[SELF_VAR]
 	}
-	
+
 	def getProperties() {
-		properties	
+		properties
 	}
-	
+
 	def allMethods() {
 		if (behavior.parent !== null)
 			behavior.methods + behavior.parent.methods
 		else
 			behavior.methods
 	}
-	
+
 	override toString() {
 		try {
-			//TODO: java string shouldn't call wollok string
+			// TODO: java string shouldn't call wollok string
 			// it should be a low-lever WollokVM debugging method
 			val string = call("toString", #[]) as WollokObject
 			(string.getNativeObject(STRING) as JavaWrapper<String>).wrapped
-		}
-		// this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
+		} // this is a hack while literal objects are not inheriting from wollok.lang.Object therefore
 		// they don't understand the toString() message
 		catch (WollokProgramExceptionWrapper e) {
 			if (e.isMessageNotUnderstood) {
 				this.behavior.objectDescription
-			}
-			else
+			} else
 				throw e
 		}
 	}
-		
+
 	def getKind() { behavior }
-	
+
 	def isVoid() { this == WollokDSK.getVoid(interpreter as WollokInterpreter, behavior) }
-	
+
 	def isKindOf(WMethodContainer c) { behavior.isKindOf(c) }
-	
+
 	// observable
-	
 	var Set<WollokObjectListener> listeners = newHashSet
-	
+
 	static val EMPTY_OBJECTS_ARRAY = newArrayOfSize(0)
-	
+
 	def addFieldChangedListener(WollokObjectListener listener) { this.listeners.add(listener) }
+
 	def removeFieldChangedListener(WollokObjectListener listener) { this.listeners.remove(listener) }
-	
+
 	override addReference(String variable, WollokObject value) {
 		setReference(variable, value)
 		value
 	}
-	
+
 	override addGlobalReference(String name, WollokObject value) {
 		interpreter.addGlobalReference(name, value)
 	}
-	
+
 	override removeGlobalReference(String name) {
 		interpreter.removeGlobalReference(name)
 	}
-	
+
 	def <T> getNativeObject(Class<T> clazz) { this.nativeObjects.values.findFirst[clazz.isInstance(it)] as T }
+
 	def <T> getNativeObject(String clazz) {
-		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz) 
-		this.nativeObjects.values.findFirst[ transformedClassName == class.name ] as T
+		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(clazz)
+		this.nativeObjects.values.findFirst[transformedClassName == class.name] as T
 	}
-	
+
 	def hasNativeType(String type) {
 		val transformedClassName = DefaultNativeObjectFactory.wollokToJavaFQN(type)
-		nativeObjects.values.exists[n| n.class.name == transformedClassName ]
+		nativeObjects.values.exists[n|n.class.name == transformedClassName]
 	}
-	
+
 	def callSuper(WMethodContainer superFrom, String message, WollokObject[] parameters) {
 		val hierarchy = behavior.linearizeHierarchy
 		val subhierarchy = hierarchy.subList(hierarchy.indexOf(superFrom) + 1, hierarchy.size)
-		
-		val method = subhierarchy.fold(null) [method, t |
+
+		val method = subhierarchy.fold(null) [ method, t |
 			if (method !== null)
 				method
-			else 
+			else
 				t.methods.findFirst[matches(message, parameters)]
 		]
 
@@ -264,7 +262,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		method.call(parameters)
 	}
 
-	override showableInStackTrace() { true }	
+	override showableInStackTrace() { true }
 }
 
 /**
