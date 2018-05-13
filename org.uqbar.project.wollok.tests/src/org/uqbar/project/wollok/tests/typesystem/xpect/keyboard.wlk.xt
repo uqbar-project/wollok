@@ -1,0 +1,15 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+import wollok.game.*
+
+object keysTest {
+	
+	// XPECT methodType at m1 --> () => Key
+	method m1() {
+		return keyboard.any()
+	}
+
+	// XPECT! methodType at m2 --> ({(Key) => Void}) => Void
+//	method m2(action) {
+//		keyboard.any().onPressDo(action)
+//	}
+}
