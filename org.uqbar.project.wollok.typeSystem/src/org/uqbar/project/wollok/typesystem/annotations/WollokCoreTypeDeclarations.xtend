@@ -4,6 +4,7 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
+		// TODO: Uncomment all definitions when solving closure parameters
 		
 		(Object == Any) => Boolean;
 		Object >> "equals" === #[Any] => Boolean;
@@ -144,7 +145,26 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "between" === #[Date, Date] => Boolean
 		Date >> "toSmartString" === #[Boolean] => String;
 		
+		Position.constructor(Number, Number)
+		Position.variable("x", Number)
+		Position.variable("y", Number)
 		(Position == Any) => Boolean;
+		Position >> "moveRight" === #[Number] => Void
+		Position >> "moveLeft" === #[Number] => Void
+		Position >> "moveUp" === #[Number] => Void
+		Position >> "moveDown" === #[Number] => Void
+		Position >> "drawElement" === #[Any] => Void
+		Position >> "drawCharacter" === #[Any] => Void
+		Position >> "deleteElement" === #[Any] => Void
+		Position >> "say" === #[Any, String] => Void
+		Position >> "allElements" === #[] => List
+		Position >> "clone" === #[] => Position
+		Position >> "distance" === #[Position] => Number
+		Position >> "clear" === #[] => Void
+		Position >> "toString" === #[] => String
+		
+//		Key >> "onPressDo" === #[closure(#[], Void)] => Void
+		
 
 		// console
 		console >> "println" === #[Any] => Void
@@ -156,14 +176,38 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment these definitions when solving closure parameters
 		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
 		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
-		assertWKO >> "fail" === #[String] => Void
+		assertWKO >> "fail" === #[String] => Void;
 
+		//TODO: getter and setters are implemented because native implementations exist
+		game.fakeProperty("title", String)
+		game.fakeProperty("width", Number)
+		game.fakeProperty("height", Number)
+		game >> "addVisual" === #[Any] => Void
+		game >> "addVisualIn" === #[Any, Position] => Void
+		game >> "addVisualCharacter" === #[Any] => Void
+		game >> "addVisualCharacterIn" === #[Any, Position] => Void
+		game >> "removeVisual" === #[Any] => Void
+//		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
+//		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
+		game >> "getObjectsIn" === #[Position] => List
+		game >> "say" === #[Any, String] => Void
+		game >> "clear" === #[] => Void
+		game >> "colliders" === #[Any] => List
+		game >> "stop" === #[] => Void
+		game >> "start" === #[] => Void
+		game >> "at" === #[Number, Number] => Position
+		game >> "origin" === #[] => Position
+		game >> "center" === #[] => Position
+		game >> "ground" === #[String] => Void
+		game >> "boardGround" === #[String] => Void
+		
+		keyboard.allMethods === #[] => Key
+		
 		comparable(Number, String, Date)
 		
 		Closure >> "apply" === #[List] => RETURN
@@ -182,5 +226,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			(T >= T) => Boolean;
 			(T === T) => Boolean;
 		]
+	}
+	
+	def fakeProperty(SimpleTypeAnnotation<? extends ConcreteType> it, String property, SimpleTypeAnnotation<? extends ConcreteType> type) {
+		it >> property === #[type] => Void
+		it >> property === #[] => type
 	}
 }

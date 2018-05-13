@@ -12,6 +12,8 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import java.lang.reflect.Method
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -33,6 +35,10 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** General syntax
 	// ****************************************************************************
+	def allMethods(SimpleTypeAnnotation<? extends ConcreteType> receiver) {
+		new AllMethodsIdentifier(target, receiver.type)
+	}
+	
 	def operator_doubleGreaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, String selector) {
 		new MethodIdentifier(target, receiver.type, selector)
 	}
@@ -43,6 +49,10 @@ abstract class TypeDeclarations {
 	
 	def constructor(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, TypeAnnotation... parameterTypes) {
 		target.addConstructorTypeDeclaration(owner.type, parameterTypes)
+	}
+	
+	def variable(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, String selector , TypeAnnotation type) {
+		target.addVariableTypeDeclaration(owner.type, selector, type)
 	}
 
 	// ****************************************************************************
@@ -123,6 +133,8 @@ abstract class TypeDeclarations {
 	def Range() { classTypeAnnotation(RANGE) }
 
 	def Position() { classTypeAnnotation(POSITION) }
+	
+	def Key() { classTypeAnnotation(KEY) }
 
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
 
@@ -133,8 +145,12 @@ abstract class TypeDeclarations {
 	def StringPrinter() { classTypeAnnotation(STRING_PRINTER) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
-
+	
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
+	def game() { objectTypeAnnotation(GAME) }
+	
+	def keyboard() { objectTypeAnnotation(KEYBOARD) }
 	
 	def KEY() { PairType.param(GenericTypeInfo.KEY) }
 	
@@ -200,6 +216,18 @@ class MethodIdentifier {
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
 		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
+	}
+}
+
+class AllMethodsIdentifier {
+	Iterable<MethodIdentifier> identifiers
+
+	new(TypeDeclarationTarget target, ConcreteType receiver) {
+		identifiers = receiver.container.methods.map[new MethodIdentifier(target, receiver, name)]
+	}
+
+	def operator_tripleEquals(MethodTypeDeclaration methodType) {
+		identifiers.forEach[it === methodType]
 	}
 }
 
