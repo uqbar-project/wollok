@@ -23,8 +23,8 @@ class WNLS {
 
 		val props = buildVariants(bundleName).map [v| 
 			// loader==null if we're launched off the Java boot classpath
-			val input = if (loader == null) ClassLoader.getSystemResourceAsStream(v) else loader.getResourceAsStream(v)
-			if (input != null) {
+			val input = if (loader === null) ClassLoader.getSystemResourceAsStream(v) else loader.getResourceAsStream(v)
+			if (input !== null) {
 				try {
 					val properties = new Properties
 					properties.load(input);
@@ -33,7 +33,7 @@ class WNLS {
 				catch (IOException e) {
 					throw new RuntimeException("Error loading i18n file", e)
 				} finally {
-					if (input != null)
+					if (input !== null)
 						try {
 							input.close
 						} catch (IOException e) {
@@ -45,7 +45,7 @@ class WNLS {
 		
 		// jfernandes: I'm using just the first one. I don't think we need the defaulting mechanism.
 		//    it would make it more difficult 
-		props.findFirst[ it != null]
+		props.findFirst[ it !== null]
 	}
 	
 	/*
@@ -55,7 +55,7 @@ class WNLS {
 	 * file_fr.properties, and finally file.properties.
 	 */
 	def static String[] buildVariants(String root) {
-		if (nlSuffixes == null) {
+		if (nlSuffixes === null) {
 			//build list of suffixes for loading resource bundles
 			var nl = Locale.getDefault.toString
 			nlSuffixes = new ArrayList<String>(4);

@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.ui.tests.WollokTestResultView
 import static org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 
 /**
  * @author tesonep
@@ -29,9 +30,9 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
 			// TODO: i18n
-			MessageDialog.openError(Display.current.activeShell, "Launcher error",
-				"There was a problem while opening test launcher. See error log for more details.")
-		// something went wrong
+			MessageDialog.openError(Display.current.activeShell, WollokLaunchUIMessages.WollokTestLaunch_TITLE,
+				WollokLaunchUIMessages.WollokTestLaunch_ERROR_MESSAGE)
+			// something went wrong
 		}
 	}
 	

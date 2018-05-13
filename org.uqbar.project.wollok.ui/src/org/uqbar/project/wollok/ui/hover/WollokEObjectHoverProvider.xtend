@@ -11,7 +11,6 @@ import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtil
  * 
  * @author jfernandes
  */
-//TODO: i18n !!
 class WollokEObjectHoverProvider extends DefaultEObjectHoverProvider {
 	
 	override getFirstLine(EObject o) {

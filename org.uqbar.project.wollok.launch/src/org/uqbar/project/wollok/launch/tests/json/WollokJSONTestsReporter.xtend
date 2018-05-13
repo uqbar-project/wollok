@@ -133,7 +133,7 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 	// ************************************************************************
 
 	def getWriter() {
-		if (_writer == null) {
+		if (_writer === null) {
 			_writer = (new Gson).newJsonWriter(new PrintWriter(System.out))
 		}
 		_writer

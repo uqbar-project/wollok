@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -482,7 +483,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''')
+		throw new WollokRuntimeException(Messages.WollokInterpreter_constructorCallNotAllowed)
 	}
 
 

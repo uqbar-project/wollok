@@ -72,21 +72,21 @@ class WollokImportScope implements IScope {
 	
 	override getSingleElement(QualifiedName name) {
 		synchronized (this) {
-			val result = getElements(name);
-			val iterator = result.iterator();
+			val result = getElements(name)
+			val iterator = result.iterator()
 			if (iterator.hasNext())
-				return iterator.next();
-			return null;
+				return iterator.next()
+			return null
 		}
 	}
 	
 	override getSingleElement(EObject object) {
 		synchronized (this) {
-			val result = getElements(object);
-			val iterator = result.iterator();
+			val result = getElements(object)
+			val iterator = result.iterator()
 			if (iterator.hasNext())
-				return iterator.next();
-			return null;		
+				return iterator.next()
+			return null		
 		}
 	}
 	

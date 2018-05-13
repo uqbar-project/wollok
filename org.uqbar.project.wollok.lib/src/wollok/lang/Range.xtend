@@ -25,7 +25,7 @@ class Range extends AbstractJavaWrapper<IntegerRange> {
 	}
 	
 	def initWrapped() {
-		if (wrapped == null) {
+		if (wrapped === null) {
 			val start = solve("start")
 			val end = solve("end")
 			val step = solve("step")

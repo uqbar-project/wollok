@@ -44,7 +44,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 
 	def newMaxTypeFor(AbstractContainerWollokType type, TypeVariable it) {
 		typeInfo.messages.forall[type.respondsTo(it) => [result |
-			log.debug('''  «type» «if (result) "responds" else "does not respond"» to «it»''')
+			log.trace('''  «type» «if (result) "responds" else "does not respond"» to «it»''')
 		]]
 	}
 

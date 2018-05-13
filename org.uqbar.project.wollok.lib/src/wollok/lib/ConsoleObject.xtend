@@ -22,8 +22,7 @@ class ConsoleObject {
 	}
 
 	def println(Object obj) {
-		// TODO We does the interpreter have the console and not me?
-		interpreter.getConsole().logMessage("" + obj);
+		interpreter.getConsole().logMessage("" + obj)
 	}
 
 	def readLine() {

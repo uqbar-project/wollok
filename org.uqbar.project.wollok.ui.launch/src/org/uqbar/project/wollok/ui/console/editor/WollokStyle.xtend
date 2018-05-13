@@ -120,7 +120,7 @@ class WollokStyle {
 	
 	def allColors() {
 		allStyles
- 			.filter [ style | style.foreground != null ]
+ 			.filter [ style | style.foreground !== null ]
  			.map [ style | style.foreground ]
  			.toSet  // remove duplicates
  			.toList // get an order

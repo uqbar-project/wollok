@@ -16,6 +16,7 @@ import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.tools.OrderedBoundedSet
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.ui.console.editor.WollokReplConsolePartitioner
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.shortcut.WollokLaunchShortcut
@@ -112,7 +113,7 @@ class WollokReplConsole extends TextConsole {
 	}
 	
 	def hasMainFile() {
-		return fileName() !== null && fileName.endsWith(".wlk")
+		return fileName() !== null && fileName.endsWith("." + WollokConstants.CLASS_OBJECTS_EXTENSION)
 	}
 
 	def fileName() {
@@ -127,7 +128,7 @@ class WollokReplConsole extends TextConsole {
 		val fileName = fileName()
 		val project = project()
 		val file = (ResourcesPlugin.getWorkspace.root.findMember(project) as IContainer).findMember(fileName)
-		val newFile = file.parent.getFile(new Path(file.nameWithoutExtension + ".wtest"))
+		val newFile = file.parent.getFile(new Path(file.nameWithoutExtension + "." + WollokConstants.TEST_EXTENSION))
 
 		// TODO include same imports as original file		
 		val content = '''

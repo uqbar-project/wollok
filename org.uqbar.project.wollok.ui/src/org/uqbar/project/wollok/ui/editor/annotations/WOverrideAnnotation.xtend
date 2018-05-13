@@ -18,7 +18,7 @@ class WOverrideAnnotation extends Annotation {
 	String methodURI
 	
 	new(String text, WMethodDeclaration method) {
-		super(ANNOTATION_TYPE, false, text);
+		super(ANNOTATION_TYPE, false, text)
 		this.methodURI = method.objectURI
 	}
 	

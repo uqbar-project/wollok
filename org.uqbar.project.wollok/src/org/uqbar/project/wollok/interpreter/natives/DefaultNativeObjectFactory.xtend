@@ -62,7 +62,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	def resolveNativeClass(String originalFqn, WollokObject obj, WollokInterpreter interpreter) {
 		val fqn = DefaultNativeObjectFactory.wollokToJavaFQN(originalFqn)
 		val bundle = WollokActivator.getDefault
-		if (bundle != null)
+		if (bundle !== null)
 			try
 				bundle.loadWollokLibClass(fqn, obj.behavior)
 			catch (ClassNotFoundException e)
@@ -73,7 +73,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	
 	def static wollokToJavaFQN(String fqn) {
 		val transformed = transformations.get(fqn)
-		if (transformed != null)
+		if (transformed !== null)
 			transformed
 		else
 			fqn
@@ -81,7 +81,7 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	
 	def static javaToWollokFQN(String fqn) {
 		val entry = transformations.entrySet.findFirst[e | e.value == fqn]
-		if (entry != null)
+		if (entry !== null)
 			entry.key
 		else
 			fqn

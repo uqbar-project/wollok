@@ -14,7 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
  * @author tesonep
  */
 @Accessors
-class VariableUsesVisitor extends AbstractVisitor {
+class VariableUsesVisitor extends AbstractWollokVisitor {
 	List<EObject> uses = newArrayList
 	WVariable lookedFor
 

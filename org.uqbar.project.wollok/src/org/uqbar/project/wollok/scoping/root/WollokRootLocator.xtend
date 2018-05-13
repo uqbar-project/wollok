@@ -4,6 +4,7 @@ import org.apache.commons.collections.map.LRUMap
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.URIConverter
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 class WollokRootLocator {
 
@@ -38,7 +39,7 @@ class WollokRootLocator {
 	def calculateLevelsToRoot(Resource resource) {
 		val uri = resource.URI
 		
-		if(uri.toString.contains("classpath:"))
+		if(uri.toString.contains(CLASSPATH))
 			return 1
 		
 		val parent = uri.trimSegments(1)

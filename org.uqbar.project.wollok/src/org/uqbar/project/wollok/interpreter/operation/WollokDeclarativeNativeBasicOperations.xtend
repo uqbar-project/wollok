@@ -28,7 +28,6 @@ import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJav
  * 
  * @author jfernandes
  */
-// I18N !
 class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperations {
 		
 	override asBinaryOperation(String operationSymbol) {
@@ -42,7 +41,7 @@ class WollokDeclarativeNativeBasicOperations implements WollokBasicBinaryOperati
 					if (e.cause instanceof WollokProgramExceptionWrapper)
 						throw e.cause
 					else
-						throw new WollokRuntimeException('''Error while resolving «a» «operationSymbol» «b»''', e.cause)
+						throw new WollokRuntimeException(NLS.bind(Messages.WollokInterpreter_errorWhileResolvingOperation, #[a, operationSymbol, b]), e.cause)
 				}
 			]
 		}

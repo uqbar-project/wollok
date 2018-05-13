@@ -25,7 +25,7 @@ import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
  * @author	tesonep
  * @author jfernandes
  */
-class VariableAssignmentsVisitor extends AbstractVisitor {
+class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	@Accessors
 	List<EObject> uses = newArrayList
 	List<WMethodDeclaration> methodsAlreadyVisited = newArrayList

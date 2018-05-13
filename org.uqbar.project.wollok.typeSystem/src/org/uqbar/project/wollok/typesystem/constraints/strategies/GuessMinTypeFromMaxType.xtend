@@ -100,7 +100,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 
 	// ************************************************************************
 	// ** Generic visiting construct 
-	// ** (TODO extract them and join with AbstractVisitor)
+	// ** (TODO extract them and join with AbstractWollokVisitor)
 	// ************************************************************************
 
 	/**

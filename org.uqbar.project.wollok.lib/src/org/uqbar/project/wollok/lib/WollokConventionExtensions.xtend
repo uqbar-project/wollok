@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.lib
 
 import java.util.List
-import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.utils.OptionalExtensions.*
@@ -19,7 +21,7 @@ class WollokConventionExtensions {
 	
 	def static getPosition(WollokObject it) {
 		findConvention(POSITION_CONVENTIONS)
-		.orElseThrow([new WollokRuntimeException('''Visual object doesn't have any position: «it.toString»''')])
+		.orElseThrow([new WollokRuntimeException(NLS.bind(Messages.WollokInterpreter_visualObjectWithoutPosition, it.toString))])
 	}
 
 	def static getImage(WollokObject it) {
@@ -49,7 +51,6 @@ class WollokConventionExtensions {
 	}
 
 	def static isGetter(String it, List<String> conventions) {
-		//conventions.map[#[it, "get" + it.toFirstUpper]].flatten.toList.contains(it)
 		conventions.contains(it)
 	}
 	

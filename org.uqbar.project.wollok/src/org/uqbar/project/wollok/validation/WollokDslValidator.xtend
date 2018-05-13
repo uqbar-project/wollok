@@ -76,7 +76,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLas
  * @author fdodino
  * @author ptesone
  * @author npasserini
- * @author jcontardoeff
+ * @author jcontardo
  * @author fbulgarelli
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
@@ -1107,8 +1107,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
-			if(expression !== null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			if(declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it,
+			if(expression !== null) report(WollokDslValidator_NATIVE_METHOD_NO_BODY, it, WMETHOD_DECLARATION__EXPRESSION)
+			if(declaringContext instanceof WObjectLiteral) report(WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES, it,
 				WMETHOD_DECLARATION__NATIVE)
 		}
 	}

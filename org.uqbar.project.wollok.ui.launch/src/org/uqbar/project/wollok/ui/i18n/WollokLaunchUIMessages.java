@@ -8,13 +8,29 @@ public class WollokLaunchUIMessages extends NLS {
 	public static String PROBLEM_LAUNCHING_WOLLOK;
 	public static String ADD_LAUNCH_PLUGIN_DEPENDENCY;
 	
+	public static String WollokMainTab_PROGRAM_FILE;
+	public static String WollokMainTab_TEST_FILE;
+	public static String WollokMainTab_BROWSE;
+	public static String WollokMainTab_BROWSE_PROGRAM_TITLE;
+	public static String WollokMainTab_BROWSE_PROGRAM_DESCRIPTION;
+	public static String WollokMainTab_FILE_DOES_NOT_EXIST;
+	public static String WollokMainTab_SPECIFY_NEW_FILE;
+	public static String WollokMainTab_BROWSE_TEST_TITLE;
+	public static String WollokMainTab_BROWSE_TEST_DESCRIPTION;
+	
+	public static String WollokLaunch_GENERAL_ERROR_MESSAGE;
+	public static String WollokTestLaunch_TITLE;
+	public static String WollokTestLaunch_ERROR_MESSAGE;
+	
+	public static String WollokDebugger_GENERAL_ERROR_MESSAGE;
+	
 	public static String WollokTestState_ASSERTION_ERROR;
 	public static String WollokTestState_ASSERT;
 	public static String WollokTestState_ERROR;
 	public static String WollokTestState_OK;
 	public static String WollokTestState_PENDING;
 	public static String WollokTestState_RUNNING;
-
+	
 	public static String WollokTestResultView_TOTAL_TESTS;
 	public static String WollokTestResultView_RUN_TESTS;
 	public static String WollokTestResultView_FAILED_TESTS;

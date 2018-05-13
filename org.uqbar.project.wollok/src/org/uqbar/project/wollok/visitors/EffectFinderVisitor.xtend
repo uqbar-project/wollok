@@ -22,7 +22,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
  * 	
  * @author npasserini
  */
-class EffectFinderVisitor extends AbstractVisitor {
+class EffectFinderVisitor extends AbstractWollokVisitor {
 	public static val PURE = 0
 	public static val SHOULD_BE_PURE = 1
 	

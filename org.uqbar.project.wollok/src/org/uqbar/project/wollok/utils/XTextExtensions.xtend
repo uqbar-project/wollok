@@ -48,7 +48,7 @@ class XTextExtensions {
 	
 	def static astNode(EObject o) { 
 		val node = NodeModelUtils.findActualNodeFor(o)
-		if (node == null)
+		if (node === null)
 			throw new WollokRuntimeException("Could NOT find AST Node for EObject " + o)
 		node
 	}
@@ -84,7 +84,7 @@ class XTextExtensions {
 		var i = 0
 		while(i < Integer.MAX_VALUE) {
 			val syntheticUri = URI.createURI(name + i + "." + WollokConstants.PROGRAM_EXTENSION);
-			if (resourceSet.getResource(syntheticUri, false) == null)
+			if (resourceSet.getResource(syntheticUri, false) === null)
 				return syntheticUri
 			i++
 		}
