@@ -35,7 +35,6 @@ import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
@@ -358,13 +357,8 @@ class WollokModelExtensions {
 		initializer.initialValue
 	}
 	
-	def static variables(WArgumentList c) {
-		c
-			.arguments
-			.filter(WAssignment)
-			.filter [ arg | ((arg as WAssignment).feature instanceof WVariableReference) ]
-			.map [ arg | (arg as WAssignment).feature as WVariableReference ]
-			.toList
+	def static variables(WArgumentList it) {
+		arguments.filter(WAssignment).map[feature].toList
 	}
 	
 	def static boolean inheritsDefaultConstructor(WClass c) {

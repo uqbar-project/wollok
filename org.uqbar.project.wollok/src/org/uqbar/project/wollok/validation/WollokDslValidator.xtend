@@ -67,7 +67,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * Custom validation rules.
@@ -355,9 +355,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotMixNamedAndPositionalParametersInConstructorDelegation(WDelegatingConstructorCall it) {
-		if (argumentList === null) return;
-		if (!argumentList.values.isEmpty && !argumentList.variables.isEmpty)	
-			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WDELEGATING_CONSTRUCTOR_CALL__ARGUMENT_LIST)
+		if (argumentList.notNullAnd[!variables.isEmpty])
+			report(WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED, it, WDELEGATING_CONSTRUCTOR_CALL__ARGUMENT_LIST)
 	}
 
 	@Check

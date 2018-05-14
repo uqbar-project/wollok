@@ -55,10 +55,7 @@ WPackage:
 	'}'
 ;
 
-// reglas generales (solo para ordenar y para fijar bien las relaciones entre clases
-// porque a veces xtext no genera bien.
-// eventualmente sería bueno construir estas clases a mano con EMF, y poder
-// agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
+// reglas generales (solo para ordenar y para fijar bien las relaciones entre clases porque a veces xtext no genera bien.
 WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
@@ -395,14 +392,14 @@ WDelegatingConstructorCall:
 // somehow this should be references to WConstructor
 WSelfDelegatingConstructorCall:
 	{WSelfDelegatingConstructorCall} 'self' '(' 
-	(=> argumentList=WArgumentList)?
+	(=> argumentList=WPositionalArgumentsList)?
 	')'
 ;
 
 // somehow this should be references to WConstructor
 WSuperDelegatingConstructorCall:
 	{WSuperDelegatingConstructorCall} 'super' '(' 
-	(=> argumentList=WArgumentList)?
+	(=> argumentList=WPositionalArgumentsList)?
 	')'
 ;
 

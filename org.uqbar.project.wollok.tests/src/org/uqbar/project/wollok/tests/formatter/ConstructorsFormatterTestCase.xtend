@@ -176,47 +176,6 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
-	def void constructorSelfDelegationNamedParameters() throws Exception {
-		assertFormatting('''
-		class A { var a constructor(_a) { a = _a } 
-		
-		
-		constructor(_a, _b)   =           self         
-		
-		
-		( 
-					
-			
-					
-		valor   
-		
-		
-		
-		=   
-		a                 +
-		
-		b)}
-		
-		
-		
-		''', 
-		'''
-		class A {
-		
-			var a
-		
-			constructor(_a) {
-				a = _a
-			}
-		
-			constructor(_a, _b) = self(valor = a + b)
-		
-		}
-		
-		''')
-	}
-	
-	@Test
 	def void constructorSuperDelegationPositionalParameters() throws Exception {
 		assertFormatting('''
 		class A { var a constructor(_a) { a = _a } 
@@ -247,50 +206,6 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		class B {
 		
 			constructor(_a, _b) = super(a + b)
-		
-		}
-		
-		''')
-	}
-
-	@Test
-	def void constructorSuperDelegationNamedParameters() throws Exception {
-		assertFormatting('''
-		class A { var a constructor(_a) { a = _a } 
-		}
-		class B {
-		
-		constructor(_a, _b)   =           super         
-		
-		
-		(
-		
-		
-		
-		
-		
-		              valorA     
-		              =a,valorB=                 
-		
-		b)}
-		
-		
-		
-		''', 
-		'''
-		class A {
-		
-			var a
-		
-			constructor(_a) {
-				a = _a
-			}
-		
-		}
-		
-		class B {
-		
-			constructor(_a, _b) = super(valorA = a, valorB = b)
 		
 		}
 		

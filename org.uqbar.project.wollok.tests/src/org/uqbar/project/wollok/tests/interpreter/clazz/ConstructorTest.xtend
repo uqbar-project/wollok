@@ -275,7 +275,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const o = new SubClass(20)
 				assert.equals(21, o.getSuperX())
 			}
-			'''.interpretPropagatingErrors
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -298,7 +298,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const o = new SubClass(5)
 				assert.equals(2.5, o.total())
 			}
-			'''.interpretPropagatingErrors
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -314,7 +314,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const o = new Prueba(5, 4)
 				assert.equals(13, o.getSuperX())
 			}
-			'''.interpretPropagatingErrors
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -334,7 +334,7 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 				const o = new Prueba(5)
 				assert.equals(2.5, o.total())
 			}
-			'''.interpretPropagatingErrors
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 	
 	@Test

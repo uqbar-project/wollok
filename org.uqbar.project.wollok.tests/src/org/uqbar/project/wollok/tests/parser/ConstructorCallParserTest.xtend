@@ -158,7 +158,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		
 			method nombre() = nombre
 		}
-		'''.expectsValidationError("You should not mix named and positional parameters", false)
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -181,7 +181,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		
 			method nombre() = nombre
 		}
-		'''.expectsValidationError("You should not mix named and positional parameters", false)
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -208,7 +208,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		
 			method nombre() = nombre
 		}
-		'''.expectsValidationError("You should not mix named and positional parameters", false)
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 
 	@Test
@@ -235,7 +235,7 @@ class ConstructorCallParserTest extends AbstractWollokInterpreterTestCase {
 		
 			method nombre() = nombre
 		}
-		'''.expectsValidationError("You should not mix named and positional parameters", false)
+		'''.expectsValidationError("Named parameters are not allowed here", false)
 	}
 	
 }

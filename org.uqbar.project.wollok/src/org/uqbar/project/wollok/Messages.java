@@ -122,6 +122,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
 	public static String WollokDslValidator_REFERENCE_UNITIALIZED;
 	public static String WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS;
+	public static String WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED;
 	
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	

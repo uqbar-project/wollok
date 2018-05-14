@@ -81,6 +81,7 @@ class AntiHeroe inherits Heroe {
 }
 class Villano inherits AntiHeroe {
 	var nivelMaldad
+	// XPECT errors --> "Named parameters are not allowed here"
 	constructor(_fraseCabecera) = super(_fraseCabecera = "No soy malo, estoy enojado") {
 		nivelMaldad = 2		
 	}
