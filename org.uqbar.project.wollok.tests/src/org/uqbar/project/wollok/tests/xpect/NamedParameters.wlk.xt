@@ -81,14 +81,17 @@ class AntiHeroe inherits Heroe {
 }
 class Villano inherits AntiHeroe {
 	var nivelMaldad
-	// XPECT errors --> "Named parameters are not allowed here"
+	// XPECT errors --> "Named parameters are not allowed here" at "_fraseCabecera = \"No soy malo, estoy enojado\""
 	constructor(_fraseCabecera) = super(_fraseCabecera = "No soy malo, estoy enojado") {
 		nivelMaldad = 2		
 	}
 }
 class ReVillano inherits AntiHeroe {
 	var nivelMaldad
-	// XPECT errors --> "Reference ciudadesQueAma not found in delegated constructor" at "ciudadesQueAma = [\"New York\"]"
+	/* XPECT errors ---
+		"Couldn't resolve reference to Referenciable 'ciudadesQueAma'." at "ciudadesQueAma"
+		"Named parameters are not allowed here" at "ciudadesQueAma = ["New York"]"
+	--- */
 	constructor(_fraseCabecera) = super(ciudadesQueAma = ["New York"]) {
 		nivelMaldad = 2
 	}
@@ -103,10 +106,17 @@ class A {
 	constructor(_a) {
 		a = _a
 	}
+	/* XPECT errors ---
+		"Couldn't resolve reference to Referenciable '_a'." at "_a"
+		"Named parameters are not allowed here" at "_a = x"
+	--- */
 	constructor(x, y) = self(_a = x) {
 		b = y
 	}
-	// XPECT errors --> "Reference inexistente not found in delegated constructor" at "inexistente = 3"
+	/* XPECT errors ---
+		"Couldn't resolve reference to Referenciable 'inexistente'." at "inexistente"
+		"Named parameters are not allowed here" at "x = y, inexistente = 3"
+	--- */
 	constructor(x, y, z) = self(x = y, inexistente = 3) {
 		b = y
 	}

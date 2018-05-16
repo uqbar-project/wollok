@@ -45,7 +45,6 @@ import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
-import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WTest
@@ -262,26 +261,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
 		parent.validateNamedParameters(parentParameters)
 	}
-	
-	@Check
-	@DefaultSeverity(ERROR)
-	def checkUnexistentNamedParametersInheritingConstructor(WSelfDelegatingConstructorCall it) {
-		val clazz = declaringContext as WClass
-		if (clazz === null || argumentList === null || !argumentList.hasNamedParameters) return;
-		val constructor = clazz.resolveConstructor(arguments)
-		clazz.validateDelegatingConstructor(argumentList, constructor)
-	}
 
-	@Check
-	@DefaultSeverity(ERROR)
-	def checkUnexistentNamedParametersInheritingConstructor(WSuperDelegatingConstructorCall it) {
-		val clazz = declaringContext
-		if (clazz === null || clazz.parent === null || argumentList === null || !argumentList.hasNamedParameters) return;
-		val parent = clazz.parent
-		val constructor = parent.resolveConstructor(arguments)
-		parent.validateDelegatingConstructor(argumentList, constructor)
-	}
-	
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
 		val validAttributes = clazz.allVariableNames
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
@@ -290,14 +270,6 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		]
 	}
 
-	def void validateDelegatingConstructor(WClass clazz, WArgumentList parameterList, WConstructor constructor) {
-		val validNames = constructor.parameters.map [ name ]
-		val invalidInitializers = parameterList.initializers.filter [ !validNames.contains(initializer.name) ]
-		invalidInitializers.forEach [ 
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR, initializer.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
-		]
-	}
-	
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUninitializedAttributesInConstructorNamedParameters(WConstructorCall it) {
@@ -354,7 +326,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def cannotMixNamedAndPositionalParametersInConstructorDelegation(WDelegatingConstructorCall it) {
+	def cannotUseNamedParametersInConstructorDelegation(WDelegatingConstructorCall it) {
 		if (argumentList.notNullAnd[!variables.isEmpty])
 			report(WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED, it, WDELEGATING_CONSTRUCTOR_CALL__ARGUMENT_LIST)
 	}
