@@ -31,6 +31,13 @@ class B inherits A {
 	method otherAbstract(one, two)
 }
 
+class Animal {
+	var property nombre
+	constructor(_nombre) {
+		nombre = _nombre
+	}
+}
+
 program p {
 	// XPECT errors --> "Object must explicitly call a superclass constructor: (param)" at "WithSingleOneArgConstructor"
 	var o = object inherits WithSingleOneArgConstructor { }
@@ -61,6 +68,9 @@ program p {
 	
 	// XPECT errors --> "You must implement all inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "object inherits B {}"
 	o = object inherits B {}
+
+	o = object inherits Animal(nombre = "julian") {} 
+
 
 	console.println(o)
 }
