@@ -45,6 +45,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 
@@ -191,7 +192,11 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
 	def dispatch void visitChildren(WTest it) { elements.visitAll }
 	def dispatch void visitChildren(WSuperInvocation it) { memberCallArguments.visitAll }
-	def dispatch void visitChildren(WConstructorCall it) {	arguments.visitAll }
+	def dispatch void visitChildren(WConstructorCall it) {	
+		if (argumentList !== null) {
+			arguments.visitAll
+		}
+	}
 	def dispatch void visitChildren(WCollectionLiteral it) { elements.visitAll }
 
 	def dispatch void visitChildren(WBlockExpression it) { expressions.visitAll	}

@@ -121,6 +121,8 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_INVALID_EFFECTLESS_EXPRESSION_IN_SEQUENCE;
 	public static String WollokDslValidator_VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE;
 	public static String WollokDslValidator_REFERENCE_UNITIALIZED;
+	public static String WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS;
+	public static String WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED;
 	
 	public static String WollokDslValidator_DONT_USE_LOCAL_VAR_ONLY_TO_RETURN;
 	
@@ -129,6 +131,7 @@ public class Messages extends NLS {
 	
 	public static String WollokDslValidator_OVERRIDING_A_METHOD_SHOULD_DO_SOMETHING_DIFFERENT;
 	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR;
+	public static String WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_DELEGATED_CONSTRUCTOR;
 	
 	public static String TestLauncher_CompilationErrorTitle;
 	public static String TestLauncher_SeeProblemTab;
@@ -199,7 +202,7 @@ public class Messages extends NLS {
 	public static String SYNTAX_DIAGNOSIS_ORDER_PROBLEM;
 	public static String SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD;
 	public static String SYNTAX_DIAGNOSIS_BAD_MESSAGE;
-
+	public static String SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES;
 	
 	// ****************************
 	// ** Conversions

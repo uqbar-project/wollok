@@ -6,7 +6,6 @@ package org.uqbar.project.wollok.formatting2
 import com.google.inject.Inject
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
 import org.uqbar.project.wollok.WollokConstants
@@ -51,6 +50,8 @@ import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 
 class WollokDslFormatter extends AbstractFormatter2 {
 	
@@ -110,19 +111,32 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.END_EXPRESSION).append[ setNewLines(2) ]
 	}
 
+	def dispatch void format(WNamedArgumentsList l, extension IFormattableDocument document) {
+		l.prepend [ noSpace ]
+		l.initializers.forEach [ initializer, i |
+			initializer.format(document, i)
+		]
+		l.append [ noSpace ]
+	}
+
+	def dispatch void format(WPositionalArgumentsList l, extension IFormattableDocument document) {
+		l.surround [ noSpace ]
+		l.values.forEach [ value, i |
+			if (i == 0) {
+				value.prepend [ noSpace ]
+			} else {
+				value.prepend [ oneSpace ]
+			}
+			value.format
+			value.append [ noSpace ]
+		]
+	}
+	
 	def dispatch void format(WNamedObject o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.WKO).prepend [ noSpace ]
 		o.regionFor.keyword(WollokConstants.WKO).append [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
-		o.parentParameters.forEach [ param, i |
-			if (i == 0) {
-				param.prepend [ noSpace ]
-			} else {
-				param.prepend [ oneSpace ]
-			}
-			param.append [ noSpace ]
-			param.format
-		]
+		o.parentParameters.format
 		o.regionFor.feature(WCLASS__PARENT).surround [ oneSpace ]
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ setNewLines(2) ].prepend [ oneSpace ]
 		o.interior [ 
@@ -352,19 +366,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		c.regionFor.keyword(WollokConstants.INSTANTIATION).append [ oneSpace ]
 		c.regionFor.keyword(WollokConstants.BEGIN_PARAMETER_LIST).prepend [ noSpace ]
 		c.regionFor.keyword(WollokConstants.END_PARAMETER_LIST).append [ noSpace ]
-		if (c.hasNamedParameters) {
-			c.arguments.forEach [ arg, i | (arg as WInitializer).format(document, i) ]
-		} else {
-			c.arguments.forEach [ arg, i |
-				if (i == 0) {
-					arg.prepend [ noSpace ]
-				} else {
-					arg.prepend [ oneSpace ]
-				}
-				arg.append [ noSpace ]
-				arg.format
-			]
-		}
+		c.argumentList?.format
 	}
 
 	def void format(WInitializer init, extension IFormattableDocument document, int i) {
@@ -433,6 +435,8 @@ class WollokDslFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(WObjectLiteral o, extension IFormattableDocument document) {
 		o.regionFor.keyword(WollokConstants.BEGIN_EXPRESSION).append[ newLine ].prepend [ oneSpace ]
+		o.regionFor.keyword(WollokConstants.INHERITS).surround [ oneSpace ]
+		o.parentParameters.format
 		o.members.forEach [
 			surround [ indent ]
 			format
@@ -514,15 +518,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			s.prepend [ oneSpace ]
 		}
 		s.regionFor.keyword(WollokConstants.SELF).append [ noSpace ]
-		s.arguments.forEach [ arg, i |
-			if (i == 0) {
-				arg.prepend [ noSpace ]
-			} else {
-				arg.prepend [ oneSpace ]
-			}
-			arg.append [ noSpace ]
-			arg.format
-		]
+		s.argumentList.format
 	}
 
 	def dispatch void format(WSuperDelegatingConstructorCall s, extension IFormattableDocument document) {
@@ -530,15 +526,7 @@ class WollokDslFormatter extends AbstractFormatter2 {
 			s.prepend [ oneSpace ]
 		}
 		s.regionFor.keyword(WollokConstants.SUPER).append [ noSpace ]
-		s.arguments.forEach [ arg, i |
-			if (i == 0) {
-				arg.prepend [ noSpace ]
-			} else {
-				arg.prepend [ oneSpace ]
-			}
-			arg.append [ noSpace ]
-			arg.format
-		]
+		s.argumentList.format
 	}
 	
 	/** 

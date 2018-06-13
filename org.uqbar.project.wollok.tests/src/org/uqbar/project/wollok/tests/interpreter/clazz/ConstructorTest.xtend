@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.tests.interpreter.AbstractWollokInterpreterTestC
  * For static validations see the X_PECT test.
  * This tests
  * - having multiple constructors
- * - constructor delegation: to this or super
+ * - constructor delegation: to self or super
  * - automatic delegation for no-args constructors
  * 
  * @author jfernandes
@@ -258,6 +258,85 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 			}
 			'''.interpretPropagatingErrors
 	}
+
+	@Test
+	def void constructorDelegationToSuperNamedParameters1() {
+		'''
+			class SuperClass {
+				var superX
+				constructor(a) { superX = a }
+				
+				method getSuperX() { return superX }
+			}
+			class SubClass inherits SuperClass { 
+				constructor(n) = super(a = n + 1) {}
+			}
+			program t {
+				const o = new SubClass(20)
+				assert.equals(21, o.getSuperX())
+			}
+		'''.expectsValidationError("Named parameters are not allowed here", false)
+	}
+
+	@Test
+	def void constructorDelegationToSuperNamedParameters2() {
+		'''
+			class SuperClass {
+				var superX
+				var superY
+				constructor(a, b) { 
+					superX = a
+					superY = b
+				}
+				
+				method total() { return superX / superY }
+			}
+			class SubClass inherits SuperClass { 
+				constructor(n) = super(b = n - 1, a = n * 2) {}
+			}
+			program t {
+				const o = new SubClass(5)
+				assert.equals(2.5, o.total())
+			}
+		'''.expectsValidationError("Named parameters are not allowed here", false)
+	}
+
+	@Test
+	def void constructorDelegationToSelfNamedParameters1() {
+		'''
+			class Prueba {
+				var superX
+				constructor(a) { superX = a }
+				constructor(n, x) = self(a = n + (x * 2)) {}
+				method getSuperX() { return superX }
+			}
+			program t {
+				const o = new Prueba(5, 4)
+				assert.equals(13, o.getSuperX())
+			}
+		'''.expectsValidationError("Named parameters are not allowed here", false)
+	}
+
+	@Test
+	def void constructorDelegationToSelfNamedParameters2() {
+		'''
+			class Prueba {
+				var superX
+				var superY
+				constructor(a, b) { 
+					superX = a
+					superY = b
+				}
+				constructor(n) = self(b = n - 1, a = n * 2) {}
+				method total() { return superX / superY }
+			}
+			program t {
+				const o = new Prueba(5)
+				assert.equals(2.5, o.total())
+			}
+		'''.expectsValidationError("Named parameters are not allowed here", false)
+	}
+	
 	@Test
 	def void emptyConstructorDelegationToSuper() {
 		'''
@@ -1002,9 +1081,9 @@ class ConstructorTest extends AbstractWollokInterpreterTestCase {
 		}
 		program t {
 			const presentacion = new Presentacion(
-				lugar = lunaPark, 
-				fecha = new Date(), 
-				cantante = chayanne, 
+				lugar = lunaPark,
+				fecha = new Date(),
+				cantante = chayanne,
 				localidades = [100, 50, 200]
 			)
 			console.println(presentacion)

@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.visitors
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WVariable

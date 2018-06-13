@@ -4,6 +4,8 @@ import java.util.Collections
 import java.util.List
 import java.util.Map
 import java.util.Set
+import org.eclipse.emf.common.util.ECollections
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -30,6 +32,7 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 
 /**
  * A wollok user defined (dynamic) object.
@@ -128,7 +131,15 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 		val other = constructor.delegatingConstructorCall
 		if (other !== null) {
 			val delegatedConstructor = constructor.wollokClass.resolveConstructorReference(other)
-			delegatedConstructor?.invokeOnContext(other, other.arguments, constructorEvalContext) // no 'this' as parent context !
+			var EList<? extends EObject> arguments = ECollections.emptyEList
+			if (other.hasNamedParameters) {
+				arguments = ECollections.asEList(delegatedConstructor.parameters.map [ name ].map [ 
+					argName | other.argumentList.getArgument(argName)					
+				])
+			} else {
+				arguments = other.arguments
+			}
+			delegatedConstructor?.invokeOnContext(other, arguments, constructorEvalContext) // no 'this' as parent context !
 		} else {
 			// automatic super() call
 			val delegatedConstructor = constructor.wollokClass.findConstructorInSuper(EMPTY_OBJECTS_ARRAY)

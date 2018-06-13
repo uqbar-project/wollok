@@ -33,28 +33,6 @@ class NamedObjectTestCase extends AbstractWollokInterpreterTestCase {
 	}
 	
 	@Test
-	def void testObjectScopingUsingVariableDefinedOutsideOfIt() {
-		'''
-		program p {
-			var n = 33
-			
-			const o = object {
-				method getN() {
-					return n
-				}
-			} 
-			
-			assert.that(33 == o.getN())
-			
-			// change N
-			n = 34
-			
-			assert.that(34 == o.getN())
-		}'''.interpretPropagatingErrors
-	}
-	
-	
-	@Test
 	def void testObjectScopingWithClassesFailsOnLinking() {
 		try {
 			'''

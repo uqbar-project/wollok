@@ -186,12 +186,11 @@ class ConstraintGenerator {
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach [ arg | arg.generateVariables ]
 		newSealed(classType(classRef))
-
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
 	def dispatch void generate(WInitializer it) {
-		val instantiatedClass = (eContainer as WConstructorCall).classRef
+		val instantiatedClass = declaringConstructorCall.classRef
 		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
 
 		initialValue.generateVariables

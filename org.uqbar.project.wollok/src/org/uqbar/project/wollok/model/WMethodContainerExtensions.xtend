@@ -17,12 +17,14 @@ import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
@@ -70,8 +72,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
-	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static WArgumentList declaringArgumentList(EObject it)  { EcoreUtil2.getContainerOfType(it, WArgumentList) }
+ 	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
+	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
 	def static EObject declaringContainer(WReturnExpression it)	{ 
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
@@ -168,10 +172,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static superMethod(WSuperInvocation it) { method.overridenMethod }
 
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
+
 	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { matches(other.name, other.parameters) }
 
-	//def static isGetter(WMethodDeclaration it) { name.length > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
-	// FED - new convention
 	def static isGetter(WMethodDeclaration it) { (it.eContainer as WMethodContainer).variableNames.contains(name) && parameters.empty }
 	
 	def static variableNames(WMethodContainer it) {	variables.map [ v | v?.name ].toList }
@@ -474,7 +477,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
 		clazz.resolveConstructor(clazz, arguments)
 	}
-
+	def static dispatch WConstructor resolveConstructor(WObjectLiteral obj, Object... arguments) {
+		obj.parent.resolveConstructor(arguments)
+	}
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
 		obj.parent.resolveConstructor(arguments)
 	}
@@ -684,10 +689,37 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static hasCyclicDefinition(WConstructor it) {
 		if (delegatingConstructorCall === null) return false
+		if (delegatingConstructorCall.hasNamedParameters) return false
 		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
 	}
 	
 	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
 	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
+
+	def static dispatch hasParentParameterValues(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterValues(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.initializers.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
+	}
+	
+	def static parentParametersValues(WNamedObject o) {
+		if (o.parentParameters === null) return 0
+		o.parentParameters.values.size
+	}
+
+	def static parentParametersValues(WObjectLiteral o) {
+		if (o.parentParameters === null) return 0
+		o.parentParameters.values.size
+	}
 
 }

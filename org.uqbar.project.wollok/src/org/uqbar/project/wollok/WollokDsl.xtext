@@ -55,10 +55,7 @@ WPackage:
 	'}'
 ;
 
-// reglas generales (solo para ordenar y para fijar bien las relaciones entre clases
-// porque a veces xtext no genera bien.
-// eventualmente sería bueno construir estas clases a mano con EMF, y poder
-// agregarles métodos: ej: WNamed.getName() y que las reglas las hereden. Para no necesitar extension methods
+// reglas generales (solo para ordenar y para fijar bien las relaciones entre clases porque a veces xtext no genera bien.
 WLibraryElement: (WPackage | WClass | WNamedObject | WMixin);
 WNamed: WMethodDeclaration | WReferenciable | WPackage | WClass | WMixin;
 WMethodContainer: WClass | {WObjectLiteral} | WNamedObject | WMixin | WSuite;
@@ -67,7 +64,9 @@ WReferenciable: WParameter | {WVariable} | WNamedObject ;
 WObjectLiteral returns WExpression:
 	{WObjectLiteral}
 	=>'object'
-	('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpressionOrInitializer (',' parentParameters+=WExpressionOrInitializer)* ')')? )?
+	('inherits' parent=[WClass|QualifiedName] 
+		(=> ( '(' parentParameters = WArgumentList ')'))?
+	)?
 	('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
@@ -340,7 +339,9 @@ WSetLiteral:
 	
 WNamedObject:
 	'object' name=ID 
-		('inherits' parent=[WClass|QualifiedName] ('(' parentParameters+=WExpressionOrInitializer (',' parentParameters+=WExpressionOrInitializer)* ')')? )?
+		('inherits' parent=[WClass|QualifiedName] 
+			(=> ( '(' parentParameters = WArgumentList ')'))?
+		)?
 		('mixed with' mixins+=[WMixin|QualifiedName] (('and'|',') mixins+=[WMixin|QualifiedName])*)?
 	'{'
 		(members+=WVariableDeclaration ';'?)*
@@ -390,28 +391,39 @@ WDelegatingConstructorCall:
 
 // somehow this should be references to WConstructor
 WSelfDelegatingConstructorCall:
-	{WSelfDelegatingConstructorCall} 'self' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+	{WSelfDelegatingConstructorCall} 'self' '(' 
+	(=> argumentList=WPositionalArgumentsList)?
+	')'
 ;
 
 // somehow this should be references to WConstructor
 WSuperDelegatingConstructorCall:
-	{WSuperDelegatingConstructorCall} 'super' '(' (arguments+=WExpression (',' arguments+=WExpression)*)? ')'
+	{WSuperDelegatingConstructorCall} 'super' '(' 
+	(=> argumentList=WPositionalArgumentsList)?
+	')'
 ;
-
-
 
 WConstructorCall:
-	'new' classRef=[WClass|QualifiedName]'('
-		(arguments+=WExpressionOrInitializer (',' arguments+=WExpressionOrInitializer)*)?		
-	')' ('with' mixins+=[WMixin])*
+	'new' classRef=[WClass|QualifiedName] '('
+	(=> argumentList=WArgumentList)?
+	')'
+	('with' mixins+=[WMixin])*
 ;
 
-WExpressionOrInitializer:
-	(=> WInitializer) | WExpression
+WArgumentList: (=> WNamedArgumentsList | WPositionalArgumentsList);
+
+WNamedArgumentsList:
+	{WNamedArgumentsList}
+	(=> initializers+=WInitializer (',' initializers+=WInitializer)*)
+;
+
+WPositionalArgumentsList:
+	{WPositionalArgumentsList}
+	(=> values += WExpression (',' values += WExpression)*)
 ;
 
 WInitializer:
-	initializer=WVariable "=" initialValue=WExpression
+	initializer= WVariable "=" initialValue=WExpression
 ;
 
 WTry:
