@@ -36,6 +36,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
  * @author npasserini
@@ -112,46 +113,52 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WMethodDeclaration it) {
-		it.newTypeVariable
+		newTypeVariable
 		parameters.forEach[generateVariables]
 
 		if (!abstract) {
 			expression?.generateVariables
-			// Return type for compact methods (others are handled by return expressions)
-			if(expressionReturns) beSupertypeOf(expression) else if(tvar.subtypes.empty) beVoid
+			if(expression.containsReturnExpression // Method contains at least one return expression
+				|| expressionReturns // Compact method, no return required.
+			) beSupertypeOf(expression) // Return type is taken from the body
+			else beVoid // Otherwise, method is void.
 		}
 
 		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
 	def dispatch void generate(WClosure it) {
-		newTypeVariable // Hack to collect returns, should be removed
 		parameters.forEach[generateVariables]
 		expression.generateVariables
-
-		val containsReturn = !tvar.subtypes.empty
-		val returnVar = if(containsReturn) tvar else expression.tvar
 
 		val closureType = closureType(parameters.length).instance
 		parameters.forEach [ parameter, index |
 			val paramName = GenericTypeInfo.PARAM(index)
 			closureType.param(paramName).beSubtypeOf(parameter.tvar)
 		]
-		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(returnVar)
+		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(expression.tvar)
 
 		newSealed(closureType)
 	}
 
-	def dispatch void generate(WParameter it) {
-		newTypeVariable
-	}
-
 	def dispatch void generate(WBlockExpression it) {
+		newTypeVariable
 		expressions.forEach[generateVariables]
 
-		it.newTypeVariable
+		val containsReturn = !tvar.subtypes.empty
+		if(!containsReturn) 
+			if(!expressions.empty) beSupertypeOf(expressions.last) else beVoid
+	}
 
-		if(!expressions.empty) it.beSupertypeOf(expressions.last) else it.beVoid
+	def dispatch void generate(WReturnExpression it) {
+		newTypeVariable
+		expression.generateVariables
+		declaringContainer.body.beSupertypeOf(expression)
+		beVoid
+	}
+
+	def dispatch void generate(WParameter it) {
+		newTypeVariable
 	}
 
 	def dispatch void generate(WNumberLiteral it) {
@@ -278,13 +285,6 @@ class ConstraintGenerator {
 			// Handling a proper BinaryExpression, such as "a + b"
 			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
 		}
-	}
-
-	def dispatch void generate(WReturnExpression it) {
-		newTypeVariable
-		expression.generateVariables
-		declaringContainer.beSupertypeOf(expression)
-		beVoid
 	}
 
 	// ************************************************************************

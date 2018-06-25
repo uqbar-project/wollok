@@ -58,10 +58,6 @@ class TypeVariable implements ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static closure(EObject owner, List<ITypeVariable> parameters, ITypeVariable returnType) {
-		new TypeVariable(owner) => [setTypeInfo(new ClosureTypeInfo(parameters, returnType))]
-	}
-
 	def static classParameter(EObject owner, GenericType type, String paramName) {
 		new ClassParameterTypeVariable(owner, type, paramName)
 	}
