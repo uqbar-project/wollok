@@ -9,11 +9,12 @@ import org.uqbar.project.wollok.typesystem.annotations.SimpleTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeDeclarationTarget
 import org.uqbar.project.wollok.typesystem.annotations.VoidTypeAnnotation
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
@@ -56,10 +57,17 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	}
 
 	def dispatch ITypeVariable beSealed(EObject object, ClosureTypeAnnotation it) {
-		registry.newClosure(
-			object,
-			parameters.map[param | beSealed(null, param)],
-			beSealed(null, returnType)
-		)
+		val typeParameters = newHashMap => [ map |
+			map.put(GenericTypeInfo.RETURN, synthetic(returnType))
+			parameters.forEach [ parameter, index |
+				map.put(GenericTypeInfo.PARAM(index), synthetic(parameter))
+			]
+		]
+	
+		registry.newSealed(object, type.instance(typeParameters))
+	}
+	
+	def synthetic(TypeAnnotation annotation) {
+		beSealed(null, annotation)
 	}
 }

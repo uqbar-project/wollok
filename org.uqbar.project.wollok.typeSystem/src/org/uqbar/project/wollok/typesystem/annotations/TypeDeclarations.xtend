@@ -12,8 +12,8 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import java.lang.reflect.Method
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -169,7 +169,7 @@ abstract class TypeDeclarations {
 	}
 	
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
-		new ClosureTypeAnnotation(parameters, returnType)
+		new ClosureTypeAnnotation(types.closureType(context, parameters.length), parameters, returnType)
 	}
 	
 	def param(SimpleTypeAnnotation<GenericType> genericType, String paramName) {

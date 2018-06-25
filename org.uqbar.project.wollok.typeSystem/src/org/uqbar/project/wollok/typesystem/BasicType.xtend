@@ -46,5 +46,5 @@ abstract class BasicType implements WollokType {
 	// nothing !
 	override getAllMessages() { #[] }
 	
-	override toString() { name }
+	override toString() { getName }
 }

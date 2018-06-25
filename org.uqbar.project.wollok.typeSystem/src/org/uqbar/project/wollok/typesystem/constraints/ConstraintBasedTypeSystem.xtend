@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import com.google.inject.Inject
-
 import java.util.List
 import java.util.Map
 import java.util.Set
@@ -12,6 +11,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
@@ -27,6 +27,7 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -36,8 +37,8 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
-import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
+import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 
 /**
  * @author npasserini
@@ -215,6 +216,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
 			genericTypes.put(classFQN, it)
 		]		
+	}
+
+	override closureType(EObject context, int parameterCount) {
+		val typeParameterNames = #[GenericTypeInfo.RETURN] + GenericTypeInfo.PARAMS(parameterCount)
+		new ClosureType(finder.getClosureClass(context), this, typeParameterNames)
 	}
 
 	def getAllTypes() {

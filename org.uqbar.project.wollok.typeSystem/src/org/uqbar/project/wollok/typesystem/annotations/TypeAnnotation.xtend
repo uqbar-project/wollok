@@ -24,27 +24,25 @@ class ClassParameterTypeAnnotation implements TypeAnnotation {
 	@Accessors(PUBLIC_GETTER)
 	String paramName
 	
-
 	new(GenericType type, String paramName) {
 		this.type = type
 		this.paramName = paramName
 	}
-	
 }
 
 
 class VoidTypeAnnotation implements TypeAnnotation {}
 
-class ClosureTypeAnnotation implements TypeAnnotation {
+class ClosureTypeAnnotation extends SimpleTypeAnnotation<GenericType> {
 	@Accessors(PUBLIC_GETTER)
 	List<TypeAnnotation> parameters
 	
 	@Accessors(PUBLIC_GETTER)
 	TypeAnnotation returnType
 	
-	new(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
+	new(GenericType closureType, List<TypeAnnotation> parameters, TypeAnnotation returnType) {
+		super(closureType)
 		this.parameters = parameters
 		this.returnType = returnType
 	}
-	
 }

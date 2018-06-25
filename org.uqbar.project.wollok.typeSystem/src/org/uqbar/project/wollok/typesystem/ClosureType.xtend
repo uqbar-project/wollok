@@ -1,16 +1,32 @@
 package org.uqbar.project.wollok.typesystem
 
-import java.util.List
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
+import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
- * Type for closures
+ * Type for generic closures
  * 
  * @author jfernandes
+ * @author npasserini
  */
-class ClosureType extends BasicType {
+class ClosureType extends GenericType {
 	
-	new(List<WollokType> paramTypes, WollokType returnType) {
-		super('''{(«paramTypes?.map[name].join(',')») => «returnType?.name»}''')
+	new(WClass clazz, TypeSystem typeSystem, String... typeParameterNames) {
+		super(clazz, typeSystem, typeParameterNames)
+	}
+
+	override toString(GenericTypeInstance it) '''{(«paramTypes?.map[name].join(',')») => «returnType?.name»}'''
+	
+	def paramTypes(GenericTypeInstance it) {
+		GenericTypeInfo.PARAMS(paramCount).map[ paramName | typeParameters.get(paramName).type ]
 	}
 	
+	def returnType(GenericTypeInstance it) {
+		typeParameters.get(GenericTypeInfo.RETURN).type
+	}
+	
+	def paramCount(GenericTypeInstance it) {
+		typeParameters.size - 1
+	}
 }
