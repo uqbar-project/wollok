@@ -8,7 +8,6 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
@@ -128,7 +127,7 @@ abstract class TypeDeclarations {
 
 	def Collection() { genericTypeAnnotation(COLLECTION, GenericTypeInfo.ELEMENT) }
 	
-	def Closure() { genericTypeAnnotation(CLOSURE, ClosureTypeInfo.RETURN) }
+	def Closure() { genericTypeAnnotation(CLOSURE, GenericTypeInfo.RETURN) }
 
 	def Range() { classTypeAnnotation(RANGE) }
 
@@ -158,7 +157,7 @@ abstract class TypeDeclarations {
 	
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
 
-	def RETURN() { Closure.param(ClosureTypeInfo.RETURN) }
+	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
 
 	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
 

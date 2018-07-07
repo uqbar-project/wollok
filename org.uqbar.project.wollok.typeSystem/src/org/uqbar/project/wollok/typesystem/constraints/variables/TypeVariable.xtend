@@ -195,12 +195,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
-		if (typeInfo === null) {
-			if (isClosureMessage)
-				setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
-			else
-				setTypeInfo(new GenericTypeInfo())
-		}
+		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.messages.add(it)
 	}
 

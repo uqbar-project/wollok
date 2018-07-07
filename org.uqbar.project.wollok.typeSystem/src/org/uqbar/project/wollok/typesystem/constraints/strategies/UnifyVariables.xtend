@@ -4,7 +4,6 @@ import java.util.Set
 import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
@@ -15,7 +14,6 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -132,12 +130,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		t2.users.forEach[typeInfo = t1]
 
 		changed = true
-		Ready
-	}
-
-	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
-		t1.parameters.biForEach(t2.parameters, [param1, param2 | param1.unifyWith(param2)])
-		t1.returnType.unifyWith(t2.returnType)
 		Ready
 	}
 

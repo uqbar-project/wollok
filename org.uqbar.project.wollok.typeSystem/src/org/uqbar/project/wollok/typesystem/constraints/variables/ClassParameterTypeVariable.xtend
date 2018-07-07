@@ -99,13 +99,6 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
 		typeInfo.param(genericType, paramName)
 	}
-	
-	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
-		switch (paramName) {
-			case ClosureTypeInfo.RETURN: typeInfo.returnType 
-			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')
-		}
-	}
-	
+		
 	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
 }
