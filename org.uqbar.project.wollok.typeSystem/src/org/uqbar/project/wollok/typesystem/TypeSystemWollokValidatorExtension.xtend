@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.xtext.validation.Check
+import org.uqbar.project.wollok.utils.WEclipseUtils
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile

@@ -42,12 +42,6 @@
        </wollokTypeSystemLabelExtension>
     </extension>
     <extension
-          point="org.uqbar.project.wollok.wollokValidationExtension">
-       <wollokValidationExtension
-             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.TypeSystemWollokValidatorExtension">
-       </wollokValidationExtension>
-    </extension>
-    <extension
           point="org.uqbar.project.wollok.typeSystem.implementation">
        <typeSystemImplementation
              class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.bindings.BoundsBasedTypeSystem">
@@ -83,6 +77,12 @@
              class="org.uqbar.project.wollok.typesystem.ui.builder.WollokTypeSystemBuilderParticipant"
              fileExtensions="wlk,wpgm,wtest">
        </participant>
+    </extension>
+    <extension
+          point="org.uqbar.project.wollok.wollokValidationExtension">
+       <wollokValidationExtension
+             class="org.uqbar.project.wollok.typeSystem.xsemantics.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.TypeSystemWollokValidatorExtension">
+       </wollokValidationExtension>
     </extension>
     <!-- Type System preferences -->
 </plugin>

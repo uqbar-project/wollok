@@ -1,9 +1,21 @@
 package org.uqbar.project.wollok.typesystem.ui.builder
 
+import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.core.runtime.NullProgressMonitor
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
+import org.eclipse.xtext.ui.editor.validation.IValidationIssueProcessor
+import org.eclipse.xtext.ui.editor.validation.MarkerIssueProcessor
+import org.eclipse.xtext.validation.CheckMode
+import org.uqbar.project.wollok.model.WollokModelExtensions
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
+
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.eclipse.xtext.validation.IConcreteSyntaxConstraintProvider.ConstraintType
 
 /**
  * A builder participant that runs the type system. 
@@ -22,12 +34,26 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 	override build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
 		val project = context.builtProject
 
-		WollokTypeSystemActivator.^default.ifEnabledFor(project) [ ts |
-			// First add all Wollok files to the type system for constraint generation
-			context.resourceSet.resources.map[contents].flatten.forEach[ts.analyse(it)]
+		WollokTypeSystemActivator.^default.ifEnabledFor(project) [
+
+			val ts = it as ConstraintBasedTypeSystem
 			
+			// First add all Wollok files to the type system for constraint generation
+			val wollokFiles = context.resourceSet.resources.filter[ IFile.isWollokExtension]
+			wollokFiles.map [ contents ].flatten.forEach[ts.analyse(it)]
+
 			// Now that we have added all files, we can resolve constraints (aka infer types).
 			ts.inferTypes
+
+			wollokFiles.forEach [
+				val issues = ts.validator.validate(it, CheckMode.ALL, null)
+				val IValidationIssueProcessor issueProcessor = new MarkerIssueProcessor(IFile, ts.markerCreator, ts.markerTypeProvider)
+				issueProcessor.processIssues(issues, monitor)
+		// TODO Hacer andar este...
+//				issueProcessor = new AnnotationIssueProcessor(xtextDocument, xtextEditor.getInternalSourceViewer().getAnnotationModel(), ts.issueResolutionProvider)
+			]
+
 		]
 	}
+
 }

@@ -19,8 +19,10 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
@@ -35,7 +37,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo.element
-import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
@@ -140,6 +141,10 @@ class ConstraintGenerator {
 		it.newTypeVariable
 
 		if (!expressions.empty) it.beSupertypeOf(expressions.last) else it.beVoid
+	}
+
+	def dispatch void generateVariables(WNullLiteral it) {
+		newSealed(WollokType.WAny)
 	}
 
 	def dispatch void generateVariables(WNumberLiteral it) {
