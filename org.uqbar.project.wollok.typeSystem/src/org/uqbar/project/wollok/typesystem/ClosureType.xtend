@@ -18,15 +18,27 @@ class ClosureType extends GenericType {
 
 	override toString(GenericTypeInstance it) '''{(«paramTypes?.map[name].join(',')») => «returnType?.name»}'''
 	
-	def paramTypes(GenericTypeInstance it) {
-		GenericTypeInfo.PARAMS(paramCount).map[ paramName | typeParameters.get(paramName).type ]
+	// ************************************************************************
+	// ** Static helpers
+	// ************************************************************************
+	
+	static def paramTypes(GenericTypeInstance it) {
+		paramTypeVariables.map[type]
 	}
 	
-	def returnType(GenericTypeInstance it) {
-		typeParameters.get(GenericTypeInfo.RETURN).type
+	static def returnType(GenericTypeInstance it) {
+		returnTypeVariable.type
+	}
+
+	static def paramTypeVariables(GenericTypeInstance it) {
+		GenericTypeInfo.PARAMS(paramCount).map[ paramName | typeParameters.get(paramName) ]
 	}
 	
-	def paramCount(GenericTypeInstance it) {
+	static def returnTypeVariable(GenericTypeInstance it) {
+		typeParameters.get(GenericTypeInfo.RETURN)
+	}
+	
+	static def paramCount(GenericTypeInstance it) {
 		typeParameters.size - 1
 	}
 }

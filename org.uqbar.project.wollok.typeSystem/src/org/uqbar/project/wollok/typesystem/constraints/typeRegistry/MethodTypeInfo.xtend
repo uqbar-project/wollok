@@ -4,6 +4,7 @@ import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
@@ -14,31 +15,39 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.findProperty
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
+import static extension org.uqbar.project.wollok.typesystem.ClosureType.*
+import org.uqbar.project.wollok.typesystem.ClosureType
 
 class MethodTypeProvider {
 	val TypeVariablesRegistry registry
-	
+
 	new(TypeVariablesRegistry registry) {
-		this.registry = registry	
+		this.registry = registry
 	}
-	
-	def methodTypeDo(WollokType type, MessageSend it, (MethodTypeInfo) => void actions) {
+
+	def methodTypeDo(WollokType type, MessageSend it, (MethodTypeInfo)=>void actions) {
 		val methodType = this.methodType(type, it)
-		if (methodType === null) throw new MessageNotUnderstoodException(type, it)
+		if(methodType === null) throw new MessageNotUnderstoodException(type, it)
 		actions.apply(methodType)
 	}
-	
+
 	def dispatch methodType(ConcreteType type, MessageSend it) {
+		// TODO Avoid this hard-coded decision and hack
+		if (selector == "apply" && type instanceof GenericTypeInstance &&
+			(type as GenericTypeInstance).rawType instanceof ClosureType) {
+			return new ClosureApplyTypeInfo(registry, type as GenericTypeInstance)
+		}
+
 		val method = type.lookupMethod(selector, arguments)
-		if (method !== null) 
+		if (method !== null)
 			return new RegularMethodTypeInfo(registry, method)
-			
+
 		val property = type.container.findProperty(selector, arguments.size)
 		if (property !== null) {
-			if (arguments.size == 0) new PropertyGetterTypeInfo(registry, property)
-			else new PropertySetterTypeInfo(registry, property)
-		} 
-		else null	
+			if(arguments.size == 0) new PropertyGetterTypeInfo(registry, property) else new PropertySetterTypeInfo(
+				registry, property)
+		} else
+			null
 	}
 
 	def dispatch methodType(WollokType type, MessageSend it) {
@@ -47,6 +56,25 @@ class MethodTypeProvider {
 
 	def forClass(WClass container, String selector, List<?> arguments) {
 		new RegularMethodTypeInfo(registry, container.lookupMethod(selector, arguments, true))
+	}
+
+}
+
+class ClosureApplyTypeInfo extends MethodTypeInfo {
+
+	GenericTypeInstance typeInstance
+
+	new(TypeVariablesRegistry registry, GenericTypeInstance typeInstance) {
+		super(registry)
+		this.typeInstance = typeInstance
+	}
+
+	override returnType() {
+		typeInstance.returnTypeVariable
+	}
+
+	override parameters() {
+		typeInstance.paramTypeVariables
 	}
 
 }
@@ -60,8 +88,8 @@ abstract class MethodTypeInfo {
 
 	def ITypeVariable returnType()
 
-	def List<ITypeVariable> parameters()
-	
+	def Iterable<ITypeVariable> parameters()
+
 	def tvarOrParam(EObject object) {
 		registry.tvarOrParam(object)
 	}
@@ -86,39 +114,38 @@ class RegularMethodTypeInfo extends MethodTypeInfo {
 
 class PropertyGetterTypeInfo extends MethodTypeInfo {
 	WVariableDeclaration declaration
-	
+
 	new(TypeVariablesRegistry registry, WVariableDeclaration declaration) {
 		super(registry)
 		this.declaration = declaration
 	}
-	
+
 	override returnType() {
 		declaration.variable.tvarOrParam
 	}
-	
+
 	override parameters() {
 		#[]
 	}
-	
+
 }
 
 class PropertySetterTypeInfo extends MethodTypeInfo {
-	
+
 	WVariableDeclaration declaration
-	
+
 	new(TypeVariablesRegistry registry, WVariableDeclaration declaration) {
 		super(registry)
 		this.declaration = declaration
 	}
-	
+
 	override returnType() {
 		// This is a hack because the declaration is void and the setter also is, but they are different things.
 		declaration.tvarOrParam
 	}
-	
+
 	override parameters() {
 		#[declaration.variable.tvarOrParam]
 	}
-	
-}
 
+}

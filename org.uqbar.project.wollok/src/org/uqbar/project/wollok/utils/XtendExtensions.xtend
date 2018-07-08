@@ -70,6 +70,12 @@ class XtendExtensions {
 	static def <T> allButLast(List<T> list) {
 		list.subList(0, (list.size - 1).max(0))
 	}
+
+	static def <T> copyWithout(Iterable<T> list, T... toRemove) {
+		list.clone => [
+			toRemove.forEach[ elem | remove(elem)]	
+		]
+	}
 	
 	static def <T> boolean notNullAnd(T receiver, (T) => boolean action) { 
 		receiver !== null && action.apply(receiver)

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ClosureType
@@ -206,6 +207,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Otherwise create a simple class type. 
 	 */
 	override classType(EObject context, String classFQN) {
+		if (classFQN == WollokDSK.CLOSURE) 
+			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+
 		genericTypes.get(classFQN) ?: finder.getCachedClass(context, classFQN).classType
 	}
 
@@ -213,6 +217,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Build a generic type and save it, so that we know which concrete types are known to be generic.
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
+		if (classFQN == WollokDSK.CLOSURE) 
+			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
 			genericTypes.put(classFQN, it)
 		]		
@@ -227,7 +234,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(allCoreClasses.map[classType(fqn)])
+			allTypes.addAll(allCoreClasses.reject[fqn == WollokDSK.CLOSURE].map[classType(fqn)])
 			allTypes.addAll(allCoreWKOs.map[objectType])
 		}
 		
