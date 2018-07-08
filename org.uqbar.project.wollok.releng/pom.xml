@@ -20,8 +20,7 @@
 		<module>../org.uqbar.project.wollok.ui.diagrams</module>
 		<module>../org.uqbar.project.wollok.ui.launch</module>
 		<module>../org.uqbar.project.wollok.typeSystem</module>
-		<module>../org.uqbar.project.wollok.typeSystem.xsemantics</module>
-		<module>../org.uqbar.project.wollok.typeSystem.xsemantics.ui</module>
+		<module>../org.uqbar.project.wollok.typeSystem.ui</module>
 		<module>../org.uqbar.project.wollok.tests</module>
 		<module>../org.uqbar.project.wollok.sdk</module>
 		<module>../org.uqbar.project.wollok.game</module>
@@ -35,7 +34,6 @@
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.11.0</xtext.version>
-		<xsemantics-version>1.11</xsemantics-version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
@@ -76,18 +74,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
-
-	<pluginRepositories>
-		<!-- XSemantics -->
-		<!-- THERE IS NO REPOSITORY ANYMORE FOR VERSION 1.11 
-		<pluginRepository>
-			<id>xsemantics-maven-repo</id>
-			<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
-		</pluginRepository>
-		-->
-		<!-- /XSemantics -->
-	</pluginRepositories>
 
 	<build>
 		<pluginManagement>

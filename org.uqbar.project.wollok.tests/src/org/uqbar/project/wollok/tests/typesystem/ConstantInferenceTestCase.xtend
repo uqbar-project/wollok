@@ -4,7 +4,6 @@ import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
-import org.uqbar.project.wollok.typesystem.substitutions.SubstitutionBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
@@ -18,10 +17,7 @@ class ConstantInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Parameters(name = "{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-			SubstitutionBasedTypeSystem,
-//			XSemanticsTypeSystem,
 			ConstraintBasedTypeSystem
-//			BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
 
