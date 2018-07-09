@@ -8,6 +8,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider
@@ -53,7 +54,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	@Accessors MarkerTypeProvider markerTypeProvider
 	@Inject
 	@Accessors IssueResolutionProvider issueResolutionProvider
-
+	@Inject 
+	@Accessors GlobalURIEditorOpener editorOpener
 
 	@Accessors
 	@Inject WollokClassFinder finder

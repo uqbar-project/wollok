@@ -1,21 +1,17 @@
 package org.uqbar.project.wollok.typesystem.ui.builder
 
-import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.core.runtime.NullProgressMonitor
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
+import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
 import org.eclipse.xtext.ui.editor.validation.IValidationIssueProcessor
 import org.eclipse.xtext.ui.editor.validation.MarkerIssueProcessor
 import org.eclipse.xtext.validation.CheckMode
-import org.uqbar.project.wollok.model.WollokModelExtensions
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.eclipse.xtext.validation.IConcreteSyntaxConstraintProvider.ConstraintType
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * A builder participant that runs the type system. 
@@ -51,6 +47,9 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 				issueProcessor.processIssues(issues, monitor)
 		// TODO Hacer andar este...
 //				issueProcessor = new AnnotationIssueProcessor(xtextDocument, xtextEditor.getInternalSourceViewer().getAnnotationModel(), ts.issueResolutionProvider)
+//				val page = PlatformUI.getWorkbench().activeWorkbenchWindow.activePage
+				val pp = ts.editorOpener.open(it.URI, true)
+				println(pp)	
 			]
 
 		]
