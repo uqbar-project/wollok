@@ -46,19 +46,22 @@ import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDecl
  */
 class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
+/* TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
 	@Accessors @Inject
 	IResourceValidator validator
-	@Inject 
-	@Accessors MarkerCreator markerCreator
-	@Inject
-	@Accessors MarkerTypeProvider markerTypeProvider
-	@Inject
-	@Accessors IssueResolutionProvider issueResolutionProvider
-	@Inject 
-	@Accessors GlobalURIEditorOpener editorOpener
+	 
+	@Accessors @Inject
+	MarkerCreator markerCreator
+	
+	@Accessors @Inject 
+	MarkerTypeProvider markerTypeProvider
 
-	@Accessors
-	@Inject WollokClassFinder finder
+//	@Accessors @Inject
+//	IssueResolutionProvider issueResolutionProvider
+/* FIN TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
+
+	@Accessors @Inject
+	WollokClassFinder finder
 
 	val Logger log = Logger.getLogger(this.class)
 

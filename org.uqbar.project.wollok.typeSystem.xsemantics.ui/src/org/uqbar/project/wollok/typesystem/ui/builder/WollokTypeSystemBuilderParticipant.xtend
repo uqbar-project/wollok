@@ -48,8 +48,8 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 		// TODO Hacer andar este...
 //				issueProcessor = new AnnotationIssueProcessor(xtextDocument, xtextEditor.getInternalSourceViewer().getAnnotationModel(), ts.issueResolutionProvider)
 //				val page = PlatformUI.getWorkbench().activeWorkbenchWindow.activePage
-				val pp = ts.editorOpener.open(it.URI, true)
-				println(pp)	
+//				val pp = ts.editorOpener.open(it.URI, true)
+//				println(pp) GlobalURIEditorOpener queria inyectar	
 			]
 
 		]
