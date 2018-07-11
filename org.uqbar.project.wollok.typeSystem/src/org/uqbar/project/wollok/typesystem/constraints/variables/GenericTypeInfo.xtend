@@ -176,6 +176,12 @@ class GenericTypeInfo extends TypeInfo {
 	public static val KEY = "key"
 	public static val VALUE = "value"
 	public static val ELEMENT = "element"
+	public static val RETURN = "return"
+	public static def PARAM(int position) { "arg" + position }
+	public static def PARAMS(int parameterCount) {
+		if (parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
+	}
+
 
 	// ************************************************************************
 	// ** Misc
@@ -186,5 +192,4 @@ class GenericTypeInfo extends TypeInfo {
 		maxTypes: «maximalConcreteTypes?:"unknown"»
 		messages: «messages»
 	'''
-
 }

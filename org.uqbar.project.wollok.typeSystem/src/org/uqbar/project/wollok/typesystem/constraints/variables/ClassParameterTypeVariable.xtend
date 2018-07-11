@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
@@ -30,17 +31,25 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	EObject owner
 	
 	@Accessors
-	GenericType type
+	GenericType genericType
 	
 	@Accessors
 	extension TypeVariablesRegistry registry
 
 	String paramName
 
-	new(EObject owner, GenericType type, String paramName) {
+	new(EObject owner, GenericType genericType, String paramName) {
 		this.owner = owner
-		this.type = type
+		this.genericType = genericType
 		this.paramName = paramName
+	}
+
+ 	override getType() {
+		WollokType.WAny
+	}
+	
+	def dispatch beSubtypeOf(ITypeVariable variable) {
+		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 
 	/**
@@ -48,8 +57,12 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	 * The received type variable should be a a message send 
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
-	override beSubtypeOf(TypeVariable variable) {
+	def dispatch beSubtypeOf(TypeVariable variable) {
 		variable.owner.classTypeParameter.beSubtypeOf(variable)		
+	}
+
+	def dispatch beSupertypeOf(ITypeVariable variable) {
+		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 
 	/**
@@ -58,7 +71,7 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	 * its container should be a message send, 
 	 * such as {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}.
 	 */
-	override beSupertypeOf(TypeVariable variable) {
+	def dispatch beSupertypeOf(TypeVariable variable) {
 		variable.owner.eContainer.classTypeParameter.beSupertypeOf(variable)
 	}
 
@@ -79,16 +92,13 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
 	}
 
+	def dispatch classTypeParameterFor(TypeInfo typeInfo) {
+		throw new UnsupportedOperationException 
+	}
+
 	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
-		typeInfo.param(type, paramName)
+		typeInfo.param(genericType, paramName)
 	}
-	
-	def dispatch classTypeParameterFor(ClosureTypeInfo typeInfo) {
-		switch (paramName) {
-			case ClosureTypeInfo.RETURN: typeInfo.returnType 
-			default: throw new TypeSystemException('''Extracting «paramName» type parameter from a Closure is not possible or yet not implemented''')
-		}
-	}
-	
-	override toString() '''t(«owner.debugInfo»: «type».«paramName»)'''
+		
+	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
 }

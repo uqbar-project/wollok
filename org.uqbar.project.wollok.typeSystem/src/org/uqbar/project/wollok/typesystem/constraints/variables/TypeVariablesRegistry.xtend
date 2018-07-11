@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
-import java.util.List
 import java.util.Map
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
@@ -55,10 +54,6 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	def newTypeVariable(EObject owner) {
 		TypeVariable.simple(owner).register
-	}
-
-	def newClosure(EObject owner, List<ITypeVariable> parameters, ITypeVariable expression) {
-		TypeVariable.closure(owner, parameters, expression).register
 	}
 
 	def newVoid(EObject owner) {

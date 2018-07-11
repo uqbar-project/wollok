@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -82,6 +83,9 @@ class WollokModelPrintForDebug {
 
 	static def dispatch String debugInfo(WConstructorCall it)
 		'''new «classRef.name»(...)'''
+
+	static def dispatch String debugInfo(WClosure it) 
+		'''Closure{«System.identityHashCode(it)»}'''
 
 	// ************************************************************************
 	// ** Debug info with context

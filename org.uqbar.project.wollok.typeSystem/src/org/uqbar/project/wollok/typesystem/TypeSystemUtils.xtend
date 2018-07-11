@@ -12,7 +12,7 @@ class TypeSystemUtils {
 	
 	// helper
 	def static functionType(WMethodDeclaration m, extension TypeSystem ts) {
-		"(" + m.parameterTypes(ts).map[it?.name].join(", ") + ') => ' + m.type?.name
+		"(" + m.parameterTypes(ts).join(", ") + ') => ' + m.type
 	}
 	
 	def static constructorType(WConstructor it, extension TypeSystem ts) {

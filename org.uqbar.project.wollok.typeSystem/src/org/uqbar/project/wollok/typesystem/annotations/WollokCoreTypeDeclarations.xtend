@@ -210,7 +210,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		
 		comparable(Number, String, Date)
 		
-		Closure >> "apply" === #[List] => RETURN
+		// Closure >> "apply" === #[List] => RETURN
 		
 		InstanceVariableMirror >> "value" === #[] => Void
 		

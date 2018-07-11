@@ -80,6 +80,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static EObject declaringContainer(WReturnExpression it)	{ 
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
 	}
+	
+	def static dispatch body(EObject it) { throw new UnsupportedOperationException }
+	def static dispatch body(WClosure it) { expression }
+	def static dispatch body(WMethodDeclaration it) { expression }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}

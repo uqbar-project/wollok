@@ -24,9 +24,9 @@ class GenericTypeInstance implements ConcreteType {
 	GenericType rawType
 	
 	@Accessors(PUBLIC_GETTER)
-	Map<String, TypeVariable> typeParameters
+	Map<String, ITypeVariable> typeParameters
 	
-	new(GenericType type, Map<String, TypeVariable> typeParameters) {
+	new(GenericType type, Map<String, ITypeVariable> typeParameters) {
 		this.rawType = type
 		this.typeParameters = typeParameters
 	}
@@ -87,7 +87,7 @@ class GenericTypeInstance implements ConcreteType {
 	// ** Basics
 	// ************************************************************************
 	
-	override toString() { rawType.toString }
+	override toString() { rawType.toString(this) }
 	
 	def dispatch equals(Object other ) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }

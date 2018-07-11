@@ -10,7 +10,7 @@ class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	}
 	
 	override getSelectedTypeSystem(EObject file) {
-		"XSemantics"
+		"Constraints-based"
 	}
 	
 }

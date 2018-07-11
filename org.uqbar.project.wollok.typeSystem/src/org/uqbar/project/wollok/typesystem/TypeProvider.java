@@ -11,6 +11,7 @@ public interface TypeProvider {
 
 	public ClassBasedWollokType classType(EObject context, String classFQN);
 	public GenericType genericType(EObject context, String classFQN, String... typeParameterNames);
+	public GenericType closureType(EObject context, int parameterCount);
 	public NamedObjectWollokType objectType(EObject context, String classFQN);
 
 }

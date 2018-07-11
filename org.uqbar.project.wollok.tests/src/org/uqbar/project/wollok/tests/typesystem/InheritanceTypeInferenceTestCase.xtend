@@ -16,10 +16,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 	@Parameters(name="{index}: {0}")
 	static def Object[] typeSystems() {
 		#[
-//			SubstitutionBasedTypeSystem,	//TO BE FIXED
 			ConstraintBasedTypeSystem
-		// ,XSemanticsTypeSystem			// TODO 
-		// BoundsBasedTypeSystem,    TO BE FIXED
 		]
 	}
 

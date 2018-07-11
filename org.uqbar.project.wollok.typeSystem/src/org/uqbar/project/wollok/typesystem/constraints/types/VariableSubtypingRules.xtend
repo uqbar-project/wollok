@@ -1,13 +1,10 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
-
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 
 class VariableSubtypingRules {
 	// ************************************************************************
@@ -28,17 +25,6 @@ class VariableSubtypingRules {
 	 * The opposite is not true, void is unacceptable where another type of value is expected.
 	 */
 	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, TypeInfo subtype) { true }
-
-	static def dispatch boolean isSupertypeOf(ClosureTypeInfo supertype, ClosureTypeInfo subtype) {
-		supertype.parameters.size === subtype.parameters.size
-		&& 
-		supertype.parameters.biForAll(subtype.parameters)[superParam, subParam|
-			// Note that the subtype relationship is inverted for parameters
-			subParam.isSuperVarOf(superParam)
-		]
-		&&
-		(supertype.returnType as TypeVariable).typeInfo.isSupertypeOf((subtype.returnType as TypeVariable).typeInfo)
-	}
 
 	/** The maxTypes of the supertype has to include every minType in subtype */
 	static def dispatch boolean isSupertypeOf(GenericTypeInfo supertype, GenericTypeInfo subtype) {
