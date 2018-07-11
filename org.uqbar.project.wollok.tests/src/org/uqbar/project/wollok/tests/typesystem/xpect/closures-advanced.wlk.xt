@@ -1,8 +1,15 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 class Calculator {
-	// XPECT methodType at next --> (Number) => Number
-	method next(n) {
-		return { a => a + 1 }.apply(n)
+	//  XPECT! methodType at next --> (Number) => Number
+//	method next(n) {
+//		return { a => a + 1 }.apply(n)
+//	}
+	
+	method closuresAndCollections() {
+		const numeros = [1,2,3]
+		
+		//  XPECT type at firstIsEven --> Boolean
+		const firstIsEven = numeros.filter { x => x.even }.first() 		
 	}
 }

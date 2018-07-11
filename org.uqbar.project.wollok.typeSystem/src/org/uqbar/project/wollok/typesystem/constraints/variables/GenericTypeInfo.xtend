@@ -186,6 +186,11 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
+	
+	override toString() '''
+	 	«class.simpleName» of «this.canonicalUser»: «basicGetType()?.toString ?: "unknown"»
+	'''
+	
 	override fullDescription() '''
 		sealed: «sealed»,
 		minTypes: «minTypes»,

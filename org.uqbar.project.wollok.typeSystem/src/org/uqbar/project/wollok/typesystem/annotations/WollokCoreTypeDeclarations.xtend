@@ -105,6 +105,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "internalToSmartString" === #[Boolean] => String;
+		Collection >> "filter" === #[closure(#[ELEMENT], Boolean)] => List.of(ELEMENT);
 
 		(List == Any) => Boolean
 		List + List => List
@@ -117,8 +118,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "take" === #[Number] => List
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 		
-		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
+		Range >> "sum" === #[closure(#[Number], Number)] => Number;
 		Range >> "internalToSmartString" === #[Boolean] => String;
+		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);
 		 
 		(Set == Any) => Boolean
 		Set >> "equals" === #[Any] => Boolean;
