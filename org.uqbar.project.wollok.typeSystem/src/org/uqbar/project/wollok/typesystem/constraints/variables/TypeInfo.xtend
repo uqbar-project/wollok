@@ -58,9 +58,9 @@ abstract class TypeInfo {
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
-	def void subtypeAdded() {}
+	def void subtypeAdded(TypeVariable subtype) {}
 
-	def void supertypeAdded() {}
+	def void supertypeAdded(TypeVariable supertype) {}
 
 	// ************************************************************************
 	// ** Misc
