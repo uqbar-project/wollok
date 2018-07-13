@@ -8,11 +8,6 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.eclipse.xtext.ui.editor.GlobalURIEditorOpener
-import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
-import org.eclipse.xtext.ui.editor.validation.MarkerCreator
-import org.eclipse.xtext.ui.validation.MarkerTypeProvider
-import org.eclipse.xtext.validation.IResourceValidator
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
@@ -45,20 +40,6 @@ import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDecl
  * @author npasserini
  */
 class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
-
-/* TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
-	@Accessors @Inject
-	IResourceValidator validator
-	 
-	@Accessors @Inject
-	MarkerCreator markerCreator
-	
-	@Accessors @Inject 
-	MarkerTypeProvider markerTypeProvider
-
-//	@Accessors @Inject
-//	IssueResolutionProvider issueResolutionProvider
-/* FIN TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
 
 	@Accessors @Inject
 	WollokClassFinder finder
