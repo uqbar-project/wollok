@@ -4,10 +4,9 @@ import org.eclipse.debug.core.DebugException
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IVariable
 import org.eclipse.emf.common.util.URI
-import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
-import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
-import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 
 /**
  * Debugger model object representing a remote stack frame.
@@ -37,7 +36,7 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 	override getThread() { thread }
 	override getName() throws DebugException {
 		val fileInfo = fileURI.lastSegment +  ":" + lineNumber
-		if (frame.sourceLocation.contextDescription != null)
+		if (frame.sourceLocation.contextDescription !== null)
 			frame.sourceLocation.contextDescription + " (" + fileInfo + ")"
 		 else
 		 	fileInfo 
@@ -47,7 +46,7 @@ class WollokStackFrame extends WollokDebugElement implements IStackFrame {
 
 	def String getSourceName() { fileURI.lastSegment }
  	def synchronized URI getFileURI() { 
- 		if (uri == null)
+ 		if (uri === null)
  			uri = URI.createURI(frame.sourceLocation.fileURI)
  		uri
  	}	

@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.interpreter
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.uqbar.project.wollok.Messages
 
 /**
  * Main exceptions for WollokInterpreter, indicates
@@ -30,7 +32,7 @@ class WollokInterpreterException extends RuntimeException {
 
 	def static String createMessage(EObject object) {
 		val node = NodeModelUtils.findActualNodeFor(object)
-		'''Error evaluating line «object?.eResource?.URI»:[«node?.textRegionWithLineInformation.lineNumber»]: «node?.text?.trim»'''
+		NLS.bind(Messages.WollokInterpreter_error_evaluating_line, #[object?.eResource?.URI, node?.textRegionWithLineInformation.lineNumber, node?.text?.trim])
 	}
 
 	def objectURI() {
@@ -46,7 +48,7 @@ class WollokInterpreterException extends RuntimeException {
 	}
 
 	def nodeText() {
-		node.text.trim
+		node?.text?.trim
 	}
 
 }

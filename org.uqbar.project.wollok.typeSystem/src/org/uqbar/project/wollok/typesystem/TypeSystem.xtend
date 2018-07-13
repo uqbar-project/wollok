@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.Resource
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -44,11 +43,9 @@ interface TypeSystem {
 
 	/**
 	 * # 3a: 
-	 * Now we can report errors.
-	 * Since the validation (and error reporting) systems works on a per-Resource basis
-	 * we need to report only the errors that are in the currently validated resource.
+	 * Now we can report errors
 	 */
-	def void reportErrors(Resource resource, ConfigurableDslValidator validator)
+	def void reportErrors(ConfigurableDslValidator validator)
 
 	/**
 	 * # 3b:

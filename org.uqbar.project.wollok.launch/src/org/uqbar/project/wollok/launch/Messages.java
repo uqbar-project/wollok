@@ -16,6 +16,32 @@ public class Messages extends NLS {
 	public static String REPL_WELCOME;
 	public static String WVM_ERROR;
 
+	// ****************************
+	// ** Launcher messages
+	// ****************************
+	public static String WollokLauncher_REQUEST_PORT_EVENTS_PORT_ARE_BOTH_REQUIRED;
+	public static String WollokLauncher_REPL_ONLY_WITH_WLK_FILES;
+	public static String WollokLauncher_FILE_OR_REPL_REQUIRED;
+	public static String WollokLauncher_INVALID_PARAMETER_NUMBER;
+	
+	// ******************************
+	// ** Launcher Options Messages
+	// ******************************
+	public static String WollokLauncherOptions_REPL;
+	public static String WollokLauncherOptions_RUNNING_TESTS;
+	public static String WollokLauncherOptions_JSON_TEST_OUTPUT;
+	public static String WollokLauncherOptions_DISABLE_COLORS_REPL;
+	public static String WollokLauncherOptions_SEVERAL_FILES;
+	public static String WollokLauncherOptions_SERVER_PORT;
+	public static String WollokLauncherOptions_REQUEST_PORT;
+	public static String WollokLauncherOptions_EVENTS_PORT;
+	public static String WollokLauncherOptions_SPECIFIC_FOLDER;
+	public static String WollokLauncherOptions_NUMBER_DECIMALS;
+	public static String WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY;
+	public static String WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY;
+	public static String WollokLauncherOptions_JAR_LIBRARIES;
+	public static String WollokLauncherOptions_WOLLOK_FILES;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

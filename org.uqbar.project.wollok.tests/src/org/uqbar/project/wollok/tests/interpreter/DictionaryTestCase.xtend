@@ -153,18 +153,30 @@ class DictionaryTestCase extends AbstractWollokInterpreterTestCase {
 		assert.that(mapaTelefonos.isEmpty())
 		'''.test
 	}
+
+	@Test
+	def void testToString() {
+		'''
+		const mapaTelefonos = new Dictionary()
+		assert.equals(mapaTelefonos.toString(), "a Dictionary []")
+		mapaTelefonos.put("choli", "2142-5980")
+		assert.equals(mapaTelefonos.toString(), "a Dictionary [\"choli\" -> \"2142-5980\"]")
+		mapaTelefonos.put(2, 33)
+		assert.equals(mapaTelefonos.toString(), "a Dictionary [2 -> 33, \"choli\" -> \"2142-5980\"]")
+		'''.test
+	}
 	
 	@Test
 	def void testPutNullKeyShouldThrowAnException() {
 		'''
-		assert.throwsException({ new Dictionary().put(null, 2184) })
+		assert.throwsExceptionWithMessage("You cannot add an element with a null key in a Dictionary", { new Dictionary().put(null, 2184) })
 		'''.test		
 	}
 	
 	@Test
 	def void testPutNullValueShouldThrowAnException() {
 		'''
-		assert.throwsException({ new Dictionary().put(2145, null) })
+		assert.throwsExceptionWithMessage("You cannot add a null value in a Dictionary", { new Dictionary().put(2145, null) })
 		'''.test		
 	}
 	

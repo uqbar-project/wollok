@@ -4,7 +4,7 @@ import java.util.Map
 import java.util.Random
 import org.eclipse.debug.core.model.IVariable
 import org.eclipse.draw2d.geometry.Dimension
-import org.eclipse.draw2d.geometry.Point
+import org.eclipse.draw2d.geometry.PrecisionPoint
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
@@ -51,7 +51,7 @@ class VariableModel extends Shape {
 	}
 	
 	def String getValueString() {
-		if (variable.value == null) 
+		if (variable.value === null) 
 			"null"
 		else if (isList)
 			"List" 
@@ -64,11 +64,11 @@ class VariableModel extends Shape {
 	}
 	
 	def isNumeric() {
-		if (variable.value == null) false else valueString.matches("^-?\\d+(\\.\\d+)?$")
+		if (variable.value === null) false else valueString.matches("^-?\\d+(\\.\\d+)?$")
 	} 
 	
 	def isList() {
-		if (variable.value == null) false else originalValueString.matches("^List \\(id.*")
+		if (variable.value === null) false else originalValueString.matches("^List \\(id.*")
 	}
 	
 	def moveCloseTo(Shape shape) {
@@ -77,9 +77,7 @@ class VariableModel extends Shape {
 		// length of the line
 		val magnitude = 100.0f
 		
-		this.location = new Point(shape.location.x + Math.cos(angle) * magnitude, shape.location.y + Math.sin(angle) * magnitude)
+		this.location = new PrecisionPoint(shape.location.x + Math.cos(angle) * magnitude, shape.location.y + Math.sin(angle) * magnitude)
 	}
 	
 }
-	
-	

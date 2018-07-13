@@ -157,9 +157,6 @@ class IJarEntryResourceAdapter extends ManifestEntryAdapter {
 		return r as IJarEntryResource 
 	}
 		
-		
-				
-	
 }
 
 class IFileAdapter extends ManifestEntryAdapter {
@@ -187,6 +184,5 @@ class IFileAdapter extends ManifestEntryAdapter {
 	override manifest() {
 		return new WollokManifest(inputStream);
 	}
-	
 	
 }

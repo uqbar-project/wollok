@@ -31,7 +31,7 @@ class WollokProposalBuilder {
 	}
 	
 	def private validate() {
-		if (reference ===null || member === null || context === null)
+		if (reference === null || member === null || context === null)
 			throw new WollokRuntimeException(Messages.WollokProposal_cannot_instantiate)
 	}
 	

@@ -1,6 +1,8 @@
 package org.uqbar.project.wollok.interpreter.operation
 
 import java.lang.reflect.Method
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 
@@ -25,9 +27,9 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 	
 	override asUnaryOperation(String operationSymbol) {
 		val op = class.methods.findFirst[hasAnnotationForOperation(operationSymbol)]
-		if (op == null) {
+		if (op === null) {
 			//TODO: model a generic WollokVMException
-			throw new RuntimeException("Operation '" + operationSymbol + "' not supported by interpreter")
+			throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_operationNotSupported, operationSymbol))
 		}
 		[ a | op.invoke(this, a) as WollokObject ]
 	}
@@ -37,7 +39,7 @@ class WollokDeclarativeNativeUnaryOperations implements WollokBasicUnaryOperatio
 	}
 	
 	def throwOperationNotSupported(String operator, Object target) {
-		throw new RuntimeException("Operator " + operator + " not supported for " + target)
+		throw new RuntimeException(NLS.bind(Messages.WollokInterpreter_operatorNotSupported, operator, target))
 	}
 	
 	// OPERATIONS

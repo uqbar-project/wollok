@@ -59,4 +59,3 @@ class WollokResultTestDTO implements Serializable {
 	}
 	
 }
-

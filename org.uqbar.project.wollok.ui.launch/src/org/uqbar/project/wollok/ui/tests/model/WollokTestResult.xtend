@@ -30,7 +30,7 @@ class WollokTestResult {
 		this.testInfo = testInfo
 		state = WollokTestState.PENDING
 		testResource = URI.createURI(testInfo.resource)
-		mainResource = testInfo.resource //testInfo.fileURI
+		mainResource = testInfo.resource
 	}
 
 	def getName() {

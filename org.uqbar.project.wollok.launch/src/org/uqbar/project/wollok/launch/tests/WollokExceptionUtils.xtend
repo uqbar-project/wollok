@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.launch.tests
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.List
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -11,9 +13,8 @@ import wollok.lib.AssertionException
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
-import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
-
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 class WollokExceptionUtils {
 
@@ -116,7 +117,7 @@ class WollokExceptionUtils {
 	}
 
 	def static dispatch generateAssertionError(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
+		throw new IllegalArgumentException(NLS.bind(Messages.WollokInterpreter_assertionExceptionNotValid, e.class.name))
 	}
 
 	/**
@@ -131,7 +132,7 @@ class WollokExceptionUtils {
 	}
 	
 	def static dispatch getURI(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
+		throw new IllegalArgumentException(NLS.bind(Messages.WollokInterpreter_assertionExceptionNotValid, e.class.name))
 	}
 	
 	/**
@@ -146,6 +147,6 @@ class WollokExceptionUtils {
 	}
 	
 	def static dispatch getLineNumber(Exception e) {
-		throw new IllegalArgumentException(e.class.name + " is not a valid AssertionException")
+		throw new IllegalArgumentException(NLS.bind(Messages.WollokInterpreter_assertionExceptionNotValid, e.class.name))
 	}
 }

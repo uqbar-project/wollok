@@ -8,7 +8,10 @@ import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant
 import org.eclipse.debug.core.sourcelookup.ISourceContainer
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer
 import org.uqbar.project.wollok.WollokActivator
+import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.debugger.model.WollokStackFrame
+
+import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -42,7 +45,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 			val libLocation = WollokActivator.^default.wollokLib.location
 			val libBundlePath = libLocation.substring(libLocation.lastIndexOf(':') + 1)
 			
-			val filePath = libBundlePath + 'src' 
+			val filePath = libBundlePath + WollokConstants.SOURCE_FOLDER 
 			val file = new File(filePath)
 			libContainer = new DirectorySourceContainer(file, true)
 		}
@@ -53,7 +56,7 @@ class WollokSourceLookupParticipant extends AbstractSourceLookupParticipant {
 		if (object instanceof WollokStackFrame) {
 			try {
 				// this can probably be done in a better way
-				if (object.fileURI.toString.startsWith("classpath:")) {
+				if (object.fileURI.toString.startsWith(CLASSPATH)) {
 //					val fileName = object.fileURI.toString.substring(object.fileURI.toString.indexOf(':') + 2)
 //					return getOrCreateLibContainer.findSourceElements(fileName)
 					super.findSourceElements(object)

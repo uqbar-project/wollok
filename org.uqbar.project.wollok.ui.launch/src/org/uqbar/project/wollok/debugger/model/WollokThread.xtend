@@ -22,7 +22,7 @@ class WollokThread extends WollokDebugElement implements IThread {
 		if (suspended) debugTarget.stackFrames else #[]
 	}
 	
-	override getBreakpoints() { if (breakpoints == null) #[] else breakpoints }
+	override getBreakpoints() { if (breakpoints === null) #[] else breakpoints }
 	
 	override getName() throws DebugException { "Thread[1]" }
 	override getPriority() throws DebugException { 0 }

@@ -11,6 +11,8 @@ import org.antlr.runtime.RecognitionException
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.AbstractRule
+import org.eclipse.xtext.ParserRule
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider.IParserErrorContext
@@ -18,6 +20,7 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.services.WollokDslGrammarAccess
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
@@ -83,7 +86,7 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 		}		
 		
 		if (token?.equalsIgnoreCase(CONSTRUCTOR) && !declaringContext?.canDefineConstructors) {
-			if (declaringContext !== null) 
+			if (declaringContext !== null)
 				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
 			else 	
 				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
@@ -112,9 +115,11 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			exception !== null && exception.isApplicable(msg, context)
 		]
 		if (specificMessage === null && context.currentContext !== null) {
-			// Last chance to detect rule
 			specificMessage = changeParserMessage(context.currentContext, exception)
-		} 
+		}
+		if (specificMessage === null && context.currentContext !== null && context.grammarRule !== null) {
+			specificMessage = changeParserMessage(context.currentContext, context.grammarRule, exception)
+		}
 		if (specificMessage === null) {
 			return super.getSyntaxErrorMessage(context)
 		}
@@ -159,7 +164,12 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 	def dispatch SpecialMessage changeParserMessage(WMethodDeclaration m, MismatchedTokenException e) {
 		new SpecialMessage(e.token.text, NLS.bind(Messages.SYNTAX_DIAGNOSIS_BAD_CHARACTER_IN_METHOD, e.token.text))				
 	}
-	
+	def dispatch SpecialMessage changeParserMessage(EObject o, AbstractRule r, Exception e) { null }
+	def dispatch SpecialMessage changeParserMessage(WArgumentList l, ParserRule r, MismatchedTokenException e) {
+		if (r.name.equalsIgnoreCase("WVariable")) {
+			new SpecialMessage(e.token.text, Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_WITH_BOTH_INITIALIZERS_AND_VALUES)
+		} else null
+	}
 }
 
 @Accessors

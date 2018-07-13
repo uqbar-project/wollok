@@ -22,7 +22,7 @@ abstract class RTFFontTagCommand extends RTFTagCommand {
 	override appliesTo(StyleRange style) {
 		var int fontStyle = style.fontStyle
 		val Font font = style.font
-		if (font != null) {
+		if (font !== null) {
 			val fontData = font.fontData.head
 			fontStyle = fontData.getStyle()
 		}
@@ -120,7 +120,7 @@ class WollokRTFColorMatcher {
 	}
 	
 	def int getColorIndex(Color color, int defaultIndex) {
-		if (color == null) return defaultIndex
+		if (color === null) return defaultIndex
 		return colors.indexOf(color) + 1
 	}
  

@@ -346,8 +346,8 @@ object game {
 }
 
 class Position {
-	var property x
-	var property y
+	var property x = 0
+	var property y = 0
 	
 	/**
 	 * Returns the position at origin: (0,0).

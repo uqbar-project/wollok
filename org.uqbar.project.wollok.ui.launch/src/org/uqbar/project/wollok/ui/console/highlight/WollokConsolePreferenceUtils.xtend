@@ -16,7 +16,7 @@ class WollokConsolePreferenceUtils {
 
     def static colorFromStringRgb(String strRgb) {
         val splitted = strRgb.split(",")
-        if (splitted != null && splitted.length == 3) {
+        if (splitted !== null && splitted.length == 3) {
             val red = tryParseInteger(splitted.get(0))
             val green = tryParseInteger(splitted.get(1))
             val blue = tryParseInteger(splitted.get(2))

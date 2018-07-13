@@ -6,6 +6,7 @@ import java.io.InputStreamReader
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtext.xbase.lib.Functions.Function1
+import static extension org.uqbar.project.wollok.WollokConstants.*
 
 class WollokManifest {
 	val uris = <URI>newArrayList
@@ -13,7 +14,7 @@ class WollokManifest {
 	val Logger log = Logger.getLogger(this.class)
 	
 	new(InputStream is) {
-		this(is, [String line | URI.createURI("classpath:/" + line)])
+		this(is, [String line | URI.createURI(CLASSPATH + line)])
 	}
 	
 	new(InputStream is, Function1<String, URI> uriTransformer) {

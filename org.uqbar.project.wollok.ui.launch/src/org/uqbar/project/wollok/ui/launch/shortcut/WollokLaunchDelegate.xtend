@@ -22,6 +22,7 @@ import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 
 /**
  * Launches the process to execute the interpreter.
@@ -64,7 +65,7 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 			}
 			catch (RuntimeException e) {
 				launch.terminate
-				abort("Could not connect to remote process", e, DebugPlugin.INTERNAL_ERROR)
+				abort(WollokLaunchUIMessages.WollokDebugger_GENERAL_ERROR_MESSAGE, e, DebugPlugin.INTERNAL_ERROR)
 			}
 		}
 	}

@@ -1,14 +1,14 @@
 package org.uqbar.project.wollok.typesystem.preferences
 
-import org.eclipse.core.resources.IProject
+import org.eclipse.emf.ecore.EObject
 
 class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	
-	override isTypeSystemEnabled(IProject project) {
+	override isTypeSystemEnabled(EObject project) {
 		false
 	}
 	
-	override getSelectedTypeSystem(IProject project) {
+	override getSelectedTypeSystem(EObject file) {
 		"Constraints-based"
 	}
 	

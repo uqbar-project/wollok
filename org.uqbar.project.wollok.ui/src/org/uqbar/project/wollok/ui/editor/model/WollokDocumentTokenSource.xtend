@@ -7,8 +7,6 @@ import org.eclipse.xtext.parser.antlr.ITokenDefProvider
 import org.eclipse.xtext.ui.LexerUIBindings
 import org.eclipse.xtext.ui.editor.model.DocumentTokenSource
 
-import static org.uqbar.project.wollok.ui.editor.model.WollokDocumentTokenSource.*
-
 /**
  * 
  * @author jfernandes

@@ -24,6 +24,9 @@ public class Messages extends NLS {
 	public static String AbstractNewWollokFileWizardPage_fileNameMustBeValid;
 	public static String AbstractNewWollokFileWizardPage_projectMustBeWritable;
 	public static String AbstractNewWollokFileWizardPage_selectContainer;
+	
+	public static String ELEMENT_VALIDATOR_SELECT_SOURCE_FOLDER;
+	
 	public static String NewWollokObjectsWizardPage_description;
 	public static String NewWollokObjectsWizardPage_title;
 	public static String NewWollokObjectsWizardPage_elementName;

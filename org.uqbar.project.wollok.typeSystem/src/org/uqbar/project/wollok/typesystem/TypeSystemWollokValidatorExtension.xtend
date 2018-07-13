@@ -1,12 +1,10 @@
 package org.uqbar.project.wollok.typesystem
 
+import org.eclipse.core.runtime.AssertionFailedException
 import org.eclipse.xtext.validation.Check
-import org.uqbar.project.wollok.utils.WEclipseUtils
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.validation.WollokValidatorExtension
 import org.uqbar.project.wollok.wollokDsl.WFile
-
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * A validator extension that runs the currently configured type system to
@@ -16,10 +14,21 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  */
 class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
 
-	@Check(FAST)
+	@Check(NORMAL)
 	override check(WFile file, WollokDslValidator validator) {
-		WollokTypeSystemActivator.^default.ifEnabledFor(file.project) [ ts |
-			ts.reportErrors(file.eResource, validator)
-		]
+		//TODO: lee las preferencias cada vez!
+		try
+			if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(file))
+				return
+		catch (IllegalStateException e) {
+			// headless launcher doesn't open workspace, so this fails.
+			// but it's ok since the type system won't run in runtime. 
+			return
+		}
+		catch (AssertionFailedException e) 
+			return;
+		
+		WollokTypeSystemActivator.^default.getTypeSystem(file).validate(file, validator)		
 	}
+	
 }

@@ -4,6 +4,7 @@ import java.util.List
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
+import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
@@ -12,6 +13,7 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextResource
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -22,6 +24,7 @@ import org.uqbar.project.wollok.visitors.ParameterUsesVisitor
 import org.uqbar.project.wollok.visitors.VariableAssignmentsVisitor
 import org.uqbar.project.wollok.visitors.VariableUsesVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -33,7 +36,6 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WExpressionOrInitializer
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
@@ -43,12 +45,14 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WMixin
 import org.uqbar.project.wollok.wollokDsl.WNamed
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
@@ -68,9 +72,9 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
+import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
-import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
@@ -90,7 +94,7 @@ class WollokModelExtensions {
 		if (it === null || it.URI === null || it.URI.toString === null) {
 			return null
 		}
-		if (URI.toString.startsWith("classpath:/"))
+		if (URI.toString.startsWith(CLASSPATH))
 			URI.trimFileExtension.segments.join(".")
 		else
 			fullPackageName(it)
@@ -216,7 +220,7 @@ class WollokModelExtensions {
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) {	m.eContainer as WMethodContainer } //
 
-	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) {	c.constructors }
+	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
 	
 	def static dispatch String constructorName(WConstructor c, WSelfDelegatingConstructorCall dc) {
@@ -289,7 +293,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isWellKnownObject(WReferenciable it) { false }
 
 	def static isValidCallToWKObject(WMemberFeatureCall it, WollokClassFinder finder) {
-		resolveWKO(finder).isValidCall(it, finder)
+		resolveWKO(finder).isValidCall(it)
 	}
 
 	def static resolveWKO(WMemberFeatureCall it, WollokClassFinder finder) {
@@ -301,17 +305,62 @@ class WollokModelExtensions {
 	}
 
 	def static isValidConstructorCall(WConstructorCall c) {
-		c.classRef.hasConstructorForArgs(c.numberOfParameters)
+		c.classRef.hasConstructorForArgs(c.arguments.size)
 	}
 
-	def static numberOfParameters(WConstructorCall c) { if(c.arguments === null) 0 else c.arguments.size }
-
+	def static dispatch EList<WExpression> values(WConstructorCall c) { 
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.values
+	}
+	def static dispatch EList<WExpression> values(WPositionalArgumentsList l) { l.values }
+	def static dispatch EList<WExpression> values(EObject o) { ECollections.emptyEList }
+	
+	def static dispatch EList<WInitializer> initializers(WConstructorCall c) { 
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.initializers
+	}
+	
+	def static dispatch EList<WInitializer> initializers(WNamedArgumentsList l) { 
+		l.initializers
+	}
+	
+	def static dispatch EList<WInitializer> initializers(EObject o) { 
+		ECollections.emptyEList
+	} 
+	
+	def static dispatch EList<? extends EObject> arguments(WSelfDelegatingConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
+	}
+	def static dispatch EList<? extends EObject> arguments(WSuperDelegatingConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
+	}
+	def static dispatch EList<? extends EObject> arguments(WConstructorCall c) {
+		if (c.argumentList === null) return ECollections.emptyEList
+		c.argumentList.arguments
+	}
+	def static dispatch EList<? extends EObject> arguments(WArgumentList l) {
+		if (l.hasNamedParameters) l.initializers else l.values	
+	}
+	def static dispatch EList<? extends EObject> arguments(EObject o) { ECollections.emptyEList }
+	
 	def static hasConstructorDefinitions(WClass c) { c.constructors !== null && c.constructors.size > 0 }
 
 	def static boolean hasConstructorForArgs(WClass c, int nrOfArgs) {
 		(nrOfArgs == 0 && c.inheritsDefaultConstructor) || c.allConstructors.exists[matches(nrOfArgs)]
 	}
 
+	def static getArgument(WArgumentList l, String name) {
+		val initializer = l.initializers.findFirst [ init | init.initializer.name.equals(name) ]
+		if (initializer === null) return null
+		initializer.initialValue
+	}
+	
+	def static variables(WArgumentList it) {
+		arguments.filter(WAssignment).map[feature].toList
+	}
+	
 	def static boolean inheritsDefaultConstructor(WClass c) {
 		if (c.hasConstructorDefinitions) {
 			return false
@@ -359,6 +408,7 @@ class WollokModelExtensions {
 
 	def static superClassRequiresNonEmptyConstructor(WClass it) { parent !== null && !parent.hasEmptyConstructor }
 	def static superClassRequiresNonEmptyConstructor(WNamedObject it) { parent !== null && !parent.hasEmptyConstructor }
+	def static superClassRequiresNonEmptyConstructor(WObjectLiteral it) { parent !== null && !parent.hasEmptyConstructor }
 
 	def static hasEmptyConstructor(WClass c) { !c.hasConstructorDefinitions || c.hasConstructorForArgs(0) }
 
@@ -425,7 +475,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WSuite p, WReferenciable v) {
 		p.tests.exists [ (it.variables + p.variables).existsMoreThanOne(v) ]
 	}
-
+	def static dispatch boolean isDuplicated(WInitializer i, WReferenciable v) { false }
 	// classes, objects and mixins
 	def static dispatch boolean isDuplicated(WMethodContainer c, WReferenciable v) { c.variables.existsMoreThanOne(v) }
 
@@ -631,7 +681,7 @@ class WollokModelExtensions {
 	
 	public static def operator(WBinaryOperation it) { 
 		if (isMultiOpAssignment) feature.substring(0, 1)
-		else throw new UnsupportedOperationException("Binary operation is not a compound assignment.")
+		else throw new UnsupportedOperationException(Messages.WollokInterpreter_binaryOperationNotCompoundAssignment)
 	}
 	
 	def static dispatch isASuite(EObject o) { false }
@@ -641,13 +691,22 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) { expressions.size === 1 && expressions.head.hasOneExpressionForFormatting }
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
-	
-	def static dispatch isNamedParameter(WExpressionOrInitializer e) { false }
-	
-	def static dispatch isNamedParameter(WInitializer i) { true }
-	
-	def static dispatch hasNamedParameters(EObject o) { false }
-	def static dispatch hasNamedParameters(WConstructorCall c) { !c.namedArguments.isEmpty }
+
+	def static dispatch boolean hasNamedParameters(EObject o) { false }
+	def static dispatch boolean hasNamedParameters(WConstructorCall c) { 
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
+		if (c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
+	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
 	
 	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }

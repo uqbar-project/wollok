@@ -13,7 +13,7 @@ class WollokTypeSystemPrettyPrinter {
 		maximalConcreteTypes?.prettyPrint ?: getType(user).toString
 	}
 	
-	static def dispatch expected(ClosureTypeInfo it, TypeVariable user) {
+	static def dispatch expected(TypeInfo it, TypeVariable user) {
 		throw new UnsupportedOperationException 
 	}
 
@@ -27,7 +27,7 @@ class WollokTypeSystemPrettyPrinter {
 		minTypes.entrySet.findFirst[value == Error]?.key?.toString
 	}
 
-	static def dispatch found(ClosureTypeInfo it) {
+	static def dispatch found(TypeInfo it) {
 		throw new UnsupportedOperationException 
 	}
 

@@ -9,8 +9,10 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
+import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
@@ -26,6 +28,7 @@ import org.uqbar.project.wollok.typesystem.constraints.strategies.PropagateMinim
 import org.uqbar.project.wollok.typesystem.constraints.strategies.SealVariables
 import org.uqbar.project.wollok.typesystem.constraints.strategies.UnifyVariables
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass
@@ -35,15 +38,15 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 
 import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 
 /**
  * @author npasserini
  */
 class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
-
-	@Accessors @Inject
-	WollokClassFinder finder
+	@Accessors
+	@Inject WollokClassFinder finder
 
 	val Logger log = Logger.getLogger(this.class)
 
@@ -68,10 +71,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	new() {
 		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
 	}
-
-	/** 
-	 * WARNING this name is used as default value in DefaultWollokTypeSystemPreferences, it shouldn't be changed. 
-	 */
+	
 	override def name() { "Constraints-based" }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
@@ -79,7 +79,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		this.analyse(file)
 		this.inferTypes
 
-		reportErrors(file.eResource, validator)
+		reportErrors(validator)
 	}
 
 	// ************************************************************************
@@ -102,7 +102,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		if (registry === null) {
 			initialize(program)
 		}
-		
+
 		programs.add(program)
 		constraintGenerator.generateVariables(program)
 	}
@@ -207,6 +207,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Otherwise create a simple class type. 
 	 */
 	override classType(EObject context, String classFQN) {
+		if (classFQN == WollokDSK.CLOSURE) 
+			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+
 		genericTypes.get(classFQN) ?: finder.getCachedClass(context, classFQN).classType
 	}
 
@@ -214,19 +217,27 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Build a generic type and save it, so that we know which concrete types are known to be generic.
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
+		if (classFQN == WollokDSK.CLOSURE) 
+			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
 			genericTypes.put(classFQN, it)
 		]		
+	}
+
+	override closureType(EObject context, int parameterCount) {
+		val typeParameterNames = #[GenericTypeInfo.RETURN] + GenericTypeInfo.PARAMS(parameterCount)
+		new ClosureType(finder.getClosureClass(context), this, typeParameterNames)
 	}
 
 	def getAllTypes() {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(allCoreClasses.map[classType(fqn)])
+			allTypes.addAll(allCoreClasses.reject[fqn == WollokDSK.CLOSURE].map[classType(fqn)])
 			allTypes.addAll(allCoreWKOs.map[objectType])
 		}
-
+		
 		allTypes
 	}
 }

@@ -25,13 +25,17 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 			return;
 		}
 		
-		var maxTypes = allTypes.filter[newMaxTypeFor(tvar)].toList
+		var maxTypes = tvar.maxTypes
 		log.trace('''maxTypes = «maxTypes»''')
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
 			log.debug('''	New max(«maxTypes») type for «tvar.debugInfoInContext»''')
 			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[TypeVariable.instance(it)].toSet), tvar)
 			changed = changed || newChanges
 		}
+	}
+	
+	def maxTypes(TypeVariable tvar) {
+		allTypes.filter[newMaxTypeFor(tvar)].toList
 	}
 
 	def contains(MaximalConcreteTypes maxTypes, List<? extends WollokType> types) {

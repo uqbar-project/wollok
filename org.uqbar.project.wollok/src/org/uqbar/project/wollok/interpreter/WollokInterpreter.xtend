@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
@@ -23,8 +24,8 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.interpreter.threads.WThread
 
 import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.model.FlowControlExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * XInterpreter impl for Wollok language.
@@ -172,8 +173,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 
 	def setReference(String variableName, WollokObject value) {
 		if (!globalVariables.containsKey(variableName))
-			// I18N !
-			throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + variableName)
 		else
 			globalVariables.put(variableName, value)
 	}
@@ -182,8 +182,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		if (globalVariables.containsKey(variableName))
 			return globalVariables.get(variableName)
 
-		// I18N !
-		throw new UnresolvableReference('''Cannot resolve reference «variableName»''')
+		throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + variableName)
 	}
 	
 	// Accessing Thread State

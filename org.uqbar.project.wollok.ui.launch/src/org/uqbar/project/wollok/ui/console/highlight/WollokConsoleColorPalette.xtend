@@ -114,7 +114,7 @@ class WollokConsoleColorPalette {
     }
 
     def static getColor(Integer index) {
-        if (null == index)
+        if (null === index)
             return null
 
         if (index >= 0 && index < palette.length) // basic, 16 color palette

@@ -3,7 +3,9 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import org.apache.log4j.Logger
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -42,8 +44,8 @@ abstract class AbstractWollokDeclarativeNativeObject implements WCallable {
 		else
 			try {
 				if (method.parameterTypes.size != parameters.size)
-					throw new WollokRuntimeException('''Wrong number of arguments for method. Expected «method.parameterTypes.size» but you passed «parameters.size»''')
-				
+					throw new WollokRuntimeException(NLS.bind(Messages.WollokConversion_INVALID_ARGUMENTS_SIZE, method.name, method.parameterTypes.size))
+
 				method.invokeConvertingArgs(this, parameters)
 			}
 			catch (WollokProgramExceptionWrapper e) {

@@ -18,7 +18,7 @@ class WollokBreakpointAdapterFactory implements IAdapterFactory {
 		if (adaptableObject instanceof XtextEditor) {
 			val editorPart = adaptableObject as ITextEditor
 			val resource = editorPart.resource
-			if (resource != null) {
+			if (resource !== null) {
 				val xt = resource.fileExtension
 				
 				if (WollokLaunchConstants.isWollokFileExtension(xt)) {

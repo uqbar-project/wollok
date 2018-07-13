@@ -20,10 +20,6 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	static def Object[] typeSystems() {
 		#[
 			ConstraintBasedTypeSystem
-//			SubstitutionBasedTypeSystem
-		// TODO: fix !
-//			XSemanticsTypeSystem,		 
-//			BoundsBasedTypeSystem
 		]
 	}
 

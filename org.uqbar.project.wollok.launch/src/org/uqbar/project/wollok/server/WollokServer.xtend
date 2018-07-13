@@ -118,7 +118,7 @@ class WollokServer extends AbstractHandler {
 		val String name = WollokConstants.SYNTHETIC_FILE
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			val syntheticUri = URI.createURI(name + i + "." + fileExtension)
-			if (resourceSet.getResource(syntheticUri, false) == null)
+			if (resourceSet.getResource(syntheticUri, false) === null)
 				return syntheticUri
 		}
 		throw new IllegalStateException()

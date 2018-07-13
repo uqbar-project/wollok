@@ -10,7 +10,9 @@ import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.IStructuredSelection
+import org.eclipse.osgi.util.NLS
 import org.eclipse.ui.IEditorPart
+import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
@@ -39,17 +41,21 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 	def void launch(IFile currFile, String mode)
 	
 	def void launch(IProject currProject, String mode) {
-		throw new RuntimeException("Launcher not found for " + currProject)
+		currProject.throwLauncherNotFound
 	}
 	
 	def void launch(IJavaProject currProject, String mode) {
-		throw new RuntimeException("Launcher not found for " + currProject)
+		currProject.throwLauncherNotFound
 	}
 	
 	def void launch(IFolder currFolder, String mode) {
-		throw new RuntimeException("Launcher not found for " + currFolder)
+		currFolder.throwLauncherNotFound
 	}
 	
+	def void throwLauncherNotFound(Object o) {
+		throw new RuntimeException(NLS.bind(WollokLaunchUIMessages.WollokLaunch_GENERAL_ERROR_MESSAGE, o.toString))
+	}
+
 	def dispatch void doLaunch(IProject currProject, String mode) {
 		launch(currProject, mode)
 	}
@@ -71,6 +77,6 @@ abstract class AbstractFileLaunchShortcut implements ILaunchShortcut {
 	}
 	
 	def dispatch void doLaunch(Object o, String mode) {
-		throw new RuntimeException("Launcher not found for " + o)
+		o.throwLauncherNotFound
 	}
 }

@@ -10,8 +10,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
  * @author jfernandes
  */
 class WollokNature implements IProjectNature {
-	@Accessors
-	IProject project
+	@Accessors IProject project
 	
 	override configure() throws CoreException { }
 	

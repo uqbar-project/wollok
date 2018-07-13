@@ -18,6 +18,7 @@ import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -65,7 +66,7 @@ import static extension org.uqbar.project.wollok.model.WEvaluationExtension.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLast
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * Custom validation rules.
@@ -76,7 +77,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.allButLas
  * @author fdodino
  * @author ptesone
  * @author npasserini
- * @author jcontardoeff
+ * @author jcontardo
  * @author fbulgarelli
  */
 class WollokDslValidator extends AbstractConfigurableDslValidator {
@@ -121,7 +122,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val REQUIRED_SUPERCLASS_CONSTRUCTOR = "REQUIRED_SUPERCLASS_CONSTRUCTOR"
 	public static val DUPLICATED_CONSTRUCTOR = "DUPLICATED_CONSTRUCTOR"
 	public static val UNNECESARY_OVERRIDE = "UNNECESARY_OVERRIDE"
-	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMTER_CONSTRUCTOR"
+	public static val ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR = "ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR"
 	public static val MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR = "MISSING_ASSIGNMENTS_IN_NAMED_PARAMETER_CONSTRUCTOR"
 	public static val MUST_CALL_SUPER = "MUST_CALL_SUPER"
 	public static val TYPE_SYSTEM_ERROR = "TYPE_SYSTEM_ERROR"
@@ -240,17 +241,32 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		}
 	}
 
-
 	@Check
 	@DefaultSeverity(ERROR)
 	def checkUnexistentNamedParametersInConstructor(WConstructorCall it) {
-		val arguments = namedArguments
-		if (arguments.isEmpty) return;
-		val validAttributes = classRef.allVariableNames
-		val namedArguments = arguments.keySet
-		val invalidArgumentsNames = namedArguments.filter [ arg | !validAttributes.contains(arg) ]
-		invalidArgumentsNames.forEach [ invArgName |
-			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, invArgName, classRef.name), arguments.get(invArgName), WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
+		if (!hasNamedParameters) return;
+		classRef.validateNamedParameters(argumentList)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WNamedObject it) {
+		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
+		parent.validateNamedParameters(parentParameters)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def checkUnexistentNamedParametersInheritingConstructor(WObjectLiteral it) {
+		if (parent === null || parentParameters === null || !parentParameters.hasNamedParameters) return;
+		parent.validateNamedParameters(parentParameters)
+	}
+
+	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
+		val validAttributes = clazz.allVariableNames
+		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
+		invalidInitializers.forEach [ 
+			reportEObject(NLS.bind(WollokDslValidator_UNDEFINED_ATTRIBUTE_IN_CONSTRUCTOR, initializer.name, clazz.name), initializer.eContainer, WollokDslValidator.ATTRIBUTE_NOT_FOUND_IN_NAMED_PARAMETER_CONSTRUCTOR)
 		]
 	}
 
@@ -300,11 +316,35 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def cannotUseInstanceVariablesInConstructorDelegation(WDelegatingConstructorCall it) {
+		val namedParameters = if (argumentList === null) newArrayList else argumentList.variables
 		eAllContents.filter(WVariableReference).forEach [ ref |
-			if (ref.ref instanceof WVariable) {
+			if (ref.ref instanceof WVariable && !namedParameters.contains(ref)) {
 				report(WollokDslValidator_CANNOT_ACCESS_INSTANCE_VARIABLES_WITHIN_CONSTRUCTOR_DELEGATION, ref, WVARIABLE_REFERENCE__REF)
 			}
 		]
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotUseNamedParametersInConstructorDelegation(WDelegatingConstructorCall it) {
+		if (argumentList.notNullAnd[!variables.isEmpty])
+			report(WollokDslValidator_NAMED_PARAMETERS_NOT_ALLOWED, it, WDELEGATING_CONSTRUCTOR_CALL__ARGUMENT_LIST)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotMixNamedAndPositionalParametersInObjectLiteral(WObjectLiteral it) {
+		if (parentParameters === null) return;
+		if (!parentParameters.values.isEmpty && !parentParameters.variables.isEmpty)
+			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WOBJECT_LITERAL__PARENT_PARAMETERS)
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def cannotMixNamedAndPositionalParametersInWKO(WNamedObject it) {
+		if (parentParameters === null) return;
+		if (!parentParameters.values.isEmpty && !parentParameters.variables.isEmpty)
+			report(WollokDslValidator_DONT_MIX_NAMED_AND_POSITIONAL_PARAMETERS, it, WNAMED_OBJECT__PARENT_PARAMETERS)
 	}
 
 	@Check
@@ -439,6 +479,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def dispatch boolean hasSeveralAssignmentsFor(WConstructor it, WReferenciable variable) {
+		if (expression === null) return false
 		expression.hasSeveralAssignmentsFor(variable)
 	}
 
@@ -566,7 +607,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def methodInvocationToThisMustExist(WMemberFeatureCall call) {
 		val declaringContext = call.declaringContext
-		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call, classFinder)) {
+		if (call.callOnThis && declaringContext !== null && !declaringContext.isValidCall(call)) {
 			var message = WollokDslValidator_METHOD_ON_THIS_DOESNT_EXIST
 			val args = call.memberCallArguments.size
 			var issueId = METHOD_ON_THIS_DOESNT_EXIST
@@ -624,7 +665,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def objectMustExplicitlyCallASuperclassConstructor(WNamedObject it) {
-		if (parent !== null && parentParameters.empty && superClassRequiresNonEmptyConstructor) {
+		if (parent !== null && !hasParentParameterValues && !hasParentParameterInitializers && superClassRequiresNonEmptyConstructor) {
 			report(NLS.bind(WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR, parent.name, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
 		}
@@ -632,8 +673,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 
 	@Check
 	@DefaultSeverity(ERROR)
-	def objectSuperClassConstructorMustExists(WNamedObject it) {
-		if (parent !== null && !parentParameters.empty && !parent.hasConstructorForArgs(parentParameters.size)) {
+	def objectSuperClassConstructorMustExist(WNamedObject it) {
+		if (parent !== null && parentParameters !== null && !hasParentParameterInitializers && !parent.hasConstructorForArgs(parentParametersValues)) {
 			report(NLS.bind(WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR, parent.constructorParameters),
 				it, WNAMED_OBJECT__PARENT)
 		}
@@ -649,6 +690,44 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				val methodDescriptions = abstractMethods.map[methodName].join(", ")
 				report('''«WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''',
 					it, WNAMED__NAME)
+			} else {
+				abstractMethods.forEach [ abstractMethod |
+					report('''«WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS»''',
+						abstractMethod, WNAMED__NAME)
+				]
+			}
+		}
+	}
+
+	// Object Literals
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectMustExplicitlyCallASuperclassConstructor(WObjectLiteral it) {
+		if (parent !== null && !hasParentParameterValues && !hasParentParameterInitializers && superClassRequiresNonEmptyConstructor) {
+			report(NLS.bind(WollokDslValidator_OBJECT_MUST_CALL_SUPERCLASS_CONSTRUCTOR, parent.name, parent.constructorParameters),
+				it, WOBJECT_LITERAL__PARENT, REQUIRED_SUPERCLASS_CONSTRUCTOR)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectSuperClassConstructorMustExist(WObjectLiteral it) {
+		if (parent !== null && parentParameters !== null && !hasParentParameterInitializers && !parent.hasConstructorForArgs(parentParametersValues)) {
+			report(NLS.bind(WollokDslValidator_NO_SUPERCLASS_CONSTRUCTOR, parent.constructorParameters),
+				it, WOBJECT_LITERAL__PARENT)
+		}
+	}
+
+	@Check
+	@DefaultSeverity(ERROR)
+	def unnamedObjectMustImplementAbstractMethods(WObjectLiteral it) {
+		val abstractMethods = unimplementedAbstractMethods
+		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== it ]
+		if (!abstractMethods.empty) {
+			if (inheritingAbstractMethods) {
+				val methodDescriptions = abstractMethods.map[methodName].join(", ")
+				report('''«WollokDslValidator_WKO_MUST_IMPLEMENT_ABSTRACT_METHODS»: «methodDescriptions»''',
+					it)
 			} else {
 				abstractMethods.forEach [ abstractMethod |
 					report('''«WollokDslValidator_WKO_WITHOUT_INHERITANCE_MUST_IMPLEMENT_ALL_METHODS»''',
@@ -1107,8 +1186,8 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def nativeMethodsChecks(WMethodDeclaration it) {
 		if (native) {
-			if(expression !== null) report("Native methods cannot have a body", it, WMETHOD_DECLARATION__EXPRESSION)
-			if(declaringContext instanceof WObjectLiteral) report("Native methods can only be defined in classes", it,
+			if(expression !== null) report(WollokDslValidator_NATIVE_METHOD_NO_BODY, it, WMETHOD_DECLARATION__EXPRESSION)
+			if(declaringContext instanceof WObjectLiteral) report(WollokDslValidator_NATIVE_METHOD_ONLY_IN_CLASSES, it,
 				WMETHOD_DECLARATION__NATIVE)
 		}
 	}

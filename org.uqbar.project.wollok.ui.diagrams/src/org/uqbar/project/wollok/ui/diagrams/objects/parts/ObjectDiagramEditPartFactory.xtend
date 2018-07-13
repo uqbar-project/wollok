@@ -12,14 +12,14 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 class ObjectDiagramEditPartFactory implements EditPartFactory {
 
 	override createEditPart(EditPart context, Object modelElement) {
-		if (modelElement == null) return null
+		if (modelElement === null) return null
 		getPartForElement(modelElement) => [
 			model = modelElement
 		]
 	}
 
 	def dispatch getPartForElement(Object modelElement) {
-		throw new RuntimeException("Can't create part for model element: " + (if (modelElement != null) modelElement.class.name else "null"))
+		throw new RuntimeException("Can't create part for model element: " + (if (modelElement !== null) modelElement.class.name else "null"))
 	}
 	
 	def dispatch getPartForElement(IStackFrame it) { new StackFrameEditPart }

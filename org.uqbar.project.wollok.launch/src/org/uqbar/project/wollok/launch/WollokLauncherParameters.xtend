@@ -8,9 +8,10 @@ import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.OptionBuilder
 import org.apache.commons.cli.Options
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.parser.OptionalGnuParser
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.parser.OptionalGnuParser
 
 /**
  * @author jfernandes
@@ -95,18 +96,18 @@ class WollokLauncherParameters {
 		coercingStrategy = parseParameterString(cmdLine, "coercingStrategy")
 		
 		if ((requestsPort == 0 && eventsPort != 0) || (requestsPort != 0 && eventsPort == 0)) {
-			throw new RuntimeException("Both RequestsPort and EventsPort should be informed")
+			throw new RuntimeException(Messages.WollokLauncher_REQUEST_PORT_EVENTS_PORT_ARE_BOTH_REQUIRED)
 		}
 		
 		parseLibraries(cmdLine)
 		parseWollokFiles(cmdLine)
 		
 		if (!wollokFiles.empty && hasRepl && !wollokFiles.get(0).endsWith(".wlk")){
-			throw new RuntimeException("Repl can only be used with .wlk files.")
+			throw new RuntimeException(Messages.WollokLauncher_REPL_ONLY_WITH_WLK_FILES)
 		}
 		
 		if (wollokFiles.empty && !hasRepl){
-			throw new RuntimeException("You must provide a file or use the REPL")
+			throw new RuntimeException(Messages.WollokLauncher_FILE_OR_REPL_REQUIRED)
 		}
 		
 		//If the parameters are empty and we are in the REPL, I generate an empty file to be able of loading the REPL
@@ -154,7 +155,7 @@ class WollokLauncherParameters {
 			val paramParsed = cmdLine.parseParameterString(paramName)
 			Integer::parseInt(paramParsed)
 		} catch (NumberFormatException e) {
-			throw new RuntimeException("Invalid number value for " + paramName)
+			throw new RuntimeException(NLS.bind(Messages.WollokLauncher_INVALID_PARAMETER_NUMBER, paramName))
 		}
 	}
 
@@ -172,24 +173,23 @@ class WollokLauncherParameters {
 
 	def options() {
 		new Options => [
-			addOption(new Option("r", "Starts an interactive REPL") => [longOpt = "repl"])
-			addOption(new Option("t", "Running tests") => [longOpt = "tests"])
-			addOption(new Option("jsonOutput", "JSON test report output"))
-			addOption(new Option("noAnsiFormat", "Disables ANSI colors for the console"))
-			addOption(new Option("severalFiles", "Allows to run several files alltogether"))
+			addOption(new Option("r", Messages.WollokLauncherOptions_REPL) => [longOpt = "repl"])
+			addOption(new Option("t", Messages.WollokLauncherOptions_RUNNING_TESTS) => [longOpt = "tests"])
+			addOption(new Option("jsonOutput", Messages.WollokLauncherOptions_JSON_TEST_OUTPUT))
+			addOption(new Option("noAnsiFormat", Messages.WollokLauncherOptions_DISABLE_COLORS_REPL))
+			addOption(new Option("severalFiles", Messages.WollokLauncherOptions_SEVERAL_FILES))
 
-			add("testPort", "Server port for tests", "port", 1)
-			add("requestsPort", "Request ports", "port", 1)
-			add("eventsPort", "Events ports", "port", 1)	
-			add("folder", "Specific folder", "folder", 1)
+			add("testPort", Messages.WollokLauncherOptions_SERVER_PORT, "port", 1)
+			add("requestsPort", Messages.WollokLauncherOptions_REQUEST_PORT, "port", 1)
+			add("eventsPort", Messages.WollokLauncherOptions_EVENTS_PORT, "port", 1)	
+			add("folder", Messages.WollokLauncherOptions_SPECIFIC_FOLDER, "folder", 1)
 			
-			add("numberOfDecimals", "Number of decimals to use in the printing and rounding", "decimals", 1)
-			add("printingStrategy", "Strategy to use when printing a number", "name", 1)
-			add("coercingStrategy", "Strategy to use when converting numbers", "name", 1)
+			add("numberOfDecimals", Messages.WollokLauncherOptions_NUMBER_DECIMALS, "decimals", 1)
+			add("printingStrategy", Messages.WollokLauncherOptions_DECIMAL_PRINTING_STRATEGY, "name", 1)
+			add("coercingStrategy", Messages.WollokLauncherOptions_DECIMAL_CONVERSION_STRATEGY, "name", 1)
 			
-			addList("lib", "libraries jars ", "libs", ',')	
-			addList("wf", "wollokFiles ", "files", ' ')	
-
+			addList("lib", Messages.WollokLauncherOptions_JAR_LIBRARIES, "libs", ',')	
+			addList("wf", Messages.WollokLauncherOptions_WOLLOK_FILES, "files", ' ')	
 		]
 	}
 

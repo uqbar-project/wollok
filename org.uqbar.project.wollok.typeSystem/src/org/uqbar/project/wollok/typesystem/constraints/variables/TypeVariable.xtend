@@ -19,10 +19,11 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.variable
 interface ITypeVariable {
 	def EObject getOwner()
 
-	def void beSubtypeOf(TypeVariable variable)
+	def void beSubtypeOf(ITypeVariable variable)
 
-	def void beSupertypeOf(TypeVariable variable)
+	def void beSupertypeOf(ITypeVariable variable)
 
+	def WollokType getType()
 }
 
 class TypeVariable implements ITypeVariable {
@@ -58,10 +59,6 @@ class TypeVariable implements ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static closure(EObject owner, List<ITypeVariable> parameters, ITypeVariable returnType) {
-		new TypeVariable(owner) => [setTypeInfo(new ClosureTypeInfo(parameters, returnType))]
-	}
-
 	def static classParameter(EObject owner, GenericType type, String paramName) {
 		new ClassParameterTypeVariable(owner, type, paramName)
 	}
@@ -72,14 +69,12 @@ class TypeVariable implements ITypeVariable {
 
 	def static dispatch instance(WollokType it) { it }
 
-	def static dispatch instance(GenericType it) {
-		new GenericTypeInstance(it, typeParameterNames.toInvertedMap[synthetic])
-	}
+	def static dispatch instance(GenericType it) { it.instance }
 
 	// ************************************************************************
 	// ** For the TypeSystem implementation
 	// ************************************************************************
-	def getType() {
+	override getType() {
 		if(typeInfo !== null) typeInfo.getType(this) else WollokType.WAny
 	}
 
@@ -99,7 +94,7 @@ class TypeVariable implements ITypeVariable {
 		if (owner.isCoreObject)
 			throw new RuntimeException('''Tried to add a type error to a core object: «owner.debugInfoInContext»''')
 
-		log.info('''Error reported in «this.fullDescription»''')
+		log.info('''«exception.message» ==> reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
 	
@@ -127,12 +122,20 @@ class TypeVariable implements ITypeVariable {
 	// ************************************************************************
 	// ** Adding constraints
 	// ************************************************************************
-	override beSupertypeOf(TypeVariable subtype) {
+	def dispatch beSupertypeOf(ITypeVariable subtype) {
+		subtype.beSubtypeOf(this)
+	}
+
+	def dispatch beSupertypeOf(TypeVariable subtype) {
 		this.addSubtype(subtype)
 		subtype.addSupertype(this)
 	}
 
-	override beSubtypeOf(TypeVariable supertype) {
+	def dispatch beSubtypeOf(ITypeVariable supertype) {
+		supertype.beSupertypeOf(this)
+	}
+
+	def dispatch beSubtypeOf(TypeVariable supertype) {
 		this.addSupertype(supertype)
 		supertype.addSubtype(this)
 	}
@@ -201,12 +204,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
-		if (typeInfo === null) {
-			if (isClosureMessage)
-				setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
-			else
-				setTypeInfo(new GenericTypeInfo())
-		}
+		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.messages.add(it)
 	}
 

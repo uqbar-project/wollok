@@ -66,7 +66,7 @@ abstract class AbstractWollokLib implements WollokLib {
 			}
 			exportedObjects
 		} catch (RuntimeException e) {
-			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resource + "]"   , e)
+			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resource + "]", e)
 		}
 	}
 	

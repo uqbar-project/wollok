@@ -5,6 +5,7 @@ import java.util.Map
 import java.util.Map.Entry
 import java.util.TreeMap
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -23,17 +24,17 @@ class WDictionary implements JavaWrapper<Map> {
 		wrapped = new TreeMap<WollokObject,WollokObject>(new WollokObjectComparator)
 	}
 	
-	def clear() { 
+	def void clear() { 
 		wrapped.clear
 	}
-	
+
 	def basicGet(WollokObject key) { 
 		wrapped.get(key)
 	}
 	
-	def put(WollokObject key, WollokObject value) {
-		if (key == null) throw new IllegalArgumentException("You cannot put a null key in a Dictionary") 
-		if (value == null) throw new IllegalArgumentException("You cannot put a null value in a Dictionary")
+	def void put(WollokObject key, WollokObject value) {
+		if (key === null) throw new IllegalArgumentException(Messages.WollokDictionary_CANNOT_PUT_NULL_KEY) 
+		if (value === null) throw new IllegalArgumentException(Messages.WollokDictionary_CANNOT_PUT_NULL_VALUE)
 		wrapped.put(key, value)
 	}
 
@@ -54,7 +55,7 @@ class WDictionary implements JavaWrapper<Map> {
 	}
 	
 	def void forEach(WollokObject proc) {
-		wrapped.entrySet.forEach [ Entry entry |
+		wrapped.entrySet.sortBy [ toString ].forEach [ Entry entry |
 			val c = proc.asClosure
 			c.doApply(entry.key.javaToWollok, entry.value.javaToWollok)
 		]

@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.typesystem.preferences
 
-import org.eclipse.core.resources.IProject
+import org.eclipse.emf.ecore.EObject
 
 interface WollokTypeSystemPreference {
-	def boolean isTypeSystemEnabled(IProject project)
-	def String getSelectedTypeSystem(IProject project)
+	def boolean isTypeSystemEnabled(EObject file)
+	def String getSelectedTypeSystem(EObject file)
 }

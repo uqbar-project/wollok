@@ -97,7 +97,7 @@ class WString extends AbstractJavaWrapper<String> {
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		val wString = other.getNativeObject(WString)
-		wString != null && wrapped == wString.wrapped
+		wString !== null && wrapped == wString.wrapped
 	}
 	
 	def replace(String expression, String replacement) {
@@ -110,7 +110,7 @@ class WString extends AbstractJavaWrapper<String> {
 
 	def asWString(WollokObject it) { 
 		val wString = it.getNativeObject(WString)
-		if (wString == null) throw new WollokRuntimeException(NLS.bind(Messages.WollokConversion_STRING_CONVERSION_FAILED, it))
+		if (wString === null) throw new WollokRuntimeException(NLS.bind(Messages.WollokConversion_STRING_CONVERSION_FAILED, it))
 		wString
 	}
 	

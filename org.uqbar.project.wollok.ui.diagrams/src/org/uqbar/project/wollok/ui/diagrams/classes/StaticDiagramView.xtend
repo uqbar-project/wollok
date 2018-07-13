@@ -584,7 +584,7 @@ class StaticDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	/* Static Diagram Configuration Notifications */
 	override update(Observable o, Object event) {
-		if (event?.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
+		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
 			this.refresh
 		}
 	}

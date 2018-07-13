@@ -50,16 +50,20 @@ class WollokDSK {
 	
 	public static val POSITION = "wollok.lib.Position"
 	public static val ASSERTION_EXCEPTION_FQN = "wollok.lib.AssertionException"
+	public static val STRING_PRINTER = "wollok.lib.StringPrinter"
 	
 	public static val MESSAGE_NOT_UNDERSTOOD_EXCEPTION = "wollok.lang.MessageNotUnderstoodException"
 	public static val STACK_OVERFLOW_EXCEPTION = "wollok.lang.StackOverflowException"
 
+	public static val KEY = "wollok.game.Key"
 	// ************************************************************************
 	// ** SDK Objects
 	// ************************************************************************
 
 	public static val CONSOLE = "wollok.lib.console"
 	public static val ASSERT = "wollok.lib.assert"
+	public static val GAME = "wollok.lib.game"
+	public static val KEYBOARD = "wollok.game.keyboard"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)
