@@ -19,6 +19,7 @@ abstract class NumberCoercingStrategy {
 			println(NLS.bind(Messages.WollokConversion_WARNING_NUMBER_VALUE_INTEGER, value, result))
 		}
 	}
+	
 }
 
 class TruncateDecimalsCoercingStrategy extends NumberCoercingStrategy {

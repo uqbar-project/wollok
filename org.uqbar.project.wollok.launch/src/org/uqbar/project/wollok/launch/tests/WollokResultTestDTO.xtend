@@ -46,7 +46,7 @@ class WollokResultTestDTO implements Serializable {
 	static def WollokResultTestDTO error(String _testName, String _message, List<StackTraceElementDTO> _stackTrace, int _lineNumber, String _resource) {
 		return new WollokResultTestDTO => [
 			testName = _testName
-			message = _message
+			message = _message	
 			stackTrace = _stackTrace
 			errorLineNumber = _lineNumber
 			resource = _resource
@@ -55,7 +55,7 @@ class WollokResultTestDTO implements Serializable {
 	}
 	
 	def getStackTraceFiltered() {
-		stackTrace.filter [ it.contextDescription !== null && !it.contextDescription.equals("")]
+		stackTrace.filter [ it.contextDescription !== null ].toList
 	}
 	
 }

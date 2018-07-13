@@ -6,6 +6,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
@@ -21,6 +22,7 @@ interface ITypeVariable {
 	def void beSubtypeOf(TypeVariable variable)
 
 	def void beSupertypeOf(TypeVariable variable)
+
 }
 
 class TypeVariable implements ITypeVariable {
@@ -60,28 +62,30 @@ class TypeVariable implements ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new ClosureTypeInfo(parameters, returnType))]
 	}
 
-	def static generic(EObject owner, List<String> typeParameterNames) {
-		new TypeVariable(owner) => [setTypeInfo(new GenericTypeInfo(typeParameterNames.toInvertedMap[synthetic]))]
-	}
-
-	def static classParameter(EObject owner, String paramName) {
-		new ClassParameterTypeVariable(owner, paramName)
+	def static classParameter(EObject owner, GenericType type, String paramName) {
+		new ClassParameterTypeVariable(owner, type, paramName)
 	}
 
 	def static synthetic() {
 		simple(null)
 	}
 
-// ************************************************************************
-// ** For the TypeSystem implementation
-// ************************************************************************
-	def getType() {
-		if (typeInfo !== null) typeInfo.getType(this) else WollokType.WAny
+	def static dispatch instance(WollokType it) { it }
+
+	def static dispatch instance(GenericType it) {
+		new GenericTypeInstance(it, typeParameterNames.toInvertedMap[synthetic])
 	}
 
-// ************************************************************************
-// ** Errors
-// ************************************************************************
+	// ************************************************************************
+	// ** For the TypeSystem implementation
+	// ************************************************************************
+	def getType() {
+		if(typeInfo !== null) typeInfo.getType(this) else WollokType.WAny
+	}
+
+	// ************************************************************************
+	// ** Errors
+	// ************************************************************************
 	/**
 	 * Informs if an error has been detected for this variable.
 	 * In the case that this variable has no type info, this means it has not yet been used, 
@@ -92,20 +96,20 @@ class TypeVariable implements ITypeVariable {
 	}
 
 	def addError(TypeSystemException exception) {
-		if (owner.isCoreObject) 
+		if (owner.isCoreObject)
 			throw new RuntimeException('''Tried to add a type error to a core object: «owner.debugInfoInContext»''')
-		
+
 		log.info('''Error reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
-
-	def reportErrors(Resource resource, ConfigurableDslValidator validator) {
+	
+	// REVIEW Is it necessary to pass 'user'?
+	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
 			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
 			try {
-				validator.report(message, ownerIn(resource))
-			}
-			catch (IllegalArgumentException exception) {
+				validator.report(message, owner)
+			} catch (IllegalArgumentException exception) {
 				// We probably reported a type error to a core object, which is not possible
 				log.error(exception.message, exception)
 			}
@@ -138,7 +142,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSubtype(TypeVariable subtype) {
 		this.subtypes.add(subtype)
-		if (typeInfo !== null) typeInfo.subtypeAdded()
+		if(typeInfo !== null) typeInfo.subtypeAdded()
 	}
 
 	/**
@@ -146,7 +150,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
-		if (typeInfo !== null) typeInfo.supertypeAdded()
+		if(typeInfo !== null) typeInfo.supertypeAdded()
 	}
 
 	def beVoid() {
@@ -183,12 +187,12 @@ class TypeVariable implements ITypeVariable {
 	 * @throws TypeSystemException if the new minType is a type error.
 	 */
 	def addMinType(WollokType type) {
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
+		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.addMinType(type)
 	}
 
 	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		if (typeInfo === null) setTypeInfo(new SimpleTypeInfo())
+		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
 	}
 
@@ -198,9 +202,11 @@ class TypeVariable implements ITypeVariable {
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
 		if (typeInfo === null) {
-			if (isClosureMessage)	setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
-			else					setTypeInfo(new SimpleTypeInfo())
-		} 
+			if (isClosureMessage)
+				setTypeInfo(new ClosureTypeInfo(arguments.map[it as ITypeVariable], returnType))
+			else
+				setTypeInfo(new GenericTypeInfo())
+		}
 		typeInfo.messages.add(it)
 	}
 
@@ -242,13 +248,14 @@ class TypeVariable implements ITypeVariable {
 	'''
 
 	def descriptionForReport() { description(false) }
+
 	def fullDescription() { description(true) }
 
 	def allSupertypes() {
 		newHashSet => [ result |
 			typeInfo.users.forEach [ unified |
 				unified.supertypes.forEach [ supertype |
-					if (!this.unifiedWith(supertype)) result.add(supertype)
+					if(!this.unifiedWith(supertype)) result.add(supertype)
 				]
 			]
 		]

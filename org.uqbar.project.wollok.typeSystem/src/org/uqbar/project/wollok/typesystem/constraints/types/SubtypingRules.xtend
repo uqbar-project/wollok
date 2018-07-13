@@ -4,9 +4,13 @@ import org.uqbar.project.wollok.typesystem.AnyType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.StructuralType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+/**
+ * @author npassserini
+ */
 class SubtypingRules {
 	
 	/** Default behavior: any type is supertype of itself */
@@ -29,9 +33,16 @@ class SubtypingRules {
 		throw new UnsupportedOperationException("Structural types are not supported yet. ")
 	}
 
-	/** TODO Structural types */
 	static def dispatch isSuperTypeOf(ClassBasedWollokType supertype, ClassBasedWollokType subtype) {
 		supertype.clazz.isSuperTypeOf(subtype.clazz)
+	}
+
+	static def dispatch isSuperTypeOf(ClassBasedWollokType supertype, GenericTypeInstance subtype) {
+		supertype.clazz.isSuperTypeOf(subtype.rawType.clazz)
+	}
+
+	static def dispatch isSuperTypeOf(GenericTypeInstance supertype, ClassBasedWollokType subtype) {
+		supertype.rawType.clazz.isSuperTypeOf(subtype.clazz)
 	}
 
 	/** TODO Structural types */

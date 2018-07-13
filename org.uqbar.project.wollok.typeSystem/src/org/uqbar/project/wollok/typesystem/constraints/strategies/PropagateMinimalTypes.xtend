@@ -4,7 +4,7 @@ import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
-import org.uqbar.project.wollok.typesystem.constraints.variables.SimpleTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
@@ -14,7 +14,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
-	def dispatch analiseVariable(TypeVariable tvar, SimpleTypeInfo typeInfo) {
+	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo typeInfo) {
 		val supertypes = tvar.allSupertypes
 		typeInfo.minTypesDo(tvar) [
 			if (state == Pending) {

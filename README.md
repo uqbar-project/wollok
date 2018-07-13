@@ -1,7 +1,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/77e46a36db0e475a81d674f2c72aff1a)](https://www.codacy.com/app/javier-fernandes/wollok?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uqbar-project/wollok&amp;utm_campaign=Badge_Grade)
 [![Travis](https://travis-ci.org/uqbar-project/wollok.svg?branch=master)](https://travis-ci.org/uqbar-project/wollok?branch=master)
 [![Coverage Status](https://coveralls.io/repos/uqbar-project/wollok/badge.svg?branch=master)](https://coveralls.io/r/uqbar-project/wollok?branch=master)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/uqbar-project/wollok?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <h1>
 <img src="https://github.com/uqbar-project/wollok/blob/master/org.uqbar.project.wollok.ui/icons/wollok-logo.iconset/icon_64x64.png?raw=true"/> Wollok

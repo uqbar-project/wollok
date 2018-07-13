@@ -12,8 +12,8 @@ class WollokComparisonFailure extends ComparisonFailure {
 	val WollokObject wollokException
 
 	new(WollokProgramExceptionWrapper e) {
-		super(e.wollokMessage, e.wollokException.call("getExpected").wollokToJava(String) as String,
-			e.wollokException.call("getActual").wollokToJava(String) as String)
+		super(e.wollokMessage, e.wollokException.call("expected").wollokToJava(String) as String,
+			e.wollokException.call("actual").wollokToJava(String) as String)
 		wollokException = e.wollokException
 		originalMessage = e.wollokMessage
 		this.fillInStackTrace

@@ -314,7 +314,7 @@ class StringTestCase extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void equalsIgnoreCaseNull() {
 		'''
-		assert.throwsExceptionWithMessage("null does not understand toUpperCase()", { "hola".equalsIgnoreCase(null) })
+		assert.throwsExceptionWithMessage("Reference aString is not initialized", { "hola".equalsIgnoreCase(null) })
 		'''.test
 	}
 	

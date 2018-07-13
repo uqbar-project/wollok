@@ -10,7 +10,6 @@ class WImage extends Image {
 	
 	new(WollokObject wObject) {
 		this.object = wObject
-		this.currentPath = this.getPath()
 	}
 	
 	override getPath() { 

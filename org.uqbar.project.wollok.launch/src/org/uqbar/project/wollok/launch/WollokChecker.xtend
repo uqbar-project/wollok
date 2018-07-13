@@ -97,7 +97,7 @@ class WollokChecker {
 	def launch(String fileName, WollokLauncherParameters parameters) {
 		val mainFile = new File(fileName)
 		log.debug("Parsing program...")
-		doSomething(mainFile.parse, injector, mainFile, parameters)
+		doSomething(mainFile.parse(parameters), injector, mainFile, parameters)
 	}
 	
 	def void doSomething(List<String> fileNames, Injector injector, WollokLauncherParameters parameters) {
@@ -108,25 +108,26 @@ class WollokChecker {
 		// by default the checker does nothing
 	}
 
-	def parse(File mainFile) {
-		mainFile.parse(true)
+	def parse(File mainFile, WollokLauncherParameters parameters) {
+		mainFile.parse(true, parameters)
 	}
 
-	def parse(File mainFile, boolean validate) {
+	def parse(File mainFile, boolean validate, WollokLauncherParameters parameters) {
 		val resourceSet = injector.getInstance(XtextResourceSet)
 		this.createClassPath(mainFile, resourceSet)
 
 		val resource = resourceSet.getResource(URI.createURI(mainFile.toURI.toString), false)
 		resource.load(#{})
 
-		if (validate) 
-			validate(injector, resource)
+		if (validate) {
+			validate(injector, resource, parameters)
+		}
 
 		resource.contents.get(0) as WFile
 	}
 
-	def parse(List<File> mainFiles) {
-		mainFiles.map [ mainFile | mainFile.parse as EObject ]
+	def parse(List<File> mainFiles, WollokLauncherParameters parameters) {
+		mainFiles.map [ mainFile | mainFile.parse(parameters) as EObject ]
 	}
 
 	def createClassPath(File file, ResourceSet resourceSet) {
@@ -145,9 +146,13 @@ class WollokChecker {
 		folder.listFiles[directory].forEach[collectWollokFiles(it, classpath)]
 	}
 
-	def validate(Injector injector, Resource resource) {
+	def validate(Injector injector, Resource resource, WollokLauncherParameters parameters) {
 		val handler = injector.getInstance(WollokLauncherIssueHandler)
-		this.validate(injector, resource, [handler.handleIssue(it)], [handler.finished; System.exit(-1)])
+		this.validate(injector, resource, [handler.handleIssue(it)], blockErrorHandler(handler, parameters))
+	}
+	
+	def Procedure1<Iterable<Issue>> blockErrorHandler(WollokLauncherIssueHandler handler, WollokLauncherParameters parameters) {
+		[handler.finished]
 	}
 
 	def validate(Injector injector, Resource resource, Procedure1<? super Issue> issueHandler,
@@ -168,7 +173,7 @@ class WollokChecker {
 		// goes up all the way (I wanted to search for something like ".project" file but
 		// the launcher is executing this interpreter with a relative path to the file, like "src/blah/myfile.wlk"
 		// so I cannot make it up to the project folder :(
-		if(folder.parentFile == null) folder else findProjectRoot(folder.parentFile)
+		if(folder.parentFile === null) folder else findProjectRoot(folder.parentFile)
 	}
 
 }

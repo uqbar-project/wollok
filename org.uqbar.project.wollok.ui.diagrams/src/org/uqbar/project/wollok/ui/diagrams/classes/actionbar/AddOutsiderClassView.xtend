@@ -119,13 +119,16 @@ class AddOutsiderClassView extends Dialog {
 			])
 		]
 		treeWollokElements => [
-			val mapMethodContainers = project.mapMethodContainers
+			val mapMethodContainers = project.mapMethodContainers(configuration.platformFile)
 			// Show wollok files
 			// - that have any valid method container
 			// - avoiding current resource of static diagram
-			val wollokFiles = project.allWollokFiles.filter [
-				!mapMethodContainers.get(it).isEmpty && it !== configuration.resource.convertToEclipseURI
-			].toList
+			var List<URI> wollokFiles = newArrayList
+			if (!configuration.platformFile) {
+				wollokFiles = project.allWollokFiles.filter [
+					!mapMethodContainers.get(it).isEmpty && it !== configuration.resource.convertToEclipseURI
+				].toList
+			}
 			control.layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 0) => [
 				heightHint = 350
 				widthHint = 250

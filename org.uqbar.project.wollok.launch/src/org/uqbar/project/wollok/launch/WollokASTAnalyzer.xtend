@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
  */
 class WollokASTAnalyzer extends WollokChecker {
 
-	override validate(Injector injector, Resource resource) {}
+	override validate(Injector injector, Resource resource, WollokLauncherParameters parameters) {}
 	
 	override doSomething(WFile file, Injector injector, File mainFile, WollokLauncherParameters parameters) {
 		println(process(file))

@@ -24,13 +24,16 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 		clazz.getOwnConstructor(parameterTypes.size)
 	}	
 	
-	override acceptAssignment(WollokType other) {
-		val value = this == other ||
+	override acceptsAssignment(WollokType other) {
+		this == other ||
 			// hackeo por ahora. Esto no permite compatibilidad entre classes y structural types
 			(other instanceof ClassBasedWollokType
 				&& clazz.isSuperTypeOf((other as ClassBasedWollokType).clazz)
 			)
-		if (!value)
+	}
+
+	override acceptAssignment(WollokType other) {
+		if (!acceptsAssignment(other))
 			throw new TypeSystemException('''<<«other»>> is not a valid substitute for <<«this»>>''')	
 	}
 	

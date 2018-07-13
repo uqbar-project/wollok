@@ -171,5 +171,25 @@ class ListTestCase extends CollectionTestCase {
 		assert.throwsExceptionWithMessage("-1.00000 must be a positive integer value", { numbers.get(-1) })
 		'''.test
 	}		
+
+	@Test
+	def void elementsToString() {
+		'''
+		object a {
+			override method printString() = "es un a"
+		}
+		
+		class B {
+			override method printString() = "cierto que era un b!"
+		}
+		
+		program c {
+			assert.throwsExceptionWithMessage(
+				"Expected [[es un a]] but found [[cierto que era un b!]]", 
+				{ assert.equals([ a ], [ new B() ]) }
+			)
+		}
+		'''.interpretPropagatingErrors
+	}	
 		
 }

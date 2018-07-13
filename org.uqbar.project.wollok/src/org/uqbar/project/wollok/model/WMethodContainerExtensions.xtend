@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.core.resources.IProject
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.common.util.URI
@@ -205,8 +206,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
-	def static getVariableDeclaration(WMethodContainer c, String _name) {
-		c.variableDeclarations.findFirst [ variable?.name.equals(_name) ]
+	/**
+	 * If the variable is not found in the method container, look up the hierarchy until it is found.
+	 * TODO: Consider mixins.
+	 */
+	def static WVariableDeclaration getVariableDeclaration(WMethodContainer it, String name) {
+		getOwnVariableDeclaration(name) ?: parent?.getVariableDeclaration(name)
+	}
+	
+	/**
+	 * Looks for "own" variables, i.e. not inherited ones.
+	 */
+	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
+		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
@@ -421,6 +433,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nextValue
 	}
 
+	def static dispatch memberTarget(WFeatureCall call) { null }
+	def static dispatch memberTarget(WMemberFeatureCall call) { call.memberCallTarget }
+	
 	def static dispatch feature(EObject o) { null }
 	def static dispatch feature(WMemberFeatureCall call) { call.feature }
 	def static dispatch feature(WSuperInvocation call) { call.method.name }
@@ -594,7 +609,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			.toList
 	}
 
-	def static mapMethodContainers(IProject project) {
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project) {
 		val result = new HashMap<URI, List<WMethodContainer>>
 		project.allWollokFiles.forEach [ file | result.put(file, newArrayList)]
 		project
@@ -606,6 +621,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 				result.put(uri, methodContainers)
 			]
 		result
+	}
+
+	def static Map<URI, List<WMethodContainer>> mapMethodContainers(IProject project, boolean platformFile) {
+		if (platformFile) return newHashMap
+		project.mapMethodContainers
 	}
 	
 	def static getMethodContainers(URI uri) {

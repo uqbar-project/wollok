@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.ui.wizard.abstractWizards;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -208,14 +207,10 @@ public abstract class AbstractNewWollokFileWizardPage extends WizardPage {
 				return;
 			}
 		}
-		
-		
-		String fullPathFile = container.getRawLocationURI().getPath() + "/" + fileName;
-		try {
-			fullPathFile = URLEncoder.encode(fullPathFile, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		}
+
+		String fullPathFile = container.getLocation().toOSString() + File.separator + fileName;
 		java.nio.file.Path path = Paths.get(fullPathFile);
+		
 		if (Files.exists(path)) {
 			updateStatus(Messages.AbstractNewWollokFileWizardPage_fileNameAlreadyExists);
 			return;

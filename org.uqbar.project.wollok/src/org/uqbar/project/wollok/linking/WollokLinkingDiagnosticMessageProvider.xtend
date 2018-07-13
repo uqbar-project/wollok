@@ -9,7 +9,7 @@ import org.eclipse.xtext.linking.impl.LinkingDiagnosticMessageProvider
 
 import static org.uqbar.project.wollok.Messages.*
 
-import static extension org.uqbar.project.wollok.WollokModelUtils.*
+import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
 
 /**
  * Overrides the default implementation to i18nize messages
@@ -24,7 +24,7 @@ class WollokLinkingDiagnosticMessageProvider extends LinkingDiagnosticMessagePro
 		val referenceType = context.reference.EReferenceType
 		var linkText = try context.linkText catch (IllegalNodeException e) e.node.text
 		
-		val msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.humanReadableModelTypeName + " '" + linkText + "'."
+		val msg = LINKING_COULD_NOT_RESOLVE_REFERENCE + referenceType.modelTypeName + " '" + linkText + "'."
 		new DiagnosticMessage(msg, Severity.ERROR, Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	

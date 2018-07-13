@@ -2,15 +2,16 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import com.google.inject.Inject
 import java.util.List
+import java.util.Map
 import java.util.Set
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
 import org.uqbar.project.wollok.typesystem.TypeProvider
@@ -51,6 +52,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	@Accessors
 	List<EObject> programs = newArrayList
+
+	/**
+	 * The collection of concrete types that are known to be generic, indexed by its FQN.
+	 */
+	Map<String, GenericType> genericTypes = newHashMap
 
 	ConstraintGenerator constraintGenerator
 
@@ -106,7 +112,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	override inferTypes() {
 		// These constraints have to be created after all files have been `analise`d
-		constraintGenerator.addInheritanceConstraints
+		constraintGenerator.addCrossReferenceConstraints
 
 		var currentStage = 0
 
@@ -156,12 +162,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Error reporting
 	// ************************************************************************
-	override reportErrors(Resource resource, ConfigurableDslValidator validator) {
-		// Registry will be null if ts is not yet initialized.
-		registry?.allVariables?.forEach [
-			if (it.owner.eResource.URI == resource.URI)
-				it.reportErrors(resource, validator)
-		]
+	override reportErrors(ConfigurableDslValidator validator) {
+		allVariables.forEach[it.reportErrors(validator)]
 	}
 
 	// ************************************************************************
@@ -184,23 +186,45 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	def classType(WClass clazz) {
-		new ClassBasedWollokType(clazz, this)
+		genericTypes.get(clazz.fqn) ?: new ClassBasedWollokType(clazz, this)
+	}
+
+	def genericType(WClass clazz, String... typeParameterNames) {
+		genericTypes.get(clazz.fqn) ?: (
+			new GenericType(clazz, this, typeParameterNames) => [
+				genericTypes.put(clazz.fqn, it)
+			]
+		)
 	}
 
 	override objectType(EObject context, String objectFQN) {
 		finder.getCachedObject(context, objectFQN).objectType
 	}
 
+	/**
+	 * Before constructing a class type, check if the provided FQN is known to be a generic type.
+	 * If so, return the known generic type.
+	 * Otherwise create a simple class type. 
+	 */
 	override classType(EObject context, String classFQN) {
-		finder.getCachedClass(context, classFQN).classType
+		genericTypes.get(classFQN) ?: finder.getCachedClass(context, classFQN).classType
+	}
+
+	/**
+	 * Build a generic type and save it, so that we know which concrete types are known to be generic.
+	 */
+	override genericType(EObject context, String classFQN, String... typeParameterNames) {
+		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
+			genericTypes.put(classFQN, it)
+		]		
 	}
 
 	def getAllTypes() {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(allCoreClasses.map[new ClassBasedWollokType(it, this)])
-			allTypes.addAll(allCoreWKOs.map[new NamedObjectWollokType(it, this)])
+			allTypes.addAll(allCoreClasses.map[classType(fqn)])
+			allTypes.addAll(allCoreWKOs.map[objectType])
 		}
 
 		allTypes

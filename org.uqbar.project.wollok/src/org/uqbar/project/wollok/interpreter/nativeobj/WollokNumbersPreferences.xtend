@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.interpreter.nativeobj
 
 import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+
 import static org.uqbar.project.wollok.Messages.*
 
 class WollokNumbersPreferences {
@@ -51,5 +52,5 @@ class WollokNumbersPreferences {
 		
 		numberPrintingStrategy = value
 	}
-
+	
 }

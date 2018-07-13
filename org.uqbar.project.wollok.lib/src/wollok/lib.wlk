@@ -23,7 +23,7 @@ object console {
 }
 
 /**
- * Exception to handle other values in assert.trowException*
+ * Exception to handle other values in assert.throwException*
  */
 class OtherValueExpectedException inherits wollok.lang.Exception {
 	constructor(_message) = super(_message)	
@@ -32,8 +32,8 @@ class OtherValueExpectedException inherits wollok.lang.Exception {
 
 class AssertionException inherits Exception {
 
-	var expected = null
-	var actual = null
+	const property expected = null
+	const property actual = null
 
 	constructor(message) = super(message)
 	
@@ -44,11 +44,6 @@ class AssertionException inherits Exception {
 		actual = _actual
 	}
 	
-	/** Answers the expected value, if present */
-	method getExpected() = expected
-	
-	/** Answers the actual value, if present */
-	method getActual() = actual
 }
 
 
@@ -98,7 +93,7 @@ object assert {
 	 *
 	 * Example:
 	 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
-	 *		assert.throwsException("hola".length() ) ==> throws an exception "Block should have failed"
+	 *		assert.throwsException({ "hola".length() }) ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
 		var failed = false
@@ -107,7 +102,7 @@ object assert {
 		} catch e {
 			failed = true
 		}
-		if (!failed) throw new AssertionException("Block should have failed")
+		if (!failed) throw new AssertionException("Block " + block + " should have failed")
 	}
 	
 	/** 
@@ -335,9 +330,14 @@ object game {
 	method height() native
 
 	/**
-	 * Sets cells image.
+	 * Sets cells background image.
 	 */			
 	method ground(image) native
+	
+	/**
+	 * Sets full background image.
+	 */			
+	method boardGround(image) native
 	
 	/** 
 	* @private
@@ -346,13 +346,13 @@ object game {
 }
 
 class Position {
-	var property x = 0
-	var property y = 0
+	var property x
+	var property y
 	
 	/**
 	 * Returns the position at origin: (0,0).
 	 */		
-	constructor() = self(0,0)
+	constructor() = self(0, 0)
 			
 	/**
 	 * Returns a position with given x and y coordinates.
@@ -382,6 +382,26 @@ class Position {
 	 */		
 	method moveDown(n) { y -= n }
 	
+	/**
+	 * Returns a new Position n steps right from this one.
+	 */		
+	method right(n) = new Position(x + n, y)
+	
+	/**
+	 * Returns a new Position n steps left from this one.
+	 */		
+	method left(n) = new Position(x - n, y)
+	
+	/**
+	 * Returns a new Position n steps up from this one.
+	 */		
+	method up(n) = new Position(x, y + n)
+	
+	/**
+	 * Returns a new Position, n steps down from this one.
+	 */		
+	method down(n) = new Position(x, y - n) 
+
 	/**
 	 * Adds an object to the board for drawing it in self.
 	 */
