@@ -4,12 +4,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
-		<groupId>org.uqbar-project</groupId>
-		<artifactId>wollok-parent</artifactId>
-		<version>1.6.6</version>
-	</parent>
+  <parent>
+    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+    <groupId>org.uqbar-project</groupId>
+    <artifactId>wollok-parent</artifactId>
+    <version>1.6.6</version>
+  </parent>
 
 	<artifactId>org.uqbar.project.xinterpreter</artifactId>
 	<packaging>eclipse-plugin</packaging>
