@@ -100,7 +100,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 
 		Collection >> "isEmpty" === #[] => Boolean
-		Collection >> "contains" === #[ELEMENT] => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
@@ -121,7 +120,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List + List => List
 		List >> "equals" === #[Any] => Boolean;
 		List >> "add" === #[ELEMENT] => Void
-		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
 		List >> "size" === #[] => Number
 		List >> "drop" === #[Number] => List
@@ -130,6 +128,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 
 		#[Collection, List, Set, Range].forEach [
 			it >> "find" === #[closure(#[ELEMENT], Boolean)] => ELEMENT;
+			it >> "contains" === #[ELEMENT] => Boolean
 		]
 
 		Range >> "sum" === #[closure(#[Number], Number)] => Number;
@@ -140,7 +139,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Set >> "equals" === #[Any] => Boolean;
 		Set + Set => Set;
 		Set >> "add" === #[ELEMENT] => Void
-		Set >> "contains" === #[ELEMENT] => Boolean
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 
 		Date.constructor(Number, Number, Number)
