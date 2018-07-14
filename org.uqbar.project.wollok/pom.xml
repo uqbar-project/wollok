@@ -4,12 +4,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
-    <groupId>org.uqbar-project</groupId>
-    <artifactId>wollok-parent</artifactId>
-    <version>1.6.6</version>
-  </parent>
+	<parent>
+		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+		<groupId>org.uqbar-project</groupId>
+		<artifactId>wollok-parent</artifactId>
+		<version>1.6.6</version>
+	</parent>
 
 	<artifactId>org.uqbar.project.wollok</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -30,19 +30,27 @@
 							<filesets combine.children="append">
 								<fileset>
 									<directory>${basedir}/src-gen/</directory>
-									<excludes><exclude>.gitignore</exclude></excludes>
+									<excludes>
+										<exclude>.gitignore</exclude>
+									</excludes>
 								</fileset>
 								<fileset>
 									<directory>${basedir}/model/generated/</directory>
-									<excludes><exclude>.gitignore</exclude></excludes>
+									<excludes>
+										<exclude>.gitignore</exclude>
+									</excludes>
 								</fileset>
 								<fileset>
 									<directory>${basedir}/../${project.artifactId}.ui/src-gen/</directory>
-									<excludes><exclude>.gitignore</exclude></excludes>
+									<excludes>
+										<exclude>.gitignore</exclude>
+									</excludes>
 								</fileset>
 								<fileset>
 									<directory>${basedir}/../${project.artifactId}.tests/src-gen/</directory>
-									<excludes><exclude>.gitignore</exclude></excludes>
+									<excludes>
+										<exclude>.gitignore</exclude>
+									</excludes>
 								</fileset>
 							</filesets>
 						</configuration>
@@ -78,41 +86,51 @@
 					</arguments>
 				</configuration>
 				<dependencies>
-				    <dependency>
-				      <groupId>org.eclipse.emf</groupId>
-				      <artifactId>org.eclipse.emf.mwe2.launch</artifactId>
-				      <version>2.9.0.201605261059</version>
-				    </dependency>
-				    <dependency>
-				      <groupId>org.eclipse.xtext</groupId>
-				      <artifactId>org.eclipse.xtext.common.types</artifactId>
-				      <version>${xtext.version}</version>
-				    </dependency>
-				    <dependency>
-				      <groupId>org.eclipse.xtext</groupId>
-				      <artifactId>org.eclipse.xtext.xtext.generator</artifactId>
-				      <version>${xtext.version}</version>
-				    </dependency>
-				    <dependency>
-				      <groupId>org.eclipse.xtext</groupId>
-				      <artifactId>org.eclipse.xtext.xbase</artifactId>
-				      <version>${xtext.version}</version>
-				    </dependency>
-				    <dependency>
-				      <groupId>org.eclipse.xtext</groupId>
-				      <artifactId>xtext-antlr-generator</artifactId>
-				      <version>[2.1.1, 3)</version>
-				    </dependency>
-				  </dependencies>				
+					<dependency>
+						<groupId>org.eclipse.emf</groupId>
+						<artifactId>org.eclipse.emf.mwe2.launch</artifactId>
+						<version>2.9.0.201605261059</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.common.types</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.xtext.generator</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.xbase</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>xtext-antlr-generator</artifactId>
+						<version>[2.1.1, 3)</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 				<dependencies>
 					<dependency>
-					    <groupId>org.eclipse.platform</groupId>
-					    <artifactId>org.eclipse.equinox.common</artifactId>
-					    <version>3.10.0</version>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.core</artifactId>
+						<version>3.12.2</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.core.runtime</artifactId>
+						<version>3.12.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.equinox.common</artifactId>
+						<version>3.8.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>

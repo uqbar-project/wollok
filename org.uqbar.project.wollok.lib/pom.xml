@@ -23,11 +23,21 @@
 				<artifactId>xtend-maven-plugin</artifactId>
 				<dependencies>
 					<dependency>
-					    <groupId>org.eclipse.platform</groupId>
-					    <artifactId>org.eclipse.equinox.common</artifactId>
-					    <version>3.10.0</version>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.core</artifactId>
+						<version>3.12.2</version>
 					</dependency>
-				</dependencies>				
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.core.runtime</artifactId>
+						<version>3.12.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.equinox.common</artifactId>
+						<version>3.8.0</version>
+					</dependency>
+				</dependencies>					
 			</plugin>
 		</plugins>
 		<pluginManagement>
