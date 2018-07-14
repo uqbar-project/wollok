@@ -77,7 +77,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
-	def static EObject declaringContainer(WReturnExpression it)	{ 
+	def static EObject declaringContainer(WExpression it)	{ 
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
 	}
 	

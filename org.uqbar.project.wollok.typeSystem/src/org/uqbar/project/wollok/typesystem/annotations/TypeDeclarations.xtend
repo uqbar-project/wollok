@@ -131,6 +131,8 @@ abstract class TypeDeclarations {
 
 	def Range() { classTypeAnnotation(RANGE) }
 
+	def Dictionary() { genericTypeAnnotation(DICTIONARY, GenericTypeInfo.KEY, GenericTypeInfo.VALUE) }
+
 	def Position() { classTypeAnnotation(POSITION) }
 	
 	def Key() { classTypeAnnotation(KEY) }
@@ -151,9 +153,13 @@ abstract class TypeDeclarations {
 	
 	def keyboard() { objectTypeAnnotation(KEYBOARD) }
 	
-	def KEY() { PairType.param(GenericTypeInfo.KEY) }
+	def PKEY() { PairType.param(GenericTypeInfo.KEY) }
 	
-	def VALUE() { PairType.param(GenericTypeInfo.VALUE) }
+	def PVALUE() { PairType.param(GenericTypeInfo.VALUE) }
+
+	def DKEY() { Dictionary.param(GenericTypeInfo.KEY) }
+	
+	def DVALUE() { Dictionary.param(GenericTypeInfo.VALUE) }
 	
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
 
@@ -176,6 +182,10 @@ abstract class TypeDeclarations {
 		]
 	
 		new GenericTypeAnnotation(types.closureType(context, parameters.length)).instance(typeParameters)
+	}
+	
+	def predicate() {
+		closure(#[ELEMENT], Boolean)
 	}
 	
 	def param(SimpleTypeAnnotation<GenericType> genericType, String paramName) {

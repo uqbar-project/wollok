@@ -220,7 +220,7 @@ class TypeVariable implements ITypeVariable {
 	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************
-	override toString() '''t(«owner.debugInfo»)'''
+	override toString() '''t(«owner.debugInfoInContext»)'''
 
 	def description(boolean full) '''
 		Type information for «owner.debugInfoInContext» {

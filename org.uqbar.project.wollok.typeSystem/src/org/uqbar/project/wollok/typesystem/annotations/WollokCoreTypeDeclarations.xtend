@@ -19,9 +19,9 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "negate" === #[] => Boolean
 		Boolean >> "toString" === #[] => String;
 
-		PairType.constructor(KEY, VALUE)
-		PairType >> "key" === #[] => KEY;
-		PairType >> "value" === #[] => VALUE;
+		PairType.constructor(PKEY, PVALUE)
+		PairType >> "key" === #[] => PKEY;
+		PairType >> "value" === #[] => PVALUE;
 
 		Number + Number => Number
 		Number - Number => Number
@@ -114,7 +114,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		]
 
 		// TODO This should use SELF type.
-		Collection >> "filter" === #[closure(#[ELEMENT], Boolean)] => List.of(ELEMENT);
+		Collection >> "filter" === #[predicate] => List.of(ELEMENT);
 
 		(List == Any) => Boolean
 		List + List => List
@@ -127,10 +127,19 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 
 		#[Collection, List, Set, Range].forEach [
-			it >> "find" === #[closure(#[ELEMENT], Boolean)] => ELEMENT;
+			it >> "find" === #[predicate] => ELEMENT;
 			it >> "contains" === #[ELEMENT] => Boolean
+			it >> "forEach" === #[closure(#[ELEMENT], Void)] => Void
+			it >> "all" === #[predicate] => Boolean
+			it >> "any" === #[predicate] => Boolean
+			it >> "find" === #[predicate] => ELEMENT
+			it >> "findOrDefault" === #[predicate, ELEMENT] => ELEMENT
+			it >> "findOrElse" === #[predicate, closure(#[], ELEMENT)] => ELEMENT
+			it >> "count" === #[predicate] => Number
 		]
 
+		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
+		
 		Range >> "sum" === #[closure(#[Number], Number)] => Number;
 		Range >> "internalToSmartString" === #[Boolean] => String;
 		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);

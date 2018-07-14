@@ -20,7 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
@@ -55,7 +55,7 @@ class WollokModelPrintForDebug {
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
 
 	static def dispatch String debugInfo(WMethodDeclaration it) 
-		'''method «eContainer.name».«name»(«parameters.join(', ')[name]») {«System.identityHashCode(it)»}'''
+		'''method «eContainer.name».«name»(«parameters.join(', ')[name]»)'''
 
 	static def dispatch String debugInfo(WParameter it)
 		'''param «name»'''
@@ -110,5 +110,5 @@ class WollokModelPrintForDebug {
 		'''«debugInfo» from «eContainer.debugInfoInContext»'''
 
 	static def dispatch String debugInfoInContext(WVariableReference it)
-		'''«debugInfo» in «method.debugInfoInContext»'''
+		'''«debugInfo» in «declaringContainer.debugInfoInContext»'''
 }

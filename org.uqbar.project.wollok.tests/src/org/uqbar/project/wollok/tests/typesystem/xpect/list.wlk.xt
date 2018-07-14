@@ -27,20 +27,15 @@ class TestCollection {
 	}
 
 	method basicClosures() {
-		//  XPECT type at filterSome --> Number
+		// XPECT type at filterSome --> Number
 		const filterSome = sample.filter { x => x.even }.first() 		
 
-		//  XPECT type at findSome --> Number
+		// XPECT type at findSome --> Number
 		const findSome = sample.find { x => x.even }
 
-	//	method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
-	//	method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
-	//	method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
-	//	method find(predicate) = self.findOrElse(predicate, { 
-	//	method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
-	//	method findOrElse(predicate, continuation) native
-	//	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
-	//	method sortedBy(closure)
+		// XPECT type at forEach --> {({Number => Void}) => Void}
+		const forEach = { closure => sample.forEach(closure) }
+		
 	}
 	
 	// Requieren comparable	
@@ -48,6 +43,7 @@ class TestCollection {
 	//	method max()		
 	//	method min(closure)
 	//	method min() = self.min({it => it})
+//		method sortedBy(closure)
 
 	//	Requieren sumables
 	//	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
