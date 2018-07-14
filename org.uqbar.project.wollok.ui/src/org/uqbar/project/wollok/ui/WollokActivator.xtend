@@ -27,7 +27,6 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok.ui.messages"
 	public static val POINT_STARTUP_ID = "org.uqbar.project.wollok.ui.startup"
 
-	/* TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
 	@Accessors @Inject
 	IResourceValidator validator
 
@@ -42,7 +41,6 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	public static XtextEditor editor 
 	
-	/* FIN TODAS ESTAS REFERENCIAS HAY QUE PASARLAS AL BUILDER Y PASAR EL BUILDER AL UI */
 	def static WollokActivator getInstance() {
 		return org.uqbar.project.wollok.ui.internal.WollokActivator.getInstance as WollokActivator
 	}

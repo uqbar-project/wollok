@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.typesystem
 
 import java.util.Collection
 import org.apache.log4j.Logger
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.runtime.AssertionFailedException
 import org.eclipse.core.runtime.Platform
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
@@ -55,6 +57,11 @@ class WollokTypeSystemActivator extends Plugin {
 		getTypeSystem(selectedTypeSystem)
 	}
 
+	def getTypeSystem(IProject project) {
+		var selectedTypeSystem = this.getTypeSystemPreferences().getSelectedTypeSystem(project)
+		getTypeSystem(selectedTypeSystem)
+	}
+
 	def getTypeSystem(String typeSystemName) {
 		getTypeSystems().findFirst[name == typeSystemName]
 	}
@@ -74,8 +81,24 @@ class WollokTypeSystemActivator extends Plugin {
 		plugin
 	}
 
-	def isTypeSystemEnabled(EObject file) {
+	def dispatch isTypeSystemEnabled(EObject file) {
 		getTypeSystemPreferences().isTypeSystemEnabled(file)
 	}
 
+	def dispatch isTypeSystemEnabled(IProject project) {
+		try {
+			getTypeSystemPreferences().isTypeSystemEnabled(project)
+		} catch (IllegalStateException e) {
+			// headless launcher doesn't open workspace, so this fails.
+			// but it's ok since the type system won't run in runtime.
+			false
+		} catch (AssertionFailedException e) {
+			false
+		}
+	}
+
+	def ifEnabledFor(IProject project, (TypeSystem) => void actions) {
+		if (project.isTypeSystemEnabled)
+			actions.apply(project.typeSystem)
+	}
 }
