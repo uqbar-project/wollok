@@ -9,7 +9,44 @@ class Calculator {
 	method closuresAndCollections() {
 		const numeros = [1,2,3]
 		
-		//  XPECT type at firstIsEven --> Boolean
-		const firstIsEven = numeros.filter { x => x.even }.first() 		
+		//  XPECT type at filterSome --> Number
+		const filterSome = numeros.filter { x => x.even }.first() 		
+
+		//  XPECT type at findSome --> Number
+		const findSome = numeros.find { x => x.even }
 	}
+
+	// Con closures
+	//	method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
+	//	method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
+	//	method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
+	//	method find(predicate) = self.findOrElse(predicate, { 
+	//	method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
+	//	method findOrElse(predicate, continuation) native
+	//	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
+	//	method sortedBy(closure)
+	
+	// Requieren comparable	
+	// method max(closure)
+	//	method max()		
+	//	method min(closure)
+	//	method min() = self.min({it => it})
+
+	//	Requieren sumables
+	//	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
+	//	method sum() = self.sum( {it => it} )
+
+	// Requiere method-scoped type parameters	
+	//	method map(closure) = self.fold([], { acc, e =>
+	//	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
+
+	// Requieren self type
+	//	 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
+	//	method +(elements) {
+	//	method addAll(elements) { elements.forEach { e => self.add(e) } }
+	//	method removeAll(elements) { 
+	//	 method removeAllSuchThat(closure) {
+	//	method flatten() = self.flatMap { e => e }
+	//	method copy() {
+	//	method newInstance()
 }

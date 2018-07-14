@@ -1,6 +1,0 @@
-/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
-
-object lists {
-	//  XPECT methodType at testFirst --> () => Number
-	method testFirst() = [1,2,3].first() 
-}
