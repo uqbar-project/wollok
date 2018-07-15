@@ -294,4 +294,9 @@ class WEclipseUtils {
 		HIDDEN_FOLDERS.forall [ !r.path.contains("/" + it) ]
 	}
 
+	def static boolean isCoreLib(Resource file) {
+		val uriString = file.URI.toFileString
+		return uriString !== null && uriString.contains(LIBRARY_FOLDER)
+	}
+	
 }

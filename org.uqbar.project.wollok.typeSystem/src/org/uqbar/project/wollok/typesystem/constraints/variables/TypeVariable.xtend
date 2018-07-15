@@ -97,7 +97,7 @@ class TypeVariable implements ITypeVariable {
 		log.info('''«exception.message» ==> reported in «this.fullDescription»''')
 		errors.add(exception)
 	}
-	
+
 	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		errors.forEach [
@@ -116,7 +116,7 @@ class TypeVariable implements ITypeVariable {
 	 * an old build. The Resource can get us the right EObject, i.e. one with the same URI
 	 */
 	def ownerIn(Resource resource) {
-		resource.getEObject(owner.eResource.getURIFragment(owner))		
+		resource.getEObject(owner.eResource.getURIFragment(owner))
 	}
 
 	// ************************************************************************
@@ -204,7 +204,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
-		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
+		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.messages.add(it)
 	}
 
