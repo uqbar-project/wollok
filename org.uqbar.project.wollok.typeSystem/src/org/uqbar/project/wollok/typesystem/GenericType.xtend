@@ -3,9 +3,11 @@ package org.uqbar.project.wollok.typesystem
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
-import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
+
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * This is the abstract definition of a GenericType, e.g List<T>. 
@@ -30,11 +32,37 @@ class GenericType extends ClassBasedWollokType {
 		instance(typeParameterNames.toInvertedMap[TypeVariable.synthetic])
 	}
 	
-	def instance(Map<String, ITypeVariable> typeParameters) {
+	def instance(Map<String, TypeVariable> typeParameters) {
 		new GenericTypeInstance(this, typeParameters)
 	} 
+	
+	def schema(Map<String, ITypeVariable> typeParameters) {
+		new GenericTypeSchema(this, typeParameters)
+	}
 	
 	def toString(GenericTypeInstance instance) {
 		'''«toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>''' 
 	}
+	
+}
+
+class GenericTypeSchema {
+	@Accessors(PUBLIC_GETTER)
+	GenericType rawType
+	
+	@Accessors(PUBLIC_GETTER)
+	Map<String, ITypeVariable> typeParameters
+	
+	new(GenericType type, Map<String, ITypeVariable> typeParameters) {
+		this.rawType = type
+		this.typeParameters = typeParameters
+	}	
+
+	def instanceFor(TypeVariable variable) {
+		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(variable)])
+	}
+
+	def instanceFor(ConcreteType concreteType) {
+		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(concreteType)])
+	}	
 }

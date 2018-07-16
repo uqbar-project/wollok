@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -45,10 +46,6 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 		WollokType.WAny
 	}
 	
-	def dispatch beSubtypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
-	}
-
 	/**
 	 * I can have supertypes when I am used as return type for a method. 
 	 * The received type variable should be a a message send 
@@ -56,10 +53,6 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	 */
 	def dispatch beSubtypeOf(TypeVariable variable) {
 		variable.owner.classTypeParameter.beSubtypeOf(variable)		
-	}
-
-	def dispatch beSupertypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 
 	/**
@@ -76,7 +69,10 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 		variable.owner.eContainer.classTypeParameter as TypeVariable
 	}
 	
-
+	override instanceFor(ConcreteType concreteReceiver) {
+		(concreteReceiver as GenericTypeInstance).param(paramName)
+	}
+	
 	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}

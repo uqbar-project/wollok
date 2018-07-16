@@ -57,7 +57,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	}
 
 	def dispatch ITypeVariable beSealed(EObject object, GenericTypeInstanceAnnotation it) {
-		registry.register(new GeneralTypeVariableSchema(object, type.instance(typeParameters.mapValues[synthetic])))
+		registry.register(new GeneralTypeVariableSchema(object, type.schema(typeParameters.mapValues[synthetic])))
 	}
 	
 	def synthetic(TypeAnnotation annotation) {

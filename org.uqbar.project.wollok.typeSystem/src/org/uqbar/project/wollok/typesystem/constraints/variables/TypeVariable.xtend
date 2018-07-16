@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
+import org.uqbar.project.wollok.typesystem.ConcreteType
 
 class TypeVariable implements ITypeVariable {
 	val Logger log = Logger.getLogger(class)
@@ -56,9 +57,15 @@ class TypeVariable implements ITypeVariable {
 		simple(null)
 	}
 
+	
 	def static dispatch WollokType instance(WollokType it) { it }
 
 	def static dispatch WollokType instance(GenericType it) { it.instance }
+
+	/**
+	 * I can not be instantiated, I am already a concrete type variable.
+	 */
+	override instanceFor(ConcreteType concreteReceiver) { this }
 
 	// ************************************************************************
 	// ** For the TypeSystem implementation

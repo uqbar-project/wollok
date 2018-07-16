@@ -78,7 +78,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		String >> "isEmpty" === #[] => Boolean
 		String >> "substring" === #[Number] => String
 		String >> "substring" === #[Number, Number] => String
-		String >> "split" === #[String] => List
+		String >> "split" === #[String] => List.of(String)
 		String >> "equalsIgnoreCase" === #[String] => Boolean
 		String >> "printString" === #[] => String
 		String >> "toString" === #[] => String
@@ -87,7 +87,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		(String > String) => Boolean
 		String >> "take" === #[Number] => String
 		String >> "drop" === #[Number] => String
-		String >> "words" === #[] => List
+		String >> "words" === #[] => List.of(String)
 		String >> "capitalize" === #[] => String
 
 		ExceptionType >> "getMessage" === #[] => String
@@ -95,8 +95,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "equals" === #[ExceptionType] => Boolean
 		ExceptionType >> "printStackTrace" === #[] => Void
 		ExceptionType >> "getStackTraceAsString" === #[] => String
-		ExceptionType >> "getFullStackTrace" === #[] => List
-		ExceptionType >> "getStackTrace" === #[] => List
+		ExceptionType >> "getFullStackTrace" === #[] => List.of(String)
+		ExceptionType >> "getStackTrace" === #[] => List.of(String)
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 
 
@@ -119,7 +119,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "equals" === #[Any] => Boolean;
 		List >> "add" === #[ELEMENT] => Void
 		List >> "first" === #[] => ELEMENT
-		List >> "size" === #[] => Number
 		List >> "drop" === #[Number] => List
 		List >> "take" === #[Number] => List
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
@@ -137,6 +136,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			it >> "findOrDefault" === #[predicate, ELEMENT] => ELEMENT
 			it >> "findOrElse" === #[predicate, closure(#[], ELEMENT)] => ELEMENT
 			it >> "count" === #[predicate] => Number
+		]
+
+		#[Collection, List, Set, Range, Dictionary].forEach [
+			it >> "size" === #[] => Number
 		]
 
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;

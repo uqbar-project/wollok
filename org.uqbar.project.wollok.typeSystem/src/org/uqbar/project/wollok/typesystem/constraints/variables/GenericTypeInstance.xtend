@@ -24,9 +24,9 @@ class GenericTypeInstance implements ConcreteType {
 	GenericType rawType
 	
 	@Accessors(PUBLIC_GETTER)
-	Map<String, ITypeVariable> typeParameters
+	Map<String, TypeVariable> typeParameters
 	
-	new(GenericType type, Map<String, ITypeVariable> typeParameters) {
+	new(GenericType type, Map<String, TypeVariable> typeParameters) {
 		this.rawType = type
 		this.typeParameters = typeParameters
 	}
@@ -83,14 +83,6 @@ class GenericTypeInstance implements ConcreteType {
 		rawType.lookupMethod(selector, parameterTypes)
 	}		
 
-	// ************************************************************************
-	// ** Schema instantiation
-	// ************************************************************************
-	
-	def instanceFor(TypeVariable variable) {
-		new GenericTypeInstance(rawType, newHashMap(typeParameters.entrySet.map[key -> value.instanceFor(variable)]))
-	}
-	
 	// ************************************************************************
 	// ** Basics
 	// ************************************************************************

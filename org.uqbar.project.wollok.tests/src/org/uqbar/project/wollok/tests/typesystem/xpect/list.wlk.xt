@@ -10,10 +10,10 @@ class TestCollection {
 	const sample = [1, 2, 3]
 
 	method generalCollection() {
-		// XPECT type at asList --> List
+		// XPECT type at asList --> List<Number>
 		const asList = sample.asList()
 		
-		// XPECT type at asSet --> Set
+		// XPECT type at asSet --> Set<Number>
 		const asSet = sample.asSet()
 		
 		// XPECT type at isEmpty --> Boolean

@@ -2,11 +2,14 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.GenericTypeSchema
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
+import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -28,27 +31,32 @@ abstract class TypeVariableSchema implements ITypeVariable {
 	def TypeVariable tvar(EObject obj) { 
 		registry.tvar(obj)
 	}
+
+	def dispatch beSubtypeOf(ITypeVariable variable) {
+		throw new UnsupportedOperationException("Yet not implemented")		
+	}
+
+	def dispatch beSupertypeOf(ITypeVariable variable) {
+		throw new UnsupportedOperationException("Yet not implemented")		
+	}
+
 }
 
 class GeneralTypeVariableSchema extends TypeVariableSchema {
 	@Accessors
 	EObject owner
 	
-	GenericTypeInstance typeSchema
+	GenericTypeSchema typeSchema
 	
-	new(EObject owner, GenericTypeInstance typeSchema) {
+	new(EObject owner, GenericTypeSchema typeSchema) {
 		this.owner = owner
 		this.typeSchema = typeSchema
 	}
 
  	override getType() {
-		typeSchema
+		WollokType.WAny // TODO
 	}
 	
-	def dispatch beSubtypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
-	}
-
 	/**
 	 * I can have supertypes when I am used as return type for a method. 
 	 * The received type variable should be a a message send 
@@ -58,10 +66,6 @@ class GeneralTypeVariableSchema extends TypeVariableSchema {
 		instanceFor(variable).beSubtypeOf(variable)
 	}
 	
-	def dispatch beSupertypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
-	}
-
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
 	 * The received type variable should be being used as a parametr to a message send, i.e.
@@ -76,5 +80,14 @@ class GeneralTypeVariableSchema extends TypeVariableSchema {
 		registry.newSealed(null, typeSchema.instanceFor(variable))
 	}
 	
-	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''	
+	override instanceFor(ConcreteType concreteReceiver) {
+		registry.newSealed(null, typeSchema.instanceFor(concreteReceiver))
+	}
+	
+	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''
+	
+	// ************************************************************************
+	// ** Schema instantiation
+	// ************************************************************************
+	
 }

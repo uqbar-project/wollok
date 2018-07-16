@@ -59,7 +59,7 @@ object positionTest {
 		new Position().say(obj, msj) //TODO: Game.say
 	}
 	
-	// XPECT methodType at m12 --> (Position) => List
+	// XPECT methodType at m12 --> (Position) => List<Any>
 	method m12(pos) {
 		return pos.allElements()
 	}
