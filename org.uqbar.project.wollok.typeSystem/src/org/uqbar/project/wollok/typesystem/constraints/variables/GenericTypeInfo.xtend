@@ -117,9 +117,19 @@ class GenericTypeInfo extends TypeInfo {
 	override ConcreteTypeState addMinType(WollokType type) {
 		if(minTypes.containsKey(type)) return Ready
 
-		validateNewMinType(type)
-
+		// Temporally put the type, it will be used to validate message information case of generic types.
 		minTypes.put(type, Pending)
+		
+		try {
+			validateNewMinType(type)
+		} catch(RuntimeException e) {
+			// In case of error, just remove the type
+			minTypes.remove(type)
+			
+			// Let another one handle this error
+			throw e
+		}
+
 		Pending
 
 	}

@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
@@ -46,11 +46,15 @@ class VariableSubtypingRules {
 		supertype.typeInfo.isSupertypeOf(subtype.typeInfo)
 	}
 
-	static def dispatch boolean isSuperVarOf(ClassParameterTypeVariable supertype, TypeVariable subtype) {
-		true // TODO
+	static def dispatch boolean isSuperVarOf(ITypeVariable supertype, TypeVariable subtype) {
+		supertype.instanceFor(subtype).isSuperVarOf(subtype)
 	} 
 
-	static def dispatch boolean isSuperVarOf(TypeVariable supertype, ClassParameterTypeVariable subtype) {
-		true // TODO
+	static def dispatch boolean isSuperVarOf(TypeVariable supertype, ITypeVariable subtype) {
+		supertype.isSuperVarOf(subtype.instanceFor(supertype))
+	} 
+
+	static def dispatch boolean isSuperVarOf(ITypeVariable supertype, ITypeVariable subtype) {
+		throw new UnsupportedOperationException("Not implemented")
 	} 
 }

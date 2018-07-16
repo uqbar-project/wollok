@@ -18,7 +18,7 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
 
 class TypeVariablesRegistry {
 	val Map<URI, TypeVariable> typeVariables = newHashMap
-	val Map<URI, ClassParameterTypeVariable> typeParameters = newHashMap
+	val Map<URI, ITypeVariable> typeSchemas = newHashMap
 	val Logger log = Logger.getLogger(this.class)
 	
 
@@ -42,10 +42,11 @@ class TypeVariablesRegistry {
 		return it
 	}
 
-	def register(ClassParameterTypeVariable it) {
+	def register(TypeVariableSchema it) {
 		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
 		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeParameters.put(owner.URI, it)
+		it.registry = this 
+		if (owner !== null) typeSchemas.put(owner.URI, it)
 		return it
 	}
 	
@@ -98,7 +99,6 @@ class TypeVariablesRegistry {
 
 	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
 		TypeVariable.classParameter(owner, type, paramName) => [
-			registry = this 
 			register
 		]
 	}
@@ -122,7 +122,7 @@ class TypeVariablesRegistry {
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
 		typeVariables.get(obj.URI) ?: 
-			typeParameters.get(obj.URI) => [ if (it === null) {
+			typeSchemas.get(obj.URI) => [ if (it === null) {
 				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
 			}]
 	}

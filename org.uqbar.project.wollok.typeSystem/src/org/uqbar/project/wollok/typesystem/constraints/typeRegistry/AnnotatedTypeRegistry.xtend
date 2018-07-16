@@ -9,6 +9,7 @@ import org.uqbar.project.wollok.typesystem.annotations.SimpleTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeDeclarationTarget
 import org.uqbar.project.wollok.typesystem.annotations.VoidTypeAnnotation
+import org.uqbar.project.wollok.typesystem.constraints.variables.GeneralTypeVariableSchema
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 
@@ -56,7 +57,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	}
 
 	def dispatch ITypeVariable beSealed(EObject object, GenericTypeInstanceAnnotation it) {
-		registry.newSealed(object, type.instance(typeParameters.mapValues[synthetic]))
+		registry.register(new GeneralTypeVariableSchema(object, type.instance(typeParameters.mapValues[synthetic])))
 	}
 	
 	def synthetic(TypeAnnotation annotation) {

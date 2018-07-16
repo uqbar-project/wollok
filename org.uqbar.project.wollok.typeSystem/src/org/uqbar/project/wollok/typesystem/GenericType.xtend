@@ -35,7 +35,6 @@ class GenericType extends ClassBasedWollokType {
 	} 
 	
 	def toString(GenericTypeInstance instance) {
-		// TODO This is partial implementation to avoid modifying all the tests right now.
-		toString 
+		'''«toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>''' 
 	}
 }

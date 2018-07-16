@@ -99,7 +99,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "getStackTrace" === #[] => List
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 
-		Collection >> "isEmpty" === #[] => Boolean
 
 		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection => Collection;
@@ -108,7 +107,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Collection >> "internalToSmartString" === #[Boolean] => String;
 
 		#[Collection, List, Set].forEach [
-			it >> "asList" === #[] => List.of(ELEMENT)
 			it >> "asSet" === #[] => Set.of(ELEMENT)
 			it >> "occurrencesOf" === #[ELEMENT] => Number
 		]
@@ -127,9 +125,12 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 
 		#[Collection, List, Set, Range].forEach [
-			it >> "find" === #[predicate] => ELEMENT;
+			it >> "isEmpty" === #[] => Boolean
 			it >> "contains" === #[ELEMENT] => Boolean
+			it >> "asList" === #[] => List.of(ELEMENT)
+
 			it >> "forEach" === #[closure(#[ELEMENT], Void)] => Void
+			it >> "find" === #[predicate] => ELEMENT;
 			it >> "all" === #[predicate] => Boolean
 			it >> "any" === #[predicate] => Boolean
 			it >> "find" === #[predicate] => ELEMENT

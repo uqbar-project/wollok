@@ -15,16 +15,6 @@ import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isC
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
 
-interface ITypeVariable {
-	def EObject getOwner()
-
-	def void beSubtypeOf(ITypeVariable variable)
-
-	def void beSupertypeOf(ITypeVariable variable)
-
-	def WollokType getType()
-}
-
 class TypeVariable implements ITypeVariable {
 	val Logger log = Logger.getLogger(class)
 
@@ -66,9 +56,9 @@ class TypeVariable implements ITypeVariable {
 		simple(null)
 	}
 
-	def static dispatch instance(WollokType it) { it }
+	def static dispatch WollokType instance(WollokType it) { it }
 
-	def static dispatch instance(GenericType it) { it.instance }
+	def static dispatch WollokType instance(GenericType it) { it.instance }
 
 	// ************************************************************************
 	// ** For the TypeSystem implementation
@@ -149,6 +139,10 @@ class TypeVariable implements ITypeVariable {
 
 	def beVoid() {
 		setTypeInfo(new VoidTypeInfo())
+	}
+
+	override instanceFor(TypeVariable variable) {
+		this // I have nothing to be instantiated
 	}
 
 	// ************************************************************************
@@ -248,5 +242,5 @@ class TypeVariable implements ITypeVariable {
 				]
 			]
 		]
-	}
+	}	
 }

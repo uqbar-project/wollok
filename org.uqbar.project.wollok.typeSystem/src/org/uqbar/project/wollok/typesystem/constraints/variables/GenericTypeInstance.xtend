@@ -84,11 +84,20 @@ class GenericTypeInstance implements ConcreteType {
 	}		
 
 	// ************************************************************************
+	// ** Schema instantiation
+	// ************************************************************************
+	
+	def instanceFor(TypeVariable variable) {
+		new GenericTypeInstance(rawType, newHashMap(typeParameters.entrySet.map[key -> value.instanceFor(variable)]))
+	}
+	
+	// ************************************************************************
 	// ** Basics
 	// ************************************************************************
 	
-	override toString() { rawType.toString(this) }
+	override toString() { rawType.toString(this).toString }
 	
 	def dispatch equals(Object other ) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
+	
 }

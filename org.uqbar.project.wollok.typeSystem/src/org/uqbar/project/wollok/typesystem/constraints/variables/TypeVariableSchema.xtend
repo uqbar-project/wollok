@@ -2,16 +2,11 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.GenericType
-import org.uqbar.project.wollok.typesystem.TypeSystemException
-import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -26,23 +21,28 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
  * Since I am related to a class, current usage expects to be related to a message send, and the real type variable will be obtained
  * from the receiver of the message.
  */
-class ClassParameterTypeVariable extends TypeVariableSchema {
+abstract class TypeVariableSchema implements ITypeVariable {
+	@Accessors
+	extension TypeVariablesRegistry registry
+	
+	def TypeVariable tvar(EObject obj) { 
+		registry.tvar(obj)
+	}
+}
+
+class GeneralTypeVariableSchema extends TypeVariableSchema {
 	@Accessors
 	EObject owner
 	
-	@Accessors
-	GenericType genericType
+	GenericTypeInstance typeSchema
 	
-	String paramName
-
-	new(EObject owner, GenericType genericType, String paramName) {
+	new(EObject owner, GenericTypeInstance typeSchema) {
 		this.owner = owner
-		this.genericType = genericType
-		this.paramName = paramName
+		this.typeSchema = typeSchema
 	}
 
  	override getType() {
-		WollokType.WAny
+		typeSchema
 	}
 	
 	def dispatch beSubtypeOf(ITypeVariable variable) {
@@ -55,16 +55,16 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
 	def dispatch beSubtypeOf(TypeVariable variable) {
-		variable.owner.classTypeParameter.beSubtypeOf(variable)		
+		instanceFor(variable).beSubtypeOf(variable)
 	}
-
+	
 	def dispatch beSupertypeOf(ITypeVariable variable) {
 		throw new UnsupportedOperationException("Yet not implemented")		
 	}
 
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
-	 * The received type variable should be being used as a parameter to a message send, i.e.
+	 * The received type variable should be being used as a parametr to a message send, i.e.
 	 * its container should be a message send, 
 	 * such as {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}.
 	 */
@@ -73,34 +73,8 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	}
 
 	override instanceFor(TypeVariable variable) {
-		variable.owner.eContainer.classTypeParameter as TypeVariable
+		registry.newSealed(null, typeSchema.instanceFor(variable))
 	}
 	
-
-	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
-		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
-	}
-
-	def dispatch ITypeVariable classTypeParameter(WArgumentList arg) {
-		arg.eContainer.classTypeParameter
-	}
-
-	def dispatch ITypeVariable classTypeParameter(WConstructorCall constructorCall) {
-		classTypeParameterFor(constructorCall.tvar.typeInfo)
-	}
-
-	def dispatch ITypeVariable classTypeParameter(WMemberFeatureCall messageSend) {
-		var tvar = classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
-		if (tvar instanceof TypeVariable) tvar else classTypeParameter(messageSend.memberCallTarget)
-	}
-
-	def dispatch classTypeParameterFor(TypeInfo typeInfo) {
-		throw new UnsupportedOperationException 
-	}
-
-	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
-		typeInfo.param(genericType, paramName)
-	}
-		
-	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
-	}
+	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''	
+}

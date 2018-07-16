@@ -30,12 +30,9 @@ class TestCollection {
 		// XPECT type at filterSome --> Number
 		const filterSome = sample.filter { x => x.even }.first() 		
 
-		// XPECT type at findSome --> Number
-		const findSome = sample.find { x => x.even }
+		// XPECT type at find --> Number
+		const find = sample.find { x => x.even }
 
-		// XPECT type at forEach --> {({Number => Void}) => Void}
-		const forEach = { closure => sample.forEach(closure) }
-		
 	}
 	
 	// Requieren comparable	
