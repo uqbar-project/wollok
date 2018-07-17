@@ -28,11 +28,11 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		PlatformUI.workbench.exportWizardRegistry.removeWizards
 		PlatformUI.workbench.importWizardRegistry.removeWizards
 		removeUnwantedPerspectives
-				
+
 		val window = Workbench.getInstance().getActiveWorkbenchWindow() as WorkbenchWindow
 		window.addPerspectiveListener(new WollokPerspectiveListener)
 
-	// TODO: find a way to remove extensions
+		// TODO: find a way to remove extensions
 //		Platform.extensionRegistry.extensionPoints.map[p | p.extensions.toList ].flatten.forEach[
 //			println('''Extension  «extensionPointUniqueIdentifier» :: «it.simpleIdentifier» | «label»''')
 //			Platform.extensionRegistry.remove
@@ -68,13 +68,13 @@ class RemoveWizardsStartup implements WollokUIStartup {
 	}
 
 	static val excludeWizards = #[
-		"org.eclipse.ui.wizards.new.project"	
+		"org.eclipse.ui.wizards.new.project"
 	]
-	
+
 	def excludeWizards(String id) {
-		excludeWizards.contains(id)	
+		excludeWizards.contains(id)
 	}
-	
+
 	def List<IWizardDescriptor> getAllWizards(IWizardCategory[] categories) {
 		val results = new ArrayList<IWizardDescriptor>
 		for (wizardCategory : categories) {
@@ -86,20 +86,23 @@ class RemoveWizardsStartup implements WollokUIStartup {
 
 	def ignoredPerspectives() {
 		#[
-		"org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaHierarchyPerspective",
-		"org.eclipse.mylyn.tasks.ui.perspectives.planning", "org.eclipse.pde.ui.PDEPerspective",
-		"org.eclipse.debug.ui.DebugPerspective", "org.eclipse.jdt.ui.JavaBrowsingPerspective"
-		].map [ toLowerCase ]	
+			"org.eclipse.jdt.ui.JavaPerspective",
+			"org.eclipse.jdt.ui.JavaHierarchyPerspective",
+			"org.eclipse.mylyn.tasks.ui.perspectives.planning",
+			"org.eclipse.pde.ui.PDEPerspective",
+			"org.eclipse.debug.ui.DebugPerspective",
+			"org.eclipse.jdt.ui.JavaBrowsingPerspective"
+		].map[toLowerCase]
 	}
-	
+
 	def void removeUnwantedPerspectives() {
-        val perspectiveRegistry = PlatformUI.getWorkbench().perspectiveRegistry
-        val perspectiveDescriptors = perspectiveRegistry.perspectives
-        val unwantedPerspectives = perspectiveDescriptors.filter [ perspectiveDescriptor |
-	        ignoredPerspectives.contains(perspectiveDescriptor.id.toLowerCase)
-        ]
-        val extChgHandler = perspectiveRegistry as IExtensionChangeHandler
-        extChgHandler.removeExtension(null, unwantedPerspectives)
+		val perspectiveRegistry = PlatformUI.getWorkbench().perspectiveRegistry
+		val perspectiveDescriptors = perspectiveRegistry.perspectives
+		val unwantedPerspectives = perspectiveDescriptors.filter [ perspectiveDescriptor |
+			ignoredPerspectives.contains(perspectiveDescriptor.id.toLowerCase)
+		]
+		val extChgHandler = perspectiveRegistry as IExtensionChangeHandler
+		extChgHandler.removeExtension(null, unwantedPerspectives)
 	}
-	
+
 }

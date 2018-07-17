@@ -56,6 +56,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def startupExtensions() {
 		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor(POINT_STARTUP_ID)
+		println("configs " + configs.map[it.createExecutableExtension("class") as WollokUIStartup])
 		configs.map[it.createExecutableExtension("class") as WollokUIStartup]
 	}
 
