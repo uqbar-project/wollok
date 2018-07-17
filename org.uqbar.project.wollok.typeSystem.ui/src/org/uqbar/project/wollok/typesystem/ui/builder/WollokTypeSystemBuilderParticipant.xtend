@@ -29,13 +29,8 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 
 	override build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
-		println("BUILDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD")
-		
-		println("Project " + context.builtProject)
-		println("Context " + context)
-		
-		val project = context.builtProject
 
+		val project = context.builtProject
 		val wollokActivator = WollokActivator.getInstance
 
 		WollokTypeSystemActivator.^default.ifEnabledFor(project) [
@@ -61,7 +56,8 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 						.processIssues(issues, monitor)
 				])
 			]
-
+			
+			wollokActivator.refreshOutline
 		]
 	}
 

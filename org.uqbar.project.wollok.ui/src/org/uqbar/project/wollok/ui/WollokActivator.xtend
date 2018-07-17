@@ -7,9 +7,12 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.jface.viewers.ILabelProvider
 import org.eclipse.swt.widgets.Display
+import org.eclipse.ui.PlatformUI
+import org.eclipse.ui.views.contentoutline.ContentOutline
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.editor.XtextEditor
+import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
 import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator
@@ -56,7 +59,6 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def startupExtensions() {
 		val configs = Platform.getExtensionRegistry.getConfigurationElementsFor(POINT_STARTUP_ID)
-		println("configs " + configs.map[it.createExecutableExtension("class") as WollokUIStartup])
 		configs.map[it.createExecutableExtension("class") as WollokUIStartup]
 	}
 
@@ -88,4 +90,10 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		])
 	}
 
+	def void refreshOutline() {
+		Display.getDefault().syncExec([
+			val outlineView = PlatformUI.workbench.activeWorkbenchWindow.activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
+			(outlineView.currentPage as OutlinePage).scheduleRefresh
+		])		
+	}
 }
