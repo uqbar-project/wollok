@@ -295,8 +295,8 @@ class WEclipseUtils {
 	}
 
 	def static boolean isCoreLib(Resource file) {
-		val uriString = file.URI.toFileString
-		return uriString !== null && uriString.contains(LIBRARY_FOLDER)
+		val uriString = file.URI.toString
+		return uriString === null || uriString.contains(LIBRARY_FOLDER)
 	}
 	
 }

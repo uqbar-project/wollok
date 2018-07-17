@@ -15,8 +15,8 @@ import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider
 import org.eclipse.xtext.validation.IResourceValidator
-import org.osgi.framework.BundleContext
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
+import org.osgi.framework.BundleContext
 
 /**
  * Customized activator.
@@ -61,14 +61,14 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def static getStandardDisplay() {
 		val display = Display.getCurrent
-		if (display == null)
+		if (display === null)
 			return Display.getDefault
-		return display;
+		return display
 	}
 
 	def getImageDescriptor(String name) {
 		val u = new URL(bundle.getEntry("/"), name)
-		return ImageDescriptor.createFromURL(u);
+		return ImageDescriptor.createFromURL(u)
 	}
 
 	def getLabelProvider() {

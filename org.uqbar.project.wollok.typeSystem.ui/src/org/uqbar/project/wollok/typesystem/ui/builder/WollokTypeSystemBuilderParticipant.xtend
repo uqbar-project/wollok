@@ -13,7 +13,6 @@ import org.uqbar.project.wollok.ui.WollokActivator
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 /**
  * A builder participant that runs the type system. 
@@ -40,8 +39,6 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			
 			// First add all Wollok files to the type system for constraint generation
 			val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
-
-			println("Wollok files " + wollokFiles)
 			
 			wollokFiles.map [ contents ].flatten.forEach[ts.analyse(it)]
  
