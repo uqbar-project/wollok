@@ -44,7 +44,7 @@
     <extension
           point="org.eclipse.xtext.builder.participant">
        <participant
-             class="org.uqbar.project.wollok.typesystem.ui.builder.WollokTypeSystemBuilderParticipant"
+             class="org.uqbar.project.wollok.typeSystem.ui.builder.WollokTypeSystemBuilderParticipant"
              fileExtensions="wlk,wpgm,wtest">
        </participant>
     </extension>
