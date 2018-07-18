@@ -2,8 +2,10 @@ package org.uqbar.project.wollok.typeSystem.ui.builder
 
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.swt.widgets.Display
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
 import org.eclipse.xtext.ui.editor.XtextEditor
+import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor
 import org.eclipse.xtext.ui.editor.validation.MarkerIssueProcessor
 import org.eclipse.xtext.validation.CheckMode
@@ -46,12 +48,12 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			ts.inferTypes
 
 			wollokFiles.forEach [
-				
-				val issues = wollokActivator.validator.validate(it, CheckMode.ALL, null)
-				new MarkerIssueProcessor(IFile, wollokActivator.markerCreator, wollokActivator.markerTypeProvider)
-					.processIssues(issues, monitor)
-
 				wollokActivator.runInXtextEditorFor(it.URI, [ XtextEditor editor |
+					val issues = wollokActivator.validator.validate(it, CheckMode.ALL, null)
+					
+					new MarkerIssueProcessor(IFile, wollokActivator.markerCreator, wollokActivator.markerTypeProvider)
+						.processIssues(issues, monitor)
+					
 					new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(), wollokActivator.issueResolutionProvider)
 						.processIssues(issues, monitor)
 				])
