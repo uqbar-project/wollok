@@ -36,7 +36,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
 	}
 	
-	override addVariableTypeDeclaration(ClassBasedWollokType receiver, String selector, TypeAnnotation type) {
+	override addVariableTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation type) {
 		var declaration = receiver.container.getVariableDeclaration(selector)
 		declaration => [
 			beSealed(type)

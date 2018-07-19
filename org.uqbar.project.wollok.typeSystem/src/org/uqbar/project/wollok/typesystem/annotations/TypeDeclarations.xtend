@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
 import org.uqbar.project.wollok.typesystem.ConcreteType
-import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
@@ -38,7 +37,7 @@ abstract class TypeDeclarations {
 		new AllMethodsIdentifier(target, receiver.type)
 	}
 	
-	def operator_doubleGreaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, String selector) {
+	def operator_doubleGreaterThan(AnnotationContext receiver, String selector) {
 		new MethodIdentifier(target, receiver.type, selector)
 	}
 
@@ -46,58 +45,58 @@ abstract class TypeDeclarations {
 		new MethodTypeDeclaration(parameterTypes, returnType)
 	}
 	
-	def constructor(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, TypeAnnotation... parameterTypes) {
-		target.addConstructorTypeDeclaration(owner.type, parameterTypes)
+	def constructor(AnnotationContext owner, TypeAnnotation... parameterTypes) {
+		target.addConstructorTypeDeclaration(owner.type as ClassBasedWollokType, parameterTypes)
 	}
 	
-	def variable(SimpleTypeAnnotation<? extends ClassBasedWollokType> owner, String selector , TypeAnnotation type) {
+	def variable(AnnotationContext owner, String selector , TypeAnnotation type) {
 		target.addVariableTypeDeclaration(owner.type, selector, type)
 	}
 
 	// ****************************************************************************
 	// ** Synthetic operator syntax
 	// ****************************************************************************
-	def operator_equals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_equals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "==", #[parameterType])
 	}
 
-	def operator_tripleEquals(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_tripleEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
 	
-	def operator_plus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_plus(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
 	}
 
-	def operator_minus(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_minus(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "-", #[parameterType])
 	}
 
-	def operator_multiply(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_multiply(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "*", #[parameterType])
 	}
 
-	def operator_divide(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_divide(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "/", #[parameterType])
 	}
 
-	def operator_greaterThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_greaterThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">", #[parameterType])
 	}
 
-	def operator_lessThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_lessThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "<", #[parameterType])
 	}
 
-	def operator_lessEqualsThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_lessEqualsThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "<=", #[parameterType])
 	}
 	
-	def operator_greaterEqualsThan(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_greaterEqualsThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
 	}
 
-	def operator_modulo(SimpleTypeAnnotation<? extends ConcreteType> receiver, TypeAnnotation parameterType) {
+	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
 	}
 	
@@ -165,12 +164,12 @@ abstract class TypeDeclarations {
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
 
-	def classTypeAnnotation(String classFQN) { new SimpleTypeAnnotation(types.classType(context, classFQN)) }
+	def classTypeAnnotation(String classFQN) { new ConcreteTypeAnnotation(types.classType(context, classFQN)) }
 
-	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
+	def objectTypeAnnotation(String objectFQN) { new ConcreteTypeAnnotation(types.objectType(context, objectFQN)) }
 
 	def genericTypeAnnotation(String classFQN, String... typeParameterNames) { 
-		new GenericTypeAnnotation(types.genericType(context, classFQN, typeParameterNames))
+		new GenericTypeAnnotationFactory(types.genericType(context, classFQN, typeParameterNames))
 	}
 	
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
@@ -181,15 +180,11 @@ abstract class TypeDeclarations {
 			]
 		]
 	
-		new GenericTypeAnnotation(types.closureType(context, parameters.length)).instance(typeParameters)
+		new GenericTypeAnnotationFactory(types.closureType(context, parameters.length)).instance(typeParameters)
 	}
 	
 	def predicate() {
 		closure(#[ELEMENT], Boolean)
-	}
-	
-	def param(SimpleTypeAnnotation<GenericType> genericType, String paramName) {
-		new ClassParameterTypeAnnotation(genericType.type, paramName)
 	}
 }
 

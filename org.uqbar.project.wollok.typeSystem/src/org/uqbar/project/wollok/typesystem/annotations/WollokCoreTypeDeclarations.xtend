@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
-import org.uqbar.project.wollok.typesystem.ConcreteType
-
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		// TODO: Uncomment all definitions when solving closure parameters
@@ -99,9 +97,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "getStackTrace" === #[] => List.of(String)
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 
-
 		Collection >> "add" === #[ELEMENT] => Void
-		Collection + Collection => Collection;
+		Collection + Collection.of(ELEMENT) => Collection.of(ELEMENT);
 		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "internalToSmartString" === #[Boolean] => String;
@@ -114,13 +111,13 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// TODO This should use SELF type.
 		Collection >> "filter" === #[predicate] => List.of(ELEMENT);
 
-		(List == Any) => Boolean
-		List + List => List
+		(List == Any) => Boolean;
+		List + List.of(ELEMENT) => List.of(ELEMENT);
 		List >> "equals" === #[Any] => Boolean;
 		List >> "add" === #[ELEMENT] => Void
 		List >> "first" === #[] => ELEMENT
-		List >> "drop" === #[Number] => List
-		List >> "take" === #[Number] => List
+		List >> "drop" === #[Number] => List.of(ELEMENT)
+		List >> "take" === #[Number] => List.of(ELEMENT)
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 
 		#[Collection, List, Set, Range].forEach [
@@ -143,14 +140,14 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		]
 
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
-		
+
 		Range >> "sum" === #[closure(#[Number], Number)] => Number;
 		Range >> "internalToSmartString" === #[Boolean] => String;
 		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);
 
 		(Set == Any) => Boolean
 		Set >> "equals" === #[Any] => Boolean;
-		Set + Set => Set;
+		Set + Set.of(ELEMENT) => Set.of(ELEMENT);
 		Set >> "add" === #[ELEMENT] => Void
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
 
@@ -184,7 +181,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Position >> "drawCharacter" === #[Any] => Void
 		Position >> "deleteElement" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
-		Position >> "allElements" === #[] => List
+		Position >> "allElements" === #[] => List.of(Any)
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
 		Position >> "clear" === #[] => Void
@@ -219,10 +216,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		game >> "removeVisual" === #[Any] => Void
 //		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
 //		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
-		game >> "getObjectsIn" === #[Position] => List
+		game >> "getObjectsIn" === #[Position] => List.of(Any)
 		game >> "say" === #[Any, String] => Void
 		game >> "clear" === #[] => Void
-		game >> "colliders" === #[Any] => List
+		game >> "colliders" === #[Any] => List.of(Any)
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
 		game >> "at" === #[Number, Number] => Position
@@ -242,7 +239,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		StringPrinter >> "getBuffer" === #[] => String
 	}
 
-	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
+	def comparable(ConcreteTypeAnnotation... types) {
 		types.forEach [ T |
 			(T > T) => Boolean;
 			(T < T) => Boolean;
@@ -252,8 +249,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		]
 	}
 
-	def fakeProperty(SimpleTypeAnnotation<? extends ConcreteType> it, String property,
-		SimpleTypeAnnotation<? extends ConcreteType> type) {
+	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
 		it >> property === #[type] => Void
 		it >> property === #[] => type
 	}
