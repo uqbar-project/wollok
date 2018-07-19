@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typeSystem.ui.preferences
 
 import com.google.inject.Inject
+import org.eclipse.core.resources.IProject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
@@ -19,13 +20,29 @@ class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 
 	override getSelectedTypeSystem(EObject file) {
 		var selectedTypeSystem = file.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
-		if(selectedTypeSystem === null || selectedTypeSystem == "")
+		if (selectedTypeSystem === null || selectedTypeSystem == "")
 			selectedTypeSystem = "Constraints-based";
-		
+
+		selectedTypeSystem
+	}
+
+	override isTypeSystemEnabled(IProject project) {
+		project.preferences.getBoolean(PREF_TYPE_SYSTEM_CHECKS_ENABLED)
+	}
+
+	override getSelectedTypeSystem(IProject project) {
+		var selectedTypeSystem = project.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
+		if (selectedTypeSystem === null || selectedTypeSystem == "")
+			selectedTypeSystem = "Constraints-based";
+
 		selectedTypeSystem
 	}
 
 	def preferences(EObject obj) {
 		preferenceStoreAccess.getContextPreferenceStore(obj.IFile.project)
+	}
+
+	def preferences(IProject project) {
+		preferenceStoreAccess.getContextPreferenceStore(project)
 	}
 }

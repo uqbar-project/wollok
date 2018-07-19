@@ -106,6 +106,7 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Retrieve type variables
 	// ************************************************************************
+	
 	def allVariables() {
 		typeVariables.values
 	}

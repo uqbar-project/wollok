@@ -10,7 +10,7 @@ class WollokTypeSystemLabelExtensionImpl implements WollokTypeSystemLabelExtensi
 	val Logger log = Logger.getLogger(this.class)
 
 	override resolvedType(EObject o) {
-		// if disabeld
+		// if disabled
 		if (!WollokTypeSystemActivator.^default.isTypeSystemEnabled(o))
 			return null
 
@@ -21,8 +21,6 @@ class WollokTypeSystemLabelExtensionImpl implements WollokTypeSystemLabelExtensi
 	def doResolvedType(EObject o) {
 		try {
 			val typeSystem = WollokTypeSystemActivator.^default.getTypeSystem(o)
-			typeSystem.analyse(o.eResource.contents.get(0)) // analyses all the file
-			typeSystem.inferTypes
 			return typeSystem.type(o)?.toString
 		} catch (Exception e) {
 			log.error("Error in type system !! " + e.message, e)

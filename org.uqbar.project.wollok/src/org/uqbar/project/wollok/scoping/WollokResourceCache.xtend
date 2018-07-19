@@ -44,6 +44,15 @@ class WollokResourceCache {
 	}
 	
 	static def isCoreObject(EObject object) {
+		if (object === null)
+			throw new RuntimeException('''Found null while verifying for core object''')
+
+		if (object.eResource === null)
+			throw new RuntimeException('''eResource null for «object» while verifying for core object''')
+
+		if (object.eResource.URI === null)
+			throw new RuntimeException('''URI null for «object.eResource» while verifying for core object''')
+			
 		object.eResource.URI.isClassPathResource
 	}
 	

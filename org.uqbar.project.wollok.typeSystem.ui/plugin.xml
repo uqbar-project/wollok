@@ -42,6 +42,13 @@
        </wollokTypeSystemLabelExtension>
     </extension>
     <extension
+          point="org.eclipse.xtext.builder.participant">
+       <participant
+             class="org.uqbar.project.wollok.typeSystem.ui.builder.WollokTypeSystemBuilderParticipant"
+             fileExtensions="wlk,wpgm,wtest">
+       </participant>
+    </extension>
+    <extension
           point="org.uqbar.project.wollok.wollokValidationExtension">
        <wollokValidationExtension
              class="org.uqbar.project.wollok.typeSystem.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typesystem.TypeSystemWollokValidatorExtension">
