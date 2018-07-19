@@ -70,8 +70,8 @@ class GenericTypeInfo extends TypeInfo {
 	 * Execute an action for each known minType, updating its state according to action result 
 	 * and reporting errors to the origin type variable.
 	 */
-	def minTypesDo(TypeVariable origin, Consumer<MinTypeAnalysisResultReporter> action) {
-		val reporter = new MinTypeAnalysisResultReporter(origin)
+	def minTypesDo(TypeVariable origin, Consumer<AnalysisResultReporter<WollokType>> action) {
+		val reporter = new AnalysisResultReporter(origin)
 		minTypes.entrySet.forEach [
 			reporter.currentEntry = it
 			action.accept(reporter)
@@ -153,7 +153,7 @@ class GenericTypeInfo extends TypeInfo {
 	 * This collaborates with the maxType propagation, 
 	 * resetting maxTypes state to force them to be propagated to the new subtypes.
 	 */
-	override subtypeAdded() {
+	override subtypeAdded(TypeVariable subtype) {
 		maximalConcreteTypes => [
 			if(it !== null) state = state.join(Pending)
 		]
@@ -163,7 +163,7 @@ class GenericTypeInfo extends TypeInfo {
 	 * This collaborates with the maxType propagation, 
 	 * resetting maxTypes state to force them to be propagated to the new subtypes.
 	 */
-	override supertypeAdded() {
+	override supertypeAdded(TypeVariable supertype) {
 		minTypes.entrySet.forEach[value = value.join(Pending)]
 	}
 
@@ -186,6 +186,11 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
+	
+	override toString() '''
+	 	«class.simpleName» of «this.canonicalUser»: «basicGetType()?.toString ?: "unknown"»
+	'''
+	
 	override fullDescription() '''
 		sealed: «sealed»,
 		minTypes: «minTypes»,

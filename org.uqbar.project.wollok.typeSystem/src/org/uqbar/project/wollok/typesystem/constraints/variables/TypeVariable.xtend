@@ -145,7 +145,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSubtype(TypeVariable subtype) {
 		this.subtypes.add(subtype)
-		if(typeInfo !== null) typeInfo.subtypeAdded()
+		if(typeInfo !== null) typeInfo.subtypeAdded(subtype)
 	}
 
 	/**
@@ -153,7 +153,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	protected def addSupertype(TypeVariable supertype) {
 		this.supertypes.add(supertype)
-		if(typeInfo !== null) typeInfo.supertypeAdded()
+		if(typeInfo !== null) typeInfo.supertypeAdded(supertype)
 	}
 
 	def beVoid() {

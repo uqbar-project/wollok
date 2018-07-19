@@ -164,11 +164,18 @@ abstract class TypeDeclarations {
 	def objectTypeAnnotation(String objectFQN) { new SimpleTypeAnnotation(types.objectType(context, objectFQN)) }
 
 	def genericTypeAnnotation(String classFQN, String... typeParameterNames) { 
-		new SimpleTypeAnnotation(types.genericType(context, classFQN, typeParameterNames))
+		new GenericTypeAnnotation(types.genericType(context, classFQN, typeParameterNames))
 	}
 	
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
-		new ClosureTypeAnnotation(types.closureType(context, parameters.length), parameters, returnType)
+		val typeParameters = newHashMap => [ map |
+			map.put(GenericTypeInfo.RETURN, returnType)
+			parameters.forEach [ parameter, index |
+				map.put(GenericTypeInfo.PARAM(index), parameter)
+			]
+		]
+	
+		new GenericTypeAnnotation(types.closureType(context, parameters.length)).instance(typeParameters)
 	}
 	
 	def param(SimpleTypeAnnotation<GenericType> genericType, String paramName) {

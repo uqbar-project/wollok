@@ -88,8 +88,9 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		classTypeParameterFor(constructorCall.tvar.typeInfo)
 	}
 
-	def dispatch classTypeParameter(WMemberFeatureCall messageSend) {
-		classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
+	def dispatch ITypeVariable classTypeParameter(WMemberFeatureCall messageSend) {
+		var tvar = classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
+		if (tvar instanceof TypeVariable) tvar else classTypeParameter(messageSend.memberCallTarget)
 	}
 
 	def dispatch classTypeParameterFor(TypeInfo typeInfo) {
