@@ -6,7 +6,6 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.MaximalConcreteTypes
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 
 class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
@@ -26,7 +25,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 		var maxTypes = tvar.maxTypes
 		log.trace('''maxTypes = «maxTypes»''')
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
-			log.debug('''	New max(«maxTypes») type for «tvar.debugInfoInContext»''')
+			log.debug('''	New max(«maxTypes») type for «tvar.owner.debugInfoInContext»''')
 			val newChanges = setMaximalConcreteTypes(new MaximalConcreteTypes(maxTypes.map[TypeVariable.instance(it)].toSet), tvar)
 			changed = changed || newChanges
 		}

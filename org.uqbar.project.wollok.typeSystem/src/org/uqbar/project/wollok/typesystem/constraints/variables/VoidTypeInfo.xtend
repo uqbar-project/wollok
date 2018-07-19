@@ -80,8 +80,7 @@ class VoidTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		// Maybe here the offender should be this and not origin, so the error should be "you are using void as a value"
-		throw new CannotBeVoidException(origin.owner)
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
+		throw new CannotBeVoidException(offender.owner.errorReportTarget)
 	}
 }

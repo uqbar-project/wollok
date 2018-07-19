@@ -68,20 +68,20 @@ class GenericTypeInfo extends TypeInfo {
 
 	/**
 	 * Execute an action for each known minType, updating its state according to action result 
-	 * and reporting errors to the origin type variable.
+	 * and reporting errors to the "offender" type variable.
 	 */
-	def minTypesDo(TypeVariable origin, Consumer<AnalysisResultReporter<WollokType>> action) {
-		val reporter = new AnalysisResultReporter(origin)
+	def minTypesDo(TypeVariable offender, Consumer<AnalysisResultReporter<WollokType>> action) {
+		val reporter = new AnalysisResultReporter(offender)
 		minTypes.entrySet.forEach [
 			reporter.currentEntry = it
 			action.accept(reporter)
 		]
 	}
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		minTypesDo(origin) [
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
+		minTypesDo(offender) [
 			if (!maxTypes.contains(type))
-				error(new RejectedMinTypeException(origin, type))
+				error(new RejectedMinTypeException(offender, type))
 		]
 
 		if (maximalConcreteTypes === null) {

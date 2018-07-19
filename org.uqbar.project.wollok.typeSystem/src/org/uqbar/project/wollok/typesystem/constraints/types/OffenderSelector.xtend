@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
@@ -37,9 +38,14 @@ class OffenderSelector {
 	// ** Proper offender selection
 	// ************************************************************************
 
+	def static dispatch EObject selectOffender(ProgramElementTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
+		selectOffender(subtype.programElement, supertype.programElement)
+	}
+
 	def static dispatch selectOffender(EObject subtype, EObject supertype) {
 		log.debug('''
-			Min type detected without a specific offender detection strategy:
+			Error detected without a specific strategy to which element we should report the error:
 				subtype=«subtype.debugInfoInContext» 
 				supertype=«supertype.debugInfoInContext»
 		''')

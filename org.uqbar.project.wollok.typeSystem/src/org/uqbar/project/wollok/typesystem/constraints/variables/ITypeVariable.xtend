@@ -1,11 +1,17 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
-import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.WollokType
 
-interface ITypeVariable {
-	def EObject getOwner()
+abstract class ITypeVariable {
+	@Accessors
+	val TypeVariableOwner owner
+	
+	new(TypeVariableOwner owner) {
+		if (owner === null) throw new IllegalArgumentException("A type variable must have an owner") 
+		this.owner = owner
+	}
 
 	def void beSubtypeOf(ITypeVariable variable)
 

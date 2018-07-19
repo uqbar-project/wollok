@@ -1,26 +1,21 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
+
 import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.*
-import org.uqbar.project.wollok.typesystem.ConcreteType
 
-class TypeVariable implements ITypeVariable {
+class TypeVariable extends ITypeVariable {
 	val Logger log = Logger.getLogger(class)
-
-	@Accessors
-	val EObject owner
 
 	/**
 	 * Type info starts in null and will be coerced to one of the type info kinds (simple or closure) when we have information related to it.
@@ -35,10 +30,12 @@ class TypeVariable implements ITypeVariable {
 	@Accessors
 	val Set<TypeVariable> supertypes = newHashSet
 
-	List<TypeSystemException> errors = newArrayList
-
-	new(EObject owner) {
-		this.owner = owner
+	// ************************************************************************
+	// ** Construction
+	// ************************************************************************
+	
+	new(EObject programElement) {
+		super(new ProgramElementTypeVariableOwner(programElement))
 	}
 
 	def static simple(EObject owner) {
@@ -77,34 +74,18 @@ class TypeVariable implements ITypeVariable {
 	// ************************************************************************
 	// ** Errors
 	// ************************************************************************
-	/**
-	 * Informs if an error has been detected for this variable.
-	 * In the case that this variable has no type info, this means it has not yet been used, 
-	 * so we assume to have no errors.
-	 */
+
 	def hasErrors() {
-		return !errors.empty
+		return owner.hasErrors
 	}
 
 	def addError(TypeSystemException exception) {
-		if (owner.isCoreObject)
-			throw new RuntimeException('''Tried to add a type error to a core object: «owner.debugInfoInContext»''')
-
-		log.info('''«exception.message» ==> reported in «this.fullDescription»''')
-		errors.add(exception)
+		owner.addError(exception)
+		log.info('''«exception.message» ==> reported in «fullDescription»''')
 	}
 	
-	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
-		errors.forEach [
-			log.debug('''Reporting error in «owner.debugInfo»: «message»''')
-			try {
-				validator.report(message, owner)
-			} catch (IllegalArgumentException exception) {
-				// We probably reported a type error to a core object, which is not possible
-				log.error(exception.message, exception)
-			}
-		]
+		owner.reportErrors(validator)
 	}
 
 	// ************************************************************************
@@ -162,11 +143,10 @@ class TypeVariable implements ITypeVariable {
 	def dispatch void setTypeInfo(VoidTypeInfo newTypeInfo) {
 		if (typeInfo.isVoid) {
 			return
-		} else if (typeInfo === null && owner.canBeVoid) {
+		} else if (typeInfo === null) {
+			owner.checkCanBeVoid()
 			doSetTypeInfo(newTypeInfo)
-		} else {
-			throw new CannotBeVoidException(owner)
-		}
+		} 
 	}
 
 	def doSetTypeInfo(TypeInfo newTypeInfo) {
@@ -186,9 +166,9 @@ class TypeVariable implements ITypeVariable {
 		typeInfo.addMinType(type)
 	}
 
-	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
 		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
-		typeInfo.setMaximalConcreteTypes(maxTypes, origin)
+		typeInfo.setMaximalConcreteTypes(maxTypes, offender)
 	}
 
 	/** 

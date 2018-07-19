@@ -12,9 +12,8 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.AnnotatedTypeRegistry
 import org.uqbar.project.wollok.typesystem.constraints.typeRegistry.MethodTypeProvider
 
-import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariableOwner.getURI
 
 class TypeVariablesRegistry {
 	val Map<URI, TypeVariable> typeVariables = newHashMap

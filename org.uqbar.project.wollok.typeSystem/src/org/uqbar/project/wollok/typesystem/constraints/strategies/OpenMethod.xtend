@@ -1,14 +1,11 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.apache.log4j.Logger
-import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 /**
@@ -19,7 +16,7 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
-		log.trace('''Trying to open methods for «tvar.debugInfoInContext»''')
+		log.trace('''Trying to open methods for «tvar.owner.debugInfoInContext»''')
 		validMessages.forEach [ message |
 			minTypes.entrySet.forEach [
 				if(value != Error) message.openMethod(key)

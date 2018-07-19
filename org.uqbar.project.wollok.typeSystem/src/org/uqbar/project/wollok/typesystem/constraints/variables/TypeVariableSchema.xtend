@@ -4,12 +4,12 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericTypeSchema
+import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
-import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -24,9 +24,13 @@ import org.uqbar.project.wollok.typesystem.WollokType
  * Since I am related to a class, current usage expects to be related to a message send, and the real type variable will be obtained
  * from the receiver of the message.
  */
-abstract class TypeVariableSchema implements ITypeVariable {
+abstract class TypeVariableSchema extends ITypeVariable {
 	@Accessors
 	extension TypeVariablesRegistry registry
+	
+	new(TypeVariableOwner owner) {
+		super(owner)
+	}
 	
 	def TypeVariable tvar(EObject obj) { 
 		registry.tvar(obj)
@@ -43,13 +47,10 @@ abstract class TypeVariableSchema implements ITypeVariable {
 }
 
 class GeneralTypeVariableSchema extends TypeVariableSchema {
-	@Accessors
-	EObject owner
-	
 	GenericTypeSchema typeSchema
 	
-	new(EObject owner, GenericTypeSchema typeSchema) {
-		this.owner = owner
+	new(EObject programElement, GenericTypeSchema typeSchema) {
+		super(new ProgramElementTypeVariableOwner(programElement))
 		this.typeSchema = typeSchema
 	}
 

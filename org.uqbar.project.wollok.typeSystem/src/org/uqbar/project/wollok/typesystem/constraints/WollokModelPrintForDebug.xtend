@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -21,6 +20,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokModelPrintForDebug {
 	static def dispatch String debugInfo(Void obj) {
@@ -90,10 +90,6 @@ class WollokModelPrintForDebug {
 	// ************************************************************************
 	// ** Debug info with context
 	// ************************************************************************
-
-	static def dispatch String debugInfoInContext(TypeVariable tvar) {
-		tvar.owner.debugInfoInContext
-	}
 
 	static def dispatch String debugInfoInContext(Void obj) {
 		"synthetic"

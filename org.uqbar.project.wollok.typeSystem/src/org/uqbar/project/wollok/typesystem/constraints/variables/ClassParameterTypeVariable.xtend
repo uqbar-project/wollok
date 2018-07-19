@@ -12,8 +12,6 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
-
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
  * I am a class type parameter, please note that there is currently no support for method type parameters in Wollok type system.
@@ -29,15 +27,12 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
  */
 class ClassParameterTypeVariable extends TypeVariableSchema {
 	@Accessors
-	EObject owner
-	
-	@Accessors
 	GenericType genericType
 	
 	String paramName
 
-	new(EObject owner, GenericType genericType, String paramName) {
-		this.owner = owner
+	new(EObject programElement, GenericType genericType, String paramName) {
+		super(new ProgramElementTypeVariableOwner(programElement))
 		this.genericType = genericType
 		this.paramName = paramName
 	}
@@ -66,13 +61,18 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	}
 
 	override instanceFor(TypeVariable variable) {
-		variable.owner.eContainer.classTypeParameter as TypeVariable
+		variable.owner.classTypeParameter as TypeVariable
 	}
 	
 	override instanceFor(ConcreteType concreteReceiver) {
 		(concreteReceiver as GenericTypeInstance).param(paramName)
 	}
 	
+	def dispatch ITypeVariable classTypeParameter(ProgramElementTypeVariableOwner owner) {
+		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
+		owner.programElement.classTypeParameter
+	}
+
 	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
 		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
 	}
