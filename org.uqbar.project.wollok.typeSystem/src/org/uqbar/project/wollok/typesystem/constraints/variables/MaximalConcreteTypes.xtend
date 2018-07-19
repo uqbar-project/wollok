@@ -15,7 +15,7 @@ class MaximalConcreteTypes {
 	@Accessors
 	var ConcreteTypeState state = Pending
 
-	new(Set<WollokType> types) {
+	new(Iterable<? extends WollokType> types) {
 		maximalConcreteTypes = newHashSet(types)
 	}
 

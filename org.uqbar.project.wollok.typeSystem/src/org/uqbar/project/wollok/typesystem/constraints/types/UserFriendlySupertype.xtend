@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
-import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -26,16 +25,16 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
  */
 class UserFriendlySupertype {
 	TypeVariable tvar
-	
+
 	new(TypeVariable tvar) {
 		this.tvar = tvar
 	}
-	
+
 	def commonSupertype(Iterable<WollokType> types, Iterable<MessageSend> messages) {
-		types.reduce[t1, t2|
-			if (t1.isSubtypeOf(t2)) t2
-			else if (t2.isSubtypeOf(t1)) t1
-			else t1.commonSupertypeWith(t2, messages)
+		types.reduce [ t1, t2 |
+			if (t1.isSubtypeOf(t2))
+				t2
+			else if(t2.isSubtypeOf(t1)) t1 else t1.commonSupertypeWith(t2, messages)
 		]
 	}
 
@@ -49,15 +48,14 @@ class UserFriendlySupertype {
 	def dispatch commonSupertypeWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
 		t1.commonSuperClassWith(t2, messages) ?: new UnionType(t1, t2)
 	}
-	
+
 	def dispatch commonSupertypeWith(UnionType t1, ConcreteType t2, Iterable<MessageSend> messages) {
 		new UnionType(#[t2] + t1.types.reject[t1.isSubtypeOf(t2)])
 	}
-	
+
 	// ************************************************************************
 	// ** Subtype relationships
 	// ************************************************************************
-	
 	/**
 	 * TODO Missing cases for non container-based types
 	 */
@@ -84,28 +82,25 @@ class UserFriendlySupertype {
 	}
 
 	def boolean isSubclassOf(WMethodContainer potSub, WMethodContainer potSuper) {
-		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper)) 
+		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper))
 	}
 
 	// ************************************************************************
 	// ** Containers
 	// ************************************************************************
-	
 	def WollokType commonSuperClassWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
-		if (t1.top !== t2.top)
-			println("cagamos")
-		
-		if (t1.isSubtypeOf(t2)) t2
-		else if (t2.isSubtypeOf(t1)) t1
+		if (t1.isSubtypeOf(t2))
+			t2
+		else if (t2.isSubtypeOf(t1))
+			t1
 		else {
 			val p1 = t1.parentType
 			val p2 = t2.parentType
-			if (p1 !== null && p1.name != "Object" && p1.respondsToAll(messages) && 
-				p2 !== null && p2.name != "Object" && p2.respondsToAll(messages)
-			) {
+			if (p1 !== null && p1.name != "Object" && p1.respondsToAll(messages) && p2 !== null &&
+				p2.name != "Object" && p2.respondsToAll(messages)) {
 				commonSuperClassWith(p1, p2, messages)
-			}
-			else null // There is no common super class, use another strategy (e.g. union types or structural types).
+			} else
+				null // There is no common super class, use another strategy (e.g. union types or structural types).
 		}
 	}
 
@@ -113,9 +108,5 @@ class UserFriendlySupertype {
 	def parentType(ConcreteType type) {
 		// TODO #1427 Instanciar el tipo encontrado instanciando correctamente según las subclases.
 		(type.typeSystem as ConstraintBasedTypeSystem).typeOrFactory(type.container.parent as WClass).instanceFor(tvar)
-	}
-	
-	def EObject top(ConcreteType it) {
-		if (name == "Object") container else parentType.top
 	}
 }

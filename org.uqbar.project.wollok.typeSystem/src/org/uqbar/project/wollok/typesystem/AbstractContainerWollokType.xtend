@@ -27,8 +27,6 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
 		this.typeSystem = ts
 	}
 		
-	override instanceFor(TypeVariable parent) { this }
-	
 	override understandsMessage(MessageType message) {
  		lookupMethod(message) !== null		
  	}
@@ -52,6 +50,8 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
   	override getAllMessages() {		
  		container.allMethods.map[m| typeSystem.queryMessageTypeForMethod(m)]		
  	}
+ 
+ 	override ConcreteType instanceFor(TypeVariable parent) { this }
  	
  	override equals(Object obj) {
  		obj instanceof AbstractContainerWollokType && (obj as AbstractContainerWollokType).container.URI == container.URI		

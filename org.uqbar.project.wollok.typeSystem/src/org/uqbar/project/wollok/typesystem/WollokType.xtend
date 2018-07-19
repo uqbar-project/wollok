@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.Iterator
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
  * 
@@ -46,7 +47,7 @@ interface WollokType {
 	 */
 	def Iterable<MessageType> getAllMessages()
 	
-	
+	def WollokType instanceFor(TypeVariable variable)
 }
 
 

@@ -39,6 +39,10 @@ class GenericTypeInstance implements ConcreteType {
 		rawType.baseType
 	}
 
+	override instanceFor(TypeVariable variable) {
+		this
+	}
+
 	// ************************************************************************
 	// ** Interface WollokType, mostly delegated to the rawType itself
 	// ************************************************************************
@@ -95,5 +99,6 @@ class GenericTypeInstance implements ConcreteType {
 	
 	def dispatch equals(Object other ) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
+	
 	
 }

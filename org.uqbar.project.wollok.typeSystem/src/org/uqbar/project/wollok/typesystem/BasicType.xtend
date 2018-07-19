@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
  * Base class for all types
@@ -45,6 +46,8 @@ abstract class BasicType implements WollokType {
 	
 	// nothing !
 	override getAllMessages() { #[] }
-	
+
+	override instanceFor(TypeVariable parent) { this }
+
 	override toString() { getName }
 }

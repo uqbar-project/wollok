@@ -85,7 +85,7 @@ class TypeVariablesRegistry {
 	}
 
 	def beSealed(TypeVariable it, WollokType type) {
-		addMinType(TypeVariable.instance(type))
+		addMinType(type.instanceFor(it))
 		beSealed
 	}
 	

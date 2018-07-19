@@ -76,7 +76,8 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	List<TypeSystemException> errors = newArrayList
 
 	new(EObject programElement) {
-		if(programElement === null) throw new IllegalArgumentException(class.simpleName + " requires a program element")
+		if(programElement === null) 
+			throw new IllegalArgumentException(class.simpleName + " requires a program element")
 		this.programElement = programElement
 	}
 

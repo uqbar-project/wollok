@@ -55,10 +55,6 @@ class TypeVariable extends ITypeVariable {
 		new ClassParameterTypeVariable(owner, type, paramName)
 	}
 
-	def static dispatch WollokType instance(WollokType it) { it }
-
-	def static dispatch WollokType instance(GenericType it) { it.instance }
-
 	/**
 	 * I can not be instantiated, I am already a concrete type variable.
 	 */
