@@ -35,8 +35,13 @@ class TypeVariable extends ITypeVariable {
 	// ************************************************************************
 	
 	new(EObject programElement) {
-		super(new ProgramElementTypeVariableOwner(programElement))
+		this(new ProgramElementTypeVariableOwner(programElement))
 	}
+
+	new(TypeVariableOwner owner) {
+		super(owner)
+	}
+
 
 	def static simple(EObject owner) {
 		new TypeVariable(owner)
@@ -50,11 +55,6 @@ class TypeVariable extends ITypeVariable {
 		new ClassParameterTypeVariable(owner, type, paramName)
 	}
 
-	def static synthetic() {
-		simple(null)
-	}
-
-	
 	def static dispatch WollokType instance(WollokType it) { it }
 
 	def static dispatch WollokType instance(GenericType it) { it.instance }

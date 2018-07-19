@@ -60,6 +60,10 @@ class TypeVariablesRegistry {
 		TypeVariable.newVoid(owner).register
 	}
 
+	def newParameter(TypeVariable generic, String paramName) {
+		new TypeVariable(new ParameterTypeVariableOwner(generic, paramName))
+	}
+
 	def newWithSubtype(EObject it, EObject... subtypes) {
 		newTypeVariable => [subtypes.forEach[subtype|it.beSupertypeOf(subtype.tvar)]]
 	}
@@ -88,13 +92,6 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Synthetic type variables
 	// ************************************************************************
-	def newSyntheticVar(WollokType type) {
-		// TODO This should disappear when we finish the new type annotations.
-		TypeVariable.synthetic => [
-			addMinType(type)
-			beSealed
-		]
-	}
 
 	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
 		TypeVariable.classParameter(owner, type, paramName) => [

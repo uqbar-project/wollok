@@ -37,7 +37,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	 * i.e. not the parametric types in their methods. 
 	 */	
 	def maxTypes(TypeVariable tvar) {
-		allTypes.map[instance].filter[it.respondsToAll(tvar.typeInfo.messages)]
+		allTypes.map[instanceFor(tvar)].filter[it.respondsToAll(tvar.typeInfo.messages)]
 	}
 
 	def contains(MaximalConcreteTypes maxTypes, Iterable<? extends WollokType> types) {

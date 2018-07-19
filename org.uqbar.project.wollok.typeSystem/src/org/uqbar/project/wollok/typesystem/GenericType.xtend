@@ -8,10 +8,11 @@ import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 interface TypeFactory {
-	def TypeSystem getTypeSystem()	
-	def ConcreteType instance()
+	def TypeSystem getTypeSystem()
+	def ConcreteType instanceFor(TypeVariable owner)
 }
 
 /**
@@ -36,8 +37,12 @@ class GenericType implements TypeFactory {
 	
 	override getTypeSystem() { baseType.typeSystem }
 	
-	override GenericTypeInstance instance() {
-		instance(typeParameterNames.toInvertedMap[TypeVariable.synthetic])
+	/**
+	 * @param futureOwner The type variable for which the resulting type (a GenericTypeInstance will be used.
+	 * 					  The dependent type variables of the created type instance require a parent type variable.
+	 */
+	override GenericTypeInstance instanceFor(TypeVariable futureOwner) {
+		instance(typeParameterNames.toInvertedMap[ name | registry.newParameter(futureOwner, name)])
 	}
 	
 	def instance(Map<String, TypeVariable> typeParameters) {
@@ -46,6 +51,10 @@ class GenericType implements TypeFactory {
 	
 	def schema(Map<String, ITypeVariable> typeParameters) {
 		new GenericTypeSchema(this, typeParameters)
+	}
+	
+	def getRegistry() {
+		(baseType.typeSystem as ConstraintBasedTypeSystem).registry		
 	}
 	
 	def toString(GenericTypeInstance instance)

@@ -11,9 +11,9 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
-import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
+import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -27,12 +27,17 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	override getType(TypeVariable tvar) {
 		// Imposibility to find a unique type now are reported as WAny, this has to be improved
-		basicGetType() ?: WollokType.WAny
+		basicGetType(tvar) ?: WollokType.WAny
 	}
 
-	def basicGetType() {
-		minTypes.entrySet// .filter[value != Error]
-		.map[key].commonSupertype(messages)
+	def basicGetType(TypeVariable tvar) {
+		val minTypes = minTypes.entrySet // .filter[value != Error]
+		.map[key]
+
+		new UserFriendlySupertype(tvar).commonSupertype(
+			minTypes,
+			messages
+		)
 	}
 
 	// ************************************************************************
@@ -119,13 +124,13 @@ class GenericTypeInfo extends TypeInfo {
 
 		// Temporally put the type, it will be used to validate message information case of generic types.
 		minTypes.put(type, Pending)
-		
+
 		try {
 			validateNewMinType(type)
-		} catch(RuntimeException e) {
+		} catch (RuntimeException e) {
 			// In case of error, just remove the type
 			minTypes.remove(type)
-			
+
 			// Let another one handle this error
 			throw e
 		}
@@ -187,20 +192,20 @@ class GenericTypeInfo extends TypeInfo {
 	public static val VALUE = "value"
 	public static val ELEMENT = "element"
 	public static val RETURN = "return"
-	public static def PARAM(int position) { "arg" + position }
-	public static def PARAMS(int parameterCount) {
-		if (parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
-	}
 
+	public static def PARAM(int position) { "arg" + position }
+
+	public static def PARAMS(int parameterCount) {
+		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
+	}
 
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	
 	override toString() '''
-	 	«class.simpleName» of «this.canonicalUser»: «basicGetType()?.toString ?: "unknown"»
+		«class.simpleName» of «canonicalUser»: «basicGetType(canonicalUser)?.toString ?: "unknown"»
 	'''
-	
+
 	override fullDescription() '''
 		sealed: «sealed»,
 		minTypes: «minTypes»,

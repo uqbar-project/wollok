@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
@@ -24,7 +25,13 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
  * The selection of how to inform a type to the user has to be fed from actual class experience, this is just a first implementation.
  */
 class UserFriendlySupertype {
-	static def commonSupertype(Iterable<WollokType> types, Iterable<MessageSend> messages) {
+	TypeVariable tvar
+	
+	new(TypeVariable tvar) {
+		this.tvar = tvar
+	}
+	
+	def commonSupertype(Iterable<WollokType> types, Iterable<MessageSend> messages) {
 		types.reduce[t1, t2|
 			if (t1.isSubtypeOf(t2)) t2
 			else if (t2.isSubtypeOf(t1)) t1
@@ -35,15 +42,15 @@ class UserFriendlySupertype {
 	/** 
 	 * Basic implementation delegates in traditional WollokType#refine
 	 */
-	static def dispatch commonSupertypeWith(WollokType t1, WollokType t2, Iterable<MessageSend> messages) {
+	def dispatch commonSupertypeWith(WollokType t1, WollokType t2, Iterable<MessageSend> messages) {
 		t1.refine(t2)
 	}
 
-	static def dispatch commonSupertypeWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
+	def dispatch commonSupertypeWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
 		t1.commonSuperClassWith(t2, messages) ?: new UnionType(t1, t2)
 	}
 	
-	static def dispatch commonSupertypeWith(UnionType t1, ConcreteType t2, Iterable<MessageSend> messages) {
+	def dispatch commonSupertypeWith(UnionType t1, ConcreteType t2, Iterable<MessageSend> messages) {
 		new UnionType(#[t2] + t1.types.reject[t1.isSubtypeOf(t2)])
 	}
 	
@@ -54,29 +61,29 @@ class UserFriendlySupertype {
 	/**
 	 * TODO Missing cases for non container-based types
 	 */
-	def static dispatch boolean isSubtypeOf(WollokType t1, WollokType t2) {
+	def dispatch boolean isSubtypeOf(WollokType t1, WollokType t2) {
 		false
 	}
 
 	/**
 	 * A union type is subtype of a container if all of its elements are subtypes of the container.
 	 */
-	def static dispatch boolean isSubtypeOf(UnionType t1, ConcreteType t2) {
+	def dispatch boolean isSubtypeOf(UnionType t1, ConcreteType t2) {
 		t1.types.forall[isSubtypeOf(t2)]
 	}
 
 	/**
 	 * A container type is subclass of union type if it is subclass of any type in the union.
 	 */
-	def static dispatch boolean isSubtypeOf(ConcreteType t1, UnionType t2) {
+	def dispatch boolean isSubtypeOf(ConcreteType t1, UnionType t2) {
 		t2.types.exists[t1.isSubtypeOf(it)]
 	}
 
-	def static dispatch boolean isSubtypeOf(ConcreteType t1, ConcreteType t2) {
+	def dispatch boolean isSubtypeOf(ConcreteType t1, ConcreteType t2) {
 		t1.container.isSubclassOf(t2.container)
 	}
 
-	def static boolean isSubclassOf(WMethodContainer potSub, WMethodContainer potSuper) {
+	def boolean isSubclassOf(WMethodContainer potSub, WMethodContainer potSuper) {
 		potSub == potSuper || (noneAreNull(potSub, potSuper) && potSub.parent.isSubclassOf(potSuper)) 
 	}
 
@@ -84,7 +91,7 @@ class UserFriendlySupertype {
 	// ** Containers
 	// ************************************************************************
 	
-	def static WollokType commonSuperClassWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
+	def WollokType commonSuperClassWith(ConcreteType t1, ConcreteType t2, Iterable<MessageSend> messages) {
 		if (t1.top !== t2.top)
 			println("cagamos")
 		
@@ -103,12 +110,12 @@ class UserFriendlySupertype {
 	}
 
 	// TODO Why parent is WMethodContainer and not WClass??
-	def static parentType(ConcreteType type) {
+	def parentType(ConcreteType type) {
 		// TODO #1427 Instanciar el tipo encontrado instanciando correctamente según las subclases.
-		(type.typeSystem as ConstraintBasedTypeSystem).typeOrFactory(type.container.parent as WClass).instance
+		(type.typeSystem as ConstraintBasedTypeSystem).typeOrFactory(type.container.parent as WClass).instanceFor(tvar)
 	}
 	
-	static def EObject top(ConcreteType it) {
+	def EObject top(ConcreteType it) {
 		if (name == "Object") container else parentType.top
 	}
 }

@@ -135,3 +135,51 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	}
 
 }
+
+class ParameterTypeVariableOwner extends TypeVariableOwner {
+	TypeVariable parentVariable
+	
+	String paramName
+	
+	new(TypeVariable parentVariable, String paramName) {
+		this.parentVariable = parentVariable
+		this.paramName = paramName
+	}
+	
+	override getURI() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override isCoreObject() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override checkCanBeVoid() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override addError(TypeSystemException exception) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override getErrors() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override reportErrors(ConfigurableDslValidator validator) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override getErrorReportTarget() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override debugInfo() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	override debugInfoInContext() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+}

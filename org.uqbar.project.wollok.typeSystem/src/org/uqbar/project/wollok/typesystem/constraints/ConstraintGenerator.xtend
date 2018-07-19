@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -131,14 +130,14 @@ class ConstraintGenerator {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
 
-		val closureType = closureType(parameters.length).instance
+		val closureType = closureType(parameters.length).instanceFor(newTypeVariable)
+
+		beSealed(closureType)
 		parameters.forEach [ parameter, index |
 			val paramName = GenericTypeInfo.PARAM(index)
 			closureType.param(paramName).beSubtypeOf(parameter.tvar)
 		]
 		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(expression.tvar)
-
-		newSealed(closureType)
 	}
 
 	def dispatch void generate(WBlockExpression it) {
@@ -174,21 +173,21 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WListLiteral it) {
-		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instance
+		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = listType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(listType)
+		beSealed(listType)
 		elements.forEach [
 			generateVariables
 			paramType.beSupertypeOf(tvar)
-		]
+		]		
 	}
-
+	
 	def dispatch void generate(WSetLiteral it) {
-		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instance
+		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(setType)
+		beSealed(setType)
 		elements.forEach [
 			generateVariables
 			paramType.beSupertypeOf(tvar)
@@ -197,7 +196,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
-		newSealed(typeOrFactory(classRef).instance)
+		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
@@ -279,11 +278,10 @@ class ConstraintGenerator {
 		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), TypeVariable.synthetic)
-			it.newVoid
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newVoid)
 		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
-			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
 		}
 	}
 
