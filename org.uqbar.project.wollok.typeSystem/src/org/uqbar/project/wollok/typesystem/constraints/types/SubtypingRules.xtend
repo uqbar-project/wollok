@@ -38,11 +38,11 @@ class SubtypingRules {
 	}
 
 	static def dispatch isSuperTypeOf(ClassBasedWollokType supertype, GenericTypeInstance subtype) {
-		supertype.clazz.isSuperTypeOf(subtype.rawType.clazz)
+		supertype.clazz.isSuperTypeOf(subtype.baseType.clazz)
 	}
 
 	static def dispatch isSuperTypeOf(GenericTypeInstance supertype, ClassBasedWollokType subtype) {
-		supertype.rawType.clazz.isSuperTypeOf(subtype.clazz)
+		supertype.baseType.clazz.isSuperTypeOf(subtype.clazz)
 	}
 
 	/** TODO Structural types */

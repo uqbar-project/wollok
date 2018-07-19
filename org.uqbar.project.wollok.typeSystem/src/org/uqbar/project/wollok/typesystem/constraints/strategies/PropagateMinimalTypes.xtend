@@ -19,6 +19,7 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo typeInfo) {
 		val supertypes = tvar.allSupertypes
 		typeInfo.minTypesDo(tvar) [
+			log.debug('''  Analysing «tvar» / «type» => «state»''')
 			if (state == Pending) {
 				tvar.propagateMinType(type, supertypes)
 				ready
@@ -44,7 +45,6 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 
 	protected def boolean propagateMinType(TypeVariable origin, WollokType type, Iterable<TypeVariable> supertypes) {
 		supertypes.evaluate [ supertype |
-			log.debug('''  Propagating min(«type») from: «origin» to «supertype»... ''')
 			val newState = propagateMinType(origin, supertype, type)
 			(newState != Ready) => [
 				if (it) {

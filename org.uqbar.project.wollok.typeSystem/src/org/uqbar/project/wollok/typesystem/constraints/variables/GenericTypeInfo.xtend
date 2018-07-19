@@ -47,7 +47,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def findCompatibleTypeFor(GenericType type) {
-		minTypes.keySet.findFirst[type.isSuperTypeOf(it)]
+		minTypes.keySet.findFirst[type.baseType.isSuperTypeOf(it)]
 	}
 
 	def dispatch findParam(GenericTypeInstance typeInstance, String paramName) {

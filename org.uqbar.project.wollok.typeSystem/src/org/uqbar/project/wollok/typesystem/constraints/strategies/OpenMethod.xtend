@@ -40,8 +40,4 @@ class OpenMethod extends SimpleTypeInferenceStrategy {
 			]
 		}
 	}
-
-	def closureType(EObject context) {
-		registry.typeSystem.classType(WollokClassFinder.instance.getClosureClass(context))
-	}
 }

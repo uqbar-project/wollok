@@ -104,7 +104,8 @@ class UserFriendlySupertype {
 
 	// TODO Why parent is WMethodContainer and not WClass??
 	def static parentType(ConcreteType type) {
-		(type.typeSystem as ConstraintBasedTypeSystem).classType(type.container.parent as WClass)
+		// TODO #1427 Instanciar el tipo encontrado instanciando correctamente según las subclases.
+		(type.typeSystem as ConstraintBasedTypeSystem).typeOrFactory(type.container.parent as WClass).instance
 	}
 	
 	static def EObject top(ConcreteType it) {

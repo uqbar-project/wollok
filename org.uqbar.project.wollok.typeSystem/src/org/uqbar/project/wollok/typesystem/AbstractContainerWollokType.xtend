@@ -13,7 +13,7 @@ import static extension org.eclipse.emf.ecore.util.EcoreUtil.*
  * @author jfernandes
  * @author npasserini
  */
-abstract class AbstractContainerWollokType extends BasicType implements ConcreteType {
+abstract class AbstractContainerWollokType extends BasicType implements ConcreteType, TypeFactory {
 	@Accessors(PUBLIC_GETTER)
 	WMethodContainer container
 	
@@ -26,6 +26,8 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
 		this.typeSystem = ts
 	}
 		
+	override instance() { this }
+	
 	override understandsMessage(MessageType message) {
  		lookupMethod(message) !== null		
  	}

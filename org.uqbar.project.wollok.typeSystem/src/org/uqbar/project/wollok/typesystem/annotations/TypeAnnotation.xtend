@@ -6,13 +6,22 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.WollokType
 
+/**
+ * A concrete class or WKO which's methods we want to annotate.
+ */
 interface AnnotationContext {
 	def ConcreteType getType()	
 }
 
+/**
+ * The definition of a type for a parameter of a return value of a method in an AnnotationContext 
+ */
 interface TypeAnnotation {
 }
 
+/**
+ * This should be used only for non-concrete types, such as Any.
+ */
 class SimpleTypeAnnotation<T extends WollokType> implements TypeAnnotation {
 	@Accessors(PUBLIC_GETTER)
 	val T type
@@ -22,6 +31,10 @@ class SimpleTypeAnnotation<T extends WollokType> implements TypeAnnotation {
 	}
 }
 
+/**
+ * Can be used both as type annotation and as annotation context.
+ * Conceptually is weird, but it makes suitable to build the annotation DSL on top of this.
+ */
 class ConcreteTypeAnnotation extends SimpleTypeAnnotation<ConcreteType> implements AnnotationContext {
 	new(ConcreteType type) {
 		super(type)
@@ -30,31 +43,39 @@ class ConcreteTypeAnnotation extends SimpleTypeAnnotation<ConcreteType> implemen
 
 /**
  * This allows to create annotations for generic types.
+ * Also it can be used as an annotation context for the methods of the generic type.
  */
 class GenericTypeAnnotationFactory implements AnnotationContext {
-	@Accessors
-	val GenericType type
+	val GenericType genericType
 
-	new(GenericType type) {
-		this.type = type
+	new(GenericType genericType) {
+		this.genericType = genericType
+	}
+
+	/**
+	 * This allows the type annotation to be used as annotation context, i.e. annotate the methods of the base type (a class)
+	 * of this generic type.
+	 */
+	override getType() {
+		genericType.baseType
 	}
 
 	/**
 	 * Creates a class-parameter type annotation for one type parameter of this generic type.
 	 */
 	def param(String paramName) {
-		new ClassParameterTypeAnnotation(type, paramName)
+		new ClassParameterTypeAnnotation(genericType, paramName)
 	}
 
 	/**
 	 * Utility method, simplified version of #instance for generic types with only one type parameter.
 	 */
 	def of(TypeAnnotation uniqueTypeParameter) {
-		instance(#{type.typeParameterNames.head -> uniqueTypeParameter})
+		instance(#{genericType.typeParameterNames.head -> uniqueTypeParameter})
 	}
 
 	def instance(Map<String, TypeAnnotation> typeParameters) {
-		new GenericTypeInstanceAnnotation(type, typeParameters)
+		new GenericTypeInstanceAnnotation(genericType, typeParameters)
 	}
 }
 
@@ -78,12 +99,15 @@ class ClassParameterTypeAnnotation implements TypeAnnotation {
 class VoidTypeAnnotation implements TypeAnnotation {
 }
 
-class GenericTypeInstanceAnnotation extends SimpleTypeAnnotation<GenericType> {
-	@Accessors(PUBLIC_GETTER)
-	Map<String, TypeAnnotation> typeParameters
+class GenericTypeInstanceAnnotation implements TypeAnnotation {
+	@Accessors
+	val GenericType type
 
-	new(GenericType closureType, Map<String, TypeAnnotation> typeParameters) {
-		super(closureType)
+	@Accessors
+	val Map<String, TypeAnnotation> typeParameters
+	
+	new(GenericType type, Map<String, TypeAnnotation> typeParameters) {
+		this.type = type
 		this.typeParameters = typeParameters
 	}
 }

@@ -197,7 +197,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
-		newSealed(classType(classRef))
+		newSealed(typeOrFactory(classRef).instance)
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 

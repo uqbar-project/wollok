@@ -9,6 +9,11 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
+interface TypeFactory {
+	def TypeSystem getTypeSystem()	
+	def ConcreteType instance()
+}
+
 /**
  * This is the abstract definition of a GenericType, e.g List<T>. 
  * It consists of a basic type, in the example the type List, 
@@ -20,15 +25,18 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
  * @author npasserini
  */
 @Accessors
-class GenericType extends ClassBasedWollokType {
+class GenericType implements TypeFactory {
+	ClassBasedWollokType baseType
 	String[] typeParameterNames
-	
+		
 	new(WClass clazz, TypeSystem typeSystem, String... typeParameterNames) {
-		super(clazz, typeSystem)
+		baseType = new ClassBasedWollokType(clazz, typeSystem)
 		this.typeParameterNames = typeParameterNames
 	}
 	
-	def instance() {
+	override getTypeSystem() { baseType.typeSystem }
+	
+	override GenericTypeInstance instance() {
 		instance(typeParameterNames.toInvertedMap[TypeVariable.synthetic])
 	}
 	
@@ -40,9 +48,11 @@ class GenericType extends ClassBasedWollokType {
 		new GenericTypeSchema(this, typeParameters)
 	}
 	
-	def toString(GenericTypeInstance instance) {
-		'''«toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>''' 
-	}
+	def toString(GenericTypeInstance instance)
+		'''«baseType.toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>''' 
+	
+	override toString()
+		'''«baseType.toString»<«typeParameterNames.join(', ')»>''' 
 	
 }
 
