@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem;
 
 import org.eclipse.emf.ecore.EObject;
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType;
 import org.uqbar.project.wollok.typesystem.NamedObjectWollokType;
 
 /**

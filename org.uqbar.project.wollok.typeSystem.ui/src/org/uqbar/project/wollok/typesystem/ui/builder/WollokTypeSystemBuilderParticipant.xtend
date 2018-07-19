@@ -42,7 +42,10 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			// First add all Wollok files to the type system for constraint generation
 			val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
 			
-			wollokFiles.map [ contents ].flatten.forEach[ts.analyse(it)]
+			wollokFiles.map [ contents ].flatten.forEach[
+				ts.initialize(it)
+				ts.analyse(it)
+			]
  
 			// Now that we have added all files, we can resolve constraints (aka infer types).
 			ts.inferTypes

@@ -5,7 +5,7 @@ import org.eclipse.core.resources.IProject
 
 class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	
-	override isTypeSystemEnabled(EObject project) {
+	override isTypeSystemEnabled(EObject file) {
 		false
 	}
 	
