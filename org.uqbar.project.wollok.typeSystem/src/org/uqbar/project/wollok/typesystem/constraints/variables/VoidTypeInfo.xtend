@@ -1,20 +1,29 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
+import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
-import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+
+import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
-import org.uqbar.project.wollok.wollokDsl.WIfExpression
-import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 
 class VoidTypeInfo extends TypeInfo {
+	/**
+	 * The set of supertypes to which we already have propagated our type information
+	 */
+	@Accessors
+	val propagationStatus = <TypeVariable, ConcreteTypeState> newHashMap
 
 	// ************************************************************************
 	// ** Extension methods
@@ -46,6 +55,14 @@ class VoidTypeInfo extends TypeInfo {
 	}
 
 	// ************************************************************************
+	// ** Notifications
+	// ************************************************************************
+
+	override supertypeAdded(TypeVariable supertype) {
+		propagationStatus.put(supertype, Pending)
+	}
+
+	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
 	override fullDescription() '''
@@ -64,7 +81,7 @@ class VoidTypeInfo extends TypeInfo {
 	}
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		// Maybe here the offender should be this and not origin, so the error should be "you are using void as a value"
+		throw new CannotBeVoidException(origin.owner)
 	}
-
 }
