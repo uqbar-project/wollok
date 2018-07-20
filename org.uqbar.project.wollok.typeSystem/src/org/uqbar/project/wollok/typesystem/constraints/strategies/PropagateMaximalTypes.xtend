@@ -17,7 +17,9 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 
 		// Do propagate		
 		propagateMaxTypes(user)
-		maximalConcreteTypes.state = Ready
+		
+		if (maximalConcreteTypes.state != Error)
+			maximalConcreteTypes.state = Ready
 	}
 
 	def void propagateMaxTypes(GenericTypeInfo it, TypeVariable user) {

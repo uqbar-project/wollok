@@ -1,19 +1,19 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.Map
-import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
-import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -71,30 +71,22 @@ class GenericTypeInfo extends TypeInfo {
 		super.beSealed
 	}
 
-	/**
-	 * Execute an action for each known minType, updating its state according to action result 
-	 * and reporting errors to the "offender" type variable.
-	 */
-	def minTypesDo(TypeVariable offender, Consumer<AnalysisResultReporter<WollokType>> action) {
-		val reporter = new AnalysisResultReporter(offender)
-		minTypes.entrySet.forEach [
-			reporter.currentEntry = it
-			action.accept(reporter)
-		]
-	}
-
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
-		minTypesDo(offender) [
-			if (!maxTypes.contains(type))
+		minTypes.statesDo(offender) [
+			if (!maxTypes.contains(type)) {
 				error(new RejectedMinTypeException(offender, type))
-		]
+				maxTypes.state = Error
+			}
+		] 
 
-		if (maximalConcreteTypes === null) {
+		if (maxTypes.state == Error) {
+			false
+		} else if (maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
 			true
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
-		}
+		}	
 	}
 
 	/** 

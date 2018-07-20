@@ -23,13 +23,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokModelPrintForDebug {
-	static def dispatch String debugInfo(Void obj) {
-		// TODO A variable without an owner is a synthetic var.
-		// Synthetic variables should have their own way of specifying something that allows us to identify where came this variable from.
-		// Also this might not be the best place for this kind of logic, specific to synthetic variables.
-		"synthetic"
-	}
-
 	static def dispatch String debugInfo(EObject obj) {
 		val base = obj.toString
 		val prefix = (WollokDslFactory.package.name + ".impl.").replace(".", "\\.")
@@ -90,10 +83,6 @@ class WollokModelPrintForDebug {
 	// ************************************************************************
 	// ** Debug info with context
 	// ************************************************************************
-
-	static def dispatch String debugInfoInContext(Void obj) {
-		"synthetic"
-	}
 
 	static def dispatch String debugInfoInContext(EObject obj) {
 		obj.debugInfo

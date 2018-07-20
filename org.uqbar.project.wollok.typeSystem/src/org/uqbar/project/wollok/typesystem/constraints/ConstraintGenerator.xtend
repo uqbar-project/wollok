@@ -152,7 +152,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WReturnExpression it) {
 		newTypeVariable
 		expression.generateVariables
-		declaringContainer.body.beSupertypeOf(expression)
+		returnContext.body.beSupertypeOf(expression)
 		beVoid
 	}
 

@@ -29,9 +29,6 @@ class VoidTypeInfo extends TypeInfo {
 	// ** Extension methods
 	// ************************************************************************
 	
-	/** No semantic object means it is a synthetic variable, it might be void in some cases */
-	static def dispatch canBeVoid(Void object) { true }
-	
 	static def dispatch canBeVoid(EObject object) { false }
 	static def dispatch canBeVoid(WBlockExpression object) { true }
 	static def dispatch canBeVoid(WMethodDeclaration object) { true }

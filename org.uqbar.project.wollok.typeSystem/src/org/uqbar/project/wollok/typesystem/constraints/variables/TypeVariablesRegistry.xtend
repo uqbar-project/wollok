@@ -35,17 +35,19 @@ class TypeVariablesRegistry {
 	}
 
 	def register(TypeVariable it) {
-		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
-		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
-		if (owner !== null) typeVariables.put(owner.URI, it)
+		if (owner === null) 
+			throw new IllegalArgumentException("A type variable must have an owner") 
+		
+		typeVariables.put(owner.URI, it)
 		return it
 	}
 
 	def register(TypeVariableSchema it) {
-		// Only register variables which have an owner. Variables without an owner have are "synthetic", i.e. 
-		// they have no representation in code. Proper handling of synthetic variables is yet to be polished
+		if (owner === null) 
+			throw new IllegalArgumentException("A type variable must have an owner") 
+		
 		it.registry = this 
-		if (owner !== null) typeSchemas.put(owner.URI, it)
+		typeSchemas.put(owner.URI, it)
 		return it
 	}
 	

@@ -18,11 +18,9 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo typeInfo) {
 		val supertypes = tvar.allSupertypes
-		typeInfo.minTypesDo(tvar) [
-			if (state == Pending) {
-				tvar.propagateMinType(type, supertypes)
-				ready
-			}
+		typeInfo.minTypes.pendingStatesDo(tvar) [
+			tvar.propagateMinType(type, supertypes)
+			ready
 		]
 	}
 
