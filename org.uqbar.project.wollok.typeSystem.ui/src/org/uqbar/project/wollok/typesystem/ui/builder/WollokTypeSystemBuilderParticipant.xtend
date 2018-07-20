@@ -53,7 +53,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			ts.inferTypes
 
 			wollokFiles.forEach [
-				wollokActivator.runInXtextEditorFor(it.URI, [ XtextEditor editor |
+				wollokActivator.runInXtextEditorFor(project, it.URI, [ XtextEditor editor |
 					val issues = wollokActivator.validator.validate(it, CheckMode.ALL, null)
 					
 					new MarkerIssueProcessor(IFile, wollokActivator.markerCreator, wollokActivator.markerTypeProvider)

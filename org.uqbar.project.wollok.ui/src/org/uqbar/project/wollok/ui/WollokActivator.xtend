@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui
 
 import com.google.inject.Inject
 import java.net.URL
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.common.util.URI
 import org.eclipse.jface.resource.ImageDescriptor
@@ -20,6 +22,7 @@ import org.eclipse.xtext.ui.validation.MarkerTypeProvider
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.osgi.framework.BundleContext
+import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
 /**
  * Customized activator.
@@ -82,11 +85,27 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		this.getInjector(ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL).getInstance(IURIEditorOpener)
 	}
 
-	def void runInXtextEditorFor(URI uri, Procedure1<XtextEditor> editorBlock) {
+	def void runInXtextEditorFor(IProject project, URI uri, Procedure1<XtextEditor> editorBlock) {
 		Display.getDefault().syncExec([
-			val editorPart = opener.open(uri, true)
-			editor = EditorUtils.getXtextEditor(editorPart)
-			editorBlock.apply(editor)
+			val activeEditor = PlatformUI.workbench?.activeWorkbenchWindow?.activePage?.activeEditor
+			if (activeEditor === null) return;
+			
+			try {
+				val activeWollokEditor = activeEditor as WollokTextEditor
+				
+				val workspaceURI = ResourcesPlugin.workspace.root.locationURI.toString
+				val activeEditorURI = activeWollokEditor.resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
+				val locationURI = uri.toPlatformString(true)
+				if (!locationURI.equals(activeEditorURI)) return;
+				
+ 				val editorPart = opener.open(uri, false)
+				if (editorPart !== activeEditor) return;
+			
+				editor = EditorUtils.getXtextEditor(editorPart)
+				editorBlock.apply(editor)
+			} catch (ClassCastException e) {
+				return;
+			}
 		])
 	}
 
