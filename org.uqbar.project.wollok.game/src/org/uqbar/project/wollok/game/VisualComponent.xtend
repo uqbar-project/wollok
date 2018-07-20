@@ -32,11 +32,14 @@ abstract class VisualComponent {
 		window.draw(image, position)
 	}
 
-	def drawAttributesIfNecesary(Window window) {		
-		var printableString = getAttributes.join(System.lineSeparator)
-		if (printableString != "" && inMyZone) {
-			window.writeAttributes(printableString, position, Color.WHITE)
+	def drawAttributesIfNecesary(Window window) {
+		if (inMyZone) {
+			var printableString = getAttributes.join(System.lineSeparator)
+			if (printableString != "") {
+				window.writeAttributes(printableString, position, Color.WHITE)
+			}
 		}
+				
 	}
 
 	def drawBallonIfNecesary(Window window) {
