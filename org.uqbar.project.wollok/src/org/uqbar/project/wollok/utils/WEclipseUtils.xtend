@@ -299,4 +299,16 @@ class WEclipseUtils {
 		return uriString === null || uriString.contains(LIBRARY_FOLDER)
 	}
 	
+	def static getWorkspaceURI() {
+		ResourcesPlugin.workspace.root.locationURI.toString
+	}
+
+	def static activeEditor() {
+		activePage?.activeEditor
+	}
+
+	def static relativeToWorkspace(IResource resource) {
+		resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
+	}
+	
 }

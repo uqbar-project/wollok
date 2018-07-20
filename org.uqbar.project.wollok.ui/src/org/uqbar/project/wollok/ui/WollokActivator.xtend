@@ -24,6 +24,8 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 /**
  * Customized activator.
  * 
@@ -87,13 +89,11 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def void runInXtextEditorFor(IProject project, URI uri, Procedure1<XtextEditor> editorBlock) {
 		Display.getDefault().syncExec([
-			val activeEditor = PlatformUI.workbench?.activeWorkbenchWindow?.activePage?.activeEditor
-			if (activeEditor === null) return;
+			val currentEditor = activeEditor
+			if (currentEditor === null) return;
 			
 			try {
-				val activeWollokEditor = activeEditor as WollokTextEditor
-				
-				val workspaceURI = ResourcesPlugin.workspace.root.locationURI.toString
+				val activeWollokEditor = currentEditor as WollokTextEditor
 				val activeEditorURI = activeWollokEditor.resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
 				val locationURI = uri.toPlatformString(true)
 				if (!locationURI.equals(activeEditorURI)) return;
