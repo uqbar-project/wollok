@@ -46,7 +46,8 @@ abstract class TypeVariableSchema extends ITypeVariable {
 
 class GeneralTypeVariableSchema extends TypeVariableSchema {
 	GenericTypeSchema typeSchema
-	
+	var instanceCount = 0
+		
 	new(TypeVariableOwner owner, GenericTypeSchema typeSchema) {
 		super(owner)
 		this.typeSchema = typeSchema
@@ -75,18 +76,22 @@ class GeneralTypeVariableSchema extends TypeVariableSchema {
 		instanceFor(variable).beSupertypeOf(variable)
 	}
 
-	override instanceFor(TypeVariable variable) {
-		registry.newSealed(null, typeSchema.instanceFor(variable))
-	}
-	
-	override instanceFor(ConcreteType concreteReceiver) {
-		registry.newSealed(null, typeSchema.instanceFor(concreteReceiver))
-	}
-	
-	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''
-	
 	// ************************************************************************
 	// ** Schema instantiation
 	// ************************************************************************
+	
+	override instanceFor(TypeVariable variable) {
+		registry.newSealed(createOwner, typeSchema.instanceFor(variable))
+	}
+	
+	override instanceFor(ConcreteType concreteReceiver) {
+		registry.newSealed(createOwner, typeSchema.instanceFor(concreteReceiver))
+	}
+	
+	def createOwner() {
+		new ParameterTypeVariableOwner(owner, '''$« instanceCount += 1 »''')
+	}
+	
+	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''
 	
 }

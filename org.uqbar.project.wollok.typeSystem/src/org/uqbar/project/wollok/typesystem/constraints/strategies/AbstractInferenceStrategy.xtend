@@ -33,7 +33,7 @@ abstract class AbstractInferenceStrategy {
 	def void walkThrougProgram() {
 		do {
 			changed = false
-			allVariables.forEach[walkThroughVariable]
+			allVariables.clone.forEach[walkThroughVariable]
 			globalChanged = globalChanged || changed
 		} while (changed)
 	}
