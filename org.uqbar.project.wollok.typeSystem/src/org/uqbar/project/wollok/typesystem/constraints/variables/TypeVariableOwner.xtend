@@ -75,6 +75,8 @@ abstract class TypeVariableOwner {
 
 	def String debugInfoInContext()
 
+	override toString() { debugInfoInContext }	
+
 	// ************************************************************************
 	// ** Static helpers
 	// ************************************************************************
@@ -160,5 +162,4 @@ class ParameterTypeVariableOwner extends TypeVariableOwner {
 	override debugInfo() '''tparam «paramName» of «parent.debugInfo»'''
 	
 	override debugInfoInContext() '''tparam «paramName» of «parent.debugInfoInContext»'''
-	
 }

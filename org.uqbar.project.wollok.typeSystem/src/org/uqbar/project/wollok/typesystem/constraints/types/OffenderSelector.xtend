@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -37,6 +38,14 @@ class OffenderSelector {
 	// ************************************************************************
 	// ** Proper offender selection
 	// ************************************************************************
+
+	def static dispatch EObject selectOffender(ParameterTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+		supertype.programElement
+	}
+
+	def static dispatch EObject selectOffender(ProgramElementTypeVariableOwner subtype, ParameterTypeVariableOwner supertype) {
+		subtype.programElement
+	}
 
 	def static dispatch EObject selectOffender(ProgramElementTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
 		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
