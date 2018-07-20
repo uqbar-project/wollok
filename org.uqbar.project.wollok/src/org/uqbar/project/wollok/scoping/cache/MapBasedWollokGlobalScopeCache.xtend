@@ -48,11 +48,11 @@ class MapBasedCacheContent {
 	def Set<String> imports() { imports }
 	def Iterable<IEObjectDescription> result() { result }
 		
-	new(URI uri, Set<String> imports, Iterable<IEObjectDescription> result){
+	new(URI uri, Set<String> imports, Iterable<IEObjectDescription> _result){
 		this.uri = uri.toString
 		this.imports = imports.toSet
 		// dodain - clone is important, otherwise when you threads are mixed importedObjects might be misconfigured
-		this.result = result.clone 
+		this.result = _result.clone
 	}
 	
 	def mismatch(Set<String> imports){

@@ -41,9 +41,11 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			
 			// First add all Wollok files to the type system for constraint generation
 			val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
+			val contents = wollokFiles.map [ contents ].flatten
 			
-			wollokFiles.map [ contents ].flatten.forEach[
-				ts.initialize(it)
+			ts.initialize(contents.head)
+			
+			contents.forEach[
 				ts.analyse(it)
 			]
  

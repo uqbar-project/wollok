@@ -29,7 +29,7 @@ class RemoveWizardsStartup implements WollokUIStartup {
 		PlatformUI.workbench.importWizardRegistry.removeWizards
 		removeUnwantedPerspectives
 
-		val window = Workbench.getInstance().getActiveWorkbenchWindow() as WorkbenchWindow
+		val window = Workbench.instance.activeWorkbenchWindow as WorkbenchWindow
 		window.addPerspectiveListener(new WollokPerspectiveListener)
 
 		// TODO: find a way to remove extensions

@@ -17,11 +17,9 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	TypeVariablesRegistry registry
-	EObject context
 
-	new(TypeVariablesRegistry registry, EObject context) {
+	new(TypeVariablesRegistry registry) {
 		this.registry = registry
-		this.context = context
 	}
 
 	override addMethodTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {

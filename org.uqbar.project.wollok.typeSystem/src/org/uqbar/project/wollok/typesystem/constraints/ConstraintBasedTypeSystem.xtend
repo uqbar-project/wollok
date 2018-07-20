@@ -94,7 +94,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		// This shouldn't be necessary if all global objects had type annotations
 		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
 
-		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
+		annotatedTypes = new AnnotatedTypeRegistry(registry)
 		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
 	}
 
