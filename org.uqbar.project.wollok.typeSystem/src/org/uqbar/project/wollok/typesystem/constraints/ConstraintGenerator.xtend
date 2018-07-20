@@ -246,8 +246,10 @@ class ConstraintGenerator {
 
 			// If there is a else branch, if can be an expression 
 			// and has to be a supertype of both (else, then) branches
-			newTypeVariable.beSubtypeOf(then.tvar)
-			newTypeVariable.beSubtypeOf(getElse.tvar)
+			newTypeVariable => [ v |
+				v.beSupertypeOf(then.tvar)
+				v.beSupertypeOf(getElse.tvar)
+			]
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
