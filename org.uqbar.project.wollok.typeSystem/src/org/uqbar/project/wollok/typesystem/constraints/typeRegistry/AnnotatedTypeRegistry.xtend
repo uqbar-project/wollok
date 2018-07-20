@@ -11,13 +11,16 @@ import org.uqbar.project.wollok.typesystem.annotations.TypeDeclarationTarget
 import org.uqbar.project.wollok.typesystem.annotations.VoidTypeAnnotation
 import org.uqbar.project.wollok.typesystem.constraints.variables.GeneralTypeVariableSchema
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVariableOwner
+import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
-	TypeVariablesRegistry registry
+	extension TypeVariablesRegistry registry
 	EObject context
 
 	new(TypeVariablesRegistry registry, EObject context) {
@@ -27,40 +30,43 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 
 	override addMethodTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes, TypeAnnotation returnType) {
 		val method = receiver.lookupMethod(selector, paramTypes)
-		method.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
-		method.beSealed(returnType)
+		method.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
+		method.asOwner.beSealed(returnType)
 	}
 
 	override addConstructorTypeDeclaration(ClassBasedWollokType receiver, TypeAnnotation[] paramTypes) {
 		var constructor = receiver.getConstructor(paramTypes)
-		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.beSealed(type)]
+		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 	}
 	
-	override addVariableTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation type) {
+	override addVariableTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation annotation) {
 		var declaration = receiver.container.getVariableDeclaration(selector)
 		declaration => [
-			beSealed(type)
-			variable.beSealed(type)
+			asOwner.beSealed(annotation)
+			variable.asOwner.beSealed(annotation)
 		]
 	}
 	
-	def dispatch ITypeVariable beSealed(EObject object, SimpleTypeAnnotation<?> annotation) {
-		registry.newSealed(object, annotation.type)
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, SimpleTypeAnnotation<?> annotation) {
+		newTypeVariable(owner) => [beSealed(annotation.type)]
 	}
 
-	def dispatch ITypeVariable beSealed(EObject object, ClassParameterTypeAnnotation annotation) {
-		registry.newClassParameterVar(object, annotation.type, annotation.paramName)
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassParameterTypeAnnotation annotation) {
+		newClassParameterVar(owner, annotation.type, annotation.paramName)
 	}
 	
-	def dispatch ITypeVariable beSealed(EObject object, VoidTypeAnnotation annotation) {
-		registry.newVoid(object)
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, VoidTypeAnnotation annotation) {
+		newTypeVariable(owner) => [beVoid]
 	}
 
-	def dispatch ITypeVariable beSealed(EObject object, GenericTypeInstanceAnnotation it) {
-		registry.register(new GeneralTypeVariableSchema(object, type.schema(typeParameters.mapValues[synthetic])))
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, GenericTypeInstanceAnnotation it) {
+		register(new GeneralTypeVariableSchema(owner,   
+			type.schema(newHashMap(typeParameters.entrySet.map[key -> 
+				new ParameterTypeVariableOwner(owner, key).beSealed(value)
+			]))))
 	}
 	
-	def synthetic(TypeAnnotation annotation) {
-		beSealed(null, annotation)
+	def asOwner(EObject programElement) {
+		new ProgramElementTypeVariableOwner(programElement)
 	}
 }

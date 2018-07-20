@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
-
 import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
@@ -43,15 +42,15 @@ class TypeVariable extends ITypeVariable {
 	}
 
 
-	def static simple(EObject owner) {
+	def static simple(TypeVariableOwner owner) {
 		new TypeVariable(owner)
 	}
 
-	def static newVoid(EObject owner) {
+	def static newVoid(TypeVariableOwner owner) {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static classParameter(EObject owner, GenericType type, String paramName) {
+	def static classParameter(TypeVariableOwner owner, GenericType type, String paramName) {
 		new ClassParameterTypeVariable(owner, type, paramName)
 	}
 

@@ -41,8 +41,8 @@ class GenericType implements TypeFactory {
 	 * @param futureOwner The type variable for which the resulting type (a GenericTypeInstance will be used.
 	 * 					  The dependent type variables of the created type instance require a parent type variable.
 	 */
-	override GenericTypeInstance instanceFor(TypeVariable futureOwner) {
-		instance(typeParameterNames.toInvertedMap[ name | registry.newParameter(futureOwner, name)])
+	override GenericTypeInstance instanceFor(TypeVariable tvar) {
+		instance(typeParameterNames.toInvertedMap[ name | registry.newParameter(tvar.owner, name)])
 	}
 	
 	def instance(Map<String, TypeVariable> typeParameters) {

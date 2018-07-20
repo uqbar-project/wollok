@@ -161,15 +161,15 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WNumberLiteral it) {
-		newSealed(classType(NUMBER))
+		newTypeVariable.beSealed(classType(NUMBER))
 	}
 
 	def dispatch void generate(WStringLiteral it) {
-		newSealed(classType(STRING))
+		newTypeVariable.beSealed(classType(STRING))
 	}
 
 	def dispatch void generate(WBooleanLiteral it) {
-		newSealed(classType(BOOLEAN))
+		newTypeVariable.beSealed(classType(BOOLEAN))
 	}
 
 	def dispatch void generate(WListLiteral it) {
@@ -211,26 +211,26 @@ class ConstraintGenerator {
 	def dispatch void generate(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-		newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WPostfixOperation it) {
-		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
+		(operand as WVariableReference).ref.asOwner.newSealed(classType(NUMBER))
 		operand.generateVariables
-		newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WVariableReference it) {
-		it.newWithSubtype(ref)
+		newTypeVariable.beSupertypeOf(ref.tvar)
 	}
 
 	def dispatch void generate(WSelf it) {
-		it.newSealed(declaringContext.asWollokType)
+		asOwner.newSealed(declaringContext.asWollokType)
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
 		if (feature.equals("!")) {
-			newSealed(classType(BOOLEAN))
+			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
 	}
@@ -246,11 +246,12 @@ class ConstraintGenerator {
 
 			// If there is a else branch, if can be an expression 
 			// and has to be a supertype of both (else, then) branches
-			it.newWithSubtype(then, getElse)
+			newTypeVariable.beSubtypeOf(then.tvar)
+			newTypeVariable.beSubtypeOf(getElse.tvar)
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
-			newVoid
+			newTypeVariable.beVoid
 		}
 	}
 
@@ -262,7 +263,7 @@ class ConstraintGenerator {
 			variable.beSupertypeOf(right)
 		}
 
-		it.newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WMemberFeatureCall it) {
@@ -278,7 +279,7 @@ class ConstraintGenerator {
 		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newVoid)
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newTypeVariable => [beVoid])
 		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
 			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
@@ -294,7 +295,7 @@ class ConstraintGenerator {
 	}
 
 	def newNamedObject(WNamedObject it) {
-		it.newSealed(it.objectType)
+		newTypeVariable.beSealed(objectType)
 	}
 
 	// ************************************************************************

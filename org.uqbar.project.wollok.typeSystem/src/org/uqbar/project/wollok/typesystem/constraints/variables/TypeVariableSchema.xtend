@@ -9,8 +9,6 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
-
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
  * I am a class type parameter, please note that there is currently no support for method type parameters in Wollok type system.
@@ -49,11 +47,11 @@ abstract class TypeVariableSchema extends ITypeVariable {
 class GeneralTypeVariableSchema extends TypeVariableSchema {
 	GenericTypeSchema typeSchema
 	
-	new(EObject programElement, GenericTypeSchema typeSchema) {
-		super(new ProgramElementTypeVariableOwner(programElement))
+	new(TypeVariableOwner owner, GenericTypeSchema typeSchema) {
+		super(owner)
 		this.typeSchema = typeSchema
 	}
-
+	
  	override getType() {
 		WollokType.WAny // TODO
 	}

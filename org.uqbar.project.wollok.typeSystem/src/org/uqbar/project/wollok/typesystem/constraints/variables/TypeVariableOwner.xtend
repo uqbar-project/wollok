@@ -28,6 +28,8 @@ abstract class TypeVariableOwner {
 	@Accessors
 	val log = Logger.getLogger(class)
 
+	List<TypeSystemException> errors = newArrayList
+
 	// ************************************************************************
 	// ** Information
 	// ************************************************************************
@@ -40,15 +42,29 @@ abstract class TypeVariableOwner {
 	// ************************************************************************
 	// ** Error handling
 	// ************************************************************************
-	def void addError(TypeSystemException exception)
+	def addError(TypeSystemException exception) {
+		if (isCoreObject)
+			throw new RuntimeException('''Tried to add a type error to a core object: «debugInfoInContext»''')
+
+		errors.add(exception)
+	}
 
 	def hasErrors() {
 		!this.errors.empty
 	}
 
-	def Iterable<TypeSystemException> getErrors()
+	def reportErrors(ConfigurableDslValidator validator) {
+		errors.forEach [
+			log.debug('''Reporting error in «debugInfoInContext»: «message»''')
+			try {
+				validator.report(message, errorReportTarget)
+			} catch (IllegalArgumentException exception) {
+				log.error(exception.message, exception)
+			}
+		]
 
-	def void reportErrors(ConfigurableDslValidator validator)
+	}
+
 
 	def EObject getErrorReportTarget()
 
@@ -71,9 +87,6 @@ abstract class TypeVariableOwner {
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	@Accessors
 	val EObject programElement
-
-	@Accessors(PUBLIC_GETTER)
-	List<TypeSystemException> errors = newArrayList
 
 	new(EObject programElement) {
 		if(programElement === null) 
@@ -101,24 +114,6 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	// ************************************************************************
 	// ** Error handling
 	// ************************************************************************
-	override addError(TypeSystemException exception) {
-		if (isCoreObject)
-			throw new RuntimeException('''Tried to add a type error to a core object: «programElement.debugInfoInContext»''')
-
-		errors.add(exception)
-	}
-
-	override reportErrors(ConfigurableDslValidator validator) {
-		errors.forEach [
-			log.debug('''Reporting error in «programElement.debugInfoInContext»: «message»''')
-			try {
-				validator.report(message, programElement)
-			} catch (IllegalArgumentException exception) {
-				log.error(exception.message, exception)
-			}
-		]
-
-	}
 
 	override getErrorReportTarget() {
 		programElement
@@ -134,53 +129,36 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	override debugInfoInContext() {
 		programElement.debugInfoInContext
 	}
-
 }
 
 class ParameterTypeVariableOwner extends TypeVariableOwner {
-	TypeVariable parentVariable
+	TypeVariableOwner parent
 	
 	String paramName
 	
-	new(TypeVariable parentVariable, String paramName) {
-		this.parentVariable = parentVariable
+	new(TypeVariableOwner parent, String paramName) {
+		this.parent = parent
 		this.paramName = paramName
 	}
 	
 	override getURI() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		parent.URI.appendFragment(paramName)
 	}
 	
 	override isCoreObject() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		parent.isCoreObject
 	}
 	
 	override checkCanBeVoid() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	override addError(TypeSystemException exception) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	override getErrors() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	override reportErrors(ConfigurableDslValidator validator) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		// Do nothing, allways allow true (TODO sure?)
 	}
 	
 	override getErrorReportTarget() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		parent.errorReportTarget
 	}
 	
-	override debugInfo() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
+	override debugInfo() '''tparam «paramName» of «parent.debugInfo»'''
 	
-	override debugInfoInContext() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
+	override debugInfoInContext() '''tparam «paramName» of «parent.debugInfoInContext»'''
 	
 }

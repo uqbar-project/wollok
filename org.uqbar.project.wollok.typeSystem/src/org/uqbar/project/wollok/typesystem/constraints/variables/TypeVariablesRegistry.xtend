@@ -52,27 +52,28 @@ class TypeVariablesRegistry {
 	// ************************************************************************
 	// ** Creating type variables.
 	// ************************************************************************
-	def newTypeVariable(EObject owner) {
+	
+	def asOwner(EObject programElement) {
+		new ProgramElementTypeVariableOwner(programElement)
+	}
+
+	def newTypeVariable(EObject programElement) {
+		programElement.asOwner.newTypeVariable
+	}
+
+	def newTypeVariable(TypeVariableOwner owner) {
 		TypeVariable.simple(owner).register
 	}
 
-	def newVoid(EObject owner) {
+	def newVoid(TypeVariableOwner owner) {
 		TypeVariable.newVoid(owner).register
 	}
 
-	def newParameter(TypeVariable generic, String paramName) {
-		new TypeVariable(new ParameterTypeVariableOwner(generic, paramName))
+	def newParameter(TypeVariableOwner parent, String paramName) {
+		new TypeVariable(new ParameterTypeVariableOwner(parent, paramName))
 	}
 
-	def newWithSubtype(EObject it, EObject... subtypes) {
-		newTypeVariable => [subtypes.forEach[subtype|it.beSupertypeOf(subtype.tvar)]]
-	}
-
-	def newWithSupertype(EObject it, EObject... supertypes) {
-		newTypeVariable => [supertypes.forEach[supertype|it.beSubtypeOf(supertype.tvar)]]
-	}
-
-	def newSealed(EObject it, WollokType type) {
+	def newSealed(TypeVariableOwner it, WollokType type) {
 		newTypeVariable => [beSealed(type)]
 	}
 
@@ -93,10 +94,8 @@ class TypeVariablesRegistry {
 	// ** Synthetic type variables
 	// ************************************************************************
 
-	def newClassParameterVar(EObject owner, GenericType type, String paramName) {
-		TypeVariable.classParameter(owner, type, paramName) => [
-			register
-		]
+	def newClassParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
+		TypeVariable.classParameter(owner, type, paramName) => [register]
 	}
 
 	// ************************************************************************

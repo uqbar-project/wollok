@@ -31,8 +31,8 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	
 	String paramName
 
-	new(EObject programElement, GenericType genericType, String paramName) {
-		super(new ProgramElementTypeVariableOwner(programElement))
+	new(TypeVariableOwner owner, GenericType genericType, String paramName) {
+		super(owner)
 		this.genericType = genericType
 		this.paramName = paramName
 	}

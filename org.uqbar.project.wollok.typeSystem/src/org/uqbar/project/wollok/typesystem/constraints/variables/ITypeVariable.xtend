@@ -9,7 +9,8 @@ abstract class ITypeVariable {
 	val TypeVariableOwner owner
 	
 	new(TypeVariableOwner owner) {
-		if (owner === null) throw new IllegalArgumentException("A type variable must have an owner") 
+		if (owner === null) 
+			throw new IllegalArgumentException("A type variable must have an owner") 
 		this.owner = owner
 	}
 
