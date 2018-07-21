@@ -123,7 +123,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 					issueResolutionProvider).processIssues(issues, new NullProgressMonitor)
 					
 			} catch (ClassCastException e) {
-				return;
+				return
 			}
 		])
 	}
