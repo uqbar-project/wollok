@@ -84,6 +84,10 @@ class WollokModelPrintForDebug {
 	// ** Debug info with context
 	// ************************************************************************
 
+	static def dispatch String debugInfoInContext(Void obj) {
+		throw new UnsupportedOperationException("Should not happen")
+	}
+
 	static def dispatch String debugInfoInContext(EObject obj) {
 		obj.debugInfo
 	}

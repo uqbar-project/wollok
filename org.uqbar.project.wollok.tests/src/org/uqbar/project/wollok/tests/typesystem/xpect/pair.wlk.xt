@@ -22,7 +22,7 @@ object pairTest {
 		return pair.key()
 	}
 
-	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair)) => Void
+	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair<Any, Any>)) => Void
 	method m4(pair) {
 		return pair.value()
 	}
