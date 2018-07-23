@@ -81,11 +81,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
 	}
 
+	/**
+	 * Returns the first container that is able to declare variables
+	 */
 	def static EObject declaringContainer(WExpression it)	{ 
 		getAllContainers.findFirst[
 			it instanceof WClosure || 
 			it instanceof WMethodDeclaration ||
-			it instanceof WProgram
+			it instanceof WProgram ||
+			it instanceof WNamedObject ||
+			it instanceof WClass
+			it instanceof WObjectLiteral
 		]
 	}
 	

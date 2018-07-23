@@ -48,7 +48,7 @@ class GenericTypeInstance implements ConcreteType {
 	// ************************************************************************
 	
 	override getName() {
-		baseType.name
+		rawType.toString(this).toString
 	}
 	
 	override getContainer() {
@@ -95,7 +95,7 @@ class GenericTypeInstance implements ConcreteType {
 	// ** Basics
 	// ************************************************************************
 	
-	override toString() { rawType.toString(this).toString }
+	override toString() { name }
 	
 	def dispatch equals(Object other ) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }

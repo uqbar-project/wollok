@@ -49,22 +49,3 @@ interface WollokType {
 	
 	def WollokType instanceFor(TypeVariable variable)
 }
-
-
-/**
- * Utilities around type system
- * 
- * @author jfernandes
- */
-// Nombre desactualizado
-class TypeInferrer {
-	
-	def static structuralType(Iterable<MessageType> messagesTypes) {
-		structuralType(messagesTypes.iterator)
-	}
-	
-	def static structuralType(Iterator<MessageType> messagesTypes) {
-		new StructuralType(messagesTypes)	
-	}
-	
-}

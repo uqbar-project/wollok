@@ -49,5 +49,5 @@ abstract class BasicType implements WollokType {
 
 	override instanceFor(TypeVariable parent) { this }
 
-	override toString() { getName }
+	override toString() { name }
 }
