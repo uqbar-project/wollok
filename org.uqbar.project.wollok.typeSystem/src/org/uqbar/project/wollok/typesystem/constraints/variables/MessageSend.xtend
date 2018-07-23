@@ -46,7 +46,7 @@ class MessageSend {
 	
 	def isClosureMessage() { selector == "apply" }
 
-	def featureCall() { returnType.owner as WMemberFeatureCall }
+	def featureCall() { returnType.owner.errorReportTarget as WMemberFeatureCall }
 	
 	def isValid() { !returnType.hasErrors	}
 

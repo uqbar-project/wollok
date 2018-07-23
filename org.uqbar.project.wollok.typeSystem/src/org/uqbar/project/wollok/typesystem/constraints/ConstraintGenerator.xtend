@@ -280,8 +280,9 @@ class ConstraintGenerator {
 
 		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
+			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newTypeVariable => [beVoid])
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newParameter(tvar.owner, "ignoredResult"))
 		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
 			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
