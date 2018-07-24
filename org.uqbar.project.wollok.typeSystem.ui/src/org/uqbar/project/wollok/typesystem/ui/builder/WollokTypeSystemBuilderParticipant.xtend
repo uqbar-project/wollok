@@ -44,21 +44,25 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
 			val contents = wollokFiles.map [ contents ].flatten
 			
+			// Initialization process is general
 			ts.initialize(contents.head)
 			
-			contents.forEach[
-				ts.analyse(it)
-			]
+			// Analyzing each file
+			contents.forEach[ ts.analyse(it) ]
  
 			// Now that we have added all files, we can resolve constraints (aka infer types).
 			ts.inferTypes
 
+			// Refreshing views - markers (problems tab), then outline and finally active editor
 			wollokFiles.forEach [
-				wollokActivator.runInXtextEditorFor(project, it, monitor)
+				wollokActivator.generateIssues(it)
+				wollokActivator.refreshTypeErrors(project, it, monitor)
 			]
 			
 			wollokActivator.refreshOutline
+			wollokActivator.refreshErrorsInEditor
 		]
+
 	}
 
 }

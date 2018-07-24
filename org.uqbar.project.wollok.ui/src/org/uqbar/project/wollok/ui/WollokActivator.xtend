@@ -32,7 +32,7 @@ import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
-import static org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
@@ -97,53 +97,40 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		this.getInjector(ORG_UQBAR_PROJECT_WOLLOK_WOLLOKDSL).getInstance(IURIEditorOpener)
 	}
 
-	def void runInXtextEditorFor(IProject project, Resource resource, IProgressMonitor monitor) {
-		val uri = resource.URI
-		val locationURI = uri.toPlatformString(true)
-		
-		Display.getDefault().syncExec([
-			val currentEditor = activeEditor
-			if(currentEditor === null) return;
-
-			try {
-				val activeWollokEditor = currentEditor as WollokTextEditor
-				val activeEditorURI = activeWollokEditor.resource.locationURI.toString.replaceAll(workspaceURI, " ").
-					trim
-				val issues = validator.validate(resource, CheckMode.ALL, null)
-				mapIssues.put(locationURI, issues)
-
-				new MarkerIssueProcessor(resource.IFile, markerCreator, markerTypeProvider).processIssues(issues,
-					monitor)
-					
-				if(!locationURI.equals(activeEditorURI)) return;
-				
-				val editorPart = opener.open(uri, false)
-				val editor = EditorUtils.getXtextEditor(editorPart)
-				new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(),
-					issueResolutionProvider).processIssues(issues, new NullProgressMonitor)
-					
-			} catch (ClassCastException e) {
-				return
-			}
-		])
+	def void generateIssues(Resource resource) {
+		val issues = validator.validate(resource, CheckMode.ALL, null)
+		mapIssues.put(resource.platformURI, issues)
+	}
+	
+	def void refreshTypeErrors(IProject project, Resource resource, IProgressMonitor monitor) {
+		Display.^default.syncExec [
+			val locationURI = resource.platformURI
+			val issues = mapIssues.get(locationURI)
+			new MarkerIssueProcessor(resource.IFile, markerCreator, markerTypeProvider).processIssues(issues, monitor)
+		]
 	}
 
 	def void refreshOutline() {
-		Display.getDefault().syncExec([
+		Display.^default.syncExec [
 			val outlineView = activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
 			if (outlineView !== null) {
 				(outlineView.currentPage as OutlinePage).scheduleRefresh
 			}
-		])
+		]
 	}
 
+	def void refreshErrorsInEditor() {
+		Display.^default.syncExec [
+			activeEditor.partActivated			
+		]
+	}
+	
 	override partActivated(IWorkbenchPart editor) {
 		if (editor instanceof WollokTextEditor) {
 			val wollokTextEditor = editor as WollokTextEditor
-			val activeEditorURI = wollokTextEditor.resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
-
+			val activeURI = wollokTextEditor.resource.locationURI
+			val activeEditorURI = activeURI.toString.replaceAll(workspaceURI, " ").trim
 			val issues = mapIssues.get(activeEditorURI) ?: #[]
-
 			Display.getDefault.syncExec [|
 				new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(),
 					issueResolutionProvider).processIssues(issues, new NullProgressMonitor)

@@ -79,7 +79,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		// Dodain - only Builder now is responsible for analyzing and inferring types
 		//this.analyse(file)
 		//this.inferTypes
-		reportErrors(validator)
+		file.reportErrors(validator)
 	}
 
 	// ************************************************************************
@@ -162,8 +162,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Error reporting
 	// ************************************************************************
-	override reportErrors(ConfigurableDslValidator validator) {
-		allVariables.forEach[it.reportErrors(validator)]
+	override reportErrors(WFile file, ConfigurableDslValidator validator) {
+		typeVariableFrom(file.eResource.URI).forEach [ reportErrors(validator) ]
 	}
 
 	// ************************************************************************

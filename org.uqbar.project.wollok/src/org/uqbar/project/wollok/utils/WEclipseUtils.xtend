@@ -295,8 +295,15 @@ class WEclipseUtils {
 	}
 
 	def static boolean isCoreLib(Resource file) {
-		val uriString = file.URI.toString
-		return uriString === null || uriString.contains(LIBRARY_FOLDER)
+		file.URI.toString.isCoreLib
+	}
+
+	def static boolean isCoreLib(String uri) {
+		return uri === null || uri.contains(LIBRARY_FOLDER)
+	}
+	
+	def static getPlatformURI(Resource resource) {
+		resource.URI.toPlatformString(true)
 	}
 	
 	def static getWorkspaceURI() {

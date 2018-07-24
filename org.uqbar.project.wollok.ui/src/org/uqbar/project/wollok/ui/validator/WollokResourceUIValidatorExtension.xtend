@@ -12,6 +12,7 @@ import org.eclipse.xtext.validation.CheckMode
 import org.eclipse.emf.common.util.URI
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExtension implements IResourceUIValidatorExtension {
 	
@@ -21,7 +22,7 @@ class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExten
 
 		val filesToUpdate = <URI>newHashSet()
 
-		if (!shouldProcess(file)) {
+		if (!doShouldProcess(file)) {
 			return
 		}
 		
@@ -36,10 +37,14 @@ class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExten
 		filesToUpdate.forEach[ uri | 
 			val res = resource.resourceSet.getResource(uri, true)
 			val f = res.IFile
-			if(shouldProcess(f)){
+			if (!doShouldProcess(file)) {
 				addMarkers(f, res, mode, monitor)
 			}
 		]
 	}
-	
+
+	def doShouldProcess(IFile file) {
+		val uri = file.locationURI.toString
+		file.isWollokExtension && !uri.isCoreLib && file.shouldProcess
+	}	
 }
