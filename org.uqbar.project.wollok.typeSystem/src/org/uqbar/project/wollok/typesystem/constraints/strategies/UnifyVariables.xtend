@@ -91,7 +91,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
 		if (subtype.typeInfo === null && supertype.typeInfo === null) {
-			log.debug('''Unifyng «subtype» with «supertype»: no type info yet, unification postponed''')
+			log.debug('''Unifying «subtype» with «supertype»: no type info yet, unification postponed''')
 			Pending
 		} else if (subtype.typeInfo === null) {
 			subtype.copyTypeInfoFrom(supertype)

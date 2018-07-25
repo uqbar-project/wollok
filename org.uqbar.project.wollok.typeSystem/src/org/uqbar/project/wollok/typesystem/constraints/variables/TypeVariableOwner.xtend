@@ -144,7 +144,9 @@ class ParameterTypeVariableOwner extends TypeVariableOwner {
 	}
 	
 	override getURI() {
-		parent.URI.appendFragment(paramName)
+		// Warning: the generated URI is very unintuitive, but it is easy and provides uniqueness.
+		// TODO: Replace by a more legible implementation when this fails short.
+		parent.URI.appendSegment(paramName)
 	}
 	
 	override isCoreObject() {
