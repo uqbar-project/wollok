@@ -45,6 +45,11 @@ class SubtypingRules {
 		supertype.baseType.clazz.isSuperTypeOf(subtype.clazz)
 	}
 
+	static def dispatch isSuperTypeOf(GenericTypeInstance supertype, GenericTypeInstance subtype) {
+		// TODO Check type parameters
+		supertype.baseType.clazz.isSuperTypeOf(subtype.baseType.clazz)
+	}
+
 	/** TODO Structural types */
 	static def dispatch isSuperTypeOf(WollokType supertype, StructuralType subtype) {
 		throw new UnsupportedOperationException("Structural types are not supported yet. ")
