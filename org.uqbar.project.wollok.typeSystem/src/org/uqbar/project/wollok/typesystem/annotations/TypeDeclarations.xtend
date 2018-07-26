@@ -183,8 +183,8 @@ abstract class TypeDeclarations {
 		new GenericTypeAnnotationFactory(types.closureType(context, parameters.length)).instance(typeParameters)
 	}
 	
-	def predicate() {
-		closure(#[ELEMENT], Boolean)
+	def predicate(TypeAnnotation input) {
+		closure(#[input], Boolean)
 	}
 }
 

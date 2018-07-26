@@ -109,7 +109,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		]
 
 		// TODO This should use SELF type.
-		Collection >> "filter" === #[predicate] => List.of(ELEMENT);
+		Collection >> "filter" === #[predicate(ELEMENT)] => List.of(ELEMENT);
 
 		(List == Any) => Boolean;
 		List + List.of(ELEMENT) => List.of(ELEMENT);
@@ -120,23 +120,28 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		List >> "take" === #[Number] => List.of(ELEMENT)
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 
-		#[Collection, List, Set, Range].forEach [
-			it >> "isEmpty" === #[] => Boolean
-			it >> "contains" === #[ELEMENT] => Boolean
-			it >> "asList" === #[] => List.of(ELEMENT)
+		val (AnnotationContext, TypeAnnotation)=>void basicCollection = [ collectionType, elementType |
+			collectionType >> "isEmpty" === #[] => Boolean
+			collectionType >> "contains" === #[elementType] => Boolean
+			collectionType >> "asList" === #[] => List.of(elementType)
 
-			it >> "forEach" === #[closure(#[ELEMENT], Void)] => Void
-			it >> "find" === #[predicate] => ELEMENT;
-			it >> "all" === #[predicate] => Boolean
-			it >> "any" === #[predicate] => Boolean
-			it >> "find" === #[predicate] => ELEMENT
-			it >> "findOrDefault" === #[predicate, ELEMENT] => ELEMENT
-			it >> "findOrElse" === #[predicate, closure(#[], ELEMENT)] => ELEMENT
-			it >> "count" === #[predicate] => Number
+			collectionType >> "forEach" === #[closure(#[elementType], Void)] => Void
+			collectionType >> "find" === #[predicate(elementType)] => elementType;
+			collectionType >> "all" === #[predicate(elementType)] => Boolean
+			collectionType >> "any" === #[predicate(elementType)] => Boolean
+			collectionType >> "find" === #[predicate(elementType)] => elementType
+			collectionType >> "findOrDefault" === #[predicate(elementType), elementType] => elementType
+			collectionType >> "findOrElse" === #[predicate(elementType), closure(#[], elementType)] => elementType
+			collectionType >> "count" === #[predicate(elementType)] => Number
 		]
 
+		basicCollection.apply(Collection, ELEMENT)
+		basicCollection.apply(List, ELEMENT)
+		basicCollection.apply(Set, ELEMENT)
+		basicCollection.apply(Range, Number)
+
 		#[Collection, List, Set, Range, Dictionary].forEach [
-			it >> "size" === #[] => Number
+		        it >> "size" === #[] => Number
 		]
 
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
