@@ -299,7 +299,7 @@ class WEclipseUtils {
 	}
 
 	def static boolean isCoreLib(String uri) {
-		return uri === null || uri.contains(LIBRARY_FOLDER)
+		return uri !== null && uri.contains(LIBRARY_FOLDER)
 	}
 	
 	def static getPlatformURI(Resource resource) {
