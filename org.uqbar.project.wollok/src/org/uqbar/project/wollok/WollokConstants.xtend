@@ -35,7 +35,9 @@ class WollokConstants {
 	public static val STACKELEMENT_SEPARATOR = ":"
 	public static val WINDOWS_FILE_PREFIX_SIZE = 6
 	public static val DEFAULT_FILE_PREFIX_SIZE = 5 
-	
+
+	public static val LIBRARY_FOLDER = "org.uqbar.project.wollok.lib"
+		
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	

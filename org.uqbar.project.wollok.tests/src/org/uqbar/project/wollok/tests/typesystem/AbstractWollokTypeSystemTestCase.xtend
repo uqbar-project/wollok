@@ -71,7 +71,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 			forEach[validate]
 			forEach[analyse]
 			inferTypes
-			reportErrors(validator)
+			forEach [ reportErrors(validator) ] 
 		]).last
 	}
 

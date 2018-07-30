@@ -77,10 +77,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
-		this.analyse(file)
-		this.inferTypes
-
-		reportErrors(validator)
+		// Dodain - only Builder now is responsible for analyzing and inferring types
+		//this.analyse(file)
+		//this.inferTypes
+		file.reportErrors(validator)
 	}
 
 	// ************************************************************************
@@ -96,8 +96,9 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		// This shouldn't be necessary if all global objects had type annotations
 		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
 
-		annotatedTypes = new AnnotatedTypeRegistry(registry, program)
-		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
+		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
+			addTypeDeclarations(this, WollokCoreTypeDeclarations, program)	
+		]
 	}
 
 	override analyse(EObject program) {
@@ -164,8 +165,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Error reporting
 	// ************************************************************************
-	override reportErrors(ConfigurableDslValidator validator) {
-		allVariables.forEach[it.reportErrors(validator)]
+	override reportErrors(WFile file, ConfigurableDslValidator validator) {
+		typeVariablesFrom(file.eResource.URI).forEach [ reportErrors(validator) ]
 	}
 
 	// ************************************************************************
@@ -265,4 +266,3 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		allTypes
 	}
 }
-	

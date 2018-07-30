@@ -294,4 +294,28 @@ class WEclipseUtils {
 		HIDDEN_FOLDERS.forall [ !r.path.contains("/" + it) ]
 	}
 
+	def static boolean isCoreLib(Resource file) {
+		file.URI.toString.isCoreLib
+	}
+
+	def static boolean isCoreLib(String uri) {
+		return uri === null || uri.contains(LIBRARY_FOLDER)
+	}
+	
+	def static getPlatformURI(Resource resource) {
+		resource.URI.toPlatformString(true)
+	}
+	
+	def static getWorkspaceURI() {
+		ResourcesPlugin.workspace.root.locationURI.toString
+	}
+
+	def static activeEditor() {
+		activePage?.activeEditor
+	}
+
+	def static relativeToWorkspace(IResource resource) {
+		resource.locationURI.toString.replaceAll(workspaceURI, " ").trim
+	}
+	
 }

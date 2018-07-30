@@ -16,12 +16,12 @@ class StandardWollokLib extends AbstractWollokLib {
 	public static val standardLibManifestName = "wollok" + WollokManifest.WOLLOK_MANIFEST_EXTENSION
 	
 	def newManifest(String bundle, String manifestName){
-		
 		if (WollokActivator.getDefault !== null) {
 			new WollokManifest(WollokActivator.getDefault.findResource(bundle, manifestName))
 		}
-		else
+		else {
 			new WollokManifest(class.getResourceAsStream("/" + manifestName))
+		}
 	}
 	
 	override doGetManifest(Resource resource) {

@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.model
 
 import java.util.List
 import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.ECollections
@@ -444,9 +445,9 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
-	def static IFile getIFile(EObject obj) {
-		getIFile(obj.eResource)
-	}
+	def static getProject(EObject obj) { obj.IFile.project }
+
+	def static IFile getIFile(EObject obj) { obj.eResource.IFile }
 	
 	def static IFile getIFile(Resource resource){
 		val platformString = resource.URI.toPlatformString(true)
@@ -454,9 +455,13 @@ class WollokModelExtensions {
 			// could be a synthetic file
 			return null;
 		}
-		ResourcesPlugin.workspace.root.getFile(new Path(platformString))		
+		workspace.root.getFile(new Path(platformString))		
 	}
 
+	def static IWorkspace workspace() {
+		ResourcesPlugin.workspace
+	}
+	
 	// ******************************
 	// ** is duplicated impl
 	// ******************************

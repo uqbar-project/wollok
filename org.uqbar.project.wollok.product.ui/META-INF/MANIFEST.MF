@@ -6,6 +6,7 @@ Bundle-Version: 1.6.6
 Bundle-Activator: org.uqbar.project.wollok.product.ui.WollokProductActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,

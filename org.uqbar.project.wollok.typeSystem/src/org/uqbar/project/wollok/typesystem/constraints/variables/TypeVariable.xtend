@@ -4,6 +4,7 @@ import java.util.List
 import java.util.Set
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
@@ -78,9 +79,17 @@ class TypeVariable extends ITypeVariable {
 		owner.addError(exception)
 		log.info('''«exception.message» ==> reported in «fullDescription»''')
 	}
-	
+
 	def reportErrors(ConfigurableDslValidator validator) {
 		owner.reportErrors(validator)
+	}
+
+	/** 
+	 * The EObject we have (owner) can be obsolete, most likely because it belongs to 
+	 * an old build. The Resource can get us the right EObject, i.e. one with the same URI
+	 */
+	def ownerIn(Resource resource) {
+		resource.getEObject(owner.errorReportTarget.eResource.getURIFragment(owner.errorReportTarget))
 	}
 
 	// ************************************************************************
@@ -171,7 +180,7 @@ class TypeVariable extends ITypeVariable {
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
 		val it = new MessageSend(selector, arguments, returnType)
-		if (typeInfo === null) setTypeInfo(new GenericTypeInfo())
+		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
 		typeInfo.messages.add(it)
 	}
 

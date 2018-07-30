@@ -2,8 +2,10 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
@@ -35,20 +37,24 @@ class MessageSend {
 	def addOpenType(WollokType type) {
 		openTypes.add(type)
 	}
-	
+
 	def fullMessage() {
-		featureCall.fullMessage
+		returnType.owner.errorReportTarget.fullMessage
 	}
-	
+
 	def argumentNames() {
-		featureCall.memberCallArguments.map[sourceCode]
+		returnType.owner.errorReportTarget.arguments.map[sourceCode]
 	}
-	
+
+	def static dispatch arguments(EObject o) { throw new RuntimeException('''Element «o» has no arguments''') }
+
+	def static dispatch arguments(WBinaryOperation it) { #[rightOperand] }
+
+	def static dispatch arguments(WMemberFeatureCall it) { memberCallArguments }
+
 	def isClosureMessage() { selector == "apply" }
 
-	def featureCall() { returnType.owner.errorReportTarget as WMemberFeatureCall }
-	
-	def isValid() { !returnType.hasErrors	}
+	def isValid() { !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 }
