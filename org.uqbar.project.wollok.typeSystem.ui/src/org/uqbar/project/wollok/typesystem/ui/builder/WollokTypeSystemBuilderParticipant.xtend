@@ -1,14 +1,8 @@
-package org.uqbar.project.wollok.typeSystem.ui.builder
+package org.uqbar.project.wollok.typesystem.ui.builder
 
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.swt.widgets.Display
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
-import org.eclipse.xtext.ui.editor.XtextEditor
-import org.eclipse.xtext.ui.editor.utils.EditorUtils
-import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor
-import org.eclipse.xtext.ui.editor.validation.MarkerIssueProcessor
-import org.eclipse.xtext.validation.CheckMode
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.ui.WollokActivator
@@ -30,11 +24,18 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  */
 class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 
+	var listenersInitialized = false
+	
 	override build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
 
 		val project = context.builtProject
 		val wollokActivator = WollokActivator.getInstance
 
+		if (!listenersInitialized) {
+			wollokActivator.initializePartListeners
+			listenersInitialized = true
+		}
+		
 		WollokTypeSystemActivator.^default.ifEnabledFor(project) [
 
 			val ts = it as ConstraintBasedTypeSystem
@@ -43,29 +44,25 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
 			val contents = wollokFiles.map [ contents ].flatten
 			
+			// Initialization process is general
 			ts.initialize(contents.head)
 			
-			contents.forEach[
-				ts.analyse(it)
-			]
+			// Analyzing each file
+			contents.forEach[ ts.analyse(it) ]
  
 			// Now that we have added all files, we can resolve constraints (aka infer types).
 			ts.inferTypes
 
+			// Refreshing views - markers (problems tab), then outline and finally active editor
 			wollokFiles.forEach [
-				wollokActivator.runInXtextEditorFor(it.URI, [ XtextEditor editor |
-					val issues = wollokActivator.validator.validate(it, CheckMode.ALL, null)
-					
-					new MarkerIssueProcessor(IFile, wollokActivator.markerCreator, wollokActivator.markerTypeProvider)
-						.processIssues(issues, monitor)
-					
-					new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(), wollokActivator.issueResolutionProvider)
-						.processIssues(issues, monitor)
-				])
+				wollokActivator.generateIssues(it)
+				wollokActivator.refreshTypeErrors(project, it, monitor)
 			]
 			
 			wollokActivator.refreshOutline
+			wollokActivator.refreshErrorsInEditor
 		]
+
 	}
 
 }

@@ -103,7 +103,7 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	// ************************************************************************
+	// *	***********************************************************************
 	// ** Retrieve type variables
 	// ************************************************************************
 	
@@ -111,6 +111,10 @@ class TypeVariablesRegistry {
 		typeVariables.values
 	}
 
+	def typeVariablesFrom(URI uri) {
+		allVariables.filter [ owner.URI.toString.toUpperCase.startsWith(uri.toString.toUpperCase) ].toList
+	}
+	
 	/**
 	 * This method returns types that are not type parameters. 
 	 * If you want to be able to handle also type parameters, you have to use {@link #tvarOrParam}
