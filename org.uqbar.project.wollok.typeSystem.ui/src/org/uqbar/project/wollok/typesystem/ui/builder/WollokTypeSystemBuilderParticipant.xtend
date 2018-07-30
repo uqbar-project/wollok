@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.typeSystem.ui.builder
+package org.uqbar.project.wollok.typesystem.ui.builder
 
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor

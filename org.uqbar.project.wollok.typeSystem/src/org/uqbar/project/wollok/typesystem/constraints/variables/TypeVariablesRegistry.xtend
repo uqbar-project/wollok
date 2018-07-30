@@ -103,7 +103,7 @@ class TypeVariablesRegistry {
 		]
 	}
 
-	// ************************************************************************
+	// *	***********************************************************************
 	// ** Retrieve type variables
 	// ************************************************************************
 	
@@ -111,7 +111,7 @@ class TypeVariablesRegistry {
 		typeVariables.values
 	}
 
-	def typeVariableFrom(URI uri) {
+	def typeVariablesFrom(URI uri) {
 		allVariables.filter [ owner.URI.toString.toUpperCase.startsWith(uri.toString.toUpperCase) ].toList
 	}
 	
