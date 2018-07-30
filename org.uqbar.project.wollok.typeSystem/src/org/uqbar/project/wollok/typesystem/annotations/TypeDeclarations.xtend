@@ -3,7 +3,7 @@ package org.uqbar.project.wollok.typesystem.annotations
 import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -46,7 +46,7 @@ abstract class TypeDeclarations {
 	}
 	
 	def constructor(AnnotationContext owner, TypeAnnotation... parameterTypes) {
-		target.addConstructorTypeDeclaration(owner.type as ClassBasedWollokType, parameterTypes)
+		target.addConstructorTypeDeclaration(owner.type as ClassInstanceType, parameterTypes)
 	}
 	
 	def variable(AnnotationContext owner, String selector , TypeAnnotation type) {

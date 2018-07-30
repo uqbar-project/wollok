@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.AnyType
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.StructuralType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
@@ -33,15 +33,15 @@ class SubtypingRules {
 		throw new UnsupportedOperationException("Structural types are not supported yet. ")
 	}
 
-	static def dispatch isSuperTypeOf(ClassBasedWollokType supertype, ClassBasedWollokType subtype) {
+	static def dispatch isSuperTypeOf(ClassInstanceType supertype, ClassInstanceType subtype) {
 		supertype.clazz.isSuperTypeOf(subtype.clazz)
 	}
 
-	static def dispatch isSuperTypeOf(ClassBasedWollokType supertype, GenericTypeInstance subtype) {
+	static def dispatch isSuperTypeOf(ClassInstanceType supertype, GenericTypeInstance subtype) {
 		supertype.clazz.isSuperTypeOf(subtype.baseType.clazz)
 	}
 
-	static def dispatch isSuperTypeOf(GenericTypeInstance supertype, ClassBasedWollokType subtype) {
+	static def dispatch isSuperTypeOf(GenericTypeInstance supertype, ClassInstanceType subtype) {
 		supertype.baseType.clazz.isSuperTypeOf(subtype.clazz)
 	}
 

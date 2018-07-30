@@ -27,11 +27,11 @@ interface TypeFactory {
  */
 @Accessors
 class GenericType implements TypeFactory {
-	ClassBasedWollokType baseType
+	ClassInstanceType baseType
 	String[] typeParameterNames
 		
 	new(WClass clazz, TypeSystem typeSystem, String... typeParameterNames) {
-		baseType = new ClassBasedWollokType(clazz, typeSystem)
+		baseType = new ClassInstanceType(clazz, typeSystem)
 		this.typeParameterNames = typeParameterNames
 	}
 	

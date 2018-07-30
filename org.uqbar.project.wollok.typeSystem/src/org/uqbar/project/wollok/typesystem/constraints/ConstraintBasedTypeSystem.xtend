@@ -10,11 +10,11 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
-import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
+import org.uqbar.project.wollok.typesystem.NamedObjectType
 import org.uqbar.project.wollok.typesystem.TypeFactory
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
@@ -185,7 +185,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	def objectType(WNamedObject model) {
-		new NamedObjectWollokType(model, this)
+		new NamedObjectType(model, this)
 	}
 
 	def classType(WClass clazz) {
@@ -193,7 +193,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 			throw new IllegalArgumentException('''Tried to get a class type for «clazz.fqn» but this is not possible because it is a generic type and must be instantiated before being used''')	
 		}  
 
-		new ClassBasedWollokType(clazz, this)
+		new ClassInstanceType(clazz, this)
 	}
 
 	def genericType(WClass clazz, String... typeParameterNames) {
@@ -245,7 +245,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Not all classes are actual types, as some have type parameters and therefore are generic types (aka type factories).
 	 */
 	def TypeFactory typeOrFactory(WClass clazz) {
-		genericTypes.get(clazz.fqn) ?: new ClassBasedWollokType(clazz, this)
+		genericTypes.get(clazz.fqn) ?: new ClassInstanceType(clazz, this)
 	}
 
 	/**

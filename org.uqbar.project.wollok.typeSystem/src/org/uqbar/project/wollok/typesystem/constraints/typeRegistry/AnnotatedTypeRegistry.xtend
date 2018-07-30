@@ -1,7 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.annotations.ClassParameterTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.GenericTypeInstanceAnnotation
@@ -32,7 +32,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		method.asOwner.beSealed(returnType)
 	}
 
-	override addConstructorTypeDeclaration(ClassBasedWollokType receiver, TypeAnnotation[] paramTypes) {
+	override addConstructorTypeDeclaration(ClassInstanceType receiver, TypeAnnotation[] paramTypes) {
 		var constructor = receiver.getConstructor(paramTypes)
 		constructor.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 	}
