@@ -25,7 +25,6 @@ class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExten
 					addMarkers(f, res, mode, monitor)
 				}
 			]
-			println("Add markers de updateValidationMarkers")
 		}
 	}
 
