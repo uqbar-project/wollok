@@ -18,7 +18,6 @@ class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExten
 			if (!file.shouldProcess) {
 				return
 			}
-			addMarkers(file, resource, mode, monitor)
 			resource.resourceSet.resources.forEach[ res |
 				val f = res.IFile
 				if (f !== null && f.shouldProcess) {
