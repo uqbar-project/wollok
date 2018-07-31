@@ -12,22 +12,21 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokResourceUIValidatorExtension extends DefaultResourceUIValidatorExtension implements IResourceUIValidatorExtension {
 	
-//	@Inject IResourceDescriptionsProvider resourceDescriptionsProvider
-	
 	override updateValidationMarkers(IFile file, Resource resource, CheckMode mode, IProgressMonitor monitor) throws OperationCanceledException {
 
-		if (!file.shouldProcess) {
-			return
-		}
-		
-		addMarkers(file, resource, mode, monitor)
-
-		resource.resourceSet.resources.forEach[ res |
-			val f = res.IFile
-			if (f !== null && f.shouldProcess) {
-				addMarkers(f, res, mode, monitor)
+		synchronized (resource) {
+			if (!file.shouldProcess) {
+				return
 			}
-		]
+			addMarkers(file, resource, mode, monitor)
+			resource.resourceSet.resources.forEach[ res |
+				val f = res.IFile
+				if (f !== null && f.shouldProcess) {
+					addMarkers(f, res, mode, monitor)
+				}
+			]
+			println("Add markers de updateValidationMarkers")
+		}
 	}
 
 }
