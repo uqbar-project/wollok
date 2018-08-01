@@ -7,10 +7,10 @@ object pepita {
 	const dos = "2"
 
 	// XPECT warnings --> "expected <<Number>> but found <<String>>" at "hola"
-	// method multiplicacion() = 2 * hola
+	method multiplicacion() = 2 * hola
 	
 	// XPECT warnings --> "expected <<Number>> but found <<Boolean>>" at "true"
-	// method otraMultiplicacion() = 2 * true
+	method otraMultiplicacion() = 2 * true
 	
 	// TODO: Ver qué hacemos con esto
 	/* XPECT warnings ---
