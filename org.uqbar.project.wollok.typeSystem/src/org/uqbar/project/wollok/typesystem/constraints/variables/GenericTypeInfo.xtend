@@ -81,7 +81,7 @@ class GenericTypeInfo extends TypeInfo {
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		minTypesDo(origin) [
 			if (!origin.hasErrors(type) && !maxTypes.contains(type))
-				error(new RejectedMinTypeException(origin, type))
+				error(new RejectedMinTypeException(origin, type, maxTypes.maximalConcreteTypes))
 		]
 
 		if (maximalConcreteTypes === null) {

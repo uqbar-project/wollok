@@ -3,7 +3,7 @@
 object pepita {
 	const hola = "hola"
 	
-	// XPECT warnings --> "expected <<[]>> but found <<String>>" at ""2""
+	// XPECT warnings --> "expected <<Number>> but found <<String>>" at ""2""
 	const dos = "2"
 
 	// XPECT warnings --> "expected <<Number>> but found <<String>>" at "hola"
