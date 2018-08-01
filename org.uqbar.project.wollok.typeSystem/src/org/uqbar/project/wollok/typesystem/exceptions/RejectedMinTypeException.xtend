@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem.exceptions
 
+import java.util.Set
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
@@ -8,10 +9,17 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.variable
 
 class RejectedMinTypeException extends TypeSystemException {
 	WollokType type
-
+	Set<WollokType> minTypes = newHashSet
+	
 	new(TypeVariable variable, WollokType type) {
 		this.variable = variable
 		this.type = type
+	}
+
+	new(TypeVariable variable, WollokType type, Set<WollokType> minTypes) {
+		this.variable = variable
+		this.type = type
+		this.minTypes = minTypes
 	}
 
 	/**
@@ -26,6 +34,16 @@ class RejectedMinTypeException extends TypeSystemException {
 		// Support null `variable`. While it should not happen and means
 		// a program error, it is not nice to throw a NPE inside the toString
 		// of a previous exception.
-		'''expected <<«if (variable !== null) variable.expectedType else "unknown"»>> but found <<«type»>>'''
+		'''expected <<«expectedType»>> but found <<«type»>>'''
 	}
+	
+	def expectedType() {
+		if (!minTypes.isEmpty) return minTypes.join("|")
+		if (variable !== null) variable.expectedType else "unknown"
+	}
+	
+	override relatedToType(WollokType typeRelated) {
+		type == typeRelated
+	}
+	
 }

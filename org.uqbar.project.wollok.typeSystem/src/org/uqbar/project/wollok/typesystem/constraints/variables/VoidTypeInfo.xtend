@@ -76,7 +76,7 @@ class VoidTypeInfo extends TypeInfo {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override addMinType(WollokType type) {
+	override addMinType(WollokType type, TypeVariable origin) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 

@@ -80,7 +80,7 @@ class GenericTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
 		minTypesDo(origin) [
-			if (!maxTypes.contains(type))
+			if (!origin.hasErrors(type) && !maxTypes.contains(type))
 				error(new RejectedMinTypeException(origin, type))
 		]
 
@@ -114,19 +114,20 @@ class GenericTypeInfo extends TypeInfo {
 		}
 	}
 
-	override ConcreteTypeState addMinType(WollokType type) {
+	override ConcreteTypeState addMinType(WollokType type, TypeVariable origin) {
 		if(minTypes.containsKey(type)) return Ready
 
-		validateNewMinType(type)
+		validateNewMinType(type, origin)
 
 		minTypes.put(type, Pending)
 		Pending
 
 	}
 
-	def validateNewMinType(WollokType type) {
-		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)])
-			throw new RejectedMinTypeException(type)
+	def validateNewMinType(WollokType type, TypeVariable origin) {
+		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+			throw new RejectedMinTypeException(origin, type, minTypes.keySet)
+		}
 
 		validMessages.forEach [
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)

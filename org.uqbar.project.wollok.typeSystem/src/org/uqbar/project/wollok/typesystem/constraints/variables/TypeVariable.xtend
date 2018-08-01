@@ -45,6 +45,7 @@ class TypeVariable implements ITypeVariable {
 	@Accessors
 	val Set<TypeVariable> supertypes = newHashSet
 
+	@Accessors
 	List<TypeSystemException> errors = newArrayList
 
 	new(EObject owner) {
@@ -88,6 +89,10 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def hasErrors() {
 		return !errors.empty
+	}
+	
+	def hasErrors(WollokType type) {
+		return errors.exists [ relatedToType(type) ]
 	}
 
 	def addError(TypeSystemException exception) {
@@ -191,7 +196,7 @@ class TypeVariable implements ITypeVariable {
 	 */
 	def addMinType(WollokType type) {
 		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
-		typeInfo.addMinType(type)
+		typeInfo.addMinType(type, this)
 	}
 
 	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {

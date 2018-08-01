@@ -25,6 +25,7 @@ class OffenderSelector {
 	def static handleOffense(TypeVariable subtype, TypeVariable supertype, TypeSystemException offense) {
 		val offender = selectOffenderVariable(subtype, supertype)
 		if (offense.variable === null) offense.variable = offender
+		offense.variable = offender
 		offense.variable.addError(offense)
 	}
 
@@ -76,4 +77,5 @@ class OffenderSelector {
 	def static dispatch selectOffender(WParameter superclass, WParameter subclass) { 
 		subclass
 	}
+	
 }

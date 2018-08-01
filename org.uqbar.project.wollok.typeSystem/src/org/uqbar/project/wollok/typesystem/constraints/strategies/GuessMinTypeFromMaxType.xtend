@@ -48,6 +48,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import org.uqbar.project.wollok.wollokDsl.Import
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	
@@ -64,7 +65,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
 			maximalConcreteTypes.forEach[ type |
-				val state = addMinType(type) 
+				val state = addMinType(type, tvar) 
 				log.debug('''  Added min type «type» => «state»''')
 				if (state == Pending) changed = true
 			]
@@ -76,11 +77,10 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	// ************************************************************************
 
 	/** We will stop visits after a change is found */
-	def dispatch shouldVisit(EObject e) { !changed && !e.isCoreObject }
+	def dispatch shouldVisit(EObject e) { !changed && e.eResource !== null && !e.isCoreObject }
 
 	/** Handle nulls in multiple dispatch */
 	def dispatch shouldVisit(Void it) { false }
-
 
 	/** Execute actions before visiting child nodes */
 	def beforeVisit(EObject e) {
@@ -98,6 +98,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch afterVisit(WClass it) {}
 	def dispatch afterVisit(WConstructor it) {}
 	def dispatch afterVisit(WInitializer it) {}
+	def dispatch afterVisit(Import it) {}
 
 	// ************************************************************************
 	// ** Generic visiting construct 
