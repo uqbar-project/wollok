@@ -10,7 +10,7 @@ import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isC
 
 class RejectedMinTypeException extends TypeSystemException {
 	WollokType type
-	Set<WollokType> minTypes = newHashSet
+	Set<WollokType> expectedTypes = newHashSet
 	
 	new(TypeVariable variable, WollokType type) {
 		if (!variable.owner.isCoreObject) {
@@ -21,7 +21,7 @@ class RejectedMinTypeException extends TypeSystemException {
 
 	new(TypeVariable variable, WollokType type, Set<WollokType> minTypes) {
 		this(variable, type)
-		this.minTypes = minTypes
+		this.expectedTypes = minTypes
 	}
 
 	/**
@@ -40,7 +40,7 @@ class RejectedMinTypeException extends TypeSystemException {
 	}
 	
 	def expectedType() {
-		if (!minTypes.isEmpty) return minTypes.join("|")
+		if (!expectedTypes.isEmpty) return expectedTypes.join("|")
 		if (variable !== null) variable.expectedType else "unknown"
 	}
 	
