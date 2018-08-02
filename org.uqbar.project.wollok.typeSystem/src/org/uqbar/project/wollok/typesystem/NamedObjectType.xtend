@@ -7,7 +7,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
  * 
  * @author jfernandes
  */
-class NamedObjectWollokType extends AbstractContainerWollokType {
+class NamedObjectType extends AbstractContainerWollokType {
 	
 	new(WNamedObject wko, TypeSystem ts) {
 		super(wko, ts)

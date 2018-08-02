@@ -43,7 +43,8 @@ class MessageLookupExtensions {
 
 	def matchesParameters(MethodTypeInfo method, MessageSend message) {
 		return method.parameters.biForAll(message.arguments) [ parameter, argument |
-			parameter.isSuperVarOf(argument)
+			parameter.typeInfo.isSupertypeOf(argument.typeInfo)
 		]
 	}
 }
+

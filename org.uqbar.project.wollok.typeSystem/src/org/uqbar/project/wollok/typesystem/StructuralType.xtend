@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem
 import java.util.Iterator
 import java.util.List
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
  * 
@@ -15,6 +16,10 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 		messages = messagesTypes.toList
 	}
 	
+	override instanceFor(TypeVariable tvar) {
+		this
+	}
+
 	override getName() { '{ ' + messages.join(' ; ') + ' }' }
 	
 	override getAllMessages() { messages }

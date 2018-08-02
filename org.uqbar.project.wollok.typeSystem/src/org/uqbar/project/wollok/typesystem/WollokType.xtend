@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.Iterator
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
  * 
@@ -46,24 +47,5 @@ interface WollokType {
 	 */
 	def Iterable<MessageType> getAllMessages()
 	
-	
-}
-
-
-/**
- * Utilities around type system
- * 
- * @author jfernandes
- */
-// Nombre desactualizado
-class TypeInferrer {
-	
-	def static structuralType(Iterable<MessageType> messagesTypes) {
-		structuralType(messagesTypes.iterator)
-	}
-	
-	def static structuralType(Iterator<MessageType> messagesTypes) {
-		new StructuralType(messagesTypes)	
-	}
-	
+	def WollokType instanceFor(TypeVariable variable)
 }

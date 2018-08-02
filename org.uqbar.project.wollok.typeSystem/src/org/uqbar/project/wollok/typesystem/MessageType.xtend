@@ -30,7 +30,7 @@ class MessageType {
 	
 	override toString() {
 		name + if (parameterTypes.empty) "" else ('(' + parameterTypes.join(',') + ')')
-			+ if (returnType != null && returnType != WollokType.WVoid) (" : " + returnType) else ""			
+			+ if (returnType !== null && returnType != WollokType.WVoid) (" : " + returnType) else ""			
 	}
 	
 	/**

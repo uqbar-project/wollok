@@ -51,9 +51,9 @@ abstract class TypeInfo {
 
 	/**
 	 * @param maxType A new set of maxTypes that will be merged with current maxTypes (or assigned if no current maxTypes).
-	 * @origin The type variable from where we obtained this information, and will be target of error reports if any.
+	 * @offender The type variable to which we should report errors if this operation is not possible
 	 */
-	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin)
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender)
 
 	// ************************************************************************
 	// ** Notifications

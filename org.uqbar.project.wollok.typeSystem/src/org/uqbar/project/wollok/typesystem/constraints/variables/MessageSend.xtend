@@ -9,7 +9,6 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 class MessageSend {
@@ -38,24 +37,24 @@ class MessageSend {
 	def addOpenType(WollokType type) {
 		openTypes.add(type)
 	}
-	
+
 	def fullMessage() {
-		featureCall.fullMessage
+		returnType.owner.errorReportTarget.fullMessage
 	}
-	
+
 	def argumentNames() {
-		featureCall.arguments.map[sourceCode]
+		returnType.owner.errorReportTarget.arguments.map[sourceCode]
 	}
-	
+
 	def static dispatch arguments(EObject o) { throw new RuntimeException('''Element «o» has no arguments''') }
-	def static dispatch arguments(WBinaryOperation it) { #[ rightOperand ] }
+
+	def static dispatch arguments(WBinaryOperation it) { #[rightOperand] }
+
 	def static dispatch arguments(WMemberFeatureCall it) { memberCallArguments }
-	
+
 	def isClosureMessage() { selector == "apply" }
 
-	def featureCall() { returnType.owner }
-	
-	def isValid() { !returnType.hasErrors	}
+	def isValid() { !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 }
