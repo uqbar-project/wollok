@@ -7,7 +7,7 @@ program p {
 	// XPECT type at largo -->  Number
 	const largo = "Hola".size() 
 
-	// XPECT type at coleccion -->  List
+	// XPECT type at coleccion -->  List<Any>
 	const coleccion = [] 
 
 	// XPECT type at algo -->  Any	

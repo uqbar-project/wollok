@@ -1,9 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
 class VariableSubtypingRules {
@@ -38,19 +36,4 @@ class VariableSubtypingRules {
 	/** Default impl, will arrive to this rule if everything else fails, type infos of different kind => impossible subtyping */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, TypeInfo subtype) { false }
 	
-	// ************************************************************************
-	// ** Type Variables
-	// ************************************************************************
-
-	static def dispatch boolean isSuperVarOf(TypeVariable supertype, TypeVariable subtype) { 
-		supertype.typeInfo.isSupertypeOf(subtype.typeInfo)
-	}
-
-	static def dispatch boolean isSuperVarOf(ClassParameterTypeVariable supertype, TypeVariable subtype) {
-		true // TODO
-	} 
-
-	static def dispatch boolean isSuperVarOf(TypeVariable supertype, ClassParameterTypeVariable subtype) {
-		true // TODO
-	} 
 }

@@ -16,7 +16,7 @@ class ClosureType extends GenericType {
 		super(clazz, typeSystem, typeParameterNames)
 	}
 
-	override toString(GenericTypeInstance it) '''{(«paramTypes?.map[name].join(',')») => «returnType?.name»}'''
+	override toString(GenericTypeInstance it) '''{(«paramTypes?.map[toString].join(',')») => «returnType?.toString»}'''
 	
 	// ************************************************************************
 	// ** Static helpers

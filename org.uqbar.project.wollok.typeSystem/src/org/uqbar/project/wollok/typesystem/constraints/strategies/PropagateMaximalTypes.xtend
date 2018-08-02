@@ -17,13 +17,15 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 
 		// Do propagate		
 		propagateMaxTypes(user)
-		maximalConcreteTypes.state = Ready
+		
+		if (maximalConcreteTypes.state != Error)
+			maximalConcreteTypes.state = Ready
 	}
 
 	def void propagateMaxTypes(GenericTypeInfo it, TypeVariable user) {
 		user.subtypes.forEach [ subtype |
-			subtype.setMaximalConcreteTypes(maximalConcreteTypes, selectOffenderVariable(subtype, user))
 			log.debug('''  Propagating maxTypes «maximalConcreteTypes» from: «user» to «subtype»''')
+			subtype.setMaximalConcreteTypes(maximalConcreteTypes, selectOffenderVariable(subtype, user))
 			changed = true
 		]
 	}

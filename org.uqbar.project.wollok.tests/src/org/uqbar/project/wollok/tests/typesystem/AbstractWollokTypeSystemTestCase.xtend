@@ -13,8 +13,8 @@ import org.junit.Before
 import org.junit.runners.Parameterized.Parameter
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
-import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
+import org.uqbar.project.wollok.typesystem.NamedObjectType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
@@ -104,14 +104,14 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	 * Finds core classes by full qualified name, e.g. context.classTypeFor('wollok.lang.String')
 	 */
 	def classTypeFor(EObject context, String classFQN) {
-		new ClassBasedWollokType(finder.getCachedClass(context, classFQN), tsystem)
+		new ClassInstanceType(finder.getCachedClass(context, classFQN), tsystem)
 	}
 
 	/**
 	 * Finds core named objects by full qualified name, e.g. context.classTypeFor('wollok.lib.console')
 	 */
 	def objectTypeFor(EObject context, String classFQN) {
-		new NamedObjectWollokType(finder.getCachedObject(context, classFQN), tsystem)
+		new NamedObjectType(finder.getCachedObject(context, classFQN), tsystem)
 	}
 
 	/**
@@ -119,7 +119,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	 * e.g. classType('Golondrina')
 	 */	
 	def classType(String className) {
-		new ClassBasedWollokType(WClass.find(className), null)
+		new ClassInstanceType(WClass.find(className), null)
 	}
 
 	/**
@@ -127,7 +127,7 @@ abstract class AbstractWollokTypeSystemTestCase extends AbstractWollokParameteri
 	 */
 	def objectType(String objectName) {
 		// TODO Use always fully qualified names
-		new NamedObjectWollokType(WNamedObject.find(objectName.split('\\.').last), null)
+		new NamedObjectType(WNamedObject.find(objectName.split('\\.').last), null)
 	}
 
 	// ************************************************************

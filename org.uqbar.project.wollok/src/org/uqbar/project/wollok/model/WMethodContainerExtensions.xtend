@@ -77,8 +77,22 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
 	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
-	def static EObject declaringContainer(WReturnExpression it)	{ 
+	def static EObject returnContext(WReturnExpression it)	{ 
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
+	}
+
+	/**
+	 * Returns the first container that is able to declare variables
+	 */
+	def static EObject declaringContainer(WExpression it)	{ 
+		getAllContainers.findFirst[
+			it instanceof WClosure || 
+			it instanceof WMethodDeclaration ||
+			it instanceof WProgram ||
+			it instanceof WNamedObject ||
+			it instanceof WClass ||
+			it instanceof WObjectLiteral
+		]
 	}
 	
 	def static dispatch body(EObject it) { throw new UnsupportedOperationException }

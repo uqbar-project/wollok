@@ -10,10 +10,10 @@ class TestCollection {
 	const sample = [1, 2, 3]
 
 	method generalCollection() {
-		// XPECT type at asList --> List
+		// XPECT type at asList --> List<Number>
 		const asList = sample.asList()
 		
-		// XPECT type at asSet --> Set
+		// XPECT type at asSet --> Set<Number>
 		const asSet = sample.asSet()
 		
 		// XPECT type at isEmpty --> Boolean
@@ -27,20 +27,12 @@ class TestCollection {
 	}
 
 	method basicClosures() {
-		//  XPECT type at filterSome --> Number
+		// XPECT type at filterSome --> Number
 		const filterSome = sample.filter { x => x.even }.first() 		
 
-		//  XPECT type at findSome --> Number
-		const findSome = sample.find { x => x.even }
+		// XPECT type at find --> Number
+		const find = sample.find { x => x.even }
 
-	//	method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
-	//	method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
-	//	method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
-	//	method find(predicate) = self.findOrElse(predicate, { 
-	//	method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
-	//	method findOrElse(predicate, continuation) native
-	//	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
-	//	method sortedBy(closure)
 	}
 	
 	// Requieren comparable	
@@ -48,6 +40,7 @@ class TestCollection {
 	//	method max()		
 	//	method min(closure)
 	//	method min() = self.min({it => it})
+//		method sortedBy(closure)
 
 	//	Requieren sumables
 	//	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })

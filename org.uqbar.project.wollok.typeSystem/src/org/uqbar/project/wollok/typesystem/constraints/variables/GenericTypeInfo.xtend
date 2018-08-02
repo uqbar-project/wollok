@@ -5,13 +5,15 @@ import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
+import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 import org.uqbar.project.wollok.typesystem.exceptions.RejectedMinTypeException
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.MessageLookupExtensions.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
-import static extension org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 
@@ -27,12 +29,17 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	override getType(TypeVariable tvar) {
 		// Imposibility to find a unique type now are reported as WAny, this has to be improved
-		basicGetType() ?: WollokType.WAny
+		basicGetType(tvar) ?: WollokType.WAny
 	}
 
-	def basicGetType() {
-		minTypes.entrySet// .filter[value != Error]
-		.map[key].commonSupertype(messages)
+	def basicGetType(TypeVariable tvar) {
+		val minTypes = minTypes.entrySet // .filter[value != Error]
+		.map[key]
+
+		new UserFriendlySupertype(tvar).commonSupertype(
+			minTypes,
+			messages
+		)
 	}
 
 	// ************************************************************************
@@ -47,7 +54,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def findCompatibleTypeFor(GenericType type) {
-		minTypes.keySet.findFirst[type.isSuperTypeOf(it)]
+		minTypes.keySet.findFirst[type.baseType.isSuperTypeOf(it)]
 	}
 
 	def dispatch findParam(GenericTypeInstance typeInstance, String paramName) {
@@ -66,30 +73,22 @@ class GenericTypeInfo extends TypeInfo {
 		super.beSealed
 	}
 
-	/**
-	 * Execute an action for each known minType, updating its state according to action result 
-	 * and reporting errors to the origin type variable.
-	 */
-	def minTypesDo(TypeVariable origin, Consumer<AnalysisResultReporter<WollokType>> action) {
-		val reporter = new AnalysisResultReporter(origin)
-		minTypes.entrySet.forEach [
-			reporter.currentEntry = it
-			action.accept(reporter)
-		]
-	}
+	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
+		minTypes.statesDo(offender) [
+			if (!offender.hasErrors(type) && !maxTypes.contains(type)) {
+				error(new RejectedMinTypeException(offender, type))
+				maxTypes.state = Error
+			}
+		] 
 
-	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin) {
-		minTypesDo(origin) [
-			if (!origin.hasErrors(type) && !maxTypes.contains(type))
-				error(new RejectedMinTypeException(origin, type, maxTypes.maximalConcreteTypes))
-		]
-
-		if (maximalConcreteTypes === null) {
+		if (maxTypes.state == Error) {
+			false
+		} else if (maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
 			true
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
-		}
+		}	
 	}
 
 	/** 
@@ -114,19 +113,19 @@ class GenericTypeInfo extends TypeInfo {
 		}
 	}
 
-	override ConcreteTypeState addMinType(WollokType type, TypeVariable origin) {
+	override ConcreteTypeState addMinType(WollokType type, TypeVariable offender) {
 		if(minTypes.containsKey(type)) return Ready
 
-		validateNewMinType(type, origin)
+		validateNewMinType(type, offender)
 
 		minTypes.put(type, Pending)
 		Pending
 
 	}
 
-	def validateNewMinType(WollokType type, TypeVariable origin) {
+	def validateNewMinType(WollokType type, TypeVariable offender) {
 		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(origin, type, minTypes.keySet)
+			throw new RejectedMinTypeException(offender, type, minTypes.keySet)
 		}
 
 		validMessages.forEach [
@@ -178,9 +177,11 @@ class GenericTypeInfo extends TypeInfo {
 	public static val VALUE = "value"
 	public static val ELEMENT = "element"
 	public static val RETURN = "return"
+
 	public static def PARAM(int position) { "arg" + position }
+
 	public static def PARAMS(int parameterCount) {
-		if (parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
+		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
 	}
 
 
@@ -189,9 +190,9 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	
 	override toString() '''
-	 	«class.simpleName» of «this.canonicalUser»: «basicGetType()?.toString ?: "unknown"»
+		«class.simpleName» of «canonicalUser»: «basicGetType(canonicalUser)?.toString ?: "unknown"»
 	'''
-	
+
 	override fullDescription() '''
 		sealed: «sealed»,
 		minTypes: «minTypes»,
