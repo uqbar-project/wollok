@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.Map
-import java.util.function.Consumer
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
 import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
@@ -15,7 +15,6 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.types.Me
 import static extension org.uqbar.project.wollok.typesystem.constraints.types.SubtypingRules.isSuperTypeOf
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
 
 class GenericTypeInfo extends TypeInfo {
 	@Accessors
@@ -116,11 +115,14 @@ class GenericTypeInfo extends TypeInfo {
 	override ConcreteTypeState addMinType(WollokType type, TypeVariable offender) {
 		if(minTypes.containsKey(type)) return Ready
 
-		validateNewMinType(type, offender)
-
-		minTypes.put(type, Pending)
-		Pending
-
+		try {
+			validateNewMinType(type, offender)			
+			minTypes.put(type, Pending)
+			Pending
+		} catch (TypeSystemException exception) {
+			minTypes.put(type, Error)
+			throw exception
+		} 
 	}
 
 	def validateNewMinType(WollokType type, TypeVariable offender) {

@@ -12,12 +12,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch void analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
-		if (tvar.sealed) {
-			return
-		} 
-		if (messages.empty) {
-			return;
-		}
+		if (tvar.sealed || tvar.hasErrors || messages.empty) return
 		
 		var maxTypes = tvar.maxTypes
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
@@ -33,9 +28,11 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	 * i.e. not the parametric types in their methods. 
 	 */	
 	def maxTypes(TypeVariable tvar) {
-		allTypes.map[instanceFor(tvar)].filter[respondsToAll(tvar.typeInfo.messages)]
+		allTypes.map[instanceFor(tvar)].filter[
+			respondsToAll(tvar.typeInfo.validMessages)
+		]
 	}
-
+	
 	def contains(MaximalConcreteTypes maxTypes, Iterable<? extends WollokType> types) {
 		(maxTypes !== null && maxTypes.containsAll(types))
 	}
