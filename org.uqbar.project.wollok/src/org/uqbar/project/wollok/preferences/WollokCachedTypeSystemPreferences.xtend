@@ -15,8 +15,8 @@ class WollokCachedTypeSystemPreferences {
 	@Accessors boolean typeSystemEnabled
 		
 	private new() {
-		typeSystemEnabled = true
-		typeSystemSeverity = CheckSeverity.ERROR
+		typeSystemEnabled = false
+		typeSystemSeverity = CheckSeverity.WARN
 	}
 	
 	static def getInstance() { 

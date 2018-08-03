@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
 import java.util.Map
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
 
 /**
@@ -88,7 +90,7 @@ class ClassParameterTypeAnnotation implements TypeAnnotation {
 
 	new(GenericType type, String paramName) {
 		if (!type.typeParameterNames.contains(paramName)) {
-			throw new IllegalArgumentException('''Bad type annotation, type «type» does not contain a class parameter named «paramName»''')
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_BAD_TYPE_ANNOTATION, type, paramName))
 		}
 
 		this.type = type

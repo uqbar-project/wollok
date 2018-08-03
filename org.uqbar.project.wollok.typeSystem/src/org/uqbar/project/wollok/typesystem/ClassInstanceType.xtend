@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
+import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 
@@ -34,7 +35,7 @@ class ClassInstanceType extends AbstractContainerWollokType {
 
 	override acceptAssignment(WollokType other) {
 		if (!acceptsAssignment(other))
-			throw new TypeSystemException('''<<«other»>> is not a valid substitute for <<«this»>>''')	
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_NOT_VALID_SUBSTITUTE, other, this))	
 	}
 	
 	// ***************************************************************************
@@ -45,7 +46,7 @@ class ClassInstanceType extends AbstractContainerWollokType {
 	def dispatch refine(ClassInstanceType previous) {
 		val commonType = commonSuperclass(clazz, previous.clazz)
 		if (commonType === null)
-			throw new TypeSystemException("Incompatible types. Expected " + previous.name + " <=> " + name)
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_INCOMPATIBLE_TYPE_EXPECTED, previous.name, name))
 		new ClassInstanceType(commonType, typeSystem)
 	}
 	

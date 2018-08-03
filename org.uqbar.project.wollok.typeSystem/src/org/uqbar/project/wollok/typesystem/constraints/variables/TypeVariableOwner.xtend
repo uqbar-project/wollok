@@ -4,7 +4,10 @@ import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.util.EcoreUtil
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
@@ -12,7 +15,6 @@ import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.canBeVoid
-import org.eclipse.emf.ecore.util.EcoreUtil
 
 /**
  * Type variables are most typically associated to a program element, but in the presence of generics there exist
@@ -44,7 +46,7 @@ abstract class TypeVariableOwner {
 	// ************************************************************************
 	def addError(TypeSystemException exception) {
 		if (isCoreObject)
-			throw new RuntimeException('''Tried to add a type error to a core object: «debugInfoInContext»''')
+			throw new RuntimeException(NLS.bind(Messages.RuntimeTypeSystemException_TRIED_TO_ADD_ERROR_TO_CORE_OBJECT, debugInfoInContext))
 
 		errors.add(exception)
 	}
@@ -92,7 +94,7 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 
 	new(EObject programElement) {
 		if(programElement === null) 
-			throw new IllegalArgumentException(class.simpleName + " requires a program element")
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_REQUIRES_PROGRAM_ELEMENT, class.simpleName))
 		this.programElement = programElement
 	}
 

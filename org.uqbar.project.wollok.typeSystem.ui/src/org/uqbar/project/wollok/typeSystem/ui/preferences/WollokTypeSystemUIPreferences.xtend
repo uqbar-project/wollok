@@ -4,11 +4,12 @@ import com.google.inject.Inject
 import org.eclipse.core.resources.IProject
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
+import org.uqbar.project.wollok.typesystem.Constants
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
 import org.uqbar.project.wollok.validation.CheckSeverity
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.typesystem.Messages
 
 class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 	public static val PREF_TYPE_SYSTEM_SEVERITY = "TYPE_SYSTEM_SEVERITY"
@@ -33,7 +34,7 @@ class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 	override getSelectedTypeSystem(EObject file) {
 		var selectedTypeSystem = file.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
 		if (selectedTypeSystem === null || selectedTypeSystem == "")
-			selectedTypeSystem = "Constraints-based"
+			selectedTypeSystem = Constants.TS_CONSTRAINTS_BASED
 
 		selectedTypeSystem
 	}
@@ -45,7 +46,7 @@ class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 	override getSelectedTypeSystem(IProject project) {
 		var selectedTypeSystem = project.preferences.getString(PREF_TYPE_SYSTEM_IMPL)
 		if (selectedTypeSystem === null || selectedTypeSystem == "")
-			selectedTypeSystem = "Constraints-based"
+			selectedTypeSystem = Constants.TS_CONSTRAINTS_BASED
 
 		selectedTypeSystem
 	}

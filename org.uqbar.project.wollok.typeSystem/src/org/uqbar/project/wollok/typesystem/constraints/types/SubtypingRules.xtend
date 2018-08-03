@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 
 import org.uqbar.project.wollok.typesystem.AnyType
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.StructuralType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
@@ -52,6 +53,6 @@ class SubtypingRules {
 
 	/** TODO Structural types */
 	static def dispatch isSuperTypeOf(WollokType supertype, StructuralType subtype) {
-		throw new UnsupportedOperationException("Structural types are not supported yet. ")
+		throw new UnsupportedOperationException(Messages.RuntimeTypeSystemException_STRUCTURAL_TYPES_NOT_SUPPORTED)
 	}
 }

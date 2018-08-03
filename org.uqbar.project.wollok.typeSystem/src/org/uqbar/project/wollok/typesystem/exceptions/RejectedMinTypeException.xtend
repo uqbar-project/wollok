@@ -1,6 +1,9 @@
 package org.uqbar.project.wollok.typesystem.exceptions
 
 import java.util.Set
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.typesystem.Constants
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
@@ -35,12 +38,12 @@ class RejectedMinTypeException extends TypeSystemException {
 		// Support null `variable`. While it should not happen and means
 		// a program error, it is not nice to throw a NPE inside the toString
 		// of a previous exception.
-		'''expected <<«expectedType»>> but found <<«type»>>'''
+		NLS.bind(Messages.TypeSystemException_REJECTED_MIN_TYPE_MESSAGE, expectedType, type)
 	}
 	
 	def expectedType() {
 		if (!expectedTypes.isEmpty) return expectedTypes.join("|")
-		if (variable !== null) variable.expectedType else "unknown"
+		if (variable !== null) variable.expectedType else Constants.UNKNOWN
 	}
 	
 	override relatedToType(WollokType typeRelated) {

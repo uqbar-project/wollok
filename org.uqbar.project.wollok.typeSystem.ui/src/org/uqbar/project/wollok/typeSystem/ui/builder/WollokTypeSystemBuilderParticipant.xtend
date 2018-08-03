@@ -31,7 +31,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 		val project = context.builtProject
 		val wollokActivator = WollokActivator.getInstance
 		// Setting default severity from preferences
-		WollokTypeSystemActivator.^default.setDefaultSeverity	
+		WollokTypeSystemActivator.^default.setDefaultValuesFor(project)
 
 		if (!listenersInitialized) {
 			wollokActivator.initializePartListeners

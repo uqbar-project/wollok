@@ -6,8 +6,6 @@ import org.uqbar.project.wollok.validation.CheckSeverity
 
 interface WollokTypeSystemPreference {
 	
-	val String CONSTRAINTS_BASED = "Constraints-based"
-	
 	def boolean isTypeSystemEnabled(EObject file)
 	def String getSelectedTypeSystem(EObject file)
 	def boolean isTypeSystemEnabled(IProject file)

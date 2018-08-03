@@ -4,10 +4,10 @@ object pepita {
 	const hola = "hola"
 	const dos = "2"
 
-	// XPECT warnings --> "expected <<Number>> but found <<String>>" at "hola"
+	// XPECT warnings --> "Type system: expected <<Number>> but found <<String>>" at "hola"
 	method multiplicacion() = 2 * hola
 	
-	// XPECT warnings --> "expected <<Number>> but found <<Boolean>>" at "true"
+	// XPECT warnings --> "Type system: expected <<Number>> but found <<Boolean>>" at "true"
 	method otraMultiplicacion() = 2 * true
 	
 	// XPECT warnings --> "String does not understand *( 2)" at "dos * 2"

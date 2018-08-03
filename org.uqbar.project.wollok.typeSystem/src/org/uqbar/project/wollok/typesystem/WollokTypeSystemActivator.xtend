@@ -103,8 +103,11 @@ class WollokTypeSystemActivator extends Plugin {
 			actions.apply(project.typeSystem)
 	}
 	
-	def setDefaultSeverity() {
-		WollokCachedTypeSystemPreferences.instance.typeSystemSeverity = typeSystemPreferences.typeSystemSeverity
+	def setDefaultValuesFor(IProject project) {
+		WollokCachedTypeSystemPreferences.instance => [
+			typeSystemEnabled = project.typeSystemEnabled	
+			typeSystemSeverity = typeSystemPreferences.typeSystemSeverity
+		]
 	}
 	
 }
