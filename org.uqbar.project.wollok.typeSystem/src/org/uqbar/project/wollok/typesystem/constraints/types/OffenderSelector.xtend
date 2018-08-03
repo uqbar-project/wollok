@@ -3,7 +3,10 @@ package org.uqbar.project.wollok.typesystem.constraints.types
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.TypeSystemException
+import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVariableOwner
+import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariableOwner
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -29,7 +32,7 @@ class OffenderSelector {
 	}
 
 	def static selectOffenderVariable(TypeVariable subtype, TypeVariable supertype) {
-		val offender = selectOffender(subtype.owner, supertype.owner)
+		val offender = selectOffenderOwner(subtype.owner, supertype.owner)
 		if(offender == subtype.owner) subtype else supertype
 	}
 
@@ -37,9 +40,23 @@ class OffenderSelector {
 	// ** Proper offender selection
 	// ************************************************************************
 
+	def static dispatch TypeVariableOwner selectOffenderOwner(ParameterTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+		supertype
+	}
+
+	def static dispatch TypeVariableOwner selectOffenderOwner(ProgramElementTypeVariableOwner subtype, ParameterTypeVariableOwner supertype) {
+		subtype
+	}
+
+	def static dispatch TypeVariableOwner selectOffenderOwner(ProgramElementTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
+		val offender = selectOffender(subtype.programElement, supertype.programElement)
+		if(offender == subtype.programElement) subtype else supertype
+	}
+
 	def static dispatch selectOffender(EObject subtype, EObject supertype) {
 		log.debug('''
-			Min type detected without a specific offender detection strategy:
+			Error detected without a specific strategy to which element we should report the error:
 				subtype=«subtype.debugInfoInContext» 
 				supertype=«supertype.debugInfoInContext»
 		''')

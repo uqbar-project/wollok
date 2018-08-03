@@ -12,7 +12,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
  * 
  * @author jfernandes
  */
-class ObjectLiteralWollokType extends BasicType implements ConcreteType {
+class ObjectLiteralType extends BasicType implements ConcreteType {
 	WObjectLiteral object
 
 	@Accessors(PUBLIC_GETTER)

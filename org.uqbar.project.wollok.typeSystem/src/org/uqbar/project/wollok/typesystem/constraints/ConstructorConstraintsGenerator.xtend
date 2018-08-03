@@ -33,7 +33,7 @@ class ConstructorConstraintsGenerator {
 			// TODO Handle and inform error conditions.
 			// TODO 2: We should consider also argumentList.initializers
 			constructor?.parameters?.biForEach(values)[param, arg|
-				param.tvarOrParam.beSupertypeOf(arg.tvar)
+				param.tvarOrParam.instanceFor(it.tvar).beSupertypeOf(arg.tvar)
 			]
 		]
 	}

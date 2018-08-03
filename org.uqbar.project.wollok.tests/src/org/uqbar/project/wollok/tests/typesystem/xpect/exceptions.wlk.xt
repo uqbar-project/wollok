@@ -8,14 +8,14 @@ object exceptionTest {
 	// XPECT methodType at m2 --> (Exception) => Boolean
 	method m2(e) = e.getCause().equals(e)
 
-	// XPECT methodType at m3 --> (Exception) => List
+	// XPECT methodType at m3 --> (Exception) => List<String>
 	method m3(e) {
 		return e.getStackTrace()
 	}
 
 	// XPECT methodType at m4 --> (Exception) => Void
 	method m4(e) {
-		// XPECT type at fst --> List
+		// XPECT type at fst --> List<String>
 		const fst = e.getFullStackTrace()
 		// XPECT type at stAs --> String
 		const stAs = e.getStackTraceAsString()

@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.constraints
 
 import java.util.regex.Pattern
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -20,16 +19,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import org.uqbar.project.wollok.wollokDsl.WollokDslFactory
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class WollokModelPrintForDebug {
-	static def dispatch String debugInfo(Void obj) {
-		// TODO A variable without an owner is a synthetic var.
-		// Synthetic variables should have their own way of specifying something that allows us to identify where came this variable from.
-		// Also this might not be the best place for this kind of logic, specific to synthetic variables.
-		"synthetic"
-	}
-
 	static def dispatch String debugInfo(EObject obj) {
 		val base = obj.toString
 		val prefix = (WollokDslFactory.package.name + ".impl.").replace(".", "\\.")
@@ -55,7 +48,7 @@ class WollokModelPrintForDebug {
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
 
 	static def dispatch String debugInfo(WMethodDeclaration it) 
-		'''method «eContainer.name».«name»(«parameters.join(', ')[name]») {«System.identityHashCode(it)»}'''
+		'''method «eContainer.name».«name»(«parameters.join(', ')[name]»)'''
 
 	static def dispatch String debugInfo(WParameter it)
 		'''param «name»'''
@@ -91,12 +84,8 @@ class WollokModelPrintForDebug {
 	// ** Debug info with context
 	// ************************************************************************
 
-	static def dispatch String debugInfoInContext(TypeVariable tvar) {
-		tvar.owner.debugInfoInContext
-	}
-
 	static def dispatch String debugInfoInContext(Void obj) {
-		"synthetic"
+		throw new UnsupportedOperationException("Should not happen")
 	}
 
 	static def dispatch String debugInfoInContext(EObject obj) {
@@ -110,5 +99,5 @@ class WollokModelPrintForDebug {
 		'''«debugInfo» from «eContainer.debugInfoInContext»'''
 
 	static def dispatch String debugInfoInContext(WVariableReference it)
-		'''«debugInfo» in «method.debugInfoInContext»'''
+		'''«debugInfo» in «declaringContainer.debugInfoInContext»'''
 }

@@ -37,7 +37,7 @@ object gameTest {
 //		game.whenCollideDo(obj, action)
 //	}
 	
-	// XPECT methodType at m8 --> (Position) => List
+	// XPECT methodType at m8 --> (Position) => List<Any>
 	method m8(pos) {
 		return game.getObjectsIn(pos)
 	}
@@ -52,7 +52,7 @@ object gameTest {
 		game.clear()
 	}
 	
-	// XPECT methodType at m11 --> (Any) => List
+	// XPECT methodType at m11 --> (Any) => List<Any>
 	method m11(obj) {
 		return game.colliders(obj)
 	}

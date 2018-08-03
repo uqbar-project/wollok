@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
-import java.util.List
 import java.util.Set
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.WollokType
@@ -16,7 +15,7 @@ class MaximalConcreteTypes {
 	@Accessors
 	var ConcreteTypeState state = Pending
 
-	new(Set<WollokType> types) {
+	new(Iterable<? extends WollokType> types) {
 		maximalConcreteTypes = newHashSet(types)
 	}
 
@@ -27,7 +26,7 @@ class MaximalConcreteTypes {
 		maximalConcreteTypes.exists[isSuperTypeOf(type)]
 	}
 
-	def containsAll(List<? extends WollokType> types) {
+	def containsAll(Iterable<? extends WollokType> types) {
 		types.forall[this.contains(it)]
 	}
 

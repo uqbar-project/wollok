@@ -2,8 +2,6 @@
 
 object pepita {
 	const hola = "hola"
-	
-	// XPECT warnings --> "expected <<Number>> but found <<String>>" at ""2""
 	const dos = "2"
 
 	// XPECT warnings --> "expected <<Number>> but found <<String>>" at "hola"
@@ -12,11 +10,7 @@ object pepita {
 	// XPECT warnings --> "expected <<Number>> but found <<Boolean>>" at "true"
 	method otraMultiplicacion() = 2 * true
 	
-	// TODO: Ver qué hacemos con esto
-	/* XPECT warnings ---
-		"String does not understand *( 2)" at "dos * 2"
-		"expected <<Number>> but found <<String>>" at "dos"
-	--- */
+	// XPECT warnings --> "String does not understand *( 2)" at "dos * 2"
 	method multiplicacion3() = dos * 2
 	
 }

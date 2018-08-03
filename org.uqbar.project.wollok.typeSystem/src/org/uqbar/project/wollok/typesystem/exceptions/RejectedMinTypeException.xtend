@@ -6,7 +6,6 @@ import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.WollokTypeSystemPrettyPrinter.*
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 
 class RejectedMinTypeException extends TypeSystemException {
 	WollokType type
@@ -19,9 +18,9 @@ class RejectedMinTypeException extends TypeSystemException {
 		this.type = type
 	}
 
-	new(TypeVariable variable, WollokType type, Set<WollokType> minTypes) {
+	new(TypeVariable variable, WollokType type, Set<WollokType> expectedTypes) {
 		this(variable, type)
-		this.expectedTypes = minTypes
+		this.expectedTypes = expectedTypes
 	}
 
 	/**
