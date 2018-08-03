@@ -140,9 +140,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagateMinimalTypes, PropagateMaximalTypes, MaxTypesFromMessages],
+		#[PropagateMinimalTypes],
 		#[OpenMethod],
-		#[UnifyVariables, SealVariables],
+		#[UnifyVariables],
+		#[PropagateMaximalTypes, MaxTypesFromMessages],
+		#[SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]
 
