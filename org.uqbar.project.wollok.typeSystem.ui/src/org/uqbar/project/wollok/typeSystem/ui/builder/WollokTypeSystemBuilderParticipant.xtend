@@ -30,6 +30,8 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 	override build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
 		val project = context.builtProject
 		val wollokActivator = WollokActivator.getInstance
+		// Setting default severity from preferences
+		WollokTypeSystemActivator.^default.setDefaultSeverity	
 
 		if (!listenersInitialized) {
 			wollokActivator.initializePartListeners
@@ -51,6 +53,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 				// Now that we have added all files, we can resolve constraints (aka infer types).
 				ts.inferTypes
 			} catch (TypeSystemException e) {
+				// TODO: Reportar un error del type system que sea más piola que Error in EValidator
 			}
 		]
 

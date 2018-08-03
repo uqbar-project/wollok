@@ -10,6 +10,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.validation.CheckSeverity
 
 import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 
@@ -19,12 +20,13 @@ import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 //TODO: must rebuild project on apply/save
 class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	static val SETTINGS_SECTION_NAME = "TypeSystemConfigurationBlock"
-	public static final String PROPERTY_PREFIX = "TypeSystemConfiguration";
+	public static final String PROPERTY_PREFIX = "TypeSystemConfiguration"
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
 		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.FALSE)
 		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, "Constraints-based")
+		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_SEVERITY, CheckSeverity.WARN.toString)
 	}
 	
 	override getPropertyPrefix() {  PROPERTY_PREFIX }
@@ -37,10 +39,17 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 			]
 			addCheckBox(it, "Enable Type System Checks", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
 			
-			val typeSystems = WollokTypeSystemActivator.^default.typeSystems
+			val typeSystems = WollokTypeSystemActivator.^default.typeSystems.map[t| t.name]
+			
 			addComboBox(it, "Type System Implementation", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, 0, 
-				typeSystems.map[t| t.name], typeSystems.map[t| t.name]
+				typeSystems, typeSystems
 			)
+			
+			val severities = WollokTypeSystemUIPreferences.severities.map [ toString ]
+			addComboBox(it, "Type System Issue Severity", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_SEVERITY, 1, 
+				severities, WollokTypeSystemUIPreferences.severitiesDescriptions
+			)
+			
 		]
 	}
 	

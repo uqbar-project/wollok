@@ -126,6 +126,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		if (editor instanceof WollokTextEditor) {
 			Thread.sleep(300) // fixes synchronization problem
 			val wollokTextEditor = editor as WollokTextEditor
+			if (wollokTextEditor.resource === null) return;
 			val activeURI = wollokTextEditor.resource.locationURI
 			val activeEditorURI = activeURI.toString.replaceAll(workspaceURI, " ").trim
 			val issues = mapIssues.get(activeEditorURI) ?: #[]

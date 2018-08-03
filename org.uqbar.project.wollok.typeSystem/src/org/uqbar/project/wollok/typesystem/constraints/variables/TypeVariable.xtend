@@ -6,6 +6,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType

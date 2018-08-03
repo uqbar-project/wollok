@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.typesystem.preferences.DefaultWollokTypeSystemPreferences
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
+import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 
 /**
  * 
@@ -26,7 +27,7 @@ class WollokTypeSystemActivator extends Plugin {
 	private static WollokTypeSystemActivator plugin
 	private BundleContext context
 	private Collection<TypeSystem> typeSystems
-	WollokTypeSystemPreference typeSystemPreferences;
+	WollokTypeSystemPreference typeSystemPreferences
 
 	def synchronized getTypeSystems() {
 		if (typeSystems === null) {
@@ -101,4 +102,9 @@ class WollokTypeSystemActivator extends Plugin {
 		if (project.isTypeSystemEnabled)
 			actions.apply(project.typeSystem)
 	}
+	
+	def setDefaultSeverity() {
+		WollokCachedTypeSystemPreferences.instance.typeSystemSeverity = typeSystemPreferences.typeSystemSeverity
+	}
+	
 }

@@ -1,7 +1,8 @@
 package org.uqbar.project.wollok.typesystem.preferences
 
-import org.eclipse.emf.ecore.EObject
 import org.eclipse.core.resources.IProject
+import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.validation.CheckSeverity
 
 class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	
@@ -19,6 +20,10 @@ class DefaultWollokTypeSystemPreferences implements WollokTypeSystemPreference {
 	
 	override isTypeSystemEnabled(IProject file) {
 		false
+	}
+	
+	override getTypeSystemSeverity() {
+		CheckSeverity.ERROR
 	}
 	
 }
