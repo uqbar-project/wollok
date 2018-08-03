@@ -127,7 +127,7 @@ class GenericTypeInfo extends TypeInfo {
 
 	def validateNewMinType(WollokType type, TypeVariable offender) {
 		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, minTypes.keySet)
+			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
 		}
 
 		validMessages.forEach [

@@ -18,9 +18,9 @@ class RejectedMinTypeException extends TypeSystemException {
 		this.type = type
 	}
 
-	new(TypeVariable variable, WollokType type, Set<WollokType> minTypes) {
+	new(TypeVariable variable, WollokType type, Set<WollokType> expectedTypes) {
 		this(variable, type)
-		this.expectedTypes = minTypes
+		this.expectedTypes = expectedTypes
 	}
 
 	/**
