@@ -58,7 +58,11 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(parsed)
 	
 			if (parameters.hasRepl) {
-				val formatter = if (parameters.noAnsiFormat) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter 
+				val formatter = if (parameters.noAnsiFormat) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
+				// FIXME: Issue #
+				// TODO 1: Preguntar si es MAC
+				// TODO 2: Pasarlo a una configuración de Wollok
+				// val formatter = new RegularReplOutputFormatter
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
