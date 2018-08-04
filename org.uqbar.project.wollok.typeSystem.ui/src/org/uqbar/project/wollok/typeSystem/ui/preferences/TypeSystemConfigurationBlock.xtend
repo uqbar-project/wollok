@@ -8,8 +8,11 @@ import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer
 import org.eclipse.xtext.ui.preferences.OptionsConfigurationBlock
+import org.uqbar.project.wollok.typesystem.Constants
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.validation.CheckSeverity
 
 import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 
@@ -19,12 +22,13 @@ import static org.uqbar.project.wollok.ui.preferences.WPreferencesUtils.*
 //TODO: must rebuild project on apply/save
 class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 	static val SETTINGS_SECTION_NAME = "TypeSystemConfigurationBlock"
-	public static final String PROPERTY_PREFIX = "TypeSystemConfiguration";
+	public static final String PROPERTY_PREFIX = "TypeSystemConfiguration"
 	
 	new(IProject project, IPreferenceStore store, IWorkbenchPreferenceContainer container) {
 		super(project, store, container)
 		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, IPreferenceStore.FALSE)
-		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, "Constraints-based")
+		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, Constants.TS_CONSTRAINTS_BASED)
+		store.setDefault(WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_SEVERITY, CheckSeverity.WARN.toString)
 	}
 	
 	override getPropertyPrefix() {  PROPERTY_PREFIX }
@@ -35,24 +39,31 @@ class TypeSystemConfigurationBlock extends OptionsConfigurationBlock {
 				marginHeight = 20
 				marginWidth = 8
 			]
-			addCheckBox(it, "Enable Type System Checks", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
+			addCheckBox(it, Messages.WollokTypeSystemPreference_ENABLE_TYPE_SYSTEM_CHECKS_TITLE, WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_CHECKS_ENABLED, booleanPrefValues, 0)
 			
-			val typeSystems = WollokTypeSystemActivator.^default.typeSystems
-			addComboBox(it, "Type System Implementation", WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, 0, 
-				typeSystems.map[t| t.name], typeSystems.map[t| t.name]
+			val typeSystems = WollokTypeSystemActivator.^default.typeSystems.map[t| t.name]
+			
+			addComboBox(it, Messages.WollokTypeSystemPreference_TYPE_SYSTEM_IMPLEMENTATION_TITLE, WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_IMPL, 0, 
+				typeSystems, typeSystems
 			)
+			
+			val severities = WollokTypeSystemUIPreferences.severities.map [ toString ]
+			addComboBox(it, Messages.WollokTypeSystemPreference_TYPE_SYSTEM_ISSUE_SEVERITY_TITLE, WollokTypeSystemUIPreferences.PREF_TYPE_SYSTEM_SEVERITY, 1, 
+				severities, WollokTypeSystemUIPreferences.severitiesDescriptions
+			)
+			
 		]
 	}
 	
 	override protected getBuildJob(IProject project) {
-		new OptionsConfigurationBlock.BuildJob("Saving Type system configuration", project) => [
+		new OptionsConfigurationBlock.BuildJob(Messages.WollokTypeSystemPreference_SAVE_JOB_TITLE, project) => [
 			rule = ResourcesPlugin.getWorkspace.ruleFactory.buildRule
 			user = true	
 		]
 	}
 	
 	override protected getFullBuildDialogStrings(boolean workspaceSettings) {
-		#["TypeSystem settings", if (workspaceSettings)	"Apply changed workspace-wide ? All wollok projects will be rebuilt" else "Apply changes for this project ? It will be rebuilt" ]
+		#[Messages.WollokTypeSystemPreference_CONFIRM_BUILD_PROJECT_TITLE, if (workspaceSettings) Messages.WollokTypeSystemPreference_CONFIRM_BUILD_ALL_MESSAGE else Messages.WollokTypeSystemPreference_CONFIRM_BUILD_PROJECT_MESSAGE ]
 	}
 	
 	override protected validateSettings(String changedKey, String oldValue, String newValue) {

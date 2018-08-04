@@ -1,8 +1,10 @@
 package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 
 import java.util.List
+import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.typesystem.ClosureType
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
 import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
@@ -36,7 +38,7 @@ class MethodTypeProvider {
 	}
 	
 	def dispatch methodType(WollokType type, MessageSend it) {
-		throw new UnsupportedOperationException('''Can't extract MethodTypeSchema for methods of «type»''')
+		throw new UnsupportedOperationException(NLS.bind(Messages.RuntimeTypeSystemException_CANT_EXTRACT_METHOD_TYPE, type))
 	}
 
 	def lookupSchema(ConcreteType type, MessageSend it) {

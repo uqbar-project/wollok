@@ -61,7 +61,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if (supertype.hasErrors) {
-			log.debug('''Unifyng «subtype» with «supertype»: errors found, aborting unification''')
+			log.debug('''Unifying «subtype» with «supertype»: errors found, aborting unification''')
 			return Error
 		}
 

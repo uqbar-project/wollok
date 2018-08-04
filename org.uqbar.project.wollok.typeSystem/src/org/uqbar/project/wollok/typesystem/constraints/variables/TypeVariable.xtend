@@ -30,6 +30,9 @@ class TypeVariable extends ITypeVariable {
 	@Accessors
 	val Set<TypeVariable> supertypes = newHashSet
 
+	@Accessors
+	List<TypeSystemException> errors = newArrayList
+
 	// ************************************************************************
 	// ** Construction
 	// ************************************************************************
@@ -74,12 +77,17 @@ class TypeVariable extends ITypeVariable {
 	def hasErrors() {
 		return owner.hasErrors
 	}
+	
+	def hasErrors(WollokType type) {
+		return errors.exists [ relatedToType(type) ]
+	}
 
 	def addError(TypeSystemException exception) {
 		owner.addError(exception)
 		log.info('''«exception.message» ==> reported in «fullDescription»''')
 	}
 
+	// REVIEW Is it necessary to pass 'user'?
 	def reportErrors(ConfigurableDslValidator validator) {
 		owner.reportErrors(validator)
 	}
@@ -167,7 +175,7 @@ class TypeVariable extends ITypeVariable {
 	 */
 	def addMinType(WollokType type) {
 		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
-		typeInfo.addMinType(type)
+		typeInfo.addMinType(type, this)
 	}
 
 	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {

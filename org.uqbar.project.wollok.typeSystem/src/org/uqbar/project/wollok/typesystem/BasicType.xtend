@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.typesystem
 
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
@@ -21,7 +22,7 @@ abstract class BasicType implements WollokType {
 
 	override acceptAssignment(WollokType other) {
 		if (!acceptsAssignment(other)) 
-			throw new TypeSystemException("Incompatible type")
+			throw new TypeSystemException(Messages.TypeSystemException_INCOMPATIBLE_TYPE)
 	}
 	
 	//TODO: implementación default para no romper todo desde el inicio.
@@ -32,7 +33,7 @@ abstract class BasicType implements WollokType {
 	
 	def dispatch refine(WollokType previouslyInferred) {
 		if (previouslyInferred != this) 
-			throw new TypeSystemException("Incompatible type " + this + " is not compatible with " + previouslyInferred)
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_INCOMPATIBLE_TYPE_DETAILED, this, previouslyInferred))
 		// dummy impl
 		previouslyInferred
 	}

@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object pepita {
+	const hola = "hola"
+	const list = [hola]
+
+	// XPECT warnings --> "Type system: expected <<String>> but found <<Number>>" at "1"
+	method generic() = [""].first() + 1
+
+	method generic2() = list.first()
+}

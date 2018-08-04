@@ -36,6 +36,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * @author npasserini
@@ -125,6 +126,8 @@ class ConstraintGenerator {
 
 		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
+
+	def dispatch void generate(Import it) {}
 
 	def dispatch void generate(WClosure it) {
 		parameters.forEach[generateVariables]

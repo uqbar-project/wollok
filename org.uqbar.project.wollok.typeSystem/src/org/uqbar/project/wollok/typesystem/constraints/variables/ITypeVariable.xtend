@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
 
 abstract class ITypeVariable {
@@ -10,7 +11,7 @@ abstract class ITypeVariable {
 	
 	new(TypeVariableOwner owner) {
 		if (owner === null) 
-			throw new IllegalArgumentException("A type variable must have an owner") 
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_TYPE_VARIABLE_MUST_HAVE_AN_OWNER) 
 		this.owner = owner
 	}
 

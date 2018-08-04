@@ -1,8 +1,11 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.Map
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.Messages
+import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.types.UserFriendlySupertype
 import org.uqbar.project.wollok.typesystem.exceptions.MessageNotUnderstoodException
@@ -46,7 +49,7 @@ class GenericTypeInfo extends TypeInfo {
 	def param(GenericType type, String paramName) {
 		val typeInstance = findCompatibleTypeFor(type)
 		if (typeInstance === null)
-			throw new IllegalStateException('''Can't find a minType compatible with «type».«paramName», known minTypes are «minTypes.keySet»''')
+			throw new IllegalStateException(NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
 
 		typeInstance.findParam(paramName)
 	}
@@ -60,7 +63,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def dispatch findParam(WollokType type, String paramName) {
-		throw new IllegalArgumentException('''Expecting a generic type but found «type» of type «type.class».''')
+		throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_EXPECTED, type, type.class))
 	}
 
 	// ************************************************************************
@@ -73,7 +76,7 @@ class GenericTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
 		minTypes.statesDo(offender) [
-			if (!maxTypes.contains(type)) {
+			if (!offender.hasErrors(type) && !maxTypes.contains(type)) {
 				error(new RejectedMinTypeException(offender, type))
 				maxTypes.state = Error
 			}
@@ -111,29 +114,23 @@ class GenericTypeInfo extends TypeInfo {
 		}
 	}
 
-	override ConcreteTypeState addMinType(WollokType type) {
+	override ConcreteTypeState addMinType(WollokType type, TypeVariable offender) {
 		if(minTypes.containsKey(type)) return Ready
 
-		// Temporally put the type, it will be used to validate message information case of generic types.
-		minTypes.put(type, Pending)
-
 		try {
-			validateNewMinType(type)
-		} catch (RuntimeException e) {
-			// In case of error, just remove the type
-			minTypes.remove(type)
-
-			// Let another one handle this error
-			throw e
-		}
-
-		Pending
-
+			validateNewMinType(type, offender)			
+			minTypes.put(type, Pending)
+			Pending
+		} catch (TypeSystemException exception) {
+			minTypes.put(type, Error)
+			throw exception
+		} 
 	}
 
-	def validateNewMinType(WollokType type) {
-		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)])
-			throw new RejectedMinTypeException(type)
+	def validateNewMinType(WollokType type, TypeVariable offender) {
+		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
+		}
 
 		validMessages.forEach [
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
@@ -191,9 +188,11 @@ class GenericTypeInfo extends TypeInfo {
 		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
 	}
 
+
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
+	
 	override toString() '''
 		«class.simpleName» of «canonicalUser»: «basicGetType(canonicalUser)?.toString ?: "unknown"»
 	'''

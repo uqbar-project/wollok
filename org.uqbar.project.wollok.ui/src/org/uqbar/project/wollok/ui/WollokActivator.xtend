@@ -15,13 +15,11 @@ import org.eclipse.jface.viewers.ILabelProvider
 import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.IPartListener
 import org.eclipse.ui.IWorkbenchPart
-import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.views.contentoutline.ContentOutline
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
-import org.eclipse.xtext.ui.editor.utils.EditorUtils
 import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator
 import org.eclipse.xtext.ui.editor.validation.MarkerIssueProcessor
@@ -32,9 +30,8 @@ import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
  * Customized activator.
@@ -127,7 +124,9 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	
 	override partActivated(IWorkbenchPart editor) {
 		if (editor instanceof WollokTextEditor) {
+			Thread.sleep(300) // fixes synchronization problem
 			val wollokTextEditor = editor as WollokTextEditor
+			if (wollokTextEditor.resource === null) return;
 			val activeURI = wollokTextEditor.resource.locationURI
 			val activeEditorURI = activeURI.toString.replaceAll(workspaceURI, " ").trim
 			val issues = mapIssues.get(activeEditorURI) ?: #[]

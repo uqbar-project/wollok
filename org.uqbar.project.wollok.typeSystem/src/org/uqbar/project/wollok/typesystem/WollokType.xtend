@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.typesystem
 
-import java.util.Iterator
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**

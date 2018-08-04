@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariableOwner
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -31,7 +32,7 @@ class OffenderSelector {
 	}
 
 	def static selectOffenderVariable(TypeVariable subtype, TypeVariable supertype) {
-		val offender = selectOffender(subtype.owner, supertype.owner)
+		val offender = selectOffenderOwner(subtype.owner, supertype.owner)
 		if(offender == subtype.owner) subtype else supertype
 	}
 
@@ -39,17 +40,18 @@ class OffenderSelector {
 	// ** Proper offender selection
 	// ************************************************************************
 
-	def static dispatch EObject selectOffender(ParameterTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
-		supertype.programElement
+	def static dispatch TypeVariableOwner selectOffenderOwner(ParameterTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+		supertype
 	}
 
-	def static dispatch EObject selectOffender(ProgramElementTypeVariableOwner subtype, ParameterTypeVariableOwner supertype) {
-		subtype.programElement
+	def static dispatch TypeVariableOwner selectOffenderOwner(ProgramElementTypeVariableOwner subtype, ParameterTypeVariableOwner supertype) {
+		subtype
 	}
 
-	def static dispatch EObject selectOffender(ProgramElementTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
+	def static dispatch TypeVariableOwner selectOffenderOwner(ProgramElementTypeVariableOwner subtype, ProgramElementTypeVariableOwner supertype) {
 		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
-		selectOffender(subtype.programElement, supertype.programElement)
+		val offender = selectOffender(subtype.programElement, supertype.programElement)
+		if(offender == subtype.programElement) subtype else supertype
 	}
 
 	def static dispatch selectOffender(EObject subtype, EObject supertype) {
@@ -91,4 +93,5 @@ class OffenderSelector {
 	def static dispatch selectOffender(WParameter superclass, WParameter subclass) { 
 		subclass
 	}
+	
 }

@@ -7,13 +7,16 @@ import java.util.Set
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.sdk.WollokDSK
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ClosureType
+import org.uqbar.project.wollok.typesystem.Constants
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.NamedObjectType
 import org.uqbar.project.wollok.typesystem.TypeFactory
 import org.uqbar.project.wollok.typesystem.TypeProvider
@@ -73,7 +76,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
 	}
 	
-	override def name() { "Constraints-based" }
+	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
@@ -140,9 +143,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagateMinimalTypes, PropagateMaximalTypes, MaxTypesFromMessages],
+		#[PropagateMinimalTypes],
 		#[OpenMethod],
-		#[UnifyVariables, SealVariables],
+		#[UnifyVariables],
+		#[PropagateMaximalTypes, MaxTypesFromMessages],
+		#[SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]
 
@@ -190,8 +195,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	def classType(WClass clazz) {
 		if (genericTypes.containsKey(clazz.fqn)) {
-			throw new IllegalArgumentException('''Tried to get a class type for «clazz.fqn» but this is not possible because it is a generic type and must be instantiated before being used''')	
-		}  
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_MUST_BE_INSTANTIATED, clazz.fqn))	
+		}
 
 		new ClassInstanceType(clazz, this)
 	}
@@ -215,10 +220,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	override classType(EObject context, String classFQN) {
 		if (classFQN == WollokDSK.CLOSURE) 
-			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
 		if (genericTypes.containsKey(classFQN)) {
-			throw new IllegalArgumentException('''Tried to get a class type for «classFQN» but this is not possible because it is a generic type and must be instantiated before being used''')	
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_MUST_BE_INSTANTIATED, classFQN))	
 		}  
 		
 		finder.getCachedClass(context, classFQN).classType
@@ -229,11 +234,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
 		if (classFQN == WollokDSK.CLOSURE) 
-			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
 			genericTypes.put(classFQN, it)
-		]		
+		]
 	}
 
 	override closureType(EObject context, int parameterCount) {

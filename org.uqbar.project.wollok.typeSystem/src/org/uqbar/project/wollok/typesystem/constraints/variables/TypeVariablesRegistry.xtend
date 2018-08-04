@@ -4,8 +4,10 @@ import java.util.Map
 import org.apache.log4j.Logger
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
@@ -36,7 +38,7 @@ class TypeVariablesRegistry {
 
 	def register(TypeVariable it) {
 		if (owner === null) 
-			throw new IllegalArgumentException("A type variable must have an owner") 
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_TYPE_VARIABLE_MUST_HAVE_AN_OWNER) 
 		
 		typeVariables.put(owner.URI, it)
 		return it
@@ -44,7 +46,7 @@ class TypeVariablesRegistry {
 
 	def register(TypeVariableSchema it) {
 		if (owner === null) 
-			throw new IllegalArgumentException("A type variable must have an owner") 
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_TYPE_VARIABLE_MUST_HAVE_AN_OWNER) 
 		
 		it.registry = this 
 		typeSchemas.put(owner.URI, it)
@@ -118,14 +120,14 @@ class TypeVariablesRegistry {
 	 */
 	def TypeVariable tvar(EObject obj) {
 		typeVariables.get(obj.URI) => [ if (it === null) {
-			throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_MISSING_TYPE_INFORMATION, obj.debugInfoInContext))
 		}]
 	}
 	
 	def ITypeVariable tvarOrParam(EObject obj) {
 		typeVariables.get(obj.URI) ?: 
 			typeSchemas.get(obj.URI) => [ if (it === null) {
-				throw new TypeSystemException("Missing type information for " + obj.debugInfoInContext)
+				throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_MISSING_TYPE_INFORMATION, obj.debugInfoInContext))
 			}]
 	}
 	
