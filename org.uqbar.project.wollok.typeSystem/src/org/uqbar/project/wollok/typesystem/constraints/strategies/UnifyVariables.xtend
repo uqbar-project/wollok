@@ -80,10 +80,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending && it != Cancel)
-				log.debug('''Unified «subtype» with «supertype» : «it»
-				«subtype.descriptionForReport»
-				«supertype.descriptionForReport»
-				''')
+				log.debug('''«it» | Unified «subtype» with «supertype» : «supertype.typeInfo.typeDescriptionForDebug»''')
 		]
 	}
 

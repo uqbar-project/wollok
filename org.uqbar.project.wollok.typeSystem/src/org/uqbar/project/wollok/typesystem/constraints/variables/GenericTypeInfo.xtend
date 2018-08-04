@@ -49,7 +49,8 @@ class GenericTypeInfo extends TypeInfo {
 	def param(GenericType type, String paramName) {
 		val typeInstance = findCompatibleTypeFor(type)
 		if (typeInstance === null)
-			throw new IllegalStateException(NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
+			throw new IllegalStateException(
+				NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
 
 		typeInstance.findParam(paramName)
 	}
@@ -63,7 +64,8 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def dispatch findParam(WollokType type, String paramName) {
-		throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_EXPECTED, type, type.class))
+		throw new IllegalArgumentException(
+			NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_EXPECTED, type, type.class))
 	}
 
 	// ************************************************************************
@@ -80,7 +82,7 @@ class GenericTypeInfo extends TypeInfo {
 				error(new RejectedMinTypeException(offender, type))
 				maxTypes.state = Error
 			}
-		] 
+		]
 
 		if (maxTypes.state == Error) {
 			false
@@ -89,7 +91,7 @@ class GenericTypeInfo extends TypeInfo {
 			true
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
-		}	
+		}
 	}
 
 	/** 
@@ -118,13 +120,13 @@ class GenericTypeInfo extends TypeInfo {
 		if(minTypes.containsKey(type)) return Ready
 
 		try {
-			validateNewMinType(type, offender)			
+			validateNewMinType(type, offender)
 			minTypes.put(type, Pending)
 			Pending
 		} catch (TypeSystemException exception) {
 			minTypes.put(type, Error)
 			throw exception
-		} 
+		}
 	}
 
 	def validateNewMinType(WollokType type, TypeVariable offender) {
@@ -188,14 +190,16 @@ class GenericTypeInfo extends TypeInfo {
 		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
 	}
 
-
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	
 	override toString() '''
-		«class.simpleName» of «canonicalUser»: «basicGetType(canonicalUser)?.toString ?: "unknown"»
+		«class.simpleName» of «canonicalUser»: «typeDescriptionForDebug»
 	'''
+
+	override typeDescriptionForDebug() {
+		basicGetType(canonicalUser)?.toString ?: "unknown"
+	}
 
 	override fullDescription() '''
 		sealed: «sealed»,

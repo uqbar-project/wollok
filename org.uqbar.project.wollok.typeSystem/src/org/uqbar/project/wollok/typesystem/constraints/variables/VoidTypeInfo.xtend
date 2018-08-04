@@ -23,27 +23,37 @@ class VoidTypeInfo extends TypeInfo {
 	 * The set of supertypes to which we already have propagated our type information
 	 */
 	@Accessors
-	val propagationStatus = <TypeVariable, ConcreteTypeState> newHashMap
+	val propagationStatus = <TypeVariable, ConcreteTypeState>newHashMap
 
 	// ************************************************************************
 	// ** Extension methods
 	// ************************************************************************
-	
 	static def dispatch canBeVoid(EObject object) { false }
+
 	static def dispatch canBeVoid(WBlockExpression object) { true }
+
 	static def dispatch canBeVoid(WMethodDeclaration object) { true }
+
 	static def dispatch canBeVoid(WMemberFeatureCall object) { true }
+
 	static def dispatch canBeVoid(WVariableDeclaration object) { true }
+
 	static def dispatch canBeVoid(WReturnExpression object) { true }
+
 	static def dispatch canBeVoid(WPostfixOperation object) { true }
+
 	static def dispatch canBeVoid(WAssignment object) { true }
+
 	static def dispatch canBeVoid(WIfExpression object) { true }
+
 	static def dispatch canBeVoid(WBinaryOperation it) { isMultiOpAssignment }
-	
+
 	static def dispatch isVoid(Void typeInfo) { false }
+
 	static def dispatch isVoid(TypeInfo typeInfo) { false }
+
 	static def dispatch isVoid(VoidTypeInfo typeInfo) { true }
-	
+
 	// ************************************************************************
 	// ** Queries
 	// ************************************************************************
@@ -54,7 +64,6 @@ class VoidTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
-
 	override supertypeAdded(TypeVariable supertype) {
 		propagationStatus.put(supertype, Pending)
 	}
@@ -62,9 +71,8 @@ class VoidTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	override fullDescription() '''
-		void
-	'''
+	override fullDescription() { return "void" }
+	override typeDescriptionForDebug() { return "void" }
 
 	// ************************************************************************
 	// ** Not yet implemented

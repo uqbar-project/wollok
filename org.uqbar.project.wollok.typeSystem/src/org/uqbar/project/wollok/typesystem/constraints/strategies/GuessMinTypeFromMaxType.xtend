@@ -4,6 +4,7 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
@@ -43,15 +44,14 @@ import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
+import static org.uqbar.project.wollok.typesystem.constraints.types.OffenderSelector.*
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
-import org.uqbar.project.wollok.wollokDsl.Import
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
-	
+
 	val Logger log = Logger.getLogger(this.class)
 
 	override walkThrougProgram() {
@@ -59,15 +59,15 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		allFiles.forEach[visit]
 		globalChanged = changed
 	}
-		
+
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
 		if (minTypes.isEmpty && maximalConcreteTypes !== null) {
 			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
-			maximalConcreteTypes.forEach[ type |
-				val state = addMinType(type, tvar) 
+			maximalConcreteTypes.forEach [ type |
+				val state = handlingOffensesDo(tvar, tvar)[tvar.addMinType(type)]
 				log.debug('''  Added min type «type» => «state»''')
-				if (state == Pending) changed = true
+				if(state != Ready) changed = true
 			]
 		}
 	}
@@ -75,7 +75,6 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	// ************************************************************************
 	// ** Interface with visitor 
 	// ************************************************************************
-
 	/** We will stop visits after a change is found */
 	def dispatch shouldVisit(EObject e) { !changed && e.eResource !== null && !e.isCoreObject }
 
@@ -84,27 +83,30 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 
 	/** Execute actions before visiting child nodes */
 	def beforeVisit(EObject e) {
-		
 	}
 
 	/** Execute actions after visiting child nodes */
 	def dispatch afterVisit(EObject it) {
-		if (shouldVisit) analiseVariable(tvar)
+		if(shouldVisit) analiseVariable(tvar)
 	}
 
 	// Avoid visiting objects that do not have associated type variables 
 	def dispatch afterVisit(WFile it) {}
+
 	def dispatch afterVisit(WProgram it) {}
+
 	def dispatch afterVisit(WClass it) {}
+
 	def dispatch afterVisit(WConstructor it) {}
+
 	def dispatch afterVisit(WInitializer it) {}
+
 	def dispatch afterVisit(Import it) {}
 
 	// ************************************************************************
 	// ** Generic visiting construct 
 	// ** (TODO extract them and join with AbstractWollokVisitor)
 	// ************************************************************************
-
 	/**
 	 * Main method to be used to visit an object.
 	 * Will check with the visiting algorithm to decide if we should continue or stop.
@@ -122,7 +124,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		all.forEach[visit]
 	}
 
-	def dispatch void visitChildren(WFile it) { 
+	def dispatch void visitChildren(WFile it) {
 		elements.visitAll
 		main.visit
 	}
@@ -140,6 +142,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	}
 
 	def dispatch void visitChildren(WThrow it) { exception.visit }
+
 	def dispatch void visitChildren(WCatch it) { expression.visit }
 
 	def dispatch void visitChildren(WAssignment it) {
@@ -156,12 +159,12 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 		initialValue.visit
 	}
 
-	def dispatch void visitChildren(WBinaryOperation it){
+	def dispatch void visitChildren(WBinaryOperation it) {
 		leftOperand.visit
 		rightOperand.visit
 	}
 
-	def dispatch void visitChildren(WMemberFeatureCall it){
+	def dispatch void visitChildren(WMemberFeatureCall it) {
 		memberCallTarget.visit
 		memberCallArguments.visitAll
 	}
@@ -175,44 +178,65 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WMethodContainer it) { eContents.visitAll }
 
 	def dispatch void visitChildren(WMixin it) { eContents.visitAll }
+
 	def dispatch void visitChildren(WSuite it) { eContents.visitAll }
+
 	def dispatch void visitChildren(WClass it) { eContents.visitAll }
+
 	def dispatch void visitChildren(WObjectLiteral it) { eContents.visitAll }
+
 	def dispatch void visitChildren(WNamedObject it) { eContents.visitAll }
+
 	def dispatch void visitChildren(WFixture it) { eContents.visitAll }
 
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }
+
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
+
 	def dispatch void visitChildren(WClosure it) { expression.visit }
+
 	def dispatch void visitChildren(WConstructor it) { expression.visit }
+
 	def dispatch void visitChildren(WMethodDeclaration it) {
-		parameters.visitAll 
+		parameters.visitAll
 		expression.visit
 	}
 
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
+
 	def dispatch void visitChildren(WTest it) { elements.visitAll }
+
 	def dispatch void visitChildren(WSuperInvocation it) { memberCallArguments.visitAll }
-	def dispatch void visitChildren(WConstructorCall it) {	
+
+	def dispatch void visitChildren(WConstructorCall it) {
 		if (argumentList !== null) {
 			arguments.visitAll
 		}
 	}
+
 	def dispatch void visitChildren(WCollectionLiteral it) { elements.visitAll }
 
-	def dispatch void visitChildren(WBlockExpression it) { expressions.visitAll	}
+	def dispatch void visitChildren(WBlockExpression it) { expressions.visitAll }
+
 	def dispatch void visitChildren(WPostfixOperation it) { operand.visit }
+
 	def dispatch void visitChildren(WReturnExpression it) { expression.visit }
 
 	// terminal elements
 	def dispatch void visitChildren(WVariableReference it) { ref.visit }
 
 	// terminals
-	def dispatch void visitChildren(WReferenciable ref){}
+	def dispatch void visitChildren(WReferenciable ref) {}
+
 	def dispatch void visitChildren(WNumberLiteral literal) {}
+
 	def dispatch void visitChildren(WNullLiteral literal) {}
+
 	def dispatch void visitChildren(WStringLiteral literal) {}
+
 	def dispatch void visitChildren(WBooleanLiteral literal) {}
+
 	def dispatch void visitChildren(WParameter param) {}
+
 	def dispatch void visitChildren(WSelf wthis) {}
 }

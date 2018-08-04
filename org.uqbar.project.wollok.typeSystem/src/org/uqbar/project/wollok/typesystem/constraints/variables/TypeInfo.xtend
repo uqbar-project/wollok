@@ -33,7 +33,7 @@ abstract class TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
-	
+
 	def validMessages() { messages.filter[isValid] }
 
 	// ************************************************************************
@@ -63,8 +63,10 @@ abstract class TypeInfo {
 	def void supertypeAdded(TypeVariable supertype) {}
 
 	// ************************************************************************
-	// ** Misc
+	// ** Debug
 	// ************************************************************************
 	def String fullDescription()
+
+	def String typeDescriptionForDebug()
 
 }
