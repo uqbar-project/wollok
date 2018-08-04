@@ -2,7 +2,7 @@
 
 object pairTest {
 	
-	// XPECT methodType at m0 --> () => Pair
+	// XPECT methodType at m0 --> () => Pair<Number, Number>
 	method m0() {
 		return new Pair(2, 3)
 	}
@@ -17,17 +17,17 @@ object pairTest {
 		return new Pair(2, "hola").value()
 	}
 
-   	// XPECT methodType at m3 --> (Pair) => Any
+   	// XPECT methodType at m3 --> (Pair<Any, Any>) => Any
 	method m3(pair) {
 		return pair.key()
 	}
 
-	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair)) => Void
+	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair<Any, Any>)) => Void
 	method m4(pair) {
 		return pair.value()
 	}
 	
-	// XPECT methodType at m5 --> (Number) => Pair
+	// XPECT methodType at m5 --> (Number) => Pair<Number, Number>
 	method m5(n) {
 		return new Pair(n + 1, n - 1)
 	}
@@ -36,13 +36,13 @@ object pairTest {
 		// XPECT type at n --> Number
 		var n = new Pair(2, 3).value()
 
-		// XPECT type at n --> String
+		// XPECT type at s --> String
 		var s = new Pair(2, "").value()
 	}
 
 	// XPECT methodType at m7 --> (Number) => Number
 	method m7(n) {
-		// XPECT type at p --> Pair
+		// XPECT type at p --> Pair<Number, Number>
 		var p = new Pair(n + 1, n - 1)
 		return p.value()
 	}

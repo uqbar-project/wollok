@@ -4,6 +4,11 @@ import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WClass
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
@@ -12,14 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WFeatureCall
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
-import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.wollokDsl.WClass
-import java.util.Map
-import java.util.HashMap
-import org.uqbar.project.wollok.wollokDsl.WInitializer
 
 /**
  * @author jfernandes
@@ -52,8 +50,12 @@ class HumanReadableUtils {
 		methodName + "(" + args + ")"
 	}
 	
-	def static fullMessage(WFeatureCall call) {
+	def static dispatch fullMessage(EObject o) { throw new RuntimeException("Element " + o + " is not a sent message")}
+	def static dispatch fullMessage(WFeatureCall call) {
 		'''«call.feature»(«call.memberCallArguments.map[sourceCode].join(', ')»)'''
+	}
+	def static dispatch fullMessage(WBinaryOperation op) {
+		'''«op.feature»(«op.rightOperand.sourceCode»)'''
 	}
 	
 	def static prettyPrint(WConstructorCall c) {
@@ -71,17 +73,9 @@ class HumanReadableUtils {
 		}
 	}
 
-	def static Map<String, EObject> namedArguments(WConstructorCall c) {
-		c.arguments.filter [ isNamedParameter ].toList.fold(new HashMap, [ total, i | 
-			val namedParameter = i as WInitializer
-			total.put(namedParameter.initializer.name, namedParameter)
-			total
-		])
-	} 
-	
 	def static uninitializedNamedParameters(WConstructorCall it) {
 		val uninitializedAttributes = classRef.allVariableDeclarations.filter [ right === null ]
-		val namedArguments = namedArguments.keySet
+		val namedArguments = initializers.map [ initializer.name ]
 		uninitializedAttributes.filter [ arg | !namedArguments.contains(arg.variable.name) ]
 	}
 	

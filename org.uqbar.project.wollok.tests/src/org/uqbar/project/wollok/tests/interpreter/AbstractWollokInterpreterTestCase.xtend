@@ -59,13 +59,23 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	}
 	
 	def expectsSyntaxError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue) {
+		expectsSyntaxError(programAsString, expectedMessage, onlyOneIssue, false)	
+	}
+	
+	def expectsSyntaxError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue, boolean shouldBeSyntaxError) {
 		val issues = programAsString.parse.validate
 		if (onlyOneIssue && issues.length != 1) {
 			fail("1 issue expected, found " + issues.length + ": " + issues) 
 		}
 		val issue = issues.findFirst [ message == expectedMessage ]
 		Assert.assertNotNull("No issue found with message " + expectedMessage + ". Issues were: " + issues, issue)
-		Assert.assertTrue(issue.isSyntaxError)
+		if (shouldBeSyntaxError) {
+			Assert.assertTrue("Issue " + issue + " is not a syntax error.", issue.isSyntaxError)
+		}
+	}
+
+	def expectsValidationError(CharSequence programAsString, String expectedMessage, boolean onlyOneIssue) {
+		expectsSyntaxError(programAsString, expectedMessage, onlyOneIssue, false)
 	}
 
 	def expectsNoSyntaxError(CharSequence programAsString) {

@@ -1,11 +1,8 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
-import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -17,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -37,6 +35,8 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * @author npasserini
@@ -44,8 +44,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class ConstraintGenerator {
 	extension ConstraintBasedTypeSystem typeSystem
 	extension TypeVariablesRegistry registry
-
-	val Logger log = Logger.getLogger(this.class)
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
@@ -80,151 +78,167 @@ class ConstraintGenerator {
 	// ************************************************************************
 	// ** Second pass / whole constraint generation
 	// ************************************************************************
-	
-	def dispatch void generateVariables(EObject node) {
-		// Default case
-		log.warn('''WARNING: Not generating constraints for: «node»''')
+	def void generateVariables(EObject it) {
+		try {
+			generate
+		} catch (Exception e) {
+			addFatalError(e)
+		}
 	}
 
-	def dispatch void generateVariables(WFile it) {
+	def dispatch void generate(WFile it) {
 		eContents.forEach[addGlobals]
 		eContents.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WProgram it) {
+	def dispatch void generate(WProgram it) {
 		elements.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WNamedObject it) {
+	def dispatch void generate(WNamedObject it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WClass it) {
+	def dispatch void generate(WClass it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
 	}
 
-	def dispatch void generateVariables(WConstructor it) {
+	def dispatch void generate(WConstructor it) {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
 		expression?.generateVariables
 	}
 
-	def dispatch void generateVariables(WMethodDeclaration it) {
-		it.newTypeVariable
+	def dispatch void generate(WMethodDeclaration it) {
+		newTypeVariable
 		parameters.forEach[generateVariables]
 
 		if (!abstract) {
 			expression?.generateVariables
-			// Return type for compact methods (others are handled by return expressions)
-			if (expressionReturns) beSupertypeOf(expression) else if (tvar.subtypes.empty) beVoid
+			if(expression.containsReturnExpression // Method contains at least one return expression
+				|| expressionReturns // Compact method, no return required.
+			) beSupertypeOf(expression) // Return type is taken from the body
+			else beVoid // Otherwise, method is void.
 		}
 
-		if (overrides) overridingConstraintsGenerator.addMethodOverride(it)
+		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
-	def dispatch void generateVariables(WClosure it) {
-		newTypeVariable //For returns
+	def dispatch void generate(Import it) {}
+
+	def dispatch void generate(WClosure it) {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
-		
-		val containsReturn = !tvar.subtypes.empty 
-		val returnVar = if (containsReturn) tvar else expression.tvar
-			
-		newClosure(parameters.map[tvar], returnVar)
+
+		val closureType = closureType(parameters.length).instanceFor(newTypeVariable)
+
+		beSealed(closureType)
+		parameters.forEach [ parameter, index |
+			val paramName = GenericTypeInfo.PARAM(index)
+			closureType.param(paramName).beSubtypeOf(parameter.tvar)
+		]
+		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(expression.tvar)
 	}
 
-	def dispatch void generateVariables(WParameter it) {
+	def dispatch void generate(WBlockExpression it) {
+		newTypeVariable
+		expressions.forEach[generateVariables]
+
+		val containsReturn = !tvar.subtypes.empty
+		if(!containsReturn) 
+			if(!expressions.empty) beSupertypeOf(expressions.last) else beVoid
+	}
+
+	def dispatch void generate(WReturnExpression it) {
+		newTypeVariable
+		expression.generateVariables
+		returnContext.body.beSupertypeOf(expression)
+		beVoid
+	}
+
+	def dispatch void generate(WParameter it) {
 		newTypeVariable
 	}
 
-	def dispatch void generateVariables(WBlockExpression it) {
-		expressions.forEach[ generateVariables ]
-
-		it.newTypeVariable
-
-		if (!expressions.empty) it.beSupertypeOf(expressions.last) else it.beVoid
+	def dispatch void generate(WNumberLiteral it) {
+		newTypeVariable.beSealed(classType(NUMBER))
 	}
 
-	def dispatch void generateVariables(WNumberLiteral it) {
-		newSealed(classType(NUMBER))
+	def dispatch void generate(WStringLiteral it) {
+		newTypeVariable.beSealed(classType(STRING))
 	}
 
-	def dispatch void generateVariables(WStringLiteral it) {
-		newSealed(classType(STRING))
+	def dispatch void generate(WBooleanLiteral it) {
+		newTypeVariable.beSealed(classType(BOOLEAN))
 	}
 
-	def dispatch void generateVariables(WBooleanLiteral it) {
-		newSealed(classType(BOOLEAN))
-	}
-
-	def dispatch void generateVariables(WListLiteral it) {
-		val listType = TypeVariable.instance(genericType(LIST, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+	def dispatch void generate(WListLiteral it) {
+		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = listType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(listType)
-		elements.forEach[
+		beSealed(listType)
+		elements.forEach [
 			generateVariables
-			tvar.beSubtypeOf(paramType)
-		]
+			paramType.beSupertypeOf(tvar)
+		]		
 	}
-
-	def dispatch void generateVariables(WSetLiteral it) {
-		val setType = TypeVariable.instance(genericType(SET, GenericTypeInfo.ELEMENT)) as GenericTypeInstance
+	
+	def dispatch void generate(WSetLiteral it) {
+		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(setType)
-		elements.forEach[
+		beSealed(setType)
+		elements.forEach [
 			generateVariables
-			tvar.beSubtypeOf(paramType)
+			paramType.beSupertypeOf(tvar)
 		]
 	}
 
-	def dispatch void generateVariables(WConstructorCall it) {
-		arguments.forEach [ arg | arg.generateVariables ]
-//		if (classRef.name.equalsIgnoreCase("Pair")) {
-//			TypeVariable.generic(it, #[KEY, VALUE]) => [ tv |
-//				tv.addMinType(classType(classRef))
-//				tv.beSealed
-//				tv.register
-//			]
-//		} else {
-			newSealed(classType(classRef))
-//		}
-
+	def dispatch void generate(WConstructorCall it) {
+		arguments.forEach[arg|arg.generateVariables]
+		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
-	def dispatch void generateVariables(WAssignment it) {
+	def dispatch void generate(WInitializer it) {
+		val instantiatedClass = declaringConstructorCall.classRef
+		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
+
+		initialValue.generateVariables
+		initializedVariable.variable.beSupertypeOf(initialValue)
+	}
+
+	def dispatch void generate(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-		newVoid
+		newTypeVariable.beVoid
 	}
 
-	def dispatch void generateVariables(WPostfixOperation it) {
-		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
+	def dispatch void generate(WPostfixOperation it) {
+		(operand as WVariableReference).ref.asOwner.newSealed(classType(NUMBER))
 		operand.generateVariables
-		newVoid
-	}
-	
-	def dispatch void generateVariables(WVariableReference it) {
-		it.newWithSubtype(ref)
-	}
-	
-	def dispatch void generateVariables(WSelf it) {
-		it.newSealed(declaringContext.asWollokType)
+		newTypeVariable.beVoid
 	}
 
-	def dispatch void generateVariables(WUnaryOperation it) {
+	def dispatch void generate(WVariableReference it) {
+		newTypeVariable.beSupertypeOf(ref.tvar)
+	}
+
+	def dispatch void generate(WSelf it) {
+		asOwner.newSealed(declaringContext.asWollokType)
+	}
+
+	def dispatch void generate(WUnaryOperation it) {
 		if (feature.equals("!")) {
-			newSealed(classType(BOOLEAN))
+			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
 	}
 
-	def dispatch void generateVariables(WIfExpression it) {
+	def dispatch void generate(WIfExpression it) {
 		condition.generateVariables
 		condition.beSealed(classType(BOOLEAN))
 
@@ -235,15 +249,18 @@ class ConstraintGenerator {
 
 			// If there is a else branch, if can be an expression 
 			// and has to be a supertype of both (else, then) branches
-			it.newWithSubtype(then, getElse)
+			newTypeVariable => [ v |
+				v.beSupertypeOf(then.tvar)
+				v.beSupertypeOf(getElse.tvar)
+			]
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
-			newVoid
+			newTypeVariable.beVoid
 		}
 	}
 
-	def dispatch void generateVariables(WVariableDeclaration it) {
+	def dispatch void generate(WVariableDeclaration it) {
 		variable.newTypeVariable()
 
 		if (right !== null) {
@@ -251,36 +268,28 @@ class ConstraintGenerator {
 			variable.beSupertypeOf(right)
 		}
 
-		it.newVoid
+		newTypeVariable.beVoid
 	}
 
-	def dispatch void generateVariables(WMemberFeatureCall it) {
+	def dispatch void generate(WMemberFeatureCall it) {
 		memberCallTarget.generateVariables
 		memberCallArguments.forEach[generateVariables]
 		memberCallTarget.tvar.messageSend(feature, memberCallArguments.map[tvar], it.newTypeVariable)
 	}
 
-	def dispatch void generateVariables(WBinaryOperation it) {
+	def dispatch void generate(WBinaryOperation it) {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
 		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
+			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), TypeVariable.synthetic)
-			it.newVoid
-		}
-		else {
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newParameter(tvar.owner, "ignoredResult"))
+		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
-			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
 		}
-	}
-
-	def dispatch void generateVariables(WReturnExpression it) {
-		newTypeVariable
-		expression.generateVariables
-		declaringContainer.beSupertypeOf(expression)
-		beVoid
 	}
 
 	// ************************************************************************
@@ -292,7 +301,7 @@ class ConstraintGenerator {
 	}
 
 	def newNamedObject(WNamedObject it) {
-		it.newSealed(it.objectType)
+		newTypeVariable.beSealed(objectType)
 	}
 
 	// ************************************************************************

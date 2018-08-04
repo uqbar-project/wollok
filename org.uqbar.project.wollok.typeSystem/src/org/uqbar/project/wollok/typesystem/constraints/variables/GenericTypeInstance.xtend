@@ -34,61 +34,71 @@ class GenericTypeInstance implements ConcreteType {
 	def param(String paramName) {
 		typeParameters.get(paramName)	
 	}
+	
+	def baseType() {
+		rawType.baseType
+	}
+
+	override instanceFor(TypeVariable variable) {
+		this
+	}
 
 	// ************************************************************************
 	// ** Interface WollokType, mostly delegated to the rawType itself
 	// ************************************************************************
 	
 	override getName() {
-		rawType.name
+		rawType.toString(this).toString
 	}
 	
 	override getContainer() {
-		rawType.container
+		baseType.container
 	}
 	
 	override getTypeSystem() {
-		rawType.typeSystem
+		baseType.typeSystem
 	}
 
 	override acceptsAssignment(WollokType other) {
-		rawType.acceptsAssignment(other)
+		baseType.acceptsAssignment(other)
 	}
 	
 	override acceptAssignment(WollokType other) {
-		rawType.acceptAssignment(other)
+		baseType.acceptAssignment(other)
 	}
 	
 	override understandsMessage(MessageType message) {
-		rawType.understandsMessage(message)
+		baseType.understandsMessage(message)
 	}
 	
 	override resolveReturnType(MessageType message) {
-		rawType.resolveReturnType(message)
+		baseType.resolveReturnType(message)
 	}
 	
 	override refine(WollokType previouslyInferred) {
-		rawType.refine(previouslyInferred)
+		baseType.refine(previouslyInferred)
 	}
 	
 	override getAllMessages() {
-		rawType.allMessages
+		baseType.allMessages
 	}
 	
 	override lookupMethod(MessageType message) {
-		rawType.lookupMethod(message)
+		baseType.lookupMethod(message)
 	}
 	
 	override lookupMethod(String selector, List<?> parameterTypes) {
-		rawType.lookupMethod(selector, parameterTypes)
+		baseType.lookupMethod(selector, parameterTypes)
 	}		
 
 	// ************************************************************************
 	// ** Basics
 	// ************************************************************************
 	
-	override toString() { rawType.toString }
+	override toString() { name }
 	
 	def dispatch equals(Object other ) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
+	
+	
 }

@@ -1,9 +1,11 @@
 package org.uqbar.project.wollok.utils
 
 import java.util.List
+import java.util.Map
 import java.util.Random
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
+
 import static extension java.lang.Math.*
 
 /**
@@ -70,4 +72,22 @@ class XtendExtensions {
 	static def <T> allButLast(List<T> list) {
 		list.subList(0, (list.size - 1).max(0))
 	}
+
+	static def <T> copyWithout(Iterable<T> list, T... toRemove) {
+		list.clone => [
+			toRemove.forEach[ elem | remove(elem)]	
+		]
+	}
+	
+	static def <T> boolean notNullAnd(T receiver, (T) => boolean action) { 
+		receiver !== null && action.apply(receiver)
+	}
+	
+	/**
+	 * Our own map values that actually computes the mapped value instead of saving the transformation.
+	 * This might not be as fast as Google #mapValues, but is easier to debug.
+	 */
+	static def <K, V1, V2> Map<K, V2> doMapValues(Map<K, V1> original, (V1) => V2 transformation) {
+		newHashMap(original.entrySet.map[key -> transformation.apply(value)])
+	}	 
 }

@@ -57,7 +57,7 @@ abstract class AbstractWollokLib implements WollokLib {
 	 * Find contents in WollokResourceCache, if not found then call internalLoad. 
 	 */
 	 def Iterable<IEObjectDescription> load(URI uri, Resource resource) {
-			try {
+		try {
 			var Iterable<IEObjectDescription> exportedObjects
 			exportedObjects = WollokResourceCache.getResource(uri)
 			if (exportedObjects === null) {
@@ -66,7 +66,7 @@ abstract class AbstractWollokLib implements WollokLib {
 			}
 			exportedObjects
 		} catch (RuntimeException e) {
-			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resource + "]"   , e)
+			throw new RuntimeException("Error while loading resource [" + uri + "] in context [ " + resource + "]", e)
 		}
 	}
 	

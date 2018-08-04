@@ -9,4 +9,12 @@
       </startup>
    </extension>
 
+   <extension
+         point="org.uqbar.project.wollok.ui.startup">
+      <startup
+            class="org.uqbar.project.wollok.product.ui.startup.AutoBuildAtStartup">
+      </startup>
+   </extension>
+
+
 </plugin>

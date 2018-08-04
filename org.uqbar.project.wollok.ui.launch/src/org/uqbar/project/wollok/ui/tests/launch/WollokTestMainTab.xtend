@@ -21,11 +21,15 @@ import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
 import org.eclipse.ui.dialogs.ResourceListSelectionDialog
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
+import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 
 /**
  * Main tab for wollok run configurations
  * 
  * @author jfernandes
+ * 
+ * TODO: Refactor to avoid duplication with WollokMainTab
+ * 
  */
 class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 	Text programText
@@ -51,7 +55,7 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 		
 		// label
 		new Label(comp, SWT.NONE) => [
-			text = "&Program:"
+			text = WollokLaunchUIMessages.WollokMainTab_TEST_FILE
 			layoutData = new GridData(GridData.BEGINNING)
 			it.font = font			
 		]
@@ -62,7 +66,7 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 			addModifyListener[e| updateLaunchConfigurationDialog ]	
 		]
 		
-		programButton = createPushButton(comp, "&Browse...", null)
+		programButton = createPushButton(comp, WollokLaunchUIMessages.WollokMainTab_BROWSE, null)
 		programButton.addSelectionListener(new SelectionAdapter {
 			override widgetSelected(SelectionEvent e) {
 				browsePDAFiles
@@ -72,8 +76,8 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 	
 	def void browsePDAFiles() {
 		val dialog = new ResourceListSelectionDialog(shell, ResourcesPlugin.workspace.root, IResource.FILE) => [
-			title = "Wollok Program"
-			message = "Select Wollok Program"	
+			title = WollokLaunchUIMessages.WollokMainTab_BROWSE_TEST_TITLE
+			message = WollokLaunchUIMessages.WollokMainTab_BROWSE_TEST_DESCRIPTION	
 		]
 		// TODO: single select
 		if (dialog.open == Window.OK) {
@@ -107,11 +111,11 @@ class WollokTestMainTab extends AbstractLaunchConfigurationTab {
 		if (text.length() > 0) {
 			val path = new Path(text)
 			if (ResourcesPlugin.workspace.root.findMember(path) === null) {
-				errorMessage = "Specified program does not exist"
+				errorMessage = WollokLaunchUIMessages.WollokMainTab_FILE_DOES_NOT_EXIST
 				return false
 			}
 		} else {
-			message = "Specify a program"
+			message = WollokLaunchUIMessages.WollokMainTab_SPECIFY_NEW_FILE
 		}
 		return super.isValid(launchConfig);
 	}

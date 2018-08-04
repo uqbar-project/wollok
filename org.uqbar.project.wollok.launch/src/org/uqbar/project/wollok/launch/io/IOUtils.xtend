@@ -34,7 +34,7 @@ class IOUtils {
 		} catch (IOException e)
 			-1
 		finally {
-			if (socket != null) {
+			if (socket !== null) {
 				try
 					socket.close
 				catch (IOException e) {

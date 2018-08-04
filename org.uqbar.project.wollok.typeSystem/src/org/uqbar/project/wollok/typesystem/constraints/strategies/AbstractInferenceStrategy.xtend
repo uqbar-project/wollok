@@ -18,7 +18,7 @@ abstract class AbstractInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	@Accessors
-	var TypeVariablesRegistry registry
+	extension TypeVariablesRegistry registry
 
 	def boolean run() {
 		log.debug('''Running strategy: «class.simpleName»''')
@@ -33,7 +33,7 @@ abstract class AbstractInferenceStrategy {
 	def void walkThrougProgram() {
 		do {
 			changed = false
-			allVariables.forEach[walkThroughVariable]
+			allVariables.clone.forEach[walkThroughVariable]
 			globalChanged = globalChanged || changed
 		} while (changed)
 	}
@@ -58,11 +58,4 @@ abstract class AbstractInferenceStrategy {
 	def allVariables() { registry.allVariables }
 	def allFiles() { typeSystem.programs }
 	def tvar(EObject node) { registry.tvar(node) }
-	
-	def addFatalError(TypeVariable variable, Exception exception) {
-		val message = '''Fatal type system error: «exception.message ?: exception.class.simpleName»'''
-		
-		log.fatal(message, exception)
-		variable.addError(new TypeSystemException(message) => [ it.variable = variable ])		
-	}
 }

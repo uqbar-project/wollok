@@ -47,20 +47,20 @@ abstract class TypeInfo {
 	 * @param type A new type to be added
 	 * @param origin The variable which provided the information for this added type and should be target of potential error reports
 	 */
-	def ConcreteTypeState addMinType(WollokType type)
+	def ConcreteTypeState addMinType(WollokType type, TypeVariable origin)
 
 	/**
 	 * @param maxType A new set of maxTypes that will be merged with current maxTypes (or assigned if no current maxTypes).
-	 * @origin The type variable from where we obtained this information, and will be target of error reports if any.
+	 * @offender The type variable to which we should report errors if this operation is not possible
 	 */
-	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable origin)
+	def boolean setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender)
 
 	// ************************************************************************
 	// ** Notifications
 	// ************************************************************************
-	def void subtypeAdded() {}
+	def void subtypeAdded(TypeVariable subtype) {}
 
-	def void supertypeAdded() {}
+	def void supertypeAdded(TypeVariable supertype) {}
 
 	// ************************************************************************
 	// ** Misc

@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem
 import java.util.Iterator
 import java.util.List
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 
 /**
  * 
@@ -15,6 +17,10 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 		messages = messagesTypes.toList
 	}
 	
+	override instanceFor(TypeVariable tvar) {
+		this
+	}
+
 	override getName() { '{ ' + messages.join(' ; ') + ' }' }
 	
 	override getAllMessages() { messages }
@@ -26,7 +32,7 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 	override acceptAssignment(WollokType other) {
 		val notSupported = messages.filter[m| !other.understandsMessage(m)]
 		if (notSupported.size > 0)
-			throw new TypeSystemException("Incompatible type. Type «" + other + "» does not complaint the following messages: " + notSupported)
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_INCOMPATIBLE_TYPE_NOT_SUPPORTED_MESSAGES, other, notSupported))
 	}
 	
 	override refine(WollokType previous) {
@@ -39,7 +45,7 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 	}
 	
 	def dispatch doRefine(WollokType previouslyInferred) {
-		throw new TypeSystemException("Incompatible types")		
+		throw new TypeSystemException(Messages.TypeSystemException_INCOMPATIBLE_TYPE)		
 	}
 	
 	override understandsMessage(MessageType message) { 

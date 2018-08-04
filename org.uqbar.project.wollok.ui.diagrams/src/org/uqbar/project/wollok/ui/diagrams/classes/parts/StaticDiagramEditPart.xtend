@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.classes.parts;
+package org.uqbar.project.wollok.ui.diagrams.classes.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -30,7 +30,7 @@ class StaticDiagramEditPart extends AbstractGraphicalEditPart implements Propert
 
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
 			modelElement.addPropertyChangeListener(this)
 		}
 	}
@@ -58,8 +58,8 @@ class StaticDiagramEditPart extends AbstractGraphicalEditPart implements Propert
 
 	override deactivate() {
 		if (active) {
-			super.deactivate;
-			modelElement.removePropertyChangeListener(this);
+			super.deactivate
+			modelElement.removePropertyChangeListener(this)
 		}
 	}
 	

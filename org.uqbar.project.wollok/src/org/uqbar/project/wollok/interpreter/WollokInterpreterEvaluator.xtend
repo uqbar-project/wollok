@@ -135,7 +135,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WProgram it) { elements.evalAll }
 
-	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
+	def dispatch WollokObject evaluate(WTest it) { elements.evalAll	}
 
 	def dispatch WollokObject evaluate(WSuite it) {
 		tests.fold(null) [ a, test |
@@ -154,9 +154,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WVariableReference it) {
 		if (ref instanceof WNamedObject)
-			ref.eval
-		else
-			interpreter.currentContext.resolve(ref.name)
+			return ref.eval
+		
+		val variableName = ref.name
+		if (variableName === null) {
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + astNode.text.trim)
+		}
+		interpreter.currentContext.resolve(variableName)
 	}
 	
 	def dispatch WollokObject evaluate(WIfExpression it) {
@@ -266,6 +270,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			l.addObjectMembers(wo)
 			l.parent.addInheritsMembers(wo)
 			l.addMixinsMembers(wo)
+			if (l.hasParentParameterValues)
+				wo.invokeConstructor(l.parentParameters.values.evalEach)
+			
+			if (l.hasParentParameterInitializers) {
+				wo.initialize(l.parentParameters.initializers)
+			}
+				
 		]
 	}
 
@@ -283,30 +294,25 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	def addMixinsMembers(WMethodContainer it, WollokObject wo) {
 		mixins.forEach[addMembersTo(wo)]
 	}
-
+	
 	def dispatch evaluate(WReturnExpression it) {
 		throw new ReturnValueException(expression.eval)
 	}
 
 	def dispatch evaluate(WConstructorCall call) {
 		if (call.hasNamedParameters) {
-			val initializers = call.arguments.fold(newHashMap, [ total, arg | 
-				val namedParameter = arg as WInitializer
-				total.put(namedParameter.initializer.name, namedParameter.initialValue.eval)
-				total
-			])
-			return newInstance(call.classRef, initializers)
+			return newInstance(call.classRef, call.initializers)
 		}
+		val values = call.values.evalEach
 		if (call.mixins.empty)
-			newInstance(call.classRef, call.arguments.evalEach)
+			newInstance(call.classRef, values)
 		else {
 			val container = new MixedMethodContainer(call.classRef, call.mixins)
 			new WollokObject(interpreter, container) => [ wo |
 				// mixins first
 				call.mixins.forEach[addMembersTo(wo)]
 				call.classRef.addInheritsMembers(wo)
-
-				wo.invokeConstructor(call.arguments.evalEach.toArray(newArrayOfSize(call.arguments.size)))
+				wo.invokeConstructor(values.toArray(newArrayOfSize(values.size)))
 			]
 		}
 	}
@@ -331,12 +337,18 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		wo
 	}
 
-	def newInstance(WClass classRef, Map<String, WollokObject> initializers) {
+	def newInstance(WClass classRef, EList<WInitializer> initializers) {
 		val wo = classRef.createInstance
-		initializers.forEach [ refName, value | wo.setReference(refName, value) ]
+		wo.initialize(initializers)
 		wo
 	}
 
+	def initialize(WollokObject wo, EList<WInitializer> namedParameters) {
+		namedParameters.forEach([ namedParameter | 
+			wo.setReference(namedParameter.initializer.name, namedParameter.initialValue.eval)
+		])
+	}
+	
 	def dispatch evaluate(WNamedObject namedObject) {
 		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(namedObject).toString
 
@@ -360,8 +372,12 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 				if (namedObject.native)
 					wo.nativeObjects.put(namedObject, namedObject.createNativeObject(wo, interpreter))
 
-				if (namedObject.parentParameters !== null && !namedObject.parentParameters.empty)
-					wo.invokeConstructor(namedObject.parentParameters.evalEach)
+				if (namedObject.hasParentParameterValues)
+					wo.invokeConstructor(namedObject.parentParameters.values.evalEach)
+
+				if (namedObject.hasParentParameterInitializers)
+					wo.initialize(namedObject.parentParameters.initializers)
+					
 			} catch (RuntimeException e) {
 				// if init failed remove it !
 				interpreter.currentContext.removeGlobalReference(qualifiedName)
@@ -447,8 +463,13 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	 */
 	def performOpAndUpdateRef(WExpression reference, String operator, ()=>WollokObject rightPart) {
 		validateNullOperand(reference.eval, operator)
+		val variableName = (reference as WVariableReference).ref.name
+		if (variableName === null) {
+			throw new UnresolvableReference(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE.trim + " " + reference.astNode.text)
+		}
 		val newValue = operator.asBinaryOperation.apply(reference.eval, rightPart).javaToWollok
-		interpreter.currentContext.setReference((reference as WVariableReference).ref.name, newValue)
+		
+		interpreter.currentContext.setReference(variableName, newValue)
 		WollokDSK.getVoid(interpreter as WollokInterpreter, reference)
 	}
 

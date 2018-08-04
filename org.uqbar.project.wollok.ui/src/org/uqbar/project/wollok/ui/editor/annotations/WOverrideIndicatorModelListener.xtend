@@ -28,26 +28,26 @@ import static extension org.eclipse.xtext.nodemodel.util.NodeModelUtils.*
  * @author jfernandes
  */
 class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl implements IXtextModelListener {
-	public static final String JOB_NAME = "Override Indicator Updater";
-	private static ISchedulingRule SCHEDULING_RULE = SchedulingRuleFactory.INSTANCE.newSequence();
+	public static final String JOB_NAME = "Override Indicator Updater"
+	private static ISchedulingRule SCHEDULING_RULE = SchedulingRuleFactory.INSTANCE.newSequence()
 	private Job currentJob
-	private XtextEditor xtextEditor;
+	private XtextEditor xtextEditor
 	var Set<Annotation> overrideIndicatorAnnotations = newHashSet()
 	
 	// listening
 	
 	override afterCreatePartControl(XtextEditor xtextEditor) {
-		this.xtextEditor = xtextEditor;
-		installModelListener(xtextEditor);
+		this.xtextEditor = xtextEditor
+		installModelListener(xtextEditor)
 	}
 
 	override afterSetInput(XtextEditor xtextEditor) {
-		installModelListener(xtextEditor);
+		installModelListener(xtextEditor)
 	}
 
 	override beforeDispose(XtextEditor xtextEditor) {
 		if (this.xtextEditor !== null) {
-			this.xtextEditor = null;
+			this.xtextEditor = null
 		}
 	}
 	
@@ -73,7 +73,7 @@ class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl impl
 			override run(IProgressMonitor monitor) {
 				updateAnnotationModel(monitor)
 			}
-		};
+		}
 		currentJob.rule = SCHEDULING_RULE
 		currentJob.priority = Job.DECORATE
 		currentJob.system = true
@@ -94,7 +94,7 @@ class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl impl
 							createOverrideIndicatorAnnotationMap(xtextResource)
 					}
 
-				});
+				})
 
 		if (monitor.isCanceled)
 			return Status.CANCEL_STATUS
@@ -117,7 +117,7 @@ class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl impl
 			if (lock !== null)
 				return lock
 		}
-		return annotationModel;
+		return annotationModel
 	}
 	
 	// metodo posta (todo lo demás era burocracia 
@@ -125,7 +125,7 @@ class WOverrideIndicatorModelListener extends IXtextEditorCallback.NullImpl impl
 		val contents = xtextResource.contents
 		if (contents.isEmpty)
 			return Maps.newHashMap
-		val eObject = contents.get(0);
+		val eObject = contents.get(0)
 		if (!(eObject instanceof WFile)) {
 			return Maps.newHashMap
 		}

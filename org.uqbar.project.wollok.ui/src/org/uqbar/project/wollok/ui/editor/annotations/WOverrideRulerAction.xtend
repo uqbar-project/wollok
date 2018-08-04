@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.ui.editor.annotations
 
 import com.google.inject.Inject
-import java.util.List
 import java.util.ResourceBundle
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.jface.text.BadLocationException
@@ -17,11 +16,9 @@ import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.XtextMarkerRulerAction
 import org.eclipse.xtext.ui.editor.actions.IActionContributor
 import org.uqbar.project.wollok.ui.WollokActivator
-import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -65,14 +62,14 @@ class WOverrideRulerAction extends ResourceAction implements IActionContributor,
 	override update() {
 		overrideIndicatorAnnotation = findOverrideIndicatorAnnotation
 		selectMarkerRulerAction.update
-		enabled = selectMarkerRulerAction.enabled || overrideIndicatorAnnotation != null
+		enabled = selectMarkerRulerAction.enabled || overrideIndicatorAnnotation !== null
 	}
 	
 	def findOverrideIndicatorAnnotation() {
 		val verticalRuler = editor.verticalRuler
 		val lineOfLastMouseButtonActivity = verticalRuler.lineOfLastMouseButtonActivity
 		val annotationModel = verticalRuler.model as IAnnotationModelExtension2
-		if (annotationModel != null) {
+		if (annotationModel !== null) {
 			try {
 				val line = editor.document.getLineInformation(lineOfLastMouseButtonActivity)
 				return annotationModel.getAnnotationIterator(line.offset, line.length + 1, true, true)
@@ -86,7 +83,7 @@ class WOverrideRulerAction extends ResourceAction implements IActionContributor,
 	// run
 	
 	override run() {
-		if (overrideIndicatorAnnotation != null) {
+		if (overrideIndicatorAnnotation !== null) {
 			initialize(RESOURCE_BUNDLE, RESOURCE_KEY_PREFIX)
 			runInternal
 		} 

@@ -21,7 +21,12 @@ class WollokConstants {
 	public static val PROGRAM_EXTENSION = "wpgm"
 	public static val TEST_EXTENSION = "wtest"
 	public static val STATIC_DIAGRAM_EXTENSION = "wsdi"
+	
 	public static val DIAGRAMS_FOLDER = ".diagrams"
+	public static val SETTINGS_FOLDER = ".settings"
+	public static val BIN_FOLDER = "bin"
+	public static val METAINF_FOLDER = "META-INF"
+	public static val HIDDEN_FOLDERS = #[DIAGRAMS_FOLDER, SETTINGS_FOLDER, BIN_FOLDER, METAINF_FOLDER]
 	
 	public static val REPL_FILE = "wollokREPL.wlk" 
 	public static val SYNTHETIC_FILE = "__synthetic"
@@ -30,7 +35,9 @@ class WollokConstants {
 	public static val STACKELEMENT_SEPARATOR = ":"
 	public static val WINDOWS_FILE_PREFIX_SIZE = 6
 	public static val DEFAULT_FILE_PREFIX_SIZE = 5 
-	
+
+	public static val LIBRARY_FOLDER = "org.uqbar.project.wollok.lib"
+		
 	// grammar elements here for being used in quickfixes, validators, and
 	// any code that generates wollok code
 	

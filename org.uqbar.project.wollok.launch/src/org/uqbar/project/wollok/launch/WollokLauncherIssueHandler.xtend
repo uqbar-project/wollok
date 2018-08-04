@@ -37,7 +37,7 @@ class DefaultWollokLauncherIssueHandler implements WollokLauncherIssueHandler {
 	
 	def String formattedIssue(Issue it) {
 		// COLUMN: investigate how to calculate the column number from the offset !
-		'''[«severity»] «uriToProblem?.trimFragment?.toFileString»:«lineNumber»:«if (offset == null) 1 else offset» «severity?.name» «message»'''
+		'''[«severity»] «uriToProblem?.trimFragment?.toFileString»:«lineNumber»:«if (offset === null) 1 else offset» «severity?.name» «message»'''
 	}
 	
 	override finished() {}

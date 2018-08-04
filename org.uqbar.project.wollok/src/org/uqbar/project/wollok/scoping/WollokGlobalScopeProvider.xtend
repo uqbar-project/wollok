@@ -6,6 +6,7 @@ import com.google.inject.Singleton
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.ClasspathUriResolutionException
 import org.eclipse.xtext.resource.IEObjectDescription
@@ -14,6 +15,7 @@ import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.impl.DefaultGlobalScopeProvider
 import org.eclipse.xtext.scoping.impl.SimpleScope
 import org.eclipse.xtext.util.OnChangeEvictingCache
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.libraries.WollokLibraryLoader
 import org.uqbar.project.wollok.scoping.cache.WollokGlobalScopeCache
@@ -27,6 +29,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author tesonep
  * @author jfernandes
+ * @author dodain - forcing to refresh global scope when imported files change
+ * 
  */
 @Singleton
 class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
@@ -73,9 +77,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 		
 		if (result === null) {
 			val rootObject = context.contents.get(0)
-			// dodain - forcing to refresh global cache when resource changes
 			cache.invalidateDependencies(rootObject.eResource.URI) 
-			//
 			result = (rootObject.allImports.map[importedNamespace] + rootObject.allFQNImports).toSet
 			importsCache.set("ImportsInResource", result)
 		}
@@ -123,7 +125,7 @@ class WollokGlobalScopeProvider extends DefaultGlobalScopeProvider {
 
 			EcoreUtil2.getResource(resource, uri)
 		} catch (RuntimeException e) {
-			throw new WollokRuntimeException("Error while resolving import '" + importedNamespace + "'", e)
+			throw new WollokRuntimeException(NLS.bind(Messages.WollokScopeProvider_unresolvedImport, importedNamespace), e)
 		}
 	}
 

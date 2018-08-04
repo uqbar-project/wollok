@@ -978,6 +978,13 @@ class Dictionary {
 	/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
 	method clear() native
 	
+	override method toString() {
+		var result = "a Dictionary ["
+		self.forEach { key, value => result = result + (key.printString() + " -> " + value.printString() + ", ") }
+		if (self.size() > 0) result = result.substring(0, result.length() - 2) 
+		return result + "]"
+	}
+	
 }
 
 /**

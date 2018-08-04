@@ -20,10 +20,6 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	static def Object[] typeSystems() {
 		#[
 			ConstraintBasedTypeSystem
-//			SubstitutionBasedTypeSystem
-		// TODO: fix !
-//			XSemanticsTypeSystem,		 
-//			BoundsBasedTypeSystem
 		]
 	}
 
@@ -191,7 +187,7 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 				const pepe = self.aList()
 			}
 		}'''.parseAndInfer.asserting [
-			assertTypeOfAsString("List", "pepe")
+			assertTypeOfAsString("List<Number>", "pepe")
 		]
 	}
 

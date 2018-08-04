@@ -20,7 +20,7 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	
 	override getThisObject() {
 		val t = inner.thisObject
-		if (t != null) t else outer.thisObject
+		if (t !== null) t else outer.thisObject
 	}
 	
 	override allReferenceNames() {

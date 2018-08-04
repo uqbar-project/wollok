@@ -4,7 +4,6 @@ import java.util.Set
 import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
@@ -13,9 +12,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 /**
  * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
@@ -57,14 +54,14 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		}
 
 		// Do not unify with core library elements
-		if (subtype.isLibraryElement || supertype.isLibraryElement) {
+		if (subtype.owner.isCoreObject || supertype.owner.isCoreObject) {
 			return Cancel
 		}
 
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
 		if (supertype.hasErrors) {
-			log.debug('''Unifyng «subtype» with «supertype»: errors found, aborting unification''')
+			log.debug('''Unifying «subtype» with «supertype»: errors found, aborting unification''')
 			return Error
 		}
 
@@ -90,15 +87,11 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		]
 	}
 
-	def isLibraryElement(TypeVariable it) {
-		owner !== null && owner.eResource.isClassPathResource
-	}
-
 	def dispatch ConcreteTypeState doUnifyWith(TypeVariable subtype, TypeVariable supertype) {
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
 		if (subtype.typeInfo === null && supertype.typeInfo === null) {
-			log.debug('''Unifyng «subtype» with «supertype»: no type info yet, unification postponed''')
+			log.debug('''Unifying «subtype» with «supertype»: no type info yet, unification postponed''')
 			Pending
 		} else if (subtype.typeInfo === null) {
 			subtype.copyTypeInfoFrom(supertype)
@@ -132,12 +125,6 @@ class UnifyVariables extends AbstractInferenceStrategy {
 		t2.users.forEach[typeInfo = t1]
 
 		changed = true
-		Ready
-	}
-
-	def dispatch doUnifyWith(ClosureTypeInfo t1, ClosureTypeInfo t2) {
-		t1.parameters.biForEach(t2.parameters, [param1, param2 | param1.unifyWith(param2)])
-		t1.returnType.unifyWith(t2.returnType)
 		Ready
 	}
 

@@ -1,13 +1,8 @@
 package org.uqbar.project.wollok.typesystem.constraints.types
 
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClassParameterTypeVariable
-import org.uqbar.project.wollok.typesystem.constraints.variables.ClosureTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
-
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForAll
 
 class VariableSubtypingRules {
 	// ************************************************************************
@@ -23,20 +18,15 @@ class VariableSubtypingRules {
 	/** Missing type info => I can always be super or subtype */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, Void subtype) { true }
 
-	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, VoidTypeInfo subtype) { true }
-
-	static def dispatch boolean isSupertypeOf(ClosureTypeInfo supertype, ClosureTypeInfo subtype) { 
-		supertype.parameters.biForAll(subtype.parameters)[superParam, subParam|
-			// Note that the subtype relationship is inverted for parameters
-			subParam.isSuperVarOf(superParam)
-		]
-		&&
-		(supertype.returnType as TypeVariable).typeInfo.isSupertypeOf((subtype.returnType as TypeVariable).typeInfo)
-	}
+	/** 
+	 * Void is supertype of anything, i.e. we can receive anything where void is expected.
+	 * The opposite is not true, void is unacceptable where another type of value is expected.
+	 */
+	static def dispatch boolean isSupertypeOf(VoidTypeInfo supertype, TypeInfo subtype) { true }
 
 	/** The maxTypes of the supertype has to include every minType in subtype */
 	static def dispatch boolean isSupertypeOf(GenericTypeInfo supertype, GenericTypeInfo subtype) {
-		supertype.maximalConcreteTypes == null 
+		supertype.maximalConcreteTypes === null 
 		||
 		subtype.minTypes.keySet.forall[
 			supertype.maximalConcreteTypes.contains(it)
@@ -46,19 +36,4 @@ class VariableSubtypingRules {
 	/** Default impl, will arrive to this rule if everything else fails, type infos of different kind => impossible subtyping */
 	static def dispatch boolean isSupertypeOf(TypeInfo supertype, TypeInfo subtype) { false }
 	
-	// ************************************************************************
-	// ** Type Variables
-	// ************************************************************************
-
-	static def dispatch boolean isSuperVarOf(TypeVariable supertype, TypeVariable subtype) { 
-		supertype.typeInfo.isSupertypeOf(subtype.typeInfo)
-	}
-
-	static def dispatch boolean isSuperVarOf(ClassParameterTypeVariable supertype, TypeVariable subtype) {
-		true // TODO
-	} 
-
-	static def dispatch boolean isSuperVarOf(TypeVariable supertype, ClassParameterTypeVariable subtype) {
-		true // TODO
-	} 
 }

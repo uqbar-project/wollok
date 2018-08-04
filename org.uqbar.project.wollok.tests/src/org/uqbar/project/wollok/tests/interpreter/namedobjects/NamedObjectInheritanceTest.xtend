@@ -165,4 +165,37 @@ class NamedObjectInheritanceTest extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 	
+	@Test
+	def void testObjectInheritingFromAClass() {
+		'''
+		class Auto {
+			var property kms
+			
+			constructor(_kms) {
+				kms = _kms
+			}
+		}
+		object bordini inherits Auto(2000) {
+			method color() = "celeste"
+		}
+		program p {
+			assert.equals(2000, bordini.kms())
+		}'''.interpretPropagatingErrors
+	}
+
+	@Test
+	def void testObjectInheritingFromAClassNamedParameters() {
+		'''
+		class Auto {
+			var property kms
+			var property owner
+		}
+		object bordini inherits Auto(owner = 'dodain', kms = 2000) {
+			method color() = "celeste"
+		}
+		program p {
+			assert.equals(2000, bordini.kms())
+		}'''.interpretPropagatingErrors
+	}
+		
 }

@@ -1,0 +1,112 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object gameTest {
+	
+	// XPECT methodType at m1 --> (Any) => Void
+	method m1(obj) {
+		game.addVisual(obj)
+	}
+
+	// XPECT methodType at m2 --> (Any, Position) => Void
+	method m2(obj, pos) {
+		game.addVisualIn(obj, pos)
+	}
+	
+	// XPECT methodType at m3 --> (Any) => Void
+	method m3(obj) {
+		game.addVisualCharacter(obj)
+	}
+	
+	// XPECT methodType at m4 --> (Any, Position) => Void
+	method m4(obj, pos) {
+		game.addVisualCharacterIn(obj, pos)
+	}
+	
+	// XPECT methodType at m5 --> (Any) => Void
+	method m5(obj) {
+		game.removeVisual(obj)
+	}
+	
+	// XPECT! methodType at m6 --> (Number, {() => Void}) => Void
+//	method m6(key, action) {
+//		game.whenKeyPressedDo(key, action)
+//	}
+	
+	// XPECT! methodType at m7 --> (Any, {(Any) => Void}) => Void
+//	method m7(obj, action) {
+//		game.whenCollideDo(obj, action)
+//	}
+	
+	// XPECT methodType at m8 --> (Position) => List<Any>
+	method m8(pos) {
+		return game.getObjectsIn(pos)
+	}
+	
+	// XPECT methodType at m9 --> (Any, String) => Void
+	method m9(obj, msj) {
+		game.say(obj, msj)
+	}
+	
+	// XPECT methodType at m10 --> () => Void
+	method m10() {
+		game.clear()
+	}
+	
+	// XPECT methodType at m11 --> (Any) => List<Any>
+	method m11(obj) {
+		return game.colliders(obj)
+	}
+		
+	// XPECT methodType at m12 --> () => Void
+	method m12() {
+		game.stop() 
+	}
+			
+	// XPECT methodType at m13 --> () => Void
+	method m13() {
+		game.start() 
+	}
+			
+	// XPECT methodType at m14 --> (Number, Number) => Position
+	method m14(x, y) {
+		return game.at(x, y) 
+	}
+			
+	// XPECT methodType at m15 --> () => Position
+	method m15() {
+		return game.origin() 
+	}
+			
+	// XPECT methodType at m16 --> () => Position
+	method m16() {
+		return game.center() 
+	}
+			
+	// XPECT methodType at m17 --> (String) => String
+	method m17(title) {
+		game.title(title)
+		return game.title() 
+	}
+			
+	// XPECT methodType at m18 --> (Number) => Number
+	method m18(n) {
+		game.width(n)
+		return game.width() 
+	}
+			
+	// XPECT methodType at m19 --> (Number) => Number
+	method m19(n) {
+		game.height(n)
+		return game.height() 
+	}
+			
+	// XPECT methodType at m20 --> (String) => Void
+	method m20(path) {
+		game.ground(path) 
+	}
+			
+	// XPECT methodType at m21 --> (String) => Void
+	method m21(path) {
+		game.boardGround(path) 
+	}
+}	

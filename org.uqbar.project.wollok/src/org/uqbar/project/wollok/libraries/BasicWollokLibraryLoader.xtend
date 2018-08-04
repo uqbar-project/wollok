@@ -12,9 +12,8 @@ import org.eclipse.emf.ecore.resource.Resource
 @Singleton
 class BasicWollokLibraryLoader implements WollokLibraryLoader {
 
-	
 	@Inject
-	var WollokLibraries libs;
+	var WollokLibraries libs
 	
 	@Inject 
 	@Named("standardWollokLib")
@@ -26,9 +25,7 @@ class BasicWollokLibraryLoader implements WollokLibraryLoader {
 	}
 	
 	def libraries(Resource resource) {
-		#[standardLib] + libs.getWollokLibs(resource);
+		#[standardLib] + libs.getWollokLibs(resource)
 	}
 	
-
-
 }

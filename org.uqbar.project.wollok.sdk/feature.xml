@@ -2,7 +2,7 @@
 <feature
       id="org.uqbar.project.wollok.sdk"
       label="Wollok Language Feature"
-      version="1.6.6"
+      version="1.6.7.qualifier"
       provider-name="Uqbar Foundation"
       os="linux,macosx,win32">
 
@@ -345,14 +345,7 @@ Library.
          unpack="false"/>
 
    <plugin
-         id="org.uqbar.project.wollok.typeSystem.xsemantics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.uqbar.project.wollok.typeSystem.xsemantics.ui"
+         id="org.uqbar.project.wollok.typeSystem.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

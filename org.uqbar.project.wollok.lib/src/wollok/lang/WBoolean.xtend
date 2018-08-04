@@ -40,7 +40,7 @@ class WBoolean extends AbstractJavaWrapper<Boolean> {
 	@NativeMessage("==")
 	def wollokEquals(WollokObject other) {
 		val o = other.getNativeObject(WBoolean)
-		o != null && wrapped == o.wrapped
+		o !== null && wrapped == o.wrapped
 	}
 	
 	def negate() { ! wrapped }

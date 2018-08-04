@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.uqbar-project</groupId>
 	<artifactId>wollok-parent</artifactId>
-	<version>1.6.6</version>
+	<version>1.6.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Wollok Parent (Releng)</name>
 	<url>https://github.com/uqbar-project/wollok</url>
@@ -20,8 +20,7 @@
 		<module>../org.uqbar.project.wollok.ui.diagrams</module>
 		<module>../org.uqbar.project.wollok.ui.launch</module>
 		<module>../org.uqbar.project.wollok.typeSystem</module>
-		<module>../org.uqbar.project.wollok.typeSystem.xsemantics</module>
-		<module>../org.uqbar.project.wollok.typeSystem.xsemantics.ui</module>
+		<module>../org.uqbar.project.wollok.typeSystem.ui</module>
 		<module>../org.uqbar.project.wollok.tests</module>
 		<module>../org.uqbar.project.wollok.sdk</module>
 		<module>../org.uqbar.project.wollok.game</module>
@@ -35,7 +34,6 @@
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.11.0</xtext.version>
-		<xsemantics-version>1.11</xsemantics-version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
@@ -77,18 +75,6 @@
 		</repository>
 	</repositories>
 
-
-	<pluginRepositories>
-		<!-- XSemantics -->
-		<!-- THERE IS NO REPOSITORY ANYMORE FOR VERSION 1.11 
-		<pluginRepository>
-			<id>xsemantics-maven-repo</id>
-			<url>http://sourceforge.net/projects/xsemantics/files/maven/repo/releases</url>
-		</pluginRepository>
-		-->
-		<!-- /XSemantics -->
-	</pluginRepositories>
-
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -99,6 +85,13 @@
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtext.version}</version>
+					<dependencies>
+						<dependency>
+						    <groupId>org.eclipse.platform</groupId>
+						    <artifactId>org.eclipse.equinox.common</artifactId>
+						    <version>3.9.0</version>
+						</dependency>
+					</dependencies>
 					<executions>
 						<execution>
 							<goals>

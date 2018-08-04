@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.actionbar
 
+import org.eclipse.core.runtime.Assert
 import org.eclipse.draw2d.Graphics
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.SWTGraphics
@@ -8,7 +9,6 @@ import org.eclipse.gef.GraphicalViewer
 import org.eclipse.gef.LayerConstants
 import org.eclipse.gef.editparts.LayerManager
 import org.eclipse.jface.dialogs.MessageDialog
-import org.eclipse.jface.util.Assert
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.GC
 import org.eclipse.swt.graphics.Image
@@ -49,7 +49,7 @@ class ImageSaveUtil {
 		Assert.isNotNull(viewer, "null viewer passed to ImageSaveUtil::save")		
 		
 		val String saveFilePath = getSaveFilePath(viewer, -1)
-		if (saveFilePath == null) return false
+		if (saveFilePath === null) return false
 		
 		var int format = SWT.IMAGE_JPEG
 		if (saveFilePath.endsWith(".jpeg")) 

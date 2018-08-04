@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -16,6 +17,7 @@ import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
+import org.uqbar.project.wollok.wollokDsl.WInitializer
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
@@ -43,9 +45,10 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
-import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
+import org.uqbar.project.wollok.wollokDsl.Import
 
 class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	
@@ -62,7 +65,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
 			maximalConcreteTypes.forEach[ type |
-				val state = addMinType(type) 
+				val state = addMinType(type, tvar) 
 				log.debug('''  Added min type «type» => «state»''')
 				if (state == Pending) changed = true
 			]
@@ -74,11 +77,10 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	// ************************************************************************
 
 	/** We will stop visits after a change is found */
-	def dispatch shouldVisit(EObject e) { !changed && !e.isCoreObject }
+	def dispatch shouldVisit(EObject e) { !changed && e.eResource !== null && !e.isCoreObject }
 
 	/** Handle nulls in multiple dispatch */
 	def dispatch shouldVisit(Void it) { false }
-
 
 	/** Execute actions before visiting child nodes */
 	def beforeVisit(EObject e) {
@@ -95,10 +97,12 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch afterVisit(WProgram it) {}
 	def dispatch afterVisit(WClass it) {}
 	def dispatch afterVisit(WConstructor it) {}
+	def dispatch afterVisit(WInitializer it) {}
+	def dispatch afterVisit(Import it) {}
 
 	// ************************************************************************
 	// ** Generic visiting construct 
-	// ** (TODO extract them and join with AbstractVisitor)
+	// ** (TODO extract them and join with AbstractWollokVisitor)
 	// ************************************************************************
 
 	/**
@@ -138,11 +142,18 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WThrow it) { exception.visit }
 	def dispatch void visitChildren(WCatch it) { expression.visit }
 
-	def dispatch void visitChildren(WAssignment expr) {
+	def dispatch void visitChildren(WAssignment it) {
 		// We are not generating type variables for the reference in an assignment.
 		// Warning: if we generalize this algorithm we should not propagate this type-system-specific tuning to the generic version.
-		// expr.feature.visit
-		expr.value.visit
+		// feature.visit
+		value.visit
+	}
+
+	def dispatch void visitChildren(WInitializer it) {
+		// We are not generating type variables for the variable reference in an initializer
+		// Warning: if we generalize this algorithm we should not propagate this type-system-specific tuning to the generic version.
+		// initializer.visit
+		initialValue.visit
 	}
 
 	def dispatch void visitChildren(WBinaryOperation it){
@@ -182,7 +193,11 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
 	def dispatch void visitChildren(WTest it) { elements.visitAll }
 	def dispatch void visitChildren(WSuperInvocation it) { memberCallArguments.visitAll }
-	def dispatch void visitChildren(WConstructorCall it) {	arguments.visitAll }
+	def dispatch void visitChildren(WConstructorCall it) {	
+		if (argumentList !== null) {
+			arguments.visitAll
+		}
+	}
 	def dispatch void visitChildren(WCollectionLiteral it) { elements.visitAll }
 
 	def dispatch void visitChildren(WBlockExpression it) { expressions.visitAll	}

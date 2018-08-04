@@ -13,7 +13,7 @@ class WollokDiagramsPlugin extends AbstractUIPlugin {
 	}
 
 	new() {
-		if (singleton == null)
+		if (singleton === null)
 			singleton = this
 	}
 

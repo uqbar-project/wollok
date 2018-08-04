@@ -49,25 +49,25 @@ class ValidatorPreferencePage extends PropertyAndPreferencePage {
 	}
 	
 	override dispose() {
-		if (configurationBlock != null)
+		if (configurationBlock !== null)
 			configurationBlock.dispose
 		super.dispose
 	}
 	
 	override enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
 		super.enableProjectSpecificSettings(useProjectSpecificSettings)
-		if (configurationBlock != null)
+		if (configurationBlock !== null)
 			configurationBlock.useProjectSpecificSettings(useProjectSpecificSettings)
 	}
 
 	override performDefaults() {
 		super.performDefaults
-		if (configurationBlock != null)
+		if (configurationBlock !== null)
 			configurationBlock.performDefaults
 	}
 
 	override performOk() {
-		if (configurationBlock != null) {
+		if (configurationBlock !== null) {
 			scheduleCleanerJobIfNecessary(container)
 			if (!configurationBlock.performOk)
 				return false
@@ -76,7 +76,7 @@ class ValidatorPreferencePage extends PropertyAndPreferencePage {
 	}
 
 	override performApply() {
-		if (configurationBlock != null) {
+		if (configurationBlock !== null) {
 			scheduleCleanerJobIfNecessary(null)
 			configurationBlock.performApply
 		}

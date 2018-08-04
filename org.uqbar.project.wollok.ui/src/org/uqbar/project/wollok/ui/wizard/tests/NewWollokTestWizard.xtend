@@ -12,7 +12,7 @@ import org.uqbar.project.wollok.ui.wizard.abstractWizards.AbstractNewWollokFileW
  * 
  */
 class NewWollokTestWizard extends AbstractNewWollokFileWizard implements INewWizard {
-	public static final String ID = "org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard";
+	public static final String ID = "org.uqbar.project.wollok.ui.wizard.tests.NewWollokTestWizard"
 	
 	override addPages() {
 		page = getWizardPage

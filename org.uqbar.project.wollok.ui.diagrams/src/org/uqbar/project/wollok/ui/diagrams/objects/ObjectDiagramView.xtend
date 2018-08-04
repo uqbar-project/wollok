@@ -94,7 +94,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		createViewer(splitter)
 		
 		splitter.graphicalControl = graphicalViewer.control
-		if (page != null) {
+		if (page !== null) {
 			splitter.externalViewer = page.getPaletteViewer
 			page = null
 		}
@@ -104,7 +104,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 
 		// Check if there is an already started debug context
 		val dc = DebugUITools.getDebugContext
-		if (dc != null) {
+		if (dc !== null) {
 			val o = dc.getAdapter(IStackFrame)
 			if (o instanceof IStackFrame)
 				setStackFrame(o as IStackFrame)
@@ -142,7 +142,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def initializeGraphicalViewer() {
-		if (model != null) {
+		if (model !== null) {
 			graphicalViewer.contents = model
 			layout
 		}
@@ -196,7 +196,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	override dispose() {
 		site.workbenchWindow.selectionService.removeSelectionListener(this)
 		editDomain.activeTool = null
-		if (actionRegistry != null) actionRegistry.dispose
+		if (actionRegistry !== null) actionRegistry.dispose
 		
 		super.dispose
 	}
@@ -256,7 +256,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	def getSplitter() { splitter }
 	def getPaletteViewerProvider() {
-		if (provider == null) provider = createPaletteViewerProvider
+		if (provider === null) provider = createPaletteViewerProvider
 		provider
 	}
 	def createPaletteViewerProvider() { new PaletteViewerProvider(editDomain) }
@@ -289,7 +289,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		// backup nodes positions
 		val oldRootPart = graphicalViewer.contents as StackFrameEditPart
 		val map = new HashMap<String,Shape>()
-		if (oldRootPart != null) {
+		if (oldRootPart !== null) {
 			oldRootPart.children.<ValueEditPart>forEach[it |
 				map.put((it.model as VariableModel).valueString, it.model as Shape)
 			]
@@ -315,7 +315,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	}
 	
 	def getEditPart() { graphicalViewer.contents as StackFrameEditPart }
-	def getChildrenEditParts() { if (editPart != null) editPart.children as List<ValueEditPart> else #[]}
+	def getChildrenEditParts() { if (editPart !== null) editPart.children as List<ValueEditPart> else #[]}
 	def getNewModels() { childrenEditParts.map[ ep | ep.model as VariableModel ] }
 	
 	def relocateSolitaryNodes(List<VariableModel> models) {

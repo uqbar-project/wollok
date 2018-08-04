@@ -116,7 +116,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	}
 	
 	override getName() throws DebugException {
-		if (name == null) {
+		if (name === null) {
 			try
 				name = launch.launchConfiguration.getMain
 			catch (CoreException e) {
@@ -134,7 +134,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	override supportsBreakpoint(IBreakpoint breakpoint) {
 		if (breakpoint.isWollokBreakpoint) {
 			val marker = breakpoint.marker
-			if (marker != null)
+			if (marker !== null)
 				return WollokLaunchConstants.isWollokFileExtension(marker.resource.fileExtension)
 		}
 		false
@@ -158,7 +158,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	var IStackFrame[] stackCache = null
 	
 	def synchronized IStackFrame[] getStackFrames() throws DebugException {
-		if (stackCache == null) {
+		if (stackCache === null) {
 			stackCache = commandHandler.stackFrames.map[i, f| f.toIStackFrame(i) ].toList.reverse
 		}
 		stackCache

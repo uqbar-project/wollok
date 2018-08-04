@@ -144,7 +144,7 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 	}
 
 	@Test
-	def void constructorSelfDelegation() throws Exception {
+	def void constructorSelfDelegationPositionalParameters() throws Exception {
 		assertFormatting('''
 		class A { var a constructor(_a) { a = _a } 
 		
@@ -174,9 +174,9 @@ class ConstructorsFormatterTestCase extends AbstractWollokFormatterTestCase {
 		
 		''')
 	}
-	
+
 	@Test
-	def void constructorSuperDelegation() throws Exception {
+	def void constructorSuperDelegationPositionalParameters() throws Exception {
 		assertFormatting('''
 		class A { var a constructor(_a) { a = _a } 
 		}

@@ -30,5 +30,5 @@ class TypeSystemWollokValidatorExtension implements WollokValidatorExtension {
 		
 		WollokTypeSystemActivator.^default.getTypeSystem(file).validate(file, validator)		
 	}
-	
+
 }

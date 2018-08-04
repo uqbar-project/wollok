@@ -460,7 +460,4 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 	}	
 
 	
-	
-	
-	
 }

@@ -15,7 +15,7 @@ class WollokLibExtensions {
 	 * loads the objects without cache
 	 */
 	static def load(URI uri, Resource resource, Manager manager) {
-		var newResource = resource.resourceSet.getResource(uri, true)
+		val newResource = resource.resourceSet.getResource(uri, true)
 		resource.load(#{})
 		manager.getResourceDescription(newResource).exportedObjects
 	}

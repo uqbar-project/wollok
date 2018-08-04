@@ -11,18 +11,20 @@ import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.resource.XtextResourceSet
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.MixedMethodContainer
-import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.sdk.WollokDSK
+import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WFeatureCall
@@ -53,6 +55,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableReference
 import static extension org.eclipse.xtext.EcoreUtil2.*
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.allWollokFiles
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.notNullAnd
 
 /**
  * Extension methods for WMethodContainers.
@@ -69,12 +72,32 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static WMethodContainer declaringContext(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodContainer) }
 	def static WMethodDeclaration declaringMethod(EObject it)	{ EcoreUtil2.getContainerOfType(it, WMethodDeclaration) }
 	def static WConstructor declaringConstructor(EObject it)	{ EcoreUtil2.getContainerOfType(it, WConstructor) }
-	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
+	def static WArgumentList declaringArgumentList(EObject it)  { EcoreUtil2.getContainerOfType(it, WArgumentList) }
+ 	def static WFixture declaringFixture(EObject it)			{ EcoreUtil2.getContainerOfType(it, WFixture) }
 	def static WClosure declaringClosure(EObject it)			{ EcoreUtil2.getContainerOfType(it, WClosure) }
+	def static WConstructorCall declaringConstructorCall(EObject it){ EcoreUtil2.getContainerOfType(it, WConstructorCall) }
 	
-	def static EObject declaringContainer(WReturnExpression it)	{ 
+	def static EObject returnContext(WReturnExpression it)	{ 
 		getAllContainers.findFirst[it instanceof WClosure || it instanceof WMethodDeclaration]
 	}
+
+	/**
+	 * Returns the first container that is able to declare variables
+	 */
+	def static EObject declaringContainer(WExpression it)	{ 
+		getAllContainers.findFirst[
+			it instanceof WClosure || 
+			it instanceof WMethodDeclaration ||
+			it instanceof WProgram ||
+			it instanceof WNamedObject ||
+			it instanceof WClass ||
+			it instanceof WObjectLiteral
+		]
+	}
+	
+	def static dispatch body(EObject it) { throw new UnsupportedOperationException }
+	def static dispatch body(WClosure it) { expression }
+	def static dispatch body(WMethodDeclaration it) { expression }
 
 	def static namedObjects(WPackage p){p.elements.filter(WNamedObject)}
 	def static namedObjects(WFile p){p.elements.filter(WNamedObject)}
@@ -167,10 +190,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static superMethod(WSuperInvocation it) { method.overridenMethod }
 
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
+
 	def static hasSameSignatureThan(WMethodDeclaration it, WMethodDeclaration other) { matches(other.name, other.parameters) }
 
-	//def static isGetter(WMethodDeclaration it) { name.length > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) }
-	// FED - new convention
 	def static isGetter(WMethodDeclaration it) { (it.eContainer as WMethodContainer).variableNames.contains(name) && parameters.empty }
 	
 	def static variableNames(WMethodContainer it) {	variables.map [ v | v?.name ].toList }
@@ -206,8 +228,19 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static variables(Iterable<WVariableDeclaration> declarations) { declarations.map[variable] }
 	def static variables(WSuite p) { p.members.filter(WVariableDeclaration).variables }
 
-	def static getVariableDeclaration(WMethodContainer c, String _name) {
-		c.variableDeclarations.findFirst [ variable?.name.equals(_name) ]
+	/**
+	 * If the variable is not found in the method container, look up the hierarchy until it is found.
+	 * TODO: Consider mixins.
+	 */
+	def static WVariableDeclaration getVariableDeclaration(WMethodContainer it, String name) {
+		getOwnVariableDeclaration(name) ?: parent?.getVariableDeclaration(name)
+	}
+	
+	/**
+	 * Looks for "own" variables, i.e. not inherited ones.
+	 */
+	def static getOwnVariableDeclaration(WMethodContainer it, String name) {
+		variableDeclarations.findFirst [ variable?.name.equals(name) ]
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
@@ -393,9 +426,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	// all calls to 'this' are valid in mixins
-//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call, WollokClassFinder finder) { true }
-	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call, WollokClassFinder finder) {
-		c.matchesProperty(call.feature, call.memberCallArguments.size) || c.allMethods.exists[isValidMessage(call)] || (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call, finder))
+	//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call) { true }
+	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
+		c.matchesProperty(call.feature, call.memberCallArguments.size) 
+			|| c.allMethods.exists[isValidMessage(call)] 
+			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call))
 	}
 
 	// ************************************************************************
@@ -460,7 +495,9 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch WConstructor resolveConstructor(WClass clazz, Object... arguments) {
 		clazz.resolveConstructor(clazz, arguments)
 	}
-
+	def static dispatch WConstructor resolveConstructor(WObjectLiteral obj, Object... arguments) {
+		obj.parent.resolveConstructor(arguments)
+	}
 	def static dispatch WConstructor resolveConstructor(WNamedObject obj, Object... arguments) {
 		obj.parent.resolveConstructor(arguments)
 	}
@@ -469,7 +506,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch WConstructor resolveConstructor(WMethodContainer otherContainer, Object... arguments) {
-		throw new WollokRuntimeException('''Impossible to call a constructor on anything besides a class''')
+		throw new WollokRuntimeException(Messages.WollokInterpreter_constructorCallNotAllowed)
 	}
 
 
@@ -509,6 +546,10 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean isWritableVarRef(WVariable it) { eContainer.isWritableVarRef }
 	def static dispatch boolean isWritableVarRef(WVariableDeclaration it) { writeable }
 	def static dispatch boolean isWritableVarRef(EObject it) { false }
+	
+	def static findProperty(WMethodContainer it, String propertyName, int parametersSize) {
+		variableDeclarations.findFirst [ variable | variable.matchesProperty(propertyName, parametersSize) ]
+	} 
 	
 	def static dispatch boolean matchesProperty(EObject it, String propertyName, int parametersSize) { false }
 	def static dispatch boolean matchesProperty(WMethodContainer it, String propertyName, int parametersSize) {
@@ -579,7 +620,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean hasRealParent(EObject it) { false }
 	def static dispatch boolean hasRealParent(WNamedObject wko) { wko.parent !== null && wko.parent.name !== null && !wko.parent.fqn.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS) }
 	def static dispatch boolean hasRealParent(WClass c) {
-		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn?.equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)
+		c.parent !== null && c.parent?.name !== null && !c.parent?.fqn.notNullAnd[equalsIgnoreCase(WollokConstants.FQN_ROOT_CLASS)]
 	}
 		
 	/* Including file name for multiple tests */
@@ -666,10 +707,37 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	
 	def static hasCyclicDefinition(WConstructor it) {
 		if (delegatingConstructorCall === null) return false
+		if (delegatingConstructorCall.hasNamedParameters) return false
 		delegatingConstructorCall.callsSelf && parameters.size == delegatingConstructorCall.arguments.size
 	}
 	
 	def static dispatch callsSelf(WDelegatingConstructorCall it) { false }
 	def static dispatch callsSelf(WSelfDelegatingConstructorCall it) { true }
+
+	def static dispatch hasParentParameterValues(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterValues(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.values.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WObjectLiteral l) {
+		l.parentParameters !== null && !l.parentParameters.initializers.empty
+	}
+
+	def static dispatch hasParentParameterInitializers(WNamedObject wko) {
+		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
+	}
+	
+	def static parentParametersValues(WNamedObject o) {
+		if (o.parentParameters === null) return 0
+		o.parentParameters.values.size
+	}
+
+	def static parentParametersValues(WObjectLiteral o) {
+		if (o.parentParameters === null) return 0
+		o.parentParameters.values.size
+	}
 
 }

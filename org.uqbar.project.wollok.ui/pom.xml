@@ -4,12 +4,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
-    <groupId>org.uqbar-project</groupId>
-    <artifactId>wollok-parent</artifactId>
-    <version>1.6.6</version>
-  </parent>
+	<parent>
+		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+		<groupId>org.uqbar-project</groupId>
+		<artifactId>wollok-parent</artifactId>
+		<version>1.6.7-SNAPSHOT</version>
+	</parent>
 
 	<artifactId>org.uqbar.project.wollok.ui</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -21,6 +21,23 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.core</artifactId>
+						<version>3.12.2</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.core.runtime</artifactId>
+						<version>3.12.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.platform</groupId>
+						<artifactId>org.eclipse.equinox.common</artifactId>
+						<version>3.9.0</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 		<pluginManagement>

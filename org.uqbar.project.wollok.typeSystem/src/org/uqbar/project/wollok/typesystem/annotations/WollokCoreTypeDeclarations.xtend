@@ -1,15 +1,15 @@
 package org.uqbar.project.wollok.typesystem.annotations
 
-import org.uqbar.project.wollok.typesystem.ConcreteType
-
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		
+		// TODO: Uncomment all definitions when solving closure parameters
 		(Object == Any) => Boolean;
+		Object >> "equals" === #[Any] => Boolean;
 		Object >> "toString" === #[] => String;
 		Object >> "printString" === #[] => String;
+		Object >> "internalToSmartString" === #[Boolean] => String;
 
-		(Boolean == Any) => Boolean		
+		(Boolean == Any) => Boolean
 		Boolean >> "||" === #[Boolean] => Boolean
 		Boolean >> "&&" === #[Boolean] => Boolean
 		Boolean >> "and" === #[Boolean] => Boolean
@@ -17,10 +17,10 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "negate" === #[] => Boolean
 		Boolean >> "toString" === #[] => String;
 
-		PairType.constructor(KEY, VALUE)
-		PairType >> "key" === #[] => KEY;
-		PairType >> "value" === #[] => VALUE;
-		
+		PairType.constructor(PKEY, PVALUE)
+		PairType >> "key" === #[] => PKEY;
+		PairType >> "value" === #[] => PVALUE;
+
 		Number + Number => Number
 		Number - Number => Number
 		Number * Number => Number
@@ -56,7 +56,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Number >> "isInteger" === #[] => Boolean;
 		Number >> "isPrime" === #[] => Boolean;
 		Number >> "plus" === #[] => Number;
-		Number >> "times" === #[closure(#[], Any)] => Void;
+		Number >> "times" === #[closure(#[Number], Void)] => Void;
 		Number >> "checkNotNull" === #[Any, String] => Void;
 		Number >> "simplifiedToSmartString" === #[] => String;
 		Number >> "internalToSmartString" === #[Boolean] => String;
@@ -76,7 +76,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		String >> "isEmpty" === #[] => Boolean
 		String >> "substring" === #[Number] => String
 		String >> "substring" === #[Number, Number] => String
-		String >> "split" === #[String] => List
+		String >> "split" === #[String] => List.of(String)
 		String >> "equalsIgnoreCase" === #[String] => Boolean
 		String >> "printString" === #[] => String
 		String >> "toString" === #[] => String
@@ -85,7 +85,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		(String > String) => Boolean
 		String >> "take" === #[Number] => String
 		String >> "drop" === #[Number] => String
-		String >> "words" === #[] => List
+		String >> "words" === #[] => List.of(String)
 		String >> "capitalize" === #[] => String
 
 		ExceptionType >> "getMessage" === #[] => String
@@ -93,29 +93,69 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "equals" === #[ExceptionType] => Boolean
 		ExceptionType >> "printStackTrace" === #[] => Void
 		ExceptionType >> "getStackTraceAsString" === #[] => String
-		ExceptionType >> "getFullStackTrace" === #[] => List
-		ExceptionType >> "getStackTrace" === #[] => List
+		ExceptionType >> "getFullStackTrace" === #[] => List.of(String)
+		ExceptionType >> "getStackTrace" === #[] => List.of(String)
 		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
-		
-		Collection >> "add" === #[ELEMENT] => Void
-		Collection + Collection => Collection;
 
-		(List == Any) => Boolean
-		List + List => List
+		Collection >> "add" === #[ELEMENT] => Void
+		Collection + Collection.of(ELEMENT) => Collection.of(ELEMENT);
+		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
+		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
+		Collection >> "internalToSmartString" === #[Boolean] => String;
+
+		#[Collection, List, Set].forEach [
+			it >> "asSet" === #[] => Set.of(ELEMENT)
+			it >> "occurrencesOf" === #[ELEMENT] => Number
+		]
+
+		// TODO This should use SELF type.
+		Collection >> "filter" === #[predicate(ELEMENT)] => List.of(ELEMENT);
+
+		(List == Any) => Boolean;
+		List + List.of(ELEMENT) => List.of(ELEMENT);
+		List >> "equals" === #[Any] => Boolean;
 		List >> "add" === #[ELEMENT] => Void
-		List >> "contains" === #[ELEMENT] => Boolean
 		List >> "first" === #[] => ELEMENT
-		List >> "size" === #[] => Number
+		List >> "drop" === #[Number] => List.of(ELEMENT)
+		List >> "take" === #[Number] => List.of(ELEMENT)
 		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
-		
-		Range >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
-		 
+
+		val (AnnotationContext, TypeAnnotation)=>void basicCollection = [ collectionType, elementType |
+			collectionType >> "isEmpty" === #[] => Boolean
+			collectionType >> "contains" === #[elementType] => Boolean
+			collectionType >> "asList" === #[] => List.of(elementType)
+
+			collectionType >> "forEach" === #[closure(#[elementType], Void)] => Void
+			collectionType >> "find" === #[predicate(elementType)] => elementType;
+			collectionType >> "all" === #[predicate(elementType)] => Boolean
+			collectionType >> "any" === #[predicate(elementType)] => Boolean
+			collectionType >> "find" === #[predicate(elementType)] => elementType
+			collectionType >> "findOrDefault" === #[predicate(elementType), elementType] => elementType
+			collectionType >> "findOrElse" === #[predicate(elementType), closure(#[], elementType)] => elementType
+			collectionType >> "count" === #[predicate(elementType)] => Number
+		]
+
+		basicCollection.apply(Collection, ELEMENT)
+		basicCollection.apply(List, ELEMENT)
+		basicCollection.apply(Set, ELEMENT)
+		basicCollection.apply(Range, Number)
+
+		#[Collection, List, Set, Range, Dictionary].forEach [
+		        it >> "size" === #[] => Number
+		]
+
+		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
+
+		Range >> "sum" === #[closure(#[Number], Number)] => Number;
+		Range >> "internalToSmartString" === #[Boolean] => String;
+		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);
+
 		(Set == Any) => Boolean
-		Set + Set => Set;
+		Set >> "equals" === #[Any] => Boolean;
+		Set + Set.of(ELEMENT) => Set.of(ELEMENT);
 		Set >> "add" === #[ELEMENT] => Void
-		Set >> "contains" === #[ELEMENT] => Boolean
 		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
-		
+
 		Date.constructor(Number, Number, Number)
 		(Date == Date) => Boolean
 		Date - Date => Number
@@ -133,9 +173,26 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Date >> "minusYears" === #[Number] => Date
 		Date >> "between" === #[Date, Date] => Boolean
 		Date >> "toSmartString" === #[Boolean] => String;
-		
-		(Position == Any) => Boolean;
 
+		Position.constructor(Number, Number)
+		Position.variable("x", Number)
+		Position.variable("y", Number)
+		(Position == Any) => Boolean;
+		Position >> "moveRight" === #[Number] => Void
+		Position >> "moveLeft" === #[Number] => Void
+		Position >> "moveUp" === #[Number] => Void
+		Position >> "moveDown" === #[Number] => Void
+		Position >> "drawElement" === #[Any] => Void
+		Position >> "drawCharacter" === #[Any] => Void
+		Position >> "deleteElement" === #[Any] => Void
+		Position >> "say" === #[Any, String] => Void
+		Position >> "allElements" === #[] => List.of(Any)
+		Position >> "clone" === #[] => Position
+		Position >> "distance" === #[Position] => Number
+		Position >> "clear" === #[] => Void
+		Position >> "toString" === #[] => String
+
+//		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 		// console
 		console >> "println" === #[Any] => Void
 		console >> "readLine" === #[] => String
@@ -146,28 +203,59 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "notThat" === #[Boolean] => Void
 		assertWKO >> "equals" === #[Any, Any] => Void
 		assertWKO >> "notEquals" === #[Any, Any] => Void
-		// TODO: Uncomment these definitions when solving closure parameters
-		//assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
-		//assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
-		//assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
-		//assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
-		//assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
-		assertWKO >> "fail" === #[String] => Void
+		// assertWKO >> "throwsException" === #[closure(#[], Any)] => Void
+		// assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
+		// assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
+		// assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
+		// assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
+		assertWKO >> "fail" === #[String] => Void;
+
+		// TODO: getter and setters are implemented because native implementations exist
+		game.fakeProperty("title", String)
+		game.fakeProperty("width", Number)
+		game.fakeProperty("height", Number)
+		game >> "addVisual" === #[Any] => Void
+		game >> "addVisualIn" === #[Any, Position] => Void
+		game >> "addVisualCharacter" === #[Any] => Void
+		game >> "addVisualCharacterIn" === #[Any, Position] => Void
+		game >> "removeVisual" === #[Any] => Void
+//		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
+//		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
+		game >> "getObjectsIn" === #[Position] => List.of(Any)
+		game >> "say" === #[Any, String] => Void
+		game >> "clear" === #[] => Void
+		game >> "colliders" === #[Any] => List.of(Any)
+		game >> "stop" === #[] => Void
+		game >> "start" === #[] => Void
+		game >> "at" === #[Number, Number] => Position
+		game >> "origin" === #[] => Position
+		game >> "center" === #[] => Position
+		game >> "ground" === #[String] => Void
+		game >> "boardGround" === #[String] => Void
+
+		keyboard.allMethods === #[] => Key
 
 		comparable(Number, String, Date)
-		
-		Closure >> "apply" === #[List] => RETURN
-		
+
+		// Closure >> "apply" === #[List] => RETURN
 		InstanceVariableMirror >> "value" === #[] => Void
+
+		StringPrinter >> "println" === #[Any] => Void
+		StringPrinter >> "getBuffer" === #[] => String
 	}
-	
-	def comparable(SimpleTypeAnnotation<? extends ConcreteType>... types) {
-		types.forEach[ T |
+
+	def comparable(ConcreteTypeAnnotation... types) {
+		types.forEach [ T |
 			(T > T) => Boolean;
 			(T < T) => Boolean;
 			(T <= T) => Boolean;
 			(T >= T) => Boolean;
 			(T === T) => Boolean;
 		]
+	}
+
+	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
+		it >> property === #[type] => Void
+		it >> property === #[] => type
 	}
 }

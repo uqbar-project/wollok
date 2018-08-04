@@ -1,8 +1,6 @@
 package org.uqbar.project.wollok.ui.tests.model
 
-import java.io.File
 import java.util.List
-import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.emf.common.util.URI
 import org.eclipse.xtend.lib.annotations.Accessors
 

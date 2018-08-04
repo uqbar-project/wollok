@@ -72,3 +72,14 @@ object badWko {
 
 // XPECT errors --> "You must implement all inherited abstract methods: A.blah(), B.otherAbstract(one, two)" at "aB"
 object aB inherits B {}
+
+
+class Animal {
+	var property nombre
+	constructor(_nombre) {
+		nombre = _nombre
+	}
+}
+
+object ornitorrinco inherits Animal(nombre = "julian") {} 
+

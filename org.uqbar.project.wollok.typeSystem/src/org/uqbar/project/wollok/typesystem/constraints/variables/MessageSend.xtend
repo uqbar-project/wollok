@@ -2,12 +2,15 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import java.util.List
 import java.util.Set
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
+import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 
 import static extension org.uqbar.project.wollok.errorHandling.HumanReadableUtils.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 class MessageSend {
@@ -36,20 +39,24 @@ class MessageSend {
 	def addOpenType(WollokType type) {
 		openTypes.add(type)
 	}
-	
+
 	def fullMessage() {
-		featureCall.fullMessage
+		returnType.owner.errorReportTarget.fullMessage
 	}
-	
+
 	def argumentNames() {
-		featureCall.memberCallArguments.map[sourceCode]
+		returnType.owner.errorReportTarget.arguments.map[sourceCode]
 	}
-	
+
+	def static dispatch arguments(EObject o) { throw new RuntimeException(NLS.bind(Messages.RuntimeTypeSystemException_ELEMENT_HAS_NO_ARGUMENTS, o)) }
+
+	def static dispatch arguments(WBinaryOperation it) { #[rightOperand] }
+
+	def static dispatch arguments(WMemberFeatureCall it) { memberCallArguments }
+
 	def isClosureMessage() { selector == "apply" }
 
-	def featureCall() { returnType.owner as WMemberFeatureCall }
-	
-	def isValid() { !returnType.hasErrors	}
+	def isValid() { !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 }

@@ -38,7 +38,7 @@ class WollokLauncherIssueHandlerJSON implements WollokLauncherIssueHandler {
 			value("length", i.length)
 			value("uri", i.uriToProblem.toFileString)
 			value("syntaxError", i.syntaxError)
-			if (i.data != null) { array("data", i.data) }
+			if (i.data !== null) { array("data", i.data) }
 		]
 	}	
 }
