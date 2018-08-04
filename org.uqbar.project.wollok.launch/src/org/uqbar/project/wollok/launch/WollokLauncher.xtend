@@ -19,6 +19,8 @@ import org.uqbar.project.wollok.launch.repl.RegularReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
+import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+
 /**
  * Main program launcher for the interpreter.
  * Able to run in debug mode in which case it will open ports and publish
@@ -58,11 +60,7 @@ class WollokLauncher extends WollokChecker {
 			interpreter.interpret(parsed)
 	
 			if (parameters.hasRepl) {
-				val formatter = if (parameters.noAnsiFormat) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
-				// FIXME: Issue #
-				// TODO 1: Preguntar si es MAC
-				// TODO 2: Pasarlo a una configuración de Wollok
-				// val formatter = new RegularReplOutputFormatter
+				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)

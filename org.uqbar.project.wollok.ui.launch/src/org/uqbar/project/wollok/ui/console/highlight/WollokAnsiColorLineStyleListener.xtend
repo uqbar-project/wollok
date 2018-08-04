@@ -88,12 +88,10 @@ class WollokAnsiColorLineStyleListener implements LineStyleListener {
         WollokConsoleAttributes.updateRangeStyle(range, lastAttributes)
         if (isCode) {
             val showEscapeCodes = WollokConsolePreferenceUtils.getBoolean(WollokConsolePreferenceConstants.PREF_SHOW_ESCAPES)
-            // FIXME: MAC // puede ser esto lo que reviente
             if (showEscapeCodes || isOsMac)
                 range.font = new Font(null, "Monospaced", 6, SWT.NORMAL)
             else
                 range.metrics = new GlyphMetrics(0, 0, 0)
-            // fin FIXME
         }
         ranges.add(range)
         lastRangeEnd += range.length
