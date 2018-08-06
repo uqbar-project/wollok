@@ -11,14 +11,14 @@ class PropagateMaximalTypes extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch analiseVariable(TypeVariable user, GenericTypeInfo it) {
-		if (maximalConcreteTypes === null) return;
-		if (maximalConcreteTypes.state != Pending) return;
-		if (user.hasErrors) return;
+		if(maximalConcreteTypes === null) return;
+		if(maximalConcreteTypes.state != Pending) return;
+		if(user.hasErrors) return;
 
 		// Do propagate		
 		propagateMaxTypes(user)
-		
-		if (maximalConcreteTypes.state != Error)
+
+		if(maximalConcreteTypes.state != Error)
 			maximalConcreteTypes.state = Ready
 	}
 

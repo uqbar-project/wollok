@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isReferenceTo
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.canBeVoid
@@ -69,6 +70,15 @@ abstract class TypeVariableOwner {
 
 
 	def EObject getErrorReportTarget()
+
+	// ************************************************************************
+	// ** Model information
+	// ************************************************************************
+
+	def isReferenceTo(TypeVariableOwner ref) {
+		errorReportTarget.isReferenceTo(ref.errorReportTarget)
+	}
+	
 
 	// ************************************************************************
 	// ** Debugging

@@ -153,9 +153,9 @@ class WollokModelExtensions {
 		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
-	// *******************
+	// ************************************************************************
 	// ** WReferenciable
-	// *******************
+	// ************************************************************************
 	def static dispatch isModifiableFrom(WVariable v, WAssignment from) {
 		v.declaration.writeable || from.initializesInstanceValueFromConstructor(v)
 	}
@@ -194,7 +194,9 @@ class WollokModelExtensions {
 
 	def static isUsed(WReferenciable ref) { !ref.uses.isEmpty }
 
-	def static indexOfUse(WVariableReference ref) { ref.ref.uses.indexOf(ref) }
+	def static indexOfUse(WVariableReference ref) {
+		ref.ref.uses.indexOf(ref.eContainer)
+	}
 
 	def static assignments(WVariable variable) {
 		if(variable === null || variable.declarationContext === null) return newArrayList
@@ -205,9 +207,12 @@ class WollokModelExtensions {
 		VariableAssignmentsVisitor.assignmentOf(variable, context)
 	}
 
-	def static declaration(WVariable variable) {
-		variable.eContainer as WVariableDeclaration
+	def static dispatch isReferenceTo(EObject one, EObject another) { false }
+	def static dispatch isReferenceTo(WVariableReference reference, WReferenciable referenciable) {
+		reference.ref == referenciable
 	}
+
+	def static declaration(WVariable variable) { variable.eContainer as WVariableDeclaration }
 
 	def static dispatch declarationContext(WVariable variable) { variable.declaration.eContainer }
 	def static dispatch declarationContext(WParameter parameter) { parameter.eContainer }

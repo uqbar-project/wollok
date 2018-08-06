@@ -137,9 +137,8 @@ class TypeVariable extends ITypeVariable {
 		if(typeInfo !== null) typeInfo.supertypeAdded(supertype)
 	}
 
-	def beVoid() {
-		setTypeInfo(new VoidTypeInfo())
-	}
+	def beVoid() { setTypeInfo(new VoidTypeInfo()) }
+	def beNonVoid() { setTypeInfo(new GenericTypeInfo()) }
 
 	override instanceFor(TypeVariable variable) {
 		this // I have nothing to be instantiated

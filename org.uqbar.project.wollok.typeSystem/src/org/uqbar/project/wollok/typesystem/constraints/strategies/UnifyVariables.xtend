@@ -15,8 +15,7 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeStateExtensions.*
 
 /**
- * TODO: Maybe this strategy goes a bit to far unifying variables and we should review it at some point in the future. 
- * Specially, for method parameters, we should take care of prioritizing internal uses over any information from outside the method.
+ * @author npasserini
  */
 class UnifyVariables extends AbstractInferenceStrategy {
 	Set<TypeVariable> alreadySeen = newHashSet
@@ -65,22 +64,10 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			return Error
 		}
 
-//		// If supertype var is a parameter, the subtype is an argument sent to this parameter
-//		// and should not be unified... 
-//		if (supertype.owner instanceof WParameter 
-//
-//			// ... unless subtype is also a parameter.
-//			// In this case this is an override relationship
-//			// (supertype is a parameter in a method overriding subtype's method).
-//			&& !(subtype.owner instanceof WParameter)
-//		) {
-//			log.debug('''Not unifying «subtype» with parameter «supertype»''')
-//			return Cancel
-//		}
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
 			if (it != Pending && it != Cancel)
-				log.debug('''«it» | Unified «subtype» with «supertype» : «supertype.typeInfo.typeDescriptionForDebug»''')
+				log.debug('''«it» | Unified «subtype» with «supertype» : «subtype.typeInfo.typeDescriptionForDebug»''')
 		]
 	}
 
@@ -94,14 +81,36 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			subtype.copyTypeInfoFrom(supertype)
 		} else if (supertype.typeInfo === null) {
 			supertype.copyTypeInfoFrom(subtype)
-		} else if (subtype.supertypes.size > 1 || supertype.subtypes.size > 1) {
+		} else if (biUniqueRelationship(subtype, supertype)) {
 			// Do not unify unless they are uniques subtype/supertypes respectively
 			// Note that this rule is more strict than for variables without type info.
-			Cancel
-		} else {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
+		} else if (supertype.isVariableReferenceTo(subtype)) {
+			// Unify variable references with their associated referenciables.
+			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
+		} else {
+			log.debug('''Not unified «subtype» with «supertype» : 
+				«supertype.fullDescription»
+				«subtype.fullDescription»''')
+			Cancel
 		}
 	}
+
+	// ************************************************************************
+	// ** Unification conditions
+	// ************************************************************************
+
+	def isVariableReferenceTo(TypeVariable supertype, TypeVariable subtype) {
+		supertype.owner.isReferenceTo(subtype.owner)
+	}
+	
+	def biUniqueRelationship(TypeVariable subtype, TypeVariable supertype) {
+		subtype.supertypes.size == 1 && supertype.subtypes.size == 1
+	}
+	
+	// ************************************************************************
+	// ** Proper unification
+	// ************************************************************************
 
 	def copyTypeInfoFrom(TypeVariable v1, TypeVariable v2) {
 		try {

@@ -12,7 +12,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	def dispatch void analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
-		if (tvar.sealed || tvar.hasErrors || messages.empty) return
+		if (tvar.sealed || tvar.hasErrors || messages.empty || maximalConcreteTypes !== null) return;
 		
 		var maxTypes = tvar.maxTypes
 		if (!maxTypes.empty && !maximalConcreteTypes.contains(maxTypes)) {
