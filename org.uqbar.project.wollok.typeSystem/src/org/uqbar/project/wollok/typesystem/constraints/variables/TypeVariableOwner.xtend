@@ -51,7 +51,7 @@ abstract class TypeVariableOwner {
 		errors.add(exception)
 	}
 
-	def hasErrors() {
+	def boolean hasErrors() {
 		!this.errors.empty
 	}
 

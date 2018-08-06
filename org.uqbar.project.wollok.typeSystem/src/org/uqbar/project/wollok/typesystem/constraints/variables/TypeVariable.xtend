@@ -74,7 +74,7 @@ class TypeVariable extends ITypeVariable {
 	// ** Errors
 	// ************************************************************************
 
-	def hasErrors() {
+	def boolean hasErrors() {
 		return owner.hasErrors
 	}
 	
