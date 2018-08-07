@@ -84,11 +84,11 @@ class Gameboard {
 	}
 
 	def pixelHeight() {
-		return height * CELLZISE;
+		return height * CELLZISE
 	}
 
 	def pixelWidth() {
-		return width * CELLZISE;
+		return width * CELLZISE
 	}
 	
 	def clear() {
@@ -109,22 +109,22 @@ class Gameboard {
 
 	// Getters & Setters
 
-	def addCharacter(VisualComponent character) {
+	def void addCharacter(VisualComponent character) {
 		this.character = character
 		addComponent(character)
 		addListener(new ArrowListener(character))
 	}
 
-	def addComponent(VisualComponent component) {
+	def void addComponent(VisualComponent component) {
 		components.add(component)
 	}
 	
-	def addComponents(Collection<VisualComponent> it) {
+	def void addComponents(Collection<VisualComponent> it) {
 		components.addAll(it)
 	}
 
-	def addListener(GameboardListener aListener){
-		listeners.add(aListener);
+	def void addListener(GameboardListener aListener){
+		listeners.add(aListener)
 	}
 	
 	def remove(VisualComponent component) {

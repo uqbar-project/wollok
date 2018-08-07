@@ -19,8 +19,8 @@ class Keyboard {
 		instance = keyboard
 	}
 	
-	def isKeyPressed(int key) {
-		return Gdx.input.isKeyJustPressed(key);
+	def boolean isKeyPressed(int key) {
+		return Gdx.input.isKeyJustPressed(key)
 	}
 	
 	def getKey(String aKey) {
