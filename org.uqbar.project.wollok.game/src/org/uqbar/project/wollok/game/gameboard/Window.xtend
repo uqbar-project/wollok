@@ -63,7 +63,7 @@ class Window {
 		font.draw(batch, glyphLayout, x, y)
 	}
 	
-	def drawBallon(String text, Position position, Color color) {		
+	def drawBaloon(String text, Position position, Color color) {		
 		val baseWidth = 75
 		var newText = text
 		var plusWidth = 0	

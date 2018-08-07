@@ -18,7 +18,7 @@ class BalloonMessage {
 		color = aColor
 	}
 	
-	def boolean shouldRemove(){
+	def boolean shouldRemove() {
 		return timestamp != 0 && new Date().time - timestamp > timeToLive   
 	}
 	
@@ -26,6 +26,6 @@ class BalloonMessage {
 		if (timestamp == 0)
 			timestamp = new Date().time
 		
-		window.drawBallon(this.text, character.position, this.color)
+		window.drawBaloon(this.text, character.position, this.color)
 	}
 }

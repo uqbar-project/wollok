@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.lib.WVisual
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 /**
  * 
@@ -48,10 +49,16 @@ class GameObject {
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.coerceToInteger
 		val function = action.asClosure
-		addListener(new KeyboardListener(num, [ function.doApply ]))
+		addListener(new KeyboardListener(num, [
+			try {
+				function.doApply
+			} catch (WollokProgramExceptionWrapper e) {
+				board.somebody?.scream(e.wollokMessage)
+			} 
+		]))
 	}
 
-	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
+	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
 		val num = key.coerceToInteger
 		val function = functionObj.asClosure
 		addListener(new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]))
@@ -60,7 +67,14 @@ class GameObject {
 	def whenCollideDo(WollokObject visual, WollokObject action) {
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		addListener(new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ]))
+		addListener(new CollisionListener(visualObject, [
+			try {
+				function.doApply((it as WVisual).wObject)
+			} catch (WollokProgramExceptionWrapper e) {
+				board.somebody?.scream(e.wollokMessage)
+				null
+			}
+		]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
