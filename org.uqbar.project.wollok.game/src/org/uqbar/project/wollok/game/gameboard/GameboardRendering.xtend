@@ -10,7 +10,7 @@ class GameboardRendering implements ApplicationListener {
 	private Window window
 	
 	new (Gameboard gameboard) {
-		this.gameboard = gameboard;
+		this.gameboard = gameboard
 	}
 
 	override create() {

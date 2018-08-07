@@ -1,12 +1,13 @@
 package wollok.lib
 
-import org.uqbar.project.wollok.lib.WVisual
-import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.lib.WPosition
+import org.uqbar.project.wollok.lib.WVisual
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
@@ -16,6 +17,7 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  * @author ?
  */
 class GameObject {
+	
 	
 	def addVisual(WollokObject it) { 
 		board.addComponent(asVisual)
@@ -38,33 +40,35 @@ class GameObject {
 		board.remove(visual)
 	}
 	
+	def onTick(WollokObject milliseconds, WollokObject action) {
+		val function = action.asClosure
+		addListener(new TimeListener(milliseconds.coerceToInteger, [ function.doApply ]))
+	}
+	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.coerceToInteger
 		val function = action.asClosure
-		var listener = new KeyboardListener(num, [ function.doApply ])
-		addListener(listener)
+		addListener(new KeyboardListener(num, [ function.doApply ]))
 	}
 
 	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
 		val num = key.coerceToInteger
 		val function = functionObj.asClosure
-		var listener = new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]) 
-		addListener(listener)
+		addListener(new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]))
 	}
 	
 	def whenCollideDo(WollokObject visual, WollokObject action) {
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		val listener = new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ])
-		addListener(listener)
+		addListener(new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
-		var pos = new WPosition(position)
-		board.getComponentsInPosition(pos)
-		.map[ it as WVisual ]
-		.map [ it.wObject ]
-		.toList.javaToWollok
+		board
+			.getComponentsInPosition(new WPosition(position))
+			.map[ it as WVisual ]
+			.map [ it.wObject ]
+			.toList.javaToWollok
 	}
 	
 	def colliders(WollokObject visual) {
@@ -85,7 +89,6 @@ class GameObject {
 	def doStart(Boolean isRepl) { board.start(isRepl) }
 	
 	def stop() { board.stop }
-	
 	
 	def board() { Gameboard.getInstance }
 	

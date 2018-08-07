@@ -25,7 +25,6 @@ class GameboardInputProcessor implements InputProcessor {
 	}
 
 	override boolean touchDown(int x, int y, int pointer, int button) {
-		
 		var inverseY = Gameboard.getInstance().pixelHeight() - y;
 		var position = new WGPosition(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
 		

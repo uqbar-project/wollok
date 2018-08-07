@@ -251,6 +251,13 @@ object game {
 	method whenCollideDo(visual, action) native
 
 	/**
+	 * Adds a block that will be executed every n milliseconds.
+	 * Block expects no argument.
+	 * Be careful not to set it too often :)
+	 */
+	method onTick(milliseconds, action) native
+	 
+	/**
 	 * Returns all objects in given position.
 	 */	
 	method getObjectsIn(position) native

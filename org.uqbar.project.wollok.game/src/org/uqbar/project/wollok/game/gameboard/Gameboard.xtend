@@ -65,7 +65,7 @@ class Gameboard {
 	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
 		for (var i=0; i < listeners.size(); i++) {
-			try 
+			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
@@ -76,7 +76,7 @@ class Gameboard {
 					character.scream(message.toString())
 				
 				log.error(message, e)	
-			} 
+			}
 		}
 
 		background.draw(window)
@@ -131,5 +131,12 @@ class Gameboard {
 		components.remove(component)
 		listeners.removeIf[it.isObserving(component)]
 	}
-	
+
+	def VisualComponent somebody() {
+		val everybody = newArrayList => [
+			addAll(components)
+			if (character !== null) add(character)
+		]
+		if (everybody.isEmpty) null else everybody.last
+	}
 }
