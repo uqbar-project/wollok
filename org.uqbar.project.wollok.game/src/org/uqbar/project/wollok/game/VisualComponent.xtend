@@ -24,7 +24,7 @@ abstract class VisualComponent {
 		window => [
 			drawMe
 			drawAttributesIfNecesary
-			drawBallonIfNecesary
+			drawBaloonIfNecesary
 		]
 	}
 
@@ -34,15 +34,14 @@ abstract class VisualComponent {
 
 	def drawAttributesIfNecesary(Window window) {
 		if (inMyZone) {
-			var printableString = getAttributes.join(System.lineSeparator)
+			val printableString = getAttributes.join(System.lineSeparator)
 			if (printableString != "") {
 				window.writeAttributes(printableString, position, Color.WHITE)
 			}
 		}
-				
 	}
 
-	def drawBallonIfNecesary(Window window) {
+	def drawBaloonIfNecesary(Window window) {
 		if (hasMessages)
 			currentMessage.draw(window, this)
 	}
@@ -74,13 +73,12 @@ abstract class VisualComponent {
 		var bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
 		var topX = bottomX + Gameboard.CELLZISE
 		var topY = bottomY - Gameboard.CELLZISE
-		
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 	
 
 	def hasMessages() {
-		var textToDelete = new ArrayList<BalloonMessage>();
+		var textToDelete = new ArrayList<BalloonMessage>()
 		for (var i = 0; i < this.balloonMessages.size; i++) {
 			if (balloonMessages.get(i).shouldRemove)
 				textToDelete.add(balloonMessages.get(i))

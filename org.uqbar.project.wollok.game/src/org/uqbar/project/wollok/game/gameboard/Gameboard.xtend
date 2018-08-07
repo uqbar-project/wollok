@@ -47,11 +47,11 @@ class Gameboard {
 	}
 
 	def void start(Boolean fromREPL) {
-		background = createBackgroud()
+		background = createBackground()
 		Application.instance.start(this, fromREPL)
 	}
 	
-	def createBackgroud() {
+	def createBackground() {
 		if (boardGround !== null)
 		 	new FullBackground(boardGround, this)
 		else 
@@ -98,7 +98,7 @@ class Gameboard {
 	}
 
 	def characterSay(String aText) {
-		character.say(aText);
+		character.say(aText)
 	}
 	
 	def getComponentsInPosition(Position p) {

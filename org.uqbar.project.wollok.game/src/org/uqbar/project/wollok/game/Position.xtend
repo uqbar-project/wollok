@@ -14,9 +14,17 @@ abstract class Position {
 
 	def getYinPixels() { y * Gameboard.CELLZISE }
 
-	def incX(int spaces) { x = x + spaces }
+	def incX(int spaces) { 
+		x = x + spaces
+		if (x < 0) x = 0
+		if (x >= Gameboard.instance.width) x = Gameboard.instance.width - 1
+	}
 
-	def incY(int spaces) { y = y + spaces }
+	def incY(int spaces) { 
+		y = y + spaces
+		if (y < 0) y = 0
+		if (y >= Gameboard.instance.height) y = Gameboard.instance.height - 1
+	}
 
 	override public int hashCode() {
 		val prime = 31
@@ -25,7 +33,7 @@ abstract class Position {
 	}
 
 	override equals(Object obj) {
-		if(obj == null) return false
+		if(obj === null) return false
 
 		var other = obj as Position
 		x == other.x && y == other.y
