@@ -73,7 +73,7 @@ class Gameboard {
 					message = "NO MESSAGE"
 				
 				if (character !== null)
-					character.scream("ERROR: " + message.toString())
+					character.scream(message.toString())
 				
 				log.error(message, e)	
 			} 
