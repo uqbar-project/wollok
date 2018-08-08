@@ -1,11 +1,14 @@
 package wollok.lib
 
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.lib.WVisual
 
@@ -13,8 +16,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
-import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-
 
 /**
  * 
@@ -128,7 +129,7 @@ class GameObject {
 		
 		if (result === null)
 			// TODO i18n
-			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, ("Visual component not found: " + visual).javaToWollok))
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok))
 			
 		result
 	}

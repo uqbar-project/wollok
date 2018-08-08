@@ -28,7 +28,7 @@ abstract class VisualComponent {
 		window => [
 			drawMe
 			drawAttributesIfNecesary
-			drawBaloonIfNecesary
+			drawBalloonIfNecesary
 		]
 	}
 
@@ -45,7 +45,7 @@ abstract class VisualComponent {
 		}
 	}
 
-	def drawBaloonIfNecesary(Window window) {
+	def drawBalloonIfNecesary(Window window) {
 		if (hasMessages)
 			currentMessage.draw(window, this)
 	}

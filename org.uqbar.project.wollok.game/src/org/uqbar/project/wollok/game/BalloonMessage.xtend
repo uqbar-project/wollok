@@ -13,7 +13,7 @@ class BalloonMessage {
 	var Color color
 	var long timestamp = 0
 	
-	new (String aText, Color aColor){
+	new (String aText, Color aColor) {
 		text = aText
 		color = aColor
 	}

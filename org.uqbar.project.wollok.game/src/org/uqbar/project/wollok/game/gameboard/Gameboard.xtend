@@ -10,6 +10,7 @@ import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.game.Messages
 
 @Accessors
 class Gameboard {
@@ -64,13 +65,13 @@ class Gameboard {
 	
 	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
-		for (var i=0; i < listeners.size(); i++) {
+		for (var i = 0; i < listeners.size(); i++) {
 			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
 				if (message === null)
-					message = "NO MESSAGE"
+					message = Messages.WollokGame_NoMessage
 				
 				if (character !== null)
 					character.scream(message.toString())

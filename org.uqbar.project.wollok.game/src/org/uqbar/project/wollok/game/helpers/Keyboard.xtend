@@ -27,6 +27,7 @@ class Keyboard {
 		try {
 			return typeof(Keys).getDeclaredField(aKey.toUpperCase).get(typeof(Integer)) as Integer;
 		} catch (Exception e) {
+			// TODO: i18n
 			throw new RuntimeException("No se encuentra el caracter " + aKey + ".")
 		}
 	}

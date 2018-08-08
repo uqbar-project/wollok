@@ -13,19 +13,19 @@ import org.uqbar.project.wollok.game.WGPosition
 class GameboardInputProcessor implements InputProcessor {
 
 	override boolean keyDown(int keycode) {
-		return false;
+		return false
 	}
 
 	override boolean keyUp(int keycode) {
-		return false;
+		return false
 	}
 
 	override boolean keyTyped(char character) {
-		return false;
+		return false
 	}
 
 	override boolean touchDown(int x, int y, int pointer, int button) {
-		var inverseY = Gameboard.getInstance().pixelHeight() - y;
+		var inverseY = Gameboard.getInstance().pixelHeight() - y
 		var position = new WGPosition(x / Gameboard.CELLZISE, inverseY / Gameboard.CELLZISE )
 		
 		var Iterable<VisualComponent> lista = Gameboard.getInstance.getComponentsInPosition(position)
@@ -35,23 +35,23 @@ class GameboardInputProcessor implements InputProcessor {
 		if (button == 1) {
 			//Gameboard.getInstance.getStage.addActor(MenuBuilder.buildMenu(x, y))
 		}
-		return true;
+		return true
 	}
 
 	override boolean touchUp(int x, int y, int pointer, int button) {
-		return false;
+		return false
 	}
 
 	override boolean touchDragged(int x, int y, int pointer) {
-		return false;
+		return false
 	}
 
 	override boolean mouseMoved(int x, int y) {
-		return false;
+		return false
 	}
 
 	override boolean scrolled(int amount) {
-		return false;
+		return false
 	}
 
 }
@@ -59,32 +59,32 @@ class GameboardInputProcessor implements InputProcessor {
 public class MenuBuilder {
 
 	def static ScrollPane buildMenu(int x, int y) {
-		var BitmapFont font = new BitmapFont();
-		font.setUseIntegerPositions(false);
+		var BitmapFont font = new BitmapFont()
+		font.setUseIntegerPositions(false)
 
-		var LabelStyle lStyle = new LabelStyle();
-		lStyle.font = font;
+		var LabelStyle lStyle = new LabelStyle()
+		lStyle.font = font
 
-		var Table mainTable = new Table();
-		mainTable.defaults().width(80);
+		var Table mainTable = new Table()
+		mainTable.defaults().width(80)
 
-		var ScrollPane scrollPane = new ScrollPane(mainTable);
-		scrollPane.setFillParent(false);
-		scrollPane.setX(x);
-		scrollPane.setY(y);
+		var ScrollPane scrollPane = new ScrollPane(mainTable)
+		scrollPane.setFillParent(false)
+		scrollPane.setX(x)
+		scrollPane.setY(y)
 
-		var Button b1 = new Button();
-		b1.add(new Label("Move", lStyle));
-		b1.left();
-		mainTable.add(b1);
-		mainTable.row();
+		var Button b1 = new Button()
+		b1.add(new Label("Move", lStyle))
+		b1.left()
+		mainTable.add(b1)
+		mainTable.row()
 
-		var Button b2 = new Button();
-		b2.add(new Label("Attack", lStyle));
-		b2.left();
-		mainTable.add(b2);
-		mainTable.row();
+		var Button b2 = new Button()
+		b2.add(new Label("Attack", lStyle))
+		b2.left()
+		mainTable.add(b2)
+		mainTable.row()
 
-		return scrollPane;
+		return scrollPane
 	}
 }
