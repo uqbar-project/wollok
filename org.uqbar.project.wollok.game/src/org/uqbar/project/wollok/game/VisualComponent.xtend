@@ -17,6 +17,7 @@ abstract class VisualComponent {
 	public static val MESSAGE_TRIM_LENGTH = 45
 	
 	List<BalloonMessage> balloonMessages = newArrayList
+	boolean showAttributes = true
 	
 	def abstract List<String> getAttributes()
 	def abstract Image getImage()
@@ -36,7 +37,7 @@ abstract class VisualComponent {
 	}
 
 	def drawAttributesIfNecesary(Window window) {
-		if (inMyZone) {
+		if (showAttributes && inMyZone) {
 			val printableString = getAttributes.join(System.lineSeparator)
 			if (printableString != "") {
 				window.writeAttributes(printableString, position, Color.WHITE)
@@ -93,6 +94,9 @@ abstract class VisualComponent {
 	def getCurrentMessage() {
 		balloonMessages.get(0)
 	}
+	
+	def hideAttributes() { showAttributes = false }
+	def showAttributes() { showAttributes = true }
 }
 
 @Accessors

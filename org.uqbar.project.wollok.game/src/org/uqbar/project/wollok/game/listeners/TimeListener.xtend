@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
 class TimeListener implements GameboardListener {
 
-	long timeSinceLastRun = 0	
+	long timeSinceLastRun = System.currentTimeMillis	
 	int millisecondsEvery
 	() => Object block
 	

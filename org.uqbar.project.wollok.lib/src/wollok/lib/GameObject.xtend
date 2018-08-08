@@ -9,9 +9,12 @@ import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.lib.WPosition
 import org.uqbar.project.wollok.lib.WVisual
 
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
 
 /**
  * 
@@ -98,6 +101,14 @@ class GameObject {
 		board.findVisual(visual).say(message)
 	}
 	
+	def hideAttributes(WollokObject visual) {
+		board.findVisual(visual).hideAttributes()
+	}
+	
+	def showAttributes(WollokObject visual) {
+		board.findVisual(visual).showAttributes()
+	}
+	
 	def clear() { board.clear }
 	
 	def doStart(Boolean isRepl) { board.start(isRepl) }
@@ -111,9 +122,15 @@ class GameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		components
+		val result = components
 		.map[it as WVisual]
 		.findFirst[ wObject.equals(visual)]
+		
+		if (result === null)
+			// TODO i18n
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, ("Visual component not found: " + visual).javaToWollok))
+			
+		result
 	}
 	
 	

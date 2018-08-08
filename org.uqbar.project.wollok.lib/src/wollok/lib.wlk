@@ -346,6 +346,18 @@ object game {
 	 */			
 	method boardGround(image) native
 	
+	/**
+	  * Attributes will not show when user mouse over a visual component.
+	  * Default behavior is to show them.
+	  */
+	method hideAttributes(visual) native
+	
+	/**
+	  * Attributes will appear again when user mouse over a visual component.
+	  * Default behavior is to show them, so this is not necessary.
+	  */
+	method showAttributes(visual) native
+	
 	/** 
 	* @private
 	*/

@@ -19,6 +19,7 @@ import org.uqbar.project.wollok.game.ImageSize
 class Window {
 	public static val DELTA_TO_VISUAL_COMPONENT = 40
 	public static val NEGATIVE_DELTA = -2
+	public static val TEXT_SIZE = 40
 		
 	val patch = new NinePatch(new Texture(Gdx.files.internal("speech.png")), 30, 60, 40, 50)
 	val patch2 = new NinePatch(new Texture(Gdx.files.internal("speech2.png")), 30, 60, 40, 50)
@@ -62,8 +63,8 @@ class Window {
 	
 	def writeAttributes(String text, Position position, Color color) {
 		val lines = text.split("[\n|\r]").length
-		val textHeight = Gameboard.CELLZISE * (lines + 1)
-		val deltaY = if (position.y < textHeight) Gameboard.CELLZISE * lines else 0
+		val textHeight = TEXT_SIZE * lines
+		val deltaY = if (position.yinPixels < textHeight) TEXT_SIZE * lines else -5
 		write(text, color, position.xinPixels - 80, position.yinPixels + deltaY)
 	}
 	
