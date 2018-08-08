@@ -4,13 +4,13 @@ import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.game.Messages
 
 @Accessors
 class Gameboard {
@@ -28,12 +28,13 @@ class Gameboard {
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
-	
+	@Accessors(NONE) VisualComponent errorReporter
+		
 	def static getInstance() {
 		if (instance === null) {
 			instance = new Gameboard()
 		}
-		return instance
+		instance
 	}
 	
 	new() {
@@ -84,13 +85,9 @@ class Gameboard {
 		components.forEach[it.draw(window)]
 	}
 
-	def pixelHeight() {
-		return height * CELLZISE
-	}
+	def pixelHeight() {	height * CELLZISE }
 
-	def pixelWidth() {
-		return width * CELLZISE
-	}
+	def pixelWidth() { width * CELLZISE }
 	
 	def clear() {
 		components.clear()
@@ -140,4 +137,13 @@ class Gameboard {
 		]
 		if (everybody.isEmpty) null else everybody.last
 	}
+	
+	def errorReporter(VisualComponent visual) {
+		 this.errorReporter = visual
+	}
+	
+	def VisualComponent errorReporter() {
+		errorReporter ?: somebody
+	}
+	
 }

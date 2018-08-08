@@ -15,16 +15,14 @@ class GameboardRendering implements ApplicationListener {
 
 	override create() {
 		Gdx.input.setInputProcessor(new GameboardInputProcessor())
-		var camera = new OrthographicCamera(0, 0)
+		val camera = new OrthographicCamera(0, 0)
 		camera.setToOrtho(false, gameboard.pixelWidth(), gameboard.pixelHeight())
 		this.window = new Window(camera)
 	}
 
 	override render() {
 		this.window.clear()
-
 		this.gameboard.draw(this.window)
-		
 		this.window.end()
 	}
 

@@ -26,6 +26,7 @@ class Window {
 	val patch3 = new NinePatch(new Texture(Gdx.files.internal("speech3.png")), 30, 60, 40, 50)
 	val patch4 = new NinePatch(new Texture(Gdx.files.internal("speech4.png")), 30, 60, 40, 50)
 	val patches = #[patch, patch2, patch3, patch4]
+	
 	val defaultImage = new Texture(Gdx.files.internal("wko.png")) //TODO: Merge with WollokConventionExtensions DEFAULT_IMAGE
 	val notFoundText = "IMAGE\nNOT\nFOUND"
 	val textBitmap = new BitmapFont()
@@ -76,7 +77,7 @@ class Window {
 	
 	def drawBalloon(String text, Position position, Color color) {		
 		val baseWidth = 75
-		var newText = text
+		val newText = text
 		var plusWidth = 0	
 		glyphLayout.reset
 		this.setText(newText, baseWidth, color)

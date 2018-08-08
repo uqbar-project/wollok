@@ -1,7 +1,9 @@
 package org.uqbar.project.wollok.game.helpers
 
-import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Keys
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.game.Messages
 
 class Keyboard {
 	
@@ -27,8 +29,7 @@ class Keyboard {
 		try {
 			return typeof(Keys).getDeclaredField(aKey.toUpperCase).get(typeof(Integer)) as Integer;
 		} catch (Exception e) {
-			// TODO: i18n
-			throw new RuntimeException("No se encuentra el caracter " + aKey + ".")
+			throw new RuntimeException(NLS.bind(Messages.WollokGame_CharacterKeyNotFound, aKey))
 		}
 	}
 }

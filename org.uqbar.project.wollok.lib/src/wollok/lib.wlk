@@ -347,17 +347,24 @@ object game {
 	method boardGround(image) native
 	
 	/**
-	  * Attributes will not show when user mouse over a visual component.
-	  * Default behavior is to show them.
-	  */
+	 * Attributes will not show when user mouse over a visual component.
+	 * Default behavior is to show them.
+	 */
 	method hideAttributes(visual) native
 	
 	/**
-	  * Attributes will appear again when user mouse over a visual component.
-	  * Default behavior is to show them, so this is not necessary.
-	  */
+	 * Attributes will appear again when user mouse over a visual component.
+	 * Default behavior is to show them, so this is not necessary.
+	 */
 	method showAttributes(visual) native
 	
+	/**
+	 * Allows to configure a visual component as "error reporter".
+	 * Then every error in game board will be reported by this visual component,
+	 * in a balloon message form.
+     */
+    method errorReporter(visual) native
+     
 	/** 
 	* @private
 	*/

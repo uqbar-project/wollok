@@ -23,7 +23,6 @@ import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
  */
 class GameObject {
 	
-	
 	def addVisual(WollokObject it) { 
 		board.addComponent(asVisual)
 	}
@@ -57,7 +56,7 @@ class GameObject {
 			try {
 				function.doApply
 			} catch (WollokProgramExceptionWrapper e) {
-				board.somebody?.scream(e.wollokMessage)
+				board.errorReporter?.scream(e.wollokMessage)
 			} 
 		]))
 	}
@@ -75,7 +74,7 @@ class GameObject {
 			try {
 				function.doApply((it as WVisual).wObject)
 			} catch (WollokProgramExceptionWrapper e) {
-				board.somebody?.scream(e.wollokMessage)
+				board.errorReporter?.scream(e.wollokMessage)
 				null
 			}
 		]))
@@ -104,6 +103,10 @@ class GameObject {
 	
 	def hideAttributes(WollokObject visual) {
 		board.findVisual(visual).hideAttributes()
+	}
+	
+	def void errorReporter(WollokObject visual) {
+		board.errorReporter(board.findVisual(visual))
 	}
 	
 	def showAttributes(WollokObject visual) {

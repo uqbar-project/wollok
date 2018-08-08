@@ -20,7 +20,7 @@ class TimeListener implements GameboardListener {
 			try {
 				block.apply
 			} catch (WollokProgramExceptionWrapper e) {
-				gameboard.somebody?.scream(e.wollokMessage)
+				gameboard.errorReporter?.scream(e.wollokMessage)
 			}
 			timeSinceLastRun = System.currentTimeMillis
 		}

@@ -35,7 +35,7 @@ abstract class Position {
 	override equals(Object obj) {
 		if(obj === null) return false
 
-		var other = obj as Position
+		val other = obj as Position
 		x == other.x && y == other.y
 	}
 	

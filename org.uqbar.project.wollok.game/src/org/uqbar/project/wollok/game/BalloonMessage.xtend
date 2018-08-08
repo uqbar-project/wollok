@@ -19,7 +19,7 @@ class BalloonMessage {
 	}
 	
 	def boolean shouldRemove() {
-		return timestamp != 0 && new Date().time - timestamp > timeToLive   
+		timestamp != 0 && new Date().time - timestamp > timeToLive   
 	}
 	
 	def draw(Window window, VisualComponent character) {

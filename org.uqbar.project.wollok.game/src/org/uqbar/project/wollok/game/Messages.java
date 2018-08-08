@@ -9,6 +9,7 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.game.messages"; //$NON-NLS-1$
 	
 	public static String WollokGame_NoMessage;
+	public static String WollokGame_CharacterKeyNotFound;
 	
 	static {
 		// initialize resource bundle

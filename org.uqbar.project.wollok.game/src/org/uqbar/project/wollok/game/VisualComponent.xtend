@@ -60,8 +60,8 @@ abstract class VisualComponent {
 	
 	def void addMessage(String message, Color color) {
 		if (message.length > MESSAGE_MAX_LENGTH) {
-			var beginning = message.substring(0, MESSAGE_TRIM_LENGTH) + ".."
-			var end = ".." + message.substring(MESSAGE_TRIM_LENGTH, message.length)
+			val beginning = message.substring(0, MESSAGE_TRIM_LENGTH) + ".."
+			val end = ".." + message.substring(MESSAGE_TRIM_LENGTH, message.length)
 			this.addMessage(beginning, color)
 			this.addMessage(end, color)
 			return 
@@ -71,24 +71,24 @@ abstract class VisualComponent {
 	}
 
 	def isInMyZone(){
-		var xMouse = Gdx.input.x
-		var yMouse = Gdx.input.y
-		var bottomX = position.xinPixels
-		var bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
-		var topX = bottomX + Gameboard.CELLZISE
-		var topY = bottomY - Gameboard.CELLZISE
+		val xMouse = Gdx.input.x
+		val yMouse = Gdx.input.y
+		val bottomX = position.xinPixels
+		val bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
+		val topX = bottomX + Gameboard.CELLZISE
+		val topY = bottomY - Gameboard.CELLZISE
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 	
 
 	def hasMessages() {
-		var textToDelete = new ArrayList<BalloonMessage>()
+		val textToDelete = new ArrayList<BalloonMessage>()
 		for (var i = 0; i < this.balloonMessages.size; i++) {
 			if (balloonMessages.get(i).shouldRemove)
 				textToDelete.add(balloonMessages.get(i))
 		}
 		balloonMessages.removeAll(textToDelete)
-		return balloonMessages.size > 0
+		balloonMessages.size > 0
 	}
 
 	def getCurrentMessage() {
