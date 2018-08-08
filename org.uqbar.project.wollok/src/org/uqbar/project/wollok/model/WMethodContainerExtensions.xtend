@@ -425,14 +425,15 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			nrOfArgs == parameters.size
 	}
 
-	// all calls to 'this' are valid in mixins
-	//	def static dispatch boolean isValidCall(WMixin it, WMemberFeatureCall call) { true }
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
-		c.matchesProperty(call.feature, call.memberCallArguments.size) 
+		c.matchesAllProperties(call.feature, call.memberCallArguments.size) 
 			|| c.allMethods.exists[isValidMessage(call)] 
-			|| (c.parent !== null && !c.hasCyclicHierarchy && c.parent.isValidCall(call))
 	}
 
+	def static boolean matchesAllProperties(WMethodContainer it, String propertyName, int parametersSize) {
+		matchesProperty(propertyName, parametersSize) || (parent !== null && !hasCyclicHierarchy && parent.matchesAllProperties(propertyName, parametersSize))	
+	}
+	
 	// ************************************************************************
 	// ** Basic methods
 	// ************************************************************************
