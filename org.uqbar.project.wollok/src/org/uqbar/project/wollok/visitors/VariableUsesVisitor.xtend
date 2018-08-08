@@ -31,8 +31,9 @@ class VariableUsesVisitor extends AbstractWollokVisitor {
 	}
 
 	override dispatch visit(WInitializer i) {
-		if (i.initializer.name == lookedFor)
+		if (i.initializer.name.equals(lookedFor.name))
 			uses.add(i)
+		i.initialValue.doVisit
 	}
 
 	def static usesOf(WVariable lookedFor, EObject container) {
