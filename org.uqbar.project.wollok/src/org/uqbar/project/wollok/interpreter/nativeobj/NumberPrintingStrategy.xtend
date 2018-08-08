@@ -13,7 +13,8 @@ class DecimalPrintingStrategy implements NumberPrintingStrategy {
 	
 	override printString(BigDecimal value) {
 		if (value.isInteger) {
-			return value.intValue.toString
+			val partNumbers = value.toString.split("\\.")
+			return if (partNumbers.isEmpty) "0" else partNumbers.get(0).toString 
 		}
 		value.stripTrailingZeros.toString	
 	}
