@@ -33,14 +33,11 @@ class GameboardRendering implements ApplicationListener {
 	}
 	
 	override pause() {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override resize(int arg0, int arg1) {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override resume() {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 }

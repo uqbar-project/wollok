@@ -61,7 +61,10 @@ class Window {
 	}
 	
 	def writeAttributes(String text, Position position, Color color) {
-		write(text, color, position.xinPixels - 80, position.yinPixels)
+		val lines = text.split("[\n|\r]").length
+		val textHeight = Gameboard.CELLZISE * (lines + 1)
+		val deltaY = if (position.y < textHeight) Gameboard.CELLZISE * lines else 0
+		write(text, color, position.xinPixels - 80, position.yinPixels + deltaY)
 	}
 	
 	def write(String text, Color color, int x, int y) {
