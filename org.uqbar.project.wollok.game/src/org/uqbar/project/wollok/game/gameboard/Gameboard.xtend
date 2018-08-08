@@ -4,6 +4,7 @@ import java.util.Collection
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.Messages
 import org.uqbar.project.wollok.game.Position
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.game.helpers.Application
@@ -27,12 +28,13 @@ class Gameboard {
 	List<VisualComponent> components = newArrayList
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
-	
+	@Accessors(NONE) VisualComponent errorReporter
+		
 	def static getInstance() {
 		if (instance === null) {
 			instance = new Gameboard()
 		}
-		return instance
+		instance
 	}
 	
 	new() {
@@ -47,11 +49,11 @@ class Gameboard {
 	}
 
 	def void start(Boolean fromREPL) {
-		background = createBackgroud()
+		background = createBackground()
 		Application.instance.start(this, fromREPL)
 	}
 	
-	def createBackgroud() {
+	def createBackground() {
 		if (boardGround !== null)
 		 	new FullBackground(boardGround, this)
 		else 
@@ -64,32 +66,28 @@ class Gameboard {
 	
 	def void draw(Window window) {
 		// NO UTILIZAR FOREACH PORQUE HAY UN PROBLEMA DE CONCURRENCIA AL MOMENTO DE VACIAR LA LISTA
-		for (var i=0; i < listeners.size(); i++) {
-			try 
+		for (var i = 0; i < listeners.size(); i++) {
+			try
 				listeners.get(i).notify(this)
 			catch (WollokProgramExceptionWrapper e) {
 				var Object message = e.wollokMessage
 				if (message === null)
-					message = "NO MESSAGE"
+					message = Messages.WollokGame_NoMessage
 				
 				if (character !== null)
-					character.scream("ERROR: " + message.toString())
+					character.scream(message.toString())
 				
 				log.error(message, e)	
-			} 
+			}
 		}
 
 		background.draw(window)
 		components.forEach[it.draw(window)]
 	}
 
-	def pixelHeight() {
-		return height * CELLZISE;
-	}
+	def pixelHeight() {	height * CELLZISE }
 
-	def pixelWidth() {
-		return width * CELLZISE;
-	}
+	def pixelWidth() { width * CELLZISE }
 	
 	def clear() {
 		components.clear()
@@ -98,7 +96,7 @@ class Gameboard {
 	}
 
 	def characterSay(String aText) {
-		character.say(aText);
+		character.say(aText)
 	}
 	
 	def getComponentsInPosition(Position p) {
@@ -109,27 +107,43 @@ class Gameboard {
 
 	// Getters & Setters
 
-	def addCharacter(VisualComponent character) {
+	def void addCharacter(VisualComponent character) {
 		this.character = character
 		addComponent(character)
 		addListener(new ArrowListener(character))
 	}
 
-	def addComponent(VisualComponent component) {
+	def void addComponent(VisualComponent component) {
 		components.add(component)
 	}
 	
-	def addComponents(Collection<VisualComponent> it) {
+	def void addComponents(Collection<VisualComponent> it) {
 		components.addAll(it)
 	}
 
-	def addListener(GameboardListener aListener){
-		listeners.add(aListener);
+	def void addListener(GameboardListener aListener){
+		listeners.add(aListener)
 	}
 	
 	def remove(VisualComponent component) {
 		components.remove(component)
 		listeners.removeIf[it.isObserving(component)]
+	}
+
+	def VisualComponent somebody() {
+		val everybody = newArrayList => [
+			addAll(components)
+			if (character !== null) add(character)
+		]
+		if (everybody.isEmpty) null else everybody.last
+	}
+	
+	def errorReporter(VisualComponent visual) {
+		 this.errorReporter = visual
+	}
+	
+	def VisualComponent errorReporter() {
+		errorReporter ?: somebody
 	}
 	
 }

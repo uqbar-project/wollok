@@ -10,21 +10,19 @@ class GameboardRendering implements ApplicationListener {
 	private Window window
 	
 	new (Gameboard gameboard) {
-		this.gameboard = gameboard;
+		this.gameboard = gameboard
 	}
 
 	override create() {
-		Gdx.input.setInputProcessor(new GameboardInputProcessor());
-		var camera = new OrthographicCamera(0, 0);
+		Gdx.input.setInputProcessor(new GameboardInputProcessor())
+		val camera = new OrthographicCamera(0, 0)
 		camera.setToOrtho(false, gameboard.pixelWidth(), gameboard.pixelHeight())
 		this.window = new Window(camera)
 	}
 
 	override render() {
 		this.window.clear()
-
 		this.gameboard.draw(this.window)
-		
 		this.window.end()
 	}
 
@@ -33,14 +31,11 @@ class GameboardRendering implements ApplicationListener {
 	}
 	
 	override pause() {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override resize(int arg0, int arg1) {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override resume() {
-//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 }

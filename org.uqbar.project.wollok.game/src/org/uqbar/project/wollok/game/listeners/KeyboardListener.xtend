@@ -11,13 +11,13 @@ class KeyboardListener implements GameboardListener {
 	Runnable gameAction
 
 	new(int key, Runnable gameAction) {
-		this.key = key;
-		this.gameAction = gameAction;
+		this.key = key
+		this.gameAction = gameAction
 	}
 
 	override notify(Gameboard gameboard) {
 		if (keyboard.isKeyPressed(this.key))
-			gameAction.run();
+			gameAction.run()
 	}
 
 	override isObserving(VisualComponent component) {

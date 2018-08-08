@@ -1,12 +1,18 @@
 package wollok.lib
 
-import org.uqbar.project.wollok.lib.WVisual
-import org.uqbar.project.wollok.lib.WPosition
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.game.gameboard.Gameboard
-import org.uqbar.project.wollok.game.listeners.KeyboardListener
 import org.uqbar.project.wollok.game.listeners.CollisionListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
+import org.uqbar.project.wollok.game.listeners.KeyboardListener
+import org.uqbar.project.wollok.game.listeners.TimeListener
 import org.uqbar.project.wollok.interpreter.core.WollokObject
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.lib.WPosition
+import org.uqbar.project.wollok.lib.WVisual
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
@@ -38,33 +44,48 @@ class GameObject {
 		board.remove(visual)
 	}
 	
+	def onTick(WollokObject milliseconds, WollokObject action) {
+		val function = action.asClosure
+		addListener(new TimeListener(milliseconds.coerceToInteger, [ function.doApply ]))
+	}
+	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
 		var num = key.coerceToInteger
 		val function = action.asClosure
-		var listener = new KeyboardListener(num, [ function.doApply ])
-		addListener(listener)
+		addListener(new KeyboardListener(num, [
+			try {
+				function.doApply
+			} catch (WollokProgramExceptionWrapper e) {
+				board.errorReporter?.scream(e.wollokMessage)
+			} 
+		]))
 	}
 
-	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {	
+	def whenKeyPressedSay(WollokObject key, WollokObject functionObj) {
 		val num = key.coerceToInteger
 		val function = functionObj.asClosure
-		var listener = new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]) 
-		addListener(listener)
+		addListener(new KeyboardListener(num, [ board.characterSay(function.doApply.asString) ]))
 	}
 	
 	def whenCollideDo(WollokObject visual, WollokObject action) {
 		var visualObject = board.findVisual(visual)
 		val function = action.asClosure
-		val listener = new CollisionListener(visualObject, [ function.doApply((it as WVisual).wObject) ])
-		addListener(listener)
+		addListener(new CollisionListener(visualObject, [
+			try {
+				function.doApply((it as WVisual).wObject)
+			} catch (WollokProgramExceptionWrapper e) {
+				board.errorReporter?.scream(e.wollokMessage)
+				null
+			}
+		]))
 	}
 	
 	def getObjectsIn(WollokObject position) {
-		var pos = new WPosition(position)
-		board.getComponentsInPosition(pos)
-		.map[ it as WVisual ]
-		.map [ it.wObject ]
-		.toList.javaToWollok
+		board
+			.getComponentsInPosition(new WPosition(position))
+			.map[ it as WVisual ]
+			.map [ it.wObject ]
+			.toList.javaToWollok
 	}
 	
 	def colliders(WollokObject visual) {
@@ -80,12 +101,23 @@ class GameObject {
 		board.findVisual(visual).say(message)
 	}
 	
+	def hideAttributes(WollokObject visual) {
+		board.findVisual(visual).hideAttributes()
+	}
+	
+	def void errorReporter(WollokObject visual) {
+		board.errorReporter(board.findVisual(visual))
+	}
+	
+	def showAttributes(WollokObject visual) {
+		board.findVisual(visual).showAttributes()
+	}
+	
 	def clear() { board.clear }
 	
 	def doStart(Boolean isRepl) { board.start(isRepl) }
 	
 	def stop() { board.stop }
-	
 	
 	def board() { Gameboard.getInstance }
 	
@@ -94,9 +126,15 @@ class GameObject {
 	}
 	
 	def findVisual(Gameboard it, WollokObject visual) {
-		components
+		val result = components
 		.map[it as WVisual]
 		.findFirst[ wObject.equals(visual)]
+		
+		if (result === null)
+			// TODO i18n
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_VisualComponentNotFound, visual).javaToWollok))
+			
+		result
 	}
 	
 	
