@@ -13,6 +13,9 @@ import org.uqbar.project.wollok.game.gameboard.Window
  */
 @Accessors
 abstract class VisualComponent {
+	public static val MESSAGE_MAX_LENGTH = 50
+	public static val MESSAGE_TRIM_LENGTH = 45
+	
 	List<BalloonMessage> balloonMessages = newArrayList
 	
 	def abstract List<String> getAttributes()
@@ -55,9 +58,9 @@ abstract class VisualComponent {
 	}
 	
 	def void addMessage(String message, Color color) {
-		if (message.length > 50) {
-			var beginning = message.substring(0, 45) + ".."
-			var end = ".." + message.substring(46, message.length)
+		if (message.length > MESSAGE_MAX_LENGTH) {
+			var beginning = message.substring(0, MESSAGE_TRIM_LENGTH) + ".."
+			var end = ".." + message.substring(MESSAGE_TRIM_LENGTH, message.length)
 			this.addMessage(beginning, color)
 			this.addMessage(end, color)
 			return 

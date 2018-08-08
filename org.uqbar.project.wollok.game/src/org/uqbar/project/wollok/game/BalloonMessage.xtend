@@ -26,6 +26,6 @@ class BalloonMessage {
 		if (timestamp == 0)
 			timestamp = new Date().time
 		
-		window.drawBaloon(this.text, character.position, this.color)
+		window.drawBalloon(this.text, character.position, this.color)
 	}
 }
