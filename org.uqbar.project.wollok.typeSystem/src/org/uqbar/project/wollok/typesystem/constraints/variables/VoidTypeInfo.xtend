@@ -29,29 +29,17 @@ class VoidTypeInfo extends TypeInfo {
 	// ** Extension methods
 	// ************************************************************************
 	static def dispatch canBeVoid(EObject object) { false }
-
 	static def dispatch canBeVoid(WBlockExpression object) { true }
-
 	static def dispatch canBeVoid(WMethodDeclaration object) { true }
-
 	static def dispatch canBeVoid(WMemberFeatureCall object) { true }
-
 	static def dispatch canBeVoid(WVariableDeclaration object) { true }
-
 	static def dispatch canBeVoid(WReturnExpression object) { true }
-
 	static def dispatch canBeVoid(WPostfixOperation object) { true }
-
 	static def dispatch canBeVoid(WAssignment object) { true }
-
 	static def dispatch canBeVoid(WIfExpression object) { true }
-
 	static def dispatch canBeVoid(WBinaryOperation it) { isMultiOpAssignment }
-
 	static def dispatch isVoid(Void typeInfo) { false }
-
 	static def dispatch isVoid(TypeInfo typeInfo) { false }
-
 	static def dispatch isVoid(VoidTypeInfo typeInfo) { true }
 
 	// ************************************************************************
