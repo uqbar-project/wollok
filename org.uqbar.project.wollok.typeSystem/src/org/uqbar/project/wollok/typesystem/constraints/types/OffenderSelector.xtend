@@ -34,8 +34,25 @@ class OffenderSelector {
 		}
 	}
 
+	def static handlingOffensesDo(TypeVariable offender, ()=>ConcreteTypeState action) {
+		try {
+			action.apply()
+		} catch (TypeSystemException offense) {
+			offender.handleOffense(offense)
+			ConcreteTypeState.Error
+		}
+	}
+
 	def static handleOffense(TypeVariable subtype, TypeVariable supertype, TypeSystemException offense) {
-		val offender = selectOffenderVariable(subtype, supertype)
+		if(offense.variable === null) {
+			val offender = selectOffenderVariable(subtype, supertype)
+			offense.variable = offender	
+		}
+
+		offense.variable.addError(offense)
+	}
+
+	def static handleOffense(TypeVariable offender, TypeSystemException offense) {
 		if(offense.variable === null) offense.variable = offender
 		offense.variable.addError(offense)
 	}

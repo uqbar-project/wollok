@@ -186,9 +186,10 @@ class TypeVariable extends ITypeVariable {
 	 * Register that a message has been sent to this type variable.
 	 */
 	def messageSend(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
-		val it = new MessageSend(selector, arguments, returnType)
+		val message = new MessageSend(this, selector, arguments, returnType)
+
 		if(typeInfo === null) setTypeInfo(new GenericTypeInfo())
-		typeInfo.messages.add(it)
+		typeInfo.messages.add(message)
 	}
 
 	/**

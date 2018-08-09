@@ -22,13 +22,13 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
 
 	override analiseVariable(TypeVariable tvar) {
-		if (!alreadySeen.contains(tvar)) {
+		if(!alreadySeen.contains(tvar)) {
 			var result = Ready
 
-			if (tvar.subtypes.size == 1) {
+			if(tvar.subtypes.size == 1) {
 				result = tvar.subtypes.uniqueElement.unifyWith(tvar)
 			}
-			if (tvar.supertypes.size == 1) {
+			if(tvar.supertypes.size == 1) {
 				result = result.join(tvar.unifyWith(tvar.supertypes.uniqueElement))
 			}
 
@@ -48,25 +48,25 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	}
 
 	def ConcreteTypeState unifyWith(TypeVariable subtype, TypeVariable supertype) {
-		if (subtype.unifiedWith(supertype)) {
+		if(subtype.unifiedWith(supertype)) {
 			return Ready
 		}
 
 		// Do not unify with core library elements
-		if (subtype.owner.isCoreObject || supertype.owner.isCoreObject) {
+		if(subtype.owner.isCoreObject || supertype.owner.isCoreObject) {
 			return Cancel
 		}
 
 		// We can only unify in absence of errors, this aims for avoiding error propagation 
 		// and further analysis of the (maybe) correct parts of the program.
-		if (supertype.hasErrors) {
+		if(supertype.hasErrors) {
 			log.debug('''Unifying «subtype» with «supertype»: errors found, aborting unification''')
 			return Error
 		}
 
 		// Now we can unify
 		subtype.doUnifyWith(supertype) => [
-			if (it != Pending && it != Cancel)
+			if(it != Pending && it != Cancel)
 				log.debug('''«it» | Unified «subtype» with «supertype» : «subtype.typeInfo.typeDescriptionForDebug»''')
 		]
 	}
@@ -74,50 +74,45 @@ class UnifyVariables extends AbstractInferenceStrategy {
 	def dispatch ConcreteTypeState doUnifyWith(TypeVariable subtype, TypeVariable supertype) {
 		// We are not handling unification of two variables with no type info, yet it should not be a problem because there is no information to share.
 		// Since we are doing nothing, eventually when one of the variables has some type information, unification will be done. 
-		if (subtype.typeInfo === null && supertype.typeInfo === null) {
+		if(subtype.typeInfo === null && supertype.typeInfo === null) {
 			log.debug('''Unifying «subtype» with «supertype»: no type info yet, unification postponed''')
 			Pending
-		} else if (subtype.typeInfo === null) {
+		} else if(subtype.typeInfo === null) {
 			subtype.copyTypeInfoFrom(supertype)
-		} else if (supertype.typeInfo === null) {
+		} else if(supertype.typeInfo === null) {
 			supertype.copyTypeInfoFrom(subtype)
-		} else if (biUniqueRelationship(subtype, supertype)) {
-			// Do not unify unless they are uniques subtype/supertypes respectively
-			// Note that this rule is more strict than for variables without type info.
-			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
-		} else if (supertype.isVariableReferenceTo(subtype)) {
-			// Unify variable references with their associated referenciables.
+		} else if(biUniqueRelationship(subtype, supertype) // Unify if both variables are uniques subtype/supertypes respectively
+		|| supertype.isVariableReferenceTo(subtype) // Unify variable references with their associated referenciables.
+		|| subtype.typeInfo.isEmpty || subtype.typeInfo.isEmpty) {
 			subtype.typeInfo.doUnifyWith(supertype.typeInfo)
 		} else {
-			log.debug('''Not unified «subtype» with «supertype» : 
-				«supertype.fullDescription»
-				«subtype.fullDescription»''')
 			Cancel
 		}
 	}
 
+	def dispatch isEmpty(VoidTypeInfo it) { true }
+	def dispatch isEmpty(GenericTypeInfo it) { minTypes.isEmpty && maximalConcreteTypes === null }
+
 	// ************************************************************************
 	// ** Unification conditions
 	// ************************************************************************
-
 	def isVariableReferenceTo(TypeVariable supertype, TypeVariable subtype) {
 		supertype.owner.isReferenceTo(subtype.owner)
 	}
-	
+
 	def biUniqueRelationship(TypeVariable subtype, TypeVariable supertype) {
 		subtype.supertypes.size == 1 && supertype.subtypes.size == 1
 	}
-	
+
 	// ************************************************************************
 	// ** Proper unification
 	// ************************************************************************
-
 	def copyTypeInfoFrom(TypeVariable v1, TypeVariable v2) {
 		try {
 			v1.typeInfo = v2.typeInfo
 			changed = true
 			Ready
-		} catch (TypeSystemException typeError) {
+		} catch(TypeSystemException typeError) {
 			v2.addError(typeError)
 			Error
 		}
@@ -141,7 +136,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 	protected def minTypesUnion(GenericTypeInfo t1, GenericTypeInfo t2) {
 		(t1.minTypes.keySet + t2.minTypes.keySet).toSet.toInvertedMap [
-			if (isReadyIn(t1) && isReadyIn(t2))
+			if(isReadyIn(t1) && isReadyIn(t2))
 				// It was already present and ready in both originating typeInfo's
 				Ready
 			else

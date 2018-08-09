@@ -120,7 +120,7 @@ class GenericTypeInfo extends TypeInfo {
 		if(minTypes.containsKey(type)) return Ready
 
 		try {
-			validateNewMinType(type, offender)
+			validateType(type, offender)
 			minTypes.put(type, Pending)
 			Pending
 		} catch (TypeSystemException exception) {
@@ -129,7 +129,7 @@ class GenericTypeInfo extends TypeInfo {
 		}
 	}
 
-	def validateNewMinType(WollokType type, TypeVariable offender) {
+	def validateType(WollokType type, TypeVariable offender) {
 		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
 			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
 		}
@@ -137,7 +137,6 @@ class GenericTypeInfo extends TypeInfo {
 		validMessages.forEach [
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
 		]
-
 	}
 
 	def unifyWith(WollokType existing, WollokType added) {

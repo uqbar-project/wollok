@@ -47,6 +47,7 @@ abstract class TypeVariableOwner {
 	// ************************************************************************
 	def addError(TypeSystemException exception) {
 		if (isCoreObject)
+
 			throw new RuntimeException(NLS.bind(Messages.RuntimeTypeSystemException_TRIED_TO_ADD_ERROR_TO_CORE_OBJECT, debugInfoInContext))
 
 		errors.add(exception)
@@ -95,7 +96,7 @@ abstract class TypeVariableOwner {
 	static def URI getURI(EObject object) {
 		EcoreUtil.getURI(object)
 	}
-
+	
 }
 
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
