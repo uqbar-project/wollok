@@ -61,7 +61,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	}
 
 	def dispatch analiseVariable(TypeVariable tvar, GenericTypeInfo it) {
-		if (minTypes.isEmpty && maximalConcreteTypes !== null) {
+		if(minTypes.isEmpty && maximalConcreteTypes !== null) {
 			log.debug('''About to guess min types for «tvar.owner.debugInfoInContext»''')
 			log.debug(tvar.fullDescription)
 			maximalConcreteTypes.forEach [ type |
@@ -92,15 +92,10 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 
 	// Avoid visiting objects that do not have associated type variables 
 	def dispatch afterVisit(WFile it) {}
-
 	def dispatch afterVisit(WProgram it) {}
-
 	def dispatch afterVisit(WClass it) {}
-
 	def dispatch afterVisit(WConstructor it) {}
-
 	def dispatch afterVisit(WInitializer it) {}
-
 	def dispatch afterVisit(Import it) {}
 
 	// ************************************************************************
@@ -112,7 +107,7 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	 * Will check with the visiting algorithm to decide if we should continue or stop.
 	 */
 	def visit(EObject it) {
-		if (shouldVisit) {
+		if(shouldVisit) {
 			beforeVisit
 			visitChildren
 			afterVisit
@@ -142,7 +137,6 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	}
 
 	def dispatch void visitChildren(WThrow it) { exception.visit }
-
 	def dispatch void visitChildren(WCatch it) { expression.visit }
 
 	def dispatch void visitChildren(WAssignment it) {
@@ -176,25 +170,15 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 
 	// i'm not sure why tests fails if we just let the generic WMethodContainer impl for all.
 	def dispatch void visitChildren(WMethodContainer it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WMixin it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WSuite it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WClass it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WObjectLiteral it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WNamedObject it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WFixture it) { eContents.visitAll }
-
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }
-
 	def dispatch void visitChildren(WUnaryOperation it) { operand.visit }
-
 	def dispatch void visitChildren(WClosure it) { expression.visit }
-
 	def dispatch void visitChildren(WConstructor it) { expression.visit }
 
 	def dispatch void visitChildren(WMethodDeclaration it) {
@@ -203,23 +187,16 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 	}
 
 	def dispatch void visitChildren(WProgram it) { elements.visitAll }
-
 	def dispatch void visitChildren(WTest it) { elements.visitAll }
-
 	def dispatch void visitChildren(WSuperInvocation it) { memberCallArguments.visitAll }
 
 	def dispatch void visitChildren(WConstructorCall it) {
-		if (argumentList !== null) {
-			arguments.visitAll
-		}
+		if(argumentList !== null) arguments.visitAll
 	}
 
 	def dispatch void visitChildren(WCollectionLiteral it) { elements.visitAll }
-
 	def dispatch void visitChildren(WBlockExpression it) { expressions.visitAll }
-
 	def dispatch void visitChildren(WPostfixOperation it) { operand.visit }
-
 	def dispatch void visitChildren(WReturnExpression it) { expression.visit }
 
 	// terminal elements
@@ -227,16 +204,10 @@ class GuessMinTypeFromMaxType extends SimpleTypeInferenceStrategy {
 
 	// terminals
 	def dispatch void visitChildren(WReferenciable ref) {}
-
 	def dispatch void visitChildren(WNumberLiteral literal) {}
-
 	def dispatch void visitChildren(WNullLiteral literal) {}
-
 	def dispatch void visitChildren(WStringLiteral literal) {}
-
 	def dispatch void visitChildren(WBooleanLiteral literal) {}
-
 	def dispatch void visitChildren(WParameter param) {}
-
 	def dispatch void visitChildren(WSelf wthis) {}
 }
