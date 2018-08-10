@@ -167,6 +167,7 @@ class SetTestCase extends CollectionTestCase {
 		'''.test
 	} 	
 	
+	// #1305 vs. #1401 - Infinite loop forces this test to change
 	@Test
 	def void elementsToString() {
 		'''
@@ -179,8 +180,14 @@ class SetTestCase extends CollectionTestCase {
 		}
 		
 		program c {
+			/*
 			assert.throwsExceptionWithMessage(
 				"Expected [#{es un a}] but found [#{cierto que era un b!}]", 
+				{ assert.equals(#{a}, #{new B()}) }
+			)
+			*/
+			assert.throwsExceptionWithMessage(
+				"Expected [#{a[]}] but found [#{a B[]}]", 
 				{ assert.equals(#{a}, #{new B()}) }
 			)
 		}

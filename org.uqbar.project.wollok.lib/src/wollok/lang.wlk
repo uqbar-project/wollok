@@ -31,7 +31,7 @@ class Exception {
 	
 	/** @private */
 	method printStackTraceWithPreffix(preffix, printer) {
-		printer.println(preffix +  self.className() + (if (message != null) (": " + message.toString()) else ""))
+		printer.println(preffix + self.className() + (if (message != null) (": " + message.toString()) else ""))
 		
 		// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
 		self.getStackTrace().forEach { e =>
@@ -505,13 +505,13 @@ class Collection {
 	
 	/** @private */
 	override method internalToSmartString(alreadyShown) =
-		self.toStringPrefix() + self.map{ e => if (alreadyShown.contains(e)) e.toSmartString(alreadyShown) else e.printString() }.join(', ') + self.toStringSufix()
+		self.toStringPreffix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
 	
 	/** @private */
-	method toStringPrefix()
+	method toStringPreffix()
 	
 	/** @private */
-	method toStringSufix()
+	method toStringSuffix()
 	
 	/** Converts a collection to a list */
 	method asList()
@@ -580,10 +580,10 @@ class Set inherits Collection {
 	override method newInstance() = #{}
 	
 	/** @private */
-	override method toStringPrefix() = "#{"
+	override method toStringPreffix() = "#{"
 	
 	/** @private */
-	override method toStringSufix() = "}"
+	override method toStringSuffix() = "}"
 	
 	/** 
 	 * Converts this set to a list
@@ -750,10 +750,10 @@ class List inherits Collection {
 	method last() = self.get(self.size() - 1)
 
 	/** @private */		 
-	override method toStringPrefix() = "["
+	override method toStringPreffix() = "["
 	
 	/** @private */
-	override method toStringSufix() = "]"
+	override method toStringSuffix() = "]"
 
 	/** 
 	 * Converts this collection to a list. No effect on Lists.
