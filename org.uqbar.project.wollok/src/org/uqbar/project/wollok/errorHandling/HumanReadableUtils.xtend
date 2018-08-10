@@ -108,4 +108,17 @@ class HumanReadableUtils {
 	def static methodNotFoundMessage(String type, String message) {
 		NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST, type, message)
 	}
+	
+	def static classNameWhenInvalid(WConstructorCall call) {
+		val expr = call.sourceCode.trim
+		val data = expr.split(" ")
+		if (data.size < 1) return expr
+		val classNameWithParameters = data.get(1)
+		var indexParentheses = classNameWithParameters.indexOf("(")
+		if (indexParentheses == -1) {
+			return classNameWithParameters 
+		}
+		classNameWithParameters.substring(0, indexParentheses)
+	}
+	
 }

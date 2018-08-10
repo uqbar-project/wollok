@@ -740,4 +740,5 @@ class WollokModelExtensions {
 	def static dispatch boolean isAssertWKO(WVariableReference ref) {
 		ref.ref.isAssertWKO
 	}
+	
 }
