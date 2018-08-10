@@ -76,7 +76,7 @@ class TypeSystemXpectTestCase extends AbstractWollokTypeSystemTestCase {
 		@ThisResource XtextResource resource,
 		@ThisModel EObject file
 	) {
-		println(target.EObject.constructor.constructorType(typeSystem))
+		expectation.assertEquals(target.EObject.constructor.constructorType(typeSystem))
 	}
 
 	def dispatch method(EObject object) {

@@ -1,0 +1,15 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Empleado{
+	var property categoria = 0
+}
+
+object jefe {
+	// XPECT type at empl --> Empleado
+	method m(empl){
+		empl.categoria()
+		
+		// XPECT warnings --> "Empleado does not understand chau()" at "empl.chau()"
+		empl.chau()
+	}
+}

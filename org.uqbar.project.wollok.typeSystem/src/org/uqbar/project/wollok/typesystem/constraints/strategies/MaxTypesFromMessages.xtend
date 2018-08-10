@@ -24,7 +24,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 			validMessages.forEach [ message |
 				maxTypes.forEach [ type |
 					if(!type.respondsTo(message))
-						message.receiver.handleOffense(new MessageNotUnderstoodException(type, message))
+						message.returnType.handleOffense(new MessageNotUnderstoodException(type, message))
 				]
 			]
 
