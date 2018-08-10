@@ -241,6 +241,11 @@ public class Messages extends NLS {
 	
 	public static String WollokTypeSystem_AN_EXPRESSION_IS_EXPECTED_AT_THIS_POSITION;
 
+	// ****************************
+	// ** Wollok Game 
+	// ****************************
+	public static String WollokGame_VisualComponentNotFound;
+	
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -13,7 +13,11 @@ import org.uqbar.project.wollok.game.gameboard.Window
  */
 @Accessors
 abstract class VisualComponent {
+	public static val MESSAGE_MAX_LENGTH = 50
+	public static val MESSAGE_TRIM_LENGTH = 45
+	
 	List<BalloonMessage> balloonMessages = newArrayList
+	boolean showAttributes = true
 	
 	def abstract List<String> getAttributes()
 	def abstract Image getImage()
@@ -24,7 +28,7 @@ abstract class VisualComponent {
 		window => [
 			drawMe
 			drawAttributesIfNecesary
-			drawBallonIfNecesary
+			drawBalloonIfNecesary
 		]
 	}
 
@@ -33,16 +37,15 @@ abstract class VisualComponent {
 	}
 
 	def drawAttributesIfNecesary(Window window) {
-		if (inMyZone) {
-			var printableString = getAttributes.join(System.lineSeparator)
+		if (showAttributes && inMyZone) {
+			val printableString = getAttributes.join(System.lineSeparator)
 			if (printableString != "") {
 				window.writeAttributes(printableString, position, Color.WHITE)
 			}
 		}
-				
 	}
 
-	def drawBallonIfNecesary(Window window) {
+	def drawBalloonIfNecesary(Window window) {
 		if (hasMessages)
 			currentMessage.draw(window, this)
 	}
@@ -56,9 +59,9 @@ abstract class VisualComponent {
 	}
 	
 	def void addMessage(String message, Color color) {
-		if (message.length > 50) {
-			var beginning = message.substring(0, 45) + ".."
-			var end = ".." + message.substring(46, message.length)
+		if (message.length > MESSAGE_MAX_LENGTH) {
+			val beginning = message.substring(0, MESSAGE_TRIM_LENGTH) + ".."
+			val end = ".." + message.substring(MESSAGE_TRIM_LENGTH, message.length)
 			this.addMessage(beginning, color)
 			this.addMessage(end, color)
 			return 
@@ -68,30 +71,32 @@ abstract class VisualComponent {
 	}
 
 	def isInMyZone(){
-		var xMouse = Gdx.input.x
-		var yMouse = Gdx.input.y
-		var bottomX = position.xinPixels
-		var bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
-		var topX = bottomX + Gameboard.CELLZISE
-		var topY = bottomY - Gameboard.CELLZISE
-		
+		val xMouse = Gdx.input.x
+		val yMouse = Gdx.input.y
+		val bottomX = position.xinPixels
+		val bottomY = Gameboard.getInstance().pixelHeight - position.yinPixels
+		val topX = bottomX + Gameboard.CELLZISE
+		val topY = bottomY - Gameboard.CELLZISE
 		return (xMouse > bottomX && xMouse < topX) && (yMouse < bottomY && yMouse > topY)
 	}
 	
 
 	def hasMessages() {
-		var textToDelete = new ArrayList<BalloonMessage>();
+		val textToDelete = new ArrayList<BalloonMessage>()
 		for (var i = 0; i < this.balloonMessages.size; i++) {
 			if (balloonMessages.get(i).shouldRemove)
 				textToDelete.add(balloonMessages.get(i))
 		}
 		balloonMessages.removeAll(textToDelete)
-		return balloonMessages.size > 0
+		balloonMessages.size > 0
 	}
 
 	def getCurrentMessage() {
 		balloonMessages.get(0)
 	}
+	
+	def hideAttributes() { showAttributes = false }
+	def showAttributes() { showAttributes = true }
 }
 
 @Accessors

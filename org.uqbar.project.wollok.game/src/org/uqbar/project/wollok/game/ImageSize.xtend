@@ -24,7 +24,7 @@ class CellSize implements ImageSize {
 class GameSize implements ImageSize {
 	Gameboard game
 	
-	new (Gameboard game) { this.game = game }
+	new(Gameboard game) { this.game = game }
 	
 	override width(int originalWidth) { game.pixelWidth }	
 	override height(int originalHeight) { game.pixelHeight }

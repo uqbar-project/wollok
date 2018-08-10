@@ -13,19 +13,19 @@ class BalloonMessage {
 	var Color color
 	var long timestamp = 0
 	
-	new (String aText, Color aColor){
+	new (String aText, Color aColor) {
 		text = aText
 		color = aColor
 	}
 	
-	def boolean shouldRemove(){
-		return timestamp != 0 && new Date().time - timestamp > timeToLive   
+	def boolean shouldRemove() {
+		timestamp != 0 && new Date().time - timestamp > timeToLive   
 	}
 	
 	def draw(Window window, VisualComponent character) {
 		if (timestamp == 0)
 			timestamp = new Date().time
 		
-		window.drawBallon(this.text, character.position, this.color)
+		window.drawBalloon(this.text, character.position, this.color)
 	}
 }

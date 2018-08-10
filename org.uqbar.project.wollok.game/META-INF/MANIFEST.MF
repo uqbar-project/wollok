@@ -10,7 +10,8 @@ Import-Package: org.junit;version="4.11.0",
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.11.0",
  org.apache.log4j,
- org.uqbar.project.wollok
+ org.uqbar.project.wollok,
+ org.eclipse.osgi
 Bundle-ClassPath: lib/gdx-1.6.0.jar,
  lib/gdx-backend-lwjgl-1.6.0.jar,
  lib/gdx-platform-1.6.0-natives-desktop.jar,
