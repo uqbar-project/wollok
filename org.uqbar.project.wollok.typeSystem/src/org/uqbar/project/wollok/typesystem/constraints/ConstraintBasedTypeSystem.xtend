@@ -7,15 +7,18 @@ import java.util.Set
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.sdk.WollokDSK
-import org.uqbar.project.wollok.typesystem.AbstractContainerWollokType
-import org.uqbar.project.wollok.typesystem.ClassBasedWollokType
+import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ClosureType
+import org.uqbar.project.wollok.typesystem.Constants
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.MessageType
-import org.uqbar.project.wollok.typesystem.NamedObjectWollokType
+import org.uqbar.project.wollok.typesystem.Messages
+import org.uqbar.project.wollok.typesystem.NamedObjectType
+import org.uqbar.project.wollok.typesystem.TypeFactory
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.annotations.WollokCoreTypeDeclarations
@@ -56,30 +59,31 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	@Accessors
 	List<EObject> programs = newArrayList
 
+	ConstraintGenerator constraintGenerator
+
 	/**
 	 * The collection of concrete types that are known to be generic, indexed by its FQN.
 	 */
 	Map<String, GenericType> genericTypes = newHashMap
 
-	ConstraintGenerator constraintGenerator
-
 	/** 
-	 * TODO It might be more correct to use WollokType, but right now it would only complicate things.
+	 * TypeFactories include both actual concrete types such as class types and object types, 
+	 * but also parametric types that need to be instantiated to create a type, such as Collection<T>
 	 */
-	Set<AbstractContainerWollokType> allTypes
+	Set<TypeFactory> allTypes
 
 	new() {
 		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
 	}
 	
-	override def name() { "Constraints-based" }
+	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
 		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
-		this.analyse(file)
-		this.inferTypes
-
-		reportErrors(validator)
+		// Dodain - only Builder now is responsible for analyzing and inferring types
+		//this.analyse(file)
+		//this.inferTypes
+		file.reportErrors(validator)
 	}
 
 	// ************************************************************************
@@ -89,13 +93,15 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		registry = new TypeVariablesRegistry(this)
 		programs = newArrayList
 		constraintGenerator = new ConstraintGenerator(this)
+		genericTypes = newHashMap
 		allTypes = null
 
 		// This shouldn't be necessary if all global objects had type annotations
 		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
 
-		annotatedTypes = new AnnotatedTypeRegistry(registry)
-		annotatedTypes.addTypeDeclarations(this, WollokCoreTypeDeclarations, program)
+		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
+			addTypeDeclarations(this, WollokCoreTypeDeclarations, program)	
+		]
 	}
 
 	override analyse(EObject program) {
@@ -137,9 +143,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Definition of the strategies to run in each stage
 	 */
 	Iterable<Iterable<Class<? extends AbstractInferenceStrategy>>> stages = #[
-		#[PropagateMinimalTypes, PropagateMaximalTypes, MaxTypesFromMessages],
+		#[PropagateMinimalTypes],
 		#[OpenMethod],
-		#[UnifyVariables, SealVariables],
+		#[UnifyVariables],
+		#[PropagateMaximalTypes, MaxTypesFromMessages],
+		#[SealVariables],
 		#[GuessMinTypeFromMaxType]
 	]
 
@@ -162,8 +170,8 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	// ************************************************************************
 	// ** Error reporting
 	// ************************************************************************
-	override reportErrors(ConfigurableDslValidator validator) {
-		allVariables.forEach[it.reportErrors(validator)]
+	override reportErrors(WFile file, ConfigurableDslValidator validator) {
+		typeVariablesFrom(file.eResource.URI).forEach [ reportErrors(validator) ]
 	}
 
 	// ************************************************************************
@@ -182,11 +190,15 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	def objectType(WNamedObject model) {
-		new NamedObjectWollokType(model, this)
+		new NamedObjectType(model, this)
 	}
 
 	def classType(WClass clazz) {
-		genericTypes.get(clazz.fqn) ?: new ClassBasedWollokType(clazz, this)
+		if (genericTypes.containsKey(clazz.fqn)) {
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_MUST_BE_INSTANTIATED, clazz.fqn))	
+		}
+
+		new ClassInstanceType(clazz, this)
 	}
 
 	def genericType(WClass clazz, String... typeParameterNames) {
@@ -203,14 +215,18 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 	/**
 	 * Before constructing a class type, check if the provided FQN is known to be a generic type.
-	 * If so, return the known generic type.
+	 * If so, this is an error.
 	 * Otherwise create a simple class type. 
 	 */
 	override classType(EObject context, String classFQN) {
 		if (classFQN == WollokDSK.CLOSURE) 
-			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
-		genericTypes.get(classFQN) ?: finder.getCachedClass(context, classFQN).classType
+		if (genericTypes.containsKey(classFQN)) {
+			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_MUST_BE_INSTANTIATED, classFQN))	
+		}  
+		
+		finder.getCachedClass(context, classFQN).classType
 	}
 
 	/**
@@ -218,11 +234,11 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	override genericType(EObject context, String classFQN, String... typeParameterNames) {
 		if (classFQN == WollokDSK.CLOSURE) 
-			throw new IllegalArgumentException("Wrong way to get a closure type, use #closureType instead")
+			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_WRONG_WAY_CLOSURE_TYPE)
 
 		finder.getCachedClass(context, classFQN).genericType(typeParameterNames) => [
 			genericTypes.put(classFQN, it)
-		]		
+		]
 	}
 
 	override closureType(EObject context, int parameterCount) {
@@ -230,11 +246,25 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		new ClosureType(finder.getClosureClass(context), this, typeParameterNames)
 	}
 
+	/**
+	 * Not all classes are actual types, as some have type parameters and therefore are generic types (aka type factories).
+	 */
+	def TypeFactory typeOrFactory(WClass clazz) {
+		genericTypes.get(clazz.fqn) ?: new ClassInstanceType(clazz, this)
+	}
+
+	/**
+	 * All types knows all objects and clases in the system. As some classes can be generic, they do not define
+	 * actual types, but "type factories" such as List<E>, which is not an actual type, but a function that
+	 * applied to an actual type will give a type. E.g. applied to Number you get a List<Number> which is a real type for an object.
+	 * 
+	 * User must instantiate type factories before usage.
+	 */
 	def getAllTypes() {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet
-			allTypes.addAll(allCoreClasses.reject[fqn == WollokDSK.CLOSURE].map[classType(fqn)])
+			allTypes.addAll(allCoreClasses.reject[fqn == WollokDSK.CLOSURE].map[typeOrFactory])
 			allTypes.addAll(allCoreWKOs.map[objectType])
 		}
 		

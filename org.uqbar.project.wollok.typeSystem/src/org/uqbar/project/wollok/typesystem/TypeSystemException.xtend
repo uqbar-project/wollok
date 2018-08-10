@@ -22,4 +22,7 @@ class TypeSystemException extends RuntimeException {
 	new(String message) {
 		super(message)
 	}
+	
+	def relatedToType(WollokType type) { false }
+	
 }

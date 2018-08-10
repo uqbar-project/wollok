@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
+import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 
@@ -12,7 +13,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author jfernandes
  */
-class ClassBasedWollokType extends AbstractContainerWollokType {
+class ClassInstanceType extends AbstractContainerWollokType {
 	
 	new(WClass clazz, TypeSystem typeSystem) {
 		super(clazz, typeSystem)
@@ -27,14 +28,14 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	override acceptsAssignment(WollokType other) {
 		this == other ||
 			// hackeo por ahora. Esto no permite compatibilidad entre classes y structural types
-			(other instanceof ClassBasedWollokType
-				&& clazz.isSuperTypeOf((other as ClassBasedWollokType).clazz)
+			(other instanceof ClassInstanceType
+				&& clazz.isSuperTypeOf((other as ClassInstanceType).clazz)
 			)
 	}
 
 	override acceptAssignment(WollokType other) {
 		if (!acceptsAssignment(other))
-			throw new TypeSystemException('''<<«other»>> is not a valid substitute for <<«this»>>''')	
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_NOT_VALID_SUBSTITUTE, other, this))	
 	}
 	
 	// ***************************************************************************
@@ -42,14 +43,14 @@ class ClassBasedWollokType extends AbstractContainerWollokType {
 	// ** the var is later assigned to this type.
 	// ***************************************************************************
 	
-	def dispatch refine(ClassBasedWollokType previous) {
+	def dispatch refine(ClassInstanceType previous) {
 		val commonType = commonSuperclass(clazz, previous.clazz)
 		if (commonType === null)
-			throw new TypeSystemException("Incompatible types. Expected " + previous.name + " <=> " + name)
-		new ClassBasedWollokType(commonType, typeSystem)
+			throw new TypeSystemException(NLS.bind(Messages.TypeSystemException_INCOMPATIBLE_TYPE_EXPECTED, previous.name, name))
+		new ClassInstanceType(commonType, typeSystem)
 	}
 	
-	def dispatch refine(ObjectLiteralWollokType previous) {
+	def dispatch refine(ObjectLiteralType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
 		new StructuralType(intersectMessages.iterator)
 	}

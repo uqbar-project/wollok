@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 1.6.6
+Bundle-Version: 1.6.7.qualifier
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.uqbar.project.wollok;singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -49,6 +49,7 @@ Export-Package: org.uqbar.project.wollok,
  org.uqbar.project.wollok.nature,
  org.uqbar.project.wollok.parser.antlr,
  org.uqbar.project.wollok.parser.antlr.internal,
+ org.uqbar.project.wollok.preferences,
  org.uqbar.project.wollok.scoping,
  org.uqbar.project.wollok.scoping.cache,
  org.uqbar.project.wollok.sdk,

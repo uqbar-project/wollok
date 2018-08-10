@@ -45,7 +45,7 @@ interface TypeSystem {
 	 * # 3a: 
 	 * Now we can report errors
 	 */
-	def void reportErrors(ConfigurableDslValidator validator)
+	def void reportErrors(WFile file, ConfigurableDslValidator validator)
 
 	/**
 	 * # 3b:

@@ -1,8 +1,11 @@
 package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.osgi.util.NLS
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
+import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
@@ -10,8 +13,6 @@ import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
-
-import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfo
 
 /**
  * I represent a type parameter that is bound to a class, for example I am the {@code E} in {@code List<E>}.
@@ -26,20 +27,14 @@ import static extension org.uqbar.project.wollok.typesystem.constraints.WollokMo
  * Since I am related to a class, current usage expects to be related to a message send, and the real type variable will be obtained
  * from the receiver of the message.
  */
-class ClassParameterTypeVariable implements ITypeVariable {
-	@Accessors
-	EObject owner
-	
+class ClassParameterTypeVariable extends TypeVariableSchema {
 	@Accessors
 	GenericType genericType
 	
-	@Accessors
-	extension TypeVariablesRegistry registry
-
 	String paramName
 
-	new(EObject owner, GenericType genericType, String paramName) {
-		this.owner = owner
+	new(TypeVariableOwner owner, GenericType genericType, String paramName) {
+		super(owner)
 		this.genericType = genericType
 		this.paramName = paramName
 	}
@@ -48,10 +43,6 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		WollokType.WAny
 	}
 	
-	def dispatch beSubtypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
-	}
-
 	/**
 	 * I can have supertypes when I am used as return type for a method. 
 	 * The received type variable should be a a message send 
@@ -61,23 +52,31 @@ class ClassParameterTypeVariable implements ITypeVariable {
 		variable.owner.classTypeParameter.beSubtypeOf(variable)		
 	}
 
-	def dispatch beSupertypeOf(ITypeVariable variable) {
-		throw new UnsupportedOperationException("Yet not implemented")		
-	}
-
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
-	 * The received type variable should be being used as a parametr to a message send, i.e.
+	 * The received type variable should be being used as a parameter to a message send, i.e.
 	 * its container should be a message send, 
 	 * such as {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}.
 	 */
 	def dispatch beSupertypeOf(TypeVariable variable) {
-		variable.owner.eContainer.classTypeParameter.beSupertypeOf(variable)
+		instanceFor(variable).beSupertypeOf(variable)
 	}
 
+	override instanceFor(TypeVariable variable) {
+		variable.owner.classTypeParameter as TypeVariable
+	}
+	
+	override instanceFor(ConcreteType concreteReceiver) {
+		(concreteReceiver as GenericTypeInstance).param(paramName)
+	}
+	
+	def dispatch ITypeVariable classTypeParameter(ProgramElementTypeVariableOwner owner) {
+		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
+		owner.programElement.classTypeParameter
+	}
 
 	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
-		throw new TypeSystemException('''Extracting a class type parameter from a «unknownObject.class» is not possible or yet not implemented''')
+		throw new TypeSystemException(NLS.bind(Messages.RuntimeTypeSystemException_EXTRACTING_TYPE_CLASS_NOT_IMPLEMENTED, unknownObject.class))
 	}
 
 	def dispatch ITypeVariable classTypeParameter(WArgumentList arg) {
@@ -102,4 +101,4 @@ class ClassParameterTypeVariable implements ITypeVariable {
 	}
 		
 	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
-}
+	}

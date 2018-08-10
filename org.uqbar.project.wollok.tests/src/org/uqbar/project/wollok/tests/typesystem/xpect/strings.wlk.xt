@@ -41,7 +41,7 @@ object stringsTests {
 	// XPECT methodType at m13 --> (String) => Boolean
 	method m13(s) = s.equalsIgnoreCase(s)
 
-	// XPECT methodType at m14 --> (String, Number) => List
+	// XPECT methodType at m14 --> (String, Number) => List<String>
 	method m14(s, n) = s.substring(0, n).split("s")
 
 	// XPECT methodType at m15 --> (Object, String) => String
@@ -59,7 +59,7 @@ object stringsTests {
 	// XPECT methodType at m17 --> (Any) => Boolean
 	method m17(s) = "hola" == s
 
-	// XPECT methodType at m18 --> (String, Number) => List
+	// XPECT methodType at m18 --> (String, Number) => List<String>
 	method m18(s, n) {
 		// XPECT type at value --> String
 		const value = s.capitalize()

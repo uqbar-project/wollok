@@ -3,7 +3,6 @@ package org.uqbar.project.wollok.typesystem.constraints
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
-import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
@@ -37,6 +36,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.wollokDsl.Import
 
 /**
  * @author npasserini
@@ -127,18 +127,20 @@ class ConstraintGenerator {
 		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
 	}
 
+	def dispatch void generate(Import it) {}
+
 	def dispatch void generate(WClosure it) {
 		parameters.forEach[generateVariables]
 		expression.generateVariables
 
-		val closureType = closureType(parameters.length).instance
+		val closureType = closureType(parameters.length).instanceFor(newTypeVariable)
+
+		beSealed(closureType)
 		parameters.forEach [ parameter, index |
 			val paramName = GenericTypeInfo.PARAM(index)
 			closureType.param(paramName).beSubtypeOf(parameter.tvar)
 		]
 		closureType.param(GenericTypeInfo.RETURN).beSupertypeOf(expression.tvar)
-
-		newSealed(closureType)
 	}
 
 	def dispatch void generate(WBlockExpression it) {
@@ -153,7 +155,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WReturnExpression it) {
 		newTypeVariable
 		expression.generateVariables
-		declaringContainer.body.beSupertypeOf(expression)
+		returnContext.body.beSupertypeOf(expression)
 		beVoid
 	}
 
@@ -162,33 +164,33 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WNumberLiteral it) {
-		newSealed(classType(NUMBER))
+		newTypeVariable.beSealed(classType(NUMBER))
 	}
 
 	def dispatch void generate(WStringLiteral it) {
-		newSealed(classType(STRING))
+		newTypeVariable.beSealed(classType(STRING))
 	}
 
 	def dispatch void generate(WBooleanLiteral it) {
-		newSealed(classType(BOOLEAN))
+		newTypeVariable.beSealed(classType(BOOLEAN))
 	}
 
 	def dispatch void generate(WListLiteral it) {
-		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instance
+		val listType = genericType(LIST, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = listType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(listType)
+		beSealed(listType)
 		elements.forEach [
 			generateVariables
 			paramType.beSupertypeOf(tvar)
-		]
+		]		
 	}
-
+	
 	def dispatch void generate(WSetLiteral it) {
-		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instance
+		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = setType.param(GenericTypeInfo.ELEMENT)
 
-		newSealed(setType)
+		beSealed(setType)
 		elements.forEach [
 			generateVariables
 			paramType.beSupertypeOf(tvar)
@@ -197,7 +199,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
-		newSealed(classType(classRef))
+		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
 		constructorConstraintsGenerator.addConstructorCall(it)
 	}
 
@@ -212,26 +214,26 @@ class ConstraintGenerator {
 	def dispatch void generate(WAssignment it) {
 		value.generateVariables
 		feature.ref.tvar.beSupertypeOf(value.tvar)
-		newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WPostfixOperation it) {
-		(operand as WVariableReference).ref.newSealed(classType(NUMBER))
+		(operand as WVariableReference).ref.asOwner.newSealed(classType(NUMBER))
 		operand.generateVariables
-		newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WVariableReference it) {
-		it.newWithSubtype(ref)
+		newTypeVariable.beSupertypeOf(ref.tvar)
 	}
 
 	def dispatch void generate(WSelf it) {
-		it.newSealed(declaringContext.asWollokType)
+		asOwner.newSealed(declaringContext.asWollokType)
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
 		if (feature.equals("!")) {
-			newSealed(classType(BOOLEAN))
+			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
 	}
@@ -247,11 +249,14 @@ class ConstraintGenerator {
 
 			// If there is a else branch, if can be an expression 
 			// and has to be a supertype of both (else, then) branches
-			it.newWithSubtype(then, getElse)
+			newTypeVariable => [ v |
+				v.beSupertypeOf(then.tvar)
+				v.beSupertypeOf(getElse.tvar)
+			]
 		} else {
 			// If there is no else branch, if is NOT an expression, 
 			// it is a (void) statement.
-			newVoid
+			newTypeVariable.beVoid
 		}
 	}
 
@@ -263,7 +268,7 @@ class ConstraintGenerator {
 			variable.beSupertypeOf(right)
 		}
 
-		it.newVoid
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WMemberFeatureCall it) {
@@ -278,12 +283,12 @@ class ConstraintGenerator {
 
 		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
+			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), TypeVariable.synthetic)
-			it.newVoid
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newParameter(tvar.owner, "ignoredResult"))
 		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
-			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), it.newTypeVariable)
+			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)
 		}
 	}
 
@@ -296,7 +301,7 @@ class ConstraintGenerator {
 	}
 
 	def newNamedObject(WNamedObject it) {
-		it.newSealed(it.objectType)
+		newTypeVariable.beSealed(objectType)
 	}
 
 	// ************************************************************************

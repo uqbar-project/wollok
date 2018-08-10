@@ -14,6 +14,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamed
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic
@@ -113,6 +114,8 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 		var severityValue = prefs?.getString(checkMethod.name)?.severityEnumValue
 		if (severityValue === null)
 			severityValue = checkMethod.getAnnotation(DefaultSeverity)?.value
+		if (severityValue === null) 
+			severityValue = WollokCachedTypeSystemPreferences.instance.typeSystemSeverity
 		severityValue
 	}
 

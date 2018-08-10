@@ -10,20 +10,20 @@ import static org.uqbar.project.wollok.typesystem.constraints.variables.Concrete
 /**
  * Used for iterating through the map of minTypes of a {@link GenericTypeInfo}. 
  * Allows to change the state of each entry in the map (Pending, Ready, Error). 
- * In case of an error, it is reported to the 'origin' type variable.
+ * In case of an error, it is reported to the 'offender' type variable.
  * 
  * @author npasserini
  */
 class AnalysisResultReporter<T> {
 	/** The type variable where to forward the errors that are found while processing current minType. */
 	@Accessors(PUBLIC_GETTER)
-	TypeVariable origin
+	TypeVariable offender
 
 	@Accessors(PROTECTED_SETTER)
 	Map.Entry<T, ConcreteTypeState> currentEntry
 
-	new(TypeVariable origin) {
-		this.origin = origin
+	new(TypeVariable offender) {
+		this.offender = offender
 	}
 
 	def type() { currentEntry.key }
@@ -35,7 +35,7 @@ class AnalysisResultReporter<T> {
 	def pending() { currentEntry.value = Pending }
 
 	def error(TypeSystemException typeError) {
-		origin.addError(typeError)
+		offender.addError(typeError)
 		currentEntry.value = Error
 	}
 	

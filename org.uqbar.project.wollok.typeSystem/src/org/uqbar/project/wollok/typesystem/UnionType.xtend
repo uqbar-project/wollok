@@ -8,8 +8,9 @@ class UnionType extends BasicType {
 	List<ConcreteType> types
 	
 	new(ConcreteType... types) {
-		// I will order them by name to have the same expected order, so it does not matter the order of the types in the textual representation.
-		super(types.sortBy[name].join('(', '|', ')', [name]))
+		// I will order them by name to have the same expected order, 
+		// so it does not matter the order of the types in the textual representation.
+		super(types.sortBy[name].join('(', '|', ')', [toString]))
 		this.types = types.toList
 	}
 }
