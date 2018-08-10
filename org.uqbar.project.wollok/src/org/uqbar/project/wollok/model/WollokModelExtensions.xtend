@@ -624,6 +624,8 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(EObject e) { false }
 	def static dispatch expectsExpression(WBinaryOperation op) { true }
 	def static dispatch expectsExpression(WUnaryOperation op) { true }
+	def static dispatch expectsExpression(WMethodDeclaration m) { m.expressionReturns }
+	def static dispatch expectsExpression(WAssignment m) { true }
 	def static dispatch expectsExpression(WReturnExpression r) { true }
 	def static dispatch expectsExpression(WVariableDeclaration v) { true }
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
