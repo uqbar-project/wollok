@@ -22,19 +22,19 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class GenericTypeInstance implements ConcreteType {
 	@Accessors(PUBLIC_GETTER)
 	GenericType rawType
-	
+
 	@Accessors(PUBLIC_GETTER)
 	Map<String, TypeVariable> typeParameters
-	
+
 	new(GenericType type, Map<String, TypeVariable> typeParameters) {
 		this.rawType = type
 		this.typeParameters = typeParameters
 	}
 
 	def param(String paramName) {
-		typeParameters.get(paramName)	
+		typeParameters.get(paramName)
 	}
-	
+
 	def baseType() {
 		rawType.baseType
 	}
@@ -43,18 +43,32 @@ class GenericTypeInstance implements ConcreteType {
 		this
 	}
 
+	def dispatch beSubtypeOf(WollokType type) {
+		// By default we have nothing to do, this is only for generic type instances to implement.
+		// We could do some validation here, but a priori it does not seem to be mandatory.
+	}
+
+	def dispatch beSubtypeOf(GenericTypeInstance other) {
+		typeParameters.forEach [name, param|
+			val otherParam = other.typeParameters.get(name)
+			// By forcing them to be both super and subtypes of each other, 
+			// we are allowing only "invariant" generic types.
+			param.beSubtypeOf(otherParam)
+			param.beSupertypeOf(otherParam)
+		]
+	}
+
 	// ************************************************************************
 	// ** Interface WollokType, mostly delegated to the rawType itself
 	// ************************************************************************
-	
 	override getName() {
 		rawType.toString(this).toString
 	}
-	
+
 	override getContainer() {
 		baseType.container
 	}
-	
+
 	override getTypeSystem() {
 		baseType.typeSystem
 	}
@@ -62,43 +76,41 @@ class GenericTypeInstance implements ConcreteType {
 	override acceptsAssignment(WollokType other) {
 		baseType.acceptsAssignment(other)
 	}
-	
+
 	override acceptAssignment(WollokType other) {
 		baseType.acceptAssignment(other)
 	}
-	
+
 	override understandsMessage(MessageType message) {
 		baseType.understandsMessage(message)
 	}
-	
+
 	override resolveReturnType(MessageType message) {
 		baseType.resolveReturnType(message)
 	}
-	
+
 	override refine(WollokType previouslyInferred) {
 		baseType.refine(previouslyInferred)
 	}
-	
+
 	override getAllMessages() {
 		baseType.allMessages
 	}
-	
+
 	override lookupMethod(MessageType message) {
 		baseType.lookupMethod(message)
 	}
-	
+
 	override lookupMethod(String selector, List<?> parameterTypes) {
 		baseType.lookupMethod(selector, parameterTypes)
-	}		
+	}
 
 	// ************************************************************************
 	// ** Basics
 	// ************************************************************************
-	
 	override toString() { name }
-	
-	def dispatch equals(Object other ) { false }
+
+	def dispatch equals(Object other) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
-	
-	
+
 }

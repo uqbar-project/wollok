@@ -60,7 +60,7 @@ class MessageSend {
 
 	def isClosureMessage() { selector == "apply" }
 
-	def isValid() { !returnType.hasErrors }
+	def boolean isValid() { !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 }

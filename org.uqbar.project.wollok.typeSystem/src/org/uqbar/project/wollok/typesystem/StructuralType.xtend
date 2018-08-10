@@ -59,4 +59,8 @@ class StructuralType extends MinimalEObjectImpl.Container implements WollokType 
 	
 	override toString() { name }
 	
+	override beSubtypeOf(WollokType type) {
+		// By default we have nothing to do, this is only for generic type instances to implement.
+		// We could do some validation here, but a priori it does not seem to be mandatory.
+	}
 }

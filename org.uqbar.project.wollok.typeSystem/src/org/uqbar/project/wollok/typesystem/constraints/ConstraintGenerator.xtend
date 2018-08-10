@@ -160,7 +160,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WParameter it) {
-		newTypeVariable
+		newTypeVariable.beNonVoid
 	}
 
 	def dispatch void generate(WNumberLiteral it) {

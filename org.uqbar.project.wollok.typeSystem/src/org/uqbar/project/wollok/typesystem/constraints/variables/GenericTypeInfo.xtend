@@ -80,9 +80,14 @@ class GenericTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
 		minTypes.statesDo(offender) [
-			if(!offender.hasErrors(type) && !maxTypes.contains(type)) {
-				error(new RejectedMinTypeException(offender, type))
-				maxTypes.state = Error
+			if(!offender.hasErrors(type)) {
+				val matchingMaxType = maxTypes.findMatching(type)
+				if(matchingMaxType !== null) {
+					type.beSubtypeOf(matchingMaxType)
+				} else {
+					error(new RejectedMinTypeException(offender, type))
+					maxTypes.state = Error
+				}
 			}
 		]
 
