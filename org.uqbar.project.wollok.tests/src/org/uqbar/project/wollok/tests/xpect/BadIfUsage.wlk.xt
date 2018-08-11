@@ -24,6 +24,12 @@ object joaquin {
 		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
 		assert.equals(10, if (tocaEnGrupo) 5)
 	}
+	
+	method asignarFelicidadSiCorresponde() {
+		if (tocaEnGrupo) {
+			gradoAlegria = gradoAlegria + 10
+		}
+	}
 }
 
 object sarasita {
