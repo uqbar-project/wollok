@@ -147,6 +147,7 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 }
 
 class ParameterTypeVariableOwner extends TypeVariableOwner {
+	@Accessors(PUBLIC_GETTER)
 	TypeVariableOwner parent
 	
 	String paramName

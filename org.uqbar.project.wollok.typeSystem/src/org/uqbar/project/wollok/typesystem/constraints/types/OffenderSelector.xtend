@@ -28,7 +28,7 @@ class OffenderSelector {
 	def static handlingOffensesDo(TypeVariable subtype, TypeVariable supertype, ()=>ConcreteTypeState action) {
 		try {
 			action.apply()
-		} catch (TypeSystemException offense) {
+		} catch(TypeSystemException offense) {
 			handleOffense(subtype, supertype, offense)
 			ConcreteTypeState.Error
 		}
@@ -37,7 +37,7 @@ class OffenderSelector {
 	def static handlingOffensesDo(TypeVariable offender, ()=>ConcreteTypeState action) {
 		try {
 			action.apply()
-		} catch (TypeSystemException offense) {
+		} catch(TypeSystemException offense) {
 			offender.handleOffense(offense)
 			ConcreteTypeState.Error
 		}
@@ -46,7 +46,7 @@ class OffenderSelector {
 	def static handleOffense(TypeVariable subtype, TypeVariable supertype, TypeSystemException offense) {
 		if(offense.variable === null) {
 			val offender = selectOffenderVariable(subtype, supertype)
-			offense.variable = offender	
+			offense.variable = offender
 		}
 
 		offense.variable.addError(offense)
@@ -65,6 +65,12 @@ class OffenderSelector {
 	// ************************************************************************
 	// ** Proper offender selection
 	// ************************************************************************
+	def static dispatch TypeVariableOwner selectOffenderOwner(ParameterTypeVariableOwner subtype,
+		ParameterTypeVariableOwner supertype) {
+		val offender = selectOffenderOwner(subtype.parent, supertype.parent)
+		if(offender == subtype.parent) subtype else supertype
+	}
+
 	def static dispatch TypeVariableOwner selectOffenderOwner(ParameterTypeVariableOwner subtype,
 		ProgramElementTypeVariableOwner supertype) {
 		supertype
