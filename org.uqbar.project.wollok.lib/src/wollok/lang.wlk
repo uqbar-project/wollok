@@ -27,11 +27,11 @@ class Exception {
 	}
 	
 	/** Prints this exception and its backtrace to the specified printer */
-	method printStackTrace(printer) { self.printStackTraceWithPreffix("", printer) }
+	method printStackTrace(printer) { self.printStackTraceWithPrefix("", printer) }
 	
 	/** @private */
-	method printStackTraceWithPreffix(preffix, printer) {
-		printer.println(preffix + self.className() + (if (message != null) (": " + message.toString()) else ""))
+	method printStackTraceWithPrefix(prefix, printer) {
+		printer.println(prefix + self.className() + (if (message != null) (": " + message.toString()) else ""))
 		
 		// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
 		self.getStackTrace().forEach { e =>
@@ -39,7 +39,7 @@ class Exception {
 		}
 		
 		if (cause != null)
-			cause.printStackTraceWithPreffix("Caused by: ", printer)
+			cause.printStackTraceWithPrefix("Caused by: ", printer)
 	}
 	
 	/** @private */
@@ -505,10 +505,10 @@ class Collection {
 	
 	/** @private */
 	override method internalToSmartString(alreadyShown) =
-		self.toStringPreffix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
+		self.toStringPrefix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
 	
 	/** @private */
-	method toStringPreffix()
+	method toStringPrefix()
 	
 	/** @private */
 	method toStringSuffix()
@@ -580,7 +580,7 @@ class Set inherits Collection {
 	override method newInstance() = #{}
 	
 	/** @private */
-	override method toStringPreffix() = "#{"
+	override method toStringPrefix() = "#{"
 	
 	/** @private */
 	override method toStringSuffix() = "}"
@@ -750,7 +750,7 @@ class List inherits Collection {
 	method last() = self.get(self.size() - 1)
 
 	/** @private */		 
-	override method toStringPreffix() = "["
+	override method toStringPrefix() = "["
 	
 	/** @private */
 	override method toStringSuffix() = "]"
