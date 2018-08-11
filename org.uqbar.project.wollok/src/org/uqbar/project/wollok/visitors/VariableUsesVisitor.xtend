@@ -25,21 +25,16 @@ class VariableUsesVisitor extends AbstractWollokVisitor {
 	// ** Visiting
 	// ************************************************************************
 
-	override dispatch visit(WAssignment asg) {
-		if (asg.feature.ref == lookedFor)
-			uses.add(asg)
-		asg.value.doVisit
+	def dispatch beforeVisit(WAssignment it) {
+		if (feature.ref == lookedFor) uses.add(it)
 	}
 
-	override dispatch visit(WVariableReference ref) {
-		if (ref.ref == lookedFor)
-			uses.add(ref.eContainer)
+	def dispatch beforeVisit(WVariableReference it) {
+		if (ref == lookedFor) uses.add(eContainer)
 	}
 
-	override dispatch visit(WInitializer i) {
-		if (i.initializer === lookedFor)
-			uses.add(i)
-		i.initialValue.doVisit
+	def dispatch beforeVisit(WInitializer it) {
+		if (initializer === lookedFor) uses.add(it)
 	}
 
 	// ************************************************************************
