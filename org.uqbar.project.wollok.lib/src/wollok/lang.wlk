@@ -27,11 +27,11 @@ class Exception {
 	}
 	
 	/** Prints this exception and its backtrace to the specified printer */
-	method printStackTrace(printer) { self.printStackTraceWithPreffix("", printer) }
+	method printStackTrace(printer) { self.printStackTraceWithPrefix("", printer) }
 	
 	/** @private */
-	method printStackTraceWithPreffix(preffix, printer) {
-		printer.println(preffix +  self.className() + (if (message != null) (": " + message.toString()) else ""))
+	method printStackTraceWithPrefix(prefix, printer) {
+		printer.println(prefix + self.className() + (if (message != null) (": " + message.toString()) else ""))
 		
 		// TODO: eventually we will need a stringbuffer or something to avoid memory consumption
 		self.getStackTrace().forEach { e =>
@@ -39,7 +39,7 @@ class Exception {
 		}
 		
 		if (cause != null)
-			cause.printStackTraceWithPreffix("Caused by: ", printer)
+			cause.printStackTraceWithPrefix("Caused by: ", printer)
 	}
 	
 	/** @private */
@@ -505,13 +505,13 @@ class Collection {
 	
 	/** @private */
 	override method internalToSmartString(alreadyShown) =
-		self.toStringPrefix() + self.map{ e => if (alreadyShown.contains(e)) e.toSmartString(alreadyShown) else e.printString() }.join(', ') + self.toStringSufix()
+		self.toStringPrefix() + self.map{ e => e.toSmartString(alreadyShown) }.join(', ') + self.toStringSuffix()
 	
 	/** @private */
 	method toStringPrefix()
 	
 	/** @private */
-	method toStringSufix()
+	method toStringSuffix()
 	
 	/** Converts a collection to a list */
 	method asList()
@@ -583,7 +583,7 @@ class Set inherits Collection {
 	override method toStringPrefix() = "#{"
 	
 	/** @private */
-	override method toStringSufix() = "}"
+	override method toStringSuffix() = "}"
 	
 	/** 
 	 * Converts this set to a list
@@ -753,7 +753,7 @@ class List inherits Collection {
 	override method toStringPrefix() = "["
 	
 	/** @private */
-	override method toStringSufix() = "]"
+	override method toStringSuffix() = "]"
 
 	/** 
 	 * Converts this collection to a list. No effect on Lists.

@@ -52,4 +52,27 @@ class RecursiveToStringTestCase extends AbstractWollokInterpreterTestCase {
 		'''.interpretPropagatingErrors
 	}
 
+	@Test
+	def void testMessageErrorInBidirectionalRelationship() {
+		'''
+		class Cuenta {
+			const property duenios = []
+		}
+		
+		class Duenio {
+			const property cuentas = []
+		}
+		
+		program prueba {
+			try {
+				const cuenta = new Cuenta()
+				const duenio = new Duenio(cuentas = [ cuenta ])
+				cuenta.duenios().add(duenio)
+				cuenta.metodoInexistente()
+			} catch e {
+				assert.equals("a Cuenta[duenios=[a Duenio[cuentas=[a Cuenta]]]] does not understand metodoInexistente()", e.getMessage())
+			}
+		}
+		'''.interpretPropagatingErrors
+	}
 }
