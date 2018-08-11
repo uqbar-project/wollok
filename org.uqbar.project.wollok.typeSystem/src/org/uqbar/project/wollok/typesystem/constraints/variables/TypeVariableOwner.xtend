@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.exceptions.CannotBeVoidException
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isReferenceTo
 import static extension org.uqbar.project.wollok.scoping.WollokResourceCache.isCoreObject
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.*
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo.canBeVoid
@@ -46,6 +47,7 @@ abstract class TypeVariableOwner {
 	// ************************************************************************
 	def addError(TypeSystemException exception) {
 		if (isCoreObject)
+
 			throw new RuntimeException(NLS.bind(Messages.RuntimeTypeSystemException_TRIED_TO_ADD_ERROR_TO_CORE_OBJECT, debugInfoInContext))
 
 		errors.add(exception)
@@ -71,6 +73,15 @@ abstract class TypeVariableOwner {
 	def EObject getErrorReportTarget()
 
 	// ************************************************************************
+	// ** Model information
+	// ************************************************************************
+
+	def isReferenceTo(TypeVariableOwner ref) {
+		errorReportTarget.isReferenceTo(ref.errorReportTarget)
+	}
+	
+
+	// ************************************************************************
 	// ** Debugging
 	// ************************************************************************
 	def String debugInfo()
@@ -85,7 +96,7 @@ abstract class TypeVariableOwner {
 	static def URI getURI(EObject object) {
 		EcoreUtil.getURI(object)
 	}
-
+	
 }
 
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
@@ -136,6 +147,7 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 }
 
 class ParameterTypeVariableOwner extends TypeVariableOwner {
+	@Accessors(PUBLIC_GETTER)
 	TypeVariableOwner parent
 	
 	String paramName

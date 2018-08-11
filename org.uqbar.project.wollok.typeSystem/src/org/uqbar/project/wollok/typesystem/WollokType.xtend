@@ -47,4 +47,9 @@ interface WollokType {
 	def Iterable<MessageType> getAllMessages()
 	
 	def WollokType instanceFor(TypeVariable variable)
+	
+	/**
+	 * Restrict this type to match type parameters of supertype in order to be a valid subtype.
+	 */
+	def void beSubtypeOf(WollokType supertype)
 }

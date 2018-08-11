@@ -300,6 +300,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	def dispatch evaluate(WConstructorCall call) {
+		if (call.classRef.eResource === null) {
+			throw newWollokExceptionAsJava(Messages.LINKING_COULD_NOT_RESOLVE_REFERENCE + call.classNameWhenInvalid)
+		}
 		if (call.hasNamedParameters) {
 			return newInstance(call.classRef, call.initializers)
 		}
