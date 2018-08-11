@@ -1,10 +1,9 @@
 package org.uqbar.project.wollok.ui.wizard.objects
 
-import java.util.List
 import org.eclipse.jface.viewers.IStructuredSelection
 import org.eclipse.swt.SWT
 import org.eclipse.swt.layout.GridData
-import org.eclipse.swt.widgets.Button
+import org.eclipse.swt.widgets.Combo
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.widgets.Label
 import org.eclipse.swt.widgets.Text
@@ -17,7 +16,7 @@ import static extension org.uqbar.project.wollok.validation.ElementNameValidatio
 
 class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 	Text elementNameText
-	List<Button> btnObject = newArrayList
+	Combo cbElement
 	@Accessors String elementName
 	@Accessors int elementIndex
 	
@@ -33,27 +32,32 @@ class NewWollokObjectsWizardPage extends AbstractNewWollokFileWizardPage {
 	}
 	
 	override doCreateControl(Composite container) {
-		btnObject.add(new Button(container, SWT.RADIO) => [
-			selection = true
-			text = Messages.NewWollokObjectsWizardPage_objectLabel
-		])
-		btnObject.add(new Button(container, SWT.RADIO) => [
-			text = Messages.NewWollokObjectsWizardPage_classLabel
-		])
+		new Label(container, SWT.NULL) => [
+			text = Messages.NewWollokObjectsWizardPage_elementType
+		]
+
+		cbElement = new Combo(container, SWT.NONE) => [
+			add(Messages.NewWollokObjectsWizardPage_objectLabel)
+			add(Messages.NewWollokObjectsWizardPage_classLabel)
+			add(Messages.NewWollokObjectsWizardPage_mixinLabel)
+			select(0)
+			addModifyListener [ e | dialogChanged()]
+		]
 		
-		val label = new Label(container, SWT.NULL)
-		label.setText(Messages.NewWollokObjectsWizardPage_elementName)
+		new Label(container, SWT.NULL) => [
+			text = Messages.NewWollokObjectsWizardPage_elementName
+		]
 	
 		elementNameText = new Text(container, SWT.BORDER.bitwiseOr(SWT.SINGLE)) => [
 			layoutData = new GridData(GridData.FILL_HORIZONTAL)
 			addModifyListener [ e | dialogChanged()]
 		]
+		
 	}
 	
 	override def doDialogChanged() {
 		elementName = elementNameText.text
-		val type = btnObject.findFirst [ btn | btn.selection ]
-		elementIndex = btnObject.indexOf(type)	
+		elementIndex = cbElement.selectionIndex	
 		
 		if (elementName.contains('.')) {
 			updateStatus('.'.asInvalidCharacterMessage)

@@ -1,10 +1,10 @@
 package org.uqbar.project.wollok.tests.interpreter.numbers
 
+import java.math.BigDecimal
 import org.apache.log4j.Logger
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
-import org.uqbar.project.wollok.interpreter.api.WollokInterpreterAccess
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 

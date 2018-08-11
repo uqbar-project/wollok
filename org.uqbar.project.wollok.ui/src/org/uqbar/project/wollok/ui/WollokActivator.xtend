@@ -111,7 +111,11 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 		Display.^default.syncExec [
 			val outlineView = activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
 			if (outlineView !== null) {
-				(outlineView.currentPage as OutlinePage).scheduleRefresh
+				val outlinePage = outlineView.currentPage
+				try {
+					(outlinePage as OutlinePage).scheduleRefresh
+				} catch (ClassCastException e) {
+				}
 			}
 		]
 	}

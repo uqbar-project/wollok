@@ -34,7 +34,7 @@ abstract class TypeInfo {
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
 
-	def validMessages() { messages.filter[isValid] }
+	def Iterable<MessageSend> validMessages() { messages.filter[ message | message.isValid] }
 
 	// ************************************************************************
 	// ** Adding type information

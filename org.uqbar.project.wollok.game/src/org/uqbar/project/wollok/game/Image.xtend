@@ -19,9 +19,9 @@ class Image {
 	}
 
 	override equals(Object obj) {
-		if(obj == null) return false
+		if(obj === null) return false
 
-		var other = obj as Image
+		val other = obj as Image
 		getPath == other.getPath
 	}
 }
