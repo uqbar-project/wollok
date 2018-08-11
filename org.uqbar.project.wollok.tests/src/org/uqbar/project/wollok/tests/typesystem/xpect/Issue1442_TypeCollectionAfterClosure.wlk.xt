@@ -1,0 +1,18 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+
+class Empleado {
+	var property categoria = 0
+}
+
+object jefe {
+	// XPECT type at empleados --> List<Empleado>
+	var empleados = []
+
+	method algunoConCategoria(cat) {
+		return empleados.any{ 
+			// XPECT type at emp --> Empleado
+			emp => emp.categoria() == cat
+		}
+	}
+}
