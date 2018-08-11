@@ -403,5 +403,19 @@ class ImportsTest extends AbstractWollokInterpreterTestCase {
 		'''
 		].interpretAsFilesPropagatingErrors
 	}
+
+	@Test
+	def void missingImportIssue1399() {
+		'''
+		describe "Cuenta" {
+			test "depositar monto" {
+				assert.throwsExceptionWithMessage("Couldn't resolve reference to Cuenta", {
+					const cuenta = new Cuenta()
+					cuenta.depositar()
+				}
+			}
+		}
+		'''.interpretPropagatingErrorsWithoutStaticChecks
+	}
 	
 }
