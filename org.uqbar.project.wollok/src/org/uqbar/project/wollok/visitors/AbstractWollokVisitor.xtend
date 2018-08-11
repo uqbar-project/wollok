@@ -41,6 +41,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WNamedArgumentsList
 
 /**
  * Implements an abstract visitor for the AST
@@ -147,7 +148,11 @@ class AbstractWollokVisitor {
 
 	// terminal elements
 	def dispatch void visit(WVariableReference it) { ref.doVisit }
-	def dispatch void visit(WInitializer i) { i.initializer.doVisit }
+	def dispatch void visit(WNamedArgumentsList it) { initializers.visitAll }
+	def dispatch void visit(WInitializer i) { 
+		i.initializer.visit
+		i.initialValue.visit
+	}
 
 	// terminals
 	def dispatch void visit(WReferenciable ref){}

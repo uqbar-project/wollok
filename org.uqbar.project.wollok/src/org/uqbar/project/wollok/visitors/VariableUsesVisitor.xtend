@@ -37,8 +37,9 @@ class VariableUsesVisitor extends AbstractWollokVisitor {
 	}
 
 	override dispatch visit(WInitializer i) {
-		if (i.initializer.name == lookedFor)
+		if (i.initializer === lookedFor)
 			uses.add(i)
+		i.initialValue.doVisit
 	}
 
 	// ************************************************************************
