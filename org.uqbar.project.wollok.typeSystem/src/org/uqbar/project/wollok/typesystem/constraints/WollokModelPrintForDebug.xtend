@@ -39,10 +39,10 @@ class WollokModelPrintForDebug {
 		'''class «name»'''
 
 	static def dispatch String debugInfo(WVariableReference it)
-		'''«ref.name»'''
+		'''«ref.name»#«indexOfUse»'''
 
 	static def dispatch String debugInfo(WVariableDeclaration it) 
-		'''«if (writeable) "var" else "const"» «variable.debugInfo»'''
+		'''declaration of «variable.debugInfo»'''
 
 	static def dispatch String debugInfo(WBinaryOperation it) 
 		'''«leftOperand.debugInfo» «feature» «rightOperand.debugInfo»'''
@@ -60,7 +60,7 @@ class WollokModelPrintForDebug {
 		'''«memberCallTarget.debugInfo».«feature»(«memberCallArguments.join(', ')[debugInfo]»)'''
 
 	static def dispatch String debugInfo(WVariable it)
-		'''&«name»'''
+		'''«if (declaration.writeable) "var" else "const"» «name»'''
 
 	static def dispatch String debugInfo(WNumberLiteral it)
 		'''«value»'''

@@ -33,8 +33,8 @@ abstract class TypeInfo {
 	// ** Queries
 	// ************************************************************************
 	def WollokType getType(TypeVariable user)
-	
-	def List<MessageSend> validMessages() { messages.filter[ message | message.isValid].toList }
+
+	def Iterable<MessageSend> validMessages() { messages.filter[ message | message.isValid] }
 
 	// ************************************************************************
 	// ** Adding type information
@@ -63,8 +63,10 @@ abstract class TypeInfo {
 	def void supertypeAdded(TypeVariable supertype) {}
 
 	// ************************************************************************
-	// ** Misc
+	// ** Debug
 	// ************************************************************************
 	def String fullDescription()
+
+	def String typeDescriptionForDebug()
 
 }
