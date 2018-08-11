@@ -426,12 +426,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
-		c.matchesAllProperties(call.feature, call.memberCallArguments.size) 
+		c.matchesPropertiesInHierarchy(call.feature, call.memberCallArguments.size) 
 			|| c.allMethods.exists[isValidMessage(call)] 
 	}
 
-	def static boolean matchesAllProperties(WMethodContainer it, String propertyName, int parametersSize) {
-		matchesProperty(propertyName, parametersSize) || (parent !== null && !hasCyclicHierarchy && parent.matchesAllProperties(propertyName, parametersSize))	
+	def static boolean matchesPropertiesInHierarchy(WMethodContainer it, String propertyName, int parametersSize) {
+		matchesProperty(propertyName, parametersSize) || (parent !== null && !hasCyclicHierarchy && parent.matchesPropertiesInHierarchy(propertyName, parametersSize))	
 	}
 	
 	// ************************************************************************
