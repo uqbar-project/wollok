@@ -17,7 +17,6 @@ import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.NamedObjectType
 import org.uqbar.project.wollok.typesystem.TypeSystem
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.validation.CheckSeverity
 import org.uqbar.project.wollok.validation.ConfigurableDslValidator
 import org.uqbar.project.wollok.validation.WollokDslValidator
 import org.uqbar.project.wollok.wollokDsl.WClass

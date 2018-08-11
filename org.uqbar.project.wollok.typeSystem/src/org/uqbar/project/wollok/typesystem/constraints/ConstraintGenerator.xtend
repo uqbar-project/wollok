@@ -81,7 +81,7 @@ class ConstraintGenerator {
 	def void generateVariables(EObject it) {
 		try {
 			generate
-		} catch (Exception e) {
+		} catch(Exception e) {
 			addFatalError(e)
 		}
 	}
@@ -116,10 +116,10 @@ class ConstraintGenerator {
 		newTypeVariable
 		parameters.forEach[generateVariables]
 
-		if (!abstract) {
+		if(!abstract) {
 			expression?.generateVariables
 			if(expression.containsReturnExpression // Method contains at least one return expression
-				|| expressionReturns // Compact method, no return required.
+			|| expressionReturns // Compact method, no return required.
 			) beSupertypeOf(expression) // Return type is taken from the body
 			else beVoid // Otherwise, method is void.
 		}
@@ -148,7 +148,7 @@ class ConstraintGenerator {
 		expressions.forEach[generateVariables]
 
 		val containsReturn = !tvar.subtypes.empty
-		if(!containsReturn) 
+		if(!containsReturn)
 			if(!expressions.empty) beSupertypeOf(expressions.last) else beVoid
 	}
 
@@ -160,7 +160,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WParameter it) {
-		newTypeVariable
+		newTypeVariable.beNonVoid
 	}
 
 	def dispatch void generate(WNumberLiteral it) {
@@ -183,9 +183,9 @@ class ConstraintGenerator {
 		elements.forEach [
 			generateVariables
 			paramType.beSupertypeOf(tvar)
-		]		
+		]
 	}
-	
+
 	def dispatch void generate(WSetLiteral it) {
 		val setType = genericType(SET, GenericTypeInfo.ELEMENT).instanceFor(newTypeVariable)
 		val paramType = setType.param(GenericTypeInfo.ELEMENT)
@@ -232,7 +232,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
-		if (feature.equals("!")) {
+		if(feature.equals("!")) {
 			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
@@ -244,7 +244,7 @@ class ConstraintGenerator {
 
 		then.generateVariables
 
-		if (getElse !== null) {
+		if(getElse !== null) {
 			getElse.generateVariables
 
 			// If there is a else branch, if can be an expression 
@@ -261,9 +261,9 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WVariableDeclaration it) {
-		variable.newTypeVariable()
+		variable.newTypeVariable.beNonVoid
 
-		if (right !== null) {
+		if(right !== null) {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
@@ -281,11 +281,12 @@ class ConstraintGenerator {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
-		if (isMultiOpAssignment) {
+		if(isMultiOpAssignment) {
 			// Handling something of the form "a += b"
 			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
-			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar), newParameter(tvar.owner, "ignoredResult"))
+			leftOperand.tvar.messageSend(operator, newArrayList(rightOperand.tvar),
+				newParameter(tvar.owner, "ignoredResult"))
 		} else {
 			// Handling a proper BinaryExpression, such as "a + b"
 			leftOperand.tvar.messageSend(feature, newArrayList(rightOperand.tvar), newTypeVariable)

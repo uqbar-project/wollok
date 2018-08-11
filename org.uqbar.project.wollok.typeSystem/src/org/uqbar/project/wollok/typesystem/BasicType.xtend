@@ -51,4 +51,9 @@ abstract class BasicType implements WollokType {
 	override instanceFor(TypeVariable parent) { this }
 
 	override toString() { name }
+	
+	override beSubtypeOf(WollokType type) {
+		// By default we have nothing to do, this is only for generic type instances to implement.
+		// We could do some validation here, but a priori it does not seem to be mandatory.
+	}
 }
