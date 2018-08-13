@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.CrossReference
 import org.eclipse.xtext.RuleCall
+import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.uqbar.project.wollok.ui.Messages
@@ -33,7 +34,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
 	WollokProposalBuilder builder
-
+	
 	override complete_WConstructorCall(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (model instanceof WConstructorCall) {
 			val initializations = (model as WConstructorCall).createInitializersForNamedParametersInConstructor
@@ -101,7 +102,9 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
 		builder.model = ref
 		builder.reference = ref.nameWithPackage
-		ref.allMethods.forEach[ addProposal( it, acceptor) ]
+		ref.allMethods.forEach[ 
+			addProposal( it, acceptor)
+		]
 	}
 
 	def addProposal(WMember m, ICompletionProposalAcceptor acceptor) {
@@ -115,8 +118,14 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// *****************************
 
 	def addProposal(ICompletionProposalAcceptor acceptor, WollokProposal aProposal) {
-		if (aProposal !== null) acceptor.accept(createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, "", aProposal.context))
+		if (aProposal === null) return;
+		val proposal = createCompletionProposal(aProposal.methodName, aProposal.displayMessage, aProposal.image, aProposal.priority, aProposal.prefix, aProposal.context)
+		acceptor.accept(proposal)
+		if (proposal instanceof ConfigurableCompletionProposal) {
+			proposal.additionalProposalInfo = WollokActivator.getInstance.multilineProvider.getDocumentation(aProposal.member)
+		}
 	}
+	
 	// ****************************************
 	// ** imports
 	// ****************************************

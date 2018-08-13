@@ -25,9 +25,9 @@ class WollokProposalBuilder {
 	
 	def getProposal() {
 		this.validate()
-		var WollokProposal result = new WollokProposal(reference, member, WollokActivator.getInstance.getImageDescriptor(imagePath).createImage, priority, context, model)
-		result.isCalledFromSelf = displayFullFqn
-		result
+		new WollokProposal(reference, member, WollokActivator.getInstance.getImageDescriptor(imagePath).createImage, priority, context, model) => [
+			isCalledFromSelf = displayFullFqn
+		]
 	}
 	
 	def private validate() {

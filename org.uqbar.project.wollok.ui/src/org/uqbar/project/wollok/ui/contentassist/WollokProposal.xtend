@@ -14,8 +14,6 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
@@ -50,6 +48,10 @@ class WollokProposal {
 		this.model = model
 	}
 
+	def getPrefix() {
+		context.prefix	
+	}
+	
 	def getMethodName() {
 		member.asProposal
 	}
