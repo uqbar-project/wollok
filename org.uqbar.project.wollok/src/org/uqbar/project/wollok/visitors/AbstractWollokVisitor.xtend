@@ -13,6 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WFixture
 import org.uqbar.project.wollok.wollokDsl.WIfExpression
 import org.uqbar.project.wollok.wollokDsl.WInitializer
@@ -27,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WPackage
 import org.uqbar.project.wollok.wollokDsl.WParameter
+import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
@@ -43,7 +45,6 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WPositionalArgumentsList
 
 /**
  * Implements an abstract visitor for the AST
@@ -105,6 +106,11 @@ class AbstractWollokVisitor {
 	/** Handle nulls in multiple dispatch */
 	def dispatch void visitChildren(Void it) {}
 
+	def dispatch void visitChildren(WFile it) {
+		elements.visitAll
+		main.visit
+	}
+
 	def dispatch void visitChildren(WIfExpression it) {
 		condition.visit
 		then.visit
@@ -141,8 +147,9 @@ class AbstractWollokVisitor {
 	}
 
 	def dispatch void visitChildren(WVariableDeclaration it) {
-		variable.visit
+		// Visit the expression before the LHS.
 		right.visit
+		variable.visit
 	}
 
 	// i'm not sure why tests fails if we just let the generic WMethodContainer impl for all.
@@ -152,7 +159,9 @@ class AbstractWollokVisitor {
 	def dispatch void visitChildren(WSuite it) { eContents.visitAll }
 	def dispatch void visitChildren(WClass it) { eContents.visitAll }
 	def dispatch void visitChildren(WObjectLiteral it) { eContents.visitAll }
-	def dispatch void visitChildren(WNamedObject it) { eContents.visitAll }
+	def dispatch void visitChildren(WNamedObject it) { 
+		eContents.visitAll
+	}
 	def dispatch void visitChildren(WFixture it) { eContents.visitAll }
 
 	def dispatch void visitChildren(WPackage it) { elements.visitAll }

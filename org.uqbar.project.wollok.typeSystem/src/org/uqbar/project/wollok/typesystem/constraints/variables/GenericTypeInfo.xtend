@@ -37,7 +37,7 @@ class GenericTypeInfo extends TypeInfo {
 		var types = if(maximalConcreteTypes !== null)
 				maximalConcreteTypes.maximalConcreteTypes
 			else
-				minTypes.entrySet.map[key]
+				minTypes.keySet
 
 		new UserFriendlySupertype(tvar).commonSupertype(
 			types,

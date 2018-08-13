@@ -79,10 +79,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
-		log.info('''Validating types of «file.eResource.URI.lastSegment» using «class.simpleName»''')
 		// Dodain - only Builder now is responsible for analyzing and inferring types
 		//this.analyse(file)
 		//this.inferTypes
+		log.info('''Reporting type errors of «file.eResource.URI.lastSegment» using «class.simpleName»''')
 		file.reportErrors(validator)
 	}
 

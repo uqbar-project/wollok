@@ -89,6 +89,16 @@ class XtendExtensions {
 		newHashMap(original.entrySet.map[key -> transformation.apply(value)])
 	}
 
+	/**
+	 * Our own map values that actually computes the mapped value instead of saving the transformation.
+	 * In this version, the transformation receives both key and value as parameters.
+	 * 
+	 * This might not be as fast as Google #mapValues, but is easier to debug.
+	 */
+	static def <K, V1, V2> Map<K, V2> doMapValues(Map<K, V1> original, (K, V1)=>V2 transformation) {
+		newHashMap(original.entrySet.map[key -> transformation.apply(key,value)])
+	}
+
 	static def <T, R> Iterable<R> flatMap(Iterable<T> original, (T)=>Iterable<R> transformation) {
 		original.map(transformation).flatten
 	}
