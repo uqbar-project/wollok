@@ -7,16 +7,23 @@ import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
+import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSetLiteral
+import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
@@ -31,7 +38,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
-	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
+	val extension BasicTypeResolver typeResolver = new BasicTypeResolver
+	val extension WollokClassFinder classFinder = WollokClassFinder.getInstance
+	
 	WollokProposalBuilder builder
 	
 	override complete_WConstructorCall(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -57,6 +66,31 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 	}
 
+	// literals
+	def dispatch void memberProposalsForTarget(WListLiteral expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.listClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+
+	def dispatch void memberProposalsForTarget(WSetLiteral expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.setClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+
+	def dispatch void memberProposalsForTarget(WBooleanLiteral expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.booleanClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+
+	def dispatch void memberProposalsForTarget(WClosure expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.closureClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+	
+	def dispatch void memberProposalsForTarget(WStringLiteral expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.stringClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+	
+	def dispatch void memberProposalsForTarget(WNumberLiteral expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		(expression.numberClass as WMethodContainer).methodsAsProposals(acceptor)
+	}
+	
 	// to a variable
 	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		memberProposalsForTarget(ref.ref, assignment, acceptor)
@@ -71,10 +105,10 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
 		val WMethodContainer type = ref.resolveType
 		if (type !== null) {
-			type.methodsAsProposals( acceptor)
+			type.methodsAsProposals(acceptor)
 		}
 		else {
-			ref.messageSentAsProposals( acceptor)
+			ref.messageSentAsProposals(acceptor)
 		}
 	}
 
@@ -173,5 +207,5 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	override completeWConstructorCall_ClassRef(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		lookupCrossReference((assignment.terminal as CrossReference), context, new ConstructorCallAcceptorDelegate(acceptor))
 	}
-	
+
 }
