@@ -109,7 +109,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def void refreshOutline() {
 		Display.^default.syncExec [
-			val outlineView = activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
+			val outlineView = activePage?.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
 			if (outlineView !== null) {
 				val outlinePage = outlineView.currentPage
 				try {

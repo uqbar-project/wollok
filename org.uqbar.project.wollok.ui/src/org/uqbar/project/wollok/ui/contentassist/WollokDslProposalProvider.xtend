@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.contentassist
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
+import org.eclipse.xtext.CrossReference
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
@@ -26,6 +27,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 /**
  *
  * @author jfernandes
+ * @see    https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#content-assist
+ * 
  */
 class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	var extension BasicTypeResolver typeResolver = new BasicTypeResolver
@@ -107,7 +110,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		acceptor.addProposal(builder.proposal)
 	}
 
-
 	// *****************************
 	// ** generic extension methods
 	// *****************************
@@ -156,4 +158,8 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 */
 
+	override completeWConstructorCall_ClassRef(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+		lookupCrossReference((assignment.terminal as CrossReference), context, new ConstructorCallAcceptorDelegate(acceptor))
+	}
+	
 }
