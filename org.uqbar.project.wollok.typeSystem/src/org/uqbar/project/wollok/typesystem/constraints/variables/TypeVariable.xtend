@@ -197,7 +197,7 @@ class TypeVariable extends ITypeVariable {
 	 */
 	def isSealed() { typeInfo !== null && typeInfo.sealed }
 
-	def beSealed() { typeInfo.beSealed() }
+	def beSealed() { typeInfo.beSealed }
 
 	// ************************************************************************
 	// ** Unification information

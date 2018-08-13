@@ -56,8 +56,12 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 			val maxTypes = messageSubsets.flatMap [ selectedMessages |
 				knownTypes.filter[respondsToAll(selectedMessages)]
 			]
-			if(!maxTypes.isEmpty) return maxTypes
+			if(!maxTypes.isEmpty) return maxTypes.toSet
 		}
+
+//Hay que encontrar dónde se construye esto:
+//	minTypes: {List<String>=Ready, Set<Any>=Ready, Range=Ready, Collection<Any>=Ready, Dictionary<Any, Any>=Ready, String=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready},
+//	maxTypes: max([List<String>, List<String>, List<String>, Range, List<String>, List<String>, Set<Any>, Collection<Any>, List<String>, Dictionary<Any, Any>, String, List<String>]) [Ready]
 
 		// TODO Report an error, we couldn't find any max type
 		return newArrayList

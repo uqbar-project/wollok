@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.typeSystem.ui.builder
 
+import org.apache.log4j.Logger
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.ui.WollokActivator
@@ -24,6 +24,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author npasserini
  */
 class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
+	val Logger log = Logger.getLogger(this.class)
 
 	var listenersInitialized = false
 	
@@ -52,8 +53,9 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 				contents.forEach[ ts.analyse(it) ]
 				// Now that we have added all files, we can resolve constraints (aka infer types).
 				ts.inferTypes
-			} catch (TypeSystemException e) {
+			} catch (Exception e) {
 				// TODO: Reportar un error del type system que sea más piola que Error in EValidator
+				log.fatal("Type inference failed", e)
 			}
 		]
 

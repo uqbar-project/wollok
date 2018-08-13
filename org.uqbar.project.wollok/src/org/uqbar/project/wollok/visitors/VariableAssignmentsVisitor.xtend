@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
@@ -23,8 +22,9 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isM
 
 /**
  * This visitor get all the assignments of the lookedFor variable
- * @author	tesonep
+ * @author tesonep
  * @author jfernandes
+ * @author npasserini
  */
 class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	@Accessors
@@ -35,74 +35,47 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 	@Accessors
 	WVariable lookedFor
 
-	// generic visitor methods
-	override doVisit(EObject e) {
-		if (e !== null) {
-			visit(e)
-		}
-	}
-
 	def static assignmentOf(WVariable lookedFor, EObject container) {
 		(new VariableAssignmentsVisitor => [
 			it.lookedFor = lookedFor
-			doVisit(container)
+			visit(container)
 		]).uses
 	}
 
 	// potatoe: specific methods to detect assignments
-	override dispatch visit(WVariableDeclaration it) {
+	def dispatch beforeVisit(WVariableDeclaration it) {
 		addIf[variable == lookedFor && right !== null]
 	}
 
-	override dispatch visit(WConstructor it) {
-		doVisit(expression)
-
-		if (delegatingConstructorCall !== null) {
-			doVisit(delegatingConstructorCall)
-		}
-	}
-
-	def dispatch visit(WDelegatingConstructorCall it) {
+	def dispatch beforeVisit(WDelegatingConstructorCall it) {
 		val constructor = declaringContext.resolveConstructor(arguments)
 		if (constructor !== null && !constructorsAlreadyVisited.contains(constructor)) {
 			constructorsAlreadyVisited.add(constructor)
-			constructor.doVisit
+			constructor.visit
 		}
 	}
 	
-	override dispatch visit(WBlockExpression it) {
-		expressions.forEach [ expression |
-			doVisit(expression)
-		]
-	}
-	
-	override dispatch visit(WMemberFeatureCall it) {
+	def dispatch beforeVisit(WMemberFeatureCall it) {
 		addIf[feature == lookedFor.name && memberCallArguments.size == 1 ]
-		val method = declaringContext?.findMethod(it)
-		if (method !== null) {
-			doVisit(method)
-		}
+		declaringContext?.findMethod(it)?.visit
 	}
 	
-	override dispatch visit(WMethodDeclaration it) {
-		if (methodsAlreadyVisited.contains(it)) return;
-		methodsAlreadyVisited.add(it)
-		doVisit(expression)
-	}
+	def dispatch shouldVisit(WMethodDeclaration it) { !methodsAlreadyVisited.contains(it) }
+	def dispatch beforeVisit(WMethodDeclaration it) { methodsAlreadyVisited.add(it) }
 	
-	override dispatch visit(WAssignment it) {
+	def dispatch beforeVisit(WAssignment it) {
 		addIf[feature.ref == lookedFor]
 	}
 
-	override dispatch visit(WPostfixOperation it) {
+	def dispatch beforeVisit(WPostfixOperation it) {
 		addIf[operand.isReferenceTo(lookedFor)]
 	}
 
-	override dispatch visit(WBinaryOperation it) {
+	def dispatch beforeVisit(WBinaryOperation it) {
 		addIf[isMultiOpAssignment && leftOperand.isReferenceTo(lookedFor)]
 	}
 	
-	override dispatch visit(WInitializer it) {
+	def dispatch beforeVisit(WInitializer it) {
 		addIf [ initializer.name == lookedFor.name ]
 	}
 
@@ -112,15 +85,6 @@ class VariableAssignmentsVisitor extends AbstractWollokVisitor {
 			uses.add(it)
 	}
 
-	def static isReferenceTo(WExpression it, WVariable variable) {
-		it instanceof WVariableReference && (it as WVariableReference).ref == variable
-	}
-
-	// I'm not sure if this is a hack
-	// why visiting the content of the reference ?
-	// in a WKO referencing itself was introducing a stackoverflow
-	override dispatch void visit(WVariableReference it) {
-		// does nothing ! 
-	}
-
+	def static dispatch isReferenceTo(WExpression it, WVariable variable) { false }
+	def static dispatch isReferenceTo(WVariableReference it, WVariable variable) { ref == variable }
 }

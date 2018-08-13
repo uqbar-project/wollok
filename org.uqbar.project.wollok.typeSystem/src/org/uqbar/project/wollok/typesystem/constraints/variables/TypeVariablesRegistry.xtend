@@ -36,21 +36,19 @@ class TypeVariablesRegistry {
 		this.typeSystem = typeSystem
 	}
 
-	def register(TypeVariable it) {
+	def dispatch register(TypeVariable it) {
 		if (owner === null) 
 			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_TYPE_VARIABLE_MUST_HAVE_AN_OWNER) 
 		
 		typeVariables.put(owner.URI, it)
-		return it
 	}
 
-	def register(TypeVariableSchema it) {
+	def dispatch register(TypeVariableSchema it) {
 		if (owner === null) 
 			throw new IllegalArgumentException(Messages.RuntimeTypeSystemException_TYPE_VARIABLE_MUST_HAVE_AN_OWNER) 
 		
 		it.registry = this 
 		typeSchemas.put(owner.URI, it)
-		return it
 	}
 	
 	// ************************************************************************
@@ -66,11 +64,11 @@ class TypeVariablesRegistry {
 	}
 
 	def newTypeVariable(TypeVariableOwner owner) {
-		TypeVariable.simple(owner).register
+		TypeVariable.simple(owner) => [ register ]
 	}
 
 	def newVoid(TypeVariableOwner owner) {
-		TypeVariable.newVoid(owner).register
+		TypeVariable.newVoid(owner) => [ register ]
 	}
 
 	def newParameter(TypeVariableOwner parent, String paramName) {

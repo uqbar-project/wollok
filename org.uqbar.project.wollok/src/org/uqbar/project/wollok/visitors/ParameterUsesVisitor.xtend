@@ -11,12 +11,12 @@ class ParameterUsesVisitor extends AbstractWollokVisitor {
 	List<EObject> uses = newArrayList
 	WParameter lookedFor
 
-	override dispatch visit(WVariableReference ref) {
+	def dispatch beforeVisit(WVariableReference ref) {
 		if (ref.ref == lookedFor)
 			uses.add(ref.eContainer)
 	}
 
-	override dispatch visit(WConstructor constructor) {
+	def dispatch beforeVisit(WConstructor constructor) {
 		if (constructor.parameters.contains(lookedFor))
 			uses.add(constructor)
 	}
