@@ -34,11 +34,13 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def basicGetType(TypeVariable tvar) {
-		val minTypes = minTypes.entrySet // .filter[value != Error]
-		.map[key]
+		var types = if(maximalConcreteTypes !== null)
+				maximalConcreteTypes.maximalConcreteTypes
+			else
+				minTypes.keySet
 
 		new UserFriendlySupertype(tvar).commonSupertype(
-			minTypes,
+			types,
 			messages
 		)
 	}
@@ -48,8 +50,9 @@ class GenericTypeInfo extends TypeInfo {
 	// ************************************************************************
 	def param(GenericType type, String paramName) {
 		val typeInstance = findCompatibleTypeFor(type)
-		if (typeInstance === null)
-			throw new IllegalStateException(NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
+		if(typeInstance === null)
+			throw new IllegalStateException(
+				NLS.bind(Messages.RuntimeTypeSystemException_CANT_FIND_MIN_TYPE, #[type, paramName, minTypes.keySet]))
 
 		typeInstance.findParam(paramName)
 	}
@@ -63,7 +66,8 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def dispatch findParam(WollokType type, String paramName) {
-		throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_EXPECTED, type, type.class))
+		throw new IllegalArgumentException(
+			NLS.bind(Messages.RuntimeTypeSystemException_GENERIC_TYPE_EXPECTED, type, type.class))
 	}
 
 	// ************************************************************************
@@ -76,20 +80,25 @@ class GenericTypeInfo extends TypeInfo {
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
 		minTypes.statesDo(offender) [
-			if (!offender.hasErrors(type) && !maxTypes.contains(type)) {
-				error(new RejectedMinTypeException(offender, type))
-				maxTypes.state = Error
+			if(!offender.hasErrors(type)) {
+				val matchingMaxType = maxTypes.findMatching(type)
+				if(matchingMaxType !== null) {
+					type.beSubtypeOf(matchingMaxType)
+				} else {
+					error(new RejectedMinTypeException(offender, type))
+					maxTypes.state = Error
+				}
 			}
-		] 
+		]
 
-		if (maxTypes.state == Error) {
+		if(maxTypes.state == Error) {
 			false
-		} else if (maximalConcreteTypes === null) {
+		} else if(maximalConcreteTypes === null) {
 			maximalConcreteTypes = maxTypes.copy
 			true
 		} else {
 			maximalConcreteTypes.restrictTo(maxTypes)
-		}	
+		}
 	}
 
 	/** 
@@ -98,9 +107,9 @@ class GenericTypeInfo extends TypeInfo {
 	 * both original sets were equal, state has to be Pending).  
 	 */
 	def joinMaxTypes(MaximalConcreteTypes other) {
-		if (maximalConcreteTypes !== null) {
-			if (other !== null) {
-				if (maximalConcreteTypes != other.maximalConcreteTypes) {
+		if(maximalConcreteTypes !== null) {
+			if(other !== null) {
+				if(maximalConcreteTypes != other.maximalConcreteTypes) {
 					maximalConcreteTypes.restrictTo(other)
 					maximalConcreteTypes.state = Pending
 				} else {
@@ -109,7 +118,7 @@ class GenericTypeInfo extends TypeInfo {
 			} else {
 				maximalConcreteTypes.state = Pending
 			}
-		} else if (other !== null) {
+		} else if(other !== null) {
 			maximalConcreteTypes = other.copy
 		}
 	}
@@ -118,24 +127,23 @@ class GenericTypeInfo extends TypeInfo {
 		if(minTypes.containsKey(type)) return Ready
 
 		try {
-			validateNewMinType(type, offender)			
+			validateType(type, offender)
 			minTypes.put(type, Pending)
 			Pending
-		} catch (TypeSystemException exception) {
+		} catch(TypeSystemException exception) {
 			minTypes.put(type, Error)
 			throw exception
-		} 
+		}
 	}
 
-	def validateNewMinType(WollokType type, TypeVariable offender) {
-		if (sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+	def validateType(WollokType type, TypeVariable offender) {
+		if(sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
 			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
 		}
 
 		validMessages.forEach [
 			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
 		]
-
 	}
 
 	def unifyWith(WollokType existing, WollokType added) {
@@ -188,14 +196,16 @@ class GenericTypeInfo extends TypeInfo {
 		if(parameterCount > 0) (0 .. parameterCount - 1).map[PARAM] else #[]
 	}
 
-
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	
 	override toString() '''
-		«class.simpleName» of «canonicalUser»: «basicGetType(canonicalUser)?.toString ?: "unknown"»
+		«class.simpleName» of «canonicalUser»: «typeDescriptionForDebug»
 	'''
+
+	override typeDescriptionForDebug() {
+		basicGetType(canonicalUser)?.toString ?: "unknown"
+	}
 
 	override fullDescription() '''
 		sealed: «sealed»,

@@ -21,7 +21,7 @@ class ReturnFinderVisitor extends AbstractWollokVisitor {
 	
 	override shouldContinue(EObject unused) { !returnsFound || !stopOnFirstFinding }
 	
-	override dispatch visit(WReturnExpression it) { returnExpressions += it }
+	def dispatch beforeVisit(WReturnExpression it) { returnExpressions += it }
 	
 	static def containsReturnExpression(WExpression expression) {
 		(new ReturnFinderVisitor() => [

@@ -28,7 +28,6 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author tesonep
  * @author jfernandes
  */
-// I18N
 class WollokRepl {
 	val Injector injector
 	val WollokLauncher launcher

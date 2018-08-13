@@ -251,6 +251,13 @@ object game {
 	method whenCollideDo(visual, action) native
 
 	/**
+	 * Adds a block that will be executed every n milliseconds.
+	 * Block expects no argument.
+	 * Be careful not to set it too often :)
+	 */
+	method onTick(milliseconds, action) native
+	 
+	/**
 	 * Returns all objects in given position.
 	 */	
 	method getObjectsIn(position) native
@@ -339,6 +346,25 @@ object game {
 	 */			
 	method boardGround(image) native
 	
+	/**
+	 * Attributes will not show when user mouse over a visual component.
+	 * Default behavior is to show them.
+	 */
+	method hideAttributes(visual) native
+	
+	/**
+	 * Attributes will appear again when user mouse over a visual component.
+	 * Default behavior is to show them, so this is not necessary.
+	 */
+	method showAttributes(visual) native
+	
+	/**
+	 * Allows to configure a visual component as "error reporter".
+	 * Then every error in game board will be reported by this visual component,
+	 * in a balloon message form.
+     */
+    method errorReporter(visual) native
+     
 	/** 
 	* @private
 	*/
@@ -363,24 +389,52 @@ class Position {
 	}
 	
 	/**
+	 * Validates x position (avoiding outside gameboard)
+	 */
+	method validateX() {
+		if (x < 0) x = 0
+		if (x >= game.width()) x = game.width() - 1
+	}
+	
+	/**
+	 * Validates y position (avoiding outside gameboard)
+	 */
+	method validateY() {
+		if (y < 0) y = 0
+		if (y >= game.height()) y = game.height() - 1
+	}
+	 
+	/**
 	 * Sums n to x coordinate.
 	 */		
-	method moveRight(n) { x += n }
+	method moveRight(n) { 
+		x += n
+		self.validateX()
+	}
 	
 	/**
 	 * Substract n to x coordinate.
 	 */		
-	method moveLeft(n) { x -= n }
+	method moveLeft(n) {
+		x -= n
+		self.validateX()
+	}
 	
 	/**
 	 * Sums n to y coordinate.
 	 */		
-	method moveUp(n) { y += n }
+	method moveUp(n) {
+		y += n
+		self.validateY()
+	}
 	
 	/**
 	 * Substract n to y coordinate.
 	 */		
-	method moveDown(n) { y -= n }
+	method moveDown(n) {
+		y -= n
+		self.validateY()
+	}
 	
 	/**
 	 * Returns a new Position n steps right from this one.

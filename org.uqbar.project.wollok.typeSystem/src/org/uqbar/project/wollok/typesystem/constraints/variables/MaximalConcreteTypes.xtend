@@ -26,6 +26,11 @@ class MaximalConcreteTypes {
 		maximalConcreteTypes.exists[isSuperTypeOf(type)]
 	}
 
+	def WollokType findMatching(WollokType type) {
+		maximalConcreteTypes.findFirst[isSuperTypeOf(type)]
+	}
+	
+
 	def containsAll(Iterable<? extends WollokType> types) {
 		types.forall[this.contains(it)]
 	}

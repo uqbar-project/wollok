@@ -2,19 +2,20 @@ package org.uqbar.project.wollok.validation
 
 import com.google.inject.Inject
 import java.lang.reflect.Method
+import java.util.List
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.validation.AbstractDeclarativeValidator
 import org.eclipse.xtext.validation.Check
+import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 import org.uqbar.project.wollok.utils.WEclipseUtils
 import org.uqbar.project.wollok.wollokDsl.WNamed
 
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic
@@ -33,13 +34,27 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def report(WNamed e, String message, String errorId) { report(message, e, WNAMED__NAME, errorId) }
 
 	override report(String message, EObject obj) {
-		report(message, obj.eContainer, obj.eContainingFeature)
+		val containingFeature = obj.eContainingFeature
+		if(containingFeature.isMany) {
+			report(
+				message,
+				obj.eContainer,
+				containingFeature,
+				(obj.eContainer.eGet(containingFeature) as List<?>).indexOf(obj)
+			)
+		} else {
+			report(
+				message,
+				obj.eContainer,
+				containingFeature
+			)
+		}
 	}
 
 	def preferences(EObject obj) {
-		if (WEclipseUtils.isWorkspaceOpen) {
+		if(WEclipseUtils.isWorkspaceOpen) {
 			val ifile = obj.IFile
-			if (ifile !== null) {
+			if(ifile !== null) {
 				return preferenceStoreAccess.getContextPreferenceStore(ifile.project)
 			}
 		}
@@ -66,24 +81,23 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 		generateIssue(severityValue, description, invalidObject, invalidObject.before, length, issueId)
 	}
 
-	def generateIssue(CheckSeverity severity, String description, EObject invalidObject, int before, int length, String issueId) {
+	def generateIssue(CheckSeverity severity, String description, EObject invalidObject, int before, int length,
+		String issueId) {
 		switch (severity) {
-			case ERROR: 
-				messageAcceptor.acceptError(description, invalidObject,	before, length, issueId)
-			
-			case WARN: 
+			case ERROR:
+				messageAcceptor.acceptError(description, invalidObject, before, length, issueId)
+			case WARN:
 				messageAcceptor.acceptWarning(description, invalidObject, before, length, issueId)
-					
-			case INFO: 
+			case INFO:
 				messageAcceptor.acceptInfo(description, invalidObject, before, length, issueId)
-		} 
-		
+		}
+
 	}
 
 	def report(String description, EObject invalidObject, EStructuralFeature ref, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 
-		if (severityValue === null)
+		if(severityValue === null)
 			error(description, invalidObject, ref, issueId)
 		switch (severityValue) {
 			case ERROR: error(description, invalidObject, ref, issueId)
@@ -99,7 +113,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def report(String description, EObject invalidObject, EStructuralFeature ref, int index, String issueId) {
 		val severityValue = calculateSeverity(invalidObject)
 
-		if (severityValue === null)
+		if(severityValue === null)
 			error(description, invalidObject, ref, index, issueId)
 		switch (severityValue) {
 			case ERROR: error(description, invalidObject, ref, index, issueId)
@@ -112,9 +126,9 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 		val checkMethod = inferCheckMethod()
 		val prefs = preferences(invalidObject)
 		var severityValue = prefs?.getString(checkMethod.name)?.severityEnumValue
-		if (severityValue === null)
+		if(severityValue === null)
 			severityValue = checkMethod.getAnnotation(DefaultSeverity)?.value
-		if (severityValue === null) 
+		if(severityValue === null)
 			severityValue = WollokCachedTypeSystemPreferences.instance.typeSystemSeverity
 		severityValue
 	}
@@ -122,7 +136,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 	def inferCheckMethod() {
 		val stackTrace = try
 			throw new RuntimeException()
-		catch (RuntimeException e)
+		catch(RuntimeException e)
 			e.stackTrace
 		val checkStackElement = stackTrace.findLast [ e |
 			val m = this.class.methods.findFirst[name == e.methodName]
@@ -167,7 +181,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			val prefs = (instance as WollokDslValidator).preferences(state.currentObject)
 			val key = method.name + PREF_KEY_ENABLED_SUFFIX
 			// default is "enabled" if not present
-			if (method.isAnnotationPresent(NotConfigurable) || prefs === null || !prefs.contains(key) ||
+			if(method.isAnnotationPresent(NotConfigurable) || prefs === null || !prefs.contains(key) ||
 				prefs.getBoolean(key)) {
 				decoratee.invoke(state)
 			} else {

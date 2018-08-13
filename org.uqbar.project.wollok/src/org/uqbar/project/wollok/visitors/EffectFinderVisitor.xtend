@@ -3,19 +3,19 @@ package org.uqbar.project.wollok.visitors
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
+import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
+import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
-import org.uqbar.project.wollok.wollokDsl.WReturnExpression
-import org.uqbar.project.wollok.wollokDsl.WThrow
 
 import static extension java.lang.Math.max
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.hasNamedParameters
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.isMultiOpAssignment
 
 /**
  * This visitor to find effects in an expression tree
@@ -48,43 +48,36 @@ class EffectFinderVisitor extends AbstractWollokVisitor {
 	
 	override shouldContinue(EObject unused) { _purity <= acceptedPurity }
 	
-	override dispatch visit(WAssignment it) { purity = EFFECTFUL }
-	override dispatch visit(WPostfixOperation it) { purity = EFFECTFUL }
-	override dispatch visit(WVariableDeclaration it) { purity = EFFECTFUL }
+	def dispatch beforeVisit(WAssignment it) { purity = EFFECTFUL }
+	def dispatch beforeVisit(WPostfixOperation it) { purity = EFFECTFUL }
+	def dispatch beforeVisit(WVariableDeclaration it) { purity = EFFECTFUL }
 	
-	override dispatch visit(WBinaryOperation it) { 
+	def dispatch beforeVisit(WBinaryOperation it) { 
 		purity = if (isMultiOpAssignment) EFFECTFUL else SHOULD_BE_PURE
-		super._visit(it)
 	}
 
-	override dispatch visit(WConstructorCall it) {
+	def dispatch beforeVisit(WConstructorCall it) {
 		if (!hasNamedParameters) purity = SHOULD_BE_PURE
-		super._visit(it)
 	}
 
-	override dispatch visit(WUnaryOperation it) { 
+	def dispatch beforeVisit(WUnaryOperation it) { 
 		purity = SHOULD_BE_PURE
-		super._visit(it)
 	}
 	
-	override dispatch visit(WMemberFeatureCall it) { 
+	def dispatch beforeVisit(WMemberFeatureCall it) { 
 		purity = UNKNOWN
-		super._visit(it)
 	}
 	
-	override dispatch visit(WSuperInvocation it) {
+	def dispatch beforeVisit(WSuperInvocation it) {
 		purity = UNKNOWN
-		super._visit(it)
 	}
 
-	override dispatch visit(WReturnExpression it) {
+	def dispatch beforeVisit(WReturnExpression it) {
 		purity = ALTERS_FLOW
-		super._visit(it)
 	}
 
-	override dispatch visit(WThrow it) {
+	def dispatch beforeVisit(WThrow it) {
 		purity = ALTERS_FLOW
-		super._visit(it)
 	}
 	
 	static def isPure(WExpression expression, int acceptedPurity) {

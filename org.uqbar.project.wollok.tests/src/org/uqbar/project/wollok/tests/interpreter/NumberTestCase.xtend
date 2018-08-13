@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
  * @author dodain
  */
 class NumberTestCase extends AbstractWollokInterpreterTestCase {
-	
+
 	@Test
 	def void integersAsResultValueOfNative() {
 		'''
@@ -766,4 +766,25 @@ class NumberTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		'''.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void addingBigNumbersIssue1398(){
+		'''
+		class Cuenta {
+			var property monto = 0
+			method depositar_monto(un_monto) {
+				monto += un_monto
+			}
+			method consultar_saldo() {
+				return monto
+			}
+		}
+		program xx {
+			const patricio = new Cuenta()
+			patricio.depositar_monto(100000000000)
+			assert.equals("100000000000", patricio.monto().toString())
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 }

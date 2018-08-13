@@ -785,7 +785,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 				]
 		}
 		// Variable is never used
-		if (variable.uses.empty && !property)
+		if (!variable.isUsed && !property)
 			warning(WollokDslValidator_VARIABLE_NEVER_USED, it, WVARIABLE_DECLARATION__VARIABLE,
 				WARNING_UNUSED_VARIABLE)
 	}

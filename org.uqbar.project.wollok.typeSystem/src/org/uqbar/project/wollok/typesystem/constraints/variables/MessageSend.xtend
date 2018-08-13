@@ -15,6 +15,9 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 
 class MessageSend {
 	@Accessors(PUBLIC_GETTER)
+	TypeVariable receiver
+
+	@Accessors(PUBLIC_GETTER)
 	String selector
 
 	@Accessors(PUBLIC_GETTER)
@@ -25,7 +28,8 @@ class MessageSend {
 
 	Set<WollokType> openTypes = newHashSet
 
-	new(String selector, List<TypeVariable> arguments, TypeVariable returnType) {
+	new(TypeVariable receiver, String selector, List<TypeVariable> arguments, TypeVariable returnType) {
+		this.receiver = receiver
 		this.selector = selector
 		this.arguments = arguments
 		this.returnType = returnType
@@ -56,7 +60,7 @@ class MessageSend {
 
 	def isClosureMessage() { selector == "apply" }
 
-	def isValid() { !returnType.hasErrors }
+	def boolean isValid() { !returnType.hasErrors }
 
 	override toString() { returnType.owner.debugInfo }
 }

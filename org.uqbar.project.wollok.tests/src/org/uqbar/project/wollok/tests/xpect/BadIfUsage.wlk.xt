@@ -1,5 +1,37 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
+object joaquin {
+	var tocaEnGrupo = false
+	var gradoAlegria 
+	
+	// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
+	method habilidadAdquirida() = if (tocaEnGrupo) 5
+
+ 	// XPECT errors --> "Must return a value on every possible flow" at "felicidad"
+	method felicidad() {
+		if (tocaEnGrupo) return 5
+	}
+	
+	method inicializar() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
+		gradoAlegria = if (tocaEnGrupo) 3
+	}
+	
+	// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
+	method felicidadTotal(numero) = numero + if (tocaEnGrupo) 5
+	
+	method validarFelicidad() {
+		// XPECT errors --> "If-statements without else cannot be considered valid expressions as they cannot always yield a value" at "tocaEnGrupo"
+		assert.equals(10, if (tocaEnGrupo) 5)
+	}
+	
+	method asignarFelicidadSiCorresponde() {
+		if (tocaEnGrupo) {
+			gradoAlegria = gradoAlegria + 10
+		}
+	}
+}
+
 object sarasita {
 	
 	method withTheReturnWithinTheBranches(n) {

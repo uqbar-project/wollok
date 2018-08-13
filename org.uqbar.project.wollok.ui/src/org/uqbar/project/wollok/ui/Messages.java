@@ -29,9 +29,11 @@ public class Messages extends NLS {
 	
 	public static String NewWollokObjectsWizardPage_description;
 	public static String NewWollokObjectsWizardPage_title;
+	public static String NewWollokObjectsWizardPage_elementType;
 	public static String NewWollokObjectsWizardPage_elementName;
-	public static String NewWollokObjectsWizardPage_classLabel;
 	public static String NewWollokObjectsWizardPage_objectLabel;
+	public static String NewWollokObjectsWizardPage_classLabel;
+	public static String NewWollokObjectsWizardPage_mixinLabel;
 	
 	public static String NewWollokProgramWizardPage_description;
 	public static String NewWollokProgramWizardPage_title;

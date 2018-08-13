@@ -29,59 +29,66 @@ interface TypeFactory {
 class GenericType implements TypeFactory {
 	ClassInstanceType baseType
 	String[] typeParameterNames
-		
+
 	new(WClass clazz, TypeSystem typeSystem, String... typeParameterNames) {
 		baseType = new ClassInstanceType(clazz, typeSystem)
 		this.typeParameterNames = typeParameterNames
 	}
-	
+
 	override getTypeSystem() { baseType.typeSystem }
-	
+
 	/**
 	 * @param futureOwner The type variable for which the resulting type (a GenericTypeInstance will be used.
 	 * 					  The dependent type variables of the created type instance require a parent type variable.
 	 */
 	override GenericTypeInstance instanceFor(TypeVariable tvar) {
-		instance(typeParameterNames.toInvertedMap[ name | registry.newParameter(tvar.owner, name)])
+		instance(typeParameterNames.toInvertedMap[name|registry.newParameter(tvar.owner, name)])
 	}
-	
+
 	def instance(Map<String, TypeVariable> typeParameters) {
 		new GenericTypeInstance(this, typeParameters)
-	} 
-	
+	}
+
 	def schema(Map<String, ITypeVariable> typeParameters) {
 		new GenericTypeSchema(this, typeParameters)
 	}
-	
-	def getRegistry() {
-		(baseType.typeSystem as ConstraintBasedTypeSystem).registry		
+
+	def schemaOrInstance(Map<String, ITypeVariable> typeParameters) {
+		if(typeParameters.values.forall[it instanceof TypeVariable])
+			// No type system will stop me from doing what I want.
+			instance(typeParameters as Map<String, ?> as Map<String, TypeVariable>)
+		else
+			schema(typeParameters)
 	}
-	
-	def toString(GenericTypeInstance instance)
-		'''«baseType.toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>''' 
-	
-	override toString()
-		'''«baseType.toString»<«typeParameterNames.join(', ')»>''' 
-	
+
+	def getRegistry() {
+		(baseType.typeSystem as ConstraintBasedTypeSystem).registry
+	}
+
+	def toString(
+		GenericTypeInstance instance) '''«baseType.toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>'''
+
+	override toString() '''«baseType.toString»<«typeParameterNames.join(', ')»>'''
+
 }
 
 class GenericTypeSchema {
 	@Accessors(PUBLIC_GETTER)
 	GenericType rawType
-	
+
 	@Accessors(PUBLIC_GETTER)
 	Map<String, ITypeVariable> typeParameters
-	
+
 	new(GenericType type, Map<String, ITypeVariable> typeParameters) {
 		this.rawType = type
 		this.typeParameters = typeParameters
-	}	
+	}
 
-	def instanceFor(TypeVariable variable) {
+	def GenericTypeInstance instanceFor(TypeVariable variable) {
 		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(variable)])
 	}
 
-	def instanceFor(ConcreteType concreteType) {
+	def GenericTypeInstance instanceFor(ConcreteType concreteType) {
 		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(concreteType)])
-	}	
+	}
 }

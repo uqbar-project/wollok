@@ -1,9 +1,7 @@
 package org.uqbar.project.wollok.typesystem.constraints.strategies
 
 import org.apache.log4j.Logger
-import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
@@ -60,14 +58,5 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 
 	def boolean evaluate(Iterable<TypeVariable> variables, (TypeVariable)=>boolean action) {
 		variables.fold(false)[hasChanges, variable|action.apply(variable) || hasChanges]
-	}
-
-	def handlingOffensesDo(TypeVariable subtype, TypeVariable supertype, ()=>ConcreteTypeState action) {
-		try {
-			action.apply()
-		} catch (TypeSystemException offense) {
-			handleOffense(subtype, supertype, offense)
-			Error
-		}
 	}
 }

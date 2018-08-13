@@ -17,7 +17,7 @@ class CellsBackground implements Background {
 	new(String image, Gameboard it) {
 		for (var i = 0; i < width ; i++) {
 			for (var j = 0; j < height; j++) {
-				cells.add(new Cell(new WGPosition(i, j), new Image(image)));
+				cells.add(new Cell(new WGPosition(i, j), new Image(image)))
 			}
 		}
 	}

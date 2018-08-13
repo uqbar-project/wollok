@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.ui.console.highlight
 
 import org.eclipse.swt.graphics.RGB
+import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 /**
  * 
@@ -144,7 +145,7 @@ class WollokConsoleColorPalette {
     }
 
     def static void setPalette(String paletteName) {
-        currentPaletteName = paletteName;
+        currentPaletteName = paletteName
         if (PALETTE_VGA.equalsIgnoreCase(paletteName))
             palette = paletteVGA
         else if (PALETTE_WINXP.equalsIgnoreCase(paletteName))
@@ -156,10 +157,9 @@ class WollokConsoleColorPalette {
         else if (PALETTE_XTERM.equalsIgnoreCase(paletteName))
             palette = paletteXTerm
         else {
-            val os = System.getProperty("os.name");
-            if (os === null || os.startsWith("Windows"))
+            if (isOsWindows)
                 setPalette(PALETTE_WINXP)
-            else if (os.startsWith("Mac"))
+            else if (isOsMac)
                 setPalette(PALETTE_MAC)
             else
                 setPalette(PALETTE_XTERM)
