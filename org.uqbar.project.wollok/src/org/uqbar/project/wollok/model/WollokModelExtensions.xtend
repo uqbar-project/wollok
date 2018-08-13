@@ -240,6 +240,7 @@ class WollokModelExtensions {
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
+	
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
 
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }

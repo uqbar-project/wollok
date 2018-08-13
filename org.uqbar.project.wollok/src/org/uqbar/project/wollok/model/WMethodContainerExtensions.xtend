@@ -278,6 +278,18 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		allVariableDeclarations.map [ variable ]
 	}
 	
+	def static allProperties(WMethodContainer it) {
+		allVariableDeclarations.filter [ property ]
+	}
+	
+	def static allPropertiesGetters(WMethodContainer it) {
+		allProperties
+	}
+	
+	def static allPropertiesSetters(WMethodContainer it) {
+		allProperties.filter [ writeable ]
+	}
+	
 	def static getInheritedMethods(WMethodContainer it) {
 		linearizeHierarchy.fold(newArrayList) [methods, type |
 			val currents = type.methods

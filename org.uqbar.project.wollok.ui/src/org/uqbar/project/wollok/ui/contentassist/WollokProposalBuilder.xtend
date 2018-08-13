@@ -7,7 +7,6 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.WollokActivator
-import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
@@ -16,17 +15,19 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class WollokProposalBuilder {
 	boolean displayFullFqn = false
 	String reference
-	WMember member
+	EObject member
 	EObject model
 	int priority
 	List<WMethodContainer> classHierarchy = newArrayList
 	static String imagePath = 'icons/wollok-icon-method_16.png'
 	ContentAssistContext context
+	Accessor accessorKind
 	
 	def getProposal() {
 		this.validate()
 		new WollokProposal(reference, member, WollokActivator.getInstance.getImageDescriptor(imagePath).createImage, priority, context, model) => [
 			isCalledFromSelf = displayFullFqn
+			accessor = accessorKind
 		]
 	}
 	

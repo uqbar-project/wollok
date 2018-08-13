@@ -12,7 +12,6 @@ import org.uqbar.project.wollok.ui.WollokActivator
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
 import org.uqbar.project.wollok.wollokDsl.WLibraryElement
-import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
@@ -102,13 +101,17 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	def methodsAsProposals(WMethodContainer ref, ICompletionProposalAcceptor acceptor) {
 		builder.model = ref
 		builder.reference = ref.nameWithPackage
-		ref.allMethods.forEach[ 
-			addProposal( it, acceptor)
-		]
+		// @Dodain - kind of hack to retrieve getters and setters from properties 
+		builder.accessorKind = Accessor.GETTER
+		ref.allPropertiesGetters.forEach [ addProposal(it, acceptor) ]
+		builder.accessorKind = Accessor.SETTER
+		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
+		builder.accessorKind = Accessor.NONE
+		ref.allMethods.forEach[ addProposal(it, acceptor) ]
 	}
 
-	def addProposal(WMember m, ICompletionProposalAcceptor acceptor) {
-		builder.member = m
+	def addProposal(EObject o, ICompletionProposalAcceptor acceptor) {
+		builder.member = o
 		builder.assignPriority
 		acceptor.addProposal(builder.proposal)
 	}
