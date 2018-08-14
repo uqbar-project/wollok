@@ -146,15 +146,22 @@ class LaunchConfigurationInfo {
 			&& project == a.getAttribute(ATTR_PROJECT_NAME, "X")
 			&& (LAUNCH_CONFIGURATION_TYPE == a.type.identifier || LAUNCH_TEST_CONFIGURATION_TYPE == a.type.identifier)
 			&& a.getAttribute(ATTR_WOLLOK_SEVERAL_FILES, false) === severalFiles
-			&& a.getAttribute(ATTR_WOLLOK_FOLDER, "X").sameFolder()
+			&& a.getAttribute(ATTR_WOLLOK_FOLDER, "").sameFolder()
 			&& a.getAttribute(ATTR_WOLLOK_LIBS, #[]).equals(libs) 
 	}
 	
 	def sameFolder(String anotherFolder) {
-		(this.folder === null && anotherFolder === null) ||
-		(this.folder !== null && anotherFolder !== null &&
+		val folder1EmptyValue = this.folder.emptyValue
+		val folder2EmptyValue = anotherFolder.emptyValue
+		
+		return (folder1EmptyValue && folder2EmptyValue) ||
+			(!folder1EmptyValue && !folder2EmptyValue &&
 			this.folder.equalsIgnoreCase(anotherFolder)
 		)
+	}
+	
+	def emptyValue(String value) {
+		value === null || value.trim.equals("")
 	}
 	
 }
