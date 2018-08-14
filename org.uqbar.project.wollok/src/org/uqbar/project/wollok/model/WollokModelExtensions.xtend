@@ -14,6 +14,7 @@ import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.nodemodel.INode
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
 import org.eclipse.xtext.resource.XtextResource
+import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
@@ -688,6 +689,34 @@ class WollokModelExtensions {
 		}
 	}
 
+	def static List<ImportNormalizer> importedDefinitions(Resource resource) {
+		resource.allContents
+			.filter(Import)
+			.map [ importedNamespace ]
+			.filter [ it !== null && !it.trim.equals("") ]
+			.map [
+				var alreadyImportedFqn = QualifiedName.create(it.split("\\."))
+				val hasWildCard = alreadyImportedFqn.lastSegment.equals("*")
+				if (hasWildCard) {
+					alreadyImportedFqn = alreadyImportedFqn.skipLast(1)
+				} 
+				new ImportNormalizer(alreadyImportedFqn, hasWildCard, false)
+			]
+			.toList
+	}
+	
+	def static List<WMethodContainer> allPossibleImports(Resource resource) {
+		resource
+			.resourceSet
+			.allContents
+			.filter(WMethodContainer)
+			.filter [ element |
+				val containerFqn = element.fqn
+				!#["wollok.lang", "wollok.lib"].exists [ library | containerFqn.startsWith(library)]
+ 			]
+ 			.toList
+	}
+	
 	// *******************************
 	// ** refactoring
 	// *******************************

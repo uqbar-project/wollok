@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.CrossReference
 import org.eclipse.xtext.RuleCall
+import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
@@ -14,7 +15,6 @@ import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WLibraryElement
 import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
@@ -168,16 +168,20 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	// ****************************************
 
 	override completeImport_ImportedNamespace(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-		val content = model.file.resourceSet.allContents.filter(WLibraryElement)
+		val alreadyImported = model.file.importedDefinitions
+		val content = model.file.allPossibleImports.filter [ element |
+			val containerFqn = element.fqn
+			val containerQn = QualifiedName.create(containerFqn.split("\\."))
+			alreadyImported.forall [ deresolve(containerQn) === null ]  
+		]
 		// add other files content here
 
 		content.forEach[
-			if (it instanceof WMethodContainer)
-				acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
+			acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
 		]
 	}
 
-		//@Inject
+	//@Inject
   	//protected WollokDslTypeSystem system
 //
 //	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
