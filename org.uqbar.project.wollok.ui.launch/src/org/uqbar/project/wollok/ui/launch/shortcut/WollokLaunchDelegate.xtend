@@ -45,16 +45,15 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
-		var config = configuration.configureLaunchSettings(mode)
+		
+		val config = configuration.configureLaunchSettings(mode)
 		super.launch(config, mode, launch, monitor)
 		
 		if (configuration.hasRepl) {
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
-			var console = consoleManager.consoles.findFirst[ name == WollokReplConsole.consoleName ] as WollokReplConsole
-			if (console === null) {
-				console = new WollokReplConsole
-				consoleManager.addConsoles(#[console])
-			}
+			consoleManager.removeConsoles(consoleManager.consoles)
+			val console = new WollokReplConsole
+			consoleManager.addConsoles(#[console])
 			console.startForProcess(launch.processes.get(0))
 		}
 		
