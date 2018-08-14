@@ -68,6 +68,8 @@ class WollokRepl {
 				printPrompt
 			}
 		}
+		
+		println(REPL_CLOSE.importantMessageStyle)
 	}
 
 	def synchronized printPrompt() {

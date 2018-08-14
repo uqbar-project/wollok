@@ -221,4 +221,5 @@ class WollokReplConsole extends TextConsole {
 			inputBuffer = inputBuffer.replaceAll(System.lineSeparator, '')
 		}
 	}
+	
 }
