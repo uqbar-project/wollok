@@ -90,7 +90,9 @@ class WollokReplConsole extends TextConsole {
 		streamsProxy.write(wordToWrite)
 	}
 
-	def shutdown() { process.terminate }
+	def shutdown() {
+		process.terminate
+	}
 
 	def isRunning() { !process.terminated }
 
@@ -189,6 +191,7 @@ class WollokReplConsole extends TextConsole {
 	def sendInputBuffer() {
 		addCommandToHistory
 		sessionCommands += inputBuffer
+		
 		streamsProxy.write(inputBuffer)
 		outputTextEnd = page.viewer.textWidget.charCount
 		updateInputBuffer
@@ -205,7 +208,6 @@ class WollokReplConsole extends TextConsole {
 				val ps = if(pos >= lastCommands.size) 0 else pos
 				lastCommands.last(ps)
 			}
-
 			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer.replace(System.lineSeparator, ""))
 		]
 	}

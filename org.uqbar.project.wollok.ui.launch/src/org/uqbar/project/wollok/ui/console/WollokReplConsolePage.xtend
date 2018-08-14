@@ -52,7 +52,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			]
 			addMouseListener(new MouseAdapter() {
 				override def mouseDown(MouseEvent e) {
-					if(isCursorInTheLasLine && isCursorInReadOnlyZone) setCursorToEnd
+					if(isCursorInTheLastLine && isCursorInReadOnlyZone) setCursorToEnd
 				}
 			})
 			setFocus
@@ -94,6 +94,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 			decreaseHistoryPosition
 			console.loadHistory(historyPosition)
 			setCursorToEnd
+			return
 		}
 
 		if (e.character == 0x0C) { // code of <Ctrl + L> 
@@ -126,7 +127,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 	// We could move this as extension methods to Jface
 	def caretOffset() { viewer.textWidget.caretOffset }
 
-	def isCursorInTheLasLine() { caretLine == lastLine }
+	def isCursorInTheLastLine() { caretLine == lastLine }
 
 	def caretLine() { viewer.textWidget.getLineAtOffset(caretOffset) }
 
@@ -136,7 +137,9 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 
 	def isCursorInReadOnlyZone() { viewer.textWidget.selectionCount < getHomePosition }
 
-	def setCursorToEnd() { viewer.textWidget.selection = charCount }
+	def setCursorToEnd() {
+		viewer.textWidget.selection = charCount
+	}
 
 	def isAtTheEnd(VerifyEvent event) { (event.widget as StyledText).caretOffset == charCount }
 
