@@ -14,7 +14,6 @@ public class Messages extends NLS {
 	public static String ALL_TEST_IN_FOLDER;
 	public static String LINE;
 	public static String REPL_WELCOME;
-	public static String REPL_CLOSE;
 	public static String WVM_ERROR;
 
 	// ****************************
