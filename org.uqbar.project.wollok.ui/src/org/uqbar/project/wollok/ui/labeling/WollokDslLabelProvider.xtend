@@ -50,7 +50,7 @@ class WollokDslLabelProvider extends DefaultEObjectLabelProvider {
 	def image(WProgram it) { 'wollok-icon-program_16.png' }
 
 	def image(WClass it) { 'wollok-icon-class_16.png' }
-
+	
 	def image(WMixin it) { 'wollok-icon-mixin_16.png' }
 
 	def image(WTest it) { 'wollok-icon-test_16.png' }

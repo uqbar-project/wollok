@@ -17,6 +17,7 @@ import org.eclipse.ui.IPartListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.views.contentoutline.ContentOutline
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
@@ -53,6 +54,9 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	@Accessors @Inject
 	IssueResolutionProvider issueResolutionProvider
+
+	@Accessors @Inject 
+	MultiLineCommentDocumentationProvider multilineProvider
 
 	Map<String, List<Issue>> mapIssues = new HashMap
 
@@ -109,7 +113,7 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	def void refreshOutline() {
 		Display.^default.syncExec [
-			val outlineView = activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
+			val outlineView = activePage?.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
 			if (outlineView !== null) {
 				val outlinePage = outlineView.currentPage
 				try {
