@@ -66,9 +66,13 @@ class ConstraintGenerator {
 		// By default we do nothing.
 	}
 
+	def dispatch void addGlobals(WFile it) {
+		eContents.forEach[addGlobals]	
+	}
+
 	def dispatch void addGlobals(WNamedObject it) {
 		typeSystem.allTypes.add(objectType)
-		newNamedObject
+		newTypeVariable.beSealed(objectType)
 	}
 
 	def dispatch void addGlobals(WClass it) {
@@ -90,7 +94,6 @@ class ConstraintGenerator {
 	// ** Containers & top level
 	// ************************************************************************
 	def dispatch void generate(WFile it) {
-		eContents.forEach[addGlobals]
 		eContents.forEach[generateVariables]
 	}
 

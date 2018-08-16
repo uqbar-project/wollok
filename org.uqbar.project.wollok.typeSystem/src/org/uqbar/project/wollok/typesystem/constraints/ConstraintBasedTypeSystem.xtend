@@ -97,7 +97,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		allTypes = null
 
 		// This shouldn't be necessary if all global objects had type annotations
-		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
+		allCoreWKOs.forEach[newTypeVariable.beSealed(objectType)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
 			addTypeDeclarations(this, WollokCoreTypeDeclarations, program)	
@@ -110,13 +110,15 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		}
 
 		programs.add(program)
-		constraintGenerator.generateVariables(program)
 	}
 
 	// ************************************************************************
 	// ** Inference
 	// ************************************************************************
 	override inferTypes() {
+		programs.forEach[constraintGenerator.addGlobals(it)]
+		programs.forEach[constraintGenerator.generateVariables(it)]
+
 		// These constraints have to be created after all files have been `analise`d
 		constraintGenerator.addCrossReferenceConstraints
 
