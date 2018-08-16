@@ -22,16 +22,17 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 
 	@Test
 	def void testVariableInferredToSuperClassWhenAssignedTwoDifferentSubclasses() {
-		#['''
-		class Animal {}
-		class Golondrina inherits Animal {}
-		class Perro inherits Animal {}
-		
-		 program p {
-			var animal
-			animal = new Golondrina()
-			animal = new Perro()
-		}'''].parseAndInfer.asserting [
+		'''
+			class Animal {}
+			class Golondrina inherits Animal {}
+			class Perro inherits Animal {}
+			
+			program p {
+				var animal
+				animal = new Golondrina()
+				animal = new Perro()
+			}
+		'''.parseAndInfer.asserting [
 //			noIssues
 			assertTypeOf(classType('Animal'), 'animal')
 		]
@@ -43,6 +44,7 @@ class InheritanceTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase 
 			class Animal {
 				method getEnergia() { return 100 }
 			}
+			
 			class Golondrina inherits Animal {
 				var energia
 				override method getEnergia() {
