@@ -1,6 +1,7 @@
 /**
  * Base class for all Exceptions.
- * Every exception and its subclasses indicates conditions that a reasonable application might want to catch.
+ * Every exception and its subclasses indicates conditions that a 
+ * reasonable application might want to catch.
  * 
  * @author jfernandes
  * @since 1.0
@@ -45,10 +46,14 @@ class Exception {
 	/** @private */
 	method createStackTraceElement(contextDescription, location) = new StackTraceElement(contextDescription, location)
 
-	/** Provides programmatic access to the stack trace information printed by printStackTrace() with full path files for linking */
+	/** Provides programmatic access to the stack trace information
+	 * printed by printStackTrace() with full path files for linking 
+	 */
 	method getFullStackTrace() native
 	
-	/** Provides programmatic access to the stack trace information printed by printStackTrace(). */
+	/** Provides programmatic access to the stack trace information
+	 * printed by printStackTrace(). 
+	 */
 	method getStackTrace() native
 	
 	/** Answers the cause of the exception, if present */
@@ -96,7 +101,8 @@ class MessageNotUnderstoodException inherits Exception {
 }
 
 /**
- * An element in a stack trace, represented by a context and a location of a method where a message was sent
+ * An element in a stack trace, represented by a context and a location
+ * of a method where a message was sent
  */
 class StackTraceElement {
 	const property contextDescription
@@ -111,18 +117,25 @@ class StackTraceElement {
  *
  * Representation of Wollok Object
  *
- * Class Object is the root of the class hierarchy. Every class has Object as a superclass.  
+ * Class Object is the root of the class hierarchy. 
+ * Every class has Object as a superclass.  
  * 
  * @author jfernandes
  * since 1.0
  */
 class Object {
-	/** Answers object identity of a Wollok object, represented by a unique number in Wollok environment */
+	/** 
+	 * Answers object identity of a Wollok object, represented by
+	 * a unique number in Wollok environment 
+	 */
 	method identity() native
+	
 	/** Answers a list of instance variables for this Wollok object */
 	method instanceVariables() native
+	
 	/** Retrieves a specific variable. Expects a name */
 	method instanceVariableFor(name) native
+	
 	/** Accesses a variable by name, in a reflexive way. */
 	method resolve(name) native
 	
@@ -256,37 +269,54 @@ class Pair {
 class Collection {
 	/**
 	  * Answers the element that is considered to be/have the maximum value.
-	  * The criteria is given by a closure that receives a single element as input (one of the element)
-	  * The closure must return a comparable value (something that understands the >, >= messages).
+	  * The criteria is given by a closure that receives a single element 
+	  * as input (one of the element). The closure must return a comparable
+	  * value (something that understands the >, >= messages).
 	  * If collection is empty, an ElementNotFound exception is thrown.
 	  *
 	  * Example:
-	  *       ["a", "ab", "abc", "d" ].max({ e => e.length() })    =>  Answers "abc"
+	  *       ["a", "ab", "abc", "d" ].max({ e => e.length() }) 
+	  *            => Answers "abc"
+	  *
+	  *       [].max({ e => e.length() })                       
+	  *            => Throws error, list must not be empty            
 	  */
 	method max(closure) = self.absolute(closure, { a, b => a > b })
 
 	/**
 	  * Answers the element that represents the maximum value in the collection.
 	  * The criteria is by direct comparison of the elements.
+	  * If collection is empty, an ElementNotFound exception is thrown.
+	  *
 	  * Example:
-	  *       [11, 1, 4, 8, 3, 15, 6].max()    =>  Answers 15		 
+	  *       [11, 1, 4, 8, 3, 15, 6].max() =>  Answers 15
+	  *       [].max()                      =>  Throws error, list must not be empty
 	  */
 	method max() = self.max({it => it})		
 	
 	/**
 	  * Answers the element that is considered to be/have the minimum value.
-	  * The criteria is given by a closure that receives a single element as input (one of the element)
-	  * The closure must return a comparable value (something that understands the <, <= messages).
+	  * The criteria is given by a closure that receives a single element
+	  * as input (one of the element). The closure must return a comparable
+	  * value (something that understands the <, <= messages).
+	  *
 	  * Example:
-	  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    =>  Answers "ab"		 
+	  *       ["ab", "abc", "hello", "wollok world"].min({ e => e.length() })    
+	  *             =>  Answers "ab"
+	  *		 
+	  *       [].min({ e => e.length() })
+	  *             => Throws error, list must not be empty
 	  */
 	method min(closure) = self.absolute(closure, { a, b => a < b} )
 	
 	/**
-	  * Answers the element that represents the minimum value in the collection.
+	  * Answers the element that represents the minimum value in the 
+	  * non-empty collection.
 	  * The criteria is by direct comparison of the elements.
+	  *
 	  * Example:
-	  *       [11, 1, 4, 8, 3, 15, 6].min()    =>  Answers 1 
+	  *       [11, 1, 4, 8, 3, 15, 6].min()  => Answers 1
+	  *       [].min()                       => Throws error, list must not be empty
 	  */
 	method min() = self.min({it => it})
 
@@ -311,8 +341,14 @@ class Collection {
 	// non-native methods
 
 	/**
-	  * Concatenates this collection to all elements from the given collection parameter giving a new collection
-	  * (no side effect) 
+	  * Concatenates this collection to all elements from the given 
+	  * collection parameter giving a new collection
+	  * (no side effect)
+	  *
+	  * Example:
+	  *		[1, 2] + [3]   => Answers [1, 2, 3]
+	  *     [1, 2] + #{3}  => supports concatenation between lists and sets, answers [1, 2, 3]
+	  *     #{} + []       => Answers #{} 
 	  */
 	method +(elements) {
 		const newCol = self.copy() 
@@ -321,62 +357,100 @@ class Collection {
 	}
 	
 	/**
-	  * Adds all elements from the given collection parameter to self collection. This is a side-effect operation.
+	  * Adds all elements from the given collection parameter to self collection. 
+	  * This is a side effect operation.
+	  *
+	  * Example:
+	  *		const list = []
+	  *     list.addAll(#{2, 4})  => list == [2, 4], always pointing to a list
 	  */
 	method addAll(elements) { elements.forEach { e => self.add(e) } }
 	
 	/**
-	  * Removes all elements of the given collection parameter from self collection. This is a side-effect operation.
+	  * Removes all elements of the given collection parameter from self collection. 
+	  * This is a side effect operation.
+	  *
+	  * Example:
+	  *		const list = [1, 6, 5]
+	  *     list.removeAll([6]) => list == [1, 5]
 	  */
 	method removeAll(elements) { 
 		elements.forEach { e => self.remove(e) } 
 	}
 	
 	/**
-	 * Removes those elements that meet a given condition. This is a side-effect operation.
-	 */
+	  * Removes those elements that meet a given condition. 
+	  * This is a side effect operation.
+	  * Supports empty collections.
+	  *
+	  * Example:
+	  *		const list = [1, 6, 5]
+	  *     list.removeAllSuchThat { e => e.even() } => list == [1, 5]
+	  */
 	 method removeAllSuchThat(closure) {
 	 	self.removeAll( self.filter(closure) )
 	 }
 
-	/** Tells whether self collection has no elements */
+	/** 
+	  * Tells whether self collection has no elements 
+	  *
+	  * Example:
+	  *		[1, 6, 5].isEmpty() => Answers false
+	  *     [].isEmpty()        => Answers true
+	  */
 	method isEmpty() = self.size() == 0
 			
 	/**
 	 * Performs an operation on every element of self collection.
 	 * The logic to execute is passed as a closure that takes a single parameter.
+	 * Supports empty collections.
 	 * @returns nothing
+	 *
 	 * Example:
 	 *      plants.forEach { plant => plant.takeSomeWater() }
 	 */
 	method forEach(closure) { self.fold(null, { acc, e => closure.apply(e) }) }
 	
 	/**
-	 * Answers whether all the elements of self collection satisfy a given condition
-	 * The condition is a closure argument that takes a single element and Answers a boolean value.
+	 * Answers whether all the elements of self collection satisfy a given
+	 * condition. The condition is a closure argument that takes a single
+	 * element and answers a boolean value.
+	 *
 	 * @returns true/false
+	 *
 	 * Example:
 	 *      plants.all({ plant => plant.hasFlowers() })
+	 *      [1, 3, 5].all { number => number.odd() }    => Answers true
+	 *      [].all { number => number.odd() }           => Answers true
 	 */
 	method all(predicate) = self.fold(true, { acc, e => if (!acc) acc else predicate.apply(e) })
 	
 	/**
-	 * Tells whether at least one element of self collection satisfies a given condition.
-	 * The condition is a closure argument that takes a single element and Answers a boolean value.
+	 * Tells whether at least one element of self collection satisfies a
+	 * given condition. The condition is a closure argument that takes a
+	 * single element and answers a boolean value.
 	 * @returns true/false
+	 *
 	 * Example:
 	 *      plants.any({ plant => plant.hasFlowers() })
+	 *      [1, 2, 3].any { number => number.even() }   ==> Answers true
+	 *      [].any { number => number.even() }   ==> Answers false
 	 */
 	method any(predicate) = self.fold(false, { acc, e => if (acc) acc else predicate.apply(e) })
 	
 	/**
 	 * Answers the element of self collection that satisfies a given condition.
-	 * If more than one element satisfies the condition then it depends on the specific collection class which element
-	 * will be returned
+	 * If more than one element satisfies the condition then it depends
+	 * on the specific collection class which element will be returned.
+	 *
 	 * @returns the element that complies the condition
 	 * @throws ElementNotFoundException if no element matched the given predicate
+	 *
 	 * Example:
 	 *      users.find { user => user.name() == "Cosme Fulanito" }
+	 *      #{1, 4, 5}.find { number => number.even() }  => Answers 4
+	 *      #{1, 3}.find { number => number.even() }     => Throws ElementNotFoundException
+	 *      #{}.find { number => number.even() }         => Throws ElementNotFoundException
 	 */
 	method find(predicate) = self.findOrElse(predicate, { 
 		throw new ElementNotFoundException("there is no element that satisfies the predicate")
@@ -386,11 +460,14 @@ class Collection {
 	 * Answers the element of self collection that satisfies a given condition, 
 	 * or the given default otherwise, if no element matched the predicate.
 	 * If more than one element satisfies the condition then it depends on the specific
-	 * collection class which element
-	 * will be returned
+	 * collection class which element will be returned.
+	 *
 	 * @returns the element that complies the condition or the default value
+	 *
 	 * Example:
 	 *      users.findOrDefault({ user => user.name() == "Cosme Fulanito" }, homer)
+	 *      [1, 3, 5].findOrDefault({ number => number.even() }, 0)  => Answers 0
+	 *      [].findOrDefault({ number => number.even() }, 0)         => Answers 0
 	 */
 	method findOrDefault(predicate, value) =  self.findOrElse(predicate, { value })
 	
@@ -398,56 +475,77 @@ class Collection {
 	 * Answers the element of self collection that satisfies a given condition, 
 	 * or the the result of evaluating the given continuation. 
 	 * If more than one element satisfies the condition then it depends on the
-	 * specific collection class which element
-	 * will be returned
-	 * @returns the element that complies the condition or the result of evaluating the continuation
+	 * specific collection class which element will be returned.
+	 *
+	 * @returns the element that complies the condition or the result
+	 * of evaluating the continuation
+	 *
 	 * Example:
 	 *      users.findOrElse({ user => user.name() == "Cosme Fulanito" }, { homer })
+	 *      [1, 3, 5].findOrElse({ number => number.even() }, { 6.max(4) }) => Answers 6
+	 *      [].findOrElse({ number => number.even() }, { false })           => Answers false
 	 */
 	method findOrElse(predicate, continuation) native
 
 	/**
 	 * Counts all elements of self collection that satisfies a given condition
-	 * The condition is a closure argument that takes a single element and Answers a number.
+	 * The condition is a closure argument that takes a single element and 
+	 * answers a number.
 	 * @returns an integer number
+	 *
 	 * Example:
 	 *      plants.count { plant => plant.hasFlowers() }
+	 *      #{1, 2, 3, 4, 5}.count { number => number.odd() }  => Answers 3
+	 *      #{}.count { number => number.odd() }               => Answers 0
 	 */
 	method count(predicate) = self.fold(0, { acc, e => if (predicate.apply(e)) acc+1 else acc  })
 
 	/**
 	 * Counts the occurrences of a given element in self collection.
 	 * @returns an integer number
+	 *
 	 * Example:
-	 *      [1, 8, 4, 1].occurrencesOf(1)	=> Answers 2
+	 *      [1, 8, 4, 1].occurrencesOf(1)  => Answers 2
+	 *      [].occurrencesOf(2)            => Answers 0
 	 */
 	method occurrencesOf(element) = self.count({it => it == element})
 	
 	/**
 	 * Collects the sum of each value for all elements.
-	 * This is similar to call a map {} to transform each element into a number object and then adding all those numbers.
-	 * The condition is a closure argument that takes a single element and Answers a boolean value.
+	 * This is similar to call a map {} to transform each element into a
+	 * number object and then adding all those numbers.
+	 * The condition is a closure argument that takes a single element and
+	 * answers a boolean value.
+	 *
 	 * @returns an integer
+	 *
 	 * Example:
 	 *      const totalNumberOfFlowers = plants.sum{ plant => plant.numberOfFlowers() }
+	 *      [].sum { employee => employee.salary() }   => Answers 0
 	 */
 	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
 	
 	/**
 	 * Sums all elements in the collection.
 	 * @returns an integer
+	 *
 	 * Example:
-	 *      const total = [1, 2, 3, 4, 5].sum() 
+	 *      [1, 2, 3, 4, 5].sum()  => Answers 15
+	 *      [].sum()               => Answers 0 
 	 */
 	method sum() = self.sum( {it => it} )
 	
 	/**
-	 * Answers a new collection that contains the result of transforming each of self collection's elements
-	 * using a given closure.
-	 * The condition is a closure argument that takes a single element and Answers an object.
+	 * Answers a new collection that contains the result of transforming 
+	 * each of self collection's elements using a given closure.
+	 * The condition is a closure argument that takes a single element 
+	 * and answers an object.
 	 * @returns another list
+	 *
 	 * Example:
 	 *      const ages = users.map({ user => user.age() })
+	 *      [1, 2, 3].map { number => number.odd() }  => Answers [true, false, true]
+	 *      [].map { number => number.odd() }         => Answers []
 	 */
 	method map(closure) = self.fold([], { acc, e =>
 		 acc.add(closure.apply(e))
@@ -460,12 +558,14 @@ class Collection {
 	 * @see flatten
 	 * 
 	 * Example
-	 * 		object klaus {	var languages = ["c", "cobol", "pascal"]
-	 *  		method languages() = languages
+	 * 		object klaus { 
+	 *  		method languages() = ["c", "cobol", "pascal"]
 	 *		}
-	 *		object fritz {	var languages = ["java", "perl"]
-	 * 			method languages() = languages
+	 *
+	 *		object fritz {
+	 * 			method languages() = ["java", "perl"]
 	 * 		}
+	 *
 	 * 		program abc {
 	 * 			console.println([klaus, fritz].flatMap({ person => person.languages() }))
 	 *				=> Answers ["c", "cobol", "pascal", "java", "perl"]
@@ -477,11 +577,15 @@ class Collection {
 	})
 
 	/**
-	 * Answers a new collection that contains the elements that meet a given condition.
-	 * The condition is a closure argument that takes a single element and Answers a boolean.
+	 * Answers a new collection that contains the elements that 
+	 * meet a given condition. The condition is a closure argument that
+	 * takes a single element and answers a boolean.
 	 * @returns another collection (same type as self one)
+	 *
 	 * Example:
 	 *      const overageUsers = users.filter({ user => user.age() >= 18 })
+	 *      #{1, 2, 3, 4, 5}.filter { number => number.even() }   => Answers #{2, 4}
+	 *      #{}.filter { number => number.even() }                => Answers #{}
 	 */
 	 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 		 if (closure.apply(e))
@@ -491,6 +595,10 @@ class Collection {
 
 	/**
 	 * Answers whether this collection contains the specified element.
+	 *
+	 * Example:
+	 *      [].contains(3)        => Answers false
+	 *      [1, 2, 3].contains(2) => Answers true
 	 */
 	method contains(e) = self.any {one => e == one }
 	
@@ -498,7 +606,7 @@ class Collection {
 	 * Flattens a collection of collections
 	 *
 	 * Example:
-	 * 		[ [1, 2], [3], [4, 0] ].flatten()  => Answers [1, 2, 3, 4, 0]
+	 * 		[ [1, 2], [3], [4, 0], [] ].flatten()  => Answers [1, 2, 3, 4, 0]
 	 *
 	 */
 	method flatten() = self.flatMap { e => e }
@@ -521,8 +629,10 @@ class Collection {
 
 	/**
 	 * Answers a new collection of the same type and with the same content 
-	 * as self.
+	 * as self. Supports empty collections.
+	 *
 	 * @returns a new collection
+	 *
 	 * Example:
 	 *      const usersCopy = users.copy() 
 	 */
@@ -535,11 +645,18 @@ class Collection {
 	/**
 	 * Answers a new List that contains the elements of self collection 
 	 * sorted by a criteria given by a closure. The closure receives two objects
-	 * X and Y and Answers a boolean, true if X should come before Y in the 
-	 * resulting collection.
+	 * X and Y and answers a boolean, true if X should come before Y in the 
+	 * resulting collection. Supports empty collections.
+	 *
 	 * @returns a new List
+	 *
 	 * Example:
 	 *      const usersByAge = users.sortedBy({ a, b => a.age() < b.age() })
+	 *      const studentsByNameDesc = students.sortedBy({ a, b => a.name() > b.name() })
+	 *      [1, 5, 9, 2, 4].sortedBy { a, b => a < b } => Answers [1, 2, 4, 5, 9]
+	 *      [1, 5, 9, 2, 4].sortedBy { a, b => a > b } => Answers [9, 5, 4, 2, 1]
+	 *      [].sortedBy { a, b => a > b }              => Answers []
+	 *
 	 */
 	method sortedBy(closure) {
 		var copy = self.copy().asList()
@@ -551,22 +668,43 @@ class Collection {
 	/**
 	 * Answers a new, empty collection of the same type as self.
 	 * @returns a new collection
+	 *
 	 * Example:
 	 *      const newCollection = users.newInstance() 
 	 */
 	method newInstance()
 	
+	/**
+	* @see subclasses implementations
+	*/
 	method anyOne() = throw new Exception("Should be implemented by the subclasses")
+	
+	/**
+	* @see subclasses implementations
+	*/
 	method add(element) = throw new Exception("Should be implemented by the subclasses")
+	
+	/**
+	* @see subclasses implementations
+	*/
 	method remove(element) = throw new Exception("Should be implemented by the subclasses")
+	
+	/**
+	* @see subclasses implementations
+	*/
 	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
+	
+	/**
+	* @see subclasses implementations
+	*/
 	method size() = throw new Exception("Should be implemented by the subclasses")
 }
 
 /**
  *
  * A collection that contains no duplicate elements. 
- * It models the mathematical set abstraction. A Set guarantees no order of elements.
+ * It models the mathematical set abstraction. 
+ * A Set guarantees no order of elements.
  * 
  * @author jfernandes
  * @since 1.3
@@ -586,7 +724,12 @@ class Set inherits Collection {
 	override method toStringSuffix() = "}"
 	
 	/** 
-	 * Converts this set to a list
+	 * Converts this set to a list.
+	 *
+	 * Examples
+	 *		#{1, 2, 3}.asList() => Answers [1, 2, 3]
+	 * 		#{}.asList()        => Answers [] 
+	 *
 	 * @see List
 	 */
 	override method asList() { 
@@ -597,22 +740,41 @@ class Set inherits Collection {
 	
 	/**
 	 * Converts an object to a Set. No effect on Sets.
+	 *
+	 * Examples
+	 *		#{1, 2, 3}.asSet() => Answers #{1, 2, 3}
+	 * 		#{}.asSet()        => Answers #{} 
 	 */
 	override method asSet() = self
 
 	/**
-	 * Answers any element of this collection 
+	 * Answers any element of a non-empty collection
+	 *
+	 * Examples
+	 *		#{1, 2, 3}.anyOne() => Answers 1, for example
+	 * 		#{}.anyOne()        => Throws error, set must not be empty 
+	 *  
 	 */
 	override method anyOne() native
 
 	/**
 	 * Answers a new Set with the elements of both self and another collection.
+	 *
+	 * Examples
+	 * 		#{1, 2}.union(#{5, 2})   => #{1, 2, 5}
+	 * 		#{}.union(#{3})          => #{3}
+	 *
 	 * @returns a Set
 	 */
 	 method union(another) = self + another
 
 	/**
 	 * Answers a new Set with the elements of self that exist in another collection
+	 *
+	 * Examples
+	 * 		#{1, 2}.intersection(#{5, 2})   => #{2}
+	 * 		#{}.intersection(#{3})          => #{}
+	 *
 	 * @returns a Set
 	 */
 	 method intersection(another) = 
@@ -620,6 +782,11 @@ class Set inherits Collection {
 	 	
 	/**
 	 * Answers a new Set with the elements of self that don't exist in another collection
+	 *
+	 * Examples
+	 * 		#{1, 2}.difference(#{5, 2}) => #{1}
+	 * 		#{3}.difference(#{})        => #{3}
+	 *
 	 * @returns a Set
 	 */
 	 method difference(another) =
@@ -627,13 +794,18 @@ class Set inherits Collection {
 	
 	// REFACTORME: DUP METHODS
 	/** 
-	 * Reduce a collection to a certain value, beginning with a seed or initial value
+	 * Reduce a collection to a certain value, beginning with a seed or initial value.
 	 * 
 	 * Examples
-	 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => Answers 21, the sum of all elements
+	 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) 
+	 *           => Answers 21, the sum of all elements
+	 *
+	 *      #{}.fold(0, {acum, each => acum + each})           
+	 *           => Answers 0, the seed.
 	 *
 	 * 		var numbers = #{3, 2, 9, 1, 7}
-	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => Answers 9, the maximum of all elements
+	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) 
+	 *           => Answers 9, the maximum of all elements
      *
 	 */
 	override method fold(initialValue, closure) native
@@ -649,19 +821,41 @@ class Set inherits Collection {
 	override method findOrElse(predicate, continuation) native
 	
 	/**
-	 * Adds the specified element to this set if it is not already present
+	 * Adds the specified element to this set if it is not already present.
+	 *
+	 * Example:
+	 * 		const set = #{}
+	 *		set.add(3)   => set = #{3}
+	 * 		set.add(2)   => set = #{2, 3}
+	 * 		set.add(2)   => set = #{2, 3}, second add produces no effect	 
 	 */
 	override method add(element) native
 	
 	/**
-	 * Removes the specified element from this set if it is present
+	 * Removes the specified element from this set if it is present.
+	 *
+	 * Example:
+	 * 		const set = #{2, 3}
+	 *		set.remove(3) => set = #{2}
+	 * 		set.remove(4) => set = #{2}, remove operation produces no effect
 	 */
 	override method remove(element) native
 	
-	/** Answers the number of elements in this set (its cardinality) */
+	/** Answers the number of elements in this set (its cardinality).
+	 *
+	 * Example:
+	 * 		#{2, 3}.size()   => Answers 2
+	 *		#{}.size()       => Answers 0
+	 */
 	override method size() native
 	
-	/** Removes all of the elements from this set */
+	/** 
+	 * Removes all of the elements from this set. This is a side effect operation.
+	 *
+	 * Example:
+	 * 		const set = #{2, 3}
+	 *		set.clear()         => set = #{}
+	 */
 	method clear() native
 
 	/**
@@ -669,19 +863,38 @@ class Set inherits Collection {
 	 * You can pass an optional character as an element separator (default is ",")
 	 *
 	 * Examples:
-	 * 		[1, 5, 3, 7].join(":") => Answers "1:5:3:7"
-	 * 		["you","will","love","wollok"].join(" ") => Answers "you will love wollok"
-	 * 		["you","will","love","wollok"].join()    => Answers "you,will,love,wollok"
+	 * 		#{1, 5, 3, 7}.join(":")                   => Answers "1:5:3:7"
+	 * 		#{"you","will","love","wollok"}.join(" ") => Answers "love will wollok you"
+	 *      #{}.join(",")                             => Answers ""
 	 */
 	method join(separator) native
+	
+	/**
+	 * Answers the concatenated string representation of the elements in the given set
+	 * with default element separator (",")
+	 *
+	 * Example:
+	 * 		#{"you","will","love","wollok"}.join()    => Answers "love,will,wollok,you"
+	 */
 	method join() native
 	
 	/**
 	 * Two sets are equals if they have the same elements
+	 *
+	 * Examples:
+	 * 		#{}.equals(#{})         => Answers true
+	 *      #{1, 2}.equals(#{2, 1}) => Answers true
+	 *      #{3, 2}.equals(#{2, 1}) => Answers false
 	 */
 	override method equals(other) native
 	
 	/**
+	 * 
+	 * Set equality operator as defined by equals
+	 *
+	 * #{1, 2} == #{2, 1}  => Answers true
+	 * #{} == #{}          => Answers true
+	 *
 	 * @see Object#==
 	 */
 	override method ==(other) native
@@ -707,10 +920,17 @@ class List inherits Collection {
 	}
 
 	/** 
-	 * Answers the element at the specified position in this list.
+	 * Answers the element at the specified position in this non-empty list.
 	 * 
-	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
-	 * Index must be a positive and integer value. 
+	 * The first char value of the sequence is at index 0, 
+	 * the next at index 1, and so on, as for array indexing.
+	 * Index must be a positive and integer value.
+	 *
+	 * Examples:
+	 * 		[].get(0)        => Throws error, list must not be empty
+	 * 		[1].get(-1)      => Throws error, index must be 0 or positive
+	 * 		[1, 2, 3].get(3) => Throws error, index exceeds list size
+	 *      [5, 2, 7].get(0) => Answers 5
 	 */
 	method get(index) native
 	
@@ -718,7 +938,11 @@ class List inherits Collection {
 	override method newInstance() = []
 	
 	/**
-	 * Answers any element of this collection 
+	 * Answers any element of a non-empty collection.
+	 *
+	 * Examples
+	 *		#[1, 2, 3].anyOne() => Answers 3, for example
+	 * 		#[].anyOne()        => Throws error, list must not be empty	  
 	 */
 	override method anyOne() {
 		if (self.isEmpty()) 
@@ -729,10 +953,12 @@ class List inherits Collection {
 	
 	/**
 	 * Answers first element of the non-empty list
+	 *
 	 * @returns first element
 	 *
 	 * Example:
-	 *		[1, 2, 3, 4].first()	=> Answers 1
+	 *		[1, 2, 3, 4].first()  => Answers 1
+	 *      [].first()            => Throws error, list must not be empty
 	 */
 	method first() = self.head()
 	
@@ -743,9 +969,12 @@ class List inherits Collection {
 	
 	/**
 	 * Answers the last element of the non-empty list.
+	 *
 	 * @returns last element
-	 * Example:	
-	 *		[1, 2, 3, 4].last()		=> Answers 4	
+	 *
+	 * Examples:	
+	 *		[1, 2, 3, 4].last()  => Answers 4
+	 *      [].last()            => Throws error, list must not be empty	
 	 */
 	method last() = self.get(self.size() - 1)
 
@@ -757,13 +986,20 @@ class List inherits Collection {
 
 	/** 
 	 * Converts this collection to a list. No effect on Lists.
+	 *
 	 * @see List
 	 */
 	override method asList() = self
 	
-	/** 
+	/**
 	 * Converts this list to a set (removing duplicate elements)
-	 * @see List
+	 *
+	 * Examples:	
+	 *		[1, 2, 3].asSet()       => Answers #{1, 2, 3}
+	 *      [].asSet()              => Answers #{}
+	 *      [1, 2, 1, 1, 2].asSet() => Answers #{1, 2}	
+	 *
+	 * @see Set
 	 */
 	override method asSet() { 
 		const result = #{}
@@ -773,12 +1009,14 @@ class List inherits Collection {
 	
 	/** 
 	 * Answers a view of the portion of this list between the specified fromIndex 
-	 * and toIndex, both inclusive. Remember first element is position 0, second is position 1, and so on.
+	 * and toIndex, both inclusive. Remember first element is position 0, 
+	 * second is position 1, and so on.
 	 * If toIndex exceeds length of list, no error is thrown.
 	 *
 	 * Example:
-	 *		[1, 5, 3, 2, 7, 9].subList(2, 3)		=> Answers [3, 2]	
-	 *		[1, 5, 3, 2, 7, 9].subList(4, 6)		=> Answers [7, 9] 
+	 *		[1, 5, 3, 2, 7, 9].subList(2, 3) => Answers [3, 2]	
+	 *		[1, 5, 3, 2, 7, 9].subList(4, 6) => Answers [7, 9]
+	 *      [].subList(1, 2)                 => Answers [] 
 	 */
 	method subList(start, end) {
 		if(self.isEmpty())
@@ -792,17 +1030,27 @@ class List inherits Collection {
 	}
 	 
 	/**
+	 *
+	 * Sorts elements of a list by a specific closure. 
+	 * Order of elements is modified (produces effect).
+	 * 
+	 * Examples:
+	 *		const list = [2, 9, 3]
+	 *      list.sortBy { el1, el2 => el1 > el2 }
+	 * 		list.get(0)           => Answers 9
+	 *
 	 * @see List#sortedBy
 	 */
 	method sortBy(closure) native
 	
 	/**
-	 * Takes first n elements of a list
+	 * Takes first n elements of a list.
 	 *
 	 * Examples:
 	 * 		[1,9,2,3].take(5)  ==> Answers [1, 9, 2, 3]
 	 *  	[1,9,2,3].take(2)  ==> Answers [1, 9]
-	 *  	[1,9,2,3].take(-2)  ==> Answers []		 
+	 *  	[1,9,2,3].take(-2) ==> Answers []
+	 *      [].take(2)         ==> Answers []		 
 	 */
 	method take(n) =
 		if(n <= 0)
@@ -810,7 +1058,6 @@ class List inherits Collection {
 		else
 			self.subList(0, n - 1)
 		
-	
 	/**
 	 * Answers a new list dropping first n elements of a list. 
 	 * This operation has no side effect.
@@ -819,6 +1066,7 @@ class List inherits Collection {
 	 * 		[1, 9, 2, 3].drop(3)  ==> Answers [3]
 	 * 		[1, 9, 2, 3].drop(1)  ==> Answers [9, 2, 3]
 	 * 		[1, 9, 2, 3].drop(-2) ==> Answers [1, 9, 2, 3]
+	 *      [].drop(2)            ==> Answers []
 	 */
 	method drop(n) = 
 		if(n >= self.size())
@@ -827,11 +1075,14 @@ class List inherits Collection {
 			self.subList(n, self.size() - 1)
 		
 	/**
-	 * Answers a new list reversing the elements, so that first element becomes last element of the new list and so on.
+	 * Answers a new list reversing the elements, 
+	 * so that first element becomes last element of the new list and so on.
 	 * This operation has no side effect.
 	 * 
 	 * Example:
 	 *  	[1, 9, 2, 3].reverse()  ==> Answers [3, 2, 9, 1]
+	 *      [1, 2].reverse()        ==> Answers [2, 1]	 
+	 *      [].reverse()            ==> Answers []
 	 *
 	 */
 	method reverse() = self.subList(self.size() - 1, 0)
@@ -841,10 +1092,15 @@ class List inherits Collection {
 	 * Reduce a collection to a certain value, beginning with a seed or initial value
 	 * 
 	 * Examples
-	 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) => Answers 21, the sum of all elements
+	 * 		#{1, 9, 3, 8}.fold(0, {acum, each => acum + each}) 
+	 *           => Answers 21, the sum of all elements
+	 *
+	 *      [].fold(0, {acum, each => acum + each})           
+	 *           => Answers 0, the seed.
 	 *
 	 * 		var numbers = #{3, 2, 9, 1, 7}
-	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) => Answers 9, the maximum of all elements
+	 * 		numbers.fold(numbers.anyOne(), { acum, number => acum.max(number) }) 
+	 *           => Answers 9, the maximum of all elements
      *
 	 */
 	override method fold(initialValue, closure) native
@@ -852,19 +1108,51 @@ class List inherits Collection {
 	/**
 	 * Finds the first element matching the boolean closure, 
 	 * or evaluates the continuation block closure if no element is found
+	 *
+	 * Examples:
+	 * 		[1, 9, 3, 8].findOrElse({ n => n.even() }, { 100 })  => Answers  8
+	 * 		[1, 5, 3, 7].findOrElse({ n => n.even() }, { 100 })  => Answers  100
 	 */
 	override method findOrElse(predicate, continuation) native
 	
-	/** Adds the specified element as last one */
+	/**  
+	 * Adds the specified element as last one
+	 *
+	 * Example:
+	 * 		const list = []
+	 *		list.add(3)   => list = [3]
+	 * 		list.add(2)   => list = [3, 2]
+	 * 		list.add(2)   => list = [3, 2, 2]	 
+	 */
 	override method add(element) native
 	
-	/** Removes an element in this list */ 
+	/** 
+	 * Removes an element in this list, if it is present.
+	 * 
+	 * Example:
+	 * 		const list = [2, 3]
+	 *		list.remove(3) => list = [2]
+	 * 		list.remove(4) => list = [2], remove operation produces no effect
+	 */	  
 	override method remove(element) native
 	
-	/** Answers the number of elements */
+	/** 
+	 * Answers the number of elements
+	 *
+	 * Example:
+	 * 		[2, 3].size()   => Answers 2
+	 *		[].size()       => Answers 0
+	 */
 	override method size() native
 	
-	/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
+	/** 
+	 * Removes all of the mappings from this Dictionary. 
+	 * This is a side effect operation.
+	 *
+	 * Example:
+	 * 		const list = [2, 3]
+	 *		list.clear()     => list = []
+	 */
 	method clear() native
 
 	/**
@@ -874,9 +1162,17 @@ class List inherits Collection {
 	 * Examples:
 	 * 		[1, 5, 3, 7].join(":") => Answers "1:5:3:7"
 	 * 		["you","will","love","wollok"].join(" ") => Answers "you will love wollok"
-	 * 		["you","will","love","wollok"].join()    => Answers "you,will,love,wollok"
 	 */
 	method join(separator) native
+	
+	/**
+	 *
+	 * Answers the concatenated string representation of the elements in the given set,
+	 * using default element separator (",")
+	 *
+	 * Examples:
+	 * 		["you","will","love","wollok"].join()    => Answers "you,will,love,wollok"
+	 */
 	method join() native
 	
 	/**
@@ -884,12 +1180,22 @@ class List inherits Collection {
 	 */
 	override method equals(other) native
 	
-	/** A list is == another list if all elements are equal (defined by == message) */
+	/** 
+	 * A list is == another list if all elements are equal (defined by == message)
+	 *
+	 *
+	 * Examples:
+	 * 		[].equals([])         => Answers true
+	 *      [1, 2].equals([2, 1]) => Answers false
+	 *      [1, 2].equals([1, 2]) => Answers true
+	 */
 	override method ==(other) native
 
 	/**
 	 * Answers the list without duplicate elements
+	 *
 	 * [1, 3, 1, 5, 1, 3, 2, 5].withoutDuplicates() => Answers [1, 2, 3, 5]
+	 * [].withoutDuplicates()                       => Answers []
 	 */
 	method withoutDuplicates() = self.asSet().asList()
 
@@ -902,17 +1208,35 @@ class List inherits Collection {
 class Dictionary {
 
 	/**
-	 * Adds or updates a value based on a key
+	 * Adds or updates a value based on a key.
+	 * If key is not present, a new value is added. 
+	 * If key is present, value is updated. 
+	 * This is a side effect operation.
+	 *
+	 * Example:
+	 *     const phones = new Dictionary()
+	 *     phones.put("4004-4004", rolo)
+	 *         => phones == a Dictionary ["4004-4004" -> rolo]
 	 */
 	method put(_key, _value) native
 	
 	/**
-	 * Answers the value to which the specified key is mapped, or null if this Dictionary contains no mapping for the key.
+	 * Answers the value to which the specified key is mapped, 
+	 * or null if this Dictionary contains no mapping for the key.
+	 *
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.basicGet("4004-4004")  => Answers rolo
+	 *     phones.basicGet("4004-4005")  => Answers null
 	 */
 	method basicGet(_key) native
 
 	/**
-	 * Answers the value to which the specified key is mapped, or evaluates a non-parameter closure otherwise 
+	 * Answers the value to which the specified key is mapped, 
+	 * or evaluates a non-parameter closure otherwise.
+	 * 
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.getOrElse("4004-4004", { 0 })  => Answers rolo
+	 *     phones.getOrElse("4004-4005", { 0 })  => Answers 0
 	 */
 	method getOrElse(_key, _closure) {
 		const value = self.basicGet(_key)
@@ -925,49 +1249,96 @@ class Dictionary {
 	/**
 	 * Answers the value to which the specified key is mapped. 
 	 * If this Dictionary contains no mapping for the key, an error is thrown.
+	 *
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.get("4004-4004")  => Answers rolo
+	 *     phones.get("4004-4005")  => Throws ElementNotFoundException
 	 */
 	method get(_key) = self.getOrElse(_key,{ => throw new ElementNotFoundException("there is no element associated with key " + _key) })
 
 	/**
 	 * Answers the number of key-value mappings in this Dictionary.
+	 *
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.size()           => Answers 1
+	 *     new Dictionary().size() => Answers 0
 	 */
 	method size() = self.values().size()
 	
 	/**
 	 * Answers whether the dictionary has no elements
+	 *
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.isEmpty()           => Answers false
+	 *     new Dictionary().isEmpty() => Answers true
 	 */
 	method isEmpty() = self.size() == 0
 	
 	/**
 	 * Answers whether this Dictionary contains a mapping for the specified key.
+	 *
+	 * Example, assuming phones is the dictionary created in put example:
+	 *     phones.containsKey("4004-4004")  => Answers true
+	 *     phones.containsKey("4004-4005")  => Answers false
+	 *     new Dictionary().containsKey(1)  => Answers false
 	 */
 	method containsKey(_key) = self.keys().contains(_key)
 	
 	/**
 	 * Answers whether if this Dictionary maps one or more keys to the specified value.
+	 *
+	 * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+	 *     numbers.containsValue(2)          => Answers true
+     *     numbers.containsValue(5)          => Answers false
+     *     new Dictionary().containsValue(3) => Answers false
 	 */
 	method containsValue(_value) = self.values().contains(_value)
 	
 	/**
-	 * Removes the mapping for a key from this Dictionary if it is present 
+	 * Removes the mapping for a key from this Dictionary if it is present.
+	 * If key is not present nothing happens.
+	 * This is a side effect operation.
+	 *
+	 * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+	 *     numbers.remove("one")   => numbers is a dictionary ("two" -> 2)
+	 *     numbers.remove("three") => nothing happens  
 	 */
 	method remove(_key) native
 	
 	/**
 	 * Answers a list of the keys contained in this Dictionary.
+	 *
+	 * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+     *     numbers.keys()   => ["one", "two"]	 
 	 */
 	method keys() native
 	
 	/**
 	 * Answers a list of the values contained in this Dictionary.
+	 *
+	 * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+     *     numbers.values()   => [1, 2]	 
 	 */
 	method values() native
 	
 	/**
-	 * Performs the given action for each entry in this Dictionary until all entries have been 
-	 * processed or the action throws an exception.
+	 * Performs the given action for each entry in this Dictionary 
+	 * until all entries have been processed or the action throws an exception.
 	 * 
-	 * Expected closure with two parameters: the first associated with key and second with value.
+	 * Expected closure with two parameters: the first associated with key and
+	 * second with value.
 	 *
 	 * Example:
 	 * 		mapaTelefonos.forEach({ k, v => result += k.size() + v.size() })
@@ -975,9 +1346,27 @@ class Dictionary {
 	 */
 	method forEach(closure) native
 	
-	/** Removes all of the mappings from this Dictionary. This is a side-effect operation. */
+	/** 
+	 * Removes all of the mappings from this Dictionary. 
+	 * This is a side effect operation.
+	 *
+     * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+	 *     numbers.clear()  => phones == empty dictionary
+	 */
 	method clear() native
 	
+	/**
+	 * String representation of a Dictionary
+	 *
+     * Example:
+	 *     const numbers = new Dictionary()
+     *     numbers.put("one", 1)
+     *     numbers.put("two", 2)
+	 *         => Answers a Dictionary ["one" -> 1, "two" -> 2]
+	 */
 	override method toString() {
 		var result = "a Dictionary ["
 		self.forEach { key, value => result = result + (key.printString() + " -> " + value.printString() + ", ") }
@@ -995,8 +1384,10 @@ class Dictionary {
  *
  * Coercing strategy for numbers can be 
  * 1) rounding up: 2,3258 using 3 decimals will result in 2,326
- * 2) rounding down or truncation: 2,3258 using 3 decimals will result in 2,325 
- * 3) not allowed: 2,3258 using 3 decimals will throw an exception since decimals exceeds maximum allowed
+ * 2) rounding down or truncation: 2,3258 using 3 decimals will
+ *    result in 2,325 
+ * 3) not allowed: 2,3258 using 3 decimals will throw an exception 
+ *    since decimals exceeds maximum allowed
  *
  * @author jfernandes
  * @author dodain (unification between Double and Integer in a single Number class)
@@ -1018,8 +1409,9 @@ class Number {
 	/** 
 	 * @private
 	 *
-	 * Applies coercing strategy to integer. If it is an integer, nothing happens. Otherwise, 
-	 * if it is a decimal, defined coercing algorithm is applied (see definition of class Number)
+	 * Applies coercing strategy to integer. If it is an integer, nothing happens. 
+	 * Otherwise, if it is a decimal, defined coercing algorithm is applied 
+	 * (see definition of class Number)
 	 */
 	method coerceToInteger() native
 	
@@ -1106,20 +1498,25 @@ class Number {
 		return if (self >= other) self else other
 	}
 	
-	/** Answers the lower number between two. @see max */
+	/** 
+	  * Answers the lower number between two. @see max 
+	  * Example:
+	  *     5.min(8)    ==> Answers 5 
+	  */
 	method min(other) {
 		self.checkNotNull(other, "min")
 		return if (self <= other) self else other
 	}
 	
 	/**
-	 * Given self and a range of integer values, Answers self if it is in that range
+	 * Given self and a range of integer values, 
+	 * answers self if it is in that range
 	 * or nearest value from self to that range 
 	 *
 	 * Examples
-	 * 4.limitBetween(2, 10)   ==> Answers 4, because 4 is in the range
-	 * 4.limitBetween(6, 10)   ==> Answers 6, because 4 is not in range 6..10, and 6 is nearest value to 4
-	 * 4.limitBetween(1, 2)    ==> Answers 2, because 4 is not in range 1..2, but 2 is nearest value to 4
+	 * 4.limitBetween(2, 10) ==> Answers 4, because 4 is in the range
+	 * 4.limitBetween(6, 10) ==> Answers 6, because 4 is not in range 6..10, and 6 is nearest value to 4
+	 * 4.limitBetween(1, 2)  ==> Answers 2, because 4 is not in range 1..2, but 2 is nearest value to 4
 	 *
 	 */   
 	method limitBetween(limitA,limitB) = if(limitA <= limitB) 
@@ -1127,30 +1524,45 @@ class Number {
 										 else 
 										 	limitB.max(self).min(limitA)
 
-	/** Answers whether self is between min and max */
+	/** 
+	  * Answers whether self is between min and max 
+	  *
+	  * Example:
+	  *     2.between(2, 3) ==> Answers true
+	  *     6.between(4, 6) ==> Answers true
+	  *     3.between(4, 6) ==> Answers false	 
+	  */
 	method between(min, max) { return (self >= min) && (self <= max) }
 	
 	/** Answers squareRoot of self
-	 * 		9.squareRoot() => Answers 3 
-	 */
+ 	  *
+	  * Example:	 
+	  * 		9.squareRoot() => Answers 3 
+	  */
 	method squareRoot() = self ** 0.5
 	
 	/** Answers square of self
-	 * 		3.square() => Answers 9 
-	 */
+	  *
+	  * Example:	 
+	  * 		3.square() => Answers 9 
+	  */
 	method square() = self * self
 	
 	/** 
-	 * Answers whether self is an even number (divisible by 2, mathematically 2k) 
-	 * Self must be an integer value
-	 */
+	  * Answers whether self is an even number 
+	  * (divisible by 2, mathematically 2k).
+	  * 
+	  * Self must be an integer value
+	  */
 	method even() {
 		const intValue = self.coerceToInteger()
 		return intValue % 2 == 0 
 	}
 	
 	/** 
-	 * Answers whether self is an odd number (not divisible by 2, mathematically 2k + 1) 
+	 * Answers whether self is an odd number 
+	 * (not divisible by 2, mathematically 2k + 1).
+	 * 
 	 * Self must be an integer value
 	 */
 	method odd() { 
@@ -1159,9 +1571,10 @@ class Number {
 	}
 	
 	/** Answers remainder between self and other
+	 *
 	 * Example:
-	 * 		5.rem(3) 	==> Answers 2
-	 *      5.5.rem(3) 	==> Answers 2
+	 *     5.rem(3) 	==> Answers 2
+	 *     5.5.rem(3) 	==> Answers 2
 	 */
 	method rem(other) = self % other
 	
@@ -1174,10 +1587,11 @@ class Number {
 	 * Rounds up self up to a certain amount of decimals.
 	 * Amount of decimals must be a positive and integer value.
 	 *
-	 * 1.223445.roundUp(3) ==> 1.224
-	 * -1.223445.roundUp(3) ==> -1.224
-	 * 14.6165.roundUp(3) ==> 14.617
-	 * 5.roundUp(3) ==> 5
+	 * Example:	 
+	 *     1.223445.roundUp(3) ==> 1.224
+	 *     -1.223445.roundUp(3) ==> -1.224
+	 *     14.6165.roundUp(3) ==> 14.617
+	 *     5.roundUp(3) ==> 5
 	 */
 	 method roundUp(_decimals) native
 
@@ -1185,10 +1599,11 @@ class Number {
 	 * Truncates self up to a certain amount of decimals.
 	 * Amount of decimals must be a positive and integer value.
 	 *
-	 * 1.223445.truncate(3) ==> 1.223
-	 * 14.6165.truncate(3) ==> 14.616
-	 * -14.6165.truncate(3) ==> -14.616
-	 * 5.truncate(3) ==> 5
+	 * Example:	 
+	 *     1.223445.truncate(3) ==> 1.223
+	 *     14.6165.truncate(3) ==> 14.616
+	 *     -14.6165.truncate(3) ==> -14.616
+	 *     5.truncate(3) ==> 5
 	 */
 	method truncate(_decimals) native
 
@@ -1206,7 +1621,8 @@ class Number {
 	method roundUp() = self.roundUp(0)
 
  	/**
-  	 * greater common divisor. Both self and "other" parameter are coerced to be integer values.
+  	 * greater common divisor. 
+  	 * Both self and "other" parameter are coerced to be integer values.
   	 *
   	 * Example:
   	 * 		8.gcd(12) ==> Answers 4
@@ -1215,7 +1631,8 @@ class Number {
   	method gcd(other) native
 
 	/**
-	 * least common multiple. Both self and "other" parameter are coerced to be integer values.
+	 * least common multiple. 
+	 * Both self and "other" parameter are coerced to be integer values.
 	 *
 	 * Example:
 	 * 		3.lcm(4) ==> Answers 12
@@ -1228,7 +1645,12 @@ class Number {
 	}
 	
 	/**
-	 * number of digits of self (without sign)
+	 * Number of digits of self (without sign)
+	 * 
+	 * Examples:
+	 *     600.digits()  ==> Answers 3
+	 *     6.00012.digits() ==> Answers 6
+	 *     -100.digits() ==> Answers -3
 	 */
 	method digits() {
 		var digits = self.toString().size()
@@ -1245,17 +1667,18 @@ class Number {
 	 * Tells if this number can be considered an integer number.
 	 *
 	 * Examples:
-	 *              2.isInteger() ==> Answers true
-	 *              (2.0).isInteger() ==> Answers true
-	 *              (2.3).isInteger() ==> Answers false
+	 *     2.isInteger() ==> Answers true
+	 *     (2.0).isInteger() ==> Answers true
+	 *     (2.3).isInteger() ==> Answers false
 	 * 
 	 * This could depend also on the rounding strategy, for example:
-	 *              (2.0001).isInteger() ==> Answers false if the rounding strategy is set to 5 decimal places (default)
-	 *              (2.0001).isInteger() ==> Answers true if the rounding strategy is set to 3 decimal places
+	 *     (2.0001).isInteger() ==> Answers false if rounding strategy is set to 5 decimal places (default)
+	 *     (2.0001).isInteger() ==> Answers true if rounding strategy is set to 3 decimal places
 	 */
 	method isInteger() native
 	
-	/** Answers whether self is a prime number, like 2, 3, 5, 7, 11 ... 
+	/** Answers whether self is a prime number, 
+	  * like 2, 3, 5, 7, 11 ... 
 	  * Self must be an integer positive value
 	  */
 	method isPrime() {
@@ -1289,7 +1712,8 @@ class Number {
 }
 
 /**
- * Strings are constant; their values cannot be changed after they are created.
+ * Strings are constant; 
+ * their values cannot be changed after they are created.
  *
  * @author jfernandes
  * @noInstantiate
@@ -1299,8 +1723,9 @@ class String {
 	method length() native
 	
 	/** 
-	 * Answers the char value at the specified index. An index ranges from 0 to length() - 1. 
-	 * The first char value of the sequence is at index 0, the next at index 1, and so on, as for array indexing.
+	 * Answers the char value at the specified index. An index ranges 
+	 * from 0 to length() - 1. The first char value of the sequence is
+	 * at index 0, the next at index 1, and so on, as for array indexing.
 	 * Parameter index must be a positive integer value.
 	 */
 	method charAt(index) native
@@ -1313,7 +1738,8 @@ class String {
 	method +(other) native
 	
 	/** 
-	 * Tests if this string starts with the specified prefix. It is case sensitive.
+	 * Tests if this string starts with the specified prefix. 
+	 * It is case sensitive.
 	 *
 	 * Examples:
 	 * 		"mother".startsWith("moth")  ==> Answers true
@@ -1321,13 +1747,16 @@ class String {
 	 */ 
 	method startsWith(other) native
 	
-	/** Tests if this string ends with the specified suffix. It is case sensitive.
+	/** 
+	 * Tests if this string ends with the specified suffix. 
+	 * It is case sensitive.
 	 * @see startsWith
 	 */
 	method endsWith(other) native
 	
 	/** 
-	 * Answers the index within this string of the first occurrence of the specified character.
+	 * Answers the index within this string of the first occurrence
+	 * of the specified character.
 	 * If character is not present, Answers -1
 	 * 
 	 * Examples:
@@ -1337,7 +1766,8 @@ class String {
 	method indexOf(other) native
 	
 	/**
-	 * Answers the index within this string of the last occurrence of the specified character.
+	 * Answers the index within this string of the last 
+	 * occurrence of the specified character.
 	 * If character is not present, Answers -1
 	 *
 	 * Examples:
@@ -1346,14 +1776,27 @@ class String {
 	 */
 	method lastIndexOf(other) native
 	
-	/** Converts all of the characters in this String to lower case */
+	/** 
+	 * Converts all of the characters in this String to lower case
+	 *
+	 * Examples:
+	 * 		"Fer".toLowerCase()  ==> Answers "fer"
+	 * 		"".toLowerCase()     ==> Answers ""
+	 */
 	method toLowerCase() native
 	
-	/** Converts all of the characters in this String to upper case */
+	/** 
+	 * Converts all of the characters in this String to upper case
+	 *
+	 * Examples:
+	 * 		"Fer".toUpperCase()  ==> Answers "FER"
+	 * 		"".toUpperCase()     ==> Answers ""
+	 */
 	method toUpperCase() native
 	
 	/** 
-	 * Answers a string whose value is this string, with any leading and trailing whitespace removed
+	 * Answers a string whose value is this string, 
+	 * with any leading and trailing whitespace removed.
 	 * 
 	 * Example:
 	 * 		"   emptySpace  ".trim()  ==> "emptySpace"
@@ -1391,17 +1834,19 @@ class String {
 	method equalsIgnoreCase(aString) = self.toUpperCase() == aString.toUpperCase()
 	
 	/**
-	 * Answers a substring of this string beginning from an inclusive index.
-	 * Parameter index must be a positive integer value.
+	 * Answers a substring of this string beginning from
+	 * an inclusive index. Parameter index must be a positive 
+	 * integer value.
 	 *
 	 * Examples:
-	 * 		"substitute".substring(6)  ==> Answers "tute", because second "t" is in position 6
+	 * 		"substitute".substring(6)  ==> Answers "tute", second "t" is in position 6
 	 * 		"effect".substring(0)      ==> Answers "effect", has no effect at all
 	 */
 	method substring(index) native
 	
 	/**
-	 * Answers a substring of this string beginning from an inclusive index up to another inclusive index
+	 * Answers a substring of this string beginning 
+	 * from an inclusive index up to another inclusive index
 	 *
 	 * Examples:
 	 * 		"walking".substring(2, 4)   ==> Answers "lk"
@@ -1416,7 +1861,8 @@ class String {
 	 * Answers a list of strings.
 	 *
 	 * Example:
-	 * 		"this,could,be,a,list".split(",")   ==> Answers ["this", "could", "be", "a", "list"]
+	 * 		"this,could,be,a,list".split(",")   
+	 *          ==> Answers ["this", "could", "be", "a", "list"]
 	 */
 	method split(expression) {
 		const result = []
@@ -1432,10 +1878,12 @@ class String {
 	}
 
 	/** 
-	 * Answers a string resulting from replacing all occurrences of expression in this string with replacement
+	 * Answers a string resulting from replacing all occurrences of
+	 * expression in this string with replacement
 	 *
 	 * Example:
-	 *		 "stupid is what stupid does".replace("stupid", "genius") ==> Answers "genius is what genius does"
+	 *		 "stupid is what stupid does".replace("stupid", "genius") 
+	 *           ==> Answers "genius is what genius does"
 	 */
 	method replace(expression, replacement) native
 	
@@ -1450,24 +1898,59 @@ class String {
 	/** @private */
 	override method toSmartString(alreadyShown) native
 	
-	/** Compares this string to the specified object. The result is true if and only if the
-	 * argument is not null and is a String object that represents the same sequence of characters as this object.
+	/** Compares this string to the specified object. 
+	 * The result is true if and only if the
+	 * argument is not null and is a String object 
+	 * that represents the same sequence of characters as this object.
 	 */
 	override method ==(other) native
 	
 	/** A synonym for length */
 	method size() = self.length()
 	
-	/** Takes first n characters of this string */
+	/** 
+	 * Takes first n characters of this string.
+	 * n must be zero-positive integer.
+	 *
+	 * Examples:
+	 *     "lowercase".take(3)  ==> Answers "low"
+	 *     "lowercase".take(0)  ==> Answers ""
+	 *     "lowercase".take(-1) ==> Throws error
+	 *     "".take(2)           ==> Answers "" 
+	 */
 	method take(n) = self.substring(0, n.min(self.size()))
 	
-	/** Answers a new string dropping first n characters of this string */
+	/** 
+	 * Answers a new string dropping 
+	 * first n characters of this string.
+	 * n must be zero-positive integer.
+	 *
+	 * Examples:
+	 *      "caption".drop(4)    ==> Answers "ion"
+	 *      "caption".drop(0)    ==> Answers "caption" 
+	 *      "caption".drop(-1)   ==> Throws error 
+	 *      "".drop(2)           ==> Answers "" 
+	 */
 	method drop(n) = self.substring(n.min(self.size()), self.size())
 	
-	/** Splits this strings into several words */
+	/** 
+	 * Splits this strings into several words.
+	 * 
+	 * Examples:
+	 *      "how does words work?".words() 
+	 *            ==> Answers ["how", "does", "words", "work?"]
+	 *
+	 *      "".words() ==> Answers [] 
+	 */
 	method words() = self.split(" ")
 	
-	/** Changes the first letter of every word to upper case in this string */
+	/**
+	 * Changes the first letter of every word to
+	 * upper case in this string. 
+	 * 
+	 * Example:
+	 *      "javier fernandes".capitalize() ==> Answers "Javier Fernandes"
+	 */
 	method capitalize() {
 		const capitalizedPhrase = self.words().fold("", { words, word => words + word.take(1).toUpperCase() + word.drop(1).toLowerCase() + " " })
 		return capitalizedPhrase.take(capitalizedPhrase.size() - 1)
@@ -1483,13 +1966,20 @@ class String {
  */
 class Boolean {
 
-	/** Answers the result of applying the logical AND operator to the specified boolean operands self and other */
+	/** 
+	 * Answers the result of applying the logical AND operator 
+	 * to the specified boolean operands self and other 
+	 */
 	method and(other) native
+	
 	/** A synonym for and operation */
 	method &&(other) native
 	
-	/** Answers the result of applying the logical OR operator to the specified boolean operands self and other */
+	/** Answers the result of applying the logical OR operator
+	 * to the specified boolean operands self and other 
+	 */
 	method or(other) native
+	
 	/** A synonym for or operation */
 	method ||(other) native
 	
@@ -1499,8 +1989,10 @@ class Boolean {
 	/** @private */
 	override method toSmartString(alreadyShown) native
 	
-	/** Compares this string to the specified object. The result is true if and only if the
-	 * argument is not null and represents same value (true or false)
+	/** Compares this string to the specified object. 
+	 * The result is true if and only if the
+	 * argument is not null and represents same value 
+	 * (true or false)
 	 */
 	override method ==(other) native
 	
@@ -1509,7 +2001,8 @@ class Boolean {
 }
 
 /**
- * Represents a finite arithmetic progression of integer numbers with optional step
+ * Represents a finite arithmetic progression 
+ * of integer numbers with optional step
  * If start = 1, end = 8, Range will represent [1, 2, 3, 4, 5, 6, 7, 8]
  * If start = 1, end = 8, step = 3, Range will represent [1, 4, 7]
  *
@@ -1522,7 +2015,8 @@ class Range {
 	var step
 	
 	/**
-	  * Instantiates a Range. Both _start and _end must be integer values.
+	  * Instantiates a Range. 
+	  * Both _start and _end must be integer values.
 	  */
 	constructor(_start, _end) {
 		start = _start.coerceToInteger()
@@ -1534,18 +2028,29 @@ class Range {
 		}
 	}
 	
+	/**
+	 * Setter for step attribute.
+	 */
 	method step(_step) { step = _step }
 
 	/** 
-	 * Iterates over a Range from start to end, based on step
+	 * Iterates over a Range from start to end, based on step.
+	 *
+	 * Example:
+	 *     new Range(1, 3).forEach { value => console.println(value) }
+	 *     => prints 1, 2, 3
 	 */
 	method forEach(closure) native
 	
 	/**
-	 * Answers a new collection that contains the result of transforming each of self collection's elements
-	 * using a given closure.
-	 * The condition is a closure argument that takes an integer and Answers an object.
+	 * Answers a new collection that contains the result of 
+	 * transforming each of self collection's elements using
+	 * a given closure.
+	 *
+	 * The condition is a closure argument that takes an integer 
+	 * and answers an object.
 	 * @returns another list
+	 *
 	 * Example:
 	 *      (1..10).map({ n => n * 2}) ==> Answers [2, 4, 6, 8, 10, 12, 14, 16, 18, 20] 
 	 */
@@ -1560,13 +2065,22 @@ class Range {
 		return self.map({ elem => return elem })
 	}
 	
-	/** Answers whether this range contains no elements */
+	/** 
+	 * Answers whether this range contains no elements
+	 * @see Collection#isEmpty() 
+	 */
 	method isEmpty() = self.size() == 0
 
 	/** @see List#fold(seed, foldClosure) */
 	method fold(seed, foldClosure) { return self.asList().fold(seed, foldClosure) }
 	
-	/** Answers the number of elements */
+	/** 
+	 * Answers the number of elements
+	 *
+	 * Examples:
+	 *     new Range(0, 2).size() ==> Answers 3
+	 *     new Range(-2, 2).size() ==> Answers 5  
+	 */
 	method size() { return end - start + 1 }
 	
 	/** @see List#any(closure) */
@@ -1586,10 +2100,19 @@ class Range {
 	
 	/**
 	 * Answers a random integer contained in the range
+	 *
+	 * Example:
+	 *     new Range(1, 3).anyOne() ==> Answers 1 or 2 or 3
 	 */		
 	method anyOne() native
 	
-	/** Tests whether a number e is contained in the range */
+	/** 
+	 * Tests whether a number e is contained in the range
+	 *
+	 * Examples:
+	 *     new Range(2, 5).contains(4) ==> Answers true 
+	 *     new Range(2, 5).contains(0) ==> Answers false
+	 */
 	method contains(e) = self.asList().contains(e)
 	
 	/** @see List#sum() */
@@ -1629,8 +2152,9 @@ class Range {
 
 /**
  * 
- * Represents an executable piece of code. You can create a closure, assign it to a reference,
- * evaluate it many times, send it as parameter to another object, and many useful things.
+ * Represents an executable piece of code. You can create a closure, 
+ * assign it to a reference, evaluate it many times, 
+ * send it as parameter to another object, and many useful things.
  *
  * @author jfernandes
  * @since 1.3
@@ -1652,7 +2176,8 @@ class Closure {
 
 /**
  *
- * Represents a Date (without time). A Date is immutable, once created you can not change it.
+ * Represents a Date (without time). A Date is immutable, 
+ * once created you can not change it.
  *
  * @since 1.4.5
  */	
@@ -1668,33 +2193,71 @@ class Date {
 	 */
 	constructor(_day, _month, _year) { self.initialize(_day, _month, _year) }
 	
+	/** String representation of a date */
 	override method toString() = self.toSmartString(false) 
 	
 	/** Two dates are equals if they represent the same date */
 	override method ==(_aDate) native
 	
-	/** Answers a copy of this Date with the specified number of days added. 
+	/** 
+	  * Answers a copy of this Date with the specified number of days added. 
 	  * Parameter must be an integer value.
+	  * This operation has no side effect (a new date is returned).	  
+	  *
+	  * Example:
+	  *     new Date(12, 5, 2018).plusDays(1) 
+	  *        ==> Answers a Date[day = 13, month = 5, year = 2018], a day forward
+	  *     
+	  *     new Date(12, 5, 2018).plusDays(-1)
+	  *        ==> Answers a Date[day = 11, month = 5, year = 2018], a day back
 	  */
 	method plusDays(_days) native
 	
-	/** Answers a copy of this Date with the specified number of months added. 
+	/** 
+	  * Answers a copy of this Date with the specified number of months added. 
 	  * Parameter must be an integer value.
+	  * This operation has no side effect (a new date is returned).
+	  *
+	  * Example:
+	  *     new Date(31, 1, 2018).plusMonths(1)
+      *        ==> Answers a Date[day = 28, month = 2, year = 2018], a month forward 
+	  *     
+	  *     new Date(12, 5, 2018).plusMonths(-1)
+	  *        ==> Answers a Date[day = 12, month = 4, year = 2018], a month back
 	  */
 	method plusMonths(_months) native
 	
-	/** Answers a copy of this Date with the specified number of years added. 
+	/** 
+	  * Answers a copy of this Date with the specified number of years added. 
 	  * Parameter must be an integer value.
+	  * This operation has no side effect (a new date is returned).
+	  *
+	  * Example:
+	  *     new Date(31, 1, 2018).plusYears(1)
+      *        ==> Answers a Date[day = 31, month = 1, year = 2019], a year forward 
+	  *     
+	  *     new Date(12, 5, 2018).plusYears(-1)
+	  *        ==> Answers a Date[day = 12, month = 5, year = 2017], a year back
 	  */
 	method plusYears(_years) native
 	
-	/** Checks if the year is a leap year, like 2000, 2004, 2008, 2012, 2016... */
+	/** 
+	  * Checks if the year is a leap year, like 2000, 2004, 2008...
+	  *
+	  * Example:
+	  *     new Date(12, 5, 2018).isLeapYear() ==> Answers false 
+	  */
 	method isLeapYear() native
 	
 	/** @private */
 	method initialize(_day, _month, _year) native
 	
-	/** Answers the day number of the Date */
+	/** 
+	  * Answers the day number of the Date
+	  *
+	  * Example:
+	  *     new Date(12, 7, 2019).day() ==> Answers 12 
+	  */
 	method day() native
 	
 	/** Answers the day of week of the Date, where
@@ -1703,13 +2266,26 @@ class Date {
 	 * 3 = WEDNESDAY
 	 * ...
 	 * 7 = SUNDAY
+	 *
+	 * Example:
+	 *     new Date(24, 2, 2018).dayOfWeek() ==> Answers 6 (SATURDAY) 
 	 */
 	method dayOfWeek() native
 	
-	/** Answers the month number of the Date */
+	/** 
+	  * Answers the month number of the Date
+	  * 
+	  * Example:
+	  *     new Date(12, 7, 2019).month() ==> Answers 7 
+	  */
 	method month() native
 	
-	/** Answers the year number of the Date */
+	/** 
+	  * Answers the year number of the Date
+	  *
+	  * Example:
+	  *     new Date(12, 7, 2019).year() ==> Answers 2019 
+	  */
 	method year() native
 	
 	/** 
@@ -1723,20 +2299,44 @@ class Date {
 	
 	/** 
 	 * Answers a copy of this date with the specified number of days subtracted.
-	 * For example, 2009-01-01 minus one day would result in 2008-12-31.
 	 * This instance is immutable and unaffected by this method call.
 	 * Parameter must be an integer value.
+	 * This operation has no side effect (a new date is returned).	 
+     *
+	 * Examples:
+	 * 		new Date(1, 1, 2009).minusDays(1) 
+	 *          ==> Answers a Date[day = 31, month = 12, year = 2008], a day back 
+	 *
+	 * 		new Date(1, 1, 2009).minusDays(-1) 
+	 *          ==> Answers a Date[day = 2, month = 1, year = 2009], a day forward 
 	 */
 	method minusDays(_days) native
 	
 	/** 
-	 * Answers a copy of this date with the specified number of months subtracted.
-	 * Parameter must be an integer value.
-	 */
+	  * Answers a copy of this date with the specified number of months subtracted.
+	  * Parameter must be an integer value.
+	  * This operation has no side effect (a new date is returned).	  
+	  *
+	  * Examples:
+	  * 		new Date(1, 1, 2009).minusMonths(1) 
+	  *             ==> Answers a Date[day = 1, month = 12, year = 2008], a month back
+	  *
+	  * 		new Date(1, 1, 2009).minusMonths(-1) 
+	  *             ==> Answers a Date[day = 1, month = 2, year = 2009], a month forward
+	  */
 	method minusMonths(_months) native
 	
-	/** Answers a copy of this date with the specified number of years subtracted.
+	/** 
+	  * Answers a copy of this date with the specified number of years subtracted.
 	  * Parameter must be an integer value.
+	  * This operation has no side effect (a new date is returned).	  
+	  *
+	  * Examples:
+	  * 		new Date(1, 1, 2009).minusYears(1) 
+	  *             ==> Answers a Date[day = 1, month = 1, year = 2008], a year back
+	  *
+	  * 		new Date(1, 1, 2009).minusYears(-1) 
+	  *             ==> Answers a Date[day = 1, month = 1, year = 2010], a year forward
 	  */
 	method minusYears(_years) native
 	
@@ -1745,7 +2345,13 @@ class Date {
 	method <=(_aDate) = (self < _aDate) || (self.equals(_aDate))
 	method >=(_aDate) = (self > _aDate) || (self.equals(_aDate)) 
 	
-	/** Answers whether self is between two dates (both inclusive comparison) */
+	/**
+	  * Answers whether self is between two dates (both inclusive comparison)
+	  *
+	  * Example:
+	  *     new Date(2, 4, 2018).between(new Date(1, 4, 2018), new Date(2, 4, 2018))
+	  *         ==> Answers true 
+	  */
 	method between(_startDate, _endDate) = (self >= _startDate) && (self <= _endDate) 
 
 	/** Shows nicely an internal representation of a date **/
