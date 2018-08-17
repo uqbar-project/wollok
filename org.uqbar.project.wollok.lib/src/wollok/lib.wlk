@@ -596,7 +596,7 @@ class Position {
 }
 
 /** 
- * Simplified algorithm for throwing an exception
+ * This object simplifies exception throwing
  */
 object error {
 	/**
