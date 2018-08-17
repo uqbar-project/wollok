@@ -12,6 +12,8 @@ import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
@@ -34,10 +36,13 @@ class VoidTypeInfo extends TypeInfo {
 	static def dispatch canBeVoid(WMemberFeatureCall object) { true }
 	static def dispatch canBeVoid(WVariableDeclaration object) { true }
 	static def dispatch canBeVoid(WReturnExpression object) { true }
+	static def dispatch canBeVoid(WThrow object) { true }
+	static def dispatch canBeVoid(WTry object) { true }
 	static def dispatch canBeVoid(WPostfixOperation object) { true }
 	static def dispatch canBeVoid(WAssignment object) { true }
 	static def dispatch canBeVoid(WIfExpression object) { true }
 	static def dispatch canBeVoid(WBinaryOperation it) { isMultiOpAssignment }
+	
 	static def dispatch isVoid(Void typeInfo) { false }
 	static def dispatch isVoid(TypeInfo typeInfo) { false }
 	static def dispatch isVoid(VoidTypeInfo typeInfo) { true }

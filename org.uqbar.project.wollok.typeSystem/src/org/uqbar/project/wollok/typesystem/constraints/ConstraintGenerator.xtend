@@ -37,6 +37,9 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 import org.uqbar.project.wollok.wollokDsl.Import
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WTry
+import org.uqbar.project.wollok.wollokDsl.WCatch
 
 /**
  * @author npasserini
@@ -272,6 +275,28 @@ class ConstraintGenerator {
 		}
 	}
 
+	def dispatch void generate(WThrow it) {
+		exception.generateVariables
+		newTypeVariable.beVoid	
+	}
+
+	def dispatch void generate(WTry it) {
+		expression.generateVariables
+		catchBlocks.forEach[generateVariables]
+		alwaysExpression?.generateVariables
+		newTypeVariable.beVoid	
+	}
+
+	def dispatch void generate(WCatch it) {
+		exceptionVarName.newTypeVariable => [tvar |
+			if (exceptionType !== null)
+				tvar.beSealed(classType(exceptionType))
+			else
+				tvar.beNonVoid	
+		]
+		expression.generateVariables
+	}
+
 	// ************************************************************************
 	// ** Literals & terminals
 	// ************************************************************************
@@ -323,10 +348,6 @@ class ConstraintGenerator {
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
 		constructorConstraintsGenerator.run()
-	}
-
-	def newNamedObject(WNamedObject it) {
-		newTypeVariable.beSealed(objectType)
 	}
 
 	// ************************************************************************
