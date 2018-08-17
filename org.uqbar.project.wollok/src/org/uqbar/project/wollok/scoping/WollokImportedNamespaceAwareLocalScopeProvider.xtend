@@ -191,7 +191,9 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 			val implicitPackageFQN = qualifiedNameConverter.toQualifiedName(implicitPackage)
 
 			(0 .. implicitPackageFQN.segmentCount).map [ i |
-				implicitPackageFQN.skipLast(i).append(importedNamespace).toString
+				if (importedNamespace !== null) {
+					implicitPackageFQN.skipLast(i).append(importedNamespace).toString
+				}				
 			]
 		}
 	}

@@ -14,7 +14,7 @@ import static extension org.uqbar.project.wollok.utils.ReflectionExtensions.exec
 class WollokScopeExtensions {
 	def static containsImport(IScope scope, String namespace) {
 		val definedNames = scope.definedNames
-		definedNames.exists[it.isIncludedIn(namespace)]
+		definedNames.exists[ namespace !== null && it.isIncludedIn(namespace) ]
 	}
 
 	def static dispatch Iterable<QualifiedName> definedNames(IScope scope) {

@@ -14,11 +14,9 @@ import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WCollectionLiteral
-import org.uqbar.project.wollok.wollokDsl.WConstructor
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WMember
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
@@ -26,22 +24,28 @@ import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WVariable
+import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+enum Accessor {
+	NONE, GETTER, SETTER
+}
+
 @Accessors
 class WollokProposal {
 	String referencePackage
 	EObject model
-	WMember member
+	EObject member
 	Image image
 	int priority = 0
 	ContentAssistContext context
 	boolean isCalledFromSelf
+	Accessor accessor	
 
-	new(String reference, WMember m, Image image, int priority, ContentAssistContext context, EObject model) {
+	new(String reference, EObject m, Image image, int priority, ContentAssistContext context, EObject model) {
 		this.referencePackage = reference
 		this.member = m
 		this.image = image
@@ -50,20 +54,28 @@ class WollokProposal {
 		this.model = model
 	}
 
+	def getPrefix() {
+		context.prefix	
+	}
+	
 	def getMethodName() {
 		member.asProposal
 	}
 
+	def getContainer() {
+		member.eContainer as WMethodContainer
+	}
+	
 	def getContainerName() {
-		member.getMethodContainer.name
+		container.name
 	}
 
 	def getContainerPackage() {
-		member.getMethodContainer.packageName
+		container.packageName
 	}
 
 	def getContainerFqn() {
-		member.getMethodContainer.getNameWithPackage
+		container.nameWithPackage
 	}
 
 	def createProposalStyler() {
@@ -105,6 +117,19 @@ class WollokProposal {
 		if(member !== null && member.declaringContext !== null) member.declaringContext.name + "." else ""
 	}
 
+	def dispatch asProposal(EObject o) { throw new IllegalArgumentException("Node " + o + " should not be a proposal") }
+	
+	// it is a property
+	def dispatch asProposal(WVariableDeclaration v) {
+		v.variable.name + v.suffix
+	}
+	
+	def suffix(WVariableDeclaration v) {
+		if (!v.property) return ""
+		if (accessor == Accessor.GETTER) return "()"
+		if (accessor == Accessor.SETTER) "(value)" else ""
+	}
+	
 	def dispatch asProposal(WMemberFeatureCall call) {
 		call.feature + "(" + call.memberCallArguments.map[asProposalParameter].join(",") + ")"
 	}
