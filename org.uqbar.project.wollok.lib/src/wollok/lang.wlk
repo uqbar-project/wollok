@@ -1,7 +1,6 @@
 /**
- * Base class for all Exceptions.
- * Every exception and its subclasses indicates conditions that a 
- * reasonable application might want to catch.
+ * Base class for all Exceptions. Every exception and its subclasses 
+ * indicates conditions that a reasonable application might want to catch.
  * 
  * @author jfernandes
  * @since 1.0
@@ -67,8 +66,7 @@ class Exception {
 }
 
 /**
- * Thrown when a stack overflow occurs because an application
- * recurses too deeply.
+ * Thrown when a stack overflow occurs because an application recurses too deeply.
  *
  * @author jfernandes
  * @since 1.5.1
@@ -2176,8 +2174,7 @@ class Closure {
 
 /**
  *
- * Represents a Date (without time). A Date is immutable, 
- * once created you can not change it.
+ * Represents a Date (without time). A Date is immutable, once created you can not change it.
  *
  * @since 1.4.5
  */	

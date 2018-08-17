@@ -23,13 +23,17 @@ object console {
 }
 
 /**
- * Exception to handle other values in assert.throwException*
+ * Exception to handle other values expected in assert.throwsException... methods
  */
 class OtherValueExpectedException inherits wollok.lang.Exception {
 	constructor(_message) = super(_message)	
 	constructor(_message,_cause) = super(_message,_cause)
 }
 
+/**
+ * Exception to handle difference between current and expected values
+ * in assert.throwsException... methods
+ */
 class AssertionException inherits Exception {
 
 	const property expected = null
@@ -54,11 +58,10 @@ object assert {
 
 	/** 
 	 * Tests whether value is true. Otherwise throws an exception.
+	 *
 	 * Example:
-	 * 		var number = 7
-	 *		assert.that(number.even())   ==> throws an exception "Value was not true"
-	 * 		var anotherNumber = 8
-	 *		assert.that(anotherNumber.even())   ==> no effect, ok		
+	 *		assert.that(7.even())   ==> throws an exception "Value was not true"
+	 *		assert.that(8.even())   ==> ok, nothing happens	
 	 */
 	method that(value) {
 		if (!value) throw new AssertionException("Value was not true")
@@ -74,16 +77,23 @@ object assert {
 	/** 
 	 * Tests whether two values are equal, based on wollok ==, != methods
 	 * 
-	 * Example:
-	 *		 assert.equals(10, 100.div(10)) ==> no effect, ok
-	 *		 assert.equals(10.0, 100.div(10)) ==> no effect, ok
+	 * Examples:
+	 *		 assert.equals(10, 100.div(10)) ==> ok, nothing happens
+	 *		 assert.equals(10.0, 100.div(10)) ==> ok, nothing happens
 	 *		 assert.equals(10.01, 100.div(10)) ==> throws an exception 
 	 */
 	method equals(expected, actual) {
 		if (expected != actual) throw new AssertionException("Expected [" + expected.printString() + "] but found [" + actual.printString() + "]", expected.printString(), actual.printString()) 
 	}
 	
-	/** Tests whether two values are equal, based on wollok ==, != methods */
+	/** 
+	 * Tests whether two values are equal, based on wollok ==, != methods
+	 * 
+	 * Examples:
+	 *       const value = 5
+	 *		 assert.notEquals(10, value * 3) ==> ok, nothing happens
+	 *		 assert.notEquals(10, value)     ==> throws an exception
+	 */
 	method notEquals(expected, actual) {
 		if (expected == actual) throw new AssertionException("Expected to be different, but [" + expected.printString() + "] and [" + actual.printString() + "] match")
 	}
@@ -91,9 +101,12 @@ object assert {
 	/** 
 	 * Tests whether a block throws an exception. Otherwise an exception is thrown.
 	 *
-	 * Example:
-	 * 		assert.throwsException({ 7 / 0 })  ==> Division by zero error, it is expected, ok
-	 *		assert.throwsException({ "hola".length() }) ==> throws an exception "Block should have failed"
+	 * Examples:
+	 * 		assert.throwsException({ 7 / 0 })  
+	 *         ==> Division by zero error, it is expected, ok
+	 *
+	 *		assert.throwsException({ "hola".length() }) 
+	 *         ==> throws an exception "Block should have failed"
 	 */
 	method throwsException(block) {
 		var failed = false
@@ -106,13 +119,21 @@ object assert {
 	}
 	
 	/** 
-	 * Tests whether a block throws an exception and this is the same expected. Otherwise an exception is thrown.
+	 * Tests whether a block throws an exception and this is the same expected. 
+	 * Otherwise an exception is thrown.
 	 *
-	 * Example:
-	 * 		
-	 *		assert.throwsExceptionLike(new BusinessException("hola"),{ => throw new BusinessException("hola") } => Works! this is the same exception class and same message.
-	 *		assert.throwsExceptionLike(new BusinessException("chau"),{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
-	 *		assert.throwsExceptionLike(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
+	 * Examples:
+	 *		assert.throwsExceptionLike(new BusinessException("hola"), 
+	 *            { => throw new BusinessException("hola") } 
+	 *            => Works! this is the same exception class and same message.
+	 *
+	 *		assert.throwsExceptionLike(new BusinessException("chau"),
+	 *            { => throw new BusinessException("hola") } 
+	 *            => Doesn't work. This is the same exception class but got a different message.
+	 *
+	 *		assert.throwsExceptionLike(new OtherException("hola"),
+	 *            { => throw new BusinessException("hola") } 
+	 *            => Doesn't work. This isn't the same exception class although it contains the same message.
 	 */	 
 	method throwsExceptionLike(exceptionExpected, block) {
 		try 
@@ -126,13 +147,18 @@ object assert {
 	}
 
 	/** 
-	 * Tests whether a block throws an exception and it have the error message as is expected. Otherwise an exception is thrown.
+	 * Tests whether a block throws an exception and it have the error message as is expected. 
+	 * Otherwise an exception is thrown.
 	 *
-	 * Example:
-	 * 		
-	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException("hola") } => Works! this is the same message.
-	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException("hola") } => Works! this is the same message.
-	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } => Doesn't work. This is the same exception class but got a different message.
+	 * Examples:
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException("hola") } 
+	 *           => Works! both have the same message.
+	 *
+	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException("hola") } 
+	 *           => Works! both have the same message.
+	 *
+	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } 
+	 *           => Doesn't work. Both are BusinessException class but their messages differ.
 	 */	 
 	method throwsExceptionWithMessage(errorMessage, block) {
 		try 
@@ -146,13 +172,18 @@ object assert {
 	}
 
 	/** 
-	 * Tests whether a block throws an exception and this is the same exception class expected. Otherwise an exception is thrown.
+	 * Tests whether a block throws an exception and this is the same exception class expected.
+	 * Otherwise an exception is thrown.
 	 *
-	 * Example:
-	 * 		
-	 *		assert.throwsExceptionWithType(new BusinessException("hola"),{ => throw new BusinessException("hola") } => Works! this is the same exception class.
-	 *		assert.throwsExceptionWithType(new BusinessException("chau"),{ => throw new BusinessException("hola") } => Works again! this is the same exception class.
-	 *		assert.throwsExceptionWithType(new OtherException("hola"),{ => throw new BusinessException("hola") } => Doesn't work. This isn't the same exception class although it contains the same message.
+	 * Examples:
+	 *		assert.throwsExceptionWithType(new BusinessException("hola"),{ => throw new BusinessException("hola") } 
+     *          => Works! Both exception class are equals.
+     *
+	 *		assert.throwsExceptionWithType(new BusinessException("chau"),{ => throw new BusinessException("hola") } 
+	 *          => Works again! Both exception class are equals.
+	 *
+	 *		assert.throwsExceptionWithType(new OtherException("hola"),{ => throw new BusinessException("hola") } 
+	 *          => Doesn't work. Exception classes differ although they contain the same message.
 	 */	 	
 	method throwsExceptionWithType(exceptionExpected, block) {
 		try 
@@ -166,14 +197,20 @@ object assert {
 	}
 
 	/** 
-	 * Tests whether a block throws an exception and compare this exception with other block called comparison. Otherwise an exception is thrown.
-	 * The block comparison have to receive a value (an exception thrown) that is compared in a boolean expression returning the result.
+	 * Tests whether a block throws an exception and compare this exception with other block 
+	 * called comparison. Otherwise an exception is thrown. The block comparison have to
+	 * receive a value (an exception thrown) that is compared in a boolean expression
+	 * returning the result.
 	 *
-	 * Example:
-	 * 		
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "hola".equals(a.getMessage())}} => Works!.
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => new BusinessException("lele").className().equals(a.className())} } => Works again!
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "chau!".equals(a.getMessage())} } => Doesn't work. The block evaluation resolve a false value.
+	 * Examples:
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "hola".equals(a.getMessage())}} 
+	 *          => Works!.
+	 *
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => new BusinessException("lele").className().equals(a.className())} } 
+	 *          => Works again!
+	 *
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "chau!".equals(a.getMessage())} } 
+	 *          => Doesn't work. The block evaluation resolve a false value.
 	 */		
 	method throwsExceptionByComparing(block,comparison){
 		var continue = false
@@ -193,7 +230,8 @@ object assert {
 	}
 	
 	/**
-	 * Throws an exception with a custom message. Useful when you reach an unwanted code in a test.
+	 * Throws an exception with a custom message. 
+	 * Useful when you reach an unwanted code in a test.
 	 */
 	method fail(message) {
 		throw new AssertionException(message)
@@ -209,44 +247,73 @@ class StringPrinter {
 	method getBuffer() = buffer
 }	
 
+/**
+  * Wollok Game main object 
+  */
 object game {
 	
 	/**
 	 * Adds an object to the board for drawing it.
-	 * That object should known a position (by reference or getter method).
+	 * That object should understand a position property 
+	 * (implemented by a reference or getter method).
+	 *
+	 * Example:
+	 *     game.addVisual(pepita) ==> pepita should have a position property
 	 */
 	method addVisual(positionable) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position.
+	 * That object should understand a position property 
+	 * (implemented by a reference or getter method).
+	 *
+	 * Example:
+	 *     game.addVisual(pepita, game.origin()) ==> pepita should have a position property
+	 *     game.addVisual(pepita, game.at(2, 2))
 	 */
 	method addVisualIn(element, position) native
 
 	
 	/**
 	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
-	 * That object should known a position (by reference or getter method).
+	 * That object should understand a position property 
+	 * (implemented by a reference or getter method).
+	 *
+	 * Example:
+	 *     game.addVisualCharacter(pepita) ==> pepita should have a position property
 	 */
 	method addVisualCharacter(positionable) native
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position. It can be moved with arrow keys.
+	 *
+	 * Example:
+	 *     game.addVisualCharacterIn(pepita, game.origin()) ==> pepita should have a position property
 	 */	
 	method addVisualCharacterIn(element, position) native
 
 	/**
 	 * Removes an object from the board for stop drawing it.
+	 *
+	 * Example:
+	 *     game.removeVisual(pepita)
 	 */
 	method removeVisual(visual) native
 	
 	/**
 	 * Adds a block that will be executed always the specific key is pressed.
+	 * @see keyboard.onPressDo()
 	 */	
 	method whenKeyPressedDo(key, action) native
 
 	/**
-	 * Adds a block that will be executed always the given object collides with other. Two objects collide when are in the same position.
+	 * Adds a block that will be executed always the given object collides with other. 
+	 * Two objects collide when are in the same position.
+	 *
 	 * The block should expect the other object as parameter.
+	 *
+	 * Example:
+	 *     game.whenCollideDo(pepita, { comida => pepita.comer(comida) })
 	 */	
 	method whenCollideDo(visual, action) native
 
@@ -254,17 +321,26 @@ object game {
 	 * Adds a block that will be executed every n milliseconds.
 	 * Block expects no argument.
 	 * Be careful not to set it too often :)
+	 *
+	 * Example:
+	 *     	game.onTick(5000, { => pepita.position().x(0.randomUpTo(4)) })
 	 */
 	method onTick(milliseconds, action) native
 	 
 	/**
 	 * Returns all objects in given position.
+	 *
+	 * Example:
+	 *     game.getObjectsIn(game.origin())
 	 */	
 	method getObjectsIn(position) native
 
 	/**
 	 * Draw a dialog balloon with given message in given visual object position.
-	 */	
+	 *
+	 * Example:
+	 *     game.say(pepita, "hola!")
+	 */
 	method say(visual, message) native
 
 	/**
@@ -371,6 +447,10 @@ object game {
 	method doStart(isRepl) native
 }
 
+/**
+ * Represents a position in a two-dimension gameboard.
+ * It is an mutable object, but it will be an immutable one in a near future.
+ */
 class Position {
 	var property x = 0
 	var property y = 0
@@ -389,7 +469,8 @@ class Position {
 	}
 	
 	/**
-	 * Validates x position (avoiding outside gameboard)
+	 * Validates x position (avoids going outside gameboard).
+	 * This is a side effect operation.
 	 */
 	method validateX() {
 		if (x < 0) x = 0
@@ -397,7 +478,8 @@ class Position {
 	}
 	
 	/**
-	 * Validates y position (avoiding outside gameboard)
+	 * Validates y position (avoids going outside gameboard)
+	 * This is a side effect operation.
 	 */
 	method validateY() {
 		if (y < 0) y = 0
@@ -405,7 +487,7 @@ class Position {
 	}
 	 
 	/**
-	 * Sums n to x coordinate.
+	 * Sums n to x coordinate. This is a side effect operation.
 	 */		
 	method moveRight(n) { 
 		x += n
@@ -413,7 +495,7 @@ class Position {
 	}
 	
 	/**
-	 * Substract n to x coordinate.
+	 * Substracts n to x coordinate. This is a side effect operation.
 	 */		
 	method moveLeft(n) {
 		x -= n
@@ -429,7 +511,7 @@ class Position {
 	}
 	
 	/**
-	 * Substract n to y coordinate.
+	 * Substracts n to y coordinate.
 	 */		
 	method moveDown(n) {
 		y -= n
@@ -503,13 +585,19 @@ class Position {
 	}
 	
 	/**
-	 * Two positions are equals if have same coordinates.
+	 * Two positions are equals if they have same coordinates.
 	 */	
 	override method ==(other) = x == other.x() && y == other.y()
 	
+	/**
+	 * String representation of a position
+	 */
 	override method toString() = "(" + x + "," + y + ")"
 }
 
+/** 
+ * Simplified algorithm for throwing an exception
+ */
 object error {
 	/**
 	 * Throws an exception with a given message.
