@@ -129,7 +129,7 @@ object assert {
 	 *
 	 *		assert.throwsExceptionLike(new BusinessException("chau"),
 	 *            { => throw new BusinessException("hola") } 
-	 *            => Doesn't work. This is the same exception class but got a different message.
+	 *            => Doesn't work. This is the same exception class but the have different messages.
 	 *
 	 *		assert.throwsExceptionLike(new OtherException("hola"),
 	 *            { => throw new BusinessException("hola") } 
@@ -198,8 +198,8 @@ object assert {
 
 	/** 
 	 * Tests whether a block throws an exception and compare this exception with other block 
-	 * called comparison. Otherwise an exception is thrown. The block comparison have to
-	 * receive a value (an exception thrown) that is compared in a boolean expression
+	 * called comparison. Otherwise an exception is thrown. The block comparison
+	 * receives a value (an exception thrown) that is compared in a boolean expression
 	 * returning the result.
 	 *
 	 * Examples:
@@ -210,7 +210,7 @@ object assert {
 	 *          => Works again!
 	 *
 	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "chau!".equals(a.getMessage())} } 
-	 *          => Doesn't work. The block evaluation resolve a false value.
+	 *          => Doesn't work. The block evaluation resolves to a false value.
 	 */		
 	method throwsExceptionByComparing(block,comparison){
 		var continue = false
