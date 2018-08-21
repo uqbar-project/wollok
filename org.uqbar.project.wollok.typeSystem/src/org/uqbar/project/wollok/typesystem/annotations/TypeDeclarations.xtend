@@ -18,13 +18,15 @@ abstract class TypeDeclarations {
 	TypeProvider types
 	EObject context
 
-	static def addTypeDeclarations(TypeDeclarationTarget target, TypeProvider provider,
-		Class<? extends TypeDeclarations> declarations, EObject context) {
-		declarations.newInstance => [
-			it.target = target
-			it.types = provider
-			it.context = context
-			it.declarations()
+	static def addTypeDeclarations(TypeDeclarationTarget target, TypeProvider provider, EObject context,
+		Class<? extends TypeDeclarations>... declarations) {
+		declarations.forEach [
+			newInstance => [
+				it.target = target
+				it.types = provider
+				it.context = context
+				it.declarations()
+			]
 		]
 	}
 
@@ -36,7 +38,7 @@ abstract class TypeDeclarations {
 	def allMethods(SimpleTypeAnnotation<? extends ConcreteType> receiver) {
 		new AllMethodsIdentifier(target, receiver.type)
 	}
-	
+
 	def operator_doubleGreaterThan(AnnotationContext receiver, String selector) {
 		new MethodIdentifier(target, receiver.type, selector)
 	}
@@ -44,12 +46,12 @@ abstract class TypeDeclarations {
 	def operator_doubleArrow(List<? extends TypeAnnotation> parameterTypes, TypeAnnotation returnType) {
 		new MethodTypeDeclaration(parameterTypes, returnType)
 	}
-	
+
 	def constructor(AnnotationContext owner, TypeAnnotation... parameterTypes) {
 		target.addConstructorTypeDeclaration(owner.type as ClassInstanceType, parameterTypes)
 	}
-	
-	def variable(AnnotationContext owner, String selector , TypeAnnotation type) {
+
+	def variable(AnnotationContext owner, String selector, TypeAnnotation type) {
 		target.addVariableTypeDeclaration(owner.type, selector, type)
 	}
 
@@ -63,7 +65,7 @@ abstract class TypeDeclarations {
 	def operator_tripleEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
-	
+
 	def operator_plus(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
 	}
@@ -91,7 +93,7 @@ abstract class TypeDeclarations {
 	def operator_lessEqualsThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "<=", #[parameterType])
 	}
-	
+
 	def operator_greaterEqualsThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
 	}
@@ -99,7 +101,24 @@ abstract class TypeDeclarations {
 	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
 	}
-	
+
+	// ****************************************************************************
+	// ** Shortcuts and helpers
+	// ****************************************************************************
+	def comparable(ConcreteTypeAnnotation... types) {
+		types.forEach [ T |
+			(T > T) => Boolean;
+			(T < T) => Boolean;
+			(T <= T) => Boolean;
+			(T >= T) => Boolean;
+			(T === T) => Boolean;
+		]
+	}
+
+	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
+		it >> property === #[type] => Void
+		it >> property === #[] => type
+	}
 
 	// ****************************************************************************
 	// ** Core class and object types
@@ -113,7 +132,7 @@ abstract class TypeDeclarations {
 	def Boolean() { classTypeAnnotation(BOOLEAN) }
 
 	def PairType() { genericTypeAnnotation(PAIR, GenericTypeInfo.KEY, GenericTypeInfo.VALUE) }
-	
+
 	def Number() { classTypeAnnotation(NUMBER) }
 
 	def String() { classTypeAnnotation(STRING) }
@@ -125,7 +144,7 @@ abstract class TypeDeclarations {
 	def Set() { genericTypeAnnotation(SET, GenericTypeInfo.ELEMENT) }
 
 	def Collection() { genericTypeAnnotation(COLLECTION, GenericTypeInfo.ELEMENT) }
-	
+
 	def Closure() { genericTypeAnnotation(CLOSURE, GenericTypeInfo.RETURN) }
 
 	def Range() { classTypeAnnotation(RANGE) }
@@ -133,7 +152,7 @@ abstract class TypeDeclarations {
 	def Dictionary() { genericTypeAnnotation(DICTIONARY, GenericTypeInfo.KEY, GenericTypeInfo.VALUE) }
 
 	def Position() { classTypeAnnotation(POSITION) }
-	
+
 	def Key() { classTypeAnnotation(KEY) }
 
 	def ExceptionType() { classTypeAnnotation(EXCEPTION) }
@@ -145,21 +164,21 @@ abstract class TypeDeclarations {
 	def StringPrinter() { classTypeAnnotation(STRING_PRINTER) }
 
 	def console() { objectTypeAnnotation(CONSOLE) }
-	
+
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
-	
+
 	def game() { objectTypeAnnotation(GAME) }
-	
+
 	def keyboard() { objectTypeAnnotation(KEYBOARD) }
-	
+
 	def PKEY() { PairType.param(GenericTypeInfo.KEY) }
-	
+
 	def PVALUE() { PairType.param(GenericTypeInfo.VALUE) }
 
 	def DKEY() { Dictionary.param(GenericTypeInfo.KEY) }
-	
+
 	def DVALUE() { Dictionary.param(GenericTypeInfo.VALUE) }
-	
+
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
@@ -168,10 +187,10 @@ abstract class TypeDeclarations {
 
 	def objectTypeAnnotation(String objectFQN) { new ConcreteTypeAnnotation(types.objectType(context, objectFQN)) }
 
-	def genericTypeAnnotation(String classFQN, String... typeParameterNames) { 
+	def genericTypeAnnotation(String classFQN, String... typeParameterNames) {
 		new GenericTypeAnnotationFactory(types.genericType(context, classFQN, typeParameterNames))
 	}
-	
+
 	def closure(List<TypeAnnotation> parameters, TypeAnnotation returnType) {
 		val typeParameters = newHashMap => [ map |
 			map.put(GenericTypeInfo.RETURN, returnType)
@@ -179,10 +198,10 @@ abstract class TypeDeclarations {
 				map.put(GenericTypeInfo.PARAM(index), parameter)
 			]
 		]
-	
+
 		new GenericTypeAnnotationFactory(types.closureType(context, parameters.length)).instance(typeParameters)
 	}
-	
+
 	def predicate(TypeAnnotation input) {
 		closure(#[input], Boolean)
 	}
