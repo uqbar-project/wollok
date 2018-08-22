@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class NumberTypeDeclarations extends TypeDeclarations {
 	override declarations() {
+		Number.comparable
 		Number + Number => Number
 		Number - Number => Number
 		Number * Number => Number

@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		// TODO: Uncomment all definitions when solving closure parameters
 		(Object == Any) => Boolean;
 		Object >> "equals" === #[Any] => Boolean;
 		Object >> "toString" === #[] => String;
@@ -21,5 +20,6 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		PairType >> "key" === #[] => PKEY;
 		PairType >> "value" === #[] => PVALUE;
 
+		// Closure >> "apply" === #[List] => RETURN
 	}
 }

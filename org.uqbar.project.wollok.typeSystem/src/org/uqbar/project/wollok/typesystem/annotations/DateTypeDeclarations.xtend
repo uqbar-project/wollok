@@ -4,6 +4,7 @@ class DateTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		Date.constructor(Number, Number, Number)
 		(Date == Date) => Boolean
+		Date.comparable
 		Date - Date => Number
 		Date >> "initialize" === #[Number, Number, Number] => Void
 		Date >> "plusDays" === #[Number] => Date

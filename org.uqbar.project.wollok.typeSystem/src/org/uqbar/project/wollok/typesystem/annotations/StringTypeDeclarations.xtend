@@ -3,6 +3,7 @@ package org.uqbar.project.wollok.typesystem.annotations
 class StringTypeDeclarations extends TypeDeclarations {
 	override declarations() {
 		(String == Any) => Boolean
+		String.comparable
 		String >> "length" === #[] => Number
 		String >> "size" === #[] => Number
 		String >> "charAt" === #[Number] => String

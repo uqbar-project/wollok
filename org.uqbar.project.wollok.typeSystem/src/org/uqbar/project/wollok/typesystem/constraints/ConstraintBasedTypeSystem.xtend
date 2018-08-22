@@ -28,6 +28,7 @@ import org.uqbar.project.wollok.typesystem.annotations.NumberTypeDeclarations
 import org.uqbar.project.wollok.typesystem.annotations.StringTypeDeclarations
 import org.uqbar.project.wollok.typesystem.annotations.WollokCoreTypeDeclarations
 import org.uqbar.project.wollok.typesystem.annotations.WollokGameTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.WollokLibTypeDeclarations
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
 import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMessages
@@ -113,6 +114,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 				DateTypeDeclarations,
 				CollectionTypeDeclarations,
 				ExceptionTypeDeclarations,
+				WollokLibTypeDeclarations,
 				WollokGameTypeDeclarations
 			)
 		]

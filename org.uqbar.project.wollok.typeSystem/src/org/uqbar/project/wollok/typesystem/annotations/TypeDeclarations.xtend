@@ -105,14 +105,12 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** Shortcuts and helpers
 	// ****************************************************************************
-	def comparable(ConcreteTypeAnnotation... types) {
-		types.forEach [ T |
-			(T > T) => Boolean;
-			(T < T) => Boolean;
-			(T <= T) => Boolean;
-			(T >= T) => Boolean;
-			(T === T) => Boolean;
-		]
+	def comparable(ConcreteTypeAnnotation T) {
+		(T > T) => Boolean;
+		(T < T) => Boolean;
+		(T <= T) => Boolean;
+		(T >= T) => Boolean;
+		(T === T) => Boolean;
 	}
 
 	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
