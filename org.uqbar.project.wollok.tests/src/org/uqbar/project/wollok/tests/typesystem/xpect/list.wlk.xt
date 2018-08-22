@@ -24,6 +24,21 @@ class TestCollection {
 	
 		// XPECT type at occurrencesOf --> {(Number) => Number}
 		const occurrencesOf = { e => sample.occurrencesOf(e) }
+
+		// XPECT type at size --> {() => Number}
+		const size = { sample.size()) }
+
+		// XPECT type at add --> {(Number) => Void}
+		const add = { e => sample.add(e) }
+
+		// XPECT type at remove --> {(Number) => Void}
+		const remove = { e => sample.remove(e) }
+
+		// XPECT type at addAll --> {(Collection<Number>) => Void}
+		const addAll = { l => sample.addAll(l) }
+
+		// XPECT type at removeAll --> {(Collection<Number>) => Void}
+		const removeAll = { l => sample.removeAll(l) }
 	}
 
 	method basicClosures() {
@@ -33,6 +48,15 @@ class TestCollection {
 		// XPECT type at find --> Number
 		const find = sample.find { x => x.even }
 
+
+	//	 method forEach(closure) {
+	//	 method removeAllSuchThat(closure) {
+		// method all()
+		// method any()
+		// method findOrDefault()
+		// method findOrElse()
+		// method count()
+		// method anyOne()
 	}
 	
 	// Requieren comparable	
@@ -40,15 +64,16 @@ class TestCollection {
 	//	method max()		
 	//	method min(closure)
 	//	method min() = self.min({it => it})
-//		method sortedBy(closure)
+	// method sortedBy(closure)
 
 	//	Requieren sumables
 	//	method sum(closure) = self.fold(0, { acc, e => acc + closure.apply(e) })
 	//	method sum() = self.sum( {it => it} )
 
 	// Requiere method-scoped type parameters	
-	//	method map(closure) = self.fold([], { acc, e =>
-	//	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
+	//	method map(closure)
+	//	method flatMap(closure)
+	//	method fold(closure) 
 }
 
 /**
@@ -67,9 +92,6 @@ class TestList {
 	// Métodos generales de collection pero que Requieren self type
 	//	 method filter(closure) = self.fold(self.newInstance(), { acc, e =>
 	//	method +(elements) {
-	//	method addAll(elements) { elements.forEach { e => self.add(e) } }
-	//	method removeAll(elements) { 
-	//	 method removeAllSuchThat(closure) {
 	//	method flatten() = self.flatMap { e => e }
 	//	method copy() {
 	//	method newInstance()	

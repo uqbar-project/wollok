@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class CollectionTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		Collection >> "add" === #[ELEMENT] => Void
 		Collection + Collection.of(ELEMENT) => Collection.of(ELEMENT);
 		Collection >> "min" === #[closure(#[ELEMENT], Number)] => ELEMENT;
 		Collection >> "max" === #[closure(#[ELEMENT], Number)] => ELEMENT;
@@ -19,46 +18,50 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		(List == Any) => Boolean;
 		List + List.of(ELEMENT) => List.of(ELEMENT);
 		List >> "equals" === #[Any] => Boolean;
-		List >> "add" === #[ELEMENT] => Void
 		List >> "first" === #[] => ELEMENT
 		List >> "drop" === #[Number] => List.of(ELEMENT)
 		List >> "take" === #[Number] => List.of(ELEMENT)
-		List >> "sum" === #[closure(#[ELEMENT], Number)] => Number
 
-		val (AnnotationContext, TypeAnnotation)=>void basicCollection = [ collectionType, elementType |
-			collectionType >> "isEmpty" === #[] => Boolean
-			collectionType >> "contains" === #[elementType] => Boolean
-			collectionType >> "asList" === #[] => List.of(elementType)
-
-			collectionType >> "forEach" === #[closure(#[elementType], Void)] => Void
-			collectionType >> "find" === #[predicate(elementType)] => elementType;
-			collectionType >> "all" === #[predicate(elementType)] => Boolean
-			collectionType >> "any" === #[predicate(elementType)] => Boolean
-			collectionType >> "find" === #[predicate(elementType)] => elementType
-			collectionType >> "findOrDefault" === #[predicate(elementType), elementType] => elementType
-			collectionType >> "findOrElse" === #[predicate(elementType), closure(#[], elementType)] => elementType
-			collectionType >> "count" === #[predicate(elementType)] => Number
-		]
-
-		basicCollection.apply(Collection, ELEMENT)
-		basicCollection.apply(List, ELEMENT)
-		basicCollection.apply(Set, ELEMENT)
-		basicCollection.apply(Range, Number)
+		Collection.mutableCollection(ELEMENT)
+		List.mutableCollection(ELEMENT)
+		Set.mutableCollection(ELEMENT)
+		Range.basicCollection(Number)
 
 		#[Collection, List, Set, Range, Dictionary].forEach [
-		        it >> "size" === #[] => Number
+			it >> "size" === #[] => Number
 		]
 
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
 
-		Range >> "sum" === #[closure(#[Number], Number)] => Number;
 		Range >> "internalToSmartString" === #[Boolean] => String;
 		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);
 
 		(Set == Any) => Boolean
 		Set >> "equals" === #[Any] => Boolean;
 		Set + Set.of(ELEMENT) => Set.of(ELEMENT);
-		Set >> "add" === #[ELEMENT] => Void
-		Set >> "sum" === #[closure(#[ELEMENT], Number)] => Number;
+	}
+
+	def basicCollection(AnnotationContext C, TypeAnnotation E) {
+		C >> "isEmpty" === #[] => Boolean
+		C >> "contains" === #[E] => Boolean
+		C >> "asList" === #[] => List.of(E)
+
+		C >> "forEach" === #[closure(#[E], Void)] => Void
+		C >> "find" === #[predicate(E)] => E;
+		C >> "all" === #[predicate(E)] => Boolean
+		C >> "any" === #[predicate(E)] => Boolean
+		C >> "find" === #[predicate(E)] => E
+		C >> "findOrDefault" === #[predicate(E), E] => E
+		C >> "findOrElse" === #[predicate(E), closure(#[], E)] => E
+		C >> "count" === #[predicate(E)] => Number
+		C >> "sum" === #[closure(#[E], Number)] => Number;
+	}
+
+	def mutableCollection(AnnotationContext C, TypeAnnotation E) {
+		C.basicCollection(E)
+		C >> "add" === #[E] => Void
+		C >> "remove" === #[E] => Void
+		C >> "addAll" === #[Collection.of(E)] => Void
+		C >> "removeAll" === #[Collection.of(E)] => Void
 	}
 }
