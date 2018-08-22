@@ -44,6 +44,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "boardGround" === #[String] => Void
 
 		keyboard.allMethods === #[] => Key
-//		Key >> "onPressDo" === #[closure(#[], Void)] => Void
+
+		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 	}
 }
