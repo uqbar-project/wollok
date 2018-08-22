@@ -8,7 +8,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import org.junit.Ignore
 
 /**
- * Test cases for type inference of closures.
+ * Test cases for type inference related to the console object.
  * 
  * @author npasserini
  */

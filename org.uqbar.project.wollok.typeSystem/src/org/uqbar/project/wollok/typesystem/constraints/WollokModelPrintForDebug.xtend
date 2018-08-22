@@ -5,6 +5,7 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
@@ -60,7 +61,7 @@ class WollokModelPrintForDebug {
 		'''«memberCallTarget.debugInfo».«feature»(«memberCallArguments.join(', ')[debugInfo]»)'''
 
 	static def dispatch String debugInfo(WVariable it)
-		'''«if (declaration.writeable) "var" else "const"» «name»'''
+		'''«eContainer.variableDeclarationPrefix» «name»'''
 
 	static def dispatch String debugInfo(WNumberLiteral it)
 		'''«value»'''
@@ -100,4 +101,11 @@ class WollokModelPrintForDebug {
 
 	static def dispatch String debugInfoInContext(WVariableReference it)
 		'''«debugInfo» in «declaringContainer.debugInfoInContext»'''
+
+	// ************************************************************************
+	// ** Helpers
+	// ************************************************************************
+
+	def static dispatch variableDeclarationPrefix(WVariableDeclaration it) { if (writeable) "var" else "const" }
+	def static dispatch variableDeclarationPrefix(WCatch it) { "catch" }
 }

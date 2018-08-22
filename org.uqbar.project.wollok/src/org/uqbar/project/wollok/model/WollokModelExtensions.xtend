@@ -180,7 +180,7 @@ class WollokModelExtensions {
 	// ************************************************************************
 	// ** Variable & parameter usage
 	// ************************************************************************
-	def static dispatch List<? extends EObject> uses(WNamedObject wko) {
+	def static dispatch List<? extends EObject> uses(EObject wko) {
 		newArrayList // TODO Not implemented
 	}
 

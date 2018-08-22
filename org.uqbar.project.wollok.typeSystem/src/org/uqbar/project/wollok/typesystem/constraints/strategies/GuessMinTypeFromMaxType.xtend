@@ -7,6 +7,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.visitors.AbstractWollokVisitor
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructor
 import org.uqbar.project.wollok.wollokDsl.WFile
@@ -62,6 +63,7 @@ class GuessMinTypeVisitor extends AbstractWollokVisitor {
 	def dispatch afterVisit(WClass it) {}
 	def dispatch afterVisit(WConstructor it) {}
 	def dispatch afterVisit(WInitializer it) {}
+	def dispatch afterVisit(WCatch it) {}
 	def dispatch afterVisit(Import it) {}
 	def dispatch afterVisit(WPositionalArgumentsList it) {}
 	def dispatch afterVisit(WNamedArgumentsList it) {}
