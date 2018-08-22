@@ -70,7 +70,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void addGlobals(WFile it) {
-		eContents.forEach[addGlobals]	
+		eContents.forEach[addGlobals]
 	}
 
 	def dispatch void addGlobals(WNamedObject it) {
@@ -277,22 +277,22 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WThrow it) {
 		exception.generateVariables
-		newTypeVariable.beVoid	
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WTry it) {
 		expression.generateVariables
 		catchBlocks.forEach[generateVariables]
 		alwaysExpression?.generateVariables
-		newTypeVariable.beVoid	
+		newTypeVariable.beVoid
 	}
 
 	def dispatch void generate(WCatch it) {
-		exceptionVarName.newTypeVariable => [tvar |
-			if (exceptionType !== null)
+		exceptionVarName.newTypeVariable => [ tvar |
+			if(exceptionType !== null)
 				tvar.beSealed(classType(exceptionType))
 			else
-				tvar.beNonVoid	
+				tvar.beNonVoid
 		]
 		expression.generateVariables
 	}
@@ -335,7 +335,13 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WVariableReference it) {
-		newTypeVariable.beSupertypeOf(ref.tvar)
+		if(ref.eIsProxy) {
+			// Reference could not be resolved, we can't add constraint with the referenced element.
+			// So we know almost nothing, but a variable reference can not be void.
+			newTypeVariable.beNonVoid
+		} else {
+			newTypeVariable.beSupertypeOf(ref.tvar)
+		}
 	}
 
 	def dispatch void generate(WSelf it) {

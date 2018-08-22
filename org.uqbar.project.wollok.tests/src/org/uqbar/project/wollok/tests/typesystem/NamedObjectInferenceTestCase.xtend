@@ -48,14 +48,14 @@ class NamedObjectInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	@Test
 	def void typeOfImportedNamedObjectReferenceReverseOrder() {
 		#['''
-			import __synthetic0.pepita
+			import __synthetic1.pepita
 					
 			program p {
 				var ref = pepita
 			}
 		''', '''
 			object pepita {}
-		'''].parseAndInfer.asserting [
+		'''].parseAndInferAll.head.asserting [
 			assertTypeOfAsString("pepita", "ref")
 		]
 	}
