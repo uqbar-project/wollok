@@ -71,11 +71,12 @@ class VoidTypeInfo extends TypeInfo {
 	// ** Not yet implemented
 	// ************************************************************************
 	override beSealed() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		// Nothing to do, I hold no mutable type info, so I am already sealed.
 	}
 
 	override addMinType(WollokType type, TypeVariable origin) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		// Ignore, VOID is supertype of everything
+		Ready
 	}
 
 	override setMaximalConcreteTypes(MaximalConcreteTypes maxTypes, TypeVariable offender) {
