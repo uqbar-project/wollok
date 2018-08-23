@@ -5,6 +5,9 @@ import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.WollokType
 
+/**
+ * Superclass of actual type variables and type variable schemas.
+ */
 abstract class ITypeVariable {
 	@Accessors
 	val TypeVariableOwner owner

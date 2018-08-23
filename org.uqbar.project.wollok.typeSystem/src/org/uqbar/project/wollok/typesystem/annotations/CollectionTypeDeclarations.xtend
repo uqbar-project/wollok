@@ -12,8 +12,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 			it >> "occurrencesOf" === #[ELEMENT] => Number
 		]
 
-		// TODO This should use SELF type.
-		Collection >> "filter" === #[predicate(ELEMENT)] => List.of(ELEMENT);
+		Collection >> "filter" === #[predicate(ELEMENT)] => SelfType.of(ELEMENT);
+		Range >> "filter" === #[predicate(Number)] => List.of(Number);
 
 		(List == Any) => Boolean;
 		List + List.of(ELEMENT) => List.of(ELEMENT);
@@ -34,7 +34,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
 
 		Range >> "internalToSmartString" === #[Boolean] => String;
-		Range >> "filter" === #[closure(#[Number], Boolean)] => List.of(Number);
 
 		(Set == Any) => Boolean
 		Set >> "equals" === #[Any] => Boolean;

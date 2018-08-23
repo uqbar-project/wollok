@@ -12,7 +12,7 @@ import org.uqbar.project.wollok.typesystem.WollokType
  * A concrete class or WKO which's methods we want to annotate.
  */
 interface AnnotationContext {
-	def ConcreteType getType()	
+	def ConcreteType getType()
 }
 
 /**
@@ -89,8 +89,9 @@ class ClassParameterTypeAnnotation implements TypeAnnotation {
 	String paramName
 
 	new(GenericType type, String paramName) {
-		if (!type.typeParameterNames.contains(paramName)) {
-			throw new IllegalArgumentException(NLS.bind(Messages.RuntimeTypeSystemException_BAD_TYPE_ANNOTATION, type, paramName))
+		if(!type.typeParameterNames.contains(paramName)) {
+			throw new IllegalArgumentException(
+				NLS.bind(Messages.RuntimeTypeSystemException_BAD_TYPE_ANNOTATION, type, paramName))
 		}
 
 		this.type = type
@@ -107,9 +108,32 @@ class GenericTypeInstanceAnnotation implements TypeAnnotation {
 
 	@Accessors
 	val Map<String, TypeAnnotation> typeParameters
-	
+
 	new(GenericType type, Map<String, TypeAnnotation> typeParameters) {
 		this.type = type
 		this.typeParameters = typeParameters
 	}
 }
+
+/**
+ * This allows to annotate something to be of the same type as the receiver. E.g. several collection 
+ * methods return objects of the same type of the receiver: Set.filter returns a Set and List.filter returns a List.
+ * 
+ * Right now this is only implemented self types for generic types with a single type parameter (such as collections)
+ */
+class GenericSelfTypeInstanceAnnotation implements TypeAnnotation {
+	@Accessors
+	TypeAnnotation uniqueTypeParameter
+
+	new(TypeAnnotation uniqueTypeParameter) {
+		this.uniqueTypeParameter = uniqueTypeParameter
+	}
+}
+
+/** Helper for the type declaration DSL to create SelfType annotations */
+class SelfType {
+	static def of(TypeAnnotation uniqueTypeParameter) {
+		new GenericSelfTypeInstanceAnnotation(uniqueTypeParameter)
+	}
+}
+
