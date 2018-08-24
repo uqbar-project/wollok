@@ -44,6 +44,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "isEmpty" === #[] => Boolean
 		C >> "contains" === #[E] => Boolean
 		C >> "asList" === #[] => List.of(E)
+		C >> "anyOne" === #[] => E
 
 		C >> "forEach" === #[closure(#[E], Void)] => Void
 		C >> "find" === #[predicate(E)] => E;
@@ -62,5 +63,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "remove" === #[E] => Void
 		C >> "addAll" === #[Collection.of(E)] => Void
 		C >> "removeAll" === #[Collection.of(E)] => Void
+		C >> "removeAllSuchThat" === #[predicate(E)] => Void
 	}
 }

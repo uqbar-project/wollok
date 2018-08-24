@@ -12,53 +12,67 @@ class TestCollection {
 	const sample = [1, 2, 3]
 
 	method generalCollection() {
-		//  XPECT type  at asList --> List<Number>
+		// XPECT type  at asList --> List<Number>
 		const asList = sample.asList()
 		
-		//  XPECT type  at asSet --> Set<Number>
+		// XPECT type  at asSet --> Set<Number>
 		const asSet = sample.asSet()
 		
-		//  XPECT type  at isEmpty --> Boolean
+		// XPECT type  at isEmpty --> Boolean
 		const isEmpty = sample.isEmpty()
 		
-		//  XPECT type  at contains --> {(Number) => Boolean}
+		// XPECT type  at contains --> {(Number) => Boolean}
 		const contains = { e => sample.contains(e) }
 	
-		//  XPECT type  at occurrencesOf --> {(Number) => Number}
+		// XPECT type  at occurrencesOf --> {(Number) => Number}
 		const occurrencesOf = { e => sample.occurrencesOf(e) }
 
-		//  XPECT type  at size --> {() => Number}
+		// XPECT type  at size --> {() => Number}
 		const size = { sample.size()) }
 
-		//  XPECT type  at add --> {(Number) => Void}
+		// XPECT type  at anyOne --> {() => Number}
+		const anyOne = { sample.anyOne() }
+
+		// XPECT type  at add --> {(Number) => Void}
 		const add = { e => sample.add(e) }
 
-		//  XPECT type  at remove --> {(Number) => Void}
+		// XPECT type  at remove --> {(Number) => Void}
 		const remove = { e => sample.remove(e) }
 
-		//  XPECT type  at addAll --> {(Collection<Number>) => Void}
+		// XPECT type  at addAll --> {(Collection<Number>) => Void}
 		const addAll = { l => sample.addAll(l) }
 
-		//  XPECT type  at removeAll --> {(Collection<Number>) => Void}
+		// XPECT type  at removeAll --> {(Collection<Number>) => Void}
 		const removeAll = { l => sample.removeAll(l) }
 	}
 
 	method basicClosures() {
-		//  XPECT type  at filterSome --> Number
-		const filterSome = sample.filter { x => x.even }.first() 		
+		// XPECT type at forEach --> {({(Number) => Void}) => Void}
+		const forEach = { action => sample.forEach(action) } 
 
-		//  XPECT type  at find --> Number
-		const find = sample.find { x => x.even }
+		// XPECT type at filter --> {({(Number) => Boolean}) => List<Number>}
+		const filter = { cond => sample.filter(cond) } 
 
+		// XPECT type at find --> {({(Number) => Boolean}) => Number}
+		const find = { predicate => sample.find(predicate) }
 
-	//	 method forEach(closure) {
-	//	 method removeAllSuchThat(closure) {
-		// method all()
-		// method any()
-		// method findOrDefault()
-		// method findOrElse()
-		// method count()
-		// method anyOne()
+		// XPECT type at findOrDefault --> {({(Number) => Boolean}, Number) => Number}
+		const findOrDefault = { predicate, defaultValue => sample.findOrDefault(predicate, defaultValue) }
+
+		// XPECT type at findOrElse --> {({(Number) => Boolean}, {() => Number}) => Number}
+		const findOrElse = { predicate, actionIfAbsent => sample.findOrElse(predicate, actionIfAbsent) }
+
+		// XPECT type at removeAllSuchThat --> {({(Number) => Boolean}) => Void}
+		const removeAllSuchThat = { closure => sample.removeAllSuchThat(closure) }
+
+		// XPECT type at all --> {({(Number) => Boolean}) => Boolean}
+		const all = { predicate => sample.all(predicate) }
+
+		// XPECT type at any --> {({(Number) => Boolean}) => Boolean}
+		const any = { predicate => sample.any(predicate) }
+
+		// XPECT type at count --> {({(Number) => Boolean}) => Number}
+		const count = { predicate => sample.count(predicate)}
 	}
 	
 	// Requieren comparable	
@@ -86,12 +100,12 @@ class TestList {
 	const sample = [1, 2, 3]
 
 	method listSpecific() {
-		//  XPECT type  at first --> Number
+		// XPECT type  at first --> Number
 		const first = sample.first() 	
 	}
 
 	method selfTyped() {
-		//  XPECT type  at filter --> {({(Number) => Boolean}) => List<Number>}
+		// XPECT type  at filter --> {({(Number) => Boolean}) => List<Number>}
 		const filter = { cond => sample.filter(cond) } 
 
 	//	method +(elements) {
