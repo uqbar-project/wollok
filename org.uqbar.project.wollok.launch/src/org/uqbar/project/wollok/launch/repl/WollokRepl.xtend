@@ -68,11 +68,15 @@ class WollokRepl {
 				printPrompt
 			}
 		}
-		
+		printEndStructure
 	}
 
 	def synchronized printPrompt() {
 		print(prompt.messageStyle)
+	}
+
+	def synchronized void printEndStructure() {
+		println(REPL_END.importantMessageStyle)
 	}
 
 	def String readInput() {

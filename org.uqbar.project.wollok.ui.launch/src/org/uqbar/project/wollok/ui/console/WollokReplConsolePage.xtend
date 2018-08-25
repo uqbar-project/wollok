@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.ui.console
 
 import org.eclipse.swt.SWT
 import org.eclipse.swt.custom.StyledText
+import org.eclipse.swt.events.FocusEvent
+import org.eclipse.swt.events.FocusListener
 import org.eclipse.swt.events.KeyEvent
 import org.eclipse.swt.events.KeyListener
 import org.eclipse.swt.events.MouseAdapter
@@ -54,6 +56,10 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 				override def mouseDown(MouseEvent e) {
 					if(isCursorInTheLastLine && isCursorInReadOnlyZone) setCursorToEnd
 				}
+			})
+			addFocusListener(new FocusListener() {
+				override focusGained(FocusEvent e) { console.isRunning }
+				override focusLost(FocusEvent e) { console.isRunning }
 			})
 			setFocus
 		]
@@ -147,7 +153,9 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 
 	def isControlPressed(KeyEvent it) { stateMask.bitwiseAnd(SWT.CTRL) == SWT.CTRL }
 
-	override keyReleased(KeyEvent e) {}
+	override keyReleased(KeyEvent e) {
+		console.isRunning
+	}
 
 	override createViewer(Composite parent) {
 		return new WollokReplConsoleViewer(parent, console, view)

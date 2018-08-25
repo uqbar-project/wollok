@@ -11,6 +11,8 @@ import org.eclipse.debug.core.model.IProcess
 import org.eclipse.debug.core.model.IStreamsProxy
 import org.eclipse.debug.internal.ui.DebugUIPlugin
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants
+import org.eclipse.swt.graphics.Color
+import org.eclipse.swt.widgets.Display
 import org.eclipse.ui.console.IConsoleView
 import org.eclipse.ui.console.TextConsole
 import org.eclipse.ui.console.TextConsolePage
@@ -49,10 +51,14 @@ class WollokReplConsole extends TextConsole {
 	@Accessors(PUBLIC_GETTER)
 	Long timeStart
 	
+	public static Color ENABLED = new Color(Display.current, 255, 255, 255) 
+	public static Color DISABLED = new Color(Display.current, 220, 220, 220)
+	
 	def static getConsoleName() { "Wollok REPL Console" }
 
 	new() {
 		super(consoleName, null, Activator.getDefault.getImageDescriptor("icons/w.png"), true)
+		background = ENABLED
 		this.partitioner = new WollokReplConsolePartitioner(this)
 		this.document.documentPartitioner = this.partitioner
 	}
@@ -91,10 +97,17 @@ class WollokReplConsole extends TextConsole {
 	}
 
 	def shutdown() {
+		background = DISABLED
 		process.terminate
 	}
 
-	def isRunning() { !process.terminated }
+	def isRunning() { 
+		val terminated = process.terminated 
+		if (terminated) {
+			background = DISABLED
+		}
+		!terminated
+	}
 
 	def getOutputText() { document.get(0, outputTextEnd) }
 
