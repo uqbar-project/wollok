@@ -376,7 +376,7 @@
 			<plugin>
 				<groupId>com.github.danielflower.mavenplugins</groupId>
 				<artifactId>gitlog-maven-plugin</artifactId>
-				<version>1.13.12</version>
+				<version>1.13.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -385,10 +385,10 @@
 					</execution>
 				</executions>
 				<configuration>
-					<generateMarkdownChangeLog>true</generateMarkdownChangeLog>
+					<generateMarkdownChangeLog>false</generateMarkdownChangeLog>
 					<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
 
-					<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
+					<generatePlainTextChangeLog>false</generatePlainTextChangeLog>
 					<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename>
 
 					<generateJSONChangeLog>false</generateJSONChangeLog>
