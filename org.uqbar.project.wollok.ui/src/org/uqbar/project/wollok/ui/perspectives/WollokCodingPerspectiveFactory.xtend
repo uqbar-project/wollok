@@ -61,6 +61,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 
 	def addActionSets(IPageLayout it) {
 		#[	
+			"org.eclipse.debug.ui.launchActionSet",
 			"org.eclipse.team.ui.actionSet",
 			IPageLayout.ID_NAVIGATE_ACTION_SET,
 			"org.eclipse.jdt.ui.actions.Rename",

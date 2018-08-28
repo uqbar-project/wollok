@@ -13,6 +13,7 @@ import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.actions.NewWizardMenu
 import org.eclipse.ui.internal.ActionSetContributionItem
 import org.eclipse.ui.internal.ActionSetMenuManager
+import org.eclipse.ui.internal.PluginActionContributionItem
 import org.eclipse.ui.internal.Workbench
 import org.eclipse.ui.internal.WorkbenchWindow
 import org.eclipse.ui.internal.ide.actions.BuildSetMenu
@@ -58,6 +59,8 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"dynamicHelp", 
 		"tipsAndTricks",
 		"org.eclipse.debug.ui.actions.BreakpointTypesContribution",
+		// Debug
+		"org.eclipse.debug.internal.ui.actions.Debug",
 		// Project Properties
 		"projectProperties",
 		// Navigate - Open Attached Javadoc and Source files
@@ -113,7 +116,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 			visible = false
 		}
 	}
-	
+
 	def dispatch void visit(Separator it) {
 		if (#["run", "debug"].includesCase(id)) {
 			visible = false
@@ -138,7 +141,10 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.jdt.ui.actions.GoToType",
 		"org.eclipse.jdt.ui.actions.GoToPackage",
 		// DEBUG - we should remove them when Wollok debugger is up again
+		"DebugGroup",
 		"org.eclipse.debug.ui.actions.DebugLast",
+		"org.eclipse.debug.internal.ui.actions.Debug",
+		"org.eclipse.debug.internal.ui.actions.DebugDropDownAction",
 		"org.eclipse.debug.internal.ui.actions.DebugHistoryMenuAction",
 		"org.eclipse.debug.internal.ui.actions.DebugWithConfigurationAction",
 		"org.eclipse.debug.ui.actions.OpenDebugConfigurations",
@@ -148,6 +154,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.debug.ui.actions.ToggleWatchpoint",
 		"org.eclipse.debug.ui.actions.SkipAllBreakpoints",
 		"org.eclipse.debug.ui.actions.RemoveAllBreakpoints",
+		"org.eclipse.jdt.debug.ui.JDTDebugActionSet",
 		"org.eclipse.jdt.debug.ui.actions.AddExceptionBreakpoint",
 		"org.eclipse.jdt.debug.ui.actions.AddClassPrepareBreakpoint",
 		"jdtGroup",
@@ -160,9 +167,13 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.jdt.debug.ui.actions.Display",
 		"org.eclipse.jdt.debug.ui.actions.Execute",
 		"org.eclipse.jdt.debug.ui.actions.ForceReturn",
+		"emptyStepGroup",
+		"org.eclipse.debug.ui.actions.BreakpointTypesContribution",
 		// Run external tools - if you want to allow you have to remove these lines 
 		"ExternalToolsGroup",
 		"org.eclipse.ui.externaltools.ExternalToolMenuDelegateMenu",
+		// Debug
+		"org.eclipse.jdt.debug.ui.commands.StepIntoSelection",
 		// Search
 		"org.eclipse.jdt.ui.actions.OpenJavaSearchPage",
 		"junit.actions.GotoTestAction",
@@ -204,7 +215,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.ltk.ui.actions.CreateRefactoringScript",
 		"org.eclipse.ltk.ui.actions.ApplyRefactoringStript",
 		"org.eclipse.ltk.ui.actions.ShowRefactoringHistory"
-		]
+		].map [ toLowerCase ]
 	}
 	
 	def dispatch void visit(BuildSetMenu it) {
@@ -212,8 +223,8 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	}
 	
 	def dispatch void visit(ActionSetContributionItem it) {
-		if (shouldHideActionSet) {
-			visible = false
+		if (shouldHideActionSet(id, actionSetId)) {
+			it.visible = false
 			if (innerItem !== null) {
 				innerItem.visible = false
 			}
@@ -227,12 +238,12 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		#["org.eclipse.ui.NavigateActionSet"]
 	}
 	
-	def shouldHideActionSet(ActionSetContributionItem it) {
+	def shouldHideActionSet(String id, String actionSetId) {
 		id !== null && unwantedActionSets.includesCase(id) || (id.equals("") && unwantedNullActionSets.includesCase(actionSetId))
 	}
 	
 	static val unwantedGroupMarkers = {
-		#["build.ext", "additions", "group.tutorials", "group.tools", "group.main.ext"]
+		#["build.ext", "additions", "group.tutorials", "group.tools", "group.main.ext"].map [ toLowerCase ]
 	}
 
 	def dispatch void visit(GroupMarker it) {
@@ -247,8 +258,20 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		update
 	}
 
+	def dispatch void visit(PluginActionContributionItem it) {
+		if (shouldHideActionSet(id, it.action.actionDefinitionId) && it.id?.toLowerCase.contains("debug")) {
+			it.visible = false
+			it.update
+		}
+	}
+
 	def dispatch void visit(ActionSetMenuManager it) {
-		getItems.forEach [ item | item.visit ]
+		if (shouldHideActionSet(id, actionSetId)) {
+			it.visible = false
+			getItems.forEach [ item | item.visible = false ]
+		} else {
+			getItems.forEach [ item | item.visit ]
+		}
 		update
 	}
 
@@ -269,7 +292,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 		"org.eclipse.xtend.ide.launching.junitPdeShortcut.debug",
 		"org.eclipse.xtend.ide.launching.localJavaShortcut.run",
 		"org.eclipse.xtend.ide.launching.localJavaShortcut.debug"
-	]
+	].map [ toLowerCase ]
 	
 	def removeUnwantedKeyBindings() {
 		val bindingService = PlatformUI.workbench.getAdapter(typeof(IBindingService)) as IBindingService
@@ -284,6 +307,7 @@ class WollokPerspectiveListener implements IPerspectiveListener {
 	 * EXTENSION METHODS
 	 */
 	def boolean includesCase(List<String> unwanted, String id) {
-		unwanted.map [ toLowerCase ].contains((id ?: "").toLowerCase)
+		val idLower = (id ?: "").toLowerCase
+		unwanted.contains(idLower) || unwanted.exists [ idLower.contains(it)]
 	}	
 }
