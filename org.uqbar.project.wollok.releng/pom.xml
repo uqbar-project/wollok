@@ -373,7 +373,7 @@
 			<!-- code coverage -->
 
 			<!-- CHANGELOG generation -->
-			<plugin>
+			<!--plugin>
 				<groupId>com.github.danielflower.mavenplugins</groupId>
 				<artifactId>gitlog-maven-plugin</artifactId>
 				<version>1.13.2</version>
@@ -396,7 +396,7 @@
 					<excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern>
 					<outputDirectory>${project.basedir}</outputDirectory>
 				</configuration>
-			</plugin>
+			</plugin-->
 			<!-- commit changelog -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
