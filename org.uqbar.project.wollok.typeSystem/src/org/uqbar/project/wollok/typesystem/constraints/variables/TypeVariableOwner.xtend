@@ -175,7 +175,9 @@ class ParameterTypeVariableOwner extends TypeVariableOwner {
 		parent.errorReportTarget
 	}
 	
-	override debugInfo() '''tparam «paramName» of «parent.debugInfo»'''
+	def ownDebugInfo() '''if (paramName.startsWith("$")) "instance" else "param"» «paramName»'''
 	
-	override debugInfoInContext() '''tparam «paramName» of «parent.debugInfoInContext»'''
+	override debugInfo() '''«ownDebugInfo» of «parent.debugInfo»'''
+	
+	override debugInfoInContext() '''«ownDebugInfo» «paramName» of «parent.debugInfoInContext»'''
 }

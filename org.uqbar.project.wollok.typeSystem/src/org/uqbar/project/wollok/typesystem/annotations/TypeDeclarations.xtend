@@ -121,6 +121,7 @@ abstract class TypeDeclarations {
 	// ****************************************************************************
 	// ** Core class and object types
 	// ****************************************************************************
+
 	def Void() { new VoidTypeAnnotation() }
 
 	def Any() { new SimpleTypeAnnotation(WollokType.WAny) }

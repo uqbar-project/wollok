@@ -91,4 +91,10 @@ class GenericTypeSchema {
 	def GenericTypeInstance instanceFor(ConcreteType concreteType) {
 		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(concreteType)])
 	}
+
+	// ************************************************************************
+	// ** Misc
+	// ************************************************************************
+	
+	override toString() '''«rawType.baseType»<«typeParameters»>'''
 }
