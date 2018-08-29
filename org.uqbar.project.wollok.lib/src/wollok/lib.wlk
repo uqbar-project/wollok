@@ -125,15 +125,15 @@ object assert {
 	 * Examples:
 	 *		assert.throwsExceptionLike(new BusinessException("hola"), 
 	 *            { => throw new BusinessException("hola") } 
-	 *            => Works! this is the same exception class and same message.
+	 *            => Works! Exception class and message both match.
 	 *
 	 *		assert.throwsExceptionLike(new BusinessException("chau"),
 	 *            { => throw new BusinessException("hola") } 
-	 *            => Doesn't work. This is the same exception class but the have different messages.
+	 *            => Doesn't work. Exception class matches but messages are different.
 	 *
 	 *		assert.throwsExceptionLike(new OtherException("hola"),
 	 *            { => throw new BusinessException("hola") } 
-	 *            => Doesn't work. This isn't the same exception class although it contains the same message.
+	 *            => Doesn't work. Messages matches but they are instances of different exceptions.
 	 */	 
 	method throwsExceptionLike(exceptionExpected, block) {
 		try 
@@ -147,18 +147,18 @@ object assert {
 	}
 
 	/** 
-	 * Tests whether a block throws an exception and it have the error message as is expected. 
+	 * Tests whether a block throws an exception and it has the error message as is expected. 
 	 * Otherwise an exception is thrown.
 	 *
 	 * Examples:
 	 *		assert.throwsExceptionWithMessage("hola",{ => throw new BusinessException("hola") } 
-	 *           => Works! both have the same message.
+	 *           => Works! Both have the same message.
 	 *
 	 *		assert.throwsExceptionWithMessage("hola",{ => throw new OtherException("hola") } 
-	 *           => Works! both have the same message.
+	 *           => Works! Both have the same message.
 	 *
 	 *		assert.throwsExceptionWithMessage("chau",{ => throw new BusinessException("hola") } 
-	 *           => Doesn't work. Both are BusinessException class but their messages differ.
+	 *           => Doesn't work. Both are instances of BusinessException but their messages differ.
 	 */	 
 	method throwsExceptionWithMessage(errorMessage, block) {
 		try 
@@ -177,10 +177,10 @@ object assert {
 	 *
 	 * Examples:
 	 *		assert.throwsExceptionWithType(new BusinessException("hola"),{ => throw new BusinessException("hola") } 
-     *          => Works! Both exception class are equals.
+     *          => Works! Both exceptions are instances of the same class.
      *
 	 *		assert.throwsExceptionWithType(new BusinessException("chau"),{ => throw new BusinessException("hola") } 
-	 *          => Works again! Both exception class are equals.
+	 *          => Works again! Both exceptions are instances of the same class.
 	 *
 	 *		assert.throwsExceptionWithType(new OtherException("hola"),{ => throw new BusinessException("hola") } 
 	 *          => Doesn't work. Exception classes differ although they contain the same message.
@@ -231,7 +231,7 @@ object assert {
 	
 	/**
 	 * Throws an exception with a custom message. 
-	 * Useful when you reach an unwanted code in a test.
+	 * Useful when you reach code that should not be reached.
 	 */
 	method fail(message) {
 		throw new AssertionException(message)
@@ -254,7 +254,7 @@ object game {
 	
 	/**
 	 * Adds an object to the board for drawing it.
-	 * That object should understand a position property 
+	 * Object should understand a position or posicion property 
 	 * (implemented by a reference or getter method).
 	 *
 	 * Example:
@@ -264,11 +264,9 @@ object game {
 
 	/**
 	 * Adds an object to the board for drawing it on a specific position.
-	 * That object should understand a position property 
-	 * (implemented by a reference or getter method).
 	 *
 	 * Example:
-	 *     game.addVisual(pepita, game.origin()) ==> pepita should have a position property
+	 *     game.addVisual(pepita, game.origin()) ==> no need for pepita to have a position property
 	 *     game.addVisual(pepita, game.at(2, 2))
 	 */
 	method addVisualIn(element, position) native
@@ -276,7 +274,7 @@ object game {
 	
 	/**
 	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
-	 * That object should understand a position property 
+	 * That object should understand a position or posicion property 
 	 * (implemented by a reference or getter method).
 	 *
 	 * Example:
@@ -288,7 +286,7 @@ object game {
 	 * Adds an object to the board for drawing it on a specific position. It can be moved with arrow keys.
 	 *
 	 * Example:
-	 *     game.addVisualCharacterIn(pepita, game.origin()) ==> pepita should have a position property
+	 *     game.addVisualCharacterIn(pepita, game.origin()) ==> no need for pepita to have a position property
 	 */	
 	method addVisualCharacterIn(element, position) native
 
@@ -301,13 +299,13 @@ object game {
 	method removeVisual(visual) native
 	
 	/**
-	 * Adds a block that will be executed always the specific key is pressed.
+	 * Adds a block that will be executed each time a specific key is pressed
 	 * @see keyboard.onPressDo()
 	 */	
 	method whenKeyPressedDo(key, action) native
 
 	/**
-	 * Adds a block that will be executed always the given object collides with other. 
+	 * Adds a block that will be executed when the given object collides with other. 
 	 * Two objects collide when are in the same position.
 	 *
 	 * The block should expect the other object as parameter.
@@ -336,7 +334,7 @@ object game {
 	method getObjectsIn(position) native
 
 	/**
-	 * Draw a dialog balloon with given message in given visual object position.
+	 * Draws a dialog balloon with given message in given visual object position.
 	 *
 	 * Example:
 	 *     game.say(pepita, "hola!")
@@ -448,7 +446,7 @@ object game {
 }
 
 /**
- * Represents a position in a two-dimension gameboard.
+ * Represents a position in a two-dimensional gameboard.
  * It is an mutable object, but it will be an immutable one in a near future.
  */
 class Position {
@@ -488,6 +486,8 @@ class Position {
 	 
 	/**
 	 * Sums n to x coordinate. This is a side effect operation.
+	 * @Deprecated 
+	 * position will be immutable soon, use right(n)
 	 */		
 	method moveRight(n) { 
 		x += n
@@ -496,6 +496,8 @@ class Position {
 	
 	/**
 	 * Substracts n to x coordinate. This is a side effect operation.
+	 * @Deprecated 
+	 * position will be immutable soon, use right(n)
 	 */		
 	method moveLeft(n) {
 		x -= n
@@ -504,6 +506,8 @@ class Position {
 	
 	/**
 	 * Sums n to y coordinate.
+	 * @Deprecated 
+	 * position will be immutable soon, use up(n)
 	 */		
 	method moveUp(n) {
 		y += n
@@ -512,6 +516,8 @@ class Position {
 	
 	/**
 	 * Substracts n to y coordinate.
+	 * @Deprecated 
+	 * position will be immutable soon, use down(n)
 	 */		
 	method moveDown(n) {
 		y -= n
