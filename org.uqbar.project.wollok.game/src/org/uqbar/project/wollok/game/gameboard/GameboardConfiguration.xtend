@@ -10,5 +10,7 @@ class GameboardConfiguration extends LwjglApplicationConfiguration {
 		this.title = gameboard.title
 		this.width = gameboard.pixelWidth()
 		this.height = gameboard.pixelHeight()
+		
+		System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
 	}
 }
