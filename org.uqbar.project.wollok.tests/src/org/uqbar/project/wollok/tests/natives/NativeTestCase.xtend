@@ -121,4 +121,20 @@ class NativeTestCase extends AbstractWollokInterpreterTestCase {
 		''']
 		.interpretPropagatingErrors
 	}
+	
+	@Test
+	def void nativeMethodInAFakeNativeClass() {
+		#["natives"->'''
+			class FakeNativeClass {
+				method aNativeMethod() native
+			}
+			
+			test "native method in a fake native class" {
+				assert.throwsExceptionWithMessage("You declared a native method but there is no native definition for natives.FakeNativeClass (maybe it is a pure Wollok definition)", 
+				{ new FakeNativeClass() })
+			}
+		''']
+		.interpretPropagatingErrors
+	}
+	
 }

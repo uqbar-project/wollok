@@ -169,9 +169,10 @@ class WollokRepl {
 	}
 
 	def stackTraceAsString(Throwable e) {
-		val s = new ByteArrayOutputStream
-		e.printStackTrace(new PrintStream(s))
-		new String(s.toByteArray)
+		//val s = new ByteArrayOutputStream
+		//e.printStackTrace(new PrintStream(s))
+		//new String(s.toByteArray)
+		e.message
 	}
 
 	def getNumberOfLinesBefore() {
