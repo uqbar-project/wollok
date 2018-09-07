@@ -69,7 +69,7 @@ class WollokExceptionExtensions {
 	}
 
 	def static dispatch String convertToString(WollokInterpreterException exception) {
-		return "ERROR: " + exception.originalCause.message
+		exception.originalCause.convertToString
 	}
 	
 	def static dispatch String convertToString(Exception exception) {
@@ -164,6 +164,18 @@ class WollokExceptionExtensions {
 	def static Throwable originalCause(Throwable e) {
 		if (e.cause === null) return e
 		e.cause.originalCause
+	}
+	
+	def static String originalMessage(Throwable e) {
+		e.originalCause.doOriginalMessage 
+	}
+	
+	def static dispatch doOriginalMessage(WollokProgramExceptionWrapper e) {
+		e.wollokMessage
+	}
+	
+	def static dispatch doOriginalMessage(Throwable e) {
+		e.message		
 	}
 	
 }
