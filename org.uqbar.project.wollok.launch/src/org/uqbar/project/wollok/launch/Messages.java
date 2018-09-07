@@ -15,7 +15,6 @@ public class Messages extends NLS {
 	public static String LINE;
 	public static String REPL_WELCOME;
 	public static String REPL_END;
-	public static String WVM_ERROR;
 
 	// ****************************
 	// ** Launcher messages

@@ -2,10 +2,8 @@ package org.uqbar.project.wollok.launch.repl
 
 import com.google.inject.Injector
 import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStreamReader
-import java.io.PrintStream
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
@@ -27,6 +25,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * 
  * @author tesonep
  * @author jfernandes
+
  */
 class WollokRepl {
 	val Injector injector
@@ -169,9 +168,6 @@ class WollokRepl {
 	}
 
 	def stackTraceAsString(Throwable e) {
-		//val s = new ByteArrayOutputStream
-		//e.printStackTrace(new PrintStream(s))
-		//new String(s.toByteArray)
 		e.message
 	}
 
@@ -208,14 +204,7 @@ class WollokRepl {
 	}
 
 	def dispatch void handleException(WollokInterpreterException e) {
-		if (e.lineNumber > numberOfLinesBefore) {
-			printlnIdent('''«WVM_ERROR» («e.lineNumber - numberOfLinesBefore»): «e.nodeText»:'''.errorStyle)
-		}
-
-		if (e.cause !== null) {
-			indent
-			handleException(e.cause)
-		}
+		printlnIdent(e.convertToString.errorStyle)
 	}
 
 	def getPrompt() {
