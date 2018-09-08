@@ -5,7 +5,7 @@
  *     keyboard.i().onPressDo { game.say(pepita, "hola!") } 
  *         => when user hits "i" key, pepita will say "hola!"
  *
- *     keyboard.any().onPressDo { game.say("you pressed a key!") }
+ *     keyboard.any().onPressDo { game.say(pepita, "you pressed a key!") }
  *         => any key pressed will activate its closure
  */
 object keyboard {
