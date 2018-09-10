@@ -1,9 +1,9 @@
 package org.uqbar.project.wollok.game
 
-import com.badlogic.gdx.graphics.Color
 import java.util.Date
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.game.gameboard.Window
+import com.badlogic.gdx.graphics.Color
 
 @Accessors
 class BalloonMessage {
