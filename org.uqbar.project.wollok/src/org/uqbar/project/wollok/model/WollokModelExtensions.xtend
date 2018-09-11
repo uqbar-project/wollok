@@ -78,6 +78,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.core.resources.IResource
 
 /**
  * Extension methods to Wollok semantic model.
@@ -497,6 +498,14 @@ class WollokModelExtensions {
 		ResourcesPlugin.workspace
 	}
 
+	def static dispatch String getPlatformFullPath(Resource resource) {
+		resource.IFile.platformFullPath
+	}
+	
+	def static dispatch String getPlatformFullPath(IResource resource) {
+		resource.fullPath.toString
+	}
+	
 	// ******************************
 	// ** is duplicated impl
 	// ******************************

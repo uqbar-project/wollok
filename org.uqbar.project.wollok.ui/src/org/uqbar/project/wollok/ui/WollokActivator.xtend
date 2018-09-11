@@ -99,14 +99,16 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	}
 
 	def void generateIssues(Resource resource) {
+		if (!resource.exists) return;
 		val issues = validator.validate(resource, CheckMode.ALL, null)
-		mapIssues.put(resource.platformURI, issues)
+		val file = resource.platformFullPath
+		println("  issues [" + file + "] ===> " + issues)
+		mapIssues.put(file, issues)
 	}
 	
 	def void refreshTypeErrors(IProject project, Resource resource, IProgressMonitor monitor) {
 		Display.^default.syncExec [
-			val locationURI = resource.platformURI
-			val issues = mapIssues.get(locationURI)
+			val issues = mapIssues.get(resource.platformFullPath)
 			new MarkerIssueProcessor(resource.IFile, markerCreator, markerTypeProvider).processIssues(issues, monitor)
 		]
 	}
@@ -135,9 +137,12 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 			Thread.sleep(300) // fixes synchronization problem
 			val wollokTextEditor = editor as WollokTextEditor
 			if (wollokTextEditor.resource === null) return;
-			val activeURI = wollokTextEditor.resource.locationURI
-			val activeEditorURI = activeURI.toString.replaceAll(workspaceURI, " ").trim
-			val issues = mapIssues.get(activeEditorURI) ?: #[]
+			val resource = wollokTextEditor.resource.platformFullPath
+			val issues = mapIssues.get(resource) ?: #[]
+			println("ISSUES")
+			mapIssues.forEach [ k,v | println("Resource [" + k + "] - Issues " + v)]
+			println("issues from [" + resource + "] : " + issues)
+			println()
 			Display.getDefault.syncExec [|
 				new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(),
 					issueResolutionProvider).processIssues(issues, new NullProgressMonitor)
