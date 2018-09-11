@@ -42,9 +42,6 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 		// First add all Wollok files to the type system for constraint generation
 		val wollokFiles = context.resourceSet.resources.filter[ IFile !== null && IFile.isWollokExtension && !isCoreLib ]
 		
-		println("Wollok FILES " + wollokFiles)
-		println("***********************************")
-		
 		WollokTypeSystemActivator.^default.ifEnabledFor(project) [
 			val ts = it as ConstraintBasedTypeSystem
 			val contents = wollokFiles.map [ contents ].flatten
@@ -64,7 +61,6 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 
 		// Refreshing views - markers (problems tab), then outline and finally active editor
 		wollokFiles.forEach [
-			println("  wollok file => " + it)
 			wollokActivator.generateIssues(it)
 			wollokActivator.refreshTypeErrors(project, it, monitor)
 		]

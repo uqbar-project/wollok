@@ -1,8 +1,7 @@
 package org.uqbar.project.wollok.game.gameboard
 
-import com.badlogic.gdx.ApplicationLogger
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import org.eclipse.xtend.lib.annotations.Accessors
+import com.badlogic.gdx.ApplicationLogger
 
 class WollokGDXApplication extends LwjglApplication {
 	
