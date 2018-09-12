@@ -78,6 +78,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.eclipse.core.resources.IResource
 
 /**
  * Extension methods to Wollok semantic model.
@@ -884,4 +885,12 @@ class WollokModelExtensions {
 	def static dispatch boolean isAssertWKO(EObject e) { false }
 	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn.equals(WollokDSK.ASSERT) }
 	def static dispatch boolean isAssertWKO(WVariableReference ref) { ref.ref.isAssertWKO }
+	
+	def static dispatch String getPlatformFullPath(Resource resource) {
+		resource.IFile.platformFullPath
+	}
+	
+	def static dispatch String getPlatformFullPath(IResource resource) {
+		resource.fullPath.toString
+	}
 }
