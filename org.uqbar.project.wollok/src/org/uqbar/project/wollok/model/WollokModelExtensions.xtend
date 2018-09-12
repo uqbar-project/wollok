@@ -1,10 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
-import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IWorkspace
-import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
@@ -75,8 +71,8 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
 import static org.uqbar.project.wollok.WollokConstants.*
-import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
@@ -89,16 +85,6 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 class WollokModelExtensions {
 
 	def static implicitPackage(EObject it) { file.implicitPackage }
-
-	def static implicitPackage(Resource it) {
-		if(it === null || it.URI === null || it.URI.toString === null) {
-			return null
-		}
-		if(URI.toString.startsWith(CLASSPATH))
-			URI.trimFileExtension.segments.join(".")
-		else
-			fullPackageName(it)
-	}
 
 	def static file(EObject it) { eResource }
 
@@ -477,23 +463,6 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WCollectionLiteral o) { true }
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
-
-	def static getProject(EObject obj) { obj.IFile.project }
-
-	def static IFile getIFile(EObject obj) { obj.eResource.IFile }
-
-	def static IFile getIFile(Resource resource) {
-		val platformString = resource.URI.toPlatformString(true)
-		if(platformString === null) {
-			// could be a synthetic file
-			return null;
-		}
-		workspace.root.getFile(new Path(platformString))
-	}
-
-	def static IWorkspace workspace() {
-		ResourcesPlugin.workspace
-	}
 
 	// ******************************
 	// ** is duplicated impl

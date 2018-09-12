@@ -13,10 +13,10 @@ import org.uqbar.project.wollok.preferences.WollokCachedTypeSystemPreferences
 import org.uqbar.project.wollok.utils.WEclipseUtils
 import org.uqbar.project.wollok.wollokDsl.WNamed
 
+import static org.uqbar.project.wollok.utils.XtendExtensions.*
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic

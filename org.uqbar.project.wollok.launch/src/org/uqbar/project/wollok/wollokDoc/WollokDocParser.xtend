@@ -42,7 +42,7 @@ class WollokDocParser extends WollokChecker {
 	val static PARAGRAPH_ON = "<p>"
 	val static PARAGRAPH_OFF = "</p>"
 	val static SPACE = " "
-	val static TABLE_ON = "<div class=\"container\"><table class=\"table table-striped table-hover table-sm table-responsive w-auto\">"
+	val static TABLE_ON = "<div class=\"container\"><table class=\"table table-striped table-hover table-sm w-auto\">"
 	val static TABLE_OFF = "</table></div>"
 	val static TABLE_HEADING_CONF_ON = "<thead>"
 	val static TABLE_HEADING_CONF_OFF = "</thread>"
@@ -50,12 +50,12 @@ class WollokDocParser extends WollokChecker {
 	val static TABLE_BODY_OFF = "</tbody>"
 	val static TABLE_HEADING_ON = "<th class=\"blue-grey lighten-2\">"
 	val static TABLE_HEADING_OFF = "</th>"
-	val static TABLE_DATA_ON = "<td>"
+	val static TABLE_DATA_ON = "<td width=\"70%;\">"
 	val static TABLE_DATA_OFF = "</td>"
 	val static TABLE_ROW_ON = "<tr>"
 	val static TABLE_ROW_OFF = "</tr>"
 	val static LINE_BREAK = "<br>"
-	val static wollokDocTokens = #["author", "since", "param", "see", "private", "returns", "return", "throws", "noInstantiate"]
+	val static wollokDocTokens = #["author", "since", "param", "see", "See", "private", "returns", "return", "throws", "noInstantiate"]
 	var BufferedWriter wollokDocFile
 	val allFiles = <File>newArrayList
 	var String outputFolder
@@ -177,7 +177,7 @@ class WollokDocParser extends WollokChecker {
 		val comment = m.comment
 		val abstractDescription = if (m.abstract) badge("abstract", "light-blue") + SPACE else ""
 		val nativeDescription = if (m.native) badge("native", "indigo") else ""
-		writeFile("<td id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
+		writeFile("<td width=\"30%\"id=\"" + m.anchor + "\">" + BOLD_ON + m.name + BOLD_OFF + SPACE + m.parametersAsString + SPACE + SPACE +
 			abstractDescription + SPACE + SPACE + nativeDescription + SPACE + TABLE_DATA_OFF +
 			TABLE_DATA_ON +	comment + TABLE_DATA_OFF)
 	}
