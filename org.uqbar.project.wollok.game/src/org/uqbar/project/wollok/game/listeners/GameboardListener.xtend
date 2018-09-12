@@ -8,5 +8,5 @@ interface GameboardListener {
 	def void notify(Gameboard gameboard)
 	
 	def boolean isObserving(VisualComponent component)
-	
+
 }
