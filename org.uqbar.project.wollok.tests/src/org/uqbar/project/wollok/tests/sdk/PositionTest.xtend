@@ -83,6 +83,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void positionCanBeAccessedByGetterMethod() {
 		'''
+		import wollok.game.*
+		
 		object aVisual {
 			method «convention»() = «position»
 			«imageMethod»
@@ -104,6 +106,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void positionCanBeAccessedByProperty() {
 		'''
+		import wollok.game.*
+		
 		object visual {
 			var «convention» = «position»
 			«imageMethod»
@@ -140,6 +144,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void whenClearShouldRemoveAllVisualsInIt() {
 		'''
+		import wollok.game.*
+		
 		class Visual {
 			«imageMethod»
 		}
@@ -151,6 +157,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 		
 		assertEquals(3, gameboard.components.size)
 		'''
+		import wollok.game.*
+		
 		program p {
 			«position».clear()
 		}'''.interpretPropagatingErrors
@@ -184,6 +192,8 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	
 	def visualObjectWithoutPosition() {
 		'''
+		import wollok.game.*
+		
 		object visual {
 			«imageMethod»
 		}

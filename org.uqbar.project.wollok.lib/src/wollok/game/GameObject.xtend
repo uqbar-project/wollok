@@ -1,4 +1,4 @@
-package wollok.lib
+package wollok.game
 
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
@@ -44,9 +44,13 @@ class GameObject {
 		board.remove(visual)
 	}
 	
-	def onTick(WollokObject milliseconds, WollokObject action) {
+	def onTick(WollokObject milliseconds, WollokObject name, WollokObject action) {
 		val function = action.asClosure
-		addListener(new TimeListener(milliseconds.coerceToInteger, [ function.doApply ]))
+		addListener(new TimeListener(name.asString, milliseconds.coerceToInteger, [ function.doApply ]))
+	}
+	
+	def removeTickEvent(WollokObject name) {
+		board.removeListener(name.asString)
 	}
 	
 	def whenKeyPressedDo(WollokObject key, WollokObject action) {
@@ -156,3 +160,4 @@ class GameObject {
 	def boardGround(String image) { board.boardGround = image }
 	
 }
+			

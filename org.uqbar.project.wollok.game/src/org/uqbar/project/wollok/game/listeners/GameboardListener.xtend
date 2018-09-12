@@ -9,4 +9,6 @@ interface GameboardListener {
 	
 	def boolean isObserving(VisualComponent component)
 
+	def name() { return "" }
+	
 }

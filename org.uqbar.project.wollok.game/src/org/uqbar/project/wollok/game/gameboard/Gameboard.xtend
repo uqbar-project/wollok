@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import java.util.Collection
+
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -11,6 +12,11 @@ import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.eclipse.osgi.util.NLS
 
 @Accessors
 class Gameboard {
@@ -123,6 +129,14 @@ class Gameboard {
 
 	def void addListener(GameboardListener aListener){
 		listeners.add(aListener)
+	}
+	
+	def removeListener(String listenerName) {
+		val listener = listeners.findFirst([ name.equals(listenerName) ])
+		if (listener === null) {
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok))
+		}
+		listeners.remove(listener)
 	}
 	
 	def remove(VisualComponent component) {

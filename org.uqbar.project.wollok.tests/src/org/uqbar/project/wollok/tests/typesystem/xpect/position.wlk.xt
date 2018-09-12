@@ -1,4 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+import wollok.game.*
 
 object positionTest {
 	
