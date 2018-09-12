@@ -16,6 +16,7 @@ import org.uqbar.project.wollok.wollokDsl.WNamed
 import static org.uqbar.project.wollok.wollokDsl.WollokDslPackage.Literals.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * Intermediate superclass to avoid mixing up "fwk-like" logic
@@ -90,6 +91,8 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 				messageAcceptor.acceptWarning(description, invalidObject, before, length, issueId)
 			case INFO:
 				messageAcceptor.acceptInfo(description, invalidObject, before, length, issueId)
+			case IGNORE:
+				doNothing
 		}
 
 	}
@@ -103,6 +106,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			case ERROR: error(description, invalidObject, ref, issueId)
 			case WARN: warning(description, invalidObject, ref, issueId)
 			case INFO: info(description, invalidObject, ref, issueId)
+			case IGNORE: doNothing
 		}
 	}
 
@@ -119,6 +123,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 			case ERROR: error(description, invalidObject, ref, index, issueId)
 			case WARN: warning(description, invalidObject, ref, index, issueId)
 			case INFO: info(description, invalidObject, ref, index, issueId)
+			case IGNORE: doNothing
 		}
 	}
 

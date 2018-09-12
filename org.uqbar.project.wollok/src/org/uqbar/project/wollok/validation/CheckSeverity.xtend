@@ -10,7 +10,8 @@ import org.uqbar.project.wollok.Messages
 enum CheckSeverity {
 	ERROR,
 	WARN,
-	INFO
+	INFO,
+	IGNORE
 }
 
 class CheckSeverityUtils {
@@ -19,6 +20,7 @@ class CheckSeverityUtils {
 			case ERROR: Messages.CheckSeverity_ERROR
 			case WARN: Messages.CheckSeverity_WARN
 			case INFO: Messages.CheckSeverity_INFO
+			case IGNORE: Messages.CheckSeverity_IGNORE
 		}
 	}
 }
