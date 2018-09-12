@@ -4,7 +4,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.VisualComponent
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 
-class TimeListener implements GameboardListener {
+class TimeListener extends GameboardListener {
 
 	long timeSinceLastRun = System.currentTimeMillis
 	String name	

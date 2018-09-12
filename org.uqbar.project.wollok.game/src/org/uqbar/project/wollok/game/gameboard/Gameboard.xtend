@@ -17,6 +17,9 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import org.eclipse.osgi.util.NLS
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
+import java.util.Map
 
 @Accessors
 class Gameboard {
@@ -35,6 +38,7 @@ class Gameboard {
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
 	@Accessors(NONE) VisualComponent errorReporter
+	Map<String, Sound> audioFiles = <String, Sound>newHashMap
 		
 	def static getInstance() {
 		if (instance === null) {
@@ -159,5 +163,14 @@ class Gameboard {
 	def VisualComponent errorReporter() {
 		errorReporter ?: somebody
 	}
+
+	def sound(String audioFile) {
+		val sound = audioFile.fetchSound
+		audioFiles.put(audioFile, sound)
+		sound.play(1.0f)
+	}
 	
+	def fetchSound(String audioFile) {
+		audioFiles.get(audioFile) ?: Gdx.audio.newSound(Gdx.files.internal(audioFile))
+	}
 }

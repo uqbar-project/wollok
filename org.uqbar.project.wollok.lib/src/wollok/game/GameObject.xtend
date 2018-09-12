@@ -141,7 +141,10 @@ class GameObject {
 		result
 	}
 	
-	
+	def sound(String audioFile) {
+		board.sound(audioFile)
+	}
+		
 //	 ACCESSORS
 	def title() { board.title }
 	def title(String title) { board.title = title }

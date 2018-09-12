@@ -200,6 +200,11 @@ object game {
      */
     method errorReporter(visual) native
      
+    /**
+	 * Plays once a .mp3, .ogg or .wav audio file
+     */ 
+    method sound(audioFile) native
+    
 	/** 
 	* @private
 	*/
