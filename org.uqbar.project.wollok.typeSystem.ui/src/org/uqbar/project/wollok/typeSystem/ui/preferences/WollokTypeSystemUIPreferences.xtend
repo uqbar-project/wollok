@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.preferences.WollokTypeSystemPreference
 import org.uqbar.project.wollok.validation.CheckSeverity
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 
 class WollokTypeSystemUIPreferences implements WollokTypeSystemPreference {
 	public static val PREF_TYPE_SYSTEM_SEVERITY = "TYPE_SYSTEM_SEVERITY"

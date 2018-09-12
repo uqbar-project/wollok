@@ -31,7 +31,7 @@ import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**

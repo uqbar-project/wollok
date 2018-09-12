@@ -161,6 +161,7 @@ public class Messages extends NLS {
 	public static String CheckSeverity_ERROR;
 	public static String CheckSeverity_WARN;
 	public static String CheckSeverity_INFO;
+	public static String CheckSeverity_IGNORE;
 	
 	// ****************************
 	// ** Check groups

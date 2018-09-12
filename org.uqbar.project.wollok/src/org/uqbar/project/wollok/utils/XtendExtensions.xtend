@@ -116,4 +116,6 @@ class XtendExtensions {
 			].flatten
 		}
 	}
+
+	static def doNothing() {}
 }

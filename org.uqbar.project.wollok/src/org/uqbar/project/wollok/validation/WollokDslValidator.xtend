@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.scoping.WollokGlobalScopeProvider
 import org.uqbar.project.wollok.scoping.WollokImportedNamespaceAwareLocalScopeProvider
 import org.uqbar.project.wollok.scoping.root.WollokRootLocator
+import org.uqbar.project.wollok.validation.rules.DontCompareEqualityOfWKORule
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WAssignment
@@ -806,17 +807,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	@Check
-	@DefaultSeverity(ERROR)
+	@DefaultSeverity(IGNORE)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
-	def comparingEqualityOfWellKnownObject(WBinaryOperation op) {
-		val comparisonOperands = #['==', '!=', '===', '!==']
-
-		if (comparisonOperands.contains(op.feature)) {
-			if (op.leftOperand.isWellKnownObject)
-				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__LEFT_OPERAND)
-			if (op.rightOperand !== null && op.rightOperand.isWellKnownObject)
-				report(WollokDslValidator_DO_NOT_COMPARE_FOR_EQUALITY_WKO, op, WBINARY_OPERATION__RIGHT_OPERAND)
-		}
+	def comparingEqualityOfWellKnownObject(WBinaryOperation it) {
+		DontCompareEqualityOfWKORule.validate(this, it)
 	}
 
 	@Check
