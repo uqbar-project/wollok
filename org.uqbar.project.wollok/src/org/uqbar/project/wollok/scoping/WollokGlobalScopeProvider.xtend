@@ -23,6 +23,7 @@ import org.uqbar.project.wollok.scoping.root.WollokRootLocator
 
 import static org.uqbar.project.wollok.WollokConstants.*
 
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**

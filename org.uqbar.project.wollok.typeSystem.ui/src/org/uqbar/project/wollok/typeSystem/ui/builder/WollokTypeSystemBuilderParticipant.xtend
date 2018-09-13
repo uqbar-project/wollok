@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.typesystem.WollokTypeSystemActivator
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.ui.WollokActivator
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**

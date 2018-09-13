@@ -13,7 +13,7 @@ import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static extension org.uqbar.project.wollok.launch.tests.WollokExceptionUtils.*
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 
 /**
  * A test reporter that prints to console in JSON format.

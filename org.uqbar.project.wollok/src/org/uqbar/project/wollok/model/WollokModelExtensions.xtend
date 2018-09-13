@@ -1,10 +1,6 @@
 package org.uqbar.project.wollok.model
 
 import java.util.List
-import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IWorkspace
-import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.ECollections
 import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
@@ -75,10 +71,9 @@ import org.uqbar.project.wollok.wollokDsl.WollokDslPackage
 import wollok.lang.Exception
 
 import static org.uqbar.project.wollok.WollokConstants.*
-import static org.uqbar.project.wollok.scoping.root.WollokRootLocator.*
 
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.eclipse.core.resources.IResource
 
 /**
  * Extension methods to Wollok semantic model.
@@ -91,20 +86,13 @@ class WollokModelExtensions {
 
 	def static implicitPackage(EObject it) { file.implicitPackage }
 
-	def static implicitPackage(Resource it) {
-		if(it === null || it.URI === null || it.URI.toString === null) {
-			return null
-		}
-		if(URI.toString.startsWith(CLASSPATH))
-			URI.trimFileExtension.segments.join(".")
-		else
-			fullPackageName(it)
-	}
-
 	def static file(EObject it) { eResource }
 
 	def static boolean isException(WClass it) { fqn == Exception.name || (parent !== null && parent.exception) }
 
+	// ************************************************************************
+	// ** Names & identifiers
+	// ************************************************************************
 	def static dispatch name(EObject it) { null }
 	def static dispatch name(WNamed it) { name }
 	def static dispatch name(WObjectLiteral it) { "anonymousObject" }
@@ -144,15 +132,6 @@ class WollokModelExtensions {
 	def static dispatch fqn(WObjectLiteral it) {
 		// TODO: make it better (show containing class /object / package + linenumber ?)
 		implicitPackage + "." + "anonymousObject"
-	}
-
-	// this doesn't work for object literals, although it could !
-	def static WPackage getPackage(WMethodContainer it) {
-		if(eContainer instanceof WPackage) eContainer as WPackage else null
-	}
-
-	def static boolean isSuperTypeOf(WClass a, WClass b) {
-		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
 	// ************************************************************************
@@ -222,6 +201,11 @@ class WollokModelExtensions {
 	// **********************
 	// ** access containers
 	// **********************
+	// this doesn't work for object literals, although it could !
+	def static WPackage getPackage(WMethodContainer it) {
+		if(eContainer instanceof WPackage) eContainer as WPackage else null
+	}
+
 	def static WClass getWollokClass(EObject it) { EcoreUtil2.getContainerOfType(it, WClass) }
 
 	def static dispatch WBlockExpression block(WBlockExpression b) { b }
@@ -242,7 +226,6 @@ class WollokModelExtensions {
 
 	// ojo podría ser un !ObjectLiteral
 	def static declaringContext(WMethodDeclaration m) { m.eContainer as WMethodContainer } //
-	
 	def static dispatch constructorsFor(WSelfDelegatingConstructorCall dc, WClass c) { c.constructors }
 
 	def static dispatch constructorsFor(WSuperDelegatingConstructorCall dc, WClass c) { c.parent.constructors }
@@ -386,7 +369,7 @@ class WollokModelExtensions {
 	}
 
 	def static getArgument(WArgumentList l, String name) {
-		val initializer = l.initializers.findFirst[init|init.initializer.name.equals(name)]
+		val initializer = l.initializers.findFirst[init|init.initializer.name == name]
 		if(initializer === null) return null
 		initializer.initialValue
 	}
@@ -480,23 +463,6 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WCollectionLiteral o) { true }
 	def static dispatch isTransparent(WVariableReference o) { true }
 	def static dispatch isTransparent(WBinaryOperation o) { true }
-
-	def static getProject(EObject obj) { obj.IFile.project }
-
-	def static IFile getIFile(EObject obj) { obj.eResource.IFile }
-
-	def static IFile getIFile(Resource resource) {
-		val platformString = resource.URI.toPlatformString(true)
-		if(platformString === null) {
-			// could be a synthetic file
-			return null;
-		}
-		workspace.root.getFile(new Path(platformString))
-	}
-
-	def static IWorkspace workspace() {
-		ResourcesPlugin.workspace
-	}
 
 	// ******************************
 	// ** is duplicated impl
@@ -615,13 +581,15 @@ class WollokModelExtensions {
 
 	def static isBooleanExpression(WBinaryOperation it) { feature.isBooleanOperand }
 
-	def static isBooleanOperand(String it) { WollokConstants.OP_BOOLEAN.contains(it) }
+	def static isBooleanOperand(String it) { OP_BOOLEAN.contains(it) }
 
-	def static isAndExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_AND.contains(feature) }
+	def static isAndExpression(WBinaryOperation it) { OP_BOOLEAN_AND.contains(feature) }
 
-	def static isOrExpression(WBinaryOperation it) { WollokConstants.OP_BOOLEAN_OR.contains(feature) }
+	def static isOrExpression(WBinaryOperation it) { OP_BOOLEAN_OR.contains(feature) }
 
-	def static isNotOperation(WUnaryOperation it) { WollokConstants.OP_UNARY_BOOLEAN.contains(feature) }
+	def static isNotOperation(WUnaryOperation it) { OP_UNARY_BOOLEAN.contains(feature) }
+
+	def static boolean isEqualityComparison(WBinaryOperation it) { OP_EQUALITY.contains(feature) }
 
 	// *******************************
 	// ** variables
@@ -691,33 +659,36 @@ class WollokModelExtensions {
 	}
 
 	def static List<ImportNormalizer> importedDefinitions(Resource resource) {
-		resource.allContents
-			.filter(Import)
-			.map [ importedNamespace ]
-			.filter [ it !== null && !it.trim.equals("") ]
-			.map [
-				var alreadyImportedFqn = QualifiedName.create(it.split("\\."))
-				val hasWildCard = alreadyImportedFqn.lastSegment.equals("*")
-				if (hasWildCard) {
-					alreadyImportedFqn = alreadyImportedFqn.skipLast(1)
-				} 
-				new ImportNormalizer(alreadyImportedFqn, hasWildCard, false)
-			]
-			.toList
+		resource.allContents.filter(Import).map[importedNamespace].filter[it !== null && it.trim !== ""].map [
+			var alreadyImportedFqn = QualifiedName.create(it.split("\\."))
+			val hasWildCard = alreadyImportedFqn.lastSegment == "*"
+			if(hasWildCard) {
+				alreadyImportedFqn = alreadyImportedFqn.skipLast(1)
+			}
+			new ImportNormalizer(alreadyImportedFqn, hasWildCard, false)
+		].toList
 	}
-	
+
 	def static List<WMethodContainer> allPossibleImports(Resource resource) {
-		resource
-			.resourceSet
-			.allContents
-			.filter(WMethodContainer)
-			.filter [ element |
-				val containerFqn = element.fqn
-				!#["wollok.lang", "wollok.lib"].exists [ library | containerFqn.startsWith(library)]
- 			]
- 			.toList
+		resource.resourceSet.allContents.filter(WMethodContainer).filter [ element |
+			val containerFqn = element.fqn
+			!#["wollok.lang", "wollok.lib"].exists[library|containerFqn.startsWith(library)]
+		].toList
 	}
-	
+
+	def static getImportedClasses(XtextResource it, WollokClassFinder finder) {
+		val imports = getAllOfType(Import)
+		imports.fold(newArrayList) [ l, i |
+			try {
+				l.add(finder.getCachedClass(i, i.importedNamespace))
+			} catch(ClassCastException e) {
+				// Temporarily user is writing another import
+			} catch(WollokRuntimeException e) {
+			}
+			l
+		]
+	}
+
 	// *******************************
 	// ** refactoring
 	// *******************************
@@ -740,13 +711,13 @@ class WollokModelExtensions {
 	def static dispatch boolean doApplyRenameTo(EObject e, EObject e2) { true }
 
 	def static dispatch boolean doApplyRenameTo(WVariable v, WVariableReference reference) {
-		reference.ref.equals(v)
+		reference.ref == v
 	}
 
 	def static boolean applyRenameTo(EObject e, INode node) {
 		val semanticsElements = e.semanticElementsAllowedToRefactor
 		val rootNodeName = e.name.trim
-		node.text.trim.equals(rootNodeName) && semanticsElements.contains(node.semanticElement.eClass.name) &&
+		node.text.trim == rootNodeName && semanticsElements.contains(node.semanticElement.eClass.name) &&
 			doApplyRenameTo(e, node.semanticElement)
 	}
 
@@ -782,9 +753,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch matchesParam(WParameter p, EObject e) { false }
-
 	def static dispatch matchesParam(WParameter p, WVariableReference ref) { p === ref.getRef }
-
 	def static dispatch matchesParam(WParameter p, WParameter p2) { p === p2 }
 
 	def static <T extends EObject> Iterable<T> getAllOfType(XtextResource it, Class<T> type) {
@@ -792,24 +761,12 @@ class WollokModelExtensions {
 	}
 
 	def static getAllElements(XtextResource it) { getAllOfType(WMethodContainer) }
-
 	def static getMixins(XtextResource it) { getAllOfType(WMixin) }
-
 	def static getClasses(XtextResource it) { getAllOfType(WClass) }
-
 	def static getNamedObjects(XtextResource it) { getAllOfType(WNamedObject) }
 
-	def static getImportedClasses(XtextResource it, WollokClassFinder finder) {
-		val imports = getAllOfType(Import)
-		imports.fold(newArrayList) [ l, i |
-			try {
-				l.add(finder.getCachedClass(i, i.importedNamespace))
-			} catch(ClassCastException e) {
-				// Temporarily user is writing another import
-			} catch(WollokRuntimeException e) {
-			}
-			l
-		]
+	def static boolean isSuperTypeOf(WClass a, WClass b) {
+		a.fqn == b.fqn || (b.parent !== null && a.isSuperTypeOf(b.parent))
 	}
 
 	// ************************************************************************
@@ -826,10 +783,9 @@ class WollokModelExtensions {
 			throw new UnsupportedOperationException(Messages.WollokInterpreter_binaryOperationNotCompoundAssignment)
 	}
 
-	def static dispatch isASuite(EObject o) { false }
-
-	def static dispatch isASuite(WFile it) { tests.empty && suite !== null }
-
+	// ************************************************************************
+	// ** Formatting
+	// ************************************************************************
 	def static dispatch boolean hasOneExpressionForFormatting(EObject o) { false }
 	def static dispatch boolean hasOneExpressionForFormatting(WBlockExpression it) {
 		expressions.size === 1 && expressions.head.hasOneExpressionForFormatting
@@ -838,25 +794,12 @@ class WollokModelExtensions {
 	def static dispatch boolean hasOneExpressionForFormatting(WExpression e) { true }
 	def static dispatch boolean hasOneExpressionForFormatting(WIfExpression e) { false }
 
-	def static dispatch boolean hasNamedParameters(EObject o) { false }
+	// ************************************************************************
+	// ** Tests and assertions
+	// ************************************************************************
+	def static dispatch isASuite(EObject o) { false }
 
-	def static dispatch boolean hasNamedParameters(WConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
-		if(c.argumentList === null) return false
-		c.argumentList.hasNamedParameters
-	}
-
-	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
-	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
+	def static dispatch isASuite(WFile it) { tests.empty && suite !== null }
 
 	def static dispatch boolean sendsMessageToAssert(Void e) { false }
 	def static dispatch boolean sendsMessageToAssert(EObject e) { false }
@@ -883,14 +826,29 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean isAssertWKO(EObject e) { false }
-	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn.equals(WollokDSK.ASSERT) }
+	def static dispatch boolean isAssertWKO(WNamedObject wko) { wko.fqn == WollokDSK.ASSERT }
 	def static dispatch boolean isAssertWKO(WVariableReference ref) { ref.ref.isAssertWKO }
-	
-	def static dispatch String getPlatformFullPath(Resource resource) {
-		resource.IFile.platformFullPath
+
+	// ************************************************************************
+	// ** Named Parameters
+	// ************************************************************************
+	def static dispatch boolean hasNamedParameters(EObject o) { false }
+
+	def static dispatch boolean hasNamedParameters(WConstructorCall c) {
+		if(c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
 	}
-	
-	def static dispatch String getPlatformFullPath(IResource resource) {
-		resource.fullPath.toString
+
+	def static dispatch boolean hasNamedParameters(WSelfDelegatingConstructorCall c) {
+		if(c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
 	}
+
+	def static dispatch boolean hasNamedParameters(WSuperDelegatingConstructorCall c) {
+		if(c.argumentList === null) return false
+		c.argumentList.hasNamedParameters
+	}
+
+	def static dispatch boolean hasNamedParameters(WPositionalArgumentsList l) { false }
+	def static dispatch boolean hasNamedParameters(WNamedArgumentsList l) { true }
 }
