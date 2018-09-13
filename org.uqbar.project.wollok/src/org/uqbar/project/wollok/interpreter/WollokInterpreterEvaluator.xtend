@@ -248,7 +248,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def <T> newInstanceWithWrapped(String className, T wrapped) {
 		newInstance(className) => [
-			val JavaWrapper<T> native = getNativeObject(className)
+			val native = getNativeObject(className) as JavaWrapper<T>
 			native.wrapped = wrapped
 		]
 	}

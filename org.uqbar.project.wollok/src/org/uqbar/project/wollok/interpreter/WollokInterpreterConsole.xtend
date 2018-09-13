@@ -2,6 +2,8 @@ package org.uqbar.project.wollok.interpreter
 
 import java.io.Serializable
 import com.google.inject.Singleton
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions
 
 /**
  * A console where the interpreter will write stuff into.
@@ -21,6 +23,6 @@ interface WollokInterpreterConsole extends Serializable {
 @Singleton
 class SysoutWollokInterpreterConsole implements WollokInterpreterConsole {
 	override logMessage(String message) { println(message)	}
-	override logError(Throwable exception) { exception.printStackTrace }
+	override logError(Throwable exception) { println(exception.convertToString) }
 	override logError(String message) { System.err.println(message) }
 }

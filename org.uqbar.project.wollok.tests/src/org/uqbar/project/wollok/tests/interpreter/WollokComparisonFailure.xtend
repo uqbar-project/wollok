@@ -3,8 +3,7 @@ package org.uqbar.project.wollok.tests.interpreter
 import org.junit.ComparisonFailure
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.launch.tests.WollokExceptionUtils
-
+import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.wollokToJava
 
 class WollokComparisonFailure extends ComparisonFailure {
@@ -27,7 +26,7 @@ class WollokComparisonFailure extends ComparisonFailure {
 		if(wollokException === null)
 			return this
 		
-		val elements = WollokExceptionUtils.convertStackTrace(wollokException).map[asStackTraceElement]
+		val elements = wollokException.convertStackTrace.map[asStackTraceElement]
 		stackTrace = elements.toArray(<StackTraceElement>newArrayOfSize(0))
 		this
 	}

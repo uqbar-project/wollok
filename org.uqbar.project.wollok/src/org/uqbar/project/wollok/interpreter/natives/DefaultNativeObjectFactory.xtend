@@ -1,6 +1,9 @@
 package org.uqbar.project.wollok.interpreter.natives
 
+import com.google.inject.Singleton
 import java.util.Map
+import org.eclipse.osgi.util.NLS
+import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.WollokActivator
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
@@ -11,7 +14,9 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import com.google.inject.Singleton
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
 
 /**
  * Default implement
@@ -62,13 +67,19 @@ class DefaultNativeObjectFactory implements NativeObjectFactory {
 	def resolveNativeClass(String originalFqn, WollokObject obj, WollokInterpreter interpreter) {
 		val fqn = DefaultNativeObjectFactory.wollokToJavaFQN(originalFqn)
 		val bundle = WollokActivator.getDefault
-		if (bundle !== null)
-			try
-				bundle.loadWollokLibClass(fqn, obj.behavior)
-			catch (ClassNotFoundException e)
+		try {
+			if (bundle !== null)
+				try
+					bundle.loadWollokLibClass(fqn, obj.behavior)
+				catch (ClassNotFoundException e)
+					interpreter.classLoader.loadClass(fqn)
+			else
 				interpreter.classLoader.loadClass(fqn)
-		else
-			interpreter.classLoader.loadClass(fqn)
+		} catch (ClassNotFoundException e) {
+			val evaluator = interpreter.evaluator as WollokInterpreterEvaluator
+			val message = NLS.bind(Messages.WollokDslInterpreter_native_class_not_found, fqn)
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, message.javaToWollok))
+		}
 	}
 	
 	def static wollokToJavaFQN(String fqn) {
