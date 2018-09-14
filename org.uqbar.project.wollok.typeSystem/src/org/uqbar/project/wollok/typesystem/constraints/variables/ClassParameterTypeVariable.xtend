@@ -62,6 +62,10 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 		instanceFor(variable).beSupertypeOf(variable)
 	}
 
+	// ************************************************************************
+	// ** Instantiation (i.e. look for a related tvar, the actual tvar)
+	// ************************************************************************
+
 	override instanceFor(TypeVariable variable) {
 		variable.owner.classTypeParameter as TypeVariable
 	}
@@ -69,7 +73,11 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	override instanceFor(ConcreteType concreteReceiver) {
 		(concreteReceiver as GenericTypeInstance).param(paramName)
 	}
-	
+
+	/**
+	 * Once this class type parameter is associated to a program element, we can get related to an actual 
+	 * type variable. This method and the following contain the algorithm for looking for that TVar.
+	 */
 	def dispatch ITypeVariable classTypeParameter(ProgramElementTypeVariableOwner owner) {
 		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
 		owner.programElement.classTypeParameter
@@ -101,4 +109,4 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	}
 		
 	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
-	}
+}

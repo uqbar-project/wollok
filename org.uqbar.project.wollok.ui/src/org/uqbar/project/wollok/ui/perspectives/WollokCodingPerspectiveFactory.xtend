@@ -41,6 +41,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 			addView(IConsoleConstants.ID_CONSOLE_VIEW)
 			addView("org.uqbar.project.wollok.ui.diagrams.class")
 			addView("org.eclipse.team.ui.GenericHistoryView")
+			addView("code.satyagraha.gfm.viewer.views.GfmView")
 		]
 
 		createFolder("topLeft", IPageLayout.LEFT, 0.25f, factory.editorArea) => [
@@ -60,6 +61,7 @@ class WollokCodingPerspectiveFactory implements IPerspectiveFactory {
 
 	def addActionSets(IPageLayout it) {
 		#[	
+			"org.eclipse.debug.ui.launchActionSet",
 			"org.eclipse.team.ui.actionSet",
 			IPageLayout.ID_NAVIGATE_ACTION_SET,
 			"org.eclipse.jdt.ui.actions.Rename",

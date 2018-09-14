@@ -1,7 +1,5 @@
 package org.uqbar.project.wollok.errorHandling
 
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.util.List
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
@@ -23,12 +21,16 @@ class WollokExceptionExtensions {
 	/**
 	 * Converts a StackTraceElementDTO to a List of parseable Strings for a RMI call
 	 */
-	def static dispatch List<StackTraceElementDTO> convertStackTrace(Exception exception) {
+	def static dispatch List<StackTraceElementDTO> convertStackTrace(Throwable e) {
 		newArrayList
 	}
 
 	def static dispatch List<StackTraceElementDTO> convertStackTrace(WollokProgramExceptionWrapper exception) {
 		exception.wollokException.internalStackTraceToDTO
+	}
+
+	def static dispatch List<StackTraceElementDTO> convertStackTrace(WollokInterpreterException exception) {
+		exception.originalCause.convertStackTrace
 	}
 
 	def static dispatch List<StackTraceElementDTO> convertStackTrace(WollokObject wollokException) {
@@ -68,10 +70,12 @@ class WollokExceptionExtensions {
 		return className + concatMessage
 	}
 
+	def static dispatch String convertToString(WollokInterpreterException exception) {
+		exception.originalCause.convertToString
+	}
+	
 	def static dispatch String convertToString(Exception exception) {
-		val sw = new StringWriter
-		exception.printStackTrace(new PrintWriter(sw))
-		sw.toString
+		"ERROR: " + exception.message
 	}
 
 	def static dispatch String convertToString(WollokObject exception) {
@@ -155,6 +159,23 @@ class WollokExceptionExtensions {
 	
 	def static String printStackTrace(StackTraceElementDTO[] stackTrace) {
 		stackTrace.fold("", [ acum, ste | acum + ste.toLink ])
+	}
+
+	def static Throwable originalCause(Throwable e) {
+		if (e.cause === null) return e
+		e.cause.originalCause
+	}
+	
+	def static String originalMessage(Throwable e) {
+		e.originalCause.doOriginalMessage 
+	}
+	
+	def static dispatch doOriginalMessage(WollokProgramExceptionWrapper e) {
+		e.wollokMessage
+	}
+	
+	def static dispatch doOriginalMessage(Throwable e) {
+		e.message		
 	}
 	
 }

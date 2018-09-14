@@ -1,3 +1,13 @@
+/**
+ * Keyboard object handles all keys movements. There is a method for each key.
+ * 
+ * Examples:
+ *     keyboard.i().onPressDo { game.say(pepita, "hola!") } 
+ *         => when user hits "i" key, pepita will say "hola!"
+ *
+ *     keyboard.any().onPressDo { game.say(pepita, "you pressed a key!") }
+ *         => any key pressed will activate its closure
+ */
 object keyboard {
 
 	method any() = new Key(-1)
@@ -116,6 +126,10 @@ class Key {
 
 	/**
 	 * Adds a block that will be executed always self is pressed.
+	 *
+	 * Examples:
+     *     keyboard.i().onPressDo { game.say(pepita, "hola!") } 
+     *         => when user hits "i" key, pepita will say "hola!"
 	 */	
 	method onPressDo(action) {
 		keyCodes.forEach{ key => game.whenKeyPressedDo(key, action) } //TODO: Implement native

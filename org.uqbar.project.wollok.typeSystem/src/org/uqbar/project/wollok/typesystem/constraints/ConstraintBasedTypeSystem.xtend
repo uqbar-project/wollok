@@ -21,7 +21,14 @@ import org.uqbar.project.wollok.typesystem.NamedObjectType
 import org.uqbar.project.wollok.typesystem.TypeFactory
 import org.uqbar.project.wollok.typesystem.TypeProvider
 import org.uqbar.project.wollok.typesystem.TypeSystem
+import org.uqbar.project.wollok.typesystem.annotations.CollectionTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.DateTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.ExceptionTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.NumberTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.StringTypeDeclarations
 import org.uqbar.project.wollok.typesystem.annotations.WollokCoreTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.WollokGameTypeDeclarations
+import org.uqbar.project.wollok.typesystem.annotations.WollokLibTypeDeclarations
 import org.uqbar.project.wollok.typesystem.constraints.strategies.AbstractInferenceStrategy
 import org.uqbar.project.wollok.typesystem.constraints.strategies.GuessMinTypeFromMaxType
 import org.uqbar.project.wollok.typesystem.constraints.strategies.MaxTypesFromMessages
@@ -97,10 +104,19 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		allTypes = null
 
 		// This shouldn't be necessary if all global objects had type annotations
-		allCoreWKOs.forEach[constraintGenerator.newNamedObject(it)]
+		allCoreWKOs.forEach[newTypeVariable.beSealed(objectType)]
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
-			addTypeDeclarations(this, WollokCoreTypeDeclarations, program)	
+			addTypeDeclarations(this, program,
+				WollokCoreTypeDeclarations,
+				NumberTypeDeclarations,
+				StringTypeDeclarations,
+				DateTypeDeclarations,
+				CollectionTypeDeclarations,
+				ExceptionTypeDeclarations,
+				WollokLibTypeDeclarations,
+				WollokGameTypeDeclarations
+			)
 		]
 	}
 
@@ -110,13 +126,15 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		}
 
 		programs.add(program)
-		constraintGenerator.generateVariables(program)
 	}
 
 	// ************************************************************************
 	// ** Inference
 	// ************************************************************************
 	override inferTypes() {
+		programs.forEach[constraintGenerator.addGlobals(it)]
+		programs.forEach[constraintGenerator.generateVariables(it)]
+
 		// These constraints have to be created after all files have been `analise`d
 		constraintGenerator.addCrossReferenceConstraints
 

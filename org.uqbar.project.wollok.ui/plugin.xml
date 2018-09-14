@@ -683,7 +683,7 @@
 		</handler>
 	</extension>
 	
-	    <extension point="org.eclipse.ui.menus">
+    <extension point="org.eclipse.ui.menus">
          <menuContribution
             locationURI="popup:#TextEditorContext?after=xtext.ui.SourceMenu">
          <menu

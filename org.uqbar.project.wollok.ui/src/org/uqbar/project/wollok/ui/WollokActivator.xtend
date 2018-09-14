@@ -17,6 +17,7 @@ import org.eclipse.ui.IPartListener
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.views.contentoutline.ContentOutline
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
@@ -30,7 +31,7 @@ import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
 
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 /**
@@ -53,6 +54,9 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 
 	@Accessors @Inject
 	IssueResolutionProvider issueResolutionProvider
+
+	@Accessors @Inject 
+	MultiLineCommentDocumentationProvider multilineProvider
 
 	Map<String, List<Issue>> mapIssues = new HashMap
 
@@ -95,21 +99,21 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	}
 
 	def void generateIssues(Resource resource) {
+		if (!resource.exists) return;
 		val issues = validator.validate(resource, CheckMode.ALL, null)
-		mapIssues.put(resource.platformURI, issues)
+		mapIssues.put(resource.platformFullPath, issues)
 	}
 	
 	def void refreshTypeErrors(IProject project, Resource resource, IProgressMonitor monitor) {
 		Display.^default.syncExec [
-			val locationURI = resource.platformURI
-			val issues = mapIssues.get(locationURI)
+			val issues = mapIssues.get(resource.platformFullPath)
 			new MarkerIssueProcessor(resource.IFile, markerCreator, markerTypeProvider).processIssues(issues, monitor)
 		]
 	}
 
 	def void refreshOutline() {
 		Display.^default.syncExec [
-			val outlineView = activePage.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
+			val outlineView = activePage?.findView("org.eclipse.ui.views.ContentOutline") as ContentOutline
 			if (outlineView !== null) {
 				val outlinePage = outlineView.currentPage
 				try {
@@ -131,9 +135,8 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 			Thread.sleep(300) // fixes synchronization problem
 			val wollokTextEditor = editor as WollokTextEditor
 			if (wollokTextEditor.resource === null) return;
-			val activeURI = wollokTextEditor.resource.locationURI
-			val activeEditorURI = activeURI.toString.replaceAll(workspaceURI, " ").trim
-			val issues = mapIssues.get(activeEditorURI) ?: #[]
+			val resource = wollokTextEditor.resource.platformFullPath
+			val issues = mapIssues.get(resource) ?: #[]
 			Display.getDefault.syncExec [|
 				new AnnotationIssueProcessor(editor.document, editor.internalSourceViewer.getAnnotationModel(),
 					issueResolutionProvider).processIssues(issues, new NullProgressMonitor)

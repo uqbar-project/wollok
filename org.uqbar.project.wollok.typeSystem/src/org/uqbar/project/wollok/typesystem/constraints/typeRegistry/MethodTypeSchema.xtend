@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
 /**
  * Type schemas are different from types in that they can have type variables inside.
- * E.g. method filter in type List<E> has type ()=>E
+ * E.g. method first in type List<E> has type ()=>E
  */
 abstract class MethodTypeSchema {
 	TypeVariablesRegistry registry
