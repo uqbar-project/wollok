@@ -227,13 +227,15 @@ class Position {
 			
 	/**
 	 * Returns a position with given x and y coordinates.
+	 * From now on, position is immutable.
 	 */	
 	constructor(_x, _y) {
-		x = _x
-		y = _y
+		x = self.adjustX(_x)
+		y = self.adjustY(_y)
 	}
 	
 	/**
+	 * @private
 	 * Validates x position (avoids going outside gameboard).
 	 * Returns adjusted new x position (no side-effect)
 	 */
@@ -244,6 +246,7 @@ class Position {
 	}
 	
 	/**
+	 * @private
 	 * Validates new y position (avoids going outside gameboard)
 	 * Returns adjusted new y position (no side-effect)
 	 */
@@ -256,22 +259,22 @@ class Position {
 	/**
 	 * Returns a new Position n steps right from this one.
 	 */		
-	method right(n) = new Position(self.adjustX(x + n), y)
+	method right(n) = new Position(x + n, y)
 	
 	/**
 	 * Returns a new Position n steps left from this one.
 	 */		
-	method left(n) = new Position(self.adjustX(x - n), y)
+	method left(n) = new Position(x - n, y)
 	
 	/**
 	 * Returns a new Position n steps up from this one.
 	 */		
-	method up(n) = new Position(x, self.adjustY(y + n))
+	method up(n) = new Position(x, y + n)
 	
 	/**
 	 * Returns a new Position, n steps down from this one.
 	 */		
-	method down(n) = new Position(x, self.adjustY(y - n)) 
+	method down(n) = new Position(x, y - n) 
 
 	/**
 	 * Adds an object to the board for drawing it in self.
@@ -324,10 +327,6 @@ class Position {
 	 */
 	override method toString() = "(" + x + "," + y + ")"
 	
-	/**
-	 * Generates a copy based on another one
-	 */
-	method copyFrom(position) = new Position(position.x(), position.y())
 }
 
 /**

@@ -27,7 +27,7 @@ class WPosition extends Position {
 	def getInt(WollokObject it, String methodName) { call(methodName).asInteger }
 	
 	def copyFrom(Position position) {
-		wObject.call("copyFrom", this.buildPosition(position.x, position.y))
+		buildPosition(position.x, position.y)
 	}
 	
 	override createPosition(int newX, int newY) {

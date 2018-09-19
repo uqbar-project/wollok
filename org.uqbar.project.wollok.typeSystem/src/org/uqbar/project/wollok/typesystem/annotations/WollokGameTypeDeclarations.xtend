@@ -13,6 +13,10 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
 		Position >> "clear" === #[] => Void
+		Position >> "up" === #[Number] => Position
+		Position >> "down" === #[Number] => Position
+		Position >> "left" === #[Number] => Position
+		Position >> "right" === #[Number] => Position
 		Position >> "toString" === #[] => String
 
 		// TODO: getter and setters are implemented because native implementations exist
