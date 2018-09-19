@@ -230,32 +230,10 @@ class Position {
 	 * From now on, position is immutable.
 	 */	
 	constructor(_x, _y) {
-		x = self.adjustX(_x)
-		y = self.adjustY(_y)
+		x = _x
+		y = _y
 	}
 	
-	/**
-	 * @private
-	 * Validates x position (avoids going outside gameboard).
-	 * Returns adjusted new x position (no side-effect)
-	 */
-	method adjustX(newX) {
-		if (newX < 0) return 0
-		if (newX >= game.width()) return game.width() - 1
-		return newX
-	}
-	
-	/**
-	 * @private
-	 * Validates new y position (avoids going outside gameboard)
-	 * Returns adjusted new y position (no side-effect)
-	 */
-	method adjustY(newY) {
-		if (newY < 0) return 0
-		if (newY >= game.height()) return game.height() - 1
-		return newY
-	}
-	 
 	/**
 	 * Returns a new Position n steps right from this one.
 	 */		
