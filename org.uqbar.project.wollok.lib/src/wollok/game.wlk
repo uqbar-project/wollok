@@ -213,8 +213,7 @@ object game {
 
 /**
  * Represents a position in a two-dimensional gameboard.
- * It is an immutable object since Wollok 1.8.0, so be careful when referring from a visual object
- * in Wollok Game.
+ * It is an immutable object since Wollok 1.8.0
  */
 class Position {
 	const property x

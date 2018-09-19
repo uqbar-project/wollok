@@ -99,19 +99,23 @@ abstract class VisualComponent {
 	def showAttributes() { showAttributes = true }
 	
 	def void up() {
-		setPosition(getPosition.up())
+		if (position.y < Gameboard.instance.height)
+			setPosition(getPosition.up())
 	}
 	
 	def void down() {
-		setPosition(getPosition.down())
+		if (position.y > 0)
+			setPosition(getPosition.down())
 	}
 	
 	def void left() {
-		setPosition(getPosition.left())
+		if (position.x > 0)
+			setPosition(getPosition.left())
 	}
 	
 	def void right() {
-		setPosition(getPosition.right())
+		if (position.x < Gameboard.instance.width)
+			setPosition(getPosition.right())
 	}
 }
 

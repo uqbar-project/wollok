@@ -12,7 +12,7 @@ class ArrowListener extends GameboardListener {
 	var listeners = new ArrayList<KeyboardListener>()
 	
 	new (VisualComponent character){
-		listeners.add(new KeyboardListener(Keys.UP, [character.up()]))
+		listeners.add(new KeyboardListener(Keys.UP, [ character.up()]))
 		listeners.add(new KeyboardListener(Keys.DOWN, [character.down()]))
 		listeners.add(new KeyboardListener(Keys.LEFT, [character.left()]))
 		listeners.add(new KeyboardListener(Keys.RIGHT, [character.right()]))
