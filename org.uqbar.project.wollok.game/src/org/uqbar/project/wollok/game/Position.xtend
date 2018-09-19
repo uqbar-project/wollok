@@ -6,24 +6,22 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 abstract class Position {
 
 	def abstract int getX()
-	def abstract void setX(int x)
 	def abstract int getY()
-	def abstract void setY(int y)
 
 	def getXinPixels() { x * Gameboard.CELLZISE }
 
 	def getYinPixels() { y * Gameboard.CELLZISE }
 
-	def incX(int spaces) { 
-		x = x + spaces
-		if (x < 0) x = 0
-		if (x >= Gameboard.instance.width) x = Gameboard.instance.width - 1
+	def adjustX(int newX) {
+		if (newX < 0) return 0
+		if (newX >= Gameboard.instance.width) return Gameboard.instance.width - 1
+		return newX
 	}
 
-	def incY(int spaces) { 
-		y = y + spaces
-		if (y < 0) y = 0
-		if (y >= Gameboard.instance.height) y = Gameboard.instance.height - 1
+	def adjustY(int newY) { 
+		if (newY < 0) return 0
+		if (newY >= Gameboard.instance.height) return Gameboard.instance.height - 1
+		return newY
 	}
 
 	override public int hashCode() {
@@ -39,13 +37,33 @@ abstract class Position {
 		x == other.x && y == other.y
 	}
 	
-	override toString() { getX + "@" + getY }	
+	override toString() { getX + "@" + getY }
+
+	def up() {
+		this.createPosition(x, adjustY(y + 1))
+	}
+
+	def down() {
+		this.createPosition(x, adjustY(y - 1))
+	}
+	
+	def left() {
+		this.createPosition(adjustX(x - 1), y)
+	}
+	
+	def right() {
+		this.createPosition(adjustX(x + 1), y)
+	}
+	
+	/** Factory method */
+	def Position createPosition(int newX, int newY)
+
 }
 
 @Accessors
 class WGPosition extends Position {
-	private int x
-	private int y
+	private int x = 0
+	private int y = 0
 
 	new() { }
 
@@ -53,4 +71,9 @@ class WGPosition extends Position {
 		this.x = x
 		this.y = y
 	}
+	
+	override createPosition(int newX, int newY) {
+		return new WGPosition(newX, newY)
+	}
+
 }

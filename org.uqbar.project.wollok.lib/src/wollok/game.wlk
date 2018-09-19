@@ -213,11 +213,12 @@ object game {
 
 /**
  * Represents a position in a two-dimensional gameboard.
- * It is an mutable object, but it will be an immutable one in a near future.
+ * It is an immutable object since Wollok 1.8.0, so be careful when referring from a visual object
+ * in Wollok Game.
  */
 class Position {
-	var property x = 0
-	var property y = 0
+	const property x
+	const property y
 	
 	/**
 	 * Returns the position at origin: (0,0).
@@ -234,81 +235,43 @@ class Position {
 	
 	/**
 	 * Validates x position (avoids going outside gameboard).
-	 * This is a side effect operation.
+	 * Returns adjusted new x position (no side-effect)
 	 */
-	method validateX() {
-		if (x < 0) x = 0
-		if (x >= game.width()) x = game.width() - 1
+	method adjustX(newX) {
+		if (newX < 0) return 0
+		if (newX >= game.width()) return game.width() - 1
+		return newX
 	}
 	
 	/**
-	 * Validates y position (avoids going outside gameboard)
-	 * This is a side effect operation.
+	 * Validates new y position (avoids going outside gameboard)
+	 * Returns adjusted new y position (no side-effect)
 	 */
-	method validateY() {
-		if (y < 0) y = 0
-		if (y >= game.height()) y = game.height() - 1
+	method adjustY(newY) {
+		if (newY < 0) return 0
+		if (newY >= game.height()) return game.height() - 1
+		return newY
 	}
 	 
 	/**
-	 * Sums n to x coordinate. This is a side effect operation.
-	 * @Deprecated 
-	 * position will be immutable soon, use right(n)
-	 */		
-	method moveRight(n) { 
-		x += n
-		self.validateX()
-	}
-	
-	/**
-	 * Substracts n to x coordinate. This is a side effect operation.
-	 * @Deprecated 
-	 * position will be immutable soon, use right(n)
-	 */		
-	method moveLeft(n) {
-		x -= n
-		self.validateX()
-	}
-	
-	/**
-	 * Sums n to y coordinate.
-	 * @Deprecated 
-	 * position will be immutable soon, use up(n)
-	 */		
-	method moveUp(n) {
-		y += n
-		self.validateY()
-	}
-	
-	/**
-	 * Substracts n to y coordinate.
-	 * @Deprecated 
-	 * position will be immutable soon, use down(n)
-	 */		
-	method moveDown(n) {
-		y -= n
-		self.validateY()
-	}
-	
-	/**
 	 * Returns a new Position n steps right from this one.
 	 */		
-	method right(n) = new Position(x + n, y)
+	method right(n) = new Position(self.adjustX(x + n), y)
 	
 	/**
 	 * Returns a new Position n steps left from this one.
 	 */		
-	method left(n) = new Position(x - n, y)
+	method left(n) = new Position(self.adjustX(x - n), y)
 	
 	/**
 	 * Returns a new Position n steps up from this one.
 	 */		
-	method up(n) = new Position(x, y + n)
+	method up(n) = new Position(x, self.adjustY(y + n))
 	
 	/**
 	 * Returns a new Position, n steps down from this one.
 	 */		
-	method down(n) = new Position(x, y - n) 
+	method down(n) = new Position(x, self.adjustY(y - n)) 
 
 	/**
 	 * Adds an object to the board for drawing it in self.
@@ -319,11 +282,6 @@ class Position {
 	 * Adds an object to the board for drawing it in self. It can be moved with arrow keys.
 	 */
 	method drawCharacter(element) { game.addVisualCharacterIn(element, self) } //TODO: Implement native
-
-	/**
-	 * Removes an object from the board for stop drawing it.
-	 */
-	method deleteElement(element) { game.removeVisual(element) } //TODO: Remove
 
 	/**
 	 * Draw a dialog balloon with given message in given visual object position.
@@ -365,6 +323,11 @@ class Position {
 	 * String representation of a position
 	 */
 	override method toString() = "(" + x + "," + y + ")"
+	
+	/**
+	 * Generates a copy based on another one
+	 */
+	method copyFrom(position) = new Position(position.x(), position.y())
 }
 
 /**

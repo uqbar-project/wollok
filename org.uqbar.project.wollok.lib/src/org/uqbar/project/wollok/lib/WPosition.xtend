@@ -1,33 +1,42 @@
 package org.uqbar.project.wollok.lib
 
-import org.uqbar.project.wollok.game.Position
-import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.game.Position
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
+import org.uqbar.project.wollok.interpreter.WollokInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.core.WollokObject
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 
 @Accessors
 class WPosition extends Position {
 	WollokObject wObject
+	WollokInterpreter interpreter
 
 	new(WollokObject position) {
-		wObject = position
+		this.wObject = position
+		this.interpreter = position.interpreter as WollokInterpreter
 	}
 
 	override getX() { wObject.getInt("x") }
 
 	override getY() { wObject.getInt("y") }
 
-	override setX(int num) { wObject.setInt("x", num) }
-
-	override setY(int num) { wObject.setInt("y", num) }
-
-
 	def getInt(WollokObject it, String methodName) { call(methodName).asInteger }
-	def setInt(WollokObject it, String methodName, Integer num) { call(methodName, num.javaToWollok) }
 	
-	def void copyFrom(Position position) {
-		setX(position.x)
-		setY(position.y)
+	def copyFrom(Position position) {
+		wObject.call("copyFrom", this.buildPosition(position.x, position.y))
 	}
+	
+	override createPosition(int newX, int newY) {
+		wObject = this.buildPosition(newX, newY) 
+		return new WPosition(wObject)
+	}
+
+	def buildPosition(int newX, int newY) {
+		((interpreter.evaluator as WollokInterpreterEvaluator).newInstance(POSITION, newX.javaToWollok, newY.javaToWollok))
+	}
+	
 }

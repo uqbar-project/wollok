@@ -6,13 +6,8 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position.variable("x", Number)
 		Position.variable("y", Number)
 		(Position == Any) => Boolean;
-		Position >> "moveRight" === #[Number] => Void
-		Position >> "moveLeft" === #[Number] => Void
-		Position >> "moveUp" === #[Number] => Void
-		Position >> "moveDown" === #[Number] => Void
 		Position >> "drawElement" === #[Any] => Void
 		Position >> "drawCharacter" === #[Any] => Void
-		Position >> "deleteElement" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
 		Position >> "allElements" === #[] => List.of(Any)
 		Position >> "clone" === #[] => Position

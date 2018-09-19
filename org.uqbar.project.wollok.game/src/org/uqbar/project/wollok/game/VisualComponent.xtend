@@ -97,6 +97,22 @@ abstract class VisualComponent {
 	
 	def hideAttributes() { showAttributes = false }
 	def showAttributes() { showAttributes = true }
+	
+	def void up() {
+		setPosition(getPosition.up())
+	}
+	
+	def void down() {
+		setPosition(getPosition.down())
+	}
+	
+	def void left() {
+		setPosition(getPosition.left())
+	}
+	
+	def void right() {
+		setPosition(getPosition.right())
+	}
 }
 
 @Accessors

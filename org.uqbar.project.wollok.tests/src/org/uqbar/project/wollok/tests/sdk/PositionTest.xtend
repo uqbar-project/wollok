@@ -68,19 +68,6 @@ class PositionTest extends AbstractWollokParameterizedInterpreterTest {
 	}
 
 	@Test
-	def void shouldDeleteVisualObjectsFromBoard() {
-		'''
-		«visualObjectWithoutPosition»
-		program p {
-			var position = «position»
-			position.drawElement(visual)
-			position.deleteElement(visual)
-		}'''.interpretPropagatingErrors
-		
-		assertEquals(0, components.size)
-	}
-	
-	@Test
 	def void positionCanBeAccessedByGetterMethod() {
 		'''
 		import wollok.game.*

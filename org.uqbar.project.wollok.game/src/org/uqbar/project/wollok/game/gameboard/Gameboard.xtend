@@ -165,12 +165,15 @@ class Gameboard {
 	}
 
 	def sound(String audioFile) {
-		val sound = audioFile.fetchSound
-		audioFiles.put(audioFile, sound)
-		sound.play(1.0f)
+		audioFile.fetchSound.play(1.0f)
 	}
 	
 	def fetchSound(String audioFile) {
-		audioFiles.get(audioFile) ?: Gdx.audio.newSound(Gdx.files.internal(audioFile))
+		var sound = audioFiles.get(audioFile)
+		if (sound === null) {
+			sound = Gdx.audio.newSound(Gdx.files.internal(audioFile))
+			audioFiles.put(audioFile, sound)
+		}
+		sound
 	}
 }
