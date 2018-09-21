@@ -7,7 +7,7 @@ object game {
 	
 	/**
 	 * Adds an object to the board for drawing it.
-	 * Object should understand a position or posicion property 
+	 * Object should understand a position property 
 	 * (implemented by a reference or getter method).
 	 *
 	 * Example:
@@ -27,7 +27,7 @@ object game {
 	
 	/**
 	 * Adds an object to the board for drawing it. It can be moved with arrow keys.
-	 * That object should understand a position or posicion property 
+	 * That object should understand a position property 
 	 * (implemented by a reference or getter method).
 	 *
 	 * Example:

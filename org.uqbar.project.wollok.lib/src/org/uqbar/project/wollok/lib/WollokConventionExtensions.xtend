@@ -11,8 +11,8 @@ import static extension org.uqbar.project.wollok.utils.OptionalExtensions.*
 
 class WollokConventionExtensions {
 		
-	public static val POSITION_CONVENTIONS = #["posicion", "position"]
-	public static val IMAGE_CONVENTIONS = #["imagen", "image"]
+	public static val POSITION_CONVENTIONS = #["position"]
+	public static val IMAGE_CONVENTIONS = #["image"]
 	public static val DEFAULT_IMAGE = "wko.png"
 
 	def static getAllConventions() {
