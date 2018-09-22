@@ -279,7 +279,7 @@ class Collection {
 	  *       [].max({ e => e.length() })                       
 	  *            => Throws error, list must not be empty            
 	  */
-	method max(closure) = self.absolute(closure, { a, b => a > b })
+	method max(closure) = self.maxIfEmpty(closure, { throw new ElementNotFoundException("collection is empty") })
 
 	/**
 	  * Answers the element that represents the maximum value in the collection.
@@ -291,6 +291,37 @@ class Collection {
 	  *       [].max()                      =>  Throws error, list must not be empty
 	  */
 	method max() = self.max({it => it})		
+
+	/**
+	  * Answers the element that is considered to be/have the maximum value,
+	  * or applies a closure if the collection is empty.
+	  * The criteria is given by a closure that receives a single element
+	  * as input (one of the element). The closure must return a comparable
+	  * value (something that understands the >, >= messages).
+	  * The closure to execute when the collection is empty is given as a second
+	  * argument.
+	  *
+	  * Example:
+	  *       ["a", "ab", "abc", "d" ].maxIfEmpty({ e => e.length() }, { "default" })
+	  *            => Answers "abc"
+	  *
+	  *       [].maxIfEmpty({ e => e.length() }, { "default" })
+	  *            => Answers "default"
+	  */
+	method maxIfEmpty(toComparableClosure, emptyCaseClosure) = self.absolute(toComparableClosure, { a, b => a > b }, emptyCaseClosure)
+
+	/**
+	  * Answers the element that is considered to be/have the maximum value,
+	  * or applies a closure if the collection is empty.
+	  * The criteria is by direct comparison of the elements.
+	  * The closure to execute when the collection is empty is given as a second
+	  * argument.
+	  *
+	  * Example:
+	  *       [11, 1, 4, 8, 3, 15, 6].maxIfEmpty({ 99 }) =>  Answers 15
+	  *       [].maxIfEmpty({ 99 })                      =>  Answers 99
+	  */
+	method maxIfEmpty(emptyCaseClosure) = self.maxIfEmpty({it => it}, emptyCaseClosure)
 	
 	/**
 	  * Answers the element that is considered to be/have the minimum value.
@@ -305,8 +336,8 @@ class Collection {
 	  *       [].min({ e => e.length() })
 	  *             => Throws error, list must not be empty
 	  */
-	method min(closure) = self.absolute(closure, { a, b => a < b} )
-	
+	method min(closure) = self.absolute(closure, { a, b => a < b }, { throw new ElementNotFoundException("collection is empty") })
+
 	/**
 	  * Answers the element that represents the minimum value in the 
 	  * non-empty collection.
@@ -318,10 +349,41 @@ class Collection {
 	  */
 	method min() = self.min({it => it})
 
+	/**
+	  * Answers the element that is considered to be/have the minimum value,
+	  * or applies a closure if the collection is empty.
+	  * The criteria is given by a closure that receives a single element
+	  * as input (one of the element). The closure must return a comparable
+	  * value (something that understands the >, >= messages).
+	  * The closure to execute when the collection is empty is given as a second
+	  * argument.
+	  *
+	  * Example:
+	  *       ["ab", "abc", "hello", "wollok world"].minIfEmpty({ e => e.length() }, { "default" })
+	  *             =>  Answers "ab"
+	  *
+	  *       [].minIfEmpty({ e => e.length() }, { "default" })
+	  *             => Answers "default"
+	  */
+	method minIfEmpty(toComparableClosure, emptyCaseClosure) = self.absolute(toComparableClosure, { a, b => a < b }, emptyCaseClosure)
+
+	/**
+	  * Answers the element that is considered to be/have the minimum value,
+	  * or applies a closure if the collection is empty.
+	  * The criteria is by direct comparison of the elements.
+	  * The closure to execute when the collection is empty is given as a second
+	  * argument.
+	  *
+	  * Example:
+	  *       [11, 1, 4, 8, 3, 15, 6].minIfEmpty({ 99 })  => Answers 1
+	  *       [].minIfEmpty({ 99 })                       => Answers 99
+	  */
+	method minIfEmpty(emptyCaseClosure) = self.minIfEmpty({it => it}, emptyCaseClosure)
+
 	/** @private */
-	method absolute(closure, criteria) {
+	method absolute(closure, criteria, emptyCaseClosure) {
 		if (self.isEmpty())
-			throw new ElementNotFoundException("collection is empty")
+			return emptyCaseClosure.apply()
 		const result = self.fold(null, { acc, e =>
 			const n = closure.apply(e) 
 			if (acc == null)
