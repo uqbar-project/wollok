@@ -605,4 +605,15 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 	
+	@Test
+	def void testCanCreateExceptionUsingNamedParametersWithoutCause() {
+		'''
+		object unObjeto {
+			method prueba() {
+				throw new Exception(message = "Saraza")
+			}
+		}
+		'''.interpretPropagatingErrors
+	}
+	
 }
