@@ -81,6 +81,10 @@ class XtendExtensions {
 		receiver !== null && action.apply(receiver)
 	}
 
+	static def <T> boolean nullOr(T receiver, (T)=>boolean action) {
+		receiver === null || action.apply(receiver)
+	}
+
 	/**
 	 * Our own map values that actually computes the mapped value instead of saving the transformation.
 	 * This might not be as fast as Google #mapValues, but is easier to debug.

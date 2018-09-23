@@ -1,3 +1,5 @@
+import wollok.vm.*
+
 /** 
  * Console is a global wollok object that implements a character-based console device
  * called "standard input/output" stream 
