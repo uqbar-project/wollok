@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.util.EcoreUtil
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.eclipse.xtext.naming.QualifiedName
 import org.eclipse.xtext.resource.ISelectable
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
@@ -18,16 +19,18 @@ import org.eclipse.xtext.scoping.impl.AbstractGlobalScopeDelegatingScopeProvider
 import org.eclipse.xtext.scoping.impl.ImportNormalizer
 import org.eclipse.xtext.scoping.impl.MultimapBasedSelectable
 import org.eclipse.xtext.util.OnChangeEvictingCache
-import org.eclipse.xtext.util.Strings
 
 import static java.util.Collections.singletonList
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.scoping.WollokScopeExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * @author tesonep
  * @author jfernandes
+ * @author npasserini
+ * @author fdodino
  */
 @Singleton
 class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScopeDelegatingScopeProvider {
@@ -38,163 +41,134 @@ class WollokImportedNamespaceAwareLocalScopeProvider extends AbstractGlobalScope
 	@Inject
 	IQualifiedNameProvider qualifiedNameProvider
 
+	static val IMPLICIT_IMPORTS = #["wollok.lib", "wollok.lang"]
+
+	// ************************************************************************
+	// ** Public interface
+	// ************************************************************************
 	override getScope(EObject context, EReference reference) {
-		synchronized (this) {
-			var IScope result
+		synchronized(context.eResource)
+			synchronized(context.eResource.resourceSet)
+				context.computeScope(reference)
 
-			if (context.eContainer() !== null) {
-				result = getScope(context.eContainer, reference)
-			} else {
-				result = getResourceScope(context.eResource, reference)
+	}
+
+	def Iterable<String> allRelativeImports(String importedNamespace, EObject context) {
+		importedNamespace.allRelativeImports(context.implicitPackage)
+	}
+
+	def Iterable<String> allRelativeImports(String importedNamespace, String implicitPackage) {
+		val implicitPackageFQN = qualifiedNameConverter.toQualifiedName(implicitPackage)
+
+		(0 .. implicitPackageFQN.segmentCount).map [ i |
+			if(importedNamespace !== null) {
+				implicitPackageFQN.skipLast(i).append(importedNamespace).toString
 			}
-			return getLocalElementsScope(result, context, reference)
-		}
+		]
 	}
 
-	def protected getResourceScope(Resource context, EReference reference) {
-		synchronized (context) {
-			synchronized (context.resourceSet) {
-				val globalScope = getGlobalScope(context, reference)
-				val normalizers = getImportedNamespaceResolvers(context, reference)
+	// ************************************************************************
+	// ** Internal implementation
+	// ************************************************************************
+	protected def IScope computeScope(EObject context, EReference reference) {
+		val IScope parent = if(context.eContainer !== null)
+				context.eContainer.computeScope(reference)
+			else
+				context.eResource.resourceScope(reference)
 
-				createImportScope(globalScope, normalizers, getAllDescriptions(context), reference.EReferenceType)
-			}
-		}
+		context.localElementsScope(parent, reference)
 	}
 
-	def protected getImplicitImports() {
-		synchronized (this) {
-			val r = newArrayList
-			r.add(new ImportNormalizer(qualifiedNameConverter.toQualifiedName("wollok.lib"), true, false))
-			r.add(new ImportNormalizer(qualifiedNameConverter.toQualifiedName("wollok.lang"), true, false))
-			r
-		}
+	protected def resourceScope(Resource context, EReference reference) {
+		val globalScope = context.getGlobalScope(reference)
+		val normalizers = context.getImportedNamespaceResolvers(reference)
+
+		createImportScope(globalScope, normalizers, context.allDescriptions, reference.EReferenceType)
 	}
 
-	def getImportedNamespaceResolvers(Resource context, EReference reference) {
-		synchronized (context) {
-			synchronized (context.resourceSet) {
-				val cache = new OnChangeEvictingCache().getOrCreate(context)
-				var result = cache.get("ImportedNamespaceResolvers")
+	protected def localElementsScope(EObject context, IScope parent, EReference reference) {
+		val name = qualifiedNameProvider.getFullyQualifiedName(context)
 
-				if (result === null) {
-					result = doGetImportedNamespaceResolvers(context.contents.get(0),
-						getGlobalScope(context, reference))
-					cache.set("ImportedNamespaceResolvers", result)
-				}
-
-				result
-			}
-		}
+		if(name !== null) {
+			val localNormalizer = new ImportNormalizer(name, true, reference.isIgnoreCase)
+			createImportScope(parent, singletonList(localNormalizer), null, reference.EReferenceType)
+		} else
+			parent
 	}
 
-	def doGetImportedNamespaceResolvers(EObject context, IScope globalScope) {
-		synchronized (context) {
+	protected def getImplicitImports() {
+		IMPLICIT_IMPORTS.map [
+			new ImportNormalizer(qualifiedNameConverter.toQualifiedName(it), true, false)
+		]
+	}
 
-			val result = getImplicitImports()
+	protected def getImportedNamespaceResolvers(Resource context, EReference reference) {
+		val cache = new OnChangeEvictingCache().getOrCreate(context)
+		var result = cache.get("ImportedNamespaceResolvers")
 
-			val namespaces = context.allImports.map [
-				#[importedNamespace] + this.allRelativeImports(importedNamespace, context)
-			].flatten.toSet
-
-			namespaces.filter [ ns |
-				globalScope.containsImport(ns)
-			].forEach [
-				val normalizer = createImportedNamespaceResolver(it)
-				if (normalizer !== null) {
-					result.add(normalizer)
-				}
-			]
-
-			result
+		if(result === null) {
+			result = doGetImportedNamespaceResolvers(context.contents.get(0), getGlobalScope(context, reference))
+			cache.set("ImportedNamespaceResolvers", result)
 		}
+
+		result
+	}
+
+	protected def doGetImportedNamespaceResolvers(EObject context, IScope globalScope) {
+		(implicitImports + context.allImports.flatMap [
+			#[importedNamespace] + importedNamespace.allRelativeImports(context)
+		].toSet.filter[globalScope.containsImport(it)].map[createImportedNamespaceResolver].filter[it !== null]
+		).toList
 	}
 
 	/**
 	 * Create a new {@link ImportNormalizer} for the given namespace.
+	 * 
 	 * @param namespace the namespace.
 	 * @param ignoreCase <code>true</code> if the resolver should be case insensitive.
 	 * @return a new {@link ImportNormalizer} or <code>null</code> if the namespace cannot be converted to a valid
 	 * qualified name.
 	 */
 	protected def ImportNormalizer createImportedNamespaceResolver(String namespace) {
-		synchronized (this) {
-			if (Strings.isEmpty(namespace))
-				return null
-			val importedNamespace = qualifiedNameConverter.toQualifiedName(namespace)
-			if (importedNamespace === null || importedNamespace.isEmpty()) {
-				return null
-			}
-			val hasWildCard = importedNamespace.getLastSegment().equals("*")
+		if(namespace.isEmpty) return null
 
-			if (hasWildCard) {
-				if (importedNamespace.getSegmentCount() <= 1)
-					return null
-				return new ImportNormalizer(importedNamespace.skipLast(1), true, false)
-			} else {
-				return new ImportNormalizer(importedNamespace, false, false)
-			}
-		}
-	}
+		val importedNamespace = qualifiedNameConverter.toQualifiedName(namespace)
+		if(importedNamespace.nullOr[isEmpty]) return null
 
-	def protected getLocalElementsScope(IScope parent, EObject context, EReference reference) {
-		synchronized (context) {
-
-			var result = parent
-			var name = qualifiedNameProvider.getFullyQualifiedName(context)
-			var ignoreCase = isIgnoreCase(reference)
-
-			if (name !== null) {
-				val localNormalizer = new ImportNormalizer(name, true, ignoreCase)
-				result = createImportScope(result, singletonList(localNormalizer), null, reference.EReferenceType)
-			}
-			return result
-		}
+		if(importedNamespace.hasWildCard)
+			if(importedNamespace.segmentCount <= 1)
+				null
+			else
+				new ImportNormalizer(importedNamespace.skipLast(1), true, false)
+		else
+			new ImportNormalizer(importedNamespace, false, false)
 	}
 
 	protected def getAllDescriptions(Resource resource) {
-		synchronized (resource) {
-			synchronized (resource.resourceSet) {
-				val Iterable<EObject> allContents = new Iterable<EObject>() {
-					override Iterator<EObject> iterator() {
-						EcoreUtil.getAllContents(resource, false)
-					}
-				}
-				val allDescriptions = Scopes.scopedElementsFor(allContents, qualifiedNameProvider)
-				return new MultimapBasedSelectable(allDescriptions)
+		val Iterable<EObject> allContents = new Iterable<EObject>() {
+			override Iterator<EObject> iterator() {
+				EcoreUtil.getAllContents(resource, false)
 			}
 		}
+		val allDescriptions = Scopes.scopedElementsFor(allContents, qualifiedNameProvider)
+		return new MultimapBasedSelectable(allDescriptions)
 	}
 
-	def protected createImportScope(IScope parent, List<ImportNormalizer> namespaceResolvers, ISelectable importFrom,
+	protected def createImportScope(IScope parent, List<ImportNormalizer> namespaceResolvers, ISelectable importFrom,
 		EClass type) {
-		synchronized (this) {
-			if (parent instanceof WollokImportScope) {
-				val parentImport = parent as WollokImportScope
 
-				if (parentImport.normalizers == namespaceResolvers && importFrom === null && parentImport.type == type)
-					return parentImport
-			}
+		if(parent instanceof WollokImportScope) {
+			val parentImport = parent as WollokImportScope
 
-			new WollokImportScope(namespaceResolvers, parent, importFrom, type)
+			if(parentImport.normalizers == namespaceResolvers && importFrom === null && parentImport.type == type)
+				return parentImport
 		}
+
+		new WollokImportScope(namespaceResolvers, parent, importFrom, type)
 	}
 
-	def Iterable<String> allRelativeImports(String importedNamespace, EObject context) {
-		synchronized (this) {
-			this.allRelativeImports(importedNamespace, context.implicitPackage)
-		}
-	}
-
-	def Iterable<String> allRelativeImports(String importedNamespace, String implicitPackage) {
-		synchronized (this) {
-			val implicitPackageFQN = qualifiedNameConverter.toQualifiedName(implicitPackage)
-
-			(0 .. implicitPackageFQN.segmentCount).map [ i |
-				if (importedNamespace !== null) {
-					implicitPackageFQN.skipLast(i).append(importedNamespace).toString
-				}				
-			]
-		}
-	}
+	// ************************************************************************
+	// ** Helpers
+	// ************************************************************************
+	def hasWildCard(QualifiedName it) { lastSegment.equals("*") }
 }
