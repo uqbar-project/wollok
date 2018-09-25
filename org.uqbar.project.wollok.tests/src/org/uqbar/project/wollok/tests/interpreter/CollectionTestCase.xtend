@@ -41,6 +41,23 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		assert.throwsException({[].min()})
 		'''.test
 	}
+	
+	@Test
+	def void minIfEmpty() {
+		'''
+		«instantiateStrings»
+		assert.equals('hi', strings.minIfEmpty({ e => e.length() }, { 'lista vacia' }))
+		assert.equals('lista vacia', [].minIfEmpty({ e => e.length() }, { 'lista vacia' }))
+		'''.test
+	}
+	
+	@Test
+	def void minIfEmptyNoArgs() {
+		'''
+		assert.equals(1, [3,1,2].minIfEmpty({ 99 }))
+		assert.equals(99, [].minIfEmpty({ 99 }))
+		'''.test
+	}
 		
 	@Test
 	def void max() {
@@ -61,6 +78,23 @@ class CollectionTestCase extends AbstractWollokInterpreterTestCase {
 		assert.equals(22, numbers.max() )
 		assert.equals(1, [1].max())
 		assert.throwsException({[].max()})
+		'''.test
+	}
+	
+	@Test
+	def void maxIfEmpty() {
+		'''
+		«instantiateStrings»
+		assert.equals('bonjour', strings.maxIfEmpty({ e => e.length() }, { 'lista vacia' }))
+		assert.equals('lista vacia', [].maxIfEmpty({ e => e.length() }, { 'lista vacia' }))
+		'''.test
+	}
+	
+	@Test
+	def void maxIfEmptyNoArgs() {
+		'''
+		assert.equals(3, [1,3,2].maxIfEmpty({ 99 }))
+		assert.equals(99, [].maxIfEmpty({ 99 }))
 		'''.test
 	}
 	
