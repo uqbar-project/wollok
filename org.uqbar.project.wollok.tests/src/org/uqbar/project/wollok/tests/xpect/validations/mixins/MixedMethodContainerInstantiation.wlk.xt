@@ -1,0 +1,32 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
+mixin Flying {
+	var property fliedMeters = 0
+	method fly(meters) {
+		self.reduceEnergy(meters)
+		fliedMeters += meters
+	}
+	
+	method reduceEnergy(meters)  // REQUIRED
+}
+
+class Superman mixed with Flying {}
+
+mixin WithEnergy {
+	var property energy = 100
+	method reduceEnergy(amount) {
+		energy -= amount
+	}
+}
+
+mixin Journalist {
+	var property salary = 100
+}
+
+class SomeClass {
+	const superman = new Superman() with WithEnergy
+	// XPECT errors --> "Class Superman cannot be instantiated because it has abstract methods: reduceEnergy(meters) (required by Flying)" at "Superman"
+	const clarkKent = new Superman() with Journalist
+	
+	method getSuperman() = superman
+	method clarkKent() = clarkKent
+}

@@ -225,7 +225,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cannotInstantiateAbstractClasses(WConstructorCall it) {
 		if(classRef === null) return
-		val abstractMethods = classRef.unimplementedAbstractMethods
+		val abstractMethods = unimplementedAbstractMethods
 		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== classRef ]
 		if (!abstractMethods.empty) {
 			if (inheritingAbstractMethods) {

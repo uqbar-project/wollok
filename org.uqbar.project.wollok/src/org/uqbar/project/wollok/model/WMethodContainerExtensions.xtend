@@ -104,7 +104,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
 
-	def static unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
+	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WConstructorCall it) {
+		if (mixins === null || mixins.isEmpty)
+			classRef.unimplementedAbstractMethods
+		else
+			new MixedMethodContainer(classRef, mixins).unimplementedAbstractMethods
+	}
+	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
 
 	def static boolean isAbstract(WMethodDeclaration it) { expression === null && !native }
 
@@ -129,9 +135,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
 		val hierarchy = c.linearizeHierarchy
-
 		val concreteMethods = <WMethodDeclaration>newArrayList
-
 		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
 			concreteMethods.addAll(chunk.methods.filter[!abstract])
 			// remove implemented
