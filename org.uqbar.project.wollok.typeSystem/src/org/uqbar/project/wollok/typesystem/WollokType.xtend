@@ -52,4 +52,5 @@ interface WollokType {
 	 * Restrict this type to match type parameters of supertype in order to be a valid subtype.
 	 */
 	def void beSubtypeOf(WollokType supertype)
+	
 }
