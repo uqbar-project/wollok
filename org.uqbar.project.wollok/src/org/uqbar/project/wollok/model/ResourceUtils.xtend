@@ -21,12 +21,8 @@ class ResourceUtils {
 	def static IFile getIFile(EObject obj) { obj.eResource.IFile }
 
 	def static IFile getIFile(Resource resource) {
-		// *******************************************************
-		// val resourceURI = resource.URI.toString
-		// val platformString = if (resourceURI.startsWith(CLASSPATH)) resourceURI else resource.URI.toPlatformString(true)
-		// prueba travis
-		val platformString = resource.URI.toPlatformString(true)
-		// *******************************************************
+		val resourceURI = resource.URI.toString
+		val platformString = if (resourceURI.startsWith(CLASSPATH)) resourceURI else resource.URI.toPlatformString(true) 
 		if(platformString === null) {
 			// could be a synthetic file
 			return null
@@ -34,6 +30,15 @@ class ResourceUtils {
 		workspace.root.getFile(new Path(platformString))
 	}
 
+	def static IFile getPlatformFile(EObject o) {
+		val platformString = o.eResource.URI.toPlatformString(true)
+		if(platformString === null) {
+			// could be a synthetic file
+			return null
+		}
+		workspace.root.getFile(new Path(platformString))
+	}
+	
 	def static IWorkspace workspace() {
 		ResourcesPlugin.workspace
 	}
