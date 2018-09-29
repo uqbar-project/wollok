@@ -20,8 +20,9 @@ class WollokTypeSystemLabelExtensionImpl implements WollokTypeSystemLabelExtensi
 	override allMessages(EObject o) {
 		if (!o.isTypeSystemEnabled)
 			return newArrayList
-			
-		o.doResolvedType.allMessages.map [ messageType | messageType.method ].toList
+		val resolvedType = o.doResolvedType
+		if (resolvedType === null) return newArrayList
+		resolvedType.allMessages.map [ messageType | messageType.method ].toList
 	}
 
 	override isTypeSystemEnabled(EObject o) {

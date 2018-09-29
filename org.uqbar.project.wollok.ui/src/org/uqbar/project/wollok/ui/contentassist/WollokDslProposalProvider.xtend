@@ -102,6 +102,14 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 
 	// default
 	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		if (expression instanceof WConstructorCall) {
+			val constructorCall = expression as WConstructorCall
+			constructorCall.classRef?.methodsAsProposals(acceptor)
+			return
+		}
+		if (expression.isTypeSystemEnabled) {
+			completeProposalsFor(expression, acceptor)
+		}
 	}
 
 	// literals
