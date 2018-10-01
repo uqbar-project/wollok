@@ -13,4 +13,12 @@ class UnionType extends BasicType {
 		super(types.sortBy[name].join('(', '|', ')', [toString]))
 		this.types = types.toList
 	}
+	
+	override getAllMessages() {
+		this.types.fold(newArrayList, [ acum, type | 
+				acum.addAll(type.allMessages)
+				acum
+		])
+	}
+	
 }
