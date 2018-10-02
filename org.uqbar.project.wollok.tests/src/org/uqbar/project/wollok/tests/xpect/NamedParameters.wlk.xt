@@ -9,7 +9,6 @@ class Ave {
 	method volar() { energia -= 10 }
 }
 class Golondrina inherits Ave {
-	// XPECT warnings --> "Variable is never assigned" at "peso"
 	var peso
 	method estaGorda() = peso > 100
 }
@@ -120,4 +119,22 @@ class A {
 	constructor(x, y, z) = self(x = y, inexistente = 3) {
 		b = y
 	}
+}
+
+class Something {
+    const property aValue
+    var property anotherValue
+}
+
+object somethingBuilder {
+	method buildEmptySomething() {
+		return new Something()
+	}
+	// XPECT errors --> "You must provide initial value to the following references: aValue" at "new Something(anotherValue = 2)"
+	method buildPartialSomething1() = new Something(anotherValue = 2)
+
+	// XPECT errors --> "You must provide initial value to the following references: anotherValue" at "new Something(aValue = 3)"
+	method buildPartialSomething2() = new Something(aValue = 3)
+	
+	method buildCompleteSomething() = new Something(anotherValue = 2, aValue = 3)
 }
