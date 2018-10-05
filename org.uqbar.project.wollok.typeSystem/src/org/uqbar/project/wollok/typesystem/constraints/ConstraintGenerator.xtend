@@ -42,6 +42,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import org.uqbar.project.wollok.typesystem.ObjectLiteralType
 
 /**
  * @author npasserini
@@ -122,9 +123,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WObjectLiteral it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
-		newTypeVariable.beSealed(new StructuralType(methods.map[queryMessageTypeForMethod].iterator))
-													// TODO: Should be allMethods (fix StructuralType.name)
-													// TODO: Move to TypeProvider
+		newTypeVariable.beSealed(new ObjectLiteralType(it, typeSystem))
 	}
 
 	// ************************************************************************

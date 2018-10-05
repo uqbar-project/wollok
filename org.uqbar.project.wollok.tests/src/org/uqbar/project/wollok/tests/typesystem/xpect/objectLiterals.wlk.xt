@@ -1,0 +1,33 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Persona {
+	
+	// XPECT type at hambriento -->  <object>
+	var hambriento = object {
+		var a = 0
+		
+		method cena() {
+			return a
+		}
+	}
+	
+	// XPECT type at charlatan -->  <object>
+	var charlatan = object {
+		method habla() = "Hola"
+	}
+	
+	// XPECT methodType at cantidad() -->  () => Number
+	method cantidad() = hambriento.cena()
+	
+	// XPECT warnings --> "{ cenar } does not understand habla()" at "hambriento.habla()"
+	method hablarConEstomagoVacio() = hambriento.habla()
+	
+	// XPECT methodType at charla() -->  () => String
+	method charla() = charlatan.habla()
+	
+	// XPECT warnings --> "{ habla } does not understand cenar()" at "charlatan.cenar()"
+	method cenarConLaBocaAbierta() = charlatan.cena()
+	
+	// XPECT methodType at charlatanString() -->  () => String
+	method charlatanString() = charlatan.toString()
+}

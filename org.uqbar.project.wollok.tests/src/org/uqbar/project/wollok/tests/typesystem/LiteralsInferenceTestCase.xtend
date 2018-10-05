@@ -45,14 +45,4 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertTypeOf(classTypeFor(BOOLEAN), "true")
 		]
 	}
-	
-	
-	@Test
-	def void testObjectLiteral() {
-		#['''
-			program p { object { } }''']
-			.parseAndInfer.asserting [
-				assertTypeOfAsString("{  }", "object { }")
-		]
-	}
 }
