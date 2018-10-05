@@ -6,6 +6,7 @@ import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static org.uqbar.project.wollok.typesystem.WollokType.*
+import org.uqbar.project.wollok.typesystem.StructuralType
 
 /**
  * The most basic inference tests
@@ -51,7 +52,7 @@ class LiteralsInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		#['''
 			program p { object { } }''']
 			.parseAndInfer.asserting [
-				assertTypeOf(WAny, "object { }")
+				assertTypeOfAsString("{  }", "object { }")
 		]
 	}
 }
