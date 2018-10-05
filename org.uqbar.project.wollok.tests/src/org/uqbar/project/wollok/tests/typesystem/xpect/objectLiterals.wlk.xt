@@ -16,19 +16,61 @@ class Persona {
 		method habla() = "Hola"
 	}
 	
-	// XPECT methodType at cantidad() -->  () => Number
-	method cantidad() = hambriento.cena()
+	// XPECT type at multifacetico -->  <object>
+	var multifacetico = object {
+		method habla() = "Chau"
+		method cena() = 100
+	}
 	
-	// XPECT warnings --> "{ cena } does not understand habla()" at "hambriento.habla()"
-	method hablarConEstomagoVacio() = hambriento.habla()
+	// XPECT type at friki -->  <object>
+	var friki = object {
+		method habla() = 42
+		method cena() = "Wollok"
+	}
+	
+	// XPECT methodType at comida() -->  () => Number
+	method comida() = hambriento.cena()
+	
+	// XPECT methodType at comidaMulti() -->  () => Number
+	method comidaMulti() = multifacetico.cena()
+	
+	// XPECT methodType at comidaRara() -->  () => String
+	method comidaRara() = friki.cena()
+	
+	// XPECT warnings --> "{ habla } does not understand cena()" at "charlatan.cena()"
+	method comidaConLaBocaAbierta() = charlatan.cena()
+	
 	
 	// XPECT methodType at charla() -->  () => String
 	method charla() = charlatan.habla()
 	
-	// XPECT warnings --> "{ habla } does not understand cena()" at "charlatan.cena()"
-	method cenarConLaBocaAbierta() = charlatan.cena()
+	// XPECT methodType at charlaMulti() -->  () => String
+	method charlaMulti() = multifacetico.habla()
+	
+	// XPECT methodType at charlaRara() -->  () => Number
+	method charlaRara() = friki.habla()
+	
+	// XPECT warnings --> "{ cena } does not understand habla()" at "hambriento.habla()"
+	method charlaConEstomagoVacio() = hambriento.habla()
+	
+	
+	// XPECT methodType at hacerHablarACharlatan() -->  () => String	
+	method hacerHablarACharlatan() = self.hacerHablar(charlatan)
+	
+	// XPECT methodType at hacerHablarAMultifacetico() -->  () => String	
+	method hacerHablarAMultifacetico() = self.hacerHablar(multifacetico)
+	
+	// XPECT! methodType at hacerHablarAFriki() -->  () => Number	
+//	method hacerHablarAFriki() = self.hacerHablar(friki)
+	
+	// XPECT! warnings --> "{ cena } doesn't match with { habla } ... TO CHECK"	
+//	method hacerHablarAHambriento() = self.hacerHablar(hambriento)
+
+	// XPECT methodType at hacerHablar(personalidad) -->  ((<object>|<object>)) => String
+												// TOFIX: ({ habla }) => (String|Number)	
+	method hacerHablar(personalidad) = personalidad.habla()
+	
 	
 	// XPECT methodType at charlatanString() -->  () => String
-	method charlatanString() = charlatan.toString()
-	
+	method charlatanString() = charlatan.toString() 
 }
