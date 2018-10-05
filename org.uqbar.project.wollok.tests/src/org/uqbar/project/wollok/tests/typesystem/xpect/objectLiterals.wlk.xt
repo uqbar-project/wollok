@@ -19,15 +19,16 @@ class Persona {
 	// XPECT methodType at cantidad() -->  () => Number
 	method cantidad() = hambriento.cena()
 	
-	// XPECT warnings --> "{ cenar } does not understand habla()" at "hambriento.habla()"
+	// XPECT warnings --> "{ cena } does not understand habla()" at "hambriento.habla()"
 	method hablarConEstomagoVacio() = hambriento.habla()
 	
 	// XPECT methodType at charla() -->  () => String
 	method charla() = charlatan.habla()
 	
-	// XPECT warnings --> "{ habla } does not understand cenar()" at "charlatan.cenar()"
+	// XPECT warnings --> "{ habla } does not understand cena()" at "charlatan.cena()"
 	method cenarConLaBocaAbierta() = charlatan.cena()
 	
 	// XPECT methodType at charlatanString() -->  () => String
 	method charlatanString() = charlatan.toString()
+	
 }

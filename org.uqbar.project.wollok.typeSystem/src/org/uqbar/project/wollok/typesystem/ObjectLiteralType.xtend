@@ -71,7 +71,7 @@ class ObjectLiteralType extends BasicType implements ConcreteType {
 		typeSystem.type(method)
 	}
 	
-	override getAllMessages() { object.methods.map[messageType] }
+	override getAllMessages() { object.allMethods.map[messageType] }
 	
 	override dispatch refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]
