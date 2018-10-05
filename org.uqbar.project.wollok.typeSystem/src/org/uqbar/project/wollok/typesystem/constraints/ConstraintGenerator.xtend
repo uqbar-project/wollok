@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WCatch
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
 /**
  * @author npasserini
@@ -115,6 +116,12 @@ class ConstraintGenerator {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
+	}
+
+	def dispatch void generate(WObjectLiteral it) {
+		// TODO Process supertype information: parent and mixins
+		newTypeVariable.beSealed(WollokType.WAny)
+		members.forEach[generateVariables]
 	}
 
 	// ************************************************************************
