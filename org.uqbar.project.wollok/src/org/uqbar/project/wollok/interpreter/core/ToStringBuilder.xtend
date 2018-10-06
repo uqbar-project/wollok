@@ -5,6 +5,8 @@ import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 
 import static org.uqbar.project.wollok.Messages.*
+import org.uqbar.project.wollok.wollokDsl.WMixin
+import org.uqbar.project.wollok.interpreter.MixedMethodContainer
 
 /**
  * @author tesonep
@@ -17,5 +19,7 @@ class ToStringBuilder {
 	def static dispatch objectDescription(WClass clazz) { OBJECT_DESCRIPTION_ARTICLE + clazz.name }
 	def static dispatch objectDescription(WObjectLiteral obj) { OBJECT_DESCRIPTION_AN_OBJECT }
 	def static dispatch objectDescription(WNamedObject namedObject) { namedObject.name }
+	def static dispatch objectDescription(WMixin mixin) { mixin.name }
+	def static dispatch objectDescription(MixedMethodContainer mmc) { mmc.toString }
 	
 }
