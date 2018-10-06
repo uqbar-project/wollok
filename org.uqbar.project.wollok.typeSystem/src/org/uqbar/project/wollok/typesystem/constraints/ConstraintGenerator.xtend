@@ -123,7 +123,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WObjectLiteral it) {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
-		newTypeVariable.beSealed(new ObjectLiteralType(it, typeSystem))
+		newTypeVariable.beSealed(objectLiteralType(it))
 	}
 
 	// ************************************************************************

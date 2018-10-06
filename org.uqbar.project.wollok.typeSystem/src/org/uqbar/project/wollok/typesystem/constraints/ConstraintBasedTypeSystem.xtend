@@ -50,6 +50,8 @@ import static org.uqbar.project.wollok.scoping.WollokResourceCache.*
 
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
+import org.uqbar.project.wollok.typesystem.ObjectLiteralType
 
 /**
  * @author npasserini
@@ -262,6 +264,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	override closureType(EObject context, int parameterCount) {
 		val typeParameterNames = #[GenericTypeInfo.RETURN] + GenericTypeInfo.PARAMS(parameterCount)
 		new ClosureType(finder.getClosureClass(context), this, typeParameterNames)
+	}
+
+	override objectLiteralType(WObjectLiteral context) {
+		new ObjectLiteralType(context, this)
 	}
 
 	/**
