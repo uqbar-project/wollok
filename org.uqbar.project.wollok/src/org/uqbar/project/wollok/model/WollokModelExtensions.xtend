@@ -410,8 +410,13 @@ class WollokModelExtensions {
 		clazz.constructors.findFirst[matches(nrOfParams)]
 	}
 
-	def static dispatch getConstructors(EObject o) { newArrayList }
-	def static dispatch getConstructors(WClass c) { c.allConstructors }
+	def static dispatch boolean shouldCheckInitialization(WMethodContainer mc) { true }
+	def static dispatch boolean shouldCheckInitialization(WClass c) { c.hasConstructors } 
+	
+	def static boolean hasConstructors(WMethodContainer c) { !c.getConstructors.isEmpty }
+
+	def static dispatch List<WConstructor> getConstructors(EObject o) { newArrayList }
+	def static dispatch List<WConstructor> getConstructors(WClass c) { c.allConstructors }
 
 	def static matches(WConstructor it, int nrOfArgs) {
 		if(hasVarArgs)
