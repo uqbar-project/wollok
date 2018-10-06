@@ -6,6 +6,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 interface WollokTypeSystemLabelExtension {
 	def String resolvedType(EObject obj)
-	def List<WMethodDeclaration> allMessages(EObject obj)
+	def List<WMethodDeclaration> allMethods(EObject obj)
 	def boolean isTypeSystemEnabled(EObject obj)
 }

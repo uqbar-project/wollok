@@ -59,10 +59,10 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		labelExtension
 	}
 	
-	def synchronized getAllMessages(EObject obj) {
+	def synchronized getAllMethods(EObject obj) {
 		val tsLabelExtension = obtainLabelExtension
 		if (tsLabelExtension !== null)
-			tsLabelExtension.allMessages(obj)
+			tsLabelExtension.allMethods(obj)
 		else
 			newArrayList
 	}
@@ -170,7 +170,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	protected def void completeProposalsFor(EObject o, ICompletionProposalAcceptor acceptor) {
-		val allMessages = o.allMessages
+		val allMessages = o.allMethods
 		allMessages.forEach [ method | 
 			builder.model = method
 			builder.reference = method.methodContainer.nameWithPackage
