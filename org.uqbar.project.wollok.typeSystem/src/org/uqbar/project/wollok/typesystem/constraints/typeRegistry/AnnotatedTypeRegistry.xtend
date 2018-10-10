@@ -6,7 +6,6 @@ import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.GenericTypeSchema
-import org.uqbar.project.wollok.typesystem.annotations.ClassParameterTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.GenericSelfTypeInstanceAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.GenericTypeInstanceAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.SimpleTypeAnnotation
@@ -26,6 +25,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
+import org.uqbar.project.wollok.typesystem.annotations.ClassTypeParameterAnnotation
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	extension TypeVariablesRegistry registry
@@ -70,7 +70,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		newTypeVariable(owner) => [beVoid]
 	}
 
-	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassParameterTypeAnnotation annotation) {
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassTypeParameterAnnotation annotation) {
 		newClassParameterVar(owner, annotation.type, annotation.paramName)
 	}
 
