@@ -99,6 +99,24 @@ class ClassTypeParameterAnnotation implements TypeAnnotation {
 	}
 }
 
+class MethodTypeParameterAnnotation implements TypeAnnotation {
+	@Accessors(PUBLIC_GETTER)
+	GenericType type
+
+	@Accessors(PUBLIC_GETTER)
+	String paramName
+
+//	new(GenericType type, String paramName) {
+//		if(!type.typeParameterNames.contains(paramName)) {
+//			throw new IllegalArgumentException(
+//				NLS.bind(Messages.RuntimeTypeSystemException_BAD_TYPE_ANNOTATION, type, paramName))
+//		}
+//
+//		this.type = type
+//		this.paramName = paramName
+//	}
+}
+
 class VoidTypeAnnotation implements TypeAnnotation {
 }
 

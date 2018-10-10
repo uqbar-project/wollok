@@ -96,8 +96,12 @@ class TypeVariablesRegistry {
 	// ** Synthetic type variables
 	// ************************************************************************
 
-	def newClassParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
-		TypeVariable.classParameter(owner, type, paramName) => [register]
+	def newClassTypeParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
+		TypeVariable.classTypeParameter(owner, type, paramName) => [register]
+	}
+
+	def newMethodTypeParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
+		TypeVariable.methodTypeParameter(owner, type, paramName) => [register]
 	}
 
 	// *	***********************************************************************

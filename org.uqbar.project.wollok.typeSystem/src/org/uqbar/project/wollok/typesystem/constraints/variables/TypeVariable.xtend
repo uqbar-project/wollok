@@ -54,8 +54,12 @@ class TypeVariable extends ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static classParameter(TypeVariableOwner owner, GenericType type, String paramName) {
-		new ClassParameterTypeVariable(owner, type, paramName)
+	def static classTypeParameter(TypeVariableOwner owner, GenericType type, String paramName) {
+		new ClassTypeParameterVariable(owner, type, paramName)
+	}
+
+	def static methodTypeParameter(TypeVariableOwner owner, GenericType type, String paramName) {
+		new MethodTypeParameterVariable(owner, type, paramName)
 	}
 
 	/**

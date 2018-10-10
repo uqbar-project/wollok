@@ -27,7 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
  * Since I am related to a class, current usage expects to be related to a message send, and the real type variable will be obtained
  * from the receiver of the message.
  */
-class ClassParameterTypeVariable extends TypeVariableSchema {
+class MethodTypeParameterVariable extends TypeVariableSchema {
 	@Accessors
 	GenericType genericType
 	
