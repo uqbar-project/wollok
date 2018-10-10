@@ -12,13 +12,21 @@ class Camion {
 describe "Carga de camiones" {
 
 	var duplic = 2
+	var duplic2 = 0
 	
 	method camion(unEstado) = new Camion(pesoMaximo = 200, estado = unEstado)
 	
 	method camionCon(coso) {
 		const camion = self.camion(disponible) /* <---------- */
 		camion.cargar(coso)
+		duplic = duplic2 + 1
 		return camion
+	}
+	
+	method conVariableDuplicada() {
+		// XPECT errors --> "Duplicated Name" at "duplic2"
+		var duplic2 = 3
+		return 0 + duplic2
 	}
 	
 	test "Intentar cargar un camión en exceso no afecta al camion" {
