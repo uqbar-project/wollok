@@ -22,9 +22,9 @@ class CompoundSelfTypeVariableSchema extends TypeVariableSchema {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override instanceFor(ConcreteType concreteReceiver) {
+	override instanceFor(ConcreteType concreteReceiver, MessageSend message) {
 		val typeSchema = new GenericTypeSchema((concreteReceiver as GenericTypeInstance).rawType, schema.typeParameters)
-		registry.newSealed(owner, typeSchema.instanceFor(concreteReceiver))
+		registry.newSealed(owner, typeSchema.instanceFor(concreteReceiver, message))
 	}
 
 	// ************************************************************************

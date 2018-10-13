@@ -47,14 +47,14 @@ class CompoundTypeVariableSchema extends TypeVariableSchema {
 		registry.newSealed(createOwner, typeSchema.instanceFor(variable))
 	}
 	
-	override instanceFor(ConcreteType concreteReceiver) {
-		registry.newSealed(createOwner, typeSchema.instanceFor(concreteReceiver))
+	override instanceFor(ConcreteType concreteReceiver, MessageSend message) {
+		registry.newSealed(createOwner, typeSchema.instanceFor(concreteReceiver, message))
 	}
 	
 	def createOwner() {
 		new ParameterTypeVariableOwner(owner, '''$« instanceCount += 1 »''')
 	}
-	
+
 	override toString() '''t(«owner.debugInfoInContext»: «typeSchema»)'''
 	
 }

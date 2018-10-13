@@ -2,15 +2,12 @@ package org.uqbar.project.wollok.typesystem.constraints.variables
 
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.Messages
 import org.uqbar.project.wollok.typesystem.TypeSystemException
 import org.uqbar.project.wollok.typesystem.WollokType
-import org.uqbar.project.wollok.wollokDsl.WArgumentList
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
-import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
@@ -28,20 +25,18 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
  * from the receiver of the message.
  */
 class MethodTypeParameterVariable extends TypeVariableSchema {
-	@Accessors
-	GenericType genericType
-	
+	GenericType type
+	String methodName
 	String paramName
 
-	new(TypeVariableOwner owner, GenericType genericType, String paramName) {
+	new(TypeVariableOwner owner, GenericType type, String methodName, String paramName) {
 		super(owner)
-		this.genericType = genericType
+		this.type = type
+		this.methodName = methodName
 		this.paramName = paramName
 	}
 
- 	override getType() {
-		WollokType.WAny
-	}
+ 	override getType() { WollokType.WAny }
 	
 	/**
 	 * I can have supertypes when I am used as return type for a method. 
@@ -49,7 +44,7 @@ class MethodTypeParameterVariable extends TypeVariableSchema {
 	 * (i.e. {@link WMemberFeatureCall}, {@link WBinaryOperation} or {@link WSuperInvocation}
 	 */
 	def dispatch beSubtypeOf(TypeVariable variable) {
-		variable.owner.classTypeParameter.beSubtypeOf(variable)		
+		instanceFor(variable).beSubtypeOf(variable)		
 	}
 
 	/**
@@ -67,46 +62,30 @@ class MethodTypeParameterVariable extends TypeVariableSchema {
 	// ************************************************************************
 
 	override instanceFor(TypeVariable variable) {
-		variable.owner.classTypeParameter as TypeVariable
+		variable.owner.typeParameter as TypeVariable
 	}
 	
-	override instanceFor(ConcreteType concreteReceiver) {
-		(concreteReceiver as GenericTypeInstance).param(paramName)
+	override instanceFor(ConcreteType concreteReceiver, MessageSend messageSend) {
+		// TODO Tal vez necesitamos un nuevo tipo de owner asociado al messageSend. 
+		// Por ahora lo asocié a lo más parecido que tenemos que es el owner del return type del message send.
+		// (Se parece porque el owner del return type es sintácticamente la expresión entera (message send).
+		messageSend.param(paramName, [| 
+			registry.newParameter(messageSend.returnType.owner, paramName)
+		])
 	}
 
 	/**
-	 * Once this class type parameter is associated to a program element, we can get related to an actual 
+	 * Given that this type parameter is associated to a program element, we can relate it to an actual 
 	 * type variable. This method and the following contain the algorithm for looking for that TVar.
 	 */
-	def dispatch ITypeVariable classTypeParameter(ProgramElementTypeVariableOwner owner) {
+	def dispatch ITypeVariable typeParameter(ProgramElementTypeVariableOwner owner) {
 		// TODO We are ignoring here other possible type variable owners, so this will be a problem soon.
-		owner.programElement.classTypeParameter
+		owner.programElement.typeParameter
 	}
 
-	def dispatch ITypeVariable classTypeParameter(EObject unknownObject) {
+	def dispatch ITypeVariable typeParameter(EObject unknownObject) {
 		throw new TypeSystemException(NLS.bind(Messages.RuntimeTypeSystemException_EXTRACTING_TYPE_CLASS_NOT_IMPLEMENTED, unknownObject.class))
 	}
 
-	def dispatch ITypeVariable classTypeParameter(WArgumentList arg) {
-		arg.eContainer.classTypeParameter
-	}
-
-	def dispatch ITypeVariable classTypeParameter(WConstructorCall constructorCall) {
-		classTypeParameterFor(constructorCall.tvar.typeInfo)
-	}
-
-	def dispatch ITypeVariable classTypeParameter(WMemberFeatureCall messageSend) {
-		var tvar = classTypeParameterFor(messageSend.memberCallTarget.tvar.typeInfo)
-		if (tvar instanceof TypeVariable) tvar else classTypeParameter(messageSend.memberCallTarget)
-	}
-
-	def dispatch classTypeParameterFor(TypeInfo typeInfo) {
-		throw new UnsupportedOperationException 
-	}
-
-	def dispatch classTypeParameterFor(GenericTypeInfo typeInfo) {
-		typeInfo.param(genericType, paramName)
-	}
-		
-	override toString() '''t(«owner.debugInfo»: «genericType».«paramName»)'''
+	override toString() '''t(«owner.debugInfo»: method type parameter «paramName»)'''
 }

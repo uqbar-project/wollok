@@ -38,6 +38,7 @@ class MessageLookupExtensions {
 	}
 
 	def canRespondTo(ConcreteType it, MessageSend message) {
+		// Decidir de dónde va a salir la info del mensaje.
 		methodType(message).notNullAnd[matchesParameters(message)]
 	}
 

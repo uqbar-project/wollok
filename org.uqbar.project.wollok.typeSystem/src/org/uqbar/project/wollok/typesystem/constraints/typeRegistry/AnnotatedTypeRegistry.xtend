@@ -77,7 +77,7 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	}
 
 	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, MethodTypeParameterAnnotation annotation) {
-		newMethodTypeParameterVar(owner, annotation.type, annotation.paramName)
+		newMethodTypeParameterVar(owner, annotation.type, annotation.methodName, annotation.paramName)
 	}
 
 	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, GenericTypeInstanceAnnotation it) {

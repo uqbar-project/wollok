@@ -100,8 +100,8 @@ class TypeVariablesRegistry {
 		TypeVariable.classTypeParameter(owner, type, paramName) => [register]
 	}
 
-	def newMethodTypeParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
-		TypeVariable.methodTypeParameter(owner, type, paramName) => [register]
+	def newMethodTypeParameterVar(TypeVariableOwner owner, GenericType type, String methodName, String paramName) {
+		TypeVariable.methodTypeParameter(owner, type, methodName, paramName) => [register]
 	}
 
 	// *	***********************************************************************

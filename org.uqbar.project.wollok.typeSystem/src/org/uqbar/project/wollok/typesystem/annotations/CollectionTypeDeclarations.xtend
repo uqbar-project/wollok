@@ -56,8 +56,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "count" === #[predicate(E)] => Number
 		C >> "sum" === #[closure(#[E], Number)] => Number;
 		
-		val T = new MethodTypeParameterAnnotation()
-		C >> "map" === #[closure(#[E], T), T];
+		C >> "map" === #[closure(#[E], T)] => List.of(T);
 	}
 
 	def mutableCollection(AnnotationContext C, TypeAnnotation E) {

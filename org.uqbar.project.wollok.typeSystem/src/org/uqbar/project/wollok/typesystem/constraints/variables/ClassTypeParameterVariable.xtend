@@ -50,7 +50,7 @@ class ClassTypeParameterVariable extends TypeVariableSchema {
 	 */
 	def dispatch beSubtypeOf(TypeVariable variable) {
 		variable.owner.classTypeParameter.beSubtypeOf(variable)		
-	}
+	} 
 
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
@@ -70,7 +70,7 @@ class ClassTypeParameterVariable extends TypeVariableSchema {
 		variable.owner.classTypeParameter as TypeVariable
 	}
 	
-	override instanceFor(ConcreteType concreteReceiver) {
+	override instanceFor(ConcreteType concreteReceiver, MessageSend _unused_) {
 		(concreteReceiver as GenericTypeInstance).param(paramName)
 	}
 

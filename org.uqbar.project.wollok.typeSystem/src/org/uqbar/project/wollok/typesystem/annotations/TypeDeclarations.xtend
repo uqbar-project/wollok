@@ -180,6 +180,8 @@ abstract class TypeDeclarations {
 
 	def ELEMENT() { Collection.param(GenericTypeInfo.ELEMENT) }
 
+	def T() { Collection.methodParam("map", "T") }
+
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
 
 	def classTypeAnnotation(String classFQN) { new ConcreteTypeAnnotation(types.classType(context, classFQN)) }

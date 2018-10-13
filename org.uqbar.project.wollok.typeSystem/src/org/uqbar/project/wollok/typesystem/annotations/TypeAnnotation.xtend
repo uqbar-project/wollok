@@ -70,6 +70,13 @@ class GenericTypeAnnotationFactory implements AnnotationContext {
 	}
 
 	/**
+	 * Creates a class-parameter type annotation for one type parameter of this generic type.
+	 */
+	def methodParam(String methodName, String paramName) {
+		new MethodTypeParameterAnnotation(genericType, methodName, paramName)
+	}
+
+	/**
 	 * Utility method, simplified version of #instance for generic types with only one type parameter.
 	 */
 	def of(TypeAnnotation uniqueTypeParameter) {
@@ -104,17 +111,16 @@ class MethodTypeParameterAnnotation implements TypeAnnotation {
 	GenericType type
 
 	@Accessors(PUBLIC_GETTER)
+	String methodName
+
+	@Accessors(PUBLIC_GETTER)
 	String paramName
 
-//	new(GenericType type, String paramName) {
-//		if(!type.typeParameterNames.contains(paramName)) {
-//			throw new IllegalArgumentException(
-//				NLS.bind(Messages.RuntimeTypeSystemException_BAD_TYPE_ANNOTATION, type, paramName))
-//		}
-//
-//		this.type = type
-//		this.paramName = paramName
-//	}
+	new(GenericType type, String methodName, String paramName) {
+		this.type = type
+		this.methodName = methodName
+		this.paramName = paramName
+	}
 }
 
 class VoidTypeAnnotation implements TypeAnnotation {
