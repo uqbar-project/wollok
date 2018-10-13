@@ -26,5 +26,6 @@ class MethodTypeInfo {
 	static def forClosureApply(GenericTypeInstance closureType) {
 		new MethodTypeInfo(closureType.paramTypeVariables, closureType.returnTypeVariable)
 	}
-	
+
+	override toString() '''MethodType [«parameters.join(", ")»]=>«returnType»'''	
 }

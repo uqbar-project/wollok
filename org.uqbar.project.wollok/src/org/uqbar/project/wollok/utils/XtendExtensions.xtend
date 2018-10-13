@@ -128,9 +128,7 @@ class XtendExtensions {
 	// ************************************************************************
 	
 	static def <K, V> V getOrElse(Map<K, V> map, K key, ()=>V continuation) {
-		map.get(key) ?: [|
-			continuation.apply
-		].apply
+		map.get(key) ?: continuation.apply
 	}
 
 	static def <K, V> V getOrElsePut(Map<K, V> map, K key, ()=>V continuation) {

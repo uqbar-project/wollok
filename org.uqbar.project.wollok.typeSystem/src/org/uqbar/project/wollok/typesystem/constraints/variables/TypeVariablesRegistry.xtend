@@ -72,7 +72,7 @@ class TypeVariablesRegistry {
 	}
 
 	def newParameter(TypeVariableOwner parent, String paramName) {
-		new TypeVariable(new ParameterTypeVariableOwner(parent, paramName))
+		new TypeVariable(new ParameterTypeVariableOwner(parent, paramName)) => [ register ]
 	}
 
 	def newSealed(TypeVariableOwner it, WollokType type) {
