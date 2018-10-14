@@ -40,6 +40,7 @@ import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WCatch
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 
 /**
  * @author npasserini
@@ -346,6 +347,12 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WSelf it) {
 		asOwner.newSealed(declaringContext.asWollokType)
+	}
+	
+	def dispatch void generate(WNullLiteral it) {
+		// Now only generate ANY variable. 
+		// Maybe we'll want another kind of variable for nullable types implementation.  
+		newTypeVariable 
 	}
 
 	// ************************************************************************
