@@ -581,6 +581,7 @@ class WollokModelExtensions {
 	def static dispatch isBooleanOrUnknownType(WCollectionLiteral it) { false }
 	def static dispatch isBooleanOrUnknownType(WObjectLiteral it) { false }
 	def static dispatch isBooleanOrUnknownType(WClosure it) { false }
+	def static dispatch isBooleanOrUnknownType(WAssignment it) { false }
 	def static dispatch isBooleanOrUnknownType(WUnaryOperation it) { isNotOperation }
 	def static dispatch isBooleanOrUnknownType(WVariableReference it) { !(ref instanceof WNamedObject) }
 
