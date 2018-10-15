@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 class UnionType extends BasicType {
 	@Accessors(PUBLIC_GETTER)
@@ -13,4 +14,9 @@ class UnionType extends BasicType {
 		super(types.sortBy[name].join('(', '|', ')', [toString]))
 		this.types = types.toList
 	}
+	
+	override getAllMessages() {
+		this.types.flatMap [ type | type.allMessages ]
+	}
+	
 }
