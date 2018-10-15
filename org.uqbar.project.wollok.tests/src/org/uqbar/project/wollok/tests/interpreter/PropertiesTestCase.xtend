@@ -241,7 +241,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "getter overriden" {
+		test "setter overriden" {
 			const acdc = new MaestroMetal()
 			acdc.base(40)
 			assert.equals(80, acdc.base())
@@ -266,7 +266,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "getter overriden" {
+		test "setter overriden" {
 			const acdc = new MaestroMetal()
 			acdc.base(40)
 			assert.equals(70, acdc.base())
