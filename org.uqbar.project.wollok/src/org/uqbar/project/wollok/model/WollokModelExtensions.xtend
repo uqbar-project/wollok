@@ -536,7 +536,7 @@ class WollokModelExtensions {
 	}
 
 	def static dispatch boolean returnsOnAllPossibleFlows(WReturnExpression it, boolean returnsOnSuperExpression) {
-		true
+		validReturnExpression
 	}
 
 	def static dispatch boolean returnsOnAllPossibleFlows(WThrow it, boolean returnsOnSuperExpression) {

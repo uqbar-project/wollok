@@ -208,10 +208,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
-	def dispatch static isReturnWithValue(WReturnExpression it) { expression !== null && allContainers.forall[!(it instanceof WClosure)] }
-
-	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
+	def dispatch static isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
+	def dispatch static hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
+
+	def static dispatch boolean isValidReturnExpression(EObject o) { 
+		val container = o.eContainer
+		container !== null && container.isValidReturnExpression
+	}
+	def static dispatch boolean isValidReturnExpression(WMemberFeatureCall call) { false }
+	def static dispatch boolean isValidReturnExpression(WBlockExpression expr) { true }
+	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
 	def static allVariableDeclarations(WMethodContainer it) { 
 		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
