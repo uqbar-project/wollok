@@ -190,7 +190,7 @@ class Object {
 	
 	/**
 	 * Provides a visual representation of Wollok Object
-	 * By default, same as toString but can be overriden
+	 * By default, same as toString but can be overridden
 	 * like in String
 	 */
 	method printString() = self.toString()

@@ -140,7 +140,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			concreteMethods.addAll(chunk.methods.filter[!abstract])
 			// remove implemented
 			unimplementedMethods.removeIf[chunk.overrides(it)]
-			// add NEW abstracts (abstracts on mixins can be overriden by an upper class / mixin in the chain!)
+			// add NEW abstracts (abstracts on mixins can be overridden by an upper class / mixin in the chain!)
 			val newAbstractsNotImplementedUpInTheHierarchy = chunk.abstractMethods.filter[abstractM |
 				!concreteMethods.exists[m| abstractM.matches(m.name, m.parameters) ]
 			]
@@ -186,12 +186,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch boolean overrides(WMixin c, WMethodDeclaration m) { c.methods.exists[!abstract && matches(m.name, m.parameters.size)] }
 
 	def static declaringMethod(WParameter p) { p.eContainer as WMethodDeclaration }
-	def static overridenMethod(WMethodDeclaration m) { m.declaringContext.overridenMethod(m.name, m.parameters) }
-	def protected static overridenMethod(WMethodContainer it, String name, List<?> parameters) {
+	def static overriddenMethod(WMethodDeclaration m) { m.declaringContext.overriddenMethod(m.name, m.parameters) }
+	def protected static overriddenMethod(WMethodContainer it, String name, List<?> parameters) {
 		lookUpMethod(linearizeHierarchy.tail, name, parameters, true)
 	}
 
-	def static superMethod(WSuperInvocation it) { method.overridenMethod }
+	def static superMethod(WSuperInvocation it) { method.overriddenMethod }
 
 	def static supposedToReturnValue(WMethodDeclaration it) { expressionReturns || eAllContents.exists[e | e.isReturnWithValue] }
 

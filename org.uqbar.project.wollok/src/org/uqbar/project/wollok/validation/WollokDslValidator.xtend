@@ -555,12 +555,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def overridingMethodMustReturnAValueIfOriginalMethodReturnsAValue(WMethodDeclaration m) {
 		if (m.overrides && !m.native) {
-			val overriden = m.overridenMethod
-			if (overriden !== null && !overriden.abstract) {
-				if (overriden.supposedToReturnValue && !m.returnsOnAllPossibleFlows(overriden.supposedToReturnValue))
+			val overridden = m.overriddenMethod
+			if (overridden !== null && !overridden.abstract) {
+				if (overridden.supposedToReturnValue && !m.returnsOnAllPossibleFlows(overridden.supposedToReturnValue))
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE,
 						OVERRIDING_METHOD_MUST_RETURN_VALUE)
-				if (!overriden.supposedToReturnValue && m.returnsOnAllPossibleFlows(overriden.supposedToReturnValue))
+				if (!overridden.supposedToReturnValue && m.returnsOnAllPossibleFlows(overridden.supposedToReturnValue))
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE,
 						OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE)
 			}
@@ -904,7 +904,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!sup.method.overrides && !sup.isInMixin)
 			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''',
+			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overriddenMethod.parameters.map[name].join(", ")»''',
 				sup)
 	}
 
