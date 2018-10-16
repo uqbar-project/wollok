@@ -598,11 +598,22 @@ class ExceptionTestCase extends AbstractWollokInterpreterTestCase {
 	def void assertThrowsExceptionFailing() {
 		'''
 		var a = 0
-		assert.throwsExceptionWithMessage(
-			"Block { a + 1 } should have failed",
+		assert.throwsExceptionLike(
+			new AssertionException("Block { a + 1 } should have failed"),
 			{ assert.throwsException({ a + 1 }) }
 		)
 		'''.test
+	}
+	
+	@Test
+	def void testCanCreateExceptionUsingNamedParametersWithoutCause() {
+		'''
+		object unObjeto {
+			method prueba() {
+				throw new Exception(message = "Saraza")
+			}
+		}
+		'''.interpretPropagatingErrors
 	}
 	
 }

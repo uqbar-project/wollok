@@ -225,7 +225,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cannotInstantiateAbstractClasses(WConstructorCall it) {
 		if(classRef === null) return
-		val abstractMethods = classRef.unimplementedAbstractMethods
+		val abstractMethods = unimplementedAbstractMethods
 		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== classRef ]
 		if (!abstractMethods.empty) {
 			if (inheritingAbstractMethods) {
@@ -764,8 +764,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
+		val declaringContext = it.declaringContext
+		val shouldCheckInitialization = declaringContext === null || declaringContext.shouldCheckInitialization
 		// Variable has no assignments
-		if (assignments.empty) {
+		if (assignments.empty && shouldCheckInitialization) {
 			if (writeable)
 				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
 					VARIABLE_NEVER_ASSIGNED)

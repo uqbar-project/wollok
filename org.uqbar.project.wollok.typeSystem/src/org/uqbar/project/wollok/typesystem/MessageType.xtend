@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.typesystem
 
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 
@@ -14,9 +15,11 @@ class MessageType {
 	String name
 	List<WollokType> parameterTypes
 	WollokType returnType
+	@Accessors(PUBLIC_GETTER) WMethodDeclaration method
 	
-	new(String name, List<WollokType> parameterTypes, WollokType returnType) {
-		this.name = name
+	new(WMethodDeclaration method, List<WollokType> parameterTypes, WollokType returnType) {
+		this.method = method
+		this.name = method.name
 		this.parameterTypes = parameterTypes
 		this.returnType = returnType
 	}

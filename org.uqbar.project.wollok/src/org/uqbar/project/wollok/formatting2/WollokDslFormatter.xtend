@@ -410,7 +410,10 @@ class WollokDslFormatter extends AbstractFormatter2 {
 		s.variableDeclarations.formatVariableDeclarations(document)
 		s.fixture.format
 		s.fixture.append [ setNewLines(2) ]
-		s.methods.forEach [ format ]
+		s.methods.forEach [ 
+			format 
+			append [ setNewLines(2) ]
+		]
 		s.tests.forEach [ 
 			format
 			append [ setNewLines(2) ]

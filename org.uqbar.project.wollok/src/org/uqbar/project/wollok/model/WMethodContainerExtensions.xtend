@@ -104,7 +104,13 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isAbstract(WMethodContainer it) { !unimplementedAbstractMethods.empty }
 
-	def static unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
+	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WConstructorCall it) {
+		if (mixins === null || mixins.isEmpty)
+			classRef.unimplementedAbstractMethods
+		else
+			new MixedMethodContainer(classRef, mixins).unimplementedAbstractMethods
+	}
+	def static dispatch List<WMethodDeclaration> unimplementedAbstractMethods(WMethodContainer it) { allAbstractMethods }
 
 	def static boolean isAbstract(WMethodDeclaration it) { expression === null && !native }
 
@@ -129,9 +135,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
 		val hierarchy = c.linearizeHierarchy
-
 		val concreteMethods = <WMethodDeclaration>newArrayList
-
 		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
 			concreteMethods.addAll(chunk.methods.filter[!abstract])
 			// remove implemented
@@ -384,12 +388,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
 	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
-		(mixins !== null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
-		|| (parent !== null && parent.hasOrInheritMethod(name, argSize))
+		(mixins !== null && mixins.exists[m| m.hasOrInheritsMethod(name, argSize)])
+		|| (parent !== null && parent.hasOrInheritsMethod(name, argSize))
 	}
 
-	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) {
-		c !== null && !c.hasCyclicHierarchy && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
+	def static boolean hasOrInheritsMethod(WMethodContainer c, String mname, int argsSize) {
+		c !== null && !c.hasCyclicHierarchy && (c.matchesProperty(mname, argsSize) || c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritsMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List<?> params, boolean acceptsAbstract) {
@@ -570,7 +574,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch boolean matchesProperty(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		matchesGetter(decl, propertyName, parametersSize) || matchesSetter(decl, propertyName, parametersSize) 
+		matchesGetter(decl, propertyName, parametersSize) || matchesSetter(decl, propertyName, parametersSize)
 	}
 
 	def static boolean matchesGetter(WVariableDeclaration decl, String propertyName, int parametersSize) {
