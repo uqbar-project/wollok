@@ -820,7 +820,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def nonBooleanValueInIfCondition(WIfExpression it) {
 		if (!condition.isBooleanOrUnknownType) {
-			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+			if (condition instanceof WAssignment) {
+				report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, it, WIF_EXPRESSION__CONDITION)
+			} else {
+				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+			}
 		}
 	}
 

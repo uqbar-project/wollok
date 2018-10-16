@@ -42,7 +42,7 @@ object p {
 
 		var a = 2
 		const b = 2
-		// XPECT errors --> "Expecting a boolean" at "a = b"
+		// XPECT errors --> "You did an assignment inside an if condition. Maybe you wanted to use '==' instead of '=' ?" at "a = b"
 		if (a = b)
 			throw new Exception("asd")
 			
