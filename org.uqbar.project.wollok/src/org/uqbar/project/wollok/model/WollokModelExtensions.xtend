@@ -74,6 +74,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * Extension methods to Wollok semantic model.
@@ -440,7 +441,7 @@ class WollokModelExtensions {
 
 	// For objects or classes
 	def static declaredVariables(WMethodContainer obj) { obj.members.filter(WVariableDeclaration).map[variable] }
-
+	
 	def static dispatch WMethodDeclaration method(Void it) { null }
 	def static dispatch WMethodDeclaration method(EObject it) { null }
 	def static dispatch WMethodDeclaration method(WMethodDeclaration it) { it }
@@ -481,9 +482,12 @@ class WollokModelExtensions {
 	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
 	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
-	def static dispatch boolean isDuplicated(WTest p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
-	def static dispatch boolean isDuplicated(WSuite p, WReferenciable v) {
-		p.tests.exists[(it.variables + p.variables).existsMoreThanOne(v)]
+	def static dispatch boolean isDuplicated(WTest test, WReferenciable v) {
+		val suite = test.declaringContext
+		test.variables.existsMoreThanOne(v) || (suite !== null && suite.isDuplicated(v)) 
+	}
+	def static dispatch boolean isDuplicated(WSuite suite, WReferenciable v) {
+		suite.variables.existsMoreThanOne(v)
 	}
 
 	def static dispatch boolean isDuplicated(WInitializer i, WReferenciable v) { false }

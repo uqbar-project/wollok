@@ -22,11 +22,13 @@ import org.uqbar.project.wollok.wollokDsl.WNamed
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WProgram
+import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WTest
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * This class contains custom scoping description.
@@ -87,6 +89,19 @@ class WollokDslScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def dispatch IScope scope(WCatch it) { eContainer.scope + exceptionVarName }
+
+	def dispatch IScope scope(WTest it) {
+		val testVariables = variables
+		if (declaringContext === null) {
+			testVariables.asScope
+		} else {
+			(testVariables + declaringContext.declaredVariables).asScope
+		}
+	}
+
+	def dispatch IScope scope(WSuite suite) {
+		suite.declaredVariables.asScope
+	}
 
 	// usage
 	def dispatch IScope scope(WExpression it) {
