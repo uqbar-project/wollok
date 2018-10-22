@@ -271,6 +271,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT)
+	def removeReturnKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_return_keyword_name,
+			Messages.WollokDslQuickFixProvider_remove_return_keyword_description, null) [ e, it |
+			xtextDocument.deleteToken(e, RETURN + blankSpace)
+		]
+	}
 	/** 
 	 * ***********************************************************************
 	 * 							Unexistent methods
