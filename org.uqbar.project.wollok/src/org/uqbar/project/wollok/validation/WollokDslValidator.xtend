@@ -140,6 +140,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
 	public static val PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS = "PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS"
 	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
+	public static val ASSIGNMENT_INSIDE_IF = "ASSIGNMENT_INSIDE_IF"
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -821,7 +822,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nonBooleanValueInIfCondition(WIfExpression it) {
 		if (!condition.isBooleanOrUnknownType) {
 			if (condition instanceof WAssignment) {
-				report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, it, WIF_EXPRESSION__CONDITION)
+				report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, it, WIF_EXPRESSION__CONDITION, ASSIGNMENT_INSIDE_IF)
 			} else {
 				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
 			}
