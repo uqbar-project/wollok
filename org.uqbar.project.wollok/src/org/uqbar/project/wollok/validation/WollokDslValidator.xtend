@@ -137,6 +137,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val INITIALIZATION_VALUE_NEVER_USED = "INITIALIZATION_VALUE_NEVER_USED"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
+	public static val CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT = "CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
 	public static val PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS = "PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS"
 	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
@@ -1088,6 +1089,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def returnUsedInAnExpression(WReturnExpression it) {
+		if (expression !== null && !isValidReturnExpression)
+			report(WollokDslValidator_CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT, it, WRETURN_EXPRESSION__EXPRESSION, CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT)
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def noSuperInConstructorBody(WSuperInvocation it) {
