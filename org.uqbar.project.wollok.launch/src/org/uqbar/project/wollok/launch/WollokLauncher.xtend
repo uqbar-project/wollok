@@ -20,6 +20,7 @@ import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
 import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+import org.uqbar.project.wollok.WollokActivator
 
 /**
  * Main program launcher for the interpreter.
@@ -61,7 +62,14 @@ class WollokLauncher extends WollokChecker {
 	
 			if (parameters.hasRepl) {
 				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
-				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
+				try {
+					val listeners = WollokActivator.replListeners.toList
+					println("listeners " + listeners)
+					new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter, listeners).startRepl
+				} catch (Exception e) {
+					println("SERIO ERROR " + e.message)
+					e.printStackTrace
+				}
 			}
 			System.exit(0)
 		}

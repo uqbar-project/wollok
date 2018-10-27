@@ -43,6 +43,9 @@ import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
+import org.uqbar.project.wollok.WollokActivator
+import org.uqbar.project.wollok.interpreter.IWollokInterpreterListener
+import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
@@ -52,12 +55,13 @@ import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartF
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
+import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * 
  * @author jfernandes
  */
-class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer {
+class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer, IWollokInterpreterListener {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -101,6 +105,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		
 		debugListener = new DebugContextListener(this)
 		DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
+		WollokActivator.addReplListener(this)
 
 		// Check if there is an already started debug context
 		val dc = DebugUITools.getDebugContext
@@ -271,7 +276,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	override partClosed(IWorkbenchPart part) { }
 	override partDeactivated(IWorkbenchPart part) { }
 	override partOpened(IWorkbenchPart part) { }
-	override selectionChanged(IWorkbenchPart part, ISelection selection) {	}
+	override selectionChanged(IWorkbenchPart part, ISelection selection) {}
 
 	// SELECTION PROVIDER
 	val listeners = new ArrayList<ISelectionChangedListener>
@@ -323,6 +328,10 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		nodesReferencedByJustOne.forEach[m | 
 			m.moveCloseTo(m.targetConnections.get(0).source)
 		]
+	}
+	
+	override messageSent(WollokInterpreter interpreter, WFile parsedFile) {
+		println("je, mirá lo que me vino " + interpreter)
 	}
 	
 }

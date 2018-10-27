@@ -6,6 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 /**
  * @author jfernandes
  */
+
 @Accessors
 class WVariable implements Serializable {
 	String name

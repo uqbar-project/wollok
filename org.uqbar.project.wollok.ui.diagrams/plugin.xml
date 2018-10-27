@@ -15,9 +15,9 @@
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
               class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.objects.ObjectDiagramView"
-              icon="icons/class_diagram_icon.png"
+              icon="icons/object_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.object"
-              name="Object Diagram"
+              name="%objectDiagramView"
               restorable="true">
         </view>
         

@@ -69,7 +69,7 @@ class XDebuggerImpl implements XDebugger {
 	
 	def checkBreakpointsAndSuspendIfHit(EObject element) {
 		val bp = breakpoints.findFirst[ hits(element) ]
-		if (bp != null && bp != lastBreakpointHit) {
+		if (bp !== null && bp != lastBreakpointHit) {
 			eventSender.breakpointHit(bp.fileURI, bp.lineNumber)
 			lastBreakpointHit = bp
 			sleep(false) // avoid sending two events (suspended by BP, suspended by step)
@@ -101,7 +101,7 @@ class XDebuggerImpl implements XDebugger {
 	override setBreakpoint(String fileURI, int line) { breakpoints.add(new XBreakpoint(fileURI, line)) }
 	override clearBreakpoint(String fileURI, int line) {
 		val bp = breakpoints.findFirst[it.fileURI == fileURI && it.lineNumber == line]
-		if (bp != null)
+		if (bp !== null)
 			breakpoints.remove(bp)
 	}
 	
