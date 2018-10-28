@@ -43,8 +43,9 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		TypeAnnotation returnType) {
 		val method = receiver.lookupMethod(selector, paramTypes) 
 			=> ifNull [ throw new IllegalArgumentException('''
-				Type system configuration error. 
-				You are trying to add a type annotation for method «selector» in type «receiver.name», which does not exist''') ]
+				Type system configuration error. «««
+You are trying to add a type annotation for method «selector»/«paramTypes.length» ««« 
+in type «receiver.name», which does not exist''') ]
 
 		method.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 		method.asOwner.beSealed(returnType)

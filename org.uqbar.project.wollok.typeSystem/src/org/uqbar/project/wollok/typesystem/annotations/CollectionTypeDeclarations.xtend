@@ -58,7 +58,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		
 		C >> "map" === #[closure(#[E], T)] => List.of(T);
 		C >> "flatMap" === #[closure(#[E], List.of(T))] => List.of(T);
-//		C >> "fold" === #[closure(#[T, E], T)] => T;
+		C >> "fold" === #[T, closure(#[T, E], T)] => T;
 	}
 
 	def mutableCollection(AnnotationContext C, TypeAnnotation E) {
