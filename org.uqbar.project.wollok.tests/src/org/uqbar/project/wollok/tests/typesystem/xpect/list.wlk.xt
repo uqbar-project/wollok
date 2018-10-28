@@ -91,11 +91,11 @@ class TestCollection {
 		// XPECT type at mapped --> List<Boolean>
 		const mapped = sample.map { number => number.even() } 
 
-		// XPECT! type at flatMapped --> List<Boolean>
-		// const flatMapped = sample.flatMap { number => [number.even()] } 
+		// XPECT type at flatMapped --> List<Boolean>
+		const flatMapped = sample.flatMap { number => [number.even()] } 
 
 		// XPECT! type at sum --> List<Number>
-		// const sum = sample.fold(0, { accum, elem => accum + elem }) 
+//		const sum = sample.fold(0, { accum, elem => accum + elem }) 
 
 		// XPECT! type at allEven --> List<Boolean>
 		// const allEven = sample.fold(true, { accum, elem => accum && elem.even() }) 

@@ -17,6 +17,14 @@ class XtendExtensions {
 
 	static def doNothing() {}
 
+	/**
+	 * Higher order block function
+	 * Receives a 1-arg void block and converts it into another one that will only be executed if the arg is null.
+	 */	
+	static def <T> (T)=>void ifNull((T)=>void actions) {
+		[ arg | if (arg === null) actions.apply(arg) ]
+	}
+
 	// ************************************************************************
 	// ** String / CharSequence extensions
 	// ************************************************************************

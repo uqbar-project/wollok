@@ -27,7 +27,6 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	extension TypeVariablesRegistry registry
@@ -42,7 +41,11 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 
 	override addMethodTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes,
 		TypeAnnotation returnType) {
-		val method = receiver.lookupMethod(selector, paramTypes)
+		val method = receiver.lookupMethod(selector, paramTypes) 
+			=> ifNull [ throw new IllegalArgumentException('''
+				Type system configuration error. 
+				You are trying to add a type annotation for method «selector» in type «receiver.name», which does not exist''') ]
+
 		method.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 		method.asOwner.beSealed(returnType)
 	}
