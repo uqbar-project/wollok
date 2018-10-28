@@ -2119,6 +2119,28 @@ class Range {
 		self.forEach{e=> l.add(closure.apply(e)) }
 		return l
 	}
+
+	/**
+	 * Map + flatten operation
+	 * @see map
+	 * @see flatten
+	 * 
+	 * Example
+	 * 		object klaus { 
+	 *  		method languages() = ["c", "cobol", "pascal"]
+	 *		}
+	 *
+	 *		object fritz {
+	 * 			method languages() = ["java", "perl"]
+	 * 		}
+	 *
+	 * Example:
+	 *      (1..4).map({ n => [1 .. n] }) ==> Answers [] 
+	 */
+	method flatMap(closure) = self.fold([], { acc, e =>
+		acc.addAll(closure.apply(e))
+		acc
+	})
 	
 	/** @private */
 	method asList() {
