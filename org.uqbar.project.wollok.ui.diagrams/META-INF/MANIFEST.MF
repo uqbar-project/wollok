@@ -28,7 +28,7 @@ Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
 Bundle-ManifestVersion: 2
 Export-Package: org.uqbar.project.wollok.ui.diagrams.classes;uses:="org.osgi.framework,org.eclipse.xtext.ui.guice,com.google.inject",
- org.uqbar.project.wollok.ui.diagrams.objects
+ org.uqbar.project.wollok.ui.diagrams.dynamic
 
 Name: org/eclipse/gef/examples/shapes/model/RectangularShape.class
 SHA1-Digest: HyGqV85f/s0Fkjw80xBP73d72Vw=

@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.objectDiagram.model
+package org.uqbar.project.wollok.ui.dynamicDiagram.model
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
@@ -7,7 +7,7 @@ import net.sf.lipermi.net.Server
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.launch.io.IOUtils
-import org.uqbar.project.wollok.ui.objectDiagram.WollokContextState
+import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextState
 
 @Singleton
 class WollokContextStateListener {

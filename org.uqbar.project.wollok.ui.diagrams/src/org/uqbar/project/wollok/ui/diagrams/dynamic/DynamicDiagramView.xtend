@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects
+package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import java.util.ArrayList
 import java.util.Collections
@@ -48,16 +48,17 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartFactory
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.StackFrameEditPart
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 
 /**
  * 
  * @author jfernandes
+ * @author dodain
  */
-class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer {
+class DynamicDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -139,7 +140,7 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	def configureGraphicalViewer() {
 		graphicalViewer.control.background = ColorConstants.listBackground
 
-		graphicalViewer.editPartFactory = new ObjectDiagramEditPartFactory
+		graphicalViewer.editPartFactory = new DynamicDiagramEditPartFactory
 		graphicalViewer.rootEditPart = new ScalableFreeformRootEditPart
 		graphicalViewer.keyHandler = new GraphicalViewerKeyHandler(graphicalViewer)
 	}

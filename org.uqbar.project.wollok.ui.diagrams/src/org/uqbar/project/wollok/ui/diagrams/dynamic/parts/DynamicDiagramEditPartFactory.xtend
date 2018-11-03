@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects.parts
+package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.gef.EditPart
@@ -9,7 +9,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
  * 
  * @author jfernandes
  */
-class ObjectDiagramEditPartFactory implements EditPartFactory {
+class DynamicDiagramEditPartFactory implements EditPartFactory {
 
 	override createEditPart(EditPart context, Object modelElement) {
 		if (modelElement === null) return null

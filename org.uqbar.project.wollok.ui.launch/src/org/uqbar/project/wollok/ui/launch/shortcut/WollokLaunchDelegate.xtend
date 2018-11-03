@@ -52,7 +52,6 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		super.launch(config, mode, launch, monitor)
 
 		if (configuration.hasRepl) {
-			// TODO: Activar el ObjectDiagram
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.removeConsoles(consoleManager.consoles)
 			val console = new WollokReplConsole
@@ -99,10 +98,8 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.hasRepl = config.hasRepl
 		parameters.libraries = config.libraries
 
-		println("Config has repl " + config.hasRepl)
 		if (config.hasRepl) {
-			parameters.objectDiagramPort = Activator.getDefault.wollokObjectDiagramListeningPort
-			println("Object diagram port " + parameters.objectDiagramPort)
+			parameters.dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
 		}
 
 		configureNumberPreferences(parameters)

@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.objectDiagram
+package org.uqbar.project.wollok.ui.dynamicDiagram
 
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import java.util.List

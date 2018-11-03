@@ -26,7 +26,7 @@ class WollokLauncherParameters {
 	List<String> wollokFiles = newArrayList
 	boolean hasRepl = false
 	Integer testPort = null
-	Integer objectDiagramPort = null
+	Integer dynamicDiagramPort = null
 	boolean jsonOutput = false
 	boolean tests = false
 	boolean noAnsiFormat = false
@@ -45,7 +45,7 @@ class WollokLauncherParameters {
 		sb.appendIfNotNull(requestsPort, "requestsPort")
 		sb.appendIfNotNull(eventsPort, "eventsPort")
 		sb.appendIfNotNull(testPort, "testPort")
-		sb.appendIfNotNull(objectDiagramPort, "objectDiagramPort")
+		sb.appendIfNotNull(dynamicDiagramPort, "dynamicDiagramPort")
 		if (tests) sb.append("-t ")
 		if (severalFiles) sb.append("-severalFiles ")
 		sb.appendIfNotNull(folder, "folder")
@@ -84,7 +84,7 @@ class WollokLauncherParameters {
 		
 		tests = cmdLine.hasOption("t")
 		testPort = parseParameterInt(cmdLine, "testPort")
-		objectDiagramPort = parseParameterInt(cmdLine, "objectDiagramPort")
+		dynamicDiagramPort = parseParameterInt(cmdLine, "dynamicDiagramPort")
 		
 		severalFiles = cmdLine.hasOption("severalFiles")
 		folder = parseParameterString(cmdLine, "folder")
@@ -185,7 +185,7 @@ class WollokLauncherParameters {
 			addOption(new Option("severalFiles", Messages.WollokLauncherOptions_SEVERAL_FILES))
 
 			add("testPort", Messages.WollokLauncherOptions_SERVER_PORT, "port", 1)
-			add("objectDiagramPort", Messages.WollokLauncherOptions_OBJECT_DIAGRAM_PORT, "port", 1)
+			add("dynamicDiagramPort", Messages.WollokLauncherOptions_DYNAMIC_DIAGRAM_PORT, "port", 1)
 			add("requestsPort", Messages.WollokLauncherOptions_REQUEST_PORT, "port", 1)
 			add("eventsPort", Messages.WollokLauncherOptions_EVENTS_PORT, "port", 1)	
 			add("folder", Messages.WollokLauncherOptions_SPECIFIC_FOLDER, "folder", 1)

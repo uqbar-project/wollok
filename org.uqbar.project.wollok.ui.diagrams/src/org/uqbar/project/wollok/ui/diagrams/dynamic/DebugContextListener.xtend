@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects
+package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.ui.contexts.DebugContextEvent

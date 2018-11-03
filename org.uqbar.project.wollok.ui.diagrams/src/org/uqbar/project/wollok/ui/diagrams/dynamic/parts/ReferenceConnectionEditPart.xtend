@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects.parts
+package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import org.eclipse.draw2d.PolygonDecoration
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart

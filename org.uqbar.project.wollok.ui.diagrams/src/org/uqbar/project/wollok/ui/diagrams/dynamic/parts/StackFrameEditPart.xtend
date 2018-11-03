@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects.parts
+package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener

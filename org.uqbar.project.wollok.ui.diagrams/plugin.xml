@@ -14,10 +14,10 @@
         </view>
         <view
               category="org.uqbar.project.wollok.ui.diagrams.category"
-              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.objects.ObjectDiagramView"
+              class="org.uqbar.project.wollok.ui.diagrams.classes.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView"
               icon="icons/object_diagram_icon.png"
               id="org.uqbar.project.wollok.ui.diagrams.object"
-              name="%objectDiagramView"
+              name="%dynamicDiagramView"
               restorable="true">
         </view>
         

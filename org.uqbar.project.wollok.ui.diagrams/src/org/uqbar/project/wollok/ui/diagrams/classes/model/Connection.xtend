@@ -4,7 +4,7 @@ import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 
 /**
  * A connection between two distinct shapes.
