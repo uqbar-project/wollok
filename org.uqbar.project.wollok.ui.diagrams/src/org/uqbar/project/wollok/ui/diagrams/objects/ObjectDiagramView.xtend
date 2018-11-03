@@ -43,9 +43,6 @@ import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
-import org.uqbar.project.wollok.WollokActivator
-import org.uqbar.project.wollok.interpreter.IWollokInterpreterListener
-import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
@@ -55,13 +52,12 @@ import org.uqbar.project.wollok.ui.diagrams.objects.parts.ObjectDiagramEditPartF
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
-import org.uqbar.project.wollok.wollokDsl.WFile
 
 /**
  * 
  * @author jfernandes
  */
-class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer, IWollokInterpreterListener {
+class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -69,7 +65,10 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	
 	StaticDiagram diagram
 	
-	DebugContextListener debugListener
+	// Frozen until debugger renaissance
+	// DebugContextListener debugListener
+	
+	// WollokRemoteUIInterpreterListener interpreterListener
 	
 	// splitter and palette
 	FlyoutPaletteComposite splitter
@@ -79,6 +78,8 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 	new() {
 		editDomain = new DefaultEditDomain(null)
 //		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
+
+		// interpreterListener = new WollokRemoteInterpreterListener
 	}
 	
 	override init(IViewSite site) throws PartInitException {
@@ -103,10 +104,12 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 			page = null
 		}
 		
-		debugListener = new DebugContextListener(this)
-		DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
-		WollokActivator.addReplListener(this)
-
+		//
+		// Frozen until debugger renaissance
+		// debugListener = new DebugContextListener(this)
+		// DebugUITools.getDebugContextManager.addDebugContextListener(debugListener)
+		// 
+		
 		// Check if there is an already started debug context
 		val dc = DebugUITools.getDebugContext
 		if (dc !== null) {
@@ -328,10 +331,6 @@ class ObjectDiagramView extends ViewPart implements ISelectionListener, ISourceV
 		nodesReferencedByJustOne.forEach[m | 
 			m.moveCloseTo(m.targetConnections.get(0).source)
 		]
-	}
-	
-	override messageSent(WollokInterpreter interpreter, WFile parsedFile) {
-		println("je, mirá lo que me vino " + interpreter)
 	}
 	
 }

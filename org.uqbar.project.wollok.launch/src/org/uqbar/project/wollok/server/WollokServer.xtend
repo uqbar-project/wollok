@@ -47,7 +47,6 @@ class WollokServer extends AbstractHandler {
 
 	override handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
 		val interpreter = injector.getInstance(WollokInterpreter)
-		interpreter.debugger = new XDebuggerOff
 
 		response => [
 			characterEncoding = "utf8"

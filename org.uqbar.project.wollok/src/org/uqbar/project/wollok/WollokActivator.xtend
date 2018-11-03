@@ -1,10 +1,8 @@
 package org.uqbar.project.wollok
 
-import java.util.List
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.emf.ecore.EObject
 import org.osgi.framework.BundleContext
-import org.uqbar.project.wollok.interpreter.IWollokInterpreterListener
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 
 /**
@@ -15,7 +13,6 @@ class WollokActivator extends Plugin {
 	public static val WOLLOK_LIB_BUNDLE_NAME = "org.uqbar.project.wollok.lib"
 	private static WollokActivator plugin;
 	private BundleContext context  
-	private static List<IWollokInterpreterListener> replListeners = newArrayList
 	
 	override start(BundleContext context) {
 		super.start(context)
@@ -65,15 +62,4 @@ class WollokActivator extends Plugin {
 			bundle.getResource(fullName).openStream
 	}
 
-	static synchronized def void addReplListener(IWollokInterpreterListener replListener) {
-		println("Add repl listener in " + Thread.currentThread)
-		replListeners.add(replListener)
-		println("replListeners " + replListeners)
-	}
-	
-	static synchronized def replListeners() {
-		println("Get repl listeners in " + Thread.currentThread)
-		println("replListeners " + replListeners)
-		replListeners
-	}
 }

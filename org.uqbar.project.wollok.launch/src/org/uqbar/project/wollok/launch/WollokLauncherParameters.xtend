@@ -26,6 +26,7 @@ class WollokLauncherParameters {
 	List<String> wollokFiles = newArrayList
 	boolean hasRepl = false
 	Integer testPort = null
+	Integer objectDiagramPort = null
 	boolean jsonOutput = false
 	boolean tests = false
 	boolean noAnsiFormat = false
@@ -40,21 +41,24 @@ class WollokLauncherParameters {
 	
 	def build() {
 		val sb = new StringBuilder
-		if (hasRepl)sb.append("-r").append(" ")
-		if (requestsPort !== null) sb.append("-requestsPort " + requestsPort.toString).append(" ")
-		if (eventsPort !== null) sb.append("-eventsPort " + eventsPort.toString).append(" ")
-		if (testPort !== null) sb.append("-testPort " + testPort.toString).append(" ")
+		if (hasRepl) sb.append("-r").append(" ")
+		sb.appendIfNotNull(requestsPort, "requestsPort")
+		sb.appendIfNotNull(eventsPort, "eventsPort")
+		sb.appendIfNotNull(testPort, "testPort")
+		sb.appendIfNotNull(objectDiagramPort, "objectDiagramPort")
 		if (tests) sb.append("-t ")
 		if (severalFiles) sb.append("-severalFiles ")
-		if (folder !== null) sb.append("-folder " + folder).append(" ")
+		sb.appendIfNotNull(folder, "folder")
 		if (jsonOutput) sb.append("-jsonOutput ")
 		if (noAnsiFormat) sb.append("-noAnsiFormat ")
-		
 		buildNumberPreferences(sb)
-		
 		buildListOption(sb, libraries, "lib", ',')
 		buildListOption(sb, wollokFiles, "wf", ' ')
 		sb.toString
+	}
+	
+	def appendIfNotNull(StringBuilder builder, Object parameterValue, String parameterKey) {
+		if (parameterValue !== null) builder.append("-" + parameterKey + " " + parameterValue.toString).append(" ")
 	}
 
 	def buildNumberPreferences(StringBuilder sb){
@@ -80,6 +84,7 @@ class WollokLauncherParameters {
 		
 		tests = cmdLine.hasOption("t")
 		testPort = parseParameterInt(cmdLine, "testPort")
+		objectDiagramPort = parseParameterInt(cmdLine, "objectDiagramPort")
 		
 		severalFiles = cmdLine.hasOption("severalFiles")
 		folder = parseParameterString(cmdLine, "folder")
@@ -180,6 +185,7 @@ class WollokLauncherParameters {
 			addOption(new Option("severalFiles", Messages.WollokLauncherOptions_SEVERAL_FILES))
 
 			add("testPort", Messages.WollokLauncherOptions_SERVER_PORT, "port", 1)
+			add("objectDiagramPort", Messages.WollokLauncherOptions_OBJECT_DIAGRAM_PORT, "port", 1)
 			add("requestsPort", Messages.WollokLauncherOptions_REQUEST_PORT, "port", 1)
 			add("eventsPort", Messages.WollokLauncherOptions_EVENTS_PORT, "port", 1)	
 			add("folder", Messages.WollokLauncherOptions_SPECIFIC_FOLDER, "folder", 1)

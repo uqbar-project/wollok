@@ -16,25 +16,7 @@ import org.uqbar.project.wollok.interpreter.stack.XStackFrame
  * 
  * @author jfernandes
  */
-interface XDebugger extends Serializable {
-	
-	// *****************************************
-	// METHODS called from the interpreter
-	// *****************************************
-	
-	/** Program execution started */
-	def void started()
-	/** Program execution terminated */
-	def void terminated()
-	
-	/**
-	 * Notifies it's about to evaluate a given element.
-	 * Allows the debugger to pause the thread.
-	 */
-	def void aboutToEvaluate(EObject element)
-
-	/** Already evaluated element */	
-	def void evaluated(EObject element)
+interface XDebugger extends Serializable, XInterpreterListener {
 	
 	// *****************************************
 	// METHODS CALLED FROM THE REMOTE DEBUGGER (won't be called if it's not in debug mode)
@@ -44,6 +26,7 @@ interface XDebugger extends Serializable {
 	 * Terminates the interpreter execution
 	 */
 	def void terminate()
+	
 	def void stepOver()
 	def void stepInto()
 	def void stepReturn()

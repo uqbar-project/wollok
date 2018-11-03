@@ -4,13 +4,11 @@ import com.google.inject.Injector
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
-import java.util.List
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.resource.XtextResourceSet
 import org.eclipse.xtext.util.LazyStringInputStream
 import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.errorHandling.StackTraceElementDTO
-import org.uqbar.project.wollok.interpreter.IWollokInterpreterListener
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokInterpreterException
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -39,10 +37,9 @@ class WollokRepl {
 	var static whiteSpaces = ""
 	val WFile parsedMainFile
 	val extension ReplOutputFormatter formatter
-	val List<IWollokInterpreterListener> replListeners
 
 	new(WollokLauncher launcher, Injector injector, WollokInterpreter interpreter, File mainFile, WFile parsedMainFile,
-		ReplOutputFormatter formatter, List<IWollokInterpreterListener> replListeners) {
+		ReplOutputFormatter formatter) {
 		this.injector = injector
 		this.launcher = launcher
 		this.interpreter = interpreter
@@ -50,8 +47,6 @@ class WollokRepl {
 		this.mainFile = mainFile
 		this.parsedMainFile = parsedMainFile
 		this.formatter = formatter
-		println("repl listeners? " + replListeners)
-		this.replListeners = replListeners
 	}
 
 	def synchronized void printWelcomeStructure() {
@@ -94,33 +89,35 @@ class WollokRepl {
 			input
 	}
 
+	def synchronized createReplExpression(String input) {
+		'''
+		«FOR a : parsedMainFile.imports.map[importedNamespace]»
+		import «a»
+		«ENDFOR»
+		import «parsedMainFile.implicitPackage».*
+
+		program repl {
+			«input»
+		}
+		'''
+	}
+	
 	def synchronized executeInput(String input) {
 		try {
-			val returnValue = interpreter.interpret('''
-				«FOR a : parsedMainFile.imports.map[importedNamespace]»
-					import «a»
-				«ENDFOR»
-				import «parsedMainFile.implicitPackage».*
-				program repl {
-				«input»
-				}
-			'''.parseRepl(mainFile), true)
-			
-			printReturnValue(returnValue)
-			
-			val context = interpreter.currentContext
+			interpreter.interpret(input.createReplExpression.parseRepl(mainFile), true)
+			// para entender qué puedo devolver
+			/*val context = interpreter.currentContext
 			println(interpreter.currentContext.allReferenceNames.map [ v | v.name + " = " + context.resolve(v.name) ])
 			println(interpreter.currentContext.allReferenceNames.map [ v | context.resolve(v.name).class ])
 			println("repl LIsteners " + replListeners)
 			//replListeners.forEach [ messageSent(interpreter, parsedMainFile) ]
-			
+			*/
 		} catch (Exception e) {
 			resetIndent
 			e.handleException
 		}
 	}
 
-	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
 		if (obj === null)
 			println("null".returnStyle)

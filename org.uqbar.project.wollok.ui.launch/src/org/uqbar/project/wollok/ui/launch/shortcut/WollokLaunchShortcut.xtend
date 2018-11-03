@@ -115,7 +115,9 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		setAttribute(ATTR_WOLLOK_LIBS, newArrayList(info.findLibs))
 	}
 	
-	def static getWollokFile(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String) }
+	def static getWollokFile(ILaunch launch) { 
+		launch.launchConfiguration.getAttribute(ATTR_WOLLOK_FILE, null as String)
+	}
 	def static getWollokProject(ILaunch launch) { launch.launchConfiguration.getAttribute(ATTR_PROJECT_NAME, null as String) }
 
 	def findLibs(LaunchConfigurationInfo info) {

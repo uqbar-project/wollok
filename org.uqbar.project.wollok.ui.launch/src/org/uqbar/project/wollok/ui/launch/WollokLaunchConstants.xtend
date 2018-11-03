@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.launch
 
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants
 
 /**
  * 

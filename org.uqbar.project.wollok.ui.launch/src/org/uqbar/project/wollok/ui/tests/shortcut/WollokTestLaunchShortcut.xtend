@@ -29,10 +29,8 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 			activateWollokTestResultView
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
-			// TODO: i18n
 			MessageDialog.openError(Display.current.activeShell, WollokLaunchUIMessages.WollokTestLaunch_TITLE,
 				WollokLaunchUIMessages.WollokTestLaunch_ERROR_MESSAGE)
-			// something went wrong
 		}
 	}
 	

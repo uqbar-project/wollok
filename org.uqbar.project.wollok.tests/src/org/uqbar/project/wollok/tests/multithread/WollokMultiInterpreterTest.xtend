@@ -31,7 +31,7 @@ class WollokMultiInterpreterTest {
 
 		val interpreter = injector.getInstance(WollokInterpreter)
 		val debugger = new XDebuggerOff
-		interpreter.setDebugger(debugger)
+		interpreter.addInterpreterListener(debugger)
 
 		var program = '''
 			object pepita {
@@ -95,7 +95,7 @@ class WollokMultiInterpreterTest {
 			val Runnable block = [
 				start.await
 				val interpreter = injector.getInstance(WollokInterpreter)
-				interpreter.debugger = new XDebuggerOff
+				interpreter.addInterpreterListener(new XDebuggerOff)
 				try{
 					interpreter.interpret(program.parse, true)
 				}catch(WollokProgramExceptionWrapper e){
@@ -147,7 +147,7 @@ class WollokMultiInterpreterTest {
 
 		val Runnable block = [
 			val interpreter = injector.getInstance(WollokInterpreter)
-			interpreter.debugger = new XDebuggerOff
+			interpreter.addInterpreterListener(new XDebuggerOff)
 			interpreter.interpret(program.parse, true)
 		]
 

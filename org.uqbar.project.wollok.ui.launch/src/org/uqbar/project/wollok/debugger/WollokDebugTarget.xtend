@@ -102,7 +102,7 @@ class WollokDebugTarget extends WollokDebugElement implements IDebugTarget {
 	def listenForVM(int port) {
 		new Server => [
 			bind(port, new CallHandler => [
-				registerGlobal(XTextInterpreterEventPublisher, new DebuggerUIInterpreterEventListener(this))	
+				registerGlobal(XTextInterpreterEventPublisher, new DebuggerUIInterpreterEventListener(this))
 			])	
 		]
 	}

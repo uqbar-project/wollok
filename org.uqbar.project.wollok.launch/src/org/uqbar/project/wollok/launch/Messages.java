@@ -33,6 +33,7 @@ public class Messages extends NLS {
 	public static String WollokLauncherOptions_DISABLE_COLORS_REPL;
 	public static String WollokLauncherOptions_SEVERAL_FILES;
 	public static String WollokLauncherOptions_SERVER_PORT;
+	public static String WollokLauncherOptions_OBJECT_DIAGRAM_PORT;
 	public static String WollokLauncherOptions_REQUEST_PORT;
 	public static String WollokLauncherOptions_EVENTS_PORT;
 	public static String WollokLauncherOptions_SPECIFIC_FOLDER;

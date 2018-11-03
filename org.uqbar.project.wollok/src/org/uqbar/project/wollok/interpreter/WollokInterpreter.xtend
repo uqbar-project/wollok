@@ -10,15 +10,14 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.interpreter.api.IWollokInterpreter
-import org.uqbar.project.wollok.interpreter.api.XDebugger
 import org.uqbar.project.wollok.interpreter.api.XInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
+import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.WollokNativeLobby
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.interpreter.stack.ReturnValueException
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
 import org.uqbar.project.wollok.interpreter.threads.WThread
@@ -38,7 +37,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 // Rename to XInterpreter and move up to "xinterpreter" project
 class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokInterpreter, Serializable {
 	static Log log = LogFactory.getLog(WollokInterpreter)
-	XDebugger debugger = new XDebuggerOff
+	List<XInterpreterListener> listeners = newArrayList
 
 	@Accessors val globalVariables = <String, WollokObject>newHashMap
 
@@ -70,8 +69,9 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 
 	def getEvaluator() { evaluator }
 
-	def setDebugger(XDebugger debugger) { this.debugger = debugger }
-
+	def addInterpreterListener(XInterpreterListener listener) {
+		listeners.add(listener)
+	}
 
 	// ***********************
 	// ** Interprets
@@ -106,7 +106,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			console.logError(e)
 			null
 		} finally
-			debugger.terminated
+			listeners.forEach [ terminated ]
 	}
 
 	override interpret(EObject rootObject, Boolean propagatingErrors) {
@@ -115,8 +115,10 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			rootObject.generateStack
 			evaluator.evaluate(rootObject)
 		} catch (WollokProgramExceptionWrapper e) {
+			e.printStackTrace
 			throw e
 		} catch (Throwable e) {
+			e.printStackTrace
 			if (propagatingErrors)
 				throw e
 			else {
@@ -124,7 +126,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 				null
 			}
 		} finally
-			debugger.terminated
+			listeners.forEach [ terminated ]
 	}
 
 	def void printStackTraceInConsole(WollokProgramExceptionWrapper e) {
@@ -156,7 +158,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 			if (e.shouldGetDeeperInStack) {
 				currentThread.stack.peek.defineCurrentLocation = e
 			}
-			debugger.aboutToEvaluate(e)
+			listeners.forEach [ aboutToEvaluate(e) ]
 			evaluator.evaluate(e)
 		} catch (ReturnValueException ex) {
 			throw ex // a return
@@ -165,7 +167,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 		} catch (Exception ex) { // vm exception
 			throw new WollokInterpreterException(e, ex)
 		} finally {
-			debugger.evaluated(e)
+			listeners.forEach [ evaluated(e) ]
 		}
 	}
 	
@@ -218,7 +220,7 @@ class WollokInterpreter implements XInterpreter<EObject, WollokObject>, IWollokI
 	def void generateStack(EObject rootObject) {
 		val stackFrame = rootObject.createInitialStackElement
 		currentThread.stack.push(stackFrame)
-		debugger.started
+		listeners.forEach [ started ]
 		rootContext = rootObject
 	}
 

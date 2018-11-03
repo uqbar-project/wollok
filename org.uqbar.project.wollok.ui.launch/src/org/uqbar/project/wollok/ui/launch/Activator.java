@@ -11,6 +11,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.ui.WollokActivator;
+import org.uqbar.project.wollok.ui.objectDiagram.model.WollokContextStateListener;
 import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
 
 import com.google.inject.Injector;
@@ -24,11 +25,13 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	private WollokTestsResultsListener wollokTestsResultListener;
-
+	private WollokContextStateListener wollokObjectDiagramContextStateListener;
+	
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		wollokTestsResultListener = getInjector().getInstance(WollokTestsResultsListener.class);
+		wollokObjectDiagramContextStateListener = getInjector().getInstance(WollokContextStateListener.class);
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -49,7 +52,7 @@ public class Activator extends AbstractUIPlugin {
 			}
 			
 			if (name.contains("platform:")) {
-				URL u = new URL(this.getDefault().getStateLocation().toFile().toURL(), name);
+				URL u = new URL(getDefault().getStateLocation().toFile().toURL(), name);
 				return ImageDescriptor.createFromURL(u);
 			} else {
 				Bundle bundle = Platform.getBundle(PLUGIN_ID);
@@ -70,8 +73,16 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public WollokContextStateListener getWollokObjectDiagramContextStateListener() {
+		return wollokObjectDiagramContextStateListener;
+	}
+	
 	public WollokTestsResultsListener getWollokTestsResultListener() {
 		return wollokTestsResultListener;
+	}
+
+	public Integer getWollokObjectDiagramListeningPort() {
+		return this.getWollokObjectDiagramContextStateListener().getListeningPort();
 	}
 
 	public Integer getWollokTestViewListeningPort() {

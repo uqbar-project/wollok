@@ -40,10 +40,10 @@ class XDebuggerImpl implements XDebugger {
 	 * Send started event, then wait paused for the debugger to install breakpoints and perform initialization.
 	 * He will call us the "resume" command once he's ready.
 	 */	
-	override started() { 
+	override started() {
 		debuggingThread = interpreter.currentThread
 		eventSender.started
-		sleep
+		//sleep
 	}
 	
 	override aboutToEvaluate(EObject element) {

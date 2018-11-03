@@ -68,7 +68,7 @@ abstract class AbstractXDebuggerImplTestCase extends AbstractWollokInterpreterTe
 			eventSender = clientSide
 			it.interpreter = interpreter
 		]
-		interpreter.debugger = realDebugger
+		interpreter.addInterpreterListener(realDebugger)
 		
 		val thread = doInAnotherThread [
 			programContent.interpretPropagatingErrors

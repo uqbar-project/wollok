@@ -16,13 +16,14 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
+import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
+import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
-import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 
 /**
  * Launches the process to execute the interpreter.
@@ -38,56 +39,57 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
 
-	//Use RefreshUtil after switching to debug >= 3.6
+	// Use RefreshUtil after switching to debug >= 3.6
 	private static final String ATTR_REFRESH_SCOPE = DebugPlugin.getUniqueIdentifier() + ".ATTR_REFRESH_SCOPE";
 
-	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
+		IProgressMonitor monitor) throws CoreException {
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
-		
+
 		val config = configuration.configureLaunchSettings(mode)
 		super.launch(config, mode, launch, monitor)
-		
+
 		if (configuration.hasRepl) {
+			// TODO: Activar el ObjectDiagram
 			val consoleManager = ConsolePlugin.getDefault().consoleManager
 			consoleManager.removeConsoles(consoleManager.consoles)
 			val console = new WollokReplConsole
 			consoleManager.addConsoles(#[console])
 			console.startForProcess(launch.processes.get(0))
 		}
-		
+
 		if (mode.isDebug) {
 			try {
 				launch.removeDebugTarget(launch.debugTarget)
 				launch.addDebugTarget(createWollokTarget(launch, config.commandPort, config.getEventPort))
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				launch.terminate
 				abort(WollokLaunchUIMessages.WollokDebugger_GENERAL_ERROR_MESSAGE, e, DebugPlugin.INTERNAL_ERROR)
 			}
 		}
 	}
-	
+
 	def configureLaunchSettings(ILaunchConfiguration config, String mode) {
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort
-			config.getWorkingCopy =>[
+			config.getWorkingCopy => [
 				setCommandPort(requestPort)
 				setEventPort(eventPort)
 				setArguments(requestPort, eventPort)
 				doSave
 			]
-		}else{
+		} else {
 			config.getWorkingCopy => [
 				setArguments(0, 0)
 				doSave
 			]
 		}
 	}
-	
-	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort){
+
+	def configureLaunchParameters(ILaunchConfiguration config, int requestPort, int eventPort) {
 		val parameters = new WollokLauncherParameters
 		parameters.eventsPort = eventPort
 		parameters.requestsPort = requestPort
@@ -96,31 +98,40 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.folder = config.folder
 		parameters.hasRepl = config.hasRepl
 		parameters.libraries = config.libraries
-	
+
+		println("Config has repl " + config.hasRepl)
+		if (config.hasRepl) {
+			parameters.objectDiagramPort = Activator.getDefault.wollokObjectDiagramListeningPort
+			println("Object diagram port " + parameters.objectDiagramPort)
+		}
+
 		configureNumberPreferences(parameters)
-		
+
 		parameters
 	}
-	
-	def configureNumberPreferences(WollokLauncherParameters parameters){
-		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.DECIMAL_POSITIONS))
-			parameters.numberOfDecimals = preferenceStoreAccess.preferenceStore.getInt(WollokNumbersConfigurationBlock.DECIMAL_POSITIONS)
-		
-		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY))
-			parameters.coercingStrategy = preferenceStoreAccess.preferenceStore.getString(WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY)
 
-		if(preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY))
-			parameters.printingStrategy = preferenceStoreAccess.preferenceStore.getString(WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY)		
+	def configureNumberPreferences(WollokLauncherParameters parameters) {
+		if (preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.DECIMAL_POSITIONS))
+			parameters.numberOfDecimals = preferenceStoreAccess.preferenceStore.getInt(
+				WollokNumbersConfigurationBlock.DECIMAL_POSITIONS)
+
+		if (preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY))
+			parameters.coercingStrategy = preferenceStoreAccess.preferenceStore.getString(
+				WollokNumbersConfigurationBlock.NUMBER_COERCING_STRATEGY)
+
+		if (preferenceStoreAccess.preferenceStore.contains(WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY))
+			parameters.printingStrategy = preferenceStoreAccess.preferenceStore.getString(
+				WollokNumbersConfigurationBlock.NUMBER_PRINTING_STRATEGY)
 	}
-		
-	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort){
+
+	def setArguments(ILaunchConfiguration config, int requestPort, int eventPort) {
 		config.programArguments = configureLaunchParameters(config, requestPort, eventPort).build
 	}
-	
+
 	def createWollokTarget(ILaunch launch, int requestPort, int eventPort) {
 		new WollokDebugTarget(preferenceStoreAccess, launch, launch.processes.get(0), requestPort, eventPort)
 	}
-	
+
 	def createListener(ILaunchConfiguration configuration) {
 		new IDebugEventSetListener() {
 			override handleDebugEvents(DebugEvent[] events) {
@@ -138,17 +149,16 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 					refreshJob(configuration).schedule
 					return
 				}
-			}
-			else if (event.isStarted) {
+			} else if (event.isStarted) {
 				openDebugPerspective
 			}
 		}
 	}
-	
+
 	def openDebugPerspective() {
 		PlatformUI.workbench => [
 			showPerspective("org.eclipse.debug.ui.DebugPerspective", activeWorkbenchWindow)
 		]
 	}
-	
+
 }
