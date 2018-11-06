@@ -66,9 +66,9 @@ class Persona {
 	// XPECT! warnings --> "{ cena } doesn't match with { habla } ... TO CHECK"	
 //	method hacerHablarAHambriento() = self.hacerHablar(hambriento)
 
-	// XPECT methodType at hacerHablar(personalidad) -->  ((<object>|<object>)) => String
-												// TOFIX: ({ habla }) => (String|Number)	
+	// XPECT methodType at hacerHablar(personalidad) -->  (({ habla ; cena }|{ habla })) => String	
 	method hacerHablar(personalidad) = personalidad.habla()
+
 
 	// XPECT methodType at hacerHablarQueNuncaSeUsa(personalidad) -->  (Any) => Any	
 	method hacerHablarQueNuncaSeUsa(personalidad) = personalidad.habla()
