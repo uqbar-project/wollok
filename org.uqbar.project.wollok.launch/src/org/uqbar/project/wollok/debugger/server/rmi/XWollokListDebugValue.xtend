@@ -28,7 +28,7 @@ class XWollokListDebugValue extends XDebugValue {
 	
 	def getElements(WollokObject object, String concreteNativeType) {
 		val native = object.getNativeObject(concreteNativeType) as WCollection<Collection<WollokObject>>
-		if (native.wrapped == null) Collections.EMPTY_LIST else native.wrapped
+		if (native.wrapped === null) Collections.EMPTY_LIST else native.wrapped
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.stack.SourceCodeLocation
 import org.uqbar.project.wollok.interpreter.stack.XStackFrame
+import java.util.HashSet
 
 /**
  * 
@@ -26,7 +27,7 @@ class XDebugStackFrame implements Serializable {
 		variables = frame.context.debugVariables
 	}
 	
-	def static ArrayList<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
+	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
 		Lists.newArrayList(context.allReferenceNames.filter[name != WollokConstants.SELF].map[
 			toVariable(context)
 		])

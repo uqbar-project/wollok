@@ -21,7 +21,6 @@ class DebugContextListener implements IDebugContextListener {
 		if (event.flags.bitwiseAnd(DebugContextEvent.ACTIVATED) > 0) {
 			contextActivated(event.context)
 		}
-		println("Debug context changed! " + event.context)
 	}
 	
 	def void contextActivated(ISelection context) {

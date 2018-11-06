@@ -43,12 +43,10 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	
 	override addGlobalReference(String name, O value) {
 		addReference(name, value)
-		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override removeGlobalReference(String name) {
 		values.remove(name)
-		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override toString() {

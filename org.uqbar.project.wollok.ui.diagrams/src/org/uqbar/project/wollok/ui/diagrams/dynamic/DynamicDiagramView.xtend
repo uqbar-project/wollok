@@ -112,12 +112,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		// 
 		
 		// Check if there is an already started debug context
-		val dc = DebugUITools.getDebugContext
-		if (dc !== null) {
-			val o = dc.getAdapter(IStackFrame)
-			if (o instanceof IStackFrame)
-				setStackFrame(o as IStackFrame)
-		}
+		// val dc = DebugUITools.getDebugContext
+		// if (dc !== null) {
+		// 	val o = dc.getAdapter(IStackFrame)
+		// 	if (o instanceof IStackFrame)
+		// 		setStackFrame(o as IStackFrame)
+		// }
+		// End Frozen until debugger renaissance
 		
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)

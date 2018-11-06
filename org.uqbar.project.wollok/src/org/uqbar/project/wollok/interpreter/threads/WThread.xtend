@@ -18,7 +18,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
  * This class represents the threads in the execution of the interpreter, 
  * however the implementation is still very crude. 
  * 
- * It only keeps the call stack, and also it is created when it is acceded. 
+ * It only keeps the call stack, and also it is created when it is accessed. 
  * The rest of the interpreter is still no multithreading.
  * 
  * Now is returning a different WThread per Java Thread.

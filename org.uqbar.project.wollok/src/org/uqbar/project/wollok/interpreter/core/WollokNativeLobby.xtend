@@ -32,7 +32,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	override getThisObject() { throw new UnsupportedOperationException(Messages.WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM)}
 	
 	override allReferenceNames() {
-		localProgramVariables.keySet.map[new WVariable(it, true)]
+		val allVariables = localProgramVariables
+		allVariables.putAll(interpreter.globalVariables)
+		allVariables.keySet.map[new WVariable(it, true)]
 	}
 	
 	override resolve(String variableName) throws UnresolvableReference {

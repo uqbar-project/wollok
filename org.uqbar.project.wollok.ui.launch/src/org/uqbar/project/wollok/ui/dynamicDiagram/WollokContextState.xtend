@@ -1,13 +1,17 @@
 package org.uqbar.project.wollok.ui.dynamicDiagram
 
-import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import java.util.List
-import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
+import org.uqbar.project.wollok.contextState.server.XContextStateListener
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 
 class WollokContextState implements XContextStateListener {
 	
-	override stateChanged(List<XDebugValue> variables) {
-		println("Re - cambió el estado")
+	override stateChanged(List<XDebugStackFrameVariable> variables) {
+		println("Thread " + Thread.currentThread)
+		println("Cambió el estado. " + variables.size + " variables")
+		variables.forEach [ variable |
+			println('''variable «variable.variable.name» => «variable.value.stringValue»''')
+		]
 	}
 	
 }

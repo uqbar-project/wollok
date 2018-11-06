@@ -19,7 +19,7 @@ class XDebugStackFrameVariable implements Serializable {
 	
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
-		this.value = if (value == null) null else value.asRemoteValue
+		this.value = if (value === null) null else value.asRemoteValue
 	}
 	
 	def asRemoteValue(WollokObject object) {
@@ -29,6 +29,19 @@ class XDebugStackFrameVariable implements Serializable {
 			 new XWollokListDebugValue(object, SET)
 		else
 			new XWollokObjectDebugValue(variable.name, object)
+	}
+	
+	override equals(Object obj) {
+		try {
+			val other = obj as XDebugStackFrameVariable
+			return other.variable.name.equals(variable.name)
+		} catch (ClassCastException e) {
+			return false
+		}
+	}
+	
+	override hashCode() {
+		this.variable.name.hashCode
 	}
 	
 }
