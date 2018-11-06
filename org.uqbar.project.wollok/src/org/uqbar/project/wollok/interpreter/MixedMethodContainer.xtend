@@ -27,5 +27,9 @@ class MixedMethodContainer extends WMethodContainerImpl {
 	override eResource() {
 		clazz.eResource
 	}
+
+	override toString() {
+		clazz.name + mixins.map [ mixin | " with " + mixin.name ].join("")
+	}
 	
 }

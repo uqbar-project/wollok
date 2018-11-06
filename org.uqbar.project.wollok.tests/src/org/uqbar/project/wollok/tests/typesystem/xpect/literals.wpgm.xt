@@ -15,5 +15,8 @@ program p {
 	
 	// XPECT type at obj -->  <object>
 	var obj = object { }
+
+	// XPECT type at nullable -->  Any
+	var nullable = null
 }
 

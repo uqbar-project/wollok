@@ -1,0 +1,19 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+program p {	
+	// XPECT type at comparable -->  Object
+	var comparable
+	
+	// XPECT type at null -->  Any
+	if (comparable == null) {
+		// XPECT type at null -->  Object
+		comparable = null
+	}
+	
+	// XPECT type at num1 -->  Number
+	var num1 = 1
+	
+	// XPECT type at null -->  Number
+	num1 = null
+}
+

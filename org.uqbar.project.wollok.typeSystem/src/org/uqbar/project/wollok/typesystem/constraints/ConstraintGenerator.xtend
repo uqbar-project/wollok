@@ -1,7 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
 import org.eclipse.emf.ecore.EObject
-import org.uqbar.project.wollok.typesystem.StructuralType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
@@ -22,6 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
@@ -42,7 +42,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-import org.uqbar.project.wollok.typesystem.ObjectLiteralType
 
 /**
  * @author npasserini
@@ -355,6 +354,12 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WSelf it) {
 		asOwner.newSealed(declaringContext.asWollokType)
+	}
+	
+	def dispatch void generate(WNullLiteral it) {
+		// Now only generate ANY variable. 
+		// Maybe we'll want another kind of variable for nullable types implementation.  
+		newTypeVariable 
 	}
 
 	// ************************************************************************
