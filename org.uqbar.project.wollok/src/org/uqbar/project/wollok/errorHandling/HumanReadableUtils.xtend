@@ -91,7 +91,7 @@ class HumanReadableUtils {
 		val fullMessage = methodName + "(" + parameters.join(",") + ")"
 		val similarMethods = container.findMethodsByName(methodName)
 		if (similarMethods.empty) {
-			val caseSensitiveMethod = container.allMethods.findMethodIgnoreCase(methodName, parameters.size)
+			val caseSensitiveMethod = container.allUntypedMethods.findMethodIgnoreCase(methodName, parameters.size)
 			if (caseSensitiveMethod !== null) {
 				(NLS.bind(Messages.WollokDslValidator_METHOD_DOESNT_EXIST_CASE_SENSITIVE,
 					#[container.name, fullMessage, #[caseSensitiveMethod].convertToString]))
