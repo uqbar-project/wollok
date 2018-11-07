@@ -60,11 +60,15 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	}
 	
 	def synchronized getAllMethods(EObject obj) {
+		if (!obj.isTypeSystemEnabled)
+			return (obj as WMethodContainer).allUntypedMethods
+		else {
 		val tsLabelExtension = obtainLabelExtension
-		if (tsLabelExtension !== null)
-			tsLabelExtension.allMethods(obj)
-		else
-			newArrayList
+			if (tsLabelExtension !== null)
+				tsLabelExtension.allMethods(obj)
+			else
+				newArrayList
+		}
 	}
 
 	def boolean isTypeSystemEnabled(EObject obj) {
@@ -207,6 +211,7 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		builder.accessorKind = Accessor.SETTER
 		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
 		builder.accessorKind = Accessor.NONE
+		println(ref.allMethods)
 		ref.allMethods.forEach[ addProposal(it, acceptor) ]
 	}
 
