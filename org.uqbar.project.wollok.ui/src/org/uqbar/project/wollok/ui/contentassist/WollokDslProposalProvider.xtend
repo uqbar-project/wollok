@@ -211,7 +211,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		builder.accessorKind = Accessor.SETTER
 		ref.allPropertiesSetters.forEach [ addProposal(it, acceptor) ]
 		builder.accessorKind = Accessor.NONE
-		println(ref.allMethods)
 		ref.allMethods.forEach[ addProposal(it, acceptor) ]
 	}
 
