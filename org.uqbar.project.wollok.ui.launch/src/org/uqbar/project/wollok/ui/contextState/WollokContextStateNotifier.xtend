@@ -7,22 +7,19 @@ import net.sf.lipermi.net.Server
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.launch.io.IOUtils
-import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 
 @Singleton
 class WollokContextStateNotifier {
-	val Server server
-	val CallHandler callHandler
+	var Server server
+	var CallHandler callHandler
 	
 	@Accessors
-	val DynamicDiagramView contextStateListener
+	var XContextStateListener contextStateListener
 	
 	@Accessors
-	val int listeningPort
+	var int listeningPort
 	
-	@Inject
-	new(DynamicDiagramView contextStateListener) {
-		this.contextStateListener = contextStateListener
+	def init(XContextStateListener contextStateListener) {
 		callHandler = new CallHandler
 		callHandler.registerGlobal(XContextStateListener, contextStateListener)
 

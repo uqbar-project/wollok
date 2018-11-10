@@ -11,7 +11,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.ui.WollokActivator;
-import org.uqbar.project.wollok.ui.dynamicDiagram.model.WollokContextStateNotifier;
+import org.uqbar.project.wollok.ui.contextState.WollokContextStateNotifier;
 import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
 
 import com.google.inject.Injector;

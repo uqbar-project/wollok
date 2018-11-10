@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Event
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.widgets.Text
 import org.uqbar.project.wollok.WollokConstants
-import org.uqbar.project.wollok.ui.diagrams.Activator
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
+import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMixin
