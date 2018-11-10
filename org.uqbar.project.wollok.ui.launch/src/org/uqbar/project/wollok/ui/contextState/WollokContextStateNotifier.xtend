@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.dynamicDiagram.model
+package org.uqbar.project.wollok.ui.contextState
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
@@ -7,7 +7,7 @@ import net.sf.lipermi.net.Server
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.launch.io.IOUtils
-import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextStateListener
+import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 
 @Singleton
 class WollokContextStateNotifier {
@@ -15,13 +15,13 @@ class WollokContextStateNotifier {
 	val CallHandler callHandler
 	
 	@Accessors
-	val WollokContextStateListener contextStateListener
+	val DynamicDiagramView contextStateListener
 	
 	@Accessors
 	val int listeningPort
 	
 	@Inject
-	new(WollokContextStateListener contextStateListener) {
+	new(DynamicDiagramView contextStateListener) {
 		this.contextStateListener = contextStateListener
 		callHandler = new CallHandler
 		callHandler.registerGlobal(XContextStateListener, contextStateListener)

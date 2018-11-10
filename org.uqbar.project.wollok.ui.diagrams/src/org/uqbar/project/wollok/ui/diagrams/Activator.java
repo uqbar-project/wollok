@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.launch;
+package org.uqbar.project.wollok.ui.diagrams;
 
 import java.net.URL;
 
@@ -11,8 +11,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.ui.WollokActivator;
-import org.uqbar.project.wollok.ui.dynamicDiagram.model.WollokContextStateNotifier;
-import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
 
 import com.google.inject.Injector;
 
@@ -24,20 +22,14 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.uqbar.project.wollok.ui";
 	private static Activator plugin;
 
-	private WollokTestsResultsListener wollokTestsResultListener;
-	private WollokContextStateNotifier wollokDynamicDiagramContextStateNotifier;
-	
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		wollokTestsResultListener = getInjector().getInstance(WollokTestsResultsListener.class);
-		wollokDynamicDiagramContextStateNotifier = getInjector().getInstance(WollokContextStateNotifier.class);
 	}
 
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-		wollokTestsResultListener.close();
 	}
 
 	public ImageDescriptor getImageDescriptor(String name) {
@@ -71,22 +63,6 @@ public class Activator extends AbstractUIPlugin {
 
 	public static Activator getDefault() {
 		return plugin;
-	}
-
-	public WollokContextStateNotifier getWollokDynamicDiagramContextStateNotifier() {
-		return wollokDynamicDiagramContextStateNotifier;
-	}
-	
-	public WollokTestsResultsListener getWollokTestsResultListener() {
-		return wollokTestsResultListener;
-	}
-
-	public Integer getWollokDynamicDiagramListeningPort() {
-		return this.getWollokDynamicDiagramContextStateNotifier().getListeningPort();
-	}
-
-	public Integer getWollokTestViewListeningPort() {
-		return this.getWollokTestsResultListener().getListeningPort();
 	}
 
 	public Injector getInjector() {

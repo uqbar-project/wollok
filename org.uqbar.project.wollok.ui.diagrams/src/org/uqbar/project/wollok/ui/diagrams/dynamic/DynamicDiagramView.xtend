@@ -43,6 +43,7 @@ import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
@@ -52,9 +53,6 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
-import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextStateListener
-import org.uqbar.project.wollok.ui.launch.Activator
-import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 
 /**
  * 
@@ -72,8 +70,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	// Frozen until debugger renaissance
 	// DebugContextListener debugListener
 	// New context state listener
-	WollokContextStateListener contextStateListener
-	
 	// splitter and palette
 	FlyoutPaletteComposite splitter
 	CustomPalettePage page
@@ -108,9 +104,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			page = null
 		}
 
-		contextStateListener = Activator.^default.wollokDynamicDiagramContextStateNotifier.contextStateListener 
-		contextStateListener.addContextStateListener(this)
-		
 		//
 		// Frozen until debugger renaissance
 		// debugListener = new DebugContextListener(this)
@@ -342,7 +335,12 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 	
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
-		println("jeje")
+		println("***************************************")
+		variables.forEach [ stackFrame |
+			println("variable " + stackFrame.variable.name + " => " + stackFrame.value.stringValue)
+			println(stackFrame.value.variables.map [ v | v.variable.name ].join(", "))
+		]
+		println("***************************************")
 	}
 	
 }
