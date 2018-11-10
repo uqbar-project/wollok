@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display
  * 
  * @author jfernandes
  */
-class ClassDiagramColors {
+class StaticDiagramColors {
 	
 	public static val CLASS_FOREGROUND = new Color(null, 0, 0, 0)
 	public static val CLASS_BACKGROUND = new Color(null, 255, 229, 236)

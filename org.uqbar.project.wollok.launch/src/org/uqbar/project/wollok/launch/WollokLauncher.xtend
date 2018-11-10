@@ -59,7 +59,9 @@ class WollokLauncher extends WollokChecker {
 
 			if (parameters.hasRepl) {
 				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
+				println("1")
 				val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort)
+				println("2")
 				interpreter.addInterpreterListener(interpreterListener)
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}

@@ -7,19 +7,21 @@ import net.sf.lipermi.net.Server
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.launch.io.IOUtils
-import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextState
+import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextStateListener
 
 @Singleton
-class WollokContextStateListener {
+class WollokContextStateNotifier {
 	val Server server
 	val CallHandler callHandler
-	val WollokContextState contextStateListener
+	
+	@Accessors
+	val WollokContextStateListener contextStateListener
 	
 	@Accessors
 	val int listeningPort
 	
 	@Inject
-	new(WollokContextState contextStateListener) {
+	new(WollokContextStateListener contextStateListener) {
 		this.contextStateListener = contextStateListener
 		callHandler = new CallHandler
 		callHandler.registerGlobal(XContextStateListener, contextStateListener)

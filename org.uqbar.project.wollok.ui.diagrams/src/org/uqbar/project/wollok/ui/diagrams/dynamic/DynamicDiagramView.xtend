@@ -5,7 +5,6 @@ import java.util.Collections
 import java.util.HashMap
 import java.util.List
 import org.eclipse.debug.core.model.IStackFrame
-import org.eclipse.debug.ui.DebugUITools
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
@@ -43,22 +42,26 @@ import org.eclipse.ui.actions.ActionFactory
 import org.eclipse.ui.part.ViewPart
 import org.eclipse.ui.views.properties.IPropertySheetPage
 import org.eclipse.xtext.ui.editor.ISourceViewerAware
+import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
-import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.StackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
-import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
+import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
+import org.uqbar.project.wollok.ui.dynamicDiagram.WollokContextStateListener
+import org.uqbar.project.wollok.ui.launch.Activator
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 
 /**
  * 
  * @author jfernandes
  * @author dodain
  */
-class DynamicDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer {
+class DynamicDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer, XContextStateListener {
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -68,8 +71,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	
 	// Frozen until debugger renaissance
 	// DebugContextListener debugListener
-	
-	// WollokRemoteUIInterpreterListener interpreterListener
+	// New context state listener
+	WollokContextStateListener contextStateListener
 	
 	// splitter and palette
 	FlyoutPaletteComposite splitter
@@ -104,6 +107,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			splitter.externalViewer = page.getPaletteViewer
 			page = null
 		}
+
+		contextStateListener = Activator.^default.wollokDynamicDiagramContextStateNotifier.contextStateListener 
+		contextStateListener.addContextStateListener(this)
 		
 		//
 		// Frozen until debugger renaissance
@@ -333,6 +339,10 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		nodesReferencedByJustOne.forEach[m | 
 			m.moveCloseTo(m.targetConnections.get(0).source)
 		]
+	}
+	
+	override stateChanged(List<XDebugStackFrameVariable> variables) {
+		println("jeje")
 	}
 	
 }

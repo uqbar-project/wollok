@@ -11,7 +11,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.uqbar.project.wollok.ui.WollokActivator;
-import org.uqbar.project.wollok.ui.dynamicDiagram.model.WollokContextStateListener;
+import org.uqbar.project.wollok.ui.dynamicDiagram.model.WollokContextStateNotifier;
 import org.uqbar.project.wollok.ui.tests.WollokTestsResultsListener;
 
 import com.google.inject.Injector;
@@ -25,13 +25,14 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	private WollokTestsResultsListener wollokTestsResultListener;
-	private WollokContextStateListener wollokDynamicDiagramContextStateListener;
+	private WollokContextStateNotifier wollokDynamicDiagramContextStateNotifier;
 	
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		wollokTestsResultListener = getInjector().getInstance(WollokTestsResultsListener.class);
-		wollokDynamicDiagramContextStateListener = getInjector().getInstance(WollokContextStateListener.class);
+		System.out.println("getInjector " + getInjector());
+		wollokDynamicDiagramContextStateNotifier = getInjector().getInstance(WollokContextStateNotifier.class);
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -73,8 +74,8 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public WollokContextStateListener getWollokDynamicDiagramContextStateListener() {
-		return wollokDynamicDiagramContextStateListener;
+	public WollokContextStateNotifier getWollokDynamicDiagramContextStateNotifier() {
+		return wollokDynamicDiagramContextStateNotifier;
 	}
 	
 	public WollokTestsResultsListener getWollokTestsResultListener() {
@@ -82,7 +83,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public Integer getWollokDynamicDiagramListeningPort() {
-		return this.getWollokDynamicDiagramContextStateListener().getListeningPort();
+		return this.getWollokDynamicDiagramContextStateNotifier().getListeningPort();
 	}
 
 	public Integer getWollokTestViewListeningPort() {
