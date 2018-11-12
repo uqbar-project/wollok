@@ -10,10 +10,17 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 class WVariable implements Serializable {
 	String name
+	Integer id
 	boolean local
 	
-	new(String name, boolean local) {
+	new(String name, Integer id, boolean local) {
 		this.name = name
 		this.local = local
+		this.id = id
 	}
+	
+	override toString() {
+		this.name + (if (id === null) "" else " (" + id + ")")
+	}
+	
 }

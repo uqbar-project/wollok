@@ -19,7 +19,7 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	override getThisObject() { null }
 	
 	override allReferenceNames() {
-		values.keySet.map[new WVariable(it, true)]
+		values.keySet.map[new WVariable(it, null, true)]
 	}
 
 	override resolve(String variableName) {
@@ -53,5 +53,10 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 		class.simpleName + "{" + values.entrySet.map[key + ":" + (if(value===null)"null" else value.class)].join(',') + '}'
 	}
 
-	override showableInStackTrace() { true }	
+	override showableInStackTrace() { true }
+	
+	override showableInDynamicDiagram(String name) {
+		false
+	}
+	
 }

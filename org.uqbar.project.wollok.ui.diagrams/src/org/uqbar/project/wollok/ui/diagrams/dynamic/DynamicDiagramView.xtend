@@ -189,8 +189,10 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			actionRegistry
 		else if (type == EditPart && graphicalViewer !== null)
 			graphicalViewer.rootEditPart
-		else if(type == IFigure && graphicalViewer !== null) (graphicalViewer.rootEditPart as GraphicalEditPart).
-			figure else super.getAdapter(type)
+		else if (type == IFigure && graphicalViewer !== null)
+			(graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		else
+			super.getAdapter(type)
 	}
 
 	def createPalettePage() {
@@ -310,29 +312,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	// posta
 	override setStackFrame(IStackFrame stackframe) {
-		// backup nodes positions
-		val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
-		val map = new HashMap<String, Shape>()
-		if (oldRootPart !== null) {
-			oldRootPart.children.<ValueEditPart>forEach [ it |
-				map.put((it.model as VariableModel).valueString, it.model as Shape)
-			]
-		}
-
-		// set new stack
-		graphicalViewer.contents = stackframe
-
-		layout()
-
-		// recover old positions
-		val newModels = newModels
-		val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
-		alreadyDisplaying.forEach [ vm |
-			val oldShape = map.get(vm.valueString)
-			vm.location = oldShape.location
-			vm.size = oldShape.size
-		]
-
+		updateDynamicDiagram(stackframe)
 	// tweak layout
 //		val newNodes = newModels.filter[!alreadyDisplaying.contains(it)].toList
 //		relocateSolitaryNodes(newNodes)
@@ -351,40 +331,42 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		]
 	}
 
+//	def static unwantedVariables() {
+//		#["contextdescription", "location", "cause", "message" ]
+//	}
+
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
+//		val List<XDebugStackFrameVariable> filteredVariables = variables.filter [ !unwantedVariables.contains(it.variable.name.toLowerCase) ].toList
+		println("variables ")
+		println(variables.map [ variable | variable.variable ].join(", "))
+		println() 
 		RunInUI.runInUI [
-
-			println("***************************************")
-			variables.forEach [ stackFrame |
-				println("variable " + stackFrame.variable.name + " => " + stackFrame.value.stringValue)
-				println(stackFrame.value.variables.map[v|v.variable.name].join(", "))
-			]
-			println("***************************************")
-
-			// backup nodes positions
-			val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
-			val map = new HashMap<String, Shape>()
-			if (oldRootPart !== null) {
-				oldRootPart.children.<ValueEditPart>forEach [ it |
-					map.put((it.model as VariableModel).valueString, it.model as Shape)
-				]
-			}
-
-			// set new stack
-			graphicalViewer.contents = variables
-
-			layout()
-
-			// recover old positions
-			val newModels = newModels
-			val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
-			alreadyDisplaying.forEach [ vm |
-				val oldShape = map.get(vm.valueString)
-				vm.location = oldShape.location
-				vm.size = oldShape.size
-			]
-
+			updateDynamicDiagram(variables)
 		]
 	}
 
+	def void updateDynamicDiagram(Object variables) {
+		// backup nodes positions
+		val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
+		val map = new HashMap<String, Shape>()
+		if (oldRootPart !== null) {
+			oldRootPart.children.<ValueEditPart>forEach [ it |
+				map.put((it.model as VariableModel).valueString, it.model as Shape)
+			]
+		}
+
+		// set new stack
+		graphicalViewer.contents = variables
+
+		layout()
+
+		// recover old positions
+		val newModels = newModels
+		val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
+		alreadyDisplaying.forEach [ vm |
+			val oldShape = map.get(vm.valueString)
+			vm.location = oldShape.location
+			vm.size = oldShape.size
+		]
+	}
 }

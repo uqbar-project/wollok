@@ -102,16 +102,11 @@ class WollokRepl {
 		'''
 	}
 	
+
 	def synchronized executeInput(String input) {
 		try {
-			interpreter.interpret(input.createReplExpression.parseRepl(mainFile), true)
-			// para entender qué puedo devolver
-			/*val context = interpreter.currentContext
-			println(interpreter.currentContext.allReferenceNames.map [ v | v.name + " = " + context.resolve(v.name) ])
-			println(interpreter.currentContext.allReferenceNames.map [ v | context.resolve(v.name).class ])
-			println("repl LIsteners " + replListeners)
-			//replListeners.forEach [ messageSent(interpreter, parsedMainFile) ]
-			*/
+			val returnValue = interpreter.interpret(input.createReplExpression.parseRepl(mainFile), true)
+			printReturnValue(returnValue)
 		} catch (Exception e) {
 			resetIndent
 			e.handleException

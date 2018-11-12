@@ -35,7 +35,7 @@ class VariableModel extends Shape {
 	}
 	
 	def void createConnections(Map<IVariable, VariableModel> context) {
-		variable.value?.variables.forEach[v| new Connection(v.name, this, get(context, v), RelationType.INHERITANCE) ]
+		variable?.value?.variables?.forEach[v| new Connection(v.name, this, get(context, v), RelationType.INHERITANCE) ]
 	}
 	
 	def get(Map<IVariable, VariableModel> map, IVariable variable) {

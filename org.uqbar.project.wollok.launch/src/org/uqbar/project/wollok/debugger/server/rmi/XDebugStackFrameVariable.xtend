@@ -34,14 +34,18 @@ class XDebugStackFrameVariable implements Serializable {
 	override equals(Object obj) {
 		try {
 			val other = obj as XDebugStackFrameVariable
-			return other.variable.name.equals(variable.name)
+			return other.variable.toString.equals(variable.toString)
 		} catch (ClassCastException e) {
 			return false
 		}
 	}
 	
 	override hashCode() {
-		this.variable.name.hashCode
+		this.variable.toString.hashCode
+	}
+	
+	override toString() {
+		this.variable.toString + " = " + this.value.toString
 	}
 	
 }

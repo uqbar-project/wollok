@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.ui.contextState
 
-import com.google.inject.Inject
 import com.google.inject.Singleton
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Server

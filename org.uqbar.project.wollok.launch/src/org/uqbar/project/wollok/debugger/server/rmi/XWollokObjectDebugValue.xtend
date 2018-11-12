@@ -1,11 +1,8 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
-import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
-import static extension java.lang.System.*
 import static extension org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.debugVariables
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.shortLabel
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
@@ -20,10 +17,9 @@ import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 class XWollokObjectDebugValue extends XDebugValue {
 	String typeName
 	String varName
-	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
 
 	new(String varName, WollokObject obj) {
-		super(obj.description)
+		super(obj.description, System.identityHashCode(obj))
 		this.typeName = obj.behavior.fqn
 		this.varName = varName
 		// should be lazily fetched
@@ -35,7 +31,7 @@ class XWollokObjectDebugValue extends XDebugValue {
 		if (obj.isBasicType)
 			((obj.call("toString") as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
 		else
-			obj.shortLabel + " (id=" + obj.identityHashCode + ")"
+			obj.shortLabel
 	}
 	
 	def isList() { typeName == LIST }
