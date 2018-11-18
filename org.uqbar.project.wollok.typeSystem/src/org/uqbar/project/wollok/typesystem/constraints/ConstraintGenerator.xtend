@@ -4,10 +4,12 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -19,6 +21,7 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
@@ -27,6 +30,9 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -36,13 +42,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.wollokDsl.WThrow
-import org.uqbar.project.wollok.wollokDsl.WTry
-import org.uqbar.project.wollok.wollokDsl.WCatch
-import org.uqbar.project.wollok.wollokDsl.WNullLiteral
-import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 /**
  * @author npasserini
@@ -53,12 +52,15 @@ class ConstraintGenerator {
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
+	SuperConstraintsGenerator superConstraintsGenerator
+	
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
 		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
+		this.superConstraintsGenerator = new SuperConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
@@ -358,11 +360,9 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WSuperInvocation it) {
+		newTypeVariable
 		memberCallArguments.forEach[generateVariables]
-		superMethod.tvar.beSupertypeOf(newTypeVariable)
-		superMethod.parameters.biForEach(memberCallArguments)[superParam, myParam|
-			superParam.tvar.beSubtypeOf(myParam.tvar)
-		]
+		superConstraintsGenerator.addSuperInvocation(it)
 	}
 
 	// ************************************************************************
@@ -371,6 +371,7 @@ class ConstraintGenerator {
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
 		constructorConstraintsGenerator.run()
+		superConstraintsGenerator.run()
 	}
 
 	// ************************************************************************
