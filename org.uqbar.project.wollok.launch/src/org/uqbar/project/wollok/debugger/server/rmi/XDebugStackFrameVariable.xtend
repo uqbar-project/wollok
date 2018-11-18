@@ -16,21 +16,21 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 class XDebugStackFrameVariable implements Serializable {
 	WVariable variable
 	XDebugValue value
-	
+
 	new(WVariable variable, WollokObject value) {
 		this.variable = variable
-		this.value = if (value === null) null else value.asRemoteValue
+		this.value = if(value === null) null else value.asRemoteValue
 	}
-	
+
 	def asRemoteValue(WollokObject object) {
 		if (object.hasNativeType(LIST))
-			 new XWollokListDebugValue(object, LIST)
+			new XWollokCollectionDebugValue(object, LIST, "List")
 		else if (object.hasNativeType(SET))
-			 new XWollokListDebugValue(object, SET)
+			new XWollokCollectionDebugValue(object, SET, "Set")
 		else
 			new XWollokObjectDebugValue(variable.name, object)
 	}
-	
+
 	override equals(Object obj) {
 		try {
 			val other = obj as XDebugStackFrameVariable
@@ -39,13 +39,14 @@ class XDebugStackFrameVariable implements Serializable {
 			return false
 		}
 	}
-	
+
 	override hashCode() {
 		this.variable.toString.hashCode
 	}
-	
+
 	override toString() {
-		this.variable.toString + " = " + this.value.toString
+		val valueToString = if (this.value === null) "null" else this.value.toString
+		this.variable.toString + " = " + valueToString
 	}
-	
+
 }

@@ -24,7 +24,7 @@ class XDebugValue implements Serializable {
 	
 	override toString() {
 		val variablesToString = if (variables.isEmpty) "" else " " + variables.map [ toString ].join(", ")
-		this.stringValue + (if (id === null) "" else " (" + id + ")") + variablesToString
+		(this.stringValue ?: "") + (if (id === null) "" else " (" + id + ")") + variablesToString
 	}
 	
 }

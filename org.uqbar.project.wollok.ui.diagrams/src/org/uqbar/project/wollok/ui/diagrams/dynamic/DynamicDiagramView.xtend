@@ -2,13 +2,11 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import java.util.ArrayList
 import java.util.Collections
-import java.util.HashMap
 import java.util.List
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PositionConstants
-import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.graph.DirectedGraph
 import org.eclipse.draw2d.graph.DirectedGraphLayout
 import org.eclipse.draw2d.graph.Edge
@@ -46,10 +44,8 @@ import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
-import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
-import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.AbstractStackFrameEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
@@ -261,7 +257,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		// map back positions to model
 		graph.nodes.forEach [
 			val n = it as Node
-			(n.data as Shape).location = new Point(n.x, n.y)
+			//(n.data as Shape).location = new Point(n.x, n.y)
 		]
 	}
 
@@ -325,18 +321,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def getNewModels() { childrenEditParts.map[ep|ep.model as VariableModel] }
 
 	def relocateSolitaryNodes(List<VariableModel> models) {
-		val nodesReferencedByJustOne = models.filter[m|m.targetConnections.size == 1]
+		/*val nodesReferencedByJustOne = models.filter[m|m.targetConnections.size == 1]
 		nodesReferencedByJustOne.forEach [ m |
 			m.moveCloseTo(m.targetConnections.get(0).source)
-		]
+		]*/
 	}
 
-//	def static unwantedVariables() {
-//		#["contextdescription", "location", "cause", "message" ]
-//	}
-
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
-//		val List<XDebugStackFrameVariable> filteredVariables = variables.filter [ !unwantedVariables.contains(it.variable.name.toLowerCase) ].toList
 		println("variables ")
 		println(variables.map [ variable | variable.variable ].join(", "))
 		println() 
@@ -346,14 +337,16 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 
 	def void updateDynamicDiagram(Object variables) {
+		VariableModel.initVariableShapes
+		
 		// backup nodes positions
-		val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
+		/*val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
 		val map = new HashMap<String, Shape>()
 		if (oldRootPart !== null) {
 			oldRootPart.children.<ValueEditPart>forEach [ it |
 				map.put((it.model as VariableModel).valueString, it.model as Shape)
 			]
-		}
+		}*/
 
 		// set new stack
 		graphicalViewer.contents = variables
@@ -361,12 +354,12 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		layout()
 
 		// recover old positions
-		val newModels = newModels
+		/*val newModels = newModels
 		val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
 		alreadyDisplaying.forEach [ vm |
 			val oldShape = map.get(vm.valueString)
 			vm.location = oldShape.location
 			vm.size = oldShape.size
-		]
+		]*/
 	}
 }

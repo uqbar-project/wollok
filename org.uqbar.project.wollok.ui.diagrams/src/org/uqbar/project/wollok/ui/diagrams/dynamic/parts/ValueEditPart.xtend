@@ -76,7 +76,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			StaticDiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isNumeric)
 			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
-		else if (model.isList)
+		else if (model.isList || model.isSet)
 			StaticDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
 		else 
 			StaticDiagramColors.CLASS_BACKGROUND

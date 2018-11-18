@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.ArrayList
 import java.util.List
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.debug.core.model.IVariable
@@ -33,9 +34,21 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.commands.MoveOrResizeC
  */
 abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
+	/**
+	 * Shapes drawed in previous stage, keeping the same order. 
+	 * It is updated every time you begin the drawing process 
+	 */
+	List<VariableModel> previousModels = newArrayList 
+
+	/**
+	 * Shapes drawed in current stage, keeping the same order. 
+	 */
+	List<VariableModel> currentModels = newArrayList 
+
+	
 	override activate() {
 		if (!active) {
-			super.activate;
+			super.activate
 //			modelElement.addPropertyChangeListener(this)
 		}
 	}
@@ -67,15 +80,23 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	abstract def List<IVariable> getVariables()
 
 	override List<VariableModel> getModelChildren() {
+		this.previousModels = new ArrayList(this.currentModels)
+		
+		// meter en un método para tener 
+		// map.put((it.model as VariableModel).valueString, it.model as Shape)
+		
+		// PRIMERO HAY QUE REDIBUJAR LOS QUE YA ESTABAN (O ELIMINAR LOS QUE NO)
+		// LUEGO, HAY QUE AGREGAR LOS QUE FALTAN
+		// EXTRAER UN MÉTODO APARTE AL QUE LE PASES LAS VARIABLES QUE QUERÉS MOSTRAR 
 		val map = (this.variables.fold(newHashMap()) [ m, v |
-			val vm = new VariableModel(v, 0)
+			val vm = VariableModel.getVariableModelFor(v, 0, null)
 			m.put(v, vm)
 			// root arrow
 			new Connection(v.name, null, vm, RelationType.ASSOCIATION)
 			m
 		])
 		map.values.<VariableModel>clone.forEach[model|model.createConnections(map)]
-
+		
 		map.values.toList
 	}
 

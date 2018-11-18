@@ -37,6 +37,7 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 		].flatten.toList
 		 */
 		
+		XDebugStackFrame.initAllVariables()
 		val variables = new XDebugStackFrame(interpreter.currentThread.stack.peek).variables
 		val setVariables = new HashSet
 		setVariables.addAll(variables)

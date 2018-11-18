@@ -20,7 +20,21 @@ class WVariable implements Serializable {
 	}
 	
 	override toString() {
-		this.name + (if (id === null) "" else " (" + id + ")")
+		(this.name ?: "") + (if (id === null) "" else " (" + id + ")")
+	}
+	
+	override equals(Object obj) {
+		try {
+			val other = obj as WVariable
+			if (other === null || other.id === null) return false
+			return other.id.equals(this.id)
+		} catch (ClassCastException e) {
+			return false
+		}
+	}
+	
+	override hashCode() {
+		this.id.hashCode
 	}
 	
 }
