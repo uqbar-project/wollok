@@ -36,11 +36,13 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 /**
  * @author npasserini
@@ -353,6 +355,14 @@ class ConstraintGenerator {
 		// Now only generate ANY variable. 
 		// Maybe we'll want another kind of variable for nullable types implementation.  
 		newTypeVariable 
+	}
+
+	def dispatch void generate(WSuperInvocation it) {
+		memberCallArguments.forEach[generateVariables]
+		superMethod.tvar.beSupertypeOf(newTypeVariable)
+		superMethod.parameters.biForEach(memberCallArguments)[superParam, myParam|
+			superParam.tvar.beSubtypeOf(myParam.tvar)
+		]
 	}
 
 	// ************************************************************************
