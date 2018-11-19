@@ -255,10 +255,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		]
 
 		// map back positions to model
+		/* 
 		graph.nodes.forEach [
 			val n = it as Node
-			//(n.data as Shape).location = new Point(n.x, n.y)
+			(n.data as Shape).location = new Point(n.x, n.y)
 		]
+		* 
+		*/
 	}
 
 	// ****************************	

@@ -24,9 +24,9 @@ class XDebugStackFrameVariable implements Serializable {
 
 	def asRemoteValue(WollokObject object) {
 		if (object.hasNativeType(LIST))
-			new XWollokCollectionDebugValue(object, LIST, "List")
+			new XWollokListDebugValue(object, LIST)
 		else if (object.hasNativeType(SET))
-			new XWollokCollectionDebugValue(object, SET, "Set")
+			new XWollokSetDebugValue(object, SET)
 		else
 			new XWollokObjectDebugValue(variable.name, object)
 	}

@@ -64,7 +64,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createShape() {
-		if (castedModel.isList)
+		if (castedModel.isCollection)
 			new RectangleFigure
 		else
 			new Ellipse
@@ -76,7 +76,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 			StaticDiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isNumeric)
 			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
-		else if (model.isList || model.isSet)
+		else if (model.isCollection)
 			StaticDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
 		else 
 			StaticDiagramColors.CLASS_BACKGROUND
@@ -90,7 +90,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createConnectionAnchor() {
-		if (castedModel.isList)
+		if (castedModel.isCollection)
 			new ChopboxAnchor(figure)
 		else
 			new EllipseAnchor(figure)

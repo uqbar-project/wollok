@@ -24,10 +24,12 @@ class Connection extends ModelElement {
 	int lineStyle
 	Shape source
 	Shape target
+	String identifier
 	@Accessors String name
 	@Accessors RelationType relationType
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
+		this.identifier = source?.toString + target.toString // boletear id
 		this.name = name
 		this.relationType = relationType
 		reconnect(source, target, relationType)
@@ -35,7 +37,7 @@ class Connection extends ModelElement {
 	}
 	
 	def calculateLineStyle() {
-		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else relationType.lineStyle
+		if (source instanceof VariableModel && (source as VariableModel).isCollection) Graphics.LINE_DASH else relationType.lineStyle
 	}
 
 	def disconnect() {
@@ -106,5 +108,23 @@ class Connection extends ModelElement {
 			super.setPropertyValue(id, value)
 	}
 
-}
+	override equals(Object obj) {
+		if (identifier === null || obj === null) return super.equals(obj)
+		try {
+			val other = obj as Connection
+			if (other.identifier === null) return false
+			return (identifier.equals(other.identifier))
+		} catch (ClassCastException e) {
+			return false
+		}
+	}
 
+	override hashCode() {
+		if (identifier === null) super.hashCode else identifier.hashCode
+	}
+	
+	override toString() {
+		"Connection " + source + " -> " + target
+	}
+	
+}

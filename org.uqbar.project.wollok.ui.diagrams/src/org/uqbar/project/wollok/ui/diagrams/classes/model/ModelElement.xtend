@@ -11,7 +11,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * 
- * Abstract class for a model element in the static diagram.
+ * Abstract class for a model element in the diagram.
  * 
  * @author jfernandes
  */

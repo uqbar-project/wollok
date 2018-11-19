@@ -56,8 +56,13 @@ class VariableModel extends Shape {
 
 	static def getVariableModelFor(IVariable variable, int level, VariableModel previous) {
 		var shape = allShapes.get(variable.toString)
+		if (shape !== null && shape.isCollection) {
+			// TODO: Refactorizar shape.isCollection pasandole shape como parámetro
+			allShapes.remove(variable.toString)
+			shape = null
+		}
 		// quick way to determine if we should re-draw the shape
-		if (shape === null || shape.isCollection) {
+		if (shape === null) {
 			shape = new VariableModel(variable, level, previous)
 			// toString is in fact the identifier of the variable
 			// hacked way to avoid duplicates
@@ -94,7 +99,7 @@ class VariableModel extends Shape {
 	}
 	
 	def void createConnections(Map<IVariable, VariableModel> context) {
-		variable?.value?.variables?.forEach[v| new Connection(v.name, this, get(context, v), RelationType.INHERITANCE) ]
+		variable?.value?.variables?.forEach[v| new Connection(v.name, this, get(context, v), RelationType.ASSOCIATION) ]
 	}
 	
 	def get(Map<IVariable, VariableModel> map, IVariable variable) {
@@ -138,6 +143,7 @@ class VariableModel extends Shape {
 		if (variable.value === null) false else originalValueString.matches("^Set.*")
 	}
 	
+	// TODO: Pasar variable como parámetro
 	def isCollection() { isList || isSet }
 	
 	def moveCloseTo(Shape shape) {
@@ -147,6 +153,10 @@ class VariableModel extends Shape {
 		val magnitude = 100.0f
 		
 		this.location = new PrecisionPoint(shape.location.x + Math.cos(angle) * magnitude, shape.location.y + Math.sin(angle) * magnitude)
+	}
+
+	override toString() {
+		"VariableModel " + this.variable.toString + " = " + this.variable.value.valueString
 	}
 	
 }

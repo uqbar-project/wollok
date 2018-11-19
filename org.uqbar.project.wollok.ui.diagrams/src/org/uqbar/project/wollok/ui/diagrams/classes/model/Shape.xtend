@@ -163,5 +163,5 @@ public abstract class Shape extends ModelElement {
 	def boolean shouldShowConnectorTo(WClass model) {
 		true
 	}
-	
+
 }

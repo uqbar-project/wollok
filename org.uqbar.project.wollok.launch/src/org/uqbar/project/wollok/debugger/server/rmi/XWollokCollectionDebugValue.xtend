@@ -12,16 +12,17 @@ import wollok.lang.WCollection
  * 
  * @author jfernandes
  */
-class XWollokCollectionDebugValue extends XDebugValue {
+abstract class XWollokCollectionDebugValue extends XDebugValue {
 	
-	new(WollokObject collection, String concreteNativeType, String simpleType) {
-		super(simpleType, System.identityHashCode(collection))
+	new(WollokObject collection, String concreteNativeType, String collectionType) {
+		super(collectionType, System.identityHashCode(collection))
 		var i = 0
 		val result = newArrayList
 		for (e : collection.getElements(concreteNativeType)) {
 			// TODO: Hay que usar el toVariable de XDebugStackFrame porque no lo está agregando
 			// a la colección de variables ni de valores
-			result.add(new XDebugStackFrameVariable(new WVariable(String.valueOf(i++), System.identityHashCode(e), false), e))
+			result.add(new XDebugStackFrameVariable(new WVariable(i.variableName, System.identityHashCode(e), false), e))
+			i++
 		}
 		variables = newArrayList(result)
 	}
@@ -31,4 +32,29 @@ class XWollokCollectionDebugValue extends XDebugValue {
 		if (native.wrapped === null) Collections.EMPTY_LIST else native.wrapped
 	}
 
+	def String getVariableName(int i)
+}
+
+class XWollokListDebugValue extends XWollokCollectionDebugValue {
+	
+	new(WollokObject collection, String concreteNativeType) {
+		super(collection, concreteNativeType, "List")
+	}
+	
+	override getVariableName(int i) {
+		String.valueOf(i)
+	}
+	
+}
+
+class XWollokSetDebugValue extends XWollokCollectionDebugValue {
+	
+	new(WollokObject collection, String concreteNativeType) {
+		super(collection, concreteNativeType, "Set")
+	}
+	
+	override getVariableName(int i) {
+		""
+	}
+		
 }
