@@ -31,16 +31,21 @@ class GolondrinaMentirosa inherits Golondrina {
 
 
 
-
 class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
-	// XPECT methodType at alimentar --> (Golondrina) => Void
-	override method alimentar(golondrina) { 
-		super(golondrina)
+	// XPECT methodType at alimentar --> (Ave) => Void
+	override method alimentar(ave) { 
+		super(ave)
+		ave.comer(1)
+	}
+	
+	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void	
+	method hacerQueVuele(golondrina) {
+		golondrina.comer(10)
 		golondrina.vola()
 	}
 }
 
 class EntrenadorDeAves {
-	// XPECT methodType at alimentar --> (Golondrina) => Void
+	// XPECT methodType at alimentar --> (Ave) => Void
 	method alimentar(ave) { ave.comer(10) }
 }
