@@ -5,13 +5,13 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.ConstraintGenerator.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class SuperConstraintsGenerator {
 	extension TypeVariablesRegistry registry
 	List<WSuperInvocation> superInvocations = newArrayList
-	
-	
+
 	new(TypeVariablesRegistry registry) {
 		this.registry = registry
 	}
@@ -21,14 +21,20 @@ class SuperConstraintsGenerator {
 	}
 
 	def run() {
-		superInvocations.forEach[
-			superMethod.tvar.beSupertypeOf(newTypeVariable)
-			superMethod.parameters.biForEach(memberCallArguments)[superParam, myParam|
-				superParam.tvar.beSubtypeOf(myParam.tvar)
-			]
+		superInvocations.forEach [
+			linkReturnType
+			linkParameterTypes
+		]
+	}
+
+	def linkReturnType(WSuperInvocation it) {
+		if (superMethod.hasReturnType)
+			superMethod.tvar.beSupertypeOf(tvar)
+	}
+
+	def linkParameterTypes(WSuperInvocation it) {
+		superMethod.parameters.biForEach(memberCallArguments) [ superParam, myParam |
+			superParam.tvar.beSubtypeOf(myParam.tvar)
 		]
 	}
 }
-
-
-		

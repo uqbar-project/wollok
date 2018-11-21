@@ -53,7 +53,6 @@ class ConstraintGenerator {
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
 	SuperConstraintsGenerator superConstraintsGenerator
-	
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
@@ -93,7 +92,7 @@ class ConstraintGenerator {
 	def void generateVariables(EObject it) {
 		try {
 			generate
-		} catch(Exception e) {
+		} catch (Exception e) {
 			addFatalError(e)
 		}
 	}
@@ -135,11 +134,9 @@ class ConstraintGenerator {
 		newTypeVariable
 		parameters.forEach[generateVariables]
 
-		if(!abstract) {
+		if (!abstract) {
 			expression?.generateVariables
-			if(expression.containsReturnExpression // Method contains at least one return expression
-			|| expressionReturns // Compact method, no return required.
-			) beSupertypeOf(expression) // Return type is taken from the body
+			if(hasReturnType) beSupertypeOf(expression) // Return type is taken from the body
 			else beVoid // Otherwise, method is void.
 		}
 
@@ -165,7 +162,7 @@ class ConstraintGenerator {
 		expressions.forEach[generateVariables]
 
 		val containsReturn = !tvar.subtypes.empty
-		if(!containsReturn)
+		if (!containsReturn)
 			if(!expressions.empty) beSupertypeOf(expressions.last) else beVoid
 	}
 
@@ -193,7 +190,7 @@ class ConstraintGenerator {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
-		if(isMultiOpAssignment) {
+		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
 			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
@@ -206,7 +203,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
-		if(feature.equals("!")) {
+		if (feature.equals("!")) {
 			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
@@ -241,7 +238,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WVariableDeclaration it) {
 		variable.newTypeVariable.beNonVoid
 
-		if(right !== null) {
+		if (right !== null) {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
@@ -264,7 +261,7 @@ class ConstraintGenerator {
 
 		then.generateVariables
 
-		if(getElse !== null) {
+		if (getElse !== null) {
 			getElse.generateVariables
 
 			// If there is a else branch, if can be an expression 
@@ -294,7 +291,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WCatch it) {
 		exceptionVarName.newTypeVariable => [ tvar |
-			if(exceptionType !== null)
+			if (exceptionType !== null)
 				tvar.beSealed(classType(exceptionType))
 			else
 				tvar.beNonVoid
@@ -340,7 +337,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WVariableReference it) {
-		if(ref.eIsProxy) {
+		if (ref.eIsProxy) {
 			// Reference could not be resolved, we can't add constraint with the referenced element.
 			// So we know almost nothing, but a variable reference can not be void.
 			newTypeVariable.beNonVoid
@@ -352,11 +349,11 @@ class ConstraintGenerator {
 	def dispatch void generate(WSelf it) {
 		asOwner.newSealed(declaringContext.asWollokType)
 	}
-	
+
 	def dispatch void generate(WNullLiteral it) {
 		// Now only generate ANY variable. 
 		// Maybe we'll want another kind of variable for nullable types implementation.  
-		newTypeVariable 
+		newTypeVariable
 	}
 
 	def dispatch void generate(WSuperInvocation it) {
@@ -387,5 +384,10 @@ class ConstraintGenerator {
 
 	def dispatch WollokType asWollokType(WClass wClass) {
 		classType(wClass)
+	}
+
+	static def hasReturnType(WMethodDeclaration it) {
+		expression.containsReturnExpression // Method contains at least one return expression
+		|| expressionReturns // Compact method, no return required.
 	}
 }
