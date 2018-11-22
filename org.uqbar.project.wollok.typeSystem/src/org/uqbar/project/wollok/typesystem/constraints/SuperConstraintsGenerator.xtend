@@ -29,12 +29,12 @@ class SuperConstraintsGenerator {
 
 	def linkReturnType(WSuperInvocation it) {
 		if (superMethod.hasReturnType)
-			superMethod.tvar.beSupertypeOf(tvar)
+			superMethod.tvar.beSubtypeOf(tvar)
 	}
 
 	def linkParameterTypes(WSuperInvocation it) {
-		superMethod.parameters.biForEach(memberCallArguments) [ superParam, myParam |
-			superParam.tvar.beSubtypeOf(myParam.tvar)
+		superMethod.parameters.biForEach(memberCallArguments) [ superParam, arg |
+			superParam.tvar.beSupertypeOf(arg.tvar)
 		]
 	}
 }

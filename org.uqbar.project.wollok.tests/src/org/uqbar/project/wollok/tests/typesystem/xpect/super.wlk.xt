@@ -30,29 +30,55 @@ class GolondrinaMentirosa inherits Golondrina {
 }
 
 
+
 class EntrenadorChanta inherits EntrenadorDeGolondrinas {
+	// XPECT methodType at alimentar --> (Ave) => Void
+	override method alimentar(ave) { 
+		super(new GolondrinaMentirosa())
+	}
+	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void
 	override method hacerQueVuele(golondrina) {
+//		golondrina.comer(1) TODO: Fix it! This can't be an Ave
 		super(golondrina)
-		golondrina.comer(1)
 	}
+	
+	// XPECT methodType at pajaro --> () => GolondrinaMentirosa
+	override method pajaro() {
+		// XPECT type at p --> Golondrina
+		const p = super()
+		return new GolondrinaMentirosa()
+	} 
 }
 
 class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	// XPECT methodType at alimentar --> (Ave) => Void
 	override method alimentar(ave) { 
-		super(ave)
-		ave.comer(1)
+		super(new Golondrina())
 	}
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void	
 	method hacerQueVuele(golondrina) {
-		golondrina.comer(10)
 		golondrina.vola()
+	} 
+	
+	// XPECT methodType at pajaro --> () => Golondrina
+	override method pajaro() {
+		// XPECT type at a --> Ave
+		const a = super()
+		return new Golondrina()
 	}
+	
+	method haverVolarGolondrina() { self.hacerQueVuele(new Golondrina()) }
 }
 
 class EntrenadorDeAves {
 	// XPECT methodType at alimentar --> (Ave) => Void
 	method alimentar(ave) { ave.comer(10) }
+	
+	// XPECT methodType at pajaro --> () => Ave
+	method pajaro() = new Ave()
+	
+	method alimentarAve() { self.alimentar(new Ave()) }
 }
+
