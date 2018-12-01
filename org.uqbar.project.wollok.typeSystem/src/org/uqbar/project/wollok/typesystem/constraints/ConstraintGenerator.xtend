@@ -30,6 +30,7 @@ import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 import org.uqbar.project.wollok.wollokDsl.WThrow
 import org.uqbar.project.wollok.wollokDsl.WTry
@@ -41,6 +42,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
@@ -128,6 +130,7 @@ class ConstraintGenerator {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
 		expression?.generateVariables
+		delegatingConstructorCall?.generateVariables
 	}
 
 	def dispatch void generate(WMethodDeclaration it) {
@@ -360,6 +363,14 @@ class ConstraintGenerator {
 		newTypeVariable
 		memberCallArguments.forEach[generateVariables]
 		superConstraintsGenerator.addSuperInvocation(it)
+	}
+
+	def dispatch void generate(WSuperDelegatingConstructorCall it) {
+		newTypeVariable
+		arguments.forEach[generateVariables]
+		declaringContext.resolveConstructorReference(it).parameters.biForEach(arguments.map[tvar]) [param, arg |
+			param.tvar.beSupertypeOf(arg)
+		]
 	}
 
 	// ************************************************************************
