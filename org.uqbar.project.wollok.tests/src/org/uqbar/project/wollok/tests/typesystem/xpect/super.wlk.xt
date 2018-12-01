@@ -28,6 +28,8 @@ class Golondrina inherits Ave {
 		self.vola()
 	}
 	
+	constructor() = self(1) { }
+	
 	// XPECT methodType at vola --> () => Void
 	method vola() {
 		energia = energia - 10 
@@ -74,9 +76,9 @@ class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 
 class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	
-	// XPECT type at g --> Ave
+	// XPECT type at g --> Golondrina
 	constructor(g) = super(g) {
-		self.alimentar(self.pajaro())
+		g.vola()
 	}
 	
 	// XPECT methodType at alimentar --> (Ave) => Void
@@ -116,5 +118,10 @@ class EntrenadorDeAves {
 	method alimentarAve() { self.alimentar(new Ave()) }
 	
 	method alimentarFavorita() { ave.comer(1) }
+}
+
+object wollok {
+	method entrenadorDeAves() = new EntrenadorDeAves(new Ave())
+	method entrenadorDeGolondrinas() = new EntrenadorDeGolondrinas(new Golondrina())
 }
 
