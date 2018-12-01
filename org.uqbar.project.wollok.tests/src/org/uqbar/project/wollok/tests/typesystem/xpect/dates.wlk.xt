@@ -18,13 +18,6 @@ object dateTests {
 	// XPECT methodType at m4 --> (Number) => Date
 	method m4(days) = new Date().plusDays(days)
 
-	// XPECT methodType at m5 --> (Date) => Boolean
-	method m5(a) {
-		var b = new Date()
-		b = b.plusDays(1)
-		return b == a
-	}
-
 	// XPECT methodType at m6 --> (Number) => Date
 	method m6(months) = new Date().plusMonths(months)
 
