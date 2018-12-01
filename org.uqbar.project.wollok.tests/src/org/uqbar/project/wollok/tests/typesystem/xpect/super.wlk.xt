@@ -12,8 +12,8 @@ class Ave {
 	
 	constructor() = self("") { }
 	
-	// XPECT methodType at comer --> (Number) => Void	
-	method comer(gramos) {
+	// XPECT methodType at come --> (Number) => Void	
+	method come(gramos) {
 		energia = energia + gramos 
 	}
 	
@@ -35,8 +35,8 @@ class Golondrina inherits Ave {
 		energia = energia - 10 
 	}
 	
-	// XPECT methodType at comer --> (Number) => Void
-	override method comer(gramos) {
+	// XPECT methodType at come --> (Number) => Void
+	override method come(gramos) {
 		super(gramos + 10) 
 	}
 }
@@ -62,7 +62,7 @@ class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void
 	override method hacerQueVuele(golondrina) {
-//		golondrina.comer(1) TODO: Fix it! This can't be an Ave
+//		golondrina.come(1) TODO: Fix it! This can't be an Ave
 		super(golondrina)
 	}
 	
@@ -83,7 +83,7 @@ class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	
 	// XPECT methodType at alimentar --> (Ave) => Void
 	override method alimentar(ave) { 
-		super(new Golondrina(1))
+		super(new Golondrina())
 	}
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void	
@@ -95,10 +95,10 @@ class EntrenadorDeGolondrinas inherits EntrenadorDeAves {
 	override method pajaro() {
 		// XPECT type at a --> Ave
 		const a = super()
-		return new Golondrina(1)
+		return new Golondrina()
 	}
 	
-	method hacerVolarGolondrina() { self.hacerQueVuele(new Golondrina(1)) }
+	method hacerVolarGolondrina() { self.hacerQueVuele(new Golondrina()) }
 }
 
 class EntrenadorDeAves {
@@ -110,14 +110,14 @@ class EntrenadorDeAves {
 	}
 	
 	// XPECT methodType at alimentar --> (Ave) => Void
-	method alimentar(ave) { ave.comer(10) }
+	method alimentar(ave) { ave.come(10) }
 	
 	// XPECT methodType at pajaro --> () => Ave
 	method pajaro() = new Ave()
 	
 	method alimentarAve() { self.alimentar(new Ave()) }
 	
-	method alimentarFavorita() { ave.comer(1) }
+	method alimentarFavorita() { ave.come(1) }
 }
 
 object wollok {

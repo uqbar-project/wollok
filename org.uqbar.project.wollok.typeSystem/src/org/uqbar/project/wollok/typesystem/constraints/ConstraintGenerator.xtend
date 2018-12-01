@@ -145,7 +145,7 @@ class ConstraintGenerator {
 			else beVoid // Otherwise, method is void.
 		}
 
-		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
+		if(overrides) overridingConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClosure it) {
@@ -226,7 +226,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
 		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
-		constructorConstraintsGenerator.addConstructorCall(it)
+		constructorConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WInitializer it) {
@@ -364,7 +364,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WSuperInvocation it) {
 		newTypeVariable
 		memberCallArguments.forEach[generateVariables]
-		superInvocationConstraintsGenerator.addSuperInvocation(it)
+		superInvocationConstraintsGenerator.add(it)
 	}
 	
 
