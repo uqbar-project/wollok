@@ -2,11 +2,13 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		(Object == Any) => Boolean;
-		Object >> "equals" === #[Any] => Boolean;
-		Object >> "toString" === #[] => String;
-		Object >> "printString" === #[] => String;
-		Object >> "internalToSmartString" === #[Boolean] => String;
+		allTypes.forEach[ T |
+			(T == Any) => Boolean;
+			T >> "equals" === #[Any] => Boolean;
+			T >> "toString" === #[] => String;
+			T >> "printString" === #[] => String;
+			T >> "internalToSmartString" === #[Boolean] => String;			
+		]
 
 		(Boolean == Any) => Boolean
 		Boolean >> "||" === #[Boolean] => Boolean

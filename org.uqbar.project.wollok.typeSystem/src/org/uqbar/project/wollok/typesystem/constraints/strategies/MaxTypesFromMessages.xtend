@@ -48,14 +48,14 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	 * Now the errors can be reported when in the message sends, which is likely what the user expects.
 	 */
 	def maxTypes(TypeVariable tvar) {
-		val knownTypes = allTypes.map[instanceFor(tvar)]
+		val knownTypes = allTypes.map[instanceFor(tvar)].toList
 		val validMessages = tvar.typeInfo.validMessages
 
 		for (var cantMessages = validMessages.size; cantMessages > 0; cantMessages--) {
 			val messageSubsets = validMessages.subsetsOfSize(cantMessages)
 			val maxTypes = messageSubsets.flatMap [ selectedMessages |
 				knownTypes.filter[respondsToAll(selectedMessages)]
-			]
+			].toList
 			if(!maxTypes.isEmpty) return maxTypes.toSet
 		}
 

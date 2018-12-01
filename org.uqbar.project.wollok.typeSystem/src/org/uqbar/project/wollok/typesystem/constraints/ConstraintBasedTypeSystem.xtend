@@ -278,7 +278,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * 
 	 * User must instantiate type factories before usage.
 	 */
-	def getAllTypes() {
+	override getAllTypes() {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet

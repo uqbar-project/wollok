@@ -206,6 +206,9 @@ abstract class TypeDeclarations {
 	def predicate(TypeAnnotation input) {
 		closure(#[input], Boolean)
 	}
+	
+	def allTypes() { types.allTypes.map[ new ConcreteTypeAnnotation(baseType)] }
+	
 }
 
 // ****************************************************************************

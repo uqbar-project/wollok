@@ -102,6 +102,8 @@ abstract class TypeVariableOwner {
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	@Accessors
 	val EObject programElement
+	
+	URI uri
 
 	new(EObject programElement) {
 		if(programElement === null) 
@@ -113,7 +115,7 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	// ** Information
 	// ************************************************************************
 	override getURI() {
-		programElement.URI
+		uri ?: (uri = programElement.URI)
 	}
 
 	override isCoreObject() {

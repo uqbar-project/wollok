@@ -13,6 +13,7 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 interface TypeFactory {
 	def TypeSystem getTypeSystem()
+	def ConcreteType getBaseType()
 	def ConcreteType instanceFor(TypeVariable owner)
 }
 

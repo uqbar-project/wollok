@@ -755,9 +755,16 @@ class Collection {
 	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
 	
 	/**
-	* @see subclasses implementations
-	*/
+	 * @see subclasses implementations
+	 */
 	method size() = throw new Exception("Should be implemented by the subclasses")
+
+	/** 
+	 * Removes all of the elements from this set. This is a side effect operation.
+	 * 
+	 * @see subclasses implementations
+	 */
+	method clear()
 }
 
 /**

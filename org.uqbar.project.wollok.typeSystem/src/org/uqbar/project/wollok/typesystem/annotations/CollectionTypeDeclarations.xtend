@@ -29,6 +29,11 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 
 		#[Collection, List, Set, Range, Dictionary].forEach [
 			it >> "size" === #[] => Number
+			it >> "isEmpty" === #[] => Boolean
+		]
+
+		#[Collection, List, Set, Dictionary].forEach [
+			it >> "clear" === #[] => Void
 		]
 
 		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
@@ -41,7 +46,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 
 	def basicCollection(AnnotationContext C, TypeAnnotation E) {
-		C >> "isEmpty" === #[] => Boolean
 		C >> "contains" === #[E] => Boolean
 		C >> "asList" === #[] => List.of(E)
 		C >> "anyOne" === #[] => E
