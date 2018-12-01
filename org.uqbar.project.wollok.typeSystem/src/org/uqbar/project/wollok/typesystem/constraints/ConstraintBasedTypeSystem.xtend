@@ -108,14 +108,14 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
 			addTypeDeclarations(this, program,
-				WollokCoreTypeDeclarations,
 				NumberTypeDeclarations,
 				StringTypeDeclarations,
 				DateTypeDeclarations,
 				CollectionTypeDeclarations,
 				ExceptionTypeDeclarations,
 				WollokLibTypeDeclarations,
-				WollokGameTypeDeclarations
+				WollokGameTypeDeclarations,
+				WollokCoreTypeDeclarations // Must be the last one
 			)
 		]
 	}
@@ -268,11 +268,12 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Not all classes are actual types, as some have type parameters and therefore are generic types (aka type factories).
 	 */
 	def TypeFactory typeOrFactory(WClass clazz) {
+		println("Type or factory " + clazz.name)
 		genericTypes.get(clazz.fqn) ?: new ClassInstanceType(clazz, this)
 	}
 
 	/**
-	 * All types knows all objects and clases in the system. As some classes can be generic, they do not define
+	 * All types knows all objects and classes in the system. As some classes can be generic, they do not define
 	 * actual types, but "type factories" such as List<E>, which is not an actual type, but a function that
 	 * applied to an actual type will give a type. E.g. applied to Number you get a List<Number> which is a real type for an object.
 	 * 
