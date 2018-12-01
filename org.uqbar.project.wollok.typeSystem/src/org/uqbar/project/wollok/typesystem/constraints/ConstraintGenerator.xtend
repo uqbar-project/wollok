@@ -42,7 +42,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
@@ -54,14 +53,16 @@ class ConstraintGenerator {
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
-	SuperConstraintsGenerator superConstraintsGenerator
+	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
+	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
 		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
-		this.superConstraintsGenerator = new SuperConstraintsGenerator(registry)
+		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
+		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
@@ -362,15 +363,13 @@ class ConstraintGenerator {
 	def dispatch void generate(WSuperInvocation it) {
 		newTypeVariable
 		memberCallArguments.forEach[generateVariables]
-		superConstraintsGenerator.addSuperInvocation(it)
+		superInvocationConstraintsGenerator.addSuperInvocation(it)
 	}
 
 	def dispatch void generate(WSuperDelegatingConstructorCall it) {
 		newTypeVariable
 		arguments.forEach[generateVariables]
-		declaringContext.resolveConstructorReference(it).parameters.biForEach(arguments.map[tvar]) [param, arg |
-			param.tvar.beSupertypeOf(arg)
-		]
+		delegatingConstructorCallConstraintsGenerator.add(it)
 	}
 
 	// ************************************************************************
@@ -379,7 +378,8 @@ class ConstraintGenerator {
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
 		constructorConstraintsGenerator.run()
-		superConstraintsGenerator.run()
+		superInvocationConstraintsGenerator.run()
+		delegatingConstructorCallConstraintsGenerator.run()
 	}
 
 	// ************************************************************************

@@ -8,7 +8,7 @@ import static extension org.uqbar.project.wollok.model.WMethodContainerExtension
 import static extension org.uqbar.project.wollok.typesystem.constraints.ConstraintGenerator.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
-class SuperConstraintsGenerator {
+class SuperInvocationConstraintsGenerator {
 	extension TypeVariablesRegistry registry
 	List<WSuperInvocation> superInvocations = newArrayList
 
