@@ -28,6 +28,7 @@ import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
 import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
@@ -364,6 +365,13 @@ class ConstraintGenerator {
 		newTypeVariable
 		memberCallArguments.forEach[generateVariables]
 		superInvocationConstraintsGenerator.addSuperInvocation(it)
+	}
+	
+
+	def dispatch void generate(WSelfDelegatingConstructorCall it) {
+		newTypeVariable
+		arguments.forEach[generateVariables]
+		delegatingConstructorCallConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WSuperDelegatingConstructorCall it) {

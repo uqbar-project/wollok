@@ -10,9 +10,7 @@ class Ave {
 		nombre = nom
 	}
 	
-	constructor() {
-		nombre = ""
-	}
+	constructor() = self("") { }
 	
 	// XPECT methodType at comer --> (Number) => Void	
 	method comer(gramos) {
