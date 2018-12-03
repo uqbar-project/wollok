@@ -163,4 +163,3 @@ class GameObject {
 	def boardGround(String image) { board.boardGround = image }
 	
 }
-			
