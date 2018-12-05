@@ -96,8 +96,8 @@ class UserFriendlySupertype {
 		else {
 			val p1 = t1.parentType
 			val p2 = t2.parentType
-			if (p1 !== null && p1.name != "Object" && p1.respondsToAll(messages) && p2 !== null &&
-				p2.name != "Object" && p2.respondsToAll(messages)) {
+			if (p1 !== null && p1.name != "Object" && p1.respondsToAll(messages, true) && p2 !== null &&
+				p2.name != "Object" && p2.respondsToAll(messages, true)) {
 				commonSuperClassWith(p1, p2, messages)
 			} else
 				null // There is no common super class, use another strategy (e.g. union types or structural types).
