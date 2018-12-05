@@ -268,7 +268,6 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 * Not all classes are actual types, as some have type parameters and therefore are generic types (aka type factories).
 	 */
 	def TypeFactory typeOrFactory(WClass clazz) {
-		println("Type or factory " + clazz.name)
 		genericTypes.get(clazz.fqn) ?: new ClassInstanceType(clazz, this)
 	}
 
