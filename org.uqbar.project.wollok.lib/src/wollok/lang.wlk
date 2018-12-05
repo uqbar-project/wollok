@@ -923,7 +923,7 @@ class Set inherits Collection {
 	 * 		const set = #{2, 3}
 	 *		set.clear()         => set = #{}
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
@@ -1220,7 +1220,7 @@ class List inherits Collection {
 	 * 		const list = [2, 3]
 	 *		list.clear()     => list = []
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
