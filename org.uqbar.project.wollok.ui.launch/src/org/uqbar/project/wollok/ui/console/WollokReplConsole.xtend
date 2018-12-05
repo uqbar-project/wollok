@@ -224,6 +224,8 @@ class WollokReplConsole extends TextConsole {
 			page.viewer.textWidget.content.replaceTextRange(outputTextEnd, document.length - outputTextEnd, inputBuffer.replace(System.lineSeparator, ""))
 		]
 	}
+	
+	def clearHistory() { lastCommands.clear }
 
 	def canWriteAt(int offset) { !partitioner.isReadOnly(offset) }
 

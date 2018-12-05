@@ -32,7 +32,6 @@ import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilde
 import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
 
 /**
  * A wollok user defined (dynamic) object.
@@ -267,9 +266,14 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 				t.methods.findFirst[matches(message, parameters)]
 		]
 
-		if (method === null)
-			// should be an specific error: no super method to call or something
-			throw throwMessageNotUnderstood(this, message, parameters)
+		if (method === null) {
+			if (message.hasProperty) {
+				return resolveProperty(message, parameters)
+			} else {
+				throw throwMessageNotUnderstood(this, message, parameters)
+			}
+		}
+			
 		method.call(parameters)
 	}
 

@@ -34,6 +34,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 	IPageBookViewPage page
 	ShowOutdatedAction outdated
 	Action export
+	Action clearHistory
 	Action stop
 	IActionBars bars
 	WollokReplConsole console
@@ -76,6 +77,7 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 
 		createTerminateAllButton
 		createRemoveButton
+		createClearHistory
 		this.outdated = new ShowOutdatedAction(this)
 
 		bars => [
@@ -86,7 +88,9 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, outdated)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, stop)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, new Separator)
 				appendToGroup(IConsoleConstants.LAUNCH_GROUP, export)
+				appendToGroup(IConsoleConstants.LAUNCH_GROUP, clearHistory)
 			]
 
 			updateActionBars
@@ -109,6 +113,15 @@ class WollokReplConsoleActionsParticipant implements IConsolePageParticipant {
 		this.export = new Action(WollokRepl_EXPORT_HISTORY_TITLE, imageDescriptor) {
 			override run() {
 				console.exportSession
+			}
+		}
+	}
+
+	def createClearHistory() {
+		val imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.equinox.security.ui/icons/storage/value_delete.gif"))
+		this.clearHistory = new Action(WollokRepl_CLEAR_HISTORY_TITLE, imageDescriptor) {
+			override run() {
+				console.clearHistory
 			}
 		}
 	}

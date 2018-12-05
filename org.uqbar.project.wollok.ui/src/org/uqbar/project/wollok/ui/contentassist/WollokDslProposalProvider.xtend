@@ -1,5 +1,6 @@
 package org.uqbar.project.wollok.ui.contentassist
 
+import org.eclipse.core.runtime.Platform
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.Assignment
 import org.eclipse.xtext.CrossReference
@@ -11,6 +12,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
 import org.uqbar.project.wollok.interpreter.WollokClassFinder
 import org.uqbar.project.wollok.ui.Messages
 import org.uqbar.project.wollok.ui.WollokActivator
+import org.uqbar.project.wollok.ui.labeling.WollokTypeSystemLabelExtension
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
@@ -34,6 +36,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 /**
  *
  * @author jfernandes
+ * @author dodain
+ * 
  * @see    https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#content-assist
  * 
  */
@@ -43,6 +47,45 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	
 	WollokProposalBuilder builder
 	
+	// Type System
+	WollokTypeSystemLabelExtension labelExtension = null
+	boolean labelExtensionResolved = false
+
+	def obtainLabelExtension() {
+		if (!labelExtensionResolved) {
+			labelExtension = resolveLabelExtension
+			labelExtensionResolved = true
+		}
+		labelExtension
+	}
+	
+	def synchronized getAllMethods(EObject obj) {
+		if (!obj.isTypeSystemEnabled)
+			return (obj as WMethodContainer).allUntypedMethods
+		else {
+		val tsLabelExtension = obtainLabelExtension
+			if (tsLabelExtension !== null)
+				tsLabelExtension.allMethods(obj)
+			else
+				newArrayList
+		}
+	}
+
+	def boolean isTypeSystemEnabled(EObject obj) {
+		obtainLabelExtension.isTypeSystemEnabled(obj)
+	}
+
+	def resolveLabelExtension() {
+		val configPoints = Platform.getExtensionRegistry.getConfigurationElementsFor(
+			"org.uqbar.project.wollok.ui.wollokTypeSystemLabelExtension")
+
+		if (configPoints.empty)
+			null
+		else
+			configPoints.get(0).createExecutableExtension("class") as WollokTypeSystemLabelExtension
+	}
+	
+	
 	override complete_WConstructorCall(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (model instanceof WConstructorCall) {
 			val initializations = (model as WConstructorCall).createInitializersForNamedParametersInConstructor
@@ -51,7 +94,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		super.complete_WConstructorCall(model, ruleCall, context, acceptor)
 	}
 	
-	// This whole implementation is just an heuristic until we have a type system
 	override completeWMemberFeatureCall_Feature(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		val call = model as WMemberFeatureCall
 		builder = new WollokProposalBuilder
@@ -64,6 +106,14 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 
 	// default
 	def dispatch void memberProposalsForTarget(WExpression expression, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		if (expression instanceof WConstructorCall) {
+			val constructorCall = expression as WConstructorCall
+			constructorCall.classRef?.methodsAsProposals(acceptor)
+			return
+		}
+		if (expression.isTypeSystemEnabled) {
+			completeProposalsFor(expression, acceptor)
+		}
 	}
 
 	// literals
@@ -93,16 +143,27 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 	
 	// to a variable
 	def dispatch void memberProposalsForTarget(WVariableReference ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
-		memberProposalsForTarget(ref.ref, assignment, acceptor)
+		val referencedElement = ref.ref
+		if (referencedElement.isTypeSystemEnabled)
+			completeProposalsFor(referencedElement, acceptor)
+		else
+			memberProposalsForTarget(referencedElement, assignment, acceptor)
 	}
 
 	// any referenciable shows all messages that you already sent to it
 	def dispatch void memberProposalsForTarget(WReferenciable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
-		ref.messageSentAsProposals(acceptor)
+		if (ref.isTypeSystemEnabled)
+			completeProposalsFor(ref, acceptor)
+		else 
+			ref.messageSentAsProposals(acceptor)
 	}
 
 	// for variables tries to resolve the type based on the initial value (for literal objects like strings, lists, etc)
 	def dispatch void memberProposalsForTarget(WVariable ref, Assignment assignment, ICompletionProposalAcceptor acceptor) {
+		if (ref.isTypeSystemEnabled) {
+			completeProposalsFor(ref, acceptor)
+			return
+		}
 		val WMethodContainer type = ref.resolveType
 		if (type !== null) {
 			type.methodsAsProposals(acceptor)
@@ -110,6 +171,15 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 		else {
 			ref.messageSentAsProposals(acceptor)
 		}
+	}
+	
+	protected def void completeProposalsFor(EObject o, ICompletionProposalAcceptor acceptor) {
+		val allMessages = o.allMethods
+		allMessages.forEach [ method | 
+			builder.model = method
+			builder.reference = method.methodContainer.nameWithPackage
+			addProposal(method, acceptor)
+		]
 	}
 
 	// message to WKO's (shows the object's methods)
@@ -180,33 +250,6 @@ class WollokDslProposalProvider extends AbstractWollokDslProposalProvider {
 			acceptor.accept(createCompletionProposal(fqn, fqn, image, context))
 		]
 	}
-
-	//@Inject
-  	//protected WollokDslTypeSystem system
-//
-//	def dispatch void memberProposalsForTarget(WVariableReference reference, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-//		super.completeWMemberFeatureCall_Feature(reference, assignment, context, acceptor)
-////		 TYPE SYSTEM
-////		 TODO: Hacer un extension point
-//				reference.ref.type.allMessages.forEach[m| if (m != null) acceptor.addProposal(context, m.asProposal, WollokActivator.getInstance.getImageDescriptor('icons/wollok-icon-method_16.png').createImage)]
-//					reference.ref.messagesSentTo.forEach[m| acceptor.addProposal(context, m.asProposalText, m.image)]
-//	}
-/*
-	def asProposal(MessageType message) {
-		message.name + "(" + message?.parameterTypes.map[p| p.asParamName ].join(", ") + ")"
-	}
-
-	def dispatch String asParamName(WollokType type) { type.name }
-	def dispatch String asParamName(StructuralType type) { "anObj" }
-	def dispatch String asParamName(ObjectLiteralWollokType type) { "anObj" }
-
-	def type(WReferenciable r) {
-		val env = system.emptyEnvironment()
-		val e = r.eResource.contents.filter(WFile).head.body
-		system.inferTypes(env, e)
-		system.queryTypeFor(env, r).first
-	}
-*/
 
 	override completeWConstructorCall_ClassRef(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		lookupCrossReference((assignment.terminal as CrossReference), context, new ConstructorCallAcceptorDelegate(acceptor))

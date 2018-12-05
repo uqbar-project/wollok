@@ -39,6 +39,12 @@ object p {
 		// XPECT errors --> "Expecting a boolean" at "{ a => a.toString() }"			
 		if ({ a => a.toString() })	 
 			throw new Exception("asd")	
+
+		var a = 2
+		const b = 2
+		// XPECT errors --> "Expecting a boolean" at "a = b"
+		if (a = b)
+			throw new Exception("asd")
 			
 		// *************************************
 		// PENDING once we have a type system

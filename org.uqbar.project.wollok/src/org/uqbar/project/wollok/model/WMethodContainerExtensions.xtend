@@ -208,10 +208,17 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def dispatch static isReturnWithValue(EObject it) { false }
 	// REVIEW: this is a hack solution. We don't want to compute "return" statements that are
 	//  within a closure as a return on the containing method.
-	def dispatch static isReturnWithValue(WReturnExpression it) { expression !== null && allContainers.forall[!(it instanceof WClosure)] }
-
-	def dispatch static hasReturnWithValue(WReturnExpression e) { e.isReturnWithValue }
+	def dispatch static isReturnWithValue(WReturnExpression it) { validReturnExpression && expression !== null && allContainers.forall[!(it instanceof WClosure)] }
+	def dispatch static hasReturnWithValue(WReturnExpression r) { r.returnWithValue }
 	def dispatch static hasReturnWithValue(EObject e) { e.eAllContents.exists[isReturnWithValue] }
+
+	def static dispatch boolean isValidReturnExpression(EObject o) { 
+		val container = o.eContainer
+		container !== null && container.isValidReturnExpression
+	}
+	def static dispatch boolean isValidReturnExpression(WMemberFeatureCall call) { false }
+	def static dispatch boolean isValidReturnExpression(WBlockExpression expr) { true }
+	def static dispatch boolean isValidReturnExpression(WMethodDeclaration method) { true }
 
 	def static allVariableDeclarations(WMethodContainer it) { 
 		linearizeHierarchy.fold(newArrayList) [variableDeclarations, type |
@@ -248,11 +255,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
+		c.allUntypedMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}
 	
 	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
-		c.allMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
 	}
 
 	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
@@ -260,7 +267,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch List<WMethodDeclaration> findMethodsByName(WMethodContainer c, String methodName) {
-		c.allMethods.findMethodsByName(methodName)
+		c.allUntypedMethods.findMethodsByName(methodName)
 	}
 	
 	def static dispatch List<WMethodDeclaration> findMethodsByName(WollokObject o, String methodName) {
@@ -271,12 +278,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WSuite it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
 
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
@@ -388,12 +395,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	def static dispatch abstractionName(WConstructor c) { WollokConstants.CONSTRUCTOR }
 	
 	def static boolean inheritsMethod(WMethodContainer it, String name, int argSize) {
-		(mixins !== null && mixins.exists[m| m.hasOrInheritMethod(name, argSize)])
-		|| (parent !== null && parent.hasOrInheritMethod(name, argSize))
+		(mixins !== null && mixins.exists[m| m.hasOrInheritsMethod(name, argSize)])
+		|| (parent !== null && parent.hasOrInheritsMethod(name, argSize))
 	}
 
-	def static boolean hasOrInheritMethod(WMethodContainer c, String mname, int argsSize) {
-		c !== null && !c.hasCyclicHierarchy && (c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritMethod(mname, argsSize))
+	def static boolean hasOrInheritsMethod(WMethodContainer c, String mname, int argsSize) {
+		c !== null && !c.hasCyclicHierarchy && (c.matchesProperty(mname, argsSize) || c.methods.exists[matches(mname, argsSize)] || c.parent.hasOrInheritsMethod(mname, argsSize))
 	}
 
 	def static WMethodDeclaration lookupMethod(WMethodContainer behavior, String message, List<?> params, boolean acceptsAbstract) {
@@ -443,7 +450,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
 		c.matchesPropertiesInHierarchy(call.feature, call.memberCallArguments.size) 
-			|| c.allMethods.exists[isValidMessage(call)] 
+			|| c.allUntypedMethods.exists[isValidMessage(call)] 
 	}
 
 	def static boolean matchesPropertiesInHierarchy(WMethodContainer it, String propertyName, int parametersSize) {
@@ -574,7 +581,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static dispatch boolean matchesProperty(WVariableDeclaration decl, String propertyName, int parametersSize) {
-		matchesGetter(decl, propertyName, parametersSize) || matchesSetter(decl, propertyName, parametersSize) 
+		matchesGetter(decl, propertyName, parametersSize) || matchesSetter(decl, propertyName, parametersSize)
 	}
 
 	def static boolean matchesGetter(WVariableDeclaration decl, String propertyName, int parametersSize) {

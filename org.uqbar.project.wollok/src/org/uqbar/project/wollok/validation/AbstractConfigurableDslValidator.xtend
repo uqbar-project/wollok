@@ -54,7 +54,7 @@ class AbstractConfigurableDslValidator extends AbstractWollokDslValidator implem
 
 	def preferences(EObject obj) {
 		if(WEclipseUtils.isWorkspaceOpen) {
-			val ifile = obj.IFile
+			val ifile = obj.platformFile
 			if(ifile !== null) {
 				return preferenceStoreAccess.getContextPreferenceStore(ifile.project)
 			}
