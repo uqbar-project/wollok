@@ -97,8 +97,8 @@ class TestCollection {
 		// XPECT type at fold --> Number
 		const fold = sample.fold(0, { accum, elem => accum + elem }) 
 
-		// XPECT! type at allEven --> List<Boolean>
-		// const allEven = sample.fold(true, { accum, elem => accum && elem.even() }) 
+		// XPECT type at allEven --> Boolean
+		const allEven = sample.fold(true, { accum, elem => accum && elem.even() }) 
 	}
 }
 
