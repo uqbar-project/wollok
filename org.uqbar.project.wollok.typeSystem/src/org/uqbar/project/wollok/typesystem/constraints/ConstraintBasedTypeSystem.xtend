@@ -79,10 +79,6 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	Set<TypeFactory> allTypes
 
-	new() {
-		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
-	}
-	
 	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {

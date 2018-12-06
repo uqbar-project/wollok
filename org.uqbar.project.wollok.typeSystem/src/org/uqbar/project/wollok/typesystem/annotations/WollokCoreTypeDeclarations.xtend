@@ -11,6 +11,8 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "toString" === #[] => String;
 
 		PairType.constructor(PKEY, PVALUE)
+		PairType.variable("x", PKEY)
+		PairType.variable("y", PVALUE)
 		PairType >> "key" === #[] => PKEY;
 		PairType >> "value" === #[] => PVALUE;
 
