@@ -266,6 +266,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
+		if (clazz.name === null) return  // avoid validation for non-existent classes
 		val validAttributes = clazz.allVariableNames
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
@@ -295,7 +296,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
-		if (!c.hasNamedParameters && !c.isValidConstructorCall()) {
+		if (c.classRef?.name !== null && !c.hasNamedParameters && !c.isValidConstructorCall()) {
 			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + c.prettyPrint, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
 		}
 	}

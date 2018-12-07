@@ -255,11 +255,11 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 	
 	def static findMethod(WMethodContainer c, WMemberFeatureCall it) {
-		c.allMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
+		c.allUntypedMethods.findFirst [ m | m.matches(feature, memberCallArguments) ]	
 	}
 	
 	def static findMethodIgnoreCase(WMethodContainer c, String methodName, int argumentsSize) {
-		c.allMethods.findMethodIgnoreCase(methodName, argumentsSize) 
+		c.allUntypedMethods.findMethodIgnoreCase(methodName, argumentsSize) 
 	}
 
 	def static findMethodIgnoreCase(Iterable<WMethodDeclaration> methods, String methodName, int argumentsSize) {
@@ -267,7 +267,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 	}
 
 	def static dispatch List<WMethodDeclaration> findMethodsByName(WMethodContainer c, String methodName) {
-		c.allMethods.findMethodsByName(methodName)
+		c.allUntypedMethods.findMethodsByName(methodName)
 	}
 	
 	def static dispatch List<WMethodDeclaration> findMethodsByName(WollokObject o, String methodName) {
@@ -278,12 +278,12 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		methods.filter [ m | m.name.equals(methodName) && !m.overrides ].toList
 	}
 	
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WMixin it) { methods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WNamedObject it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WObjectLiteral it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(MixedMethodContainer it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WClass it) { inheritedMethods }
-	def static dispatch Iterable<WMethodDeclaration> allMethods(WSuite it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WMixin it) { methods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WNamedObject it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WObjectLiteral it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(MixedMethodContainer it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WClass it) { inheritedMethods }
+	def static dispatch Iterable<WMethodDeclaration> allUntypedMethods(WSuite it) { methods }
 
 	def static allVariables(WMethodContainer it) {
 		allVariableDeclarations.map [ variable ]
@@ -450,7 +450,7 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	def static boolean isValidCall(WMethodContainer c, WMemberFeatureCall call) {
 		c.matchesPropertiesInHierarchy(call.feature, call.memberCallArguments.size) 
-			|| c.allMethods.exists[isValidMessage(call)] 
+			|| c.allUntypedMethods.exists[isValidMessage(call)] 
 	}
 
 	def static boolean matchesPropertiesInHierarchy(WMethodContainer it, String propertyName, int parametersSize) {
