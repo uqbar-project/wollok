@@ -137,9 +137,11 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	public static val INITIALIZATION_VALUE_NEVER_USED = "INITIALIZATION_VALUE_NEVER_USED"
 	public static val VARIABLE_NEVER_ASSIGNED = "VARIABLE_NEVER_ASSIGNED"
 	public static val RETURN_FORGOTTEN = "RETURN_FORGOTTEN"
+	public static val CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT = "CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT"
 	public static val VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE = "VAR_ARG_PARAM_MUST_BE_THE_LAST_ONE"
 	public static val PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS = "PROPERTY_ONLY_ALLOWED_IN_CERTAIN_METHOD_CONTAINERS"
 	public static val WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL = "WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL" 
+	public static val ASSIGNMENT_INSIDE_IF = "ASSIGNMENT_INSIDE_IF"
 
 	// WARNING KEYS
 	public static val WARNING_UNUSED_VARIABLE = "WARNING_UNUSED_VARIABLE"
@@ -225,7 +227,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def cannotInstantiateAbstractClasses(WConstructorCall it) {
 		if(classRef === null) return
-		val abstractMethods = classRef.unimplementedAbstractMethods
+		val abstractMethods = unimplementedAbstractMethods
 		val inheritingAbstractMethods = abstractMethods.exists[ m | m.declaringContext !== classRef ]
 		if (!abstractMethods.empty) {
 			if (inheritingAbstractMethods) {
@@ -264,6 +266,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	}
 
 	def void validateNamedParameters(WClass clazz, WArgumentList parameterList) {
+		if (clazz.name === null) return  // avoid validation for non-existent classes
 		val validAttributes = clazz.allVariableNames
 		val invalidInitializers = parameterList.initializers.filter [ !validAttributes.contains(initializer.name) ]
 		invalidInitializers.forEach [ 
@@ -293,7 +296,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@Check
 	@DefaultSeverity(ERROR)
 	def invalidConstructorCall(WConstructorCall c) {
-		if (!c.hasNamedParameters && !c.isValidConstructorCall()) {
+		if (c.classRef?.name !== null && !c.hasNamedParameters && !c.isValidConstructorCall()) {
 			reportEObject(WollokDslValidator_WCONSTRUCTOR_CALL__ARGUMENTS + " " + c.prettyPrint, c, WRONG_NUMBER_ARGUMENTS_CONSTRUCTOR_CALL)
 		}
 	}
@@ -555,12 +558,12 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@DefaultSeverity(ERROR)
 	def overridingMethodMustReturnAValueIfOriginalMethodReturnsAValue(WMethodDeclaration m) {
 		if (m.overrides && !m.native) {
-			val overriden = m.overridenMethod
-			if (overriden !== null && !overriden.abstract) {
-				if (overriden.supposedToReturnValue && !m.returnsOnAllPossibleFlows(overriden.supposedToReturnValue))
+			val overridden = m.overriddenMethod
+			if (overridden !== null && !overridden.abstract) {
+				if (overridden.supposedToReturnValue && !m.returnsOnAllPossibleFlows(overridden.supposedToReturnValue))
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_RETURN_VALUE,
 						OVERRIDING_METHOD_MUST_RETURN_VALUE)
-				if (!overriden.supposedToReturnValue && m.returnsOnAllPossibleFlows(overriden.supposedToReturnValue))
+				if (!overridden.supposedToReturnValue && m.returnsOnAllPossibleFlows(overridden.supposedToReturnValue))
 					m.report(WollokDslValidator_OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE,
 						OVERRIDING_METHOD_MUST_NOT_RETURN_VALUE)
 			}
@@ -764,8 +767,10 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def unusedVariablesAndInitializedConstants(WVariableDeclaration it) {
 		val assignments = variable.assignments
+		val declaringContext = it.declaringContext
+		val shouldCheckInitialization = declaringContext === null || declaringContext.shouldCheckInitialization
 		// Variable has no assignments
-		if (assignments.empty) {
+		if (assignments.empty && shouldCheckInitialization) {
 			if (writeable)
 				warning(WollokDslValidator_WARN_VARIABLE_NEVER_ASSIGNED, it, WVARIABLE_DECLARATION__VARIABLE,
 					VARIABLE_NEVER_ASSIGNED)
@@ -818,7 +823,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def nonBooleanValueInIfCondition(WIfExpression it) {
 		if (!condition.isBooleanOrUnknownType) {
-			report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
+			checkBooleanExpression(condition, it, WIF_EXPRESSION__CONDITION)
 		}
 	}
 
@@ -828,12 +833,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nonBooleanValueInBooleanOperationComponent(WBinaryOperation it) {
 		if (isBooleanExpression) {
 			if (!leftOperand.isBooleanOrUnknownType)
-				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
+				checkBooleanExpression(leftOperand, it, WBINARY_OPERATION__LEFT_OPERAND)
 			if (rightOperand !== null && !rightOperand.isBooleanOrUnknownType)
-				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)
+				checkBooleanExpression(rightOperand, it, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}
 
+	private def checkBooleanExpression(WExpression expression, EObject container, EStructuralFeature feature) {
+		if (expression instanceof WAssignment) {
+			report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, container, feature, ASSIGNMENT_INSIDE_IF)
+		} else {
+			report(WollokDslValidator_EXPECTING_BOOLEAN, container, feature)
+		}
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
@@ -898,7 +911,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 		if (!sup.method.overrides && !sup.isInMixin)
 			report(WollokDslValidator_SUPER_ONLY_OVERRIDING_METHOD, sup)
 		else if (sup.memberCallArguments.size != sup.method.parameters.size)
-			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overridenMethod.parameters.map[name].join(", ")»''',
+			report('''«WollokDslValidator_SUPER_INCORRECT_ARGS» «sup.method.parameters.size»: «sup.method.overriddenMethod.parameters.map[name].join(", ")»''',
 				sup)
 	}
 
@@ -1086,6 +1099,13 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 			report(WollokDslValidator_CANNOT_RETURN_ASSIGNMENT, it, WRETURN_EXPRESSION__EXPRESSION)
 	}
 
+	@Check
+	@DefaultSeverity(ERROR)
+	def returnUsedInAnExpression(WReturnExpression it) {
+		if (expression !== null && !isValidReturnExpression)
+			report(WollokDslValidator_CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT, it, WRETURN_EXPRESSION__EXPRESSION, CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT)
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	def noSuperInConstructorBody(WSuperInvocation it) {

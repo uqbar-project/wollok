@@ -48,7 +48,7 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
   	}
   	
   	override getAllMessages() {		
- 		container.allMethods.map[m| typeSystem.queryMessageTypeForMethod(m)]		
+ 		container.allUntypedMethods.map[m| typeSystem.queryMessageTypeForMethod(m)]		
  	}
  
  	override ConcreteType instanceFor(TypeVariable parent) { this }

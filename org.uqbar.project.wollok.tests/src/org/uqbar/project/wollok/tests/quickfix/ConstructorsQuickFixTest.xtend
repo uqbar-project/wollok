@@ -1000,7 +1000,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 		}
 		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 7, "You must provide initial value to the following references: saludo, color")
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 4, "You must provide initial value to the following references: saludo, color")
 	}	
 
 	@Test
@@ -1032,7 +1032,7 @@ class ConstructorsQuickFixTest extends AbstractWollokQuickFixTestCase {
 			}
 		}
 		''']
-		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 6, "You must provide initial value to the following references: color")
+		assertQuickfix(initial, result, Messages.WollokDslQuickFixProvider_add_missing_initializations_name, 4, "You must provide initial value to the following references: color")
 	}
 	
 }

@@ -191,6 +191,17 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(ASSIGNMENT_INSIDE_IF)
+	def replaceAssignmentWithComparison(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_replace_assignment_with_comparison_name,
+			Messages.WollokDslQuickFixProvider_replace_assignment_with_comparison_description, null) [ e, it |
+			val ^if = e as WIfExpression
+			val assignment = ^if.condition as WAssignment
+			val comparison = assignment.feature.node.text.trim + " == " + assignment.value.node.text.trim
+			xtextDocument.replaceWith(assignment, comparison)
+		]
+	}
+
 	@Fix(MUST_CALL_SUPER)
 	def addCallToSuperInConstructor(Issue issue, IssueResolutionAcceptor acceptor) {
 		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_add_call_super_name,
@@ -260,6 +271,13 @@ class WollokDslQuickfixProvider extends DefaultQuickfixProvider {
 		]
 	}
 
+	@Fix(CANT_USE_RETURN_EXPRESSION_IN_ARGUMENT)
+	def removeReturnKeyword(Issue issue, IssueResolutionAcceptor acceptor) {
+		acceptor.accept(issue, Messages.WollokDslQuickFixProvider_remove_return_keyword_name,
+			Messages.WollokDslQuickFixProvider_remove_return_keyword_description, null) [ e, it |
+			xtextDocument.deleteToken(e, RETURN + blankSpace)
+		]
+	}
 	/** 
 	 * ***********************************************************************
 	 * 							Unexistent methods

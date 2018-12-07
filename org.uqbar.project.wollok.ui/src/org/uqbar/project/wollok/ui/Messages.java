@@ -117,6 +117,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickfixProvider_create_method_superclass_description;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_name;
 	public static String WollokDslQuickFixProvider_remove_override_keyword_description;
+	public static String WollokDslQuickFixProvider_remove_return_keyword_name;
+	public static String WollokDslQuickFixProvider_remove_return_keyword_description;
 	public static String WollokDslQuickFixProvider_create_constructor_class_name; 
 	public static String WollokDslQuickFixProvider_create_constructor_class_description; 
 	public static String WollokDslQuickFixProvider_adjust_constructor_call_name; 
@@ -165,6 +167,8 @@ public class Messages extends NLS {
 	public static String WollokDslQuickFixProvider_create_new_local_wko_description;
 	public static String WollokDslQuickFixProvider_create_new_external_wko_name;
 	public static String WollokDslQuickFixProvider_create_new_external_wko_description;
+	public static String WollokDslQuickFixProvider_replace_assignment_with_comparison_name;
+	public static String WollokDslQuickFixProvider_replace_assignment_with_comparison_description;
 	
 	public static String AddNewElementQuickFix_Title;
 	public static String AddNewWKOQuickFix_Title;

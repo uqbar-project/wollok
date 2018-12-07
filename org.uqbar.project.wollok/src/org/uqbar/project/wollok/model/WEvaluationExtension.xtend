@@ -95,7 +95,7 @@ class WEvaluationExtension {
 	def static dispatch boolean isEvaluatesToAValue(WBlockExpression it, WollokClassFinder finder) { expressions.last.isEvaluatesToAValue(finder) }
 	def static dispatch boolean isEvaluatesToAValue(WTry it, WollokClassFinder finder) { expression.isEvaluatesToAValue(finder) && catchBlocks.forall[c| c.expression.isEvaluatesToAValue(finder) ] }
 	// calls
-	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it, WollokClassFinder finder) { method.overridenMethod !== null && method.overridenMethod.supposedToReturnValue }
+	def static dispatch boolean isEvaluatesToAValue(WSuperInvocation it, WollokClassFinder finder) { method.overriddenMethod !== null && method.overriddenMethod.supposedToReturnValue }
 	def static dispatch boolean isEvaluatesToAValue(WMemberFeatureCall it, WollokClassFinder finder) { val m = resolveMethod(finder) ; m !== null && m.supposedToReturnValue }
 	// default
 	def static dispatch boolean isEvaluatesToAValue(Void it, WollokClassFinder finder) { false }

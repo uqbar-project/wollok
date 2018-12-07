@@ -226,7 +226,7 @@ object assert {
 				else
 					throw new OtherValueExpectedException("Expected other value", ex)
 			}
-		if (continue) throw new Exception("Should have thrown an exception")	
+		if (continue) throw new AssertionException("Should have thrown an exception")	
 	}
 	
 	/**

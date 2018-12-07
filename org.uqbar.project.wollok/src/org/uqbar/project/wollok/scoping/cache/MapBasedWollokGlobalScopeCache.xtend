@@ -32,11 +32,6 @@ class MapBasedWollokGlobalScopeCache implements WollokGlobalScopeCache {
 		]
 		cache.remove(uri.toString)
 	}
-	
-	override synchronized clearCache() {
-		cache.clear
-	}
-	
 }
 
 class MapBasedCacheContent {
@@ -48,11 +43,12 @@ class MapBasedCacheContent {
 	def Set<String> imports() { imports }
 	def Iterable<IEObjectDescription> result() { result }
 		
-	new(URI uri, Set<String> imports, Iterable<IEObjectDescription> _result){
+	new(URI uri, Set<String> imports, Iterable<IEObjectDescription> result){
 		this.uri = uri.toString
 		this.imports = imports.toSet
-		// dodain - clone is important, otherwise when you threads are mixed importedObjects might be misconfigured
-		this.result = _result.clone
+		
+		// Ensure materialization of results
+		this.result = result.toList
 	}
 	
 	def mismatch(Set<String> imports){

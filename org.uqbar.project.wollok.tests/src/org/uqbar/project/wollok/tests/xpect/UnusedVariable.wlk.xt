@@ -4,10 +4,8 @@ class WithUnusedVariables {
 	var a = 123
 	// XPECT warnings --> "Unused variable" at "b"
 	var b = 123
-	// XPECT warnings --> "Variable is never assigned" at "c"
 	var c 
 	var d
-	// XPECT errors --> "Variable is never assigned" at "x" 
 	const x 
 	const z = 1
 	

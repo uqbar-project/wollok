@@ -204,7 +204,7 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	override queryMessageTypeForMethod(WMethodDeclaration it) {
-		new MessageType(it.name, parameters.map[type], type)
+		new MessageType(it, parameters.map[type], type)
 	}
 
 	def objectType(WNamedObject model) {

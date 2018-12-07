@@ -178,3 +178,15 @@ class TestPersonas {
 		assert.notEquals(new Hijo(2), new Persona(2))
 	}	
 }
+
+class SomeClass {
+	method someMethod() {
+		// XPECT errors --> "Couldn't resolve reference to Class 'UnexistentException'." at "UnexistentException"
+		throw new UnexistentException("some message")
+	}
+	
+	method anotherMethod() {
+		// XPECT errors --> "Couldn't resolve reference to Class 'UnexistentException'." at "UnexistentException"
+		throw new UnexistentException(medico = "hola")
+	}
+}
