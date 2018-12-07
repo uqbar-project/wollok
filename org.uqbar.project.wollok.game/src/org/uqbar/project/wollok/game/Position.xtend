@@ -12,18 +12,6 @@ abstract class Position {
 
 	def getYinPixels() { y * Gameboard.CELLZISE }
 
-	def adjustX(int newX) {
-		if (newX < 0) return 0
-		if (newX >= Gameboard.instance.width) return Gameboard.instance.width - 1
-		return newX
-	}
-
-	def adjustY(int newY) { 
-		if (newY < 0) return 0
-		if (newY >= Gameboard.instance.height) return Gameboard.instance.height - 1
-		return newY
-	}
-
 	override public int hashCode() {
 		val prime = 31
 		val result = prime + x
@@ -40,19 +28,19 @@ abstract class Position {
 	override toString() { getX + "@" + getY }
 
 	def up() {
-		this.createPosition(x, adjustY(y + 1))
+		this.createPosition(x, y + 1)
 	}
 
 	def down() {
-		this.createPosition(x, adjustY(y - 1))
+		this.createPosition(x, y - 1)
 	}
 	
 	def left() {
-		this.createPosition(adjustX(x - 1), y)
+		this.createPosition(x - 1, y)
 	}
 	
 	def right() {
-		this.createPosition(adjustX(x + 1), y)
+		this.createPosition(x + 1, y)
 	}
 	
 	/** Factory method */

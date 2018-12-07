@@ -74,7 +74,6 @@ class ArrowListenerTest {
 		Assert.assertEquals(new WGPosition(1, 0), character.position) 
 	}
 
-	@Ignore // TODO: Ver qué le ocurre con el próximo PR
 	@Test
 	def when_right_key_is_pressed_character_move_right_2() {
 		character.position = new WGPosition(4, 4)
