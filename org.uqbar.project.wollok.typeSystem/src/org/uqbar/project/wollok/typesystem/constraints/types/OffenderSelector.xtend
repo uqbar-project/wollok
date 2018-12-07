@@ -122,7 +122,7 @@ class OffenderSelector {
 
 	/**
 	 * A direct relationship between two parameters is due to a method override.
-	 * (note inverse relationship: SUBclass method parameter has to be a SUPERtype of the overriden one.)
+	 * (note inverse relationship: SUBclass method parameter has to be a SUPERtype of the overridden one.)
 	 * We mark the errors in the subclass.
 	 */
 	def static dispatch selectOffender(WParameter superclass, WParameter subclass) {
