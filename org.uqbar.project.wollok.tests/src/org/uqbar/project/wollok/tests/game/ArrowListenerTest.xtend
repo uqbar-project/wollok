@@ -80,7 +80,7 @@ class ArrowListenerTest {
 		this.press("RIGHT")
 		
 		arrowListener.notify(gameboard)
-		Assert.assertEquals(new WGPosition(4, 4), character.position) 
+		Assert.assertEquals(new WGPosition(5, 4), character.position) 
 	}
 	
 	def press(String key) {
