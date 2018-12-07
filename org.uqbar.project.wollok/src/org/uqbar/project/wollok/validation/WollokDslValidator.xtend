@@ -822,11 +822,7 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)
 	def nonBooleanValueInIfCondition(WIfExpression it) {
 		if (!condition.isBooleanOrUnknownType) {
-			if (condition instanceof WAssignment) {
-				report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, it, WIF_EXPRESSION__CONDITION, ASSIGNMENT_INSIDE_IF)
-			} else {
-				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WIF_EXPRESSION__CONDITION)
-			}
+			checkBooleanExpression(condition, it, WIF_EXPRESSION__CONDITION)
 		}
 	}
 
@@ -836,12 +832,20 @@ class WollokDslValidator extends AbstractConfigurableDslValidator {
 	def nonBooleanValueInBooleanOperationComponent(WBinaryOperation it) {
 		if (isBooleanExpression) {
 			if (!leftOperand.isBooleanOrUnknownType)
-				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__LEFT_OPERAND)
+				checkBooleanExpression(leftOperand, it, WBINARY_OPERATION__LEFT_OPERAND)
 			if (rightOperand !== null && !rightOperand.isBooleanOrUnknownType)
-				report(WollokDslValidator_EXPECTING_BOOLEAN, it, WBINARY_OPERATION__RIGHT_OPERAND)
+				checkBooleanExpression(rightOperand, it, WBINARY_OPERATION__RIGHT_OPERAND)
 		}
 	}
 
+	private def checkBooleanExpression(WExpression expression, EObject container, EStructuralFeature feature) {
+		if (expression instanceof WAssignment) {
+			report(WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING, container, feature, ASSIGNMENT_INSIDE_IF)
+		} else {
+			report(WollokDslValidator_EXPECTING_BOOLEAN, container, feature)
+		}
+	}
+	
 	@Check
 	@DefaultSeverity(ERROR)
 	@CheckGroup(WollokCheckGroup.POTENTIAL_PROGRAMMING_PROBLEM)

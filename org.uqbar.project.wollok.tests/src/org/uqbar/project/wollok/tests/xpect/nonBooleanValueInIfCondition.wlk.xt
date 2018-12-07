@@ -42,10 +42,20 @@ object p {
 
 		var a = 2
 		const b = 2
-		// XPECT errors --> "You did an assignment inside an if condition. Maybe you wanted to use '==' instead of '=' ?" at "a = b"
+		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "a = b"
 		if (a = b)
 			throw new Exception("asd")
-			
+
+		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "(a = 3)"
+		if (a == 2 || (a = 3)) {
+			throw new Exception("asd")
+		}
+
+		// XPECT errors --> "You did an assignment inside an if condition. This won't work, a boolean expression is expected. Maybe you wanted to use '==' instead of '=' ?" at "(a = 3)"
+		if (a == 2 && (a = 3)) {
+			throw new Exception("asd")
+		}
+					
 		// *************************************
 		// PENDING once we have a type system
 		// *************************************
@@ -54,6 +64,6 @@ object p {
         if (2+2)
             throw new Exception("asd")
 
-
     }
+    
 }
