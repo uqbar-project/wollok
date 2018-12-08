@@ -43,7 +43,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
  * @author npasserini
@@ -403,10 +402,5 @@ class ConstraintGenerator {
 
 	def dispatch WollokType asWollokType(WClass wClass) {
 		classType(wClass)
-	}
-
-	static def hasReturnType(WMethodDeclaration it) {
-		expression.containsReturnExpression // Method contains at least one return expression
-		|| expressionReturns // Compact method, no return required.
 	}
 }

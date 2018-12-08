@@ -4,7 +4,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.typesystem.constraints.ConstraintGenerator.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class SuperInvocationConstraintsGenerator extends CrossReferenceConstraintsGenerator<WSuperInvocation> {
 
