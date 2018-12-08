@@ -1,18 +1,19 @@
 package org.uqbar.project.wollok.tests.game
 
-import static org.mockito.Mockito.*;
-
-import org.uqbar.project.wollok.game.listeners.ArrowListener
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
+import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.VisualComponent
+import org.uqbar.project.wollok.game.WGPosition
+import org.uqbar.project.wollok.game.WGVisualComponent
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.helpers.Keyboard
-import org.uqbar.project.wollok.game.VisualComponent
-import org.uqbar.project.wollok.game.WGVisualComponent
-import org.uqbar.project.wollok.game.WGPosition
-import org.uqbar.project.wollok.game.Image
+import org.uqbar.project.wollok.game.listeners.ArrowListener
 
-import org.junit.Before
-import org.junit.Test
-import org.junit.Assert
+import static org.mockito.Mockito.*
+import static org.uqbar.project.wollok.game.helpers.Keyboard.*
 
 class ArrowListenerTest {
 		

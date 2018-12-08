@@ -61,7 +61,7 @@ class WollokDslRuntimeModule extends AbstractWollokDslRuntimeModule {
 		binder.bind(WollokLibraries).to(JarWollokLibraries)	
 	}
 	
-	//this method is overriden by WollokLauncherModule
+	//this method is overridden by WollokLauncherModule
 	def List<String> libs() {
 		#[]
 	}

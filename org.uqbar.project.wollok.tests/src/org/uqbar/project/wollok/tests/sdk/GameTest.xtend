@@ -40,6 +40,8 @@ class GameTest extends AbstractWollokInterpreterTestCase {
 	@Test
 	def void shouldReturnVisualColliders() {
 		'''
+		import wollok.game.*
+		
 		object myVisual { }
 		class Visual { }
 		

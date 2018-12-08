@@ -40,7 +40,7 @@ class WVisual extends VisualComponent {
 	}
 
 	override setPosition(Position position) {
-		objectPosition.copyFrom(position)
+		wPosition = objectPosition.copyFrom(position) 
 	}
 
 	def getObjectPosition() {
