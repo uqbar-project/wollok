@@ -7,15 +7,15 @@ import java.util.ArrayList
 import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.VisualComponent
 
-class ArrowListener implements GameboardListener {
+class ArrowListener extends GameboardListener {
 	
 	var listeners = new ArrayList<KeyboardListener>()
 	
 	new (VisualComponent character){
-		listeners.add(new KeyboardListener(Keys.UP, [character.position.incY(1)]))
-		listeners.add(new KeyboardListener(Keys.DOWN, [character.position.incY(-1)]))
-		listeners.add(new KeyboardListener(Keys.LEFT, [character.position.incX(-1)]))
-		listeners.add(new KeyboardListener(Keys.RIGHT, [character.position.incX(1)]))
+		listeners.add(new KeyboardListener(Keys.UP, [ character.up()]))
+		listeners.add(new KeyboardListener(Keys.DOWN, [character.down()]))
+		listeners.add(new KeyboardListener(Keys.LEFT, [character.left()]))
+		listeners.add(new KeyboardListener(Keys.RIGHT, [character.right()]))
 	}
 	
 	override notify(Gameboard gameboard) {
@@ -25,4 +25,5 @@ class ArrowListener implements GameboardListener {
 	override isObserving(VisualComponent component) {
 		listeners.exists[isObserving(component)]
 	}
+	
 }
