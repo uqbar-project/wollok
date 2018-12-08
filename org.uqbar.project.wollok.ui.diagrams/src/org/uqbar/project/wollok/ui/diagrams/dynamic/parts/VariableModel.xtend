@@ -57,7 +57,6 @@ class VariableModel extends Shape {
 	static def getVariableModelFor(IVariable variable, int level, VariableModel previous) {
 		var shape = allShapes.get(variable.toString)
 		if (shape !== null && shape.isCollection) {
-			// TODO: Refactorizar shape.isCollection pasandole shape como parámetro
 			allShapes.remove(variable.toString)
 			shape = null
 		}
@@ -80,11 +79,11 @@ class VariableModel extends Shape {
 		siblings.add(this)
 		shapesSameLevel.put(level, siblings)
 
-		if (previous !== null) {
-			this.location = previous.location
-		} else {
+		//if (previous !== null) {
+		//	this.location = previous.location
+		//} else {
 			this.location = new Point(siblings.size * WIDTH_SIZE, HEIGHT_MARGIN + level * HEIGHT_SIZE)
-		}
+		//}
 	}
 	
 	def calculateSize(IVariable variable) {
@@ -143,7 +142,6 @@ class VariableModel extends Shape {
 		if (variable.value === null) false else originalValueString.matches("^Set.*")
 	}
 	
-	// TODO: Pasar variable como parámetro
 	def isCollection() { isList || isSet }
 	
 	def moveCloseTo(Shape shape) {
@@ -156,7 +154,7 @@ class VariableModel extends Shape {
 	}
 
 	override toString() {
-		"VariableModel " + this.variable.toString + " = " + this.variable.value.valueString
+		"VariableModel " + this.variable.toString + " = " + this.valueString
 	}
 	
 }
