@@ -2,7 +2,7 @@
 
 class Persona {
 	
-	// XPECT type at hambriento -->  <object>
+	// XPECT type at hambriento -->  { cena }
 	var hambriento = object {
 		var a = 0
 		
@@ -11,18 +11,18 @@ class Persona {
 		}
 	}
 	
-	// XPECT type at charlatan -->  <object>
+	// XPECT type at charlatan -->  { habla }
 	var charlatan = object {
 		method habla() = "Hola"
 	}
 	
-	// XPECT type at multifacetico -->  <object>
+	// XPECT type at multifacetico -->  { habla; cena }
 	var multifacetico = object {
 		method habla() = "Chau"
 		method cena() = 100
 	}
 	
-	// XPECT type at friki -->  <object>
+	// XPECT type at friki -->  { habla; cena }
 	var friki = object {
 		method habla() = 42
 		method cena() = "Wollok"
