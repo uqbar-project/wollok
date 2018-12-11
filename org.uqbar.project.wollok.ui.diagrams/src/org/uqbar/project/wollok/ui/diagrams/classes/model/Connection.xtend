@@ -29,7 +29,7 @@ class Connection extends ModelElement {
 	@Accessors RelationType relationType
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
-		this.identifier = source?.toString + target.toString // boletear id
+		this.identifier = source?.toString + target.toString
 		this.name = name
 		this.relationType = relationType
 		reconnect(source, target, relationType)

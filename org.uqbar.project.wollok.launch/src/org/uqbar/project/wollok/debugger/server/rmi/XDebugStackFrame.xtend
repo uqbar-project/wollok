@@ -21,8 +21,8 @@ import org.uqbar.project.wollok.sdk.WollokDSK
 class XDebugStackFrame implements Serializable {
 	SourceCodeLocation sourceLocation
 	List<XDebugStackFrameVariable> variables
-	static Map<WVariable, WollokObject> allValues
-	static List<WVariable> allVariables
+	public static Map<WVariable, WollokObject> allValues
+	public static List<WVariable> allVariables
 	
 	new(XStackFrame<WollokObject> frame) {
 		sourceLocation = frame.currentLocation
@@ -45,10 +45,10 @@ class XDebugStackFrame implements Serializable {
 	}
 	
 	def static toVariable(WVariable variable, EvaluationContext<WollokObject> context) {
-		val value = allValues.get(variable)
 		if (allVariables.contains(variable)) {
 			return new XDebugStackFrameVariable(variable, null)
 		}
+		val value = allValues.get(variable)
 		if (value !== null) {
 			return new XDebugStackFrameVariable(variable, value)
 		}

@@ -2,7 +2,9 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import java.util.ArrayList
 import java.util.Collections
+import java.util.HashMap
 import java.util.List
+import java.util.Map
 import org.eclipse.debug.core.model.IStackFrame
 import org.eclipse.draw2d.ColorConstants
 import org.eclipse.draw2d.IFigure
@@ -73,6 +75,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
+	public static Map<String, XDebugStackFrameVariable> variableValues
+	
 	new() {
 		editDomain = new DefaultEditDomain(null)
 //		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
@@ -331,9 +335,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
-		println("variables ")
-		println(variables.map [ variable | variable.variable ].join(", "))
-		println() 
+		variableValues = new HashMap()
+		variables.forEach [ variable | variable.collectValues(variableValues) ]
 		RunInUI.runInUI [
 			updateDynamicDiagram(variables)
 		]

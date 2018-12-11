@@ -9,9 +9,12 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.PrecisionPoint
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.debugger.model.WollokVariable
+import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Connection
 import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
+import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 
 /**
  * 
@@ -33,36 +36,37 @@ class VariableModel extends Shape {
 	 * All shapes by variable name 
 	 */
 	static Map<String, VariableModel> allShapes = new HashMap()
-	
+
 	static int HEIGHT_SIZE = 140
-	static int HEIGHT_MARGIN = 60
-	static int WIDTH_SIZE = 75
+	static int HEIGHT_MARGIN = 40
+	static int WIDTH_SIZE = 140
+	static int WIDTH_MARGIN = 50
 	static int MIN_WIDTH = 25
 	static int LETTER_WIDTH = 12
 	static int MAX_ELEMENT_WIDTH = 200
 	
 	IVariable variable
-	VariableModel previous
 	int level
 	int brothers = 0
 	
-	new(IVariable variable, int level, VariableModel previous) {
-		this.variable = variable
+	new(IVariable variable, int level) {
+		val variableValues = DynamicDiagramView.variableValues
+		val fixedVariable = variableValues.get(variable.toString)
+		if (fixedVariable !== null && variable.value === null) {
+			this.variable = new WollokVariable(null, fixedVariable)
+		} else {
+			this.variable = variable
+		}
 		this.level = level
-		this.previous = previous
 		this.size = variable.calculateSize()
 		this.calculateInitialLocation(level)
 	}
 
-	static def getVariableModelFor(IVariable variable, int level, VariableModel previous) {
+	static def getVariableModelFor(IVariable variable, int level) {
 		var shape = allShapes.get(variable.toString)
-		if (shape !== null && shape.isCollection) {
-			allShapes.remove(variable.toString)
-			shape = null
-		}
 		// quick way to determine if we should re-draw the shape
 		if (shape === null) {
-			shape = new VariableModel(variable, level, previous)
+			shape = new VariableModel(variable, level)
 			// toString is in fact the identifier of the variable
 			// hacked way to avoid duplicates
 			allShapes.put(variable.toString, shape)
@@ -72,18 +76,14 @@ class VariableModel extends Shape {
 	
 	public static def initVariableShapes() {
 		shapesSameLevel = new HashMap()
+		allShapes = new HashMap()
 	}
 	
 	def void calculateInitialLocation(int level) {
 		val siblings = shapesSameLevel.get(level) ?: newArrayList
 		siblings.add(this)
 		shapesSameLevel.put(level, siblings)
-
-		//if (previous !== null) {
-		//	this.location = previous.location
-		//} else {
-			this.location = new Point(siblings.size * WIDTH_SIZE, HEIGHT_MARGIN + level * HEIGHT_SIZE)
-		//}
+		this.location = new Point(WIDTH_MARGIN + level * WIDTH_SIZE, HEIGHT_MARGIN + siblings.size * HEIGHT_SIZE)
 	}
 	
 	def calculateSize(IVariable variable) {
@@ -107,7 +107,7 @@ class VariableModel extends Shape {
 		}
 		else {
 			// TODO: Conseguir los shapes de la corrida anterior que están en stackFrameEditPart
-			VariableModel.getVariableModelFor(variable, this.level + 1, null) => [
+			VariableModel.getVariableModelFor(variable, this.level + 1) => [
 				map.put(variable, it)
 				// go deep (recursion)
 				it.createConnections(map)

@@ -29,19 +29,9 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
-		/*
-		 * Previous definition
-		val variables = interpreter.currentThread.stack.map [
-			val vars = new XDebugStackFrame(it).variables 
-			vars
-		].flatten.toList
-		 */
-		
 		XDebugStackFrame.initAllVariables()
 		val variables = new XDebugStackFrame(interpreter.currentThread.stack.peek).variables
-		val setVariables = new HashSet
-		setVariables.addAll(variables)
-		setVariables.toList.notifyPossibleStateChanged
+		variables.notifyPossibleStateChanged
 	}
 
 	override aboutToEvaluate(EObject element) {}

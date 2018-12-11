@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
 import java.io.Serializable
+import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
@@ -49,4 +50,11 @@ class XDebugStackFrameVariable implements Serializable {
 		this.variable.toString + " = " + valueToString
 	}
 
+	def void collectValues(Map<String, XDebugStackFrameVariable> variableValues) {
+		if (this.value !== null) {
+			variableValues.put(this.variable.id.toString, this)
+			this.value.variables.forEach [ variable | variable.collectValues(variableValues) ]
+		}
+	}
+	
 }

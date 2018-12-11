@@ -58,6 +58,15 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 		this.adaptee.variable.id.toString
 	}
 	
+	override equals(Object o) {
+		try {
+			val other = o as WollokVariable
+			return other.toString.equals(this.toString) 
+		} catch (ClassCastException e) {
+			return super.equals(o)
+		}
+	}
+	
 	override hashCode() {
 		this.toString.hashCode
 	}
