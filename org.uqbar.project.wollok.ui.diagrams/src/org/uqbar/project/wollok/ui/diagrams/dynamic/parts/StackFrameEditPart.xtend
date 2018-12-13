@@ -36,7 +36,6 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	override activate() {
 		if (!active) {
 			super.activate
-//			modelElement.addPropertyChangeListener(this)
 		}
 	}
 
@@ -58,7 +57,6 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 	override deactivate() {
 		if (active) {
 			super.deactivate
-//			modelElement.removePropertyChangeListener(this)
 		}
 	}
 
@@ -75,9 +73,6 @@ abstract class AbstractStackFrameEditPart<T> extends AbstractGraphicalEditPart i
 			m
 		])
 		map.values.<VariableModel>clone.forEach[model|model.createConnections(map)]
-		
-		println("map " + map)
-		
 		map.values.toList
 	}
 

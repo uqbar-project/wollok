@@ -19,13 +19,19 @@ import org.eclipse.gef.GraphicalEditPart
 import org.eclipse.gef.GraphicalViewer
 import org.eclipse.gef.commands.CommandStack
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
+import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.ui.actions.ActionRegistry
+import org.eclipse.gef.ui.actions.ZoomComboContributionItem
+import org.eclipse.gef.ui.actions.ZoomInAction
+import org.eclipse.gef.ui.actions.ZoomOutAction
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite
 import org.eclipse.gef.ui.palette.PaletteViewerProvider
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer
 import org.eclipse.gef.ui.parts.SelectionSynchronizer
 import org.eclipse.gef.ui.properties.UndoablePropertySheetPage
+import org.eclipse.jface.action.IAction
+import org.eclipse.jface.action.Separator
 import org.eclipse.jface.text.source.ISourceViewer
 import org.eclipse.jface.viewers.ISelection
 import org.eclipse.jface.viewers.ISelectionChangedListener
@@ -46,6 +52,7 @@ import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
+import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
@@ -67,6 +74,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	StaticDiagram diagram
 
+	IViewSite site
+
+	// Toolbar - actions
+	ExportAction exportAction
+	IAction zoomIn
+	IAction zoomOut
+
 	// Frozen until debugger renaissance
 	// DebugContextListener debugListener
 	// New context state listener
@@ -76,7 +90,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	PaletteViewerProvider provider
 
 	public static Map<String, XDebugStackFrameVariable> variableValues
-	
+
 	new() {
 		editDomain = new DefaultEditDomain(null)
 //		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
@@ -84,6 +98,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	override init(IViewSite site) throws PartInitException {
 		super.init(site)
+		this.site = site
 
 		Activator.^default.wollokDynamicDiagramContextStateNotifier.init(this)
 
@@ -107,6 +122,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			page = null
 		}
 
+		// Create toolbar
+		configureToolbar
+
 		//
 		// Frozen until debugger renaissance
 		// debugListener = new DebugContextListener(this)
@@ -122,6 +140,30 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 		// End Frozen until debugger renaissance
 		// set initial content based on active editor (if any)
 		partBroughtToTop(site.page.activeEditor)
+		
+		// we provide selection
+		site.selectionProvider = this
+	}
+
+	def configureToolbar() {
+		getActionRegistry
+		
+		exportAction = new ExportAction => [
+			viewer = graphicalViewer
+		]
+
+		site.actionBars.toolBarManager => [
+			add(new ZoomComboContributionItem(site.workbenchWindow.activePage, #{
+				ZoomManager.FIT_ALL,
+				ZoomManager.FIT_HEIGHT,
+				ZoomManager.FIT_WIDTH
+			} as String[]))
+			add(zoomIn)
+			add(zoomOut)
+			add(new Separator)
+			add(exportAction)
+			add(new Separator)
+		]
 	}
 
 	def createViewer(Composite parent) {
@@ -169,7 +211,24 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 
 	def getActionRegistry() {
-		if(actionRegistry === null) actionRegistry = new ActionRegistry
+		if (actionRegistry === null) {
+			actionRegistry = new ActionRegistry => [
+				// Adding zoom capabilities
+				val zoomManager = (graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
+				zoomManager.setZoomLevelContributions(#[
+					ZoomManager.FIT_ALL,
+					ZoomManager.FIT_WIDTH,
+					ZoomManager.FIT_HEIGHT
+				])
+				zoomIn = new ZoomInAction(zoomManager)
+				zoomOut = new ZoomOutAction(zoomManager)
+				registerAction(zoomIn)
+				registerAction(zoomOut)
+	
+				site.keyBindingService.registerAction(zoomIn)
+				site.keyBindingService.registerAction(zoomOut)
+			]
+		}
 		actionRegistry
 	}
 
@@ -191,6 +250,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			graphicalViewer.rootEditPart
 		else if (type == IFigure && graphicalViewer !== null)
 			(graphicalViewer.rootEditPart as GraphicalEditPart).figure
+		else if (type == ZoomManager)
+			(graphicalViewer.rootEditPart as ScalableFreeformRootEditPart).zoomManager
 		else
 			super.getAdapter(type)
 	}
@@ -258,14 +319,14 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			visit(graph)
 		]
 
-		// map back positions to model
-		/* 
-		graph.nodes.forEach [
-			val n = it as Node
-			(n.data as Shape).location = new Point(n.x, n.y)
-		]
-		* 
-		*/
+	// map back positions to model
+	/* 
+	 * graph.nodes.forEach [
+	 * 	val n = it as Node
+	 * 	(n.data as Shape).location = new Point(n.x, n.y)
+	 * ]
+	 * 
+	 */
 	}
 
 	// ****************************	
@@ -329,14 +390,14 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	def relocateSolitaryNodes(List<VariableModel> models) {
 		/*val nodesReferencedByJustOne = models.filter[m|m.targetConnections.size == 1]
-		nodesReferencedByJustOne.forEach [ m |
-			m.moveCloseTo(m.targetConnections.get(0).source)
-		]*/
+		 * nodesReferencedByJustOne.forEach [ m |
+		 * 	m.moveCloseTo(m.targetConnections.get(0).source)
+		 ]*/
 	}
 
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
 		variableValues = new HashMap()
-		variables.forEach [ variable | variable.collectValues(variableValues) ]
+		variables.forEach[variable|variable.collectValues(variableValues)]
 		RunInUI.runInUI [
 			updateDynamicDiagram(variables)
 		]
@@ -344,28 +405,27 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	def void updateDynamicDiagram(Object variables) {
 		VariableModel.initVariableShapes
-		
+
 		// backup nodes positions
 		/*val oldRootPart = graphicalViewer.contents as AbstractStackFrameEditPart<?>
-		val map = new HashMap<String, Shape>()
-		if (oldRootPart !== null) {
-			oldRootPart.children.<ValueEditPart>forEach [ it |
-				map.put((it.model as VariableModel).valueString, it.model as Shape)
-			]
-		}*/
-
+		 * val map = new HashMap<String, Shape>()
+		 * if (oldRootPart !== null) {
+		 * 	oldRootPart.children.<ValueEditPart>forEach [ it |
+		 * 		map.put((it.model as VariableModel).valueString, it.model as Shape)
+		 * 	]
+		 }*/
 		// set new stack
 		graphicalViewer.contents = variables
 
 		layout()
 
-		// recover old positions
-		/*val newModels = newModels
-		val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
-		alreadyDisplaying.forEach [ vm |
-			val oldShape = map.get(vm.valueString)
-			vm.location = oldShape.location
-			vm.size = oldShape.size
-		]*/
+	// recover old positions
+	/*val newModels = newModels
+	 * val alreadyDisplaying = newModels.filter[map.containsKey(valueString)].toList
+	 * alreadyDisplaying.forEach [ vm |
+	 * 	val oldShape = map.get(vm.valueString)
+	 * 	vm.location = oldShape.location
+	 * 	vm.size = oldShape.size
+	 ]*/
 	}
 }
