@@ -43,6 +43,7 @@ public class WollokLaunchUIMessages extends NLS {
 	
 	public static String WollokRepl_STOP_TITLE;
 	public static String WollokRepl_EXPORT_HISTORY_TITLE;
+	public static String WollokRepl_CLEAR_HISTORY_TITLE;
 	public static String WollokRepl_SYNCED_MESSAGE;
 	public static String WollokRepl_OUTDATED_MESSAGE;
 	public static String WollokRepl_SYNCED_TOOLTIP;

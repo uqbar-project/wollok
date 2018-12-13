@@ -189,7 +189,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 	}
 
 	@Test
-	def void propertyGetterOverridenInSubclass() {
+	def void propertyGetterOverriddenInSubclass() {
 		'''
 		class MaestroTierra {
 			var property base = 100
@@ -201,14 +201,14 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "getter overriden" {
+		test "getter overridden" {
 			assert.equals(200, new MaestroMetal().base())
 		}
 		'''.interpretPropagatingErrors
 	}
 
 	@Test
-	def void propertyOverridenInClassAndOverridenInSubclass() {
+	def void propertyOverriddenInClassAndOverridenInSubclass() {
 		'''
 		class MaestroTierra {
 			var property base = 100
@@ -222,7 +222,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "getter overriden" {
+		test "getter overridden" {
 			assert.equals(300, new MaestroMetal().base())
 		}
 		'''.interpretPropagatingErrors
@@ -241,7 +241,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "setter overriden" {
+		test "setter overridden" {
 			const acdc = new MaestroMetal()
 			acdc.base(40)
 			assert.equals(80, acdc.base())
@@ -266,7 +266,7 @@ class PropertiesTestCase extends AbstractWollokInterpreterTestCase {
 			}
 		}
 		
-		test "setter overriden" {
+		test "setter overridden" {
 			const acdc = new MaestroMetal()
 			acdc.base(40)
 			assert.equals(70, acdc.base())
