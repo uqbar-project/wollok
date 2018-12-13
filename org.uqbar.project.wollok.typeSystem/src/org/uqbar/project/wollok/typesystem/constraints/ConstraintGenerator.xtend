@@ -23,6 +23,7 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
 import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
@@ -122,6 +123,12 @@ class ConstraintGenerator {
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
+	}
+
+	def dispatch void generate(WObjectLiteral it) {
+		// TODO Process supertype information: parent and mixins
+		members.forEach[generateVariables]
+		newTypeVariable.beSealed(objectLiteralType(it))
 	}
 
 	// ************************************************************************

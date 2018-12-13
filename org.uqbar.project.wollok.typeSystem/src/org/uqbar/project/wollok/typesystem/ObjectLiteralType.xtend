@@ -6,7 +6,9 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.allUntypedMethods
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.methods
 
 /**
  * 
@@ -71,7 +73,7 @@ class ObjectLiteralType extends BasicType implements ConcreteType {
 		typeSystem.type(method)
 	}
 	
-	override getAllMessages() { object.methods.map[messageType] }
+	override getAllMessages() { object.allUntypedMethods.map[messageType] }
 	
 	override dispatch refine(WollokType previous) {
 		val intersectMessages = allMessages.filter[previous.understandsMessage(it)]

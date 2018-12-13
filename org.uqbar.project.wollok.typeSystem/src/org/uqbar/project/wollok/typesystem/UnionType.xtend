@@ -11,7 +11,7 @@ class UnionType extends BasicType {
 	new(ConcreteType... types) {
 		// I will order them by name to have the same expected order, 
 		// so it does not matter the order of the types in the textual representation.
-		super(types.sortBy[name].join('(', '|', ')', [toString]))
+		super(types.sortBy[name].join('(', '|', ')', [name]))
 		this.types = types.toList
 	}
 	
