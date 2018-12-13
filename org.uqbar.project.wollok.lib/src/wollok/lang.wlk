@@ -617,7 +617,7 @@ class Collection {
 	 * @see map
 	 * @see flatten
 	 * 
-	 * Example
+	 * Example:
 	 * 		object klaus { 
 	 *  		method languages() = ["c", "cobol", "pascal"]
 	 *		}
@@ -626,10 +626,9 @@ class Collection {
 	 * 			method languages() = ["java", "perl"]
 	 * 		}
 	 *
-	 * 		program abc {
-	 * 			console.println([klaus, fritz].flatMap({ person => person.languages() }))
-	 *				=> Answers ["c", "cobol", "pascal", "java", "perl"]
-	 * 		}	
+	 *
+	 * 		[klaus, fritz].flatMap({ person => person.languages() })
+	 *			=> Answers ["c", "cobol", "pascal", "java", "perl"]
 	 */
 	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 		acc.addAll(closure.apply(e))
@@ -2131,18 +2130,9 @@ class Range {
 	 * Map + flatten operation
 	 * @see map
 	 * @see flatten
-	 * 
-	 * Example
-	 * 		object klaus { 
-	 *  		method languages() = ["c", "cobol", "pascal"]
-	 *		}
-	 *
-	 *		object fritz {
-	 * 			method languages() = ["java", "perl"]
-	 * 		}
 	 *
 	 * Example:
-	 *      (1..4).map({ n => [1 .. n] }) ==> Answers [] 
+	 *      (1..4).flatMap({ n => 1 .. n }) ==> Answers [1, 1, 2, 1, 2, 3, 1, 2, 3, 4] 
 	 */
 	method flatMap(closure) = self.fold([], { acc, e =>
 		acc.addAll(closure.apply(e))
