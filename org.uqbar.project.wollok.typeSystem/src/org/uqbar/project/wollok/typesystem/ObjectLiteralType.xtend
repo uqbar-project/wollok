@@ -82,6 +82,4 @@ class ObjectLiteralType extends BasicType implements ConcreteType {
 	
 	def messageType(WMethodDeclaration m) { typeSystem.queryMessageTypeForMethod(m) }
 	def type(WParameter p) { typeSystem.type(p) }
-	
-	override toString() { name }
 }
