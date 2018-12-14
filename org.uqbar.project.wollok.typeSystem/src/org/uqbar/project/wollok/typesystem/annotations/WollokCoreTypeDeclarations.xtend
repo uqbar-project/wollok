@@ -19,12 +19,20 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// Closure >> "apply" === #[List] => RETURN
 
 		// This must come at last, because of "allTypes"
+		// TODO: should include Object type?
 		allTypes.forEach[ T |
 			(T == Any) => Boolean;
+			(T != Any) => Boolean;
+			(T === Any) => Boolean;
+			(T !== Any) => Boolean;
+//			(T -> Any) => PairType; //TODO: generics 
 			T >> "equals" === #[Any] => Boolean;
 			T >> "toString" === #[] => String;
 			T >> "printString" === #[] => String;
-			T >> "internalToSmartString" === #[Boolean] => String;			
+			T >> "internalToSmartString" === #[Boolean] => String;
+			T >> "kindName" === #[] => String;
+			T >> "className" === #[] => String;
+			T >> "error" === #[String] => Void;
 		]
 	}
 }

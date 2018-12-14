@@ -65,6 +65,18 @@ abstract class TypeDeclarations {
 	def operator_tripleEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
+	
+	def operator_notEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "!=", #[parameterType])
+	}
+
+	def operator_tripleNotEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "!==", #[parameterType])
+	}
+
+	def operator_mappedTo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "->", #[parameterType])
+	}
 
 	def operator_plus(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])

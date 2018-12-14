@@ -1,0 +1,38 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object objectTests {
+	
+	// XPECT methodType at equalsOperator --> (Object, Any) => Boolean
+	method equalsOperator(o1, o2) = o1 == o2
+	
+	// XPECT methodType at notEqualsOperator --> (Object, Any) => Boolean
+	method notEqualsOperator(o1, o2) = o1 != o2
+	
+	// XPECT methodType at tripleEqualsOperator --> (Object, Any) => Boolean
+	method tripleEqualsOperator(o1, o2) = o1 === o2
+	
+	// XPECT methodType at tripleNotEqualsOperator --> (Object, Any) => Boolean
+	method tripleNotEqualsOperator(o1, o2) = o1 !== o2
+	
+	// XPECT methodType at equals --> (Object, Any) => Boolean
+	method equals(o1, o2) = o1.equals(o2)
+	
+	// XPECT methodType at toStringObject --> (Object) => String
+	method toStringObject(o) = o.toString()
+	
+	// XPECT methodType at printStringObject --> (Object) => String
+	method printStringObject(o) = o.printString()
+	
+	// XPECT methodType at internalToSmartStringObject --> (Object, Boolean) => String
+	method internalToSmartStringObject(o, bul) = o.internalToSmartString(bul)
+	
+	// XPECT methodType at kindNameObject --> (Object) => String
+	method kindNameObject(o) = o.kindName()
+	
+	// XPECT methodType at classNameObject --> (Object) => String
+	method classNameObject(o) = o.className()
+	
+	// XPECT methodType at errorObject --> (Object, String) => Void
+	method errorObject(o, message) = o.error(message)
+	
+}
