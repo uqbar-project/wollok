@@ -26,7 +26,10 @@ class Exception {
 		return printer.getBuffer()
 	}
 	
-	/** Prints this exception and its backtrace to the specified printer */
+	/**
+	  * @private
+	  * Prints this exception and its backtrace to the specified printer 
+	  */
 	method printStackTrace(printer) { self.printStackTraceWithPrefix("", printer) }
 	
 	/** @private */

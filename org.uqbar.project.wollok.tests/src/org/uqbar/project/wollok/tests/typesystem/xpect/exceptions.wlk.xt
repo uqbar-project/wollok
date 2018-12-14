@@ -2,28 +2,33 @@
 
 object exceptionTest {
 	
-	// XPECT methodType at m1 --> () => String
-	method m1() = new Exception().getMessage()
-
-	// XPECT methodType at m2 --> (Exception) => Boolean
-	method m2(e) = e.getCause().equals(e)
-
-	// XPECT methodType at m3 --> (Exception) => List<String>
-	method m3(e) {
-		return e.getStackTrace()
-	}
-
-	// XPECT methodType at m4 --> (Exception) => Void
-	method m4(e) {
-		// XPECT type at fst --> List<String>
-		const fst = e.getFullStackTrace()
-		// XPECT type at stAs --> String
-		const stAs = e.getStackTraceAsString()
-		console.println(fst.size())
-		e.printStackTrace()
-	}
-
-	// XPECT methodType at m5 --> () => StackTraceElement
-	method m5() = new Exception().createStackTraceElement("contextDescription", "2")
+	// XPECT methodType at createException1 --> () => Exception
+	method createException1() = new Exception()
 	
+	// XPECT methodType at createException2 --> (String) => Exception
+	method createException2(message) = new Exception(message)
+	
+	// XPECT methodType at createException3 --> (String, Exception) => Exception
+	method createException3(message, cause) = new Exception(message, cause)
+	
+	// XPECT methodType at getMessage --> (Exception) => String
+	method getMessage(e) = e.getMessage()
+
+	// XPECT methodType at getCause --> (Exception) => Exception
+	method getCause(e) = e.getCause()
+
+	// XPECT methodType at getStackTrace --> (Exception) => List<String>
+	method getStackTrace(e) = e.getStackTrace()
+
+	// XPECT methodType at getFullStackTrace --> (Exception) => List<String>
+	method getFullStackTrace(e) = e.getFullStackTrace()
+
+	// XPECT methodType at getStackTraceAsString --> (Exception) => String
+	method getStackTraceAsString(e) = e.getStackTraceAsString()
+
+	// XPECT methodType at printStackTrace --> (Exception) => Void
+	method printStackTrace(e) = e.printStackTrace()
+
+	// XPECT methodType at createStackTraceElement --> (Exception, String, String) => StackTraceElement
+	method createStackTraceElement(e, contextDescription, location) = e.createStackTraceElement(contextDescription, location)
 }
