@@ -1,15 +1,14 @@
 package org.uqbar.project.wollok.interpreter.listeners
 
-import java.util.HashSet
 import java.util.List
 import net.sf.lipermi.handler.CallHandler
 import net.sf.lipermi.net.Client
-import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.contextState.server.XContextStateListener
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterListener
+import org.eclipse.emf.ecore.EObject
 
 class WollokRemoteContextStateListener implements XInterpreterListener {
 
@@ -29,9 +28,21 @@ class WollokRemoteContextStateListener implements XInterpreterListener {
 	override started() {}
 
 	override terminated() {
-		XDebugStackFrame.initAllVariables()
-		val variables = new XDebugStackFrame(interpreter.currentThread.stack.peek).variables
-		variables.notifyPossibleStateChanged
+		try {
+			XDebugStackFrame.initAllVariables()
+			val variables = new XDebugStackFrame(interpreter.currentThread.stack.peek).variables
+			variables.notifyPossibleStateChanged
+		} catch (Exception e) {
+			val realCause = e.realCause
+			println("ERROR: " + realCause.class.name + ", " + realCause.message)
+			realCause.stackTrace.forEach [ ste |
+				println('''«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
+			]
+		}
+	}
+	
+	static def Throwable getRealCause(Throwable e) {
+		if (e.cause === null) e else e.cause.realCause
 	}
 
 	override aboutToEvaluate(EObject element) {}

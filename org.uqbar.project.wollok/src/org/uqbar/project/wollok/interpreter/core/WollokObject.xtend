@@ -280,8 +280,9 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	override showableInStackTrace() { true }
 	
 	override showableInDynamicDiagram(String name) {
-		val value = instanceVariables.get(name)
-		(value === null || !value.class.name.toLowerCase.contains("exception"))
+		true
+//		val value = instanceVariables.get(name)
+//		(value === null || !value.class.name.toLowerCase.contains("exception"))
 	}
 	
 }

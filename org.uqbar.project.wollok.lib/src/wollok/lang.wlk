@@ -2232,6 +2232,17 @@ class Closure {
 	
 	/** Answers a string representation of this closure object */
 	override method toString() native
+	
+	/** 
+	  * Shows a short, internal representation of a closure 
+	  * 
+	  * Example:
+	  *     { a => a + 1 }.shortDescription()
+	  *         ==> Answers "a Closure { a => a + 1 }"
+	  */
+	override method shortDescription() =
+		"a Closure " + self.toString()
+	
 }
 
 /**
@@ -2416,5 +2427,15 @@ class Date {
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
 		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+
+	/** 
+	  * Shows a short, internal representation of a date 
+	  * 
+	  * Example:
+	  *     new Date(2, 4, 2018).shortDescription()
+	  *         ==> Answers "a Date [2/4/2018]"
+	  */
+	override method shortDescription() =
+		"a Date [" + self.day() + "/" + self.month() + "/" + self.year() + "]"
 
 }

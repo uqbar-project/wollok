@@ -397,6 +397,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
 		variableValues = new HashMap()
+		println("variables " + variables)
 		variables.forEach[variable|variable.collectValues(variableValues)]
 		RunInUI.runInUI [
 			updateDynamicDiagram(variables)

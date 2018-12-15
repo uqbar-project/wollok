@@ -28,6 +28,8 @@ class XDebugStackFrameVariable implements Serializable {
 			new XWollokListDebugValue(object, LIST)
 		else if (object.hasNativeType(SET))
 			new XWollokSetDebugValue(object, SET)
+		else if (object.hasNativeType(DICTIONARY))
+			new XWollokDictionaryDebugValue(object, DICTIONARY)
 		else
 			new XWollokObjectDebugValue(variable.name, object)
 	}

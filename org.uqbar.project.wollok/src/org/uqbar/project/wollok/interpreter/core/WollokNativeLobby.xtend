@@ -94,8 +94,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	override showableInStackTrace() { !interpreter.isRootFile }
 	
 	override showableInDynamicDiagram(String name) {
-		val value = allVariables.get(name)
-		(value === null || !value.behavior.name.toLowerCase.contains("exception"))
+		true
+//		val value = allVariables.get(name)
+//		(value === null || !value.behavior.name.toLowerCase.contains("exception"))
 	}
 	
 }

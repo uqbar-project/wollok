@@ -5,6 +5,9 @@ import java.util.Collections
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import wollok.lang.WCollection
+import wollok.lang.WDictionary
+
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 
 /**
  * Special value for wollok collection.
@@ -18,21 +21,20 @@ abstract class XWollokCollectionDebugValue extends XDebugValue {
 		super(collectionType, System.identityHashCode(collection))
 		var i = 0
 		val result = newArrayList
-		for (e : collection.getElements(concreteNativeType)) {
-			// TODO: Hay que usar el toVariable de XDebugStackFrame porque no lo está agregando
-			// a la colección de variables ni de valores
-			result.add(new XDebugStackFrameVariable(new WVariable(i.variableName, System.identityHashCode(e), false), e))
+		val elements = collection.getElements(concreteNativeType)
+		for (e : elements) {
+			result.add(new XDebugStackFrameVariable(new WVariable(i.getVariableName(collection, concreteNativeType), System.identityHashCode(e), false), e))
 			i++
 		}
 		variables = newArrayList(result)
 	}
 	
-	def getElements(WollokObject object, String concreteNativeType) {
-		val native = object.getNativeObject(concreteNativeType) as WCollection<Collection<WollokObject>>
+	def getElements(WollokObject collection, String concreteNativeType) {
+		val native = collection.getNativeObject(concreteNativeType) as WCollection<Collection<WollokObject>>
 		if (native.wrapped === null) Collections.EMPTY_LIST else native.wrapped
 	}
 
-	def String getVariableName(int i)
+	def String getVariableName(int i, WollokObject collection, String concreteNativeType)
 }
 
 class XWollokListDebugValue extends XWollokCollectionDebugValue {
@@ -41,7 +43,7 @@ class XWollokListDebugValue extends XWollokCollectionDebugValue {
 		super(collection, concreteNativeType, "List")
 	}
 	
-	override getVariableName(int i) {
+	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
 		String.valueOf(i)
 	}
 	
@@ -53,8 +55,26 @@ class XWollokSetDebugValue extends XWollokCollectionDebugValue {
 		super(collection, concreteNativeType, "Set")
 	}
 	
-	override getVariableName(int i) {
+	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
 		""
 	}
 		
+}
+
+class XWollokDictionaryDebugValue extends XWollokCollectionDebugValue {
+	
+	new(WollokObject collection, String concreteNativeType) {
+		super(collection, concreteNativeType, "Dictionary")
+	}
+	
+	override getVariableName(int i, WollokObject collection, String concreteNativeType) {
+		val wrapped = collection.getNativeObject(concreteNativeType) as WDictionary
+		wrapped.keys.get(i).asString
+	}
+
+	override def getElements(WollokObject collection, String concreteNativeType) {
+		val wrapped = collection.getNativeObject(concreteNativeType) as WDictionary
+		if (wrapped === null) Collections.EMPTY_LIST else wrapped.values
+	}
+
 }
