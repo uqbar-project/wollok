@@ -55,6 +55,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.WollokDiagramsPlugin
 import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
@@ -77,6 +78,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	IViewSite site
 
 	// Toolbar - actions
+	CleanAction cleanAction
 	ExportAction exportAction
 	IAction zoomIn
 	IAction zoomOut
@@ -147,6 +149,10 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	def configureToolbar() {
 		getActionRegistry
+
+		cleanAction = new CleanAction => [
+			diagram = this
+		]
 		
 		exportAction = new ExportAction => [
 			viewer = graphicalViewer
@@ -161,6 +167,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			add(zoomIn)
 			add(zoomOut)
 			add(new Separator)
+			add(cleanAction)
 			add(exportAction)
 			add(new Separator)
 		]
@@ -397,7 +404,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
 		variableValues = new HashMap()
-		println("variables " + variables)
 		variables.forEach[variable|variable.collectValues(variableValues)]
 		RunInUI.runInUI [
 			updateDynamicDiagram(variables)
@@ -429,4 +435,9 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	 * 	vm.size = oldShape.size
 	 ]*/
 	}
+	
+	def cleanDiagram() {
+		stateChanged(newArrayList)		
+	}
+	
 }

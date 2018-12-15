@@ -187,6 +187,11 @@ class Object {
 	method toString() {
 		return self.toSmartString([])
 	}
+
+	/**
+	 * Shows a short, internal representation
+	 */
+	method shortDescription() = self.toString()
 	
 	/**
 	 * Provides a visual representation of Wollok Object
