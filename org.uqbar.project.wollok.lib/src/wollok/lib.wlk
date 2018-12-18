@@ -203,13 +203,13 @@ object assert {
 	 * returning the result.
 	 *
 	 * Examples:
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "hola".equals(a.getMessage())}} 
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "hola".equals(ex.getMessage())}} 
 	 *          => Works!.
 	 *
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => new BusinessException("lele").className().equals(a.className())} } 
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => new BusinessException("lele").className().equals(ex.className())} } 
 	 *          => Works again!
 	 *
-	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{a => "chau!".equals(a.getMessage())} } 
+	 *		assert.throwsExceptionByComparing({ => throw new BusinessException("hola"),{ex => "chau!".equals(ex.getMessage())} } 
 	 *          => Doesn't work. The block evaluation resolves to a false value.
 	 */		
 	method throwsExceptionByComparing(block,comparison){

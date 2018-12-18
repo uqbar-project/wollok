@@ -15,7 +15,7 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
 		assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
+		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[ExceptionType], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void;
 
 		InstanceVariableMirror >> "value" === #[] => Any
