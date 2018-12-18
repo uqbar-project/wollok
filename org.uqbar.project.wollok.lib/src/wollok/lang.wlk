@@ -193,7 +193,7 @@ class Object {
 	
 	/**
 	 * Provides a visual representation of Wollok Object
-	 * By default, same as toString but can be overriden
+	 * By default, same as toString but can be overridden
 	 * like in String
 	 */
 	method printString() = self.toString()
@@ -1322,7 +1322,7 @@ class Dictionary {
 	method getOrElse(_key, _closure) {
 		const value = self.basicGet(_key)
 		if (value == null) 
-			return_closure.apply()
+			return _closure.apply()
 		else 
 			return value
 	}

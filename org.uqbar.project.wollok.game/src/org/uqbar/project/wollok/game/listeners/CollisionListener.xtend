@@ -6,7 +6,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 /**
  * 
  */
-class CollisionListener implements GameboardListener {
+class CollisionListener extends GameboardListener {
 	VisualComponent component
 	(VisualComponent)=>Object block
 

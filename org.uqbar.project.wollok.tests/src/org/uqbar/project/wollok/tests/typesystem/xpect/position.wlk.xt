@@ -1,44 +1,26 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+import wollok.game.*
 
 object positionTest {
 	
 	// XPECT methodType at m1 --> (Position, Number) => Number
 	method m1(pos, n) {
-		pos.x(n)
-		return pos.x()
+		return pos.left(n).x()
 	}
 
 	// XPECT methodType at m2 --> (Position, Number) => Number
 	method m2(pos, n) {
-		pos.y(n)
-		return pos.y()
+		return pos.up(n).y()
 	}
 	
 	// XPECT methodType at m3 --> (Number, Number) => Position 
 	method m3(_x, _y) {
 		return new Position(_x, _y)
 	}
-	
-	// XPECT methodType at m4 --> (Position, Number) => Void
-	method m4(pos, n) {
-		pos.moveRight(n)
-	}
-	
-	// XPECT methodType at m5 --> (Position, Number) => Void
-	method m5(pos, n) {
-		pos.moveLeft(n)
-	}
-	
-	// XPECT methodType at m6 --> (Position, Number) => Void
-	method m6(pos, n) {
-		pos.moveUp(n)
-	}
-	
-	// XPECT methodType at m7 --> (Position, Number) => Void
-	method m7(pos, n) {
-		pos.moveDown(n)
-	}
-	
+
+	// XPECT methodType at m4 --> (Position, Number) => Position
+	method m4(pos, n) = pos.right(n).down(n)
+
 	// XPECT methodType at m8 --> (Position, Any) => Void
 	method m8(pos, obj) {
 		pos.drawElement(obj)
@@ -47,11 +29,6 @@ object positionTest {
 	// XPECT methodType at m9 --> (Position, Any) => Void
 	method m9(pos, obj) {
 		pos.drawCharacter(obj)
-	}
-	
-	// XPECT methodType at m10 --> (Position, Any) => Void
-	method m10(pos, obj) {
-		pos.deleteElement(obj)
 	}
 	
 	// XPECT methodType at m11 --> (Any, String) => Void
@@ -80,29 +57,5 @@ object positionTest {
 		const p = new Position()
 		p.clear()
 		return p.toString()
-	}
-	
-	// XPECT methodType at validates --> (Position) => Void
-	method validates(pos) {
-		// XPECT type at validateX --> {() => Void}		
-		const validateX = { pos.validateX() }
-		
-		// XPECT type at validateY --> {() => Void}
-		const validateY = { pos.validateY() } 
-	}
-	
-	// XPECT methodType at moveWothoutEfect --> (Position) => Void
-	method moveWothoutEfect(pos) {
-		// XPECT type at right --> {(Number) => Position}
-		const right = {n => pos.right(n)}
-		
-		// XPECT type at left --> {(Number) => Position}
-		const left = {n => pos.left(n)}
-		
-		// XPECT type at up --> {(Number) => Position}
-		const up = {n => pos.up(n)}
-		
-		// XPECT type at down --> {(Number) => Position}
-		const down = {n => pos.down(n)}
 	}
 }

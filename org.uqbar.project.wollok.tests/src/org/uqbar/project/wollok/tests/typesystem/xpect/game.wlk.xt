@@ -1,4 +1,5 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+import wollok.game.*
 
 object gameTest {
 	
@@ -37,9 +38,10 @@ object gameTest {
 		game.whenCollideDo(obj, action)
 	}
 	
-	// XPECT methodType at m7_2 --> (Number, {() => Void}) => Void
-	method m7_2(n, action) {
-		game.onTick(n, action)
+	// XPECT methodType at m7_2 --> (Number, String, {() => Void}) => Void
+	method m7_2(n, name, action) {
+		game.onTick(n, name, action)
+		game.removeTickEvent(name)
 	}
 	
 	// XPECT methodType at m8 --> (Position) => List<Any>
@@ -128,5 +130,10 @@ object gameTest {
 	// XPECT methodType at m23 --> (Any) => Void
 	method m23(obj) {
 		game.errorReporter(obj) 
+	}
+			
+	// XPECT methodType at m24 --> (String) => Void
+	method m24(file) {
+		game.sound(file) 
 	}
 }	

@@ -29,6 +29,8 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void imageCanBeAccessedByGetterMethod() {
 		'''
+		import wollok.game.*
+		
 		object aVisual {
 			method «convention»() = «image»
 		}
@@ -48,6 +50,8 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void imageCanBeAccessedByProperty() {
 		'''
+		import wollok.game.*
+		
 		object visual {
 			var «convention» = «image»
 		}
@@ -62,6 +66,8 @@ class ImageTest extends AbstractWollokParameterizedInterpreterTest {
 	@Test
 	def void visualsWithoutImageDefaultIsAssigned() {
 		'''
+		import wollok.game.*
+		
 		object visual { }
 		
 		program p {

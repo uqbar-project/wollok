@@ -155,6 +155,7 @@ public class Messages extends NLS {
 	public static String WollokDslValidator_DONT_USE_WKONAME_WITHIN_IT;
 	
 	public static String WollokDslValidator_EXPECTING_BOOLEAN;
+	public static String WollokDslValidator_EXPECTING_BOOLEAN_COMPARING_VS_ASSIGNING;
 	public static String WollokDslValidator_UNNECESSARY_IF;
 	public static String WollokDslValidator_UNNECESSARY_CONDITION;
 	public static String WollokDslValidator_ALWAYS_EVALUATES_TO_FALSE;

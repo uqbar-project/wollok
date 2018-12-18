@@ -6,23 +6,21 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position.variable("x", Number)
 		Position.variable("y", Number)
 		Position.clear
-		Position >> "validateX" === #[] => Void
-		Position >> "validateY" === #[] => Void
-		Position >> "moveRight" === #[Number] => Void
-		Position >> "moveLeft" === #[Number] => Void
-		Position >> "moveUp" === #[Number] => Void
-		Position >> "moveDown" === #[Number] => Void
 		Position >> "right" === #[Number] => Position
 		Position >> "left" === #[Number] => Position
 		Position >> "up" === #[Number] => Position
 		Position >> "down" === #[Number] => Position
 		Position >> "drawElement" === #[Any] => Void
 		Position >> "drawCharacter" === #[Any] => Void
-		Position >> "deleteElement" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
 		Position >> "allElements" === #[] => List.of(Any)
 		Position >> "clone" === #[] => Position
 		Position >> "distance" === #[Position] => Number
+		Position >> "clear" === #[] => Void
+		Position >> "up" === #[Number] => Position
+		Position >> "down" === #[Number] => Position
+		Position >> "left" === #[Number] => Position
+		Position >> "right" === #[Number] => Position
 		Position >> "toString" === #[] => String
 
 		// TODO: getter and setters are implemented because native implementations exist
@@ -37,7 +35,8 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "removeVisual" === #[Any] => Void
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
 		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
-		game >> "onTick" === #[Number, closure(#[], Void)] => Void
+		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void
+		game >> "removeTickEvent" === #[String] => Void
 		game >> "getObjectsIn" === #[Position] => List.of(Any)
 		game >> "say" === #[Any, String] => Void
 		game >> "colliders" === #[Any] => List.of(Any)
@@ -51,6 +50,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "hideAttributes" === #[Any] => Void
 		game >> "showAttributes" === #[Any] => Void
 		game >> "errorReporter" === #[Any] => Void
+		game >> "sound" === #[String] => Void
 
 		keyboard.allMethods === #[] => Key
 		keyboard >> "num" === #[Number] => Key
