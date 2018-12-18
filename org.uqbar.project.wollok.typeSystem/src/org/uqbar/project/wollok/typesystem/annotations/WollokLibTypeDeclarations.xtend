@@ -5,7 +5,7 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		console >> "println" === #[Any] => Void
 		console >> "readLine" === #[] => String
 		console >> "readInt" === #[] => Number
-		console >> "newline" === #[] => Void
+		console >> "newline" === #[] => String
 
 		assertWKO >> "that" === #[Boolean] => Void
 		assertWKO >> "notThat" === #[Boolean] => Void
