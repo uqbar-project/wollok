@@ -141,6 +141,10 @@ abstract class TypeDeclarations {
 	def contains(AnnotationContext C, TypeAnnotation E) {
 		C >> "contains" === #[E] => Boolean
 	}
+	
+	def clear(AnnotationContext C) {
+		C >> "clear" === #[] => Void
+	}
 
 	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
 		it >> property === #[type] => Void

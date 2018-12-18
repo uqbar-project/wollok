@@ -61,10 +61,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "sum" === #[closure(#[E], Number)] => Number;
 	}
 	
-	def clear(AnnotationContext C) {
-		C >> "clear" === #[] => Void
-	}
-	
 	def remove(AnnotationContext C, TypeAnnotation E) {
 		C >> "remove" === #[E] => Void
 	}

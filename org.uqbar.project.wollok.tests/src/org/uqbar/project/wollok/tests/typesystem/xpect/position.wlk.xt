@@ -81,4 +81,28 @@ object positionTest {
 		p.clear()
 		return p.toString()
 	}
+	
+	// XPECT methodType at validates --> (Position) => Void
+	method validates(pos) {
+		// XPECT type at validateX --> {() => Void}		
+		const validateX = { pos.validateX() }
+		
+		// XPECT type at validateY --> {() => Void}
+		const validateY = { pos.validateY() } 
+	}
+	
+	// XPECT methodType at moveWothoutEfect --> (Position) => Void
+	method moveWothoutEfect(pos) {
+		// XPECT type at right --> {(Number) => Position}
+		const right = {n => pos.right(n)}
+		
+		// XPECT type at left --> {(Number) => Position}
+		const left = {n => pos.left(n)}
+		
+		// XPECT type at up --> {(Number) => Position}
+		const up = {n => pos.up(n)}
+		
+		// XPECT type at down --> {(Number) => Position}
+		const down = {n => pos.down(n)}
+	}
 }

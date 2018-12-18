@@ -27,15 +27,20 @@ object gameTest {
 		game.removeVisual(obj)
 	}
 	
-	// XPECT! methodType at m6 --> (Number, {() => Void}) => Void
-//	method m6(key, action) {
-//		game.whenKeyPressedDo(key, action)
-//	}
+	// XPECT methodType at m6 --> (Number, {() => Void}) => Void
+	method m6(key, action) {
+		game.whenKeyPressedDo(key, action)
+	}
 	
-	// XPECT! methodType at m7 --> (Any, {(Any) => Void}) => Void
-//	method m7(obj, action) {
-//		game.whenCollideDo(obj, action)
-//	}
+	// XPECT methodType at m7 --> (Any, {(Any) => Void}) => Void
+	method m7(obj, action) {
+		game.whenCollideDo(obj, action)
+	}
+	
+	// XPECT methodType at m7_2 --> (Number, {() => Void}) => Void
+	method m7_2(n, action) {
+		game.onTick(n, action)
+	}
 	
 	// XPECT methodType at m8 --> (Position) => List<Any>
 	method m8(pos) {
@@ -108,5 +113,20 @@ object gameTest {
 	// XPECT methodType at m21 --> (String) => Void
 	method m21(path) {
 		game.boardGround(path) 
+	}
+			
+	// XPECT methodType at m22 --> (Any) => Void
+	method m22(obj) {
+		game.hideAttributes(obj) 
+	}
+			
+	// XPECT methodType at m23 --> (Any) => Void
+	method m23(obj) {
+		game.showAttributes(obj) 
+	}
+			
+	// XPECT methodType at m23 --> (Any) => Void
+	method m23(obj) {
+		game.errorReporter(obj) 
 	}
 }	
