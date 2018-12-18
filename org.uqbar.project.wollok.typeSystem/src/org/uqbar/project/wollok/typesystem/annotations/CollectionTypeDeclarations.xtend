@@ -17,7 +17,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "contains" === #[E] => Boolean
 
 		C >> "forEach" === #[closure(#[E], Void)] => Void
-		C >> "find" === #[predicate(E)] => E;
 		C >> "all" === #[predicate(E)] => Boolean
 		C >> "any" === #[predicate(E)] => Boolean
 		C >> "find" === #[predicate(E)] => E
@@ -41,14 +40,20 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 
 	//TODO: Define comparables
 	def comparableCollection(AnnotationContext C, TypeAnnotation E) {
-		C >> "min" === #[] => E;
-		C >> "max" === #[] => E;
+		C.basicComparableCollection(E)
 		C >> "min" === #[closure(#[E], Number)] => E;
 		C >> "max" === #[closure(#[E], Number)] => E;
 		C >> "minIfEmpty" === #[closure(#[], E)] => E;
 		C >> "maxIfEmpty" === #[closure(#[], E)] => E;
 		C >> "minIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
 		C >> "maxIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
+	}
+	
+	//TODO: Define comparables
+	def basicComparableCollection(AnnotationContext C, TypeAnnotation E) {
+		C >> "min" === #[] => E;
+		C >> "max" === #[] => E;
+		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
 	}
 
 	//TODO: Define sumables
@@ -84,7 +89,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		
 		C >> "asSet" === #[] => Set.of(E)
 		C >> "occurrencesOf" === #[E] => Number
-		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
 		
 		C >> "copy" === #[] => SelfType.of(E);
 		C >> "newInstance" === #[] => SelfType.of(Any);
@@ -114,9 +118,12 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 	
 	def rangeDeclarations(AnnotationContext R) {
+		R.constructor(Number, Number)
 		R.basicCollection(Number)
+		R.sumableCollection(Number)
+		R.basicComparableCollection(Number)
+		R >> "step" === #[Number] => Void;
 		R >> "filter" === #[predicate(Number)] => List.of(Number);
-		R >> "internalToSmartString" === #[Boolean] => String;
 	}
 	
 	def dictionaryDeclarations(AnnotationContext D, TypeAnnotation K, TypeAnnotation V) {

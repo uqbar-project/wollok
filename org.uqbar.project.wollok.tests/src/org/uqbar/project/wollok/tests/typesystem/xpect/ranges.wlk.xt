@@ -1,0 +1,77 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object rangeTest {
+	// XPECT type at range --> Range
+	const range = new Range(0, 0)
+	
+	method rangeDeclarations() {
+		// XPECT type at rangeConstructor --> {(Number, Number) => Range}
+		const rangeConstructor = {start, end => new Range(start, end)}
+		
+		// XPECT type at step --> {(Number) => Void}
+		const step = {n => range.step(n)}
+		
+		// XPECT type at size --> {() => Number}
+		const size = {range.size()}
+		
+		// XPECT type at isEmpty --> {() => Boolean}
+		const isEmpty = {range.isEmpty()}
+		
+		// XPECT type at asList --> {() => List<Number>}
+		const asList = {range.asList()}
+		
+		// XPECT type at anyOne --> {() => Number}
+		const anyOne = {range.anyOne()}
+		
+		// XPECT type at contains --> {(Number) => Boolean}
+		const contains = {n => range.contains(n)}
+		
+		// XPECT type at forEach --> {({(Number) => Void}) => Void}
+		const forEach = {c => range.forEach(c)}
+		
+		// XPECT type at all --> {({(Number) => Boolean}) => Boolean}
+		const all = {pred => range.all(pred)}
+		
+		// XPECT type at any --> {({(Number) => Boolean}) => Boolean}
+		const any = {pred => range.any(pred)}
+		
+		// XPECT type at find --> {({(Number) => Boolean}) => Number}
+		const find = {pred => range.find(pred)}
+		
+		// XPECT type at findOrDefault --> {({(Number) => Boolean}, Number) => Number}
+		const findOrDefault = {pred, n => range.findOrDefault(pred, n)}
+		
+		// XPECT type at findOrElse --> {({(Number) => Boolean}, {() => Number}) => Number}
+		const findOrElse = {pred, c => range.findOrElse(pred, c)}
+		
+		// XPECT type at count --> {({(Number) => Boolean}) => Number}
+		const count = {pred => range.count(pred)}
+		
+		// XPECT type at filter --> {({(Number) => Boolean}) => List<Number>}
+		const filter = {pred => range.filter(pred)}
+		
+		// XPECT type at map --> List<String>
+		const map = range.map({n => n.toString()})
+		
+		// XPECT! type at flatMap --> List<String>
+//		const flatMap = range.flatMap({n => [n.toString()]})
+		
+		// XPECT type at fold --> String
+		const fold = range.fold("", {acum, n => n.toString()})
+		
+		// XPECT type at sum --> {() => Number}
+		const sum = {range.sum()}
+		
+		// XPECT type at sum --> {({(Number) => Number}) => Number}
+		const sum = {c => range.sum(c)}
+		
+		// XPECT type at min --> {() => Number}
+		const min = {range.min()}
+		
+		// XPECT type at max --> {() => Number}
+		const max = {range.max()}
+		
+		// XPECT type at sortedBy --> {({(Number, Number) => Boolean}) => List<Number>}
+		const sortedBy = {pred => range.sortedBy(pred)}
+	}
+}
