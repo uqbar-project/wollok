@@ -194,6 +194,8 @@ abstract class TypeDeclarations {
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
+	def error() { objectTypeAnnotation(ERROR) }
 
 	def game() { objectTypeAnnotation(GAME) }
 
