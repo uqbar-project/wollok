@@ -10,11 +10,10 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	}
 
 	def basicCollection(AnnotationContext C, TypeAnnotation E) {
-		C.sizedCollection
+		C.sized
+		C.contains(E)
 		C >> "asList" === #[] => List.of(E)
-		
 		C >> "anyOne" === #[] => E
-		C >> "contains" === #[E] => Boolean
 
 		C >> "forEach" === #[closure(#[E], Void)] => Void
 		C >> "all" === #[predicate(E)] => Boolean
@@ -61,11 +60,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "sum" === #[] => Number; //TODO: Should be C<Number>
 		C >> "sum" === #[closure(#[E], Number)] => Number;
 	}
-
-	def sizedCollection(AnnotationContext C) {
-		C >> "size" === #[] => Number
-		C >> "isEmpty" === #[] => Boolean
-	}
 	
 	def clear(AnnotationContext C) {
 		C >> "clear" === #[] => Void
@@ -102,12 +96,13 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		L >> "head" === #[] => E
 		L >> "last" === #[] => E
 		L >> "get" === #[Number] => E
-		L >> "take" === #[Number] => List.of(E)		
-		L >> "drop" === #[Number] => List.of(E)
 		L >> "subList" === #[Number, Number] => List.of(E)
 		L >> "reverse" === #[] => List.of(E)
 		L >> "withoutDuplicates" === #[] => List.of(E)
 		L >> "sortBy" === #[predicate(E, E)] => Void
+		
+		L >> "take" === #[Number] => List.of(E)
+		L >> "drop" === #[Number] => List.of(E)
 	}
 	
 	def setDeclarations(AnnotationContext S, TypeAnnotation E) {
@@ -128,7 +123,7 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	
 	def dictionaryDeclarations(AnnotationContext D, TypeAnnotation K, TypeAnnotation V) {
 		D.clear
-		D.sizedCollection
+		D.sized
 		D.remove(K)
 		D >> "put" === #[K, V] => Void;
 		D >> "get" === #[K] => V; //Throw exception

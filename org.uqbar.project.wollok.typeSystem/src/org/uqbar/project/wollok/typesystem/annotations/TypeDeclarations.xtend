@@ -133,6 +133,15 @@ abstract class TypeDeclarations {
 		(T === T) => Boolean;
 	}
 
+	def sized(AnnotationContext T) {
+		T >> "size" === #[] => Number
+		T >> "isEmpty" === #[] => Boolean
+	}
+	
+	def contains(AnnotationContext C, TypeAnnotation E) {
+		C >> "contains" === #[E] => Boolean
+	}
+
 	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
 		it >> property === #[type] => Void
 		it >> property === #[] => type
