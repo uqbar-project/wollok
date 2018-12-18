@@ -2,13 +2,11 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		(Boolean == Any) => Boolean
 		Boolean >> "||" === #[Boolean] => Boolean
 		Boolean >> "&&" === #[Boolean] => Boolean
 		Boolean >> "and" === #[Boolean] => Boolean
 		Boolean >> "or" === #[Boolean] => Boolean
 		Boolean >> "negate" === #[] => Boolean
-		Boolean >> "toString" === #[] => String;
 
 		PairType.constructor(PKEY, PVALUE)
 		PairType.variable("x", PKEY)
