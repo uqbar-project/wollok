@@ -94,6 +94,18 @@ abstract class TypeDeclarations {
 		new ExpectReturnType(target, receiver.type, "/", #[parameterType])
 	}
 
+	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
+	}
+
+	def operator_power(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "**", #[parameterType])
+	}
+
+	def operator_upTo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "..", #[parameterType])
+	}
+
 	def operator_greaterThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">", #[parameterType])
 	}
@@ -108,10 +120,6 @@ abstract class TypeDeclarations {
 
 	def operator_greaterEqualsThan(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
-	}
-
-	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
-		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
 	}
 
 	// ****************************************************************************

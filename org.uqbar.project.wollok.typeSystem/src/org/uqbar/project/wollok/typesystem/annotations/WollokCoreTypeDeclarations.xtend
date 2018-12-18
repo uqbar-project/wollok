@@ -30,6 +30,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			T >> "toString" === #[] => String;
 			T >> "printString" === #[] => String;
 			T >> "internalToSmartString" === #[Boolean] => String;
+			T >> "simplifiedToSmartString" === #[] => String;
 			T >> "kindName" === #[] => String;
 			T >> "className" === #[] => String;
 			T >> "error" === #[String] => Void;

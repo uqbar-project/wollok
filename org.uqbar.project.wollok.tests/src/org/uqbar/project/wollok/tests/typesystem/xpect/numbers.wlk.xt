@@ -16,7 +16,7 @@ object numberTest {
 		return (a + b) / (a - b) * a
 	}
 
-	// XPECT methodType at m3 --> (Number) => Boolean
+	// XPECT methodType at m3 --> (Object) => Boolean
 	method m3(a) {
 		return a === 2
 	}
@@ -25,15 +25,10 @@ object numberTest {
 	method m4(a) {
 		return 3 == a
 	}
- 
-	// X PECT methodType at m5 --> (Number) => Boolean
-	//method m5(a) {
-	//	return 2 == a
-	//}
 	
-	// XPECT methodType at m6 --> (Number) => String
+	// XPECT methodType at m6 --> (Number) => Number
 	method m6(a) {
-		return (a % 2).toString()
+		return a % 2
 	}
 	
 	// XPECT methodType at m7 --> (Number) => Range
@@ -89,7 +84,7 @@ object numberTest {
 	}
 
 	// XPECT methodType at m21 --> (Number) => Number
-	method m21(a) = a.roundUp()
+	method m21(a) = a.roundUp() + a.randomUpTo(2)
 	
 	// XPECT methodType at m22 --> (Number) => Number
 	method m22(a) = a.truncate(3)
@@ -110,10 +105,11 @@ object numberTest {
 	// XPECT methodType at m26 --> (Number) => Number
 	method m26(a) = a.plus()
 	
-	// XPECT methodType at m27 --> (Number) => Void
+	// XPECT methodType at m27 --> (Number) => Boolean
 	method m27(a) {
 		var b = 0
 		a.times({ i => b = i })
+		return a.isPrime()
 	}
 
 	// XPECT methodType at m28 --> (Number, Boolean) => String
@@ -122,4 +118,6 @@ object numberTest {
 	// XPECT methodType at m29 --> () => String
 	method m29() = 4.4.simplifiedToSmartString()
 	
+	// XPECT methodType at m30 --> (Number) => String
+	method m30(n) = n.stringValue()
 }
