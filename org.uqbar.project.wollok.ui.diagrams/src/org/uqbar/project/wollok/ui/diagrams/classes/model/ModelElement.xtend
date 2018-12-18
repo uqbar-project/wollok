@@ -22,12 +22,12 @@ abstract class ModelElement implements IPropertySource, Serializable {
 	def synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		if (l === null)
 			throw new IllegalArgumentException
-		pcsDelegate.addPropertyChangeListener(l);
+		pcsDelegate.addPropertyChangeListener(l)
 	}
 
 	def firePropertyChange(String property, Object oldValue, Object newValue) {
 		if (pcsDelegate.hasListeners(property))
-			pcsDelegate.firePropertyChange(property, oldValue, newValue);
+			pcsDelegate.firePropertyChange(property, oldValue, newValue)
 	}
 
 	override getEditableValue() {

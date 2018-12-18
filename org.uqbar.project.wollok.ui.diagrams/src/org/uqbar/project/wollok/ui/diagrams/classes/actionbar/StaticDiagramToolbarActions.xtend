@@ -161,19 +161,19 @@ class RememberShapePositionsToggleButton extends Action implements Observer {
 		super(title, AS_CHECK_BOX)
 		this.configuration = configuration
 		this.configuration.addObserver(this)
-		this.checked = configuration.rememberLocationAndSizeShapes
+		this.checked = configuration.isRememberLocationsAndSizes
 		imageDescriptor = ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui/icons/full/ovr16/pinned_ovr@2x.png"))
 	}
 
 	override run() {
-		configuration.rememberLocationAndSizeShapes = !configuration.rememberLocationAndSizeShapes
+		configuration.rememberLocationAndSizeShapes = !configuration.isRememberLocationsAndSizes
 		configuration.initLocationsAndSizes  // just in case we don't want to remember anymore, cleaning up
 		this.update(null, StaticDiagramConfiguration.CONFIGURATION_CHANGED)
 	}
 	
 	override update(Observable o, Object event) {
 		if (event !== null && event.equals(StaticDiagramConfiguration.CONFIGURATION_CHANGED)) {
-			this.checked = configuration.rememberLocationAndSizeShapes
+			this.checked = configuration.isRememberLocationsAndSizes
 		}
 	}
 	

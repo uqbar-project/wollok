@@ -56,6 +56,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.actionbar.ExportAction
 import org.uqbar.project.wollok.ui.diagrams.classes.model.StaticDiagram
 import org.uqbar.project.wollok.ui.diagrams.classes.palette.CustomPalettePage
 import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.CleanAction
+import org.uqbar.project.wollok.ui.diagrams.dynamic.actionbar.RememberObjectPositionAction
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramEditPartFactory
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.ValueEditPart
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
@@ -78,6 +79,7 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	IViewSite site
 
 	// Toolbar - actions
+	RememberObjectPositionAction rememberAction
 	CleanAction cleanAction
 	ExportAction exportAction
 	IAction zoomIn
@@ -91,6 +93,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	CustomPalettePage page
 	PaletteViewerProvider provider
 
+	List<XDebugStackFrameVariable> currentVariables = newArrayList
+	
 	public static Map<String, XDebugStackFrameVariable> variableValues
 
 	new() {
@@ -150,6 +154,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	def configureToolbar() {
 		getActionRegistry
 
+		rememberAction = new RememberObjectPositionAction(this)
+		
 		cleanAction = new CleanAction => [
 			diagram = this
 		]
@@ -166,6 +172,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 			} as String[]))
 			add(zoomIn)
 			add(zoomOut)
+			add(new Separator)
+			add(rememberAction)
 			add(new Separator)
 			add(cleanAction)
 			add(exportAction)
@@ -405,9 +413,8 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
 		variableValues = new HashMap()
 		variables.forEach[variable|variable.collectValues(variableValues)]
-		RunInUI.runInUI [
-			updateDynamicDiagram(variables)
-		]
+		this.currentVariables = variables
+		this.refreshView
 	}
 
 	def void updateDynamicDiagram(Object variables) {
@@ -438,6 +445,13 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	
 	def cleanDiagram() {
 		stateChanged(newArrayList)		
+	}
+	
+	def refreshView() {
+		RunInUI.runInUI [
+			updateDynamicDiagram(this.currentVariables)
+		]
+		
 	}
 	
 }

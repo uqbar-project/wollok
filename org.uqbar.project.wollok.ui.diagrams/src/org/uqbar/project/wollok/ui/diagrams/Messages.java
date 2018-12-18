@@ -28,6 +28,7 @@ public class Messages extends NLS {
 	
 	// Dynamic Diagram - Toolbar actions
 	public static String DynamicDiagram_Clean_Description;
+	public static String DynamicDiagram_RememberObjectPosition_Description;
 	
 	// Tool entries
 	public static String StaticDiagram_CreateAssociation_Title;

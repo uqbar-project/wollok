@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.model.commands
 
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
+
 /**
  * 
  * Create Dependency Command allows to create a new dependency relationship
@@ -14,12 +16,12 @@ class CreateDependencyCommand extends CreateAssociationCommand {
 
 	override canExecute() {
 		if (!super.canExecute()) return false
-		val configuration = sourceContainer.configuration
+		val configuration = sourceContainer.configuration as StaticDiagramConfiguration
 		return configuration !== null && configuration.canAddDependency(sourceContainer, targetContainer)
 	}
 	
 	override execute() {
-		targetContainer.configuration.addDependency(sourceContainer, targetContainer)
+		(targetContainer.configuration as StaticDiagramConfiguration).addDependency(sourceContainer, targetContainer)
 	}
 	
 }
