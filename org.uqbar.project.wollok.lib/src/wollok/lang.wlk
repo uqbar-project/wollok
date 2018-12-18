@@ -1322,7 +1322,7 @@ class Dictionary {
 	method getOrElse(_key, _closure) {
 		const value = self.basicGet(_key)
 		if (value == null) 
-			return _closure.apply()
+			return_closure.apply()
 		else 
 			return value
 	}

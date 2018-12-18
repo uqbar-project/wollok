@@ -187,8 +187,8 @@ class TestList {
 	}
 
 	method selfTypedList() {
-		// XPECT! type at filterList --> {({(Number) => Boolean}) => List<Number>}
-//		const filterList = { cond => list.filter(cond) }
+		// XPECT type at filterList --> {({(Number) => Boolean}) => List<Number>}
+		const filterList = { cond => list.filter(cond) }
 
 		// XPECT! type at plusList --> {(Collection<Number>) => List<Number>}
 //		const plusList = { c => list + c }

@@ -2,30 +2,11 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class CollectionTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		#[Collection, Set, List].forEach [ collectionDeclarations(ELEMENT) ]
-		
-		List >> "first" === #[] => ELEMENT
-		List >> "head" === #[] => ELEMENT
-		List >> "last" === #[] => ELEMENT
-		List >> "get" === #[Number] => ELEMENT
-		List >> "take" === #[Number] => List.of(ELEMENT)		
-		List >> "drop" === #[Number] => List.of(ELEMENT)
-		List >> "subList" === #[Number, Number] => List.of(ELEMENT)
-		List >> "reverse" === #[] => List.of(ELEMENT)
-		List >> "withoutDuplicates" === #[] => List.of(ELEMENT)
-		List >> "sortBy" === #[predicate(ELEMENT, ELEMENT)] => Void
-		
-		Set >> "union" === #[Collection.of(ELEMENT)] => Set.of(ELEMENT)
-		Set >> "intersection" === #[Collection.of(ELEMENT)] => Set.of(ELEMENT)
-		Set >> "difference" === #[Collection.of(ELEMENT)] => Set.of(ELEMENT)
-		
-		Range.basicCollection(Number)
-		Range >> "filter" === #[predicate(Number)] => List.of(Number);
-		Range >> "internalToSmartString" === #[Boolean] => String;
-
-		Dictionary.clear
-		Dictionary.sizedCollection
-		Dictionary >> "forEach" === #[closure(#[DKEY, DVALUE], Void)] => Void;
+		Collection.collectionDeclarations(ELEMENT)
+		List.listDeclarations(ELEMENT)
+		Set.setDeclarations(ELEMENT)
+		Range.rangeDeclarations
+		Dictionary.dictionaryDeclarations(DKEY, DVALUE)
 	}
 
 	def basicCollection(AnnotationContext C, TypeAnnotation E) {
@@ -51,33 +32,11 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 
 	def mutableCollection(AnnotationContext C, TypeAnnotation E) {
 		C.basicCollection(E)
+		C.remove(E)
 		C >> "add" === #[E] => Void
-		C >> "remove" === #[E] => Void
 		C >> "addAll" === #[Collection.of(E)] => Void
 		C >> "removeAll" === #[Collection.of(E)] => Void
 		C >> "removeAllSuchThat" === #[predicate(E)] => Void
-	}
-
-	def collectionDeclarations(AnnotationContext C, TypeAnnotation E) { 
-		C + Collection.of(E) => SelfType.of(E);
-		C.mutableCollection(E)
-		C.comparableCollection(E)
-		C.sumableCollection(E)
-		C.clear
-
-		C >> "toStringPrefix" === #[] => String
-		C >> "toStringSuffix" === #[] => String
-		C >> "join" === #[String] => String
-		C >> "join" === #[] => String
-		
-		C >> "asSet" === #[] => Set.of(E)
-		C >> "occurrencesOf" === #[E] => Number
-		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
-		
-		C >> "copy" === #[] => SelfType.of(E);
-		C >> "newInstance" === #[] => SelfType.of(Any);
-		C >> "filter" === #[predicate(E)] => SelfType.of(E);
-//		C >> "flatten" === #[] => SelfType.of(E); //TODO: Should be C<C<E>>
 	}
 
 	//TODO: Define comparables
@@ -105,5 +64,73 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	
 	def clear(AnnotationContext C) {
 		C >> "clear" === #[] => Void
+	}
+	
+	def remove(AnnotationContext C, TypeAnnotation E) {
+		C >> "remove" === #[E] => Void
+	}
+
+	def collectionDeclarations(AnnotationContext C, TypeAnnotation E) { 
+		C + Collection.of(E) => SelfType.of(E);
+		C.mutableCollection(E)
+		C.comparableCollection(E)
+		C.sumableCollection(E)
+		C.clear
+
+		C >> "toStringPrefix" === #[] => String
+		C >> "toStringSuffix" === #[] => String
+		C >> "join" === #[String] => String
+		C >> "join" === #[] => String
+		
+		C >> "asSet" === #[] => Set.of(E)
+		C >> "occurrencesOf" === #[E] => Number
+		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
+		
+		C >> "copy" === #[] => SelfType.of(E);
+		C >> "newInstance" === #[] => SelfType.of(Any);
+		C >> "filter" === #[predicate(E)] => SelfType.of(E);
+//		C >> "flatten" === #[] => SelfType.of(E); //TODO: Should be C<C<E>>
+	}
+	
+	def listDeclarations(AnnotationContext L, TypeAnnotation E) {
+		L.collectionDeclarations(E)
+		L >> "first" === #[] => E
+		L >> "head" === #[] => E
+		L >> "last" === #[] => E
+		L >> "get" === #[Number] => E
+		L >> "take" === #[Number] => List.of(E)		
+		L >> "drop" === #[Number] => List.of(E)
+		L >> "subList" === #[Number, Number] => List.of(E)
+		L >> "reverse" === #[] => List.of(E)
+		L >> "withoutDuplicates" === #[] => List.of(E)
+		L >> "sortBy" === #[predicate(E, E)] => Void
+	}
+	
+	def setDeclarations(AnnotationContext S, TypeAnnotation E) {
+		S.collectionDeclarations(E)
+		S >> "union" === #[Collection.of(E)] => Set.of(E)
+		S >> "intersection" === #[Collection.of(E)] => Set.of(E)
+		S >> "difference" === #[Collection.of(E)] => Set.of(E)
+	}
+	
+	def rangeDeclarations(AnnotationContext R) {
+		R.basicCollection(Number)
+		R >> "filter" === #[predicate(Number)] => List.of(Number);
+		R >> "internalToSmartString" === #[Boolean] => String;
+	}
+	
+	def dictionaryDeclarations(AnnotationContext D, TypeAnnotation K, TypeAnnotation V) {
+		D.clear
+		D.sizedCollection
+		D.remove(K)
+		D >> "put" === #[K, V] => Void;
+		D >> "get" === #[K] => V; //Throw exception
+		D >> "basicGet" === #[K] => V; //Nullable
+		D >> "getOrElse" === #[K, closure(#[], V)] => V;
+		D >> "containsKey" === #[K] => Boolean;
+		D >> "containsValue" === #[V] => Boolean;
+		D >> "keys" === #[] => List.of(K);
+		D >> "values" === #[] => List.of(V);
+		D >> "forEach" === #[closure(#[K, V], Void)] => Void;
 	}
 }
