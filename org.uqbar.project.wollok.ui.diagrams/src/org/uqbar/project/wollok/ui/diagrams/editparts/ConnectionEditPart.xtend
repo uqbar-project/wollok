@@ -35,7 +35,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			lineStyle = castedModel.lineStyle
 			
 			if (castedModel.name !== null)
-				add(new Label(castedModel.name) => [ opaque = true ], new MidpointLocator(it, 0))
+				add(new Label(castedModel.name) => [ opaque = true ], new ReferenceLocator(it))
 		]
 	}
 	
