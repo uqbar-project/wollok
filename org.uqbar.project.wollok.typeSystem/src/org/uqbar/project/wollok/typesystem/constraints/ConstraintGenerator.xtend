@@ -56,6 +56,7 @@ class ConstraintGenerator {
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
 	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
 	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
+	UnaryOperationsConstraintsGenerator unaryOperationsConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
@@ -64,6 +65,8 @@ class ConstraintGenerator {
 		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
 		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
+		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
+		this.unaryOperationsConstraintsGenerator = new UnaryOperationsConstraintsGenerator(typeSystem)
 	}
 
 	// ************************************************************************
@@ -214,13 +217,8 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
-		if (feature.equals("!") || feature.equals("not")) {
-			newTypeVariable.beSealed(classType(BOOLEAN))
-		}
-		if (feature.equals("+") || feature.equals("-")) {
-			newTypeVariable.beSealed(classType(NUMBER))
-		}
 		operand.generateVariables
+		unaryOperationsConstraintsGenerator.generate(it)
 	}
 
 	def dispatch void generate(WPostfixOperation it) {

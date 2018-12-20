@@ -39,6 +39,8 @@ object booleanConditionError {
 	// XPECT methodType at m9 --> () => String
 	method m9() = rules.a().toString()
 	
+	// XPECT methodType at m10 --> (Boolean) => Boolean
+	method m10(b) = !b
 }
 
 object rules {
