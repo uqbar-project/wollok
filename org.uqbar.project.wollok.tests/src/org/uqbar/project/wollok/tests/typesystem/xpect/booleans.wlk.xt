@@ -32,9 +32,12 @@ object booleanConditionError {
 
 	// XPECT methodType at m7 --> () => Boolean
 	method m7() = !(a > 0)
+
+	// XPECT methodType at m8 --> () => Boolean
+	method m8() = not (a > 0)
 	
-	// XPECT methodType at m8 --> () => String
-	method m8() = rules.a().toString()
+	// XPECT methodType at m9 --> () => String
+	method m9() = rules.a().toString()
 	
 }
 

@@ -120,4 +120,10 @@ object numberTest {
 	
 	// XPECT methodType at m30 --> (Number) => String
 	method m30(n) = n.stringValue()
+	
+	// XPECT methodType at m31 --> () => Number
+	method m31() = -1
+	
+	// XPECT methodType at m32 --> () => Number
+	method m32() = +1
 }

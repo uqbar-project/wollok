@@ -214,8 +214,11 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
-		if (feature.equals("!")) {
+		if (feature.equals("!") || feature.equals("not")) {
 			newTypeVariable.beSealed(classType(BOOLEAN))
+		}
+		if (feature.equals("+") || feature.equals("-")) {
+			newTypeVariable.beSealed(classType(NUMBER))
 		}
 		operand.generateVariables
 	}
