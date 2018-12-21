@@ -1,5 +1,28 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.xpect.WollokXPectTest END_SETUP */
 
+class Arma {
+   method artefacto()
+}
+
+class EspadaConcreta inherits Arma {
+   const property artefacto = new Object()
+}
+
+class EspadaAbstracta inherits Arma {}
+
+class A {
+	method m1(x)
+}
+
+class B inherits A {
+	var property m1
+}
+
+class C inherits A {
+	const property m1
+}
+
+
 describe "group of tests" {
 	
 	var valor = 4
@@ -20,5 +43,23 @@ describe "group of tests" {
 		// XPECT errors --> "Property are only allowed in objects, classes and mixins" at "property"
 		var property localVariable = 0
 		assert.notEquals(3, cuatro)
+	}
+	
+	test "no se puede instanciar una clase a la que le falta implementar métodos abstractos" {
+		// XPECT errors --> "Class EspadaAbstracta cannot be instantiated because it has abstract methods: artefacto() (required by Arma)" at "EspadaAbstracta"
+		assert.notEquals(null, new EspadaAbstracta())
+		
+		// XPECT errors --> "Class C cannot be instantiated because it has abstract methods: m1(x) (required by A)" at "C"
+		assert.notEquals(null, new C())
+	}
+	
+	test "se puede instanciar una clase que define una const property como implementación de un método abstracto" {
+		assert.notEquals(null, new EspadaConcreta().artefacto())
+	}
+	
+	test "se puede instanciar una clase que define una var property como implementación de un método abstracto" {
+		const b = new B()
+		b.m1(5)
+		assert.notEquals(5, b.m1())
 	}
 }
