@@ -91,7 +91,8 @@ abstract class AbstractMethodContainerEditPart extends AbstractLanguageElementEd
 	override getTargetConnectionAnchor(ConnectionEditPart connection) { 
 		connection.mappedConnectionAnchor
 	}
-	
+
+	// NO LO USA EL ROOT VARIABLE	
 	def ConnectionAnchor mappedConnectionAnchor(ConnectionEditPart connection) {
 		val anchor = connectionAnchors.get(connection)
 		if (anchor !== null) return anchor

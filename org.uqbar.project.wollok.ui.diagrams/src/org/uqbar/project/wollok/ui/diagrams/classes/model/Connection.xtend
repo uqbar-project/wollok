@@ -30,7 +30,7 @@ class Connection extends ModelElement {
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
 		this.identifier = source?.toString + target.toString
-		this.name = name
+		this.name = name.split("\\.").last
 		this.relationType = relationType
 		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()

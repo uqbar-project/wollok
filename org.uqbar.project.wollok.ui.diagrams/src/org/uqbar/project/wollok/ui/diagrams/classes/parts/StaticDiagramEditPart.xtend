@@ -52,8 +52,6 @@ class StaticDiagramEditPart extends AbstractGraphicalEditPart implements Propert
 	
 	def createConnectionRouter(FreeformLayer f) {
 		new SquareConnectionRouter
-//		new ManhattanConnectionRouter
-//		new ShortestPathConnectionRouter(f)
 	}
 
 	override deactivate() {

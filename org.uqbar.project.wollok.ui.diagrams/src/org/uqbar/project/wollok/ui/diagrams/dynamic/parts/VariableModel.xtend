@@ -37,7 +37,7 @@ class VariableModel extends Shape {
 	static Map<String, VariableModel> allVariables = new HashMap()
 
 	static int WIDTH_SIZE = 140
-	static int WIDTH_MARGIN = 70
+	static int WIDTH_MARGIN = 100
 	static int MIN_WIDTH = 25
 	static int LETTER_WIDTH = 12
 	static int MAX_ELEMENT_WIDTH = 200
@@ -62,13 +62,13 @@ class VariableModel extends Shape {
 	}
 
 	static def VariableModel getVariableModelFor(IVariable variable, int level) {
-		var variableModel = org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel.allVariables.get(variable.toString)
+		var variableModel = VariableModel.allVariables.get(variable.toString)
 		// quick way to determine if we should re-draw the shape
 		if (variableModel === null) {
 			variableModel = new VariableModel(variable, level)
 			// toString is in fact the identifier of the variable
 			// hacked way to avoid duplicates
-			org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel.allVariables.put(variable.toString, variableModel)
+			VariableModel.allVariables.put(variable.toString, variableModel)
 		}
 		variableModel => [
 			shapeHeightHandler.addVariableModel(it, level)
@@ -78,9 +78,9 @@ class VariableModel extends Shape {
 	
 	public static def initVariableShapes() {
 		shapeHeightHandler = new ShapeHeightHandler()
-		org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel.allVariables = new HashMap()
+		VariableModel.allVariables = new HashMap()
 	}
-
+	
 	def int childrenSizeForHeight() {
 		if (variable.value === null) 1 else variable.value.variables.size
 	}
@@ -95,19 +95,11 @@ class VariableModel extends Shape {
 		variable.value.variables.get(index)
 	}
 
-	def int nextLocationForChild() {
-		this.bounds.top.y
-	}
-	
-	def int nextLocationForSibling() {
-		val allChildrenSize = (childrenSizeForHeight * DEFAULT_HEIGHT) / 2
-		allChildrenSize + nextLocationForChild + this.size.height + PADDING
-	}
-	
 	def void calculateInitialLocation(int level) {
 		val manualValue = configuration.getLocation(this)
 		if (manualValue === null) {
-			this.location = new Point(WIDTH_MARGIN + level * WIDTH_SIZE, shapeHeightHandler.getHeight(this))
+			val originalLocation = new Point(WIDTH_MARGIN + level * WIDTH_SIZE, shapeHeightHandler.getHeight(this))
+			this.location = originalLocation
 		} else {
 			this.location = manualValue
 		}
@@ -192,21 +184,43 @@ class VariableModel extends Shape {
 	override toString() {
 		"VariableModel " + this.variable.toString + " = " + this.valueString
 	}
+
+	def int nextLocationForSibling() {
+		val allChildrenSize = (childrenSizeForHeight * DEFAULT_HEIGHT) / 2
+		allChildrenSize + nextLocationForChild + this.size.height + PADDING
+	}
+
+	def int nextLocationForChild() {
+		this.YItShouldHave
+	}
+
+	def int getYItShouldHave() {
+		shapeHeightHandler.getYItShouldHave(this)
+	}
 	
+	def int y() {
+		this.bounds.top.y
+	}
+
+	def int getYValueForAnchor() {
+		YItShouldHave + (this.size.height / 2) - PADDING
+	}
+
 }
 
 class ShapeHeightHandler {
 	List<VariableModel> rootVariables = newArrayList
-	Map<IVariable, VariableModel> allVariables = new HashMap()
-	Map<IVariable, VariableModel> allParents = newHashMap()
+	Map<IVariable, Map<IVariable, Integer>> allSizes = newHashMap
+	Map<IVariable, List<VariableModel>> allParents = newHashMap
+	Map<IVariable, Integer> parentsVisited = newHashMap
+	static val int PADDING = 20
 	
 	def getHeight(VariableModel variableModel) {
 		variableModel.currentHeight
 	}
 	
 	def int getCurrentHeight(VariableModel variableModel) {
-		allVariables.put(variableModel.variable, variableModel)
-		val parent = allParents.get(variableModel.variable)
+		val parent = allParents.get(variableModel.variable)?.last
 		var height = 0
 		// TODO: Generate two strategies for root variables and non-root ones
 		if (parent === null) {
@@ -217,24 +231,48 @@ class ShapeHeightHandler {
 				height = sibling.nextLocationForSibling
 			}
 		} else {
-			height = parent.nextLocationForChild 
+			val mapParent = allSizes.get(parent.variable) as Map<IVariable, Integer> ?: newHashMap
+			height = parent.nextLocationForChild
 			val upTo = parent.indexOfChild(variableModel)
 			val hasPrevious = upTo > 0
 			if (hasPrevious) {
-				val previousSibling = allVariables.get(parent.getChild(upTo - 1))
-				height = previousSibling.nextLocationForSibling
+				val parentVariable = allSizes.get(parent.variable)
+				// TODO: Meter un mapa IVariable => VariableModel y pedirle nextSibling
+				val originalHeight = parentVariable.get(parent.getChild(upTo - 1)) ?: parent.y
+				height = originalHeight + PADDING + 80
+				allSizes.get(parent.variable).put(variableModel.variable, height)
 			}
+			mapParent.put(variableModel.variable, new Integer(height))
+			parentsVisited.get(variableModel.variable)
 		}
 		return height
 	}
 
+	def getYItShouldHave(VariableModel variableModel) {
+		val parents = allParents.get(variableModel.variable)
+		val index = parentsVisited.get(variableModel.variable)
+		if (parents === null || parents.size >= index) {
+			return variableModel.y
+		}
+		val parent = parents.get(index)
+		if (parent === null) {
+			variableModel.y
+		} else {
+			allSizes.get(parent.variable).get(variableModel.variable)
+		}
+	}
+	
 	def addVariableModel(VariableModel variableModel, int level) {
 		variableModel.variable.value.variables.forEach [
-			allParents.put(it, variableModel)
+			val variables = allParents.get(it) as List<VariableModel> ?: newArrayList
+			variables.add(variableModel)
+			allParents.put(it, variables)
+			allSizes.put(variableModel.variable, newHashMap)
+			parentsVisited.put(it, 0)
 		]
 		if (level === 0) {
 			rootVariables.add(variableModel)
 		}
 	}
-	
+
 }
