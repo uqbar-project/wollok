@@ -15,6 +15,7 @@ import org.uqbar.project.wollok.ui.diagrams.classes.model.RelationType
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
 import org.uqbar.project.wollok.ui.diagrams.dynamic.DynamicDiagramView
 import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
+import static extension org.uqbar.project.wollok.ui.diagrams.dynamic.parts.DynamicDiagramUtils.*
 
 /**
  * 
@@ -36,15 +37,6 @@ class VariableModel extends Shape {
 	 */
 	static Map<String, VariableModel> allVariables = new HashMap()
 
-	static int WIDTH_SIZE = 140
-	static int WIDTH_MARGIN = 100
-	static int MIN_WIDTH = 25
-	static int LETTER_WIDTH = 12
-	static int MAX_ELEMENT_WIDTH = 200
-	static int PADDING = 10
-
-	public static int DEFAULT_HEIGHT = 65		
-	
 	IVariable variable
 	int level
 	int brothers = 0
@@ -82,9 +74,9 @@ class VariableModel extends Shape {
 	}
 	
 	def int childrenSizeForHeight() {
-		if (variable.value === null) 1 else variable.value.variables.size
+		variable.childrenSizeForHeight
 	}
-	
+
 	def int indexOfChild(VariableModel v) {
 		if (variable.value === null) return -1
 		variable.value.variables.indexOf(v.variable)	
@@ -186,10 +178,9 @@ class VariableModel extends Shape {
 	}
 
 	def int nextLocationForSibling() {
-		val allChildrenSize = (childrenSizeForHeight * DEFAULT_HEIGHT) / 2
-		allChildrenSize + nextLocationForChild + this.size.height + PADDING
+		variable.nextLocationForSibling(nextLocationForChild, this.size.height)
 	}
-
+	
 	def int nextLocationForChild() {
 		this.YItShouldHave
 	}
@@ -213,14 +204,15 @@ class ShapeHeightHandler {
 	Map<IVariable, Map<IVariable, Integer>> allSizes = newHashMap
 	Map<IVariable, List<VariableModel>> allParents = newHashMap
 	Map<IVariable, Integer> parentsVisited = newHashMap
-	static val int PADDING = 20
+	Map<IVariable, VariableModel> allVariables = newHashMap
 	
 	def getHeight(VariableModel variableModel) {
 		variableModel.currentHeight
 	}
 	
 	def int getCurrentHeight(VariableModel variableModel) {
-		val parent = allParents.get(variableModel.variable)?.last
+		var current = parentsVisited.get(variableModel.variable)		
+		val parent = allParents.get(variableModel.variable)?.get(current)
 		var height = 0
 		// TODO: Generate two strategies for root variables and non-root ones
 		if (parent === null) {
@@ -236,14 +228,19 @@ class ShapeHeightHandler {
 			val upTo = parent.indexOfChild(variableModel)
 			val hasPrevious = upTo > 0
 			if (hasPrevious) {
-				val parentVariable = allSizes.get(parent.variable)
-				// TODO: Meter un mapa IVariable => VariableModel y pedirle nextSibling
-				val originalHeight = parentVariable.get(parent.getChild(upTo - 1)) ?: parent.y
-				height = originalHeight + PADDING + 80
-				allSizes.get(parent.variable).put(variableModel.variable, height)
+				val siblingVariable = parent.getChild(upTo - 1)
+				val originalHeight = mapParent.get(siblingVariable) ?: parent.y
+				val sibling = allVariables.get(siblingVariable)
+				height = nextLocationForSibling(siblingVariable, originalHeight, sibling.size.height)
+				// Previous
+				// val parentVariable = allSizes.get(parent.variable)
+				//val originalHeight = parentVariable.get(parent.getChild(upTo - 1)) ?: parent.y
+				//height = originalHeight + PADDING + 80
+				current++
+				parentsVisited.put(variableModel.variable, current)
 			}
+			allSizes.get(parent.variable).put(variableModel.variable, height)
 			mapParent.put(variableModel.variable, new Integer(height))
-			parentsVisited.get(variableModel.variable)
 		}
 		return height
 	}
@@ -263,11 +260,13 @@ class ShapeHeightHandler {
 	}
 	
 	def addVariableModel(VariableModel variableModel, int level) {
+		allSizes.put(variableModel.variable, newHashMap)
+		allVariables.put(variableModel.variable, variableModel)
 		variableModel.variable.value.variables.forEach [
 			val variables = allParents.get(it) as List<VariableModel> ?: newArrayList
 			variables.add(variableModel)
 			allParents.put(it, variables)
-			allSizes.put(variableModel.variable, newHashMap)
+			allSizes.put(it, newHashMap)
 			parentsVisited.put(it, 0)
 		]
 		if (level === 0) {
