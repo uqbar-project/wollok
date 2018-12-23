@@ -33,7 +33,7 @@
 	<properties>
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.11.0</xtext.version>
+		<xtext.version>2.12.0</xtext.version>
 
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
