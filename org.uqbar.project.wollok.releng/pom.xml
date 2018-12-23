@@ -106,7 +106,7 @@
 							<artifactId>org.eclipse.emf.codegen</artifactId>
 							<version>2.11.0</version>
 						</dependency>
-					</dependencies>				
+					</dependencies>
 					<executions>
 						<execution>
 							<goals>

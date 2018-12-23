@@ -238,7 +238,7 @@ class ShapeHeightHandler {
 				//height = originalHeight + PADDING + 80
 				current++
 				parentsVisited.put(variableModel.variable, current)
-			}
+			}	
 			allSizes.get(parent.variable).put(variableModel.variable, height)
 			mapParent.put(variableModel.variable, new Integer(height))
 		}
