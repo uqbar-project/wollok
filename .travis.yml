@@ -1,8 +1,8 @@
 language: java
-dist: trusty
+dist: precise
 sudo: false
 jdk:
-- openjdk8
+- oraclejdk8
 before_install:
 - df -h
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
