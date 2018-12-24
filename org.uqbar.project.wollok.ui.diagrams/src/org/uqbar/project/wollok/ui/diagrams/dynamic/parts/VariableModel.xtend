@@ -102,12 +102,12 @@ class VariableModel extends Shape {
 		if (manualValue !== null) return manualValue
 
 		if (isNumeric)
-			new Dimension(50, 50)
+			new Dimension(50, DEFAULT_HEIGHT)
 		else if (isCollection)
-			new Dimension(50, 25)
+			new Dimension(50, 30)
 		else {
 			val size = Math.max(Math.min(valueString.length * LETTER_WIDTH, MAX_ELEMENT_WIDTH), MIN_WIDTH)
-			new Dimension(size, Math.min(size, 55))
+			new Dimension(size, Math.min(size, DEFAULT_HEIGHT))
 		}
 	}
 	
@@ -232,10 +232,6 @@ class ShapeHeightHandler {
 				val originalHeight = mapParent.get(siblingVariable) ?: parent.y
 				val sibling = allVariables.get(siblingVariable)
 				height = nextLocationForSibling(siblingVariable, originalHeight, sibling.size.height)
-				// Previous
-				// val parentVariable = allSizes.get(parent.variable)
-				//val originalHeight = parentVariable.get(parent.getChild(upTo - 1)) ?: parent.y
-				//height = originalHeight + PADDING + 80
 				current++
 				parentsVisited.put(variableModel.variable, current)
 			}	
