@@ -229,12 +229,13 @@ class ShapeHeightHandler {
 			val hasPrevious = upTo > 0
 			if (hasPrevious) {
 				val siblingVariable = parent.getChild(upTo - 1)
-				val originalHeight = mapParent.get(siblingVariable) ?: parent.y
+				val originalHeight = mapParent.get(siblingVariable) ?: parent.y + (DEFAULT_HEIGHT * upTo)
 				val sibling = allVariables.get(siblingVariable)
-				height = nextLocationForSibling(siblingVariable, originalHeight, sibling.size.height)
+				val siblingHeight = if (sibling === null) DEFAULT_HEIGHT else sibling.size.height
+				height = nextLocationForSibling(siblingVariable, originalHeight, siblingHeight)
 				current++
 				parentsVisited.put(variableModel.variable, current)
-			}	
+			}
 			allSizes.get(parent.variable).put(variableModel.variable, height)
 			mapParent.put(variableModel.variable, new Integer(height))
 		}
@@ -258,6 +259,7 @@ class ShapeHeightHandler {
 	def addVariableModel(VariableModel variableModel, int level) {
 		allSizes.put(variableModel.variable, newHashMap)
 		allVariables.put(variableModel.variable, variableModel)
+		parentsVisited.put(variableModel.variable, 0)
 		variableModel.variable.value.variables.forEach [
 			val variables = allParents.get(it) as List<VariableModel> ?: newArrayList
 			variables.add(variableModel)

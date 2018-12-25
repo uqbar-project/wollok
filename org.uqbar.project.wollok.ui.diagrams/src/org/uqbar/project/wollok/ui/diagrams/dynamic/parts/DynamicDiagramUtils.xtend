@@ -14,7 +14,8 @@ class DynamicDiagramUtils {
 	static def int nextLocationForSibling(IVariable variable, Integer y, Integer height) {
 		val allChildrenSize = variable.childrenSizeForHeight
 		val calculatedHeightBasedOnChild = Math.max(1, allChildrenSize) * (DEFAULT_HEIGHT + PADDING)
-		calculatedHeightBasedOnChild + y + PADDING
+		val int halfPadding = PADDING / 2
+		calculatedHeightBasedOnChild + y + halfPadding
 	}
 
 	static def int childrenSizeForHeight(IVariable variable) {
