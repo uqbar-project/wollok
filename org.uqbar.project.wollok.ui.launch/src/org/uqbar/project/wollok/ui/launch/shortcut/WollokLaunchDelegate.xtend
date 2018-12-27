@@ -15,12 +15,14 @@ import org.eclipse.ui.console.ConsolePlugin
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
+import static org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
@@ -44,6 +46,14 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {
+		
+		if (configuration.hasRepl) {
+			// TODO: Add configuration
+			RunInUI.runInUI [
+				openView("org.uqbar.project.wollok.ui.diagrams.object")
+			]
+		}
+			
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}

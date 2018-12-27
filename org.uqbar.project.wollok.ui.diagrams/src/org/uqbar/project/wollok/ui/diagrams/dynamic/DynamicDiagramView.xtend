@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.diagrams.dynamic
 
 import java.util.ArrayList
 import java.util.Collections
-import java.util.HashMap
 import java.util.List
 import java.util.Map
 import org.eclipse.debug.core.model.IStackFrame
@@ -63,12 +62,16 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.launch.Activator
 
+import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+
 /**
  * 
  * @author jfernandes
  * @author dodain - REPL integration
  */
 class DynamicDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer, XContextStateListener {
+	public static String NAME = "org.uqbar.project.wollok.ui.diagrams.object"
+	
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
 	SelectionSynchronizer synchronizer
@@ -100,6 +103,12 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	new() {
 		editDomain = new DefaultEditDomain(null)
 //		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
+	}
+
+	def static activate() {
+		RunInUI.runInUI [
+		    DynamicDiagramView.NAME.openView
+		]
 	}
 
 	override init(IViewSite site) throws PartInitException {
@@ -392,9 +401,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	// posta
 	override setStackFrame(IStackFrame stackframe) {
 		updateDynamicDiagram(stackframe)
-	// tweak layout
-//		val newNodes = newModels.filter[!alreadyDisplaying.contains(it)].toList
-//		relocateSolitaryNodes(newNodes)
 	}
 
 	def getEditPart() { graphicalViewer.contents }
@@ -411,7 +417,10 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	}
 
 	override stateChanged(List<XDebugStackFrameVariable> variables) {
-		variableValues = new HashMap()
+		if (splitter.disposed) {
+			return
+		}
+		variableValues = newHashMap
 		variables.forEach[variable|variable.collectValues(variableValues)]
 		this.currentVariables = variables
 		this.refreshView

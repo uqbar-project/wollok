@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
+import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
@@ -54,7 +55,15 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 	def doLaunch(IFile currFile, String mode) {
 		try {
 			locateRunner(currFile)
-			getOrCreateConfig(currFile).launch(mode)
+			val config = getOrCreateConfig(currFile)
+			// TODO: Add configuration and extract to an extension method in order to avoid
+			// duplicates
+			if (config.hasRepl) {
+				RunInUI.runInUI [
+					openView("org.uqbar.project.wollok.ui.diagrams.object")
+				]
+			}		
+			config.launch(mode)
 			currFile.refreshProject
 		} catch (CoreException e)
 			MessageDialog.openError(null, PROBLEM_LAUNCHING_WOLLOK, e.message)
