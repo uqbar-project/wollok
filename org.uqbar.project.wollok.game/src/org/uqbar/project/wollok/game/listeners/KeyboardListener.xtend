@@ -4,7 +4,7 @@ import org.uqbar.project.wollok.game.gameboard.Gameboard
 import org.uqbar.project.wollok.game.helpers.Keyboard
 import org.uqbar.project.wollok.game.VisualComponent
 
-class KeyboardListener implements GameboardListener {
+class KeyboardListener extends GameboardListener {
 
 	var keyboard = Keyboard.instance
 	int key

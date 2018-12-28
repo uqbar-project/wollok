@@ -85,6 +85,8 @@ abstract class AbstractWollokInterpreterTestCase extends Assert {
 	
 	def test(CharSequence testCode) {
 	    '''
+	    import wollok.game.*
+	    
 	    program a {
     		«testCode»
 	    } 

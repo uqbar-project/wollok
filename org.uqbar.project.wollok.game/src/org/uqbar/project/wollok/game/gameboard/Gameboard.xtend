@@ -1,6 +1,7 @@
 package org.uqbar.project.wollok.game.gameboard;
 
 import java.util.Collection
+
 import java.util.List
 import org.apache.log4j.Logger
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -11,6 +12,14 @@ import org.uqbar.project.wollok.game.helpers.Application
 import org.uqbar.project.wollok.game.listeners.ArrowListener
 import org.uqbar.project.wollok.game.listeners.GameboardListener
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
+
+import static org.uqbar.project.wollok.sdk.WollokDSK.*
+
+import static extension org.uqbar.project.wollok.interpreter.nativeobj.WollokJavaConversions.*
+import org.eclipse.osgi.util.NLS
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
+import java.util.Map
 
 @Accessors
 class Gameboard {
@@ -29,6 +38,7 @@ class Gameboard {
 	List<GameboardListener> listeners = newArrayList
 	VisualComponent character
 	@Accessors(NONE) VisualComponent errorReporter
+	Map<String, Sound> audioFiles = <String, Sound>newHashMap
 		
 	def static getInstance() {
 		if (instance === null) {
@@ -125,6 +135,14 @@ class Gameboard {
 		listeners.add(aListener)
 	}
 	
+	def removeListener(String listenerName) {
+		val listener = listeners.findFirst([ name.equals(listenerName) ])
+		if (listener === null) {
+			throw new WollokProgramExceptionWrapper(evaluator.newInstance(EXCEPTION, NLS.bind(Messages.WollokGame_ListenerNotFound, listenerName).javaToWollok))
+		}
+		listeners.remove(listener)
+	}
+	
 	def remove(VisualComponent component) {
 		components.remove(component)
 		listeners.removeIf[it.isObserving(component)]
@@ -145,5 +163,17 @@ class Gameboard {
 	def VisualComponent errorReporter() {
 		errorReporter ?: somebody
 	}
+
+	def sound(String audioFile) {
+		audioFile.fetchSound.play(1.0f)
+	}
 	
+	def fetchSound(String audioFile) {
+		var sound = audioFiles.get(audioFile)
+		if (sound === null) {
+			sound = Gdx.audio.newSound(Gdx.files.internal(audioFile))
+			audioFiles.put(audioFile, sound)
+		}
+		sound
+	}
 }

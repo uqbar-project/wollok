@@ -74,7 +74,7 @@ import static org.uqbar.project.wollok.WollokConstants.*
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
 
 /**
  * Extension methods to Wollok semantic model.
@@ -573,6 +573,11 @@ class WollokModelExtensions {
 
 	def static catchesBefore(WCatch it) { tri.catchBlocks.subList(0, tri.catchBlocks.indexOf(it)) }
 
+	def static hasReturnType(WMethodDeclaration it) {
+		expression.containsReturnExpression // Method contains at least one return expression
+		|| expressionReturns // Compact method, no return required.
+	}
+	
 	// *******************************
 	// ** Boolean evaluation
 	// *******************************
@@ -741,7 +746,7 @@ class WollokModelExtensions {
 	def static dispatch expectsExpression(WMemberFeatureCall c) { true }
 
 	def static redefinesSendingOnlySuper(WMethodDeclaration m) {
-		if(m.overridenMethod === null) return false
+		if(m.overriddenMethod === null) return false
 		if(m.expressionReturns) return m.expression.callsToSuperWith(m)
 		val methodBody = m.expression.eContents
 		methodBody.size == 1 && methodBody.head.callsToSuperWith(m)

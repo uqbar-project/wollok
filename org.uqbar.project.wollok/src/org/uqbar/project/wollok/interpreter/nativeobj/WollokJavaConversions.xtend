@@ -85,7 +85,7 @@ class WollokJavaConversions {
 	def static dispatch isNativeType(WollokObject o, String type) { o.hasNativeType(type) }
 
 	def static WollokObject javaToWollok(Object o) {
-		if (o == null) return null
+		if (o === null) return null
 		convertJavaToWollok(o)
 	}
 

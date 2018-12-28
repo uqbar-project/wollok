@@ -176,6 +176,25 @@ class MethodTypeInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 			assertMethodSignature("(Number) => Void", 'GolondrinaIneficiente.comer')
 		]
 	}
+	
+	@Test
+	def void testMethodInferredFromSuperMethodWithSuperInvocation() {
+		'''
+			class Golondrina {
+				var energia = 100
+				method comer(gramos) {
+					energia = energia + gramos 
+				}
+			}
+			class GolondrinaIneficiente inherits Golondrina {
+				override method comer(gramos) { super(gramos - 10) }
+			}
+		'''.parseAndInfer.asserting [
+			noIssues
+			assertMethodSignature("(Number) => Void", 'Golondrina.comer')
+			assertMethodSignature("(Number) => Void", 'GolondrinaIneficiente.comer')
+		]
+	}
 
 	// Method Calls
 	@Test

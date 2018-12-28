@@ -13,6 +13,9 @@ program p {
 	// XPECT type at algo -->  Any	
 	var algo
 	
+	// XPECT type at obj -->  {  }
+	var obj = object { }
+
 	// XPECT type at nullable -->  Any
 	var nullable = null
 }
