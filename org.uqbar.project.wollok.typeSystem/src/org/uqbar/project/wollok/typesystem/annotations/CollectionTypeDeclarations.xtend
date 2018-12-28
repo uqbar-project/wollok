@@ -46,6 +46,8 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "maxIfEmpty" === #[closure(#[], E)] => E;
 		C >> "minIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
 		C >> "maxIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
+		/* privates */
+		C >> "absolute" === #[closure(#[E], Number), closure(#[Number, Number], Boolean), closure(#[], E)] => E;
 	}
 	
 	//TODO: Define comparables
@@ -72,8 +74,6 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C.sumableCollection(E)
 		C.clear
 
-		C >> "toStringPrefix" === #[] => String
-		C >> "toStringSuffix" === #[] => String
 		C >> "join" === #[String] => String
 		C >> "join" === #[] => String
 		
@@ -84,6 +84,10 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "newInstance" === #[] => SelfType.of(Any);
 		C >> "filter" === #[predicate(E)] => SelfType.of(E);
 //		C >> "flatten" === #[] => SelfType.of(E); //TODO: Should be C<C<E>>
+		
+		/* privates */
+		C >> "toStringPrefix" === #[] => String
+		C >> "toStringSuffix" === #[] => String
 	}
 	
 	def listDeclarations(AnnotationContext L, TypeAnnotation E) {

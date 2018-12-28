@@ -121,6 +121,10 @@ class TestCollection {
 		// XPECT type at sortedBy --> {({(String, String) => Boolean}) => List<String>}
 		const sortedBy = { predicate => strings.sortedBy(predicate) }
 		
+		
+		// XPECT type at absolute --> {({(String) => Number}, {(Number, Number) => Boolean}, {() => String}) => String}
+		const absolute = { comparable, criteria, IfEmpty => strings.absolute (comparable, criteria, IfEmpty) }
+		
 	}
 	
 	method sumableCollection() { 
