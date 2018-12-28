@@ -1,6 +1,5 @@
 package org.uqbar.project.wollok.tests.typesystem
 
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
@@ -41,7 +40,6 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 	}
 
 	@Test
-	@Ignore
 	def void add() {
 		'''
 		program p {
@@ -51,6 +49,49 @@ class CollectionInferenceTestCase extends AbstractWollokTypeSystemTestCase {
 		}
 		'''.parseAndInfer.asserting [
 			assertTypeOf(classTypeFor(NUMBER), "firstOfNumbers")
+		]
+	}
+
+	@Test
+	def void listSelfType() {
+		'''
+		program p {
+			const l = [1,2,3]
+			const pares = l.filter({ n => n.even() })
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List<Number>", "l")
+			assertTypeOfAsString("List<Number>", "pares")
+		]
+	}
+	
+	@Test
+	def void setSelfType() {
+		'''
+		program p {
+			const l = #{1,2,3}
+			const pares = l.filter({ n => n.even() })
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("Set<Number>", "l")
+			assertTypeOfAsString("Set<Number>", "pares")
+		]
+	}
+	
+	@Test
+	def void bothSelfType() {
+		'''
+		program p {
+			const l = [1,2,3]
+			const lPares = l.filter({ n => n.even() })
+			const s = #{"1"}
+			const sPares = s.filter({ n => n > "2" })
+		}
+		'''.parseAndInfer.asserting [
+			assertTypeOfAsString("List<Number>", "l")
+			assertTypeOfAsString("List<Number>", "lPares")
+			assertTypeOfAsString("Set<String>", "s")
+			assertTypeOfAsString("Set<String>", "sPares")
 		]
 	}
 }

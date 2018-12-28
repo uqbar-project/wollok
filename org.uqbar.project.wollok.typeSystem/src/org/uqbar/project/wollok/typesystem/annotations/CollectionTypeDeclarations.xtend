@@ -52,14 +52,14 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 	
 	//TODO: Define comparables
 	def basicComparableCollection(AnnotationContext C, TypeAnnotation E) {
-		C >> "min" === #[] => E;
-		C >> "max" === #[] => E;
+		C >> "min" === #[] => E; //TODO: Should be C<Comparable>
+		C >> "max" === #[] => E; //TODO: Should be C<Comparable>
 		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
 	}
 
 	//TODO: Define sumables
 	def sumableCollection(AnnotationContext C, TypeAnnotation E) {
-		C >> "sum" === #[] => Number; //TODO: Should be C<Number>
+		C >> "sum" === #[] => Number; //TODO: Should be C<Comparable>
 		C >> "sum" === #[closure(#[E], Number)] => Number;
 	}
 	
