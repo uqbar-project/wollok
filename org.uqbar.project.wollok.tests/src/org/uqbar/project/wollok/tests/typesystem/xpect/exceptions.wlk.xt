@@ -38,3 +38,14 @@ object exceptionTest {
 	// XPECT methodType at createStackTraceElement --> (Exception, String, String) => StackTraceElement
 	method createStackTraceElement(e, contextDescription, location) = e.createStackTraceElement(contextDescription, location)
 }
+
+
+
+object stackTraceElementTest {
+	
+	// XPECT methodType at contextDescription --> (StackTraceElement) => String
+	method contextDescription(stackTraceElement) = stackTraceElement.contextDescription()
+	
+	// XPECT methodType at location --> (StackTraceElement) => String
+	method location(stackTraceElement) = stackTraceElement.location()
+}
