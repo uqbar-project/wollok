@@ -38,8 +38,8 @@ class NumberTypeDeclarations extends TypeDeclarations {
 		Number >> "stringValue" === #[] => String
 		Number >> "times" === #[closure(#[Number], Void)] => Void;
 		
-		//Private
-		Number >> "coerceToInteger" === #[] => Number;
-		Number >> "checkNotNull" === #[Any, String] => Void; //Why Any?
+		/* privates */
+		Number >> "checkNotNull" === #[Any, String] => Void //TODO: Any or Number?
+		Number >> "coerceToInteger" === #[] => Number
 	}
 }

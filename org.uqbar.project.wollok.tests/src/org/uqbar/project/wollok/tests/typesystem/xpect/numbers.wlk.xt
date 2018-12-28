@@ -112,7 +112,7 @@ object numberTest {
 		return a.isPrime()
 	}
 
-	// XPECT methodType at m28 --> (Number, Boolean) => String
+	// XPECT methodType at m28 --> (Number, List<Object>) => String
 	method m28(n, b) = n.coerceToInteger().internalToSmartString(b)
 	
 	// XPECT methodType at m29 --> () => String

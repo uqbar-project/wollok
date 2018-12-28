@@ -131,7 +131,6 @@ abstract class TypeDeclarations {
 		(T < T) => Boolean;
 		(T <= T) => Boolean;
 		(T >= T) => Boolean;
-		(T === T) => Boolean;
 	}
 
 	def sized(AnnotationContext T) {
