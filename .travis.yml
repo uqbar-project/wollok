@@ -6,12 +6,6 @@ jdk:
 before_install:
 - df -h
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
-- echo '******************'
-- echo $encrypted_1cc7b892dc78_key
-- echo $encrypted_1cc7b892dc78_iv
-- echo '******************'
-- cat settings.xml
-- echo '******************'
 - mv settings.xml ~/.m2/settings.xml
 script:
 # Creates the correct profile to run
