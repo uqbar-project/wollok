@@ -20,6 +20,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider
 import org.eclipse.xtext.ui.editor.IURIEditorOpener
 import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider
 import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator
@@ -43,6 +44,8 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	public static val BUNDLE_NAME = "org.uqbar.project.wollok.ui.messages"
 	public static val POINT_STARTUP_ID = "org.uqbar.project.wollok.ui.startup"
 
+	public static String DYNAMIC_DIAGRAM_VIEW_ID = "org.uqbar.project.wollok.ui.diagrams.object"
+
 	@Accessors @Inject
 	IResourceValidator validator
 
@@ -58,6 +61,9 @@ class WollokActivator extends org.uqbar.project.wollok.ui.internal.WollokActivat
 	@Accessors @Inject 
 	MultiLineCommentDocumentationProvider multilineProvider
 
+	@Accessors @Inject
+	IPreferenceStoreAccess preferenceStoreAccess
+	
 	Map<String, List<Issue>> mapIssues = new HashMap
 
 	def static WollokActivator getInstance() {

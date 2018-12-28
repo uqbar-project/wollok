@@ -15,17 +15,16 @@ import org.eclipse.ui.console.ConsolePlugin
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.launch.WollokLauncherParameters
-import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.console.WollokReplConsole
 import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.preferences.WollokNumbersConfigurationBlock
 
 import static org.uqbar.project.wollok.launch.io.IOUtils.*
-import static org.uqbar.project.wollok.utils.WEclipseUtils.*
 
 import static extension org.uqbar.project.wollok.ui.launch.WollokLaunchConstants.*
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
 
 /**
  * Launches the process to execute the interpreter.
@@ -38,6 +37,7 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
  * @author jfernandes
  */
 class WollokLaunchDelegate extends JavaLaunchDelegate {
+	
 	@Inject
 	IPreferenceStoreAccess preferenceStoreAccess
 
@@ -46,14 +46,9 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 
 	override launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 		IProgressMonitor monitor) throws CoreException {
-		
-		if (configuration.hasRepl) {
-			// TODO: Add configuration
-			RunInUI.runInUI [
-				openView("org.uqbar.project.wollok.ui.diagrams.object")
-			]
-		}
-			
+
+		configuration.activateDynamicDiagramIfNeeded(preferenceStoreAccess)
+
 		if (mode.isDebug && configuration.getAttribute(ATTR_REFRESH_SCOPE, null as String) !== null) {
 			DebugPlugin.getDefault.addDebugEventListener(createListener(configuration))
 		}
@@ -80,18 +75,20 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		}
 	}
 
-	def configureLaunchSettings(ILaunchConfiguration config, String mode) {
+	def configureLaunchSettings(ILaunchConfiguration configuration, String mode) {
+		val result = configuration.getWorkingCopy
+		result.setAttribute(ATTR_WOLLOK_DYNAMIC_DIAGRAM, preferenceStoreAccess.dynamicDiagramActivated)
 		if (mode.isDebug) {
 			val requestPort = findFreePort
 			val eventPort = findFreePort
-			config.getWorkingCopy => [
+			result => [
 				setCommandPort(requestPort)
 				setEventPort(eventPort)
 				setArguments(requestPort, eventPort)
 				doSave
 			]
 		} else {
-			config.getWorkingCopy => [
+			result => [
 				setArguments(0, 0)
 				doSave
 			]
@@ -106,9 +103,10 @@ class WollokLaunchDelegate extends JavaLaunchDelegate {
 		parameters.severalFiles = config.severalFiles
 		parameters.folder = config.folder
 		parameters.hasRepl = config.hasRepl
+		parameters.dynamicDiagramActivated = preferenceStoreAccess.dynamicDiagramActivated
 		parameters.libraries = config.libraries
 
-		if (config.hasRepl) {
+		if (config.hasRepl && preferenceStoreAccess.dynamicDiagramActivated) {
 			parameters.dynamicDiagramPort = Activator.getDefault.wollokDynamicDiagramListeningPort
 		}
 

@@ -25,6 +25,7 @@ class WollokLauncherParameters {
 	Integer eventsPort = null
 	List<String> wollokFiles = newArrayList
 	boolean hasRepl = false
+	boolean dynamicDiagramActivated = false
 	Integer testPort = null
 	Integer dynamicDiagramPort = null
 	boolean jsonOutput = false
@@ -42,10 +43,13 @@ class WollokLauncherParameters {
 	def build() {
 		val sb = new StringBuilder
 		if (hasRepl) sb.append("-r").append(" ")
+		if (hasRepl && dynamicDiagramActivated) sb.append("-dd").append(" ")
 		sb.appendIfNotNull(requestsPort, "requestsPort")
 		sb.appendIfNotNull(eventsPort, "eventsPort")
 		sb.appendIfNotNull(testPort, "testPort")
-		sb.appendIfNotNull(dynamicDiagramPort, "dynamicDiagramPort")
+		if (hasRepl && dynamicDiagramActivated) {
+			sb.appendIfNotNull(dynamicDiagramPort, "dynamicDiagramPort")
+		}
 		if (tests) sb.append("-t ")
 		if (severalFiles) sb.append("-severalFiles ")
 		sb.appendIfNotNull(folder, "folder")
@@ -81,6 +85,7 @@ class WollokLauncherParameters {
 		val cmdLine = parser.parse(options, args, false)
 		
 		hasRepl = cmdLine.hasOption("r")
+		dynamicDiagramActivated = cmdLine.hasOption("dd")
 		
 		tests = cmdLine.hasOption("t")
 		testPort = parseParameterInt(cmdLine, "testPort")
@@ -179,6 +184,7 @@ class WollokLauncherParameters {
 	def options() {
 		new Options => [
 			addOption(new Option("r", Messages.WollokLauncherOptions_REPL) => [longOpt = "repl"])
+			addOption(new Option("dd", Messages.WollokLauncherOptions_DYNAMIC_DIAGRAM_ACTIVATED) => [longOpt = "dynamicDiagramActivated"])
 			addOption(new Option("t", Messages.WollokLauncherOptions_RUNNING_TESTS) => [longOpt = "tests"])
 			addOption(new Option("jsonOutput", Messages.WollokLauncherOptions_JSON_TEST_OUTPUT))
 			addOption(new Option("noAnsiFormat", Messages.WollokLauncherOptions_DISABLE_COLORS_REPL))

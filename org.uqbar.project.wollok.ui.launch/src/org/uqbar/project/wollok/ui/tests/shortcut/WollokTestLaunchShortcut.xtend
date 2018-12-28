@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
  * @author tesonep
  */
 class WollokTestLaunchShortcut extends WollokLaunchShortcut {
+	
 	override createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_TEST_CONFIGURATION_TYPE.configType
 		val runConfiguration = cfgType.newInstance(null, info.generateUniqueName)

@@ -62,15 +62,12 @@ import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 import org.uqbar.project.wollok.ui.diagrams.editparts.ConnectionEditPart
 import org.uqbar.project.wollok.ui.launch.Activator
 
-import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-
 /**
  * 
  * @author jfernandes
  * @author dodain - REPL integration
  */
 class DynamicDiagramView extends ViewPart implements ISelectionListener, ISourceViewerAware, IPartListener, ISelectionProvider, ISelectionChangedListener, IStackFrameConsumer, XContextStateListener {
-	public static String NAME = "org.uqbar.project.wollok.ui.diagrams.object"
 	
 	DefaultEditDomain editDomain
 	GraphicalViewer graphicalViewer
@@ -103,12 +100,6 @@ class DynamicDiagramView extends ViewPart implements ISelectionListener, ISource
 	new() {
 		editDomain = new DefaultEditDomain(null)
 //		editDomain.paletteRoot = ClassDiagramPaletterFactory.create
-	}
-
-	def static activate() {
-		RunInUI.runInUI [
-		    DynamicDiagramView.NAME.openView
-		]
 	}
 
 	override init(IViewSite site) throws PartInitException {

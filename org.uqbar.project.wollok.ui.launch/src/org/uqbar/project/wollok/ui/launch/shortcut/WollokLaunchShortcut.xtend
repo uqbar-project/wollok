@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Display
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.Messages
 import org.uqbar.project.wollok.launch.WollokLauncher
-import org.uqbar.project.wollok.ui.console.RunInUI
 import org.uqbar.project.wollok.ui.launch.Activator
 import org.uqbar.project.wollok.ui.launch.WollokLaunchConstants
 
@@ -31,6 +30,9 @@ import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtens
 import static extension org.uqbar.project.wollok.ui.libraries.WollokLibrariesStore.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import static extension org.uqbar.project.wollok.ui.launch.shortcut.LauncherExtensions.*
+
+import org.uqbar.project.wollok.ui.WollokActivator
 
 /**
  * Launches a "run" or "debug" configuration (already existing or creates one)
@@ -41,6 +43,7 @@ import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
  * @author jfernandes
  */
 class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
+	
 	ILaunchManager launchManager = DebugPlugin.getDefault.launchManager
 
 	override launch(IFile currFile, String mode) {
@@ -56,13 +59,7 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		try {
 			locateRunner(currFile)
 			val config = getOrCreateConfig(currFile)
-			// TODO: Add configuration and extract to an extension method in order to avoid
-			// duplicates
-			if (config.hasRepl) {
-				RunInUI.runInUI [
-					openView("org.uqbar.project.wollok.ui.diagrams.object")
-				]
-			}		
+			config.activateDynamicDiagramIfNeeded(WollokActivator.instance.preferenceStoreAccess)
 			config.launch(mode)
 			currFile.refreshProject
 		} catch (CoreException e)
@@ -78,7 +75,6 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 		])
 		val wc = config.getWorkingCopy
 		wc.setAttribute(WollokLaunchConstants.ATTR_WOLLOK_IS_REPL, this.hasRepl)
-		// It returns the modified launch config
 		wc.doSave
 	}
 
@@ -105,9 +101,9 @@ class WollokLaunchShortcut extends AbstractFileLaunchShortcut {
 
 	def createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_CONFIGURATION_TYPE.configType
-		val x = cfgType.newInstance(null, info.generateUniqueName)
-		configureConfiguration(x, info)
-		x.doSave
+		val configuration = cfgType.newInstance(null, info.generateUniqueName)
+		configureConfiguration(configuration, info)
+		configuration.doSave
 	}
 
 	def configureConfiguration(ILaunchConfigurationWorkingCopy it, LaunchConfigurationInfo info) {
@@ -147,7 +143,7 @@ class LaunchConfigurationInfo {
 		name = file.name
 		project = file.project.name
 		this.file = file.projectRelativePath.toString
-		libs =  getProject(project).libPaths.toList
+		libs = getProject(project).libPaths.toList
 	}
 
 	def configEquals(ILaunchConfiguration a) throws CoreException {
