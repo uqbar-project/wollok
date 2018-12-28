@@ -20,9 +20,14 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 
 		error >> "throwWithMessage" === #[String] => Void;
 
-		InstanceVariableMirror >> "value" === #[] => Any
+		InstanceVariableMirror.constructor(Object, String) 
+		InstanceVariableMirror.variable("name", String)  
+		InstanceVariableMirror >> "value" === #[] => Any //TODO: should return variable type
+		InstanceVariableMirror >> "valueToSmartString" === #[List.of(Object)] => String
 
 		StringPrinter >> "println" === #[Any] => Void
 		StringPrinter >> "getBuffer" === #[] => String
+		
+		runtime >> "isInteractive" === #[] => Boolean
 	}
 }

@@ -65,6 +65,7 @@ class WollokDSK {
 	public static val ERROR = "wollok.lib.error"
 	public static val GAME = "wollok.game.game"
 	public static val KEYBOARD = "wollok.game.keyboard"
+	public static val RUNTIME = "wollok.vm.runtime"
 	
 	def static WollokObject getVoid(WollokInterpreter i, EObject context) {
 		(i.evaluator as WollokInterpreterEvaluator).getWKObject(VOID, context)

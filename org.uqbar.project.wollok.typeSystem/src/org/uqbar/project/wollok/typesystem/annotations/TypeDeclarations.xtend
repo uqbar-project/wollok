@@ -6,13 +6,13 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
+import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import org.uqbar.project.wollok.typesystem.UnionType
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -202,6 +202,8 @@ abstract class TypeDeclarations {
 	def error() { objectTypeAnnotation(ERROR) }
 
 	def game() { objectTypeAnnotation(GAME) }
+	
+	def runtime() { objectTypeAnnotation(RUNTIME) }
 
 	def keyboard() { objectTypeAnnotation(KEYBOARD) }
 

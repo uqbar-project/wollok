@@ -41,7 +41,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			/* introspection */
 			T >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
 			T >> "instanceVariableFor" === #[String] => InstanceVariableMirror
-			T >> "resolve" === #[String] => Any //TODO: should return the variable type
+			T >> "resolve" === #[String] => Any //TODO: should return variable type
 		]
 	}
 }
