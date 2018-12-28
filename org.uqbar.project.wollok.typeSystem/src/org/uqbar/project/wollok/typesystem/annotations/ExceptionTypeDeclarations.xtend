@@ -10,8 +10,13 @@ class ExceptionTypeDeclarations extends TypeDeclarations {
 		ExceptionType >> "getStackTrace" === #[] => List.of(String)
 		ExceptionType >> "getMessage" === #[] => String
 		ExceptionType >> "getCause" === #[] => ExceptionType
-		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement //TODO: private methods?
+		/* privates */
+		ExceptionType >> "printStackTrace" === #[unionType(console, StringPrinter)] => Void
+		ExceptionType >> "printStackTraceWithPrefix" === #[String, unionType(console, StringPrinter)] => Void
+		ExceptionType >> "createStackTraceElement" === #[String, String] => StackTraceElement
 		
-		//TODO: StackTraceElement? Because seems like a "private" class
+		//TODO: Properties!
+//		StackTraceElement >> "contextDescription" === #[] => String
+//		StackTraceElement >> "location" === #[] => String
 	}
 }

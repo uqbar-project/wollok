@@ -26,9 +26,15 @@ object exceptionTest {
 	// XPECT methodType at getStackTraceAsString --> (Exception) => String
 	method getStackTraceAsString(e) = e.getStackTraceAsString()
 
-	// XPECT methodType at printStackTrace --> (Exception) => Void
-	method printStackTrace(e) = e.printStackTrace()
+	// XPECT methodType at printStackTrace1 --> (Exception) => Void
+	method printStackTrace1(e) = e.printStackTrace()
 
+	// XPECT methodType at printStackTrace2 --> (Exception, (StringPrinter|console)) => Void
+	method printStackTrace2(e, printer) = e.printStackTrace(printer)
+	
+	// XPECT methodType at printStackTraceWithPrefix --> (Exception, String, (StringPrinter|console)) => Void
+	method printStackTraceWithPrefix(e, prefix, printer) = e.printStackTraceWithPrefix(prefix, printer)
+	
 	// XPECT methodType at createStackTraceElement --> (Exception, String, String) => StackTraceElement
 	method createStackTraceElement(e, contextDescription, location) = e.createStackTraceElement(contextDescription, location)
 }

@@ -12,6 +12,7 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import org.uqbar.project.wollok.typesystem.UnionType
 
 abstract class TypeDeclarations {
 	TypeDeclarationTarget target
@@ -222,6 +223,8 @@ abstract class TypeDeclarations {
 	def classTypeAnnotation(String classFQN) { new ConcreteTypeAnnotation(types.classType(context, classFQN)) }
 
 	def objectTypeAnnotation(String objectFQN) { new ConcreteTypeAnnotation(types.objectType(context, objectFQN)) }
+	
+	def unionType(SimpleTypeAnnotation<ConcreteType>... annotations) { new SimpleTypeAnnotation(new UnionType(annotations.map[type])) }
 
 	def genericTypeAnnotation(String classFQN, String... typeParameterNames) {
 		new GenericTypeAnnotationFactory(types.genericType(context, classFQN, typeParameterNames))
