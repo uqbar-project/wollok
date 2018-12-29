@@ -1,13 +1,14 @@
 language: java
 dist: trusty
-sudo: true
+sudo: false
 jdk:
 - oraclejdk8
 before_install:
 - df -h
 - openssl aes-256-cbc -K $encrypted_1cc7b892dc78_key -iv $encrypted_1cc7b892dc78_iv -in settings.xml.enc -out settings.xml -d
 # must replace for this when settings.xml.enc is ok
-- mv settings.xml ~/.m2/settings.xml
+#- mv settings.xml ~/.m2/settings.xml
+- mv settingsPosta.xml ~/.m2/settings.xml
 
 script:
 # Creates the correct profile to run
