@@ -6,28 +6,60 @@
             <id>uqbar-releases</id>
             <username>mvn@uqbar-wiki.org</username>
             <password>repomaven88</password>
+            <configuration>
+                <httpConfiguration>
+                    <put>
+                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
+                    </put>
+                </httpConfiguration>
+            </configuration>            
         </server>
         <server>
             <id>uqbar-snapshots</id>
             <username>mvn@uqbar-wiki.org</username>
             <password>repomaven88</password>
+            <configuration>
+                <httpConfiguration>
+                    <put>
+                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
+                    </put>
+                </httpConfiguration>
+            </configuration>            
         </server>
         <server>
             <id>sites-uqbar-project.org</id>
             <username>sites@uqbar-wiki.org</username>
             <password>diego1986</password>
+            <configuration>
+                <httpConfiguration>
+                    <put>
+                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
+                    </put>
+                </httpConfiguration>
+            </configuration>            
         </server>
         <server>
             <id>p2-uqbar</id>
             <username>update@uqbar-wiki.org</username>
             <password>Goyco1990</password>
+            <configuration>
+                <httpConfiguration>
+                    <put>
+                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
+                    </put>
+                </httpConfiguration>
+            </configuration>            
         </server>
         <server>
             <id>downloads-uqbar</id>
             <username>download@uqbar-wiki.org</username>
             <password>Goyco1990</password>
             <configuration>
-                <timeout>120000</timeout> <!-- milliseconds -->
+                <httpConfiguration>
+                    <put>
+                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
+                    </put>
+                </httpConfiguration>
             </configuration>
         </server>
     </servers>
@@ -68,5 +100,5 @@
     <activeProfiles>
         <activeProfile>uqbar-wiki</activeProfile>
     </activeProfiles>
- </settings>
+</settings>
  
