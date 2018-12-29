@@ -7,11 +7,7 @@
             <username>mvn@uqbar-wiki.org</username>
             <password>repomaven88</password>
             <configuration>
-                <httpConfiguration>
-                    <put>
-                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
-                    </put>
-                </httpConfiguration>
+                <timeout>1200000</timeout> <!-- milliseconds -->
             </configuration>            
         </server>
         <server>
@@ -19,11 +15,7 @@
             <username>mvn@uqbar-wiki.org</username>
             <password>repomaven88</password>
             <configuration>
-                <httpConfiguration>
-                    <put>
-                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
-                    </put>
-                </httpConfiguration>
+                <timeout>1200000</timeout> <!-- milliseconds -->
             </configuration>            
         </server>
         <server>
@@ -31,11 +23,7 @@
             <username>sites@uqbar-wiki.org</username>
             <password>diego1986</password>
             <configuration>
-                <httpConfiguration>
-                    <put>
-                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
-                    </put>
-                </httpConfiguration>
+                <timeout>1200000</timeout> <!-- milliseconds -->
             </configuration>            
         </server>
         <server>
@@ -43,11 +31,7 @@
             <username>update@uqbar-wiki.org</username>
             <password>Goyco1990</password>
             <configuration>
-                <httpConfiguration>
-                    <put>
-                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
-                    </put>
-                </httpConfiguration>
+                <timeout>1200000</timeout> <!-- milliseconds -->
             </configuration>            
         </server>
         <server>
@@ -55,12 +39,8 @@
             <username>download@uqbar-wiki.org</username>
             <password>Goyco1990</password>
             <configuration>
-                <httpConfiguration>
-                    <put>
-                        <connectionTimeout>1200000</connectionTimeout> <!-- milliseconds -->
-                    </put>
-                </httpConfiguration>
-            </configuration>
+                <timeout>1200000</timeout> <!-- milliseconds -->
+            </configuration>            
         </server>
     </servers>
     <profiles>
