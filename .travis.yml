@@ -18,6 +18,7 @@ script:
   export PROFILES="uploadRepo,uploadProducts"; export UPDATE_SITE="stable" ; fi
 - echo "Running with profiles $PROFILES"
 
+
 # Maven build
 - export MAVEN_OPTS=-Xmx2048m
 - mvn -e -Darguments='-Dtycho.disableP2Mirrors=true' -Dtycho.disableP2Mirrors=true -U -DupdateSiteFolder=$UPDATE_SITE -DTRAVIS_JOB_ID=$TRAVIS_JOB_ID clean install
