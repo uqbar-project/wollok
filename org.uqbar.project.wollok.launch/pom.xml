@@ -153,8 +153,7 @@
 								</goals>
 								<configuration>
 									<fromDir>${products.path}</fromDir>
-									<!--  includes>**-wdk.zip</includes-->
-									<includes>pom.xml</includes>
+									<includes>**-wdk.zip</includes>
 									<toDir>/wollok/sdk/${updateSiteFolder}</toDir>
 									<url>${ftp.url}</url>
 									<serverId>downloads-uqbar</serverId>
