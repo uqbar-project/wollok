@@ -154,7 +154,7 @@
 								<configuration>
 									<fromDir>${products.path}</fromDir>
 									<!--  includes>**-wdk.zip</includes-->
-									<includes>**-p2artifacts.xml</includes>
+									<includes>**.pom</includes>
 									<toDir>/wollok/sdk/${updateSiteFolder}</toDir>
 									<url>${ftp.url}</url>
 									<serverId>downloads-uqbar</serverId>
