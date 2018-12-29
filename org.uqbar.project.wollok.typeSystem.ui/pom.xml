@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
-    <groupId>org.uqbar-project</groupId>
-    <artifactId>wollok-parent</artifactId>
-    <version>1.7.2-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+		<groupId>org.uqbar-project</groupId>
+		<artifactId>wollok-parent</artifactId>
+		<version>1.7.2-SNAPSHOT</version>
+	</parent>
 
 	<artifactId>org.uqbar.project.wollok.typeSystem.ui</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -45,7 +45,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				</dependencies>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 

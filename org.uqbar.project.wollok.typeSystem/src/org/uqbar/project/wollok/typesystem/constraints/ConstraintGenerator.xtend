@@ -4,10 +4,12 @@ import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
+import org.uqbar.project.wollok.wollokDsl.Import
 import org.uqbar.project.wollok.wollokDsl.WAssignment
 import org.uqbar.project.wollok.wollokDsl.WBinaryOperation
 import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WBooleanLiteral
+import org.uqbar.project.wollok.wollokDsl.WCatch
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WClosure
 import org.uqbar.project.wollok.wollokDsl.WConstructor
@@ -19,14 +21,21 @@ import org.uqbar.project.wollok.wollokDsl.WListLiteral
 import org.uqbar.project.wollok.wollokDsl.WMemberFeatureCall
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 import org.uqbar.project.wollok.wollokDsl.WNumberLiteral
+import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WPostfixOperation
 import org.uqbar.project.wollok.wollokDsl.WProgram
 import org.uqbar.project.wollok.wollokDsl.WReturnExpression
 import org.uqbar.project.wollok.wollokDsl.WSelf
+import org.uqbar.project.wollok.wollokDsl.WSelfDelegatingConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WSetLiteral
 import org.uqbar.project.wollok.wollokDsl.WStringLiteral
+import org.uqbar.project.wollok.wollokDsl.WSuperDelegatingConstructorCall
+import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
+import org.uqbar.project.wollok.wollokDsl.WThrow
+import org.uqbar.project.wollok.wollokDsl.WTry
 import org.uqbar.project.wollok.wollokDsl.WUnaryOperation
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
@@ -35,12 +44,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.visitors.ReturnFinderVisitor.containsReturnExpression
-import org.uqbar.project.wollok.wollokDsl.Import
-import org.uqbar.project.wollok.wollokDsl.WThrow
-import org.uqbar.project.wollok.wollokDsl.WTry
-import org.uqbar.project.wollok.wollokDsl.WCatch
-import org.uqbar.project.wollok.wollokDsl.WNullLiteral
 
 /**
  * @author npasserini
@@ -51,12 +54,16 @@ class ConstraintGenerator {
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
 	ConstructorConstraintsGenerator constructorConstraintsGenerator
+	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
+	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
 		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
+		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
+		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
@@ -89,7 +96,7 @@ class ConstraintGenerator {
 	def void generateVariables(EObject it) {
 		try {
 			generate
-		} catch(Exception e) {
+		} catch (Exception e) {
 			addFatalError(e)
 		}
 	}
@@ -118,6 +125,12 @@ class ConstraintGenerator {
 		constructors.forEach[generateVariables]
 	}
 
+	def dispatch void generate(WObjectLiteral it) {
+		// TODO Process supertype information: parent and mixins
+		members.forEach[generateVariables]
+		newTypeVariable.beSealed(objectLiteralType(it))
+	}
+
 	// ************************************************************************
 	// ** Methods and closures
 	// ************************************************************************
@@ -125,21 +138,20 @@ class ConstraintGenerator {
 		// TODO Process superconstructor information.
 		parameters.forEach[generateVariables]
 		expression?.generateVariables
+		delegatingConstructorCall?.generateVariables
 	}
 
 	def dispatch void generate(WMethodDeclaration it) {
 		newTypeVariable
 		parameters.forEach[generateVariables]
 
-		if(!abstract) {
+		if (!abstract) {
 			expression?.generateVariables
-			if(expression.containsReturnExpression // Method contains at least one return expression
-			|| expressionReturns // Compact method, no return required.
-			) beSupertypeOf(expression) // Return type is taken from the body
+			if(hasReturnType) beSupertypeOf(expression) // Return type is taken from the body
 			else beVoid // Otherwise, method is void.
 		}
 
-		if(overrides) overridingConstraintsGenerator.addMethodOverride(it)
+		if(overrides) overridingConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClosure it) {
@@ -161,7 +173,7 @@ class ConstraintGenerator {
 		expressions.forEach[generateVariables]
 
 		val containsReturn = !tvar.subtypes.empty
-		if(!containsReturn)
+		if (!containsReturn)
 			if(!expressions.empty) beSupertypeOf(expressions.last) else beVoid
 	}
 
@@ -189,7 +201,7 @@ class ConstraintGenerator {
 		leftOperand.generateVariables
 		rightOperand.generateVariables
 
-		if(isMultiOpAssignment) {
+		if (isMultiOpAssignment) {
 			// Handling something of the form "a += b"
 			newTypeVariable => [beVoid]
 			val operator = feature.substring(0, 1)
@@ -202,7 +214,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WUnaryOperation it) {
-		if(feature.equals("!")) {
+		if (feature.equals("!")) {
 			newTypeVariable.beSealed(classType(BOOLEAN))
 		}
 		operand.generateVariables
@@ -220,7 +232,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
 		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
-		constructorConstraintsGenerator.addConstructorCall(it)
+		constructorConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WInitializer it) {
@@ -237,7 +249,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WVariableDeclaration it) {
 		variable.newTypeVariable.beNonVoid
 
-		if(right !== null) {
+		if (right !== null) {
 			right.generateVariables
 			variable.beSupertypeOf(right)
 		}
@@ -260,7 +272,7 @@ class ConstraintGenerator {
 
 		then.generateVariables
 
-		if(getElse !== null) {
+		if (getElse !== null) {
 			getElse.generateVariables
 
 			// If there is a else branch, if can be an expression 
@@ -290,7 +302,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WCatch it) {
 		exceptionVarName.newTypeVariable => [ tvar |
-			if(exceptionType !== null)
+			if (exceptionType !== null)
 				tvar.beSealed(classType(exceptionType))
 			else
 				tvar.beNonVoid
@@ -336,7 +348,7 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WVariableReference it) {
-		if(ref.eIsProxy) {
+		if (ref.eIsProxy) {
 			// Reference could not be resolved, we can't add constraint with the referenced element.
 			// So we know almost nothing, but a variable reference can not be void.
 			newTypeVariable.beNonVoid
@@ -348,11 +360,30 @@ class ConstraintGenerator {
 	def dispatch void generate(WSelf it) {
 		asOwner.newSealed(declaringContext.asWollokType)
 	}
-	
+
 	def dispatch void generate(WNullLiteral it) {
 		// Now only generate ANY variable. 
 		// Maybe we'll want another kind of variable for nullable types implementation.  
-		newTypeVariable 
+		newTypeVariable
+	}
+
+	def dispatch void generate(WSuperInvocation it) {
+		newTypeVariable
+		memberCallArguments.forEach[generateVariables]
+		superInvocationConstraintsGenerator.add(it)
+	}
+	
+
+	def dispatch void generate(WSelfDelegatingConstructorCall it) {
+		newTypeVariable
+		arguments.forEach[generateVariables]
+		delegatingConstructorCallConstraintsGenerator.add(it)
+	}
+
+	def dispatch void generate(WSuperDelegatingConstructorCall it) {
+		newTypeVariable
+		arguments.forEach[generateVariables]
+		delegatingConstructorCallConstraintsGenerator.add(it)
 	}
 
 	// ************************************************************************
@@ -361,6 +392,8 @@ class ConstraintGenerator {
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
 		constructorConstraintsGenerator.run()
+		superInvocationConstraintsGenerator.run()
+		delegatingConstructorCallConstraintsGenerator.run()
 	}
 
 	// ************************************************************************

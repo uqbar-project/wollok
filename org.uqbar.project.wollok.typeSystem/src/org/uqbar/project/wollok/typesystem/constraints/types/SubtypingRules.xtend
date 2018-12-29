@@ -29,11 +29,6 @@ class SubtypingRules {
 		false
 	}
 
-	/** TODO Structural types */
-	static def dispatch isSuperTypeOf(StructuralType supertype, WollokType subtype) {
-		throw new UnsupportedOperationException("Structural types are not supported yet. ")
-	}
-
 	static def dispatch isSuperTypeOf(ClassInstanceType supertype, ClassInstanceType subtype) {
 		supertype.clazz.isSuperTypeOf(subtype.clazz)
 	}
@@ -53,6 +48,11 @@ class SubtypingRules {
 
 	/** TODO Structural types */
 	static def dispatch isSuperTypeOf(WollokType supertype, StructuralType subtype) {
+		throw new UnsupportedOperationException(Messages.RuntimeTypeSystemException_STRUCTURAL_TYPES_NOT_SUPPORTED)
+	}
+
+	/** TODO Structural types */
+	static def dispatch isSuperTypeOf(StructuralType supertype, WollokType subtype) {
 		throw new UnsupportedOperationException(Messages.RuntimeTypeSystemException_STRUCTURAL_TYPES_NOT_SUPPORTED)
 	}
 }

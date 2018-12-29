@@ -388,30 +388,13 @@
 			<!-- code coverage -->
 
 			<!-- CHANGELOG generation -->
-			<!--plugin>
-				<groupId>com.github.danielflower.mavenplugins</groupId>
-				<artifactId>gitlog-maven-plugin</artifactId>
-				<version>1.13.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<generateMarkdownChangeLog>true</generateMarkdownChangeLog>
-					<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
-
-					<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
-					<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename>
-
-					<generateJSONChangeLog>false</generateJSONChangeLog>
-
-					<excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern>
-					<outputDirectory>${project.basedir}</outputDirectory>
-				</configuration>
-			</plugin-->
+			<!--plugin> <groupId>com.github.danielflower.mavenplugins</groupId> <artifactId>gitlog-maven-plugin</artifactId> 
+				<version>1.13.2</version> <executions> <execution> <goals> <goal>generate</goal> 
+				</goals> </execution> </executions> <configuration> <generateMarkdownChangeLog>true</generateMarkdownChangeLog> 
+				<markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename> <generatePlainTextChangeLog>true</generatePlainTextChangeLog> 
+				<simpleHTMLChangeLogFilename>CHANGELOG.txt</simpleHTMLChangeLogFilename> 
+				<generateJSONChangeLog>false</generateJSONChangeLog> <excludeCommitsPattern>!(.*#.*)</excludeCommitsPattern> 
+				<outputDirectory>${project.basedir}</outputDirectory> </configuration> </plugin -->
 			<!-- commit changelog -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
