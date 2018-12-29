@@ -4,12 +4,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
-    <groupId>org.uqbar-project</groupId>
-    <artifactId>wollok-parent</artifactId>
-    <version>1.7.2-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<relativePath>../org.uqbar.project.wollok.releng/pom.xml</relativePath>
+		<groupId>org.uqbar-project</groupId>
+		<artifactId>wollok-parent</artifactId>
+		<version>1.7.2-SNAPSHOT</version>
+	</parent>
 
 	<artifactId>org.uqbar.project.wollok.game</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -17,25 +17,13 @@
 	<name>Wollok Game</name>
 
 	<dependencies>
-	    <!-- uncommment just for running copy-dependencies and moving them to /lib folder
-	    	we are not using maven for this.
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-backend-lwjgl</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-platform</artifactId>
-			<version>1.6.0</version>
-			<classifier>natives-desktop</classifier>
-		</dependency>
-		 -->
+		<!-- uncommment just for running copy-dependencies and moving them to /lib 
+			folder we are not using maven for this. <dependency> <groupId>com.badlogicgames.gdx</groupId> 
+			<artifactId>gdx</artifactId> <version>1.6.0</version> </dependency> <dependency> 
+			<groupId>com.badlogicgames.gdx</groupId> <artifactId>gdx-backend-lwjgl</artifactId> 
+			<version>1.6.0</version> </dependency> <dependency> <groupId>com.badlogicgames.gdx</groupId> 
+			<artifactId>gdx-platform</artifactId> <version>1.6.0</version> <classifier>natives-desktop</classifier> 
+			</dependency> -->
 	</dependencies>
 
 	<build>
@@ -53,17 +41,22 @@
 					<dependency>
 						<groupId>org.eclipse.jdt</groupId>
 						<artifactId>org.eclipse.jdt.core</artifactId>
-						<version>3.12.2</version>
+						<version>3.13.102</version>
 					</dependency>
 					<dependency>
-						<groupId>org.eclipse.platform</groupId>
-						<artifactId>org.eclipse.core.runtime</artifactId>
-						<version>3.12.0</version>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.compiler.apt</artifactId>
+						<version>1.3.110</version>
 					</dependency>
 					<dependency>
-						<groupId>org.eclipse.platform</groupId>
-						<artifactId>org.eclipse.equinox.common</artifactId>
-						<version>3.9.0</version>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.compiler.tool</artifactId>
+						<version>1.2.101</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.emf</groupId>
+						<artifactId>org.eclipse.emf.codegen</artifactId>
+						<version>2.11.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>
