@@ -127,4 +127,9 @@ class Connection extends ModelElement {
 		"Connection " + source + " -> " + target
 	}
 	
+	def nameForPrinting() {
+		if (name.length < 15) return name
+		name.substring(0, 14) + "..."
+	}
+	
 }

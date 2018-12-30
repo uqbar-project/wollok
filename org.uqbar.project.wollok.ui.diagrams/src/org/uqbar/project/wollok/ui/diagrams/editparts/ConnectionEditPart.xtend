@@ -33,7 +33,7 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 			targetDecoration = createEdgeDecoration()
 			lineStyle = castedModel.lineStyle
 			if (castedModel.name !== null)
-				add(new Label(castedModel.name) => [ opaque = true ], createConnectionLocator)
+				add(new Label(castedModel.nameForPrinting) => [ opaque = true ], createConnectionLocator)
 		]
 	}
 	
