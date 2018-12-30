@@ -28,9 +28,9 @@ class ReferenceConnectionEditPart extends ConnectionEditPart {
 		val object = (this.target as ValueEditPart).castedModel
 		var y = object.YValueForAnchor
 		try {
-			val targetVariables = object.targetConnections.map [ conn | (conn.target as VariableModel).variable.name ]
-			val int index = new Double(Math.random * (targetVariables.size - 1) * 10).intValue
-			y = y + index * 10
+			val targetVariables = object.targetConnections.map [ conn | conn.name ]
+			val index = targetVariables.indexOf(this.castedModel.name)
+			y = y + index * 27
 		} catch (Exception e) {
 			// Nothing, maybe algorithm is too complicated
 		}

@@ -15,6 +15,8 @@ class Connection extends ModelElement {
 	static final val SOLID_STR = "Solid"
 	static val DASHED_STR = "Dashed"
 	
+	public static val MAX_LABEL_FOR_PRINTING = 16
+	
 	public static val LINESTYLE_PROP = "LineStyle"
 	static val descriptors = #[
 		new ComboBoxPropertyDescriptor(LINESTYLE_PROP, LINESTYLE_PROP, #[SOLID_STR, DASHED_STR])
@@ -128,8 +130,8 @@ class Connection extends ModelElement {
 	}
 	
 	def nameForPrinting() {
-		if (name.length < 15) return name
-		name.substring(0, 14) + "..."
+		if (name.length < MAX_LABEL_FOR_PRINTING) return name
+		name.substring(0, MAX_LABEL_FOR_PRINTING) + "..."
 	}
 	
 }

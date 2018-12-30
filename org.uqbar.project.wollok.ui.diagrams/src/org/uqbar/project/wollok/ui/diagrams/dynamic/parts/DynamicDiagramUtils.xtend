@@ -8,7 +8,7 @@ class DynamicDiagramUtils {
 	public static int MIN_WIDTH = 25
 	public static int LETTER_WIDTH = 12
 	public static int MAX_ELEMENT_WIDTH = 200
-	public static int PADDING = 10
+	public static int PADDING = 13
 	public static int DEFAULT_HEIGHT = 50
 	
 	static def int nextLocationForSibling(IVariable variable, Integer y, Integer height) {
