@@ -36,7 +36,7 @@ class VariableModel extends Shape {
 	 * All shapes by variable name 
 	 */
 	static Map<String, VariableModel> allVariables = new HashMap()
-
+	
 	IVariable variable
 	int level
 	int brothers = 0

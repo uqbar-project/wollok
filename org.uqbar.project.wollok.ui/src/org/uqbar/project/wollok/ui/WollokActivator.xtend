@@ -31,6 +31,7 @@ import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.Issue
 import org.osgi.framework.BundleContext
 import org.uqbar.project.wollok.ui.editor.WollokTextEditor
+import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramPreferencePage
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*

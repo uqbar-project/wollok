@@ -29,8 +29,8 @@ class Connection extends ModelElement {
 	@Accessors RelationType relationType
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
-		this.identifier = source?.toString + target.toString
 		this.name = name.split("\\.").last
+		this.identifier = source?.toString + this.name + target.toString
 		this.relationType = relationType
 		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()

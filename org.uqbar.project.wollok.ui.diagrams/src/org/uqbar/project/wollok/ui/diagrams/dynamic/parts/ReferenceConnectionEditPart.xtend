@@ -25,7 +25,15 @@ class ReferenceConnectionEditPart extends ConnectionEditPart {
 	override getSourceConnectionAnchor() {
 		if (source !== null || !(this.target instanceof ValueEditPart)) 
 			return super.sourceConnectionAnchor
-		val y = (this.target as ValueEditPart).castedModel.YValueForAnchor
+		val object = (this.target as ValueEditPart).castedModel
+		var y = object.YValueForAnchor
+		try {
+			val targetVariables = object.targetConnections.map [ conn | (conn.target as VariableModel).variable.name ]
+			val int index = new Double(Math.random * (targetVariables.size - 1) * 10).intValue
+			y = y + index * 10
+		} catch (Exception e) {
+			// Nothing, maybe algorithm is too complicated
+		}
 		new XYAnchor(new Point(10, y))
 	}
 	
