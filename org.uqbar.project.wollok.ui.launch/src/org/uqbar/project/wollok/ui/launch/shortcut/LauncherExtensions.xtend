@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.ui.preferences.WollokDynamicDiagramConfiguration
 
 import static extension org.uqbar.project.wollok.ui.launch.shortcut.WDebugExtensions.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
+import org.uqbar.project.wollok.ui.preferences.WPreferencesUtils
 
 class LauncherExtensions {
 
@@ -20,7 +21,13 @@ class LauncherExtensions {
 	}
 
 	static def boolean dynamicDiagramActivated(IPreferenceStoreAccess preferenceStoreAccess) {
-		preferenceStoreAccess.preferenceStore.getBoolean(WollokDynamicDiagramConfigurationBlock.ACTIVATE_DYNAMIC_DIAGRAM_REPL)
+		val store = preferenceStoreAccess.writablePreferenceStore
+		var result = store.getString(WollokDynamicDiagramConfigurationBlock.ACTIVATE_DYNAMIC_DIAGRAM_REPL)
+		if (result === null || result.equals("")) {
+			store.putValue(WollokDynamicDiagramConfigurationBlock.ACTIVATE_DYNAMIC_DIAGRAM_REPL, WPreferencesUtils.TRUE)
+			result = WPreferencesUtils.TRUE
+		}
+		result.equalsIgnoreCase(WPreferencesUtils.TRUE)
 	}
 
 }
