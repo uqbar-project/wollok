@@ -23,7 +23,7 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 
 			validMessages.forEach [ message |
 				maxTypes.forEach [ type |
-					if(!type.respondsTo(message))
+					if(!type.respondsTo(message, true))
 						message.returnType.handleOffense(new MessageNotUnderstoodException(type, message))
 				]
 			]
@@ -48,20 +48,16 @@ class MaxTypesFromMessages extends SimpleTypeInferenceStrategy {
 	 * Now the errors can be reported when in the message sends, which is likely what the user expects.
 	 */
 	def maxTypes(TypeVariable tvar) {
-		val knownTypes = allTypes.map[instanceFor(tvar)]
+		val knownTypes = allTypes.map[instanceFor(tvar)].toList
 		val validMessages = tvar.typeInfo.validMessages
 
 		for (var cantMessages = validMessages.size; cantMessages > 0; cantMessages--) {
 			val messageSubsets = validMessages.subsetsOfSize(cantMessages)
 			val maxTypes = messageSubsets.flatMap [ selectedMessages |
-				knownTypes.filter[respondsToAll(selectedMessages)]
-			]
+				knownTypes.filter[respondsToAll(selectedMessages, true)]
+			].toList
 			if(!maxTypes.isEmpty) return maxTypes.toSet
 		}
-
-//Hay que encontrar dónde se construye esto:
-//	minTypes: {List<String>=Ready, Set<Any>=Ready, Range=Ready, Collection<Any>=Ready, Dictionary<Any, Any>=Ready, String=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready, List<String>=Ready},
-//	maxTypes: max([List<String>, List<String>, List<String>, Range, List<String>, List<String>, Set<Any>, Collection<Any>, List<String>, Dictionary<Any, Any>, String, List<String>]) [Ready]
 
 		// TODO Report an error, we couldn't find any max type
 		return newArrayList

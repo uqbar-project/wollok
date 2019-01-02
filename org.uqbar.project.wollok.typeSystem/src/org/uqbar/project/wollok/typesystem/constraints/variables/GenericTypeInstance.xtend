@@ -113,4 +113,5 @@ class GenericTypeInstance implements ConcreteType {
 	def dispatch equals(Object other) { false }
 	def dispatch equals(GenericTypeInstance other) { rawType == other.rawType }
 
+	override hashCode() { rawType.hashCode }
 }

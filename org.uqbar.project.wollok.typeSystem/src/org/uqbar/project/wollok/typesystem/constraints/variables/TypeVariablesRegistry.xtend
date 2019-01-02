@@ -72,7 +72,7 @@ class TypeVariablesRegistry {
 	}
 
 	def newParameter(TypeVariableOwner parent, String paramName) {
-		new TypeVariable(new ParameterTypeVariableOwner(parent, paramName))
+		new TypeVariable(new ParameterTypeVariableOwner(parent, paramName)) => [ register ]
 	}
 
 	def newSealed(TypeVariableOwner it, WollokType type) {
@@ -96,8 +96,12 @@ class TypeVariablesRegistry {
 	// ** Synthetic type variables
 	// ************************************************************************
 
-	def newClassParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
-		TypeVariable.classParameter(owner, type, paramName) => [register]
+	def newClassTypeParameterVar(TypeVariableOwner owner, GenericType type, String paramName) {
+		TypeVariable.classTypeParameter(owner, type, paramName) => [register]
+	}
+
+	def newMethodTypeParameterVar(TypeVariableOwner owner, GenericType type, String methodName, String paramName) {
+		TypeVariable.methodTypeParameter(owner, type, methodName, paramName) => [register]
 	}
 
 	// *	***********************************************************************

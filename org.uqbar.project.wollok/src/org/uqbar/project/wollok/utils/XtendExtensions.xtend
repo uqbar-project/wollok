@@ -14,6 +14,21 @@ import static extension java.lang.Math.*
  * @author npasserini
  */
 class XtendExtensions {
+
+	static def doNothing() {}
+
+	/**
+	 * Higher order block function
+	 * Receives a 1-arg void block and converts it into another one that will only be executed if the arg is null.
+	 */	
+	static def <T> (T)=>void ifNull((T)=>void actions) {
+		[ arg | if (arg === null) actions.apply(arg) ]
+	}
+
+	// ************************************************************************
+	// ** String / CharSequence extensions
+	// ************************************************************************
+
 	/**
 	 * Divides a string into lines
 	 */
@@ -26,12 +41,30 @@ class XtendExtensions {
 		string.substring(0, string.lastIndexOf(character))
 	}
 
-	/**
-	 * Returns an random element  
-	 */
-	static def random(List<Integer> it) {
-		val index = new Random().nextInt(size)
-		get(index)
+	// ************************************************************************
+	// ** Boolean extensions
+	// ************************************************************************
+
+	static def <T> boolean notNullAnd(T receiver, (T)=>boolean action) {
+		receiver !== null && action.apply(receiver)
+	}
+
+	static def <T> boolean nullOr(T receiver, (T)=>boolean action) {
+		receiver === null || action.apply(receiver)
+	}
+
+	// ************************************************************************
+	// ** Iterable extensions
+	// ************************************************************************
+
+	static def <T> copyWithout(Iterable<T> list, T... toRemove) {
+		list.clone => [
+			toRemove.forEach[elem|remove(elem)]
+		]
+	}
+
+	static def <T, R> Iterable<R> flatMap(Iterable<T> original, (T)=>Iterable<R> transformation) {
+		original.map(transformation).flatten
 	}
 
 	static def <T, U> biForEach(Iterable<T> it1, Iterable<U> it2, BiConsumer<T, U> function) {
@@ -63,6 +96,32 @@ class XtendExtensions {
 		result
 	}
 
+	static def <T> Iterable<Iterable<T>> subsetsOfSize(Iterable<T> input, int size) {
+		val data = input.toList
+		if(data.size == size)
+			return newArrayList(data)
+		else if(size == 1)
+			return data.map[newArrayList(it)]
+		else {
+			(0 .. (data.size - size)).map [ index |
+				val current = data.get(index)
+				data.subList(index + 1, data.size).subsetsOfSize(size - 1).map[#[current] + it]
+			].flatten
+		}
+	}
+
+	// ************************************************************************
+	// ** List Extensions
+	// ************************************************************************
+
+	/**
+	 * Returns an random element  
+	 */
+	static def random(List<Integer> it) {
+		val index = new Random().nextInt(size)
+		get(index)
+	}
+
 	/**
 	 * Returns a copy of the list with the last element removed, 
 	 * or an empty list if the received list is empty.
@@ -71,18 +130,17 @@ class XtendExtensions {
 		list.subList(0, (list.size - 1).max(0))
 	}
 
-	static def <T> copyWithout(Iterable<T> list, T... toRemove) {
-		list.clone => [
-			toRemove.forEach[elem|remove(elem)]
-		]
+	
+	// ************************************************************************
+	// ** Map Extensions
+	// ************************************************************************
+	
+	static def <K, V> V getOrElse(Map<K, V> map, K key, ()=>V continuation) {
+		map.get(key) ?: continuation.apply
 	}
 
-	static def <T> boolean notNullAnd(T receiver, (T)=>boolean action) {
-		receiver !== null && action.apply(receiver)
-	}
-
-	static def <T> boolean nullOr(T receiver, (T)=>boolean action) {
-		receiver === null || action.apply(receiver)
+	static def <K, V> V getOrElsePut(Map<K, V> map, K key, ()=>V continuation) {
+		map.getOrElse(key, [| continuation.apply => [map.put(key, it)]])	
 	}
 
 	/**
@@ -102,24 +160,4 @@ class XtendExtensions {
 	static def <K, V1, V2> Map<K, V2> doMapValues(Map<K, V1> original, (K, V1)=>V2 transformation) {
 		newHashMap(original.entrySet.map[key -> transformation.apply(key,value)])
 	}
-
-	static def <T, R> Iterable<R> flatMap(Iterable<T> original, (T)=>Iterable<R> transformation) {
-		original.map(transformation).flatten
-	}
-
-	static def <T> Iterable<Iterable<T>> subsetsOfSize(Iterable<T> input, int size) {
-		val data = input.toList
-		if(data.size == size)
-			return newArrayList(data)
-		else if(size == 1)
-			return data.map[newArrayList(it)]
-		else {
-			(0 .. (data.size - size)).map [ index |
-				val current = data.get(index)
-				data.subList(index + 1, data.size).subsetsOfSize(size - 1).map[#[current] + it]
-			].flatten
-		}
-	}
-
-	static def doNothing() {}
 }

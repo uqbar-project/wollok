@@ -87,9 +87,19 @@ class TestCollection {
 	//	method sum() = self.sum( {it => it} )
 
 	// Requiere method-scoped type parameters	
-	//	method map(closure)
-	//	method flatMap(closure)
-	//	method fold(closure) 
+	method methodScopedTypeParameters() {
+		// XPECT type at mapped --> List<Boolean>
+		const mapped = sample.map { number => number.even() } 
+
+		// XPECT type at flatMapped --> List<Boolean>
+		const flatMapped = sample.flatMap { number => [number.even()] } 
+
+		// XPECT type at fold --> Number
+		const fold = sample.fold(0, { accum, elem => accum + elem }) 
+
+		// XPECT type at allEven --> Boolean
+		const allEven = sample.fold(true, { accum, elem => accum && elem.even() }) 
+	}
 }
 
 /**

@@ -27,7 +27,7 @@ import org.uqbar.project.wollok.wollokDsl.WSuperInvocation
  * Since I am related to a class, current usage expects to be related to a message send, and the real type variable will be obtained
  * from the receiver of the message.
  */
-class ClassParameterTypeVariable extends TypeVariableSchema {
+class ClassTypeParameterVariable extends TypeVariableSchema {
 	@Accessors
 	GenericType genericType
 	
@@ -50,7 +50,7 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 	 */
 	def dispatch beSubtypeOf(TypeVariable variable) {
 		variable.owner.classTypeParameter.beSubtypeOf(variable)		
-	}
+	} 
 
 	/**
 	 * I can have subtypes when I am used as parameter type for a method. 
@@ -70,7 +70,7 @@ class ClassParameterTypeVariable extends TypeVariableSchema {
 		variable.owner.classTypeParameter as TypeVariable
 	}
 	
-	override instanceFor(ConcreteType concreteReceiver) {
+	override instanceFor(ConcreteType concreteReceiver, MessageSend _unused_) {
 		(concreteReceiver as GenericTypeInstance).param(paramName)
 	}
 

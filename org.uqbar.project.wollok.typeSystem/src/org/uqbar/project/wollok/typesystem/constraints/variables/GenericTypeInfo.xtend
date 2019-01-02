@@ -142,7 +142,8 @@ class GenericTypeInfo extends TypeInfo {
 		}
 
 		validMessages.forEach [
-			if(!type.respondsTo(it)) throw new MessageNotUnderstoodException(type, it)
+			if(!type.respondsTo(it, false)) 
+				throw new MessageNotUnderstoodException(type, it)
 		]
 	}
 

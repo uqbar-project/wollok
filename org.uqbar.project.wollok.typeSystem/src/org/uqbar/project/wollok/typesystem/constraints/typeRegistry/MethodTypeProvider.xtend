@@ -31,10 +31,10 @@ class MethodTypeProvider {
 		// TODO Avoid this hard-coded decision and hack
 		if (selector == "apply" && type instanceof GenericTypeInstance &&
 			(type as GenericTypeInstance).rawType instanceof ClosureType) {
-			return new ClosureApplyTypeInfo(registry, type as GenericTypeInstance)
+			return MethodTypeInfo.forClosureApply(type as GenericTypeInstance)
 		}
 
-		type.lookupSchema(it)?.instanceFor(type)
+		type.lookupSchema(it)?.instanceFor(type, it)
 	}
 	
 	def dispatch methodType(WollokType type, MessageSend it) {

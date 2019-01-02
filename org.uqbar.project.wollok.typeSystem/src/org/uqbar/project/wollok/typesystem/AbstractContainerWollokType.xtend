@@ -27,6 +27,8 @@ abstract class AbstractContainerWollokType extends BasicType implements Concrete
 		this.typeSystem = ts
 	}
 		
+	override getBaseType() { this }
+	
 	override understandsMessage(MessageType message) {
  		lookupMethod(message) !== null		
  	}

@@ -3,6 +3,8 @@ package org.uqbar.project.wollok.typesystem.constraints.typeRegistry
 import org.eclipse.emf.ecore.EObject
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
+import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRegistry
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -26,9 +28,13 @@ abstract class MethodTypeSchema {
 		registry.tvarOrParam(object)
 	}
 
-	def instanceFor(ConcreteType type) {
-		new SchemaBasedMethodTypeInfo(this, [instanceFor(type)]) 
-	}	
+	def instanceFor(ConcreteType type, MessageSend message) {
+		instance[instanceFor(type, message)]
+	}
+
+	def instance((ITypeVariable)=>TypeVariable variableResolver) {
+		new MethodTypeInfo(parameters.map(variableResolver), variableResolver.apply(returnType))
+	}
 }
 
 class RegularMethodTypeSchema extends MethodTypeSchema {
