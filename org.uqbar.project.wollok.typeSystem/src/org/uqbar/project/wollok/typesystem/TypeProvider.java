@@ -16,6 +16,6 @@ public interface TypeProvider {
 	public GenericType genericType(EObject context, String classFQN, String... typeParameterNames);
 	public GenericType closureType(EObject context, int parameterCount);
 	public NamedObjectType objectType(EObject context, String classFQN);
-	public Set<TypeFactory> getAllTypes();
 	public ObjectLiteralType objectLiteralType(WObjectLiteral context);
+	public Set<TypeFactory> getAllTypes();
 }
