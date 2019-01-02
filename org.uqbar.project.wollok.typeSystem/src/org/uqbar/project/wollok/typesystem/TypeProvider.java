@@ -1,5 +1,7 @@
 package org.uqbar.project.wollok.typesystem;
 
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EObject;
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral;
 
@@ -15,4 +17,5 @@ public interface TypeProvider {
 	public GenericType closureType(EObject context, int parameterCount);
 	public NamedObjectType objectType(EObject context, String classFQN);
 	public ObjectLiteralType objectLiteralType(WObjectLiteral context);
+	public Set<TypeFactory> getAllTypes();
 }

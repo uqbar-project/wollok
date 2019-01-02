@@ -617,7 +617,7 @@ class Collection {
 	 * @see map
 	 * @see flatten
 	 * 
-	 * Example
+	 * Example:
 	 * 		object klaus { 
 	 *  		method languages() = ["c", "cobol", "pascal"]
 	 *		}
@@ -626,10 +626,9 @@ class Collection {
 	 * 			method languages() = ["java", "perl"]
 	 * 		}
 	 *
-	 * 		program abc {
-	 * 			console.println([klaus, fritz].flatMap({ person => person.languages() }))
-	 *				=> Answers ["c", "cobol", "pascal", "java", "perl"]
-	 * 		}	
+	 *
+	 * 		[klaus, fritz].flatMap({ person => person.languages() })
+	 *			=> Answers ["c", "cobol", "pascal", "java", "perl"]
 	 */
 	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 		acc.addAll(closure.apply(e))
@@ -755,9 +754,16 @@ class Collection {
 	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
 	
 	/**
-	* @see subclasses implementations
-	*/
+	 * @see subclasses implementations
+	 */
 	method size() = throw new Exception("Should be implemented by the subclasses")
+
+	/** 
+	 * Removes all of the elements from this set. This is a side effect operation.
+	 * 
+	 * @see subclasses implementations
+	 */
+	method clear()
 }
 
 /**
@@ -916,7 +922,7 @@ class Set inherits Collection {
 	 * 		const set = #{2, 3}
 	 *		set.clear()         => set = #{}
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
@@ -1213,7 +1219,7 @@ class List inherits Collection {
 	 * 		const list = [2, 3]
 	 *		list.clear()     => list = []
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
@@ -2119,6 +2125,19 @@ class Range {
 		self.forEach{e=> l.add(closure.apply(e)) }
 		return l
 	}
+
+	/**
+	 * Map + flatten operation
+	 * @see map
+	 * @see flatten
+	 *
+	 * Example:
+	 *      (1..4).flatMap({ n => 1 .. n }) ==> Answers [1, 1, 2, 1, 2, 3, 1, 2, 3, 4] 
+	 */
+	method flatMap(closure) = self.fold([], { acc, e =>
+		acc.addAll(closure.apply(e))
+		acc
+	})
 	
 	/** @private */
 	method asList() {

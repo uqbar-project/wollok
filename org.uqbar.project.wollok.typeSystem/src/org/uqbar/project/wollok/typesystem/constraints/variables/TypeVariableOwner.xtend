@@ -102,6 +102,8 @@ abstract class TypeVariableOwner {
 class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	@Accessors
 	val EObject programElement
+	
+	URI uri
 
 	new(EObject programElement) {
 		if(programElement === null) 
@@ -113,7 +115,7 @@ class ProgramElementTypeVariableOwner extends TypeVariableOwner {
 	// ** Information
 	// ************************************************************************
 	override getURI() {
-		programElement.URI
+		uri ?: (uri = programElement.URI)
 	}
 
 	override isCoreObject() {
@@ -175,9 +177,9 @@ class ParameterTypeVariableOwner extends TypeVariableOwner {
 		parent.errorReportTarget
 	}
 	
-	def ownDebugInfo() '''if (paramName.startsWith("$")) "instance" else "param"» «paramName»'''
+	def ownDebugInfo() '''«if (paramName.startsWith("$")) "instance" else "param"» «paramName»'''
 	
 	override debugInfo() '''«ownDebugInfo» of «parent.debugInfo»'''
 	
-	override debugInfoInContext() '''«ownDebugInfo» «paramName» of «parent.debugInfoInContext»'''
+	override debugInfoInContext() '''«ownDebugInfo» of «parent.debugInfoInContext»'''
 }

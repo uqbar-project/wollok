@@ -66,7 +66,14 @@ class GenericTypeAnnotationFactory implements AnnotationContext {
 	 * Creates a class-parameter type annotation for one type parameter of this generic type.
 	 */
 	def param(String paramName) {
-		new ClassParameterTypeAnnotation(genericType, paramName)
+		new ClassTypeParameterAnnotation(genericType, paramName)
+	}
+
+	/**
+	 * Creates a class-parameter type annotation for one type parameter of this generic type.
+	 */
+	def methodParam(String methodName, String paramName) {
+		new MethodTypeParameterAnnotation(genericType, methodName, paramName)
 	}
 
 	/**
@@ -81,7 +88,7 @@ class GenericTypeAnnotationFactory implements AnnotationContext {
 	}
 }
 
-class ClassParameterTypeAnnotation implements TypeAnnotation {
+class ClassTypeParameterAnnotation implements TypeAnnotation {
 	@Accessors(PUBLIC_GETTER)
 	GenericType type
 
@@ -95,6 +102,23 @@ class ClassParameterTypeAnnotation implements TypeAnnotation {
 		}
 
 		this.type = type
+		this.paramName = paramName
+	}
+}
+
+class MethodTypeParameterAnnotation implements TypeAnnotation {
+	@Accessors(PUBLIC_GETTER)
+	GenericType type
+
+	@Accessors(PUBLIC_GETTER)
+	String methodName
+
+	@Accessors(PUBLIC_GETTER)
+	String paramName
+
+	new(GenericType type, String methodName, String paramName) {
+		this.type = type
+		this.methodName = methodName
 		this.paramName = paramName
 	}
 }

@@ -2,12 +2,6 @@ package org.uqbar.project.wollok.typesystem.annotations
 
 class WollokCoreTypeDeclarations extends TypeDeclarations {
 	override declarations() {
-		(Object == Any) => Boolean;
-		Object >> "equals" === #[Any] => Boolean;
-		Object >> "toString" === #[] => String;
-		Object >> "printString" === #[] => String;
-		Object >> "internalToSmartString" === #[Boolean] => String;
-
 		(Boolean == Any) => Boolean
 		Boolean >> "||" === #[Boolean] => Boolean
 		Boolean >> "&&" === #[Boolean] => Boolean
@@ -17,9 +11,20 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Boolean >> "toString" === #[] => String;
 
 		PairType.constructor(PKEY, PVALUE)
+		PairType.variable("x", PKEY)
+		PairType.variable("y", PVALUE)
 		PairType >> "key" === #[] => PKEY;
 		PairType >> "value" === #[] => PVALUE;
 
 		// Closure >> "apply" === #[List] => RETURN
+
+		// This must come at last, because of "allTypes"
+		allTypes.forEach[ T |
+			(T == Any) => Boolean;
+			T >> "equals" === #[Any] => Boolean;
+			T >> "toString" === #[] => String;
+			T >> "printString" === #[] => String;
+			T >> "internalToSmartString" === #[Boolean] => String;			
+		]
 	}
 }

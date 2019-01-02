@@ -6,9 +6,10 @@ import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.GenericType
 import org.uqbar.project.wollok.typesystem.GenericTypeSchema
-import org.uqbar.project.wollok.typesystem.annotations.ClassParameterTypeAnnotation
+import org.uqbar.project.wollok.typesystem.annotations.ClassTypeParameterAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.GenericSelfTypeInstanceAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.GenericTypeInstanceAnnotation
+import org.uqbar.project.wollok.typesystem.annotations.MethodTypeParameterAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.SimpleTypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeAnnotation
 import org.uqbar.project.wollok.typesystem.annotations.TypeDeclarationTarget
@@ -24,8 +25,8 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.biForEach
 
 class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 	extension TypeVariablesRegistry registry
@@ -40,7 +41,12 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 
 	override addMethodTypeDeclaration(ConcreteType receiver, String selector, TypeAnnotation[] paramTypes,
 		TypeAnnotation returnType) {
-		val method = receiver.lookupMethod(selector, paramTypes)
+		val method = receiver.lookupMethod(selector, paramTypes) 
+			=> ifNull [ throw new IllegalArgumentException('''
+				Type system configuration error. «««
+You are trying to add a type annotation for method «selector»/«paramTypes.length» ««« 
+in type «receiver.name», which does not exist''') ]
+
 		method.parameters.biForEach(paramTypes)[parameter, type|parameter.asOwner.beSealed(type)]
 		method.asOwner.beSealed(returnType)
 	}
@@ -70,8 +76,12 @@ class AnnotatedTypeRegistry implements TypeDeclarationTarget {
 		newTypeVariable(owner) => [beVoid]
 	}
 
-	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassParameterTypeAnnotation annotation) {
-		newClassParameterVar(owner, annotation.type, annotation.paramName)
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, ClassTypeParameterAnnotation annotation) {
+		newClassTypeParameterVar(owner, annotation.type, annotation.paramName)
+	}
+
+	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, MethodTypeParameterAnnotation annotation) {
+		newMethodTypeParameterVar(owner, annotation.type, annotation.methodName, annotation.paramName)
 	}
 
 	def dispatch ITypeVariable beSealed(TypeVariableOwner owner, GenericTypeInstanceAnnotation it) {

@@ -34,7 +34,7 @@ abstract class ITypeVariable {
 	 * When E is used inside the program it is matched (via OpenMethod) with a message send to a concrete receiver, 
 	 * e.g. a list of Numbers. In that case the type of the method has to be instantiated to ()=>Number.  
 	 */
-	def TypeVariable instanceFor(ConcreteType concreteReceiver)
+	def TypeVariable instanceFor(ConcreteType concreteReceiver, MessageSend message)
 
 	def WollokType getType()
 }

@@ -54,14 +54,18 @@ class TypeVariable extends ITypeVariable {
 		new TypeVariable(owner) => [setTypeInfo(new VoidTypeInfo())]
 	}
 
-	def static classParameter(TypeVariableOwner owner, GenericType type, String paramName) {
-		new ClassParameterTypeVariable(owner, type, paramName)
+	def static classTypeParameter(TypeVariableOwner owner, GenericType type, String paramName) {
+		new ClassTypeParameterVariable(owner, type, paramName)
+	}
+
+	def static methodTypeParameter(TypeVariableOwner owner, GenericType type, String methodName, String paramName) {
+		new MethodTypeParameterVariable(owner, type, methodName, paramName)
 	}
 
 	/**
 	 * I can not be instantiated, I am already a concrete type variable.
 	 */
-	override instanceFor(ConcreteType concreteReceiver) { this }
+	override instanceFor(ConcreteType concreteReceiver, MessageSend _unused_) { this }
 
 	// ************************************************************************
 	// ** For the TypeSystem implementation
