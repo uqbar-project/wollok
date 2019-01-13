@@ -19,29 +19,29 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		// This must come at last, because of "allTypes"
 		// TODO1: should include Object type?
 		// TODO2: should only be declared for Object?
-		allTypes.forEach[ T |
-			(T == Any) => Boolean;
-			(T != Any) => Boolean;
-			(T === Any) => Boolean;
-			(T !== Any) => Boolean;
-//			(T -> Any) => PairType; //TODO: generics
-			T >> "identity" === #[] => Number; 
-			T >> "equals" === #[Any] => Boolean;
-			T >> "toString" === #[] => String;
-			T >> "printString" === #[] => String;
-			T >> "kindName" === #[] => String;
-			T >> "className" === #[] => String;
-			T >> "error" === #[String] => Void;
+		allTypes.forEach[ O |
+			(O == Any) => Boolean;
+			(O != Any) => Boolean;
+			(O === Any) => Boolean;
+			(O !== Any) => Boolean;
+			(O -> T) => PairType.instance(#{PKEY.paramName -> O, PVALUE.paramName -> T});
+			O >> "identity" === #[] => Number; 
+			O >> "equals" === #[Any] => Boolean;
+			O >> "toString" === #[] => String;
+			O >> "printString" === #[] => String;
+			O >> "kindName" === #[] => String;
+			O >> "className" === #[] => String;
+			O >> "error" === #[String] => Void;
 			/* privates */
-			T >> "toSmartString" === #[List.of(Object)] => String
-			T >> "internalToSmartString" === #[List.of(Object)] => String
-			T >> "simplifiedToSmartString" === #[] => String
-			T >> "messageNotUnderstood" === #[String, List.of(Object)] => Void
-			T >> "generateDoesNotUnderstandMessage" === #[String, String, Number] => String
+			O >> "toSmartString" === #[List.of(Object)] => String
+			O >> "internalToSmartString" === #[List.of(Object)] => String
+			O >> "simplifiedToSmartString" === #[] => String
+			O >> "messageNotUnderstood" === #[String, List.of(Object)] => Void
+			O >> "generateDoesNotUnderstandMessage" === #[String, String, Number] => String
 			/* introspection */
-			T >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
-			T >> "instanceVariableFor" === #[String] => InstanceVariableMirror
-			T >> "resolve" === #[String] => Any //TODO: should return variable type
+			O >> "instanceVariables" === #[] => List.of(InstanceVariableMirror)
+			O >> "instanceVariableFor" === #[String] => InstanceVariableMirror
+			O >> "resolve" === #[String] => Any //TODO: should return variable type
 		]
 	}
 }
