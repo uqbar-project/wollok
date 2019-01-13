@@ -37,29 +37,26 @@ class CollectionTypeDeclarations extends TypeDeclarations {
 		C >> "removeAllSuchThat" === #[predicate(E)] => Void
 	}
 
-	//TODO: Define comparables
 	def comparableCollection(AnnotationContext C, TypeAnnotation E) {
 		C.basicComparableCollection(E)
-		C >> "min" === #[closure(#[E], Number)] => E;
-		C >> "max" === #[closure(#[E], Number)] => E;
+		C >> "min" === #[closure(#[E], Comparable)] => E;
+		C >> "max" === #[closure(#[E], Comparable)] => E;
 		C >> "minIfEmpty" === #[closure(#[], E)] => E;
 		C >> "maxIfEmpty" === #[closure(#[], E)] => E;
-		C >> "minIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
-		C >> "maxIfEmpty" === #[closure(#[E], Number), closure(#[], E)] => E;
+		C >> "minIfEmpty" === #[closure(#[E], Comparable), closure(#[], E)] => E;
+		C >> "maxIfEmpty" === #[closure(#[E], Comparable), closure(#[], E)] => E;
 		/* privates */
-		C >> "absolute" === #[closure(#[E], Number), closure(#[Number, Number], Boolean), closure(#[], E)] => E;
+		C >> "absolute" === #[closure(#[E], Comparable), predicate(Comparable, Comparable), closure(#[], E)] => E;
 	}
 	
-	//TODO: Define comparables
 	def basicComparableCollection(AnnotationContext C, TypeAnnotation E) {
 		C >> "min" === #[] => E; //TODO: Should be C<Comparable>
 		C >> "max" === #[] => E; //TODO: Should be C<Comparable>
 		C >> "sortedBy" === #[predicate(E, E)] => List.of(E);
 	}
 
-	//TODO: Define sumables
 	def sumableCollection(AnnotationContext C, TypeAnnotation E) {
-		C >> "sum" === #[] => Number; //TODO: Should be C<Comparable>
+		C >> "sum" === #[] => Number; //TODO: Should be C<Number>
 		C >> "sum" === #[closure(#[E], Number)] => Number;
 	}
 	

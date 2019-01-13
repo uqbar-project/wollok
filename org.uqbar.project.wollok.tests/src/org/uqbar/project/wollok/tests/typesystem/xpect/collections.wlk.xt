@@ -95,26 +95,26 @@ class TestCollection {
 		// XPECT type at min --> {() => String}
 		const min = { strings.min() }
 		
-		// XPECT type at minComparable --> {({(String) => Number}) => String}
+		// XPECT type at minComparable --> {({(String) => (Date|Number|String)}) => String}
 		const minComparable = { comparable => strings.min(comparable) }
 		
 		// XPECT type at minIfEmpty --> {({() => String}) => String}
 		const minIfEmpty = { IfEmpty => strings.minIfEmpty(IfEmpty) }
 		
-		// XPECT type at minIfEmptyComparable --> {({(String) => Number}, {() => String}) => String}
+		// XPECT type at minIfEmptyComparable --> {({(String) => (Date|Number|String)}, {() => String}) => String}
 		const minIfEmptyComparable = { comparable, IfEmpty => strings.minIfEmpty(comparable, IfEmpty) }
 		
 		
 		// XPECT type at max --> {() => String}
 		const max = { strings.max() }
 		
-		// XPECT type at maxComparable --> {({(String) => Number}) => String}
+		// XPECT type at maxComparable --> {({(String) => (Date|Number|String)}) => String}
 		const maxComparable = { comparable => strings.max(comparable) }
 		
 		// XPECT type at maxIfEmpty --> {({() => String}) => String}
 		const maxIfEmpty = { IfEmpty => strings.maxIfEmpty(IfEmpty) }
 		
-		// XPECT type at maxIfEmptyComparable --> {({(String) => Number}, {() => String}) => String}
+		// XPECT type at maxIfEmptyComparable --> {({(String) => (Date|Number|String)}, {() => String}) => String}
 		const maxIfEmptyComparable = { comparable, IfEmpty => strings.maxIfEmpty(comparable, IfEmpty) }
 		
 		
@@ -122,7 +122,7 @@ class TestCollection {
 		const sortedBy = { predicate => strings.sortedBy(predicate) }
 		
 		
-		// XPECT type at absolute --> {({(String) => Number}, {(Number, Number) => Boolean}, {() => String}) => String}
+		// XPECT type at absolute --> {({(String) => (Date|Number|String)}, {((Date|Number|String), (Date|Number|String)) => Boolean}, {() => String}) => String}
 		const absolute = { comparable, criteria, IfEmpty => strings.absolute (comparable, criteria, IfEmpty) }
 		
 	}

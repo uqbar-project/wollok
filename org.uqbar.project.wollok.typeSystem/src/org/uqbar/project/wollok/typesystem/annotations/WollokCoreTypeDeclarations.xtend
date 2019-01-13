@@ -14,7 +14,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		PairType >> "key" === #[] => PKEY;
 		PairType >> "value" === #[] => PVALUE;
 
-		// Closure >> "apply" === #[List] => RETURN
+		// Closure >> "apply" === #[List] => RETURN //TODO: VarArgs
 
 		// This must come at last, because of "allTypes"
 		// TODO1: should include Object type?
