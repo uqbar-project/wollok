@@ -52,7 +52,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "errorReporter" === #[Any] => Void
 		game >> "sound" === #[String] => Void
 
-		keyboard.allMethods === #[] => Key
+		keyboard.allMethods.except("num") === #[] => Key
 		keyboard >> "num" === #[Number] => Key
 
 		Key >> "onPressDo" === #[closure(#[], Void)] => Void

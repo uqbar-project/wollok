@@ -292,6 +292,8 @@ class MethodIdentifier {
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
 		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
+	
+	def hasName(String methodName) { selector == methodName }
 }
 
 class AllMethodsIdentifier {
@@ -299,6 +301,11 @@ class AllMethodsIdentifier {
 
 	new(TypeDeclarationTarget target, ConcreteType receiver) {
 		identifiers = receiver.container.methods.map[new MethodIdentifier(target, receiver, name)]
+	}
+	
+	def except(String name) {
+		identifiers = identifiers.reject[hasName(name)]
+		this
 	}
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
