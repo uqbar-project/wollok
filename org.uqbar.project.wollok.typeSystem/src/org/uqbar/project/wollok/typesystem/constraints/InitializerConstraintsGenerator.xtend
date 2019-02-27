@@ -12,7 +12,8 @@ class InitializerConstraintsGenerator extends CrossReferenceConstraintsGenerator
 	}
 
 	override generate(WInitializer it) {
-		val instantiatedClass = declaringConstructorCall.classRef
+		// Initializer could be in a ConstructorCall or an object parent declaration
+		val instantiatedClass = declaringConstructorCall?.classRef ?: declaringContext.parent
 		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
 
 		initializedVariable.variable.tvar.beSupertypeOf(initialValue.tvar)

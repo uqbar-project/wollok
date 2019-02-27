@@ -1,7 +1,8 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object pepita inherits Golondrina(1) { }
-object pepona inherits Ave { }
+object pepona inherits Ave(nombre = "Pepona") { }
+object pepe inherits Ave { }
 
 class Golondrina inherits Ave {
 	// XPECT type at energia --> Number
@@ -10,14 +11,18 @@ class Golondrina inherits Ave {
 	constructor(_energia) {
 		energia = _energia
 	}
+	
+	// XPECT methodType at hermana --> () => { }
+	method hermana() = object inherits Golondrina(2) { }
 
 	// XPECT methodType at amiga --> () => { }
-	method amiga() = object inherits Golondrina(2) { }
+	method amiga() = object inherits Ave(nombre = "Ami") { }
 }
 
 class Ave {
+	// XPECT type at nombre --> String
 	var nombre
 	
-	method nombre() = nombre
+	method nombreAve() = nombre
 }
 

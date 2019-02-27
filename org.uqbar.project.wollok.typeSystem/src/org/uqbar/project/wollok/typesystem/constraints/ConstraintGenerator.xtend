@@ -120,7 +120,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WNamedObject it) {
 		// TODO Process supertype information: mixins
-		parentParameters?.values?.forEach[generateVariables]
+		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
 		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
@@ -133,7 +133,7 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WObjectLiteral it) {
 		// TODO Process supertype information: mixins
-		parentParameters?.values?.forEach[generateVariables]
+		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
 		newTypeVariable.beSealed(objectLiteralType(it))
 		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
