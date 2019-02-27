@@ -1,12 +1,23 @@
 /* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
 
 object pepita inherits Golondrina(1) { }
+object pepona inherits Ave { }
 
-class Golondrina {
+class Golondrina inherits Ave {
 	// XPECT type at energia --> Number
 	const energia
 	
 	constructor(_energia) {
 		energia = _energia
 	}
+
+	// XPECT methodType at amiga --> () => { }
+	method amiga() = object inherits Golondrina(2) { }
 }
+
+class Ave {
+	var nombre
+	
+	method nombre() = nombre
+}
+

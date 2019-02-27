@@ -6,9 +6,9 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariablesRe
 import org.uqbar.project.wollok.wollokDsl.WClass
 import org.uqbar.project.wollok.wollokDsl.WConstructorCall
 import org.uqbar.project.wollok.wollokDsl.WExpression
-import org.uqbar.project.wollok.wollokDsl.WNamedObject
+import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.resolveConstructor
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
@@ -45,14 +45,14 @@ class ConstructorCallConstraintsGenerator extends ConstructorConstraintsGenerato
 	}
 }
 
-class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<WNamedObject> {
+class ObjectParentConstraintsGenerator extends ConstructorConstraintsGenerator<WMethodContainer> {
 	
 	new(TypeVariablesRegistry registry) {
 		super(registry)
 	}
 	
-	override generate(WNamedObject it) {
-		generate(parent, parentParameters.values)
+	override generate(WMethodContainer it) {
+		generate(parent, parentParameters)
 	}
 	
 }
