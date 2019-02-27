@@ -44,7 +44,6 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * @author npasserini
@@ -54,15 +53,17 @@ class ConstraintGenerator {
 	extension TypeVariablesRegistry registry
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
-	ConstructorConstraintsGenerator constructorConstraintsGenerator
+	ConstructorCallConstraintsGenerator constructorCallConstraintsGenerator
+	ObjectParentConstraintsGenerator objectParentConstraintsGenerator
 	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
 	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
-
+	
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
-		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
+		this.constructorCallConstraintsGenerator = new ConstructorCallConstraintsGenerator(registry)
+		this.objectParentConstraintsGenerator = new ObjectParentConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
 		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
 	}
@@ -116,13 +117,10 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WNamedObject it) {
-		val args = parentParameters.values
-		args.forEach[generateVariables]
-		parent.resolveConstructor(args)?.parameters?.biForEach(args) [ param, arg |
-			param.tvarOrParam.instanceFor(it.tvar).beSupertypeOf(arg.tvar)
-		]
-		// TODO Process supertype information: parent and mixins
+		// TODO Process supertype information: mixins
+		parentParameters?.values?.forEach[generateVariables]
 		members.forEach[generateVariables]
+		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClass it) {
@@ -238,7 +236,7 @@ class ConstraintGenerator {
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
 		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
-		constructorConstraintsGenerator.add(it)
+		constructorCallConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WInitializer it) {
@@ -397,7 +395,8 @@ class ConstraintGenerator {
 	// ************************************************************************
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
-		constructorConstraintsGenerator.run()
+		constructorCallConstraintsGenerator.run()
+		objectParentConstraintsGenerator.run()
 		superInvocationConstraintsGenerator.run()
 		delegatingConstructorCallConstraintsGenerator.run()
 	}
