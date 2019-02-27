@@ -18,13 +18,18 @@ class Direccion {
 
 // Clase sin constructores, instanciación directa usando variables de superclase
 class DireccionRemota inherits Direccion {
-	var ciudad = new Ciudad()
+	var ciudad = new Ciudad(km = 0)
 	
 	override method tipar() = ciudad.nombreCiudad()
 }
 
 class Ciudad {
+	// XPECT type at km --> Number	
+	const km
+	
 	method nombreCiudad() = "Buenos Aires"
+	
+	method kmDondeEsta() = km
 }
 
 // Clase con múltiples constructores
