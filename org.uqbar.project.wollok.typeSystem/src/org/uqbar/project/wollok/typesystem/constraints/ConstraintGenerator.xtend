@@ -57,7 +57,8 @@ class ConstraintGenerator {
 	ObjectParentConstraintsGenerator objectParentConstraintsGenerator
 	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
 	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
-	
+	InitializerConstraintsGenerator initializerConstraintsGenerator
+		
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
@@ -66,6 +67,7 @@ class ConstraintGenerator {
 		this.objectParentConstraintsGenerator = new ObjectParentConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
 		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
+		this.initializerConstraintsGenerator = new InitializerConstraintsGenerator(registry)
 	}
 
 	// ************************************************************************
@@ -242,11 +244,8 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WInitializer it) {
-		val instantiatedClass = declaringConstructorCall.classRef
-		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
-
 		initialValue.generateVariables
-		initializedVariable.variable.beSupertypeOf(initialValue)
+		initializerConstraintsGenerator.add(it)
 	}
 	
 	// ************************************************************************
@@ -401,6 +400,7 @@ class ConstraintGenerator {
 		objectParentConstraintsGenerator.run()
 		superInvocationConstraintsGenerator.run()
 		delegatingConstructorCallConstraintsGenerator.run()
+		initializerConstraintsGenerator.run()
 	}
 
 	// ************************************************************************
