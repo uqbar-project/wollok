@@ -9,5 +9,4 @@ class Golondrina {
 	}
 }
 
-// XPECT type at 1 --> Number
 object pepita inherits Golondrina(1) { }

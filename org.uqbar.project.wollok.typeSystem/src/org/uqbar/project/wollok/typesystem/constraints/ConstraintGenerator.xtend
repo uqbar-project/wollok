@@ -44,6 +44,7 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 /**
  * @author npasserini
@@ -115,6 +116,11 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WNamedObject it) {
+		val args = parentParameters.values
+		args.forEach[generateVariables]
+		parent.resolveConstructor(args)?.parameters?.biForEach(args) [ param, arg |
+			param.tvarOrParam.instanceFor(it.tvar).beSupertypeOf(arg.tvar)
+		]
 		// TODO Process supertype information: parent and mixins
 		members.forEach[generateVariables]
 	}
@@ -242,7 +248,7 @@ class ConstraintGenerator {
 		initialValue.generateVariables
 		initializedVariable.variable.beSupertypeOf(initialValue)
 	}
-
+	
 	// ************************************************************************
 	// ** Variables
 	// ************************************************************************
