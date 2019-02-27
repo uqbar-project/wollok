@@ -1,0 +1,13 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+class Golondrina {
+	// XPECT type at energia --> Number
+	const energia
+	
+	constructor(_energia) {
+		energia = _energia
+	}
+}
+
+// XPECT type at 1 --> Number
+object pepita inherits Golondrina(1) { }
