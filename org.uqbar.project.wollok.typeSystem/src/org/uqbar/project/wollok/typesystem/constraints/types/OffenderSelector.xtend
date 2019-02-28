@@ -8,12 +8,14 @@ import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVa
 import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariableOwner
+import org.uqbar.project.wollok.wollokDsl.WBlockExpression
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WParameter
 import org.uqbar.project.wollok.wollokDsl.WReferenciable
 import org.uqbar.project.wollok.wollokDsl.WVariableReference
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.WollokModelPrintForDebug.debugInfoInContext
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 
 /**
  * When a type error is found because we found an incompatible subtype relationship between two type variables, 
@@ -58,8 +60,14 @@ class OffenderSelector {
 	}
 
 	def static selectOffenderVariable(TypeVariable subtype, TypeVariable supertype) {
-		val offender = selectOffenderOwner(subtype.owner, supertype.owner)
-		if(offender == subtype.owner) subtype else supertype
+		if (subtype.owner.isCoreObject)
+			supertype
+		else if (supertype.owner.isCoreObject)
+			subtype
+		else {
+			val offender = selectOffenderOwner(subtype.owner, supertype.owner)
+			if (offender == subtype.owner) subtype else supertype	
+		}
 	}
 
 	// ************************************************************************
@@ -119,6 +127,16 @@ class OffenderSelector {
 	 * Errors should go to the sender and not to the method.
 	 */
 	def static dispatch selectOffender(WMethodDeclaration returnType, EObject messageSend) { messageSend }
+
+	/**
+	 * A return expression fails to meet the return type of the method. 
+	 */
+	def static dispatch selectOffender(EObject returnExpression, WMethodDeclaration returnType) { returnExpression }
+	
+	/**
+	 * A return (or final closure) expression fails to meet the return type of the closure. 
+	 */
+	def static dispatch selectOffender(EObject returnExpression, WBlockExpression blockReturnType) { returnExpression }
 
 	/**
 	 * A direct relationship between two parameters is due to a method override.

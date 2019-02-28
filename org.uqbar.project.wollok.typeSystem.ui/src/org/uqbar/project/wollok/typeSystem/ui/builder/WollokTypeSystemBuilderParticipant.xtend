@@ -1,9 +1,12 @@
 package org.uqbar.project.wollok.typeSystem.ui.builder
 
 import com.google.inject.Inject
+import com.google.inject.Singleton
+import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.builder.IXtextBuilderParticipant
 import org.eclipse.xtext.resource.IResourceDescriptions
 import org.eclipse.xtext.resource.impl.ResourceDescriptionsProvider
@@ -13,8 +16,6 @@ import org.uqbar.project.wollok.ui.WollokActivator
 
 import static extension org.uqbar.project.wollok.model.ResourceUtils.*
 import static extension org.uqbar.project.wollok.utils.WEclipseUtils.*
-import com.google.inject.Singleton
-import org.eclipse.emf.ecore.resource.Resource
 
 /**
  * A builder participant that runs the type system. 
@@ -52,7 +53,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 			// First add all Wollok files to the type system for constraint generation
 			context.loadAllResources
 
-			val wollokFiles = context.resourceSet.resources.filter[isWollokUserFile]
+			val wollokFiles = context.resourceSet.resources.filter[isWollokUserFile].toList
 			log.debug("Infering types for files: " + wollokFiles.map[it.URI.lastSegment])
 
 			val ts = it as ConstraintBasedTypeSystem
@@ -86,7 +87,7 @@ class WollokTypeSystemBuilderParticipant implements IXtextBuilderParticipant {
 	def loadAllResources(IBuildContext context) {
 		val IResourceDescriptions index = resourceDescriptionsProvider.createResourceDescriptions
 		index.allResourceDescriptions.forEach [ rd |
-			println(rd.URI)
+			log.debug(rd.URI)
 			context.resourceSet.getResource(rd.URI, true)
 		]
 	}

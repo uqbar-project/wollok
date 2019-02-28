@@ -70,9 +70,6 @@ class VoidTypeInfo extends TypeInfo {
 	// ************************************************************************
 	// ** Not yet implemented
 	// ************************************************************************
-	override beSealed() {
-		// Nothing to do, I hold no mutable type info, so I am already sealed.
-	}
 
 	override addMinType(WollokType type, TypeVariable origin) {
 		// Ignore, VOID is supertype of everything
