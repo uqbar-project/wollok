@@ -2238,16 +2238,6 @@ class Closure {
 	/** Answers a string representation of this closure object */
 	override method toString() native
 	
-	/** 
-	  * Shows a short, internal representation of a closure 
-	  * 
-	  * Example:
-	  *     { a => a + 1 }.shortDescription()
-	  *         ==> Answers "a Closure { a => a + 1 }"
-	  */
-	override method shortDescription() =
-		"a Closure " + self.toString()
-	
 }
 
 /**
@@ -2438,9 +2428,9 @@ class Date {
 	  * 
 	  * Example:
 	  *     new Date(2, 4, 2018).shortDescription()
-	  *         ==> Answers "a Date [2/4/2018]"
+	  *         ==> Answers "2/4/2018"
 	  */
 	override method shortDescription() =
-		"a Date [" + self.day() + "/" + self.month() + "/" + self.year() + "]"
+		"" + self.day() + "/" + self.month() + "/" + self.year()
 
 }

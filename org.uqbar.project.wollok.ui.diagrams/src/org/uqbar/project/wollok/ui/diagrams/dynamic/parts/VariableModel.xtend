@@ -260,6 +260,7 @@ class ShapeHeightHandler {
 		allSizes.put(variableModel.variable, newHashMap)
 		allVariables.put(variableModel.variable, variableModel)
 		parentsVisited.put(variableModel.variable, 0)
+		if (variableModel.variable.value === null) return;
 		variableModel.variable.value.variables.forEach [
 			val variables = allParents.get(it) as List<VariableModel> ?: newArrayList
 			variables.add(variableModel)
