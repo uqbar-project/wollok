@@ -7,6 +7,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 		Object >> "toString" === #[] => String;
 		Object >> "printString" === #[] => String;
 		Object >> "internalToSmartString" === #[Boolean] => String;
+		Object >> "shortDescription" === #[] => String;
 
 		(Boolean == Any) => Boolean
 		Boolean >> "||" === #[Boolean] => Boolean

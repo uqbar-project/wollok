@@ -8,7 +8,7 @@ class WollokObjectUtils {
 
  	/** asString: calls toString for a WollokObject and returns its internal representation */
 	def static asString(WollokObject o) {
-		((o.call("toString") as WollokObject).getNativeObject(STRING) as JavaWrapper<String>)?.wrapped
+		o.asString("toString")
 	}
 
 	/** calls any method and cast the result to a string */
