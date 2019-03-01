@@ -34,7 +34,9 @@
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.11.0</xtext.version>
-
+		<upload.p2.url>https://update.uqbar.org/upload/</upload.p2.url>
+		<upload.download.url>https://download.uqbar.org/upload/</upload.download.url>
+		<upload.server>updateWollok</upload.server>
 		<scm.gitServer>https://github.com/uqbar-project</scm.gitServer>
 	</properties>
 
@@ -475,6 +477,11 @@
 			<id>tesonep</id>
 			<name>Pablo Tesone</name>
 			<email>tesonep@gmail.com</email>
+		</developer>
+		<developer>
+			<id>fdodino</id>
+			<name>Fernando Dodino</name>
+			<email>fernando.dodino@gmail.com</email>
 		</developer>
 	</developers>
 

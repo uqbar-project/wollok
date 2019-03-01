@@ -1,0 +1,54 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+object dictionaryTests {
+	// XPECT type at numbers --> Dictionary<String, Number>
+	const numbers = new Dictionary()
+	
+	method stringNumberMethods() {
+		numbers.put("One", 1)
+		
+		// XPECT type at put --> {(String, Number) => Void}
+		const put = {k, v => numbers.put(k, v)}
+		
+		// XPECT type at get --> {(String) => Number}
+		const get = {k => numbers.get(k)}
+		
+		// XPECT type at basicGet --> {(String) => Number}
+		const basicGet = {k => numbers.basicGet(k)}
+		
+		// XPECT type at getOrElse --> {(String, {() => Number}) => Number}
+		const getOrElse = {k, closure => numbers.getOrElse(k, closure)}
+		
+		// XPECT type at containsKey --> {(String) => Boolean}
+		const containsKey = {k => numbers.containsKey(k)}
+		
+		// XPECT type at containsValue --> {(Number) => Boolean}
+		const containsValue = {v => numbers.containsValue(v)}
+		
+		// XPECT type at keys --> {() => List<String>}
+		const keys = {numbers.keys()}
+		
+		// XPECT type at values --> {() => List<Number>}
+		const values = {numbers.values()}
+		
+		// XPECT type at forEach --> {({(String, Number) => Void}) => Void}
+		const forEach = {closure => numbers.forEach(closure)}
+	}
+	
+	method basicMethods() {
+		// XPECT type at remove --> {(String) => Void}
+		const remove = {k => numbers.remove(k)}
+		
+		// XPECT type at clear --> {() => Void}
+		const clear = { numbers.clear()}
+		
+		// XPECT type at size --> {() => Number}
+		const size = { numbers.size()}
+		
+		// XPECT type at isEmpty --> {() => Boolean}
+		const isEmpty = { numbers.isEmpty()}
+		
+		// XPECT type at toString --> {() => String}
+		const toString = { numbers.toString()}
+	}
+}

@@ -18,13 +18,6 @@ object dateTests {
 	// XPECT methodType at m4 --> (Number) => Date
 	method m4(days) = new Date().plusDays(days)
 
-	// XPECT methodType at m5 --> (Date) => Boolean
-	method m5(a) {
-		var b = new Date()
-		b = b.plusDays(1)
-		return b == a
-	}
-
 	// XPECT methodType at m6 --> (Number) => Date
 	method m6(months) = new Date().plusMonths(months)
 
@@ -67,7 +60,7 @@ object dateTests {
 	// XPECT methodType at m18 --> (Date, Date) => Boolean
 	method m18(_date, _date1) = _date.between(_date1, new Date())
 
-	// XPECT methodType at m19 --> (Boolean) => String
+	// XPECT methodType at m19 --> (List<Object>) => String
 	method m19(b) = new Date().toSmartString(b)
 
 }

@@ -81,10 +81,6 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	 */
 	Set<TypeFactory> allTypes
 
-	new() {
-		Logger.getLogger("org.uqbar.project.wollok.typesystem").level = Level.DEBUG
-	}
-	
 	override def name() { Constants.TS_CONSTRAINTS_BASED }
 
 	override validate(WFile file, ConfigurableDslValidator validator) {
@@ -110,14 +106,14 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 
 		annotatedTypes = new AnnotatedTypeRegistry(registry) => [
 			addTypeDeclarations(this, program,
-				WollokCoreTypeDeclarations,
 				NumberTypeDeclarations,
 				StringTypeDeclarations,
 				DateTypeDeclarations,
 				CollectionTypeDeclarations,
 				ExceptionTypeDeclarations,
 				WollokLibTypeDeclarations,
-				WollokGameTypeDeclarations
+				WollokGameTypeDeclarations,
+				WollokCoreTypeDeclarations // Must be the last one
 			)
 		]
 	}
@@ -278,13 +274,13 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 	}
 
 	/**
-	 * All types knows all objects and clases in the system. As some classes can be generic, they do not define
+	 * All types knows all objects and classes in the system. As some classes can be generic, they do not define
 	 * actual types, but "type factories" such as List<E>, which is not an actual type, but a function that
 	 * applied to an actual type will give a type. E.g. applied to Number you get a List<Number> which is a real type for an object.
 	 * 
 	 * User must instantiate type factories before usage.
 	 */
-	def getAllTypes() {
+	override getAllTypes() {
 		if (allTypes === null) {
 			// Initialize with core classes and wkos, then type system will add own classes incrementally.
 			allTypes = newHashSet

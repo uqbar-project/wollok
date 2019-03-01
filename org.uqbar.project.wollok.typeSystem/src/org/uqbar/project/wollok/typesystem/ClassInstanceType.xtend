@@ -11,6 +11,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * 
+ * @author npasserini
  * @author jfernandes
  */
 class ClassInstanceType extends AbstractContainerWollokType {

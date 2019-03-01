@@ -26,7 +26,10 @@ class Exception {
 		return printer.getBuffer()
 	}
 	
-	/** Prints this exception and its backtrace to the specified printer */
+	/**
+	  * @private
+	  * Prints this exception and its backtrace to the specified printer 
+	  */
 	method printStackTrace(printer) { self.printStackTraceWithPrefix("", printer) }
 	
 	/** @private */
@@ -622,7 +625,7 @@ class Collection {
 	 * @see map
 	 * @see flatten
 	 * 
-	 * Example
+	 * Example:
 	 * 		object klaus { 
 	 *  		method languages() = ["c", "cobol", "pascal"]
 	 *		}
@@ -631,10 +634,9 @@ class Collection {
 	 * 			method languages() = ["java", "perl"]
 	 * 		}
 	 *
-	 * 		program abc {
-	 * 			console.println([klaus, fritz].flatMap({ person => person.languages() }))
-	 *				=> Answers ["c", "cobol", "pascal", "java", "perl"]
-	 * 		}	
+	 *
+	 * 		[klaus, fritz].flatMap({ person => person.languages() })
+	 *			=> Answers ["c", "cobol", "pascal", "java", "perl"]
 	 */
 	method flatMap(closure) = self.fold(self.newInstance(), { acc, e =>
 		acc.addAll(closure.apply(e))
@@ -760,9 +762,28 @@ class Collection {
 	method fold(element, closure) = throw new Exception("Should be implemented by the subclasses")
 	
 	/**
-	* @see subclasses implementations
-	*/
+	 * @see subclasses implementations
+	 */
 	method size() = throw new Exception("Should be implemented by the subclasses")
+
+	/** 
+	 * Removes all of the elements from this set. This is a side effect operation.
+	 * 
+	 * @see subclasses implementations
+	 */
+	method clear()
+	
+	/**
+	 * Answers the concatenated string representation of the elements in the given set.
+	 * You can pass an optional character as an element separator (default is ",")
+	 */
+	method join(separator)
+	
+	/**
+	 * Answers the concatenated string representation of the elements in the given set
+	 * with default element separator (",")
+	 */
+	method join()
 }
 
 /**
@@ -921,7 +942,7 @@ class Set inherits Collection {
 	 * 		const set = #{2, 3}
 	 *		set.clear()         => set = #{}
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
@@ -932,7 +953,7 @@ class Set inherits Collection {
 	 * 		#{"you","will","love","wollok"}.join(" ") => Answers "love will wollok you"
 	 *      #{}.join(",")                             => Answers ""
 	 */
-	method join(separator) native
+	override method join(separator) native
 	
 	/**
 	 * Answers the concatenated string representation of the elements in the given set
@@ -941,7 +962,7 @@ class Set inherits Collection {
 	 * Example:
 	 * 		#{"you","will","love","wollok"}.join()    => Answers "love,will,wollok,you"
 	 */
-	method join() native
+	override method join() native
 	
 	/**
 	 * Two sets are equals if they have the same elements
@@ -1218,7 +1239,7 @@ class List inherits Collection {
 	 * 		const list = [2, 3]
 	 *		list.clear()     => list = []
 	 */
-	method clear() native
+	override method clear() native
 
 	/**
 	 * Answers the concatenated string representation of the elements in the given set.
@@ -1228,7 +1249,7 @@ class List inherits Collection {
 	 * 		[1, 5, 3, 7].join(":") => Answers "1:5:3:7"
 	 * 		["you","will","love","wollok"].join(" ") => Answers "you will love wollok"
 	 */
-	method join(separator) native
+	override method join(separator) native
 	
 	/**
 	 *
@@ -1238,7 +1259,7 @@ class List inherits Collection {
 	 * Examples:
 	 * 		["you","will","love","wollok"].join()    => Answers "you,will,love,wollok"
 	 */
-	method join() native
+	override method join() native
 	
 	/**
 	 * @see == message
@@ -2124,6 +2145,19 @@ class Range {
 		self.forEach{e=> l.add(closure.apply(e)) }
 		return l
 	}
+
+	/**
+	 * Map + flatten operation
+	 * @see map
+	 * @see flatten
+	 *
+	 * Example:
+	 *      (1..4).flatMap({ n => 1 .. n }) ==> Answers [1, 1, 2, 1, 2, 3, 1, 2, 3, 4] 
+	 */
+	method flatMap(closure) = self.fold([], { acc, e =>
+		acc.addAll(closure.apply(e))
+		acc
+	})
 	
 	/** @private */
 	method asList() {

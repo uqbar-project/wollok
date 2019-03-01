@@ -5,7 +5,11 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		Position.constructor(Number, Number)
 		Position.variable("x", Number)
 		Position.variable("y", Number)
-		(Position == Any) => Boolean;
+		Position.clear
+		Position >> "right" === #[Number] => Position
+		Position >> "left" === #[Number] => Position
+		Position >> "up" === #[Number] => Position
+		Position >> "down" === #[Number] => Position
 		Position >> "drawElement" === #[Any] => Void
 		Position >> "drawCharacter" === #[Any] => Void
 		Position >> "say" === #[Any, String] => Void
@@ -23,6 +27,7 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game.fakeProperty("title", String)
 		game.fakeProperty("width", Number)
 		game.fakeProperty("height", Number)
+		game.clear
 		game >> "addVisual" === #[Any] => Void
 		game >> "addVisualIn" === #[Any, Position] => Void
 		game >> "addVisualCharacter" === #[Any] => Void
@@ -30,9 +35,10 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "removeVisual" === #[Any] => Void
 		game >> "whenKeyPressedDo" === #[Number, closure(#[], Void)] => Void
 		game >> "whenCollideDo" === #[Any, closure(#[Any], Void)] => Void
+		game >> "onTick" === #[Number, String, closure(#[], Void)] => Void
+		game >> "removeTickEvent" === #[String] => Void
 		game >> "getObjectsIn" === #[Position] => List.of(Any)
 		game >> "say" === #[Any, String] => Void
-		game >> "clear" === #[] => Void
 		game >> "colliders" === #[Any] => List.of(Any)
 		game >> "stop" === #[] => Void
 		game >> "start" === #[] => Void
@@ -41,8 +47,13 @@ class WollokGameTypeDeclarations extends TypeDeclarations {
 		game >> "center" === #[] => Position
 		game >> "ground" === #[String] => Void
 		game >> "boardGround" === #[String] => Void
+		game >> "hideAttributes" === #[Any] => Void
+		game >> "showAttributes" === #[Any] => Void
+		game >> "errorReporter" === #[Any] => Void
+		game >> "sound" === #[String] => Void
 
-		keyboard.allMethods === #[] => Key
+		keyboard.allMethods.except("num") === #[] => Key
+		keyboard >> "num" === #[Number] => Key
 
 		Key >> "onPressDo" === #[closure(#[], Void)] => Void
 	}

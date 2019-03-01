@@ -2,6 +2,11 @@
 
 object pairTest {
 	
+	// XPECT! methodType at arrow --> () => Pair<Number, String>
+//	method arrow() {
+//		return 2 -> ""
+//	}
+	
 	// XPECT methodType at m0 --> () => Pair<Number, Number>
 	method m0() {
 		return new Pair(2, 3)
@@ -22,7 +27,7 @@ object pairTest {
 		return pair.key()
 	}
 
-	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair<Any, Any>)) => Void
+	// XPECT methodType at m4 --> ((InstanceVariableMirror|Pair<Any, Any>)) => Any
 	method m4(pair) {
 		return pair.value()
 	}

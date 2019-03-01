@@ -2,16 +2,18 @@ package org.uqbar.project.wollok.typesystem
 
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInstance
+import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
+import org.uqbar.project.wollok.typesystem.constraints.variables.MessageSend
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.wollokDsl.WClass
-import org.uqbar.project.wollok.typesystem.constraints.variables.ITypeVariable
 
 import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
-import org.uqbar.project.wollok.typesystem.constraints.ConstraintBasedTypeSystem
 
 interface TypeFactory {
 	def TypeSystem getTypeSystem()
+	def ConcreteType getBaseType()
 	def ConcreteType instanceFor(TypeVariable owner)
 }
 
@@ -88,8 +90,8 @@ class GenericTypeSchema {
 		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(variable)])
 	}
 
-	def GenericTypeInstance instanceFor(ConcreteType concreteType) {
-		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(concreteType)])
+	def GenericTypeInstance instanceFor(ConcreteType concreteType, MessageSend message) {
+		new GenericTypeInstance(rawType, typeParameters.doMapValues[instanceFor(concreteType, message)])
 	}
 
 	// ************************************************************************

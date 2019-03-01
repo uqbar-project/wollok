@@ -29,6 +29,15 @@ class RangeTestCase extends AbstractWollokInterpreterTestCase {
 		'''.test
 	}
 
+	@Test 
+	def void flatMap() { 
+		'''
+		var range = 1 .. 4 
+		var flatMap = range.flatMap { n => 1 .. n }
+		assert.equals([1, 1, 2, 1, 2, 3, 1, 2, 3, 4], flatMap)
+		'''.test
+	}
+
 	@Test
 	def void sum() {
 		'''
