@@ -6,6 +6,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
 import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
 
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
+
 /**
  * A connection between two distinct shapes.
  * 
@@ -130,8 +132,7 @@ class Connection extends ModelElement {
 	}
 	
 	def nameForPrinting() {
-		if (name.length < MAX_LABEL_FOR_PRINTING) return name
-		name.substring(0, MAX_LABEL_FOR_PRINTING) + "..."
+		name.truncate(MAX_LABEL_FOR_PRINTING)
 	}
 	
 }
