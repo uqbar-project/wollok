@@ -1,0 +1,17 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+import wollok.mirror.*
+
+object instanceVariableMirrorTest {
+	// XPECT methodType at construction --> (Object, String) => InstanceVariableMirror
+	method construction(obj, name) = new InstanceVariableMirror(obj, name)
+	
+	// XPECT methodType at name --> (InstanceVariableMirror) => String
+	method name(mirror) = mirror.name()
+	
+	// XPECT methodType at value --> () => Any
+	method value() = self.construction(null, null).value()
+	
+	// XPECT methodType at valueToSmartString --> (InstanceVariableMirror, List<Object>) => String
+	method valueToSmartString(mirror, alreadyShown) = mirror.valueToSmartString(alreadyShown)
+}
+

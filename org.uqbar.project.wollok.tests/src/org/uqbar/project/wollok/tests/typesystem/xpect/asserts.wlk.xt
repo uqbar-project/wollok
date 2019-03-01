@@ -27,14 +27,34 @@ object assertsTest {
 		assert.notEquals(2, n)
 	}
 
-	// XPECT! methodType at m6 --> () => Void
-	//method m6() {
-	//	assert.throwsException({ 1 / 0})
-	//}
+	// XPECT methodType at m6 --> () => Void
+	method m6() {
+		assert.throwsException({ 1 / 0})
+	}
 
-	// XPECT! methodType at m7 --> (() => Any) => Void
-	//method m7(clos) {
-	//	assert.throwsException(clos)
-	//}
+	// XPECT methodType at m7 --> ({() => Any}) => Void
+	method m7(clos) {
+		assert.throwsException(clos)
+	}
+	
+	// XPECT methodType at m8 --> (Exception, {() => Any}) => Void
+	method m8(ex, clos) {
+		assert.throwsExceptionLike(ex, clos)
+	}
+	
+	// XPECT methodType at m9 --> (String, {() => Any}) => Void
+	method m9(msg, clos) {
+		assert.throwsExceptionWithMessage(msg, clos)
+	}
+	
+	// XPECT methodType at m10 --> (Exception, {() => Any}) => Void
+	method m10(ex, clos) {
+		assert.throwsExceptionWithType(ex, clos)
+	}
+	
+	// XPECT methodType at m11 --> ({() => Any}, {(Exception) => Boolean}) => Void
+	method m11(clos, comparer) {
+		assert.throwsExceptionByComparing(clos, comparer)
+	}
 	
 }

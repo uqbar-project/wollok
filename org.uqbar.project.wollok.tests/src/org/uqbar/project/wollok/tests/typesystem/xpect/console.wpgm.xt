@@ -7,6 +7,14 @@ object consoleTest {
 	 	console.println(a)
 	}
 	
+	// XPECT methodType at readLine --> () => String 
+	method readLine() = console.readLine()
+	
+	// XPECT methodType at readInt --> () => Number 
+	method readInt() = console.readInt()
+	
+	// XPECT methodType at newline --> () => String 
+	method newline() = console.newline()
 }
 
 program p {
@@ -14,7 +22,6 @@ program p {
  	console
 
 	// XPECT methodType at println --> (Any) => Void 
- 	console.println("hola")
- 	
+ 	console.println("hola") 	
 }
 

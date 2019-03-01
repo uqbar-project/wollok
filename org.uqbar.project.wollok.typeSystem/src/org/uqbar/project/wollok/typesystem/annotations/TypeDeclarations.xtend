@@ -6,6 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.typesystem.ClassInstanceType
 import org.uqbar.project.wollok.typesystem.ConcreteType
 import org.uqbar.project.wollok.typesystem.TypeProvider
+import org.uqbar.project.wollok.typesystem.UnionType
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
 
@@ -65,6 +66,18 @@ abstract class TypeDeclarations {
 	def operator_tripleEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "===", #[parameterType])
 	}
+	
+	def operator_notEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "!=", #[parameterType])
+	}
+
+	def operator_tripleNotEquals(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "!==", #[parameterType])
+	}
+
+	def operator_mappedTo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "->", #[parameterType])
+	}
 
 	def operator_plus(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "+", #[parameterType])
@@ -80,6 +93,18 @@ abstract class TypeDeclarations {
 
 	def operator_divide(AnnotationContext receiver, TypeAnnotation parameterType) {
 		new ExpectReturnType(target, receiver.type, "/", #[parameterType])
+	}
+
+	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
+	}
+
+	def operator_power(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "**", #[parameterType])
+	}
+
+	def operator_upTo(AnnotationContext receiver, TypeAnnotation parameterType) {
+		new ExpectReturnType(target, receiver.type, "..", #[parameterType])
 	}
 
 	def operator_greaterThan(AnnotationContext receiver, TypeAnnotation parameterType) {
@@ -98,10 +123,6 @@ abstract class TypeDeclarations {
 		new ExpectReturnType(target, receiver.type, ">=", #[parameterType])
 	}
 
-	def operator_modulo(AnnotationContext receiver, TypeAnnotation parameterType) {
-		new ExpectReturnType(target, receiver.type, "%", #[parameterType])
-	}
-
 	// ****************************************************************************
 	// ** Shortcuts and helpers
 	// ****************************************************************************
@@ -110,7 +131,19 @@ abstract class TypeDeclarations {
 		(T < T) => Boolean;
 		(T <= T) => Boolean;
 		(T >= T) => Boolean;
-		(T === T) => Boolean;
+	}
+
+	def sized(AnnotationContext T) {
+		T >> "size" === #[] => Number
+		T >> "isEmpty" === #[] => Boolean
+	}
+	
+	def contains(AnnotationContext C, TypeAnnotation E) {
+		C >> "contains" === #[E] => Boolean
+	}
+	
+	def clear(AnnotationContext C) {
+		C >> "clear" === #[] => Void
 	}
 
 	def fakeProperty(ConcreteTypeAnnotation it, String property, TypeAnnotation type) {
@@ -165,8 +198,12 @@ abstract class TypeDeclarations {
 	def console() { objectTypeAnnotation(CONSOLE) }
 
 	def assertWKO() { objectTypeAnnotation(ASSERT) }
+	
+	def error() { objectTypeAnnotation(ERROR) }
 
 	def game() { objectTypeAnnotation(GAME) }
+	
+	def runtime() { objectTypeAnnotation(RUNTIME) }
 
 	def keyboard() { objectTypeAnnotation(KEYBOARD) }
 
@@ -183,10 +220,14 @@ abstract class TypeDeclarations {
 	def T() { Collection.methodParam("map", "T") }
 
 	def RETURN() { Closure.param(GenericTypeInfo.RETURN) }
+	
+	def Comparable() { unionType(Number, String, Date) } //TODO: Define as structural
 
 	def classTypeAnnotation(String classFQN) { new ConcreteTypeAnnotation(types.classType(context, classFQN)) }
 
 	def objectTypeAnnotation(String objectFQN) { new ConcreteTypeAnnotation(types.objectType(context, objectFQN)) }
+	
+	def unionType(SimpleTypeAnnotation<ConcreteType>... annotations) { new SimpleTypeAnnotation(new UnionType(annotations.map[type])) }
 
 	def genericTypeAnnotation(String classFQN, String... typeParameterNames) {
 		new GenericTypeAnnotationFactory(types.genericType(context, classFQN, typeParameterNames))
@@ -203,8 +244,8 @@ abstract class TypeDeclarations {
 		new GenericTypeAnnotationFactory(types.closureType(context, parameters.length)).instance(typeParameters)
 	}
 
-	def predicate(TypeAnnotation input) {
-		closure(#[input], Boolean)
+	def predicate(TypeAnnotation... input) {
+		closure(input, Boolean)
 	}
 	
 	def allTypes() { types.allTypes.map[ new ConcreteTypeAnnotation(baseType)] }
@@ -251,6 +292,8 @@ class MethodIdentifier {
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {
 		target.addMethodTypeDeclaration(receiver, selector, methodType.parameterTypes, methodType.returnType)
 	}
+	
+	def hasName(String methodName) { selector == methodName }
 }
 
 class AllMethodsIdentifier {
@@ -258,6 +301,11 @@ class AllMethodsIdentifier {
 
 	new(TypeDeclarationTarget target, ConcreteType receiver) {
 		identifiers = receiver.container.methods.map[new MethodIdentifier(target, receiver, name)]
+	}
+	
+	def except(String name) {
+		identifiers = identifiers.reject[hasName(name)]
+		this
 	}
 
 	def operator_tripleEquals(MethodTypeDeclaration methodType) {

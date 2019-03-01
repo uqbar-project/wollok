@@ -27,7 +27,7 @@ object stringsTests {
 	method m8(a) = a > (a.trim())
 
 	// XPECT methodType at m9 --> (String) => Boolean
-	method m9(a) = a < (a.toUpperCase())
+	method m9(a) = a < (a.toLowerCase())
 
 	// XPECT methodType at m10 --> (String) => Boolean
 	method m10(a) = a <= (a.trim())
