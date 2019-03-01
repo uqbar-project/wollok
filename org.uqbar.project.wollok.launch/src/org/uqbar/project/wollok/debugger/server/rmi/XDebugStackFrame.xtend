@@ -23,30 +23,30 @@ class XDebugStackFrame implements Serializable {
 	List<XDebugStackFrameVariable> variables
 	public static Map<WVariable, WollokObject> allValues
 	public static List<WVariable> allVariables
-	
+
 	new(XStackFrame<WollokObject> frame) {
 		sourceLocation = frame.currentLocation
 		variables = frame.context.debugVariables
 	}
-	
+
 	def static unwantedObjects() {
 		#[WollokConstants.SELF, WollokDSK.VOID, WollokDSK.CONSOLE]
 	}
-	
+
 	def static List<XDebugStackFrameVariable> debugVariables(EvaluationContext<WollokObject> context) {
-		val vars = Lists.newArrayList(context.allReferenceNames
-			.filter[
-				!local && context.showableInDynamicDiagram(name) && !unwantedObjects.exists
-				[ unwanted | name.toLowerCase.contains(unwanted) ]
-			])
-		Lists.newArrayList(vars.map[
+		val vars = Lists.newArrayList(context.allReferenceNames.filter [
+			!local && context.showableInDynamicDiagram(name) && !unwantedObjects.exists [ unwanted |
+				name.toLowerCase.contains(unwanted)
+			]
+		])
+		Lists.newArrayList(vars.map [
 			toVariable(context)
 		])
 	}
-	
+
 	def static toVariable(WVariable variable, EvaluationContext<WollokObject> context) {
 		if (allVariables.contains(variable)) {
-			return new XDebugStackFrameVariable(variable, null)
+			return new XDebugStackFrameVariable(variable, null) // Evita que el listener entre en loop infinito por referencias circulares. Luego el diagrama de objetos enlaza los objetos por id interno.
 		}
 		val value = allValues.get(variable)
 		if (value !== null) {
@@ -57,10 +57,10 @@ class XDebugStackFrame implements Serializable {
 		allValues.put(variable, newValue)
 		new XDebugStackFrameVariable(variable, newValue)
 	}
-	
+
 	def static initAllVariables() {
 		allVariables = newArrayList
 		allValues = newHashMap
 	}
-	
+
 }
