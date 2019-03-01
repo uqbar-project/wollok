@@ -26,6 +26,9 @@ object objectTests {
 	// XPECT methodType at printStringObject --> (Object) => String
 	method printStringObject(o) = o.printString()
 	
+	// XPECT methodType at shortDescriptionObject --> (Object) => String
+	method shortDescriptionObject(o) = o.shortDescription()
+	
 	// XPECT methodType at kindNameObject --> (Object) => String
 	method kindNameObject(o) = o.kindName()
 	
