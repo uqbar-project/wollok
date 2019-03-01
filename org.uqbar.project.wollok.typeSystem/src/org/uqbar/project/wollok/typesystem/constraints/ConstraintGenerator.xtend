@@ -65,7 +65,6 @@ class ConstraintGenerator {
 		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
 		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
-		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
 		this.unaryOperationsConstraintsGenerator = new UnaryOperationsConstraintsGenerator(typeSystem)
 	}
 

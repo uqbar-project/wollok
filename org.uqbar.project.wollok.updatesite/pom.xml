@@ -73,8 +73,6 @@
 		<profile>
 			<id>uploadRepo</id>
 			<properties>
-				<!-- Properties relative to the distant host where to upload the repo -->
-				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
 				<!-- Relative path to the repo being uploaded -->
 				<repo.path>${project.build.directory}/repository/</repo.path>
 			</properties>
@@ -114,8 +112,8 @@
 									<fromDir>${repo.path}</fromDir>
 									<includes>**</includes>
 									<toDir>/wollok/${updateSiteFolder}</toDir>
-									<url>${ftp.url}</url>
-									<serverId>p2-uqbar</serverId>
+									<url>${upload.p2.url}</url>
+									<serverId>${upload.server}</serverId>
 								</configuration>
 							</execution>
 						</executions>
@@ -126,7 +124,6 @@
 		<profile>
 			<id>uploadProducts</id>
 			<properties>
-				<ftp.url>ftp://uqbar-wiki.org</ftp.url>
 				<products.path>${project.build.directory}/products/</products.path>
 			</properties>
 
@@ -148,8 +145,8 @@
 									<fromDir>${products.path}</fromDir>
 									<includes>**.zip</includes>
 									<toDir>/wollok/products/${updateSiteFolder}</toDir>
-									<url>${ftp.url}</url>
-									<serverId>downloads-uqbar</serverId>
+									<url>${upload.download.url}</url>
+									<serverId>${upload.server}</serverId>
 								</configuration>
 							</execution>
 						</executions>

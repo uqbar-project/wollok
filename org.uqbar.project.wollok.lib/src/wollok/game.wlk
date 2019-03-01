@@ -322,8 +322,6 @@ object keyboard {
 
 	method num(n) = new Key(n + 7, n + 144)
 	
-	method num() = self.num(0)
-	
 	method num0() = self.num(0)
 
 	method num1() = self.num(1)

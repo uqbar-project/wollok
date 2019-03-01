@@ -18,8 +18,6 @@
 
 	<properties>
 		<updateSiteFolder>dev</updateSiteFolder>
-		<!-- Properties relative to the distant host where to upload the repo -->
-		<ftp.url>ftp://uqbar-wiki.org</ftp.url>
 		<!-- Relative path to the repo being uploaded -->
 		<products.path>${project.build.directory}</products.path>
 	</properties>
@@ -155,8 +153,8 @@
 									<fromDir>${products.path}</fromDir>
 									<includes>**-wdk.zip</includes>
 									<toDir>/wollok/sdk/${updateSiteFolder}</toDir>
-									<url>${ftp.url}</url>
-									<serverId>downloads-uqbar</serverId>
+									<url>${upload.download.url}</url>
+									<serverId>${upload.server}</serverId>
 								</configuration>
 							</execution>
 						</executions>
