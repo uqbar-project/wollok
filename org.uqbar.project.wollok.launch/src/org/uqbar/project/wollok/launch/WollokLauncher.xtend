@@ -9,17 +9,17 @@ import net.sf.lipermi.net.Client
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
 import org.uqbar.project.wollok.debugger.server.out.XTextInterpreterEventPublisher
-import org.uqbar.project.wollok.debugger.server.rmi.CommandHandlerFactory
+import org.uqbar.project.wollok.debugger.server.rmi.DebuggerCommandHandlerFactory
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.WollokRuntimeException
 import org.uqbar.project.wollok.interpreter.api.XDebugger
-import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
+import org.uqbar.project.wollok.interpreter.listeners.WollokRemoteContextStateListener
 import org.uqbar.project.wollok.launch.repl.AnsiColoredReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.RegularReplOutputFormatter
 import org.uqbar.project.wollok.launch.repl.WollokRepl
 import org.uqbar.project.wollok.wollokDsl.WFile
 
-import static extension org.uqbar.project.wollok.utils.OperatingSystemUtils.*
+import static org.uqbar.project.wollok.utils.OperatingSystemUtils.*
 
 /**
  * Main program launcher for the interpreter.
@@ -37,8 +37,7 @@ class WollokLauncher extends WollokChecker {
 	override doSomething(List<String> fileNames, Injector injector, WollokLauncherParameters parameters) {
 		try {
 			val interpreter = injector.getInstance(WollokInterpreter)
-			val debugger = createDebugger(interpreter, parameters)
-			interpreter.setDebugger(debugger)
+			createDebugger(interpreter, parameters)
 			val filesToParse = fileNames.map [ wollokFile |
 				new File(wollokFile)
 			]
@@ -53,14 +52,17 @@ class WollokLauncher extends WollokChecker {
 	override doSomething(WFile parsed, Injector injector, File mainFile, WollokLauncherParameters parameters) {
 		try {
 			val interpreter = injector.getInstance(WollokInterpreter)
-			val debugger = createDebugger(interpreter, parameters)
-			interpreter.setDebugger(debugger)
+			createDebugger(interpreter, parameters)
 
 			log.debug("Interpreting: " + mainFile.absolutePath)
 			interpreter.interpret(parsed)
-	
+
 			if (parameters.hasRepl) {
 				val formatter = if (parameters.noAnsiFormat || isOsMac) new RegularReplOutputFormatter else new AnsiColoredReplOutputFormatter
+				if (parameters.dynamicDiagramActivated) {
+					val interpreterListener = new WollokRemoteContextStateListener(interpreter, parameters.dynamicDiagramPort)
+					interpreter.addInterpreterListener(interpreterListener)
+				}
 				new WollokRepl(this, injector, interpreter, mainFile, parsed, formatter).startRepl
 			}
 			System.exit(0)
@@ -70,11 +72,11 @@ class WollokLauncher extends WollokChecker {
 		}
 	}
 
-	def createDebugger(WollokInterpreter interpreter, WollokLauncherParameters parameters) {
+	def void createDebugger(WollokInterpreter interpreter, WollokLauncherParameters parameters) {
 		if (parameters.hasDebuggerPorts) {
-			createDebuggerOn(interpreter, parameters.requestsPort, parameters.eventsPort)
-		} else
-			new XDebuggerOff
+			val debugger = createDebuggerOn(interpreter, parameters.requestsPort, parameters.eventsPort)
+			interpreter.addInterpreterListener(debugger)
+		}
 	}
 
 	protected def createDebuggerOn(WollokInterpreter interpreter, int listenCommandsPort, int sendEventsPort) {
@@ -85,15 +87,12 @@ class WollokLauncher extends WollokChecker {
 		registerCommandHandler(debugger, listenCommandsPort)
 		log.debug(listenCommandsPort + " opened !")
 		
-		
-
 		log.debug("Connecting to client " + sendEventsPort)
 		val client = connectToClient(sendEventsPort)
 		debugger.eventSender = client
-		
 		debugger
 	}
-	
+
 	def XTextInterpreterEventPublisher connectToClient(int port) {
 		var retries = 1
 		do {
@@ -119,7 +118,7 @@ class WollokLauncher extends WollokChecker {
 
 	def void registerCommandHandler(XDebugger debugger, int listenPort) {
 		log.debug("[VM] Listening for clients on port " + listenPort)
-		CommandHandlerFactory.createCommandHandler(debugger, listenPort, [
+		DebuggerCommandHandlerFactory.createCommandHandler(debugger, listenPort, [
 			synchronized(debuggerStartLock) {
 				debuggerStartLock.notify
 			}

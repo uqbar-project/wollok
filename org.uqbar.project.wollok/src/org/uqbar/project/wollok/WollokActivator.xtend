@@ -13,7 +13,7 @@ class WollokActivator extends Plugin {
 	public static val WOLLOK_LIB_BUNDLE_NAME = "org.uqbar.project.wollok.lib"
 	private static WollokActivator plugin;
 	private BundleContext context  
-
+	
 	override start(BundleContext context) {
 		super.start(context)
 		this.context = context
@@ -43,7 +43,6 @@ class WollokActivator extends Plugin {
 		catch (ClassNotFoundException e) {
 			// not found in wollok-lib Search here
 			Thread.currentThread.contextClassLoader.loadClass(className)
-//			throw new WollokRuntimeException("Error while creating native object class " + className, e);
 		}
 		catch (IllegalAccessException e) {
 			throw new WollokRuntimeException("Error while creating native object class " + className, e);
@@ -51,16 +50,16 @@ class WollokActivator extends Plugin {
 	}
 	
 	def findResource(String bundleName, String fullName) {
-		val x = context.bundles.findFirst[it.symbolicName == bundleName]
-		x?.getResource(fullName).openStream
+		val bundle = context.bundles.findFirst[it.symbolicName == bundleName]
+		bundle?.getResource(fullName).openStream
 	}
 	
 	def findResource(String fullName) {
-		val x = context.bundles.findFirst [ it.getResource("/" + fullName) != null ]
-		if(x == null)
+		val bundle = context.bundles.findFirst [ it.getResource("/" + fullName) !== null ]
+		if(bundle === null)
 			null
 		else
-			x.getResource(fullName).openStream
+			bundle.getResource(fullName).openStream
 	}
-	
+
 }

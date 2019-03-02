@@ -29,6 +29,7 @@ class WollokCoreTypeDeclarations extends TypeDeclarations {
 			O >> "equals" === #[Any] => Boolean;
 			O >> "toString" === #[] => String;
 			O >> "printString" === #[] => String;
+			O >> "shortDescription" === #[] => String;
 			O >> "kindName" === #[] => String;
 			O >> "className" === #[] => String;
 			O >> "error" === #[String] => Void;

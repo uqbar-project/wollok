@@ -11,6 +11,7 @@ import org.eclipse.xtext.Constants
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess
 import org.eclipse.xtext.ui.preferences.PropertyAndPreferencePage
 
+// TODO: Generate an Abstract Preference Page
 class WollokNumbersPreferencePage extends PropertyAndPreferencePage implements IWorkbenchPropertyPage {
 	@Inject @Named(Constants.LANGUAGE_NAME) String languageName
 	@Inject IPreferenceStoreAccess preferenceStoreAccess

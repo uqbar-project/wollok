@@ -5,6 +5,7 @@ import java.util.Map
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.WollokConstants
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WVariableDeclaration
@@ -51,8 +52,9 @@ abstract class AbstractModel extends Shape {
 
 	new(WMethodContainer mc) {
 		component = mc
-		variables = configuration.getVariablesFor(mc)
-		methods = configuration.getMethodsFor(mc)
+		val selectedConfiguration = configuration as StaticDiagramConfiguration
+		variables = selectedConfiguration.getVariablesFor(mc)
+		methods = selectedConfiguration.getMethodsFor(mc)
 		this.defineSize
 	}
 	

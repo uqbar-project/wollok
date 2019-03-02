@@ -89,17 +89,23 @@ class WollokRepl {
 			input
 	}
 
+	def synchronized createReplExpression(String input) {
+		'''
+		«FOR a : parsedMainFile.imports.map[importedNamespace]»
+		import «a»
+		«ENDFOR»
+		import «parsedMainFile.implicitPackage».*
+
+		program repl {
+			«input»
+		}
+		'''
+	}
+	
+
 	def synchronized executeInput(String input) {
 		try {
-			val returnValue = interpreter.interpret('''
-				«FOR a : parsedMainFile.imports.map[importedNamespace]»
-					import «a»
-				«ENDFOR»
-				import «parsedMainFile.implicitPackage».*
-				program repl {
-				«input»
-				}
-			'''.parseRepl(mainFile), true)
+			val returnValue = interpreter.interpret(input.createReplExpression.parseRepl(mainFile), true)
 			printReturnValue(returnValue)
 		} catch (Exception e) {
 			resetIndent
@@ -107,7 +113,6 @@ class WollokRepl {
 		}
 	}
 
-	// TODO: should be WollokObject
 	def printReturnValue(Object obj) {
 		if (obj === null)
 			println("null".returnStyle)

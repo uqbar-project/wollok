@@ -26,7 +26,7 @@ abstract class AbstractXDebuggerTestCase extends AbstractWollokInterpreterTestCa
 	 */
 	def debugger() {
 		val debugger = new TestDebugger(interpreter)
-		interpreter.debugger = debugger
+		interpreter.addInterpreterListener(debugger)
 		new DebuggingSessionAsserter(debugger)
 	}
 	

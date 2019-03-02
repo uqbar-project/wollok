@@ -120,5 +120,5 @@ class HumanReadableUtils {
 		}
 		classNameWithParameters.substring(0, indexParentheses)
 	}
-	
+
 }

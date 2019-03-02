@@ -5,8 +5,8 @@ import org.eclipse.debug.core.model.IVariable
 import org.uqbar.project.wollok.debugger.WollokDebugTarget
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrameVariable
 import org.uqbar.project.wollok.debugger.server.rmi.XDebugValue
-import org.uqbar.project.wollok.debugger.server.rmi.XWollokListDebugValue
 import org.uqbar.project.wollok.debugger.server.rmi.XWollokObjectDebugValue
+import org.uqbar.project.wollok.debugger.server.rmi.XWollokCollectionDebugValue
 
 /**
  * 
@@ -23,7 +23,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	}
 	
 	def dispatch toEclipseValue(XWollokObjectDebugValue value) { new WollokObjectValue(target, value) }
-	def dispatch toEclipseValue(XWollokListDebugValue value) { new WollokObjectValue(target, value) }
+	def dispatch toEclipseValue(XWollokCollectionDebugValue value) { new WollokObjectValue(target, value) }
 	def dispatch toEclipseValue(XDebugValue value) { 
 		new WollokValue(target, value.stringValue)
 	}
@@ -46,7 +46,7 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 	
 	def String getIcon() {
 		// eventually all variables will know their custom icons
-		if (adaptee.value instanceof XWollokListDebugValue) 
+		if (adaptee.value instanceof XWollokCollectionDebugValue) 
 			'icons/listVariableIcon.gif'
 		else if (adaptee.variable.local)
 			'icons/localvariable_obj.png'
@@ -54,4 +54,20 @@ class WollokVariable extends WollokDebugElement implements IVariable {
 			null
 	}
 	
+	override toString() {
+		this.adaptee.variable.id.toString
+	}
+	
+	override equals(Object o) {
+		try {
+			val other = o as WollokVariable
+			return other.toString.equals(this.toString) 
+		} catch (ClassCastException e) {
+			return super.equals(o)
+		}
+	}
+	
+	override hashCode() {
+		this.toString.hashCode
+	}
 }

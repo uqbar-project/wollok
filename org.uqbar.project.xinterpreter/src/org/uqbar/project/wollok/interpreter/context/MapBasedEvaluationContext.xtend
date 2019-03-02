@@ -19,7 +19,7 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	override getThisObject() { null }
 	
 	override allReferenceNames() {
-		values.keySet.map[new WVariable(it, true)]
+		values.keySet.map[new WVariable(it, null, true)]
 	}
 
 	override resolve(String variableName) {
@@ -43,17 +43,20 @@ class MapBasedEvaluationContext<O> implements EvaluationContext<O> {
 	
 	override addGlobalReference(String name, O value) {
 		addReference(name, value)
-		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override removeGlobalReference(String name) {
 		values.remove(name)
-		//throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
 	override toString() {
 		class.simpleName + "{" + values.entrySet.map[key + ":" + (if(value===null)"null" else value.class)].join(',') + '}'
 	}
 
-	override showableInStackTrace() { true }	
+	override showableInStackTrace() { true }
+	
+	override showableInDynamicDiagram(String name) {
+		false
+	}
+	
 }

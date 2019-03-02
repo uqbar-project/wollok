@@ -46,8 +46,6 @@ class WollokLauncherModule extends WollokDslRuntimeModule {
 		params.libraries
 	}
 
-	
-
 	def Class<? extends WollokTestsReporter> bindWollokTestsReporter() {
 		if (params.tests) {
 			if (params.testPort !== null && params.testPort != 0)

@@ -190,6 +190,11 @@ class Object {
 	method toString() {
 		return self.toSmartString([])
 	}
+
+	/**
+	 * Shows a short, internal representation
+	 */
+	method shortDescription() = self.toString()
 	
 	/**
 	 * Provides a visual representation of Wollok Object
@@ -2266,6 +2271,7 @@ class Closure {
 	
 	/** Answers a string representation of this closure object */
 	override method toString() native
+	
 }
 
 /**
@@ -2450,5 +2456,15 @@ class Date {
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
 		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+
+	/** 
+	  * Shows a short, internal representation of a date 
+	  * 
+	  * Example:
+	  *     new Date(2, 4, 2018).shortDescription()
+	  *         ==> Answers "2/4/2018"
+	  */
+	override method shortDescription() =
+		"" + self.day() + "/" + self.month() + "/" + self.year()
 
 }

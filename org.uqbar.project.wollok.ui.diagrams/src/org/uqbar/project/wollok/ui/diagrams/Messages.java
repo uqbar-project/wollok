@@ -8,7 +8,7 @@ import org.uqbar.project.wollok.utils.WNLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.uqbar.project.wollok.ui.diagrams.messages"; //$NON-NLS-1$
 
-	// Toolbar actions
+	// Static Diagram - Toolbar actions
 	public static String StaticDiagram_Export_Description;
 	public static String StaticDiagram_Show_Variables;
 	public static String StaticDiagram_RememberShapePositions_Description;
@@ -25,6 +25,10 @@ public class Messages extends NLS {
 	public static String StaticDiagram_AddOutsiderClass_AcceptButton;
 	public static String StaticDiagram_AddOutsiderClass_CancelButton;
 	public static String StaticDiagram_DeleteAllOutsiderClasses_Description;
+	
+	// Dynamic Diagram - Toolbar actions
+	public static String DynamicDiagram_Clean_Description;
+	public static String DynamicDiagram_RememberObjectPosition_Description;
 	
 	// Tool entries
 	public static String StaticDiagram_CreateAssociation_Title;

@@ -106,9 +106,11 @@ class WDebugExtensions {
 		launchManager.generateUniqueLaunchConfigurationNameFrom(info.name)
 	}
 	
-	def static launch(ILaunchConfiguration conf, String mode) { DebugUITools.launch(conf, mode) }
+	def static launch(ILaunchConfiguration conf, String mode) { 
+		DebugUITools.launch(conf, mode)
+	}
 	
 	def static fileURI(IBreakpoint bp) {
 		bp.marker.resource.locationURI
-	}	
+	}
 }

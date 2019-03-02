@@ -126,7 +126,7 @@ class WollokReplConsolePage extends TextConsolePage implements KeyListener {
 		} else {
 			console.updateInputBuffer
 		}
-
+		
 		return
 	}
 

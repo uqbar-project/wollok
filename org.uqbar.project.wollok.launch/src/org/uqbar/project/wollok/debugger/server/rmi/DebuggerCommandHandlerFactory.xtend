@@ -10,7 +10,7 @@ import org.uqbar.project.wollok.interpreter.api.XDebugger
  * 
  * @author jfernandes
  */
-class CommandHandlerFactory {
+class DebuggerCommandHandlerFactory {
 	
 	def static Server createCommandHandler(XDebugger debugger, int port, ()=>void onReady) {
 		val server = new Server

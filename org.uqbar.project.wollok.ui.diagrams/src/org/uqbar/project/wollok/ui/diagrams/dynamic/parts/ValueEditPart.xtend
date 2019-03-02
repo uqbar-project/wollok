@@ -1,4 +1,4 @@
-package org.uqbar.project.wollok.ui.diagrams.objects.parts
+package org.uqbar.project.wollok.ui.diagrams.dynamic.parts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
@@ -18,8 +18,9 @@ import org.eclipse.gef.Request
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart
 import org.eclipse.gef.editpolicies.ComponentEditPolicy
 import org.uqbar.project.wollok.ui.diagrams.classes.model.Shape
-import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.eclipse.draw2d.ChopboxAnchor
+import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
+import org.uqbar.project.wollok.ui.diagrams.dynamic.configuration.DynamicDiagramConfiguration
 
 /**
  * 
@@ -64,7 +65,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createShape() {
-		if (castedModel.isList)
+		if (castedModel.isCollection)
 			new RectangleFigure
 		else
 			new Ellipse
@@ -73,13 +74,13 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	def colorFor(VariableModel model) {
 		val v = model.valueString
 		if (v == "null")
-			ClassDiagramColors.OBJECTS_VALUE_NULL
+			StaticDiagramColors.OBJECTS_VALUE_NULL
 		else if (model.isNumeric)
-			ClassDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
-		else if (model.isList)
-			ClassDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
+			StaticDiagramColors.OBJECTS_VALUE_NUMERIC_BACKGROUND
+		else if (model.isCollection)
+			StaticDiagramColors.OBJECTS_VALUE_LIST_BACKGROUND
 		else 
-			ClassDiagramColors.CLASS_BACKGROUND
+			StaticDiagramColors.CLASS_BACKGROUND
 	}
 	
 	def getCastedModel() { model as VariableModel }
@@ -90,7 +91,7 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	}
 	
 	def createConnectionAnchor() {
-		if (castedModel.isList)
+		if (castedModel.isCollection)
 			new ChopboxAnchor(figure)
 		else
 			new EllipseAnchor(figure)
@@ -108,9 +109,16 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
 	override propertyChange(PropertyChangeEvent evt) {
 		val prop = evt.propertyName
-		if (Shape.SIZE_PROP == prop || Shape.LOCATION_PROP == prop) refreshVisuals
-		else if (Shape.SOURCE_CONNECTIONS_PROP == prop)	refreshSourceConnections
-		else if (Shape.TARGET_CONNECTIONS_PROP == prop)	refreshTargetConnections
+		if (Shape.SOURCE_CONNECTIONS_PROP == prop)	refreshSourceConnections
+		if (Shape.TARGET_CONNECTIONS_PROP == prop)	refreshTargetConnections
+		if (Shape.SIZE_PROP == prop) {
+			refreshVisuals
+			DynamicDiagramConfiguration.instance.saveSize(castedModel)
+		}
+		if (Shape.LOCATION_PROP == prop) {
+			refreshVisuals
+			DynamicDiagramConfiguration.instance.saveLocation(castedModel)
+		}
 	}
 
 	override refreshVisuals() {
@@ -119,5 +127,5 @@ class ValueEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 	
 	def getBounds(Shape it) { new Rectangle(location, size) }
 //	def getBounds() { new Rectangle((Math.random * 200).intValue, (Math.random * 200).intValue, 75, 75) }
-	
+
 }

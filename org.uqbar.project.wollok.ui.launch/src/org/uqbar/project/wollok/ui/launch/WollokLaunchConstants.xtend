@@ -2,7 +2,6 @@ package org.uqbar.project.wollok.ui.launch
 
 import org.eclipse.debug.core.ILaunchConfiguration
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants
 
 /**
  * 
@@ -25,6 +24,7 @@ class WollokLaunchConstants {
 	public static val ATTR_WOLLOK_FILE = "WOLLOK_FILE"
 	public static val ATTR_WOLLOK_SEVERAL_FILES = "ATTR_WOLLOK_SEVERAL_FILES"
 	public static val ATTR_WOLLOK_IS_REPL = "WOLLOK_IS_REPL"
+	public static val ATTR_WOLLOK_DYNAMIC_DIAGRAM = "WOLLOK_DYNAMIC_DIAGRAM"
 	public static val ATTR_WOLLOK_DEBUG_PARAM = "WOLLOK_DEBUG_PARAM"
 	public static val ATTR_WOLLOK_DEBUG_COMMAND_PORT = "WOLLOK_DEBUG_COMMAND_PORT"
 	public static val ATTR_WOLLOK_DEBUG_EVENT_PORT = "WOLLOK_DEBUG_EVENT_PORT"
