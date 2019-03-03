@@ -44,7 +44,7 @@
     <extension
           point="org.eclipse.xtext.builder.participant">
        <participant
-             class="org.uqbar.project.wollok.typeSystem.ui.builder.WollokTypeSystemBuilderParticipant"
+             class="org.uqbar.project.wollok.typeSystem.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.ui.builder.WollokTypeSystemBuilderParticipant"
              fileExtensions="wlk,wpgm,wtest">
        </participant>
     </extension>
@@ -65,6 +65,5 @@
        <wollokTypeSystemPreference
              class="org.uqbar.project.wollok.typeSystem.ui.internal.WollokDslExecutableExtensionFactory:org.uqbar.project.wollok.typeSystem.ui.preferences.WollokTypeSystemUIPreferences">
        </wollokTypeSystemPreference>
-    </extension>
-    <!-- Type System preferences -->
+  </extension>      <!-- Type System preferences -->
 </plugin>
