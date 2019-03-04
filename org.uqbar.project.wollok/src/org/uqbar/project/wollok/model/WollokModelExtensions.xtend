@@ -478,9 +478,10 @@ class WollokModelExtensions {
 	}
 
 	// Root objects (que no tiene acceso a variables fuera de ellos)
+	def static dispatch boolean isDuplicated(WFile f, WReferenciable r) { f.elements.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WFile f, WNamedObject o) { f.elements.existsMoreThanOne(o) }
 	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
-	def static dispatch boolean isDuplicated(WProgram p, WReferenciable v) { p.variables.existsMoreThanOne(v) }
+	def static dispatch boolean isDuplicated(WProgram p, WReferenciable r) { p.variables.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
 	def static dispatch boolean isDuplicated(WTest test, WReferenciable v) {
 		val suite = test.declaringContext
