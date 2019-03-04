@@ -1,0 +1,22 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+
+object pepita {
+	method energia() = 100
+}
+
+object arbol {
+	method altura() = 999
+}
+
+object wollok {
+	// XPECT methodType at tomarEnergia --> (pepita) => Number		
+	method tomarEnergia(energetico) = energetico.energia()
+	
+	// XPECT methodType at prueba --> () => Number
+	method prueba() = self.tomarEnergia(pepita)
+	
+	// XPECT warnings --> "Type system: expected <<pepita>> but found <<arbol>>" at "arbol"
+	method prueba2() = self.tomarEnergia(arbol)
+}
+
