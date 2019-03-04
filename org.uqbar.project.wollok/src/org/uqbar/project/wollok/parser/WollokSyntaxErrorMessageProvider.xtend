@@ -26,8 +26,8 @@ import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import static org.eclipse.xtext.diagnostics.Diagnostic.*
 import static org.uqbar.project.wollok.WollokConstants.*
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 @Singleton
 class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
@@ -86,23 +86,26 @@ class WollokSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
 			}
 		}		
 		
-		if (token.notNullAnd[equalsIgnoreCase(CONSTRUCTOR)]) 
-			if (declaringContext === null) 
-				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)				
-			else if (!declaringContext.canDefineConstructors) 
+		if (token.notNullAnd[equalsIgnoreCase(CONSTRUCTOR)]) {
+			if (declaringContext === null)
+				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
+			else if (!declaringContext.canDefineConstructors)
 				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_CONSTRUCTOR_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+		}		
 
-		if (token.notNullAnd[equalsIgnoreCase(FIXTURE)]) 
+		if (token.notNullAnd[equalsIgnoreCase(FIXTURE)]) {
 			if (declaringContext === null)
 				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			else if ( !declaringContext.canDefineFixture) 	
+			else if (declaringContext.canDefineFixture)
 				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_FIXTURE_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+		}		
 
-		if (token.notNullAnd[equalsIgnoreCase(TEST)]) 
+		if (token.notNullAnd[equalsIgnoreCase(TEST)]) {
 			if (declaringContext === null)
 				return new SyntaxErrorMessage(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE_GENERIC, SYNTAX_DIAGNOSTIC)
-			else if (declaringContext.canDefineTests) 	
+			else if (!declaringContext.canDefineTests)
 				return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_TESTS_NOT_ALLOWED_HERE, declaringContext?.constructionName), SYNTAX_DIAGNOSTIC)
+		}		
 
 		if (exception.parserMessage.contains(MISSING_EOF) && orderedConstructions.contains(construction)) {
 			return new SyntaxErrorMessage(NLS.bind(Messages.SYNTAX_DIAGNOSIS_ORDER_PROBLEM, token, construction), SYNTAX_DIAGNOSTIC)
