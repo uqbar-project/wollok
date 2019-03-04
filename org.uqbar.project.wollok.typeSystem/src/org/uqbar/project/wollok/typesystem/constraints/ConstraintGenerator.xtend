@@ -146,7 +146,7 @@ class ConstraintGenerator {
 	
 	def dispatch void generate(WSuite it) {
 		members.forEach[generateVariables]
-		fixture.generateVariables
+		fixture?.generateVariables
 		tests.forEach[generateVariables]
 	}
 
