@@ -3,13 +3,18 @@ package org.uqbar.project.wollok.typesystem.constraints.strategies
 import org.apache.log4j.Logger
 import org.uqbar.project.wollok.typesystem.WollokType
 import org.uqbar.project.wollok.typesystem.constraints.variables.GenericTypeInfo
+import org.uqbar.project.wollok.typesystem.constraints.variables.ParameterTypeVariableOwner
+import org.uqbar.project.wollok.typesystem.constraints.variables.ProgramElementTypeVariableOwner
 import org.uqbar.project.wollok.typesystem.constraints.variables.TypeVariable
 import org.uqbar.project.wollok.typesystem.constraints.variables.VoidTypeInfo
+import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static org.uqbar.project.wollok.typesystem.constraints.types.OffenderSelector.*
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
 import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
+import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
@@ -51,6 +56,8 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	}
 
 	def propagateMinType(TypeVariable origin, TypeVariable destination, WollokType type) {
+		val shouldPropagateMinTypes = shouldPropagateMinTypesTo(destination)
+		if (!shouldPropagateMinTypes) return Cancel
 		handlingOffensesDo(origin, destination) [
 			destination.addMinType(type)
 		]
@@ -58,5 +65,17 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 
 	def boolean evaluate(Iterable<TypeVariable> variables, (TypeVariable)=>boolean action) {
 		variables.fold(false)[hasChanges, variable|action.apply(variable) || hasChanges]
+	}
+	
+	def shouldPropagateMinTypesTo(TypeVariable destination) {
+		destination.owner.shouldPropagateMinTypes(destination)
+	}
+	
+	def dispatch shouldPropagateMinTypes(ParameterTypeVariableOwner owner, TypeVariable variable) {
+		true
+	}
+	
+	def dispatch shouldPropagateMinTypes(ProgramElementTypeVariableOwner owner, TypeVariable variable) {
+		!((owner.programElement instanceof WParameter) && owner.programElement.declaringMethod !== null) 
 	}
 }

@@ -15,15 +15,13 @@ class RejectedMinTypeException extends TypeSystemException {
 	Set<WollokType> expectedTypes = newHashSet
 	
 	new(TypeVariable variable, WollokType type) {
-		if (!variable.owner.isCoreObject) {
-			this.variable = variable
-		}
 		this.type = type
 	}
 
 	new(TypeVariable variable, WollokType type, Set<WollokType> expectedTypes) {
 		this(variable, type)
-		this.expectedTypes = expectedTypes
+		if (expectedTypes !== null)
+			this.expectedTypes = expectedTypes
 	}
 
 	/**

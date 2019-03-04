@@ -74,7 +74,10 @@ class GenericTypeInfo extends TypeInfo {
 	// ** Adding type information
 	// ************************************************************************
 	override beSealed() {
-		maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
+		if (maximalConcreteTypes === null) 
+			maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
+		else if (!minTypes.empty)
+			maximalConcreteTypes.restrictTo(new MaximalConcreteTypes(minTypes.keySet))
 		super.beSealed
 	}
 
@@ -85,7 +88,7 @@ class GenericTypeInfo extends TypeInfo {
 				if(matchingMaxType !== null) {
 					type.beSubtypeOf(matchingMaxType)
 				} else {
-					error(new RejectedMinTypeException(offender, type))
+					error(new RejectedMinTypeException(offender, type, maxTypes.maximalConcreteTypes))
 					maxTypes.state = Error
 				}
 			}
@@ -137,7 +140,7 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-		if(sealed && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
+		if(sealed && !minTypes.isEmpty && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
 			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
 		}
 
