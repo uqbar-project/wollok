@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+describe "without fixture" {
+	// XPECT type at s --> String
+	var s = ""
+	
+	test "test in suite" {
+		// XPECT type at y --> String
+		var y = s
+	}
+}
