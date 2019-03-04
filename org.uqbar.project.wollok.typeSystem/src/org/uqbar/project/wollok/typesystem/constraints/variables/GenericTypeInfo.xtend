@@ -74,6 +74,7 @@ class GenericTypeInfo extends TypeInfo {
 	// ** Adding type information
 	// ************************************************************************
 	override beSealed() {
+		//TODO: Check this
 		if (maximalConcreteTypes === null) 
 			maximalConcreteTypes = new MaximalConcreteTypes(minTypes.keySet)
 		else if (!minTypes.empty)
@@ -140,8 +141,9 @@ class GenericTypeInfo extends TypeInfo {
 	}
 
 	def validateType(WollokType type, TypeVariable offender) {
-		if(sealed && !minTypes.isEmpty && !minTypes.keySet.exists[isSuperTypeOf(type)]) {
-			throw new RejectedMinTypeException(offender, type, maximalConcreteTypes.maximalConcreteTypes)
+		val readyMinTypes = minTypes.filter[k, value| value == Ready]
+		if(sealed && !readyMinTypes.empty && !readyMinTypes.keySet.exists[isSuperTypeOf(type)]) {
+			throw new RejectedMinTypeException(offender, type, readyMinTypes.keySet)
 		}
 
 		validMessages.forEach [
