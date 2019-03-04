@@ -158,6 +158,11 @@ class WollokModelExtensions {
 	def static dispatch boolean isAConstructor(WConstructor it) { true }
 	def static dispatch boolean isAConstructor(WFixture it) { true }
 
+	/** A variable is global if its declaration (i.e. its eContainer) is direct child of a WFile element */
+	def static dispatch boolean isGlobal(WVariable it) { declaration.eContainer instanceof WFile }
+	def static dispatch boolean isGlobal(WNamedObject it) { true }
+	def static dispatch boolean isGlobal(WParameter it) { false }
+
 	// ************************************************************************
 	// ** Variable & parameter usage
 	// ************************************************************************
@@ -200,7 +205,7 @@ class WollokModelExtensions {
 	def static dispatch declarationContext(WParameter parameter) { parameter.eContainer }
 
 	// **********************
-	// ** access containers
+	// ** Access containers
 	// **********************
 	// this doesn't work for object literals, although it could !
 	def static WPackage getPackage(WMethodContainer it) {
@@ -451,7 +456,7 @@ class WollokModelExtensions {
 	def static isInMixin(EObject e) { e.declaringContext instanceof WMixin }
 
 	// ****************************
-	// ** transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
+	// ** Transparent containers (in terms of debugging -maybe also could be used for visualizing, like outline?-)
 	// ****************************
 	// containers
 	def static dispatch isTransparent(EObject o) { false }
@@ -471,18 +476,16 @@ class WollokModelExtensions {
 	def static dispatch isTransparent(WBinaryOperation o) { true }
 
 	// ******************************
-	// ** is duplicated impl
+	// ** Is duplicated impl
 	// ******************************
 	def static boolean isDuplicated(WReferenciable reference) {
 		reference.eContainer.isDuplicated(reference)
 	}
 
 	// Root objects (que no tiene acceso a variables fuera de ellos)
-	def static dispatch boolean isDuplicated(WFile f, WReferenciable r) { f.elements.existsMoreThanOne(r) }
-	def static dispatch boolean isDuplicated(WFile f, WNamedObject o) { f.elements.existsMoreThanOne(o) }
-	def static dispatch boolean isDuplicated(WFile f, WClass c) { f.elements.existsMoreThanOne(c) }
+	def static dispatch boolean isDuplicated(WFile it, WNamed named) { namedElements.existsMoreThanOne(named) }
 	def static dispatch boolean isDuplicated(WProgram p, WReferenciable r) { p.variables.existsMoreThanOne(r) }
-	def static dispatch boolean isDuplicated(WPackage it, WNamedObject r) { namedObjects.existsMoreThanOne(r) }
+	def static dispatch boolean isDuplicated(WPackage it, WNamed named) { namedElements.existsMoreThanOne(named) }
 	def static dispatch boolean isDuplicated(WTest test, WReferenciable v) {
 		val suite = test.declaringContext
 		test.variables.existsMoreThanOne(v) || (suite !== null && suite.isDuplicated(v)) 
@@ -514,11 +517,7 @@ class WollokModelExtensions {
 	// default case is to delegate up to container
 	def static dispatch boolean isDuplicated(EObject it, WReferenciable r) { eContainer.isDuplicated(r) }
 
-	def static dispatch existsMoreThanOne(Iterable<?> exps, WReferenciable ref) {
-		exps.filter(WReferenciable).exists[it != ref && name == ref.name]
-	}
-
-	def static dispatch existsMoreThanOne(Iterable<?> exps, WNamed named) {
+	def static existsMoreThanOne(Iterable<?> exps, WNamed named) {
 		exps.filter(WReferenciable).exists[it != named && name == named.name]
 	}
 
@@ -534,7 +533,7 @@ class WollokModelExtensions {
 	def static dispatch boolean isInConstructorBody(WBlockExpression obj) { obj.isInConstructor }
 
 	// *****************************
-	// ** valid return
+	// ** Valid returns
 	// *****************************
 	def static dispatch boolean returnsOnAllPossibleFlows(WMethodDeclaration it, boolean returnsOnSuperExpression) {
 		expressionReturns || expression.returnsOnAllPossibleFlows(returnsOnSuperExpression)
@@ -608,7 +607,7 @@ class WollokModelExtensions {
 	def static boolean isEqualityComparison(WBinaryOperation it) { OP_EQUALITY.contains(feature) }
 
 	// *******************************
-	// ** variables
+	// ** Variables
 	// *******************************
 	def static isLocalToMethod(WVariableDeclaration it) {
 		EcoreUtil2.getContainerOfType(it, WMethodDeclaration) !== null
@@ -632,7 +631,7 @@ class WollokModelExtensions {
 	}
 
 	// *******************************
-	// ** imports
+	// ** Imports
 	// *******************************
 	def static importedNamespaceWithoutWildcard(Import it) {
 		if(importedNamespace.endsWith(".*"))
@@ -706,7 +705,7 @@ class WollokModelExtensions {
 	}
 
 	// *******************************
-	// ** refactoring
+	// ** Refactoring
 	// *******************************
 	def static dispatch List<String> semanticElementsAllowedToRefactor(EObject e) { #[e.class.name] }
 
