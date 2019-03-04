@@ -40,7 +40,7 @@ class SquareConnectionRouter extends AbstractRouter {
 	Point endPoint
 	
 	override route(Connection conn) {
-		if (conn.sourceAnchor == null || conn.targetAnchor == null)
+		if (conn.sourceAnchor === null || conn.targetAnchor === null)
 			return;
 
 		startPoint = getStartPoint(conn)

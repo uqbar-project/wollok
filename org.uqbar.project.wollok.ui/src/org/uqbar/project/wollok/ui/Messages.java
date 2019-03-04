@@ -197,6 +197,17 @@ public class Messages extends NLS {
 	public static String WollokNumbersPreferencePage_numberPrintingStrategy;
 
 	
+	// **************************************
+	// ** Dynamic diagram preference page
+	// **************************************
+	
+	public static String WollokDynamicDiagramPreferencePage_integrateREPL_description;
+	
+	
+	// ****************************
+	// ** Refactoring
+	// ****************************
+
 	public static String ExtractMethodUserInputPage_methodName;
 	public static String ExtractMethodUserInputPage_methodSignaturePreview;
 	public static String ExtractMethodUserInputPage_provideMethodName;
@@ -204,10 +215,18 @@ public class Messages extends NLS {
 
 	public static String LaunchReplWithoutFileHandler_notHavingWollokProject;
 	
+	// ****************************
+	// ** Wollok Tests
+	// ****************************
+
 	public static String WollokTestResultView_runAgain;
 	public static String WollokTestResultView_showOnlyFailuresAndErrors;
 	public static String WollokTestResultView_debugAgain;
 	
+	// **************************************
+	// ** Wollok proposals (autocomplete)
+	// **************************************
+
 	public static String WollokProposal_from_class;
 	public static String WollokProposal_from_object;
 	public static String WollokProposal_from_mixin;

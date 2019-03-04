@@ -134,19 +134,36 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 
 	// rename: should be non-implemented abstract methods
 	def static allAbstractMethods(WMethodContainer c) {
-		val hierarchy = c.linearizeHierarchy
-		val concreteMethods = <WMethodDeclaration>newArrayList
-		hierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, chunk |
-			concreteMethods.addAll(chunk.methods.filter[!abstract])
-			// remove implemented
-			unimplementedMethods.removeIf[chunk.overrides(it)]
-			// add NEW abstracts (abstracts on mixins can be overridden by an upper class / mixin in the chain!)
-			val newAbstractsNotImplementedUpInTheHierarchy = chunk.abstractMethods.filter[abstractM |
-				!concreteMethods.exists[m| abstractM.matches(m.name, m.parameters) ]
-			]
-			unimplementedMethods.addAll(newAbstractsNotImplementedUpInTheHierarchy)
+		c.linearizeHierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [unimplementedMethods, methodContainer |
+			// remove implemented methods
+			unimplementedMethods.removeIf[methodContainer.overrides(it)]
+			
+			unimplementedMethods.addAll(c.notImplementedMethodsOf(methodContainer))
 			unimplementedMethods
 		]
+	}
+	
+	protected def static Iterable<WMethodDeclaration> notImplementedMethodsOf(WMethodContainer methodContainer, WMethodContainer abstractMethodContainer) {
+		val concreteMethods = methodContainer.allConcreteMethods
+		val propertyGetters = methodContainer.allPropertiesGetters
+		val propertySetters = methodContainer.allPropertiesSetters
+		
+		abstractMethodContainer.abstractMethods.reject[abstractMethod |
+			abstractMethod.isImplementedBy(concreteMethods, propertyGetters, propertySetters)
+		]
+	}
+	
+	protected def static ArrayList<WMethodDeclaration> allConcreteMethods(WMethodContainer c) {
+		c.linearizeHierarchy.reverse.fold(<WMethodDeclaration>newArrayList) [concreteMethods, methodContainer |
+			concreteMethods.addAll(methodContainer.methods.filter[!abstract])
+			concreteMethods
+		]
+	}
+	
+	protected def static boolean isImplementedBy(WMethodDeclaration abstractMethod, List<WMethodDeclaration> concreteMethods, Iterable<WVariableDeclaration> propertyGetters, Iterable<WVariableDeclaration> propertySetters) {
+		concreteMethods.exists[m| abstractMethod.matches(m.name, m.parameters)] ||
+		propertyGetters.exists[property| abstractMethod.matches(property.variable.name, 0)] ||
+		propertySetters.exists[property| abstractMethod.matches(property.variable.name, 1)]
 	}
 
 	def static getAllMessageSentToThis(WMethodContainer it) {

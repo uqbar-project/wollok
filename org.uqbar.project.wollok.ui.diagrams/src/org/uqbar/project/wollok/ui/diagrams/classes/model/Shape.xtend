@@ -5,7 +5,7 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
-import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
+import org.uqbar.project.wollok.ui.diagrams.classes.AbstractDiagramConfiguration
 import org.uqbar.project.wollok.wollokDsl.WClass
 
 /**
@@ -25,14 +25,14 @@ public abstract class Shape extends ModelElement {
 	static val XPOS_PROP = "Shape.xPos"
 	static val YPOS_PROP = "Shape.yPos"
 	static List<TextPropertyDescriptor> descriptors
-	private static StaticDiagramConfiguration configuration
+	private static AbstractDiagramConfiguration configuration
 	
 	Point location = new Point(0, 0)
 	Dimension size = new Dimension(100, 100)
 	List<Connection> sourceConnections = newArrayList
 	List<Connection> targetConnections = newArrayList
 	
-	def static useConfiguration(StaticDiagramConfiguration _configuration) {
+	def static useConfiguration(AbstractDiagramConfiguration _configuration) {
 		configuration = _configuration		
 	}
 
@@ -163,5 +163,5 @@ public abstract class Shape extends ModelElement {
 	def boolean shouldShowConnectorTo(WClass model) {
 		true
 	}
-	
+
 }

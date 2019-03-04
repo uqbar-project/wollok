@@ -8,6 +8,7 @@ import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.context.WVariable
 import org.uqbar.project.wollok.interpreter.nativeobj.AbstractWollokDeclarativeNativeObject
+import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
 /**
  * Contiene metodos "nativos" que están disponibles
@@ -30,11 +31,19 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	}
 	
 	override getThisObject() { throw new UnsupportedOperationException(Messages.WollokDslValidator_CANNOT_USE_SELF_IN_A_PROGRAM)}
-	
-	override allReferenceNames() {
-		localProgramVariables.keySet.map[new WVariable(it, true)]
+
+	def allVariables() {
+		val allVariables = localProgramVariables
+		allVariables.putAll(interpreter.globalVariables)
+		allVariables
 	}
 	
+	override allReferenceNames() {
+		allVariables.keySet.map[ variableName |
+			new WVariable(variableName, System.identityHashCode(allVariables.get(variableName)), false)
+		]
+	}
+
 	override resolve(String variableName) throws UnresolvableReference {
 		if (localProgramVariables.containsKey(variableName))
 			localProgramVariables.get(variableName)
@@ -83,5 +92,9 @@ class WollokNativeLobby extends AbstractWollokDeclarativeNativeObject implements
 	override toString() { "Lobby" }
 
 	override showableInStackTrace() { !interpreter.isRootFile }
+	
+	override showableInDynamicDiagram(String name) {
+		true
+	}
 	
 }

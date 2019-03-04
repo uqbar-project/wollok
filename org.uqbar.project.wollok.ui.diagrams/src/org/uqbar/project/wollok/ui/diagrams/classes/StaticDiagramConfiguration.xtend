@@ -28,6 +28,87 @@ import org.uqbar.project.wollok.wollokDsl.WMethodContainer
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 
+@Accessors
+abstract class AbstractDiagramConfiguration extends Observable {
+
+	/** Notification Events  */
+	public static String CONFIGURATION_CHANGED = "configuration"
+	
+	/** Internal state */	
+	boolean rememberLocationsAndSizes = true
+	Map<String, Point> locations
+	Map<String, Dimension> sizes
+
+	new() {
+		init
+	}
+	
+	/** 
+	 ******************************************************
+	 *  STATE INITIALIZATION 
+	 *******************************************************
+	 */	
+	def void init() {
+		internalInitLocationsAndSizes
+	}
+	
+	def void internalInitLocationsAndSizes() {
+		locations = newHashMap
+		sizes = newHashMap
+	}
+
+	def void setRememberLocationAndSizeShapes(boolean remember) {
+		this.rememberLocationsAndSizes = remember
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+
+	/** 
+	 * 
+	 ******************************************************
+	 *  CONFIGURATION CHANGES 
+	 *******************************************************
+	 */	
+	def void initLocationsAndSizes() {
+		this.internalInitLocationsAndSizes
+		this.setChanged
+		this.notifyObservers(CONFIGURATION_CHANGED)
+	}
+	
+	def void saveLocation(Shape shape) {
+		if (!rememberLocationsAndSizes) return;
+		locations.put(shape.toString, new Point => [
+			x = shape.location.x
+			y = shape.location.y
+		])
+		this.setChanged
+	}
+
+	def void saveSize(Shape shape) {
+		if (!isRememberLocationsAndSizes) return;
+		sizes.put(shape.toString, new Dimension => [
+			height = shape.size.height
+			width = shape.size.width
+		])
+		this.setChanged
+	}
+	
+	/** 
+	 ******************************************************
+	 *  PUBLIC STATE & COPY METHODS 
+	 *******************************************************
+	 */	
+	def Point getLocation(Shape shape) {
+		locations.get(shape.toString)
+	}
+	
+	def Dimension getSize(Shape shape) {
+		sizes.get(shape.toString)
+	}
+	
+
+}
+
 /**
  * @author dodain
  * 
@@ -36,16 +117,10 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  *  
  */
 @Accessors
-class StaticDiagramConfiguration extends Observable implements Serializable {
+class StaticDiagramConfiguration extends AbstractDiagramConfiguration implements Serializable {
 
-	/** Notification Events  */
-	public static String CONFIGURATION_CHANGED = "configuration"
-	
 	/** Internal state */	
 	boolean showVariables = false
-	boolean rememberLocationAndSizeShapes = true
-	Map<String, Point> locations
-	Map<String, Dimension> sizes
 	List<String> hiddenComponents = newArrayList
 	Map<String, List<HiddenPart>> hiddenParts = newHashMap
 	List<Relation> relations = newArrayList
@@ -64,19 +139,14 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 	 *  STATE INITIALIZATION 
 	 *******************************************************
 	 */	
-	def void init() {
-		internalInitLocationsAndSizes
+	override init() {
+		super.init()
 		internalInitHiddenComponents
 		internalInitHiddenParts
 		internalInitRelationships
 		internalInitOutsiderElements
 	}
 	
-	def void internalInitLocationsAndSizes() {
-		locations = newHashMap
-		sizes = newHashMap
-	}
-
 	def void internalInitOutsiderElements() {
 		outsiderElements = newArrayList
 	}
@@ -106,12 +176,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}	
 	
-	def void initLocationsAndSizes() {
-		this.internalInitLocationsAndSizes
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
 	def void showAllComponents() {
 		this.internalInitHiddenComponents
 		this.setChanged
@@ -135,24 +199,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.internalInitOutsiderElements
 		this.setChanged
 		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-	
-	def void saveLocation(Shape shape) {
-		if (!rememberLocationAndSizeShapes) return;
-		locations.put(shape.toString, new Point => [
-			x = shape.location.x
-			y = shape.location.y
-		])
-		this.setChanged
-	}
-
-	def void saveSize(Shape shape) {
-		if (!rememberLocationAndSizeShapes) return;
-		sizes.put(shape.toString, new Dimension => [
-			height = shape.size.height
-			width = shape.size.width
-		])
-		this.setChanged
 	}
 	
 	def hideComponent(AbstractModel model) {
@@ -220,12 +266,6 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		this.notifyObservers(CONFIGURATION_CHANGED)
 	}
 
-	def void setRememberLocationAndSizeShapes(boolean remember) {
-		this.rememberLocationAndSizeShapes = remember
-		this.setChanged
-		this.notifyObservers(CONFIGURATION_CHANGED)
-	}
-
 	def addOutsiderElement(WMethodContainer element) {
 		outsiderElements.add(new OutsiderElement(element))
 		this.setChanged
@@ -279,17 +319,9 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 		modelSource !== modelTarget && this.findAssociationBetween(modelSource, modelTarget) === null
 	}
 
-	def Point getLocation(Shape shape) {
-		locations.get(shape.toString)
-	}
-	
-	def Dimension getSize(Shape shape) {
-		sizes.get(shape.toString)
-	}
-	
 	def copyFrom(StaticDiagramConfiguration configuration) {
 		this.showVariables = configuration.showVariables
-		this.rememberLocationAndSizeShapes = configuration.rememberLocationAndSizeShapes
+		this.rememberLocationsAndSizes = configuration.isRememberLocationsAndSizes
 		this.locations = configuration.locations
 		this.sizes = configuration.sizes
 		this.hiddenComponents = configuration.hiddenComponents
@@ -389,7 +421,7 @@ class StaticDiagramConfiguration extends Observable implements Serializable {
 			full path = «this.fullPath»
 			original file name = «this.originalFileName»
 			show variables = «this.showVariables»
-			remember locations = «this.rememberLocationAndSizeShapes»
+			remember locations = «this.isRememberLocationsAndSizes»
 			locations = «this.locations»
 			sizes = «this.sizes»
 			outsider elements = «this.outsiderElements»

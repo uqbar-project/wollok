@@ -32,7 +32,7 @@ class DebugWithoutThreadingTestCase extends AbstractWollokInterpreterTestCase {
 	
 	def debugger() {
 		val debugger = new PostEvaluationTestDebugger(interpreter)
-		interpreter.debugger = debugger
+		interpreter.addInterpreterListener(debugger)
 		//Tip: if tests fail you should use activate it
 		//debugger.logSession = true
 		debugger

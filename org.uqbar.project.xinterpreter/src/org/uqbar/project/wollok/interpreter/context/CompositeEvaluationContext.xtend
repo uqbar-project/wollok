@@ -66,5 +66,9 @@ class CompositeEvaluationContext<O> implements EvaluationContext<O> {
 	def dispatch asText(EvaluationContext<O> it) { class.simpleName }
 	
 	override showableInStackTrace() { true }
+	
+	override showableInDynamicDiagram(String name) {
+		false		
+	}
 
 }

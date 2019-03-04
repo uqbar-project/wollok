@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.editparts
 
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import org.eclipse.draw2d.ConnectionLocator
 import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.MidpointLocator
 import org.eclipse.draw2d.PolylineConnection
@@ -25,18 +26,19 @@ abstract class ConnectionEditPart extends AbstractConnectionEditPart implements 
 
 	override createEditPolicies() {
 		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy)
-		
 	}
 	
 	override createFigure() {
 		super.createFigure as PolylineConnection => [
 			targetDecoration = createEdgeDecoration()
-			
 			lineStyle = castedModel.lineStyle
-			
 			if (castedModel.name !== null)
-				add(new Label(castedModel.name) => [ opaque = true ], new MidpointLocator(it, 0))
+				add(new Label(castedModel.nameForPrinting) => [ opaque = true ], createConnectionLocator)
 		]
+	}
+	
+	def ConnectionLocator createConnectionLocator(PolylineConnection connection) {
+		new MidpointLocator(connection, 0)
 	}
 	
 	def RotatableDecoration createEdgeDecoration()

@@ -71,8 +71,10 @@ class WollokChecker {
 
 			log.debug("Program finished")
 		} catch (Throwable t) {
-			log.error(t.message)
-			t.printStackTrace
+			log.error("Checker error : " + t.class.name)
+			t.stackTrace.forEach [ ste |
+				log.error('''«ste.methodName» («ste.fileName»:«ste.lineNumber»)''')
+			]
 			System.exit(1)
 		}
 	}

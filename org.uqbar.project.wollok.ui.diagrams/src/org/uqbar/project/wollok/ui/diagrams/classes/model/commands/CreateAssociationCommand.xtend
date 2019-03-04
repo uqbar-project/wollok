@@ -2,6 +2,7 @@ package org.uqbar.project.wollok.ui.diagrams.classes.model.commands
 
 import org.eclipse.gef.commands.Command
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.project.wollok.ui.diagrams.classes.StaticDiagramConfiguration
 import org.uqbar.project.wollok.ui.diagrams.classes.model.AbstractModel
 import org.uqbar.project.wollok.ui.diagrams.classes.parts.AbstractMethodContainerEditPart
 
@@ -24,7 +25,7 @@ class CreateAssociationCommand extends Command {
 	}
 	
 	override execute() {
-		targetContainer.configuration.addAssociation(sourceContainer, targetContainer)
+		(targetContainer.configuration as StaticDiagramConfiguration).addAssociation(sourceContainer, targetContainer)
 	}
 	
 	def defineSource(AbstractMethodContainerEditPart part) {

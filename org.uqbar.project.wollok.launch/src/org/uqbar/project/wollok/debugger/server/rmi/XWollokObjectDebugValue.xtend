@@ -1,15 +1,13 @@
 package org.uqbar.project.wollok.debugger.server.rmi
 
-import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
 
-import static extension java.lang.System.*
 import static extension org.uqbar.project.wollok.debugger.server.rmi.XDebugStackFrame.debugVariables
 import static extension org.uqbar.project.wollok.interpreter.core.ToStringBuilder.shortLabel
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
 import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
+import static extension org.uqbar.project.wollok.utils.WollokObjectUtils.*
 
 /**
  * A stack frame variable's value that holds a wollok object.
@@ -20,29 +18,23 @@ import static extension org.uqbar.project.wollok.sdk.WollokDSK.*
 class XWollokObjectDebugValue extends XDebugValue {
 	String typeName
 	String varName
-	@Accessors List<XDebugStackFrameVariable> variables = newArrayList
 
 	new(String varName, WollokObject obj) {
-		super(obj.description)
+		super(obj.description, System.identityHashCode(obj))
 		this.typeName = obj.behavior.fqn
 		this.varName = varName
-		// should be lazily fetched
 		if (!obj.isBasicType)
 			variables = obj.debugVariables
 	}
 	
 	def static description(WollokObject obj) {
 		if (obj.isBasicType)
-			((obj.call("toString") as WollokObject).getNativeObject(STRING) as JavaWrapper<String>).wrapped
-		else
-			obj.shortLabel + " (id=" + obj.identityHashCode + ")"
+			obj.asString
+		else {
+			if (obj.hasShortDescription)
+				obj.asString("shortDescription")
+			else obj.shortLabel
+		}
 	}
 	
-	def isList() { typeName == LIST }
-	def isSet() { typeName == SET }
-	def isCollection() { isList || isSet }
-	def isNumber() { typeName == NUMBER }
-	def isString() { typeName == STRING }
-	def isBoolean() { typeName == BOOLEAN }
-
 }

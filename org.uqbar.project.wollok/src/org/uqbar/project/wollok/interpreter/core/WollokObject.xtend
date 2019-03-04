@@ -40,7 +40,7 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
  * @author npasserini
  */
 class WollokObject extends AbstractWollokCallable implements EvaluationContext<WollokObject> {
-	public static val SELF_VAR = new WVariable(SELF, false)
+	public static val SELF_VAR = new WVariable(SELF, null, false)
 	@Accessors val Map<String, WollokObject> instanceVariables = newHashMap
 	@Accessors var Map<WMethodContainer, Object> nativeObjects = newHashMap
 	val EvaluationContext<WollokObject> parentContext
@@ -185,7 +185,7 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 
 	// query (kind of reflection api)
 	override allReferenceNames() {
-		instanceVariables.keySet.map[new WVariable(it, false)] + #[SELF_VAR]
+		instanceVariables.keySet.map[ new WVariable(it, System.identityHashCode(instanceVariables.get(it)), false)] + #[SELF_VAR]
 	}
 
 	def getProperties() {
@@ -278,6 +278,11 @@ class WollokObject extends AbstractWollokCallable implements EvaluationContext<W
 	}
 
 	override showableInStackTrace() { true }
+	
+	override showableInDynamicDiagram(String name) {
+		true
+	}
+	
 }
 
 /**

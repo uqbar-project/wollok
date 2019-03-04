@@ -4,12 +4,13 @@ import wollok.game.*
 object keysTest {
 	
 	// XPECT methodType at m1 --> () => Key
-	method m1() {
-		return keyboard.any()
-	}
+	method m1() = keyboard.any()
 
-	// XPECT! methodType at m2 --> ({(Key) => Void}) => Void
-//	method m2(action) {
-//		keyboard.any().onPressDo(action)
-//	}
+	// XPECT methodType at m2 --> ({() => Void}) => Void
+	method m2(action) {
+		keyboard.any().onPressDo(action)
+	}
+	
+	// XPECT methodType at m3 --> (Number) => Key
+	method m3(n) = keyboard.num(n)
 }

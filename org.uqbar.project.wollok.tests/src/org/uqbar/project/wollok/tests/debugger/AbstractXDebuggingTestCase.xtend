@@ -6,13 +6,13 @@ import net.sf.lipermi.net.Client
 import net.sf.lipermi.net.Server
 import org.uqbar.project.wollok.debugger.server.XDebuggerImpl
 import org.uqbar.project.wollok.debugger.server.out.AsyncXTextInterpreterEventPublisher
-import org.uqbar.project.wollok.debugger.server.rmi.CommandHandlerFactory
 import org.uqbar.project.wollok.debugger.server.rmi.DebugCommandHandler
 import org.uqbar.project.wollok.tests.debugger.util.AbstractXDebuggerImplTestCase
 import org.uqbar.project.wollok.tests.debugger.util.DebugEventListenerAsserter
 import org.uqbar.project.wollok.tests.debugger.util.TestTextInterpreterEventPublisher
 
 import static org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
+import org.uqbar.project.wollok.debugger.server.rmi.DebuggerCommandHandlerFactory
 
 /**
  * Abstract base class for all tests for debugging sessions
@@ -37,13 +37,13 @@ abstract class AbstractXDebuggingTestCase extends AbstractXDebuggerImplTestCase 
 				
 				// server-side (VM)
 				var commandsPort = randomBetween(10000, 11000) 
-				server = CommandHandlerFactory.createCommandHandler(realDebugger, commandsPort, [])
+				server = DebuggerCommandHandlerFactory.createCommandHandler(realDebugger, commandsPort, [])
 				
 				// client-side (test/ui)
 				commandClient = new Client("localhost", commandsPort, new CallHandler)
 				val commandHandler = commandClient.getGlobal(DebugCommandHandler) as DebugCommandHandler
 			
-			interpreter.debugger = realDebugger
+			interpreter.addInterpreterListener(realDebugger)
 			clientSide.commandHandler = commandHandler
 	
 			// instruct the debugger		

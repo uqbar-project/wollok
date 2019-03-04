@@ -1,11 +1,11 @@
 package org.uqbar.project.wollok.ui.diagrams.classes.parts;
 
 import org.uqbar.project.wollok.ui.diagrams.classes.model.ClassModel
-import org.uqbar.project.wollok.ui.diagrams.classes.view.ClassDiagramColors
 import org.uqbar.project.wollok.ui.diagrams.classes.view.WClassFigure
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.ui.diagrams.classes.view.StaticDiagramColors
 
 /**
  * 
@@ -22,20 +22,20 @@ class ClassEditPart extends AbstractMethodContainerEditPart {
 	}
 	
 	def foregroundColor(ClassModel c) {
-		if (c.component.isWellKnownObject) return ClassDiagramColors.NAMED_OBJECTS_FOREGROUND 
+		if (c.component.isWellKnownObject) return StaticDiagramColors.NAMED_OBJECTS_FOREGROUND 
 		if (c.imported) {
-			ClassDiagramColors.IMPORTED_CLASS_FOREGROUND			
+			StaticDiagramColors.IMPORTED_CLASS_FOREGROUND			
 		} else {
-			ClassDiagramColors.CLASS_FOREGROUND	
+			StaticDiagramColors.CLASS_FOREGROUND	
 		}
 	}
 	
 	def backgroundColor(ClassModel c) {
-		if (c.component.isWellKnownObject) return ClassDiagramColors.NAMED_OBJECTS__BACKGROUND
+		if (c.component.isWellKnownObject) return StaticDiagramColors.NAMED_OBJECTS__BACKGROUND
 		if (c.imported) {
-			ClassDiagramColors.IMPORTED_CLASS_BACKGROUND			
+			StaticDiagramColors.IMPORTED_CLASS_BACKGROUND			
 		} else {
-			ClassDiagramColors.CLASS_BACKGROUND	
+			StaticDiagramColors.CLASS_BACKGROUND	
 		}
 	}
 

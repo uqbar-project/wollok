@@ -13,7 +13,9 @@ import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 
 interface TypeFactory {
 	def TypeSystem getTypeSystem()
+
 	def ConcreteType getBaseType()
+
 	def ConcreteType instanceFor(TypeVariable owner)
 }
 
@@ -56,7 +58,7 @@ class GenericType implements TypeFactory {
 	}
 
 	def schemaOrInstance(Map<String, ITypeVariable> typeParameters) {
-		if(typeParameters.values.forall[it instanceof TypeVariable])
+		if (typeParameters.values.forall[it instanceof TypeVariable])
 			// No type system will stop me from doing what I want.
 			instance(typeParameters as Map<String, ?> as Map<String, TypeVariable>)
 		else
@@ -67,8 +69,8 @@ class GenericType implements TypeFactory {
 		(baseType.typeSystem as ConstraintBasedTypeSystem).registry
 	}
 
-	def toString(
-		GenericTypeInstance instance) '''«baseType.toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>'''
+	def toString(GenericTypeInstance instance) 
+		'''«baseType.toString»<«typeParameterNames.map[instance.param(it).type].join(', ')»>'''
 
 	override toString() '''«baseType.toString»<«typeParameterNames.join(', ')»>'''
 
@@ -97,6 +99,5 @@ class GenericTypeSchema {
 	// ************************************************************************
 	// ** Misc
 	// ************************************************************************
-	
 	override toString() '''«rawType.baseType»<«typeParameters»>'''
 }

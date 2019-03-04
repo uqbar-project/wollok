@@ -5,7 +5,7 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		console >> "println" === #[Any] => Void
 		console >> "readLine" === #[] => String
 		console >> "readInt" === #[] => Number
-		console >> "newline" === #[] => Void
+		console >> "newline" === #[] => String
 
 		assertWKO >> "that" === #[Boolean] => Void
 		assertWKO >> "notThat" === #[Boolean] => Void
@@ -15,12 +15,19 @@ class WollokLibTypeDeclarations extends TypeDeclarations {
 		assertWKO >> "throwsExceptionLike" === #[ExceptionType, closure(#[], Any)] => Void
 		assertWKO >> "throwsExceptionWithMessage" === #[String, closure(#[], Any)] => Void
 		assertWKO >> "throwsExceptionWithType" === #[ExceptionType, closure(#[], Any)] => Void
-		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[Any], Boolean)] => Void
+		assertWKO >> "throwsExceptionByComparing" === #[closure(#[], Any), closure(#[ExceptionType], Boolean)] => Void
 		assertWKO >> "fail" === #[String] => Void;
 
-		InstanceVariableMirror >> "value" === #[] => Any
+		error >> "throwWithMessage" === #[String] => Void;
+
+		InstanceVariableMirror.constructor(Object, String) 
+		InstanceVariableMirror.variable("name", String)  
+		InstanceVariableMirror >> "value" === #[] => Any //TODO: should return variable type
+		InstanceVariableMirror >> "valueToSmartString" === #[List.of(Object)] => String
 
 		StringPrinter >> "println" === #[Any] => Void
 		StringPrinter >> "getBuffer" === #[] => String
+		
+		runtime >> "isInteractive" === #[] => Boolean
 	}
 }

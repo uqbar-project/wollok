@@ -17,6 +17,7 @@ import org.uqbar.project.wollok.ui.i18n.WollokLaunchUIMessages
  * @author tesonep
  */
 class WollokTestLaunchShortcut extends WollokLaunchShortcut {
+	
 	override createConfiguration(LaunchConfigurationInfo info) throws CoreException {
 		val cfgType = LAUNCH_TEST_CONFIGURATION_TYPE.configType
 		val runConfiguration = cfgType.newInstance(null, info.generateUniqueName)
@@ -29,10 +30,8 @@ class WollokTestLaunchShortcut extends WollokLaunchShortcut {
 			activateWollokTestResultView
 			super.launch(currFile, mode)
 		} catch (CoreException e) {
-			// TODO: i18n
 			MessageDialog.openError(Display.current.activeShell, WollokLaunchUIMessages.WollokTestLaunch_TITLE,
 				WollokLaunchUIMessages.WollokTestLaunch_ERROR_MESSAGE)
-			// something went wrong
 		}
 	}
 	

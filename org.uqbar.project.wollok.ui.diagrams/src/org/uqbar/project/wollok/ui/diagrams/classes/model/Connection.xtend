@@ -4,7 +4,9 @@ import org.eclipse.draw2d.Graphics
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.ui.diagrams.Messages
-import org.uqbar.project.wollok.ui.diagrams.objects.parts.VariableModel
+import org.uqbar.project.wollok.ui.diagrams.dynamic.parts.VariableModel
+
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 /**
  * A connection between two distinct shapes.
@@ -15,6 +17,8 @@ class Connection extends ModelElement {
 	static final val SOLID_STR = "Solid"
 	static val DASHED_STR = "Dashed"
 	
+	public static val MAX_LABEL_FOR_PRINTING = 16
+	
 	public static val LINESTYLE_PROP = "LineStyle"
 	static val descriptors = #[
 		new ComboBoxPropertyDescriptor(LINESTYLE_PROP, LINESTYLE_PROP, #[SOLID_STR, DASHED_STR])
@@ -24,18 +28,20 @@ class Connection extends ModelElement {
 	int lineStyle
 	Shape source
 	Shape target
+	String identifier
 	@Accessors String name
 	@Accessors RelationType relationType
 
 	new(String name, Shape source, Shape target, RelationType relationType) {
-		this.name = name
+		this.name = name.split("\\.").last
+		this.identifier = source?.toString + this.name + target.toString
 		this.relationType = relationType
 		reconnect(source, target, relationType)
 		this.lineStyle = calculateLineStyle()
 	}
 	
 	def calculateLineStyle() {
-		if (source instanceof VariableModel && (source as VariableModel).isList) Graphics.LINE_DASH else relationType.lineStyle
+		if (source instanceof VariableModel && (source as VariableModel).isCollection) Graphics.LINE_DASH else relationType.lineStyle
 	}
 
 	def disconnect() {
@@ -106,5 +112,27 @@ class Connection extends ModelElement {
 			super.setPropertyValue(id, value)
 	}
 
-}
+	override equals(Object obj) {
+		if (identifier === null || obj === null) return super.equals(obj)
+		try {
+			val other = obj as Connection
+			if (other.identifier === null) return false
+			return (identifier.equals(other.identifier))
+		} catch (ClassCastException e) {
+			return false
+		}
+	}
 
+	override hashCode() {
+		if (identifier === null) super.hashCode else identifier.hashCode
+	}
+	
+	override toString() {
+		"Connection " + source + " -> " + target
+	}
+	
+	def nameForPrinting() {
+		name.truncate(MAX_LABEL_FOR_PRINTING)
+	}
+	
+}

@@ -1,8 +1,8 @@
 package org.uqbar.project.wollok.tests.debugger
 
 import org.junit.Test
-import org.uqbar.project.wollok.debugger.server.rmi.XWollokListDebugValue
 import org.junit.Ignore
+import org.uqbar.project.wollok.debugger.server.rmi.XWollokCollectionDebugValue
 
 /**
  * Tests a breakpoint being hit by the debugger/interpreter
@@ -71,7 +71,7 @@ class BreakPointHitTestCase extends AbstractXDebuggingTestCase {
 							assertEquals("aList", variable.name)
 							assertTrue(value.stringValue + " didn't match List", value.stringValue.startsWith("List (id="))
 							
-							assertEquals(XWollokListDebugValue, value.class)	
+							assertEquals(XWollokCollectionDebugValue, value.class)	
 							
 							// list should have elements
 							assertEquals(3, value.variables.length)

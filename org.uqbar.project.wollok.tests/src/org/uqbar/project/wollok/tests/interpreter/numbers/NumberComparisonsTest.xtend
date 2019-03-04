@@ -5,7 +5,7 @@ import org.junit.runners.Parameterized.Parameter
 import org.junit.runners.Parameterized.Parameters
 import org.uqbar.project.wollok.tests.base.AbstractWollokParameterizedInterpreterTest
 
-import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
+import static extension org.uqbar.project.wollok.utils.StringUtils.*
 
 class NumberComparisonsTest extends AbstractWollokParameterizedInterpreterTest {
 	@Parameter(0)

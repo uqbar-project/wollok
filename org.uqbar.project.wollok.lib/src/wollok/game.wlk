@@ -320,25 +320,27 @@ object keyboard {
 
 	method any() = new Key(-1)
 
-	method num0() = new Key(7, 144)
+	method num(n) = new Key(n + 7, n + 144)
+	
+	method num0() = self.num(0)
 
-	method num1() = new Key(8, 145)
+	method num1() = self.num(1)
 
-	method num2() = new Key(9, 146)
+	method num2() = self.num(2)
 
-	method num3() = new Key(10, 147)
+	method num3() = self.num(3)
 
-	method num4() = new Key(11, 148)
+	method num4() = self.num(4)
 
-	method num5() = new Key(12, 149)
+	method num5() = self.num(5)
 
-	method num6() = new Key(13, 150)
+	method num6() = self.num(6)
 
-	method num7() = new Key(14, 151)
+	method num7() = self.num(7)
 
-	method num8() = new Key(15, 152)
+	method num8() = self.num(8)
 
-	method num9() = new Key(16, 153)
+	method num9() = self.num(9)
 
 	method a() = new Key(29)
 

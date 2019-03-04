@@ -26,7 +26,10 @@ class Exception {
 		return printer.getBuffer()
 	}
 	
-	/** Prints this exception and its backtrace to the specified printer */
+	/**
+	  * @private
+	  * Prints this exception and its backtrace to the specified printer 
+	  */
 	method printStackTrace(printer) { self.printStackTraceWithPrefix("", printer) }
 	
 	/** @private */
@@ -187,6 +190,11 @@ class Object {
 	method toString() {
 		return self.toSmartString([])
 	}
+
+	/**
+	 * Shows a short, internal representation
+	 */
+	method shortDescription() = self.toString()
 	
 	/**
 	 * Provides a visual representation of Wollok Object
@@ -764,6 +772,18 @@ class Collection {
 	 * @see subclasses implementations
 	 */
 	method clear()
+	
+	/**
+	 * Answers the concatenated string representation of the elements in the given set.
+	 * You can pass an optional character as an element separator (default is ",")
+	 */
+	method join(separator)
+	
+	/**
+	 * Answers the concatenated string representation of the elements in the given set
+	 * with default element separator (",")
+	 */
+	method join()
 }
 
 /**
@@ -933,7 +953,7 @@ class Set inherits Collection {
 	 * 		#{"you","will","love","wollok"}.join(" ") => Answers "love will wollok you"
 	 *      #{}.join(",")                             => Answers ""
 	 */
-	method join(separator) native
+	override method join(separator) native
 	
 	/**
 	 * Answers the concatenated string representation of the elements in the given set
@@ -942,7 +962,7 @@ class Set inherits Collection {
 	 * Example:
 	 * 		#{"you","will","love","wollok"}.join()    => Answers "love,will,wollok,you"
 	 */
-	method join() native
+	override method join() native
 	
 	/**
 	 * Two sets are equals if they have the same elements
@@ -1229,7 +1249,7 @@ class List inherits Collection {
 	 * 		[1, 5, 3, 7].join(":") => Answers "1:5:3:7"
 	 * 		["you","will","love","wollok"].join(" ") => Answers "you will love wollok"
 	 */
-	method join(separator) native
+	override method join(separator) native
 	
 	/**
 	 *
@@ -1239,7 +1259,7 @@ class List inherits Collection {
 	 * Examples:
 	 * 		["you","will","love","wollok"].join()    => Answers "you,will,love,wollok"
 	 */
-	method join() native
+	override method join() native
 	
 	/**
 	 * @see == message
@@ -2251,6 +2271,7 @@ class Closure {
 	
 	/** Answers a string representation of this closure object */
 	override method toString() native
+	
 }
 
 /**
@@ -2435,5 +2456,15 @@ class Date {
 	/** Shows nicely an internal representation of a date **/
 	override method toSmartString(alreadyShown) =
 		"a Date[day = " + self.day() + ", month = " + self.month() + ", year = " + self.year() + "]"
+
+	/** 
+	  * Shows a short, internal representation of a date 
+	  * 
+	  * Example:
+	  *     new Date(2, 4, 2018).shortDescription()
+	  *         ==> Answers "2/4/2018"
+	  */
+	override method shortDescription() =
+		"" + self.day() + "/" + self.month() + "/" + self.year()
 
 }

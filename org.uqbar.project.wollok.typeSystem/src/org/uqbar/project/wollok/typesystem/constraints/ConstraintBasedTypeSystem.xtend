@@ -1,6 +1,6 @@
 package org.uqbar.project.wollok.typesystem.constraints
 
-import com.google.inject.Inject
+import com.google.inject.Inject 
 import java.util.List
 import java.util.Map
 import java.util.Set

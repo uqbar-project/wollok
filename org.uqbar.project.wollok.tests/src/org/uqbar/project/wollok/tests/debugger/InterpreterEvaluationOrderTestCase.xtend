@@ -22,7 +22,7 @@ class InterpreterEvaluationOrderTestCase extends AbstractXDebuggerImplTestCase {
 	@Test
 	def void callsStartedAndTerminated() {
 		val debugger = XDebugger.mock
-		interpreter.debugger = debugger
+		interpreter.addInterpreterListener(debugger)
 		'''
 		program a {
 			const one = 1
@@ -40,7 +40,7 @@ class InterpreterEvaluationOrderTestCase extends AbstractXDebuggerImplTestCase {
 		val aboutToEvaluateCaptor = ArgumentCaptor.forClass(EObject)
 		val evaluatedCaptor = ArgumentCaptor.forClass(EObject)
 		
-		interpreter.debugger = debugger
+		interpreter.addInterpreterListener(debugger)
 		'''
 		program a {
 			const one = 1
