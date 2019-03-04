@@ -20,7 +20,7 @@ class GlobalConstantsTestCase extends AbstractWollokInterpreterTestCase {
 				
 				const pepita = new Golondrina()
 
-				program namedObjects{
+				program globalConstants {
 					assert.equals(0, pepita.energyLevel())
 					pepita.addEnergy(10)
 					assert.equals(10, pepita.energyLevel())
@@ -29,55 +29,29 @@ class GlobalConstantsTestCase extends AbstractWollokInterpreterTestCase {
 		].interpretPropagatingErrors
 	}
 
-//	@Test
-//	def unusedVariables() {
-//		val model = '''
-//			object pepita {
-//				var energia = 0
-//				method getEnergia(){ return energia }
-//				method setEnergia(x){ energia = x }
-//			}
-//		'''.parse
-//
-//		model.assertNoIssues
-//	}
-//
-//	@Test
-//	def void usingSelf() {
-//		'''
-//			object pepita {
-//				method uno(){
-//					return self.otro()
-//				}
-//				method otro(){
-//					return 5
-//				}
-//			}
-//		'''.interpretPropagatingErrors
-//	}
-//
-//	@Test
-//	def void referencingObject() {
-//		'''
-//			object pp {
-//			    const ps = [pepita]
-//			    
-//			    method unMethod(){
-//			        var x = pepita
-//			        return x
-//			    }
-//			
-//			    method getPs(){
-//			        return ps
-//			    }
-//			}
-//			
-//			object pepita {}
-//			
-//			program xxx{
-//				pp.unMethod()
-//				assert.equals(pepita, pp.getPs().get(0))
-//			}
-//		'''.interpretPropagatingErrors
-//	}
+	@Test
+	def void references() {
+		'''
+			class Golondrina {
+				var property energia = 0
+				
+				method entrenar() { energia += 1 }
+			}
+			
+			class Entrenador {
+			    const property ave
+			    method entrenar() { ave.entrenar() }
+			}
+			
+			const chuck = new Entrenador(ave = pepita)
+			
+			const pepita = new Golondrina()
+			
+			program xxx {
+				assert.equals(0, pepita.energia())
+				chuck.entrenar()
+				assert.equals(1, pepita.energia())
+			}
+		'''.interpretPropagatingErrors
+	}
 }
