@@ -1,0 +1,29 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+describe "Type System" {	
+	// XPECT type at n --> Number
+	var n
+	// XPECT type at b --> Boolean
+	var b
+	
+	fixture {
+		b = true
+	}
+	
+	// XPECT methodType at blah --> () => Void	
+	method blah() {
+		// XPECT type at m --> Number
+		var m = n
+	}
+	
+	// XPECT methodType at number --> () => Number
+	method number() = 0
+	
+	
+	test "type system test" {
+		n = self.number()
+		// XPECT type at s --> String
+		var s = ""
+		assert.equals(n, s)
+	}
+}
