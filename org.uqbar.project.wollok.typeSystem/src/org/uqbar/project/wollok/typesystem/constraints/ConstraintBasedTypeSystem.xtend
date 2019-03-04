@@ -52,6 +52,8 @@ import static extension org.uqbar.project.wollok.model.WollokModelExtensions.fqn
 import static extension org.uqbar.project.wollok.typesystem.annotations.TypeDeclarations.*
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.typesystem.ObjectLiteralType
+import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.typesystem.SuiteType
 
 /**
  * @author npasserini
@@ -215,6 +217,10 @@ class ConstraintBasedTypeSystem implements TypeSystem, TypeProvider {
 		}
 
 		new ClassInstanceType(clazz, this)
+	}
+	
+	def suiteType(WSuite model) {
+		new SuiteType(model, this)
 	}
 
 	def genericType(WClass clazz, String... typeParameterNames) {
