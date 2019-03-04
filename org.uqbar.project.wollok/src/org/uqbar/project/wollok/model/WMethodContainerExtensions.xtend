@@ -91,7 +91,8 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 			it instanceof WProgram ||
 			it instanceof WNamedObject ||
 			it instanceof WClass ||
-			it instanceof WObjectLiteral
+			it instanceof WObjectLiteral ||
+			it instanceof WSuite
 		]
 	}
 	
