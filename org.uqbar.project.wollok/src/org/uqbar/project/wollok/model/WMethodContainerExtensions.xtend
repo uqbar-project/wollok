@@ -771,6 +771,16 @@ class WMethodContainerExtensions extends WollokModelExtensions {
 		wko.parentParameters !== null && !wko.parentParameters.initializers.empty
 	}
 	
+	def static dispatch parentParameters(WMethodContainer c) { throw new UnsupportedOperationException("shouldn't happen") }
+		
+	def static dispatch parentParameters(WNamedObject o) {
+		o.parentParameters.values
+	}
+
+	def static dispatch parentParameters(WObjectLiteral o) {
+		o.parentParameters.values
+	}
+	
 	def static parentParametersValues(WNamedObject o) {
 		if (o.parentParameters === null) return 0
 		o.parentParameters.values.size

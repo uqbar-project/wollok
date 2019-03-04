@@ -53,18 +53,22 @@ class ConstraintGenerator {
 	extension TypeVariablesRegistry registry
 
 	OverridingConstraintsGenerator overridingConstraintsGenerator
-	ConstructorConstraintsGenerator constructorConstraintsGenerator
+	ConstructorCallConstraintsGenerator constructorCallConstraintsGenerator
+	ObjectParentConstraintsGenerator objectParentConstraintsGenerator
 	SuperInvocationConstraintsGenerator superInvocationConstraintsGenerator
 	DelegatingConstructorCallConstraintsGenerator delegatingConstructorCallConstraintsGenerator
+	InitializerConstraintsGenerator initializerConstraintsGenerator
 	UnaryOperationsConstraintsGenerator unaryOperationsConstraintsGenerator
 
 	new(ConstraintBasedTypeSystem typeSystem) {
 		this.typeSystem = typeSystem
 		this.registry = typeSystem.registry
 		this.overridingConstraintsGenerator = new OverridingConstraintsGenerator(registry)
-		this.constructorConstraintsGenerator = new ConstructorConstraintsGenerator(registry)
+		this.constructorCallConstraintsGenerator = new ConstructorCallConstraintsGenerator(registry)
+		this.objectParentConstraintsGenerator = new ObjectParentConstraintsGenerator(registry)
 		this.superInvocationConstraintsGenerator = new SuperInvocationConstraintsGenerator(registry)
 		this.delegatingConstructorCallConstraintsGenerator = new DelegatingConstructorCallConstraintsGenerator(registry)
+		this.initializerConstraintsGenerator = new InitializerConstraintsGenerator(registry)
 		this.unaryOperationsConstraintsGenerator = new UnaryOperationsConstraintsGenerator(typeSystem)
 	}
 
@@ -117,20 +121,24 @@ class ConstraintGenerator {
 	}
 
 	def dispatch void generate(WNamedObject it) {
-		// TODO Process supertype information: parent and mixins
+		// TODO Process supertype information: mixins
+		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
+		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WClass it) {
-		// TODO Process supertype information: parent and mixins
+		// TODO Process supertype information: parent? and mixins
 		members.forEach[generateVariables]
 		constructors.forEach[generateVariables]
 	}
 
 	def dispatch void generate(WObjectLiteral it) {
-		// TODO Process supertype information: parent and mixins
+		// TODO Process supertype information: mixins
+		parentParameters?.arguments?.forEach[generateVariables]
 		members.forEach[generateVariables]
 		newTypeVariable.beSealed(objectLiteralType(it))
+		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
 
 	// ************************************************************************
@@ -232,17 +240,14 @@ class ConstraintGenerator {
 	def dispatch void generate(WConstructorCall it) {
 		arguments.forEach[arg|arg.generateVariables]
 		beSealed(typeOrFactory(classRef).instanceFor(newTypeVariable))
-		constructorConstraintsGenerator.add(it)
+		constructorCallConstraintsGenerator.add(it)
 	}
 
 	def dispatch void generate(WInitializer it) {
-		val instantiatedClass = declaringConstructorCall.classRef
-		val initializedVariable = instantiatedClass.getVariableDeclaration(initializer.name)
-
 		initialValue.generateVariables
-		initializedVariable.variable.beSupertypeOf(initialValue)
+		initializerConstraintsGenerator.add(it)
 	}
-
+	
 	// ************************************************************************
 	// ** Variables
 	// ************************************************************************
@@ -391,9 +396,11 @@ class ConstraintGenerator {
 	// ************************************************************************
 	def addCrossReferenceConstraints() {
 		overridingConstraintsGenerator.run()
-		constructorConstraintsGenerator.run()
+		constructorCallConstraintsGenerator.run()
+		objectParentConstraintsGenerator.run()
 		superInvocationConstraintsGenerator.run()
 		delegatingConstructorCallConstraintsGenerator.run()
+		initializerConstraintsGenerator.run()
 	}
 
 	// ************************************************************************
