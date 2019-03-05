@@ -44,6 +44,9 @@ import static org.uqbar.project.wollok.sdk.WollokDSK.*
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
 import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import org.uqbar.project.wollok.wollokDsl.WSuite
+import org.uqbar.project.wollok.wollokDsl.WFixture
+import org.uqbar.project.wollok.wollokDsl.WTest
 
 /**
  * @author npasserini
@@ -140,6 +143,12 @@ class ConstraintGenerator {
 		newTypeVariable.beSealed(objectLiteralType(it))
 		if (parentParameters !== null) objectParentConstraintsGenerator.add(it)
 	}
+	
+	def dispatch void generate(WSuite it) {
+		members.forEach[generateVariables]
+		fixture?.generateVariables
+		tests.forEach[generateVariables]
+	}
 
 	// ************************************************************************
 	// ** Methods and closures
@@ -196,6 +205,14 @@ class ConstraintGenerator {
 
 	def dispatch void generate(WParameter it) {
 		newTypeVariable.beNonVoid
+	}
+	
+	def dispatch void generate(WFixture it) {
+		elements.forEach[generateVariables]
+	}
+	
+	def dispatch void generate(WTest it) {
+		elements.forEach[generateVariables]
 	}
 
 	// ************************************************************************
@@ -416,5 +433,9 @@ class ConstraintGenerator {
 
 	def dispatch WollokType asWollokType(WClass wClass) {
 		classType(wClass)
+	}
+	
+	def dispatch WollokType asWollokType(WSuite suite) {
+		suiteType(suite)
 	}
 }

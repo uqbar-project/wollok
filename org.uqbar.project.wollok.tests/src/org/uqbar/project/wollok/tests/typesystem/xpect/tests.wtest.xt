@@ -1,0 +1,11 @@
+/* XPECT_SETUP org.uqbar.project.wollok.tests.typesystem.xpect.TypeSystemXpectTestCase END_SETUP */
+
+test "solitary number" {
+	// XPECT type at x --> Number
+	var x = 1
+}
+
+test "solitary string" {
+	// XPECT type at x --> String
+	var x = ""
+}
