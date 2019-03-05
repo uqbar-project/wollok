@@ -12,9 +12,8 @@ import org.uqbar.project.wollok.wollokDsl.WParameter
 import static org.uqbar.project.wollok.typesystem.constraints.types.OffenderSelector.*
 import static org.uqbar.project.wollok.typesystem.constraints.variables.ConcreteTypeState.*
 
-import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.*
-import static extension org.uqbar.project.wollok.model.WollokModelExtensions.*
+import static extension org.uqbar.project.wollok.typesystem.constraints.variables.AnalysisResultReporter.*
 
 class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	val Logger log = Logger.getLogger(this.class)
@@ -56,7 +55,7 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 	}
 
 	def propagateMinType(TypeVariable origin, TypeVariable destination, WollokType type) {
-		val shouldPropagateMinTypes = shouldPropagateMinTypesTo(destination)
+		val shouldPropagateMinTypes = origin.shouldPropagateMinTypesTo(destination)
 		if (!shouldPropagateMinTypes) return Cancel
 		handlingOffensesDo(origin, destination) [
 			destination.addMinType(type)
@@ -67,15 +66,16 @@ class PropagateMinimalTypes extends SimpleTypeInferenceStrategy {
 		variables.fold(false)[hasChanges, variable|action.apply(variable) || hasChanges]
 	}
 	
-	def shouldPropagateMinTypesTo(TypeVariable destination) {
-		destination.owner.shouldPropagateMinTypes(destination)
+	def shouldPropagateMinTypesTo(TypeVariable origin, TypeVariable destination) {
+		//TODO: think better
+		!destination.owner.isMethodParameter
 	}
 	
-	def dispatch shouldPropagateMinTypes(ParameterTypeVariableOwner owner, TypeVariable variable) {
-		true
+	def dispatch isMethodParameter(ParameterTypeVariableOwner owner) {
+		false
 	}
 	
-	def dispatch shouldPropagateMinTypes(ProgramElementTypeVariableOwner owner, TypeVariable variable) {
-		!((owner.programElement instanceof WParameter) && owner.programElement.declaringMethod !== null) 
+	def dispatch isMethodParameter(ProgramElementTypeVariableOwner owner) {
+		(owner.programElement instanceof WParameter) && owner.programElement.declaringMethod !== null 
 	}
 }
