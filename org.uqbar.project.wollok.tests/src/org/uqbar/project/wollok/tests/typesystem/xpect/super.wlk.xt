@@ -62,7 +62,7 @@ class EntrenadorChanta inherits EntrenadorDeGolondrinas {
 	
 	// XPECT methodType at hacerQueVuele --> (Golondrina) => Void
 	override method hacerQueVuele(golondrina) {
-//		golondrina.come(1) TODO: Fix it! This can't be an Ave
+		golondrina.come(1)
 		super(golondrina)
 	}
 	
