@@ -54,23 +54,23 @@ class Persona {
 	method charlaConEstomagoVacio() = hambriento.habla()
 	
 	
-	// XPECT methodType at hacerHablarACharlatan() -->  () => String	
+	// XPECT methodType at hacerHablarACharlatan() -->  () => (Number|String)
 	method hacerHablarACharlatan() = self.hacerHablar(charlatan)
 	
-	// XPECT methodType at hacerHablarAMultifacetico() -->  () => String	
+	// XPECT methodType at hacerHablarAMultifacetico() -->  () => (Number|String)	
 	method hacerHablarAMultifacetico() = self.hacerHablar(multifacetico)
 	
-	// XPECT! methodType at hacerHablarAFriki() -->  () => Number	
-//	method hacerHablarAFriki() = self.hacerHablar(friki)
+	// XPECT methodType at hacerHablarAFriki() -->  () => (Number|String)	
+	method hacerHablarAFriki() = self.hacerHablar(friki)
 	
-	// XPECT! warnings --> "{ cena } doesn't match with { habla } ... TO CHECK"	
-//	method hacerHablarAHambriento() = self.hacerHablar(hambriento)
+	// XPECT! warnings --> "{ cena } does not understand habla()" at "hambriento"
+	method hacerHablarAHambriento() = self.hacerHablar(hambriento)
 
-	// XPECT methodType at hacerHablar(personalidad) -->  (({ habla ; cena }|{ habla })) => String	
+	// XPECT methodType at hacerHablar(personalidad) --> (({ habla ; cena }|{ habla ; cena }|{ habla })) => (Number|String)
 	method hacerHablar(personalidad) = personalidad.habla()
 
 
-	// XPECT methodType at hacerHablarQueNuncaSeUsa(personalidad) -->  (Any) => Any	
+	// XPECT methodType at hacerHablarQueNuncaSeUsa(personalidad) --> (({ habla ; cena }|{ habla ; cena }|{ habla })) => (Number|String)	
 	method hacerHablarQueNuncaSeUsa(personalidad) = personalidad.habla()
 	
 	// XPECT methodType at charlatanString() -->  () => String

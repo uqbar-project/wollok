@@ -1,33 +1,26 @@
 package org.uqbar.project.wollok.typesystem
 
 import java.util.List
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.project.wollok.wollokDsl.WMethodDeclaration
 import org.uqbar.project.wollok.wollokDsl.WObjectLiteral
 import org.uqbar.project.wollok.wollokDsl.WParameter
 
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.allUntypedMethods
 import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.lookupMethod
-import static extension org.uqbar.project.wollok.model.WMethodContainerExtensions.methods
 
 /**
  * 
  * @author jfernandes
  */
-class ObjectLiteralType extends BasicType implements ConcreteType {
+class ObjectLiteralType extends AbstractContainerWollokType implements ConcreteType {
 	WObjectLiteral object
-
-	@Accessors(PUBLIC_GETTER)
-	TypeSystem typeSystem
 	
 	new(WObjectLiteral obj, TypeSystem typeSystem) {
-		super("<object>")
+		super(obj, typeSystem)
 		object = obj
 		this.typeSystem = typeSystem
 	}
 	
-	override getName() { '{ ' + object.methods.map[name].join(' ; ') + ' }'	}
-
 	override getContainer() { object }
 	
 	def signature(WMethodDeclaration m) {
