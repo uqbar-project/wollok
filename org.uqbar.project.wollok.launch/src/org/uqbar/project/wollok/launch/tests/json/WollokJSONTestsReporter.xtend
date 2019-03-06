@@ -12,16 +12,20 @@ import org.uqbar.project.wollok.wollokDsl.WFile
 import org.uqbar.project.wollok.wollokDsl.WTest
 import wollok.lib.AssertionException
 
+import static extension org.uqbar.project.wollok.utils.XtendExtensions.*
 import static extension org.uqbar.project.wollok.ui.utils.XTendUtilExtensions.*
-import static extension org.uqbar.project.wollok.errorHandling.WollokExceptionExtensions.*
+import static extension org.uqbar.project.wollok.lib.WollokSDKExtensions.*
+import org.uqbar.project.wollok.interpreter.core.WollokObject
 
 /**
  * A test reporter that prints to console in JSON format.
  * Used by mumuki, for example.
  * 
  * @author jfernandes
+ * @author npasserini
  */
-//TODO: it could be rendering the elapsed time for each test
+// TODO: it could be rendering the elapsed time for each test
+// TODO: This should be using our JSonWriter to simplify code and unify some conventions (e.g. stack trace formats).
 class WollokJSONTestsReporter implements WollokTestsReporter {
 	var testPassed = 0
 	var testFailures = 0
@@ -81,13 +85,20 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 					name("message").value(assertionError.message)
 					name("file").value(resource.trimFragment.toString)
 					name("lineNumber").value(lineNumber)
-					name("stackTrace").value(assertionError.wollokException?.convertToString) // TODO: Test it and adjust it
+					name("stackTrace").beginArray
+						assertionError.wollokStackTrace.forEach [ element |
+							beginObject
+								name("contextDescription").value(element.call("contextDescription").asString)
+								name("location").value(element.call("location").asString)
+							endObject
+						]
+					endArray
 				endObject
 			endObject
 		]
 		testFailures++
 	}
-
+	
 	override reportTestOk(WTest test) {
 		writer => [
 			beginObject 
@@ -126,6 +137,14 @@ class WollokJSONTestsReporter implements WollokTestsReporter {
 
 	def dispatch String getWollokStackTraceAsString(WollokProgramExceptionWrapper exception) {
 		exception.wollokStackTrace
+	}
+
+	def getWollokStackTrace(AssertionException exception) {
+		// This is almost repeated in WollokServer and should be reviewed.
+		(exception.wollokException
+			.call("getStackTrace")
+			.asList.wrapped as List<WollokObject>)
+			.allButFirst
 	}
 
 	// ************************************************************************

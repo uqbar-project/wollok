@@ -9,10 +9,12 @@ import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.osgi.util.NLS
 import org.uqbar.project.wollok.Messages
+import org.uqbar.project.wollok.adapter.mumuki.MumukiAdapter
 import org.uqbar.project.wollok.interpreter.api.XInterpreterEvaluator
 import org.uqbar.project.wollok.interpreter.context.EvaluationContext
 import org.uqbar.project.wollok.interpreter.context.UnresolvableReference
 import org.uqbar.project.wollok.interpreter.core.CallableSuper
+import org.uqbar.project.wollok.interpreter.core.WCallable
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
 import org.uqbar.project.wollok.interpreter.nativeobj.JavaWrapper
@@ -88,6 +90,7 @@ import static extension org.uqbar.project.wollok.utils.XTextExtensions.*
 class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> {
 	extension WollokBasicBinaryOperations = new WollokDeclarativeNativeBasicOperations
 	extension WollokBasicUnaryOperations = new WollokDeclarativeNativeUnaryOperations
+	extension MumukiAdapter = new MumukiAdapter
 
 	// caches
 	var Map<String, WeakReference<WollokObject>> numbersCache = newHashMap
@@ -136,7 +139,10 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 
 	def dispatch WollokObject evaluate(WPackage it) {}
 
-	def dispatch WollokObject evaluate(WProgram it) { elements.evalAll }
+	def dispatch WollokObject evaluate(WProgram it) {
+		programStarted 
+		elements.evalAll
+	}
 
 	def dispatch WollokObject evaluate(WTest it) { elements.evalAll }
 
@@ -461,7 +467,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			throw newWollokExceptionAsJava(
 				NLS.bind(Messages.WollokDslValidator_REFERENCE_UNITIALIZED, memberTarget.sourceCode.trim))
 		}
-		if (target === getVoid(interpreter, call) && memberTarget !== null) {
+		
+		if (target.isVoid(call) && memberTarget !== null && !ignoreVoidValidation) {
 			throw newWollokExceptionAsJava(
 				NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES,
 					memberTarget.sourceCode.trim))
@@ -470,9 +477,9 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 		parameters.forEach[param, i|param.validateVoidOperand(call.memberCallArguments.get(i))]
 		target.call(call.feature, parameters)
 	}
-
+	
 	private def void validateVoidOperand(WollokObject o, WExpression expression) {
-		if (o !== null && o === getVoid(interpreter, o.behavior)) {
+		if (o !== null && o.isVoid(expression) && !ignoreVoidValidation) {
 			throw newWollokExceptionAsJava(
 				NLS.bind(Messages.WollokDslValidator_VOID_MESSAGES_CANNOT_BE_USED_AS_VALUES,
 					expression.sourceCode.trim))
@@ -496,7 +503,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			initializeReference
 		}
 	}
-
+	
 	def dispatch void initializeReference(WNamedObject it) { createNamedObject(qualifiedName) }
 
 	def dispatch void initializeReference(WVariable it) { eContainer.eval }
@@ -533,7 +540,7 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 	}
 
 	// ********************************************************************************************
-	// ** HELPER FOR message sends
+	// ** Helpers
 	// ********************************************************************************************
 	def dispatch evaluateTarget(WFeatureCall call) { throw new UnsupportedOperationException("Should not happen") }
 
@@ -548,5 +555,8 @@ class WollokInterpreterEvaluator implements XInterpreterEvaluator<WollokObject> 
 			createNamedObject(classFinder.getCachedObject(context, qualifiedName), qualifiedName)
 		}
 	}
+
+	def dispatch isVoid(WollokObject object, EObject context) { object === getVoid(interpreter, context) }
+	def dispatch isVoid(CallableSuper call, EObject context) { false }
 }
 	

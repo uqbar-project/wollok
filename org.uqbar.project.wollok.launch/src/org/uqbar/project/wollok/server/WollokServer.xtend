@@ -18,7 +18,6 @@ import org.uqbar.project.wollok.WollokConstants
 import org.uqbar.project.wollok.interpreter.WollokInterpreter
 import org.uqbar.project.wollok.interpreter.core.WollokObject
 import org.uqbar.project.wollok.interpreter.core.WollokProgramExceptionWrapper
-import org.uqbar.project.wollok.interpreter.debugger.XDebuggerOff
 import org.uqbar.project.wollok.launch.Wollok
 import org.uqbar.project.wollok.launch.WollokChecker
 import org.uqbar.project.wollok.launch.WollokLauncherInterpreterEvaluator
@@ -117,7 +116,7 @@ class WollokServer extends AbstractHandler {
 		val String name = WollokConstants.SYNTHETIC_FILE
 		for (var i = 0; i < Integer.MAX_VALUE; i++) {
 			val syntheticUri = URI.createURI(name + i + "." + fileExtension)
-			if (resourceSet.getResource(syntheticUri, false) == null)
+			if (resourceSet.getResource(syntheticUri, false) === null)
 				return syntheticUri
 		}
 		throw new IllegalStateException()
@@ -146,19 +145,19 @@ class WollokServer extends AbstractHandler {
 	// ** Main
 	// ************************************************************************
 	def static void main(String[] args) {
-		
+
 		var int port = 8080;
-		
-		if(args.size() > 0){
-			try{
+
+		if (args.size() > 0) {
+			try {
 				println(args.get(0));
 				port = Integer.parseInt(args.get(0));
-			}catch(NumberFormatException e){
+			} catch (NumberFormatException e) {
 				port = 8080;
 				println("Using default port 8080");
 			}
 		}
-		
+
 		new Server(port) => [
 			handler = new WollokServer
 			start
