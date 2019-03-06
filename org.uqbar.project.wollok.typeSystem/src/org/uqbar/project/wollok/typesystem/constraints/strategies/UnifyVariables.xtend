@@ -117,7 +117,7 @@ class UnifyVariables extends AbstractInferenceStrategy {
 			Error
 		}
 	}
-
+	
 	def dispatch doUnifyWith(GenericTypeInfo t1, GenericTypeInfo t2) {
 		t1.minTypes = minTypesUnion(t1, t2)
 		t1.joinMaxTypes(t2.maximalConcreteTypes)
@@ -131,6 +131,14 @@ class UnifyVariables extends AbstractInferenceStrategy {
 
 	def dispatch doUnifyWith(VoidTypeInfo t1, VoidTypeInfo t2) {
 		// Nothing to do
+		Ready
+	}
+	
+	def dispatch doUnifyWith(GenericTypeInfo t1, VoidTypeInfo t2) {
+		Ready
+	}
+
+	def dispatch doUnifyWith(VoidTypeInfo t1, GenericTypeInfo t2) {
 		Ready
 	}
 
